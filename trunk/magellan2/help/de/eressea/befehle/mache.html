@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: MACHE</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><B>MACHE&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE TEMP einheit-alias-nr ["name"]<BR>
+MACHE [stufen] geb&auml;ude-typ [geb&auml;ude-nr]&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] BOOT&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] LANGBOOT&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] DRACHENSCHIFF&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] KARAVELLE&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] TRIREME&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] SCHIFF [schiff-nr]&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [stufen] STRASSE richtung&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [anzahl] KR&Auml;UTER&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [anzahl] trank&nbsp;&nbsp;&nbsp;&lt;L&gt;<BR>
+MACHE [anzahl] gegenstand&nbsp;&nbsp;&nbsp;&lt;L&gt;</B></p>
+
+<P><TT>MACHE</TT> ist der allgemeine Produktionsbefehl. </P>
+<P> Gegenst&auml;nde werden mit <TT>MACHE [anzahl] gegenstand</TT> hergestellt.
+Je nach Gegenstand wird ein bestimmtes Talent und vielleicht auch noch
+bestimmte Rohstoffe ben&ouml;tigt. Ohne Angabe von <TT>anzahl</TT> wir die
+Einheit so viele Gegenst&auml;nde produzieren, wie Personen, Talent und evtl.
+Rohstoffe es ihr erm&ouml;glichen. </P>
+<P> Ein Alchimist kann nur einen Trank pro Runde herstellen - dies ist
+eine Ausnahme zur sonstigen Produktion. </P>
+<P> Folgende Gegenst&auml;nde k&ouml;nnen gemacht werden (in Klammern das Talent
+und ggf. die ben&ouml;tigten Rohstoffe): </P>
+
+<P><BLOCKQUOTE> Eisen (Bergbau),
+Holz (Holzf&auml;llen),
+Stein (Steinbau),
+Laen (Bergbau&nbsp;7; braucht Bergwerk),
+Mallorn (Holzf&auml;llen&nbsp;2),
+Pferd (Pferdedressur),
+Wagen (Wagenbau&nbsp;1; 5&nbsp;Holz),
+Katapult (Wagenbau&nbsp;5; 10&nbsp;Holz),
+Schwert (Waffenbau&nbsp;3; 1&nbsp;Eisen),
+Bih&auml;nder (Waffenbau&nbsp;4; 2&nbsp;Eisen),
+Laenschwert (Waffenbau&nbsp;8; 1&nbsp;Laen),
+Kriegsaxt (Waffenbau&nbsp;3; 1&nbsp;Eisen und 1&nbsp;Holz),
+Speer (Waffenbau&nbsp;2; 1&nbsp;Holz),
+Mallornspeer (Waffenbau&nbsp;5; 1&nbsp;Mallorn),
+Lanze (Waffenbau&nbsp;2; 2&nbsp;Holz),
+Mallornlanze (Waffenbau&nbsp;5; 2&nbsp;Mallorn),
+Hellebarde (Waffenbau&nbsp;3; 1&nbsp;Eisen und 1&nbsp;Holz),
+Armbrust (Waffenbau&nbsp;3; 1&nbsp;Holz),
+Mallornarmbrust (Waffenbau&nbsp;5; 1&nbsp;Mallorn),
+Bogen (Waffenbau&nbsp;2; 1&nbsp;Holz),
+Mallornbogen (Waffenbau&nbsp;5; 1&nbsp;Mallorn),
+Elfenbogen (Waffenbau&nbsp;5; 1&nbsp;Mallorn; nur Elfen),
+Kettenhemd (R&uuml;stungsbau&nbsp;3; 3&nbsp;Eisen),
+Plattenpanzer (R&uuml;stungsbau&nbsp;4; 5&nbsp;Eisen),
+Schild (R&uuml;stungsbau&nbsp;2; 1&nbsp;Eisen),
+Laenschild (R&uuml;stungsbau&nbsp;7; 1&nbsp;Laen),
+Laenkettenhemd (R&uuml;stungsbau&nbsp;9; 3&nbsp;Laen),
+Kr&auml;uter (Kr&auml;uterkunde),
+div. Tr&auml;nke (Alchemie; mind. 3&nbsp;Kr&auml;uter).
+</BLOCKQUOTE>
+</P>
+
+<P> Bei der Herstellung von Gegenst&auml;nde (au&szlig;er Kr&auml;utern) kann man auch
+eine Anzahl angeben, um z.B. Mengenvereinbarungen beim Holzf&auml;llen einzuhalten.
+</P><A name="MACHETEMP">
+<P> Wenn man neue Einheiten erschafft (<TT>MACHE TEMP</TT>), gibt man
+der Einheit eine Alias-Nummer, denn man wei&szlig; ja zu diesem Zeitpunkt
+noch nicht, welche Nummer die Einheit schlu&szlig;endlich noch bekommen wird.
+F&uuml;r alle anderen Befehle kann man nun diesen Alias verwenden (mit dem
+Wort <TT>TEMP</TT> davor). Die neue Einheit mu&szlig; allerdings noch Mitglieder
+bekommen, sonst wird sie stillschweigend am Ende der Runde wieder gel&ouml;scht!
+</P><P>
+Die Alias-Nummer wird als Nummer der Einheit benutzt, wenn diese noch
+nicht belegt ist. Ebenso kann man schon hier einen Namen der Einheit
+angeben. So lassen sich die Befehle
+<PRE>
+MACHE TEMP 1
+BENENNE EINHEIT "Clowns"
+NUMMER EINHEIT lach
+</PRE>
+verk&uuml;rzen auf
+<PRE>
+MACHE TEMP lach "Clowns"
+</PRE>
+</P>
+<P> Pro Partei sind maximal 1000 Einheiten erlaubt. Hat die Partei 1000
+oder mehr Einheiten, so k&ouml;nnen mit <TT>MACHE TEMP</TT> keine neuen Einheiten
+geschaffen werden, es m&uuml;ssen erst andere Einheiten z.B. durch Zusammenfassen
+gel&ouml;scht werden. </P>
+<P> Nach diesem Befehl werden die Befehle f&uuml;r die neue Einheit angegeben,
+bis man das Wort <A HREF="#ENDE"><TT>ENDE</TT></A> eingibt. Andere Parteien
+k&ouml;nnen tempor&auml;re Einheiten dann ansprechen, wenn sie nicht selber eine
+<TT>TEMP</TT>-Einheit mit der selben Nummer haben. Mit ein wenig
+Absprache k&ouml;nnen also auch <TT>TEMP</TT>-Einheiten fremder Parteien
+angesprochen werden.
+</P>
+<P> Wenn die neue Einheit Mitglieder neu rekrutieren soll, mu&szlig; sie auch
+genug Geld daf&uuml;r erhalten. Erh&auml;lt sie das nicht, wird die Einheit niemanden
+rekrutieren k&ouml;nnen und am Ende der Runde stillschweigend entfernt werden.
+Bekommt die Einheit Geld, rekrutiert aber keine Mitglieder, l&ouml;st sie
+sich ebenfalls auf und das Geld f&auml;llt den Bauern zu.
+<PRE>
+EINHEIT 17;       K&auml;mpfer [15,700$]
+MACHE TEMP 1
+BENENNE EINHEIT "Drachenreiter"
+LERNE Hiebwaffen
+ENDE
+GIB TEMP 1 5 PERSONEN
+
+GIB TEMP 2 100 SILBER
+MACHE TEMP 2
+REKRUTIERE 1
+BENENNE EINHEIT "Sp&auml;her"
+DEFAULT "LERNE Wahrnehmung"
+NACH Westen
+ENDE
+</PRE>
+etc...
+</P>
+<P> Um ein neues Geb&auml;ude zu errichten, verwendet man <TT>MACHE geb&auml;ude-typ</TT>. Ist man innerhalb
+eines Geb&auml;udes, kann man mit <TT>MACHE</TT> oder <TT>MACHE geb&auml;ude-typ</TT>
+an diesem weiterbauen. Will man allerdings an einem Geb&auml;ude weiterbauen,
+in dem man sich nicht befindet, mu&szlig; man dessen Nummer angeben. Burgen
+und die meisten anderen Geb&auml;ude k&ouml;nnen beliebig ausgebaut werden. Um
+Burgen zu bauen, mu&szlig; man das Talent Burgenbau und Steine haben, andere
+Geb&auml;ude erfordern i.d.R. weiterhin Holz, Eisen und Silber in verschiedenen
+Mengen. </P>
+<P> Mit <TT>MACHE schifftyp</TT> beginnt man, ein neues Schiff zu bauen. Schiffe k&ouml;nnen
+nicht wie Burgen erweitert werden, sondern man mu&szlig; bei Baubeginn den
+Typ festlegen. Einmal im Schiff, kann man mit <TT>MACHE</TT> oder <TT>MACHE
+SCHIFF</TT> daran weiterbauen. Will man allerdings an einem anderen
+Schiff weiterbauen, mu&szlig; man dessen Nummer angeben. An Schiffen kann
+nur bis zu der am Anfang angegebenen Gr&ouml;&szlig;e weiter gebaut werden. Um
+Schiffe zu bauen, mu&szlig; man das Talent Schiffbau und Holz haben. </P>
+<P> Sowohl bei Geb&auml;uden als auch bei Schiffen kann man mit <TT>stufen</TT>
+angeben, wieviele Stufen man das Geb&auml;ude bzw. Schiff bauen/erweitern
+will. Dies ist vor allem im Zusammenhang mit dem
+Materialpool n&uuml;tzlich. </P>
+<P>
+<BLOCKQUOTE>erste Woche - <TT>MACHE LANGBOOT</TT><BR>
+Ein neues Schiff wird gebaut und bekommt vom Computer die Nummer&nbsp;76.<BR>
+zweite Woche -- <TT>MACHE SCHIFF 76</TT><BR>
+An Schiff Nr.&nbsp;76 wird nun weiter gebaut. </BLOCKQUOTE>
+</P>
+<P> Will man in einer Region das Durchreisen durch Stra&szlig;en und Br&uuml;cken
+erleichtern, verwendet man <TT>MACHE STRASSE richtung</TT>. Um Stra&szlig;en
+zu bauen, braucht man das Talent Stra&szlig;enbau und Steine</P>
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: mache.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

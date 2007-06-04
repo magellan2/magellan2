@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Fenster-Modus</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel=stylesheet href="../default.css" type="text/css">
+</head>
+
+<body <!--#include virtual="../../bgcolor.ssi"-->
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Der Fenster-Modus</h1>
+
+<p>Der zweite Modus des Magellan Desktop ist der Fenster-Modus. In dieser
+Darstellungsart werden die Komponenten von Magellan in einzelnen Fenstern
+dargestellt, so da&szlig; Magellan aus einer Vielzahl von Fenstern besteht.</p>
+
+<h2>Vorteile des Fenstermodus</h2>
+
+<p>Das Konzept der SplitPanes ist sehr ausgereift und benutzerfreundlich, doch es hat auch einen gravierenden Nachteil: Wegen des "rekursiven" Aufbaus sind die M&ouml;glichkeiten der Darstellung stark begrenzt. Ein gutes Beispiel hierf&uuml;r ist die Windm&uuml;hle:</p>
+
+<pre>
+################
+#    #         #
+#    ###########
+#    #    #    #
+###########    #
+#         #    #
+################
+</pre>
+
+<p>Diese Struktur kann mit SplitPanes leider nicht nachgebildet werden. Im Fenster-Modus werden alle Bedienelemente von Magellan in eigene Fenster ausgelagert, die dann frei verschoben und in ihrer Größe verändert werden können.</p>
+
+<p>Wird Magellan das erste mal im Fenstermodus gestartet, so wird eine Standardanordnung angelegt, die die traditionelle Darstellung von Magellan emuliert. Danach k&ouml;nnen die Fenster beliebig nach Ihren Bed&uuml;rfnissen angeordnet werden. Die neue Anordnung wird dann beim Beenden gespeichert und steht bei der n&auml;chsten Sitzung wieder bereit.</p>
+
+<br>
+<h2>Nachteile des Fenstermodus</h2>
+<p>Leider hat dieses Konzept auch Nachteile. Im Gegensatz zu den SplitPanes, bei denen eine Ver&auml;nderung des Teilverh&auml;ltnisses zu einer Ver&auml;nderung der gesamten Oberfl&auml;che f&uuml;hrt und alle Komponenten aneinander abgrenzen, ist dies bei Fenstern nicht m&ouml;glich. Vielf&auml;ltige &Uuml;berlappungen k&ouml;nnen sich dabei ereignen.</p>
+
+<p>Ein weiterer Nachteil ist die Vielzahl der Fenster, denn alle haben eine Referenz in der lokalen Taskbar. Dies wird dann etwas un&uuml;bersichtlich.</p>
+
+<br>
+<h2>Konfiguration</h2>
+<p>F&uuml;r das schnelle Zu- und Abschalten der einzelnen Fenster existiert ein Untermen&uuml; "Fenster" im Men&uuml; "Desktop". Dieses ist nur im Modus Fenster-Modus erreichbar, den Sie im Optionsmen&uuml; aktivieren k&ouml;nnen. Ein jedes Fenster hat dort eine Entsprechung, die Sie w&auml;hlen k&ouml;nnen.</p>
+
+<p>Im Optionsmen&uuml; befinden sich zwei Konfigurationsmöglichkeiten:
+<ul>
+	<li>Aktivierungsmodus:
+	<p>Hierbei handelt es sich um eine Einstellung, um alle Magellan-Fenster in den Vordergrund zu holen. Dabei k&ouml;nnen Sie w&auml;hlen zwischen <i>Niemals</i>, d.h. die Fenster werden nicht automatisch nach vorne bewegt, <i>Client</i>, d.h. bei Aktivierung des Magellan-Hauptfensters werden alle Fenster in den Vordergrund geschoben, und <i>Immer</i>, d.h. bei Aktivierung eines jeglichen Magellan-Fensters werden alle Fenster in den Vordergrund verschoben.</p>
+
+	<li>Ikonifizierungsmodus:
+	<p>Diese Einstellung hilft zum Aufr&auml;umen der Taskbar. W&auml;hlen Sie hier Automatisch, so werden alle Fenster bis auf das Hauptfenster versteckt, wenn Sie Magellan minimieren. Sollten Sie Manuell w&auml;hlen, dann passiert bei Minimierung von Magellan nichts besonderes.<p>
+</ul>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: reference_desktop_windows.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

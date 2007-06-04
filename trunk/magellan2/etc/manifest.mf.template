@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Built-By: @USER@
+Specification-Title: Magellan Client @VERSION@ [build @BUILD@]
+Specification-Vendor: Magellan Development Team
+Main-Class: magellan.client.Client
+Class-Path: magellan-client.jar
+            magellan-library.jar 
+            magellan-help.jar
+            lib/ant-1.5.3.jar 
+            lib/forms-1.0.4.jar 
+            lib/jflap4_0b7.jar 
+            lib/jfreechart.jar 
+            lib/jimi.jar 
+            lib/jh.jar 
+            lib/looks-1.3b1.jar 
+            lib/skins/xplookandfeel.jar
+            lib/skins/kunststoff.jar 
+            lib/skins/metouia.jar

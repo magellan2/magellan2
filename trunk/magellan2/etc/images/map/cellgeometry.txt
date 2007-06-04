@@ -1,0 +1,16 @@
+x0=32
+x1=63
+x2=63
+x3=32
+x4=0
+x5=0
+y0=0
+y1=16
+y2=47
+y3=63
+y4=47
+y5=16
+imgOffsetx=8
+imgOffsety=8
+imgSizex=80
+imgSizey=80

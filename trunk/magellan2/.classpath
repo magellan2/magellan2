@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src-test"/>
+	<classpathentry kind="src" path="src-client"/>
+	<classpathentry kind="src" path="src-library"/>
+	<classpathentry kind="src" path="src-plugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jfreechart.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3.8.1"/>
+	<classpathentry kind="lib" path="lib/jimi.jar"/>
+	<classpathentry kind="lib" path="lib/ant-1.5.3.jar"/>
+	<classpathentry kind="lib" path="lib/skins/kunststoff.jar"/>
+	<classpathentry kind="lib" path="lib/skins/liquidlnf-0.2.8.jar"/>
+	<classpathentry kind="lib" path="lib/skins/metouia.jar"/>
+	<classpathentry kind="lib" path="lib/skins/xplookandfeel.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

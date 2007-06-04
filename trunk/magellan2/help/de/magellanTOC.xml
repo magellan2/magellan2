@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE toc
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+
+<toc version="1.0">
+<tocitem text="Magellan Hilfe" image="openbook" target="intro">
+	<tocitem text="Menüs" image="chapter" target="menu">
+		<tocitem text="Datei" image="chapter" target="menu_file">
+			<tocitem text="Öffnen" image="topic" target="menu_file_open"/>
+			<tocitem text="Hinzufügen" image="topic" target="menu_file_add"/>
+			<tocitem text="Befehle öffnen" image="topic" target="menu_file_openorders"/>
+			<tocitem text="Speichern" image="topic" target="menu_file_save"/>
+			<tocitem text="Speichern unter" image="topic" target="menu_file_saveas"/>
+			<tocitem text="Befehle speichern" image="topic" target="menu_file_saveorders"/>
+			<tocitem text="CR exportieren" image="topic" target="menu_file_crexport"/>
+			<tocitem text="Abbrechen" image="topic" target="menu_file_abort"/>
+			<tocitem text="Beenden" image="topic" target="menu_file_exit"/>
+		</tocitem>
+
+		<tocitem text="Bearbeiten" image="chapter" target="menu_edit">
+			<tocitem text="Rückgängig" image="topic" target="menu_edit_undo"/>
+			<tocitem text="Wiederherstellen" image="topic" target="menu_edit_redo"/>
+		</tocitem>
+
+		<tocitem text="Befehle" image="chapter" target="menu_orders">
+			<tocitem text="N&auml;chste Unbestätigte Einheit" image="topic" target="menu_orders_unconfirmed"/>
+			<tocitem text="Bestätigungsstatus &auml;ndern" image="topic" target="menu_orders_confirm"/>
+			<tocitem text="Alle bestätigen" image="topic" target="menu_orders_confirmall"/>
+			<tocitem text="Alle aufheben" image="topic" target="menu_orders_unconfirmall"/>
+			<tocitem text="Bestätigung invertieren" image="topic" target="menu_orders_invertconfirmation"/>
+		</tocitem>
+
+		<tocitem text="Karte" image="chapter" target="menu_map">
+			<tocitem text="Ursprung setzen" image="topic" target="menu_map_origin"/>
+			<tocitem text="Insel erfassen" image="topic" target="menu_map_island"/>
+			<tocitem text="Als Bild speichern" image="topic" target="menu_map_image"/>
+			<tocitem text="Alles ausw&auml;hlen" image="topic" target="menu_map_selectall"/>
+			<tocitem text="Auswahl aufheben" image="topic" target="menu_map_selectnothing"/>
+			<tocitem text="Auswahl invertieren" image="topic" target="menu_map_invertselection"/>
+			<tocitem text="Inseln ausw&auml;hlen" image="topic" target="menu_map_selectisland"/>
+			<tocitem text="Auswahl f&uuml;llen" image="topic" target="menu_map_fillselection"/>
+		</tocitem>
+
+		<tocitem text="Desktop" image="chapter" target="menu_desktop">
+			<tocitem text="Fenster" image="topic" target="menu_desktop_window"/>
+			<tocitem text="Split-Sets" image="topic" target="menu_desktop_splitsets"/>
+			<tocitem text="Layouts" image="topic" target="menu_desktop_layouts"/>
+		</tocitem>
+
+		<tocitem text="Extras" image="chapter" target="menu_extras">
+			<tocitem text="Parteistatistik" image="topic" target="menu_extras_factionstatistics"/>
+			<tocitem text="Suchen" image="topic" target="menu_extras_search"/>
+			<tocitem text="E-Check" image="topic" target="menu_extras_echeck"/>
+			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
+			<tocitem text="Neuzeichnen" image="topic" target="menu_extras_redraw"/>
+			<tocitem text="Grafikset neuladen" image="topic" target="menu_extras_reload"/>
+			<tocitem text="Optionen" image="chapter" target="menu_extras_options">
+				<tocitem text="System" image="topic" target="menu_extras_options_system"/>
+				<tocitem text="Desktop" image="topic" target="menu_extras_options_desktop"/>
+				<tocitem text="Regionsanzeige" image="topic" target="menu_extras_options_region"/>
+				<tocitem text="Detailanzeige" image="topic" target="menu_extras_options_detail"/>
+				<tocitem text="Ressourcen" image="topic" target="menu_extras_options_ressources"/>
+				<tocitem text="Karte" image="topic" target="menu_extras_options_map"/>
+				<tocitem text="Icons" image="topic" target="menu_extras_options_icons"/>
+				<tocitem text="Pfade" image="topic" target="menu_extras_options_paths"/>
+			</tocitem>
+			<tocitem text="Eressea Optionen" image="topic" target="menu_extras_eresseaoptions"/>
+			<tocitem text="Hilfe" image="topic" target="menu_extras_help"/>
+			<tocitem text="Info" image="topic" target="menu_extras_info"/>
+		</tocitem>
+	</tocitem>
+
+	<tocitem text="Fensterelemente" image="chapter" target="windows">
+		<tocitem text="Regionsübersicht" image="topic" target="windows_regions"/>
+		<tocitem text="History" image="topic" target="windows_history"/>
+		<tocitem text="MiniMap" image="topic" target="windows_minimap"/>
+		<tocitem text="Karte" image="topic" target="windows_map"/>
+		<tocitem text="Meldungen" image="topic" target="windows_messages"/>
+		<tocitem text="Objektname/-beschreibung" image="topic" target="windows_name"/>
+		<tocitem text="Details" image="topic" target="windows_details"/>
+		<tocitem text="Befehle" image="topic" target="windows_orders"/>
+	</tocitem>
+
+	<tocitem text="Referenz" image="chapter" target="reference">
+		<tocitem text="Desktopeinstellungen" image="chapter" target="reference_desktop">
+			<tocitem text="Splitpane-Modus" image="topic" target="reference_desktop_splitpanes"/>
+			<tocitem text="Fenster-Modus" image="topic" target="reference_desktop_windows"/>
+			<tocitem text="Layout-Modus" image="topic" target="reference_desktop_layout"/>
+		</tocitem>
+		<tocitem text="Grafiksets" image="chapter" target="reference_graphicsets">
+			<tocitem text="Einbinden von Grafiksets" image="topic" target="reference_graphicsets_install"/>
+			<tocitem text="Erstellen von Grafiksets" image="topic" target="reference_graphicsets_making"/>
+		</tocitem>
+		<tocitem text="Ressourcen" image="topic" target="reference_ressources"></tocitem>
+		<tocitem text="Computerreporte" image="topic" target="reference_cr"></tocitem>
+		<tocitem text="Tastaturkürzel" image="topic" target="reference_shortcuts"></tocitem>
+		<tocitem text="Kommandozeilen-Parameter" image="topic" target="reference_commandline"></tocitem>
+	</tocitem>
+	<tocitem text="FAQ" image="topic" target="faq"></tocitem>
+	<tocitem text="Feedback und Support" image="topic" target="feedback"></tocitem>
+</tocitem>
+</toc>
+
+<!-- $Id: magellanTOC.xml 8 2003-10-12 21:05:43Z eressea $ -->

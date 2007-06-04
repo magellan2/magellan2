@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>SplitPane-Modus</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel=stylesheet href="../default.css" type="text/css">
+</head>
+
+<body <!--#include virtual="../../bgcolor.ssi"-->
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Der SplitPane-Modus</h1>
+
+<h2>Was sind SplitPanes?</h2>
+<p>Zuerst sollte wohl erkl&auml;rt werden, was SplitPanes sind:<br>
+<i>SplitPanes sind graphische Komponenten, die eine Fl&auml;che in zwei Bereiche
+unterteilen. In diesen Bereichen k&ouml;nen wieder Komponenten dargestellt
+werden. Mittels Benutzerinteraktion oder durch Programmierung kann die
+Trennlinie dabei beeinflu&szlig;t werden.</i></p>
+
+<h2>Vorteile des SplitPane-Modus</h2>
+<p>In diesem Modus ist es relativ einfach m&ouml;glich, eine klar gegliederte und vom
+Benutzer anpassbare Oberfl&auml;che zu entwerfen. Die Gr&ouml;&szlig;e der einzelnen Fensterelemente kann dabei w&auml;hrend der Benutzung ver&auml;ndert werden. </p>
+
+<h2>Nachteile des SplitPane-Modus</h2>
+<p>Das Konzept der SplitPanes bietet bei allem leichten Aufbau auch einen
+gravierenden Nachteil: Die rekursiv aufgebaute Struktur ist relativ starr
+und nur in engen Grenzen vom Anwender anzupassen. Ohne den Grundaufbau
+zu &auml;ndern, ist es nicht m&ouml;glich gr&ouml;&szlig;ere &Auml;nderungen
+der Darstellung vorzunehmen.</p>
+
+<h2>Konfiguration</h2>
+<p>
+Das wichtigste ist dabei nat&uuml;rlich die Konfiguration des Magellan Desktop.
+Die Entwicklern w&auml;hlten die Speicherung in einer externen Textdatei, die
+den Namen &quot;magellan_desktop.ini&quot; hat und sich im Magellan-Verzeichnis befindet.
+Sollte keine solche Datei vorhanden sein, so startet der Desktop mit einer
+Standardkonfiguration und speichert diese zum Schlu&szlig; in eine neu erzeugte
+Datei.
+</p>
+<p>
+Der Aufbau der Konfigurationsdatei wurde dabei an die Standard-Ini-Struktur
+der verbreiteten Betriebssysteme und Software angelehnt:
+<pre>
+[SplitSet-Name]
+SPLIT 0.5 H
+SPLIT 0.15 V
+COMPONENT MAP
+COMPONENT DETAILS
+/SPLIT
+COMPONENT OVERVIEW
+/SPLIT
+[SplitSet-Name]
+.
+.
+</pre>
+
+<p>Wie zu sehen, erh&auml;lt jedes &quot;Set&quot; von Konfigurationsanweisungen einen Namen, der in eckigen Klammern angegeben wird. Wichtig ist dabei, den Namen nicht mit "Layout_" zu beginnen, da dies ein
+Layout f&uuml;r den Layout-Modus kennzeichnet. Darauf folgen dann zeilenweise die Anweisungen an den Magellan Desktop.</p>
+
+<p>Der Aufbau der Anweisungen ist der Einfachheit halber sowohl der Umsetzung im
+Programm als auch der &auml;hnlichen FrameSet-Struktur der HTM-Sprache nachempfunden.
+Sollten Sie sich damit nicht auskennen, so benutzen Sie den folgenden Ablauf,
+um eine eigene Konfiguration zu &quot;erfinden&quot;. Starten Sie dabei im ersten Schritt
+mit der Gesamtfl&auml;che, da&szlig; hei&szlig;t dem gesamten Bildschirm:</p>
+
+<ul>
+	<li>Nehmen Sie sich Ihre Fl&auml;che, f&uuml;hren Sie eine der beiden folgenden Anweisungen aus
+	<ul>
+		<li>Erzeugung eines Splits = Einer Teilung
+		<ul>
+		<li>Teilen Sie diese in zwei H&auml;lften, entweder horizontal (zwei H&auml;lften nebeneinander) oder vertikal (zwei H&auml;lften &uuml;bereinander). Notieren Sie sich das Kennwort &quot;SPLIT&quot;,das Teil-Verh&auml;ltnis (zwischen 0 und 1) und die Orientierung (&quot;H&quot; f&uuml;r horizontal, &quot;V&quot; f&uuml;r vertikal)
+		<li>Nehmen sie die linke/obere H&auml;lfte und beginnen Sie beim ersten Schritt erneut (setzen sie f&uuml;r &quot;Ihre Fl&auml;che&quot; die linke/obere H&auml;lfte ein). 
+		<li>Nehmen sie die rechte/untere H&auml;lfte und beginnen Sie beim ersten Schritt erneut (setzen sie f&uuml;r &quot;Ihre Fl&auml;che&quot; die rechte/untere H&auml;lfte ein).
+		<li>Notieren Sie sich das Kennwort &quot;/SPLIT&quot;</li>
+	</ul>
+	
+	<li>Einsetzen einer Komponente
+	<ul>
+		<li>Notieren Sie sich das Kennwort &quot;COMPONENT&quot; und den Kennamen der Komponente, die in dieser Fl&auml;che angezeigt werden soll. Kennnamen siehe Tabelle unten.</li>
+	</ul>
+	</li>
+
+	<li>Kehren Sie zu Ihrem letzten Schritt zur&uuml;ck (sollte kein letzter Schritt mehr bestehen, sind Sie fertig).</li>
+</ul>
+
+<p>Nun sollten Sie eine Notiz in den H&auml;nden halten, die Ihre eigene 
+Kreation wiederspiegelt. Geben Sie diese einfach mit einem eigenen Namen ein. 
+Sie k&ouml;nen Sich dabei am vorgegebenen Standard-Set orientieren.</p>
+
+<p>Wichtig sind nat&uuml;rlich die Kennamen f&uuml;r die m&ouml;glichen Komponenten,
+die Magellan darstellen kann.</p>
+
+<br>
+<table border=1 cellpadding="3" cellspacing="0">
+<tr bgcolor="#f9d0d0">
+	<td><b>Schl&uuml;sselwort</b></td>
+    <td><b>Komponente</b></td>
+</tr>
+
+<tr>
+	<td>ORDERS</td>
+	<td>Befehlseditor</td>
+</tr>
+
+<tr>
+	<td>DESCRIPTION</td>
+	<td>Beschreibung einer Region/Geb&auml;ude/Schiff/Einheit, losgel&ouml;st vom Namensfeld</td>
+</tr>
+
+<tr>
+	<td>DETAILS</td>
+	<td>Anzeige der Details einer Region/Geb&auml;ude/Schiff/Einheit</td>
+</tr>
+
+<tr>
+	<td>HISTORY</td>
+	<td>Verlaufsanzeige, Liste der letztgew&auml;hlten Objekte</td>
+</tr>
+
+<tr>
+	<td>MAP</td>
+	<td>Gro&szlig;e Karte</td>
+</tr>
+
+<tr>
+	<td>MESSAGES</td>
+	<td>Nachrichtenanzeige</td>
+</tr>
+
+<tr>
+	<td>MINIMAP</td>
+	<td>Kleine Karte</td>
+</tr>
+
+<tr>
+	<td>NAME</td>
+	<td>Name einer Region/Geb&auml;ude/Schiff/Einheit, losgel&ouml;st vom Beschreibungsfeld</td>
+</tr>
+
+<tr>
+	<td>NAME&amp;DESCRIPTION</td>
+	<td>Zusammenfassung von Names- und Beschreibungsfeld, horizontal getrennt</td>
+</tr>
+
+<tr>
+	<td>OVERVIEW</td>
+	<td>Regions-/Inselbaum</td>
+</tr>
+
+<tr>
+	<td>OVERVIEW&amp;HISTORY</td>
+	<td>Zusammenfassung von Regionsbaum und Verlaufsanzeige, horizontal getrennt</td>
+</tr>
+</table>
+
+<br>
+<p>Die auswertbaren, da&szlig; hei&szlig;t vom Magellan verstandenen Konfigurationen k&ouml;nnen dann im Men&uuml; "Desktop" im Unterpunkt "Split-Sets" unter dem von Ihnen angegebenen Namen ausgew&auml;hlt werden.</p>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: reference_desktop_splitpanes.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

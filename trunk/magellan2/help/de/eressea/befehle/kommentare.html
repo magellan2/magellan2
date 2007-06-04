@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: //</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><B>// Kommentar</B></p>
+
+<P> Im Gegensatz zu einem Kommentar hinter einem <TT>;</TT> (Semikolon)
+wird dieser Kommentar mit in die Vorlage für den Zug der nächsten Runde
+mit aufgenommen.
+<PRE>
+EINHEIT 123;     Hundertdreiundzwanzig [20,450$]
+// Unterhalt Magierturm
+@GIB 234 1000 SILBER
+// Ab und an Stangenwaffen lernen
+TREIBE Steuern ein
+</PRE>
+Das <TT>//</TT> muß wie ein Befehl behandelt werden, man darf also nicht
+<PRE>
+@GIB 345 100 SILBER // wegen Sägewerk
+</PRE>
+machen. Außerdem muß ein Leerzeichen hinter den <TT>//</TT> sein.
+</P>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: kommentare.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,1850 @@
+
+<!doctype html public "-//W3C//DTD HTML 3.2//DE">
+<html>
+<head>
+<title>Befehlsbeschreibungen</title>
+<meta http-equiv="Content-Language" content="de-DE">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+<meta name="description" content="Magellan Dokumentation">
+<meta name="AUTHOR" content="rb@behme.space.net"><link rel="stylesheet" href="../default.css" type="text/css">
+</head>
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Die Liste der Befehle</h1>
+<p>Vorab ein paar Hinweise zur Notation:</p>
+<ul>
+	<li>feste Eingaben sind <tt>GROSS</tt> geschrieben. Sie m&uuml;ssen aber im Zug nicht zwangsweise auch gro&szlig; geschrieben werden.
+	<li>Bezeichnungen sind <tt>klein</tt> geschrieben. F&uuml;r sie ist es sinnvoller, kontextbezogene Werte einzugeben.<br>
+	Beispiel: <tt>GIB einheit-nr anzahl SILBER</tt> gibt einer Einheit Silber.
+    <tt>GIB bp2 2000 Silber</tt> gibt der Einheit <tt>bp2</tt> 2000 Silber.<br>
+	In den Reports wird oftmals auch die Schreibweise <tt>&lt;einheit-nr&gt;</tt> benutzt; die spitzen Klammern sind in diesem Fall wegzulassen.
+	<li>Dinge, die in eckigen Klammern stehen (<tt>[NICHT]</tt>) sind optional,
+    das hei&szlig;t sie k&ouml;nnen, m&uuml;ssen aber nicht eingegeben werden. Dabei sind die eckigen Klammern wegzulassen.<br>
+	Beispiel: <tt>MACHE [stufen] SCHIFF</tt>: hier kann eine Stufenanzahl benutzt werden: <tt>MACHE 10 SCHIFF</tt>, oder ohne Angabe <tt>MACHE SCHIFF</tt>.
+</ul>
+<h2>Kurzbeschreibung der Befehle</h2>
+<p>Unter "K/L" ist vermerkt, ob der Befehl ein kurzer oder langer Befehl ist,
+d.h., ob er sofort ausgef&uuml;hrt wird (und danach weitere Befehle m&ouml;glich sind)
+oder eine ganze Runde zur Ausf&uuml;hrung braucht.</p>
+<br>
+<table cellspacing="0" cellpadding="3" border="1">
+<tr bgcolor="#DDDDDD">
+	<th>Befehl</th>
+	<th>Beschreibung</th>
+	<th nowrap>K/L</th>
+	<th>Details</th>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>ARBEITE</tt></td>
+	<td>verdient 10 Silber oder mehr</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/arbeite.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>ATTACKIERE einheit-nr</tt></td>
+	<td>greift die Einheit an</td>
+	<td align="center">(L)</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/attackiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BANNER "text"</tt></td>
+	<td>Setzt Text f&uuml;r Adress-Liste</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/banner.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BEKLAUE einheit-nr</tt></td>
+	<td>klaut 50 Silber oder mehr</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beklaue.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BELAGERE burg-nr</tt></td>
+	<td>belagert die Burg</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/belagere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BENENNE EINHEIT "name"</tt></td>
+	<td>benennt Objekte</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BENENNE PARTEI "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BENENNE BURG "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BENENNE SCHIFF "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BENENNE REGION "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BENENNE FREMDE EINHEIT einheit "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BENENNE FREMDES SCHIFF schiff "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BENENNE FREMDES GEB&Auml;UDE haus "name"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benenne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BENUTZE trank</tt></td>
+	<td>benutzt alchemistischen Trank</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/benutze.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BESCHREIBE EINHEIT "text"</tt></td>
+	<td>beschreibt Objekte</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beschreibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BESCHREIBE PRIVAT "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beschreibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BESCHREIBE BURG "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beschreibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BESCHREIBE SCHIFF "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beschreibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BESCHREIBE REGION "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/beschreibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BETRETE BURG burg-nr</tt></td>
+	<td>betritt Objekte</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/betrete.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BETRETE GEB&Auml;UDE geb&auml;ude-nr</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/betrete.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BETRETE SCHIFF schiff-nr</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/betrete.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BEWACHE [NICHT]</tt></td>
+	<td>bewacht die Region</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/bewache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BOTSCHAFT AN REGION "text"</tt></td>
+	<td>versendet Botschaften</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/botschaft.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BOTSCHAFT AN SCHIFF schiff-nr "text"</tt></td>
+	<td>versendet Botschaften</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/botschaft.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BOTSCHAFT AN BURG burg-nr "text"</tt></td>
+	<td>versendet Botschaften</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/botschaft.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>BOTSCHAFT AN EINHEIT einh-nr "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/botschaft.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>BOTSCHAFT AN PARTEI partei-nr "text"</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/botschaft.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>DEFAULT befehl</tt></td>
+	<td>Setzt Default-Befehl f&uuml;r die n&auml;chste
+	Runde.</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/default.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>EINHEIT einheit-nr</tt></td>
+	<td>beginnt Befehle f&uuml;r eine Einheit</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/einheit.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>EMAIL email@adresse</tt></td>
+	<td>setzt die eMail-Adresse</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/email.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>ENDE</tt></td>
+	<td>beendet <tt>MACHE TEMP</tt></td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/ende.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>FAHRE einheit-nr</tt></td>
+	<td>sich transportieren lassen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/fahre.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>FOLGE EINHEIT einheit-nr</tt></td>
+	<td>folgt einer Einheit</td>
+	<td align="center">(L)</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/folge.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>FOLGE SCHIFF schiff-nr</tt></td>
+	<td>folgt einem Schiff</td>
+	<td align="center">(L)</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/folge.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>FORSCHE KR&Auml;UTER</tt></td>
+	<td>sucht Kr&auml;uter</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/forsche.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>FOLGE SCHIFF schiff-nr</tt></td>
+	<td>folgt einem Schiff</td>
+	<td align="center">(L)</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>GIB einheit-nr KR&Auml;UTER</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>GIB einheit-nr KOMMANDO</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>GIB einheit-nr anzahl SILBER</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>GIB einheit-nr anzahl PERSONEN</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>GIB einheit-nr EINHEIT</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>GIB einheit-nr anzahl gegenstand</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>GIB 0 anzahl SILBER</tt></td>
+	<td>wegwerfen von Gegenst&auml;nden</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>GIB 0 anzahl PERSONEN</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>GIB 0 anzahl gegenstand</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gib.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>GRUPPE ["name"]</tt></td>
+	<td>Gruppieren von Einheiten</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/gruppe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>HELFE partei-nr ALLES [NICHT]</tt></td>
+	<td>setze/l&ouml;sche
+	<b>einseitige</b> Allianz</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/helfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>HELFE partei-nr GIB [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/helfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>HELFE partei-nr K&Auml;MPFE [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/helfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>HELFE partei-nr BEWACHE [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/helfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>HELFE partei-nr SILBER [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/helfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>K&Auml;MPFE</tt></td>
+	<td>setzt Verhalten im Kampf</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kaempfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>K&Auml;MPFE NICHT</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kaempfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>K&Auml;MPFE HINTEN</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kaempfe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>KAMPFZAUBER "zauberspruch"</tt></td>
+	<td>setzt Zauber f&uuml;r K&auml;mpfe</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kampfzauber.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>KAUFE anzahl luxusgut</tt></td>
+	<td>kaufe Luxusg&uuml;ter</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kaufe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>KONTAKTIERE einheit-nr</tt></td>
+	<td>kontaktiere fremde Einheiten</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/kontaktiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>LEHRE einheit-nr [einheit-nr etc.]</tt></td>
+	<td>lehre Einheiten</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/lehre.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>LERNE talent</tt></td>
+	<td>Talent lernen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/lerne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE TEMP unit-alias-nr ["name"]</tt></td>
+	<td>erschaffe neue Einheit</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE [stufe] geb&auml;ude-typ [geb&auml;ude-nr]</tt></td>
+	<td>erweitere oder baue
+	neues Geb&auml;ude</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [stufe] SCHIFF [schiff-nr]</tt></td>
+	<td>baue weiter am Schiff</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE</tt></td>
+	<td>baue weiter an Geb&auml;ude/Schiff</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [stufe] BOOT</tt></td>
+	<td>baue neue Schiffe</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE [stufe] LANGBOOT</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [stufe] DRACHENSCHIFF</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE [stufe] KARAVELLE</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [stufe] TRIREME</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE [stufe] STRASSE richtung</tt></td>
+	<td>baue Stra&szlig;en</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [anzahl] KR&Auml;UTER</tt></td>
+	<td>suche Kr&auml;uter der Region</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MACHE [anzahl] trank</tt></td>
+	<td>mache einen alchemistischen
+	Trank</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MACHE [anzahl] gegenstand</tt></td>
+	<td>mache einen Gegenstand</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/mache.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>MAGIEGEBIET magiegebiet</tt></td>
+	<td>w&auml;hle Magiegebiet der
+	Partei</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/magiegebiet.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>MEINUNG umfrage alternative ["kommentar"]</tt></td>
+	<td>Meinung
+	zu Umfragen kundtun</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/meinung.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>NACH richtung [richtung etc.]</tt></td>
+	<td>Reisen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/nach.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>N&Auml;CHSTER</tt></td>
+	<td>Beendet <tt>PARTEI</tt></td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/naechster.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>NEUSTART "passwort"</tt></td>
+	<td>L&auml;&szlig;t Partei neu starten</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/passswort.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>NUMMER EINHEIT [neue_nr]</tt></td>
+	<td>vergibt neue Nummer</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/nummer.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>NUMMER BURG [neue_nr]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/nummer.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>NUMMER SCHIFF [neue_nr]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/nummer.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>OPTION AUSWERTUNG [NICHT]</tt></td>
+	<td>verschiedene Optionen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>OPTION COMPUTER [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>OPTION ZIPPED [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>OPTION BZIP2 [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>OPTION SILBERPOOL [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>OPTION MATERIALPOOL [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>OPTION ADRESSEN [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>OPTION ZUGVORLAGE [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>OPTION STATISTIK [NICHT]</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/option.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>PARTEI partei-nr "passwort"</tt></td>
+	<td>beginnt Befehle f&uuml;r Partei</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/partei.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>PASSWORT "neues-passwort"</tt></td>
+	<td>setze neues Passwort</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/passwort.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>PIRATERIE [partei_1 [partei_2 [...]]]</tt></td>
+	<td>Piraterie setzen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/piraterie.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>PR&Auml;FIX [pr&auml;fix]</tt></td>
+	<td>Pr&auml;fix setzen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/piraterie.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>REGION x,y</tt></td>
+	<td>keine Funktion (nur f&uuml;r Tools)</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/region.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REKRUTIERE anzahl</tt></td>
+	<td>rekrutiere weitere Personen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/rekrutiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT BATTLE level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT EVENTS level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT ERRORS level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT ECONOMY level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT PRODUCTION level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT MAGIC level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT MOVEMENT level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>REPORT STUDY level</tt></td>
+	<td>Reportoptionen einstellen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/report.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>RESERVIERE anzahl "gegenstand"</tt></td>
+	<td>Gegenst&auml;nde
+	reservieren</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/reserviere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>RESERVIERE anzahl SILBER</tt></td>
+	<td>Silber
+	reservieren</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/reserviere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>ROUTE richtung [richtung etc.]</tt></td>
+	<td>Reisen</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/route.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>SABOTIERE SCHIFF</tt></td>
+	<td>Schiff versenken</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/sabotiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>SPIONIERE einheit-nr</tt></td>
+	<td>Einheit ausspionieren</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/spioniere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>SORTIERE VOR einheit-nr</tt></td>
+	<td>Einheit in Report sortieren</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/sortiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>SORTIERE HINTER einheit-nr</tt></td>
+	<td>&nbsp;</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/sortiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>STIRB "passwort"</tt></td>
+	<td>aus dem Spiel ausscheiden</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/stirb.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>TARNE [stufe]</tt></td>
+	<td>Tarnstufe setzen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/tarne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>TARNE rasse</tt></td>
+	<td>D&auml;monen: als andere Rasse tarnen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/tarne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>TARNE PARTEI [NICHT]</tt></td>
+	<td>Parteizugeh&ouml;rigkeit verbergen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/tarne.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>TRANSPORTIERE einheit-nr</tt></td>
+	<td>andere Einheiten mitnehmen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/transportiere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>TREIBE [betrag]</tt></td>
+	<td>Steuern eintreiben
+	(max. 20 S/Talentpunkt)</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/treibe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>UNTERHALTE [betrag]</tt></td>
+	<td>verdiene 20 oder mehr Silber</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/unterhalte.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>URSPRUNG [x y]</tt></td>
+	<td>setzt den Koordinaten-Ursprung</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/ursprung.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>VERGESSE talent</tt></td>
+	<td>vergi&szlig;t das Talent</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/vergesse.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>VERKAUFE anzahl luxusgut</tt></td>
+	<td>verkaufe Luxusg&uuml;ter</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/verkaufe.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>VERLASSE</tt></td>
+	<td>Schiff oder Burg verlassen</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/verlasse.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>ZAUBERE "zauberspruch"</tt></td>
+	<td>Zaubern</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zaubere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>ZEIGE "zauberspruch"</tt></td>
+	<td>Zeige Beschreibung des Zaubers</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zeige.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>ZERST&Ouml;RE</tt></td>
+	<td>Burg, Schiff oder Stra&szlig;e</td>
+	<td align="center">K</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zerstoere.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#EEEEEE">
+	<td><tt>Z&Uuml;CHTE PFERDE</tt></td>
+	<td>Pferde z&uuml;chten - nur in Pferdezucht</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zuechte.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>Z&Uuml;CHTE KR&Auml;UTER</tt></td>
+	<td>Kr&auml;uter z&uuml;chten</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zuechte.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+<tr bgcolor="#DDDDDD">
+	<td><tt>// Kommentar</tt></td>
+	<td>f&uuml;gt persistenten Kommentar ein</td>
+	<td align="center">L</td>
+	<td align="right">
+	<object CLASSID="java:com.sun.java.help.impl.JHSecondaryViewer">
+		<param name="content" value="befehle/zuechte.html">
+		<param name="viewerActivator" value="javax.help.LinkLabel">
+		<param name="iconByName" value="../images/hg_exam.gif">
+		<param name="viewerStyle" value="javax.help.Popup">
+		<param name="viewerSize" value="400,200">
+	</object>
+	</td>
+</tr>
+</table>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: orders_desc.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

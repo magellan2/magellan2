@@ -1,0 +1,4 @@
+#
+# This is a generated file. Edit VERSION.template instead
+#
+VERSION=@VERSION@

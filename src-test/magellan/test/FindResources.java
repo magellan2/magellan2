@@ -28,9 +28,9 @@ import java.io.FileReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import magellan.library.utils.Resources;
 
@@ -56,13 +56,14 @@ public class FindResources {
     Collections.sort(resourceKeys);
     System.out.println("----end----");
     
-    Set<String> keys = Resources.getInstance().getKeys(Locale.GERMANY);
+    Enumeration<String> keys = Resources.getInstance().getKeys(Locale.GERMANY);
     
     // okay, we could do this in ONE loop but I want to sort them by
     // priority...
     System.out.println("----okay----");
     
-    for (String key : keys) {
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement();
       boolean found = false;
       for (String v : resourceKeys) {
         if (key.equals(v)) {
@@ -74,7 +75,8 @@ public class FindResources {
     }
     
     System.out.println("----maybe----");
-    for (String key : keys) {
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement();
       boolean found = false;
       for (String v : resourceKeys) {
         if (key.startsWith(v)) {
@@ -89,7 +91,8 @@ public class FindResources {
     }
     
     System.out.println("----unused----");
-    for (String key : keys) {
+    while (keys.hasMoreElements()) {
+      String key = keys.nextElement();
       boolean found = false;
       for (String v : resourceKeys) {
         if (key.equals(v) || key.startsWith(v)) {

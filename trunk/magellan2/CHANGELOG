@@ -1,0 +1,5 @@
+2007-06-05 Thoralf (thoralf@m84.de)
+    * Bugfix for 1.6er getKeys() instead of get keySet() method for Maps in Resources.
+
+2007-06-04 Thoralf (thoralf@m84.de)
+    * Import of magellan2 into sf.net from private svn server

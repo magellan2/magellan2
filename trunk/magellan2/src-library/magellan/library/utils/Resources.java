@@ -35,6 +35,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -196,23 +197,23 @@ public class Resources {
   /**
    * 
    */
-  public Set<String> getKeys(Locale locale) {
+  public Enumeration<String> getKeys(Locale locale) {
     if (locale == null) {
       if (bundles.containsKey(DEFAULT)) {
-        return bundles.get(DEFAULT).keySet();
+        return bundles.get(DEFAULT).getKeys();
       }
     } else {
       String localeName = locale.toString();
       if (bundles.containsKey(localeName)) {
-        return bundles.get(localeName).keySet();
+        return bundles.get(localeName).getKeys();
       }
       localeName = locale.getCountry();
       if (bundles.containsKey(localeName)) {
-        return bundles.get(localeName).keySet();
+        return bundles.get(localeName).getKeys();
       }
       localeName = locale.getLanguage();
       if (bundles.containsKey(localeName)) {
-        return bundles.get(localeName).keySet();
+        return bundles.get(localeName).getKeys();
       }
     }
     return null;

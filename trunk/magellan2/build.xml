@@ -145,7 +145,7 @@
     <delete file="${release}/magellan-help.jar" failonerror="false" />
     
     <!-- JAR File erzeugen -->
-    <jar jarfile="${release}/magellan-help.jar" manifest="${help}/META-INF/manifest.mf">
+    <jar jarfile="${release}/magellan-help.jar" manifest="${help}/META-INF/MANIFEST.MF">
       <fileset dir="${help}"/>
     </jar>
   </target>

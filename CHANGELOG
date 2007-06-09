@@ -1,3 +1,7 @@
+2007-06-09 Thoralf (thoralf@m84.de)
+    * Bugfix for some Umlaut problems in eressea date
+    * Release contains now the LICENSE,COPYING an CHANGELOG files... (mantis bug #50)
+
 2007-06-05 Thoralf (thoralf@m84.de)
     * Bugfix for 1.6er getKeys() instead of get keySet() method for Maps in Resources.
 

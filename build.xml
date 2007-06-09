@@ -202,7 +202,13 @@
       </fileset>
     </copy>
     
-    
+    <copy todir="${release}/" overwrite="true">
+      <fileset dir="${basedir}">
+        <include name="CHANGELOG"/>
+        <include name="COPYING"/>
+        <include name="LICENSE"/>
+      </fileset>
+    </copy>
   </target>
   <!-- *************************************************************** -->
   <!-- *                                                             * -->

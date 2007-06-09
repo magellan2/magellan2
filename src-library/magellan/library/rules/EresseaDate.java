@@ -22,8 +22,8 @@ import magellan.library.utils.Resources;
  * @version
  */
 public class EresseaDate extends Date {
-  private static final String months_old[] = { "Januar", "Februar", "M�rz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember" };
-  private static final String months_new[] = { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer", "Eiswind", "Schneebann", "Bl�tenregen", "Mond_der_milden_Winde", "Sonnenfeuer" };
+  private static final String months_old[] = { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember" };
+  private static final String months_new[] = { "Feldsegen", "Nebeltage", "Sturmmond", "Herdfeuer", "Eiswind", "Schneebann", "Blütenregen", "Mond_der_milden_Winde", "Sonnenfeuer" };
 
   // long
   private static final String week_long[] = { "Erste_Woche_des_Monats_", "Zweite_Woche_des_Monats_", "Dritte_Woche_des_Monats_" };
@@ -62,7 +62,7 @@ public class EresseaDate extends Date {
   private static final String age_phrase_alt2 = "_des_zweiten_Zeitalters.";
 
   // seasons
-  private static final String seasonPhrases[] = { "Es_ist_Sommer", "Es_ist_Herbst", "Es_ist_Herbst", "Es_ist_Winter", "Es_ist_Winter", "Es_ist_Winter", "Es_ist_Fr�hling", "Es_ist_Fr�hling", "Es_ist_Sommer" };
+  private static final String seasonPhrases[] = { "Es_ist_Sommer", "Es_ist_Herbst", "Es_ist_Herbst", "Es_ist_Winter", "Es_ist_Winter", "Es_ist_Winter", "Es_ist_Frühling", "Es_ist_Frühling", "Es_ist_Sommer" };
 
   // private static int epochsBeginAt[] = {0, 1, 184};
   private int epoch = 1;

@@ -104,7 +104,6 @@ public abstract class AbstractPlugInLoader<T> {
 
     try {
       File file = new File(path);
-
       if (file.exists()) {
         if (file.isDirectory()) {
           log.debug("Searching in " + file.getAbsolutePath() + "...");
@@ -134,10 +133,13 @@ public abstract class AbstractPlugInLoader<T> {
               Class foundClass = resLoader.loadClass(name);
               Class interfaces[] = foundClass.getInterfaces();
               boolean found = false;
+              
+              for (Class ainterface : interfaces) log.debug("interface: "+ainterface.getName());
 
               for (int i = 0; (i < interfaces.length) && !found; i++) {
                 if (interfaces[i].equals(externalModuleClass)) {
                   found = true;
+                  break;
                 }
               }
 

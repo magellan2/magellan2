@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,7 +62,6 @@ public class ResourcePathClassLoader extends ClassLoader {
    */
   private static List<URL> loadResourcePaths(Properties settings) {
     Collection<String> properties = PropertiesHelper.getList(settings, "Resources.preferredPathList");
-
     List<URL> resourcePaths = new ArrayList<URL>(properties.size());
 
     for(Iterator<String> iter = properties.iterator(); iter.hasNext();) {
@@ -73,7 +73,7 @@ public class ResourcePathClassLoader extends ClassLoader {
         log.error(e);
       }
     }
-
+    
     return resourcePaths;
   }
 
@@ -184,7 +184,6 @@ public class ResourcePathClassLoader extends ClassLoader {
 
     try {
       url = new URL(location, name);
-
       InputStream istream = url.openStream();
       istream.close();
     } catch(Exception ex) {
@@ -208,7 +207,7 @@ public class ResourcePathClassLoader extends ClassLoader {
 
     try {
       File currentDirectory = new File(".");
-      URL baseLocation = new URL(currentDirectory.toURI().toURL(), "");
+      URL baseLocation = currentDirectory.toURI().toURL();
       url = verifyResource(baseLocation, name);
     } catch(Exception e) {
       log.error(e);
@@ -240,4 +239,39 @@ public class ResourcePathClassLoader extends ClassLoader {
       return null;
     } 
   }
+
+  /**
+   * @see java.lang.ClassLoader#findClass(java.lang.String)
+   */
+  @Override
+  protected Class<?> findClass(String name) throws ClassNotFoundException {
+    String fileName = name.replace('.', '/').concat(".class");
+    
+    URL url = getResourceFromPaths(fileName, resourcePaths);
+    if (url == null) url = getResourceFromCurrentDir(fileName);
+    if (url == null) return findSystemClass(name);
+    
+    try {
+      InputStream stream = url.openStream();
+      List<Byte> buffer = new LinkedList<Byte>();
+      int read;
+      
+      while ((read = stream.read()) != -1) {
+        buffer.add(new Byte((byte) read));
+      }
+      
+      stream.close();
+
+      byte buf[] = new byte[buffer.size()];
+
+      for(int i = 0; i < buffer.size(); i++) {
+        buf[i] = buffer.get(i).byteValue();
+      }
+      return defineClass(name, buf, 0, buf.length);
+    } catch (Exception exception) {
+      throw new ClassNotFoundException(exception.getMessage());
+    }
+  }
+  
+  
 }

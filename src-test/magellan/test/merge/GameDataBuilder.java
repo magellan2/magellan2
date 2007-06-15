@@ -199,20 +199,20 @@ public class GameDataBuilder {
 
 	public static Message createMessage(String text) {
 		// EINHEITSBOTSCHAFTEN
-		// "Eine Botschaft von Krï¿½uterlager (ax1a): 'MessMach99ï¿½99ï¿½99!Wundsalbe!xxxx'"
+		// "Eine Botschaft von Kr?uterlager (ax1a): 'MessMach99?99?99!Wundsalbe!xxxx'"
 		return MagellanFactory.createMessage(text);
 	}
 
 	public Border addRoad(Region region, int id, int direction, int buildRatio) {
 		// GRENZE 1
-		// "StraÃŸe";typ
+		// "Straße";typ
 		// 0;richtung
 		// 100;prozent
 		Border road = MagellanFactory.createBorder(IntegerID.create(id));
 		
 		road.setDirection(direction);
 		road.setBuildRatio(buildRatio);
-		road.setType("StraÃŸe");
+		road.setType("Straße");
 		
 
 		region.addBorder(road);

@@ -25,7 +25,7 @@ import magellan.library.GameData;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich KÃ¼ster A class providing useful methods on handling factions' trustlevels
+ * @author Ulrich Küster A class providing useful methods on handling factions' trustlevels
  */
 public class TrustLevels {
 	/**

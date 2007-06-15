@@ -241,7 +241,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					// notify all components in the tabbed pane
 
 					/**
-					 * Ulrich Kï¿½ster: (!) Special care has to be taken for the FactionStatsDialog.
+					 * Ulrich Küster: (!) Special care has to be taken for the FactionStatsDialog.
 					 * It can not be differed, if SelectionEvents come from the faction list in
 					 * FactionStatsDialog or from other components of Magellan. To keep the
 					 * faction list in this object consistent to the displayed data in the

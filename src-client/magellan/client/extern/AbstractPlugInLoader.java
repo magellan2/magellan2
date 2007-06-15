@@ -35,7 +35,7 @@ import magellan.library.utils.logging.Logger;
  * Loads all external modules that can be found. Please see
  * com.eressea.extern.ExternalModule for documentation.
  * 
- * @author Ulrich KÃ¶ster
+ * @author Ulrich Küster
  * @author Thoralf Rickert
  */
 public abstract class AbstractPlugInLoader<T> {

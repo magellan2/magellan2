@@ -157,7 +157,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /**
-       * Ulrich Kï¿½ster: (!) Special care has to be taken. Generelly it can not
+       * Ulrich Küster: (!) Special care has to be taken. Generelly it can not
        * be differed, if SelectionEvents come from the faction list in
        * FactionStatsDialog or from other components of Magellan (except if a
        * special SelectionType has been defined in SelectionEvent and is used).
@@ -231,7 +231,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    */
 
   /**
-   * Ulrich Kï¿½ster: The algorithm wasn't correct as it is wrong to count the
+   * Ulrich Küster: The algorithm wasn't correct as it is wrong to count the
    * number of persons in the temp units to get the number of recruited persons.
    * a) Temp units always have zero persons b) 'normal' units can recruit
    * persons So it is necessary to look at all unit's RecruitmentRelations in
@@ -601,7 +601,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   }
                 }
               } else if (msgID == 170076) {
-                // bezahlt fÃ¼r Kauf von Luxusgï¿½tern
+                // bezahlt für Kauf von Luxusg?tern
                 value = msg.getAttributes().get("money");
 
                 if (value != null) {
@@ -938,7 +938,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }
-      // Fiete: zerstï¿½rt das Icon...erstmal raus
+      // Fiete: zerst?rt das Icon...erstmal raus
       // m.setUserObject(iCategory.toString() + ": " + totalAmount);
     }
 

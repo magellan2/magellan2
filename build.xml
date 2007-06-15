@@ -61,7 +61,6 @@
            fork="true"
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
-           encoding="UTF-8"
            debug="${debug}">
       <!--<compilerarg value="-Xlint:unchecked"/>-->
       <!--<compilerarg value="-Xlint:deprecation"/>-->
@@ -105,7 +104,6 @@
            fork="true"
            memoryInitialSize="128m"
            memoryMaximumSize="256m"
-           encoding="UTF-8"
            debug="${debug}">
       <!--<compilerarg value="-Xlint:unchecked"/>-->
       <!--<compilerarg value="-Xlint:deprecation"/>-->

@@ -37,7 +37,7 @@ import magellan.library.utils.logging.Logger;
  * A Dialog that asks the user for a string input (usually an eressea order). In Addition the user
  * is asked, if the order shall extend or replace existing orders.
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class GiveOrderDialog extends InternationalizedDialog {
 	private static final Logger log = Logger.getInstance(GiveOrderDialog.class);

@@ -30,7 +30,7 @@ import magellan.library.Unit;
  * sub-comparator which is applied in cases of equality.
  * </p>
  *
- * @author Ulrich KÃ¼ster
+ * @author Ulrich Küster
  */
 public class UnitHealthComparator implements Comparator<Unit> {
 	protected Comparator subCmp = null;

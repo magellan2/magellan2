@@ -14,7 +14,7 @@
 /*
  * ArmyStatsPanel.java
  *
- * Created on 4. Mï¿½rz 2002, 12:19
+ * Created on 4. März 2002, 12:19
  */
 package magellan.client.swing;
 

@@ -115,7 +115,7 @@ public abstract class MenuAction extends AbstractAction {
       String name = "etc/images/gui/actions/" + aName;
       icon = client.getMagellanContext().getImageFactory().loadImage(name);
       
-      log.info("Image fÃ¼r "+aName+" ("+name+") ist "+icon);
+      log.info("Image für "+aName+" ("+name+") ist "+icon);
     }
 
     this.putValue(Action.SMALL_ICON, icon);

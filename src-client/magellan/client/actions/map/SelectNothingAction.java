@@ -32,7 +32,7 @@ import magellan.library.utils.Resources;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class SelectNothingAction extends MenuAction implements SelectionListener, GameDataListener {
 	private Map<CoordinateID,Region> selectedRegions = new Hashtable<CoordinateID, Region>();

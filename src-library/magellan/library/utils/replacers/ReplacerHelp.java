@@ -268,7 +268,7 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerSystem createReplacer(String def) {
-		return createReplacer(def, "ยง", "-?-");
+		return createReplacer(def, "ง", "-?-");
 	}
 
 	/**
@@ -280,7 +280,7 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerSystem createReplacer(String def, String unknown) {
-		return createReplacer(def, "ยง", unknown);
+		return createReplacer(def, "ง", unknown);
 	}
 
 	/**

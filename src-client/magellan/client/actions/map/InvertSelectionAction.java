@@ -32,7 +32,7 @@ import magellan.library.utils.Resources;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class InvertSelectionAction extends MenuAction implements GameDataListener,
 																 SelectionListener

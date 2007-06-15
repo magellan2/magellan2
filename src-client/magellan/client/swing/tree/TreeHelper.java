@@ -55,7 +55,7 @@ import magellan.library.utils.comparator.tree.GroupingComparator;
 /**
  * To help constructing the tree structure.
  *
- * @author Andreas, Ulrich Kï¿½ster
+ * @author Andreas, Ulrich Küster
  */
 public class TreeHelper {
 	/**
@@ -334,7 +334,7 @@ public class TreeHelper {
 				case HEALTH:
 						String verw = data.getTranslation("verwundet");
 						String sverw = data.getTranslation("schwer verwundet");
-						String ersch = data.getTranslation("erschï¿½pft");
+						String ersch = data.getTranslation("ersch?pft");
 						String hicon = "gesund";
 						String text = prevUnit.getHealth();
 
@@ -483,7 +483,7 @@ public class TreeHelper {
 
 					String verw = data.getTranslation("verwundet");
 					String sverw = data.getTranslation("schwer verwundet");
-					String ersch = data.getTranslation("erschï¿½pft");
+					String ersch = data.getTranslation("ersch?pft");
 					String hicon = "gesund";
 					String text = curUnit.getHealth();
 

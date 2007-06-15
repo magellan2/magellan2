@@ -83,7 +83,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * DOCUMENT ME!
  * 
- * @author Andreas Gampe, Ulrich Kï¿½ster
+ * @author Andreas Gampe, Ulrich Küster
  */
 public class AutoCompletion implements SelectionListener, KeyListener, ActionListener, CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);

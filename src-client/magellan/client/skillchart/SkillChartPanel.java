@@ -58,7 +58,7 @@ import com.jrefinery.chart.VerticalNumberAxis;
  * A class painting barcharts out of skills of eressea units. The data with
  * the units to be considered is received solely by SelectionEvents.
  *
- * @author Ulrich KÃ¼ster 
+ * @author Ulrich Küster 
  */
 public class SkillChartPanel extends InternationalizedDataPanel implements SelectionListener {
 	private static final Logger log = Logger.getInstance(SkillChartPanel.class);

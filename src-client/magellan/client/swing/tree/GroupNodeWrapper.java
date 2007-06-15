@@ -29,7 +29,7 @@ import magellan.library.Group;
 /**
  * DOCUMENT ME!
  *
- * @author Andreas, Ulrich Kï¿½ster
+ * @author Andreas, Ulrich Küster
  */
 public class GroupNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	protected Group group;

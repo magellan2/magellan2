@@ -14,7 +14,7 @@
 /*
  * ItemCategory.java
  *
- * Created on 9. MÃ¤rz 2002, 20:39
+ * Created on 9. März 2002, 20:39
  */
 package magellan.library.rules;
 

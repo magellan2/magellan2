@@ -286,7 +286,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		if (retVal.length()==0) {
 			retVal = null;
 		} else {
-			// pr�fix: 
+			// pr?fix: 
 			retVal = "Syntax: " + Resources.getOrderTranslation(EresseaConstants.O_CAST) + " " + retVal;
 		}
 		return retVal;

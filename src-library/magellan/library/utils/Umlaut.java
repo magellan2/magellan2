@@ -24,13 +24,13 @@ import java.util.Map;
  * @version
  */
 public class Umlaut {
-	private static final char UMLAUTS[] = { 'Ã„', 'Ã–', 'Ãœ', 'Ã¤', 'Ã¶', 'Ã¼', 'ÃŸ' };
+	private static final char UMLAUTS[] = { 'Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß' };
 	private static final String EXPANSIONS[] = { "Ae", "Oe", "Ue", "ae", "oe", "ue", "ss" };
 	private static final Map<String,String> recodedStrings = new Hashtable<String,String>();
 
 	/**
 	 * Expand all umlauts in a string. Note that uppercase umlauts are converted to mixed case
-	 * expansions (Ã„ -> Ae).
+	 * expansions (Ä -> Ae).
 	 *
 	 * 
 	 *

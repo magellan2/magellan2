@@ -40,8 +40,8 @@ public class MemoryManagment {
 	}
 
 	 /** 
-     * Ã„ndert die PriotitÃ¤t des Finalizer-Threads. 
-     * @param newPriority Die PrioritÃ¤t, die der Finalizer-Thread bekommen soll. 
+     * Ändert die Priotität des Finalizer-Threads. 
+     * @param newPriority Die Priorität, die der Finalizer-Thread bekommen soll. 
      * from Helge Stieghahn
      * (Fiete)
      */ 

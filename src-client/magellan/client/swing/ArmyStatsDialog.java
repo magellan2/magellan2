@@ -14,7 +14,7 @@
 /*
  * ArmyStatsDialog.java
  *
- * Created on 5. Mï¿½rz 2002, 12:00
+ * Created on 5. März 2002, 12:00
  */
 package magellan.client.swing;
 

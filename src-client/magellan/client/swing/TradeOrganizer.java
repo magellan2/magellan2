@@ -75,7 +75,7 @@ import magellan.library.utils.logging.Logger;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class TradeOrganizer extends InternationalizedDataDialog implements SelectionListener {
   private static final Logger log = Logger.getInstance(TradeOrganizer.class);
@@ -198,7 +198,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		
 		if((data != null) && (data.rules != null)) {
 			String help[] = new String[] {
-								"Balsam", "Gewï¿½rz", "Juwel", "Myrrhe", "ï¿½l", "Seide", "Weihrauch"
+								"Balsam", "Gew?rz", "Juwel", "Myrrhe", "?l", "Seide", "Weihrauch"
 							};
 
 			for(int i = 0; i < help.length; i++) {
@@ -1219,7 +1219,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		
 		if((data != null) && (data.rules != null)) {
 			String help[] = new String[] {
-								"Balsam", "GewÃ¼rz", "Juwel", "Myrrhe", "Ã–l", "Seide", "Weihrauch"
+								"Balsam", "Gewürz", "Juwel", "Myrrhe", "Öl", "Seide", "Weihrauch"
 							};
 
 			for(int i = 0; i < help.length; i++) {

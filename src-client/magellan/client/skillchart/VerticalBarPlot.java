@@ -70,7 +70,7 @@ import com.jrefinery.chart.VerticalValuePlot;
  * the CategoryDataSource interface.
  *
  * @see Plot
- * @see CategoryDataSource I (Ulrich Kï¿½ster) needed to change this class as I couldn't extend it,
+ * @see CategoryDataSource I (Ulrich Küster) needed to change this class as I couldn't extend it,
  * 		because the method I needed to change (draw) accesses a private method (getBars). I
  * 		added     the method getBarAreas() to receive a Vector with the areas of the bars on the
  * 		screen,     that is needed in SkillChartJFreeChartPanel to show tooltips on them.

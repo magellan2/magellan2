@@ -164,9 +164,9 @@ public class EresseaPostProcessor {
 		although we actually know that the resource is available with
 		an amount of 0. Resolve this ambiguity here: */
 		if((data != null) && (data.regions() != null)) {
-			/*ItemType sproutResourceID = */data.rules.getItemType("SchÃ¶ÃŸlinge",true);
-			/*ItemType treeResourceID = */data.rules.getItemType("BÃ¤ume",true);
-			/*ItemType mallornSproutResourceID = */data.rules.getItemType("MallornschÃ¶ÃŸlinge",true);
+			/*ItemType sproutResourceID = */data.rules.getItemType("Schößlinge",true);
+			/*ItemType treeResourceID = */data.rules.getItemType("Bäume",true);
+			/*ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge",true);
 			/*ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn",true);
 
 			for(Iterator regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
@@ -206,7 +206,7 @@ public class EresseaPostProcessor {
 					// DURCHSCHIFFUNG
 					// SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, (Kueste)
 					// EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Schiff, (Burg)
-					// GEGENSTÃ„NDE
+					// GEGENSTÄNDE
 					// ------------------------------------------------------------------
 					// the following tags seem to be visible for "travel";visibility:
 					// Baeume, Schoesslinge, Bauern, Pferde, Effects 

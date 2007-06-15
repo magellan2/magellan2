@@ -16,7 +16,7 @@ package magellan.client.swing.tree;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich K�ster
+ * @author Ulrich Küster
  */
 public interface SupportsClipboard {
 	/**

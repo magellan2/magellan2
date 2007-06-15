@@ -37,7 +37,7 @@ import magellan.library.rules.SkillType;
  * the sub-comparator's comparison is returned.
  * </p>
  *
- * @author Ulrich KÃ¼ster
+ * @author Ulrich Küster
  */
 public class SkillTypeRankComparator<E> implements Comparator<Object> {
 	private final Comparator<E> subCmp;

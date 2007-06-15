@@ -53,7 +53,7 @@ import magellan.library.utils.logging.Logger;
  * A context menu for the map. Currently providing copy of the name and the coordinates of the
  * region.
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class MapContextMenu extends JPopupMenu implements ContextObserver {
 

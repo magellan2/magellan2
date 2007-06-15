@@ -39,7 +39,7 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 /**
  * Works together with com.eressea.swing.RoutingDialog to calculate the route for a ship.
  *
- * @author Ulrich KÃ¼ster
+ * @author Ulrich Küster
  * @author Andreas
  */
 public class ShipRoutePlanner {

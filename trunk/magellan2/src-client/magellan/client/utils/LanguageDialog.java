@@ -14,7 +14,7 @@
 /*
  * LanguageDialog.java
  *
- * Created on 28. M�rz 2002, 10:38
+ * Created on 28. M?rz 2002, 10:38
  */
 package magellan.client.utils;
 

@@ -167,7 +167,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     conMenu = new MapContextMenu(context.getClient(), context.getEventDispatcher(), context.getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>ï¿½rnameï¿½</font></html>"));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>§rname§</font></html>"));
 
     setShowTooltip(settings.getProperty("Mapper.showTooltips", "false").equals("true"));
 
@@ -368,7 +368,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>ï¿½rnameï¿½</font></html>"));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>§rname§</font></html>"));
   }
 
   /**
@@ -1477,7 +1477,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public List<String> getAllTooltipDefinitions() {
-    String s = settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>ï¿½rnameï¿½</font></html>");
+    String s = settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>§rname§</font></html>");
     StringTokenizer st = new StringTokenizer(s, "~");
     int j = st.countTokens();
 
@@ -1516,7 +1516,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
       }
     } else {
-      buf.append("Standard~<html><font=-1>ï¿½rnameï¿½</font></html>");
+      buf.append("Standard~<html><font=-1>§rname§</font></html>");
     }
 
     settings.setProperty("Mapper.ToolTip.Definitions", buf.toString());
@@ -1528,7 +1528,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public void addTooltipDefinition(String name, String def) {
-    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>ï¿½rnameï¿½</font></html>") + "~" + name + "~" + def);
+    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>§rname§</font></html>") + "~" + name + "~" + def);
 
     conMenu.updateTooltips(this);
   }

@@ -1,3 +1,6 @@
+2007-06-15 Thoralf (thoralf@m84.de)
+    * Replaced all UTF-8 encoded files with ISO-8859-1 encodings.
+
 2007-06-09 Thoralf (thoralf@m84.de)
     * Bugfix for some Umlaut problems in eressea date
     * Release contains now the LICENSE,COPYING an CHANGELOG files... (mantis bug #50)

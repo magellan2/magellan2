@@ -22,7 +22,7 @@ import java.util.List;
  * that contains this wrapper. This List should be used to determine the return value of
  * emphasized().
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public interface SupportsEmphasizing {
 	/**

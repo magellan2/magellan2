@@ -140,7 +140,7 @@ public class StartWindow extends JWindow {
 		String descr = "\n"+Resources.get("magellan.startwindow.infotext");
 
 		if((names == null) || (names.length() == 0)) {
-			names = "Roger Butenuth, Enno Rehling, Stefan GÃ¶tz, Klaas Prause, Sebastian Tusk, Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, Guenter Grossberger, SÃ¶ren Bendig, Marc Geerligs, Matthias MÃ¼ller, Ulrich KÃ¼ster, Jake Hofer, Ilja Pavkovic\n";
+			names = "Roger Butenuth, Enno Rehling, Stefan Götz, Klaas Prause, Sebastian Tusk, Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, Ulrich Küster, Jake Hofer, Ilja Pavkovic\n";
 		}
 
 		StyledDocument styled = new DefaultStyledDocument();

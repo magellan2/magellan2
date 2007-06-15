@@ -26,7 +26,7 @@ import javax.swing.tree.TreePath;
 /**
  * An extended JTree that supports CopyToClipboard by STRG+C and STRG+INSERT
  *
- * @author Ulrich KÃ¶ster
+ * @author Ulrich Küster
  */
 public class CopyTree extends JTree implements KeyListener {
 

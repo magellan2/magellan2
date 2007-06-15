@@ -28,7 +28,7 @@ import magellan.library.utils.Resources;
 /**
  * Just a little class to invoke a trade organizer
  *
- * @author Ulrich Kï¿½ster
+ * @author Ulrich Küster
  */
 public class TradeOrganizerAction extends MenuAction implements GameDataListener {
 

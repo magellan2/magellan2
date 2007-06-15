@@ -224,7 +224,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * Wald
 	 * </li>
 	 * <li>
-	 * W?�ste
+	 * W??ste
 	 * </li>
 	 * <li>
 	 * Ozean
@@ -247,7 +247,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 		regionColors.put(StringID.create("Ebene"), new Color(49, 230, 0));
 		regionColors.put(StringID.create("Sumpf"), new Color(0, 180, 160));
 		regionColors.put(StringID.create("Wald"), new Color(36, 154, 0));
-		regionColors.put(StringID.create("W?�ste"), new Color(244, 230, 113));
+		regionColors.put(StringID.create("W??ste"), new Color(244, 230, 113));
 		regionColors.put(StringID.create("Ozean"), new Color(128, 128, 255));
 		regionColors.put(StringID.create("Feuerwand"), new Color(255, 79, 0));
 		regionColors.put(StringID.create("Hochebene"), new Color(166, 97, 56));

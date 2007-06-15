@@ -14,7 +14,7 @@
 /*
  * ContextObserver.java
  *
- * Created on 1. Mï¿½rz 2002, 16:03
+ * Created on 1. März 2002, 16:03
  */
 package magellan.client.swing.context;
 

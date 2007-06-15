@@ -179,7 +179,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 				String str = (String) iter.next();
 				sb.append("<td>");
 
-				if(!filter || (str.indexOf('�') == -1)) {
+				if(!filter || (str.indexOf('?') == -1)) {
 					// filter unreplaced strings?
 					sb.append(str);
 				}
@@ -202,7 +202,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 		if(log.isDebugEnabled()) {
 			log.debug("BasicRegionPanel.makeHTMLFromString: transforming string \n" +
-					  def.replace('�', '#') + "\" to " + htmlText.replace('�', '#'));
+					  def.replace('?', '#') + "\" to " + htmlText.replace('?', '#'));
 		}
 
 		return htmlText;

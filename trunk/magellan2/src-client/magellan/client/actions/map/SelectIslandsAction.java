@@ -33,7 +33,7 @@ import magellan.library.utils.Resources;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich KÃ¼ster
+ * @author Ulrich Küster
  */
 public class SelectIslandsAction extends MenuAction implements GameDataListener, SelectionListener {
 	private Map<CoordinateID,Region> selectedRegions = new Hashtable<CoordinateID,Region>();

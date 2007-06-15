@@ -310,7 +310,7 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	//************* BEFÃ–RDERUNG
+	//************* BEFÖRDERUNG
 	private boolean readBefoerderung(OrderToken token) {
 		token.ttype = OrderToken.TT_KEYWORD;
 		
@@ -2896,9 +2896,9 @@ public class EresseaOrderParser implements OrderParser {
 			for(int i = 0; i < txt.length(); i++) {
 				char c = txt.charAt(i);
 
-				if(!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'Ã„') ||
-					   (c == 'Ã–') || (c == 'Ãœ') || (c == 'Ã¤') || (c == 'Ã¶') || (c == 'Ã¼') ||
-					   (c == '~') || (c == '"') || (c == 'ÃŸ'))) {
+				if(!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'Ä') ||
+					   (c == 'Ö') || (c == 'Ü') || (c == 'ä') || (c == 'ö') || (c == 'ü') ||
+					   (c == '~') || (c == '"') || (c == 'ß'))) {
 					retVal = false;
 
 					break;

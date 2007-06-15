@@ -14,7 +14,7 @@
 /*
  * ContextChangeable.java
  *
- * Created on 1. Mï¿½rz 2002, 15:32
+ * Created on 1. März 2002, 15:32
  */
 package magellan.client.swing.context;
 

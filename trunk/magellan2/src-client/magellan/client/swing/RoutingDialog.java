@@ -58,7 +58,7 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
  * shall be created if the destination region can not be reached in one week and if the captain's
  * orders shall be replaced.
  *
- * @author Ulrich KÃ¼ster
+ * @author Ulrich Küster
  */
 public class RoutingDialog extends InternationalizedDialog implements RoutingDialogDataPicker {
 	private JButton ok;

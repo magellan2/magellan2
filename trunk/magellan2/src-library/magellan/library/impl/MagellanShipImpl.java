@@ -213,7 +213,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 			}
 
 			if(damageRatio != 0) {
-				sb.append(", ").append(damageRatio).append("% Besch√§digung");
+				sb.append(", ").append(damageRatio).append("% Besch‰digung");
 			}
 		}
 

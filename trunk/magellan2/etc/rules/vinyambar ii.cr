@@ -78,7 +78,7 @@ ALLIANCECATEGORY "SILBER"
 "ALLES";parent
 1;bitmask
 
-ALLIANCECATEGORY "KÃ„MPFE"
+ALLIANCECATEGORY "KÄMPFE"
 "COMBAT";name
 "ALLES";parent
 2;bitmask
@@ -123,7 +123,7 @@ ITEMCATEGORY "ammunition"
 "weapons";parent
 
 ITEMCATEGORY "armour"
-"RÃ¼stungen";name
+"Rüstungen";name
 1;naturalorder
 
 ITEMCATEGORY "shield"
@@ -136,20 +136,20 @@ ITEMCATEGORY "resources"
 2;naturalorder
 
 ITEMCATEGORY "luxuries"
-"LuxusgÃ¼ter";name
+"Luxusgüter";name
 3;naturalorder
 
 ITEMCATEGORY "herbs"
-"KrÃ¤uter";name
+"Kräuter";name
 "kraeuter";iconname
 4;naturalorder
 
 ITEMCATEGORY "potions"
-"TrÃ¤nke";name
+"Tränke";name
 5;naturalorder
 
 ITEMCATEGORY "trophies"
-"TrophÃ¤en";name
+"Trophäen";name
 6;naturalorder
 
 ITEMCATEGORY "misc"
@@ -194,8 +194,8 @@ HERB "Flachwurz"
 "Ebene";region
 "herbs";category
 
-HERB "WÃ¼rziger Wagemut"
-"WÃ¼rziger Wagemut";name
+HERB "Würziger Wagemut"
+"Würziger Wagemut";name
 "Ebene";region
 "herbs";category
 
@@ -204,8 +204,8 @@ HERB "Eulenauge"
 "Ebene";region
 "herbs";category
 
-HERB "GrÃ¼ner Spinnerich"
-"GrÃ¼ner Spinnerich";name
+HERB "Grüner Spinnerich"
+"Grüner Spinnerich";name
 "Wald";region
 "herbs";category
 
@@ -236,17 +236,17 @@ HERB "Blasenmorchel"
 
 HERB "Wasserfinder"
 "Wasserfinder";name
-"WÃ¼ste";region
+"Wüste";region
 "herbs";category
 
 HERB "Kakteenschwitz"
 "Kakteenschwitz";name
-"WÃ¼ste";region
+"Wüste";region
 "herbs";category
 
-HERB "SandfÃ¤ule"
-"SandfÃ¤ule";name
-"WÃ¼ste";region
+HERB "Sandfäule"
+"Sandfäule";name
+"Wüste";region
 "herbs";category
 
 HERB "Windbeutel"
@@ -264,8 +264,8 @@ HERB "Alraune"
 "Hochland";region
 "herbs";category
 
-HERB "SteinbeiÃŸer"
-"SteinbeiÃŸer";name
+HERB "Steinbeißer"
+"Steinbeißer";name
 "Gebirge";region
 "herbs";category
 
@@ -274,8 +274,8 @@ HERB "Spaltwachs"
 "Gebirge";region
 "herbs";category
 
-HERB "HÃ¶hlenglimm"
-"HÃ¶hlenglimm";name
+HERB "Höhlenglimm"
+"Höhlenglimm";name
 "Gebirge";region
 "herbs";category
 
@@ -284,8 +284,8 @@ HERB "Eisblume"
 "Gletscher";region
 "herbs";category
 
-HERB "WeiÃŸer WÃ¼terich"
-"WeiÃŸer WÃ¼terich";name
+HERB "Weißer Wüterich"
+"Weißer Wüterich";name
 "Gletscher";region
 "herbs";category
 
@@ -299,8 +299,8 @@ HERB "Schneekristall"
 SKILL "Alchemie"
 "Alchemie";name
 "build";category
-SKILL "ArmbrustschieÃŸen"
-"ArmbrustschieÃŸen";name
+SKILL "Armbrustschießen"
+"Armbrustschießen";name
 "war";category
 SKILL "Ausdauer"
 "Ausdauer";name
@@ -308,8 +308,8 @@ SKILL "Ausdauer"
 SKILL "Bergbau"
 "Bergbau";name
 "resource";category
-SKILL "Bogenschieï¿½en"
-"Bogenschieï¿½en";name
+SKILL "Bogenschie?en"
+"Bogenschie?en";name
 "war";category
 SKILL "Burgenbau"
 "Burgenbau";name
@@ -320,14 +320,14 @@ SKILL "Handeln"
 SKILL "Hiebwaffen"
 "Hiebwaffen";name
 "war";category
-SKILL "Holzfï¿½llen"
-"Holzfï¿½llen";name
+SKILL "Holzf?llen"
+"Holzf?llen";name
 "resource";category
 SKILL "Katapultbedienung"
 "Katapultbedienung";name
 "war";category
-SKILL "Krï¿½uterkunde"
-"Krï¿½uterkunde";name
+SKILL "Kr?uterkunde"
+"Kr?uterkunde";name
 "resource";category
 SKILL "Magie"
 "Magie";name
@@ -338,8 +338,8 @@ SKILL "Pferdedressur"
 SKILL "Reiten"
 "Reiten";name
 "movement";category
-SKILL "Rï¿½stungsbau"
-"Rï¿½stungsbau";name
+SKILL "R?stungsbau"
+"R?stungsbau";name
 "build";category
 SKILL "Schiffbau"
 "Schiffbau";name
@@ -359,8 +359,8 @@ SKILL "Steinbau"
 SKILL "Steuereintreiben"
 "Steuereintreiben";name
 "silver";category
-SKILL "Straï¿½enbau"
-"Straï¿½enbau";name
+SKILL "Stra?enbau"
+"Stra?enbau";name
 "build";category
 SKILL "Taktik"
 "Taktik";name
@@ -388,22 +388,22 @@ RACE "Zwerge"
 5.4;capacity
 TALENTBONI
 2;Bergbau
--1;Bogenschieï¿½en
+-1;Bogenschie?en
 2;Burgenbau
 1;Handeln
 1;Hiebwaffen
--1;Holzfï¿½llen
+-1;Holzf?llen
 2;Katapultbedienung
--2;Krï¿½uterkunde
+-2;Kr?uterkunde
 -2;Magie
 -2;Pferdedressur
 -2;Reiten
-2;Rï¿½stungsbau
+2;R?stungsbau
 -1;Schiffbau
 -2;Segeln
 2;Steinbau
 1;Steuereintreiben
-2;Straï¿½enbau
+2;Stra?enbau
 -1;Tarnung
 -1;Unterhaltung
 2;Waffenbau
@@ -422,11 +422,11 @@ TALENTBONI
 1;Bergbau
 1;Burgenbau
 -3;Handeln
-1;Holzfï¿½llen
--2;Krï¿½uterkunde
+1;Holzf?llen
+-2;Kr?uterkunde
 -1;Magie
 -1;Pferdedressur
-1;Rï¿½stungsbau
+1;R?stungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Spionage
@@ -447,11 +447,11 @@ TALENTBONI
 1;Bergbau
 1;Burgenbau
 -3;Handeln
-1;Holzfï¿½llen
--2;Krï¿½uterkunde
+1;Holzf?llen
+-2;Kr?uterkunde
 -1;Magie
 -1;Pferdedressur
-1;Rï¿½stungsbau
+1;R?stungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Spionage
@@ -470,17 +470,17 @@ RACE "Elfen"
 TALENTBONI
 -1;Alchemie
 -2;Bergbau
-2;Bogenschieï¿½en
+2;Bogenschie?en
 -1;Burgenbau
 -2;Katapultbedienung
-2;Krï¿½uterkunde
+2;Kr?uterkunde
 1;Magie
 1;Pferdedressur
--1;Rï¿½stungsbau
+-1;R?stungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Steinbau
--1;Straï¿½enbau
+-1;Stra?enbau
 1;Tarnung
 1;Wahrnehmung
 TALENTBONI "Wald"
@@ -498,19 +498,19 @@ TALENTBONI
 -2;Bergbau
 -1;Burgenbau
 -1;Katapultbedienung
-1;Krï¿½uterkunde
--1;Rï¿½stungsbau
+1;Kr?uterkunde
+-1;R?stungsbau
 -1;Schiffbau
 -2;Segeln
 2;Spionage
 -1;Steinbau
 1;Steuereintreiben
--1;Straï¿½enbau
+-1;Stra?enbau
 1;Tarnung
 2;Wahrnehmung
 
-RACE "Dï¿½monen"
-"Dï¿½monen";name
+RACE "D?monen"
+"D?monen";name
 150;recruitmentcosts
 10;weight
 5.4;capacity
@@ -518,8 +518,8 @@ TALENTBONI
 2;Alchemie
 -3;Handeln
 1;Hiebwaffen
-1;Holzfï¿½llen
--3;Krï¿½uterkunde
+1;Holzf?llen
+-3;Kr?uterkunde
 1;Magie
 -3;Pferdedressur
 -1;Reiten
@@ -540,14 +540,14 @@ RACE "Halblinge"
 10;weight
 5.4;capacity
 TALENTBONI
-1;ArmbrustschieÃŸen
+1;Armbrustschießen
 1;Bergbau
--1;Bogenschieï¿½en
+-1;Bogenschie?en
 1;Burgenbau
 2;Handeln
 -1;Hiebwaffen
 -1;Katapultbedienung
-2;Krï¿½uterkunde
+2;Kr?uterkunde
 -1;Pferdedressur
 -1;Reiten
 -1;Schiffbau
@@ -555,7 +555,7 @@ TALENTBONI
 1;Spionage
 -1;Stangenwaffen
 -1;Steuereintreiben
-1;Straï¿½enbau
+1;Stra?enbau
 1;Tarnung
 1;Unterhaltung
 2;Wagenbau
@@ -568,7 +568,7 @@ RACE "Menschen"
 5.4;capacity
 TALENTBONI
 1;Handeln
--1;Krï¿½uterkunde
+-1;Kr?uterkunde
 1;Schiffbau
 1;Segeln
 
@@ -586,7 +586,7 @@ TALENTBONI
 -1;Magie
 -2;Schiffbau
 -2;Segeln
--2;Straï¿½enbau
+-2;Stra?enbau
 -2;Taktik
 1;Tarnung
 -1;Unterhaltung
@@ -598,19 +598,19 @@ RACE "Insekten"
 10;weight
 5.4;capacity
 TALENTBONI
-1;ArmbrustschieÃŸen
+1;Armbrustschießen
 1;Bergbau
--2;Bogenschieï¿½en
+-2;Bogenschie?en
 2;Burgenbau
 -1;Handeln
 -1;Hiebwaffen
-1;Holzfï¿½llen
-1;Krï¿½uterkunde
+1;Holzf?llen
+1;Kr?uterkunde
 -3;Pferdedressur
 -3;Reiten
-2;Rï¿½stungsbau
+2;R?stungsbau
 1;Stangenwaffen
--1;Straï¿½enbau
+-1;Stra?enbau
 -1;Taktik
 -1;Tarnung
 -2;Unterhaltung
@@ -623,20 +623,20 @@ RACE "Trolle"
 10.8;capacity
 TALENTBONI
 2;Bergbau
--2;Bogenschieï¿½en
+-2;Bogenschie?en
 2;Burgenbau
 1;Hiebwaffen
 2;Katapultbedienung
--1;Krï¿½uterkunde
+-1;Kr?uterkunde
 -1;Pferdedressur
 -2;Reiten
-2;Rï¿½stungsbau
+2;R?stungsbau
 -1;Schiffbau
 -1;Segeln
 -3;Spionage
 2;Steinbau
 1;Steuereintreiben
-2;Straï¿½enbau
+2;Stra?enbau
 -1;Taktik
 -3;Tarnung
 -1;Unterhaltung
@@ -651,10 +651,10 @@ TALENTBONI
 -2;Bergbau
 -1;Burgenbau
 2;Handeln
--1;Rï¿½stungsbau
+-1;R?stungsbau
 3;Schiffbau
 3;Segeln
--1;Straï¿½enbau
+-1;Stra?enbau
 SPECIALS
 1;shiprange
 
@@ -709,8 +709,8 @@ ITEM "Balsam"
 RESOURCES
 4;Silber
 
-ITEM "Gewï¿½rz"
-"Gewï¿½rz";name
+ITEM "Gew?rz"
+"Gew?rz";name
 2;weight
 "luxuries";category
 RESOURCES
@@ -723,8 +723,8 @@ ITEM "Myrrhe"
 RESOURCES
 5;Silber
 
-ITEM "ï¿½l"
-"ï¿½l";name
+ITEM "?l"
+"?l";name
 3;weight
 "luxuries";category
 RESOURCES
@@ -752,31 +752,31 @@ ITEM "Laen"
 ITEM "Holz"
 "Holz";name
 5;weight
-"Holzfï¿½llen";makeskill
+"Holzf?llen";makeskill
 "resources";category
 
-ITEM "Bï¿½ume"
-"Bï¿½ume";name
+ITEM "B?ume"
+"B?ume";name
 5;weight
-"Holzfï¿½llen";makeskill
+"Holzf?llen";makeskill
 "resources";category
 
-ITEM "Schï¿½ï¿½linge"
-"Schï¿½ï¿½linge";name
+ITEM "Sch??linge"
+"Sch??linge";name
 5;weight
-"Holzfï¿½llen";makeskill
+"Holzf?llen";makeskill
 "resources";category
 
 ITEM "Mallorn"
 "Mallorn";name
 5;weight
-"Holzfï¿½llen";makeskill
+"Holzf?llen";makeskill
 "resources";category
 
-ITEM "Mallornschï¿½ï¿½linge"
-"Mallornschï¿½ï¿½linge";name
+ITEM "Mallornsch??linge"
+"Mallornsch??linge";name
 5;weight
-"Holzfï¿½llen";makeskill
+"Holzf?llen";makeskill
 "resources";category
 
 ITEM "Stein"
@@ -805,17 +805,17 @@ ITEM "Pferde"
 1;makeskilllevel
 "resources";category
 
-ITEM "Krï¿½uter"
-"Krï¿½uter";name
+ITEM "Kr?uter"
+"Kr?uter";name
 0;weight
-"Krï¿½uterkunde";makeskill
+"Kr?uterkunde";makeskill
 1;makeskilllevel
 "resources";category
 
 ITEM "Samen"
 "Samen";name
 0.1;weight
-"Krï¿½uterkunde";makeskill
+"Kr?uterkunde";makeskill
 1;makeskilllevel
 "resources";category
 
@@ -889,8 +889,8 @@ ITEM "Flammenschwert"
 "Hiebwaffen";useskill
 "weapons";category
 
-ITEM "Bihï¿½nder"
-"Bihï¿½nder";name
+ITEM "Bih?nder"
+"Bih?nder";name
 2;weight
 "Waffenbau";makeskill
 "Hiebwaffen";useskill
@@ -946,7 +946,7 @@ ITEM "Armbrust"
 "Armbrust";name
 1;weight
 "Waffenbau";makeskill
-"ArmbrustschieÃŸen";useskill
+"Armbrustschießen";useskill
 3;makeskilllevel
 "distance weapons";category
 RESOURCES
@@ -956,7 +956,7 @@ ITEM "Bogen"
 "Bogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschieï¿½en";useskill
+"Bogenschie?en";useskill
 2;makeskilllevel
 "distance weapons";category
 RESOURCES
@@ -966,7 +966,7 @@ ITEM "Elfenbogen"
 "Elfenbogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschieï¿½en";useskill
+"Bogenschie?en";useskill
 5;makeskilllevel
 "distance weapons";category
 RESOURCES
@@ -976,7 +976,7 @@ ITEM "Mallornbogen"
 "Mallornbogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschieï¿½en";useskill
+"Bogenschie?en";useskill
 5;makeskilllevel
 "distance weapons";category
 "bogen";iconname
@@ -987,7 +987,7 @@ ITEM "Mallornarmbrust"
 "Mallornarmbrust";name
 1;weight
 "Waffenbau";makeskill
-"ArmbrustschieÃŸen";useskill
+"Armbrustschießen";useskill
 5;makeskilllevel
 "distance weapons";category
 "armbrust";iconname
@@ -1017,7 +1017,7 @@ RESOURCES
 ITEM "Kettenhemd"
 "Kettenhemd";name
 2;weight
-"Rï¿½stungsbau";makeskill
+"R?stungsbau";makeskill
 3;makeskilllevel
 "armour";category
 "ruestungen";iconname
@@ -1032,7 +1032,7 @@ ITEM "Rostiges Kettenhemd"
 ITEM "Laenkettenhemd"
 "Laenkettenhemd";name
 1;weight
-"Rï¿½stungsbau";makeskill
+"R?stungsbau";makeskill
 9;makeskilllevel
 "armour";category
 RESOURCES
@@ -1041,7 +1041,7 @@ RESOURCES
 ITEM "Plattenpanzer"
 "Plattenpanzer";name
 4;weight
-"Rï¿½stungsbau";makeskill
+"R?stungsbau";makeskill
 4;makeskilllevel
 "armour";category
 RESOURCES
@@ -1050,7 +1050,7 @@ RESOURCES
 ITEM "Schild"
 "Schild";name
 1;weight
-"Rï¿½stungsbau";makeskill
+"R?stungsbau";makeskill
 2;makeskilllevel
 "shield";category
 RESOURCES
@@ -1063,7 +1063,7 @@ ITEM "Rostiger Schild"
 
 ITEM "Laenschild"
 "Laenschild";name
-"Rï¿½stungsbau";makeskill
+"R?stungsbau";makeskill
 7;makeskilllevel
 "shield";category
 RESOURCES
@@ -1123,7 +1123,7 @@ ITEM "Schaffenstrunk"
 RESOURCES
 1;Alraune
 1;Spaltwachs
-1;Wï¿½rziger Wagemut
+1;W?rziger Wagemut
 
 
 ITEM "Wundsalbe"
@@ -1132,9 +1132,9 @@ ITEM "Wundsalbe"
 4;makeskilllevel
 "potions";category
 RESOURCES
-1;Weiï¿½er Wï¿½terich
+1;Wei?er W?terich
 1;Blauer Baumringel
-1;Wï¿½rziger Wagemut
+1;W?rziger Wagemut
 
 ITEM "Bauernblut"
 "Bauernblut";name
@@ -1142,7 +1142,7 @@ ITEM "Bauernblut"
 4;makeskilllevel
 "potions";category
 RESOURCES
-1;Hï¿½hlenglimm
+1;H?hlenglimm
 1;Fjordwuchs
 1;Blauer Baumringel
 1;Bauer
@@ -1154,7 +1154,7 @@ ITEM "Gehirnschmalz"
 "potions";category
 RESOURCES
 1;Wasserfinder
-1;Steinbeiï¿½er
+1;Steinbei?er
 1;Windbeutel
 1;Gurgelkraut
 
@@ -1165,29 +1165,29 @@ ITEM "Dumpfbackenbrot"
 "potions";category
 RESOURCES
 1;Eulenauge
-1;Grï¿½ner Spinnerich
-1;Hï¿½hlenglimm
+1;Gr?ner Spinnerich
+1;H?hlenglimm
 1;Fjordwuchs
 
-ITEM "Nestwï¿½rme"
-"Nestwï¿½rme";name
+ITEM "Nestw?rme"
+"Nestw?rme";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
 RESOURCES
 1;Eisblume;
-1;Grï¿½ner Spinnerich
+1;Gr?ner Spinnerich
 1;Spaltwachs
 1;Kakteenschwitz
 
-ITEM "Pferdeglï¿½ck"
-"Pferdeglï¿½ck";name
+ITEM "Pferdegl?ck"
+"Pferdegl?ck";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
 RESOURCES
 1;Blauer Baumringel
-1;Sandfï¿½ule
+1;Sandf?ule
 1;Kakteenschwitz
 1;Knotiger Saugwurz
 
@@ -1197,10 +1197,10 @@ ITEM "Berserkerblut"
 6;makeskilllevel
 "potions";category
 RESOURCES
-1;Weiï¿½er Wï¿½terich
+1;Wei?er W?terich
 1;Alraune
 1;Flachwurz
-1;Sandfï¿½ule
+1;Sandf?ule
 
 ITEM "Bauernlieb"
 "Bauernlieb";name
@@ -1210,7 +1210,7 @@ ITEM "Bauernlieb"
 RESOURCES
 1;Alraune
 1;Schneekristall
-1;Steinbeiï¿½er
+1;Steinbei?er
 1;Blasenmorchel
 1;Elfenlieb
 
@@ -1223,7 +1223,7 @@ RESOURCES
 1;Elfenlieb
 1;Wasserfinder
 1;Windbeutel
-1;Grï¿½ner Spinnerich
+1;Gr?ner Spinnerich
 1;Blasenmorchel
 1;Drachenblut
 
@@ -1245,7 +1245,7 @@ ITEM "Phiole"
 "traenke";iconname
 
 ITEM "Kraeuterbeutel"
-"Krï¿½uterbeutel";name
+"Kr?uterbeutel";name
 "herbs";category
 
 ITEM "Silberbeutel"
@@ -1266,8 +1266,8 @@ ITEM "Zwergenbart"
 "trophies";category
 0.01;weight
 
-ITEM "Halblingfuï¿½"
-"Halblingfuï¿½";name
+ITEM "Halblingfu?"
+"Halblingfu?";name
 "trophies";category
 0.01;weight
 
@@ -1281,13 +1281,13 @@ ITEM "Elfenohr"
 "trophies";category
 0.01;weight
 
-ITEM "Dï¿½monenblut"
-"Dï¿½monenblut";name
+ITEM "D?monenblut"
+"D?monenblut";name
 "trophies";category
 0.01;weight
 
-ITEM "Insektenfï¿½hler"
-"Insektenfï¿½hler";name
+ITEM "Insektenf?hler"
+"Insektenf?hler";name
 "trophies";category
 0.01;weight
 
@@ -1441,7 +1441,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Bergwerk"
@@ -1462,7 +1462,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Steinbruch"
@@ -1483,11 +1483,11 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
-BUILDINGTYPE "Sï¿½gewerk"
-"Sï¿½gewerk";name
+BUILDINGTYPE "S?gewerk"
+"S?gewerk";name
 3;level
 MAINTENANCE
 250;Silber
@@ -1497,14 +1497,14 @@ RAWMATERIALS
 3;Eisen
 200;Silber
 TALENTBONI
-1;Holzfï¿½llen
+1;Holzf?llen
 REGIONTYPES
 "Berge"
 "Ebene"
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Schmiede"
@@ -1525,7 +1525,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Pferdezucht"
@@ -1544,7 +1544,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Hafen"
@@ -1563,14 +1563,14 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Taverne"
 "Taverne";name
 2;level
 MAINTENANCE
-5;Silber pro Grï¿½ï¿½enpunkt
+5;Silber pro Gr??enpunkt
 RAWMATERIALS
 1;Eisen
 4;Stein
@@ -1582,7 +1582,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Akademie"
@@ -1602,7 +1602,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Magierturm"
@@ -1626,7 +1626,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 BUILDINGTYPE "Karawanserei"
@@ -1642,7 +1642,7 @@ RAWMATERIALS
 1;Eisen
 500;Silber
 REGIONTYPES
-"Wï¿½ste"
+"W?ste"
 
 BUILDINGTYPE "Damm"
 "Damm";name
@@ -1688,7 +1688,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"Wï¿½ste"
+"W?ste"
 "Wald"
 
 REGIONTYPE "Berge"
@@ -1718,8 +1718,8 @@ REGIONTYPE "Sumpf"
 75;roadstones
 "Damm";roadsupportbuilding
 
-REGIONTYPE "Wï¿½ste"
-"Wï¿½ste";name
+REGIONTYPE "W?ste"
+"W?ste";name
 500;maxworkers
 100;roadstones
 "Karawanserei";roadsupportbuilding

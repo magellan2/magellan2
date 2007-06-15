@@ -28,7 +28,7 @@ import com.jrefinery.chart.JFreeChartPanel;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich Kï¿½ster extended for use with tooltips
+ * @author Ulrich Küster extended for use with tooltips
  */
 public class SkillChartJFreeChartPanel extends JFreeChartPanel {
 	// the SkillChartPanel object this JFreeChartPanel is inside

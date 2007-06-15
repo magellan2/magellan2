@@ -48,7 +48,7 @@ import magellan.library.utils.Resources;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich Kï¿½ster Manages setting an getting of Bookmarks. - CTRL + F2 : place a bookmark on
+ * @author Ulrich Küster Manages setting an getting of Bookmarks. - CTRL + F2 : place a bookmark on
  * 		   the current activeObject or removes it if already bookmarked - F2 : go to next bookmark
  * 		   - Shift + F2 : go to prior bookmark
  */

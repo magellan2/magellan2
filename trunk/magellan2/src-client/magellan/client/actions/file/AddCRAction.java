@@ -36,7 +36,7 @@ import magellan.library.utils.Resources;
 /**
  * DOCUMENT ME!
  *
- * @author Andreas, Ulrich Kï¿½ster
+ * @author Andreas, Ulrich Küster
  */
 public class AddCRAction extends MenuAction implements GameDataListener{
 

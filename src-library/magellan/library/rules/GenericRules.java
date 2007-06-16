@@ -432,10 +432,6 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public ItemType getItemType(ID id) {
@@ -443,12 +439,7 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * 
 	 */
 	public ItemType getItemType(ID id, boolean add) {
 		ItemType r = (ItemType) getObjectType(mapItemType, mapItemTypeNames, id.toString());
@@ -462,10 +453,6 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public ItemType getItemType(String id) {
@@ -473,11 +460,6 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
 	 * 
 	 */
 	public ItemType getItemType(String id, boolean add) {
@@ -489,19 +471,13 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public Iterator getAllianceCategoryIterator() {
 		return getIterator(AllianceCategory.class, mapAllianceCategory);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public AllianceCategory getAllianceCategory(ID id) {
@@ -941,12 +917,6 @@ public class GenericRules implements Rules {
 	 * Tries to retrieve an object type form the specified map by its name. If the name is not used
 	 * as a key in the map but an object with the specified name exists, the object is put into
 	 * the map with the name as its key for speeding up future look-ups.
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	private ObjectType getObjectType(Map<String,ObjectType> objects, Map<String, ObjectType> names, String name) {
 		String normName = Umlaut.normalize(name);

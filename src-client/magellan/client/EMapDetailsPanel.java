@@ -249,7 +249,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private final ID treesID = StringID.create("Baeume");
 	private final ID mallornID = StringID.create("Mallorn");
 	private final ID sproutsID = StringID.create("Schoesslinge");
-	private final ID mallornSproutsID = StringID.create("MallornschÃ¶sslinge");
+	private final ID mallornSproutsID = StringID.create("Mallornschösslinge");
 	private final ID stonesID = StringID.create("Steine");
 
 	/**
@@ -801,9 +801,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 			}
 
-			luxuriesNode.add(createSimpleNode(p.getItemType().getName() + ": " +
-											  getDiffString(p.getPrice(), oldPrice),
-											  "items/" + p.getItemType().getIconName()));
+			luxuriesNode.add(createSimpleNode(p.getItemType().getName() + ": " + getDiffString(p.getPrice(), oldPrice), "items/" + p.getItemType().getIconName()));
 		}
 	}
 

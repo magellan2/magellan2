@@ -1,7 +1,6 @@
 2007-06-16 Thoralf (thoralf@m84.de)
     * Added some more english translations to the resources (bug #43)
     * Added some icons (herbs, potions, shields) - copied from kraeuter, traenke and schilde
-    * Copied some buiilding icons from icons/items to map.
 
 2007-06-15 Thoralf (thoralf@m84.de)
     * Replaced all UTF-8 encoded files with ISO-8859-1 encodings.

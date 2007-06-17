@@ -269,4 +269,23 @@ public class FrameTreeNode implements PropertyChangeListener {
 	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
+  
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("FrameTreeNode{").append("\n");
+    buffer.append("Name.........:").append(name).append("\n");
+    buffer.append("Leaf.........:").append(leaf).append("\n");
+    buffer.append("Percentage...:").append(percentage).append("\n");
+    buffer.append("Orientation..:").append(orientation).append("\n");
+    buffer.append("Absolute.....:").append(absolute).append("\n");
+    buffer.append("Configuration:").append(configuration).append("\n");
+    buffer.append("SplitPane....:").append(splitPane).append("\n");
+    if (child != null) {
+      for (int i=0 ; i<child.length; i++) {
+        buffer.append("Child[").append(i).append("]....:").append(child[i]).append("\n");
+      }
+    }
+    buffer.append("}\n");
+    return buffer.toString();
+  }
 }

@@ -87,23 +87,6 @@ public class WorkSpace extends JPanel {
 		if(chooser != null) {
 			this.add(chooser,BorderLayout.WEST);
 		}
-
-		// 		JPanel status = createDefaultStatus();
-
-		//  		JSplitPane perspectiveOverStatus = UIFactory.createBorderlessJSplitPane(JSplitPane.VERTICAL_SPLIT);
-		//  		perspectiveOverStatus.setTopComponent(perspective);
-		//  		perspectiveOverStatus.setBottomComponent(status);
-		//  		JPanel perspectiveOverStatus = new JPanel(new BorderLayout());
-		//  		perspectiveOverStatus.add(contentPanel, BorderLayout.CENTER);
-		//  		perspectiveOverStatus.add(status, BorderLayout.SOUTH);
-		//   		JSplitPane chooserLeftPerspective = UIFactory.createBorderlessJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		//   		chooserLeftPerspective.setLeftComponent(chooser);
-		//    		chooserLeftPerspective.setRightComponent(perspectiveOverStatus);
-		//    		JPanel chooserLeftPerspective = new JPanel(new BorderLayout());
-		//   		chooserLeftPerspective.add(chooser, BorderLayout.WEST);
-		//   		chooserLeftPerspective.add(perspectiveOverStatus, BorderLayout.CENTER);
-		// 		this.setLayout(new BorderLayout());
-		// 		this.add(chooserLeftPerspective, BorderLayout.CENTER);
 	}
 
 	private JPanel createContentPanel() {
@@ -166,9 +149,7 @@ public class WorkSpace extends JPanel {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public void setContent(Component newContent) {
 		removeContent();

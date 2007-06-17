@@ -239,7 +239,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 */
 	public MagellanDesktop(Frame client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
 		this.client = client;
-        this.context = context;
+    this.context = context;
 
 		magellanDir = dir;
 		timer = new Timer(1000, this);
@@ -347,26 +347,15 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * various places for compatibility with older version. The priorities are:
 	 * 
 	 * <ol>
-	 * <li>
-	 * Magellan directory
-	 * </li>
-	 * <li>
-	 * HOME Directory
-	 * </li>
-	 * <li>
-	 * Local directory
-	 * </li>
+	 *   <li>Magellan directory</li>
+	 *   <li>HOME Directory</li>
+	 *   <li>Local directory</li>
 	 * </ol>
 	 * 
 	 * The file to save to is always in the magellan directory.
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	public File getDesktopFile(boolean save) {
 		if(save) { // always save to magellan directory
-
 			return new File(magellanDir, "magellan_desktop.ini");
 		}
 
@@ -422,8 +411,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public Set getAvailableSplitSets() {
@@ -431,11 +418,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
 	 * 
 	 */
 	public boolean addSplitSet(String name, List<String> set) {
@@ -460,8 +442,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public Set getAvailableLayouts() {
@@ -470,8 +450,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Returns all the components available to this desktop. Keys are IDs, Values are components.
-	 *
-	 * 
 	 */
 	public Map getManagedComponents() {
 		return components;
@@ -480,8 +458,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Sets the components available for this desktop. This is only useful if called before a
 	 * mode-change.
-	 *
-	 * 
 	 */
 	public void setManagedComponents(Map<String,Component> components) {
 		this.components = components;
@@ -489,8 +465,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Returns the activation mode.
-	 *
-	 * 
 	 */
 	public int getActivationMode() {
 		return activationMode;
@@ -500,19 +474,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * Sets the activation mode. Possible values are:
 	 * 
 	 * <ul>
-	 * <li>
-	 * ACTIVATION_MODE_NONE: Never activate other windows
-	 * </li>
-	 * <li>
-	 * ACTIVATION_MODE_CLIENT_ONLY: Activate other windows if the client frame is activated
-	 * </li>
-	 * <li>
-	 * ACTIVATION_MODE_ANY: Activate all frames if any of them is activated.
-	 * </li>
+	 *   <li>ACTIVATION_MODE_NONE: Never activate other windows</li>
+	 *   <li>ACTIVATION_MODE_CLIENT_ONLY: Activate other windows if the client frame is activated</li>
+	 *   <li>ACTIVATION_MODE_ANY: Activate all frames if any of them is activated.</li>
 	 * </ul>
-	 * 
-	 *
-	 * 
 	 */
 	public void setActivationMode(int activationMode) {
 		this.activationMode = activationMode;
@@ -521,8 +486,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Returns the iconification mode. TRUE means, that all windows are (de)iconified if the main
 	 * window is (de)iconified.
-	 *
-	 * 
 	 */
 	public boolean isIconify() {
 		return iconify;
@@ -531,8 +494,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Sets the iconification mode. TRUE means, that all windows are (de)iconified if the main
 	 * window is (de)iconified.
-	 *
-	 * 
 	 */
 	public void setIconify(boolean iconify) {
 		this.iconify = iconify;
@@ -541,10 +502,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * this function creates a FrameRectangle with given id. The name is evaluated (and translated)
 	 * out of the given id.
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	private FrameRectangle createFrameRectangle(String id) {
 		String translationkey = id.toLowerCase();
@@ -556,27 +513,20 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		if(id.equals("OVERVIEW&HISTORY")) {
 			translationkey = "overviewandhistory";
 		}
-
-		// FrameRectangle frame=new FrameRectangle(name,id);
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.orders.title"),"ORDERS");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.details.title"),"DETAILS");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.name.title"),"NAME&DESCRIPTION");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.messages.title"),"MESSAGES");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.map.title"),"MAP");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.minimap.title"),"MINIMAP");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.overviewandhistory.title"),"OVERVIEW&HISTORY");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.overview.title"),"OVERVIEW");
-		// new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame.history.title"),"HISTORY");
+    
 		return new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame." + translationkey + ".title"), id);
 	}
 
+  /**
+   * 
+   */
 	private class ActivateSplitSetAction extends AbstractAction {
 		ActivateSplitSetAction(String splitSetName, String text, String tooltip) {
 			super(text);
 			this.putValue(Action.ACTION_COMMAND_KEY, splitSetName);
 			this.putValue(Action.SHORT_DESCRIPTION, tooltip);
 		}
-		/* (non-Javadoc)
+		/**
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
 		public void actionPerformed(ActionEvent e) {
@@ -590,7 +540,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			this.putValue(Action.ACTION_COMMAND_KEY, splitSetName);
 			this.putValue(Action.SHORT_DESCRIPTION, tooltip);
 		}
-		/* (non-Javadoc)
+		/**
 		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
 		public void actionPerformed(ActionEvent e) {
@@ -699,12 +649,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Replaces the first substring toRep in def by repBy.
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	protected String replace(String def, String toRep, String repBy) {
 		if(def.indexOf(toRep) > -1) {
@@ -835,8 +779,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Creates the default Split set. Current implementation emulates old-style Magellan.
-	 *
-	 * 
 	 */
 	protected List<String> createStandardSplitSet() {
 		List<String> st = new ArrayList<String>(22);
@@ -872,7 +814,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	protected void buildDefaultLayoutComponents() {
 		lManager = new DesktopLayoutManager();
 
-		Map<String,magellan.client.desktop.MagellanDesktop.DesktopLayoutManager.CPref> lMap = new HashMap<String, magellan.client.desktop.MagellanDesktop.DesktopLayoutManager.CPref>();
+		Map<String,DesktopLayoutManager.CPref> lMap = new HashMap<String, DesktopLayoutManager.CPref>();
 		lMap.put("OVERVIEW", lManager.createCPref(0, 0, 0.25, 0.5));
 		lMap.put("HISTORY", lManager.createCPref(0, 0.5, 0.25, 0.25));
 		lMap.put("MINIMAP", lManager.createCPref(0, 0.75, 0.25, 0.25));
@@ -888,9 +830,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Loads a layout with name lName out of the given definition.
-	 *
-	 * 
-	 * 
 	 */
 	protected void loadLayout(String lName, List def) {
 		String msg = "Loading layout \"" + lName + "\"...";
@@ -1022,15 +961,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Initializes a default frame set. This implementation emulates the default splitted screen:
-	 * 
-	 * <p>
-	 * |---1/3---|----1/3---|-1/3------   | 1/3     |          |Name&    1/3 | Overview  | Map
-	 * |Descript.    |         |----------|          |----------| 1/3 History   | |Details  1/3
-	 * |---------|----------|----------| 1/3 Minimap   | Messages |Commands 1/3
-	 * |---------|----------|----------|
-	 * </p>
-	 *
-	 * 
 	 */
 	protected List initFrameDefault() {
 		List<Component> compsUsed = new LinkedList<Component>();
@@ -1165,17 +1095,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * Computes the largest free rectangle on the screen: the biggest free place without the client
-	 * frame.
-	 * 
-	 * <p>
-	 * SOMEBODY SHOULD ADD CODE TO SUPPRESS TASKBAR OVERLAY!!!
-	 * </p>
-	 *
-	 * 
-	 *
-	 * 
-	 */
+	 * Computes the largest free rectangle on the screen: 
+   * the biggest free place without the client frame.
+   */
 	protected Rectangle computeRectangle(Dimension screenSize) {
 		// create the screen rectangle
 		Rectangle screen = new Rectangle(0, 0, screenSize.width, screenSize.height);
@@ -1306,10 +1228,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Initializes the desktop using SplitPanes.
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	protected boolean initSplitSet(String setName) {
 		// can't find split-set
@@ -1338,11 +1256,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		splitBuilder.setScreen(r);
-
+    
 		try {
-			splitRoot = splitBuilder.buildDesktop((FrameTreeNode) splitSets.get(setName), components);
+			splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components);
 		} catch(Exception exc) {
-            log.error(exc);
+      log.error(exc);
 			return false;
 		}
 
@@ -1373,6 +1291,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * <p>
 	 * Desktop.FrameInt=Int,Int,Int,Int,ID,Title,State
 	 * </p>
+   * 
 	 * Where ID is the name of the component, Title the frame title and State the state of the
 	 * frame: ICON means ICONIFIED. The parser starts with Frame0 and end when the next property
 	 * can't be found. If no such property is found a default frame set will be used emulating the
@@ -1647,9 +1566,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Registers a shortcut translation.
-	 *
-	 * 
-	 * 
 	 */
 	public void registerTranslation(KeyStroke newStroke, KeyStroke oldStroke) {
 		if(newStroke.equals(oldStroke)) { // senseless
@@ -1666,8 +1582,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void removeTranslation(KeyStroke stroke) {
@@ -1680,10 +1594,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public KeyStroke getTranslation(KeyStroke newStroke) {
@@ -1691,10 +1601,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public KeyStroke findTranslation(KeyStroke oldStroke) {
@@ -1713,9 +1619,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Registers a new KeyStroke/ShortcutListener pair at the desktop.
-	 *
-	 * 
-	 * 
 	 */
 	public void registerShortcut(KeyStroke stroke, ShortcutListener sl) {
 		keyHandler.addStroke(stroke, sl);
@@ -1723,8 +1626,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Register a ShortcutListener with all its shortcuts at the desktop.
-	 *
-	 * 
 	 */
 	public void registerShortcut(ShortcutListener sl) {
 		keyHandler.addListener(sl);
@@ -1733,9 +1634,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Registers a new KeyStroke/ActionListener pair at the desktop. If the given boolean is FALSE,
 	 * the listener will not be registered at the Client frame. This feature is for menu items.
-	 *
-	 * 
-	 * 
 	 */
 	public void registerShortcut(KeyStroke stroke, ActionListener al) {
 		keyHandler.addStroke(stroke, al, true);
@@ -1750,8 +1648,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Just empty - do nothing if a frame is inactivated.
-	 *
-	 * 
 	 */
 	public void windowDeactivated(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1760,8 +1656,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Just empty - do nothing if a frame is closed.
-	 *
-	 * 
 	 */
 	public void windowClosed(java.awt.event.WindowEvent p1) {
 	}
@@ -1769,8 +1663,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Check if this event comes from the client window and if all windows should be deiconified -
 	 * if so, deiconify all and put them to front.
-	 *
-	 * 
 	 */
 	public void windowDeiconified(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1801,8 +1693,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Just empty - do nothing if a frame is opened.
-	 *
-	 * 
 	 */
 	public void windowOpened(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1812,8 +1702,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Check if this  event comes from the client window and if all windows should be iconified -
 	 * if so, iconify them.
-	 *
-	 * 
 	 */
 	public void windowIconified(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1836,8 +1724,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Update the frames menu.
-	 *
-	 * 
 	 */
 	public void windowClosing(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1852,19 +1738,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * Check the activation modus:
 	 * 
 	 * <ul>
-	 * <li>
-	 * DO NOTHING ON ACTIVATION
-	 * </li>
-	 * <li>
-	 * ACTIVATE ALL WHEN CLIENT IS ACTIVATED
-	 * </li>
-	 * <li>
-	 * ACTIVATE ALL IF ANY WINDOW IS ACTIVATED
-	 * </li>
+	 *   <li>DO NOTHING ON ACTIVATION</li>
+	 *   <li>ACTIVATE ALL WHEN CLIENT IS ACTIVATED</li>
+	 *   <li>ACTIVATE ALL IF ANY WINDOW IS ACTIVATED</li>
 	 * </ul>
-	 * 
-	 *
-	 * 
 	 */
 	public void windowActivated(java.awt.event.WindowEvent p1) {
 		// clear "input buffer"
@@ -1902,8 +1779,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Activates all frames if in frame mode.
-	 *
-	 * 
 	 */
 	public void setAllVisible(boolean visible) {
 		if(mode == MODE_FRAME) {
@@ -1936,8 +1811,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * The component with the ID id will gain the focus. If Frame Mode is enabled, the parent frame
 	 * will be activated.
-	 *
-	 * 
 	 */
 	public void componentRequestFocus(String id) {
 		if(!components.containsKey(id)) {
@@ -1968,8 +1841,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Repaints the component with ID id.
-	 *
-	 * 
 	 */
 	public void repaint(String id) {
 		if(!components.containsKey(id)) {
@@ -2008,7 +1879,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * 
 	 */
 	public void updateLaF() {
 		SwingUtilities.updateComponentTreeUI(client);
@@ -2028,8 +1899,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void actionPerformed(ActionEvent p1) {
@@ -2085,8 +1954,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			protected KeyStroke stroke;
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
@@ -2109,8 +1976,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void connect(Collection<Component> deskElements) {
@@ -2142,7 +2007,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * 
 		 */
 		public void disconnect() {
 			if(lastComponents.size() > 0) {
@@ -2174,8 +2039,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void removeStroke(KeyStroke stroke) {
@@ -2183,8 +2046,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void addTranslationStroke(KeyStroke str) {
@@ -2192,9 +2053,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 * 
 		 */
 		public void addStroke(KeyStroke str, Object dest) {
@@ -2202,10 +2060,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
 		 * 
 		 */
 		public void addStroke(KeyStroke str, Object dest, boolean actionAware) {
@@ -2223,8 +2077,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void addListener(ShortcutListener sl) {
@@ -2236,9 +2088,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 * 
 		 */
 		public void keyPressed(KeyStroke e, Object src) {
@@ -2313,12 +2162,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		/**
 		 * Removes the given key stroke from the container searching an instance of JComponent.
-		 *
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
 		 */
 		protected boolean addToContainer(Component c, KeyStroke s, ActionListener al) {
 			if(c instanceof JComponent) {
@@ -2348,9 +2191,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		 * Removes the KeyStrokes in the collection from all desktop components. If the given flag
 		 * is true, all key-strokes in the collection are removed, else only non-base-level
 		 * key-strokes.
-		 *
-		 * 
-		 * 
 		 */
 		protected void remove(Collection col, boolean flag) {
 			Iterator it = col.iterator();
@@ -2382,11 +2222,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		/**
 		 * Removes the given key stroke from the container searching an instance of JComponent.
-		 *
-		 * 
-		 * 
-		 *
-		 * 
 		 */
 		protected boolean removeFromContainer(Component c, KeyStroke s) {
 			if(c instanceof JComponent) {
@@ -2422,9 +2257,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		/**
 		 * Performs the action for the given shortcut listener.
-		 *
-		 * 
-		 * 
 		 */
 		protected void reactOnStroke(KeyStroke stroke, ShortcutListener sl) {
 			if(sl instanceof ExtendedShortcutListener) {
@@ -2452,8 +2284,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			/**
 			 * Creates a new GameEventListener object.
-			 *
-			 * 
 			 */
 			public GameEventListener(KeyHandler parent) {
 				this.parent = parent;
@@ -2465,8 +2295,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			/**
 			 * Invoked when different objects are activated or selected.
-			 *
-			 * 
 			 */
 			public void selectionChanged(magellan.client.event.SelectionEvent e) {
 				parent.resetExtendedShortcutListener();
@@ -2474,8 +2302,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			/**
 			 * Invoked when the current game data object becomes invalid.
-			 *
-			 * 
 			 */
 			public void gameDataChanged(magellan.library.event.GameDataEvent e) {
 				parent.resetExtendedShortcutListener();
@@ -2501,19 +2327,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * values are:
 	 * 
 	 * <ul>
-	 * <li>
-	 * MODE_SPLIT: Build the desktop with SplitPanes.
-	 * </li>
-	 * <li>
-	 * MODE_FRAME: Build the desktop with Frames.
-	 * </li>
-	 * <li>
-	 * MODE_LAYOUT: Build the desktop with the special Layout.
-	 * </li>
+	 *   <li>MODE_SPLIT: Build the desktop with SplitPanes.</li>
+	 *   <li>MODE_FRAME: Build the desktop with Frames.</li>
+	 *   <li>MODE_LAYOUT: Build the desktop with the special Layout.</li>
 	 * </ul>
-	 * 
-	 *
-	 * 
 	 */
 	public void setMode(int mode) {
 		switch(mode) {
@@ -2534,21 +2351,12 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * values are:
 	 * 
 	 * <ul>
-	 * <li>
-	 * MODE_SPLIT: Build the desktop with SplitPanes.
-	 * </li>
-	 * <li>
-	 * MODE_FRAME: Build the desktop with Frames.
-	 * </li>
-	 * <li>
-	 * MODE_LAYOUT: Build the desktop with the special Layout.
-	 * </li>
+	 *   <li>MODE_SPLIT: Build the desktop with SplitPanes.</li>
+	 *   <li>MODE_FRAME: Build the desktop with Frames.</li>
+	 *   <li>MODE_LAYOUT: Build the desktop with the special Layout.</li>
 	 * </ul>
 	 * 
 	 * The given parameter describes the mode.
-	 *
-	 * 
-	 * 
 	 */
 	public void setMode(int mode, Object param) {
 		if((mode != this.mode) || ((mode == MODE_SPLIT) && !param.equals(splitName)) ||
@@ -2728,15 +2536,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * Saves properties of Split Mode. Following properties may be set:
 	 * 
 	 * <ul>
-	 * <li>
-	 * Client.x,Client.y,Client.width,Client.height
-	 * </li>
-	 * <li>
-	 * Desktop.Type
-	 * </li>
-	 * <li>
-	 * Desktop.SplitSet
-	 * </li>
+	 *   <li>Client.x,Client.y,Client.width,Client.height</li>
+	 *   <li>Desktop.Type</li>
+	 *   <li>Desktop.SplitSet</li>
 	 * </ul>
 	 */
 	protected void saveSplitModeProperties() {
@@ -2753,15 +2555,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * Saves properties of Frame Mode. Following properties may be set:
 	 * 
 	 * <ul>
-	 * <li>
-	 * Client.Frame.x,Client.Frame.y,Client.Frame.width,Client.Frame.height
-	 * </li>
-	 * <li>
-	 * Desktop.Type
-	 * </li>
-	 * <li>
-	 * Desktop.FrameX
-	 * </li>
+	 *   <li>Client.Frame.x,Client.Frame.y,Client.Frame.width,Client.Frame.height</li>
+	 *   <li>Desktop.Type</li>
+	 *   <li>Desktop.FrameX</li>
 	 * </ul>
 	 */
 	protected void saveFrameModeProperties() {
@@ -2778,15 +2574,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * Saves properties of Split Mode. Following properties may be set:
 	 * 
 	 * <ul>
-	 * <li>
-	 * Client.x,Client.y,Client.width,Client.height
-	 * </li>
-	 * <li>
-	 * Desktop.Type
-	 * </li>
-	 * <li>
-	 * Desktop.Layout
-	 * </li>
+	 *   <li>Client.x,Client.y,Client.width,Client.height</li>
+	 *   <li>Desktop.Type</li>
+	 *   <li>Desktop.Layout</li>
 	 * </ul>
 	 */
 	protected void saveLayoutModeProperties() {
@@ -2801,8 +2591,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Saves the content of splitSets and layoutComponents to the desktop file.
-	 *
-	 * @throws Exception DOCUMENT-ME
 	 */
 	protected void saveDesktopFile() throws Exception {
 		File magFile = getDesktopFile(true);
@@ -2844,10 +2632,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Writes the given map with the given block name to out.
-	 *
-	 * 
-	 * 
-	 * 
 	 */
 	private void saveList(String name, Map map, PrintWriter out) {
 		out.println('[' + name + ']');
@@ -2862,10 +2646,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Writes the given FrameTreeNode structure with block name to out.
-	 *
-	 * 
-	 * 
-	 * 
 	 */
 	private void saveList(String name, FrameTreeNode root, PrintWriter out) {
 		out.println('[' + name + ']');
@@ -2874,9 +2654,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 	/**
 	 * Saves the FrameRectangle structure to the given properties object.
-	 *
-	 * 
-	 * 
 	 */
 	protected void saveFrames(Map fr, Properties p) {
 		// save activation and iconification setting
@@ -2953,9 +2730,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 * 
 		 */
 		public void addLayoutComponent(java.lang.String str, java.awt.Component component) {
@@ -2967,8 +2741,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void layoutContainer(java.awt.Container container) {
@@ -2984,10 +2756,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public java.awt.Dimension minimumLayoutSize(java.awt.Container container) {
@@ -2995,10 +2763,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public java.awt.Dimension preferredLayoutSize(java.awt.Container container) {
@@ -3006,8 +2770,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void removeLayoutComponent(java.awt.Component component) {
@@ -3015,9 +2777,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 * 
 		 */
 		public void addLayoutComponent(java.awt.Component component, java.lang.Object obj) {
@@ -3031,10 +2790,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public float getLayoutAlignmentX(java.awt.Container container) {
@@ -3042,10 +2797,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public float getLayoutAlignmentY(java.awt.Container container) {
@@ -3053,18 +2804,12 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void invalidateLayout(java.awt.Container container) {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public java.awt.Dimension maximumLayoutSize(java.awt.Container container) {
@@ -3072,10 +2817,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public CPref parseCPref(String s) {
@@ -3103,13 +2844,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
 		 * 
 		 */
 		public CPref createCPref(double x, double y, double w, double h) {
@@ -3136,11 +2870,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			/**
 			 * Creates a new CPref object.
-			 *
-			 * 
-			 * 
-			 * 
-			 * 
 			 */
 			public CPref(double d1, double d2, double d3, double d4) {
 				x = d1;
@@ -3150,8 +2879,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public String toString() {
@@ -3165,8 +2892,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public String getConfiguration() {
@@ -3174,8 +2899,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public void setConfiguration(String config) {
@@ -3197,15 +2920,13 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		/**
 		 * Creates a new WindowActivator object.
-		 *
-		 * 
 		 */
 		public WindowActivator(Window s) {
 			source = s;
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * 
 		 */
 		public void run() {
 			if((mode != MODE_FRAME) || (frames == null)) {
@@ -3394,8 +3115,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void actionPerformed(java.awt.event.ActionEvent p1) {
@@ -3429,8 +3148,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public int getActMode() {
@@ -3439,16 +3156,12 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		/**
 		 * Sets the displayed tab.
-		 *
-		 * 
 		 */
 		public void setDeskMode(int n) {
 			modeBox.setSelectedIndex(n);
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public int getDeskMode() {
@@ -3456,8 +3169,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public boolean isModeIconify() {
@@ -3465,8 +3176,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public java.awt.Component getComponent() {
@@ -3474,24 +3183,22 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public java.lang.String getTitle() {
 			return Resources.get("magellan.desktop.magellandesktop.prefs.title");
 		}
 
-        /**
-         * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-         * @deprecated TODO: implement it
-         */
-        public void initPreferences() {
-            // TODO: implement it
-        }
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+     * @deprecated TODO: implement it
+     */
+    public void initPreferences() {
+        // TODO: implement it
+    }
         
 		/**
-		 * DOCUMENT-ME
+		 * 
 		 */
 		public void applyPreferences() {
 			setMode(getDeskMode());
@@ -3501,8 +3208,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public List getChildren() {
@@ -3698,23 +3403,21 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				}
 			}
 
-            /**
-             * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-             * @deprecated TODO: implement it!
-             */
-            public void initPreferences() {
-                // TODO: implement it
-            }
+      /**
+       * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+       * @deprecated TODO: implement it!
+       */
+      public void initPreferences() {
+          // TODO: implement it
+      }
             
 			/**
-			 * DOCUMENT-ME
+			 * 
 			 */
 			public void applyPreferences() {
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public Component getComponent() {
@@ -3722,8 +3425,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
 			 * 
 			 */
 			public String getTitle() {
@@ -3732,11 +3433,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			protected class ListenerComparator implements Comparator<Object> {
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 *
 				 * 
 				 */
 				public int compare(Object o1, Object o2) {
@@ -3773,11 +3469,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			protected class KeyStrokeComparator implements Comparator<KeyStroke> {
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 *
 				 * 
 				 */
 				public int compare(KeyStroke o1, KeyStroke o2) {
@@ -3820,20 +3511,12 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			protected class ListTableModel extends DefaultTableModel {
 				/**
 				 * Creates a new ListTableModel object.
-				 *
-				 * 
-				 * 
 				 */
 				public ListTableModel(Object data[][], Object columns[]) {
 					super(data, columns);
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 *
 				 * 
 				 */
 				public boolean isCellEditable(int r, int c) {
@@ -3925,9 +3608,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
+       * 
 			 */
 			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 			}
@@ -3935,8 +3616,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			protected class InformDialog extends JDialog implements ActionListener {
 				/**
 				 * Creates a new InformDialog object.
-				 *
-				 * 
 				 */
 				public InformDialog(Frame parent) {
 					super(parent, true);
@@ -3945,8 +3624,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				/**
 				 * Creates a new InformDialog object.
-				 *
-				 * 
 				 */
 				public InformDialog(Dialog parent) {
 					super(parent, true);
@@ -3991,8 +3668,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
 				 * 
 				 */
 				public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
@@ -4007,8 +3682,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				/**
 				 * Creates a new TranslateStroke object.
-				 *
-				 * 
 				 */
 				public TranslateStroke(Frame parent) {
 					super(parent, true);
@@ -4017,8 +3690,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				/**
 				 * Creates a new TranslateStroke object.
-				 *
-				 * 
 				 */
 				public TranslateStroke(Dialog parent) {
 					super(parent, true);
@@ -4047,8 +3718,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
 				 * 
 				 */
 				public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
@@ -4062,8 +3731,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
 				 * 
 				 */
 				public KeyStroke getStroke() {
@@ -4083,9 +3750,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
-					 * 
 					 * 
 					 */
 					public void init(int modifiers, int key) {
@@ -4104,8 +3768,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
 					 * 
 					 */
 					public void keyReleased(KeyEvent p1) {
@@ -4113,8 +3775,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
 					 * 
 					 */
 					public void keyPressed(KeyEvent p1) {
@@ -4164,23 +3824,19 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
 					 * 
 					 */
 					public void keyTyped(KeyEvent p1) {
 					}
 
-					/** To allow "tab" as a key.
-					 * 
+					/** 
+					 * To allow "tab" as a key.
 					 */
 					public boolean isManagingFocus() {
 						return true;
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
 					 * 
 					 */
 					public int getKeyCode() {
@@ -4188,8 +3844,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
 					 * 
 					 */
 					public int getModifiers() {
@@ -4211,15 +3865,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 *
 				 * 
 				 */
 				public Component getTableCellRendererComponent(JTable table, Object value,
@@ -4250,8 +3895,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void setComponent(Component c) {
@@ -4260,8 +3903,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void paintComponent(Graphics g) {
@@ -4308,10 +3949,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public Component add(Component c) {
@@ -4321,9 +3958,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void add(Component c, Object con) {
@@ -4352,8 +3986,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void paintComponent(Graphics g) {

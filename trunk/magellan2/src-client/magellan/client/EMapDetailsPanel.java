@@ -192,13 +192,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private static final Logger log = Logger.getInstance(EMapDetailsPanel.class);
 
 	// GUI elements
+  private JPanel nameDescPanel = null;
+  private JPanel pnlRegionInfoTree = null;
+  private MultiEditorOrderEditorList editor;
+  
 	private JTextArea name = null;
 	private JTextArea description = null;
 	private DefaultTreeModel treeModel = null;
 	private DefaultMutableTreeNode rootNode = null;
 	private CopyTree tree = null;
 	private AutoCompletion orders = null;
-	private MultiEditorOrderEditorList editor;
 	private Region lastRegion = null;
 	private Units unitsTools = null;
 
@@ -218,10 +221,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	
 	
 	/** split pane */
-	JSplitPane topSplitPane;
+	private JSplitPane topSplitPane;
 
 	/** split pane */
-	JSplitPane bottomSplitPane;
+	private JSplitPane bottomSplitPane;
+  
 	private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
 	protected NodeWrapperFactory nodeWrapperFactory;
 	private List<KeyStroke> shortCuts;
@@ -254,11 +258,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * Creates a new EMapDetailsPanel object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr) {
 		super(d, data, p);
@@ -309,8 +308,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							   isPrivilegedAndNoSpy(u) && !u.ordersAreNull()) {
 							// the following code only changes the name
 							// right now it is not necessary to refresh the relations; are we sure??
-							data.getGameSpecificStuff().getOrderChanger().addNamingOrder(u,
-																						 name.getText());
+							data.getGameSpecificStuff().getOrderChanger().addNamingOrder(u,name.getText());
 							dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, u));
 
 							//if (u.cache != null && u.cache.orderEditor != null) {
@@ -329,11 +327,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 						if(isPrivilegedAndNoSpy(modUnit) && !modUnit.ordersAreNull()) {
 							if(((uc.getName() == null) && (name.getText().equals("") == false)) ||
-								   ((uc.getName() != null) &&
-								   (name.getText().equals(uc.getName()) == false))) {
+								   ((uc.getName() != null) && (name.getText().equals(uc.getName()) == false))) {
 								data.getGameSpecificStuff().getOrderChanger().addNamingOrder(modUnit,
-																							 uc,
-																							 name.getText());
+																							 uc,name.getText());
 								dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, modUnit));
 
 								//if (modUnit.cache != null && modUnit.cache.orderEditor != null) {
@@ -438,7 +434,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		descScrollPane.setBorder(null);
 
 		// panel combining name and description
-		JPanel nameDescPanel = new JPanel(new BorderLayout(0, 2));
+		nameDescPanel = new JPanel(new BorderLayout(0, 2));
 		nameDescPanel.add(name, BorderLayout.NORTH);
 		nameDescPanel.add(descScrollPane, BorderLayout.CENTER);
 		nameDescPanel.setPreferredSize(new Dimension(100, 100));
@@ -533,7 +529,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		treeScrollPane.setBorder(null);
 
 		// panel combining the region info and the tree
-		JPanel pnlRegionInfoTree = new JPanel(new BorderLayout());
+		pnlRegionInfoTree = new JPanel(new BorderLayout());
 		pnlRegionInfoTree.add(regionPanel = new BasicRegionPanel(dispatcher, settings),
 							  BorderLayout.NORTH);
 		pnlRegionInfoTree.add(treeScrollPane, BorderLayout.CENTER);
@@ -563,6 +559,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// split pane combining name, desc & tree
 		topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
 		topSplitPane.setOneTouchExpandable(true);
+    
+    
 		editor = new MultiEditorOrderEditorList(dispatcher, data, settings, _undoMgr);
 
 		// build auto completion structure
@@ -576,6 +574,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.CTRL_MASK));
 
 		// split pane combining top split pane and orders
+    
 		bottomSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topSplitPane, editor);
 		bottomSplitPane.setOneTouchExpandable(true);
 		setLayout(new GridLayout(1, 0));
@@ -590,10 +589,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// save split pane changes
 		ComponentAdapter splitPaneListener = new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
-				settings.setProperty("EMapDetailsPanel.bottomSplitPane",
-									 "" + bottomSplitPane.getDividerLocation());
-				settings.setProperty("EMapDetailsPanel.topSplitPane",
-									 "" + topSplitPane.getDividerLocation());
+				settings.setProperty("EMapDetailsPanel.bottomSplitPane","" + bottomSplitPane.getDividerLocation());
+				settings.setProperty("EMapDetailsPanel.topSplitPane","" + topSplitPane.getDividerLocation());
 			}
 		};
 
@@ -617,9 +614,29 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		excludeTags.add("regionicon");
 	}
 
+  /**
+   * Returns a panel with a Textfield for the name and
+   * a Textarea for the description.
+   */
+  public JPanel getNameAndDescriptionPanel() {
+    return nameDescPanel;
+  }
+  
+  /**
+   * Returns the Details Tree panel for selected regions
+   */
+  public JPanel getDetailsPanel() {
+    return pnlRegionInfoTree;
+  }
+  
+  /**
+   * Returns the multi order editor.
+   */
+  public JComponent getOrderEditor() {
+    return editor;
+  }
+  
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public NodeWrapperFactory getNodeWrapperFactory() {

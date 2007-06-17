@@ -519,15 +519,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     panels.add(detailsPanel);
     nodeWrapperFactories.add(detailsPanel.getNodeWrapperFactory());
 
-    Container c = (Container) detailsPanel.topSplitPane.getTopComponent();
+    Container c = (Container) detailsPanel.getNameAndDescriptionPanel();
     components.put("NAME&DESCRIPTION", c);
     components.put("NAME", c.getComponent(0));
     components.put("DESCRIPTION", c.getComponent(1));
-    components.put("DETAILS", detailsPanel.topSplitPane.getBottomComponent());
-    components.put("ORDERS", detailsPanel.bottomSplitPane.getBottomComponent());
-
+    components.put("DETAILS", detailsPanel.getDetailsPanel());
+    components.put("ORDERS", detailsPanel.getOrderEditor());
+    
     // this keyword is deprecated
-    components.put("COMMANDS", detailsPanel.bottomSplitPane.getBottomComponent());
+    components.put("COMMANDS", detailsPanel.getOrderEditor());
     topLevel.add(detailsPanel);
 
     // configure and add overview panel
@@ -1953,4 +1953,23 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
   }
+
+  /**
+   * Returns a String representing all parts of the component for debugging. 
+   */
+  public static String debug(Component comp) {
+    String result = "";
+    if (comp instanceof Container) {
+      Container container = (Container)comp;
+      result = "Container: "+container +"\n";
+      result+="{";
+      Component[] comps = container.getComponents();
+      for (Component acomp : comps) result+=" "+debug(acomp)+"\n";
+      result+=")";
+    } else {
+      result = "Component: "+comp+"\n";
+    }
+    return result;
+  }
+  
 }

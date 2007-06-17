@@ -75,7 +75,7 @@ public class Resources {
    * This constructor loads all available resources into a hashtable.
    */
   private Resources() {
-    log.debug("Initializing resources...");
+    log.info("Initializing resources...");
     File resourceDirectory = new File("etc/");
     for (File file : resourceDirectory.listFiles(new ResourceFilenameFilter())) {
       String resourceName = file.getName();
@@ -85,7 +85,7 @@ public class Resources {
       } else {
         resourceName = resourceName.substring(10,resourceName.length()-11);
       }
-      
+      log.info("Load resource: "+file.getName()+" as "+resourceName);
       try {
         FileInputStream stream = new FileInputStream(file);
         MyResourceBundle bundle = new MyResourceBundle(stream);
@@ -241,8 +241,7 @@ public class Resources {
       }
     }
     if (result == null && returnKey) {
-      log.warn("Could not find the resource key '"+key+"' in the resources.");
-      log.warn("See "+getLine()+" for more details");
+      log.warn("Could not find the resource key '"+key+"' in the resources. See "+getLine()+" for more details");
       result = key;
       // try to find out who calls us
     }

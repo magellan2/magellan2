@@ -300,7 +300,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					}
 
 					if(!loaded) { //Sorry, cannot load -> build new default set
-						JOptionPane.showMessageDialog(client, Resources.get("magellan.desktop.magellandesktop.msg.corruptsettings.text"));
+						JOptionPane.showMessageDialog(client, Resources.get("desktop.magellandesktop.msg.corruptsettings.text"));
 						System.exit(1);
 					}
 				}
@@ -514,7 +514,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			translationkey = "overviewandhistory";
 		}
     
-		return new FrameRectangle(Resources.get("magellan.desktop.magellandesktop.frame." + translationkey + ".title"), id);
+		return new FrameRectangle(Resources.get("desktop.magellandesktop.frame." + translationkey + ".title"), id);
 	}
 
   /**
@@ -553,14 +553,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * sub-menu for all available split sets and at last a sub-menu with all layouts.
 	 */
 	protected void initDesktopMenu() {
-		desktopMenu = new JMenu(Resources.get("magellan.desktop.magellandesktop.menu.desktop.caption"));
-		desktopMenu.setMnemonic(Resources.get("magellan.desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
+		desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
+		desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
 
-		framesMenu = new JMenu(Resources.get("magellan.desktop.magellandesktop.menu.frames.caption"));
-		framesMenu.setMnemonic(Resources.get("magellan.desktop.magellandesktop.menu.frames.menmonic").charAt(0));
+		framesMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.frames.caption"));
+		framesMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.frames.menmonic").charAt(0));
 
 		if(frames.size() > 0) {
-			JMenuItem mitem = new JMenuItem(Resources.get("magellan.desktop.magellandesktop.menu.frames.activate"));
+			JMenuItem mitem = new JMenuItem(Resources.get("desktop.magellandesktop.menu.frames.activate"));
 			mitem.addActionListener(this);
 			framesMenu.add(mitem);
 			framesMenu.addSeparator();
@@ -582,15 +582,15 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 		framesMenu.setEnabled(frames.size() > 0);
 		desktopMenu.add(framesMenu);
-		setMenu = new JMenu(Resources.get("magellan.desktop.magellandesktop.menu.set.caption"));
-		setMenu.setMnemonic(Resources.get("magellan.desktop.magellandesktop.menu.set.mnemonic").charAt(0));
+		setMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.set.caption"));
+		setMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.set.mnemonic").charAt(0));
 		setMenuGroup = new ButtonGroup();
 
 		int index = 0;
 
 		if((splitSets != null) && (splitSets.size() > 0)) {
 			index = 1;
-			String prefix = Resources.get("magellan.desktop.magellandesktop.menu.set.caption").substring(0,1).toUpperCase();
+			String prefix = Resources.get("desktop.magellandesktop.menu.set.caption").substring(0,1).toUpperCase();
 			for (Iterator iter = splitSets.keySet().iterator(); iter.hasNext(); ) {
 				String name = (String) iter.next();
 
@@ -598,7 +598,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				ActivateSplitSetAction ase = new ActivateSplitSetAction(name, 
 																		prefix+ index + ": " + name, 
-																		Resources.get("magellan.desktop.magellandesktop.menu.set.caption")+ " "+name);
+																		Resources.get("desktop.magellandesktop.menu.set.caption")+ " "+name);
 
 				mi = new JCheckBoxMenuItem(ase);
 
@@ -615,12 +615,12 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		desktopMenu.add(setMenu);
-		layoutMenu = new JMenu(Resources.get("magellan.desktop.magellandesktop.menu.layout.caption"));
-		layoutMenu.setMnemonic(Resources.get("magellan.desktop.magellandesktop.menu.layout.mnemonic").charAt(0));
+		layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.layout.caption"));
+		layoutMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.layout.mnemonic").charAt(0));
 
 		if((layoutComponents != null) && (layoutComponents.size() > 0)) {
 			index = 1;
-			String prefix = Resources.get("magellan.desktop.magellandesktop.menu.layout.caption").substring(0,1).toUpperCase();
+			String prefix = Resources.get("desktop.magellandesktop.menu.layout.caption").substring(0,1).toUpperCase();
 			for(Iterator iter = layoutComponents.keySet().iterator(); iter.hasNext(); ) {
 				String name = (String) iter.next();
 
@@ -628,7 +628,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				ActivateLayoutAction action = new ActivateLayoutAction(name, 
 																	   prefix+ index + ": " + name, 
-																	   Resources.get("magellan.desktop.magellandesktop.menu.layout.caption")+ " "+name);
+																	   Resources.get("desktop.magellandesktop.menu.layout.caption")+ " "+name);
 				mi = new JCheckBoxMenuItem(action);
 
 				if(index <= 10) {
@@ -2987,13 +2987,13 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		JCheckBox enableWorkSpaceChooser;
 
 		private final String act[] = {
-										 Resources.get("magellan.desktop.magellandesktop.prefs.activationdescription.single"),
-										 Resources.get("magellan.desktop.magellandesktop.prefs.activationdescription.main"),
-										 Resources.get("magellan.desktop.magellandesktop.prefs.activationdescription.all")
+										 Resources.get("desktop.magellandesktop.prefs.activationdescription.single"),
+										 Resources.get("desktop.magellandesktop.prefs.activationdescription.main"),
+										 Resources.get("desktop.magellandesktop.prefs.activationdescription.all")
 									 };
 		private final String ico[] = {
-										 Resources.get("magellan.desktop.magellandesktop.prefs.iconifydescription.single"),
-										 Resources.get("magellan.desktop.magellandesktop.prefs.iconifydescription.main")
+										 Resources.get("desktop.magellandesktop.prefs.iconifydescription.single"),
+										 Resources.get("desktop.magellandesktop.prefs.iconifydescription.main")
 									 };
 
 		/**
@@ -3003,28 +3003,28 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			this.setLayout(new BorderLayout());
 
 			JPanel up = new JPanel(new FlowLayout(FlowLayout.LEADING));
-			up.add(new JLabel(Resources.get("magellan.desktop.magellandesktop.prefs.lbl.mode.caption")));
+			up.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.mode.caption")));
 
 			String modeItems[] = new String[3];
-			modeItems[0] = Resources.get("magellan.desktop.magellandesktop.prefs.modeitem.split");
-			modeItems[1] = Resources.get("magellan.desktop.magellandesktop.prefs.modeitem.frames");
-			modeItems[2] = Resources.get("magellan.desktop.magellandesktop.prefs.modeitem.layout");
+			modeItems[0] = Resources.get("desktop.magellandesktop.prefs.modeitem.split");
+			modeItems[1] = Resources.get("desktop.magellandesktop.prefs.modeitem.frames");
+			modeItems[2] = Resources.get("desktop.magellandesktop.prefs.modeitem.layout");
 			modeBox = new JComboBox(modeItems);
 			modeBox.setSelectedIndex(getMode());
 			modeBox.addActionListener(this);
 			up.add(modeBox);
 			
-			enableWorkSpaceChooser = new JCheckBox(Resources.get("magellan.desktop.magellandesktop.prefs.displaychooser"), workSpace.isEnabledChooser());;
+			enableWorkSpaceChooser = new JCheckBox(Resources.get("desktop.magellandesktop.prefs.displaychooser"), workSpace.isEnabledChooser());;
 			up.add(enableWorkSpaceChooser);
 			
 			this.add(up, BorderLayout.NORTH);
 
 			center = new JPanel();
 			center.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.desktop.magellandesktop.prefs.border.options")));
+											  Resources.get("desktop.magellandesktop.prefs.border.options")));
 			center.setLayout(card = new CardLayout());
 
-			JTextArea splitText = new JTextArea(Resources.get("magellan.desktop.magellandesktop.prefs.txt.split.text"));
+			JTextArea splitText = new JTextArea(Resources.get("desktop.magellandesktop.prefs.txt.split.text"));
 			splitText.setEditable(false);
 			splitText.setLineWrap(true);
 			splitText.setWrapStyleWord(true);
@@ -3048,16 +3048,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			con.anchor = GridBagConstraints.NORTHWEST;
 			con.weightx = 0.25;
 
-			panel.add(new JLabel(Resources.get("magellan.desktop.magellandesktop.prefs.lbl.activationmode.caption")), con);
+			panel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.activationmode.caption")), con);
 
 			con.gridx = 1;
 			con.gridwidth = 3;
 			con.weightx = 0.75;
 
 			String actItems[] = new String[3];
-			actItems[0] = Resources.get("magellan.desktop.magellandesktop.prefs.activationmode.single");
-			actItems[1] = Resources.get("magellan.desktop.magellandesktop.prefs.activationmode.main");
-			actItems[2] = Resources.get("magellan.desktop.magellandesktop.prefs.activationmode.all");
+			actItems[0] = Resources.get("desktop.magellandesktop.prefs.activationmode.single");
+			actItems[1] = Resources.get("desktop.magellandesktop.prefs.activationmode.main");
+			actItems[2] = Resources.get("desktop.magellandesktop.prefs.activationmode.all");
 			actMode = new JComboBox(actItems);
 			actMode.addActionListener(this);
 			actLabel = new JTextArea(act[getActivationMode()]);
@@ -3074,14 +3074,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			con.gridy = 2;
 			con.gridwidth = 1;
 			con.weightx = 0.25;
-			panel.add(new JLabel(Resources.get("magellan.desktop.magellandesktop.prefs.lbl.iconify.caption")), con);
+			panel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.iconify.caption")), con);
 			con.gridx = 1;
 			con.gridwidth = 3;
 			con.weightx = 0.75;
 
 			String icoItems[] = new String[2];
-			icoItems[0] = Resources.get("magellan.desktop.magellandesktop.prefs.iconify.single");
-			icoItems[1] = Resources.get("magellan.desktop.magellandesktop.prefs.iconify.main");
+			icoItems[0] = Resources.get("desktop.magellandesktop.prefs.iconify.single");
+			icoItems[1] = Resources.get("desktop.magellandesktop.prefs.iconify.main");
 			icoBox = new JComboBox(icoItems);
 			icoBox.setSelectedIndex(isIconify() ? 1 : 0);
 			icoBox.addActionListener(this);
@@ -3097,7 +3097,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 			center.add(panel, "1");
 
-			splitText = new JTextArea(Resources.get("magellan.desktop.magellandesktop.prefs.txt.layout.text"));
+			splitText = new JTextArea(Resources.get("desktop.magellandesktop.prefs.txt.layout.text"));
 			splitText.setEditable(false);
 			splitText.setLineWrap(true);
 			splitText.setWrapStyleWord(true);
@@ -3186,7 +3186,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		 * 
 		 */
 		public java.lang.String getTitle() {
-			return Resources.get("magellan.desktop.magellandesktop.prefs.title");
+			return Resources.get("desktop.magellandesktop.prefs.title");
 		}
 
     /**
@@ -3233,8 +3233,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				if(shortCutListeners != null) {
 					Object columns[] = {
-										   Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.header1"),
-										   Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.header2")
+										   Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"),
+										   Resources.get("desktop.magellandesktop.prefs.shortcuts.header2")
 									   };
 
 					Map<Object,List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
@@ -3307,10 +3307,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 									data[i][1] = sl.getShortcutDescription(obj);
 
 									if(data[i][1] == null) {
-										data[i][1] = Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.unknown");
+										data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
 									}
 								} catch(RuntimeException re) {
-									data[i][1] = Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.unknown");
+									data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
 								}
 							} else {
 								data[i][1] = key;
@@ -3375,7 +3375,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 				otherShortcuts = set;
 
 				JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-				JButton help = new JButton(Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.help"));
+				JButton help = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.help"));
 				help.addActionListener(this);
 				south.add(help);
 				this.add(south, BorderLayout.SOUTH);
@@ -3428,7 +3428,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			 * 
 			 */
 			public String getTitle() {
-				return Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.title");
+				return Resources.get("desktop.magellandesktop.prefs.shortcuts.title");
 			}
 
 			protected class ListenerComparator implements Comparator<Object> {
@@ -3572,14 +3572,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				if((newStroke != null) && !newStroke.equals(stroke)) {
 					if(ownShortcuts.contains(newStroke)) {
-						JOptionPane.showMessageDialog(this, Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.error"));
+						JOptionPane.showMessageDialog(this, Resources.get("desktop.magellandesktop.prefs.shortcuts.error"));
 					} else {
 						boolean doIt = true;
 
 						if(otherShortcuts.contains(newStroke)) {
 							int res = JOptionPane.showConfirmDialog(this,
-																	Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.warning"),
-																	Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.warningtitle"),
+																	Resources.get("desktop.magellandesktop.prefs.shortcuts.warning"),
+																	Resources.get("desktop.magellandesktop.prefs.shortcuts.warningtitle"),
 																	JOptionPane.YES_NO_OPTION);
 							doIt = (res == JOptionPane.YES_OPTION);
 						}
@@ -3636,7 +3636,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					StringBuffer buf = new StringBuffer();
 
 					Object args[] = { new Integer(otherShortcuts.size()) };
-					buf.append(MessageFormat.format(Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.others"), args));
+					buf.append(MessageFormat.format(Resources.get("desktop.magellandesktop.prefs.shortcuts.others"), args));
 					buf.append('\n');
 					buf.append('\n');
 
@@ -3698,16 +3698,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
 				protected void init() {
 					JPanel con = new JPanel(new BorderLayout());
-					con.add(new JLabel(Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.dialog.label")),
+					con.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label")),
 							BorderLayout.NORTH);
 					text = new KeyTextField();
 					con.add(text, BorderLayout.CENTER);
 
 					JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
-					JButton ok = new JButton(Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.dialog.ok"));
+					JButton ok = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.ok"));
 					buttons.add(ok);
 					ok.addActionListener(this);
-					cancel = new JButton(Resources.get("magellan.desktop.magellandesktop.prefs.shortcuts.dialog.cancel"));
+					cancel = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.cancel"));
 					buttons.add(cancel);
 					cancel.addActionListener(this);
 					con.add(buttons, BorderLayout.SOUTH);

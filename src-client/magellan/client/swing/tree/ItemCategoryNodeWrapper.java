@@ -119,7 +119,7 @@ public class ItemCategoryNodeWrapper implements CellObject{
 	}
 	protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
 		return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix, new String[][] {
-													{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "magellan.tree.itemcategorynodewrapper.");
+													{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "tree.itemcategorynodewrapper.");
 	}
 	
 	public void setIcons(Object icons) {

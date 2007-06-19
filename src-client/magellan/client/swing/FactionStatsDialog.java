@@ -111,7 +111,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 	private void init() {
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.factionstatsdialog.window.title"));
+		setTitle(Resources.get("factionstatsdialog.window.title"));
 
 		int width = Integer.parseInt(settings.getProperty("FactionStatsDialog.width", "500"));
 		int height = Integer.parseInt(settings.getProperty("FactionStatsDialog.height", "300"));
@@ -143,16 +143,16 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 		//optionPanel = new EresseaOptionPanel();
 		tabPane = new JTabbedPane();
-		tabPane.addTab(Resources.get("magellan.factionstatsdialog.tab.stats.caption"), null, pnlStats, null);
+		tabPane.addTab(Resources.get("factionstatsdialog.tab.stats.caption"), null, pnlStats, null);
 
 		JPanel skillChartPanel = getSkillChartPanel();
 
 		if(skillChartPanel != null) {
-			tabPane.addTab(Resources.get("magellan.factionstatsdialog.tab.skillchart.caption"), skillChartPanel);
+			tabPane.addTab(Resources.get("factionstatsdialog.tab.skillchart.caption"), skillChartPanel);
 		}
 
 		// pavkovic 2003.11.19: deactivated, because EresseaOptionPanel is currently broken
-		// tabPane.addTab(Resources.get("magellan.factionstatsdialog.tab.options.caption"), null, optionPanel, null);
+		// tabPane.addTab(Resources.get("factionstatsdialog.tab.options.caption"), null, optionPanel, null);
 		splFaction = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, getFactionPanel(), tabPane);
 		mainPanel.add(splFaction, BorderLayout.CENTER);
 		mainPanel.add(getButtonPanel(), BorderLayout.SOUTH);
@@ -161,8 +161,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getButtonPanel() {
-		JButton btnClose = new JButton(Resources.get("magellan.factionstatsdialog.btn.close.caption"));
-		btnClose.setMnemonic(Resources.get("magellan.factionstatsdialog.btn.close.menmonic").charAt(0));
+		JButton btnClose = new JButton(Resources.get("factionstatsdialog.btn.close.caption"));
+		btnClose.setMnemonic(Resources.get("factionstatsdialog.btn.close.menmonic").charAt(0));
 		btnClose.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();
@@ -264,11 +264,11 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		String s;
 
 		if(sortByTrustLevel.equalsIgnoreCase("true")) {
-			s = Resources.get("magellan.factionstatsdialog.btn.sort.detailed.caption");
+			s = Resources.get("factionstatsdialog.btn.sort.detailed.caption");
 		} else if (sortByTrustLevel.equalsIgnoreCase("detailed")){
-			s = Resources.get("magellan.factionstatsdialog.btn.sort.name.caption");
+			s = Resources.get("factionstatsdialog.btn.sort.name.caption");
 		}else{
-			s = Resources.get("magellan.factionstatsdialog.btn.sort.trustlevel.caption");
+			s = Resources.get("factionstatsdialog.btn.sort.trustlevel.caption");
 		}
 
 		final JButton sort = new JButton(s);
@@ -277,15 +277,15 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					String sortByTrust = settings.getProperty("FactionStatsDialog.SortByTrustLevel", "true");
 					if(sortByTrust.equalsIgnoreCase("true")) {
 						sortByTrust="detailed";
-						sort.setText(Resources.get("magellan.factionstatsdialog.btn.sort.name.caption"));
+						sort.setText(Resources.get("factionstatsdialog.btn.sort.name.caption"));
 						Collections.sort(factions, FactionTrustComparator.DETAILED_COMPARATOR);
 					} else if (sortByTrust.equalsIgnoreCase("detailed")){
 						sortByTrust="false";
-						sort.setText(Resources.get("magellan.factionstatsdialog.btn.sort.trustlevel.caption"));
+						sort.setText(Resources.get("factionstatsdialog.btn.sort.trustlevel.caption"));
 						Collections.sort(factions, nameComparator);
 					}else{
 						sortByTrust="true";
-						sort.setText(Resources.get("magellan.factionstatsdialog.btn.sort.detailed.caption"));
+						sort.setText(Resources.get("factionstatsdialog.btn.sort.detailed.caption"));
 						Collections.sort(factions, factionTrustComparator);
 					}
 					settings.setProperty("FactionStatsDialog.SortByTrustLevel",
@@ -298,8 +298,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JButton btnDeleteFaction = new JButton(Resources.get("magellan.factionstatsdialog.btn.deletefaction.caption"));
-		btnDeleteFaction.setMnemonic(Resources.get("magellan.factionstatsdialog.btn.deletefaction.mnemonic").charAt(0));
+		JButton btnDeleteFaction = new JButton(Resources.get("factionstatsdialog.btn.deletefaction.caption"));
+		btnDeleteFaction.setMnemonic(Resources.get("factionstatsdialog.btn.deletefaction.mnemonic").charAt(0));
 		btnDeleteFaction.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
           Object[] values = lstFaction.getSelectedValues();
@@ -313,7 +313,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 						if(f.units().size() > 0) {
 							Object msgArgs[] = { f };
 							JOptionPane.showMessageDialog(d,
-														  (new java.text.MessageFormat(Resources.get("magellan.factionstatsdialog.msg.factioncontainsunits.text"))).format(msgArgs));
+														  (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factioncontainsunits.text"))).format(msgArgs));
 							veto = true;
 						}
 
@@ -326,7 +326,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 									   dummy.getAllies().containsKey(f.getID())) {
 									Object msgArgs[] = { f, dummy.getAllies().get(f.getID()) };
 									JOptionPane.showMessageDialog(d,
-																  (new java.text.MessageFormat(Resources.get("magellan.factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
+																  (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
 									veto = true;
 
 									break;
@@ -338,8 +338,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 							Object msgArgs[] = { f, };
 
 							if(JOptionPane.showConfirmDialog(d,
-																 (new java.text.MessageFormat(Resources.get("magellan.factionstatsdialog.msg.confirmdeletefaction.text"))).format(msgArgs),
-																 Resources.get("magellan.factionstatsdialog.msg.confirmdeletefaction.title"),
+																 (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.confirmdeletefaction.text"))).format(msgArgs),
+																 Resources.get("factionstatsdialog.msg.confirmdeletefaction.title"),
 																 JOptionPane.YES_NO_OPTION) != JOptionPane.OK_OPTION) {
 								veto = true;
 							}
@@ -366,8 +366,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JButton btnPassword = new JButton(Resources.get("magellan.factionstatsdialog.btn.setpwd.caption"));
-		btnPassword.setMnemonic(Resources.get("magellan.factionstatsdialog.btn.setpwd.menmonic").charAt(0));
+		JButton btnPassword = new JButton(Resources.get("factionstatsdialog.btn.setpwd.caption"));
+		btnPassword.setMnemonic(Resources.get("factionstatsdialog.btn.setpwd.menmonic").charAt(0));
 		btnPassword.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if((lstFaction.getModel().getSize() <= 0) || lstFaction.isSelectionEmpty()) {
@@ -385,8 +385,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					// ask user for password
 					Object msgArgs[] = { f };
 					pwd = (String) JOptionPane.showInputDialog(getRootPane(),
-															   (new java.text.MessageFormat(Resources.get("magellan.factionstatsdialog.msg.passwdinput.text"))).format(msgArgs),
-															   Resources.get("magellan.factionstatsdialog.msg.passwdinput.title"),
+															   (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.passwdinput.text"))).format(msgArgs),
+															   Resources.get("factionstatsdialog.msg.passwdinput.title"),
 															   JOptionPane.QUESTION_MESSAGE, null,
 															   null, pwd);
 
@@ -420,8 +420,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JButton btnTrustlevel = new JButton(Resources.get("magellan.factionstatsdialog.btn.trustlevel.caption"));
-		btnTrustlevel.setMnemonic(Resources.get("magellan.factionstatsdialog.btn.trustlevel.mnemonic").charAt(0));
+		JButton btnTrustlevel = new JButton(Resources.get("factionstatsdialog.btn.trustlevel.caption"));
+		btnTrustlevel.setMnemonic(Resources.get("factionstatsdialog.btn.trustlevel.mnemonic").charAt(0));
 		btnTrustlevel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if((lstFaction.getModel().getSize() <= 0) || lstFaction.isSelectionEmpty()) {
@@ -450,8 +450,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 						}
 
 						String stringValue = (String) JOptionPane.showInputDialog(FactionStatsDialog.this,
-																				  Resources.get("magellan.factionstatsdialog.msg.trustlevelinput.text"),
-																				  Resources.get("magellan.factionstatsdialog.msg.trustlevelinput.title"),
+																				  Resources.get("factionstatsdialog.msg.trustlevelinput.text"),
+																				  Resources.get("factionstatsdialog.msg.trustlevelinput.title"),
 																				  JOptionPane.OK_CANCEL_OPTION,
 																				  null, null,
 																				  oldTrustLevel);
@@ -485,7 +485,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 								Collections.sort(factions, factionTrustComparator);
 							} else {
 								JOptionPane.showMessageDialog(FactionStatsDialog.this,
-															  Resources.get("magellan.factionstatsdialog.msg.trustlevelinputinvalid"));
+															  Resources.get("factionstatsdialog.msg.trustlevelinputinvalid"));
 							}
 						}
 					}

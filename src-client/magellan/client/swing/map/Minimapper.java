@@ -68,7 +68,7 @@ public class Minimapper extends Mapper {
 
 	protected RenderingPlane[] initRenderingPlanes() {
 		RenderingPlane p[] = new RenderingPlane[1];
-		p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("magellan.map.mapper.plane.region.name"), 1);
+		p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"), 1);
 		p[PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
 																			 context,
 																			 "Minimap.FactionColors",

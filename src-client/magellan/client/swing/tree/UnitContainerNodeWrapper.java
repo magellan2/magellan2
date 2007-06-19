@@ -88,7 +88,7 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 			}
 		}
 		if (hasOwner)
-			text.append(" ("+Resources.get("magellan.tree.unitcontainernodewrapper.owner")+")");
+			text.append(" ("+Resources.get("tree.unitcontainernodewrapper.owner")+")");
 		return text.toString();
 	}
 

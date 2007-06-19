@@ -81,7 +81,7 @@ public class OpenCRAction extends MenuAction {
 
 		fc.setSelectedFile(file);
 		fc.setAccessory(new HistoryAccessory(settings, fc));
-		fc.setDialogTitle(Resources.get("magellan.actions.opencraction.title"));
+		fc.setDialogTitle(Resources.get("actions.opencraction.title"));
 
 		if(fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
 			// find selected FileFilter
@@ -173,7 +173,7 @@ public class OpenCRAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.opencraction.accelerator",false);
+    return Resources.get("actions.opencraction.accelerator",false);
   }
 
   /**
@@ -181,7 +181,7 @@ public class OpenCRAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.opencraction.mnemonic",false);
+    return Resources.get("actions.opencraction.mnemonic",false);
   }
 
   /**
@@ -189,11 +189,11 @@ public class OpenCRAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.opencraction.name");
+    return Resources.get("actions.opencraction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.opencraction.tooltip",false);
+    return Resources.get("actions.opencraction.tooltip",false);
   }
 }

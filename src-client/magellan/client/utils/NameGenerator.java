@@ -190,7 +190,7 @@ public class NameGenerator implements PreferencesFactory {
 	}
 
 	protected void showMessage() {
-		JOptionPane.showMessageDialog(new JFrame(), Resources.get("magellan.util.namegenerator.nomorenames"));
+		JOptionPane.showMessageDialog(new JFrame(), Resources.get("util.namegenerator.nomorenames"));
 	}
 
 	/**
@@ -239,14 +239,14 @@ public class NameGenerator implements PreferencesFactory {
 			help.setLayout(new GridBagLayout());
 			help.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
 															   new EmptyBorder(0, 3, 3, 3)),
-											Resources.get("magellan.util.namegenerator.prefs.title")));
+											Resources.get("util.namegenerator.prefs.title")));
 
 			GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
 														  GridBagConstraints.WEST,
 														  GridBagConstraints.HORIZONTAL,
 														  new Insets(2, 10, 1, 10), 0, 0);
 
-			active = new JCheckBox(Resources.get("magellan.util.namegenerator.prefs.active"), isActive());
+			active = new JCheckBox(Resources.get("util.namegenerator.prefs.active"), isActive());
 			help.add(active, c);
 
 			c.gridy++;
@@ -300,7 +300,7 @@ public class NameGenerator implements PreferencesFactory {
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.util.namegenerator.prefs.title");
+			return Resources.get("util.namegenerator.prefs.title");
 		}
 
 		/**

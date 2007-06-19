@@ -65,14 +65,14 @@ public class InfoDlg extends InternationalizedDialog {
     jTextArea1 = new JTextArea();
 
     setModal(true);
-    setTitle(Resources.get("magellan.infodlg.window.title"));
+    setTitle(Resources.get("infodlg.window.title"));
     Icon icon = MagellanImages.ABOUT_MAGELLAN;
 
     magellanImage.setIcon(icon);
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
     jPanel.add(magellanImage);
-    String text = Resources.get("magellan.infodlg.infotext") + getVersionString();
+    String text = Resources.get("infodlg.infotext") + getVersionString();
 
     jTextArea1.setWrapStyleWord(true);
     jTextArea1.setLineWrap(true);
@@ -84,7 +84,7 @@ public class InfoDlg extends InternationalizedDialog {
     jPanel.add(scrollPane);
 
     // OK Button
-    btn_OK = new JButton(Resources.get("magellan.infodlg.btn.close.caption"));
+    btn_OK = new JButton(Resources.get("infodlg.btn.close.caption"));
     btn_OK.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent evt) {
         quit();
@@ -104,7 +104,7 @@ public class InfoDlg extends InternationalizedDialog {
     if (versionInfo == null) {
       versionInfo = "not available";
     }
-    return "Magellan " + Resources.get("magellan.infodlg.infotext.version") + ": " + versionInfo + "\n";
+    return "Magellan " + Resources.get("infodlg.infotext.version") + ": " + versionInfo + "\n";
   }
 
   // pavkovic 2003.01.28: this is a Map of the default Translations mapped to

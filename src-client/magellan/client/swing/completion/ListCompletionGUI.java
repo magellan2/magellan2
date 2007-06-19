@@ -344,6 +344,6 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
    */
   @Override
   public String getTitle() {
-    return Resources.get("magellan.completion.listcompletiongui.gui.title");
+    return Resources.get("completion.listcompletiongui.gui.title");
   }
 }

@@ -119,7 +119,7 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	}
 
 	private String getExtension(int flag) {
-		return "." + Resources.get("magellan.eresseafilefilter.defaults.extension." + flag).toLowerCase();
+		return "." + Resources.get("eresseafilefilter.defaults.extension." + flag).toLowerCase();
 	}
 
 	private String getExtension() {
@@ -146,7 +146,7 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	 */
 	protected String getDescription(int flag) {
 		String retVal = "";
-		retVal = Resources.get("magellan.eresseafilefilter.defaults.description." + flag);
+		retVal = Resources.get("eresseafilefilter.defaults.description." + flag);
 		if (retVal==null)
 			retVal = "unknown";
 		if (!extensions.isEmpty())

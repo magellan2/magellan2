@@ -136,8 +136,8 @@ public class ShipRoutePlanner {
 						} else if(shipRange <= 0) {
 							// couldn't determine shiprange
 							JOptionPane.showMessageDialog(ui,
-														  Resources.get("magellan.util.shiprouteplanner.msg.shiprangeiszero.text"),
-														  Resources.get("magellan.util.shiprouteplanner.msg.title"),
+														  Resources.get("util.shiprouteplanner.msg.shiprangeiszero.text"),
+														  Resources.get("util.shiprouteplanner.msg.title"),
 														  JOptionPane.WARNING_MESSAGE);
 							shipRange = Integer.MAX_VALUE;
 						}
@@ -213,21 +213,21 @@ public class ShipRoutePlanner {
 						return shipOwner;
 					} else {
 						// No path could be found from start to destination region.
-						JOptionPane.showMessageDialog(ui, Resources.get("magellan.util.shiprouteplanner.msg.nopathfound.text"),
-													  Resources.get("magellan.util.shiprouteplanner.msg.title"),
+						JOptionPane.showMessageDialog(ui, Resources.get("util.shiprouteplanner.msg.nopathfound.text"),
+													  Resources.get("util.shiprouteplanner.msg.title"),
 													  JOptionPane.WARNING_MESSAGE);
 					}
 				} else {
 					// Captain of the ship does not belong to a privileged faction.
 					// No orders can be given.
-					JOptionPane.showMessageDialog(ui, Resources.get("magellan.util.shiprouteplanner.msg.captainnotprivileged.text"),
-												  Resources.get("magellan.util.shiprouteplanner.msg.title"),
+					JOptionPane.showMessageDialog(ui, Resources.get("util.shiprouteplanner.msg.captainnotprivileged.text"),
+												  Resources.get("util.shiprouteplanner.msg.title"),
 												  JOptionPane.WARNING_MESSAGE);
 				}
 			} else {
 				// Ship has no captain. No orders will be given.
-				JOptionPane.showMessageDialog(ui, Resources.get("magellan.util.shiprouteplanner.msg.captainnotfound.text"),
-											  Resources.get("magellan.util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(ui, Resources.get("util.shiprouteplanner.msg.captainnotfound.text"),
+											  Resources.get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
 			}
 		}
 

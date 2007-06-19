@@ -118,7 +118,7 @@ public class RegionTypeSwitch extends AbstractRegionSwitch {
 	 * 
 	 */
 	public String getDescription() {
-    String s = Resources.get("magellan.util.replacers.regiontypereplacer.description");
+    String s = Resources.get("util.replacers.regiontypereplacer.description");
 
 		if(s == null) {
 			if(type != null) {

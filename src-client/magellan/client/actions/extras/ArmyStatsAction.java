@@ -94,7 +94,7 @@ public class ArmyStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.armystatsaction.accelerator",false);
+    return Resources.get("actions.armystatsaction.accelerator",false);
   }
 
   /**
@@ -102,7 +102,7 @@ public class ArmyStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.armystatsaction.mnemonic",false);
+    return Resources.get("actions.armystatsaction.mnemonic",false);
   }
 
   /**
@@ -110,11 +110,11 @@ public class ArmyStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.armystatsaction.name");
+    return Resources.get("actions.armystatsaction.name");
   }
   
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.armystatsaction.tooltip",false);
+    return Resources.get("actions.armystatsaction.tooltip",false);
   }
 }

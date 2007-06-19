@@ -924,7 +924,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       boolean infoExists = false;
 
       try {
-        JTextArea info = new JTextArea(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.help"), 10, 5);
+        JTextArea info = new JTextArea(Resources.get("map.advancedregionshapecellrenderer.prefs.help"), 10, 5);
         info.setLineWrap(true);
         info.setWrapStyleWord(true);
         info.setEditable(false);
@@ -994,7 +994,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       con.gridwidth = 1;
 
       con.gridy++;
-      help.add(new JLabel(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.result")), con);
+      help.add(new JLabel(Resources.get("map.advancedregionshapecellrenderer.prefs.result")), con);
 
       cShowPanel = new ColorShowPanel();
 
@@ -1071,17 +1071,17 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected Component createMenu() {
-      addSet = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.add"));
+      addSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.add"));
       addSet.addActionListener(this);
-      removeSet = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.remove"));
+      removeSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.remove"));
       removeSet.addActionListener(this);
-      renameSet = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.rename"));
+      renameSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.rename"));
       renameSet.addActionListener(this);
-      importSet = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.import"));
+      importSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.import"));
       importSet.addActionListener(this);
-      exportSet = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.export"));
+      exportSet = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.export"));
       exportSet.addActionListener(this);
-      setTooltip = new JButton(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip"));
+      setTooltip = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip"));
       setTooltip.addActionListener(this);
       tooltipLabel = new JLabel();
       tooltipLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1120,7 +1120,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       for (int i = 0; i < 4; i++) {
         con.gridx = (i % 2) * 2;
         con.gridy = (i / 2);
-        panel.add(new JLabel(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.texts." + String.valueOf(i))), con);
+        panel.add(new JLabel(Resources.get("map.advancedregionshapecellrenderer.prefs.texts." + String.valueOf(i))), con);
       }
 
       con.gridx = 1;
@@ -1173,7 +1173,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public String getTitle() {
-      return Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.title");
+      return Resources.get("map.advancedregionshapecellrenderer.prefs.title");
     }
 
     /**
@@ -1205,11 +1205,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected void addSet() {
-      String name = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.newset"));
+      String name = JOptionPane.showInputDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.newset"));
 
       if ((name != null) && !name.trim().equals("")) {
         if (!checkName(name)) {
-          JOptionPane.showMessageDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.error.already"));
+          JOptionPane.showMessageDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.error.already"));
 
           return;
         }
@@ -1291,11 +1291,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected void renameSet() {
-      String newName = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.renameset"));
+      String newName = JOptionPane.showInputDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.renameset"));
 
       if ((newName != null) && !newName.trim().equals("")) {
         if (!checkName(newName)) {
-          JOptionPane.showMessageDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.error.already"));
+          JOptionPane.showMessageDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.error.already"));
 
           return;
         }
@@ -1372,19 +1372,19 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       // make a list of all available tooltips plus "none" and "current"
       List<Object> list = new LinkedList<Object>();
       int selIndex = 2;
-      list.add(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.none"));
+      list.add(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.none"));
 
       if (mapperTooltip == null) {
         selIndex = 0;
       }
 
-      list.add(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.current"));
+      list.add(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.current"));
 
       if ((mapperTooltip != null) && mapperTooltip.equals(curText.getText())) {
         selIndex = 1;
       }
 
-      list.add(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.manual"));
+      list.add(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.manual"));
 
       if (mapper != null) {
         java.util.List l = mapper.getAllTooltipDefinitions();
@@ -1405,7 +1405,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       Object o[] = list.toArray();
-      Object ret = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.choose"), Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.title"), JOptionPane.QUESTION_MESSAGE, null, o, o[selIndex]);
+      Object ret = JOptionPane.showInputDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.choose"), Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.title"), JOptionPane.QUESTION_MESSAGE, null, o, o[selIndex]);
 
       if (ret != null) {
         if (ret == o[0]) {
@@ -1419,7 +1419,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           loadSettings(); // to set tooltip
           updateTooltipLabel();
         } else if (ret == o[2]) {
-          String tip = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tooltip.input"));
+          String tip = JOptionPane.showInputDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tooltip.input"));
 
           if (tip != null) {
             mapperTooltip = tip;
@@ -1444,7 +1444,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     protected void updateTooltipLabel() {
       if (mapperTooltip == null) {
-        tooltipLabel.setText(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.menu.tlabel.none"));
+        tooltipLabel.setText(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.tlabel.none"));
       } else {
         String s = mapperTooltip;
 
@@ -1634,11 +1634,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       protected void createPopup() {
         popup = new JPopupMenu();
 
-        addItem = new JMenuItem(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.popup.add"));
+        addItem = new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.add"));
         addItem.addActionListener(this);
-        removeItem = new JMenuItem(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.popup.remove"));
+        removeItem = new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.remove"));
         removeItem.addActionListener(this);
-        modifyItem = new JMenuItem(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.popup.modify"));
+        modifyItem = new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup.modify"));
         modifyItem.addActionListener(this);
       }
 
@@ -1907,7 +1907,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           index++;
         }
 
-        Color col = JColorChooser.showDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.newcolor"), Color.white);
+        Color col = JColorChooser.showDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.newcolor"), Color.white);
 
         if (col != null) {
           value.add(index, new Float(((float) x) / ((float) width)));
@@ -1927,7 +1927,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       protected void changeColor() {
-        Color col = JColorChooser.showDialog(this, Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.changecolor"), (Color) mapping.get(addX));
+        Color col = JColorChooser.showDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.changecolor"), (Color) mapping.get(addX));
 
         if (col != null) {
           mapping.set(addX, col);
@@ -2100,9 +2100,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       protected void createPopup() {
         popup = new JPopupMenu();
 
-        addItem = new JMenuItem(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.popup2.add"));
+        addItem = new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup2.add"));
         addItem.addActionListener(this);
-        removeItem = new JMenuItem(Resources.get("magellan.map.advancedregionshapecellrenderer.prefs.popup2.remove"));
+        removeItem = new JMenuItem(Resources.get("map.advancedregionshapecellrenderer.prefs.popup2.remove"));
         removeItem.addActionListener(this);
       }
 
@@ -2440,6 +2440,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.advancedregionshapecellrenderer.name");
+    return Resources.get("map.advancedregionshapecellrenderer.name");
   }
 }

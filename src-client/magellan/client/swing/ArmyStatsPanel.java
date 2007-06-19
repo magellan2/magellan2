@@ -1402,18 +1402,18 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			StringBuffer buf = new StringBuffer();
 			buf.append(persons);
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiersofunit"));
+			buf.append(Resources.get("armystatspanel.soldiersofunit"));
 			buf.append(' ');
 			buf.append(parent.getName());
 
 			if(weapon != null) {
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.with"));
+				buf.append(Resources.get("armystatspanel.with"));
 				buf.append(' ');
 				buf.append(weapon.getName());
 			} else {
 				buf.append(", ");
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 			}
 
 			if((armour != null) || (shield != null)) {
@@ -1424,7 +1424,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 					if(shield != null) {
 						buf.append(' ');
-						buf.append(Resources.get("magellan.armystatspanel.and"));
+						buf.append(Resources.get("armystatspanel.and"));
 						buf.append(' ');
 						buf.append(shield.getName());
 					}
@@ -1435,18 +1435,18 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 			if(parent.getSkillMap() != null) {
 				buf.append(", ");
-				buf.append(Resources.get("magellan.armystatspanel.skill"));
+				buf.append(Resources.get("armystatspanel.skill"));
 				buf.append(' ');
 
 				if(skill > 0) {
 					buf.append(skill);
 				} else {
-					buf.append(Resources.get("magellan.armystatspanel.missing"));
+					buf.append(Resources.get("armystatspanel.missing"));
 				}
 
 				if(!hasSkill) {
 					buf.append('(');
-					buf.append(Resources.get("magellan.armystatspanel.wrongskill"));
+					buf.append(Resources.get("armystatspanel.wrongskill"));
 					buf.append(')');
 				}
 			}
@@ -1504,16 +1504,16 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			StringBuffer buf = new StringBuffer();
 			buf.append(getMen());
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			if(weapon != null) {
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.with"));
+				buf.append(Resources.get("armystatspanel.with"));
 				buf.append(' ');
 				buf.append(weapon.getName());
 			} else {
 				buf.append(", ");
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 			}
 
 			return buf.toString();
@@ -1613,15 +1613,15 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			StringBuffer buf = new StringBuffer();
 
 			if(lineType == 0) {
-				buf.append(Resources.get("magellan.armystatspanel.frontline"));
+				buf.append(Resources.get("armystatspanel.frontline"));
 			} else {
-				buf.append(Resources.get("magellan.armystatspanel.backline"));
+				buf.append(Resources.get("armystatspanel.backline"));
 			}
 
 			buf.append(", ");
 			buf.append(getMen());
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			int unarmed = getUnarmed();
 
@@ -1629,7 +1629,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				buf.append('(');
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 				buf.append(')');
 			}
 
@@ -1726,7 +1726,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			buf.append(": ");
 			buf.append(getMen());
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			int unarmed = getUnarmed();
 
@@ -1734,7 +1734,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				buf.append('(');
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 				buf.append(')');
 			}
 
@@ -1787,13 +1787,13 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			buf.append('(');
 			buf.append(men);
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			if(unarmed > 0) {
 				buf.append(", ");
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 			}
 
 			buf.append(')');
@@ -1861,13 +1861,13 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			buf.append(": ");
 			buf.append(men);
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			if(unarmed > 0) {
 				buf.append('(');
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 				buf.append(')');
 			}
 
@@ -1917,13 +1917,13 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			StringBuffer buf = new StringBuffer(island.getName());
 			buf.append(" (");
 			buf.append(men);
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			if(unarmed > 0) {
 				buf.append(", ");
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 			}
 
 			buf.append(')');
@@ -1980,19 +1980,19 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 * 
 		 */
 		public String toString() {
-			StringBuffer buf = new StringBuffer(Resources.get("magellan.armystatspanel.armeeof"));
+			StringBuffer buf = new StringBuffer(Resources.get("armystatspanel.armeeof"));
 			buf.append(' ');
 			buf.append(owner.toString());
 			buf.append(" (");
 			buf.append(men);
 			buf.append(' ');
-			buf.append(Resources.get("magellan.armystatspanel.soldiers"));
+			buf.append(Resources.get("armystatspanel.soldiers"));
 
 			if(unarmed > 0) {
 				buf.append(", ");
 				buf.append(unarmed);
 				buf.append(' ');
-				buf.append(Resources.get("magellan.armystatspanel.withoutweapon"));
+				buf.append(Resources.get("armystatspanel.withoutweapon"));
 			}
 
 			buf.append(')');

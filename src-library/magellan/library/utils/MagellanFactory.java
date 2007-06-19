@@ -1846,7 +1846,7 @@ public abstract class MagellanFactory {
     String retVal = combatStatusToString(u.getCombatStatus());
 
     if(u.isUnaided()) {
-      retVal += (", " + Resources.get("magellan.unit.combatstatus.unaided"));
+      retVal += (", " + Resources.get("unit.combatstatus.unaided"));
     }
 
     return retVal;
@@ -1860,39 +1860,39 @@ public abstract class MagellanFactory {
 
     switch(combatStatus) {
     case 0:
-      retVal = Resources.get("magellan.unit.combatstatus.aggressive");
+      retVal = Resources.get("unit.combatstatus.aggressive");
 
       break;
 
     case 1:
-      retVal = Resources.get("magellan.unit.combatstatus.front");
+      retVal = Resources.get("unit.combatstatus.front");
 
       break;
 
     case 2:
-      retVal = Resources.get("magellan.unit.combatstatus.back");
+      retVal = Resources.get("unit.combatstatus.back");
 
       break;
 
     case 3:
-      retVal = Resources.get("magellan.unit.combatstatus.defensive");
+      retVal = Resources.get("unit.combatstatus.defensive");
 
       break;
 
     case 4:
-      retVal = Resources.get("magellan.unit.combatstatus.passive");
+      retVal = Resources.get("unit.combatstatus.passive");
 
       break;
 
     case 5:
-      retVal = Resources.get("magellan.unit.combatstatus.escape");
+      retVal = Resources.get("unit.combatstatus.escape");
 
       break;
 
     default:
 
       Object msgArgs[] = { new Integer(combatStatus) };
-      retVal = (new java.text.MessageFormat(Resources.get("magellan.unit.combatstatus.unknown"))).format(msgArgs);
+      retVal = (new java.text.MessageFormat(Resources.get("unit.combatstatus.unknown"))).format(msgArgs);
     }
 
     return retVal;
@@ -1905,11 +1905,11 @@ public abstract class MagellanFactory {
     String strFlags = "";
 
     if(iFlags != 0) {
-      strFlags += Resources.get("magellan.unit.guard.region");
+      strFlags += Resources.get("unit.guard.region");
     }
 
     if((iFlags & Unit.GUARDFLAG_WOOD) != 0) {
-      strFlags += (", " + Resources.get("magellan.unit.guard.wood"));
+      strFlags += (", " + Resources.get("unit.guard.wood"));
     }
 
     return strFlags;

@@ -93,7 +93,7 @@ public class FactionStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.factionstatsaction.accelerator",false);
+    return Resources.get("actions.factionstatsaction.accelerator",false);
   }
 
   /**
@@ -101,7 +101,7 @@ public class FactionStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.factionstatsaction.mnemonic",false);
+    return Resources.get("actions.factionstatsaction.mnemonic",false);
   }
 
   /**
@@ -109,11 +109,11 @@ public class FactionStatsAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.factionstatsaction.name");
+    return Resources.get("actions.factionstatsaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.factionstatsaction.tooltip",false);
+    return Resources.get("actions.factionstatsaction.tooltip",false);
   }
 }

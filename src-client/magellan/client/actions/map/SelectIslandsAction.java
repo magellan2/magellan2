@@ -142,7 +142,7 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.selectislandsaction.accelerator",false);
+    return Resources.get("actions.selectislandsaction.accelerator",false);
   }
 
   /**
@@ -150,7 +150,7 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.selectislandsaction.mnemonic",false);
+    return Resources.get("actions.selectislandsaction.mnemonic",false);
   }
 
   /**
@@ -158,11 +158,11 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.selectislandsaction.name");
+    return Resources.get("actions.selectislandsaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.selectislandsaction.tooltip",false);
+    return Resources.get("actions.selectislandsaction.tooltip",false);
   }
 }

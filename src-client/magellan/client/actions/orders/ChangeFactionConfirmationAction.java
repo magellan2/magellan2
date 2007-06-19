@@ -71,7 +71,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 		selectedRegionsOnly = r;
 
 		if(selectedRegionsOnly) {
-			setName(getName() + " " + Resources.get("magellan.actions.changefactionconfirmationaction.name.postfix.selected"));
+			setName(getName() + " " + Resources.get("actions.changefactionconfirmationaction.name.postfix.selected"));
 		}
 	}
 
@@ -175,7 +175,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.changefactionconfirmationaction.accelerator",false);
+    return Resources.get("actions.changefactionconfirmationaction.accelerator",false);
   }
 
   /**
@@ -183,7 +183,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.changefactionconfirmationaction.mnemonic",false);
+    return Resources.get("actions.changefactionconfirmationaction.mnemonic",false);
   }
 
   /**
@@ -191,11 +191,11 @@ public class ChangeFactionConfirmationAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.changefactionconfirmationaction.name");
+    return Resources.get("actions.changefactionconfirmationaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.changefactionconfirmationaction.tooltip",false);
+    return Resources.get("actions.changefactionconfirmationaction.tooltip",false);
   }
 }

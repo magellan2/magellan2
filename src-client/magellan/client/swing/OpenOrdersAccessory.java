@@ -43,11 +43,11 @@ public class OpenOrdersAccessory extends HistoryAccessory {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		chkAutoConfirm = new JCheckBox(Resources.get("magellan.openordersaccessory.chk.autoconfirmation.caption"));
-		chkAutoConfirm.setToolTipText(Resources.get("magellan.openordersaccessory.chk.autoconfirmation.tooltip"));
+		chkAutoConfirm = new JCheckBox(Resources.get("openordersaccessory.chk.autoconfirmation.caption"));
+		chkAutoConfirm.setToolTipText(Resources.get("openordersaccessory.chk.autoconfirmation.tooltip"));
 
-		chkIgnoreSemicolonComments = new JCheckBox(Resources.get("magellan.openordersaccessory.chk.ignoresemicoloncomments.caption"));
-		chkIgnoreSemicolonComments.setToolTipText(Resources.get("magellan.openordersaccessory.chk.ignoresemicoloncomments.tooltip"));
+		chkIgnoreSemicolonComments = new JCheckBox(Resources.get("openordersaccessory.chk.ignoresemicoloncomments.caption"));
+		chkIgnoreSemicolonComments.setToolTipText(Resources.get("openordersaccessory.chk.ignoresemicoloncomments.tooltip"));
 
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = 0;

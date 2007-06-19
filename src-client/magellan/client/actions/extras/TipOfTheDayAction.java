@@ -82,7 +82,7 @@ public class TipOfTheDayAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.tipofthedayaction.accelerator",false);
+    return Resources.get("actions.tipofthedayaction.accelerator",false);
   }
 
   /**
@@ -90,7 +90,7 @@ public class TipOfTheDayAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.tipofthedayaction.mnemonic",false);
+    return Resources.get("actions.tipofthedayaction.mnemonic",false);
   }
 
   /**
@@ -98,11 +98,11 @@ public class TipOfTheDayAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.tipofthedayaction.name");
+    return Resources.get("actions.tipofthedayaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.tipofthedayaction.tooltip",false);
+    return Resources.get("actions.tipofthedayaction.tooltip",false);
   }
 }

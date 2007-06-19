@@ -132,7 +132,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.unitskillcountreplacer.description." + mode);
+		return Resources.get("util.replacers.unitskillcountreplacer.description." + mode);
 	}
 
 	/**

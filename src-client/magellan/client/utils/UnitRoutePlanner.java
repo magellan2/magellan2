@@ -133,8 +133,8 @@ public class UnitRoutePlanner {
 				} else {
 					if(range <= 0) {
 						// couldn't determine shiprange
-						JOptionPane.showMessageDialog(ui, Resources.get("magellan.util.unitrouteplanner.msg.unitrangeiszero.text"),
-													  Resources.get("magellan.util.unitrouteplanner.msg.title"),
+						JOptionPane.showMessageDialog(ui, Resources.get("util.unitrouteplanner.msg.unitrangeiszero.text"),
+													  Resources.get("util.unitrouteplanner.msg.title"),
 													  JOptionPane.WARNING_MESSAGE);
 						range = Integer.MAX_VALUE;
 					}
@@ -213,8 +213,8 @@ public class UnitRoutePlanner {
 				return true;
 			} else {
 				// No path could be found from start to destination region.
-				JOptionPane.showMessageDialog(ui, Resources.get("magellan.util.unitrouteplanner.msg.nopathfound.text"),
-											  Resources.get("magellan.util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(ui, Resources.get("util.unitrouteplanner.msg.nopathfound.text"),
+											  Resources.get("util.unitrouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
 			}
 		}
 

@@ -122,7 +122,7 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.undoaction.accelerator",false);
+    return Resources.get("actions.undoaction.accelerator",false);
   }
 
   /**
@@ -130,7 +130,7 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.undoaction.mnemonic",false);
+    return Resources.get("actions.undoaction.mnemonic",false);
   }
 
   /**
@@ -138,11 +138,11 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.undoaction.name");
+    return Resources.get("actions.undoaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.undoaction.tooltip",false);
+    return Resources.get("actions.undoaction.tooltip",false);
   }
 }

@@ -79,7 +79,7 @@ public class QuitAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.quitaction.accelerator",false);
+    return Resources.get("actions.quitaction.accelerator",false);
   }
 
   /**
@@ -87,7 +87,7 @@ public class QuitAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.quitaction.mnemonic",false);
+    return Resources.get("actions.quitaction.mnemonic",false);
   }
 
   /**
@@ -95,12 +95,12 @@ public class QuitAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.quitaction.name");
+    return Resources.get("actions.quitaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.quitaction.tooltip",false);
+    return Resources.get("actions.quitaction.tooltip",false);
   }
 
 }

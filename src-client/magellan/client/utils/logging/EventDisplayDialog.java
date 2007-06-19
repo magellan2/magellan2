@@ -48,7 +48,7 @@ public class EventDisplayDialog extends InternationalizedDialog {
 
   /**
   protected String getString(String key) {
-    return Resources.get("magellan.utils.logging.eventdisplaydialog.",key);
+    return Resources.get("utils.logging.eventdisplaydialog.",key);
   }
   */
 }

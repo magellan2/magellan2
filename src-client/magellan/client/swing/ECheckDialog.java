@@ -78,7 +78,7 @@ public class ECheckDialog extends InternationalizedDataDialog {
 		}
 
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.echeckdialog.window.title"));
+		setTitle(Resources.get("echeckdialog.window.title"));
 
 		int width = Integer.parseInt(settings.getProperty("ECheckDialog.width", "500"));
 		int height = Integer.parseInt(settings.getProperty("ECheckDialog.height", "300"));
@@ -109,8 +109,8 @@ public class ECheckDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getButtonPanel() {
-		JButton btnRun = new JButton(Resources.get("magellan.echeckdialog.btn.run.caption"));
-		btnRun.setMnemonic(Resources.get("magellan.echeckdialog.btn.run.mnemonic").charAt(0));
+		JButton btnRun = new JButton(Resources.get("echeckdialog.btn.run.caption"));
+		btnRun.setMnemonic(Resources.get("echeckdialog.btn.run.mnemonic").charAt(0));
 		btnRun.setDefaultCapable(true);
 		btnRun.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -119,8 +119,8 @@ public class ECheckDialog extends InternationalizedDataDialog {
 			});
 		this.getRootPane().setDefaultButton(btnRun);
 
-		JButton btnClose = new JButton(Resources.get("magellan.echeckdialog.btn.close.caption"));
-		btnClose.setMnemonic(Resources.get("magellan.echeckdialog.btn.close.mnemonic").charAt(0));
+		JButton btnClose = new JButton(Resources.get("echeckdialog.btn.close.caption"));
+		btnClose.setMnemonic(Resources.get("echeckdialog.btn.close.mnemonic").charAt(0));
 		btnClose.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();

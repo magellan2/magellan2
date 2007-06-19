@@ -42,7 +42,7 @@ public class NewLineReplacer implements Replacer {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get( "magellan.util.replacers.newlinereplacer.description");
+		return Resources.get("util.replacers.newlinereplacer.description");
 	}
 
 }

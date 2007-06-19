@@ -105,7 +105,7 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
   
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.regionfieldreplacer.description");
+    return Resources.get("util.replacers.regionfieldreplacer.description");
   }  
 
 }

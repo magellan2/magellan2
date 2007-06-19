@@ -99,11 +99,11 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		LayoutManager lm = new FlowLayout(FlowLayout.CENTER);
 
 		JPanel help = new JPanel(lm);
-		help.add(categorize = new JCheckBox(Resources.get("magellan.armystatsdialog.categorized"),
+		help.add(categorize = new JCheckBox(Resources.get("armystatsdialog.categorized"),
 											settings.getProperty("ArmyStatsDialog.Categorize",
 																 "true").equals("true")));
 		categorize.addActionListener(this);
-		help.add(excludeDialog = new JButton(Resources.get("magellan.armystatsdialog.exclude") + "..."));
+		help.add(excludeDialog = new JButton(Resources.get("armystatsdialog.exclude") + "..."));
 		excludeDialog.addActionListener(this);
 
 		JPanel inner = new JPanel(new BorderLayout());
@@ -122,7 +122,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 
 		help = new JPanel(lm);
 
-		JButton button = new JButton(Resources.get("magellan.armystatsdialog.ok"));
+		JButton button = new JButton(Resources.get("armystatsdialog.ok"));
 		button.addActionListener(this);
 		help.add(button);
 
@@ -302,7 +302,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			settings.setProperty("ArmyStatsDialog.Categorize", state ? "true" : "false");
 		} else if(e.getSource() == excludeDialog) {
 			if(data != null) {
-				ExcludeDialog ed = new ExcludeDialog(this, Resources.get("magellan.armystatsdialog.exclude.title"), data,
+				ExcludeDialog ed = new ExcludeDialog(this, Resources.get("armystatsdialog.exclude.title"), data,
 													 excludeNames, excludeSkills,
 													 excludeCombatStates);
 				ed.show();
@@ -367,16 +367,16 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			con.gridheight = 1;
 			con.fill = GridBagConstraints.HORIZONTAL;
 			con.weightx = 1;
-			add = new JButton(Resources.get("magellan.armystatsdialog.add") + "...");
+			add = new JButton(Resources.get("armystatsdialog.add") + "...");
 			add.addActionListener(this);
 			inner.add(add, con);
 			con.gridy = 1;
 
-			JButton remove = new JButton(Resources.get("magellan.armystatsdialog.remove"));
+			JButton remove = new JButton(Resources.get("armystatsdialog.remove"));
 			remove.addActionListener(this);
 			inner.add(remove, con);
 			nPanel.add(inner, BorderLayout.EAST);
-			nPanel.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("magellan.armystatsdialog.names")));
+			nPanel.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("armystatsdialog.names")));
 
 			// create skill-type check-boxes
 			Iterator<SkillType> it1 = data.rules.getSkillTypeIterator();
@@ -410,11 +410,11 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			}
 
 			JPanel statePanel = new JPanel(new GridLayout(0, 1));
-			statePanel.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("magellan.armystatsdialog.states")));
+			statePanel.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("armystatsdialog.states")));
 			states = new JCheckBox[7];
 
 			for(int i = 0; i < 7; i++) {
-				states[i] = new JCheckBox(Resources.get("magellan.armystatsdialog.state" + i));
+				states[i] = new JCheckBox(Resources.get("armystatsdialog.state" + i));
 
 				if(eStates != null) {
 					Iterator<Integer> it2 = eStates.iterator();
@@ -438,13 +438,13 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			help.add(nPanel);
 
 			JScrollPane scroll = new JScrollPane(sPanel);
-			scroll.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("magellan.armystatsdialog.skills")));
+			scroll.setBorder(new javax.swing.border.TitledBorder(border, Resources.get("armystatsdialog.skills")));
 			help.add(scroll);
 			help.add(statePanel);
 			cont.add(help, BorderLayout.CENTER);
 
 			JPanel button = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			close = new JButton(Resources.get("magellan.armystatsdialog.close"));
+			close = new JButton(Resources.get("armystatsdialog.close"));
 			close.addActionListener(this);
 			button.add(close);
 			cont.add(button, BorderLayout.SOUTH);
@@ -464,7 +464,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		}
 
 		protected void addName() {
-			String ret = JOptionPane.showInputDialog(this, Resources.get("magellan.armystatsdialog.newname"));
+			String ret = JOptionPane.showInputDialog(this, Resources.get("armystatsdialog.newname"));
 
 			if((ret != null) && !ret.equals("")) {
 				((DefaultListModel) names.getModel()).addElement(ret);

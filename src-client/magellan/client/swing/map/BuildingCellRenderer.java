@@ -114,7 +114,7 @@ public class BuildingCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.buildingcellrenderer.name");
+    return Resources.get("map.buildingcellrenderer.name");
   }
 
 }

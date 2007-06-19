@@ -93,7 +93,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 
 		HistoryAccessory acc = new HistoryAccessory(settings, fc);
 		fc.setAccessory(acc);
-		fc.setDialogTitle(Resources.get("magellan.actions.addcraction.title"));
+		fc.setDialogTitle(Resources.get("actions.addcraction.title"));
 
 		if(fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
 			// find selected FileFilter
@@ -165,7 +165,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.addcraction.accelerator",false);
+    return Resources.get("actions.addcraction.accelerator",false);
   }
 
   /**
@@ -173,7 +173,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.addcraction.mnemonic",false);
+    return Resources.get("actions.addcraction.mnemonic",false);
   }
 
   /**
@@ -181,12 +181,12 @@ public class AddCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.addcraction.name");
+    return Resources.get("actions.addcraction.name");
   }
   
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.addcraction.tooltip",false);
+    return Resources.get("actions.addcraction.tooltip",false);
   }
 
 }

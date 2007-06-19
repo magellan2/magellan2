@@ -46,6 +46,6 @@ public class IronReplacer extends AbstractRegionReplacer {
 	}
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.ironreplacer.description");
+    return Resources.get("util.replacers.ironreplacer.description");
   }
 }

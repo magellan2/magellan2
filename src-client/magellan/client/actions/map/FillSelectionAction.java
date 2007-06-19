@@ -157,7 +157,7 @@ public class FillSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.accelerator",false);
+    return Resources.get("actions.filesaveasaction.accelerator",false);
   }
 
   /**
@@ -165,7 +165,7 @@ public class FillSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.mnemonic",false);
+    return Resources.get("actions.filesaveasaction.mnemonic",false);
   }
 
   /**
@@ -173,12 +173,12 @@ public class FillSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.name");
+    return Resources.get("actions.filesaveasaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.tooltip",false);
+    return Resources.get("actions.filesaveasaction.tooltip",false);
   }
 
 }

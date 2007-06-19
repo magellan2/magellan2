@@ -54,11 +54,11 @@ public class MagellanPlugInSettings extends InternationalizedPanel implements Pr
 
 		JPanel pnl = new JPanel(new GridBagLayout());
 		pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-														  Resources.get("magellan.extern.externalmodulesettings.border.externalmodules")));
+														  Resources.get("extern.externalmodulesettings.border.externalmodules")));
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		chkSearchResources = new JCheckBox(Resources.get("magellan.extern.externalmodulesettings.chk.searchResources"),
+		chkSearchResources = new JCheckBox(Resources.get("extern.externalmodulesettings.chk.searchResources"),
 										   Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader",
 																			"true")).booleanValue());
 
@@ -70,7 +70,7 @@ public class MagellanPlugInSettings extends InternationalizedPanel implements Pr
 		c.weighty = 1.0;
 		pnl.add(chkSearchResources, c);
 
-		chkSearchClassPath = new JCheckBox(Resources.get("magellan.extern.externalmodulesettings.chk.searchClassPath"),
+		chkSearchClassPath = new JCheckBox(Resources.get("extern.externalmodulesettings.chk.searchClassPath"),
 										   Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchClassPath",
 																			"true")).booleanValue());
 
@@ -112,6 +112,6 @@ public class MagellanPlugInSettings extends InternationalizedPanel implements Pr
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.extern.externalmodulesettings.title");
+		return Resources.get("extern.externalmodulesettings.title");
 	}
 }

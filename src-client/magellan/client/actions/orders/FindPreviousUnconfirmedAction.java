@@ -82,7 +82,7 @@ public class FindPreviousUnconfirmedAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.findpreviousunconfirmedaction.accelerator",false);
+    return Resources.get("actions.findpreviousunconfirmedaction.accelerator",false);
   }
 
   /**
@@ -90,7 +90,7 @@ public class FindPreviousUnconfirmedAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.findpreviousunconfirmedaction.mnemonic",false);
+    return Resources.get("actions.findpreviousunconfirmedaction.mnemonic",false);
   }
 
   /**
@@ -98,11 +98,11 @@ public class FindPreviousUnconfirmedAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.findpreviousunconfirmedaction.name");
+    return Resources.get("actions.findpreviousunconfirmedaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.findpreviousunconfirmedaction.tooltip",false);
+    return Resources.get("actions.findpreviousunconfirmedaction.tooltip",false);
   }
 }

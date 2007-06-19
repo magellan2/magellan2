@@ -115,7 +115,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
 	public String getShortcutDescription(java.lang.Object obj) {
 		int index = shortCuts.indexOf(obj);
 
-		return Resources.get("magellan.actions.saveordersaction.shortcuts.description." + String.valueOf(index));
+		return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(index));
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
 	 * 
 	 */
 	public java.lang.String getListenerDescription() {
-		return Resources.get("magellan.actions.saveordersaction.shortcuts.title");
+		return Resources.get("actions.saveordersaction.shortcuts.title");
 	}
 	
 	public void gameDataChanged(GameDataEvent e) {
@@ -141,7 +141,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.saveordersaction.accelerator",false);
+    return Resources.get("actions.saveordersaction.accelerator",false);
   }
 
   /**
@@ -149,7 +149,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.saveordersaction.mnemonic",false);
+    return Resources.get("actions.saveordersaction.mnemonic",false);
   }
 
   /**
@@ -157,12 +157,12 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.saveordersaction.name");
+    return Resources.get("actions.saveordersaction.name");
   }
 
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.saveordersaction.tooltip",false);
+    return Resources.get("actions.saveordersaction.tooltip",false);
   }
 }

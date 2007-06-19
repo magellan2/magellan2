@@ -131,7 +131,7 @@ public class SelectNothingAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.selectnothingaction.accelerator",false);
+    return Resources.get("actions.selectnothingaction.accelerator",false);
   }
 
   /**
@@ -139,7 +139,7 @@ public class SelectNothingAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.selectnothingaction.mnemonic",false);
+    return Resources.get("actions.selectnothingaction.mnemonic",false);
   }
 
   /**
@@ -147,11 +147,11 @@ public class SelectNothingAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.selectnothingaction.name");
+    return Resources.get("actions.selectnothingaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.selectnothingaction.tooltip",false);
+    return Resources.get("actions.selectnothingaction.tooltip",false);
   }
 }

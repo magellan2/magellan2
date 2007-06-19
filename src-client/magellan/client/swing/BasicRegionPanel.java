@@ -113,7 +113,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		def = settings.getProperty("BasicRegionPanel.Def");
 
 		if(def == null) {
-			def = Resources.get("magellan.basicregionpanel.default");
+			def = Resources.get("basicregionpanel.default");
 		}
 
 		if(!BasicHTML.isHTMLString(def)) {
@@ -318,7 +318,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		public BRPPreferences() {
 			this.setLayout(new BorderLayout());
 			this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-															Resources.get("magellan.basicregionpanel.prefs.title")));
+															Resources.get("basicregionpanel.prefs.title")));
 
 			//text pane
 			defText = new JTextPane();
@@ -356,7 +356,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.basicregionpanel.prefs.title");
+			return Resources.get("basicregionpanel.prefs.title");
 		}
 	}
 

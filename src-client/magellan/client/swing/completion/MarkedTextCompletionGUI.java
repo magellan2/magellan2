@@ -343,6 +343,6 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
    */
   @Override
   public String getTitle() {
-    return Resources.get("magellan.completion.markedtextcompletiongui.gui.title");
+    return Resources.get("completion.markedtextcompletiongui.gui.title");
   }
 }

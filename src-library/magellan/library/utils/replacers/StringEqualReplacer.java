@@ -78,7 +78,7 @@ public class StringEqualReplacer extends AbstractParameterSwitch {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.stringequalreplacer.description." + ignoreCase);
+		return Resources.get("util.replacers.stringequalreplacer.description." + ignoreCase);
 	}
 
 }

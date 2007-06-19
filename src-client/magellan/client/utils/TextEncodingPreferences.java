@@ -85,34 +85,34 @@ public class TextEncodingPreferences extends JPanel implements PreferencesAdapte
 		textEncodingPrefrencesPanel.setLayout(new GridBagLayout());
 		textEncodingPrefrencesPanel.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
 														   new EmptyBorder(0, 3, 3, 3)),
-										Resources.get("magellan.util.textencodingpreferences.prefs.title")));
+										Resources.get("util.textencodingpreferences.prefs.title")));
 
 		GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
 													  GridBagConstraints.WEST,
 													  GridBagConstraints.HORIZONTAL,
 													  new Insets(2, 10, 1, 10), 0, 0);
 
-		JLabel textEncodingInfoLabel = new JLabel(Resources.get("magellan.util.textencodingpreferences.prefs.info1"));
+		JLabel textEncodingInfoLabel = new JLabel(Resources.get("util.textencodingpreferences.prefs.info1"));
 		textEncodingPrefrencesPanel.add(textEncodingInfoLabel,c);
 		
 		c.gridy++;
-		textEncodingInfoLabel = new JLabel(Resources.get("magellan.util.textencodingpreferences.prefs.info2"));
+		textEncodingInfoLabel = new JLabel(Resources.get("util.textencodingpreferences.prefs.info2"));
 		textEncodingPrefrencesPanel.add(textEncodingInfoLabel,c);
 		
 		c.gridy++;
-		saveOrders = new JCheckBox(Resources.get("magellan.util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false));
+		saveOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false));
 		textEncodingPrefrencesPanel.add(saveOrders, c);
 		
 		c.gridy++;
-		openOrders = new JCheckBox(Resources.get("magellan.util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOopenOrders", false));
+		openOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOopenOrders", false));
 		textEncodingPrefrencesPanel.add(openOrders, c);
 		
 		c.gridy++;
-		runEcheck = new JCheckBox(Resources.get("magellan.util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunEcheck", false));
+		runEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunEcheck", false));
 		textEncodingPrefrencesPanel.add(runEcheck, c);
 		
 		c.gridy++;
-		runJVorlage = new JCheckBox(Resources.get("magellan.util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunJVorlage", false));
+		runJVorlage = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunJVorlage", false));
 		runJVorlage.setEnabled(false);
 		textEncodingPrefrencesPanel.add(runJVorlage, c);
 		
@@ -145,7 +145,7 @@ public class TextEncodingPreferences extends JPanel implements PreferencesAdapte
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.util.textencodingpreferences.prefs.title");
+		return Resources.get("util.textencodingpreferences.prefs.title");
 	}
 
 }

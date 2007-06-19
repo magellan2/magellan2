@@ -137,7 +137,7 @@ public class InvertSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.invertselectionaction.accelerator",false);
+    return Resources.get("actions.invertselectionaction.accelerator",false);
   }
 
   /**
@@ -145,7 +145,7 @@ public class InvertSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.invertselectionaction.mnemonic",false);
+    return Resources.get("actions.invertselectionaction.mnemonic",false);
   }
 
   /**
@@ -153,12 +153,12 @@ public class InvertSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.invertselectionaction.name");
+    return Resources.get("actions.invertselectionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.invertselectionaction.tooltip",false);
+    return Resources.get("actions.invertselectionaction.tooltip",false);
   }
 
 

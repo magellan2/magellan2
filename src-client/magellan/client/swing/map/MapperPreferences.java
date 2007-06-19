@@ -107,11 +107,11 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 	}
 
 	private void init() {
-		chkDeferPainting = new JCheckBox(Resources.get("magellan.map.mapperpreferences.chk.deferpainting.caption"),
+		chkDeferPainting = new JCheckBox(Resources.get("map.mapperpreferences.chk.deferpainting.caption"),
 										 source.isDeferringPainting());
-		showTooltips = new JCheckBox(Resources.get("magellan.map.mapperpreferences.showtooltips.caption"), source.isShowingTooltip());
+		showTooltips = new JCheckBox(Resources.get("map.mapperpreferences.showtooltips.caption"), source.isShowingTooltip());
 
-		JButton configureTooltips = new JButton(Resources.get("magellan.map.mapperpreferences.showtooltips.configure.caption"));
+		JButton configureTooltips = new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
 		configureTooltips.addActionListener(this);
 
 		JPanel helpPanel = new JPanel(new GridBagLayout());
@@ -130,7 +130,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		helpPanel.add(configureTooltips, gbc);
 
 		JPanel rendererPanel = new JPanel(new BorderLayout());
-		rendererPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("magellan.map.mapperpreferences.border.rendereroptions")));
+		rendererPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("map.mapperpreferences.border.rendereroptions")));
 		planes = new JTabbedPane();
 		rendererPanel.add(planes, BorderLayout.CENTER);
 
@@ -142,7 +142,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 			JComboBox availableRenderers = new JComboBox();
 			availableRenderers.setEditable(false);
-			availableRenderers.addItem(Resources.get("magellan.map.mapperpreferences.cmb.renderers.disabled"));
+			availableRenderers.addItem(Resources.get("map.mapperpreferences.cmb.renderers.disabled"));
 
 			final CardLayout cards = new CardLayout();
 			final JPanel temp = new JPanel(cards);
@@ -187,7 +187,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 					}
 				});
 
-			JLabel lblRenderers = new JLabel(Resources.get("magellan.map.mapperpreferences.lbl.renderer.caption"));
+			JLabel lblRenderers = new JLabel(Resources.get("map.mapperpreferences.lbl.renderer.caption"));
 			aRendererPanel.add(lblRenderers, gbc);
 			gbc.gridx++;
 			gbc.weightx = 1;
@@ -273,7 +273,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.map.mapperpreferences.title");
+		return Resources.get("map.mapperpreferences.title");
 	}
 
 	/**
@@ -287,10 +287,10 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 			if(parent instanceof Frame) {
 				ttsDialog = new ToolTipSwitcherDialog((Frame) parent,
-													  Resources.get("magellan.map.mapperpreferences.tooltipdialog.title"));
+													  Resources.get("map.mapperpreferences.tooltipdialog.title"));
 			} else {
 				ttsDialog = new ToolTipSwitcherDialog((Dialog) parent,
-													  Resources.get("magellan.map.mapperpreferences.tooltipdialog.title"));
+													  Resources.get("map.mapperpreferences.tooltipdialog.title"));
 			}
 		}
 
@@ -343,7 +343,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				c.add(new JScrollPane(text), BorderLayout.CENTER);
 
 				JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-				JButton exit = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.tooltipinfo.ok"));
+				JButton exit = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.ok"));
 				exit.addActionListener(this);
 				south.add(exit);
 				c.add(south, BorderLayout.SOUTH);
@@ -433,11 +433,11 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				JPanel p = new JPanel(new FlowLayout());
 				((FlowLayout) p.getLayout()).setAlignment(FlowLayout.CENTER);
 
-				JButton b = new JButton(Resources.get("magellan.map.mapperpreferences.imexportdialog.OK"));
+				JButton b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.OK"));
 				ok = b;
 				b.addActionListener(this);
 				p.add(b);
-				b = new JButton(Resources.get("magellan.map.mapperpreferences.imexportdialog.Cancel"));
+				b = new JButton(Resources.get("map.mapperpreferences.imexportdialog.Cancel"));
 				b.addActionListener(this);
 				p.add(b);
 
@@ -511,10 +511,10 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 									}
 								} else { // no def found, show error
 									JOptionPane.showMessageDialog(this,
-																  Resources.get("magellan.map.mapperpreferences.imexportdialog.nodeffound"));
+																  Resources.get("map.mapperpreferences.imexportdialog.nodeffound"));
 								}
 							} else { // file not found, show error
-								JOptionPane.showMessageDialog(this, Resources.get("magellan.map.mapperpreferences.imexportdialog.fnf"));
+								JOptionPane.showMessageDialog(this, Resources.get("map.mapperpreferences.imexportdialog.fnf"));
 							}
 						} else {
 							data = source.getAllTooltipDefinitions();
@@ -549,7 +549,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 						}
 					} catch(Exception exc) { // some I/O Error, show it
 						JOptionPane.showMessageDialog(this,
-													  Resources.get("magellan.map.mapperpreferences.imexportdialog.ioerror") +
+													  Resources.get("map.mapperpreferences.imexportdialog.ioerror") +
 													  exc.toString());
 						log.error(exc);
 					}
@@ -611,9 +611,9 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				gbc.weightx = 0;
 				gbc.anchor = GridBagConstraints.WEST;
 
-				center.add(new JLabel(Resources.get("magellan.map.mapperpreferences.addtooltipdialog.name")), gbc);
+				center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.name")), gbc);
 				gbc.gridy++;
-				center.add(new JLabel(Resources.get("magellan.map.mapperpreferences.addtooltipdialog.value")), gbc);
+				center.add(new JLabel(Resources.get("map.mapperpreferences.addtooltipdialog.value")), gbc);
 
 				gbc.gridx = 1;
 				gbc.gridy = 0;
@@ -630,11 +630,11 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 				JPanel s = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-				JButton b = new JButton(Resources.get("magellan.map.mapperpreferences.addtooltipdialog.OK"));
+				JButton b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.OK"));
 				b.addActionListener(this);
 				s.add(b);
 
-				b = new JButton(Resources.get("magellan.map.mapperpreferences.addtooltipdialog.Cancel"));
+				b = new JButton(Resources.get("map.mapperpreferences.addtooltipdialog.Cancel"));
 				b.addActionListener(this);
 				cancel = b;
 				s.add(b);
@@ -736,14 +736,14 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				rightPart = null;
 
 				// get name and size
-				name = JOptionPane.showInputDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.name"));
+				name = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.name"));
 
 				if((name == null) || (name.length() < 1)) {
 					return;
 				}
 
 				String s = JOptionPane.showInputDialog(this,
-													   Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.rows"));
+													   Resources.get("map.mapperpreferences.tooltipdialog.addbymask.rows"));
 				int rows = 0;
 
 				try {
@@ -756,7 +756,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 					return;
 				}
 
-				s = JOptionPane.showInputDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.columns"));
+				s = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.columns"));
 
 				int columns = 0;
 
@@ -990,17 +990,17 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				}
 
 				if(ok == null) {
-					ok = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.ok"));
+					ok = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.ok"));
 					ok.addActionListener(this);
 				}
 
 				if(cancel == null) {
-					cancel = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.cancel"));
+					cancel = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.cancel"));
 					cancel.addActionListener(this);
 				}
 
 				if(excludeOceans == null) {
-					excludeOceans = new JCheckBox(Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.excludeocean"),
+					excludeOceans = new JCheckBox(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.excludeocean"),
 												  true);
 				}
 			}
@@ -1259,11 +1259,11 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			JPanel normal = new JPanel(new GridLayout(0, 1, 2, 3));
 			normal.setBorder(border);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.add"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.add"));
 			b.addActionListener(this);
 			add = b;
 			normal.add(b);
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.edit"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.edit"));
 			b.addActionListener(this);
 			edit = b;
 			edit.setEnabled(false);
@@ -1276,12 +1276,12 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			normal = new JPanel(new GridLayout(0, 1, 2, 3));
 			normal.setBorder(border);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask"));
 			b.addActionListener(this);
 			mask = b;
 			normal.add(b);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.editbymask"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.editbymask"));
 			b.addActionListener(this);
 			editmask = b;
 			editmask.setEnabled(false);
@@ -1295,7 +1295,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			gbc.insets.right += 5;
 			gbc.insets.bottom = 0;
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.delete"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.delete"));
 			b.addActionListener(this);
 			delete = b;
 			delete.setEnabled(false);
@@ -1313,21 +1313,21 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 			Container east = new JPanel(new GridLayout(0, 1, 2, 3));
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.ok"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.ok"));
 			b.addActionListener(this);
 			east.add(b);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.info"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.info"));
 			info = b;
 			b.addActionListener(this);
 			east.add(b);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.import"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.import"));
 			b.addActionListener(this);
 			importT = b;
 			east.add(b);
 
-			b = new JButton(Resources.get("magellan.map.mapperpreferences.tooltipdialog.export"));
+			b = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.export"));
 			b.addActionListener(this);
 			exportT = b;
 			east.add(b);
@@ -1405,18 +1405,18 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		 */
 		public void actionPerformed(ActionEvent e) {
 			if(e.getSource() == importT) {
-				new ImExportDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.importdialog.title")).showDialog(true);
+				new ImExportDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.importdialog.title")).showDialog(true);
 				recreate();
 			} else if(e.getSource() == exportT) {
-				new ImExportDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.exportdialog.title")).showDialog(false);
+				new ImExportDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.exportdialog.title")).showDialog(false);
 			} else if(e.getSource() == add) {
-				new AddTooltipDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null,
+				new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null,
 									 null, -1).show();
 				recreate();
 			} else if(e.getSource() == mask) {
 				if(maskDialog == null) {
 					maskDialog = new AddByMaskDialog(this,
-													 Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.title"));
+													 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
 				}
 
 				maskDialog.show();
@@ -1427,7 +1427,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 					if(maskDialog == null) {
 						maskDialog = new AddByMaskDialog(this,
-														 Resources.get("magellan.map.mapperpreferences.tooltipdialog.addbymask.title"));
+														 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
 					}
 
 					log.info("Starting editing dialog...");
@@ -1438,7 +1438,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			} else if(e.getSource() == edit) {
 				if((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
 					int index = tooltipList.getSelectedIndex();
-          AddTooltipDialog dialog = new AddTooltipDialog(this, Resources.get("magellan.map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"),
+          AddTooltipDialog dialog = new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"),
 										 tooltipList.getSelectedValue().toString(),
 										 tooltips.get(index), index * 2);
           dialog.show();
@@ -1456,7 +1456,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			} else if(e.getSource() == info) {
 				if(infoDialog == null) {
 					infoDialog = new ToolTipReplacersInfo(this,
-														  Resources.get("magellan.map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+														  Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
 				}
 
 				if(!infoDialog.isVisible()) {

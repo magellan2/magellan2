@@ -83,7 +83,7 @@ public abstract class UnitFilter {
 	 * 
 	 */
 	public String getName() {
-		String ret = Resources.get("magellan.unitfilter."+getClass().getName());
+		String ret = Resources.get("unitfilter."+getClass().getName());
 
 		if(ret == null) {
 			ret = "UnitFilter";

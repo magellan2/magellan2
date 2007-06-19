@@ -79,7 +79,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		name.setEnabled(false);
 		add(name);
 
-		JMenuItem copyID = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.copyid.caption"));
+		JMenuItem copyID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyid.caption"));
 		copyID.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					copyID();
@@ -87,7 +87,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			});
 		add(copyID);
 
-		JMenuItem copyNameID = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.copyidandname.caption"));
+		JMenuItem copyNameID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandname.caption"));
 		copyNameID.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					copyNameID();
@@ -96,7 +96,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		add(copyNameID);
 
 		if(uc instanceof Ship) {
-			JMenuItem planShipRoute = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.planshiproute.caption"));
+			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
 			planShipRoute.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						planShipRoute();
@@ -105,14 +105,14 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			planShipRoute.setEnabled(ShipRoutePlanner.canPlan((Ship) uc));
 			add(planShipRoute);
 		} else if(uc instanceof Faction) {
-			JMenuItem copyMail = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.copymail.caption"));
+			JMenuItem copyMail = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copymail.caption"));
 			copyMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						copyMail();
 					}
 				});
 
-			JMenuItem factionStats = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.factionstats.caption"));
+			JMenuItem factionStats = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.factionstats.caption"));
 			factionStats.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						factionStats();
@@ -135,7 +135,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			}
 		}
 		if (shipsInSelection){
-			JMenuItem shipOrders = new JMenuItem(Resources.get("magellan.context.unitcontainercontextmenu.menu.shiporders.caption"));
+			JMenuItem shipOrders = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiporders.caption"));
 			shipOrders.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					event_addShipOrder();

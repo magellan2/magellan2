@@ -82,7 +82,7 @@ public class UnconfirmAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.unconfirmaction.accelerator",false);
+    return Resources.get("actions.unconfirmaction.accelerator",false);
   }
 
   /**
@@ -90,7 +90,7 @@ public class UnconfirmAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.unconfirmaction.mnemonic",false);
+    return Resources.get("actions.unconfirmaction.mnemonic",false);
   }
 
   /**
@@ -98,11 +98,11 @@ public class UnconfirmAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.unconfirmaction.name");
+    return Resources.get("actions.unconfirmaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.unconfirmaction.tooltip",false);
+    return Resources.get("actions.unconfirmaction.tooltip",false);
   }
 }

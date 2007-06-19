@@ -27,7 +27,7 @@ public class CopyAction extends ContextAction {
      */
     @Override
     protected String getNameTranslated() {
-      return Resources.get("magellan.context.action.copyaction.name");
+      return Resources.get("context.action.copyaction.name");
     }
 
 }

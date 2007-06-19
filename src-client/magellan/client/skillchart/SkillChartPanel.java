@@ -85,8 +85,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		regions.putAll(data.regions());
 
 		// create axis, plot, chart
-		HorizontalCategoryAxis xAxis = new HorizontalCategoryAxis(Resources.get("magellan.skillchart.skillchartpanel.labeltext.horizontalaxis"));
-		VerticalNumberAxis yAxis = new VerticalNumberAxis(Resources.get("magellan.skillchart.skillchartpanel.labeltext.verticalaxis"));
+		HorizontalCategoryAxis xAxis = new HorizontalCategoryAxis(Resources.get("skillchart.skillchartpanel.labeltext.horizontalaxis"));
+		VerticalNumberAxis yAxis = new VerticalNumberAxis(Resources.get("skillchart.skillchartpanel.labeltext.verticalaxis"));
 		yAxis.setTickValue(new Integer(1));
 		yAxis.setAutoRangeIncludesZero(true);
 
@@ -137,12 +137,12 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			});
 		add(skills, c);
 
-		persons = new JComboBox(new String[] { Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalpersons") });
+		persons = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") });
 		c = new GridBagConstraints(1, 1, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
 								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
 		add(persons, c);
 
-		totalSkillPoints = new JComboBox(new String[] { Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskilllevel") });
+		totalSkillPoints = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") });
 		c = new GridBagConstraints(0, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
 								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
 		add(totalSkillPoints, c);
@@ -151,7 +151,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			totalSkillPoints.setVisible(false);
 		}
 
-		totalSkillLevel = new JComboBox(new String[] { Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskillpoints") });
+		totalSkillLevel = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") });
 		c = new GridBagConstraints(1, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
 								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
 		add(totalSkillLevel, c);
@@ -167,9 +167,9 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			Vector<String> vPersons = new Vector<String>();
 			Vector<String> vTotalSkillLevel = new Vector<String>();
 			Vector<String> vTotalSkillPoints = new Vector<String>();
-			vPersons.add(Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalpersons") + skillStats.getPersonNumber(skillType));
-			vTotalSkillLevel.add(Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskilllevel") + skillStats.getSkillLevelNumber(skillType));
-			vTotalSkillPoints.add(Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskillpoints") + skillStats.getSkillPointsNumber(skillType));
+			vPersons.add(Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") + skillStats.getPersonNumber(skillType));
+			vTotalSkillLevel.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") + skillStats.getSkillLevelNumber(skillType));
+			vTotalSkillPoints.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") + skillStats.getSkillPointsNumber(skillType));
 
 			for(Iterator<Skill> iter = skillStats.getKnownSkills(skillType).iterator(); iter.hasNext();) {
 				Skill skill = iter.next();
@@ -183,13 +183,13 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			totalSkillPoints.setModel(new DefaultComboBoxModel(vTotalSkillPoints));
 		} else {
 			persons.setModel(new DefaultComboBoxModel(new String[] {
-														  Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalpersons")
+														  Resources.get("skillchart.skillchartpanel.labeltext.totalpersons")
 													  }));
 			totalSkillPoints.setModel(new DefaultComboBoxModel(new String[] {
-																   Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskilllevel")
+																   Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel")
 															   }));
 			totalSkillLevel.setModel(new DefaultComboBoxModel(new String[] {
-																  Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskillpoints")
+																  Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints")
 															  }));
 		}
 	}
@@ -352,11 +352,11 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			return null;
 		} else {
 			Skill skill = (Skill) skillStats.getKnownSkills(type).get(i);
-			String retVal = Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalpersons") +
+			String retVal = Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") +
 							skillStats.getPersonNumber(skill);
-			retVal += (", " + Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskilllevel") +
+			retVal += (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") +
 			skillStats.getSkillLevelNumber(skill));
-			retVal += (", " + Resources.get("magellan.skillchart.skillchartpanel.labeltext.totalskillpoints") +
+			retVal += (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") +
 			skillStats.getSkillPointsNumber(skill));
 
 			return retVal;

@@ -106,7 +106,7 @@ public class JVorlage extends InternationalizedDialog {
 
 	private void init() {
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.jvorlage.window.title"));
+		setTitle(Resources.get("jvorlage.window.title"));
 
 		int width = Math.max(Integer.parseInt(settings.getProperty("JVorlage.width", "450")), 450);
 		int height = Math.max(Integer.parseInt(settings.getProperty("JVorlage.height", "310")), 310);
@@ -184,7 +184,7 @@ public class JVorlage extends InternationalizedDialog {
 	}
 
 	private Container getInfoPanel() {
-		JTextArea txtInfo = new JTextArea(Resources.get("magellan.jvorlage.txt.info.text"));
+		JTextArea txtInfo = new JTextArea(Resources.get("jvorlage.txt.info.text"));
 		txtInfo.setOpaque(false);
 		txtInfo.setEditable(false);
 		txtInfo.setLineWrap(true);
@@ -194,14 +194,14 @@ public class JVorlage extends InternationalizedDialog {
 	}
 
 	private Container getButtonPanel() {
-		JButton okButton = new JButton(Resources.get("magellan.jvorlage.btn.ok.caption"));
+		JButton okButton = new JButton(Resources.get("jvorlage.btn.ok.caption"));
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					execUsersVorlage();
 				}
 			});
 
-		JButton cancelButton = new JButton(Resources.get("magellan.jvorlage.btn.close.caption"));
+		JButton cancelButton = new JButton(Resources.get("jvorlage.btn.close.caption"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();
@@ -219,14 +219,14 @@ public class JVorlage extends InternationalizedDialog {
 		comboInputFile = new JComboBox(getList(settings.getProperty("JVorlage.inputFile", ""))
 										   .toArray());
 		comboInputFile.setEditable(true);
-		comboInputFile.setToolTipText(Resources.get("magellan.jvorlage.combo.inputfile.tooltip"));
+		comboInputFile.setToolTipText(Resources.get("jvorlage.combo.inputfile.tooltip"));
 
-		JLabel lblInputFile = new JLabel(Resources.get("magellan.jvorlage.lbl.inputfile.caption"));
+		JLabel lblInputFile = new JLabel(Resources.get("jvorlage.lbl.inputfile.caption"));
 		lblInputFile.setLabelFor(comboInputFile);
 		lblInputFile.setToolTipText(comboInputFile.getToolTipText());
 
 		JButton btnInputFile = new JButton("...");
-		btnInputFile.setToolTipText(Resources.get("magellan.jvorlage.btn.inputfile.tooltip"));
+		btnInputFile.setToolTipText(Resources.get("jvorlage.btn.inputfile.tooltip"));
 		btnInputFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String inputFile = getFileName((String) comboInputFile.getSelectedItem(), true,
@@ -242,14 +242,14 @@ public class JVorlage extends InternationalizedDialog {
 		comboOutputFile = new JComboBox(getList(settings.getProperty("JVorlage.outputFile", ""))
 											.toArray());
 		comboOutputFile.setEditable(true);
-		comboOutputFile.setToolTipText(Resources.get("magellan.jvorlage.combo.outputfile.tooltip"));
+		comboOutputFile.setToolTipText(Resources.get("jvorlage.combo.outputfile.tooltip"));
 
-		JLabel lblOutputFile = new JLabel(Resources.get("magellan.jvorlage.lbl.outputfile.caption"));
+		JLabel lblOutputFile = new JLabel(Resources.get("jvorlage.lbl.outputfile.caption"));
 		lblOutputFile.setLabelFor(comboOutputFile);
 		lblOutputFile.setToolTipText(comboOutputFile.getToolTipText());
 
 		JButton btnOutputFile = new JButton("...");
-		btnOutputFile.setToolTipText(Resources.get("magellan.jvorlage.btn.outputfile.tooltip"));
+		btnOutputFile.setToolTipText(Resources.get("jvorlage.btn.outputfile.tooltip"));
 		btnOutputFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String outputFile = getFileName((String) comboOutputFile.getSelectedItem(),
@@ -266,14 +266,14 @@ public class JVorlage extends InternationalizedDialog {
 		comboScriptFile = new JComboBox(getList(settings.getProperty("JVorlage.scriptFile", ""))
 											.toArray());
 		comboScriptFile.setEditable(true);
-		comboScriptFile.setToolTipText(Resources.get("magellan.jvorlage.combo.scriptfile.tooltip"));
+		comboScriptFile.setToolTipText(Resources.get("jvorlage.combo.scriptfile.tooltip"));
 
-		JLabel lblScriptFile = new JLabel(Resources.get("magellan.jvorlage.lbl.scriptfile.caption"));
+		JLabel lblScriptFile = new JLabel(Resources.get("jvorlage.lbl.scriptfile.caption"));
 		lblScriptFile.setLabelFor(comboScriptFile);
 		lblScriptFile.setToolTipText(comboScriptFile.getToolTipText());
 
 		JButton btnScriptFile = new JButton("...");
-		btnScriptFile.setToolTipText(Resources.get("magellan.jvorlage.btn.scriptfile.tooltip"));
+		btnScriptFile.setToolTipText(Resources.get("jvorlage.btn.scriptfile.tooltip"));
 		btnScriptFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String scriptFile = getFileName((String) comboScriptFile.getSelectedItem(),
@@ -289,19 +289,19 @@ public class JVorlage extends InternationalizedDialog {
 
 		txtVorlageFile = new JTextField(settings.getProperty("JVorlage.vorlageFile", ""));
 		txtVorlageFile.setEditable(true);
-		txtVorlageFile.setToolTipText(Resources.get("magellan.jvorlage.txt.vorlagefile.tooltip"));
+		txtVorlageFile.setToolTipText(Resources.get("jvorlage.txt.vorlagefile.tooltip"));
 
-		JLabel lblVorlageFile = new JLabel(Resources.get("magellan.jvorlage.lbl.vorlagefile.caption"));
+		JLabel lblVorlageFile = new JLabel(Resources.get("jvorlage.lbl.vorlagefile.caption"));
 		lblVorlageFile.setLabelFor(txtVorlageFile);
 		lblVorlageFile.setToolTipText(txtVorlageFile.getToolTipText());
 
 		JButton btnVorlageFile = new JButton("...");
-		btnVorlageFile.setToolTipText(Resources.get("magellan.jvorlage.btn.vorlagefile.tooltip"));
+		btnVorlageFile.setToolTipText(Resources.get("jvorlage.btn.vorlagefile.tooltip"));
 		btnVorlageFile.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String vorlageFile = getFileName(txtVorlageFile.getText(), false,
 													 new EresseaFileFilter("exe",
-																		   Resources.get("magellan.jvorlage.filter.executable.description")));
+																		   Resources.get("jvorlage.filter.executable.description")));
 
 					if(vorlageFile != null) {
 						txtVorlageFile.setText(vorlageFile);
@@ -311,7 +311,7 @@ public class JVorlage extends InternationalizedDialog {
 
 		JPanel pnlFiles = new JPanel(new GridBagLayout());
 		pnlFiles.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("magellan.jvorlage.border.files")));
+											Resources.get("jvorlage.border.files")));
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -435,20 +435,20 @@ public class JVorlage extends InternationalizedDialog {
 	}
 
 	private Container getOptionPanel() {
-		chkOptionCR = new JCheckBox(Resources.get("magellan.jvorlage.chk.outputcr.caption"),
+		chkOptionCR = new JCheckBox(Resources.get("jvorlage.chk.outputcr.caption"),
 									(Boolean.valueOf(settings.getProperty("JVorlage.optionCR", "false"))).booleanValue());
-		chkOptionCR.setToolTipText(Resources.get("magellan.jvorlage.chk.outputcr.tooltip"));
+		chkOptionCR.setToolTipText(Resources.get("jvorlage.chk.outputcr.tooltip"));
 
 		txtOptions = new JTextField(settings.getProperty("JVorlage.options", ""));
-		txtOptions.setToolTipText(Resources.get("magellan.jvorlage.txt.options.tooltip"));
+		txtOptions.setToolTipText(Resources.get("jvorlage.txt.options.tooltip"));
 
-		JLabel lblOptions = new JLabel(Resources.get("magellan.jvorlage.lbl.options.caption"));
+		JLabel lblOptions = new JLabel(Resources.get("jvorlage.lbl.options.caption"));
 		lblOptions.setToolTipText(txtOptions.getToolTipText());
 		lblOptions.setLabelFor(txtOptions);
 
 		JPanel pnlOptions = new JPanel(new GridBagLayout());
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.jvorlage.border.options")));
+											  Resources.get("jvorlage.border.options")));
 
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
@@ -499,7 +499,7 @@ public class JVorlage extends InternationalizedDialog {
 
 		JPanel pnlOutput = new JPanel(new GridBagLayout());
 		pnlOutput.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											 Resources.get("magellan.jvorlage.border.output")));
+											 Resources.get("jvorlage.border.output")));
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -582,8 +582,8 @@ public class JVorlage extends InternationalizedDialog {
 		File vorlage = new File(txtVorlageFile.getText());
 
 		if((vorlage.exists() == false) || (vorlage.canRead() == false)) {
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.jvorlage.msg.invalidvorlage.text"),
-										  Resources.get("magellan.jvorlage.msg.invalidvorlage.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("jvorlage.msg.invalidvorlage.text"),
+										  Resources.get("jvorlage.msg.invalidvorlage.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			return sb;
@@ -596,8 +596,8 @@ public class JVorlage extends InternationalizedDialog {
 		} catch(Exception e) {
 			log.error("JVorlage.execVorlage(): unable to create temporary file for Vorlage output",
 					  e);
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.jvorlage.msg.tempfileerror.text"),
-										  Resources.get("magellan.jvorlage.msg.tempfileerror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("jvorlage.msg.tempfileerror.text"),
+										  Resources.get("jvorlage.msg.tempfileerror.title"),
 										  JOptionPane.ERROR_MESSAGE);
 		}
 
@@ -625,8 +625,8 @@ public class JVorlage extends InternationalizedDialog {
 			}
 
 			if((System.currentTimeMillis() - start) > 5000) {
-				if(JOptionPane.showConfirmDialog(this, Resources.get("magellan.jvorlage.msg.stopvorlage.text"),
-													 Resources.get("magellan.jvorlage.msg.stopvorlage.title"),
+				if(JOptionPane.showConfirmDialog(this, Resources.get("jvorlage.msg.stopvorlage.text"),
+													 Resources.get("jvorlage.msg.stopvorlage.title"),
 													 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					p.destroy();
 
@@ -640,8 +640,8 @@ public class JVorlage extends InternationalizedDialog {
 				if(p.exitValue() != 0) {
 					Object msgArgs[] = { new Integer(p.exitValue()) };
 					JOptionPane.showMessageDialog(this,
-												  (new java.text.MessageFormat(Resources.get("magellan.jvorlage.msg.execerror.text"))).format(msgArgs),
-												  Resources.get("magellan.jvorlage.msg.execerror.title"),
+												  (new java.text.MessageFormat(Resources.get("jvorlage.msg.execerror.text"))).format(msgArgs),
+												  Resources.get("jvorlage.msg.execerror.title"),
 												  JOptionPane.WARNING_MESSAGE);
 				}
 

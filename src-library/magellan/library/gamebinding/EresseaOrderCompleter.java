@@ -430,7 +430,7 @@ public class EresseaOrderCompleter implements Completer {
 				" " + curUnit.getID().toString() + " ;" + curUnit.getName());
 			}
 
-			completions.add(new Completion(Resources.get("magellan.gamebinding.eressea.eresseaordercompleter.spies"), enemyUnits, "", 5, 0));
+			completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.spies"), enemyUnits, "", 5, 0));
 		}
 
 		for(Iterator iter = unitList.keySet().iterator(); iter.hasNext();) {

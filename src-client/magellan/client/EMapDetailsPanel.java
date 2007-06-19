@@ -269,7 +269,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		undoMgr = _undoMgr;
 
 		nodeWrapperFactory = new NodeWrapperFactory(settings, "EMapDetailsPanel",
-													Resources.get("magellan.emapdetailspanel.wrapperfactory.title"));
+													Resources.get("emapdetailspanel.wrapperfactory.title"));
 		nodeWrapperFactory.setSource(this);
 
 		// to get the pref-adapter
@@ -338,8 +338,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							}
 						} else {
 							JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-														  Resources.get("magellan.emapdetailspanel.msg.cannotrename.text"),
-														  Resources.get("magellan.emapdetailspanel.error"),
+														  Resources.get("emapdetailspanel.msg.cannotrename.text"),
+														  Resources.get("emapdetailspanel.error"),
 														  javax.swing.JOptionPane.WARNING_MESSAGE);
 							tree.grabFocus();
 						}
@@ -415,8 +415,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							}
 						} else {
 							JOptionPane.showMessageDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-														  Resources.get("magellan.emapdetailspanel.msg.cannotdescribe.text"),
-														  Resources.get("magellan.emapdetailspanel.error"),
+														  Resources.get("emapdetailspanel.msg.cannotdescribe.text"),
+														  Resources.get("emapdetailspanel.error"),
 														  javax.swing.JOptionPane.WARNING_MESSAGE);
 							tree.grabFocus();
 						}
@@ -538,12 +538,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		tagContainer.setLayout(new GridLayout(1, 2));
 		treeContainer = pnlRegionInfoTree;
 
-		addTag = new JButton(Resources.get("magellan.emapdetailspanel.addtag.caption"));
+		addTag = new JButton(Resources.get("emapdetailspanel.addtag.caption"));
 		addTag.addActionListener(this);
 		addTag.setEnabled(false);
 		tagContainer.add(addTag);
 
-		removeTag = new JButton(Resources.get("magellan.emapdetailspanel.removetag.caption"));
+		removeTag = new JButton(Resources.get("emapdetailspanel.removetag.caption"));
 		removeTag.addActionListener(this);
 		removeTag.setEnabled(false);
 		tagContainer.add(removeTag);
@@ -748,18 +748,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendRegionInfo(Region r, DefaultMutableTreeNode parent,
 								  Collection<NodeWrapper> expandableNodes) {
 		// terrain type
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.terrain") + ": " + r.getType().getName(),
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": " + r.getType().getName(),
 									r.getType().getID() + "-detail"));
 
 		// terrain coordinates
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.coordinates") + ": " + r.getID(), "koordinaten"));
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.coordinates") + ": " + r.getID(), "koordinaten"));
 
 		// region guards
 		appendRegionGuardInfo(r, parent, expandableNodes);
 
 		// orc infestation
 		if(r.isOrcInfested()) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.orcinfestation"), "orkinfest"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.orcinfestation"), "orkinfest"));
 		}
 
 		// resources
@@ -796,12 +796,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
     /*
-		DefaultMutableTreeNode luxuriesNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.trade") +
+		DefaultMutableTreeNode luxuriesNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.trade") +
 																		 ": " +
 																		 getDiffString(r.maxLuxuries(),
 																					   r.maxOldLuxuries()));
     */
-    DefaultMutableTreeNode luxuriesNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.trade") + ": " + getDiffString(r.maxLuxuries(),r.maxOldLuxuries()), "handeln");
+    DefaultMutableTreeNode luxuriesNode = createSimpleNode(Resources.get("emapdetailspanel.node.trade") + ": " + getDiffString(r.maxLuxuries(),r.maxOldLuxuries()), "handeln");
     
 		parent.add(luxuriesNode);
 		expandableNodes.add(new NodeWrapper(luxuriesNode, "EMapDetailsPanel.RegionLuxuriesExpanded"));
@@ -852,23 +852,23 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 								  .toString();
 		peasantsInfo += (" / " + maxWorkers);
 
-		DefaultMutableTreeNode peasantsNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.peasants") + ": " +
+		DefaultMutableTreeNode peasantsNode = createSimpleNode(Resources.get("emapdetailspanel.node.peasants") + ": " +
 															   peasantsInfo, "bauern");
 		parent.add(peasantsNode);
 		expandableNodes.add(new NodeWrapper(peasantsNode, "EMapDetailsPanel.RegionPeasantsExpanded"));
 
 		// recruit
-		peasantsNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.recruit") + ": " +
+		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.recruit") + ": " +
 										  getDiffString(r.maxRecruit(), r.maxRecruit(),
 														r.modifiedRecruit()) + " " +
-										  Resources.get("magellan.emapdetailspanel.node.of") + r.maxRecruit(), "rekruten"));
+										  Resources.get("emapdetailspanel.node.of") + r.maxRecruit(), "rekruten"));
 
 		// silver
-		peasantsNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.silver") + ": " +
+		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " +
 										  getDiffString(r.getSilver(), r.getOldSilver()), "items/silber"));
 
 		// surplus
-		peasantsNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.surplus") + ": " +
+		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.surplus") + ": " +
 										  getDiffString(surplus, oldSurplus), "items/silber"));
 
 		// wage
@@ -880,7 +880,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			wage = r.getWage();
 		}
 
-		StringBuffer nodeText = new StringBuffer(Resources.get("magellan.emapdetailspanel.node.wage")).append(": ").append(getDiffString(getWage(wage,
+		StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.wage")).append(": ").append(getDiffString(getWage(wage,
 																												   false),
 																										   getWage(r.getOldWage(),
 																												   false)));
@@ -893,7 +893,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		peasantsNode.add(createSimpleNode(nodeText.toString(), "lohn"));
 
 		// entertain
-		peasantsNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.enterainment") + ": " +
+		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.enterainment") + ": " +
 										  getDiffString(r.maxEntertain(), r.maxOldEntertain()),
 										  "items/silber"));
 	}
@@ -907,8 +907,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	  */
 	private void appendRegionResourceInfo(Region r, DefaultMutableTreeNode parent,
 										  Collection<NodeWrapper> expandableNodes) {
-		//DefaultMutableTreeNode resourceNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.resources"));
-    DefaultMutableTreeNode resourceNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.resources"), "ressourcen");
+		//DefaultMutableTreeNode resourceNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources"));
+    DefaultMutableTreeNode resourceNode = createSimpleNode(Resources.get("emapdetailspanel.node.resources"), "ressourcen");
 		String icon = null;
 		if(!r.resources().isEmpty()) {
 			// resources of region
@@ -927,7 +927,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
 						icon += "_region";
 					}
-					treeNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.mallorntrees") + ": " +
+					treeNode = createSimpleNode(Resources.get("emapdetailspanel.node.mallorntrees") + ": " +
 												getDiffString(r.getTrees(), r.getOldTrees()),
 												icon);
 				} else {
@@ -935,7 +935,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
 						icon += "_region";
 					}
-					treeNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.trees") + ": " +
+					treeNode = createSimpleNode(Resources.get("emapdetailspanel.node.trees") + ": " +
 												getDiffString(r.getTrees(), r.getOldTrees()),
 												icon);
 				}
@@ -958,7 +958,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
 					icon += "_region";
 				}
-				resourceNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.laen") + ": " +
+				resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.laen") + ": " +
 												  getDiffString(r.getLaen(), r.getOldLaen()),
 												  icon));
 			}
@@ -970,13 +970,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
 				icon += "_region";
 			}
-			resourceNode.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.horses") + ": " +
+			resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.horses") + ": " +
 											  getDiffString(r.getHorses(), r.getOldHorses()), icon));
 		}
 
 		// herb
 		if(r.getHerb() != null) {
-			StringBuffer sb = new StringBuffer(Resources.get("magellan.emapdetailspanel.node.herbs")).append(": ").append(r.getHerb().getName());
+			StringBuffer sb = new StringBuffer(Resources.get("emapdetailspanel.node.herbs")).append(": ").append(r.getHerb().getName());
 
 			if(r.getHerbAmount() != null) {
 				sb.append(" (").append(r.getHerbAmount()).append(")");
@@ -1104,13 +1104,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// Now the data is prepared. Build the tree:
 		// peasants
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.peasants") + ": " + peasants, "bauern"));
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.peasants") + ": " + peasants, "bauern"));
 
 		// silver
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.silver") + ": " + silver, "items/silber"));
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " + silver, "items/silber"));
 
 		// terrains sorted by region type
-		DefaultMutableTreeNode terrainsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.terrains"));
+		DefaultMutableTreeNode terrainsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.terrains"));
 		parent.add(terrainsNode);
 		expandableNodes.add(new NodeWrapper(terrainsNode, "EMapDetailsPanel.RegionTerrainsExpanded"));
 
@@ -1141,7 +1141,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// resources of the regions sorted by name,id of resource
-		DefaultMutableTreeNode resourcesNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.resources"));
+		DefaultMutableTreeNode resourcesNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources"));
 		List<ItemType> sortedList2 = new LinkedList<ItemType>(resources.keySet());
 		Collections.sort(sortedList2, new NameComparator<Unique>(IDComparator.DEFAULT));
 
@@ -1162,7 +1162,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// herbs of the regions sorted by name, id of herb
-		DefaultMutableTreeNode herbsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.herbs"));
+		DefaultMutableTreeNode herbsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.herbs"));
 		List<ItemType> sortedList3 = new LinkedList<ItemType>(herbs.keySet());
 		Collections.sort(sortedList3, new NameComparator<Unique>(IDComparator.DEFAULT));
 
@@ -1294,9 +1294,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		if(parties.size() > 0) {
-			// DefaultMutableTreeNode guardRoot = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.guarded") + ": ");
+			// DefaultMutableTreeNode guardRoot = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.guarded") + ": ");
 			// Fiete 20060911: added support for "bewacht" - icon
-			DefaultMutableTreeNode guardRoot = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.guarded") +
+			DefaultMutableTreeNode guardRoot = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.guarded") +
 					  ": ",
 					  "bewacht"));
 			
@@ -1381,7 +1381,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return;
 		}
 
-		DefaultMutableTreeNode schemeNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.schemes"));
+		DefaultMutableTreeNode schemeNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.schemes"));
 		parent.add(schemeNode);
 		expandableNodes.add(new NodeWrapper(schemeNode, "EMapDetailsPanel.RegionSchemesExpanded"));
 
@@ -1431,7 +1431,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return;
 		}
 
-		DefaultMutableTreeNode tags = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.tags"));
+		DefaultMutableTreeNode tags = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.tags"));
 
 		for(Iterator iter = taggable.getTagMap().keySet().iterator(); iter.hasNext();) {
 			String tempName = (String) iter.next();
@@ -1573,13 +1573,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// weight (Fiete)
-		String text = Resources.get("magellan.emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
+		String text = Resources.get("emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
 
 		if(uWeight != modUWeight) {
 			text += (" (" + weightNumberFormat.format(modUWeight) + ")");
 		}
 
-		text += (" " + Resources.get("magellan.emapdetailspanel.node.weightunits"));
+		text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
 		parent.add(createSimpleNode(text, "gewicht"));
 		// categorized items
 		Collection catNodes = unitsTools.addCategorizedUnitItems(units, parent, null, null,
@@ -1603,8 +1603,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		if(skills.size() > 0) {
-			// DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.skills"));
-			DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.skills"),
+			// DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
+			DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.skills"),
 				"skills"));
 			parent.add(skillsNode);
 			expandableNodes.add(new NodeWrapper(skillsNode, "EMapDetailsPanel.FactionSkillsExpanded"));
@@ -1689,11 +1689,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			DefaultMutableTreeNode n = new DefaultMutableTreeNode(personCount + " " +
-																  Resources.get("magellan.emapdetailspanel.node.persons"));
+																  Resources.get("emapdetailspanel.node.persons"));
 			parent.add(n);
 
 			if((g.allies() != null) && (g.allies().values().size() > 0)) {
-				n = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.alliances"));
+				n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.alliances"));
 				parent.add(n);
 				expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
 
@@ -1735,8 +1735,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			if(skills.size() > 0) {
-				// n = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.skills"));
-				n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.skills"),
+				// n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
+				n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.skills"),
 					"skills"));
 				parent.add(n);
 				expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.RegionSkillsExpanded"));
@@ -1838,7 +1838,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// Heldenanzeige
 		if(u.isHero()) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.hero"), "hero"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.hero"), "hero"));
 		}
 
 		// Personenanzeige
@@ -1855,7 +1855,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// Kampfreihenanzeige
 		SimpleNodeWrapper cWrapper = nodeWrapperFactory
-				.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.combatstatus") + ": "
+				.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.combatstatus") + ": "
 						+ MagellanFactory.combatStatusToString(u), "kampfstatus");
 
 		if(isPrivileged(u.getFaction())) {
@@ -1866,7 +1866,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		
 		// starvation
 		if(u.isStarving()) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.starved"), "hunger"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.starved"), "hunger"));
 		}
 
 		// health state
@@ -1874,12 +1874,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			// Fiete 20060910
 			// the hp-string is not translated in the cr
 			// so u.health = german
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.health") + ": " + data.getTranslation(u.getHealth()), u.getHealth()));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.health") + ": " + data.getTranslation(u.getHealth()), u.getHealth()));
 		}
 
 		// guard state
 		if(u.getGuard() != 0) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.guards") + ": " +
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.guards") + ": " +
           MagellanFactory.guardFlagsToString(u.getGuard()), "bewacht"));
 		}
 
@@ -1888,7 +1888,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// spy
 		if(u.isSpy()) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.spy"), "spion"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spy"), "spion"));
 		}
 
 		// Gebaeude-/Schiffsanzeige
@@ -1896,7 +1896,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// magic aura
 		if(u.getAura() != -1) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.aura") + ": " + u.getAura() + " / " + u.getAuraMax(),
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.aura") + ": " + u.getAura() + " / " + u.getAuraMax(),
 										"aura"));
 		}
 
@@ -1973,7 +1973,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(customUnitIconNode);
     }
     
-    String strPersons = Resources.get("magellan.emapdetailspanel.node.persons") + ": " + u.getPersons();
+    String strPersons = Resources.get("emapdetailspanel.node.persons") + ": " + u.getPersons();
 	
 		if(u.getPersons() != u.getModifiedPersons()) {
 			strPersons += (" (" + u.getModifiedPersons() + ")");
@@ -2059,9 +2059,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendFactionInfo(Faction f, DefaultMutableTreeNode parent, Collection expandableNodes) {
     DefaultMutableTreeNode fNode;
     if(f == null) {
-      fNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.faction") +
+      fNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.faction") +
                                               ": " +
-                                              Resources.get("magellan.emapdetailspanel.node.unknownfaction"),
+                                              Resources.get("emapdetailspanel.node.unknownfaction"),
                                               "faction"));
     } else {
       // custom faction icon ?
@@ -2074,7 +2074,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
         
       } else {
-        fNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.faction") +
+        fNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.faction") +
                                               ": " +
                                               f.toString(),
                                               "faction"));
@@ -2095,7 +2095,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendUnitRaceInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if(u.getRace() != null) {
-			StringBuffer nodeText = new StringBuffer(Resources.get("magellan.emapdetailspanel.node.race")).append(": ").append(u.getRaceName(this.data));
+			StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.race")).append(": ").append(u.getRaceName(this.data));
 	
 			if(u.getRealRace() != null) {
 				nodeText.append(" (").append(u.getRealRace().getName()).append(")");
@@ -2113,7 +2113,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendUnitGroupInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if(u.getGroup() != null) {
 			Group group = u.getGroup();
-			DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.group") +
+			DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.group") +
 					  ": \"" + group.getName() +
 					  "\"","groups"));
 			
@@ -2141,7 +2141,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 	
 		if(u.isHideFaction() || stealthLevel > 0) {
-			String strHide = Resources.get("magellan.emapdetailspanel.node.stealth") + ":";
+			String strHide = Resources.get("emapdetailspanel.node.stealth") + ":";
 	
 			if(stealthLevel > 0) {
 				if(u.getStealth() == -1) {
@@ -2156,7 +2156,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					strHide += ",";
 				}
 	
-				strHide += (" " + Resources.get("magellan.emapdetailspanel.node.disguised"));
+				strHide += (" " + Resources.get("emapdetailspanel.node.disguised"));
 			}
 	
 			String icon = null;
@@ -2178,7 +2178,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 		// disguise
 		if(u.getGuiseFaction() != null) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.disguisedas") + u.getGuiseFaction(),
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + u.getGuiseFaction(),
 										((stealth != null)
 										 ? stealth.getSkillType().getID().toString() : "tarnung")));
 		}
@@ -2197,7 +2197,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 						Skill unitSkill = u.getModifiedSkill(resMakeSkillType);
 						if (unitSkill.getLevel()>0){
 							if (n==null){
-								n=new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.resources_region"));
+								n=new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources_region"));
 								expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.UnitRegionResourceExpanded"));
 							}
 							int oldValue = findOldValueByResourceType(u.getRegion(), res);
@@ -2225,7 +2225,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				Unit parentUnit = this.data.getUnit(u.getFamiliarmageID());
 				if (parentUnit != null) {
 					// DefaultMutableTreeNode parentsNode = new DefaultMutableTreeNode("Parents");
-					DefaultMutableTreeNode parentsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.FamiliarParents"),
+					DefaultMutableTreeNode parentsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.FamiliarParents"),
 						"aura"));
 					parent.add(parentsNode);
 					expandableNodes.add(new NodeWrapper(parentsNode, "EMapDetailsPanel.FamiliarParentsExpanded"));
@@ -2245,7 +2245,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					}
 				}
 				if (familiars.size()>0){
-					DefaultMutableTreeNode childsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.FamiliarChilds"),
+					DefaultMutableTreeNode childsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.FamiliarChilds"),
 						"aura"));
 					parent.add(childsNode);
 					expandableNodes.add(new NodeWrapper(childsNode, "EMapDetailsPanel.FamiliarChildsExpanded"));
@@ -2270,13 +2270,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendUnitWeight(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		Float uWeight = new Float(u.getWeight() / 100.0F);
 		Float modUWeight = new Float(u.getModifiedWeight() / 100.0F);
-		String text = Resources.get("magellan.emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
+		String text = Resources.get("emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
 	
 		if(!uWeight.equals(modUWeight)) {
 			text += (" (" + weightNumberFormat.format(modUWeight) + ")");
 		}
 	
-		text += (" " + Resources.get("magellan.emapdetailspanel.node.weightunits"));
+		text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
 		parent.add(createSimpleNode(text, "gewicht"));
 	}
 
@@ -2315,14 +2315,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		int modLoad = u.getModifiedLoad();
 	
 		if((load != 0) || (modLoad != 0)) {
-			String text = Resources.get("magellan.emapdetailspanel.node.load") + ": " +
+			String text = Resources.get("emapdetailspanel.node.load") + ": " +
 				   weightNumberFormat.format(new Float(load / 100.0F));
 	
 			if(load != modLoad) {
 				text += (" (" + weightNumberFormat.format(new Float(modLoad / 100.0F)) + ")");
 			}
 	
-			text += (" " + Resources.get("magellan.emapdetailspanel.node.weightunits"));
+			text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
 			parent.add(createSimpleNode(text, "beladung"));
 		}
 	
@@ -2330,29 +2330,29 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		int maxOnFoot = u.getPayloadOnFoot();
 	
 		if(maxOnFoot == Unit.CAP_UNSKILLED) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.capacityonfoot") + ": " +
-										Resources.get("magellan.emapdetailspanel.node.toomanyhorses"), "warnung"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonfoot") + ": " +
+										Resources.get("emapdetailspanel.node.toomanyhorses"), "warnung"));
 		} else {
 			Float max = new Float(maxOnFoot / 100.0F);
 			Float free = new Float(Math.abs(maxOnFoot - modLoad) / 100.0F);
 			DefaultMutableTreeNode capacityNode;
 	
 			if((maxOnFoot - modLoad) < 0) {
-				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.capacityonfoot") +
+				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonfoot") +
 																									 ": " +
-																									 Resources.get("magellan.emapdetailspanel.node.overloadedby") +
+																									 Resources.get("emapdetailspanel.node.overloadedby") +
 																									 weightNumberFormat.format(free) +
 																									 " " +
-																									 Resources.get("magellan.emapdetailspanel.node.weightunits"),
+																									 Resources.get("emapdetailspanel.node.weightunits"),
 																									 "warnung"));
 			} else {
-				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.capacityonfoot") +
+				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonfoot") +
 																									 ": " +
 																									 weightNumberFormat.format(free) +
 																									 " / " +
 																									 weightNumberFormat.format(max) +
 																									 " " +
-																									 Resources.get("magellan.emapdetailspanel.node.weightunits"),
+																									 Resources.get("emapdetailspanel.node.weightunits"),
 																									 "ladfuss"));
 				appendUnitCapacityByItems(capacityNode, u, maxOnFoot - modLoad);
 	
@@ -2368,8 +2368,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		int maxOnHorse = u.getPayloadOnHorse();
 	
 		if(maxOnHorse == Unit.CAP_UNSKILLED) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.capacityonhorse") + ": " +
-										Resources.get("magellan.emapdetailspanel.node.toomanyhorses"), "warnung"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonhorse") + ": " +
+										Resources.get("emapdetailspanel.node.toomanyhorses"), "warnung"));
 		} else if(maxOnHorse == Unit.CAP_NO_HORSES) {
 		} else {
 			Float max = new Float(maxOnHorse / 100.0F);
@@ -2377,21 +2377,21 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			DefaultMutableTreeNode capacityNode;
 	
 			if((maxOnHorse - modLoad) < 0) {
-				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.capacityonhorse") +
+				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonhorse") +
 																									 ": " +
-																									 Resources.get("magellan.emapdetailspanel.node.overloadedby") +
+																									 Resources.get("emapdetailspanel.node.overloadedby") +
 																									 weightNumberFormat.format(free) +
 																									 " " +
-																									 Resources.get("magellan.emapdetailspanel.node.weightunits"),
+																									 Resources.get("emapdetailspanel.node.weightunits"),
 																									 "warnung"));
 			} else {
-				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.capacityonhorse") +
+				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonhorse") +
 																									 ": " +
 																									 weightNumberFormat.format(free) +
 																									 " / " +
 																									 weightNumberFormat.format(max) +
 																									 " " +
-																									 Resources.get("magellan.emapdetailspanel.node.weightunits"),
+																									 Resources.get("emapdetailspanel.node.weightunits"),
 																									 "ladpferd"));
 				appendUnitCapacityByItems(capacityNode, u, maxOnHorse - modLoad);
 	
@@ -2408,8 +2408,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendUnitItemInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		// items
 		if(u.getModifiedItems().size() > 0) {
-			//DefaultMutableTreeNode itemsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.items"));
-      DefaultMutableTreeNode itemsNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.items"), "things");
+			//DefaultMutableTreeNode itemsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.items"));
+      DefaultMutableTreeNode itemsNode = createSimpleNode(Resources.get("emapdetailspanel.node.items"), "things");
 			parent.add(itemsNode);
 			expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.UnitItemsExpanded"));
 	
@@ -2467,8 +2467,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Collections.sort(sortedSkills, new SkillComparator());
 	
 		if(!sortedSkills.isEmpty()) {
-			// DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.skills"));
-			DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.skills"),
+			// DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
+			DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.skills"),
 				"skills"));
 			parent.add(skillsNode);
 			expandableNodes.add(new NodeWrapper(skillsNode, "EMapDetailsPanel.UnitSkillsExpanded"));
@@ -2549,7 +2549,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					teachersNode.add(teacherNode);
 				}
 	
-				teachersNode.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.teacher") + ": " +
+				teachersNode.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.teacher") + ": " +
 						teacherCounter + " / " +
 						(((u.getModifiedPersons() % 10) == 0)
 								? (u.getModifiedPersons() / 10)
@@ -2593,7 +2593,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           duplicatePupilWarning = " (!!!)";
         }
         
-				pupilsNode.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.pupils") + ": " +
+				pupilsNode.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.pupils") + ": " +
 						pupilCounter + " / " +
             (u.getModifiedPersons() * 10) + duplicatePupilWarning, null,
             pupils,"pupils"));
@@ -2605,7 +2605,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Collection<Unit> carriers = u.getCarriers();
 	
 		if(carriers.size() > 0) {
-			DefaultMutableTreeNode carriersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.carriers"),
+			DefaultMutableTreeNode carriersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.carriers"),
 					null,
 					carriers));
 			parent.add(carriersNode);
@@ -2623,7 +2623,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Collection<Unit> passengers = u.getPassengers();
 	
 		if(passengers.size() > 0) {
-			DefaultMutableTreeNode passengersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.passengers"),
+			DefaultMutableTreeNode passengersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.passengers"),
 					null,
 					passengers));
 			parent.add(passengersNode);
@@ -2634,12 +2634,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				Unit passenger = (Unit) iter.next();
 				String str = passenger.toString() + ": " +
 				weightNumberFormat.format(new Float(passenger.getWeight() / 100.0f)) +
-				" " + Resources.get("magellan.emapdetailspanel.node.weightunits");
+				" " + Resources.get("emapdetailspanel.node.weightunits");
 	
 				if(passenger.getWeight() != passenger.getModifiedWeight()) {
 					str += (" (" +
 							weightNumberFormat.format(new Float(passenger.getModifiedWeight() / 100.0f)) +
-							" " + Resources.get("magellan.emapdetailspanel.node.weightunits") + ")");
+							" " + Resources.get("emapdetailspanel.node.weightunits") + ")");
 				}
 	
 				UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(passenger, str);
@@ -2654,7 +2654,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Collection<Unit> attacks = u.getAttackVictims();
 	
 		if(attacks.size() > 0) {
-			DefaultMutableTreeNode attacksNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.attacks"),
+			DefaultMutableTreeNode attacksNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.attacks"),
 					null,
 					attacks));
 			parent.add(attacksNode);
@@ -2673,7 +2673,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Collection<Unit> attackedBy = u.getAttackAggressors();
 	
 		if(attackedBy.size() > 0) {
-			DefaultMutableTreeNode attackedByNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.attackedBy"),
+			DefaultMutableTreeNode attackedByNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.attackedBy"),
 					null,
 					attackedBy));
 			parent.add(attackedByNode);
@@ -2699,8 +2699,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendUnitSpellsInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if((u.getSpells() != null) && (u.getSpells().size() > 0)) {
-			//DefaultMutableTreeNode spellsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.spells"));
-      DefaultMutableTreeNode spellsNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.spells"), "magicschool");
+			//DefaultMutableTreeNode spellsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spells"));
+      DefaultMutableTreeNode spellsNode = createSimpleNode(Resources.get("emapdetailspanel.node.spells"), "magicschool");
 			parent.add(spellsNode);
 			expandableNodes.add(new NodeWrapper(spellsNode, "EMapDetailsPanel.UnitSpellsExpanded"));
 	
@@ -2720,7 +2720,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return;
 		}
 	
-		DefaultMutableTreeNode combatSpells = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.combatspells"));
+		DefaultMutableTreeNode combatSpells = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.combatspells"));
 		parent.add(combatSpells);
 		expandableNodes.add(new NodeWrapper(combatSpells,
 											"EMapDetailsPanel.UnitCombatSpellsExpanded"));
@@ -2740,8 +2740,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendUnitPotionInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if((data.potions() != null) && (u.getSkillMap() != null) && u.getSkillMap().containsKey(EresseaConstants.S_ALCHEMIE)) {
-				//DefaultMutableTreeNode potionsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.potions"));
-        DefaultMutableTreeNode potionsNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.potions"), "Alchemie");
+				//DefaultMutableTreeNode potionsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.potions"));
+        DefaultMutableTreeNode potionsNode = createSimpleNode(Resources.get("emapdetailspanel.node.potions"), "Alchemie");
 				Skill alchSkill = u.getSkillMap().get(EresseaConstants.S_ALCHEMIE);
 				List<Potion> potions = new LinkedList<Potion>(data.potions().values());
 				Collections.sort(potions, new PotionLevelComparator<Named>(new NameComparator<Unique>(null)));
@@ -2786,8 +2786,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 						Skill unitSkill = u.getModifiedSkill(resMakeSkillType);
 						if (unitSkill.getLevel()>0){
 							if (resourceNode==null){
-								//resourceNode=new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.resources_region"));
-                resourceNode=createSimpleNode(Resources.get("magellan.emapdetailspanel.node.resources_region"), "ressourcen");
+								//resourceNode=new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources_region"));
+                resourceNode=createSimpleNode(Resources.get("emapdetailspanel.node.resources_region"), "ressourcen");
 								expandableNodes.add(new NodeWrapper(resourceNode, "EMapDetailsPanel.UnitRegionResourceExpanded"));
 							}
 							int oldValue = findOldValueByResourceType(u.getRegion(), res);
@@ -2845,7 +2845,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				givers.add(rel.source);
 		}
 		if (givers!=null || getters!=null){
-			DefaultMutableTreeNode commandNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.command"));
+			DefaultMutableTreeNode commandNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
 			expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
 			if (givers!=null){
 				for (Iterator it = givers.iterator(); it.hasNext();){	
@@ -3033,8 +3033,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		DefaultMutableTreeNode n;
 		if(iter.hasNext()) {
-			//n = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.buildingcost"));
-      n = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.buildingcost"), "buildingcost");
+			//n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.buildingcost"));
+      n = createSimpleNode(Resources.get("emapdetailspanel.node.buildingcost"), "buildingcost");
 			parent.add(n);
 			expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.BuildingCostExpanded"));
 		} else {
@@ -3060,7 +3060,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			BuildingType buildungType = b.getBuildingType();
 			if (buildungType!=null && buildungType.getMinSkillLevel()>-1){
 				m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-						Resources.get("magellan.emapdetailspanel.node.buildingminskilllevel") + ": " + buildungType.getMinSkillLevel(),"skills"));
+						Resources.get("emapdetailspanel.node.buildingminskilllevel") + ": " + buildungType.getMinSkillLevel(),"skills"));
 				n.add(m);
 			}
 			
@@ -3070,7 +3070,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				if (buildungType instanceof CastleType){
 					CastleType castleType = (CastleType) buildungType;
 					m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-							Resources.get("magellan.emapdetailspanel.node.buildingcastlesizelimits") + ": " +
+							Resources.get("emapdetailspanel.node.buildingcastlesizelimits") + ": " +
 							      castleType.getMinSize() + " - " + castleType.getMaxSize(),"build_size"));
 				} else {
 					m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
@@ -3093,8 +3093,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		Iterator iter = b.getBuildingType().getMaintenanceItems();
 
 		if(iter.hasNext()) {
-			//DefaultMutableTreeNode maintNode =  new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.upkeep"));
-      DefaultMutableTreeNode maintNode = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.upkeep"), "upkeep");
+			//DefaultMutableTreeNode maintNode =  new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.upkeep"));
+      DefaultMutableTreeNode maintNode = createSimpleNode(Resources.get("emapdetailspanel.node.upkeep"), "upkeep");
 			parent.add(maintNode);
 			expandableNodes.add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
 
@@ -3185,18 +3185,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			if(inmates == modInmates) {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.inmates") + ": " + inmates, null,
+        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates") + ": " + inmates, null,
              allInmates,"occupants"));
 			} else {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.inmates") + ": " + inmates + " (" + modInmates +
+        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates") + ": " + inmates + " (" + modInmates +
             ")", null, allInmates,"occupants"));
 			}
 		}
 
 		DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(((inmates == modInmates)
-																				   ? (Resources.get("magellan.emapdetailspanel.node.size") +
+																				   ? (Resources.get("emapdetailspanel.node.size") +
 																				   ": " + inmates)
-																				   : (Resources.get("magellan.emapdetailspanel.node.size") +
+																				   : (Resources.get("emapdetailspanel.node.size") +
 																				   ": " + inmates +
 																				   " (" +
 																				   modInmates +
@@ -3217,7 +3217,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendBuildingOwnerInfo(Building b, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if(b.getOwnerUnit() != null) {
 			UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(b.getOwnerUnit(),
-																		 Resources.get("magellan.emapdetailspanel.node.owner") +
+																		 Resources.get("emapdetailspanel.node.owner") +
 																		 ": ",
 																		 b.getOwnerUnit()
 																		  .getPersons(),
@@ -3227,10 +3227,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			parent.add(n);
 
 			if(b.getOwnerUnit().getFaction() == null) {
-				n = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.faction") + ": " +
-									 Resources.get("magellan.emapdetailspanel.node.unknownfaction"), "faction");
+				n = createSimpleNode(Resources.get("emapdetailspanel.node.faction") + ": " +
+									 Resources.get("emapdetailspanel.node.unknownfaction"), "faction");
 			} else {
-				n = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.faction") + ": " +
+				n = createSimpleNode(Resources.get("emapdetailspanel.node.faction") + ": " +
 									 b.getOwnerUnit().getFaction().toString(), "faction");
 			}
 			parent.add(n);
@@ -3250,14 +3250,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// Fiete 20060910
 		// added support for wahrerTyp
 		if (b.getTrueBuildingType()!=null){
-			n = createSimpleNode(Resources.get("magellan.emapdetailspanel."+b.getTrueBuildingType()),
+			n = createSimpleNode(Resources.get("emapdetailspanel."+b.getTrueBuildingType()),
 					 "warnung");
 			parent.add(n);
 		}
 		
 		
 		// Typ
-		n = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.type") + ": " + b.getType().getName(),
+		n = createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": " + b.getType().getName(),
 							 b.getType().getID().toString());
 		parent.add(n);
 	}
@@ -3284,7 +3284,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// Schiffstyp
 		if((s.getName() != null) && (s.getType().getName() != null)) {
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.type") + ": " + s.getType().getName(),
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": " + s.getType().getName(),
 										s.getType().getID().toString()));
 		}
 
@@ -3294,14 +3294,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			// nominal size and damage
 			int ratio = nominalShipSize != 0 ? ratio = (s.getSize() * 100) / nominalShipSize : 0;
 
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.completion") + ": " + ratio +
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.completion") + ": " + ratio +
 												  "% (" + s.getSize() + "/" + nominalShipSize + ")","sonstiges"));
 
 			appendShipDamageInfo(s, parent, expandableNodes);
 		} else {
 			// Kueste
 			if (s.getShoreId() > -1) {
-				parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.shore") + ": "
+				parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.shore") + ": "
 						+ Direction.toString(s.getShoreId()), "shore_" + String.valueOf(s.getShoreId())));
 			}
 
@@ -3345,8 +3345,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendShipCosts(Ship s, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		ShipType shipType = s.getShipType();
 		if (shipType!=null && shipType.getMaxSize()>-1){
-			//DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.buildingcost"));
-      DefaultMutableTreeNode n = createSimpleNode(Resources.get("magellan.emapdetailspanel.node.buildingcost"), "buildingcost");
+			//DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.buildingcost"));
+      DefaultMutableTreeNode n = createSimpleNode(Resources.get("emapdetailspanel.node.buildingcost"), "buildingcost");
 			parent.add(n);
 			expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.ShipCostExpanded"));
 			DefaultMutableTreeNode m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
@@ -3354,7 +3354,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			n.add(m);
 			
 			m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-					Resources.get("magellan.emapdetailspanel.node.buildingminskilllevel") + ": " + shipType.getBuildLevel(),"skills"));
+					Resources.get("emapdetailspanel.node.buildingminskilllevel") + ": " + shipType.getBuildLevel(),"skills"));
 			n.add(m);
 		} 
 	}
@@ -3405,7 +3405,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					text.append(" (").append(weightNumberFormat.format(modWeight)).append(")");
 				}
 
-				text.append(" " + Resources.get("magellan.emapdetailspanel.node.weightunits"));
+				text.append(" " + Resources.get("emapdetailspanel.node.weightunits"));
 
 				UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(u, text.toString());
 				m = new DefaultMutableTreeNode(w);
@@ -3430,7 +3430,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 						text.append(" (").append(weightNumberFormat.format(modWeight)).append(")");
 					}
 
-					text.append(" " + Resources.get("magellan.emapdetailspanel.node.weightunits"));
+					text.append(" " + Resources.get("emapdetailspanel.node.weightunits"));
 
 					UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(u, text.toString());
 					m = new DefaultMutableTreeNode(w);
@@ -3439,10 +3439,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			if(inmates == modInmates) {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.inmates")
+        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates")
             + ": " + inmates, null, allInmates,"occupants"));
 			} else {
-        n.setUserObject(new UnitListNodeWrapper(Resources.get("magellan.emapdetailspanel.node.inmates") + ": " + inmates + " (" + modInmates +
+        n.setUserObject(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.inmates") + ": " + inmates + " (" + modInmates +
             ")", null, allInmates,"occupants"));
 			}
 
@@ -3471,17 +3471,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		DefaultMutableTreeNode n;
 		if (fac == null) {
 			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-					Resources.get("magellan.emapdetailspanel.node.faction") + ": " + Resources.get("magellan.emapdetailspanel.node.unknownfaction"),
+					Resources.get("emapdetailspanel.node.faction") + ": " + Resources.get("emapdetailspanel.node.unknownfaction"),
 					"faction"));
 		} else {
 			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-					Resources.get("magellan.emapdetailspanel.node.faction") + ": " + fac.toString(), "faction"));
+					Resources.get("emapdetailspanel.node.faction") + ": " + fac.toString(), "faction"));
 		}
 		parent.add(n);
 
 		// captain
 		UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(owner,
-				Resources.get("magellan.emapdetailspanel.node.captain") + ": ", owner.getPersons(), owner
+				Resources.get("emapdetailspanel.node.captain") + ": ", owner.getPersons(), owner
 						.getModifiedPersons());
 		w.setReverseOrder(true);
 		w.setAdditionalIcon("captain");
@@ -3491,10 +3491,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// skill
 		Skill sailingSkill = s.getOwnerUnit().getModifiedSkill(sailingSkillType);
 		int sailingSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
-		String text = Resources.get("magellan.emapdetailspanel.node.sailingskill") + ": " + Resources.get("magellan.emapdetailspanel.node.captain")+" "
+		String text = Resources.get("emapdetailspanel.node.sailingskill") + ": " + Resources.get("emapdetailspanel.node.captain")+" "
 				+ sailingSkillAmount + " / " + s.getShipType().getCaptainSkillLevel() + ", ";
 //		n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-//				Resources.get("magellan.emapdetailspanel.node.captainskill") + ": " + sailingSkillAmount + " / "
+//				Resources.get("emapdetailspanel.node.captainskill") + ": " + sailingSkillAmount + " / "
 //						+ s.getShipType().getCaptainSkillLevel(), "captain"));
 //		parent.add(n);
 		
@@ -3512,7 +3512,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
 			}
 		}
-		text += Resources.get("magellan.emapdetailspanel.node.crew")+" "+sailingSkillAmount + " / "
+		text += Resources.get("emapdetailspanel.node.crew")+" "+sailingSkillAmount + " / "
 		+ s.getShipType().getSailorSkillLevel();
 		n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
 		parent.add(n);
@@ -3552,24 +3552,24 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					  strCap + ")");
 		}
 
-		DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.load") +
+		DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.load") +
 																		  ": " + strLoad +
 																		  ((!strModLoad.equals(strLoad))
 																		   ? (" (" +
 																		   strModLoad + ") ")
 																		   : " ") + "/ " +
 																		  strCap + " " +
-																		  Resources.get("magellan.emapdetailspanel.node.weightunits") + overLoad,
+																		  Resources.get("emapdetailspanel.node.weightunits") + overLoad,
 																		  "beladung"));
 		parent.add(n);
 		// explizit node for overloading a ship
 		if (s.getModifiedLoad()>s.getMaxCapacity()) {
-			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.emapdetailspanel.node.load") +
+			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.load") +
 					 ": " +
-					 Resources.get("magellan.emapdetailspanel.node.overloadedby") +
+					 Resources.get("emapdetailspanel.node.overloadedby") +
 					 weightNumberFormat.format(new Float((s.getModifiedLoad() - s.getMaxCapacity()) / 100.0F)) +
 					 " " +
-					 Resources.get("magellan.emapdetailspanel.node.weightunits"),
+					 Resources.get("emapdetailspanel.node.weightunits"),
 					 "warnung"));
 			parent.add(n);
 		} 
@@ -3596,7 +3596,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		rad = new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio()))
 								 .divide(new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
 
-		String rangeString = Resources.get("magellan.emapdetailspanel.node.range") + ": " + rad;
+		String rangeString = Resources.get("emapdetailspanel.node.range") + ": " + rad;
 		if((s.getOwnerUnit() != null) && (s.getOwnerUnit().getRace() != null) &&
 				   s.getOwnerUnit().getRace().getAdditiveShipBonus()!=0) {
 				rangeString += (" (" + s.getOwnerUnit().getRace().getName() + ")");
@@ -3618,7 +3618,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			int absolute = new BigDecimal(s.getDamageRatio() * s.getSize()).divide(new BigDecimal(100),
 																		 BigDecimal.ROUND_UP)
 																 .intValue();
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.damage") + ": " + s.getDamageRatio() +
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.damage") + ": " + s.getDamageRatio() +
 										"% / " + absolute, "damage"));
 		}
 	}
@@ -3649,7 +3649,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		}
 		if (givers!=null || getters!=null){
-			DefaultMutableTreeNode commandNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.command"));
+			DefaultMutableTreeNode commandNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
 			expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
 			if (givers!=null){
 				for (Iterator it = givers.iterator(); it.hasNext();){	
@@ -3688,13 +3688,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private void appendBorderInfo(Border b, DefaultMutableTreeNode parent,
 								  Collection<NodeWrapper> expandableNodes) {
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.type") + ": " + b.getType(), b.getType()));
-		parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.direction") + ": " +
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": " + b.getType(), b.getType()));
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.direction") + ": " +
 									Direction.toString(b.getDirection()),
 									"border_" + String.valueOf(b.getDirection())));
 
 		if((b.getBuildRatio() > -1) && (b.getBuildRatio()  != 100)) {
-			String str = Resources.get("magellan.emapdetailspanel.node.completion") + ": " + b.getBuildRatio() + " %";
+			String str = Resources.get("emapdetailspanel.node.completion") + ": " + b.getBuildRatio() + " %";
 
 			if(Umlaut.normalize(b.getType()).equals("STRASSE")) {
 				int stones = lastRegion.getRegionType().getRoadStones();
@@ -3725,26 +3725,26 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		
 		if (s.getLevel()<0 && s.getRank()<0){
 			// no information available
-			DefaultMutableTreeNode noInfo=createSimpleNode(Resources.get("magellan.emapdetailspanel.spell.noinfo"), "spell_noinfo");
+			DefaultMutableTreeNode noInfo=createSimpleNode(Resources.get("emapdetailspanel.spell.noinfo"), "spell_noinfo");
 			parent.add(noInfo);
 		} else {
 			// more information to tell about
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.type") + ": " + s.getTypeName(),"spell_type"));
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.level") + ": " + s.getLevel(),"spell_level"));
-			parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.rank") + ": " + s.getRank(),"spell_rank"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.type") + ": " + s.getTypeName(),"spell_type"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.level") + ": " + s.getLevel(),"spell_level"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.rank") + ": " + s.getRank(),"spell_rank"));
 	
 			if(s.getOnShip()) {
-				// parent.add(new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.spell.ship")));
-				parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.spell.ship"),"spell_ship"));
+				// parent.add(new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spell.ship")));
+				parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.ship"),"spell_ship"));
 			}
 	
 			if(s.getIsFar()) {
-				// parent.add(new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.spell.far")));
-				parent.add(createSimpleNode(Resources.get("magellan.emapdetailspanel.node.spell.far"),"spell_far"));
+				// parent.add(new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.spell.far")));
+				parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spell.far"),"spell_far"));
 			}
 	
 			if((s.getComponents() != null) && (s.getComponents().size() > 0)) {
-				DefaultMutableTreeNode componentsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.components"));
+				DefaultMutableTreeNode componentsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.components"));
 				parent.add(componentsNode);
 				expandableNodes.add(new NodeWrapper(componentsNode,
 													"EMapDetailsPanel.SpellComponentsExpanded"));
@@ -3762,14 +3762,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							String getLevelAtDays = val.substring(blankPos + 1, val.length());
 	
 							if(getLevelAtDays.equals("0")) {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.aura"), "aura");
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.aura"), "aura");
 							} else if(getLevelAtDays.equals("1")) {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.aura") +
-															" * " + Resources.get("magellan.emapdetailspanel.node.level"), "aura");
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.aura") +
+															" * " + Resources.get("emapdetailspanel.node.level"), "aura");
 							} else {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.aura") +
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.aura") +
 															" * " + getLevelAtDays + " * " +
-															Resources.get("magellan.emapdetailspanel.node.level"), "aura");
+															Resources.get("emapdetailspanel.node.level"), "aura");
 							}
 	
 						} else {
@@ -3783,14 +3783,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							String getLevelAtDays = val.substring(blankPos + 1, val.length());
 	
 							if(getLevelAtDays.equals("0")) {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.permanenteaura"), "permanentaura");
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.permanenteaura"), "permanentaura");
 							} else if(getLevelAtDays.equals("1")) {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.permanenteaura") +
-															" * " + Resources.get("magellan.emapdetailspanel.node.level"), "permanentaura");
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
+															" * " + Resources.get("emapdetailspanel.node.level"), "permanentaura");
 							} else {
-								compNode = createSimpleNode(aura + " " + Resources.get("magellan.emapdetailspanel.node.permanenteaura") +
+								compNode = createSimpleNode(aura + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
 															" * " + getLevelAtDays + " * " +
-															Resources.get("magellan.emapdetailspanel.node.level"), "permanentaura");
+															Resources.get("emapdetailspanel.node.level"), "permanentaura");
 							}
 	
 						} else {
@@ -3806,11 +3806,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							if(getLevelAtDays.equals("0")) {
 								compNode = createSimpleNode(usage + " " + Resources.getOrderTranslation(key), "items/" + key);
 							} else if(getLevelAtDays.equals("1")) {
-								compNode = createSimpleNode(usage + " " + Resources.getOrderTranslation(key) + " * " + Resources.get("magellan.emapdetailspanel.node.level"), "items/" + key);
+								compNode = createSimpleNode(usage + " " + Resources.getOrderTranslation(key) + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							} else {
-								compNode = createSimpleNode(usage + " " + Resources.get("magellan.emapdetailspanel.node.permanenteaura") +
+								compNode = createSimpleNode(usage + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
 															" * " + getLevelAtDays + " * " +
-															Resources.get("magellan.emapdetailspanel.node.level"), "items/" + key);
+															Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							}
 						} else {
 							compNode = createSimpleNode(key + ": " + val, "items/" + key);
@@ -3846,10 +3846,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private void appendPotionInfo(Potion p, DefaultMutableTreeNode parent,
 								  Collection<NodeWrapper> expandableNodes, Object backTarget) {
-		parent.add(new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.level") + ": " + p.getLevel()));
+		parent.add(new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.level") + ": " + p.getLevel()));
 
 		if(p.ingredients().size() > 0) {
-			DefaultMutableTreeNode ingredientsNode = new DefaultMutableTreeNode(Resources.get("magellan.emapdetailspanel.node.ingredients"));
+			DefaultMutableTreeNode ingredientsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.ingredients"));
 			parent.add(ingredientsNode);
 
 			for(Iterator iter = p.ingredients().iterator(); iter.hasNext();) {
@@ -4180,7 +4180,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				if((node2 != null) && (node2 instanceof DefaultMutableTreeNode)) {
 					Object o2 = ((DefaultMutableTreeNode) node2).getUserObject();
 
-					if((o2 instanceof String) && ((String) o2).equals(Resources.get("magellan.emapdetailspanel.node.tags"))) {
+					if((o2 instanceof String) && ((String) o2).equals(Resources.get("emapdetailspanel.node.tags"))) {
 						removeTag.setEnabled(true);
 					}
 				}
@@ -4208,7 +4208,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendComments(UnitContainer uc, DefaultMutableTreeNode parent,
 			Collection<NodeWrapper> expandableNodes) {
 		if ((uc.getComments() != null) && (uc.getComments().size() > 0)) {
-			CommentListNode commentNode = new CommentListNode(uc, Resources.get("magellan.emapdetailspanel.node.comments"));
+			CommentListNode commentNode = new CommentListNode(uc, Resources.get("emapdetailspanel.node.comments"));
 			parent.add(commentNode);
 			expandableNodes.add(new NodeWrapper(commentNode, "EMapDetailsPanel.CommentsExpanded"));
 
@@ -4224,7 +4224,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendComments(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if ((u.getComments() != null) && (u.getComments().size() > 0)) {
 			UnitCommentListNode unitCommentNode = new UnitCommentListNode(u,
-					Resources.get("magellan.emapdetailspanel.node.comments"));
+					Resources.get("emapdetailspanel.node.comments"));
 			parent.add(unitCommentNode);
 			expandableNodes.add(new NodeWrapper(unitCommentNode,
 					"EMapDetailsPanel.UnitCommentsExpanded"));
@@ -4304,11 +4304,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 		if(actionEvent.getSource() == addTag) {
-			String key = JOptionPane.showInputDialog(tree, Resources.get("magellan.emapdetailspanel.addtag.tagname.message"));
+			String key = JOptionPane.showInputDialog(tree, Resources.get("emapdetailspanel.addtag.tagname.message"));
 
 			if((key != null) && (key.length() > 0)) {
 				String value = JOptionPane.showInputDialog(tree,
-														   Resources.get("magellan.emapdetailspanel.addtag.tagvalue.message"));
+														   Resources.get("emapdetailspanel.addtag.tagvalue.message"));
 
 				if((value != null) && (value.length() > 0)) {
 					if(displayedObject instanceof UnitContainer) {
@@ -4436,7 +4436,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	public String getShortcutDescription(Object stroke) {
 		int index = shortCuts.indexOf(stroke);
 
-		return Resources.get("magellan.emapdetailspanel.shortcuts.description." + String.valueOf(index));
+		return Resources.get("emapdetailspanel.shortcuts.description." + String.valueOf(index));
 	}
 
 	/**
@@ -4445,7 +4445,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * 
 	 */
 	public String getListenerDescription() {
-		return Resources.get("magellan.emapdetailspanel.shortcuts.title");
+		return Resources.get("emapdetailspanel.shortcuts.title");
 	}
 
 	private class NodeWrapper {
@@ -4589,7 +4589,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		private JPanel getDataViewPanel() {
 			JPanel help = new JPanel(new GridBagLayout());
 			help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("magellan.emapdetailspanel.prefs.datadisplay")));
+											Resources.get("emapdetailspanel.prefs.datadisplay")));
 
       GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1.0, 0,
 														  GridBagConstraints.NORTH,
@@ -4601,13 +4601,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			c.gridy = 0;
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.weightx = 0.1;
-			chkShowTagButtons = new JCheckBox(Resources.get("magellan.emapdetailspanel.prefs.showTagButtons"),
+			chkShowTagButtons = new JCheckBox(Resources.get("emapdetailspanel.prefs.showTagButtons"),
 											  source.isShowingTagButtons());
 			help.add(chkShowTagButtons, c);
 
       
       c.gridy = 1;
-      chkAllowCustomIcons = new JCheckBox(Resources.get("magellan.emapdetailspanel.prefs.allowCustomIcons"),
+      chkAllowCustomIcons = new JCheckBox(Resources.get("emapdetailspanel.prefs.allowCustomIcons"),
             source.isAllowingCustomIcons());
       help.add(chkAllowCustomIcons, c);
       
@@ -4658,7 +4658,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.emapdetailspanel.prefs.title");
+			return Resources.get("emapdetailspanel.prefs.title");
 		}
 	}
 
@@ -4679,7 +4679,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * 
 		 */
 		public String toString() {
-			return Resources.get("magellan.emapdetailspanel."+key);
+			return Resources.get("emapdetailspanel."+key);
 		}
 
 		/**
@@ -5080,15 +5080,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				
 				
 
-				addComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.createcomment"));
+				addComment = new JMenuItem(Resources.get("emapdetailspanel.menu.createcomment"));
 				addComment.addActionListener(this);
 				this.add(addComment);
 
 				if(node != null && o != null) {
 					if (o instanceof UnitContainerCommentNodeWrapper){
-						modifyComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.changecomment"));
+						modifyComment = new JMenuItem(Resources.get("emapdetailspanel.menu.changecomment"));
 						modifyComment.addActionListener(this);
-						removeComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.removecomment"));
+						removeComment = new JMenuItem(Resources.get("emapdetailspanel.menu.removecomment"));
 						removeComment.addActionListener(this);
 
 						this.add(modifyComment);
@@ -5097,7 +5097,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(removeAll) {
-					removeAllComments = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.removecomment.all"));
+					removeAllComments = new JMenuItem(Resources.get("emapdetailspanel.menu.removecomment.all"));
 					removeAllComments.addActionListener(this);
 					this.add(removeAllComments);
 				}
@@ -5111,7 +5111,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					Object obj = n.getUserObject();
 
 					if((obj != null) && obj instanceof String &&
-						   obj.equals(Resources.get("magellan.emapdetailspanel.node.comments"))) {
+						   obj.equals(Resources.get("emapdetailspanel.node.comments"))) {
 						parent = n;
 
 						break;
@@ -5119,7 +5119,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(parent == null) {
-					parent = new CommentListNode(uc, Resources.get("magellan.emapdetailspanel.node.comments"));
+					parent = new CommentListNode(uc, Resources.get("emapdetailspanel.node.comments"));
 					rootNode.add(parent);
 				}
 
@@ -5258,15 +5258,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					}
 				}
 				
-				addComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.createcomment"));
+				addComment = new JMenuItem(Resources.get("emapdetailspanel.menu.createcomment"));
 				addComment.addActionListener(this);
 				this.add(addComment);
 
 				if(node != null && o != null) {
 					if (o instanceof UnitCommentNodeWrapper){
-						modifyComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.changecomment"));
+						modifyComment = new JMenuItem(Resources.get("emapdetailspanel.menu.changecomment"));
 						modifyComment.addActionListener(this);
-						removeComment = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.removecomment"));
+						removeComment = new JMenuItem(Resources.get("emapdetailspanel.menu.removecomment"));
 						removeComment.addActionListener(this);
 
 						this.add(modifyComment);
@@ -5275,7 +5275,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(removeAll) {
-					removeAllComments = new JMenuItem(Resources.get("magellan.emapdetailspanel.menu.removecomment.all"));
+					removeAllComments = new JMenuItem(Resources.get("emapdetailspanel.menu.removecomment.all"));
 					removeAllComments.addActionListener(this);
 					this.add(removeAllComments);
 				}
@@ -5289,7 +5289,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					Object obj = n.getUserObject();
 
 					if((obj != null) && obj instanceof String &&
-						   obj.equals(Resources.get("magellan.emapdetailspanel.node.comments"))) {
+						   obj.equals(Resources.get("emapdetailspanel.node.comments"))) {
 						parent = n;
 
 						break;
@@ -5297,7 +5297,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(parent == null) {
-					parent = new UnitCommentListNode(u, Resources.get("magellan.emapdetailspanel.node.comments"));
+					parent = new UnitCommentListNode(u, Resources.get("emapdetailspanel.node.comments"));
 					rootNode.add(parent);
 				}
 
@@ -5412,8 +5412,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				Object actUserObject = actArg.getUserObject();
 				if (actUserObject  instanceof SimpleNodeWrapper) {
 					SimpleNodeWrapper actSNW = (SimpleNodeWrapper) actUserObject;
-					if (actSNW.toString().toLowerCase().startsWith(Resources.get("magellan.emapdetailspanel.node.capacityonfoot").toLowerCase())
-							|| actSNW.toString().toLowerCase().startsWith(Resources.get("magellan.emapdetailspanel.node.capacityonhorse").toLowerCase()
+					if (actSNW.toString().toLowerCase().startsWith(Resources.get("emapdetailspanel.node.capacityonfoot").toLowerCase())
+							|| actSNW.toString().toLowerCase().startsWith(Resources.get("emapdetailspanel.node.capacityonhorse").toLowerCase()
 							)){
 						// OK, this is right klick in Capacity...
 						
@@ -5440,8 +5440,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * 
 	 */
 	public JMenu getMenu() {
-		JMenu tree = new JMenu(Resources.get("magellan.emapdetailspanel.menu.caption"));
-		tree.setMnemonic(Resources.get("magellan.emapdetailspanel.menu.mnemonic").charAt(0));
+		JMenu tree = new JMenu(Resources.get("emapdetailspanel.menu.caption"));
+		tree.setMnemonic(Resources.get("emapdetailspanel.menu.mnemonic").charAt(0));
 		tree.add(nodeWrapperFactory.getContextMenu());
 
 		return tree;
@@ -5462,7 +5462,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * 
 	 */
 	public String getSuperMenuTitle() {
-		return Resources.get("magellan.emapdetailspanel.menu.supertitle");
+		return Resources.get("emapdetailspanel.menu.supertitle");
 	}
 	
 	/**

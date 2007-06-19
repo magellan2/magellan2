@@ -56,7 +56,7 @@ public class MapSaveAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.mapsaveaction.accelerator",false);
+    return Resources.get("actions.mapsaveaction.accelerator",false);
   }
 
   /**
@@ -64,7 +64,7 @@ public class MapSaveAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.mapsaveaction.mnemonic",false);
+    return Resources.get("actions.mapsaveaction.mnemonic",false);
   }
 
   /**
@@ -72,11 +72,11 @@ public class MapSaveAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.mapsaveaction.name");
+    return Resources.get("actions.mapsaveaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.mapsaveaction.tooltip",false);
+    return Resources.get("actions.mapsaveaction.tooltip",false);
   }
 }

@@ -333,12 +333,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	private Vector<String> getHeaderTitles() {
 		Vector<String> v = new Vector<String>(6);
-		v.add(Resources.get("magellan.tasks.tasktablepanel.header.type"));
-		v.add(Resources.get("magellan.tasks.tasktablepanel.header.description"));
-		v.add(Resources.get("magellan.tasks.tasktablepanel.header.object"));
-		v.add(Resources.get("magellan.tasks.tasktablepanel.header.region"));
-		v.add(Resources.get("magellan.tasks.tasktablepanel.header.line"));
-//		v.add(Resources.get("magellan.tasks.tasktablepanel.header.unknown"));
+		v.add(Resources.get("tasks.tasktablepanel.header.type"));
+		v.add(Resources.get("tasks.tasktablepanel.header.description"));
+		v.add(Resources.get("tasks.tasktablepanel.header.object"));
+		v.add(Resources.get("tasks.tasktablepanel.header.region"));
+		v.add(Resources.get("tasks.tasktablepanel.header.line"));
+//		v.add(Resources.get("tasks.tasktablepanel.header.unknown"));
 
 		return v;
 	}

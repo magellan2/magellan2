@@ -277,7 +277,7 @@ public class Direction {
 			return Resources.getOrderTranslation(EresseaConstants.O_WEST);
 		}
 
-		return Resources.get("magellan.util.direction.name.long.invalid");
+		return Resources.get("util.direction.name.long.invalid");
 	}
 
 	private static String getShortDirectionString(int key) {
@@ -301,7 +301,7 @@ public class Direction {
 			return Resources.getOrderTranslation(EresseaConstants.O_W);
 		}
 
-		return Resources.get("magellan.util.direction.name.short.invalid");
+		return Resources.get("util.direction.name.short.invalid");
 	}
 
 	/**

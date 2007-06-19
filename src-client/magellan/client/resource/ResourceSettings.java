@@ -79,7 +79,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 		this.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 								 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), c);
 
-		this.btnAdd = new JButton(Resources.get("magellan.resource.resourcesettings.btn.new.caption"));
+		this.btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
 		this.btnAdd.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					btnAddActionPerformed(evt);
@@ -95,7 +95,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 		c.weighty = 0.0;
 		this.add(btnAdd, c);
 
-		this.btnRemove = new JButton(Resources.get("magellan.resource.resourcesettings.btn.remove.caption"));
+		this.btnRemove = new JButton(Resources.get("resource.resourcesettings.btn.remove.caption"));
 		btnRemove.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					btnRemoveActionPerformed(evt);
@@ -107,7 +107,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 		c.insets = new java.awt.Insets(0, 0, 5, 5);
 		add(btnRemove, c);
 
-		this.btnEdit = new JButton(Resources.get("magellan.resource.resourcesettings.btn.edit.caption"));
+		this.btnEdit = new JButton(Resources.get("resource.resourcesettings.btn.edit.caption"));
 		btnEdit.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					btnEditActionPerformed(evt);
@@ -148,8 +148,8 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 
 		if((w != null) && (w.url != null)) {
 			Object selectionValues[] = { w.toString() };
-			String input = (String) JOptionPane.showInputDialog(parent, Resources.get("magellan.resource.resourcesettings.msg.edit.text"),
-																Resources.get("magellan.resource.resourcesettings.msg.edit.title"),
+			String input = (String) JOptionPane.showInputDialog(parent, Resources.get("resource.resourcesettings.msg.edit.text"),
+																Resources.get("resource.resourcesettings.msg.edit.title"),
 																JOptionPane.PLAIN_MESSAGE, null,
 																null, selectionValues[0]);
 
@@ -158,21 +158,21 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 					try {
 						w.url = new URL(input);
 					} catch(MalformedURLException mue) {
-						JOptionPane.showMessageDialog(parent, Resources.get("magellan.resource.resourcesettings.msg.invalidformat.text"));
+						JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.invalidformat.text"));
 					}
 				} else {
 					File f = new File(input);
 
 					if(!f.exists()) {
 						if(JOptionPane.showConfirmDialog(parent,
-															 Resources.get("magellan.resource.resourcesettings.msg.usenonexisting.text"),
-															 Resources.get("magellan.resource.resourcesettings.msg.usenonexisting.title"),
+															 Resources.get("resource.resourcesettings.msg.usenonexisting.text"),
+															 Resources.get("resource.resourcesettings.msg.usenonexisting.title"),
 															 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 							try {
 								w.url = new URL(input);
 							} catch(MalformedURLException mue) {
 								JOptionPane.showMessageDialog(parent,
-															  Resources.get("magellan.resource.resourcesettings.msg.invalidformat.text"));
+															  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
 							}
 						}
 					} else {
@@ -180,7 +180,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 							w.url = f.toURI().toURL();
 						} catch(MalformedURLException mue) {
 							JOptionPane.showMessageDialog(parent,
-														  Resources.get("magellan.resource.resourcesettings.msg.invalidformat.text"));
+														  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
 						}
 					}
 				}
@@ -224,12 +224,12 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 						// in this case the user double clicked a directory instead of just selecting it
 						urlWrapper = new URLWrapper(file.getParentFile().toURI().toURL());
 					} else {
-						JOptionPane.showMessageDialog(parent, Resources.get("magellan.resource.resourcesettings.msg.nonexistingfile.text"));
+						JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.nonexistingfile.text"));
 					}
 				}
 			} catch(MalformedURLException ex) {
 				JOptionPane.showMessageDialog(parent,
-											  Resources.get("magellan.resource.resourcesettings.msg.urlexception.text") + " " +
+											  Resources.get("resource.resourcesettings.msg.urlexception.text") + " " +
 											  ex.toString());
 			}
 		}
@@ -275,7 +275,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.resource.resourcesettings.title");
+		return Resources.get("resource.resourcesettings.title");
 	}
 
 	private DefaultListModel getWrappedURLs(Collection urls) {

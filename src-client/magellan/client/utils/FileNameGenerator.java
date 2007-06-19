@@ -137,14 +137,14 @@ public class FileNameGenerator implements PreferencesFactory {
 			fileNameGeneratorPanel.setLayout(new GridBagLayout());
 			fileNameGeneratorPanel.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
 															   new EmptyBorder(0, 3, 3, 3)),
-											Resources.get("magellan.util.filenamegenerator.prefs.title")));
+											Resources.get("util.filenamegenerator.prefs.title")));
 
 			GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
 														  GridBagConstraints.WEST,
 														  GridBagConstraints.HORIZONTAL,
 														  new Insets(2, 10, 1, 10), 0, 0);
 
-			JLabel ordersSaveFileNamePatternLabel = new JLabel(Resources.get("magellan.util.filenamegenerator.field.ordersSaveFileNamePattern.label"));
+			JLabel ordersSaveFileNamePatternLabel = new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNamePattern.label"));
 			fileNameGeneratorPanel.add(ordersSaveFileNamePatternLabel,c);
 			
 			c.gridy++;
@@ -152,7 +152,7 @@ public class FileNameGenerator implements PreferencesFactory {
 			fileNameGeneratorPanel.add(patternField, c);
 			
 			c.gridy++;
-			JLabel ordersSaveFileNamePatternInfo = new JLabel(Resources.get("magellan.util.filenamegenerator.field.ordersSaveFileNameInfo.label"));
+			JLabel ordersSaveFileNamePatternInfo = new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNameInfo.label"));
 			fileNameGeneratorPanel.add(ordersSaveFileNamePatternInfo,c);
 
 			return fileNameGeneratorPanel;
@@ -190,7 +190,7 @@ public class FileNameGenerator implements PreferencesFactory {
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.util.filenamegenerator.prefs.title");
+			return Resources.get("util.filenamegenerator.prefs.title");
 		}
 	}
 

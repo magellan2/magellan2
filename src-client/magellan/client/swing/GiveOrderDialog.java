@@ -59,7 +59,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 	 */
 	public GiveOrderDialog(Frame owner) {
 		super(owner, true);
-		setTitle(Resources.get("magellan.giveorderdialog.window.title"));
+		setTitle(Resources.get("giveorderdialog.window.title"));
 
 		Container cp = getContentPane();
 		cp.setLayout(new GridBagLayout());
@@ -68,7 +68,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 													  GridBagConstraints.BOTH,
 													  new Insets(3, 3, 3, 3), 0, 0);
 
-		cp.add(new JLabel(Resources.get("magellan.giveorderdialog.window.message")), c);
+		cp.add(new JLabel(Resources.get("giveorderdialog.window.message")), c);
 
 		order = new JTextField();
 		order.setPreferredSize(new Dimension(200, 25));
@@ -76,9 +76,9 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		c.weightx = 0.5;
 		cp.add(order, c);
 
-		JRadioButton firstButton = new JRadioButton(Resources.get("magellan.giveorderdialog.radio.first.title"));
+		JRadioButton firstButton = new JRadioButton(Resources.get("giveorderdialog.radio.first.title"));
 		firstButton.setActionCommand(FIRST_POS);
-		JRadioButton lastButton = new JRadioButton(Resources.get("magellan.giveorderdialog.radio.last.title"));
+		JRadioButton lastButton = new JRadioButton(Resources.get("giveorderdialog.radio.last.title"));
 		lastButton.setActionCommand(LAST_POS);
 		position = new ButtonGroup();
 		position.add(firstButton);
@@ -96,27 +96,27 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		cp.add(lastButton, c);
 		
 		
-		replaceOrders = new JCheckBox(Resources.get("magellan.giveorderdialog.chkbox.replaceOrder.title"));
+		replaceOrders = new JCheckBox(Resources.get("giveorderdialog.chkbox.replaceOrder.title"));
 		c.gridx = 0;
 		c.gridy = 2;
 		c.weightx = 0;
 		cp.add(replaceOrders, c);
 
-		keepComments = new JCheckBox(Resources.get("magellan.giveorderdialog.chkbox.keepComments.title"));
+		keepComments = new JCheckBox(Resources.get("giveorderdialog.chkbox.keepComments.title"));
 		keepComments.setSelected(true);
 		c.gridy = 3;
 		cp.add(keepComments, c);
 
-		ok = new JButton(Resources.get("magellan.giveorderdialog.btn.ok.caption"));
-		ok.setMnemonic(Resources.get("magellan.giveorderdialog.btn.ok.mnemonic").charAt(0));
+		ok = new JButton(Resources.get("giveorderdialog.btn.ok.caption"));
+		ok.setMnemonic(Resources.get("giveorderdialog.btn.ok.mnemonic").charAt(0));
 
 		// actionListener is added in the show() method
 		c.gridy = 4;
 		c.anchor = GridBagConstraints.EAST;
 		cp.add(ok, c);
 
-		cancel = new JButton(Resources.get("magellan.giveorderdialog.btn.cancel.caption"));
-		cancel.setMnemonic(Resources.get("magellan.giveorderdialog.btn.cancel.mnemonic").charAt(0));
+		cancel = new JButton(Resources.get("giveorderdialog.btn.cancel.caption"));
+		cancel.setMnemonic(Resources.get("giveorderdialog.btn.cancel.mnemonic").charAt(0));
 		cancel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();

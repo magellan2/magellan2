@@ -116,7 +116,7 @@ public class HighlightImageCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.highlightimagecellrenderer.name");
+    return Resources.get("map.highlightimagecellrenderer.name");
   }
 
 }

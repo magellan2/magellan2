@@ -226,7 +226,7 @@ public class Units {
 			if(currentCategoryMap.size() > 0) {
 				
 				String catIconName = magellan.library.utils.Umlaut.convertUmlauts(currentCategoryMap.getCategory().getName());
-				String nodeName = Resources.get("magellan.util.units."+catIconName);
+				String nodeName = Resources.get("util.units."+catIconName);
 				ItemCategoryNodeWrapper wrapper = new ItemCategoryNodeWrapper(currentCategoryMap.getCategory(), -1,nodeName);
 				wrapper.setIcons(catIconName);
 				categoryNode = new DefaultMutableTreeNode(wrapper);
@@ -280,7 +280,7 @@ public class Units {
 								text = String.valueOf(itr.amount) + " (!!!) "; //TODO: use append
 								icons.add("warnung");
 							}
-							text = text + Resources.get("magellan.util.units.node.reserved");
+							text = text + Resources.get("util.units.node.reserved");
 							icons.add("reserve");
 							
 							SimpleNodeWrapper reserveNodeWrapper = factory.createSimpleNodeWrapper(text, icons);

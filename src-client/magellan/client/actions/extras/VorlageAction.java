@@ -81,7 +81,7 @@ public class VorlageAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.vorlageaction.accelerator",false);
+    return Resources.get("actions.vorlageaction.accelerator",false);
   }
 
   /**
@@ -89,7 +89,7 @@ public class VorlageAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.vorlageaction.mnemonic",false);
+    return Resources.get("actions.vorlageaction.mnemonic",false);
   }
 
   /**
@@ -97,11 +97,11 @@ public class VorlageAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.vorlageaction.name");
+    return Resources.get("actions.vorlageaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.vorlageaction.tooltip",false);
+    return Resources.get("actions.vorlageaction.tooltip",false);
   }
 }

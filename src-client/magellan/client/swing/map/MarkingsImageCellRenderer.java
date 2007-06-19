@@ -143,7 +143,7 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.markingsimagecellrenderer.name");
+    return Resources.get("map.markingsimagecellrenderer.name");
   }
 
 }

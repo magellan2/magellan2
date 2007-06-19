@@ -89,10 +89,10 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
 	 */
 	public java.lang.String getShortcutDescription(java.lang.Object obj) {
 		if(imStroke.equals(obj)) {
-			return Resources.get( "magellan.actions.echeckaction.shortcuts.description.1");
+			return Resources.get( "actions.echeckaction.shortcuts.description.1");
 		}
 
-		return Resources.get("magellan.actions.echeckaction.shortcuts.description.0");
+		return Resources.get("actions.echeckaction.shortcuts.description.0");
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
 	 * 
 	 */
 	public java.lang.String getListenerDescription() {
-		return Resources.get("magellan.actions.echeckaction.shortcuts.title");
+		return Resources.get("actions.echeckaction.shortcuts.title");
 	}
 
 	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
@@ -137,7 +137,7 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.echeckaction.accelerator",false);
+    return Resources.get("actions.echeckaction.accelerator",false);
   }
 
   /**
@@ -145,7 +145,7 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.echeckaction.mnemonic",false);
+    return Resources.get("actions.echeckaction.mnemonic",false);
   }
 
   /**
@@ -153,12 +153,12 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.echeckaction.name");
+    return Resources.get("actions.echeckaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.echeckaction.tooltip",false);
+    return Resources.get("actions.echeckaction.tooltip",false);
   }
 
 

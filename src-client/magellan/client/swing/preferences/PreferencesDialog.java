@@ -109,7 +109,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 	public PreferencesDialog(Frame owner, boolean modal, Properties settings) {
 		super(owner, modal);
 		this.settings = settings;
-		setTitle(Resources.get("magellan.preferences.preferencesdialog.window.title"));
+		setTitle(Resources.get("preferences.preferencesdialog.window.title"));
 
 		adapters = new LinkedList<PreferencesAdapter>();
 
@@ -193,7 +193,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 	}
 
 	private Container getMainPane() {
-		JButton okButton = new JButton(Resources.get("magellan.preferences.preferencesdialog.btn.ok.caption"));
+		JButton okButton = new JButton(Resources.get("preferences.preferencesdialog.btn.ok.caption"));
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					applyPreferences();
@@ -201,7 +201,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 				}
 			});
 
-		JButton cancelButton = new JButton(Resources.get("magellan.preferences.preferencesdialog.btn.cancel.caption"));
+		JButton cancelButton = new JButton(Resources.get("preferences.preferencesdialog.btn.cancel.caption"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					//reloadPreferences();
@@ -209,7 +209,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 				}
 			});
 
-		JButton applyButton = new JButton(Resources.get("magellan.preferences.preferencesdialog.btn.apply.caption"));
+		JButton applyButton = new JButton(Resources.get("preferences.preferencesdialog.btn.apply.caption"));
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					applyPreferences();
@@ -279,7 +279,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 			// maybe some code to center the tree and make it smaller
 			JPanel help = new JPanel(CenterLayout.SPAN_BOTH_LAYOUT);
 
-			//help.add(new JTextfield(Resources.get("magellan.preferences.preferencesdialog.tree.title")));
+			//help.add(new JTextfield(Resources.get("preferences.preferencesdialog.tree.title")));
 			help.add(treePane);
 
 			//this.add(help, BorderLayout.WEST);

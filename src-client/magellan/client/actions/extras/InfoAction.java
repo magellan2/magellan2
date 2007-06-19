@@ -79,7 +79,7 @@ public class InfoAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.infoaction.accelerator",false);
+    return Resources.get("actions.infoaction.accelerator",false);
   }
 
   /**
@@ -87,7 +87,7 @@ public class InfoAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.infoaction.mnemonic",false);
+    return Resources.get("actions.infoaction.mnemonic",false);
   }
 
   /**
@@ -95,12 +95,12 @@ public class InfoAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.infoaction.name");
+    return Resources.get("actions.infoaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.infoaction.tooltip",false);
+    return Resources.get("actions.infoaction.tooltip",false);
   }
 
 }

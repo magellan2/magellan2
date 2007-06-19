@@ -130,7 +130,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		con.gridheight = 1;
 		con.gridx = 0;
 		con.gridy = 0;
-		toolTipOn = new JCheckBox(Resources.get("magellan.tree.iconadapter.tooltips.show.text"), CellRenderer.showTooltips);
+		toolTipOn = new JCheckBox(Resources.get("tree.iconadapter.tooltips.show.text"), CellRenderer.showTooltips);
 		add(toolTipOn, con);
 		con.gridx = 1;
 
@@ -200,7 +200,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.tree.iconadapter.iconadapter.title");
+		return Resources.get("tree.iconadapter.iconadapter.title");
 	}
 
 	/**
@@ -243,22 +243,22 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 * Creates a new EmphasizeStyle object.
 		 */
 		public EmphasizeStyle() {
-			JLabel eLabel = new JLabel(Resources.get("magellan.tree.iconadapter.emphasize.text"));
+			JLabel eLabel = new JLabel(Resources.get("tree.iconadapter.emphasize.text"));
 
 			try {
-				eLabel.setToolTipText(Resources.get("magellan.tree.iconadapter.emphasize.tooltip"));
+				eLabel.setToolTipText(Resources.get("tree.iconadapter.emphasize.tooltip"));
 			} catch(MissingResourceException mexc) {
 			}
 
 			this.add(eLabel);
 
 			Container style = Box.createVerticalBox();
-			style.add(bold = new JCheckBox(Resources.get("magellan.tree.iconadapter.emphasize.bold"),
+			style.add(bold = new JCheckBox(Resources.get("tree.iconadapter.emphasize.bold"),
 										   (CellRenderer.emphasizeStyleChange & Font.BOLD) != 0));
-			style.add(italic = new JCheckBox(Resources.get("magellan.tree.iconadapter.emphasize.italic"),
+			style.add(italic = new JCheckBox(Resources.get("tree.iconadapter.emphasize.italic"),
 											 (CellRenderer.emphasizeStyleChange & Font.ITALIC) != 0));
 			this.add(style);
-			this.add(actColor = new JCheckBox(Resources.get("magellan.tree.iconadapter.emphasize.color.text"),
+			this.add(actColor = new JCheckBox(Resources.get("tree.iconadapter.emphasize.color.text"),
 											  CellRenderer.emphasizeColor != null));
 			colButton = new JButton(" ");
 			colButton.addActionListener(this);
@@ -278,7 +278,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 */
 		public void actionPerformed(ActionEvent e) {
 			JButton source = (JButton) e.getSource();
-			Color col = JColorChooser.showDialog(this, Resources.get("magellan.tree.iconadapter.colorchooser.title"),
+			Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colorchooser.title"),
 												 source.getBackground());
 
 			if(col != null) {
@@ -521,7 +521,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 */
 		public ColorMapping() {
 			this.setLayout(new GridBagLayout());
-			this.setBorder(new TitledBorder(Resources.get("magellan.tree.iconadapter.colormap.title")));
+			this.setBorder(new TitledBorder(Resources.get("tree.iconadapter.colormap.title")));
 
 			GridBagConstraints con = new GridBagConstraints();
 			con.weighty = 1;
@@ -548,30 +548,30 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 
 			Border border = BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED);
 
-			buttons[0] = new JButton(Resources.get("magellan.tree.iconadapter.colormap.button0"));
+			buttons[0] = new JButton(Resources.get("tree.iconadapter.colormap.button0"));
 			buttons[0].addActionListener(this);
 			buttons[0].setBorder(border);
 			bBox.add(buttons[0]);
 
-			buttons[1] = new JButton(Resources.get("magellan.tree.iconadapter.colormap.button1"));
+			buttons[1] = new JButton(Resources.get("tree.iconadapter.colormap.button1"));
 			buttons[1].addActionListener(this);
 			buttons[1].setEnabled(false);
 			buttons[1].setBorder(border);
 			bBox.add(buttons[1]);
 
-			buttons[2] = new JButton(Resources.get("magellan.tree.iconadapter.colormap.button2"));
+			buttons[2] = new JButton(Resources.get("tree.iconadapter.colormap.button2"));
 			buttons[2].addActionListener(this);
 			buttons[2].setEnabled(false);
 			buttons[2].setBorder(border);
 			bBox.add(buttons[2]);
 
-			buttons[3] = new JButton(Resources.get("magellan.tree.iconadapter.colormap.button3"));
+			buttons[3] = new JButton(Resources.get("tree.iconadapter.colormap.button3"));
 			buttons[3].addActionListener(this);
 			buttons[3].setBorder(border);
 			bBox.add(Box.createVerticalStrut(20));
 			bBox.add(buttons[3]);
 
-			buttons[4] = new JButton(Resources.get("magellan.tree.iconadapter.colormap.button4"));
+			buttons[4] = new JButton(Resources.get("tree.iconadapter.colormap.button4"));
 			buttons[4].addActionListener(this);
 			buttons[4].setBorder(border);
 			bBox.add(Box.createVerticalStrut(20));
@@ -587,8 +587,8 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 			this.add(bBox, con);
 
 			dialog = new HelpDialog((Frame) this.getTopLevelAncestor(),
-									Resources.get("magellan.tree.iconadapter.colormap.help.text"),
-									Resources.get("magellan.tree.iconadapter.colormap.help.button"));
+									Resources.get("tree.iconadapter.colormap.help.text"),
+									Resources.get("tree.iconadapter.colormap.help.button"));
 		}
 
 		protected DefaultListModel createListModel() {
@@ -668,7 +668,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 			boolean error = false;
 
 			do {
-				value = JOptionPane.showInputDialog(this, Resources.get("magellan.tree.iconadapter.colormap.create.value"));
+				value = JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.colormap.create.value"));
 
 				if(value == null) {
 					return;
@@ -677,11 +677,11 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 				error = value.equals("") || valueExists(value);
 
 				if(error) {
-					JOptionPane.showMessageDialog(this, Resources.get("magellan.tree.iconadapter.colormap.create.valueExisting"));
+					JOptionPane.showMessageDialog(this, Resources.get("tree.iconadapter.colormap.create.valueExisting"));
 				}
 			} while(error);
 
-			Color col = JColorChooser.showDialog(this, Resources.get("magellan.tree.iconadapter.colormap.create.color"),
+			Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colormap.create.color"),
 												 CellRenderer.getTypeset(3).getForeground());
 
 			if(col != null) {
@@ -692,14 +692,14 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		protected void changePair() {
 			MapElement elem = (MapElement) list.getSelectedValue();
 			int index = list.getSelectedIndex();
-			String newValue = JOptionPane.showInputDialog(this, Resources.get("magellan.tree.iconadapter.colormap.change.value"));
+			String newValue = JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.colormap.change.value"));
 
 			if(newValue == null) {
 				return;
 			}
 
 			if(!newValue.equals("") && valueExists(newValue)) {
-				JOptionPane.showMessageDialog(this, Resources.get("magellan.tree.iconadapter.colormap.change.valueExisting"));
+				JOptionPane.showMessageDialog(this, Resources.get("tree.iconadapter.colormap.change.valueExisting"));
 
 				return;
 			}
@@ -708,7 +708,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 				newValue = elem.value;
 			}
 
-			Color col = JColorChooser.showDialog(this, Resources.get("magellan.tree.iconadapter.colormap.change.color"),
+			Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colormap.change.color"),
 												 elem.color);
 
 			if(col == null) {
@@ -771,7 +771,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.tree.iconadapter.colormap.title");
+			return Resources.get("tree.iconadapter.colormap.title");
 		}
 
 		/**
@@ -932,10 +932,10 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 						}
 					}
 
-					buttons[4].setText(Resources.get("magellan.tree.iconadapter.icontext.position.icon"));
+					buttons[4].setText(Resources.get("tree.iconadapter.icontext.position.icon"));
 					last = buttons[5];
 					buttons[5].setSelected(true);
-					buttons[5].setText(Resources.get("magellan.tree.iconadapter.icontext.position.t"));
+					buttons[5].setText(Resources.get("tree.iconadapter.icontext.position.t"));
 				}
 
 				/**
@@ -977,7 +977,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 				public void actionPerformed(ActionEvent e) {
 					if(last != null) {
 						if(last == buttons[4]) {
-							last.setText(Resources.get("magellan.tree.iconadapter.icontext.position.icon"));
+							last.setText(Resources.get("tree.iconadapter.icontext.position.icon"));
 						} else {
 							last.setText(null);
 						}
@@ -986,9 +986,9 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 					last = (AbstractButton) e.getSource();
 
 					if(last == buttons[4]) {
-						last.setText(Resources.get("magellan.tree.iconadapter.icontext.position.icon&text"));
+						last.setText(Resources.get("tree.iconadapter.icontext.position.icon&text"));
 					} else {
-						last.setText(Resources.get("magellan.tree.iconadapter.icontext.position.t"));
+						last.setText(Resources.get("tree.iconadapter.icontext.position.t"));
 					}
 
 					StringTokenizer st = new StringTokenizer(e.getActionCommand(), ";");
@@ -1060,9 +1060,9 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 
 					// Style checkboxes
 					styles = new JCheckBox[2];
-					styles[0] = new JCheckBox(Resources.get("magellan.tree.iconadapter.icontext.text.font.bold"));
+					styles[0] = new JCheckBox(Resources.get("tree.iconadapter.icontext.text.font.bold"));
 					styles[0].setFont(styles[0].getFont().deriveFont(Font.BOLD));
-					styles[1] = new JCheckBox(Resources.get("magellan.tree.iconadapter.icontext.text.font.italic"));
+					styles[1] = new JCheckBox(Resources.get("tree.iconadapter.icontext.text.font.italic"));
 					styles[1].setFont(styles[1].getFont().deriveFont(Font.ITALIC));
 
 					JPanel p2 = new JPanel();
@@ -1142,7 +1142,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 					for(int i = 0; i < 4; i++) {
 						con.gridx = 0;
 						con.gridy = i;
-						this.add(boxes[i] = new JCheckBox(Resources.get("magellan.tree.iconadapter.styles.color." +
+						this.add(boxes[i] = new JCheckBox(Resources.get("tree.iconadapter.styles.color." +
 																	String.valueOf(i))), con);
 						con.gridx = 1;
 						this.add(buttons[i] = new JButton(" "), con);
@@ -1224,7 +1224,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 				 */
 				public void actionPerformed(ActionEvent e) {
 					JButton source = (JButton) e.getSource();
-					Color col = JColorChooser.showDialog(this, Resources.get("magellan.tree.iconadapter.colorchooser.title"),
+					Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colorchooser.title"),
 														 source.getBackground());
 
 					if(col != null) {
@@ -1258,7 +1258,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 
 				// font
 				JPanel p = new JPanel(new GridBagLayout());
-				fontEnabled = new JCheckBox(Resources.get("magellan.tree.iconadapter.icontext.text.font"), set.getFont() != null);
+				fontEnabled = new JCheckBox(Resources.get("tree.iconadapter.icontext.text.font"), set.getFont() != null);
 				con.fill = GridBagConstraints.NONE;
 				con.gridx = 0;
 				con.gridwidth = 1;
@@ -1357,7 +1357,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 */
 		public Stylesets() {
 			this.setLayout(new BorderLayout(1, 5));
-			this.setBorder(new TitledBorder(Resources.get("magellan.tree.iconadapter.styles.title")));
+			this.setBorder(new TitledBorder(Resources.get("tree.iconadapter.styles.title")));
 
 			// left: "add" & "remove" buttons + styleset combobox
 			JPanel p = new JPanel(new FlowLayout(FlowLayout.LEADING));
@@ -1370,10 +1370,10 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 
 			this.add(new JScrollPane(stylesets), BorderLayout.WEST);
 
-			JButton button = new JButton(Resources.get("magellan.tree.iconadapter.styles.add"));
+			JButton button = new JButton(Resources.get("tree.iconadapter.styles.add"));
 			button.addActionListener(this);
 			p.add(button);
-			button = new JButton(Resources.get("magellan.tree.iconadapter.styles.remove"));
+			button = new JButton(Resources.get("tree.iconadapter.styles.remove"));
 			button.addActionListener(this);
 			p.add(button);
 			removeButton = button;
@@ -1433,15 +1433,15 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 			}
 
 			DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeObject("SIMPLE",
-																					Resources.get("magellan.tree.iconadapter.styles.simple")));
+																					Resources.get("tree.iconadapter.styles.simple")));
 			DefaultMutableTreeNode firstNode = node;
 			newRoot.add(node);
 			nodeMap.put("SIMPLE", node);
-			node = new DefaultMutableTreeNode(new TreeObject("MAIN", Resources.get("magellan.tree.iconadapter.styles.main")));
+			node = new DefaultMutableTreeNode(new TreeObject("MAIN", Resources.get("tree.iconadapter.styles.main")));
 			newRoot.add(node);
 			nodeMap.put("MAIN", node);
 			node = new DefaultMutableTreeNode(new TreeObject("ADDITIONAL",
-															 Resources.get("magellan.tree.iconadapter.styles.additional")));
+															 Resources.get("tree.iconadapter.styles.additional")));
 			newRoot.add(node);
 			nodeMap.put("MAIN", node);
 
@@ -1580,7 +1580,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		}
 
 		protected void addStyleset() {
-			String name = JOptionPane.showInputDialog(this, Resources.get("magellan.tree.iconadapter.styles.add.text"));
+			String name = JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.styles.add.text"));
 
 			if(name == null) {
 				return;
@@ -1697,7 +1697,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.tree.iconadapter.styles.title");
+			return Resources.get("tree.iconadapter.styles.title");
 		}
 
 		/**

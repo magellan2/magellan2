@@ -2268,7 +2268,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
                 myName = getName();
             }
             if(myName == null) {
-                myName = Resources.get("magellan.unit.unit")+ " "+toString(false);
+                myName = Resources.get("unit.unit")+ " "+toString(false);
             }
             return myName + " ("+toString(false)+")";
         } else {

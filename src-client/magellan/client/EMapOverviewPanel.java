@@ -237,7 +237,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     loadExpandProperties();
     loadCollapseProperty();
 
-    nodeWrapperFactory = new NodeWrapperFactory(settings, "EMapOverviewPanel", Resources.get("magellan.emapoverviewpanel.wrapperfactory.title"));
+    nodeWrapperFactory = new NodeWrapperFactory(settings, "EMapOverviewPanel", Resources.get("emapoverviewpanel.wrapperfactory.title"));
     nodeWrapperFactory.setSource(this);
 
     // to get the pref-adapter
@@ -1957,7 +1957,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public String getShortcutDescription(Object stroke) {
     int index = shortcuts.indexOf(stroke);
 
-    return Resources.get("magellan.emapoverviewpanel.shortcut.description." + String.valueOf(index));
+    return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index));
   }
 
   /**
@@ -1966,7 +1966,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * 
    */
   public String getListenerDescription() {
-    return Resources.get("magellan.emapoverviewpanel.shortcut.title");
+    return Resources.get("emapoverviewpanel.shortcut.title");
   }
 
   private class EMapOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
@@ -1982,7 +1982,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
        */
       public SkillPreferences() {
         this.setLayout(new BorderLayout());
-        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.skillorder")));
+        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.skillorder")));
 
         skillList = new JList();
         skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -2004,7 +2004,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         JPanel buttons = new JPanel(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 1, 2, 1), 0, 0);
 
-        upButton = new JButton(Resources.get("magellan.emapoverviewpanel.prefs.upbutton.caption"));
+        upButton = new JButton(Resources.get("emapoverviewpanel.prefs.upbutton.caption"));
         upButton.setPreferredSize(new Dimension(110, 40));
         upButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -2058,7 +2058,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         c.gridy++;
 
-        downButton = new JButton(Resources.get("magellan.emapoverviewpanel.prefs.downbutton.caption"));
+        downButton = new JButton(Resources.get("emapoverviewpanel.prefs.downbutton.caption"));
         downButton.setPreferredSize(new Dimension(110, 40));
         downButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -2123,7 +2123,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         c.weighty = 0;
         c.insets.bottom = 0;
 
-        refreshListButton = new JButton(Resources.get("magellan.emapoverviewpanel.prefs.refreshlistbutton.caption"));
+        refreshListButton = new JButton(Resources.get("emapoverviewpanel.prefs.refreshlistbutton.caption"));
         refreshListButton.setPreferredSize(new Dimension(110, 40));
         refreshListButton.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -2186,7 +2186,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
        * 
        */
       public String getTitle() {
-        return Resources.get("magellan.emapoverviewpanel.prefs.skillorder");
+        return Resources.get("emapoverviewpanel.prefs.skillorder");
       }
 
       /**
@@ -2273,13 +2273,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      */
     public EMapOverviewPreferences(EMapOverviewPanel parent, Properties settings) {
       overviewPanel = parent;
-      chkSortRegions = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs.sortregions"));
+      chkSortRegions = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortregions"));
 
-      chkSortShipUnderUnitParent = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs.sortShipUnderUnitParent"));
+      chkSortShipUnderUnitParent = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortShipUnderUnitParent"));
 
-      rdbSortRegionsCoordinates = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.sortbycoordinates"));
+      rdbSortRegionsCoordinates = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbycoordinates"));
 
-      rdbSortRegionsIslands = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.sortbyislands"));
+      rdbSortRegionsIslands = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyislands"));
 
       ButtonGroup regionSortButtons = new ButtonGroup();
       regionSortButtons.add(rdbSortRegionsCoordinates);
@@ -2287,39 +2287,39 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       JPanel pnlRegionSortButtons = new JPanel();
       pnlRegionSortButtons.setLayout(new BoxLayout(pnlRegionSortButtons, BoxLayout.Y_AXIS));
-      pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.regionsorting")));
+      pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.regionsorting")));
       pnlRegionSortButtons.add(chkSortRegions);
       pnlRegionSortButtons.add(rdbSortRegionsCoordinates);
       pnlRegionSortButtons.add(rdbSortRegionsIslands);
 
-      chkDisplayIslands = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs.showislands"));
+      chkDisplayIslands = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showislands"));
 
-      chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs_treebuildings"));
-      chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs_treeships"));
-      chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs_treecomments"));
+      chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treebuildings"));
+      chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treeships"));
+      chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treecomments"));
 
       JPanel pnlTreeStructure = new JPanel();
       pnlTreeStructure.setLayout(new GridBagLayout());
 
       GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
-      pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.treeStructure")));
+      pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure")));
 
       JPanel elementsPanel = new JPanel();
       elementsPanel.setLayout(new BorderLayout(0, 0));
-      elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.available")));
+      elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.available")));
 
       DefaultListModel elementsListModel = new DefaultListModel();
-      elementsListModel.add(TreeHelper.FACTION, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.faction"));
-      elementsListModel.add(TreeHelper.GROUP, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.group"));
-      elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.combat"));
-      elementsListModel.add(TreeHelper.HEALTH, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.health"));
-      elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
-      elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
-      elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING }));
-      elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING2 }));
-      elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING3 }));
-      elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING4 }));
-      elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING5 }));
+      elementsListModel.add(TreeHelper.FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.faction"));
+      elementsListModel.add(TreeHelper.GROUP, Resources.get("emapoverviewpanel.prefs.treeStructure.element.group"));
+      elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.combat"));
+      elementsListModel.add(TreeHelper.HEALTH, Resources.get("emapoverviewpanel.prefs.treeStructure.element.health"));
+      elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
+      elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources.get("emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
+      elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING }));
+      elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING2 }));
+      elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING3 }));
+      elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING4 }));
+      elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING5 }));
 
       elementsList = new JList(elementsListModel);
 
@@ -2328,7 +2328,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       JPanel usePanel = new JPanel();
       usePanel.setLayout(new GridBagLayout());
-      usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.use")));
+      usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.use")));
 
       useList = new JList();
       useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -2344,7 +2344,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       c.gridy++;
       c.weighty = 0;
 
-      JButton up = new JButton(Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.up"));
+      JButton up = new JButton(Resources.get("emapoverviewpanel.prefs.treeStructure.up"));
       up.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           int pos = useList.getSelectedIndex();
@@ -2364,7 +2364,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       c.gridy++;
 
-      JButton down = new JButton(Resources.get("magellan.emapoverviewpanel.prefs.treeStructure.down"));
+      JButton down = new JButton(Resources.get("emapoverviewpanel.prefs.treeStructure.down"));
       down.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           int pos = useList.getSelectedIndex();
@@ -2440,7 +2440,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       pnlTreeStructure.add(new JPanel(), c);
 
       // Unit sorting
-      rdbSortUnitsUnsorted = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.reportorder"));
+      rdbSortUnitsUnsorted = new JRadioButton(Resources.get("emapoverviewpanel.prefs.reportorder"));
       rdbSortUnitsUnsorted.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           skillSort.setEnabled(false);
@@ -2449,7 +2449,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       });
 
-      rdbSortUnitsSkills = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.sortbyskills"));
+      rdbSortUnitsSkills = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyskills"));
       rdbSortUnitsSkills.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           skillSort.setEnabled(true);
@@ -2458,13 +2458,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       });
 
-      useBestSkill = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.usebestskill"));
-      useTopmostSkill = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.usetopmostskill"));
+      useBestSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usebestskill"));
+      useTopmostSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usetopmostskill"));
 
       ButtonGroup whichSkillToUse = new ButtonGroup();
       whichSkillToUse.add(useBestSkill);
       whichSkillToUse.add(useTopmostSkill);
-      rdbSortUnitsNames = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.sortbynames"));
+      rdbSortUnitsNames = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbynames"));
       rdbSortUnitsNames.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           skillSort.setEnabled(false);
@@ -2481,7 +2481,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       JPanel pnlUnitSort = new JPanel();
       pnlUnitSort.setLayout(new GridBagLayout());
       c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-      pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.unitsorting")));
+      pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.unitsorting")));
       pnlUnitSort.add(rdbSortUnitsUnsorted, c);
       c.gridy = 1;
       pnlUnitSort.add(rdbSortUnitsSkills, c);
@@ -2552,7 +2552,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       this.add(pnlUnitSort, c);
 
       JPanel help = new JPanel(new GridLayout(1, 2));
-      help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.emapoverviewpanel.prefs.expand.title")));
+      help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.expand.title")));
       help.add(ePanel = new ExpandPanel()); // , BorderLayout.WEST);
       help.add(cPanel = new CollapsePanel()); // , BorderLayout.EAST);
       c.gridy++;
@@ -2689,7 +2689,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      * 
      */
     public String getTitle() {
-      return Resources.get("magellan.emapoverviewpanel.prefs.title");
+      return Resources.get("emapoverviewpanel.prefs.title");
     }
 
     /**
@@ -2719,7 +2719,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         boolean expanded = (expandMode & EXPAND_FLAG) != 0;
 
-        radioButtons[0] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.expand.none"), !expanded);
+        radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.none"), !expanded);
         group.add(radioButtons[0]);
         this.add(radioButtons[0], con);
 
@@ -2728,12 +2728,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         this.add(new JSeparator(JSeparator.HORIZONTAL), con);
         con.fill = GridBagConstraints.NONE;
 
-        radioButtons[1] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.expand.faction"), (expanded && ((expandMode >> 2) == 0)));
+        radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.faction"), (expanded && ((expandMode >> 2) == 0)));
         group.add(radioButtons[1]);
         con.gridy++;
         this.add(radioButtons[1], con);
 
-        radioButtons[2] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.expand.full"), (expanded && ((expandMode >> 2) == 3)));
+        radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.full"), (expanded && ((expandMode >> 2) == 3)));
         group.add(radioButtons[2]);
         con.gridy++;
         this.add(radioButtons[2], con);
@@ -2744,7 +2744,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         JPanel help = new JPanel();
         help.add(Box.createRigidArea(new Dimension(20, 5)));
 
-        String s = Resources.get("magellan.emapoverviewpanel.prefs.expand.trustlevel");
+        String s = Resources.get("emapoverviewpanel.prefs.expand.trustlevel");
         int index = s.indexOf("#T");
 
         if (index == 0) {
@@ -2767,7 +2767,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         this.add(help, con);
 
         con.gridy++;
-        checkBox = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs.expand.ifinside"), (expandMode & EXPAND_IFINSIDE_FLAG) != 0);
+        checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.expand.ifinside"), (expandMode & EXPAND_IFINSIDE_FLAG) != 0);
         checkBox.setEnabled(expanded);
         this.add(checkBox, con);
 
@@ -2845,7 +2845,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         boolean collapse = (collapseMode & COLLAPSE_FLAG) != 0;
 
-        radioButtons[0] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.collapse.none"), !collapse);
+        radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.none"), !collapse);
         group.add(radioButtons[0]);
         this.add(radioButtons[0], con);
 
@@ -2856,18 +2856,18 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         con.insets.left = 3;
         con.fill = GridBagConstraints.NONE;
 
-        radioButtons[1] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.collapse.faction"), (collapse && ((collapseMode >> 2) == 0)));
+        radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.faction"), (collapse && ((collapseMode >> 2) == 0)));
         group.add(radioButtons[1]);
         con.gridy++;
         this.add(radioButtons[1], con);
 
-        radioButtons[2] = new JRadioButton(Resources.get("magellan.emapoverviewpanel.prefs.collapse.full"), (collapse && ((collapseMode >> 2) == 3)));
+        radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.full"), (collapse && ((collapseMode >> 2) == 3)));
         group.add(radioButtons[2]);
         con.gridy++;
         this.add(radioButtons[2], con);
 
         con.gridy++;
-        checkBox = new JCheckBox(Resources.get("magellan.emapoverviewpanel.prefs.collapse.onlyautoexpanded"), (collapseMode & COLLAPSE_ONLY_EXPANDED) != 0);
+        checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.collapse.onlyautoexpanded"), (collapseMode & COLLAPSE_ONLY_EXPANDED) != 0);
         this.add(checkBox, con);
 
         // to make it equally high to ePanel
@@ -3292,7 +3292,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
 
       // add the homeless
-      DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("magellan.emapoverviewpanel.node.regionlessunits"));
+      DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("emapoverviewpanel.node.regionlessunits"));
 
       for (Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
         Unit un = iter.next();
@@ -3346,7 +3346,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       this.add(nodeWrapperFactory.getContextMenu());
       addSeparator();
 
-      JMenuItem item = this.add(Resources.get("magellan.emapoverviewpanel.menu.filter"));
+      JMenuItem item = this.add(Resources.get("emapoverviewpanel.menu.filter"));
       item.setEnabled(false);
 
       int mode = getTreeBuilder().getDisplayMode();
@@ -3354,7 +3354,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       items = new JCheckBoxMenuItem[4];
 
       for (int i = 0; i < 4; i++) {
-        items[i] = new JCheckBoxMenuItem(Resources.get("magellan.emapoverviewpanel.menu.filter." + String.valueOf(i)));
+        items[i] = new JCheckBoxMenuItem(Resources.get("emapoverviewpanel.menu.filter." + String.valueOf(i)));
         items[i].setSelected((mode & (1 << i)) != 0);
         items[i].addActionListener(this);
         this.add(items[i]);
@@ -3396,7 +3396,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public JMenu getMenu() {
     // We will create it every time the method is invoked since that should be
     // only once...
-    return new OverviewMenu(Resources.get("magellan.emapoverviewpanel.menu.caption"), Resources.get("magellan.emapoverviewpanel.menu.mnemonic").charAt(0));
+    return new OverviewMenu(Resources.get("emapoverviewpanel.menu.caption"), Resources.get("emapoverviewpanel.menu.mnemonic").charAt(0));
   }
 
   /**
@@ -3414,7 +3414,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * 
    */
   public String getSuperMenuTitle() {
-    return Resources.get("magellan.emapoverviewpanel.menu.supertitle");
+    return Resources.get("emapoverviewpanel.menu.supertitle");
   }
 
   public Collection getSelectedObjects() {

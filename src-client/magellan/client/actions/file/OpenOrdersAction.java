@@ -105,14 +105,14 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 				OrderReader.Status status = r.getStatus();
 				Object msgArgs[] = { new Integer(status.factions), new Integer(status.units) };
 				JOptionPane.showMessageDialog(client,
-											  (new java.text.MessageFormat(Resources.get("magellan.actions.openordersaction.msg.fileordersopen.status.text"))).format(msgArgs),
-                                                     Resources.get("magellan.actions.openordersaction.msg.fileordersopen.status.title"),
+											  (new java.text.MessageFormat(Resources.get("actions.openordersaction.msg.fileordersopen.status.text"))).format(msgArgs),
+                                                     Resources.get("actions.openordersaction.msg.fileordersopen.status.title"),
 											  JOptionPane.PLAIN_MESSAGE);
 			} catch(Exception exc) {
 				log.error(exc);
 				JOptionPane.showMessageDialog(client,
-            Resources.get("magellan.actions.openordersaction.msg.fileordersopen.error.text") + e.toString(),
-                        Resources.get("magellan.actions.openordersaction.msg.fileordersopen.error.title"),
+            Resources.get("actions.openordersaction.msg.fileordersopen.error.text") + e.toString(),
+                        Resources.get("actions.openordersaction.msg.fileordersopen.error.title"),
 											  JOptionPane.ERROR_MESSAGE);
 			}
 
@@ -170,7 +170,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.openordersaction.accelerator",false);
+    return Resources.get("actions.openordersaction.accelerator",false);
   }
 
   /**
@@ -178,7 +178,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.openordersaction.mnemonic",false);
+    return Resources.get("actions.openordersaction.mnemonic",false);
   }
 
   /**
@@ -186,12 +186,12 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.openordersaction.name");
+    return Resources.get("actions.openordersaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.openordersaction.tooltip",false);
+    return Resources.get("actions.openordersaction.tooltip",false);
   }
   
 }

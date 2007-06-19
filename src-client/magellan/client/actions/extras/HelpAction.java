@@ -55,7 +55,7 @@ public class HelpAction extends MenuAction {
 
       if (hsURL == null) hsURL = loader.getResource("magellan.hs");
       if (hsURL == null) {
-        JOptionPane.showMessageDialog(client, Resources.get("magellan.actions.helpaction.msg.helpsetnotfound.text"));
+        JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.helpsetnotfound.text"));
         return;
       }
 
@@ -68,7 +68,7 @@ public class HelpAction extends MenuAction {
           Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader.getSystemClassLoader());
           helpBrokerClass = Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
         } catch (ClassNotFoundException ex) {
-          JOptionPane.showMessageDialog(client, Resources.get("magellan.actions.helpaction.msg.javahelpnotfound.text"));
+          JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.javahelpnotfound.text"));
 
           return;
         }
@@ -107,7 +107,7 @@ public class HelpAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.helpaction.accelerator", false);
+    return Resources.get("actions.helpaction.accelerator", false);
   }
 
   /**
@@ -115,7 +115,7 @@ public class HelpAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.helpaction.mnemonic", false);
+    return Resources.get("actions.helpaction.mnemonic", false);
   }
 
   /**
@@ -123,12 +123,12 @@ public class HelpAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.helpaction.name");
+    return Resources.get("actions.helpaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.helpaction.tooltip", false);
+    return Resources.get("actions.helpaction.tooltip", false);
   }
 
 }

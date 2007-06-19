@@ -222,7 +222,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 			pnlFontColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlFontColor.getTopLevelAncestor(),
-																  Resources.get("magellan.map.textcellrenderer.textcolor"),
+																  Resources.get("map.textcellrenderer.textcolor"),
 																  pnlFontColor.getBackground());
 
 						if(newColor != null) {
@@ -231,7 +231,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 					}
 				});
 
-			JLabel lblFontColor = new JLabel(Resources.get("magellan.map.textcellrenderer.fontcolor"));
+			JLabel lblFontColor = new JLabel(Resources.get("map.textcellrenderer.fontcolor"));
 			lblFontColor.setLabelFor(pnlFontColor);
 
 			String fontNames[] = null;
@@ -248,10 +248,10 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 			cmbFontName = new JComboBox(fontNames);
 			cmbFontName.setSelectedItem(source.getFont().getName());
 
-			JLabel lblFontName = new JLabel(Resources.get("magellan.map.textcellrenderer.fonttype"));
+			JLabel lblFontName = new JLabel(Resources.get("map.textcellrenderer.fonttype"));
 			lblFontName.setLabelFor(cmbFontName);
 
-			chkFontBold = new JCheckBox(Resources.get("magellan.map.textcellrenderer.usebold"),
+			chkFontBold = new JCheckBox(Resources.get("map.textcellrenderer.usebold"),
 										source.getFont().getStyle() != Font.PLAIN);
 
 			Font font = source.getFont();
@@ -269,17 +269,17 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 			cmbFontSize.setEditable(true);
 			cmbFontSize.setSelectedItem("" + font.getSize());
 
-			JLabel lblFontSize = new JLabel(Resources.get("magellan.map.textcellrenderer.fontsize"));
+			JLabel lblFontSize = new JLabel(Resources.get("map.textcellrenderer.fontsize"));
 			lblFontSize.setLabelFor(cmbFontSize);
 
 			cmbMinimumFontSize = new JComboBox(fontSizes.toArray());
 			cmbMinimumFontSize.setEditable(true);
 			cmbMinimumFontSize.setSelectedItem("" + source.getMinimumFontSize());
 
-			JLabel lblMinimumFontSize = new JLabel(Resources.get("magellan.map.textcellrenderer.minimumfontsize"));
+			JLabel lblMinimumFontSize = new JLabel(Resources.get("map.textcellrenderer.minimumfontsize"));
 			lblMinimumFontSize.setLabelFor(cmbMinimumFontSize);
 
-			chkScaleFont = new JCheckBox(Resources.get("magellan.map.textcellrenderer.scalefontwithmapzoom"), source.isScalingFont());
+			chkScaleFont = new JCheckBox(Resources.get("map.textcellrenderer.scalefontwithmapzoom"), source.isScalingFont());
 
 			this.setLayout(new GridBagLayout());
 
@@ -365,7 +365,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.textcellrenderer.name");
+    return Resources.get("map.textcellrenderer.name");
   }
 
 }

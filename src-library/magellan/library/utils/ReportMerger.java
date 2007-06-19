@@ -143,7 +143,7 @@ public class ReportMerger extends Object {
 		 */
 		private void init(JFrame parent) {
 			dlg = new ProgressDlg(parent, true);
-			dlg.labelText.setText(Resources.get("magellan.util.reportmerger.status.merge"));
+			dlg.labelText.setText(Resources.get("util.reportmerger.status.merge"));
 			dlg.progressBar.setMinimum(0);
 			dlg.progressBar.setMaximum(reports.length * 4);
 		}
@@ -167,7 +167,7 @@ public class ReportMerger extends Object {
 			 */
 			public void run() {
 				if(JOptionPane.showConfirmDialog(dlg, strMessage,
-            Resources.get("magellan.util.reportmerger.msg.confirmmerge.title"),
+            Resources.get("util.reportmerger.msg.confirmmerge.title"),
 													 JOptionPane.YES_NO_OPTION,
 													 JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
 					bResult = true;
@@ -341,7 +341,7 @@ public class ReportMerger extends Object {
 			}
 
 			if(iFailedConnectivity > 0) {
-				String strMessage = Resources.get("magellan.util.reportmerger.msg.noconnection.text.1");
+				String strMessage = Resources.get("util.reportmerger.msg.noconnection.text.1");
 
 				for(int i = 0; i < reports.length; i++) {
 					if(!reports[i].merged) {
@@ -353,14 +353,14 @@ public class ReportMerger extends Object {
 					}
 				}
 
-				strMessage += Resources.get("magellan.util.reportmerger.msg.noconnection.text.2");
+				strMessage += Resources.get("util.reportmerger.msg.noconnection.text.2");
 
-				if(ui != null && ui.confirm(strMessage, Resources.get("magellan.util.reportmerger.msg.confirmmerge.title"))) {
+				if(ui != null && ui.confirm(strMessage, Resources.get("util.reportmerger.msg.confirmmerge.title"))) {
 					for(int i = 0; i < reports.length; i++) {
 						if(!reports[i].merged) {
 							iProgress += 2;
 							ui.setProgress(reports[i].file.getName() + " - " +
-                  Resources.get("magellan.util.reportmerger.status.merging"), iProgress);
+                  Resources.get("util.reportmerger.status.merging"), iProgress);
 
 							//data.mergeWith( reports[i].data );
 							data = GameData.merge(data, reports[i].data);
@@ -400,7 +400,7 @@ public class ReportMerger extends Object {
 		if(report.data == null) {
 			iProgress += 1;
 			if(ui != null) { 
-				ui.setProgress(report.file.getName() + " - " + Resources.get("magellan.util.reportmerger.status.loading"), iProgress);
+				ui.setProgress(report.file.getName() + " - " + Resources.get("util.reportmerger.status.loading"), iProgress);
 			}
 
 			report.data = loader.load(report.file);
@@ -465,7 +465,7 @@ public class ReportMerger extends Object {
 		if(report.regionMap == null) {
 			iProgress += 1;
 			if(ui != null) {				
-				ui.setProgress(report.file.getName() + " - " + Resources.get("magellan.util.reportmerger.status.processing"), iProgress);
+				ui.setProgress(report.file.getName() + " - " + Resources.get("util.reportmerger.status.processing"), iProgress);
 			}
 			report.regionMap = new HashMap<String, Region>();
 			report.schemeMap = new HashMap<String, Collection<Region>>();
@@ -509,7 +509,7 @@ public class ReportMerger extends Object {
 		 */
 		iProgress += 1;
 		if(ui != null) {				
-			ui.setProgress(report.file.getName() + " - " + Resources.get("magellan.util.reportmerger.status.connecting"), iProgress);
+			ui.setProgress(report.file.getName() + " - " + Resources.get("util.reportmerger.status.connecting"), iProgress);
 		}
 
 		// maps translation (Coordinate) to match count (Integer)
@@ -882,7 +882,7 @@ public class ReportMerger extends Object {
 			iProgress += 1;
 			if (ui != null) {
 				ui.setProgress(report.file.getName() + " - "
-						+ Resources.get("magellan.util.reportmerger.status.merging"), iProgress);
+						+ Resources.get("util.reportmerger.status.merging"), iProgress);
 			}
 			
 			
@@ -924,7 +924,7 @@ public class ReportMerger extends Object {
 			getContentPane().setLayout(new GridBagLayout());
 
 			GridBagConstraints gridBagConstraints1;
-			setTitle(Resources.get("magellan.util.reportmerger.window.title"));
+			setTitle(Resources.get("util.reportmerger.window.title"));
 
 			/*addWindowListener(new java.awt.event.WindowAdapter() {
 			    public void windowClosing(java.awt.event.WindowEvent evt) {

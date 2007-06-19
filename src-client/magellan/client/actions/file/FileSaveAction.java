@@ -59,7 +59,7 @@ public class FileSaveAction extends FileSaveAsAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.filesaveaction.accelerator",false);
+    return Resources.get("actions.filesaveaction.accelerator",false);
   }
 
   /**
@@ -67,7 +67,7 @@ public class FileSaveAction extends FileSaveAsAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.filesaveaction.mnemonic",false);
+    return Resources.get("actions.filesaveaction.mnemonic",false);
   }
 
   /**
@@ -75,12 +75,12 @@ public class FileSaveAction extends FileSaveAsAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.filesaveaction.name");
+    return Resources.get("actions.filesaveaction.name");
   }
 
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.filesaveaction.tooltip",false);
+    return Resources.get("actions.filesaveaction.tooltip",false);
   }
 }

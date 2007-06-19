@@ -133,36 +133,36 @@ public class EresseaDate extends Date {
       default:
       case Date.TYPE_SHORT: {
         int iWeek = (iDate2 % 3) + 1;
-        String strWeek = Resources.get("magellan.rules.eresseadate."+week_short[iWeek - 1]);
-        String strMonth = Resources.get("magellan.rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
+        String strWeek = Resources.get("rules.eresseadate."+week_short[iWeek - 1]);
+        String strMonth = Resources.get("rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
         int iYear = (iDate2 / 27) + 1;
 
         // strDate = iWeek + " " + getString("._Woche_") +" " + strMonth +
         // iYear;
-        strDate = strWeek + " " + Resources.get("magellan.rules.eresseadate.Woche") + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate.Jahr") + " " + iYear;
+        strDate = strWeek + " " + Resources.get("rules.eresseadate.Woche") + " " + strMonth + " " + Resources.get("rules.eresseadate.Jahr") + " " + iYear;
       }
 
         break;
 
       case Date.TYPE_LONG: {
         int iWeek = iDate2 % 3;
-        String strMonth = Resources.get("magellan.rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
+        String strMonth = Resources.get("rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
         int iYear = (iDate2 / 27) + 1;
 
         switch (((int) (java.lang.Math.random() * 3)) % 3) {
         default:
         case 0:
-          strDate = Resources.get("magellan.rules.eresseadate."+week_long[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_long) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_long);
+          strDate = Resources.get("rules.eresseadate."+week_long[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_long) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_long);
 
           break;
 
         case 1:
-          strDate = Resources.get("magellan.rules.eresseadate."+week_long_alt[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_long_alt) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_long_alt);
+          strDate = Resources.get("rules.eresseadate."+week_long_alt[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_long_alt) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_long_alt);
 
           break;
 
         case 2:
-          strDate = Resources.get("magellan.rules.eresseadate."+week_long_alt2[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_long_alt2) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_long_alt2);
+          strDate = Resources.get("rules.eresseadate."+week_long_alt2[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_long_alt2) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_long_alt2);
 
           break;
         }
@@ -172,23 +172,23 @@ public class EresseaDate extends Date {
 
       case TYPE_PHRASE: {
         int iWeek = iDate2 % 3;
-        String strMonth = Resources.get("magellan.rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
+        String strMonth = Resources.get("rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
         int iYear = (iDate2 / 27) + 1;
 
         switch (((int) (java.lang.Math.random() * 3)) % 3) {
         default:
         case 0:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase);
+          strDate = Resources.get("rules.eresseadate."+begin_phrase) + " " + Resources.get("rules.eresseadate."+week_phrase[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase);
 
           break;
 
         case 1:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase_alt) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase_alt[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase_alt) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase_alt);
+          strDate = Resources.get("rules.eresseadate."+begin_phrase_alt) + " " + Resources.get("rules.eresseadate."+week_phrase_alt[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase_alt) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase_alt);
 
           break;
 
         case 2:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase_alt2) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase_alt2[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase_alt2) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase_alt2);
+          strDate = Resources.get("rules.eresseadate."+begin_phrase_alt2) + " " + Resources.get("rules.eresseadate."+week_phrase_alt2[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase_alt2) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase_alt2);
 
           break;
         }
@@ -198,24 +198,24 @@ public class EresseaDate extends Date {
 
       case TYPE_PHRASE_AND_SEASON: {
         int iWeek = iDate2 % 3;
-        String strMonth = Resources.get("magellan.rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
-        String season = " " + Resources.get("magellan.rules.eresseadate."+seasonPhrases[(iDate2 / 3) % 9]);
+        String strMonth = Resources.get("rules.eresseadate."+months_new[(iDate2 / 3) % 9]);
+        String season = " " + Resources.get("rules.eresseadate."+seasonPhrases[(iDate2 / 3) % 9]);
         int iYear = (iDate2 / 27) + 1;
 
         switch (((int) (java.lang.Math.random() * 3)) % 3) {
         default:
         case 0:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase) + season;
+          strDate = Resources.get("rules.eresseadate."+begin_phrase) + " " + Resources.get("rules.eresseadate."+week_phrase[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase) + season;
 
           break;
 
         case 1:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase_alt) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase_alt[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase_alt) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase_alt) + " " + season;
+          strDate = Resources.get("rules.eresseadate."+begin_phrase_alt) + " " + Resources.get("rules.eresseadate."+week_phrase_alt[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase_alt) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase_alt) + " " + season;
 
           break;
 
         case 2:
-          strDate = Resources.get("magellan.rules.eresseadate."+begin_phrase_alt2) + " " + Resources.get("magellan.rules.eresseadate."+week_phrase_alt2[iWeek]) + " " + strMonth + " " + Resources.get("magellan.rules.eresseadate."+year_phrase_alt2) + " " + iYear + " " + Resources.get("magellan.rules.eresseadate."+age_phrase_alt2) + season;
+          strDate = Resources.get("rules.eresseadate."+begin_phrase_alt2) + " " + Resources.get("rules.eresseadate."+week_phrase_alt2[iWeek]) + " " + strMonth + " " + Resources.get("rules.eresseadate."+year_phrase_alt2) + " " + iYear + " " + Resources.get("rules.eresseadate."+age_phrase_alt2) + season;
 
           break;
         }

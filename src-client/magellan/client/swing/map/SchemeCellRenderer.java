@@ -99,7 +99,7 @@ public class SchemeCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.schemecellrenderer.name");
+    return Resources.get("map.schemecellrenderer.name");
   }
 
 }

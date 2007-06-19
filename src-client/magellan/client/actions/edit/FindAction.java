@@ -115,7 +115,7 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.findaction.accelerator",false);
+    return Resources.get("actions.findaction.accelerator",false);
   }
 
   /**
@@ -123,7 +123,7 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.findaction.mnemonic",false);
+    return Resources.get("actions.findaction.mnemonic",false);
   }
 
   /**
@@ -131,12 +131,12 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.findaction.name");
+    return Resources.get("actions.findaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.findaction.tooltip",false);
+    return Resources.get("actions.findaction.tooltip",false);
   }
 
 }

@@ -77,7 +77,7 @@ public class RepaintAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.repaintaction.accelerator",false);
+    return Resources.get("actions.repaintaction.accelerator",false);
   }
 
   /**
@@ -85,7 +85,7 @@ public class RepaintAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.repaintaction.mnemonic",false);
+    return Resources.get("actions.repaintaction.mnemonic",false);
   }
 
   /**
@@ -93,11 +93,11 @@ public class RepaintAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.repaintaction.name");
+    return Resources.get("actions.repaintaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.repaintaction.tooltip",false);
+    return Resources.get("actions.repaintaction.tooltip",false);
   }
 }

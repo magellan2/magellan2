@@ -50,7 +50,7 @@ public class MallornReplacer extends AbstractRegionReplacer {
   
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.mallornreplacer.description");
+    return Resources.get("util.replacers.mallornreplacer.description");
   }  
 
 }

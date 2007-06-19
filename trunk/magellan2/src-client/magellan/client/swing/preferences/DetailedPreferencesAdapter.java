@@ -146,7 +146,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 
 		int cBox = 0;
 		ActionListener al = new DetailListener(this);
-		String bTitle = Resources.get("magellan.preferences.detailedpreferencesadapter.button.title");
+		String bTitle = Resources.get("preferences.detailedpreferencesadapter.button.title");
 
 		for(int i = 0; i < count; i++) {
 			help.add(boxes[cBox], con);
@@ -360,9 +360,9 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 		 * 
 		 */
 		public void init(JComponent adapter, String help) {
-			adapter.setBorder(BorderFactory.createTitledBorder(Resources.get("magellan.preferences.detailedpreferencesadapter.ddialog.options.title")));
+			adapter.setBorder(BorderFactory.createTitledBorder(Resources.get("preferences.detailedpreferencesadapter.ddialog.options.title")));
 
-			JButton okButton = new JButton(Resources.get("magellan.preferences.detailedpreferencesadapter.ok"));
+			JButton okButton = new JButton(Resources.get("preferences.detailedpreferencesadapter.ok"));
 			okButton.addActionListener(this);
 
 			JPanel south = null;
@@ -377,7 +377,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 
 				JScrollPane pane = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 												   JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-				pane.setBorder(BorderFactory.createTitledBorder(Resources.get("magellan.preferences.detailedpreferencesadapter.ddialog.help.title")));
+				pane.setBorder(BorderFactory.createTitledBorder(Resources.get("preferences.detailedpreferencesadapter.ddialog.help.title")));
 
 				south = new JPanel(new BorderLayout());
 				south.add(pane, BorderLayout.CENTER);

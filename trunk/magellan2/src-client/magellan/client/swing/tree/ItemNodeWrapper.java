@@ -187,7 +187,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 					Item ri = unit.getRegion().getItem(modItem.getItemType());
 
 					if(ri != null) {
-						nodeText.append(Resources.get("magellan.tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())
+						nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())
 								.append(' ');
 					}
 				}
@@ -197,7 +197,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 				if(modItem.getItemType().getWeight() > 0) {
 					float weight = (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
 					nodeText.append(": ").append(weightNumberFormat.format(new Float(weight)));
-					nodeText.append(" " + Resources.get("magellan.tree.itemnodewrapper.node.weightunits"));
+					nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
 				}
 			} else {
 				nodeText.append(item.getAmount()).append(" ");
@@ -218,7 +218,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 					Item ri = unit.getRegion().getItem(modItem.getItemType());
 
 					if(ri != null) {
-						nodeText.append(Resources.get("magellan.tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())
+						nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())
 								.append(' ');
 					}
 				}
@@ -235,7 +235,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 							nodeText.append(" (")
 									.append(weightNumberFormat.format(new Float(modWeight))).append(")");
 						}
-						nodeText.append(" " + Resources.get("magellan.tree.itemnodewrapper.node.weightunits"));
+						nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
 					}
 				}
 			}
@@ -251,7 +251,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 												new String[][] {
 													{ "units.showRegionItemAmount", "true" }
 												}, new String[] { "prefs.region.text" }, 0,
-												"magellan.tree.itemnodewrapper.");
+												"tree.itemnodewrapper.");
 	}
 
 	/**

@@ -1312,34 +1312,34 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[PLANES];
-    p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("magellan.map.mapper.plane.region.name"));
+    p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"));
     p[PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_REGION, RegionImageCellRenderer.class.getName())));
 
-    p[PLANE_BORDER] = new RenderingPlane(PLANE_BORDER, Resources.get("magellan.map.mapper.plane.border.name"));
+    p[PLANE_BORDER] = new RenderingPlane(PLANE_BORDER, Resources.get("map.mapper.plane.border.name"));
     p[PLANE_BORDER].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_BORDER, BorderCellRenderer.class.getName())));
 
-    p[PLANE_BUILDING] = new RenderingPlane(PLANE_BUILDING, Resources.get("magellan.map.mapper.plane.building.name"));
+    p[PLANE_BUILDING] = new RenderingPlane(PLANE_BUILDING, Resources.get("map.mapper.plane.building.name"));
     p[PLANE_BUILDING].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_BUILDING, BuildingCellRenderer.class.getName())));
 
-    p[PLANE_SHIP] = new RenderingPlane(PLANE_SHIP, Resources.get("magellan.map.mapper.plane.ship.name"));
+    p[PLANE_SHIP] = new RenderingPlane(PLANE_SHIP, Resources.get("map.mapper.plane.ship.name"));
     p[PLANE_SHIP].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_SHIP, ShipCellRenderer.class.getName())));
 
-    p[PLANE_TEXT] = new RenderingPlane(PLANE_TEXT, Resources.get("magellan.map.mapper.plane.text.name"));
+    p[PLANE_TEXT] = new RenderingPlane(PLANE_TEXT, Resources.get("map.mapper.plane.text.name"));
     p[PLANE_TEXT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_TEXT, TextCellRenderer.class.getName())));
 
-    p[PLANE_PATH] = new RenderingPlane(PLANE_PATH, Resources.get("magellan.map.mapper.plane.path.name"), RenderingPlane.ACTIVE_OBJECT);
+    p[PLANE_PATH] = new RenderingPlane(PLANE_PATH, Resources.get("map.mapper.plane.path.name"), RenderingPlane.ACTIVE_OBJECT);
     p[PLANE_PATH].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_PATH, PathCellRenderer.class.getName())));
 
-    p[PLANE_HIGHLIGHT] = new RenderingPlane(PLANE_HIGHLIGHT, Resources.get("magellan.map.mapper.plane.highlight.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED);
+    p[PLANE_HIGHLIGHT] = new RenderingPlane(PLANE_HIGHLIGHT, Resources.get("map.mapper.plane.highlight.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED);
     p[PLANE_HIGHLIGHT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_HIGHLIGHT, HighlightImageCellRenderer.class.getName())));
 
-    p[PLANE_MARKINGS] = new RenderingPlane(PLANE_MARKINGS, Resources.get("magellan.map.mapper.plane.markings.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.TAGGED_REGIONS);
+    p[PLANE_MARKINGS] = new RenderingPlane(PLANE_MARKINGS, Resources.get("map.mapper.plane.markings.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.TAGGED_REGIONS);
     p[PLANE_MARKINGS].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_MARKINGS, MarkingsImageCellRenderer.class.getName())));
 
-    p[PLANE_SCHEMES] = new RenderingPlane(PLANE_SCHEMES, Resources.get("magellan.map.mapper.plane.schemes.name"), RenderingPlane.VISIBLE_REGIONS);
+    p[PLANE_SCHEMES] = new RenderingPlane(PLANE_SCHEMES, Resources.get("map.mapper.plane.schemes.name"), RenderingPlane.VISIBLE_REGIONS);
     p[PLANE_SCHEMES].setRenderer(getRenderer(SchemeCellRenderer.class.getName()));
 
-    p[PLANE_SIGNS] = new RenderingPlane(PLANE_SIGNS, Resources.get("magellan.map.mapper.plane.signs.name"));
+    p[PLANE_SIGNS] = new RenderingPlane(PLANE_SIGNS, Resources.get("map.mapper.plane.signs.name"));
     p[PLANE_SIGNS].setRenderer(getRenderer(SignTextCellRenderer.class.getName()));
 
     return p;

@@ -94,8 +94,8 @@ public class LanguageDialog {
 	public Locale showDialog(Component parent) {
 		if(languagesFound()) {
 			Object ret = JOptionPane.showInputDialog(parent,
-													 Resources.get("magellan.util.languagedialog.choose"),
-                           Resources.get("magellan.util.languagedialog.title"),
+													 Resources.get("util.languagedialog.choose"),
+                           Resources.get("util.languagedialog.title"),
 													 JOptionPane.QUESTION_MESSAGE, null,
 													 languageList.toArray(), sysDefault);
 

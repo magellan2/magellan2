@@ -46,7 +46,7 @@ public class MaxTradeReplacer extends AbstractRegionReplacer {
 	}
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.maxtradereplacer.description");
+    return Resources.get("util.replacers.maxtradereplacer.description");
   }  
 
 }

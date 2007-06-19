@@ -121,7 +121,7 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.redoaction.accelerator",false);
+    return Resources.get("actions.redoaction.accelerator",false);
   }
 
   /**
@@ -129,7 +129,7 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.redoaction.mnemonic",false);
+    return Resources.get("actions.redoaction.mnemonic",false);
   }
 
   /**
@@ -137,12 +137,12 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.redoaction.name");
+    return Resources.get("actions.redoaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.redoaction.tooltip",false);
+    return Resources.get("actions.redoaction.tooltip",false);
   }
 
 }

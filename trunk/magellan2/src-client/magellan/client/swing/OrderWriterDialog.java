@@ -163,7 +163,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 				}
 			});
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.orderwriterdialog.window.title"));
+		setTitle(Resources.get("orderwriterdialog.window.title"));
 		setSize(550, 580);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -248,21 +248,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getButtonPanel() {
-		JButton saveButton = new JButton(Resources.get("magellan.orderwriterdialog.btn.save.caption"));
+		JButton saveButton = new JButton(Resources.get("orderwriterdialog.btn.save.caption"));
 		saveButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					saveToFile();
 				}
 			});
 
-		JButton clipboardButton = new JButton(Resources.get("magellan.orderwriterdialog.btn.clipboard.caption"));
+		JButton clipboardButton = new JButton(Resources.get("orderwriterdialog.btn.clipboard.caption"));
 		clipboardButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					copyToClipboard();
 				}
 			});
 
-		JButton mailButton = new JButton(Resources.get("magellan.orderwriterdialog.btn.mail.caption"));
+		JButton mailButton = new JButton(Resources.get("orderwriterdialog.btn.mail.caption"));
 		mailButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					sendMail();
@@ -270,7 +270,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 			});
 		sendButton = mailButton;
 
-		JButton autoFileNameButton = new JButton(Resources.get("magellan.orderwriterdialog.btn.autofilename.caption"));
+		JButton autoFileNameButton = new JButton(Resources.get("orderwriterdialog.btn.autofilename.caption"));
 		autoFileNameButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent ae) {
 					autoFileName();
@@ -279,7 +279,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		
 
 		
-		JButton cancelButton = new JButton(Resources.get("magellan.orderwriterdialog.btn.close.caption"));
+		JButton cancelButton = new JButton(Resources.get("orderwriterdialog.btn.close.caption"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit(false);
@@ -298,49 +298,49 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 	private Container getControlsPanel() {
 		int fixedWidth = Integer.parseInt(settings.getProperty("OrderWriter.fixedWidth", "-76"));
-		chkFixedWidth = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
+		chkFixedWidth = new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
 		chkFixedWidth.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
 				}
 			});
 
-		JLabel lblFixedWidth1 = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.wordwrapafter"));
+		JLabel lblFixedWidth1 = new JLabel(Resources.get("orderwriterdialog.lbl.wordwrapafter"));
 		txtFixedWidth = new JTextField(10);
 		txtFixedWidth.setText("" + Math.abs(fixedWidth));
 		txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
 
-		JLabel lblFixedWidth2 = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.wordwrapchars"));
+		JLabel lblFixedWidth2 = new JLabel(Resources.get("orderwriterdialog.lbl.wordwrapchars"));
 
 		JPanel pnlFixedWidth = new JPanel();
 		pnlFixedWidth.add(lblFixedWidth1);
 		pnlFixedWidth.add(txtFixedWidth);
 		pnlFixedWidth.add(lblFixedWidth2);
 
-		chkECheckComments = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.addecheckcomments.caption"),
+		chkECheckComments = new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),
 										  (Boolean.valueOf(settings.getProperty("OrderWriter.addECheckComments",
 																			"true"))).booleanValue());
-		chkRemoveSCComments = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.removesemicoloncomments.caption"),
+		chkRemoveSCComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),
 											(Boolean.valueOf(settings.getProperty("OrderWriter.removeSCComments",
 																			  "false"))).booleanValue());
-		chkRemoveSSComments = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.removedoubleslashcomments.caption"),
+		chkRemoveSSComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),
 											(Boolean.valueOf(settings.getProperty("OrderWriter.removeSSComments",
 																			  "false"))).booleanValue());
-		chkConfirmedOnly = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.skipunconfirmedorders.caption"),
+		chkConfirmedOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),
 										 (Boolean.valueOf(settings.getProperty("OrderWriter.confirmedOnly",
 																		   "false"))).booleanValue());
-		chkSelRegionsOnly = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.selectedregions.caption"),
+		chkSelRegionsOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"),
 										  (Boolean.valueOf(settings.getProperty("OrderWriter.includeSelRegionsOnly",
 																			"false"))).booleanValue());
 		chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
-		chkWriteUnitTagsAsVorlageComment = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),
+		chkWriteUnitTagsAsVorlageComment = new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),
 										  (Boolean.valueOf(settings.getProperty("OrderWriter.writeUnitTagsAsVorlageComment",
 																			"false"))).booleanValue());
 
 		JPanel pnlCmdSave = new JPanel();
 		pnlCmdSave.setLayout(new BoxLayout(pnlCmdSave, BoxLayout.Y_AXIS));
 		pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.orderwriterdialog.border.outputoptions")));
+											  Resources.get("orderwriterdialog.border.outputoptions")));
 		pnlCmdSave.add(chkFixedWidth);
 		pnlCmdSave.add(pnlFixedWidth);
 
@@ -398,7 +398,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
 		pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.orderwriterdialog.border.faction")));
+											  Resources.get("orderwriterdialog.border.faction")));
 		pnlCmdSave.add(cmbFaction);
 
 		return pnlCmdSave;
@@ -429,7 +429,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
 		pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.orderwriterdialog.border.group")));
+											  Resources.get("orderwriterdialog.border.group")));
 		pnlCmdSave.add(cmbGroup);
 
 		return pnlCmdSave;
@@ -454,7 +454,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		JPanel pnlFile = new JPanel(new BorderLayout());
 		pnlFile.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-										   Resources.get("magellan.orderwriterdialog.border.outputfile")));
+										   Resources.get("orderwriterdialog.border.outputfile")));
 		pnlFile.add(cmbOutputFile, BorderLayout.CENTER);
 		pnlFile.add(btnOutputFile, BorderLayout.EAST);
 
@@ -462,12 +462,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getMailPanel() {
-		JLabel lblMailServer = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.smtpserver"));
+		JLabel lblMailServer = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver"));
 		txtMailServer = new JTextField(settings.getProperty("OrderWriter.mailServer", "smtp.bar.net"),
 									   20);
 		lblMailServer.setLabelFor(txtMailServer);
 
-		JLabel lblMailRecipient = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.recipient"));
+		JLabel lblMailRecipient = new JLabel(Resources.get("orderwriterdialog.lbl.recipient"));
 
 		// pavkovic 2002.01.23: enno wanted this change...
 		String email = settings.getProperty("OrderWriter.mailRecipient",
@@ -489,12 +489,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		lblMailRecipient.setLabelFor(txtMailServer);
 
-		JLabel lblMailSender = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.sender"));
+		JLabel lblMailSender = new JLabel(Resources.get("orderwriterdialog.lbl.sender"));
 		txtMailSender = new JTextField(settings.getProperty("OrderWriter.mailSender", "foo@bar.net"),
 									   20);
 		lblMailSender.setLabelFor(txtMailServer);
 
-		JLabel lblMailSubject = new JLabel(Resources.get("magellan.orderwriterdialog.lbl.subject"));
+		JLabel lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
 		txtMailSubject = new JTextField(settings.getProperty("OrderWriter.mailSubject",
 															 "Eressea Befehle"), 20);
 		lblMailSubject.setLabelFor(txtMailSubject);
@@ -502,9 +502,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		JPanel pnlMail = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		pnlMail.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-										   Resources.get("magellan.orderwriterdialog.border.mailoptions")));
+										   Resources.get("orderwriterdialog.border.mailoptions")));
 
-		chkUseSettingsFromCR = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.usesettingsfromcr.caption"),
+		chkUseSettingsFromCR = new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"),
 											 (Boolean.valueOf(settings.getProperty("OrderWriter.useSettingsFromCr",
 																			   "true"))).booleanValue());
 		chkUseSettingsFromCR.setEnabled((data != null) && (data.mailTo != null) &&
@@ -522,7 +522,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() ||
 								  !chkUseSettingsFromCR.isSelected());
 
-		chkCCToSender = new JCheckBox(Resources.get("magellan.orderwriterdialog.chk.cctosender.caption"),
+		chkCCToSender = new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"),
 									  (Boolean.valueOf(settings.getProperty("OrderWriter.CCToSender",
 																		"true"))).booleanValue());
 
@@ -737,8 +737,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 					fixedWidth = Integer.parseInt(txtFixedWidth.getText());
 				} catch(NumberFormatException e) {
 					setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-					JOptionPane.showMessageDialog(this, Resources.get("magellan.orderwriterdialog.msg.invalidfixedwidth.text"),
-												  Resources.get("magellan.orderwriterdialog.msg.invalidfixedwidth.title"),
+					JOptionPane.showMessageDialog(this, Resources.get("orderwriterdialog.msg.invalidfixedwidth.text"),
+												  Resources.get("orderwriterdialog.msg.invalidfixedwidth.title"),
 												  JOptionPane.WARNING_MESSAGE);
 
 					return false;
@@ -785,17 +785,17 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 			}
 
 			JOptionPane.showMessageDialog(this,
-										  (new java.text.MessageFormat(Resources.get("magellan.orderwriterdialog.msg.writtenunits.text"))).format(new Object[] {
+										  (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.writtenunits.text"))).format(new Object[] {
 																													   String.valueOf(writtenUnits),
 																													   String.valueOf(allUnits),
 																													   faction
 																												   }),
-										  Resources.get("magellan.orderwriterdialog.msg.writtenunits.title"),
+										  Resources.get("orderwriterdialog.msg.writtenunits.title"),
 										  JOptionPane.INFORMATION_MESSAGE);
 		} catch(IOException ioe) {
 			setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.orderwriterdialog.msg.erroronsave.text") + ioe.toString(),
-										  Resources.get("magellan.orderwriterdialog.msg.erroronsave.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("orderwriterdialog.msg.erroronsave.text") + ioe.toString(),
+										  Resources.get("orderwriterdialog.msg.erroronsave.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			return false;
@@ -812,7 +812,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		if(f.getPassword() == null) {
 			Object msgArgs[] = { f.toString() };
 			JOptionPane.showMessageDialog(getRootPane(),
-										  (new java.text.MessageFormat(Resources.get("magellan.orderwriterdialog.msg.nopassword.text"))).format(msgArgs));
+										  (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.nopassword.text"))).format(msgArgs));
 
 			return false;
 		} else {
@@ -906,8 +906,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		// check mail parameters
 		if(sender.equals("")) {
 			ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(ae, Resources.get("magellan.orderwriterdialog.msg.invalidfromaddress.text"),
-										  Resources.get("magellan.orderwriterdialog.msg.mailerror.title"),
+			JOptionPane.showMessageDialog(ae, Resources.get("orderwriterdialog.msg.invalidfromaddress.text"),
+										  Resources.get("orderwriterdialog.msg.mailerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			return;
@@ -915,8 +915,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		if(recipient.equals("")) {
 			ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(ae, Resources.get("magellan.orderwriterdialog.msg.invalidrecipient.text"),
-										  Resources.get("magellan.orderwriterdialog.msg.mailerror.title"),
+			JOptionPane.showMessageDialog(ae, Resources.get("orderwriterdialog.msg.invalidrecipient.text"),
+										  Resources.get("orderwriterdialog.msg.mailerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			return;
@@ -924,8 +924,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 		if(mailHost.equals("")) {
 			ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(ae, Resources.get("magellan.orderwriterdialog.msg.invalidsmtpserver.text"),
-										  Resources.get("magellan.orderwriterdialog.msg.mailerror.title"),
+			JOptionPane.showMessageDialog(ae, Resources.get("orderwriterdialog.msg.invalidsmtpserver.text"),
+										  Resources.get("orderwriterdialog.msg.mailerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			return;
@@ -956,8 +956,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 			Object msgArgs[] = { mailHost, e.toString() };
 			JOptionPane.showMessageDialog(ae,
-										  (new java.text.MessageFormat(Resources.get("magellan.orderwriterdialog.msg.smtpserverunreachable.text"))).format(msgArgs),
-										  Resources.get("magellan.orderwriterdialog.msg.mailerror.title"),
+										  (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.smtpserverunreachable.text"))).format(msgArgs),
+										  Resources.get("orderwriterdialog.msg.mailerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			if(log.isDebugEnabled()) {
@@ -978,8 +978,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
 			Object msgArgs[] = { e.toString() };
 			JOptionPane.showMessageDialog(ae,
-										  (new java.text.MessageFormat(Resources.get("magellan.orderwriterdialog.msg.transfererror.text"))).format(msgArgs),
-										  Resources.get("magellan.orderwriterdialog.msg.mailerror.title"),
+										  (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.transfererror.text"))).format(msgArgs),
+										  Resources.get("orderwriterdialog.msg.mailerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 
 			if(log.isDebugEnabled()) {
@@ -1034,8 +1034,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 		} catch(IOException ioe) {
 			Object msgArgs[] = { outputFile.toString() };
 			JOptionPane.showMessageDialog(this,
-										  (new java.text.MessageFormat(Resources.get("magellan.orderwriterdialog.msg.writeerror.text"))).format(msgArgs),
-										  Resources.get("magellan.orderwriterdialog.msg.writeerror.title"),
+										  (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.writeerror.text"))).format(msgArgs),
+										  Resources.get("orderwriterdialog.msg.writeerror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 		}
 	}

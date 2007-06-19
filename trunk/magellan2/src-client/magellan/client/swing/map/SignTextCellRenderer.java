@@ -412,7 +412,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			pnlFontColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlFontColor.getTopLevelAncestor(),
-																  Resources.get("magellan.map.signtextcellrenderer.textcolor"),
+																  Resources.get("map.signtextcellrenderer.textcolor"),
 																  pnlFontColor.getBackground());
 
 						if(newColor != null) {
@@ -421,7 +421,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 					}
 				});
 
-			JLabel lblFontColor = new JLabel(Resources.get("magellan.map.signtextcellrenderer.fontcolor"));
+			JLabel lblFontColor = new JLabel(Resources.get("map.signtextcellrenderer.fontcolor"));
 			lblFontColor.setLabelFor(pnlFontColor);
 			
 			pnlBackColor = new JPanel();
@@ -430,7 +430,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			pnlBackColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlBackColor.getTopLevelAncestor(),
-																  Resources.get("magellan.map.signtextcellrenderer.backcolor"),
+																  Resources.get("map.signtextcellrenderer.backcolor"),
 																  pnlBackColor.getBackground());
 
 						if(newColor != null) {
@@ -439,7 +439,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 					}
 				});
 
-			JLabel lblBackColor = new JLabel(Resources.get("magellan.map.signtextcellrenderer.backcolor"));
+			JLabel lblBackColor = new JLabel(Resources.get("map.signtextcellrenderer.backcolor"));
 			lblFontColor.setLabelFor(pnlBackColor);
 
 			String fontNames[] = null;
@@ -456,10 +456,10 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			cmbFontName = new JComboBox(fontNames);
 			cmbFontName.setSelectedItem(source.getFont().getName());
 
-			JLabel lblFontName = new JLabel(Resources.get("magellan.map.signtextcellrenderer.fonttype"));
+			JLabel lblFontName = new JLabel(Resources.get("map.signtextcellrenderer.fonttype"));
 			lblFontName.setLabelFor(cmbFontName);
 
-			chkFontBold = new JCheckBox(Resources.get("magellan.map.signtextcellrenderer.usebold"),
+			chkFontBold = new JCheckBox(Resources.get("map.signtextcellrenderer.usebold"),
 										source.getFont().getStyle() != Font.PLAIN);
 
 			Font font = source.getFont();
@@ -477,17 +477,17 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			cmbFontSize.setEditable(true);
 			cmbFontSize.setSelectedItem("" + font.getSize());
 
-			JLabel lblFontSize = new JLabel(Resources.get("magellan.map.signtextcellrenderer.fontsize"));
+			JLabel lblFontSize = new JLabel(Resources.get("map.signtextcellrenderer.fontsize"));
 			lblFontSize.setLabelFor(cmbFontSize);
 
 			cmbMinimumFontSize = new JComboBox(fontSizes.toArray());
 			cmbMinimumFontSize.setEditable(true);
 			cmbMinimumFontSize.setSelectedItem("" + source.getMinimumFontSize());
 
-			JLabel lblMinimumFontSize = new JLabel(Resources.get("magellan.map.signtextcellrenderer.minimumfontsize"));
+			JLabel lblMinimumFontSize = new JLabel(Resources.get("map.signtextcellrenderer.minimumfontsize"));
 			lblMinimumFontSize.setLabelFor(cmbMinimumFontSize);
 
-			chkScaleFont = new JCheckBox(Resources.get("magellan.map.signtextcellrenderer.scalefontwithmapzoom"), source.isScalingFont());
+			chkScaleFont = new JCheckBox(Resources.get("map.signtextcellrenderer.scalefontwithmapzoom"), source.isScalingFont());
 
 			this.setLayout(new GridBagLayout());
 
@@ -598,7 +598,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.signtextcellrenderer.name");
+    return Resources.get("map.signtextcellrenderer.name");
   }
 
 	

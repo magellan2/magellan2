@@ -75,6 +75,6 @@ public class TagReplacer extends AbstractParameterReplacer {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get( "magellan.util.replacers.tagreplacer.description." + mode);
+		return Resources.get("util.replacers.tagreplacer.description." + mode);
 	}
 }

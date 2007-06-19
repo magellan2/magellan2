@@ -83,7 +83,7 @@ public class ConfirmAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.confirmaction.accelerator",false);
+    return Resources.get("actions.confirmaction.accelerator",false);
   }
 
   /**
@@ -91,7 +91,7 @@ public class ConfirmAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.confirmaction.mnemonic",false);
+    return Resources.get("actions.confirmaction.mnemonic",false);
   }
 
   /**
@@ -99,11 +99,11 @@ public class ConfirmAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.confirmaction.name");
+    return Resources.get("actions.confirmaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.confirmaction.tooltip",false);
+    return Resources.get("actions.confirmaction.tooltip",false);
   }
 }

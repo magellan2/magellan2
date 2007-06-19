@@ -156,7 +156,7 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 	 *
 	 * 
 	protected abstract String getString(String key);/* {
-		return Resources.get("magellan.map.hexcellrenderer.", key);
+		return Resources.get("map.hexcellrenderer.", key);
 	}
   */
 
@@ -191,7 +191,7 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 		 * 
 		 */
 		public Component getComponent() {
-			return new JLabel(Resources.get("magellan.map.hexcellrenderer.lbl.nooptions.caption"));
+			return new JLabel(Resources.get("map.hexcellrenderer.lbl.nooptions.caption"));
 		}
 
 		/**

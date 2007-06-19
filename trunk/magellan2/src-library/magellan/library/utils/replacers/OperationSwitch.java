@@ -39,7 +39,7 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.operationswitch.description");
+		return Resources.get("util.replacers.operationswitch.description");
 	}
 
 	/**

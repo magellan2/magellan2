@@ -1554,10 +1554,10 @@ public abstract class GameData implements Cloneable {
               Region r = MagellanFactory.createRegion(c, this);
               RegionType type = this.rules.getRegionType(StringID.create("Leere"), true);
               r.setType(type);
-              r.setName(Resources.get("magellan.completedata.region.thevoid.name"));
-              r.setDescription(Resources.get("magellan.completedata.region.thevoid..beschr"));
+              r.setName(Resources.get("completedata.region.thevoid.name"));
+              r.setDescription(Resources.get("completedata.region.thevoid..beschr"));
               newRegions.add(r);
-              this.addTranslation("Leere", Resources.get("magellan.completedata.region.thevoid.name"));
+              this.addTranslation("Leere", Resources.get("completedata.region.thevoid.name"));
             }
           }
         }

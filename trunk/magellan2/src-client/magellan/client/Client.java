@@ -268,7 +268,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // get new dispatcher
     EventDispatcher dispatcher = new EventDispatcher();
 
-    startWindow.progress(1, Resources.get("magellan.clientstart.1"));
+    startWindow.progress(1, Resources.get("clientstart.1"));
     Properties settings = loadSettings(settingsDirectory, "magellan.ini");
     if (settings == null) {
       log.info("Client.loadSettings: settings file " + "magellan.ini" + " does not exist, using default values.");
@@ -302,7 +302,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     reportState = new ReportObserver(dispatcher);
 
     // init components
-    startWindow.progress(2, Resources.get("magellan.clientstart.2"));
+    startWindow.progress(2, Resources.get("clientstart.2"));
     panels = new LinkedList<JPanel>();
     nodeWrapperFactories = new LinkedList<NodeWrapperFactory>();
 
@@ -310,7 +310,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Map<String,Component> components = initComponents(topLevelComponents);
 
     // init desktop
-    startWindow.progress(3, Resources.get("magellan.clientstart.3"));
+    startWindow.progress(3, Resources.get("clientstart.3"));
     Rectangle bounds = PropertiesHelper.loadRect(settings, null, "Client");
     if (bounds != null)
       setBounds(bounds);
@@ -601,7 +601,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       List<JMenuItem> plugInMenuItems = plugIn.getMenuItems();
       if (plugInMenuItems != null && plugInMenuItems.size()>0) {
         if (plugInMenu == null) {
-          plugInMenu = new JMenu(Resources.get("magellan.client.menu.plugins.caption"));
+          plugInMenu = new JMenu(Resources.get("client.menu.plugins.caption"));
           menuBar.add(plugInMenu);
         } else {
           plugInMenu.addSeparator();
@@ -616,8 +616,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createFileMenu() {
-    JMenu file = new JMenu(Resources.get("magellan.client.menu.file.caption"));
-    file.setMnemonic(Resources.get("magellan.client.menu.file.mnemonic").charAt(0));
+    JMenu file = new JMenu(Resources.get("client.menu.file.caption"));
+    file.setMnemonic(Resources.get("client.menu.file.mnemonic").charAt(0));
     addMenuItem(file, new OpenCRAction(this));
     addMenuItem(file, new AddCRAction(this));
     addMenuItem(file, new OpenOrdersAction(this));
@@ -641,8 +641,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createEditMenu() {
-    JMenu edit = new JMenu(Resources.get("magellan.client.menu.edit.caption"));
-    edit.setMnemonic(Resources.get("magellan.client.menu.edit.mnemonic").charAt(0));
+    JMenu edit = new JMenu(Resources.get("client.menu.edit.caption"));
+    edit.setMnemonic(Resources.get("client.menu.edit.mnemonic").charAt(0));
     addMenuItem(edit, new UndoAction(this, undoMgr));
     addMenuItem(edit, new RedoAction(this, undoMgr));
     edit.addSeparator();
@@ -652,26 +652,26 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createOrdersMenu() {
-    JMenu ordersMenu = new JMenu(Resources.get("magellan.client.menu.orders.caption"));
-    ordersMenu.setMnemonic(Resources.get("magellan.client.menu.orders.mnemonic").charAt(0));
+    JMenu ordersMenu = new JMenu(Resources.get("client.menu.orders.caption"));
+    ordersMenu.setMnemonic(Resources.get("client.menu.orders.mnemonic").charAt(0));
     addMenuItem(ordersMenu, new UnconfirmAction(this, overviewPanel));
     addMenuItem(ordersMenu, new FindPreviousUnconfirmedAction(this, overviewPanel));
 
     addMenuItem(ordersMenu, new ConfirmAction(this, overviewPanel));
 
     // add factionordersmenu to ordersmenu
-    factionOrdersMenu = new JMenu(Resources.get("magellan.client.menu.orders.all.caption"));
-    factionOrdersMenu.setMnemonic(Resources.get("magellan.client.menu.orders.all.mnemonic").charAt(0));
+    factionOrdersMenu = new JMenu(Resources.get("client.menu.orders.all.caption"));
+    factionOrdersMenu.setMnemonic(Resources.get("client.menu.orders.all.mnemonic").charAt(0));
     ordersMenu.add(factionOrdersMenu);
 
     // add factionordersmenunot to ordersmenu
-    factionOrdersMenuNot = new JMenu(Resources.get("magellan.client.menu.orders.allnot.caption"));
-    factionOrdersMenuNot.setMnemonic(Resources.get("magellan.client.menu.orders.allnot.mnemonic").charAt(0));
+    factionOrdersMenuNot = new JMenu(Resources.get("client.menu.orders.allnot.caption"));
+    factionOrdersMenuNot.setMnemonic(Resources.get("client.menu.orders.allnot.mnemonic").charAt(0));
     ordersMenu.add(factionOrdersMenuNot);
 
     // add factionordersmenu to ordersmenu
-    invertAllOrdersConfirmation = new JMenu(Resources.get("magellan.client.menu.orders.invert.caption"));
-    invertAllOrdersConfirmation.setMnemonic(Resources.get("magellan.client.menu.orders.invert.mnemonic").charAt(0));
+    invertAllOrdersConfirmation = new JMenu(Resources.get("client.menu.orders.invert.caption"));
+    invertAllOrdersConfirmation.setMnemonic(Resources.get("client.menu.orders.invert.mnemonic").charAt(0));
     ordersMenu.add(invertAllOrdersConfirmation);
 
     updateConfirmMenu();
@@ -706,8 +706,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createMapMenu() {
-    JMenu map = new JMenu(Resources.get("magellan.client.menu.map.caption"));
-    map.setMnemonic(Resources.get("magellan.client.menu.map.mnemonic").charAt(0));
+    JMenu map = new JMenu(Resources.get("client.menu.map.caption"));
+    map.setMnemonic(Resources.get("client.menu.map.mnemonic").charAt(0));
     addMenuItem(map, new SetOriginAction(this));
     addMenuItem(map, new IslandAction(this));
     addMenuItem(map, new MapSaveAction(this, mapPanel));
@@ -727,15 +727,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createBookmarkMenu() {
-    JMenu bookmarks = new JMenu(Resources.get("magellan.client.menu.bookmarks.caption"));
-    bookmarks.setMnemonic(Resources.get("magellan.client.menu.bookmarks.mnemonic").charAt(0));
+    JMenu bookmarks = new JMenu(Resources.get("client.menu.bookmarks.caption"));
+    bookmarks.setMnemonic(Resources.get("client.menu.bookmarks.mnemonic").charAt(0));
 
-    JMenuItem toggle = new JMenuItem(Resources.get("magellan.client.menu.bookmarks.toggle.caption"));
+    JMenuItem toggle = new JMenuItem(Resources.get("client.menu.bookmarks.toggle.caption"));
     toggle.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.CTRL_MASK));
     toggle.addActionListener(new ToggleBookmarkAction());
     bookmarks.add(toggle);
 
-    JMenuItem forward = new JMenuItem(Resources.get("magellan.client.menu.bookmarks.forward.caption"));
+    JMenuItem forward = new JMenuItem(Resources.get("client.menu.bookmarks.forward.caption"));
     forward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
     forward.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -744,7 +744,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     });
     bookmarks.add(forward);
 
-    JMenuItem backward = new JMenuItem(Resources.get("magellan.client.menu.bookmarks.backward.caption"));
+    JMenuItem backward = new JMenuItem(Resources.get("client.menu.bookmarks.backward.caption"));
     backward.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.SHIFT_MASK));
     backward.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -753,7 +753,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     });
     bookmarks.add(backward);
 
-    JMenuItem show = new JMenuItem(Resources.get("magellan.client.menu.bookmarks.show.caption"));
+    JMenuItem show = new JMenuItem(Resources.get("client.menu.bookmarks.show.caption"));
     show.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.ALT_MASK));
     show.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -762,7 +762,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     });
     bookmarks.add(show);
 
-    JMenuItem clear = new JMenuItem(Resources.get("magellan.client.menu.bookmarks.clear.caption"));
+    JMenuItem clear = new JMenuItem(Resources.get("client.menu.bookmarks.clear.caption"));
     clear.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         bookmarkManager.clearBookmarks();
@@ -774,8 +774,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   protected JMenu createExtrasMenu() {
-    JMenu extras = new JMenu(Resources.get("magellan.client.menu.extras.caption"));
-    extras.setMnemonic(Resources.get("magellan.client.menu.extras.mnemonic").charAt(0));
+    JMenu extras = new JMenu(Resources.get("client.menu.extras.caption"));
+    extras.setMnemonic(Resources.get("client.menu.extras.mnemonic").charAt(0));
     addMenuItem(extras, new FactionStatsAction(this));
     addMenuItem(extras, new ArmyStatsAction(this));
     addMenuItem(extras, new TradeOrganizerAction(this));
@@ -887,7 +887,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       startWindow.setVisible(true);
 
-      startWindow.progress(0, Resources.get("magellan.clientstart.0"));
+      startWindow.progress(0, Resources.get("clientstart.0"));
 
       /* determine default value for files directory */
       fileDir = MagellanFinder.findMagellanDirectory();
@@ -970,7 +970,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       INSTANCE = c;
 
       if (report != null) {
-        startWindow.progress(4, Resources.get("magellan.clientstart.4"));
+        startWindow.progress(4, Resources.get("clientstart.4"));
 
         File crFile = new File(report);
 
@@ -982,7 +982,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       c.setReportChanged(false);
       
-      startWindow.progress(5, Resources.get("magellan.clientstart.5"));
+      startWindow.progress(5, Resources.get("clientstart.5"));
       c.setAllVisible(true);
       startWindow.setVisible(false);
       startWindow.dispose();
@@ -1022,12 +1022,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       if (dataFile != null) {
         Object msgArgs[] = { dataFile.getAbsolutePath() };
-        msg = (new MessageFormat(Resources.get("magellan.client.msg.quit.confirmsavefile.text"))).format(msgArgs);
+        msg = (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text"))).format(msgArgs);
       } else {
-        msg = Resources.get("magellan.client.msg.quit.confirmsavenofile.text");
+        msg = Resources.get("client.msg.quit.confirmsavenofile.text");
       }
 
-      switch (JOptionPane.showConfirmDialog(this, msg, Resources.get("magellan.client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
+      switch (JOptionPane.showConfirmDialog(this, msg, Resources.get("client.msg.quit.confirmsave.title"), JOptionPane.YES_NO_CANCEL_OPTION)) {
       case JOptionPane.YES_OPTION:
 
         try {
@@ -1124,17 +1124,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       d = new GameDataReader().readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(this)));
       everLoadedReport = true;
     } catch (FileTypeFactory.NoValidEntryException e) {
-      JOptionPane.showMessageDialog(this, Resources.get("magellan.client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("magellan.client.msg.loadcr.missingcr.text.2"), Resources.get("magellan.client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (Exception exc) {
       // here we also catch RuntimeExceptions on purpose!
       // } catch (IOException exc) {
-      JOptionPane.showMessageDialog(this, Resources.get("magellan.client.msg.loadcr.error.text") + exc.toString(), Resources.get("magellan.client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.loadcr.error.text") + exc.toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       log.error(exc);
     }
 
     if (d.outOfMemory) {
-      JOptionPane.showMessageDialog(this, Resources.get("magellan.client.msg.outofmemory.text"), Resources.get("magellan.client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-      log.error(Resources.get("magellan.client.msg.outofmemory.text"));
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+      log.error(Resources.get("client.msg.outofmemory.text"));
     }
     return d;
   }
@@ -1188,7 +1188,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         stringEntries[i] = entries[i].toString();
       }
 
-      Object selected = JOptionPane.showInputDialog(client.getRootPane(), Resources.get("magellan.client.msg.loadcr.multiplezipentries.text"), Resources.get("magellan.client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE, null, stringEntries, stringEntries[0]);
+      Object selected = JOptionPane.showInputDialog(client.getRootPane(), Resources.get("client.msg.loadcr.multiplezipentries.text"), Resources.get("client.msg.loadcr.multiplezipentries.title"), JOptionPane.QUESTION_MESSAGE, null, stringEntries, stringEntries[0]);
 
       if (selected == null) {
         return null;
@@ -1263,7 +1263,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                     // password from message
                     Object msgArgs[] = { f.toString() };
 
-                    if (JOptionPane.showConfirmDialog(getRootPane(), (new java.text.MessageFormat(Resources.get("magellan.client.msg.postprocessloadedcr.acceptnewpassword.text"))).format(msgArgs), Resources.get("magellan.client.msg.postprocessloadedcr.acceptnewpassword.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    if (JOptionPane.showConfirmDialog(getRootPane(), (new java.text.MessageFormat(Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.text"))).format(msgArgs), Resources.get("client.msg.postprocessloadedcr.acceptnewpassword.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                       f.setPassword(password);
 
                       if (!f.isTrustLevelSetByUser()) { // password
@@ -1289,7 +1289,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       TrustLevels.recalculateTrustLevels(aData);
 
       if (privFacsWoPwd) { // no password set for any faction
-        JOptionPane.showMessageDialog(getRootPane(), Resources.get("magellan.client.msg.postprocessloadedcr.missingpassword.text"));
+        JOptionPane.showMessageDialog(getRootPane(), Resources.get("client.msg.postprocessloadedcr.missingpassword.text"));
       }
     }
   }
@@ -1376,7 +1376,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       if (units > 0) {
         BigDecimal percent = (new BigDecimal((done * 100) / ((float) units))).setScale(2, BigDecimal.ROUND_DOWN);
-        title += (" (" + units + " " + Resources.get("magellan.client.title.unit") + ", " + done + " " + Resources.get("magellan.client.title.done") + ", " + Resources.get("magellan.client.title.thatare") + " " + percent + " " + Resources.get("magellan.client.title.percent") + ")");
+        title += (" (" + units + " " + Resources.get("client.title.unit") + ", " + done + " " + Resources.get("client.title.done") + ", " + Resources.get("client.title.thatare") + " " + percent + " " + Resources.get("client.title.percent") + ")");
       }
     }
 
@@ -1759,7 +1759,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    */
   public String getShortcutDescription(Object stroke) {
-    return Resources.get("magellan.client.shortcut.description");
+    return Resources.get("client.shortcut.description");
   }
 
   /**
@@ -1768,7 +1768,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    */
   public String getListenerDescription() {
-    return Resources.get("magellan.client.shortcut.title");
+    return Resources.get("client.shortcut.title");
   }
 
   /**

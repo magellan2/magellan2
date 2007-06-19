@@ -76,6 +76,6 @@ public class LessReplacer extends AbstractParameterSwitch {
 
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.lessreplacer.description");
+    return Resources.get("util.replacers.lessreplacer.description");
   }  
 }

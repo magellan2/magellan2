@@ -200,7 +200,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 			context.addSeparator();
 		}
 
-		JMenuItem i = new JMenuItem(Resources.get("magellan.map.tradetextcellrenderer.sellMode"));
+		JMenuItem i = new JMenuItem(Resources.get("map.tradetextcellrenderer.sellMode"));
 		i.addActionListener(this);
 		context.add(i);
 	}
@@ -250,7 +250,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.tradetextcellrenderer.name");
+    return Resources.get("map.tradetextcellrenderer.name");
   }
   
   

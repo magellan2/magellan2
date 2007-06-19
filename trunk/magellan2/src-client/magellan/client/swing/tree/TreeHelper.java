@@ -339,7 +339,7 @@ public class TreeHelper {
 						String text = prevUnit.getHealth();
 
 						if(text == null) {
-							text = Resources.get("magellan.tree.treehelper.healthy");
+							text = Resources.get("tree.treehelper.healthy");
 						} else if(text.equals(verw)) {
 							hicon = "verwundet";
 						} else if(text.equals(sverw)) {
@@ -382,7 +382,7 @@ public class TreeHelper {
 
 				case FACTION_DISGUISE_STATUS:
 						if(prevUnit.isHideFaction()) {
-							SimpleNodeWrapper fdsNodeWrapper = factory.createSimpleNodeWrapper(Resources.get("magellan.tree.treehelper.factiondisguised"),
+							SimpleNodeWrapper fdsNodeWrapper = factory.createSimpleNodeWrapper(Resources.get("tree.treehelper.factiondisguised"),
 																								  "tarnung");
 							DefaultMutableTreeNode fdsNode = new DefaultMutableTreeNode(fdsNodeWrapper);
 							mother.add(fdsNode);
@@ -488,7 +488,7 @@ public class TreeHelper {
 					String text = curUnit.getHealth();
 
 					if(text == null) {
-						text = Resources.get("magellan.tree.treehelper.healthy");
+						text = Resources.get("tree.treehelper.healthy");
 					} else if(text.equals(verw)) {
 						hicon = "verwundet";
 					} else if(text.equals(sverw)) {
@@ -510,7 +510,7 @@ public class TreeHelper {
 				case FACTION_DISGUISE_STATUS:
 
 					if(curUnit.isHideFaction()) {
-						node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources.get("magellan.tree.treehelper.factiondisguised"), "tarnung"));
+						node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources.get("tree.treehelper.factiondisguised"), "tarnung"));
 					} else {
 						node = null;
 					}

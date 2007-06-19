@@ -70,7 +70,7 @@ public class AddSignDialog extends InternationalizedDialog {
 
 	private void init() {
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.addsigndialog.window.title"));
+		setTitle(Resources.get("addsigndialog.window.title"));
 
 		int width = Math.max(Integer.parseInt(settings.getProperty("AddSign.width", "350")), 350);
 		int height = Math.max(Integer.parseInt(settings.getProperty("AddSign.height", "140")), 140);
@@ -89,24 +89,24 @@ public class AddSignDialog extends InternationalizedDialog {
 		JPanel mainPanel = new JPanel(layout);		
 		mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 		
-		JLabel label1 = new JLabel(Resources.get("magellan.addsigndialog.label.line1"));
+		JLabel label1 = new JLabel(Resources.get("addsigndialog.label.line1"));
 		Line1 = new JTextField(30);
 		mainPanel.add(label1);
 		mainPanel.add(Line1);
 		
-		JLabel label2 = new JLabel(Resources.get("magellan.addsigndialog.label.line2"));
+		JLabel label2 = new JLabel(Resources.get("addsigndialog.label.line2"));
 		Line2 = new JTextField();
 		mainPanel.add(label2);
 		mainPanel.add(Line2);
 		
-		JButton okButton = new JButton(Resources.get("magellan.addsigndialog.btn.ok.caption"));
+		JButton okButton = new JButton(Resources.get("addsigndialog.btn.ok.caption"));
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					addSign();
 				}
 			});
 
-		JButton cancelButton = new JButton(Resources.get("magellan.addsigndialog.btn.close.caption"));
+		JButton cancelButton = new JButton(Resources.get("addsigndialog.btn.close.caption"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();

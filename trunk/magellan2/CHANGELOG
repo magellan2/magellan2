@@ -1,5 +1,6 @@
 2007-06-19 Thoralf (thoralf@m84.de
     * New subnode in faction statistics panel for locale presentation
+    * Removed magellan. prefix from resource keys.
 
 2007-06-16 Thoralf (thoralf@m84.de)
     * Added some more english translations to the resources (bug #43)

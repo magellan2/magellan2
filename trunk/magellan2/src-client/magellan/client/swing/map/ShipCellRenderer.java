@@ -213,7 +213,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.shipcellrenderer.name");
+    return Resources.get("map.shipcellrenderer.name");
   }
 
 }

@@ -148,7 +148,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 		setSize(width, height);
 		setLocation(xPos, yPos);
-		setTitle(Resources.get("magellan.tradeorganizer.title"));
+		setTitle(Resources.get("tradeorganizer.title"));
 
 		// build GUI
 		JTabbedPane tabPane = new JTabbedPane();
@@ -162,7 +162,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 													  GridBagConstraints.NONE,
 													  new Insets(5, 5, 5, 5), 0, 0);
 
-		topPanel.add(new JLabel(Resources.get("magellan.tradeorganizer.minsellmultiplier")), c);
+		topPanel.add(new JLabel(Resources.get("tradeorganizer.minsellmultiplier")), c);
 		c.gridx++;
 		minSellMultiplierSlider = new JSlider(1, 30, minSellMultiplier);
 		minSellMultiplierSlider.setMinorTickSpacing(1);
@@ -183,7 +183,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		topPanel.add(minSellMultiplierSlider, c);
 		c.gridx++;
 
-		topPanel.add(new JLabel(Resources.get("magellan.tradeorganizer.luxury")), c);
+		topPanel.add(new JLabel(Resources.get("tradeorganizer.luxury")), c);
 		c.gridx++;
 		c.weightx = 1.0;
 
@@ -253,17 +253,17 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		// build Tables in TabbedPane
 		cp = new JPanel();
 		cp.setLayout(new BorderLayout());
-		tabPane.addTab(Resources.get("magellan.tradeorganizer.buy"), cp);
+		tabPane.addTab(Resources.get("tradeorganizer.buy"), cp);
 		buy = new BuyTable();
 		cp.add(new JScrollPane(buy), BorderLayout.CENTER);
 
 		cp = new JPanel();
 		cp.setLayout(new BorderLayout());
-		tabPane.addTab(Resources.get("magellan.tradeorganizer.sell"), cp);
+		tabPane.addTab(Resources.get("tradeorganizer.sell"), cp);
 		sell = new SellTable();
 		cp.add(new JScrollPane(sell), BorderLayout.CENTER);
 
-		tabPane.add(Resources.get("magellan.tradeorganizer.stocks"), getStocksPanel());
+		tabPane.add(Resources.get("tradeorganizer.stocks"), getStocksPanel());
 	}
 
 	private JPanel getStocksPanel() {
@@ -392,7 +392,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 			}
 		}
 
-		totalBuyingVolume.setText(Resources.get("magellan.tradeorganizer.totalBuyingVolume") + total + ", ");
+		totalBuyingVolume.setText(Resources.get("tradeorganizer.totalBuyingVolume") + total + ", ");
 		buy.setRegions(newRegions);
 		buy.sort();
 	}
@@ -429,12 +429,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		}
 
 		sell.setRegions(newRegions);
-		totalSellingVolume.setText(Resources.get("magellan.tradeorganizer.totalSellingVolume") + total + ", ");
+		totalSellingVolume.setText(Resources.get("tradeorganizer.totalSellingVolume") + total + ", ");
 
 		if(total != 0) {
-			averagePrice.setText(Resources.get("magellan.tradeorganizer.averagePrice") + (totalPrice / total));
+			averagePrice.setText(Resources.get("tradeorganizer.averagePrice") + (totalPrice / total));
 		} else {
-			averagePrice.setText(Resources.get("magellan.tradeorganizer.averagePrice") + 0);
+			averagePrice.setText(Resources.get("tradeorganizer.averagePrice") + 0);
 		}
 
 		sell.sort();
@@ -620,13 +620,13 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		public String getColumnName(int col) {
 			switch(col) {
 			case 0:
-				return Resources.get("magellan.tradeorganizer.buycolumnname1");
+				return Resources.get("tradeorganizer.buycolumnname1");
 
 			case 1:
-				return Resources.get("magellan.tradeorganizer.buycolumnname2");
+				return Resources.get("tradeorganizer.buycolumnname2");
 
 			case 2:
-				return Resources.get("magellan.tradeorganizer.buycolumnname3");
+				return Resources.get("tradeorganizer.buycolumnname3");
 			}
 
 			return "";
@@ -821,10 +821,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		public String getColumnName(int col) {
 			switch(col) {
 			case 0:
-				return Resources.get("magellan.tradeorganizer.sellcolumnname1");
+				return Resources.get("tradeorganizer.sellcolumnname1");
 
 			case 1:
-				return Resources.get("magellan.tradeorganizer.sellcolumnname2");
+				return Resources.get("tradeorganizer.sellcolumnname2");
 			}
 
 			return "";
@@ -1012,10 +1012,10 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		public String getColumnName(int col) {
 			switch(col) {
 			case 0:
-				return Resources.get("magellan.tradeorganizer.sellcolumnname1");
+				return Resources.get("tradeorganizer.sellcolumnname1");
 
 			case 1:
-				return Resources.get("magellan.tradeorganizer.sellcolumnname2");
+				return Resources.get("tradeorganizer.sellcolumnname2");
 			}
 
 			return "";

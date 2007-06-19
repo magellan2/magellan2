@@ -78,7 +78,7 @@ public class TileSetAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.tilesetaction.accelerator",false);
+    return Resources.get("actions.tilesetaction.accelerator",false);
   }
 
   /**
@@ -86,7 +86,7 @@ public class TileSetAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.tilesetaction.mnemonic",false);
+    return Resources.get("actions.tilesetaction.mnemonic",false);
   }
 
   /**
@@ -94,12 +94,12 @@ public class TileSetAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.tilesetaction.name");
+    return Resources.get("actions.tilesetaction.name");
   }
 
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.tilesetaction.tooltip",false);
+    return Resources.get("actions.tilesetaction.tooltip",false);
   }
 }

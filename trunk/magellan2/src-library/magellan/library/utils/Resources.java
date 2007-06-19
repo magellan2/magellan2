@@ -231,6 +231,7 @@ public class Resources {
   public static String get(String key, Locale locale, boolean returnKey) {
     if (locale == null) locale = Locale.getDefault();
     key = key.trim().replaceAll(" ","");
+    if (key.startsWith("magellan.")) key = key.substring(9);
     Resources resources = getInstance();
     String result = resources.getResource(key, locale);
     
@@ -293,7 +294,7 @@ public class Resources {
   
   public static String getOrderTranslation(String key, Locale locale) {
     Resources resources = getInstance();
-    key = "magellan.orders."+key;
+    key = "orders."+key;
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {

@@ -1293,13 +1293,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		protected Container getLayoutPanel() {
 			JPanel content = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 0));
-			content.setBorder(new TitledBorder(Resources.get("magellan.completion.multieditorordereditorlist.prefs.layout")));
+			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.layout")));
 
-			chkMultiEditorLayout = new JCheckBox(Resources.get("magellan.completion.multieditorordereditorlist.prefs.multieditorlayout"),
+			chkMultiEditorLayout = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.multieditorlayout"),
 												 source.isMultiEditorLayout());
 			content.add(chkMultiEditorLayout);
 
-			chkHideButtons = new JCheckBox(Resources.get("magellan.completion.multieditorordereditorlist.prefs.hidebuttons"), source.isHideButtons());
+			chkHideButtons = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.hidebuttons"), source.isHideButtons());
 			content.add(chkHideButtons);
 
 			return content;
@@ -1307,14 +1307,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		protected Container getColorPanel() {
 			JPanel content = new JPanel(new GridBagLayout());
-			content.setBorder(new TitledBorder(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors")));
+			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.colors")));
 
 			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
 														  GridBagConstraints.WEST,
 														  GridBagConstraints.NONE,
 														  new Insets(0, 2, 1, 1), 0, 0);
 
-			JLabel lblStandardColor = new JLabel(Resources.get("magellan.completion.multieditorordereditorlist.prefs.inactivebackground") + ": ");
+			JLabel lblStandardColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground") + ": ");
 
 			pnlStandardColor = new JPanel();
 			pnlStandardColor.setBorder(new LineBorder(Color.black));
@@ -1323,7 +1323,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			pnlStandardColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("magellan.completion.multieditorordereditorlist.prefs.backgroundcolor"),
+																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
 																  ((Component) e.getSource()).getBackground());
 
 						if(newColor != null) {
@@ -1332,7 +1332,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					}
 				});
 
-			JLabel lblStandardColorConfirmed = new JLabel(Resources.get("magellan.completion.multieditorordereditorlist.prefs.inactivebackground.confirmed") +
+			JLabel lblStandardColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground.confirmed") +
 														  ": ");
 
 			pnlStandardColorConfirmed = new JPanel();
@@ -1342,7 +1342,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			pnlStandardColorConfirmed.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("magellan.completion.multieditorordereditorlist.prefs.backgroundcolor"),
+																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
 																  ((Component) e.getSource()).getBackground());
 
 						if(newColor != null) {
@@ -1351,7 +1351,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					}
 				});
 
-			JLabel lblActiveColor = new JLabel(Resources.get("magellan.completion.multieditorordereditorlist.prefs.activebackground") + ": ");
+			JLabel lblActiveColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground") + ": ");
 
 			pnlActiveColor = new JPanel();
 			pnlActiveColor.setBorder(new LineBorder(Color.black));
@@ -1360,7 +1360,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			pnlActiveColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("magellan.completion.multieditorordereditorlist.prefs.backgroundcolor"),
+																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
 																  ((Component) e.getSource()).getBackground());
 
 						if(newColor != null) {
@@ -1369,7 +1369,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					}
 				});
 
-			JLabel lblActiveColorConfirmed = new JLabel(Resources.get("magellan.completion.multieditorordereditorlist.prefs.activebackground.confirmed") +
+			JLabel lblActiveColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground.confirmed") +
 														": ");
 
 			pnlActiveColorConfirmed = new JPanel();
@@ -1379,7 +1379,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			pnlActiveColorConfirmed.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("magellan.completion.multieditorordereditorlist.prefs.backgroundcolor"),
+																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
 																  ((Component) e.getSource()).getBackground());
 
 						if(newColor != null) {
@@ -1418,14 +1418,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		protected Container getHighlightPanel() {
 			JPanel content = new JPanel(new GridBagLayout());
-			content.setBorder(new TitledBorder(Resources.get("magellan.completion.multieditorordereditorlist.prefs.syntaxhighlighting")));
+			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting")));
 
 			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
 														  GridBagConstraints.WEST,
 														  GridBagConstraints.NONE,
 														  new Insets(0, 2, 1, 1), 0, 0);
 
-			chkSyntaxHighlighting = new JCheckBox(Resources.get("magellan.completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"),
+			chkSyntaxHighlighting = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"),
 												  source.getUseSyntaxHighlighting());
 			content.add(chkSyntaxHighlighting, c);
 
@@ -1439,9 +1439,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		protected Container getListModePanel() {
 			JPanel content = new JPanel(new BorderLayout(2, 2));
-			content.setBorder(new TitledBorder(Resources.get("magellan.completion.multieditorordereditorlist.prefs.listMode")));
+			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.listMode")));
 
-			JTextArea text = new JTextArea(Resources.get("magellan.completion.multieditorordereditorlist.prefs.listMode.text"));
+			JTextArea text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
 			text.setBackground(content.getBackground());
 			text.setEditable(false);
 			text.setLineWrap(true);
@@ -1456,7 +1456,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			listModes = new JCheckBox[3];
 
 			for(int i = 0; i < 3; i++) {
-				listModes[i] = new JCheckBox(Resources.get("magellan.completion.multieditorordereditorlist.prefs.listMode." + i));
+				listModes[i] = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i));
 				listModes[i].setSelected(((listMode >> (3 - i)) & 1) != 0);
 				help.add(listModes[i], con);
 				con.gridy++;
@@ -1467,7 +1467,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			con.fill = GridBagConstraints.HORIZONTAL;
 
 			for(int i = 0; i < 3; i++) {
-				text = new JTextArea(Resources.get("magellan.completion.multieditorordereditorlist.prefs.listMode." + i + ".text"));
+				text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i + ".text"));
 				text.setBackground(content.getBackground());
 				text.setEditable(false);
 				text.setLineWrap(true);
@@ -1522,19 +1522,19 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		private Object[] getStyles() {
 			Object styles[] = new Object[6];
 
-			styles[0] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.standard"),
+			styles[0] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.standard"),
 										   OrderEditor.S_REGULAR,
 										   source.getTokenColor(OrderEditor.S_REGULAR));
-			styles[1] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.keywords"),
+			styles[1] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.keywords"),
 										   OrderEditor.S_KEYWORD,
 										   source.getTokenColor(OrderEditor.S_KEYWORD));
-			styles[2] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.strings"), OrderEditor.S_STRING,
+			styles[2] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.strings"), OrderEditor.S_STRING,
 										   source.getTokenColor(OrderEditor.S_STRING));
-			styles[3] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.numbers"), OrderEditor.S_NUMBER,
+			styles[3] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.numbers"), OrderEditor.S_NUMBER,
 										   source.getTokenColor(OrderEditor.S_NUMBER));
-			styles[4] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.ids"), OrderEditor.S_ID,
+			styles[4] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.ids"), OrderEditor.S_ID,
 										   source.getTokenColor(OrderEditor.S_ID));
-			styles[5] = new StyleContainer(Resources.get("magellan.completion.multieditorordereditorlist.prefs.colors.comments"),
+			styles[5] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.comments"),
 										   OrderEditor.S_COMMENT,
 										   source.getTokenColor(OrderEditor.S_COMMENT));
 
@@ -1591,7 +1591,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.completion.multieditorordereditorlist.prefs.title");
+			return Resources.get("completion.multieditorordereditorlist.prefs.title");
 		}
 
 		private class StyleContainer {
@@ -1986,17 +1986,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					}
 
 					public String getListenerDescription() {
-						return Resources.get("magellan.completion.multieditorordereditorlist.shortcuts.title");
+						return Resources.get("completion.multieditorordereditorlist.shortcuts.title");
 					}
 
 					public String getShortcutDescription(Object stroke) {
 						int index = shortcuts.indexOf(stroke);
 
-						return Resources.get("magellan.completion.multieditorordereditorlist.shortcuts.description." + String.valueOf(index));
+						return Resources.get("completion.multieditorordereditorlist.shortcuts.description." + String.valueOf(index));
 					}
 				});
 
-			checkOrderConfirm = new JCheckBox(Resources.get("magellan.completion.multieditorordereditorlist.chk.orderconfirmation"), false);
+			checkOrderConfirm = new JCheckBox(Resources.get("completion.multieditorordereditorlist.chk.orderconfirmation"), false);
 			checkOrderConfirm.addActionListener(this);
 			checkOrderConfirm.setEnabled(false);
 
@@ -2205,7 +2205,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
                                                                             tempUnit.toString(false)+
 																		   " " + recCost + " " +
 																		   silver + "; " +
-																		   Resources.get("magellan.completion.multieditorordereditorlist.tempunit.recruitCost");
+																		   Resources.get("completion.multieditorordereditorlist.tempunit.recruitCost");
 														parentUnit.addOrders(tmpOrders);
 													}
 
@@ -2215,7 +2215,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 																		   " " +
 																		   String.valueOf(10 * i) +
 																		   " " + silver + "; " +
-																		   Resources.get("magellan.completion.multieditorordereditorlist.tempunit.maintainCost");
+																		   Resources.get("completion.multieditorordereditorlist.tempunit.maintainCost");
 														parentUnit.addOrders(tmpOrders);
 													}
 
@@ -2253,14 +2253,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 								return;
 							} else {
 								JOptionPane.showMessageDialog(this,
-															  Resources.get("magellan.completion.multieditorordereditorlist.msg.duplicatetempid.text"),
-															  Resources.get("magellan.completion.multieditorordereditorlist.msg.duplicatetempid.title"),
+															  Resources.get("completion.multieditorordereditorlist.msg.duplicatetempid.text"),
+															  Resources.get("completion.multieditorordereditorlist.msg.duplicatetempid.title"),
 															  JOptionPane.ERROR_MESSAGE);
 							}
 						} catch(NumberFormatException nfe) {
 							JOptionPane.showMessageDialog(this,
-														  Resources.get("magellan.completion.multieditorordereditorlist.msg.invalidtempid.text"),
-														  Resources.get("magellan.completion.multieditorordereditorlist.msg.invalidtempid.title"),
+														  Resources.get("completion.multieditorordereditorlist.msg.invalidtempid.text"),
+														  Resources.get("completion.multieditorordereditorlist.msg.invalidtempid.title"),
 														  JOptionPane.ERROR_MESSAGE);
 						}
 					} else {

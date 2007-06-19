@@ -400,6 +400,6 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 													"prefs.turns.text", "prefs.changes.text",
 													"prefs.changes.mode0.text",
 													"prefs.changes.mode1.text",
-												}, 0, "magellan.tree.skillnodewrapper.");
+												}, 0, "tree.skillnodewrapper.");
 	}
 }

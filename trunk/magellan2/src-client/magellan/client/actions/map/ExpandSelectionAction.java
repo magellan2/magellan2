@@ -149,7 +149,7 @@ public class ExpandSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.expandselectionaction.accelerator",false);
+    return Resources.get("actions.expandselectionaction.accelerator",false);
   }
 
   /**
@@ -157,7 +157,7 @@ public class ExpandSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.expandselectionaction.mnemonic",false);
+    return Resources.get("actions.expandselectionaction.mnemonic",false);
   }
 
   /**
@@ -165,11 +165,11 @@ public class ExpandSelectionAction extends MenuAction implements GameDataListene
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.expandselectionaction.name");
+    return Resources.get("actions.expandselectionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.expandselectionaction.tooltip",false);
+    return Resources.get("actions.expandselectionaction.tooltip",false);
   }
 }

@@ -48,7 +48,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.factionswitch.description");
+		return Resources.get("util.replacers.factionswitch.description");
 	}
 
 	/**

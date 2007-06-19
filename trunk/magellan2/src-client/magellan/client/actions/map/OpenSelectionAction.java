@@ -86,7 +86,7 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 		fc.addChoosableFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION,
 														SaveSelectionAction.DESCRIPTION));
 		fc.setSelectedFile(new File(client.getProperties().getProperty(getPropertyName(), "")));
-		fc.setDialogTitle(Resources.get("magellan.actions.openselectionaction.title"));
+		fc.setDialogTitle(Resources.get("actions.openselectionaction.title"));
 
 		if(fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
 			client.getProperties().setProperty(getPropertyName(),
@@ -116,9 +116,9 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 			} catch(Exception exc) {
 				log.error(exc);
 				JOptionPane.showMessageDialog(client,
-											  Resources.get("magellan.actions.openselectionaction.msg.fileordersopen.error.text") +
+											  Resources.get("actions.openselectionaction.msg.fileordersopen.error.text") +
 											  e.toString(),
-                        Resources.get("magellan.actions.openselectionaction.msg.fileordersopen.error.title"),
+                        Resources.get("actions.openselectionaction.msg.fileordersopen.error.title"),
 											  JOptionPane.ERROR_MESSAGE);
 			}
 
@@ -174,7 +174,7 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.openselectionaction.accelerator",false);
+    return Resources.get("actions.openselectionaction.accelerator",false);
   }
 
   /**
@@ -182,7 +182,7 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.openselectionaction.mnemonic",false);
+    return Resources.get("actions.openselectionaction.mnemonic",false);
   }
 
   /**
@@ -190,11 +190,11 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.openselectionaction.name");
+    return Resources.get("actions.openselectionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.openselectionaction.tooltip",false);
+    return Resources.get("actions.openselectionaction.tooltip",false);
   }
 }

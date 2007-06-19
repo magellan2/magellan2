@@ -40,6 +40,6 @@ public class HerbReplacer extends AbstractRegionReplacer {
 	}
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.herbreplacer.description");
+    return Resources.get("util.replacers.herbreplacer.description");
   }
 }

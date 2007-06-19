@@ -93,7 +93,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 	 */
 	public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions, boolean excludeUnnamed, boolean initializeRegions) {
 		super(owner, true);
-		setTitle(Resources.get("magellan.routingdialog.window.title"));
+		setTitle(Resources.get("routingdialog.window.title"));
 
     if (initializeRegions) initialize(data,destRegions,excludeUnnamed);
 	}
@@ -109,11 +109,11 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
     JPanel destSelect = new JPanel();
     destSelect.setLayout(new GridBagLayout());
-    destSelect.setBorder(BorderFactory.createTitledBorder(Resources.get("magellan.routingdialog.window.message"))); //BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+    destSelect.setBorder(BorderFactory.createTitledBorder(Resources.get("routingdialog.window.message"))); //BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 
-    //destSelect.add(new JLabel(Resources.get("magellan.routingdialog.window.message")), c);
+    //destSelect.add(new JLabel(Resources.get("routingdialog.window.message")), c);
     c.gridwidth = 1;
-    destSelect.add(new JLabel(Resources.get("magellan.routingdialog.xcoor")), c);
+    destSelect.add(new JLabel(Resources.get("routingdialog.xcoor")), c);
 
     c.gridx = 1;
     c.weightx = 0.2;
@@ -123,7 +123,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
     c.gridx = 2;
     c.weightx = 0;
-    destSelect.add(new JLabel(Resources.get("magellan.routingdialog.ycoor")), c);
+    destSelect.add(new JLabel(Resources.get("routingdialog.ycoor")), c);
 
     c.gridx = 3;
     c.weightx = 0.2;
@@ -143,7 +143,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       temp.setLayout(new BorderLayout(6, 6));
       destSelect.add(temp, c);
 
-      temp.add(new JLabel(Resources.get("magellan.routingdialog.regionname")), BorderLayout.WEST);
+      temp.add(new JLabel(Resources.get("routingdialog.regionname")), BorderLayout.WEST);
 
       regionName = new JTextField();
       temp.add(regionName, BorderLayout.CENTER);
@@ -214,8 +214,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridwidth = 2;
     cp.add(destSelect, c);
 
-    createSingleTrip = new JRadioButton(Resources.get("magellan.routingdialog.radiobtn.createsingletrip.title"));
-    createRoute = new JRadioButton(Resources.get("magellan.routingdialog.radiobtn.createroute.title"));
+    createSingleTrip = new JRadioButton(Resources.get("routingdialog.radiobtn.createsingletrip.title"));
+    createRoute = new JRadioButton(Resources.get("routingdialog.radiobtn.createroute.title"));
 
     ButtonGroup buttonGroup = new ButtonGroup();
     buttonGroup.add(createSingleTrip);
@@ -246,7 +246,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.insets.left = 30;
     c.gridy = 3;
 
-    considerShipRange = new JCheckBox(Resources.get("magellan.routingdialog.chkbox.considerrange.title"));
+    considerShipRange = new JCheckBox(Resources.get("routingdialog.chkbox.considerrange.title"));
     considerShipRange.setSelected(true);
     considerShipRange.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -260,23 +260,23 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     cp.add(considerShipRange, c);
 
     c.gridy = 4;
-    createVorlageOrders = new JCheckBox(Resources.get("magellan.routingdialog.chkbox.createvorlageorders.title"));
+    createVorlageOrders = new JCheckBox(Resources.get("routingdialog.chkbox.createvorlageorders.title"));
     cp.add(createVorlageOrders, c);
 
     c.gridy = 5;
     c.insets.left = 3;
-    replaceOrdersBox = new JCheckBox(Resources.get("magellan.routingdialog.chkbox.replaceorders.title"));
+    replaceOrdersBox = new JCheckBox(Resources.get("routingdialog.chkbox.replaceorders.title"));
     cp.add(replaceOrdersBox, c);
 
     c.gridy = 6;
     c.gridwidth = 1;
-    ok = new JButton(Resources.get("magellan.routingdialog.okbutton.text"));
-    ok.setMnemonic(Resources.get("magellan.routingdialog.okbutton.mnemonic").charAt(0));
+    ok = new JButton(Resources.get("routingdialog.okbutton.text"));
+    ok.setMnemonic(Resources.get("routingdialog.okbutton.mnemonic").charAt(0));
     cp.add(ok, c);
 
     c.gridx = 1;
-    cancel = new JButton(Resources.get("magellan.routingdialog.cancelbutton.text"));
-    cancel.setMnemonic(Resources.get("magellan.routingdialog.cancelbutton.mnemonic").charAt(0));
+    cancel = new JButton(Resources.get("routingdialog.cancelbutton.text"));
+    cancel.setMnemonic(Resources.get("routingdialog.cancelbutton.mnemonic").charAt(0));
     cancel.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           quit();

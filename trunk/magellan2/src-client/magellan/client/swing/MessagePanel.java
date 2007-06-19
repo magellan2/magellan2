@@ -101,7 +101,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 	public MessagePanel(EventDispatcher d, GameData gd, Properties p) {
 		super(d, gd, p);
 
-		nodeFactory = new NodeWrapperFactory(p, "MessagePanel.Nodes", Resources.get("magellan.messagepanel.nodeFactory.title"));
+		nodeFactory = new NodeWrapperFactory(p, "MessagePanel.Nodes", Resources.get("messagepanel.nodeFactory.title"));
 
 		// create dummies to have a valid pref adapter
 		nodeFactory.createUnitNodeWrapper(null, null);
@@ -208,7 +208,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if(!sortedMessages.isEmpty()) {
-			DefaultMutableTreeNode node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.factionmessages"));
+			DefaultMutableTreeNode node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.factionmessages"));
 			parent.add(node);
 			addCategorizedMessages(sortedMessages, node);
 		}
@@ -231,7 +231,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		// a node for the category and add the messages as sub-
 		// nodes if the category is not empty
 		if((r.getMessages() != null) && (r.getMessages().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.messages"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.messages"));
 			parent.add(node);
 
 			Iterator<Message> iter = r.getMessages().iterator();
@@ -242,7 +242,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((r.getEffects() != null) && (r.getEffects().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.effects"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
 			parent.add(node);
 
 			Iterator<String> iter = r.getEffects().iterator();
@@ -253,7 +253,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((r.getPlayerMessages() != null) && (r.getPlayerMessages().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.dispatches"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.dispatches"));
 			parent.add(node);
 
 			Iterator<Message> iter = r.getPlayerMessages().iterator();
@@ -264,7 +264,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((r.getEvents() != null) && (r.getEvents().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.events"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.events"));
 			parent.add(node);
 
 			Iterator<Message> iter = r.getEvents().iterator();
@@ -275,7 +275,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((r.getSurroundings() != null) && (r.getSurroundings().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.surroundings"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.surroundings"));
 			parent.add(node);
 
 			Iterator<Message> iter = r.getSurroundings().iterator();
@@ -287,7 +287,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
 		if(((r.getTravelThru() != null) && (r.getTravelThru().size() > 0)) ||
 			   ((r.getTravelThruShips() != null) && (r.getTravelThruShips().size() > 0))) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.travelthru"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.travelthru"));
 			parent.add(node);
 
 			if(r.getTravelThru() != null) {
@@ -340,7 +340,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 			}
 
 			if(!sortedMessages.isEmpty()) {
-				node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.factionmessages"));
+				node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.factionmessages"));
 				parent.add(node);
 				addCategorizedMessages(sortedMessages, node);
 			}
@@ -364,7 +364,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		// a node for the category and add the messages as sub-
 		// nodes if the category is not empty
 		if((f.getErrors() != null) && (f.getErrors().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.errors"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.errors"));
 			parent.add(node);
 
 			Iterator msgs = f.getErrors().iterator();
@@ -375,7 +375,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((f.getBattles() != null) && (f.getBattles().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.battles"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.battles"));
 			parent.add(node);
 
 			Iterator battles = f.getBattles().iterator();
@@ -386,7 +386,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((f.getMessages() != null) && (f.getMessages().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.messages"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.messages"));
 			parent.add(node);
 			addCategorizedMessages(f.getMessages(), node);
 		}
@@ -406,7 +406,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		DefaultMutableTreeNode node = null;
 
 		if((u.getEffects() != null) && (u.getEffects().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.effects"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
 			parent.add(node);
 
 			Iterator<String> iter = u.getEffects().iterator();
@@ -417,7 +417,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		}
 
 		if((u.getUnitMessages() != null) && (u.getUnitMessages().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.unitdispatches"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.unitdispatches"));
 			parent.add(node);
 
 			Iterator<Message> iter = u.getUnitMessages().iterator();
@@ -506,7 +506,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		List<Message> sortedMessages = new LinkedList<Message>();
 
 		if((uc.getEffects() != null) && (uc.getEffects().size() > 0)) {
-			node = new DefaultMutableTreeNode(Resources.get("magellan.messagepanel.node.effects"));
+			node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.effects"));
 			parent.add(node);
 
 			Iterator<String> iter = uc.getEffects().iterator();
@@ -723,7 +723,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 			}
 
 			if(section == null) {
-				section = Resources.get("magellan.messagepanel.node.others");
+				section = Resources.get("messagepanel.node.others");
 			}
 
 			List<Message> l = categories.get(section);
@@ -745,7 +745,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 			String s = null;
 
 			try {
-				s = Resources.get("magellan.messagepanel.section." + category);
+				s = Resources.get("messagepanel.section." + category);
 			} catch(MissingResourceException e) {
 				s = category.toString();
 			}
@@ -824,8 +824,8 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 	 * 
 	 */
 	public JMenu getMenu() {
-		JMenu tree = new JMenu(Resources.get("magellan.messagepanel.menu.caption"));
-		tree.setMnemonic(Resources.get("magellan.messagepanel.menu.mnemonic").charAt(0));
+		JMenu tree = new JMenu(Resources.get("messagepanel.menu.caption"));
+		tree.setMnemonic(Resources.get("messagepanel.menu.mnemonic").charAt(0));
 		tree.add(nodeFactory.getContextMenu());
 
 		return tree;
@@ -846,7 +846,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 	 * 
 	 */
 	public String getSuperMenuTitle() {
-		return Resources.get("magellan.messagepanel.menu.supertitle");
+		return Resources.get("messagepanel.menu.supertitle");
 	}
 
 	protected class Pref extends JPanel implements PreferencesAdapter {
@@ -863,9 +863,9 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 			this.src = src;
 
 			JPanel help = new JPanel(new FlowLayout(FlowLayout.LEADING));
-			help.setBorder(BorderFactory.createTitledBorder(Resources.get("magellan.messagepanel.prefs.border.title")));
+			help.setBorder(BorderFactory.createTitledBorder(Resources.get("messagepanel.prefs.border.title")));
 
-			lineWrap = new JCheckBox(Resources.get("magellan.messagepanel.prefs.linewrap"), src.isLineWrap());
+			lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), src.isLineWrap());
 			help.add(lineWrap);
 
 			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1,
@@ -907,7 +907,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 		 * 
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.messagepanel.prefs.title");
+			return Resources.get("messagepanel.prefs.title");
 		}
 	}
 }

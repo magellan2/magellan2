@@ -117,7 +117,7 @@ public class UnitContextMenu extends JPopupMenu {
 	private void initBoth(Collection<Unit> selectedObjects) {
 		// this part for both (but only for selectedUnits)
 		if (containsPrivilegedUnit()) {
-			JMenuItem validateOrders = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.confirm.caption"));
+			JMenuItem validateOrders = new JMenuItem(Resources.get("context.unitcontextmenu.menu.confirm.caption"));
 			validateOrders.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					event_confirmOrders();
@@ -125,7 +125,7 @@ public class UnitContextMenu extends JPopupMenu {
 			});
 			add(validateOrders);
 
-			JMenuItem addOrder = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.addorder.caption"));
+			JMenuItem addOrder = new JMenuItem(Resources.get("context.unitcontextmenu.menu.addorder.caption"));
 			addOrder.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					event_addOrder();
@@ -138,9 +138,9 @@ public class UnitContextMenu extends JPopupMenu {
 		if (this.selectedUnits.size() > 0) {
 			JMenuItem selectUnits = null;
 			if (this.selectedUnits.size() == 1) {
-				selectUnits = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.setasunitselection_singular.caption"));
+				selectUnits = new JMenuItem(Resources.get("context.unitcontextmenu.setasunitselection_singular.caption"));
 			} else {
-				selectUnits = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.setasunitselection_plural.caption"));
+				selectUnits = new JMenuItem(Resources.get("context.unitcontextmenu.setasunitselection_plural.caption"));
 			}
 			selectUnits.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -155,7 +155,7 @@ public class UnitContextMenu extends JPopupMenu {
 			addSeparator();
 		}
 
-		JMenuItem addTag = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.addtag.caption"));
+		JMenuItem addTag = new JMenuItem(Resources.get("context.unitcontextmenu.addtag.caption"));
 		addTag.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				event_addTag();
@@ -171,7 +171,7 @@ public class UnitContextMenu extends JPopupMenu {
 		for (Iterator<String> iter = tags.iterator(); iter.hasNext();) {
 			String tag = iter.next();
 
-			JMenuItem removeTag = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.removetag.caption") + ": " + tag);
+			JMenuItem removeTag = new JMenuItem(Resources.get("context.unitcontextmenu.removetag.caption") + ": " + tag);
 			removeTag.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					event_removeTag(e);
@@ -202,7 +202,7 @@ public class UnitContextMenu extends JPopupMenu {
 				addSeparator();
 			}
 
-			JMenuItem planRoute = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.planroute"));
+			JMenuItem planRoute = new JMenuItem(Resources.get("context.unitcontextmenu.menu.planroute"));
 
 			planRoute.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -239,11 +239,11 @@ public class UnitContextMenu extends JPopupMenu {
 
 	private void initMultiple() {
 		// this part for multiple unit-selections
-		JMenuItem unitString = new JMenuItem(selectedUnits.size() + " " + Resources.get("magellan.context.unitcontextmenu.units"));
+		JMenuItem unitString = new JMenuItem(selectedUnits.size() + " " + Resources.get("context.unitcontextmenu.units"));
 		unitString.setEnabled(false);
 		add(unitString);
 
-		JMenuItem copyMultipleID = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.copyids.caption"));
+		JMenuItem copyMultipleID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyids.caption"));
 		copyMultipleID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				event_copyMultipleID(e);
@@ -251,7 +251,7 @@ public class UnitContextMenu extends JPopupMenu {
 		});
 		add(copyMultipleID);
 
-		JMenuItem copyMultipleNameID = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.copyidsandnames.caption"));
+		JMenuItem copyMultipleNameID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidsandnames.caption"));
 		copyMultipleNameID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				event_copyMultipleNameID(e);
@@ -267,7 +267,7 @@ public class UnitContextMenu extends JPopupMenu {
 		unitString.setEnabled(false);
 		add(unitString);
 
-		JMenuItem copyUnitID = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.copyid.caption"));
+		JMenuItem copyUnitID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyid.caption"));
 		copyUnitID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				event_copyID(e);
@@ -275,7 +275,7 @@ public class UnitContextMenu extends JPopupMenu {
 		});
 		add(copyUnitID);
 
-		JMenuItem copyUnitNameID = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.copyidandname.caption"));
+		JMenuItem copyUnitNameID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidandname.caption"));
 		copyUnitNameID.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				event_copyNameID(e);
@@ -284,7 +284,7 @@ public class UnitContextMenu extends JPopupMenu {
 		add(copyUnitNameID);
 
 		if (EMapDetailsPanel.isPrivilegedAndNoSpy(unit)) {
-			JMenuItem hideID = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.disguise.caption"));
+			JMenuItem hideID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.disguise.caption"));
 
 			hideID.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -299,7 +299,7 @@ public class UnitContextMenu extends JPopupMenu {
 		for (Iterator it = unit.getTeachers().iterator(); it.hasNext();){
 			Unit teacher = (Unit) it.next();
 			JMenuItem removeFromTeachersList = new JMenuItem(
-					Resources.get("magellan.context.unitcontextmenu.menu.removeFromTeachersList") + ": " + teacher.toString());
+					Resources.get("context.unitcontextmenu.menu.removeFromTeachersList") + ": " + teacher.toString());
 			add(removeFromTeachersList);
 			removeFromTeachersList.addActionListener(new RemoveUnitFromTeachersListAction(unit,
 					teacher, this.data));
@@ -307,7 +307,7 @@ public class UnitContextMenu extends JPopupMenu {
 		
 
 		if ((unit.getShip() != null) && unit.equals(unit.getShip().getOwnerUnit())) {
-			JMenuItem planShipRoute = new JMenuItem(Resources.get("magellan.context.unitcontextmenu.menu.planshiproute.caption"));
+			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontextmenu.menu.planshiproute.caption"));
 			planShipRoute.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					planShipRoute();
@@ -397,7 +397,7 @@ public class UnitContextMenu extends JPopupMenu {
 
 		List<String> sortedKeys = new ArrayList<String>(keys);
 		Collections.sort(sortedKeys);
-		key = showInputDialog(Resources.get("magellan.context.unitcontextmenu.addtag.tagname.message"), sortedKeys);
+		key = showInputDialog(Resources.get("context.unitcontextmenu.addtag.tagname.message"), sortedKeys);
 
 		if ((key != null) && (key.length() > 0)) {
 			String value = null;
@@ -419,7 +419,7 @@ public class UnitContextMenu extends JPopupMenu {
 			// Collections.sort(sortedValues);
 			// sortedKeyValues.addAll(sortedValues);
 
-			value = showInputDialog(Resources.get("magellan.context.unitcontextmenu.addtag.tagvalue.message"), sortedKeyValues);
+			value = showInputDialog(Resources.get("context.unitcontextmenu.addtag.tagvalue.message"), sortedKeyValues);
 
 			if (value != null) {
 				for (Iterator iter = selectedUnits.iterator(); iter.hasNext();) {

@@ -59,7 +59,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	public RegionImageCellRenderer(CellGeometry geo, MagellanContext context) {
 		super(geo, context);
 		fogOfWar = (Boolean.valueOf(settings.getProperty("RegionImageCellRenderer.fogOfWar",Boolean.TRUE.toString()))).booleanValue();
-		item = new JCheckBoxMenuItem(Resources.get("magellan.map.regionimagecellrenderer.chk.showfow.caption"), fogOfWar);
+		item = new JCheckBoxMenuItem(Resources.get("map.regionimagecellrenderer.chk.showfow.caption"), fogOfWar);
 		item.addItemListener(new java.awt.event.ItemListener() {
 				public void itemStateChanged(java.awt.event.ItemEvent e) {
 					fogOfWar = item.isSelected();
@@ -198,7 +198,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.regionimagecellrenderer.name");
+    return Resources.get("map.regionimagecellrenderer.name");
   }
 
 	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
@@ -241,7 +241,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 		}
 
 		private void init() {
-			chkFogOfWar = new JCheckBox(Resources.get("magellan.map.regionimagecellrenderer.chk.showfow.caption"), source.getFogOfWar());
+			chkFogOfWar = new JCheckBox(Resources.get("map.regionimagecellrenderer.chk.showfow.caption"), source.getFogOfWar());
 			this.add(chkFogOfWar);
 		}
 

@@ -800,7 +800,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // ClearLook suggests to remove border
     scpMapper.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-    JLabel lblScaling = new JLabel(Resources.get("magellan.mapperpanel.lbl.zoom.caption"));
+    JLabel lblScaling = new JLabel(Resources.get("mapperpanel.lbl.zoom.caption"));
     sldScaling = new JSlider(SwingConstants.HORIZONTAL);
     sldScaling.setMajorTickSpacing(5);
     sldScaling.setPaintTicks(true);
@@ -834,7 +834,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     });
     lblScaling.setLabelFor(sldScaling);
 
-    lblLevel = new JLabel(Resources.get("magellan.mapperpanel.lbl.level.caption"));
+    lblLevel = new JLabel(Resources.get("mapperpanel.lbl.level.caption"));
     cmbLevel = new JComboBox(mapper.getLevels().toArray());
 
     if (cmbLevel.getItemCount() > 0) {
@@ -1000,7 +1000,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     case 2:
 
-      String input = JOptionPane.showInputDialog(Resources.get("magellan.mapperpanel.msg.enterhotspotname.text"));
+      String input = JOptionPane.showInputDialog(Resources.get("mapperpanel.msg.enterhotspotname.text"));
 
       if ((input != null) && !input.equals("")) {
         assignHotSpot(input); // just CTRL
@@ -1110,7 +1110,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   public String getShortcutDescription(Object stroke) {
     int index = shortcuts.indexOf(stroke);
 
-    return Resources.get("magellan.mapperpanel.shortcuts.description." + String.valueOf(index));
+    return Resources.get("mapperpanel.shortcuts.description." + String.valueOf(index));
   }
 
   /**
@@ -1119,7 +1119,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * 
    */
   public String getListenerDescription() {
-    return Resources.get("magellan.mapperpanel.shortcuts.description");
+    return Resources.get("mapperpanel.shortcuts.description");
   }
 
   private class MapperPanelPreferences extends JPanel implements ExtendedPreferencesAdapter {
@@ -1137,20 +1137,20 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
         // display mode combo box
         String items[] = new String[5];
-        items[0] = Resources.get("magellan.mapperpanel.prefs.minimapitems.terrain");
-        items[1] = Resources.get("magellan.mapperpanel.prefs.minimapitems.politics");
-        items[2] = Resources.get("magellan.mapperpanel.prefs.minimapitems.allfactions");
-        items[3] = Resources.get("magellan.mapperpanel.prefs.minimapitems.trustlevel");
-        items[4] = Resources.get("magellan.mapperpanel.prefs.minimapitems.trustlevelguard");
+        items[0] = Resources.get("mapperpanel.prefs.minimapitems.terrain");
+        items[1] = Resources.get("mapperpanel.prefs.minimapitems.politics");
+        items[2] = Resources.get("mapperpanel.prefs.minimapitems.allfactions");
+        items[3] = Resources.get("mapperpanel.prefs.minimapitems.trustlevel");
+        items[4] = Resources.get("mapperpanel.prefs.minimapitems.trustlevelguard");
         cmbDisplayMode = new JComboBox(items);
         cmbDisplayMode.setSelectedIndex(source.getMinimapMode());
 
-        JLabel lblDisplayMode = new JLabel(Resources.get("magellan.mapperpanel.prefs.lbl.minimapoptions"));
+        JLabel lblDisplayMode = new JLabel(Resources.get("mapperpanel.prefs.lbl.minimapoptions"));
         lblDisplayMode.setLabelFor(cmbDisplayMode);
         lblDisplayMode.setHorizontalTextPosition(JLabel.CENTER);
 
         // color synching button
-        JButton btnSyncColors = new JButton(Resources.get("magellan.mapperpanel.prefs.lbl.synccolors.caption"));
+        JButton btnSyncColors = new JButton(Resources.get("mapperpanel.prefs.lbl.synccolors.caption"));
         btnSyncColors.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             MapperPanel.this.synchronizeMinimap();
@@ -1166,15 +1166,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         sldZoom.setPaintTicks(true);
         sldZoom.setValue(getMinimapScale());
 
-        JLabel lblZoom = new JLabel(Resources.get("magellan.mapperpanel.prefs.lbl.zoom"));
+        JLabel lblZoom = new JLabel(Resources.get("mapperpanel.prefs.lbl.zoom"));
         lblZoom.setLabelFor(sldZoom);
         lblZoom.setHorizontalTextPosition(JLabel.CENTER);
 
         // auto scale checkbox
-        autoScale = new JCheckBox(Resources.get("magellan.mapperpanel.prefs.lbl.minimapautoscale"), source.isAutoScaling());
+        autoScale = new JCheckBox(Resources.get("mapperpanel.prefs.lbl.minimapautoscale"), source.isAutoScaling());
 
         // panel grouping minimap stuff
-        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("magellan.mapperpanel.prefs.border.minimap")));
+        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("mapperpanel.prefs.border.minimap")));
 
         this.setLayout(new GridBagLayout());
 
@@ -1244,7 +1244,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
        * 
        */
       public String getTitle() {
-        return Resources.get("magellan.mapperpanel.prefs.border.minimap");
+        return Resources.get("mapperpanel.prefs.border.minimap");
       }
 
       public void initPreferences() {
@@ -1328,7 +1328,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * 
      */
     public String getTitle() {
-      return Resources.get("magellan.mapperpanel.prefs.title");
+      return Resources.get("mapperpanel.prefs.title");
     }
   }
 
@@ -1461,7 +1461,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     public String getShortcutDescription(Object stroke) {
       int index = shortcuts.indexOf(stroke);
 
-      return Resources.get("magellan.mapperpanel.shortcuts.tooltips." + String.valueOf(index));
+      return Resources.get("mapperpanel.shortcuts.tooltips." + String.valueOf(index));
     }
 
     /**
@@ -1470,7 +1470,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * 
      */
     public String getListenerDescription() {
-      return Resources.get("magellan.mapperpanel.shortcuts.tooltips");
+      return Resources.get("mapperpanel.shortcuts.tooltips");
     }
   }
 }

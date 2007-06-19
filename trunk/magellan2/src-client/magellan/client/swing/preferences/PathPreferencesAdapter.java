@@ -157,7 +157,7 @@ public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter
 	 * 
 	 */
 	public String getTitle() {
-		return Resources.get("magellan.preferences.pathpreferencesadapter.prefs.title");
+		return Resources.get("preferences.pathpreferencesadapter.prefs.title");
 	}
 
 	protected class DirButton extends JButton implements ActionListener {

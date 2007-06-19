@@ -46,6 +46,6 @@ public class LaenReplacer extends AbstractRegionReplacer {
 	}
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.laenreplacer.description");
+    return Resources.get("util.replacers.laenreplacer.description");
   }  
 }

@@ -243,9 +243,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	 */
 	public String getTypeName() {
 		if(this.type != null) {
-			return Resources.get("magellan.spell."+this.type);
+			return Resources.get("spell."+this.type);
 		} else {
-			return Resources.get("magellan.spell.unspecified");
+			return Resources.get("spell.unspecified");
 		}
 	}
 
@@ -258,7 +258,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		
 		// Region, if is far
 		if (isFar){
-			retVal = "[" + Resources.get("magellan.spell.region") + " X Y]";
+			retVal = "[" + Resources.get("spell.region") + " X Y]";
 		}
 		
 		// Level...allways possible, but not allways usefull
@@ -266,7 +266,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		if (retVal.length()>0){
 			retVal += " ";
 		}
-		retVal += "[" + Resources.get("magellan.spell.level") + " n]";
+		retVal += "[" + Resources.get("spell.level") + " n]";
 		
 		// name of spell in "
 		if (retVal.length()>0){

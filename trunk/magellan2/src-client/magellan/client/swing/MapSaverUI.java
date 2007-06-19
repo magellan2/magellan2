@@ -90,20 +90,20 @@ public class MapSaverUI extends InternationalizedDialog {
 
 	private void initComponents() {
 		cbFormat = new javax.swing.JComboBox();
-		btnCancel = new javax.swing.JButton(Resources.get("magellan.mapsaverui.btn.cancel.caption"));
+		btnCancel = new javax.swing.JButton(Resources.get("mapsaverui.btn.cancel.caption"));
 		jPanel1 = new javax.swing.JPanel();
-		rbtnSize = new javax.swing.JRadioButton(Resources.get("magellan.mapsaverui.radio.size.caption"));
+		rbtnSize = new javax.swing.JRadioButton(Resources.get("mapsaverui.radio.size.caption"));
 		textX = new javax.swing.JTextField();
-		rbtnCount = new javax.swing.JRadioButton(Resources.get("magellan.mapsaverui.radio.amount.caption"));
+		rbtnCount = new javax.swing.JRadioButton(Resources.get("mapsaverui.radio.amount.caption"));
 		textY = new javax.swing.JTextField();
 		jLabel1 = new javax.swing.JLabel();
 		jLabel2 = new javax.swing.JLabel();
-		btnSave = new javax.swing.JButton(Resources.get("magellan.mapsaverui.btn.save.caption"));
+		btnSave = new javax.swing.JButton(Resources.get("mapsaverui.btn.save.caption"));
 		getContentPane().setLayout(new java.awt.GridBagLayout());
 
 		java.awt.GridBagConstraints gridBagConstraints1;
 
-		setTitle(Resources.get("magellan.mapsaverui.window.title"));
+		setTitle(Resources.get("mapsaverui.window.title"));
 		addWindowListener(new java.awt.event.WindowAdapter() {
 				public void windowClosing(java.awt.event.WindowEvent evt) {
 					closeDialog(evt);
@@ -119,7 +119,7 @@ public class MapSaverUI extends InternationalizedDialog {
 		qSlider.createStandardLabels(1);
 		qSlider.setSnapToTicks(true);
 
-		JLabel qLabel = new JLabel(Resources.get("magellan.mapsaverui.quality.label") + ":");
+		JLabel qLabel = new JLabel(Resources.get("mapsaverui.quality.label") + ":");
 
 		gridBagConstraints1 = new java.awt.GridBagConstraints();
 		gridBagConstraints1.gridx = 0;
@@ -143,7 +143,7 @@ public class MapSaverUI extends InternationalizedDialog {
 
 		java.awt.GridBagConstraints gridBagConstraints2;
 
-		jPanel1.setBorder(new javax.swing.border.TitledBorder(Resources.get("magellan.mapsaverui.border.imageoptions")));
+		jPanel1.setBorder(new javax.swing.border.TitledBorder(Resources.get("mapsaverui.border.imageoptions")));
 
 		rbtnSize.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -296,14 +296,14 @@ public class MapSaverUI extends InternationalizedDialog {
 		} catch(Exception ex) {
 			log.error(ex);
 			javax.swing.JOptionPane.showMessageDialog(this,
-													  Resources.get("magellan.mapsaverui.msg.erroronsave.text") +
+													  Resources.get("mapsaverui.msg.erroronsave.text") +
 													  ex.toString(),
-													  Resources.get("magellan.mapsaverui.msg.erroronsave.title"),
+													  Resources.get("mapsaverui.msg.erroronsave.title"),
 													  javax.swing.JOptionPane.ERROR_MESSAGE);
 		} catch(OutOfMemoryError oomError) {
 			log.error(oomError);
-			javax.swing.JOptionPane.showMessageDialog(this, Resources.get("magellan.mapsaverui.msg.outofmem.text"),
-													  Resources.get("magellan.mapsaverui.msg.outofmem.title"),
+			javax.swing.JOptionPane.showMessageDialog(this, Resources.get("mapsaverui.msg.outofmem.text"),
+													  Resources.get("mapsaverui.msg.outofmem.title"),
 													  javax.swing.JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -513,10 +513,10 @@ class MapSaverFileFilter extends FileFilter {
   public String getDescription() {
     switch (iType) {
       case MapSaverUI.SAVEAS_IMAGETYPE_PNG: {
-        return Resources.get("magellan.mapsaverui.filter.png.description");
+        return Resources.get("mapsaverui.filter.png.description");
       }
       case MapSaverUI.SAVEAS_IMAGETYPE_JPEG: {
-        return Resources.get("magellan.mapsaverui.filter.jpg.description");
+        return Resources.get("mapsaverui.filter.jpg.description");
       }
     }
     return "*.*";

@@ -131,7 +131,7 @@ public class SelectAllAction extends MenuAction implements SelectionListener, Ga
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.selectallaction.accelerator",false);
+    return Resources.get("actions.selectallaction.accelerator",false);
   }
 
   /**
@@ -139,7 +139,7 @@ public class SelectAllAction extends MenuAction implements SelectionListener, Ga
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.selectallaction.mnemonic",false);
+    return Resources.get("actions.selectallaction.mnemonic",false);
   }
 
   /**
@@ -147,11 +147,11 @@ public class SelectAllAction extends MenuAction implements SelectionListener, Ga
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.selectallaction.name");
+    return Resources.get("actions.selectallaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.selectallaction.tooltip",false);
+    return Resources.get("actions.selectallaction.tooltip",false);
   }
 }

@@ -171,6 +171,6 @@ public class NoneCompletionGUI extends AbstractCompletionGUI {
    */
   @Override
   public String getTitle() {
-    return Resources.get("magellan.completion.nonecompletiongui.gui.title");
+    return Resources.get("completion.nonecompletiongui.gui.title");
   }
 }

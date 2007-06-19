@@ -134,7 +134,7 @@ public class SpellSyntaxToken {
 		if (retVal==null){
 			return retVal;
 		}
-		String tokenString = "<" + Resources.get("magellan.util.spellsyntaxtoken.SpellSyntaxToken." + retVal) + ">";
+		String tokenString = "<" + Resources.get("util.spellsyntaxtoken.SpellSyntaxToken." + retVal) + ">";
 		retVal = tokenString;
 		// if optional...let it show
 		if (!isNeeded()){

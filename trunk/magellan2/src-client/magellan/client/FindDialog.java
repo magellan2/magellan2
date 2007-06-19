@@ -126,7 +126,7 @@ public class FindDialog extends InternationalizedDataDialog
 		settings = p;
 		this.dispatcher = dispatcher;
 
-		setTitle(Resources.get("magellan.finddialog.window.title"));
+		setTitle(Resources.get("finddialog.window.title"));
 		setContentPane(getMainPane());
 		setSize(420, 500);
 
@@ -228,8 +228,8 @@ public class FindDialog extends InternationalizedDataDialog
 		txtPattern.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 		txtPattern.setPreferredSize(new Dimension(100, 25));
 
-		JLabel l = new JLabel(Resources.get("magellan.finddialog.lbl.pattern.caption") + ": ");
-		l.setDisplayedMnemonic(Resources.get("magellan.finddialog.lbl.pattern.mnemonic").charAt(0));
+		JLabel l = new JLabel(Resources.get("finddialog.lbl.pattern.caption") + ": ");
+		l.setDisplayedMnemonic(Resources.get("finddialog.lbl.pattern.mnemonic").charAt(0));
 		l.setLabelFor(txtPattern);
 
 		JPanel pnlPattern = new JPanel(new BorderLayout());
@@ -237,29 +237,29 @@ public class FindDialog extends InternationalizedDataDialog
 		pnlPattern.add(l, BorderLayout.WEST);
 		pnlPattern.add(txtPattern, BorderLayout.CENTER);
 
-		chkIDs = new JCheckBox(Resources.get("magellan.finddialog.chk.ids.caption"),
+		chkIDs = new JCheckBox(Resources.get("finddialog.chk.ids.caption"),
 							   settings.getProperty("FindDialog.IDs", "true").equals("true"));
-		chkIDs.setMnemonic(Resources.get("magellan.finddialog.chk.ids.mnemonic").charAt(0));
+		chkIDs.setMnemonic(Resources.get("finddialog.chk.ids.mnemonic").charAt(0));
 
-		chkNames = new JCheckBox(Resources.get("magellan.finddialog.chk.names.caption"),
+		chkNames = new JCheckBox(Resources.get("finddialog.chk.names.caption"),
 								 settings.getProperty("FindDialog.Names", "true").equals("true"));
-		chkNames.setMnemonic(Resources.get("magellan.finddialog.chk.names.mnemonic").charAt(0));
+		chkNames.setMnemonic(Resources.get("finddialog.chk.names.mnemonic").charAt(0));
 
-		chkDescs = new JCheckBox(Resources.get("magellan.finddialog.chk.descriptions.caption"),
+		chkDescs = new JCheckBox(Resources.get("finddialog.chk.descriptions.caption"),
 								 settings.getProperty("FindDialog.Descriptions", "true").equals("true"));
-		chkDescs.setMnemonic(Resources.get("magellan.finddialog.chk.descriptions.mnemonic").charAt(0));
+		chkDescs.setMnemonic(Resources.get("finddialog.chk.descriptions.mnemonic").charAt(0));
 
-		chkCmds = new JCheckBox(Resources.get("magellan.finddialog.chk.orders.caption"),
+		chkCmds = new JCheckBox(Resources.get("finddialog.chk.orders.caption"),
 								settings.getProperty("FindDialog.Orders", "true").equals("true"));
-		chkCmds.setMnemonic(Resources.get("magellan.finddialog.chk.orders.mnemonic").charAt(0));
+		chkCmds.setMnemonic(Resources.get("finddialog.chk.orders.mnemonic").charAt(0));
 
-		chkMessages = new JCheckBox(Resources.get("magellan.finddialog.chk.msgsandeffects.caption"),
+		chkMessages = new JCheckBox(Resources.get("finddialog.chk.msgsandeffects.caption"),
 									settings.getProperty("FindDialog.Msgs", "true").equals("true"));
-		chkMessages.setMnemonic(Resources.get("magellan.finddialog.chk.msgsandeffects.mnemonic").charAt(0));
+		chkMessages.setMnemonic(Resources.get("finddialog.chk.msgsandeffects.mnemonic").charAt(0));
 
-		chkItems = new JCheckBox(Resources.get("magellan.finddialog.chk.items.caption"),
+		chkItems = new JCheckBox(Resources.get("finddialog.chk.items.caption"),
 								 settings.getProperty("FindDialog.Items", "true").equals("true"));
-		chkItems.setMnemonic(Resources.get("magellan.finddialog.chk.items.mnemonic").charAt(0));
+		chkItems.setMnemonic(Resources.get("finddialog.chk.items.mnemonic").charAt(0));
 
 		JPanel pnlAttributeCheckBoxes = new JPanel(new GridBagLayout());
 
@@ -329,8 +329,8 @@ public class FindDialog extends InternationalizedDataDialog
 		factionCombo.addItem("");
 		factionCombo.setSelectedIndex(factionCombo.getItemCount() - 1);
 
-		JLabel factionLabel = new JLabel(Resources.get("magellan.finddialog.lbl.faction.caption") + ": ");
-		factionLabel.setDisplayedMnemonic(Resources.get("magellan.finddialog.lbl.faction.mnemonic").charAt(0));
+		JLabel factionLabel = new JLabel(Resources.get("finddialog.lbl.faction.caption") + ": ");
+		factionLabel.setDisplayedMnemonic(Resources.get("finddialog.lbl.faction.mnemonic").charAt(0));
 		factionLabel.setLabelFor(factionCombo);
 
 		JPanel pnlFaction = new JPanel(new BorderLayout());
@@ -339,16 +339,16 @@ public class FindDialog extends InternationalizedDataDialog
 
 		JPanel pnlAttributes = new JPanel(new BorderLayout());
 		pnlAttributes.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-												 Resources.get("magellan.finddialog.frm.attributes")));
+												 Resources.get("finddialog.frm.attributes")));
 		pnlAttributes.add(pnlAttributeCheckBoxes, BorderLayout.CENTER);
 		pnlAttributes.add(pnlFaction, BorderLayout.SOUTH);
 
-		JButton findButton = new JButton(Resources.get("magellan.finddialog.btn.find"));
+		JButton findButton = new JButton(Resources.get("finddialog.btn.find"));
 		findButton.setDefaultCapable(true);
 		findButton.addActionListener(findListener);
 		this.getRootPane().setDefaultButton(findButton);
 
-		JButton cancelButton = new JButton(Resources.get("magellan.finddialog.btn.close"));
+		JButton cancelButton = new JButton(Resources.get("finddialog.btn.close"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();
@@ -359,29 +359,29 @@ public class FindDialog extends InternationalizedDataDialog
 		pnlButtons.add(findButton);
 		pnlButtons.add(cancelButton);
 
-		addUnits = new JCheckBox(Resources.get("magellan.finddialog.chk.units.caption"),
+		addUnits = new JCheckBox(Resources.get("finddialog.chk.units.caption"),
 								 settings.getProperty("FindDialog.Units", "true").equals("true"));
-		addUnits.setMnemonic(Resources.get("magellan.finddialog.chk.units.mnemonic").charAt(0));
-		addRegions = new JCheckBox(Resources.get("magellan.finddialog.chk.regions.caption"),
+		addUnits.setMnemonic(Resources.get("finddialog.chk.units.mnemonic").charAt(0));
+		addRegions = new JCheckBox(Resources.get("finddialog.chk.regions.caption"),
 								   settings.getProperty("FindDialog.Regions", "false").equals("true"));
-		addRegions.setMnemonic(Resources.get("magellan.finddialog.chk.regions.mnemonic").charAt(0));
-		addBuildings = new JCheckBox(Resources.get("magellan.finddialog.chk.buildings.caption"),
+		addRegions.setMnemonic(Resources.get("finddialog.chk.regions.mnemonic").charAt(0));
+		addBuildings = new JCheckBox(Resources.get("finddialog.chk.buildings.caption"),
 									 settings.getProperty("FindDialog.Buildings", "false").equals("true"));
-		addBuildings.setMnemonic(Resources.get("magellan.finddialog.chk.buildings.mnemonic").charAt(0));
-		addShips = new JCheckBox(Resources.get("magellan.finddialog.chk.ships.caption"),
+		addBuildings.setMnemonic(Resources.get("finddialog.chk.buildings.mnemonic").charAt(0));
+		addShips = new JCheckBox(Resources.get("finddialog.chk.ships.caption"),
 								 settings.getProperty("FindDialog.Ships", "false").equals("true"));
-		addShips.setMnemonic(Resources.get("magellan.finddialog.chk.ships.mnemonic").charAt(0));
-		addTraitors = new JCheckBox(Resources.get("magellan.finddialog.chk.traitors.caption"),
+		addShips.setMnemonic(Resources.get("finddialog.chk.ships.mnemonic").charAt(0));
+		addTraitors = new JCheckBox(Resources.get("finddialog.chk.traitors.caption"),
 									settings.getProperty("FindDialog.Traitors", "false").equals("true"));
-		addTraitors.setMnemonic(Resources.get("magellan.finddialog.chk.traitors.mnemonic").charAt(0));
-		addOnlyUnconfirmedUnits = new JCheckBox(Resources.get("magellan.finddialog.chk.addonlyunconfirmedunits.caption"),
+		addTraitors.setMnemonic(Resources.get("finddialog.chk.traitors.mnemonic").charAt(0));
+		addOnlyUnconfirmedUnits = new JCheckBox(Resources.get("finddialog.chk.addonlyunconfirmedunits.caption"),
 												settings.getProperty("FindDialog.OnlyUnconfirmedUnits",
 																	 "false").equals("true"));
-		addOnlyUnconfirmedUnits.setMnemonic(Resources.get("magellan.finddialog.chk.addonlyunconfirmedunits.mnemonic")
+		addOnlyUnconfirmedUnits.setMnemonic(Resources.get("finddialog.chk.addonlyunconfirmedunits.mnemonic")
 												.charAt(0));
-		addFactions = new JCheckBox(Resources.get("magellan.finddialog.chk.factions.caption"),
+		addFactions = new JCheckBox(Resources.get("finddialog.chk.factions.caption"),
 									settings.getProperty("FindDialog.Factions", "true").equals("true"));
-		addFactions.setMnemonic(Resources.get("magellan.finddialog.chk.factions.mnemonic").charAt(0));
+		addFactions.setMnemonic(Resources.get("finddialog.chk.factions.mnemonic").charAt(0));
 
 		JPanel pnlItems = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0,
@@ -389,7 +389,7 @@ public class FindDialog extends InternationalizedDataDialog
 														GridBagConstraints.HORIZONTAL,
 														new Insets(2, 2, 2, 2), 0, 0);
 		pnlItems.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("magellan.finddialog.frm.objects")));
+											Resources.get("finddialog.frm.objects")));
 
 		pnlItems.add(addRegions, gbc);
 		gbc.gridx++;
@@ -416,7 +416,7 @@ public class FindDialog extends InternationalizedDataDialog
 											   JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		scroller.setBorder(new LineBorder(Color.black));
 
-		JButton bookmarkResults = new JButton(Resources.get("magellan.finddialog.btn.bookmark"));
+		JButton bookmarkResults = new JButton(Resources.get("finddialog.btn.bookmark"));
 		bookmarkResults.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					for(int i = 0; i < resultList.getModel().getSize(); i++) {
@@ -436,7 +436,7 @@ public class FindDialog extends InternationalizedDataDialog
 		pnlResults.add(scroller, BorderLayout.CENTER);
 		pnlResults.add(bookmarkResults, BorderLayout.SOUTH);
 		pnlResults.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.finddialog.frm.results")));
+											  Resources.get("finddialog.frm.results")));
 
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 0;
@@ -1125,7 +1125,7 @@ public class FindDialog extends InternationalizedDataDialog
 		Collection results = find();
 		resultList.setListData(results.toArray());
 		pnlResults.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.finddialog.frm.results") + " (" + results.size() +
+											  Resources.get("finddialog.frm.results") + " (" + results.size() +
 											  ")"));
 
 		if(results.size() > 0) {

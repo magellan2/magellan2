@@ -530,9 +530,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 
 		private void init() {
-			chkDrawPassivePath = new JCheckBox(Resources.get("magellan.map.pathcellrenderer.drawpassivepath"),
+			chkDrawPassivePath = new JCheckBox(Resources.get("map.pathcellrenderer.drawpassivepath"),
 											   source.getDrawPassivePath());
-			chkDrawPastPath = new JCheckBox(Resources.get("magellan.map.pathcellrenderer.drawpastpath"), source.getDrawPastPath());
+			chkDrawPastPath = new JCheckBox(Resources.get("map.pathcellrenderer.drawpastpath"), source.getDrawPastPath());
 
 			this.setLayout(new GridBagLayout());
 
@@ -585,7 +585,7 @@ public class PathCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.pathcellrenderer.name");
+    return Resources.get("map.pathcellrenderer.name");
   }
 
 }

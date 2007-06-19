@@ -180,7 +180,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
    */
   protected NodeWrapperDrawPolicy createSimpleDrawPolicy(Properties settings, String prefix) {
     return new DetailsNodeWrapperDrawPolicy(1, null, settings, prefix,
-                        new String[][] {{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "magellan.tree.unitnodewrapper.");
+                        new String[][] {{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "tree.unitnodewrapper.");
   }
   /**
    * DOCUMENT-ME

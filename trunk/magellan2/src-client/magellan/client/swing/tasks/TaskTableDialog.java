@@ -50,7 +50,7 @@ public class TaskTableDialog extends InternationalizedDataDialog {
 
 	private void init() {
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.tasks.tasktabledialog.window.title"));
+		setTitle(Resources.get("tasks.tasktabledialog.window.title"));
 
 		int width = Integer.parseInt(settings.getProperty("TaskTableDialog.width", "500"));
 		int height = Integer.parseInt(settings.getProperty("TaskTableDialog.height", "300"));

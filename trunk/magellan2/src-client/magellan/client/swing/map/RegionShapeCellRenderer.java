@@ -1026,27 +1026,27 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			}
 		};
 
-		JMenuItem item = new JMenuItem(Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.terrain"));
+		JMenuItem item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.terrain"));
 		item.addActionListener(al);
 		item.setActionCommand("0");
 		contextMenu.add(item);
 
-		item = new JMenuItem(Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.byfaction"));
+		item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.byfaction"));
 		item.addActionListener(al);
 		item.setActionCommand("1");
 		contextMenu.add(item);
 
-		item = new JMenuItem(Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.allfactions"));
+		item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.allfactions"));
 		item.addActionListener(al);
 		item.setActionCommand("2");
 		contextMenu.add(item);
 
-		item = new JMenuItem(Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.trustlevel"));
+		item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevel"));
 		item.addActionListener(al);
 		item.setActionCommand("3");
 		contextMenu.add(item);
 
-		item = new JMenuItem(Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.trustlevelandguard"));
+		item = new JMenuItem(Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevelandguard"));
 		item.addActionListener(al);
 		item.setActionCommand("4");
 		contextMenu.add(item);
@@ -1075,7 +1075,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.regionshapecellrenderer.name");
+    return Resources.get("map.regionshapecellrenderer.name");
   }
 
 	/**
@@ -1481,8 +1481,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			public ModePanel(boolean politics) {
 				mode = politics;
 
-				oceanLabel = Resources.get("magellan.map.regionshapecellrenderer.lbl.ocean.caption");
-				unknownLabel = Resources.get("magellan.map.regionshapecellrenderer.lbl.unassignedregion.caption");
+				oceanLabel = Resources.get("map.regionshapecellrenderer.lbl.ocean.caption");
+				unknownLabel = Resources.get("map.regionshapecellrenderer.lbl.unassignedregion.caption");
 
 				nameComp = new NameComparator();
 				trustComp = new ListElementFactionTrustComparator();
@@ -1518,12 +1518,12 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					JPanel left = new JPanel(magellan.client.swing.CenterLayout.SPAN_X_LAYOUT);
 					Box box = Box.createVerticalBox();
 					ButtonGroup group = new ButtonGroup();
-					nameBox = new JCheckBox(Resources.get("magellan.map.regionshapecellrenderer.chk.compare.name"), true);
+					nameBox = new JCheckBox(Resources.get("map.regionshapecellrenderer.chk.compare.name"), true);
 					nameBox.addActionListener(this);
 					group.add(nameBox);
 					box.add(nameBox);
 
-					JCheckBox trustBox = new JCheckBox(Resources.get("magellan.map.regionshapecellrenderer.chk.compare.trust"), false);
+					JCheckBox trustBox = new JCheckBox(Resources.get("map.regionshapecellrenderer.chk.compare.trust"), false);
 					trustBox.addActionListener(this);
 					group.add(trustBox);
 					box.add(trustBox);
@@ -1631,14 +1631,14 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				int colMode = 0;
 
 				if(oceanLabel.equals(element.name)) {
-					title = Resources.get("magellan.map.regionshapecellrenderer.dialog.oceancolor.title");
+					title = Resources.get("map.regionshapecellrenderer.dialog.oceancolor.title");
 					colMode = 1;
 				} else if(unknownLabel.equals(element.name)) {
-					title = Resources.get("magellan.map.regionshapecellrenderer.dialog.unassignedregioncolor.title");
+					title = Resources.get("map.regionshapecellrenderer.dialog.unassignedregioncolor.title");
 					colMode = 2;
 				} else {
 					Object msgArgs[] = { element.name };
-					title = (new java.text.MessageFormat(Resources.get("magellan.map.regionshapecellrenderer.dialog.color.title"))).format(msgArgs);
+					title = (new java.text.MessageFormat(Resources.get("map.regionshapecellrenderer.dialog.color.title"))).format(msgArgs);
 				}
 
 				Color c = JColorChooser.showDialog(parent, title, element.color);
@@ -1716,7 +1716,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			inner = new JPanel();
 			inner.setLayout(card = new CardLayout());
 			inner.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-																Resources.get("magellan.map.regionshapecellrenderer.border.colortable")));
+																Resources.get("map.regionshapecellrenderer.border.colortable")));
 			content = new ModePanel[2];
 			content[0] = new ModePanel(false);
 			content[1] = new ModePanel(true);
@@ -1729,17 +1729,17 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			inner.add(scroller, "1");
 
 			String items[] = new String[5];
-			items[0] = Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.terrain");
-			items[1] = Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.byfaction");
-			items[2] = Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.allfactions");
-			items[3] = Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.trustlevel");
-			items[4] = Resources.get("magellan.map.regionshapecellrenderer.cmb.mode.trustlevelandguard");
+			items[0] = Resources.get("map.regionshapecellrenderer.cmb.mode.terrain");
+			items[1] = Resources.get("map.regionshapecellrenderer.cmb.mode.byfaction");
+			items[2] = Resources.get("map.regionshapecellrenderer.cmb.mode.allfactions");
+			items[3] = Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevel");
+			items[4] = Resources.get("map.regionshapecellrenderer.cmb.mode.trustlevelandguard");
 			modeBox = new JComboBox(items);
 			modeBox.setEditable(false);
 			modeBox.addActionListener(this);
 
 			JPanel p = new JPanel();
-			p.add(new JLabel(Resources.get("magellan.map.regionshapecellrenderer.lbl.rendermode.caption")));
+			p.add(new JLabel(Resources.get("map.regionshapecellrenderer.lbl.rendermode.caption")));
 			p.add(modeBox);
 
 			setLayout(new BorderLayout());
@@ -1798,7 +1798,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 		 * @return the adapter title
 		 */
 		public String getTitle() {
-			return Resources.get("magellan.map.regionshapecellrenderer.name");
+			return Resources.get("map.regionshapecellrenderer.name");
 		}
 
 		/**

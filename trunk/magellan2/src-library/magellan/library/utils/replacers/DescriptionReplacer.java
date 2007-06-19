@@ -72,6 +72,6 @@ public class DescriptionReplacer implements Replacer {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.descriptionreplacer.description");
+		return Resources.get("util.replacers.descriptionreplacer.description");
 	}
 }

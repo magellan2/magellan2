@@ -82,6 +82,6 @@ public class StringIndexReplacer extends AbstractParameterSwitch {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.stringindexreplacer.description." + ignoreCase);
+		return Resources.get("util.replacers.stringindexreplacer.description." + ignoreCase);
 	}
 }

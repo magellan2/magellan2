@@ -428,7 +428,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 * 
 	 */
 	public String getShortcutDescription(Object stroke) {
-		return Resources.get("magellan.map.advancedtextcellrenderer.shortcuts.description");
+		return Resources.get("map.advancedtextcellrenderer.shortcuts.description");
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 * 
 	 */
 	public String getListenerDescription() {
-		return Resources.get("magellan.map.advancedtextcellrenderer.shortcuts.title");
+		return Resources.get("map.advancedtextcellrenderer.shortcuts.title");
 	}
 
 
@@ -447,7 +447,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	//////////////////
 	public JMenuItem getContextAdapter() {
 		if(contextMenu == null) {
-			contextMenu = new JMenu(Resources.get("magellan.map.advancedtextcellrenderer.context.title"));
+			contextMenu = new JMenu(Resources.get("map.advancedtextcellrenderer.context.title"));
 			fillDefItems();
 		}
 
@@ -882,7 +882,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 														  GridBagConstraints.HORIZONTAL,
 														  new Insets(1, 1, 1, 1), 0, 0);
 
-			JTextArea fontHelp = new JTextArea(Resources.get("magellan.map.advancedtextcellrenderer.prefs.fonthelp"));
+			JTextArea fontHelp = new JTextArea(Resources.get("map.advancedtextcellrenderer.prefs.fonthelp"));
 			fontHelp.setEditable(false);
 			fontHelp.setBorder(null);
 			fontHelp.setBackground(this.getBackground());
@@ -898,7 +898,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			c.fill = GridBagConstraints.NONE;
 			c.gridy++;
 
-			linebreak = new JCheckBox(Resources.get("magellan.map.advancedtextcellrenderer.prefs.breakline"), s.breakLines);
+			linebreak = new JCheckBox(Resources.get("map.advancedtextcellrenderer.prefs.breakline"), s.breakLines);
 			this.add(linebreak, c);
 
 			c.gridx = 1;
@@ -926,15 +926,15 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		protected Component createNavPanel() {
-			add = new JButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.add"));
+			add = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.add"));
 			add.addActionListener(this);
-			remove = new JButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.remove"));
+			remove = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.remove"));
 			remove.addActionListener(this);
-			rename = new JButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.rename"));
+			rename = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.rename"));
 			rename.addActionListener(this);
-			importB = new JButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.import"));
+			importB = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.import"));
 			importB.addActionListener(this);
-			export = new JButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.export"));
+			export = new JButton(Resources.get("map.advancedtextcellrenderer.prefs.export"));
 			export.addActionListener(this);
 
 			listModel = new DefaultListModel();
@@ -972,12 +972,12 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			JPanel sPanel = new JPanel(new BorderLayout());
 
 			JPanel help = new JPanel(new FlowLayout(FlowLayout.CENTER));
-			help.add(new JLabel(Resources.get("magellan.map.advancedtextcellrenderer.prefs.replace")));
+			help.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.replace")));
 			help.add(replace = new JTextField(set.getUnknown(), 5));
 			sPanel.add(help, BorderLayout.NORTH);
 
 			help = new JPanel();
-			help.add(new JLabel(Resources.get("magellan.map.advancedtextcellrenderer.prefs.def"))); //Resources.get("magellan.map.advancedtextcellrenderer.prefs.planes")),c);
+			help.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.def"))); //Resources.get("map.advancedtextcellrenderer.prefs.planes")),c);
 			help.add(new JScrollPane(def = new JTextArea(set.getDef(), 15, 30)));
 			sPanel.add(help, BorderLayout.CENTER);
 
@@ -986,14 +986,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 
 		protected Component createAlignPanel() {
 			Box box = new Box(BoxLayout.X_AXIS);
-			box.add(new JLabel(Resources.get("magellan.map.advancedtextcellrenderer.prefs.aligntext")));
+			box.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.aligntext")));
 			box.add(Box.createHorizontalStrut(5));
 
 			ButtonGroup group = new ButtonGroup();
 			align = new JRadioButton[3];
 
 			for(int i = 0; i < 3; i++) {
-				align[i] = new JRadioButton(Resources.get("magellan.map.advancedtextcellrenderer.prefs.align" + String.valueOf(i)),
+				align[i] = new JRadioButton(Resources.get("map.advancedtextcellrenderer.prefs.align" + String.valueOf(i)),
 											i == s.getHAlign());
 				group.add(align[i]);
 				box.add(align[i]);
@@ -1116,11 +1116,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		protected void addSet() {
-			String name = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedtextcellrenderer.prefs.add.text"));
+			String name = JOptionPane.showInputDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.add.text"));
 
 			if((name != null) && !name.trim().equals("")) {
 				if(exists(name)) {
-					JOptionPane.showMessageDialog(this, Resources.get("magellan.map.advancedtextcellrenderer.prefs.nameexists"));
+					JOptionPane.showMessageDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.nameexists"));
 				} else {
 					saveSettings();
 					loadSet(name);
@@ -1130,11 +1130,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		protected void renameSet() {
-			String newName = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedtextcellrenderer.prefs.rename.text"));
+			String newName = JOptionPane.showInputDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.rename.text"));
 
 			if((newName != null) && !newName.trim().equals("")) {
 				if(exists(newName)) {
-					JOptionPane.showMessageDialog(this, Resources.get("magellan.map.advancedtextcellrenderer.prefs.nameexists"));
+					JOptionPane.showMessageDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.nameexists"));
 				} else {
 					s.removeSet(set.getName());
 					set.setName(newName);
@@ -1193,7 +1193,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			String oldName = name;
 
 			while((name != null) && exists(name)) {
-				name = JOptionPane.showInputDialog(this, Resources.get("magellan.map.advancedtextcellrenderer.prefs.nameexists2") + name);
+				name = JOptionPane.showInputDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.nameexists2") + name);
 			}
 
 			if(name == null) {

@@ -113,7 +113,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 		this.initString = initString;
 
 		if(title == null) {
-			title = Resources.get("magellan.tree.nodewrapperfactory.title.unknown");
+			title = Resources.get("tree.nodewrapperfactory.title.unknown");
 		}
 
 		this.title = title;

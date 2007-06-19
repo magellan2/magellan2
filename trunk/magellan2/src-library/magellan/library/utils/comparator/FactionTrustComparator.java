@@ -133,22 +133,22 @@ public class FactionTrustComparator<E> implements Comparator<Faction> {
 
 		switch(getTrustLevel(level)) {
 		case FactionTrustComparator.PRIVILEGED:
-			nodeLabel = Resources.get("magellan.factionstatspanel.node.trust.privileged");
+			nodeLabel = Resources.get("factionstatspanel.node.trust.privileged");
 
 			break;
 
 		case FactionTrustComparator.ALLIED:
-			nodeLabel = Resources.get("magellan.factionstatspanel.node.trust.allied");
+			nodeLabel = Resources.get("factionstatspanel.node.trust.allied");
 
 			break;
 
 		case FactionTrustComparator.DEFAULT:
-			nodeLabel = Resources.get("magellan.factionstatspanel.node.trust.standard");
+			nodeLabel = Resources.get("factionstatspanel.node.trust.standard");
 
 			break;
 
 		case FactionTrustComparator.ENEMY:
-			nodeLabel = Resources.get("magellan.factionstatspanel.node.trust.enemy");
+			nodeLabel = Resources.get("factionstatspanel.node.trust.enemy");
 
 			break;
 		}

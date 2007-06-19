@@ -93,7 +93,7 @@ public class ExportCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.exportcraction.accelerator",false);
+    return Resources.get("actions.exportcraction.accelerator",false);
   }
 
   /**
@@ -101,7 +101,7 @@ public class ExportCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.exportcraction.mnemonic",false);
+    return Resources.get("actions.exportcraction.mnemonic",false);
   }
 
   /**
@@ -109,11 +109,11 @@ public class ExportCRAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.exportcraction.name");
+    return Resources.get("actions.exportcraction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.exportcraction.tooltip",false);
+    return Resources.get("actions.exportcraction.tooltip",false);
   }
 }

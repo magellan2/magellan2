@@ -65,7 +65,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 		editY = new javax.swing.JTextField();
 		editLevel = new javax.swing.JTextField();
 		getContentPane().setLayout(new java.awt.GridBagLayout());
-		setTitle(Resources.get("magellan.setorigindialog.window.title"));
+		setTitle(Resources.get("setorigindialog.window.title"));
 
 		java.awt.GridBagConstraints gridBagConstraints1;
 		addWindowListener(new java.awt.event.WindowAdapter() {
@@ -74,7 +74,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 				}
 			});
 
-		btnOK.setText(Resources.get("magellan.setorigindialog.btn.ok.caption"));
+		btnOK.setText(Resources.get("setorigindialog.btn.ok.caption"));
 		btnOK.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					btnOKActionPerformed(evt);
@@ -87,7 +87,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 		gridBagConstraints1.insets = new java.awt.Insets(0, 0, 5, 5);
 		getContentPane().add(btnOK, gridBagConstraints1);
 
-		btnCancel.setText(Resources.get("magellan.setorigindialog.btn.cancel.caption"));
+		btnCancel.setText(Resources.get("setorigindialog.btn.cancel.caption"));
 		btnCancel.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent evt) {
 					btnCancelActionPerformed(evt);
@@ -111,7 +111,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 
 		java.awt.GridBagConstraints gridBagConstraints2;
 
-		jLabel1.setText(Resources.get("magellan.setorigindialog.lbl.x.caption") + ":");
+		jLabel1.setText(Resources.get("setorigindialog.lbl.x.caption") + ":");
 
 		gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 0;
@@ -121,7 +121,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 		gridBagConstraints2.anchor = java.awt.GridBagConstraints.EAST;
 		jPanel2.add(jLabel1, gridBagConstraints2);
 
-		jLabel2.setText(Resources.get("magellan.setorigindialog.lbl.y.caption") + ":");
+		jLabel2.setText(Resources.get("setorigindialog.lbl.y.caption") + ":");
 
 		gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 2;
@@ -131,7 +131,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 		gridBagConstraints2.anchor = java.awt.GridBagConstraints.EAST;
 		jPanel2.add(jLabel2, gridBagConstraints2);
 
-		jLabel3.setText(Resources.get("magellan.setorigindialog.lbl.z.caption") + ":");
+		jLabel3.setText(Resources.get("setorigindialog.lbl.z.caption") + ":");
 
 		gridBagConstraints2 = new java.awt.GridBagConstraints();
 		gridBagConstraints2.gridx = 4;

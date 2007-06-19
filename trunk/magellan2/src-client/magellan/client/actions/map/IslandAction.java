@@ -60,7 +60,7 @@ public class IslandAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.islandaction.accelerator",false);
+    return Resources.get("actions.islandaction.accelerator",false);
   }
 
   /**
@@ -68,7 +68,7 @@ public class IslandAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.islandaction.mnemonic",false);
+    return Resources.get("actions.islandaction.mnemonic",false);
   }
 
   /**
@@ -76,12 +76,12 @@ public class IslandAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.islandaction.name");
+    return Resources.get("actions.islandaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.islandaction.tooltip",false);
+    return Resources.get("actions.islandaction.tooltip",false);
   }
 
 }

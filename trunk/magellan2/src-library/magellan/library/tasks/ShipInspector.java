@@ -100,12 +100,12 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 
 		if (s.modifiedUnits().isEmpty()) {
 			problems.add(new CriticizedError(s.getRegion(), s, this,
-					Resources.get("magellan.tasks.shipinspector.error.nocrew.description")));
+					Resources.get("tasks.shipinspector.error.nocrew.description")));
 		}
 
 		if (s.getModifiedLoad() > (s.getMaxCapacity())) {
 			problems.add(new CriticizedError(s.getRegion(), s, this,
-					Resources.get("magellan.tasks.shipinspector.error.overloaded.description")));
+					Resources.get("tasks.shipinspector.error.overloaded.description")));
 		}
 
 		problems.addAll(reviewMovingShip(s));
@@ -142,12 +142,12 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 
 			if (Math.abs(s.getShoreId() - d.getDir()) > 1 && Math.abs(s.getShoreId() - d.getDir()) < 5) {
 				problems.add(new CriticizedError(s.getRegion(), s, this,
-						Resources.get("magellan.tasks.shipinspector.error.wrongshore.description")));
+						Resources.get("tasks.shipinspector.error.wrongshore.description")));
 				return problems;
 			}
 			if (!nextRegion.getRegionType().equals(ozean)) {
 				problems.add(new CriticizedError(s.getRegion(), s, this,
-						Resources.get("magellan.tasks.shipinspector.error.noocean.description")));
+						Resources.get("tasks.shipinspector.error.noocean.description")));
 				return problems;
 			}
 			if (movementIterator.hasNext()) {
@@ -164,7 +164,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 					|| nextRegion.getRegionType().equals(wald) || nextRegion.getRegionType()
 					.equals(ebene)))) {
 				problems.add(new CriticizedError(s.getRegion(), s, this,
-						Resources.get("magellan.tasks.shipinspector.error.shipwreck.description")));
+						Resources.get("tasks.shipinspector.error.shipwreck.description")));
 				return problems;
 			}
 			if (movementIterator.hasNext()) {

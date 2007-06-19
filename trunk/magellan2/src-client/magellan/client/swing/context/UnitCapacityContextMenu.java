@@ -60,7 +60,7 @@ public class UnitCapacityContextMenu extends JPopupMenu {
     	
     	// new: all Items in CR/rules.cr
     	JMenuItem toogleAllItems = null;
-    	toogleAllItems = new JMenuItem(Resources.get("magellan.context.unitcapacitycontextmenu.menu.toggleShowAllItems.caption"));	
+    	toogleAllItems = new JMenuItem(Resources.get("context.unitcapacitycontextmenu.menu.toggleShowAllItems.caption"));	
         toogleAllItems.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	settings.setProperty("unitCapacityContextMenuShowAll", "true");
@@ -77,7 +77,7 @@ public class UnitCapacityContextMenu extends JPopupMenu {
         
         // new: all Items in region, regardles which faction (= some)
         JMenuItem toogleSomeItems = null;
-    	toogleSomeItems = new JMenuItem(Resources.get("magellan.context.unitcapacitycontextmenu.menu.toggleShowSomeItems.caption"));	
+    	toogleSomeItems = new JMenuItem(Resources.get("context.unitcapacitycontextmenu.menu.toggleShowSomeItems.caption"));	
         toogleSomeItems.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	settings.setProperty("unitCapacityContextMenuShowAll", "false");
@@ -93,7 +93,7 @@ public class UnitCapacityContextMenu extends JPopupMenu {
         
         // old = normal behaviour
         JMenuItem toogleFriendlyItems = null;
-    	toogleFriendlyItems = new JMenuItem(Resources.get("magellan.context.unitcapacitycontextmenu.menu.toggleShowFriendlyItems.caption"));	
+    	toogleFriendlyItems = new JMenuItem(Resources.get("context.unitcapacitycontextmenu.menu.toggleShowFriendlyItems.caption"));	
         toogleFriendlyItems.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                 	settings.setProperty("unitCapacityContextMenuShowAll", "false");

@@ -101,6 +101,6 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get( "magellan.util.replacers.unitcountreplacer.description." + countPersons);
+		return Resources.get("util.replacers.unitcountreplacer.description." + countPersons);
 	}
 }

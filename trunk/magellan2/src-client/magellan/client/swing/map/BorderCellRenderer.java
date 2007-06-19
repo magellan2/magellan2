@@ -130,7 +130,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.bordercellrenderer.name");
+    return Resources.get("map.bordercellrenderer.name");
   }
 
 }

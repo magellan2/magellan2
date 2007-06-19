@@ -109,7 +109,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 		}
 
 		fc.setAccessory(new magellan.client.swing.HistoryAccessory(settings, fc));
-		fc.setDialogTitle(Resources.get("magellan.actions.filesaveasaction.title"));
+		fc.setDialogTitle(Resources.get("actions.filesaveasaction.title"));
 
 		if(fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
 			boolean bOpenEqualsSave = Boolean.valueOf(settings.getProperty("Client.openEqualsSave",
@@ -145,7 +145,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 		} catch(IOException exc) {
 			log.error(exc);
 			JOptionPane.showMessageDialog(client, exc.toString(),
-										  Resources.get("magellan.actions.filesaveaction.msg.filesave.error.title"),
+										  Resources.get("actions.filesaveaction.msg.filesave.error.title"),
 										  JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -167,7 +167,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 		} catch(IOException exc) {
 			log.error(exc);
 			JOptionPane.showMessageDialog(client, exc.toString(),
-          Resources.get("magellan.actions.filesaveaction.msg.filesave.error.title"),
+          Resources.get("actions.filesaveaction.msg.filesave.error.title"),
 										  JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -195,7 +195,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.accelerator",false);
+    return Resources.get("actions.filesaveasaction.accelerator",false);
   }
 
   /**
@@ -203,7 +203,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.mnemonic",false);
+    return Resources.get("actions.filesaveasaction.mnemonic",false);
   }
 
   /**
@@ -211,11 +211,11 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.name");
+    return Resources.get("actions.filesaveasaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.filesaveasaction.tooltip",false);
+    return Resources.get("actions.filesaveasaction.tooltip",false);
   }
 }

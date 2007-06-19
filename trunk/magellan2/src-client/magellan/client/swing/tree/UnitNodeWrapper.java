@@ -760,14 +760,14 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 					  "prefs.categorized.5", "prefs.categorized.6",
 					  
 			"prefs.showWarnings"
-				  }, 0, "magellan.tree.unitnodewrapper.");
+				  }, 0, "tree.unitnodewrapper.");
 
 			// context menu
-			contextMenu = new JMenu(Resources.get("magellan.tree.unitnodewrapper.prefs.title"));
-			itemItem = new JCheckBoxMenuItem(Resources.get("magellan.tree.unitnodewrapper.prefs.other.text"), properties[SHOW_OTHER]);
+			contextMenu = new JMenu(Resources.get("tree.unitnodewrapper.prefs.title"));
+			itemItem = new JCheckBoxMenuItem(Resources.get("tree.unitnodewrapper.prefs.other.text"), properties[SHOW_OTHER]);
 			itemItem.addActionListener(this);
 			contextMenu.add(itemItem);
-			skillItem = new JCheckBoxMenuItem(Resources.get("magellan.tree.unitnodewrapper.prefs.skill.text"), properties[SHOW_SKILL]);
+			skillItem = new JCheckBoxMenuItem(Resources.get("tree.unitnodewrapper.prefs.skill.text"), properties[SHOW_SKILL]);
 			skillItem.addActionListener(this);
 			contextMenu.add(skillItem);
 		}

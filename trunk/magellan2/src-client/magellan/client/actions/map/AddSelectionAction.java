@@ -105,7 +105,7 @@ public class AddSelectionAction extends OpenSelectionAction implements Selection
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.addselectionaction.accelerator",false);
+    return Resources.get("actions.addselectionaction.accelerator",false);
   }
 
   /**
@@ -113,7 +113,7 @@ public class AddSelectionAction extends OpenSelectionAction implements Selection
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.addselectionaction.mnemonic",false);
+    return Resources.get("actions.addselectionaction.mnemonic",false);
   }
 
   /**
@@ -121,11 +121,11 @@ public class AddSelectionAction extends OpenSelectionAction implements Selection
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.addselectionaction.name");
+    return Resources.get("actions.addselectionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.addselectionaction.tooltip");
+    return Resources.get("actions.addselectionaction.tooltip");
   }
 }

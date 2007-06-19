@@ -212,14 +212,14 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 				// is that one upon whose alliances the activeAlliances depends
 				if(alliance.getState() == Integer.MAX_VALUE) {
 					icon = "alliancestate_basisfaction";
-					tooltip = Resources.get("magellan.tree.factionnodewrapper.basis");
+					tooltip = Resources.get("tree.factionnodewrapper.basis");
 				} else {
 					icon = "alliancestate_" + alliance.getState();
-					tooltip = Resources.get("magellan.tree.factionnodewrapper.allied") + alliance.stateToString();
+					tooltip = Resources.get("tree.factionnodewrapper.allied") + alliance.stateToString();
 				}
 			} else {
 				icon = "alliancestate_0";
-				tooltip = Resources.get("magellan.tree.factionnodewrapper.neutral");
+				tooltip = Resources.get("tree.factionnodewrapper.neutral");
 			}
 		}
 

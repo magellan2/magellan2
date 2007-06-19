@@ -86,7 +86,7 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
 	 * 
 	 */
 	public String getDescription() {
-		return Resources.get("magellan.util.replacers.soldluxuryreplacer.description." + mode);
+		return Resources.get("util.replacers.soldluxuryreplacer.description." + mode);
 	}
 
 }

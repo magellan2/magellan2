@@ -103,7 +103,7 @@ public class OptionAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.optionaction.accelerator",false);
+    return Resources.get("actions.optionaction.accelerator",false);
   }
 
   /**
@@ -111,7 +111,7 @@ public class OptionAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.optionaction.mnemonic",false);
+    return Resources.get("actions.optionaction.mnemonic",false);
   }
 
   /**
@@ -119,11 +119,11 @@ public class OptionAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.optionaction.name");
+    return Resources.get("actions.optionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.optionaction.tooltip",false);
+    return Resources.get("actions.optionaction.tooltip",false);
   }
 }

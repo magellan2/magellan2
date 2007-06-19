@@ -124,7 +124,7 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 		JFileChooser fc = new JFileChooser();
 		fc.addChoosableFileFilter(new EresseaFileFilter(EXTENSION, DESCRIPTION));
 		fc.setSelectedFile(new File(client.getProperties().getProperty(getPropertyName(), "")));
-		fc.setDialogTitle(Resources.get("magellan.actions.saveselectionaction.title"));
+		fc.setDialogTitle(Resources.get("actions.saveselectionaction.title"));
 
 		if(fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
 			PrintWriter pw = null;
@@ -152,7 +152,7 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 			} catch(IOException exc) {
 				log.error(exc);
 				JOptionPane.showMessageDialog(client, exc.toString(),
-											  Resources.get("magellan.actions.saveselectionaction.msg.filesave.error.title"),
+											  Resources.get("actions.saveselectionaction.msg.filesave.error.title"),
 											  JOptionPane.ERROR_MESSAGE);
 			} finally {
 				if(pw != null) {
@@ -195,7 +195,7 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.saveselectionaction.accelerator",false);
+    return Resources.get("actions.saveselectionaction.accelerator",false);
   }
 
   /**
@@ -203,7 +203,7 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.saveselectionaction.mnemonic",false);
+    return Resources.get("actions.saveselectionaction.mnemonic",false);
   }
 
   /**
@@ -211,11 +211,11 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.saveselectionaction.name");
+    return Resources.get("actions.saveselectionaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.saveselectionaction.tooltip",false);
+    return Resources.get("actions.saveselectionaction.tooltip",false);
   }
 }

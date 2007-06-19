@@ -80,7 +80,7 @@ public class TaskTableAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.tasktableaction.accelerator",false);
+    return Resources.get("actions.tasktableaction.accelerator",false);
   }
 
   /**
@@ -88,7 +88,7 @@ public class TaskTableAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.tasktableaction.mnemonic",false);
+    return Resources.get("actions.tasktableaction.mnemonic",false);
   }
 
   /**
@@ -96,11 +96,11 @@ public class TaskTableAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.tasktableaction.name");
+    return Resources.get("actions.tasktableaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.tasktableaction.tooltip",false);
+    return Resources.get("actions.tasktableaction.tooltip",false);
   }
 }

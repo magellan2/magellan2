@@ -106,7 +106,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	public TipOfTheDay(Frame parent, Properties settings) {
 		super(parent, false);
 
-		setTitle(Resources.get("magellan.tipoftheday.title"));
+		setTitle(Resources.get("tipoftheday.title"));
 
 		this.settings = settings;
 
@@ -176,7 +176,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 			panel.add(iconLabel, BorderLayout.WEST);
 		}
 
-		JLabel didyouknow = new JLabel("    " + Resources.get("magellan.tipoftheday.didyouknow"));
+		JLabel didyouknow = new JLabel("    " + Resources.get("tipoftheday.didyouknow"));
 		Font old = didyouknow.getFont();
 		didyouknow.setFont(old.deriveFont(old.getStyle() | Font.ITALIC, 18f));
 		didyouknow.setForeground(foreground);
@@ -201,17 +201,17 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 		panel.add(content, BorderLayout.CENTER);
 
-		showTips = new JCheckBox(Resources.get("magellan.tipoftheday.showTips"),
+		showTips = new JCheckBox(Resources.get("tipoftheday.showTips"),
 								 settings.getProperty("TipOfTheDay.showTips", "true").equals("true"));
 		showTips.setBackground(background);
 		showTips.setForeground(foreground);
 
-		JButton close = new JButton(Resources.get("magellan.tipoftheday.close"));
+		JButton close = new JButton(Resources.get("tipoftheday.close"));
 		close.addActionListener(this);
 		close.setBackground(background);
 		close.setForeground(foreground);
 
-		JButton next = new JButton(Resources.get("magellan.tipoftheday.nextTip"));
+		JButton next = new JButton(Resources.get("tipoftheday.nextTip"));
 		next.addActionListener(this);
 		next.setActionCommand(NEXT);
 		next.setBackground(background);
@@ -251,14 +251,14 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		int count = 0;
 
 		try {
-			count = Integer.parseInt(Resources.get("magellan.tipoftheday.numTips"));
+			count = Integer.parseInt(Resources.get("tipoftheday.numTips"));
 		} catch(Exception exc) {
 		}
 
 		if(count > 0) {
 			for(int i = 0; i < count; i++) {
 				try {
-					String s = Resources.get("magellan.tipoftheday.tip." + String.valueOf(i));
+					String s = Resources.get("tipoftheday.tip." + String.valueOf(i));
 
 					if(s != null) {
 						Tip tip = new Tip();
@@ -336,7 +336,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 			if(firstTime) {
 				firstTime = false;
 				tip = new Tip();
-				tip.text = Resources.get("magellan.tipoftheday.warningString");
+				tip.text = Resources.get("tipoftheday.warningString");
 			} else {
 				int i = 0;
 
@@ -360,7 +360,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 				if(tip.text.startsWith(E_KEY)) {
 					kit.insertHTML(doc2, 0,
-								   E_HTML_START + "<font size=+1>" + Resources.get("magellan.tipoftheday.tip.eressea") +
+								   E_HTML_START + "<font size=+1>" + Resources.get("tipoftheday.tip.eressea") +
 								   "</font><br>" + tip.text.substring(E_KEY.length()) + E_HTML_END,
 								   0, 0, null);
 				} else {

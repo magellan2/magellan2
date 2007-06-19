@@ -43,7 +43,7 @@ public class MaxWorkersReplacer extends AbstractRegionReplacer {
   
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.maxworkersreplacer.description");
+    return Resources.get("util.replacers.maxworkersreplacer.description");
   }  
 
 }

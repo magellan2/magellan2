@@ -49,7 +49,7 @@ public class EventDisplayPanel extends InternationalizedPanel implements UnitOrd
 
   /**
   protected String getString(String key) {
-    return Resources.get("magellan.utils.logging.eventdisplaypanel.",key);
+    return Resources.get("utils.logging.eventdisplaypanel.",key);
   }
   */
 }

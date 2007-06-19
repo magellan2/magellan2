@@ -104,7 +104,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		name.setEnabled(false);
 		add(name);
 
-		changeSelState = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.changeselectionstate"));
+		changeSelState = new JMenuItem(Resources.get("context.mapcontextmenu.menu.changeselectionstate"));
 		changeSelState.setEnabled(false);
 		changeSelState.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -113,7 +113,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(changeSelState);
 
-		copyNameID = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.copyidandname.caption"));
+		copyNameID = new JMenuItem(Resources.get("context.mapcontextmenu.menu.copyidandname.caption"));
 		copyNameID.setEnabled(false);
 		copyNameID.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -122,7 +122,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(copyNameID);
 
-		setOriginItem = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.setorigin"));
+		setOriginItem = new JMenuItem(Resources.get("context.mapcontextmenu.menu.setorigin"));
 		setOriginItem.setEnabled(false);
 		setOriginItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -137,7 +137,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(setOriginItem);
 
-		changeHotSpot = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.changehotspot"));
+		changeHotSpot = new JMenuItem(Resources.get("context.mapcontextmenu.menu.changehotspot"));
 		changeHotSpot.setEnabled(false);
 		changeHotSpot.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -146,7 +146,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(changeHotSpot);
 
-		armystats = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.armystats"));
+		armystats = new JMenuItem(Resources.get("context.mapcontextmenu.menu.armystats"));
 		armystats.setEnabled(false);
 
 		final EventDispatcher ed = aDispatcher;
@@ -162,15 +162,15 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(armystats);
 		
-		signs = new JMenu(Resources.get("magellan.context.mapcontextmenu.menu.signs"));
+		signs = new JMenu(Resources.get("context.mapcontextmenu.menu.signs"));
 		add(signs);
 		addSeparator();
 
-		tooltips = new JMenu(Resources.get("magellan.context.mapcontextmenu.menu.tooltips"));
+		tooltips = new JMenu(Resources.get("context.mapcontextmenu.menu.tooltips"));
 		tooltips.setEnabled(false);
 		add(tooltips);
 
-		renderer = new JMenu(Resources.get("magellan.context.mapcontextmenu.menu.renderer"));
+		renderer = new JMenu(Resources.get("context.mapcontextmenu.menu.renderer"));
 		renderer.setEnabled(false);
 		add(renderer);
 	}
@@ -206,7 +206,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 * DOCUMENT-ME
 	 */
 	public void clear() {
-		String s = Resources.get("magellan.context.mapcontextmenu.menu.noregion");
+		String s = Resources.get("context.mapcontextmenu.menu.noregion");
 		setLabel(s);
 		name.setText(s);
 		changeSelState.setEnabled(false);
@@ -227,7 +227,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		signs.removeAll();
 		// add or delete
 		if (region.getSigns()!=null && region.getSigns().size()>0){
-			JMenuItem delSign = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.signs.selsign"));
+			JMenuItem delSign = new JMenuItem(Resources.get("context.mapcontextmenu.menu.signs.selsign"));
 			delSign.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						delSign();
@@ -235,7 +235,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 				});
 			signs.add(delSign);
 		} else {
-			JMenuItem delSign = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.signs.addsign"));
+			JMenuItem delSign = new JMenuItem(Resources.get("context.mapcontextmenu.menu.signs.addsign"));
 			delSign.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						addSign();
@@ -245,7 +245,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 		
 		// remove all
-		JMenuItem delAllSigns = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.signs.selallsigns"));
+		JMenuItem delAllSigns = new JMenuItem(Resources.get("context.mapcontextmenu.menu.signs.selallsigns"));
 		delAllSigns.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				delAllSigns();
@@ -372,7 +372,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			if(rs != null) {
 				addedi = true;
 
-				JMenuItem item = new JMenuItem(Resources.get("magellan.context.mapcontextmenu.menu.renderer.none"));
+				JMenuItem item = new JMenuItem(Resources.get("context.mapcontextmenu.menu.renderer.none"));
 				item.setEnabled(rp.getRenderer() != null);
 				item.putClientProperty(RKEY, new Integer(rp.getIndex()));
 				item.addActionListener(rListener);

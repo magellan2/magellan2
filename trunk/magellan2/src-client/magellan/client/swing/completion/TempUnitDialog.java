@@ -104,9 +104,9 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
 		con.insets = i;
 
-		c.add(new JLabel(Resources.get("magellan.completion.tempunitdialog.id.label")), con);
+		c.add(new JLabel(Resources.get("completion.tempunitdialog.id.label")), con);
 		con.gridy = 1;
-		c.add(new JLabel(Resources.get("magellan.completion.tempunitdialog.name.label")), con);
+		c.add(new JLabel(Resources.get("completion.tempunitdialog.name.label")), con);
 
 		con.gridy = 0;
 		con.gridx = 1;
@@ -137,7 +137,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-		panel.add(more = new JButton(Resources.get("magellan.completion.tempunitdialog.more.more")));
+		panel.add(more = new JButton(Resources.get("completion.tempunitdialog.more.more")));
 		panel.setOpaque(false);
 		more.addActionListener(this);
 		bPanel = panel;
@@ -149,9 +149,9 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		con.gridheight = 2;
 		panel = new JPanel(new GridLayout(2, 1));
 		panel.setOpaque(false);
-		panel.add(ok = new JButton(Resources.get("magellan.completion.tempunitdialog.ok")));
+		panel.add(ok = new JButton(Resources.get("completion.tempunitdialog.ok")));
 		ok.addActionListener(this);
-		panel.add(cancel = new JButton(Resources.get("magellan.completion.tempunitdialog.cancel")));
+		panel.add(cancel = new JButton(Resources.get("completion.tempunitdialog.cancel")));
 		cancel.addActionListener(this);
 		con.fill = GridBagConstraints.NONE;
 		c.add(panel, con);
@@ -162,19 +162,19 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		con.gridy = 0;
 		con.gridwidth = 1;
 		con.gridheight = 1;
-		morePanel.add(new JLabel(Resources.get("magellan.completion.tempunitdialog.recruit.label")), con);
+		morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.recruit.label")), con);
 		con.gridy = 2;
-		morePanel.add(new JLabel(Resources.get("magellan.completion.tempunitdialog.order.label")), con);
+		morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.order.label")), con);
 		con.gridy = 3;
 		con.anchor = GridBagConstraints.NORTHWEST;
-		morePanel.add(new JLabel(Resources.get("magellan.completion.tempunitdialog.descript.label")), con);
+		morePanel.add(new JLabel(Resources.get("completion.tempunitdialog.descript.label")), con);
 		con.anchor = GridBagConstraints.CENTER;
 		con.gridy = 1;
 		con.gridx = 1;
 		con.fill = GridBagConstraints.HORIZONTAL;
-		morePanel.add(giveRecruitCost = new JCheckBox(Resources.get("magellan.completion.tempunitdialog.recruitCost.label")), con);
+		morePanel.add(giveRecruitCost = new JCheckBox(Resources.get("completion.tempunitdialog.recruitCost.label")), con);
 		con.gridx = 2;
-		morePanel.add(giveMaintainCost = new JCheckBox(Resources.get("magellan.completion.tempunitdialog.maintainCost.label")), con);
+		morePanel.add(giveMaintainCost = new JCheckBox(Resources.get("completion.tempunitdialog.maintainCost.label")), con);
 		giveRecruitCost.setSelected(settings.getProperty("TempUnitDialog.AddRecruitCost", "false")
 											.equals("true"));
 		giveMaintainCost.setSelected(settings.getProperty("TempUnitDialog.AddMaintainCost", "false")
@@ -336,7 +336,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		if(settings.getProperty("TempUnitDialog.LastOrderEmpty", "false").equals("true")) {
 			order.setText(null);
 		} else {
-			order.setText(Resources.get("magellan.completion.tempunitdialog.order.default") + " ");
+			order.setText(Resources.get("completion.tempunitdialog.order.default") + " ");
 		}
 
 		descript.setText(null);
@@ -484,7 +484,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			con.gridwidth = 2;
 			con.fill = GridBagConstraints.BOTH;
 			c.add(morePanel, con);
-			more.setText(Resources.get("magellan.completion.tempunitdialog.more.less"));
+			more.setText(Resources.get("completion.tempunitdialog.more.less"));
 			setFocusList(true);
 			settings.setProperty(SETTINGS_KEY, "true");
 		} else { // remove
@@ -495,7 +495,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			con.gridheight = 1;
 			con.fill = GridBagConstraints.HORIZONTAL;
 			layout.setConstraints(bPanel, con);
-			more.setText(Resources.get("magellan.completion.tempunitdialog.more.more"));
+			more.setText(Resources.get("completion.tempunitdialog.more.more"));
 			setFocusList(false);
 			settings.setProperty(SETTINGS_KEY, "false");
 		}

@@ -36,7 +36,7 @@ public class PrivDescReplacer extends AbstractUnitReplacer {
   
 
   public String getDescription() {
-    return Resources.get("magellan.util.replacers.privdescreplacer.description");
+    return Resources.get("util.replacers.privdescreplacer.description");
   }  
 
 }

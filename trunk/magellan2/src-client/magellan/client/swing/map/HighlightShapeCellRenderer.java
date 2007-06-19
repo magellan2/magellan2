@@ -251,7 +251,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 			pnlSelectedColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlSelectedColor.getTopLevelAncestor(),
-																  Resources.get("magellan.map.highlightshapecellrenderer.textcolor"),
+																  Resources.get("map.highlightshapecellrenderer.textcolor"),
 																  pnlSelectedColor.getBackground());
 
 						if(newColor != null) {
@@ -260,7 +260,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 					}
 				});
 
-			JLabel lblSelectedColor = new JLabel(Resources.get("magellan.map.highlightshapecellrenderer.lblselectedcolor"));
+			JLabel lblSelectedColor = new JLabel(Resources.get("map.highlightshapecellrenderer.lblselectedcolor"));
 			lblSelectedColor.setLabelFor(pnlSelectedColor);
 
 			pnlActiveColor = new JPanel();
@@ -269,7 +269,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 			pnlActiveColor.addMouseListener(new MouseAdapter() {
 					public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlActiveColor.getTopLevelAncestor(),
-																  Resources.get("magellan.map.highlightshapecellrenderer.textcolor"),
+																  Resources.get("map.highlightshapecellrenderer.textcolor"),
 																  pnlActiveColor.getBackground());
 
 						if(newColor != null) {
@@ -278,10 +278,10 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 					}
 				});
 
-			JLabel lblActiveColor = new JLabel(Resources.get("magellan.map.highlightshapecellrenderer.lblactivecolor"));
+			JLabel lblActiveColor = new JLabel(Resources.get("map.highlightshapecellrenderer.lblactivecolor"));
 			lblActiveColor.setLabelFor(pnlActiveColor);
 
-			chkDrawFilled = new JCheckBox(Resources.get("magellan.map.highlightshapecellrenderer.drawfilled"), source.getDrawFilled());
+			chkDrawFilled = new JCheckBox(Resources.get("map.highlightshapecellrenderer.drawfilled"), source.getDrawFilled());
 
 			this.setLayout(new GridBagLayout());
 
@@ -342,7 +342,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
    */
   @Override
   public String getName() {
-    return Resources.get("magellan.map.highlightshapecellrenderer.name");
+    return Resources.get("map.highlightshapecellrenderer.name");
   }
 
 }

@@ -180,8 +180,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		Faction selectedFaction = (Faction) cmbFactions.getSelectedItem();
 
 		if(selectedFaction == null) {
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.nofaction.text"),
-										  Resources.get("magellan.echeckpanel.msg.nofaction.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.nofaction.text"),
+										  Resources.get("echeckpanel.msg.nofaction.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			return;
@@ -214,8 +214,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		File exeFile = new File(txtECheckEXE.getText());
 
 		if(!exeFile.exists()) {
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.echeckmissing.text"),
-										  Resources.get("magellan.echeckpanel.msg.echeckmissing.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.echeckmissing.text"),
+										  Resources.get("echeckpanel.msg.echeckmissing.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			return;
@@ -230,17 +230,17 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
 				Object msgArgs[] = { JECheck.getRequiredVersion() };
 				JOptionPane.showMessageDialog(this,
-											  java.text.MessageFormat.format(Resources.get("magellan.echeckpanel.msg.wrongversion.text"),
+											  java.text.MessageFormat.format(Resources.get("echeckpanel.msg.wrongversion.text"),
 																			 msgArgs),
-											  Resources.get("magellan.echeckpanel.msg.wrongversion.title"),
+											  Resources.get("echeckpanel.msg.wrongversion.title"),
 											  JOptionPane.ERROR_MESSAGE);
 
 				return;
 			}
 		} catch(IOException e) {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.versionretrievalerror.text"),
-										  Resources.get("magellan.echeckpanel.msg.versionretrievalerror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.versionretrievalerror.text"),
+										  Resources.get("echeckpanel.msg.versionretrievalerror.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			return;
@@ -274,8 +274,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 			stream.close();
 		} catch(IOException e) {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.ordersaveerror.text") + e,
-										  Resources.get("magellan.echeckpanel.msg.ordersaveerror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.ordersaveerror.text") + e,
+										  Resources.get("echeckpanel.msg.ordersaveerror.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			if(orderFile != null) {
@@ -309,14 +309,14 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				JECheck.determineAffectedObjects(data, orderFile, messages);
 				lstMessages.setListData(messages.toArray());
 			} else {
-				JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.noecheckmessages.text"),
-											  Resources.get("magellan.echeckpanel.msg.noecheckmessages.title"),
+				JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.noecheckmessages.text"),
+											  Resources.get("echeckpanel.msg.noecheckmessages.title"),
 											  JOptionPane.INFORMATION_MESSAGE);
 			}
 		} catch(IOException e) {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.echeckerror.text") + e,
-										  Resources.get("magellan.echeckpanel.msg.echeckerror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.echeckerror.text") + e,
+										  Resources.get("echeckpanel.msg.echeckerror.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			if(orderFile != null) {
@@ -329,8 +329,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 			return;
 		} catch(java.text.ParseException e) {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.echeckpanel.msg.parseerror.text") + e,
-										  Resources.get("magellan.echeckpanel.msg.parseerror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("echeckpanel.msg.parseerror.text") + e,
+										  Resources.get("echeckpanel.msg.parseerror.title"),
 										  JOptionPane.ERROR_MESSAGE);
 
 			if(orderFile != null) {
@@ -361,8 +361,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	private Container getControlsPanel() {
 		usedOptions.setEditable(true);
 
-		JLabel lblECheckEXE = new JLabel(Resources.get("magellan.echeckpanel.lbl.echeck.caption"));
-		lblECheckEXE.setDisplayedMnemonic(Resources.get("magellan.echeckpanel.lbl.echeck.mnemonic").charAt(0));
+		JLabel lblECheckEXE = new JLabel(Resources.get("echeckpanel.lbl.echeck.caption"));
+		lblECheckEXE.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.echeck.mnemonic").charAt(0));
 		txtECheckEXE = new JTextField(settings.getProperty("JECheckPanel.echeckEXE", ""));
 		lblECheckEXE.setLabelFor(txtECheckEXE);
 
@@ -377,8 +377,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				}
 			});
 
-		JLabel lblFactions = new JLabel(Resources.get("magellan.echeckpanel.lbl.faction.caption"));
-		lblFactions.setDisplayedMnemonic(Resources.get("magellan.echeckpanel.lbl.faction.mnemonic").charAt(0));
+		JLabel lblFactions = new JLabel(Resources.get("echeckpanel.lbl.faction.caption"));
+		lblFactions.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.faction.mnemonic").charAt(0));
 		cmbFactions = new JComboBox();
 		lblFactions.setLabelFor(cmbFactions);
 
@@ -425,13 +425,13 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				}
 			});
 
-		chkConfirmedOnly = new JCheckBox(Resources.get("magellan.echeckpanel.chk.skipunconfirmedorders.caption"));
+		chkConfirmedOnly = new JCheckBox(Resources.get("echeckpanel.chk.skipunconfirmedorders.caption"));
 
-		chkSelRegionsOnly = new JCheckBox(Resources.get("magellan.echeckpanel.chk.selectedregions.caption"));
+		chkSelRegionsOnly = new JCheckBox(Resources.get("echeckpanel.chk.selectedregions.caption"));
 		chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
 
-		JLabel lblOptions = new JLabel(Resources.get("magellan.echeckpanel.lbl.options.caption"));
-		lblOptions.setDisplayedMnemonic(Resources.get("magellan.echeckpanel.lbl.options.mnemonic").charAt(0));
+		JLabel lblOptions = new JLabel(Resources.get("echeckpanel.lbl.options.caption"));
+		lblOptions.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.options.mnemonic").charAt(0));
 		lblOptions.setLabelFor(usedOptions);
 
 		/* trigger option creation */
@@ -533,8 +533,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 															   msg.getAffectedObject()));
 						} else {
 							JOptionPane.showMessageDialog(ECheckPanel.this,
-														  Resources.get("magellan.echeckpanel.msg.messagetargetnotfound.text"),
-														  Resources.get("magellan.echeckpanel.msg.messagetargetnotfound.title"),
+														  Resources.get("echeckpanel.msg.messagetargetnotfound.text"),
+														  Resources.get("echeckpanel.msg.messagetargetnotfound.title"),
 														  JOptionPane.INFORMATION_MESSAGE);
 						}
 					}
@@ -543,7 +543,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
 		JPanel messages = new JPanel(new BorderLayout());
 		messages.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("magellan.echeckpanel.border.echeckmessages")));
+											Resources.get("echeckpanel.border.echeckmessages")));
 		messages.add(new JScrollPane(lstMessages), BorderLayout.CENTER);
 
 		return messages;
@@ -555,7 +555,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
 		JPanel orders = new JPanel(new BorderLayout());
 		orders.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-										  Resources.get("magellan.echeckpanel.border.orders")));
+										  Resources.get("echeckpanel.border.orders")));
 		orders.add(new JScrollPane(txtOutput), BorderLayout.CENTER);
 
 		return orders;
@@ -580,7 +580,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 			}
 
 			public String getDescription() {
-				return Resources.get("magellan.echeckpanel.filter.echeckexe.desc");
+				return Resources.get("echeckpanel.filter.echeckexe.desc");
 			}
 		};
 
@@ -713,9 +713,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				}
 
 				if(m.getType() == JECheck.ECheckMessage.WARNING) {
-					lblCaption.setText(Resources.get("magellan.echeckpanel.celllbl.warning") + m.getLineNr());
+					lblCaption.setText(Resources.get("echeckpanel.celllbl.warning") + m.getLineNr());
 				} else {
-					lblCaption.setText(Resources.get("magellan.echeckpanel.celllbl.error") + m.getLineNr());
+					lblCaption.setText(Resources.get("echeckpanel.celllbl.error") + m.getLineNr());
 				}
 
 				txtMessage.setText(m.getMessage());

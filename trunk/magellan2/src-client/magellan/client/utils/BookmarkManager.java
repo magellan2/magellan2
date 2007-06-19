@@ -263,7 +263,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	public java.lang.String getShortcutDescription(java.lang.Object obj) {
 		int index = shortCuts.indexOf(obj);
 
-		return Resources.get("magellan.util.bookmarkmanager.shortcuts.description." + String.valueOf(index));
+		return Resources.get("util.bookmarkmanager.shortcuts.description." + String.valueOf(index));
 	}
 
 	/**
@@ -272,7 +272,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	 * 
 	 */
 	public java.lang.String getListenerDescription() {
-		return Resources.get("magellan.util.bookmarkmanager.shortcuts.title");
+		return Resources.get("util.bookmarkmanager.shortcuts.title");
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 		 * 
 		 */
 		public BookmarkDialog(Frame owner) {
-			super(owner, Resources.get("magellan.util.bookmarkmanager.bookmarkdialog.caption"), false);
+			super(owner, Resources.get("util.bookmarkmanager.bookmarkdialog.caption"), false);
 			dispatcher.addSelectionListener(this);
 
 			this.addWindowListener(new WindowAdapter() {

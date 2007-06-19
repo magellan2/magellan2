@@ -49,7 +49,7 @@ public class AbortAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.abortaction.accelerator",false);
+    return Resources.get("actions.abortaction.accelerator",false);
   }
 
   /**
@@ -57,7 +57,7 @@ public class AbortAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.abortaction.mnemonic",false);
+    return Resources.get("actions.abortaction.mnemonic",false);
   }
 
   /**
@@ -65,12 +65,12 @@ public class AbortAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.abortaction.name");
+    return Resources.get("actions.abortaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.abortaction.tooltip",false);
+    return Resources.get("actions.abortaction.tooltip",false);
   }
 
 }

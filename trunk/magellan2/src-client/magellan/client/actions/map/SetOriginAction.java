@@ -85,7 +85,7 @@ public class SetOriginAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.setoriginaction.accelerator",false);
+    return Resources.get("actions.setoriginaction.accelerator",false);
   }
 
   /**
@@ -93,7 +93,7 @@ public class SetOriginAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.setoriginaction.mnemonic",false);
+    return Resources.get("actions.setoriginaction.mnemonic",false);
   }
 
   /**
@@ -101,11 +101,11 @@ public class SetOriginAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.setoriginaction.name");
+    return Resources.get("actions.setoriginaction.name");
   }
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.setoriginaction.tooltip",false);
+    return Resources.get("actions.setoriginaction.tooltip",false);
   }
 }

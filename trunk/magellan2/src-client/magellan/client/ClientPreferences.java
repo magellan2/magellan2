@@ -181,9 +181,9 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 	private Component getProgressPanel() {
 		// progress
 		JPanel progressPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-		progressPanel.setBorder(new TitledBorder( Resources.get("magellan.clientpreferences.border.progress")));
+		progressPanel.setBorder(new TitledBorder( Resources.get("clientpreferences.border.progress")));
 
-		showProgress = new JCheckBox( Resources.get("magellan.clientpreferences.progress.caption"), source.isShowingStatus());
+		showProgress = new JCheckBox( Resources.get("clientpreferences.progress.caption"), source.isShowingStatus());
 		progressPanel.add(showProgress);
 
 		return progressPanel;
@@ -192,9 +192,9 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 	private Component getCreateVoidPanel() {
 		// create Void Regions
 		JPanel voidPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-		voidPanel.setBorder(new TitledBorder( Resources.get("magellan.clientpreferences.create.void.regions.border")));
+		voidPanel.setBorder(new TitledBorder( Resources.get("clientpreferences.create.void.regions.border")));
 
-		createVoidRegions = new JCheckBox( Resources.get("magellan.clientpreferences.create.void.regions.caption"), PropertiesHelper.getboolean(settings, "map.creating.void", false));
+		createVoidRegions = new JCheckBox( Resources.get("clientpreferences.create.void.regions.caption"), PropertiesHelper.getboolean(settings, "map.creating.void", false));
 		voidPanel.add(createVoidRegions);
 
 		return voidPanel;
@@ -207,23 +207,23 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 													   GridBagConstraints.WEST,
 													   GridBagConstraints.VERTICAL,
 													   new Insets(4, 4, 4, 4), 0, 0);
-		tempIDs.setBorder(new TitledBorder( Resources.get("magellan.clientpreferences.border.temps")));
+		tempIDs.setBorder(new TitledBorder( Resources.get("clientpreferences.border.temps")));
 
-		JLabel label = new JLabel( Resources.get("magellan.clientpreferences.tempids"));
+		JLabel label = new JLabel( Resources.get("clientpreferences.tempids"));
 		tempIDs.add(label, c2);
 		c2.gridy = 1;
 
 		String s = settings.getProperty("ClientPreferences.TempIDsInitialValue", "");
 		tempIDsInitialValue = new JTextField(s);
 		tempIDsInitialValue.setPreferredSize(new Dimension(100, 40));
-		tempIDsInitialValue.setBorder(new TitledBorder( Resources.get("magellan.clientpreferences.tempidsinitialvalue.caption")));
+		tempIDsInitialValue.setBorder(new TitledBorder( Resources.get("clientpreferences.tempidsinitialvalue.caption")));
 		tempIDsInitialValue.setMargin(new Insets(2, 2, 2, 2));
 		tempIDsInitialValue.setHorizontalAlignment(JTextField.CENTER);
 		tempIDs.add(tempIDsInitialValue, c2);
 
 		Boolean b = Boolean.valueOf(settings.getProperty("ClientPreferences.countDecimal", "true"));
-		countDecimal = new JRadioButton( Resources.get("magellan.clientpreferences.tempids.countdecimal.caption"), b.booleanValue());
-		countBase36 = new JRadioButton( Resources.get("magellan.clientpreferences.tempids.countbase36.caption"), !b.booleanValue());
+		countDecimal = new JRadioButton( Resources.get("clientpreferences.tempids.countdecimal.caption"), b.booleanValue());
+		countBase36 = new JRadioButton( Resources.get("clientpreferences.tempids.countbase36.caption"), !b.booleanValue());
 
 		ButtonGroup buttonGroup = new ButtonGroup();
 		buttonGroup.add(countDecimal);
@@ -239,9 +239,9 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		//pavkovic
 		Boolean ascending = Boolean.valueOf(settings.getProperty("ClientPreferences.ascendingOrder",
 																 "true"));
-		ascendingOrder = new JRadioButton( Resources.get("magellan.clientpreferences.tempids.ascendingorder.caption"),
+		ascendingOrder = new JRadioButton( Resources.get("clientpreferences.tempids.ascendingorder.caption"),
 										  ascending.booleanValue());
-		descendingOrder = new JRadioButton( Resources.get("magellan.clientpreferences.tempids.descendingorder.caption"),
+		descendingOrder = new JRadioButton( Resources.get("clientpreferences.tempids.descendingorder.caption"),
 										   !ascending.booleanValue());
 
 		ButtonGroup buttonGroup2 = new ButtonGroup();
@@ -257,15 +257,15 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		c2.gridy = 3;
 		c2.gridx = 0;
 		c2.gridwidth = 3;
-		showTempUnitDialog = new JCheckBox( Resources.get("magellan.clientpreferences.showtempunitdialog"),
+		showTempUnitDialog = new JCheckBox( Resources.get("clientpreferences.showtempunitdialog"),
 										   settings.getProperty("MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog",
 																"true").equalsIgnoreCase("true"));
 		tempIDs.add(showTempUnitDialog, c2);
 
 		// tooltips
-		tempIDsInitialValue.setToolTipText( Resources.get("magellan.clientpreferences.tempidsinitialvalue.tooltip"));
-		countDecimal.setToolTipText( Resources.get("magellan.clientpreferences.tempids.countdecimal.tooltip"));
-		countBase36.setToolTipText( Resources.get("magellan.clientpreferences.tempids.countbase36.tooltip"));
+		tempIDsInitialValue.setToolTipText( Resources.get("clientpreferences.tempidsinitialvalue.tooltip"));
+		countDecimal.setToolTipText( Resources.get("clientpreferences.tempids.countdecimal.tooltip"));
+		countBase36.setToolTipText( Resources.get("clientpreferences.tempids.countbase36.tooltip"));
 
 		return tempIDs;
 	}
@@ -280,20 +280,20 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 
 		JPanel pnlLocales = new JPanel(new GridBagLayout());
 		pnlLocales.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-																  Resources.get("magellan.clientpreferences.border.locales")));
+																  Resources.get("clientpreferences.border.locales")));
 
 		cmbGUILocale = new JComboBox(availLocales);
 		cmbGUILocale.setSelectedItem(new LocaleWrapper(Locales.getGUILocale()));
 
-		JLabel lblGUILocale = new JLabel( Resources.get("magellan.clientpreferences.lbl.guilocale.caption"));
-		lblGUILocale.setDisplayedMnemonic( Resources.get("magellan.clientpreferences.lbl.guilocale.mnemonic").charAt(0));
+		JLabel lblGUILocale = new JLabel( Resources.get("clientpreferences.lbl.guilocale.caption"));
+		lblGUILocale.setDisplayedMnemonic( Resources.get("clientpreferences.lbl.guilocale.mnemonic").charAt(0));
 		lblGUILocale.setLabelFor(cmbGUILocale);
 
 		cmbOrderLocale = new JComboBox(availLocales);
 		cmbOrderLocale.setSelectedItem(new LocaleWrapper(Locales.getOrderLocale()));
 
-		JLabel lblOrderLocale = new JLabel( Resources.get("magellan.clientpreferences.lbl.orderlocale.caption"));
-		lblOrderLocale.setDisplayedMnemonic( Resources.get("magellan.clientpreferences.lbl.orderlocale.mnemonic").charAt(0));
+		JLabel lblOrderLocale = new JLabel( Resources.get("clientpreferences.lbl.orderlocale.caption"));
+		lblOrderLocale.setDisplayedMnemonic( Resources.get("clientpreferences.lbl.orderlocale.mnemonic").charAt(0));
 		lblOrderLocale.setLabelFor(cmbOrderLocale);
 
 		GridBagConstraints c = new GridBagConstraints();
@@ -413,7 +413,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 	 * 
 	 */
 	public String getTitle() {
-		return  Resources.get("magellan.clientpreferences.title");
+		return  Resources.get("clientpreferences.title");
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		LookAndFeel laf = UIManager.getLookAndFeel();
 
 		if(laf instanceof javax.swing.plaf.metal.MetalLookAndFeel) {
-			Color col = JColorChooser.showDialog(this,  Resources.get("magellan.clientpreferences.desktopcolor.title"),
+			Color col = JColorChooser.showDialog(this,  Resources.get("clientpreferences.desktopcolor.title"),
 												 MetalLookAndFeel.getWindowBackground());
 
 			if(col != null) {
@@ -516,14 +516,14 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		protected Container createFontPanel() {
 			JPanel panel = new JPanel(new GridBagLayout());
 			panel.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-																 Resources.get("magellan.clientpreferences.border.fontsize")));
+																 Resources.get("clientpreferences.border.fontsize")));
 
 			GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
 															GridBagConstraints.WEST,
 															GridBagConstraints.HORIZONTAL,
 															new Insets(3, 3, 3, 3), 0, 0);
 
-			panel.add(new JLabel( Resources.get("magellan.clientpreferences.lbl.relativefontsize.caption")), con);
+			panel.add(new JLabel( Resources.get("clientpreferences.lbl.relativefontsize.caption")), con);
 
 			editFontSize = new JTextField(5);
 			editFontSize.setPreferredSize(new java.awt.Dimension(50, 20));
@@ -546,7 +546,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			con.gridx = 2;
 			panel.add(new JLabel("%"), con);
 
-			JTextArea help = new JTextArea( Resources.get("magellan.clientpreferences.txt.restartforfontsize.caption"));
+			JTextArea help = new JTextArea( Resources.get("clientpreferences.txt.restartforfontsize.caption"));
 			help.setEditable(false);
 			help.setLineWrap(true);
 			help.setWrapStyleWord(true);
@@ -571,7 +571,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 															GridBagConstraints.HORIZONTAL,
 															new Insets(3, 3, 3, 3), 0, 0);
 
-			panel.add(new JLabel( Resources.get("magellan.clientpreferences.lbl.lafrenderer.caption")), con);
+			panel.add(new JLabel( Resources.get("clientpreferences.lbl.lafrenderer.caption")), con);
 
 			String renderer[] = source.getLookAndFeels();
 			jComboBoxLaF = new JList(renderer);
@@ -581,7 +581,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			con.weightx = 0;
 			panel.add(new JScrollPane(jComboBoxLaF), con);
 
-			JButton button = new JButton( Resources.get("magellan.clientpreferences.desktopcolor.button"));
+			JButton button = new JButton( Resources.get("clientpreferences.desktopcolor.button"));
 			button.addActionListener(this);
 			con.gridx = 1;
 			con.gridy = 1;
@@ -590,7 +590,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 
 			JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEADING));
 			panel2.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-																  Resources.get("magellan.clientpreferences.border.lookandfeel")));
+																  Resources.get("clientpreferences.border.lookandfeel")));
 			panel2.add(panel);
 
 			return panel2;
@@ -611,7 +611,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		 * 
 		 */
 		public String getTitle() {
-			return  Resources.get("magellan.clientpreferences.border.lookandfeel");
+			return  Resources.get("clientpreferences.border.lookandfeel");
 		}
 
         /**
@@ -636,9 +636,9 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			} catch(NumberFormatException ex) {
 				log.error(ex);
 				javax.swing.JOptionPane.showMessageDialog(this,
-														   Resources.get("magellan.clientpreferences.msg.fontsizeerror.text") +
+														   Resources.get("clientpreferences.msg.fontsizeerror.text") +
 														  ex.toString(),
-														   Resources.get("magellan.clientpreferences.msg.fontsizeerror.title"),
+														   Resources.get("clientpreferences.msg.fontsizeerror.title"),
 														  javax.swing.JOptionPane.ERROR_MESSAGE);
 			}
 
@@ -674,7 +674,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			JPanel help = new JPanel();
 			help.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
 															   new EmptyBorder(0, 3, 3, 3)),
-											 Resources.get("magellan.clientpreferences.border.filehistory")));
+											 Resources.get("clientpreferences.border.filehistory")));
 			help.setLayout(new GridBagLayout());
 
 			GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
@@ -682,7 +682,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 															GridBagConstraints.HORIZONTAL,
 															new Insets(0, 0, 0, 0), 0, 0);
 
-			help.add(new JLabel( Resources.get("magellan.clientpreferences.lbl.filehistoryentries.caption")), con);
+			help.add(new JLabel( Resources.get("clientpreferences.lbl.filehistoryentries.caption")), con);
 			con.gridx = 1;
 			con.weightx = 1;
 			txtFileHistorySize = new JTextField(Integer.toString(source.getMaxFileHistorySize()));
@@ -697,7 +697,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			con.gridy = 1;
 			con.gridwidth = 2;
 
-			JTextArea txtFoo = new JTextArea( Resources.get("magellan.clientpreferences.txt.filehistorydescription.text"));
+			JTextArea txtFoo = new JTextArea( Resources.get("clientpreferences.txt.filehistorydescription.text"));
 			txtFoo.setLineWrap(true);
 			txtFoo.setWrapStyleWord(true);
 			txtFoo.setEditable(false);
@@ -736,7 +736,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		 * 
 		 */
 		public String getTitle() {
-			return  Resources.get("magellan.clientpreferences.border.filehistory");
+			return  Resources.get("clientpreferences.border.filehistory");
 		}
 
         /**

@@ -135,7 +135,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 	private void init() {
 		setContentPane(getMainPane());
-		setTitle(Resources.get("magellan.crwriterdialog.window.title"));
+		setTitle(Resources.get("crwriterdialog.window.title"));
 		setSize(450, 250);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -185,7 +185,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getButtonPanel() {
-		JButton saveButton = new JButton(Resources.get("magellan.crwriterdialog.btn.save.caption"));
+		JButton saveButton = new JButton(Resources.get("crwriterdialog.btn.save.caption"));
 		saveButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					File outputFile = new File((String) comboOutputFile.getSelectedItem());
@@ -199,14 +199,14 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 						String msgArgs[] = { outputFile.getPath() };
 						JOptionPane.showMessageDialog((JButton) e.getSource(),
-													  (new java.text.MessageFormat(Resources.get("magellan.crwriterdialog.msg.writeerror.text"))).format(msgArgs),
-													  Resources.get("magellan.crwriterdialog.msg.exporterror.title"),
+													  (new java.text.MessageFormat(Resources.get("crwriterdialog.msg.writeerror.text"))).format(msgArgs),
+													  Resources.get("crwriterdialog.msg.exporterror.title"),
 													  JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			});
 
-		JButton clipboardButton = new JButton(Resources.get("magellan.crwriterdialog.btn.clipboard.caption"));
+		JButton clipboardButton = new JButton(Resources.get("crwriterdialog.btn.clipboard.caption"));
 		clipboardButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					StringWriter sw = new StringWriter();
@@ -217,7 +217,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JButton cancelButton = new JButton(Resources.get("magellan.crwriterdialog.btn.close.caption"));
+		JButton cancelButton = new JButton(Resources.get("crwriterdialog.btn.close.caption"));
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					quit();
@@ -238,7 +238,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 														.toArray());
 		comboOutputFile.setEditable(true);
 
-		JLabel lblOutputFile = new JLabel(Resources.get("magellan.crwriterdialog.lbl.targetfile"));
+		JLabel lblOutputFile = new JLabel(Resources.get("crwriterdialog.lbl.targetfile"));
 		lblOutputFile.setLabelFor(comboOutputFile);
 
 		JButton btnOutputFile = new JButton("...");
@@ -257,7 +257,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 		JPanel pnlFiles = new JPanel(new GridBagLayout());
 		pnlFiles.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("magellan.crwriterdialog.border.files")));
+											Resources.get("crwriterdialog.border.files")));
 
 		GridBagConstraints c = new GridBagConstraints();
 
@@ -295,47 +295,47 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 	private Container getOptionPanel() {
 		// TODO: add tooltips
-		chkServerConformance = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.servercompatibility.caption"),
+		chkServerConformance = new JCheckBox(Resources.get("crwriterdialog.chk.servercompatibility.caption"),
 											 (Boolean.valueOf(settings.getProperty("CRWriterDialog.serverConformance",
 																			   "true"))).booleanValue());
-		chkIslands = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.islands.caption"),
+		chkIslands = new JCheckBox(Resources.get("crwriterdialog.chk.islands.caption"),
 								   (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeIslands",
 																	 "true"))).booleanValue());
-		chkRegions = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.regions.caption"),
+		chkRegions = new JCheckBox(Resources.get("crwriterdialog.chk.regions.caption"),
 								   (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeRegions",
 																	 "true"))).booleanValue());
-		chkRegionDetails = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.regiondetails.caption"),
+		chkRegionDetails = new JCheckBox(Resources.get("crwriterdialog.chk.regiondetails.caption"),
 										 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeRegionDetails",
 																		   "true"))).booleanValue());
-		chkBuildings = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.buildings.caption"),
+		chkBuildings = new JCheckBox(Resources.get("crwriterdialog.chk.buildings.caption"),
 									 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeBuildings",
 																	   "true"))).booleanValue());
-		chkShips = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.ships.caption"),
+		chkShips = new JCheckBox(Resources.get("crwriterdialog.chk.ships.caption"),
 								 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeShips",
 																   "true"))).booleanValue());
-		chkUnits = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.units.caption"),
+		chkUnits = new JCheckBox(Resources.get("crwriterdialog.chk.units.caption"),
 								 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeUnits",
 																   "true"))).booleanValue());
-		chkMessages = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.messages.caption"),
+		chkMessages = new JCheckBox(Resources.get("crwriterdialog.chk.messages.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.includeMessages",
 																	  "true"))).booleanValue());
-		chkSpellsAndPotions = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.spellsandpotions.caption"),
+		chkSpellsAndPotions = new JCheckBox(Resources.get("crwriterdialog.chk.spellsandpotions.caption"),
 											(Boolean.valueOf(settings.getProperty("CRWriterDialog.includeSpellsAndPotions",
 																			  "true"))).booleanValue());
-		chkSelRegionsOnly = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.selectedregions.caption"),
+		chkSelRegionsOnly = new JCheckBox(Resources.get("crwriterdialog.chk.selectedregions.caption"),
 										  (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeSelRegionsOnly",
 																			"false"))).booleanValue());
 		chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
-		chkDelStats = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.delstats.caption"),
+		chkDelStats = new JCheckBox(Resources.get("crwriterdialog.chk.delstats.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.delStats",
 																	  "false"))).booleanValue());
-		chkDelTrans = new JCheckBox(Resources.get("magellan.crwriterdialog.chk.deltrans.caption"),
+		chkDelTrans = new JCheckBox(Resources.get("crwriterdialog.chk.deltrans.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.delTrans",
 																	  "false"))).booleanValue());
 
 		JPanel pnlOptions = new JPanel(new GridLayout(6, 2));
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("magellan.crwriterdialog.border.options")));
+											  Resources.get("crwriterdialog.border.options")));
 		pnlOptions.add(chkServerConformance);
 		pnlOptions.add(chkIslands);
 		pnlOptions.add(chkRegions);
@@ -676,8 +676,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.close();
 		} catch(Exception exc) {
 			log.error(exc);
-			JOptionPane.showMessageDialog(this, Resources.get("magellan.crwriterdialog.msg.exporterror.text") + exc.toString(),
-          Resources.get("magellan.crwriterdialog.msg.exporterror.title"),
+			JOptionPane.showMessageDialog(this, Resources.get("crwriterdialog.msg.exporterror.text") + exc.toString(),
+          Resources.get("crwriterdialog.msg.exporterror.title"),
 										  JOptionPane.WARNING_MESSAGE);
 		}
 

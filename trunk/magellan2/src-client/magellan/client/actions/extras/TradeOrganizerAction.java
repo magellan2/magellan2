@@ -93,7 +93,7 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("magellan.actions.tradeorganizeraction.accelerator",false);
+    return Resources.get("actions.tradeorganizeraction.accelerator",false);
   }
 
   /**
@@ -101,7 +101,7 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("magellan.actions.tradeorganizeraction.mnemonic",false);
+    return Resources.get("actions.tradeorganizeraction.mnemonic",false);
   }
 
   /**
@@ -109,12 +109,12 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("magellan.actions.tradeorganizeraction.name");
+    return Resources.get("actions.tradeorganizeraction.name");
   }
 
 
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("magellan.actions.tradeorganizeraction.tooltip",false);
+    return Resources.get("actions.tradeorganizeraction.tooltip",false);
   }
 }

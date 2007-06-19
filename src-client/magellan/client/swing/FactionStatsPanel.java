@@ -261,12 +261,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     int heros_count = 0;
 
     if (factions.size() == 1) {
-      f = (Faction) factions.values().iterator().next();
+      f = factions.values().iterator().next();
     }
     SkillStats skillStats = new SkillStats();
 
-    for (Iterator iter = regions.values().iterator(); iter.hasNext();) {
-      Region r = (Region) iter.next();
+    for (Iterator<Region> iter = regions.values().iterator(); iter.hasNext();) {
+      Region r = iter.next();
 
       /**
        * poorly it is necessary to refresh all relations, as at this time it is
@@ -344,6 +344,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       if (f.getAge() > -1) {
         n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.factionstatspanel.node.age") + ": " + f.getAge(), "age"));
+        rootNode.add(n);
+      }
+      
+      if (f.getLocale() != null) {
+        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("magellan.factionstatspanel.node.locale") + ": " + f.getLocale(), "locale"));
         rootNode.add(n);
       }
 

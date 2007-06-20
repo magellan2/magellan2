@@ -182,7 +182,7 @@
     </copy>
     <copy file="${etc}/VERSION.template" tofile="${release}/etc/VERSION" overwrite="yes">
       <filterset>
-        <filter token="VERSION" value="${VERSION.POINTED}"/>
+        <filter token="VERSION" value="${VERSION.POINTED} (build ${build.number})"/>
       </filterset>
     </copy>
     

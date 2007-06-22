@@ -1,4 +1,8 @@
-2007-06-19 Thoralf (thoralf@m84.de
+2007-06-22 Thoralf (thoralf@m84.de)
+    * Added some more icons for the map (thanks to Mar'ek Khadar)
+    * Removed some unnecessary code 
+
+2007-06-19 Thoralf (thoralf@m84.de)
     * New subnode in faction statistics panel for locale presentation
     * Removed magellan. prefix from resource keys.
 

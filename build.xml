@@ -162,7 +162,6 @@
         <include name="**"/>
         <exclude name="forms-1.0.4.jar"/>
         <exclude name="jflap4_0b7.jar"/>
-        <!--<exclude name="jh.jar"/>-->
       </fileset>
     </copy>
     

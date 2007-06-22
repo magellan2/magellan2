@@ -46,7 +46,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -459,62 +458,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     // settings.setProperty("AdvancedShapeRenderer.Unknown", s);
     this.gameDataChanged(null);
-  }
-
-  // pavkovic 2003.01.28: this is a Map of the default Translations mapped to
-  // this class
-  // it is called by reflection (we could force the implementation of an
-  // interface,
-  // this way it is more flexible.)
-  // Pls use this mechanism, so the translation files can be created
-  // automagically
-  // by inspecting all classes.
-  private static Map<String, String> defaultTranslations;
-
-  /**
-   * DOCUMENT-ME
-   */
-  public static synchronized Map<String, String> getDefaultTranslations() {
-    if (defaultTranslations == null) {
-      defaultTranslations = new Hashtable<String, String>();
-      defaultTranslations.put("name", "ARR");
-      defaultTranslations.put("prefs.title", "ARR");
-      defaultTranslations.put("prefs.menu.export", "Export...");
-      defaultTranslations.put("prefs.popup2.remove", "Remove");
-      defaultTranslations.put("prefs.popup2.add", "Add");
-      defaultTranslations.put("prefs.popup.modify", "Change color...");
-      defaultTranslations.put("prefs.popup.remove", "Remove");
-      defaultTranslations.put("prefs.popup.add", "Add color...");
-      defaultTranslations.put("prefs.newcolor", "New color");
-      defaultTranslations.put("prefs.newset", "Name of new set:");
-      defaultTranslations.put("prefs.menu.tooltip.input", "Please enter your desired tooltip.");
-      defaultTranslations.put("prefs.menu.tooltip.title", "Choose tooltip");
-      defaultTranslations.put("prefs.menu.tooltip.choose", "Choose the (kind of) tooltip you wish.");
-      defaultTranslations.put("prefs.menu.tooltip.manual", "Direct input");
-      defaultTranslations.put("prefs.menu.tooltip.current", "Value of current field");
-      defaultTranslations.put("prefs.menu.tooltip.none", "None");
-      defaultTranslations.put("prefs.menu.tlabel.none", "Not set");
-      defaultTranslations.put("prefs.menu.tooltip", "Tooltip");
-      defaultTranslations.put("prefs.changecolor", "New color");
-      defaultTranslations.put("prefs.renameset", "New name of this set:");
-      defaultTranslations.put("prefs.error.already", "A set with this name already exists!");
-      defaultTranslations.put("prefs.chooseset", "Choose set");
-      defaultTranslations.put("prefs.menu.import", "Import...");
-      defaultTranslations.put("prefs.menu.choose", "Choose...");
-      defaultTranslations.put("prefs.label.text", "Name: ");
-      defaultTranslations.put("prefs.menu.title", "Set...");
-      defaultTranslations.put("prefs.menu.rename", "Rename...");
-      defaultTranslations.put("prefs.menu.remove", "Remove");
-      defaultTranslations.put("prefs.menu.add", "Add...");
-      defaultTranslations.put("prefs.help", "Use the context menu (right click) to add, remove or modify the preferences");
-      defaultTranslations.put("prefs.result", "Result:");
-      defaultTranslations.put("prefs.texts.3", "Unknown");
-      defaultTranslations.put("prefs.texts.2", "Maximum");
-      defaultTranslations.put("prefs.texts.1", "Value");
-      defaultTranslations.put("prefs.texts.0", "Minimum");
-    }
-
-    return defaultTranslations;
   }
 
   /**

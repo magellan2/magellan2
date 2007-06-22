@@ -51,10 +51,6 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 
 	/**
 	 * Loads the properties from the given input stream and cleans them afterwards.
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
 	public synchronized void load(InputStream inStream) throws IOException {
 		super.load(inStream);

@@ -362,7 +362,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       if (this.resources == null) {
         this.resourceCollection = new ArrayList<RegionResource>();
       } else {
-        this.resourceCollection = Collections.unmodifiableCollection(new HashSet<RegionResource>(this.resources.values()));
+        this.resourceCollection = new HashSet<RegionResource>(this.resources.values());
       }
 		}
 

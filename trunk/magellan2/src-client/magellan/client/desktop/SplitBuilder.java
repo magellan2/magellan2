@@ -16,6 +16,13 @@ package magellan.client.desktop;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -23,15 +30,31 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
 
+import magellan.client.Client;
+import magellan.client.utils.ErrorWindow;
+import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.RootWindow;
+import net.infonode.docking.SplitWindow;
+import net.infonode.docking.TabWindow;
+import net.infonode.docking.View;
+import net.infonode.docking.theme.DockingWindowsTheme;
+import net.infonode.docking.theme.ShapedGradientDockingTheme;
+import net.infonode.docking.util.DockingUtil;
+import net.infonode.docking.util.StringViewMap;
+import net.infonode.util.Direction;
+
 
 /**
- * DOCUMENT ME!
  *
  * @author Andreas
  * @version
  */
-public class SplitBuilder extends Object {
+public class SplitBuilder  {
+  private static final Logger log = Logger.getInstance(SplitBuilder.class);
 	private List<Component> componentsUsed;
+  private StringViewMap viewMap = null;
 
 	/** Holds value of property screen. */
 	private Rectangle screen;
@@ -52,14 +75,9 @@ public class SplitBuilder extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
 	 * 
 	 */
-	public JComponent buildDesktop(FrameTreeNode root, Map<String,Component> components) {
+	public JComponent buildDesktop(FrameTreeNode root, Map<String,Component> components, File serializedView) {
 		componentsUsed.clear();
 		root = checkTree(root, components);
 
@@ -72,10 +90,111 @@ public class SplitBuilder extends Object {
 
 			return (JComponent) components.get(root.getName());
 		}
+    
+    // okay, this is a try for InfoNode docking window framework
+    // we have a tree of settings and a list of components. Let's build a root window here...
+    
+    return createRootWindow(components,screen,serializedView);
 
-		return createSplit(root, components, screen);
+		//return createSplit(root, components, screen);
 	}
+  
+  /**
+   * This method tries to setup the infonode docking framework.
+   */
+  protected JComponent createRootWindow(Map<String,Component> components, Rectangle size, File serializedViewData) {
+    Map<String,View> views = new HashMap<String,View>();
+    viewMap = new StringViewMap();
 
+    for (String key : components.keySet()) {
+      if (key.equals("COMMANDS")) continue; // deprecated
+      if (key.equals("NAME")) continue; // deprecated
+      if (key.equals("DESCRIPTION")) continue; // deprecated
+      if (key.equals("OVERVIEW&HISTORY")) continue; // deprecated
+      
+      Component component = components.get(key);
+      
+      View view = new View(Resources.get("dock."+key+".title"),null,component);
+      view.setName(key);
+      view.setToolTipText(Resources.get("dock."+key+".tooltip"));
+      viewMap.addView(key,view);
+      views.put(key,view);
+    }
+    
+    RootWindow window = null;
+    try {
+      if (serializedViewData != null && serializedViewData.exists()) {
+        window = read(viewMap,serializedViewData);
+      } else {
+        window = createDefault(viewMap,views);
+      }
+    } catch (NullPointerException npe) {
+      // okay, sometimes this happens without a reason (setToolTipText())...
+      log.error("NPE",npe);
+    } catch (Throwable t) {
+      log.fatal(t.getMessage(),t);
+      ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
+      errorWindow.setVisible(true);
+    }
+    
+    DockingWindowsTheme theme = new ShapedGradientDockingTheme();
+    window.getWindowBar(Direction.DOWN).setEnabled(true);
+    window.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());
+    window.setPopupMenuFactory(new MagellanPopupMenuFactory(viewMap));
+    return window;
+  }
+  
+  public StringViewMap getViewMap() {
+    return viewMap;
+  }
+  
+  public void write(File serializedViewData, RootWindow window) throws IOException {
+    FileOutputStream fos = new FileOutputStream(serializedViewData);
+    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    window.write(oos, true);
+    oos.close();
+    fos.close();
+  }
+  
+  public RootWindow read(StringViewMap viewMap, File serializedViewData) throws IOException {
+    RootWindow window = DockingUtil.createRootWindow(viewMap, true);
+    
+    FileInputStream fis = new FileInputStream(serializedViewData);
+    ObjectInputStream ois = new ObjectInputStream(fis);
+    window.read(ois, true);
+    ois.close();
+    fis.close();
+    return window;
+  }
+  
+  
+  protected RootWindow createDefault(StringViewMap viewMap, Map<String,View> views) {
+    RootWindow window = DockingUtil.createRootWindow(viewMap, true);
+    
+    View overview = views.get("OVERVIEW");
+    View history = views.get("HISTORY");
+    View minimap = views.get("MINIMAP");
+    View map = views.get("MAP");
+    View messages = views.get("MESSAGES");
+    View details = views.get("DETAILS");
+    View orders = views.get("ORDERS");
+    View name = views.get("NAME&DESCRIPTION");
+    
+    TabWindow bottomLeft = new TabWindow(new DockingWindow[]{history,minimap});
+    SplitWindow left = new SplitWindow(false,overview,bottomLeft);
+    
+    SplitWindow middle = new SplitWindow(false,map,messages);
+    
+    SplitWindow topRight = new SplitWindow(false,name,details);
+    SplitWindow right = new SplitWindow(false,topRight,orders);
+    
+    SplitWindow splitWindow = new SplitWindow(true,left,new SplitWindow(true,middle,right));
+    
+    window.setWindow(splitWindow);
+    
+    return window;
+  }
+  
 	protected FrameTreeNode checkTree(FrameTreeNode node, Map comp) {
 		if(node == null) {
 			return null;
@@ -270,8 +389,6 @@ public class SplitBuilder extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public List getComponentsUsed() {

@@ -13,5 +13,8 @@
 	<classpathentry kind="lib" path="lib/skins/liquidlnf-0.2.8.jar"/>
 	<classpathentry kind="lib" path="lib/skins/metouia.jar"/>
 	<classpathentry kind="lib" path="lib/skins/xplookandfeel.jar"/>
+	<classpathentry kind="lib" path="lib/idw-gpl.jar" sourcepath="C:/Users/thoralf/Downloads/idw-gpl-1.5.0-src.zip"/>
+	<classpathentry kind="lib" path="lib/looks-1.3b1.jar"/>
+	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

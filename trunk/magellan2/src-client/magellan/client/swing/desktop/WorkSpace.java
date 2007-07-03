@@ -52,17 +52,20 @@ public class WorkSpace extends JPanel {
 	 * - perspective panel
 	 * - status panel
 	 */
-	public WorkSpace(ButtonGroup buttonGroup) {
-		initUI(buttonGroup);
+	public WorkSpace() {
+		initUI();
 	}
 
 
 	public void setEnabledChooser(boolean bool) {
+    // TR 2007-06-20 useless in docking environment 
+    /*
 		if(bool) {
 			this.add(chooser, BorderLayout.WEST);
 		} else {
 			this.remove(chooser);
 		}
+    */
 		validate();
 	}
 
@@ -76,17 +79,18 @@ public class WorkSpace extends JPanel {
 		return false;
 	}
 
-	private void initUI(ButtonGroup buttonGroup) {
+	private void initUI() {
 		contentPanel = createContentPanel();
 		setContent(new EmptyPerspective().getJPanel());
 
 		this.setLayout(new BorderLayout());
 		this.add(contentPanel,BorderLayout.CENTER);
 
-		chooser = createChooser(buttonGroup);
-		if(chooser != null) {
-			this.add(chooser,BorderLayout.WEST);
-		}
+  // TR 2007-06-20 useless in docking environment 
+	//	chooser = createChooser(buttonGroup);
+	//	if(chooser != null) {
+	//		this.add(chooser,BorderLayout.WEST);
+	//	}
 	}
 
 	private JPanel createContentPanel() {
@@ -164,7 +168,7 @@ public class WorkSpace extends JPanel {
 		UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
 		JFrame frame = new JFrame();
-		frame.setContentPane(new WorkSpace(null));
+		frame.setContentPane(new WorkSpace());
 		frame.setSize(600, 400);
 		frame.setTitle("Magellan - Desktop");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

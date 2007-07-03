@@ -123,7 +123,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 	protected void setLocation(Component parent) {
 		// center if using frame mode
-		if(DesktopEnvironment.getMode() == MagellanDesktop.MODE_FRAME) {
+		if(DesktopEnvironment.getMode().equals(MagellanDesktop.Mode.FRAMES)) {
 			Dimension screen = getToolkit().getScreenSize();
 			Dimension size = getSize();
 			int x = (screen.width - size.width) / 2;

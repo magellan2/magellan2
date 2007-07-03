@@ -30,17 +30,17 @@ import magellan.library.utils.Pair;
  * @version
  */
 public class DesktopEnvironment extends Object {
-	/** DOCUMENT-ME */
+	/** */
 	private static MagellanDesktop desktop;
 
-	/** DOCUMENT-ME */
-	public static final int SPLIT = MagellanDesktop.MODE_SPLIT;
+	/** */
+	public static final MagellanDesktop.Mode SPLIT = MagellanDesktop.Mode.SPLIT;
 
-	/** DOCUMENT-ME */
-	public static final int FRAME = MagellanDesktop.MODE_FRAME;
+	/** */
+	public static final MagellanDesktop.Mode FRAME = MagellanDesktop.Mode.FRAMES;
 
-	/** DOCUMENT-ME */
-	public static final int LAYOUT = MagellanDesktop.MODE_LAYOUT;
+	/** */
+	public static final MagellanDesktop.Mode LAYOUT = MagellanDesktop.Mode.LAYOUT;
 
 	// init state
 	private static boolean initialized = false;
@@ -49,8 +49,6 @@ public class DesktopEnvironment extends Object {
 	private static List<Pair<KeyStroke,ActionListener>> pendingAEListeners;
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	static void init(MagellanDesktop md) {
@@ -105,9 +103,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public static void registerShortcutListener(ShortcutListener sl) {
 		if(initialized) {
@@ -122,10 +118,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+   * 
 	 */
 	public static void registerShortcutListener(KeyStroke stroke, ShortcutListener sl) {
 		if(initialized) {
@@ -140,10 +133,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+   * 
 	 */
 	public static void registerActionListener(KeyStroke stroke, ActionListener al) {
 		if(initialized) {
@@ -158,18 +148,14 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public static MagellanDesktop getDesktop() {
 		return desktop;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public static void requestFocus(String component) {
 		if(initialized) {
@@ -178,9 +164,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * 
 	 */
 	public static void repaintComponent(String component) {
 		if(initialized) {
@@ -189,7 +173,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
+   * 
 	 */
 	public static void repaintAll() {
 		if(initialized) {
@@ -198,7 +182,7 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
+   * 
 	 */
 	public static void updateLaF() {
 		if(initialized) {
@@ -207,15 +191,13 @@ public class DesktopEnvironment extends Object {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
-	public static int getMode() {
+	public static MagellanDesktop.Mode getMode() {
 		if(initialized) {
 			return getDesktop().getMode();
 		}
 
-		return -1;
+		return MagellanDesktop.Mode.SPLIT;
 	}
 }

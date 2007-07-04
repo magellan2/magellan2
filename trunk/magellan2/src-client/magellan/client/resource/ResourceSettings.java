@@ -68,6 +68,7 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 		this.setLayout(new java.awt.GridBagLayout());
 
 		this.lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
+    
 		this.lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		GridBagConstraints c = new java.awt.GridBagConstraints();

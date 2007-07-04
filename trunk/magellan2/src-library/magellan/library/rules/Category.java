@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import magellan.library.ID;
+import magellan.library.utils.Umlaut;
 
 /**
  * DOCUMENT-ME
@@ -333,7 +334,7 @@ public abstract class Category extends ObjectType {
 		if((iconName == null) && (parent != null)) {
 			return parent.getIconName();
 		}
-
+    
 		return iconName;
 	}
 

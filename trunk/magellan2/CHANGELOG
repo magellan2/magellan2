@@ -1,5 +1,9 @@
-2007-07-04 Thoralf (thoralf@m84.de)
+2007-07-04 Fiete (sf@fietefietz.de)
 	* fixed english order completion, use "default" bundle for Locale.English
+	* static resource paths are loaded to resources - now shown in options again
+	* switched addObject and getObject in GenericRules to use normalized Strings as Keys
+	* (solved display of herbs - bug)
+	* added icon for race "Schneemaenner"
 
 2007-07-03 Thoralf (thoralf@m84.de)
     * Added InfoNode DockingFramework

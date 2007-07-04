@@ -365,6 +365,9 @@ public class Resources {
       }
     } else {
       String localeName = locale.toString();
+      if (Locale.ENGLISH.equals(locale)){
+        localeName = DEFAULT;
+      }
       if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key)) {
         return bundles.get(localeName).getString(key);
       }

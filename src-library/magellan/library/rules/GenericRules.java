@@ -904,7 +904,8 @@ public class GenericRules implements Rules {
 			log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID() + ")");
 		}
 
-		mapObjectType.put(o.getID().toString(), o);
+		//mapObjectType.put(o.getID().toString(), o);
+    mapObjectType.put(Umlaut.normalize(o.getID().toString()), o);
 
 		if(o.getName() != null) {
 			mapObjectTypeNames.put(Umlaut.normalize(o.getName()), o);
@@ -932,6 +933,11 @@ public class GenericRules implements Rules {
 
 					return ot;
 				}
+        if(Umlaut.normalize(ot.getID().toString()).equals(normName)) {
+          names.put(normName, ot);
+          return ot;
+        }
+        
 			}
 		}
 

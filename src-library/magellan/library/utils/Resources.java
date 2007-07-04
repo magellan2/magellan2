@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -343,7 +345,26 @@ public class Resources {
     }
   }
   
+  /**
+   * loads RessourcePaths(static) from the given settings
+   * @param settings
+   */
+  public static void initStaticPaths(Properties settings){
+    Collection<String> properties = PropertiesHelper.getList(settings, "Resources.preferredPathList");
+    List<URL> resourcePaths = new ArrayList<URL>(properties.size());
 
+    for(Iterator<String> iter = properties.iterator(); iter.hasNext();) {
+      String location = iter.next();
+      try {
+        resourcePaths.add(new URL(location));
+      } catch(MalformedURLException e) {
+        log.error(e);
+      }
+    }
+    Resources.setStaticPaths(resourcePaths);
+  }
+  
+  
   /**
    * Stores the specified resource paths to the specified settings.
    */

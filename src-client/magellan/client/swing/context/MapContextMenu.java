@@ -19,6 +19,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -33,6 +34,7 @@ import javax.swing.JPopupMenu;
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
+import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.AddSignDialog;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.map.Mapper;
@@ -83,6 +85,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	protected ActionListener rListener;
 	protected ActionListener tListener;
 	protected Mapper source;
+  
+  private Collection<MapContextMenuProvider> externalMapContectMenuProvider = null;
 
 	/**
 	 * Creates a new MapContextMenu object.
@@ -173,8 +177,38 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		renderer = new JMenu(Resources.get("context.mapcontextmenu.menu.renderer"));
 		renderer.setEnabled(false);
 		add(renderer);
+    
+    this.initContextMenuProviders();
+    
 	}
 
+  private void initContextMenuProviders() {
+    Collection cmpList = getMapContextMenuProviders();
+    if (!cmpList.isEmpty()) {
+      addSeparator();
+    }
+    for (Iterator iter = cmpList.iterator(); iter.hasNext();) {
+      MapContextMenuProvider cmp = (MapContextMenuProvider) iter.next();
+      add(cmp.createContextMenu(dispatcher, data));
+      if (this.externalMapContectMenuProvider==null){
+        this.externalMapContectMenuProvider = new ArrayList<MapContextMenuProvider>();
+      }
+      this.externalMapContectMenuProvider.add(cmp);
+    }
+
+  }
+
+  private Collection<MapContextMenuProvider> getMapContextMenuProviders() {
+    Collection<MapContextMenuProvider> cmpList = new ArrayList<MapContextMenuProvider>();
+    for (MagellanPlugIn plugIn : this.client.getPlugIns()) {
+      if (plugIn instanceof MapContextMenuProvider) {
+        cmpList.add((MapContextMenuProvider)plugIn);
+      }
+    }
+    return cmpList;
+  }
+  
+  
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -200,8 +234,24 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		armystats.setEnabled(true);
 		signs.setEnabled(true);
 		updateSigns();
+    
+    updateMapContextMenuProvider(r);
+    
 	}
 
+  /**
+   * Updates the external provided menues (pLugins)
+   *
+   */
+  private void updateMapContextMenuProvider(Region r){
+    if (this.externalMapContectMenuProvider!=null && this.externalMapContectMenuProvider.size()>0){
+      for (MapContextMenuProvider plugIn : this.externalMapContectMenuProvider){
+        plugIn.update(r);
+      }
+    }
+  }
+  
+  
 	/**
 	 * DOCUMENT-ME
 	 */
@@ -215,6 +265,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		changeHotSpot.setEnabled(false);
 		armystats.setEnabled(false);
 		signs.setEnabled(false);
+    
+    this.updateMapContextMenuProvider(null);
+    
 	}
 
 	/**

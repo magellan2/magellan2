@@ -1,3 +1,6 @@
+2007-07-05 Fiete (sf@fietefietz.de)
+	* fixed addTranslation and nameChange
+
 2007-07-04 Fiete (sf@fietefietz.de)
 	* fixed english order completion, use "default" bundle for Locale.English
 	* static resource paths are loaded to resources - now shown in options again

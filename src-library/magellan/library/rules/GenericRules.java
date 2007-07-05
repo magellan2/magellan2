@@ -879,7 +879,8 @@ public class GenericRules implements Rules {
 	}
 
 	protected ObjectType changeName(ID id, String name, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
-		ObjectType ot = (ObjectType) mapObjectType.get(id);
+    String key = Umlaut.normalize(id.toString());
+		ObjectType ot = (ObjectType) mapObjectType.get(key);
 
 		if(ot != null) {
 			mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));

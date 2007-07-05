@@ -307,6 +307,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     undoMgr = new MagellanUndoManager();
     reportState = new ReportObserver(dispatcher);
 
+    // load plugins
+    initPlugIns();
+    
     // init components
     startWindow.progress(2, Resources.get("clientstart.2"));
     panels = new LinkedList<JPanel>();
@@ -326,7 +329,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     setContentPane(desktop);
     
     // load plugins
-    initPlugIns();
+    // initPlugIns();
 
     // do it here because we need the desktop menu
     setJMenuBar(createMenuBar(topLevelComponents));

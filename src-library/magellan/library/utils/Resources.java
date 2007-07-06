@@ -43,6 +43,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
@@ -78,24 +79,7 @@ public class Resources {
    */
   private Resources() {
     log.info("Initializing resources...");
-    File resourceDirectory = new File("etc/");
-    for (File file : resourceDirectory.listFiles(new ResourceFilenameFilter())) {
-      String resourceName = file.getName();
-      if (resourceName.equalsIgnoreCase("resources.properties")) {
-        // default resource...
-        resourceName = DEFAULT;
-      } else {
-        resourceName = resourceName.substring(10,resourceName.length()-11);
-      }
-      log.info("Load resource: "+file.getName()+" as "+resourceName);
-      try {
-        FileInputStream stream = new FileInputStream(file);
-        MyResourceBundle bundle = new MyResourceBundle(stream);
-        bundles.put(resourceName, bundle);
-      } catch (Exception exception) {
-        log.error("Could not load resource '"+file+"'");
-      }
-    }
+    initialize("");
   }
   
   /**
@@ -104,6 +88,40 @@ public class Resources {
   public static synchronized Resources getInstance() {
     if (_instance == null) _instance = new Resources();
     return _instance;
+  }
+  
+  /**
+   * This method makes it possible to add specific resource files
+   * to this Resources map. 
+   * F.e. call initialize("mapedit_") to search and load resource 
+   * files from files called "mapedit_resources.properties".
+   */
+  public void initialize(String prefix) {
+    if (prefix == null) prefix = "";
+    File resourceDirectory = new File("etc/");
+    for (File file : resourceDirectory.listFiles(new ResourceFilenameFilter(prefix))) {
+      String resourceName = file.getName();
+      if (resourceName.equalsIgnoreCase(prefix+"resources.properties")) {
+        // default resource...
+        resourceName = DEFAULT;
+      } else {
+        resourceName = resourceName.substring(prefix.length()+10,resourceName.length()-11);
+      }
+      log.info("Load resource '"+file.getName()+"' as "+resourceName);
+      try {
+        FileInputStream stream = new FileInputStream(file);
+        MyResourceBundle bundle = new MyResourceBundle(stream);
+        if (bundles.containsKey(resourceName)) {
+          MyResourceBundle parentBundle = bundles.get(resourceName);
+          parentBundle.add(bundle);
+        } else {
+          bundles.put(resourceName, bundle);
+        }
+      } catch (Exception exception) {
+        log.error("Could not load resource '"+file+"'");
+      }
+    }
+    
   }
   
   /**
@@ -233,7 +251,10 @@ public class Resources {
   public static String get(String key, Locale locale, boolean returnKey) {
     if (locale == null) locale = Locale.getDefault();
     key = key.trim().replaceAll(" ","");
-    if (key.startsWith("magellan.")) key = key.substring(9);
+    if (key.startsWith("magellan.")) {
+      log.warn("Using deprecated resource key with prefix 'magellan.'. The key '"+key+"' will be truncated.");
+      key = key.substring(9);
+    }
     Resources resources = getInstance();
     String result = resources.getResource(key, locale);
     
@@ -382,7 +403,7 @@ public class Resources {
   private String getResource(String key, Locale locale) {
     if (locale == null) {
       if (bundles.containsKey(DEFAULT) && bundles.get(DEFAULT).containsKey(key)) {
-        return bundles.get(DEFAULT).getString(key);
+        return bundles.get(DEFAULT).getResource(key);
       }
     } else {
       String localeName = locale.toString();
@@ -390,15 +411,15 @@ public class Resources {
         localeName = DEFAULT;
       }
       if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key)) {
-        return bundles.get(localeName).getString(key);
+        return bundles.get(localeName).getResource(key);
       }
       localeName = locale.getCountry();
       if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key)) {
-        return bundles.get(localeName).getString(key);
+        return bundles.get(localeName).getResource(key);
       }
       localeName = locale.getLanguage();
       if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key)) {
-        return bundles.get(localeName).getString(key);
+        return bundles.get(localeName).getResource(key);
       }
     }
     return null;
@@ -414,9 +435,19 @@ public class Resources {
  * A small filter for resource file names...
  */
 class ResourceFilenameFilter implements FilenameFilter {
+  private String prefix;
+  
+  public ResourceFilenameFilter() {
+    this(null);
+  }
 
+  public ResourceFilenameFilter(String prefix) {
+    if (prefix == null) prefix = "";
+    this.prefix = prefix;
+  }
+  
   public boolean accept(File dir, String name) {
-    return (name.startsWith("resources") && name.endsWith(".properties"));
+    return (name.startsWith(prefix+"resources") && name.endsWith(".properties"));
   }
   
 }
@@ -426,6 +457,8 @@ class ResourceFilenameFilter implements FilenameFilter {
  * Small wrapper for JDK1.6 ResourceBunde with Reader and containsKey()...
  */
 class MyResourceBundle extends PropertyResourceBundle {
+  /** Contains all sub bundles (loaded via plugins) */
+  private List<MyResourceBundle> childResources = new ArrayList<MyResourceBundle>();
 
   /**
    * 
@@ -434,12 +467,51 @@ class MyResourceBundle extends PropertyResourceBundle {
     super(stream);
   }
   
+  /**
+   * Adds a child resource bundle to this bundle. For example
+   * is "mapedit_resources.properties" a child of "resources.properties".
+   * 
+   * This childs will be used when the master bundle does not contain
+   * the key.
+   */
+  public void add(MyResourceBundle bundle) {
+    childResources.add(bundle);
+  }
   
+  /**
+   * @see java.util.ResourceBundle#getString(java.lang.String)
+   */
+  public String getResource(String key) {
+    try {
+      return getString(key);
+    } catch (Exception exception) {
+      if (childResources.size()>0) {
+        for (MyResourceBundle child : childResources) {
+          if (child.containsKey(key)) return child.getResource(key);
+        }
+      }
+    }
+    throw new MissingResourceException("Can't find resource key "+key,this.getClass().getName(),key); 
+  }
+  
+  /**
+   * This method tries to find the resource key in this
+   * resource bundle. If it cannot be found it tries
+   * all child resource bundles.
+   * 
+   * @see java.util.ResourceBundle#containsKey(java.lang.String)
+   */
   public boolean containsKey(String key) {
     try {
       getString(key);
       return true;
     } catch (Exception exception) {
+      // let us try the childs...
+      if (childResources.size()>0) {
+        for (MyResourceBundle child : childResources) {
+          if (child.containsKey(key)) return true;
+        }
+      }
       return false;
     }
   }

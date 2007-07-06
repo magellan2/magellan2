@@ -16,6 +16,7 @@ package magellan.client.extern;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
@@ -56,23 +57,24 @@ public abstract class AbstractPlugInLoader<T> {
 
     for (Iterator<URL> iter = resLoader.getPaths().iterator(); iter.hasNext();) {
       URL url = iter.next();
-      String s = url.getFile();
-
-      if (s.startsWith("file:/")) {
-        s = s.substring(6, s.length());
+      
+      String path = null;
+      try {
+        path = URLDecoder.decode(url.getFile(),"UTF-8");
+      } catch (Exception exception) {
+        log.error("",exception);
+        continue;
       }
 
-      if (s.endsWith("!/")) {
-        s = s.substring(0, s.length() - 2);
+      if (path.startsWith("file:/")) {
+        path = path.substring(6, path.length());
       }
 
-      // manuell decode
-      // remove when better solution available
-      // Fiete
-      s = s.replace("%20", " ");
-      
-      
-      paths.add(s);
+      if (path.endsWith("!/")) {
+        path = path.substring(0, path.length() - 2);
+      }
+
+      paths.add(path);
     }
 
     return paths;

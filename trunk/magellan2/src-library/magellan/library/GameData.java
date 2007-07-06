@@ -229,6 +229,15 @@ public abstract class GameData implements Cloneable {
    * are running out of memory... data may be corrupted or empty then
    */
   public boolean outOfMemory = false;
+  
+  /**
+   * sortIndex is used to keep objects from CRParser to CRWriter 
+   * in an order.
+   * maxSortIndex is set after CRParse and Used for creation of new
+   * Objects (e.g. MapEdit Plugin) and increased.
+   */
+  private int maxSortIndex = 0;
+  
 
   /**
    * Creates a new GameData object.
@@ -1655,6 +1664,14 @@ public abstract class GameData implements Cloneable {
         this.regions().remove(actID);
       }
     }
+  }
+
+  public int getMaxSortIndex() {
+    return ++maxSortIndex;
+  }
+  
+  public void setMaxSortIndex(int maxSortIndex) {
+    this.maxSortIndex = maxSortIndex;
   }
 
 }

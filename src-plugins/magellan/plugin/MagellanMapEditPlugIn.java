@@ -31,18 +31,23 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.MapContextMenuProvider;
+import magellan.client.utils.ErrorWindow;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.event.GameDataEvent;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -60,7 +65,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   private JMenuItem setName = null;
   private JMenuItem delName = null;
   private JMenu setTerrain = null;
-  private JMenuItem delTerrain = null;
+  private JMenuItem delRegion = null;
   
   private Region r = null;
   private CoordinateID c = null;
@@ -68,6 +73,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   private GameData data = null;
   private Client client = null;
   
+  private final String regionTypeIdentifier = "regiontype.";
   
   /**
    * Creates the Context-MenuItem (after Right-Click on Map)
@@ -81,17 +87,23 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     rootTitle = new JMenu(Resources.get("mapedit.menu.title"));
     
     setName = new JMenuItem(Resources.get("mapedit.menu.setname"));
+    setName.addActionListener(this);
+    setName.setActionCommand("setName");
     rootTitle.add(setName);
     
     delName = new JMenuItem(Resources.get("mapedit.menu.delname"));
+    delName.addActionListener(this);
+    delName.setActionCommand("delName");
     rootTitle.add(delName);
     
     setTerrain = new JMenu(Resources.get("mapedit.menu.setterrain"));
     this.addTerrains(setTerrain);
     rootTitle.add(setTerrain);
     
-    delTerrain = new JMenuItem(Resources.get("mapedit.menu.delterrain"));
-    rootTitle.add(delTerrain);
+    delRegion = new JMenuItem(Resources.get("mapedit.menu.delterrain"));
+    delRegion.addActionListener(this);
+    delRegion.setActionCommand("delRegion");
+    rootTitle.add(delRegion);
     return rootTitle;
   }
   
@@ -101,9 +113,12 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @param menu
    */
   private void addTerrains(JMenu menu){
-    if (this.data==null){
+    if (this.data==null || menu==null){
       return;
     }
+    
+    menu.removeAll();
+    
     ArrayList<RegionType> types = new ArrayList<RegionType>();
     types.addAll(this.data.rules.getRegionTypes());
     
@@ -112,7 +127,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     for (Iterator iter = types.iterator();iter.hasNext();){
       RegionType rType = (RegionType)iter.next();
       JMenuItem toAdd = new JMenuItem(rType.getName());
-      toAdd.setActionCommand("regiontype." + rType.getID().toString());
+      toAdd.setActionCommand(this.regionTypeIdentifier + rType.getID().toString());
       toAdd.addActionListener(this);
       menu.add(toAdd);
     }
@@ -134,7 +149,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.setTerrain.setEnabled(true);
       
       // Löschmöglichkeit
-      this.delTerrain.setEnabled(false);
+      this.delRegion.setEnabled(false);
       
       //  keine benannten Nixe
       this.setName.setEnabled(false);
@@ -180,7 +195,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.setTerrain.setEnabled(true);
       
       // Löschmöglichkeit
-      this.delTerrain.setEnabled(true);
+      this.delRegion.setEnabled(true);
       
     } else {
       this.rootTitle.setText(Resources.get("mapedit.menu.title"));
@@ -211,12 +226,12 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
    */
   public void init(Client client, Properties properties) {
-//  init the plugin
+    // init the plugin
     log = Logger.getInstance(MagellanMapEditPlugIn.class);
     Resources.getInstance().initialize("mapedit_");
     log.info("MapEdit initialized...(client)");
     this.client = client;
-System.err.println(Resources.get("mapedit.menu.setterrain"));
+    // System.err.println(Resources.get("mapedit.menu.setterrain"));
   }
   
   /**
@@ -236,12 +251,154 @@ System.err.println(Resources.get("mapedit.menu.setterrain"));
    */
   public void actionPerformed(ActionEvent e) {
     log.info(e.getActionCommand());
+    if (e.getActionCommand().equalsIgnoreCase("delName")){
+      this.runDelName();
+    } else if (e.getActionCommand().equalsIgnoreCase("setName")){
+      this.runSetName();
+    } else if (e.getActionCommand().equalsIgnoreCase("delRegion")){
+      this.runDelRegion();
+    } else if (e.getActionCommand().startsWith(this.regionTypeIdentifier)){
+      this.runSetTerrain(e.getActionCommand());
+    }
+      
   }
+  
+  /**
+   * Name einer vorhandenen Region setzen
+   *
+   */
+  private void runSetName(){
+    if (this.r==null){
+      log.error("MapEdit runSetName with no region");
+      return;
+    }
+    String newName =  JOptionPane.showInputDialog(this.client, Resources.get("mapedit.input.newname"));
+    if (newName!=null && newName.length()>0){
+      // Nur bestimmte Zeichen zulassen (!?)
+      if (Pattern.matches("[a-zA-Z0-9\\s´`']+", newName)){
+        // alles fein
+        r.setName(newName);
+        this.updateClient();
+      } else {
+        // Paste wohl nicht
+        ErrorWindow errorWindow = new ErrorWindow(
+            Resources.get("mapedit.error.unwantedcharacter.message"),
+              Resources.get("mapedit.error.unwantedcharacter.description"),null);
+        errorWindow.setVisible(true);
+      }
+    } else {
+      // keine Eingabe
+    }
+  }
+  
+  /**
+   * Namen einer Region komplett löschen
+   *
+   */
+  private void runDelName(){
+    if (this.r==null){
+      log.error("MapEdit runDelName with no region");
+      return;
+    }
+    r.setName(null);
+    this.updateClient();
+  }
+  
+  /**
+   * Eine Region aus GameData entfernen
+   *
+   */
+  private void runDelRegion(){
+    if (this.r==null){
+      log.error("MapEdit runDelRegion with no region");
+      return;
+    }
+    Region rGone = this.data.regions().remove(r.getID());
+    if (rGone!=null){
+      // ok..ist wech
+      this.r = null;
+      this.updateClient();
+    } else {
+      // konnte nicht entfernt werden
+      log.error("MapEdit runDelRegion: removing region not succesfull");
+    }
+  }
+  
+  /**
+   * Terrain einer vorhandenen Region ändern
+   * bzw eine neue Region anlegen (mit gewähltem Terrain
+   */
+  private void runSetTerrain(String actionCommand){
+    // zuerst RegionType organisieren und checken
+    String regionTypeName = actionCommand.substring(this.regionTypeIdentifier.length());
+    if (regionTypeName==null || regionTypeName.length()==0){
+      log.error("MapEdit: runSetTerrain unknown Region Type Name");
+      return;
+    }
+    
+    // the Region Type to set
+    RegionType setRegionType = null;
+    
+    ArrayList<RegionType> types = new ArrayList<RegionType>();
+    types.addAll(this.data.rules.getRegionTypes());
+    for (Iterator iter = types.iterator();iter.hasNext();){
+      RegionType rType = (RegionType)iter.next();
+      if (rType.getID().toString().equalsIgnoreCase(regionTypeName)){
+        setRegionType = rType;
+        break;
+      }
+    }
+    
+    if (setRegionType==null){
+      log.error("MapEdit: RegionType not found:" + regionTypeName);
+      return;
+    }
+    
+    // the Region to work on
+    Region workingRegion = r;
+    if (workingRegion==null){
+      // may be we have to create a new region here?
+      if (this.c==null){
+        // we can not create...
+        log.error("MapEdit: can not create new Region!");
+        return;
+      } else {
+        // alles fein, wir können loslegen
+        // last check...kennen wir doch die region?
+        workingRegion = this.data.getRegion(c);
+        if (workingRegion==null){
+          // ok, wirklich nicht da
+          workingRegion = MagellanFactory.createRegion(c, this.data);
+          // sortIndex setzen und erhöhen
+          workingRegion.setSortIndex(this.data.getMaxSortIndex());
+          // name setzen ?
+          // hinzu!
+          this.data.regions().put(workingRegion.getCoordinate(),workingRegion);
+        }
+      }
+    }
+    
+    // the real terrain type setting
+    workingRegion.setType(setRegionType);
+    this.updateClient();
+  }
+  
+  /**
+   * fires the GameDataChanged Event to notify all Listeners
+   * (refreshes map, details...all.
+   */
+  private void updateClient(){
+    if (this.client!=null){
+      this.client.getDispatcher().fire(new GameDataEvent(this, this.data, true));
+    }
+  }
+  
+  
+  
   // inner class //
   private class RegionTypeComparator implements Comparator<RegionType> {
     public int compare(RegionType arg0, RegionType arg1) {
       return arg0.getName().compareToIgnoreCase(arg1.getName());
     }
-    
   }
 }

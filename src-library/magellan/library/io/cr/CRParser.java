@@ -2956,7 +2956,7 @@ public class CRParser implements RulesIO, GameDataIO {
 			}
 			
 		}
-
+		this.world.setMaxSortIndex(++regionSortIndex);
 		return this.world;
 	}
 

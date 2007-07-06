@@ -235,27 +235,30 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		signs.setEnabled(true);
 		updateSigns();
     
-    updateMapContextMenuProvider(r);
+    updateMapContextMenuProvider(r,null);
     
 	}
 
   /**
    * Updates the external provided menues (pLugins)
-   *
+   * r - the region of known or null
+   * c - the CoordinateID if region is not know
    */
-  private void updateMapContextMenuProvider(Region r){
+  private void updateMapContextMenuProvider(Region r,CoordinateID c){
     if (this.externalMapContectMenuProvider!=null && this.externalMapContectMenuProvider.size()>0){
       for (MapContextMenuProvider plugIn : this.externalMapContectMenuProvider){
-        plugIn.update(r);
+        if (r!=null){plugIn.update(r);}
+        if (c!=null){plugIn.updateUnknownRegion(c);}
       }
     }
   }
   
   
 	/**
-	 * DOCUMENT-ME
+	 * Right click on an area without an existing region...
+   * the assumed CordinateID is provided
 	 */
-	public void clear() {
+	public void clear(CoordinateID c) {
 		String s = Resources.get("context.mapcontextmenu.menu.noregion");
 		setLabel(s);
 		name.setText(s);
@@ -266,7 +269,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		armystats.setEnabled(false);
 		signs.setEnabled(false);
     
-    this.updateMapContextMenuProvider(null);
+    this.updateMapContextMenuProvider(null,c);
     
 	}
 

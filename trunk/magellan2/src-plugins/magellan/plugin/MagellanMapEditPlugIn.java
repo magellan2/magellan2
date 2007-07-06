@@ -23,17 +23,27 @@
 // 
 package magellan.plugin;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.MapContextMenuProvider;
+import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.rules.RegionType;
+import magellan.library.utils.logging.Logger;
 
 /**
  * 
@@ -42,9 +52,20 @@ import magellan.library.Region;
  * @author Fiete
  * @version 1.0, 05.07.2007
  */
-public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvider{
+public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvider,ActionListener{
+  private static Logger log = null;
   
-  private JMenuItem testTitle = null;
+  private JMenu rootTitle = null;
+  private JMenuItem setName = null;
+  private JMenuItem delName = null;
+  private JMenu setTerrain = null;
+  private JMenuItem delTerrain = null;
+  
+  private Region r = null;
+  private CoordinateID c = null;
+  
+  private GameData data = null;
+  private Client client = null;
   
   
   /**
@@ -56,26 +77,116 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @return The JMenuItem to show in the MapContextMenu
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data) {
-    testTitle = new JMenuItem("MapEdit present");
-    return testTitle;
+    rootTitle = new JMenu("MapEdit present");
+    
+    setName = new JMenuItem("set name");
+    rootTitle.add(setName);
+    
+    delName = new JMenuItem("del name");
+    rootTitle.add(delName);
+    
+    setTerrain = new JMenu("set terrain");
+    this.addTerrains(setTerrain);
+    rootTitle.add(setTerrain);
+    
+    delTerrain = new JMenuItem("del terrain");
+    rootTitle.add(delTerrain);
+    return rootTitle;
+  }
+  
+  
+  /**
+   * adds all terrains to a JMenu
+   * @param menu
+   */
+  private void addTerrains(JMenu menu){
+    if (this.data==null){
+      return;
+    }
+    ArrayList<RegionType> types = new ArrayList<RegionType>();
+    types.addAll(this.data.rules.getRegionTypes());
+    
+    Collections.sort(types,new RegionTypeComparator());
+    
+    for (Iterator iter = types.iterator();iter.hasNext();){
+      RegionType rType = (RegionType)iter.next();
+      JMenuItem toAdd = new JMenuItem(rType.getName());
+      toAdd.setActionCommand("regiontype." + rType.getID().toString());
+      toAdd.addActionListener(this);
+      menu.add(toAdd);
+    }
+  }
+  
+  
+  /**
+   * update the plugin menu and react to a click on an 
+   * non-region area
+   * @see magellan.client.swing.context.MapContextMenuProvider#updateUnknownRegion(magellan.library.CoordinateID)
+   */
+  public void updateUnknownRegion(CoordinateID c) {
+    if (c!=null){
+      this.c = c;
+      this.rootTitle.setText("MapEdit: NEW " + c.toString());
+      this.rootTitle.setEnabled(true);
+      // Terrainänderung
+      this.setTerrain.setText("add terrain");
+      this.setTerrain.setEnabled(true);
+      
+      // Löschmöglichkeit
+      this.delTerrain.setEnabled(false);
+      
+      //  keine benannten Nixe
+      this.setName.setEnabled(false);
+      // nix nicht löschen können
+      this.delName.setEnabled(false);
+    } else {
+      this.rootTitle.setText("MapEdit present");
+      this.rootTitle.setEnabled(false);
+    }
   }
 
-  
-  
+
+
   /**
    * update the PlugIn-Menu to the current region
    * @see magellan.client.swing.context.MapContextMenuProvider#update(magellan.library.Region)
    */
   public void update(Region r) {
     if (r!=null){
-      this.testTitle.setText("MapEdit: " + r.toString());
+      this.r = r;
+      this.rootTitle.setText("MapEdit: " + r.toString());
+      this.rootTitle.setEnabled(true);
+      
+      if (r.getRegionType().getID().toString().equalsIgnoreCase("Ozean")){
+        // keine benannten Ozeane
+        this.setName.setEnabled(false);
+        // zombies löschen können
+        // wenn name gesetzt
+        if (r.getName()!=null && r.getName().length()>0){
+          this.delName.setEnabled(true);
+        } else {
+          this.delName.setEnabled(false);
+        }
+      } else {
+        // benannten Regionen
+        this.setName.setEnabled(true);
+        // keine Unbenannten LandRegionen
+        this.delName.setEnabled(false);
+      }
+      
+      // Terrainänderung
+      this.setTerrain.setText("set terrain");
+      this.setTerrain.setEnabled(true);
+      
+      // Löschmöglichkeit
+      this.delTerrain.setEnabled(true);
+      
     } else {
-      this.testTitle.setText("MapEdit present");
+      this.rootTitle.setText("MapEdit present");
+      this.rootTitle.setEnabled(false);
     }
     
   }
-
-
 
 
   /**
@@ -95,20 +206,39 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   }
   
   /**
-   * kein Bedarf dieses Inits
+   * Aktualisiert die lokale Referenz auf den Client
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
    */
   public void init(Client client, Properties properties) {
-    
+//  init the plugin
+    log = Logger.getInstance(MagellanMapEditPlugIn.class);
+    log.info("MapEdit initialized...(client)");
+    this.client = client;
   }
   
   /**
-   * kein Bedarf dieses Inits
+   * aktualisiert die lokale referenz auf GameData
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.library.GameData)
    */
   public void init(GameData data) {
+    log.info("MapEdit initialized...(GameData)");
+    this.data=data;
+    this.addTerrains(this.setTerrain);
+  }
+
+  
+  /**
+   * handels the event that one of our Items was selected
+   * @param e the event
+   */
+  public void actionPerformed(ActionEvent e) {
+    log.info(e.getActionCommand());
+  }
+  // inner class //
+  private class RegionTypeComparator implements Comparator<RegionType> {
+    public int compare(RegionType arg0, RegionType arg1) {
+      return arg0.getName().compareToIgnoreCase(arg1.getName());
+    }
     
   }
-  
-
 }

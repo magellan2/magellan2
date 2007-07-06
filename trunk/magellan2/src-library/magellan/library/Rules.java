@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+import java.util.Collection;
 import java.util.Iterator;
 
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -78,6 +79,9 @@ public interface Rules {
 	 */
 	public Iterator<RegionType> getRegionTypeIterator();
 
+  
+  public Collection<RegionType> getRegionTypes();
+  
 	/**
 	 * get RegionType by (possibly localized) name
 	 *

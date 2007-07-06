@@ -1739,4 +1739,10 @@ REGIONTYPE "Feuerwand"
 "Feuerwand";name
 0;maxworkers
 
+REGIONTYPE "Vulkan"
+"Vulkan";name
+0;maxworkers
 
+REGIONTYPE "Aktiver Vulkan"
+"Aktiver Vulkan";name
+0;maxworkers

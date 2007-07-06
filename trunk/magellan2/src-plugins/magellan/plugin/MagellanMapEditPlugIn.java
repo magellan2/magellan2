@@ -43,6 +43,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -77,19 +78,19 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @return The JMenuItem to show in the MapContextMenu
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data) {
-    rootTitle = new JMenu("MapEdit present");
+    rootTitle = new JMenu(Resources.get("mapedit.menu.title"));
     
-    setName = new JMenuItem("set name");
+    setName = new JMenuItem(Resources.get("mapedit.menu.setname"));
     rootTitle.add(setName);
     
-    delName = new JMenuItem("del name");
+    delName = new JMenuItem(Resources.get("mapedit.menu.delname"));
     rootTitle.add(delName);
     
-    setTerrain = new JMenu("set terrain");
+    setTerrain = new JMenu(Resources.get("mapedit.menu.setterrain"));
     this.addTerrains(setTerrain);
     rootTitle.add(setTerrain);
     
-    delTerrain = new JMenuItem("del terrain");
+    delTerrain = new JMenuItem(Resources.get("mapedit.menu.delterrain"));
     rootTitle.add(delTerrain);
     return rootTitle;
   }
@@ -129,7 +130,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.rootTitle.setText("MapEdit: NEW " + c.toString());
       this.rootTitle.setEnabled(true);
       // Terrainänderung
-      this.setTerrain.setText("add terrain");
+      this.setTerrain.setText(Resources.get("mapedit.menu.addterrain"));
       this.setTerrain.setEnabled(true);
       
       // Löschmöglichkeit
@@ -140,7 +141,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       // nix nicht löschen können
       this.delName.setEnabled(false);
     } else {
-      this.rootTitle.setText("MapEdit present");
+      this.rootTitle.setText(Resources.get("mapedit.menu.title"));
       this.rootTitle.setEnabled(false);
     }
   }
@@ -175,14 +176,14 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       }
       
       // Terrainänderung
-      this.setTerrain.setText("set terrain");
+      this.setTerrain.setText(Resources.get("mapedit.menu.setterrain"));
       this.setTerrain.setEnabled(true);
       
       // Löschmöglichkeit
       this.delTerrain.setEnabled(true);
       
     } else {
-      this.rootTitle.setText("MapEdit present");
+      this.rootTitle.setText(Resources.get("mapedit.menu.title"));
       this.rootTitle.setEnabled(false);
     }
     
@@ -212,8 +213,10 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   public void init(Client client, Properties properties) {
 //  init the plugin
     log = Logger.getInstance(MagellanMapEditPlugIn.class);
+    Resources.getInstance().initialize("mapedit_");
     log.info("MapEdit initialized...(client)");
     this.client = client;
+System.err.println(Resources.get("mapedit.menu.setterrain"));
   }
   
   /**

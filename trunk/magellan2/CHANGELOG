@@ -1,3 +1,7 @@
+2007-07-06 Thoralf (thoralf@m84.de)
+    * Added Resources.initialize(String) to load special resources for plugins
+    * Changed MapEditPlugIn to use Resources instead of hard coded Strings
+
 2007-07-05 Fiete (sf@fietefietz.de)
 	* fixed addTranslation and nameChange
 	* prepared MapContextMenuProvider (for MapEditPlugin)

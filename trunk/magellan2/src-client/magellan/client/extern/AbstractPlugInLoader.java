@@ -66,6 +66,12 @@ public abstract class AbstractPlugInLoader<T> {
         s = s.substring(0, s.length() - 2);
       }
 
+      // manuell decode
+      // remove when better solution available
+      // Fiete
+      s = s.replace("%20", " ");
+      
+      
       paths.add(s);
     }
 

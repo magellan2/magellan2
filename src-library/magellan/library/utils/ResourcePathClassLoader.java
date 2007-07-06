@@ -71,7 +71,7 @@ public class ResourcePathClassLoader extends ClassLoader {
         resourcePaths.add(new URL(location));
       } catch(MalformedURLException e) {
         log.error(e);
-      }
+      } 
     }
     
     return resourcePaths;

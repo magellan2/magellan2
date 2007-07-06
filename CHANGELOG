@@ -1,6 +1,7 @@
 2007-07-06 Fiete (sf@fietefietz.de)
 	* Completed MapEditPlugIn
 	* added maxSortIndex to GameData (set by CRParser)
+	* Changed path handling from paths in AbstractMagellanPlugInLoader to decode "%20"
 
 2007-07-06 Thoralf (thoralf@m84.de)
     * Added Resources.initialize(String) to load special resources for plugins

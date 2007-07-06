@@ -1,0 +1,46 @@
+Mit * ist erledigt. 
+Mit - fehlt noch. 
+Mit + ist in Arbeit
+
+* Mischmasch der Sprachen bei englischen Reports (englische
+  Templates & deutsche Eressea Trees (zum Beispiel: Gewürze),
+  etc.
+
+- Inseln werden nicht richtig erfasst (zumindest passiert da
+  bei mir nichts)
+
++ Dockkonfiguration nicht binär sondern textuell speichern
+  (XML oder so).
+
+- Darstellungsfehler bei den Docks korrigieren (Theme vs.
+  L&F mit Abständen)
+
+- Ausblenden von Tab-Buttons
+
+- Docks wieder einblenden (als freies Fenster)
+
+- Mehrere Layouts für Docks zulassen (umschaltbare Views)
+
++ Probleme mit den PlugIns
+
+* Probleme mit Order Completion (Bug #49)
+
+- ECheck als Dock
+
+- Nur eine Einstellung für den ECheck-Pfad (Bug #65)
+
+- Icons in der Karte (Optionen & Anzeige)
+
+- Minimap speichert den ARR Renderer nicht
+
+- UTF Encoding für CRs implementieren
+
++ Manuelles Anlegen von fehlenden Regionen (via Popup in
+  Karte)
+
++ Magellan Hilfe überarbeiten und an neue Gegebenheiten
+  anpassen
+
+- Sonstige Bugfixes
+
+- evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 

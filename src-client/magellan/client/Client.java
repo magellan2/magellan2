@@ -1402,13 +1402,31 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
+   * Updates the plugins after GameData Change
+   *
+   */
+  private void updatePlugIns(){
+    if (this.plugIns!=null && this.plugIns.size()>0){
+      for (MagellanPlugIn plugIn : this.plugIns) {
+        try {
+          plugIn.init(getData());
+        } catch (Throwable t) {
+          ErrorWindow errorWindow = new ErrorWindow(this,t.getMessage(),"",t);
+          errorWindow.setVisible(true);
+        }
+      }
+    }
+  }
+  
+  /**
    * Called after GameData changes. Also called via EventDispatcher thread to
    * ensure graphical changes do occur.
    */
   private void updatedGameData() {
     updateTitleCaption();
     updateConfirmMenu();
-
+    updatePlugIns();
+    
     if (getData().getCurTempID() == -1) {
       String s = getProperties().getProperty("ClientPreferences.TempIDsInitialValue", "");
 

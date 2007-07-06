@@ -3,6 +3,7 @@ package magellan.client.swing.context;
 import javax.swing.JMenuItem;
 
 import magellan.client.event.EventDispatcher;
+import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 
@@ -27,4 +28,12 @@ public interface MapContextMenuProvider {
      * here we update the plugin
      */
     public void update(Region r);
+    
+    /**
+     * Gives the ContextMenu the chance to react on clicks 
+     * on non-region areas
+     * @param c the coordinate provided by the mapper (Eressea Coordinates)
+     */
+    public void updateUnknownRegion(CoordinateID c);
+    
 }

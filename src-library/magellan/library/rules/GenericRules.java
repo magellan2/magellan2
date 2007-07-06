@@ -14,6 +14,7 @@
 package magellan.library.rules;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
@@ -131,6 +132,24 @@ public class GenericRules implements Rules {
 		return getRegionType(StringID.create(id), add);
 	}
 
+  /**
+   * All RegionTypes in one Collection
+   * @return
+   */
+  public Collection<RegionType> getRegionTypes(){
+    if (this.mapUnitContainerType!=null && this.mapUnitContainerType.size()>0){
+      ArrayList<RegionType> erg = new ArrayList<RegionType>();
+      for (Iterator iter = this.getRegionTypeIterator();iter.hasNext();){
+        RegionType actRegionType = (RegionType)iter.next();
+        erg.add(actRegionType);
+      }
+      return erg;
+    } else {
+      return null;
+    }
+  }
+  
+  
 	/**
 	 * DOCUMENT-ME
 	 *

@@ -308,8 +308,8 @@ SKILL "Ausdauer"
 SKILL "Bergbau"
 "Bergbau";name
 "resource";category
-SKILL "Bogenschie?en"
-"Bogenschie?en";name
+SKILL "Bogenschießen"
+"Bogenschießen";name
 "war";category
 SKILL "Burgenbau"
 "Burgenbau";name
@@ -320,14 +320,14 @@ SKILL "Handeln"
 SKILL "Hiebwaffen"
 "Hiebwaffen";name
 "war";category
-SKILL "Holzf?llen"
-"Holzf?llen";name
+SKILL "Holzfällen"
+"Holzfällen";name
 "resource";category
 SKILL "Katapultbedienung"
 "Katapultbedienung";name
 "war";category
-SKILL "Kr?uterkunde"
-"Kr?uterkunde";name
+SKILL "Kräuterkunde"
+"Kräuterkunde";name
 "resource";category
 SKILL "Magie"
 "Magie";name
@@ -338,8 +338,8 @@ SKILL "Pferdedressur"
 SKILL "Reiten"
 "Reiten";name
 "movement";category
-SKILL "R?stungsbau"
-"R?stungsbau";name
+SKILL "Rüstungsbau"
+"Rüstungsbau";name
 "build";category
 SKILL "Schiffbau"
 "Schiffbau";name
@@ -359,8 +359,8 @@ SKILL "Steinbau"
 SKILL "Steuereintreiben"
 "Steuereintreiben";name
 "silver";category
-SKILL "Stra?enbau"
-"Stra?enbau";name
+SKILL "Straßenbau"
+"Straßenbau";name
 "build";category
 SKILL "Taktik"
 "Taktik";name
@@ -388,22 +388,22 @@ RACE "Zwerge"
 5.4;capacity
 TALENTBONI
 2;Bergbau
--1;Bogenschie?en
+-1;Bogenschießen
 2;Burgenbau
 1;Handeln
 1;Hiebwaffen
--1;Holzf?llen
+-1;Holzfällen
 2;Katapultbedienung
--2;Kr?uterkunde
+-2;Kräuterkunde
 -2;Magie
 -2;Pferdedressur
 -2;Reiten
-2;R?stungsbau
+2;Rüstungsbau
 -1;Schiffbau
 -2;Segeln
 2;Steinbau
 1;Steuereintreiben
-2;Stra?enbau
+2;Straßenbau
 -1;Tarnung
 -1;Unterhaltung
 2;Waffenbau
@@ -422,11 +422,11 @@ TALENTBONI
 1;Bergbau
 1;Burgenbau
 -3;Handeln
-1;Holzf?llen
--2;Kr?uterkunde
+1;Holzfällen
+-2;Kräuterkunde
 -1;Magie
 -1;Pferdedressur
-1;R?stungsbau
+1;Rüstungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Spionage
@@ -447,11 +447,11 @@ TALENTBONI
 1;Bergbau
 1;Burgenbau
 -3;Handeln
-1;Holzf?llen
--2;Kr?uterkunde
+1;Holzfällen
+-2;Kräuterkunde
 -1;Magie
 -1;Pferdedressur
-1;R?stungsbau
+1;Rüstungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Spionage
@@ -470,17 +470,17 @@ RACE "Elfen"
 TALENTBONI
 -1;Alchemie
 -2;Bergbau
-2;Bogenschie?en
+2;Bogenschießen
 -1;Burgenbau
 -2;Katapultbedienung
-2;Kr?uterkunde
+2;Kräuterkunde
 1;Magie
 1;Pferdedressur
--1;R?stungsbau
+-1;Rüstungsbau
 -1;Schiffbau
 -1;Segeln
 -1;Steinbau
--1;Stra?enbau
+-1;Straßenbau
 1;Tarnung
 1;Wahrnehmung
 TALENTBONI "Wald"
@@ -498,19 +498,19 @@ TALENTBONI
 -2;Bergbau
 -1;Burgenbau
 -1;Katapultbedienung
-1;Kr?uterkunde
--1;R?stungsbau
+1;Kräuterkunde
+-1;Rüstungsbau
 -1;Schiffbau
 -2;Segeln
 2;Spionage
 -1;Steinbau
 1;Steuereintreiben
--1;Stra?enbau
+-1;Straßenbau
 1;Tarnung
 2;Wahrnehmung
 
-RACE "D?monen"
-"D?monen";name
+RACE "Dämonen"
+"Dämonen";name
 150;recruitmentcosts
 10;weight
 5.4;capacity
@@ -518,8 +518,8 @@ TALENTBONI
 2;Alchemie
 -3;Handeln
 1;Hiebwaffen
-1;Holzf?llen
--3;Kr?uterkunde
+1;Holzfällen
+-3;Kräuterkunde
 1;Magie
 -3;Pferdedressur
 -1;Reiten
@@ -542,12 +542,12 @@ RACE "Halblinge"
 TALENTBONI
 1;Armbrustschießen
 1;Bergbau
--1;Bogenschie?en
+-1;Bogenschießen
 1;Burgenbau
 2;Handeln
 -1;Hiebwaffen
 -1;Katapultbedienung
-2;Kr?uterkunde
+2;Kräuterkunde
 -1;Pferdedressur
 -1;Reiten
 -1;Schiffbau
@@ -555,7 +555,7 @@ TALENTBONI
 1;Spionage
 -1;Stangenwaffen
 -1;Steuereintreiben
-1;Stra?enbau
+1;Straßenbau
 1;Tarnung
 1;Unterhaltung
 2;Wagenbau
@@ -568,7 +568,7 @@ RACE "Menschen"
 5.4;capacity
 TALENTBONI
 1;Handeln
--1;Kr?uterkunde
+-1;Kräuterkunde
 1;Schiffbau
 1;Segeln
 
@@ -586,7 +586,7 @@ TALENTBONI
 -1;Magie
 -2;Schiffbau
 -2;Segeln
--2;Stra?enbau
+-2;Straßenbau
 -2;Taktik
 1;Tarnung
 -1;Unterhaltung
@@ -600,17 +600,17 @@ RACE "Insekten"
 TALENTBONI
 1;Armbrustschießen
 1;Bergbau
--2;Bogenschie?en
+-2;Bogenschießen
 2;Burgenbau
 -1;Handeln
 -1;Hiebwaffen
-1;Holzf?llen
-1;Kr?uterkunde
+1;Holzfällen
+1;Kräuterkunde
 -3;Pferdedressur
 -3;Reiten
-2;R?stungsbau
+2;Rüstungsbau
 1;Stangenwaffen
--1;Stra?enbau
+-1;Straßenbau
 -1;Taktik
 -1;Tarnung
 -2;Unterhaltung
@@ -623,20 +623,20 @@ RACE "Trolle"
 10.8;capacity
 TALENTBONI
 2;Bergbau
--2;Bogenschie?en
+-2;Bogenschießen
 2;Burgenbau
 1;Hiebwaffen
 2;Katapultbedienung
--1;Kr?uterkunde
+-1;Kräuterkunde
 -1;Pferdedressur
 -2;Reiten
-2;R?stungsbau
+2;Rüstungsbau
 -1;Schiffbau
 -1;Segeln
 -3;Spionage
 2;Steinbau
 1;Steuereintreiben
-2;Stra?enbau
+2;Straßenbau
 -1;Taktik
 -3;Tarnung
 -1;Unterhaltung
@@ -651,10 +651,10 @@ TALENTBONI
 -2;Bergbau
 -1;Burgenbau
 2;Handeln
--1;R?stungsbau
+-1;Rüstungsbau
 3;Schiffbau
 3;Segeln
--1;Stra?enbau
+-1;Straßenbau
 SPECIALS
 1;shiprange
 
@@ -709,8 +709,8 @@ ITEM "Balsam"
 RESOURCES
 4;Silber
 
-ITEM "Gew?rz"
-"Gew?rz";name
+ITEM "Gewürz"
+"Gewürz";name
 2;weight
 "luxuries";category
 RESOURCES
@@ -723,8 +723,8 @@ ITEM "Myrrhe"
 RESOURCES
 5;Silber
 
-ITEM "?l"
-"?l";name
+ITEM "Öl"
+"Öl";name
 3;weight
 "luxuries";category
 RESOURCES
@@ -752,31 +752,31 @@ ITEM "Laen"
 ITEM "Holz"
 "Holz";name
 5;weight
-"Holzf?llen";makeskill
+"Holzfällen";makeskill
 "resources";category
 
-ITEM "B?ume"
-"B?ume";name
+ITEM "Bäume"
+"Bäume";name
 5;weight
-"Holzf?llen";makeskill
+"Holzfällen";makeskill
 "resources";category
 
-ITEM "Sch??linge"
-"Sch??linge";name
+ITEM "Schößlinge"
+"Schößlinge";name
 5;weight
-"Holzf?llen";makeskill
+"Holzfällen";makeskill
 "resources";category
 
 ITEM "Mallorn"
 "Mallorn";name
 5;weight
-"Holzf?llen";makeskill
+"Holzfällen";makeskill
 "resources";category
 
-ITEM "Mallornsch??linge"
-"Mallornsch??linge";name
+ITEM "Mallornschößlinge"
+"Mallornschößlinge";name
 5;weight
-"Holzf?llen";makeskill
+"Holzfällen";makeskill
 "resources";category
 
 ITEM "Stein"
@@ -805,17 +805,17 @@ ITEM "Pferde"
 1;makeskilllevel
 "resources";category
 
-ITEM "Kr?uter"
-"Kr?uter";name
+ITEM "Kräuter"
+"Kräuter";name
 0;weight
-"Kr?uterkunde";makeskill
+"Kräuterkunde";makeskill
 1;makeskilllevel
 "resources";category
 
 ITEM "Samen"
 "Samen";name
 0.1;weight
-"Kr?uterkunde";makeskill
+"Kräuterkunde";makeskill
 1;makeskilllevel
 "resources";category
 
@@ -889,8 +889,8 @@ ITEM "Flammenschwert"
 "Hiebwaffen";useskill
 "weapons";category
 
-ITEM "Bih?nder"
-"Bih?nder";name
+ITEM "Bihänder"
+"Bihänder";name
 2;weight
 "Waffenbau";makeskill
 "Hiebwaffen";useskill
@@ -956,7 +956,7 @@ ITEM "Bogen"
 "Bogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschie?en";useskill
+"Bogenschießen";useskill
 2;makeskilllevel
 "distance weapons";category
 RESOURCES
@@ -966,7 +966,7 @@ ITEM "Elfenbogen"
 "Elfenbogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschie?en";useskill
+"Bogenschießen";useskill
 5;makeskilllevel
 "distance weapons";category
 RESOURCES
@@ -976,7 +976,7 @@ ITEM "Mallornbogen"
 "Mallornbogen";name
 1;weight
 "Waffenbau";makeskill
-"Bogenschie?en";useskill
+"Bogenschießen";useskill
 5;makeskilllevel
 "distance weapons";category
 "bogen";iconname
@@ -1017,7 +1017,7 @@ RESOURCES
 ITEM "Kettenhemd"
 "Kettenhemd";name
 2;weight
-"R?stungsbau";makeskill
+"Rüstungsbau";makeskill
 3;makeskilllevel
 "armour";category
 "ruestungen";iconname
@@ -1032,7 +1032,7 @@ ITEM "Rostiges Kettenhemd"
 ITEM "Laenkettenhemd"
 "Laenkettenhemd";name
 1;weight
-"R?stungsbau";makeskill
+"Rüstungsbau";makeskill
 9;makeskilllevel
 "armour";category
 RESOURCES
@@ -1041,7 +1041,7 @@ RESOURCES
 ITEM "Plattenpanzer"
 "Plattenpanzer";name
 4;weight
-"R?stungsbau";makeskill
+"Rüstungsbau";makeskill
 4;makeskilllevel
 "armour";category
 RESOURCES
@@ -1050,7 +1050,7 @@ RESOURCES
 ITEM "Schild"
 "Schild";name
 1;weight
-"R?stungsbau";makeskill
+"Rüstungsbau";makeskill
 2;makeskilllevel
 "shield";category
 RESOURCES
@@ -1063,7 +1063,7 @@ ITEM "Rostiger Schild"
 
 ITEM "Laenschild"
 "Laenschild";name
-"R?stungsbau";makeskill
+"Rüstungsbau";makeskill
 7;makeskilllevel
 "shield";category
 RESOURCES
@@ -1123,7 +1123,7 @@ ITEM "Schaffenstrunk"
 RESOURCES
 1;Alraune
 1;Spaltwachs
-1;W?rziger Wagemut
+1;Würziger Wagemut
 
 
 ITEM "Wundsalbe"
@@ -1132,7 +1132,7 @@ ITEM "Wundsalbe"
 4;makeskilllevel
 "potions";category
 RESOURCES
-1;Wei?er W?terich
+1;Weißer Wüterich
 1;Blauer Baumringel
 1;W?rziger Wagemut
 
@@ -1142,7 +1142,7 @@ ITEM "Bauernblut"
 4;makeskilllevel
 "potions";category
 RESOURCES
-1;H?hlenglimm
+1;Höhlenglimm
 1;Fjordwuchs
 1;Blauer Baumringel
 1;Bauer
@@ -1154,7 +1154,7 @@ ITEM "Gehirnschmalz"
 "potions";category
 RESOURCES
 1;Wasserfinder
-1;Steinbei?er
+1;Steinbeißer
 1;Windbeutel
 1;Gurgelkraut
 
@@ -1165,29 +1165,29 @@ ITEM "Dumpfbackenbrot"
 "potions";category
 RESOURCES
 1;Eulenauge
-1;Gr?ner Spinnerich
-1;H?hlenglimm
+1;Grüner Spinnerich
+1;Höhlenglimm
 1;Fjordwuchs
 
-ITEM "Nestw?rme"
-"Nestw?rme";name
+ITEM "Nestwärme"
+"Nestwärme";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
 RESOURCES
 1;Eisblume;
-1;Gr?ner Spinnerich
+1;Grüner Spinnerich
 1;Spaltwachs
 1;Kakteenschwitz
 
-ITEM "Pferdegl?ck"
-"Pferdegl?ck";name
+ITEM "Pferdeglück"
+"Pferdeglück";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
 RESOURCES
 1;Blauer Baumringel
-1;Sandf?ule
+1;Sandfäule
 1;Kakteenschwitz
 1;Knotiger Saugwurz
 
@@ -1197,10 +1197,10 @@ ITEM "Berserkerblut"
 6;makeskilllevel
 "potions";category
 RESOURCES
-1;Wei?er W?terich
+1;Weißer Wüterich
 1;Alraune
 1;Flachwurz
-1;Sandf?ule
+1;Sandfäule
 
 ITEM "Bauernlieb"
 "Bauernlieb";name
@@ -1210,7 +1210,7 @@ ITEM "Bauernlieb"
 RESOURCES
 1;Alraune
 1;Schneekristall
-1;Steinbei?er
+1;Steinbeißer
 1;Blasenmorchel
 1;Elfenlieb
 
@@ -1223,7 +1223,7 @@ RESOURCES
 1;Elfenlieb
 1;Wasserfinder
 1;Windbeutel
-1;Gr?ner Spinnerich
+1;Grüner Spinnerich
 1;Blasenmorchel
 1;Drachenblut
 
@@ -1245,7 +1245,7 @@ ITEM "Phiole"
 "traenke";iconname
 
 ITEM "Kraeuterbeutel"
-"Kr?uterbeutel";name
+"Kräuterbeutel";name
 "herbs";category
 
 ITEM "Silberbeutel"
@@ -1266,8 +1266,8 @@ ITEM "Zwergenbart"
 "trophies";category
 0.01;weight
 
-ITEM "Halblingfu?"
-"Halblingfu?";name
+ITEM "Halblingfuß"
+"Halblingfuß";name
 "trophies";category
 0.01;weight
 
@@ -1281,13 +1281,13 @@ ITEM "Elfenohr"
 "trophies";category
 0.01;weight
 
-ITEM "D?monenblut"
-"D?monenblut";name
+ITEM "Dämonenblut"
+"Dämonenblut";name
 "trophies";category
 0.01;weight
 
-ITEM "Insektenf?hler"
-"Insektenf?hler";name
+ITEM "Insektenfühler"
+"Insektenfühler";name
 "trophies";category
 0.01;weight
 
@@ -1441,7 +1441,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Bergwerk"
@@ -1462,7 +1462,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Steinbruch"
@@ -1483,11 +1483,11 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
-BUILDINGTYPE "S?gewerk"
-"S?gewerk";name
+BUILDINGTYPE "Sägewerk"
+"Sägewerk";name
 3;level
 MAINTENANCE
 250;Silber
@@ -1497,14 +1497,14 @@ RAWMATERIALS
 3;Eisen
 200;Silber
 TALENTBONI
-1;Holzf?llen
+1;Holzfällen
 REGIONTYPES
 "Berge"
 "Ebene"
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Schmiede"
@@ -1525,7 +1525,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Pferdezucht"
@@ -1544,7 +1544,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Hafen"
@@ -1563,14 +1563,14 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Taverne"
 "Taverne";name
 2;level
 MAINTENANCE
-5;Silber pro Gr??enpunkt
+5;Silber pro Größenpunkt
 RAWMATERIALS
 1;Eisen
 4;Stein
@@ -1582,7 +1582,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Akademie"
@@ -1602,7 +1602,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Magierturm"
@@ -1626,7 +1626,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 BUILDINGTYPE "Karawanserei"
@@ -1642,7 +1642,7 @@ RAWMATERIALS
 1;Eisen
 500;Silber
 REGIONTYPES
-"W?ste"
+"Wüste"
 
 BUILDINGTYPE "Damm"
 "Damm";name
@@ -1688,7 +1688,7 @@ REGIONTYPES
 "Gletscher"
 "Hochland"
 "Sumpf"
-"W?ste"
+"Wüste"
 "Wald"
 
 REGIONTYPE "Berge"
@@ -1718,8 +1718,8 @@ REGIONTYPE "Sumpf"
 75;roadstones
 "Damm";roadsupportbuilding
 
-REGIONTYPE "W?ste"
-"W?ste";name
+REGIONTYPE "Wüste"
+"Wüste";name
 500;maxworkers
 100;roadstones
 "Karawanserei";roadsupportbuilding
@@ -1738,4 +1738,10 @@ REGIONTYPE "Feuerwand"
 "Feuerwand";name
 0;maxworkers
 
+REGIONTYPE "Vulkan"
+"Vulkan";name
+0;maxworkers
 
+REGIONTYPE "Aktiver Vulkan"
+"Aktiver Vulkan";name
+0;maxworkers

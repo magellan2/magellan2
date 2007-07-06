@@ -238,7 +238,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             conMenu.show(Mapper.this, me.getX(), me.getY());
           }
         } else if ((me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
-          conMenu.clear();
+          conMenu.clear(c);
           conMenu.show(Mapper.this, me.getX(), me.getY());
         }
       }
@@ -658,23 +658,23 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a sublist of regions to render according to the state of the given
    * int. Values are interpreted as those of RenderingPlane.
    */
-  protected List createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
-    List main = null;
+  protected List<Region> createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
+    List<Region> main = null;
 
     if ((inPaint < 2) || (paintNumber == 0) || (duration > 0)) {
       main = regionList;
     }
 
     if (main == null) {
-      main = new LinkedList();
+      main = new LinkedList<Region>();
     } else {
       main.clear();
     }
 
     if ((condition & RenderingPlane.ACTIVE_OBJECT) != 0) {
       // simply add the first region found
-      if (activeObject != null) {
-        main.add(activeObject);
+      if (activeObject != null && activeObject instanceof Region) {
+        main.add((Region)activeObject);
       }
 
       return main;

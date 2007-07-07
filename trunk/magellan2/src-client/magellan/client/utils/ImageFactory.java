@@ -66,14 +66,21 @@ public class ImageFactory implements GameDataListener {
 
 	private Map<String,ImageIcon> images = new HashMap<String, ImageIcon>();
 
+  
+
+  /**
+   * Loads the given image. First it tests to load
+   * 
+   */
+  public ImageIcon loadImage(String imageName) {
+    return loadImage(imageName, true);
+  }
+  
 	/**
 	 * Loads the given image. First it tests to load
-	 *
-	 * 
-	 *
 	 * 
 	 */
-	public ImageIcon loadImage(String imageName) {
+	public ImageIcon loadImage(String imageName, Boolean errorIfNotFound) {
 		// look into cache
 		if(images.containsKey(imageName)) {
 			return images.get(imageName);
@@ -94,7 +101,7 @@ public class ImageFactory implements GameDataListener {
 			images.put(imageName, img);
 		}
 
-    if (img == null) {
+    if (img == null && errorIfNotFound) {
 		  log.error("ImageFactory.loadImage(" + imageName + "): found:" + (img != null));
     }
     
@@ -240,7 +247,7 @@ public class ImageFactory implements GameDataListener {
 	 * 
 	 */
 	public boolean existImageIcon(String imageName) {
-		ImageIcon img = loadImage("etc/images/icons/" + imageName);
+		ImageIcon img = loadImage("etc/images/icons/" + imageName,false);
 
 		return (img == null) ? false : true;
 	}
@@ -254,7 +261,7 @@ public class ImageFactory implements GameDataListener {
    * 
    */
   public boolean imageIconSizeCheck(String imageName,int maxHeight, int maxWidth) {
-    ImageIcon icon = loadImage("images/icons/" + imageName);
+    ImageIcon icon = loadImage("etc/images/icons/" + imageName);
     if (icon!=null){
       Image img = icon.getImage();
       int w = img.getWidth(null);

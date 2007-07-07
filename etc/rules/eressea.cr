@@ -193,106 +193,127 @@ HERB "Flachwurz"
 "Flachwurz";name
 "Ebene";region
 "herbs";category
+"flatroot";iconname
 
 HERB "Würziger Wagemut"
 "Würziger Wagemut";name
 "Ebene";region
 "herbs";category
+"tangy temerity";iconname
 
 HERB "Eulenauge"
 "Eulenauge";name
 "Ebene";region
 "herbs";category
+"owlsgaze";iconname
 
 HERB "Grüner Spinnerich"
 "Grüner Spinnerich";name
 "Wald";region
 "herbs";category
+"spider ivy";iconname
 
 HERB "Blauer Baumringel"
 "Blauer Baumringel";name
 "Wald";region
 "herbs";category
+"cobalt fungus";iconname
 
 HERB "Elfenlieb"
 "Elfenlieb";name
 "Wald";region
 "herbs";category
+"elvendear";iconname
 
 HERB "Gurgelkraut"
 "Gurgelkraut";name
 "Sumpf";region
 "herbs";category
+"bugleweed";iconname
 
 HERB "Knotiger Saugwurz"
 "Knotiger Saugwurz";name
 "Sumpf";region
 "herbs";category
+"knotroot";iconname
 
 HERB "Blasenmorchel"
 "Blasenmorchel";name
 "Sumpf";region
 "herbs";category
+"bubblemorel";iconname
 
 HERB "Wasserfinder"
 "Wasserfinder";name
 "Wüste";region
 "herbs";category
+"waterfinder";iconname
 
 HERB "Kakteenschwitz"
 "Kakteenschwitz";name
 "Wüste";region
 "herbs";category
+"peyote";iconname
 
 HERB "Sandfäule"
 "Sandfäule";name
 "Wüste";region
 "herbs";category
+"sandreeker";iconname
 
 HERB "Windbeutel"
 "Windbeutel";name
 "Hochland";region
 "herbs";category
+"windbag";iconname
 
 HERB "Fjordwuchs"
 "Fjordwuchs";name
 "Hochland";region
 "herbs";category
+"fjord fungus";iconname
 
 HERB "Alraune"
 "Alraune";name
 "Hochland";region
 "herbs";category
+"mandrake";iconname
 
 HERB "Steinbeißer"
 "Steinbeißer";name
 "Gebirge";region
 "herbs";category
+"rockweed";iconname
 
 HERB "Spaltwachs"
 "Spaltwachs";name
 "Gebirge";region
 "herbs";category
+"gapgrowth";iconname
 
 HERB "Höhlenglimm"
 "Höhlenglimm";name
 "Gebirge";region
 "herbs";category
+"cavelichen";iconname
 
 HERB "Eisblume"
 "Eisblume";name
 "Gletscher";region
 "herbs";category
+"ice begonia";iconname
 
 HERB "Weißer Wüterich"
 "Weißer Wüterich";name
 "Gletscher";region
 "herbs";category
+"white hemlock";iconname
 
 HERB "Schneekristall"
 "Schneekristall";name
 "Gletscher";region
 "herbs";category
+"snowcrystal petal";iconname
 
 
 
@@ -869,7 +890,6 @@ ITEM "Runenschwert"
 1;weight
 "Hiebwaffen";useskill
 "weapons";category
-"hiebwaffen";iconname
 RESOURCES
 3000;Silber
 
@@ -926,7 +946,6 @@ ITEM "Hellebarde"
 "Stangenwaffen";useskill
 3;makeskilllevel
 "weapons";category
-"hellebarde";iconname
 RESOURCES
 1;Eisen
 2;Holz
@@ -979,7 +998,6 @@ ITEM "Mallornbogen"
 "Bogenschießen";useskill
 5;makeskilllevel
 "distance weapons";category
-"bogen";iconname
 RESOURCES
 1;Mallorn
 
@@ -990,7 +1008,6 @@ ITEM "Mallornarmbrust"
 "Armbrustschießen";useskill
 5;makeskilllevel
 "distance weapons";category
-"armbrust";iconname
 RESOURCES
 1;Mallorn
 
@@ -1020,7 +1037,6 @@ ITEM "Kettenhemd"
 "Rüstungsbau";makeskill
 3;makeskilllevel
 "armour";category
-"ruestungen";iconname
 RESOURCES
 3;Eisen
 
@@ -1072,7 +1088,6 @@ RESOURCES
 ITEM "Mantel der Unverletzlichkeit"
 "Mantel der Unverletzlichkeit";name
 "armour";category
-"ruestungen";iconname
 RESOURCES
 3000;Silber
 

@@ -3744,7 +3744,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 	
 			if((s.getComponents() != null) && (s.getComponents().size() > 0)) {
-				DefaultMutableTreeNode componentsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.components"));
+				// DefaultMutableTreeNode componentsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.components"));
+        DefaultMutableTreeNode componentsNode = createSimpleNode(Resources.get("emapdetailspanel.node.components"), "things");
 				parent.add(componentsNode);
 				expandableNodes.add(new NodeWrapper(componentsNode,
 													"EMapDetailsPanel.SpellComponentsExpanded"));

@@ -1,3 +1,9 @@
+2007-07-07 Fiete (sf@fietefietz.de)
+	* herb icons from khadar
+	* new magic spell component icons
+	* fixed checkSize for custom icons
+	* for existIcon-tests no error msg is produced anymore
+
 2007-07-06 Fiete (sf@fietefietz.de)
 	* Completed MapEditPlugIn
 	* added maxSortIndex to GameData (set by CRParser)

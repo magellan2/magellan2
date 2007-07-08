@@ -18,6 +18,7 @@
   <!-- Some properties -->
   <property name="src.library"       location="${basedir}/src-library"/>
   <property name="src.client"        location="${basedir}/src-client"/>
+  <property name="src.plugins"       location="${basedir}/src-plugins"/>
   <property name="src.test"          location="${basedir}/src-test"/>
   <property name="classes"           location="${basedir}/classes"/>
   <property name="help"              location="${basedir}/help"/>
@@ -39,6 +40,7 @@
       <include name="**/*.jar" />
     </fileset>
     <pathelement location="${release}/magellan-library.jar" />
+    <pathelement location="${release}/magellan-client.jar" />
   </path>
 
   <!-- *************************************************************** -->
@@ -133,6 +135,49 @@
   
   <!-- *************************************************************** -->
   <!-- *                                                             * -->
+  <!-- *  This target compiles and packs the magellan plugin.        * -->
+  <!-- *                                                             * -->
+  <!-- *************************************************************** -->
+  <target name="build_plugins">
+    <echo message="Compiling PlugIns..." />
+
+    <antcall target="clear-classes"/>
+    <mkdir dir="${classes}" />
+  	
+    <javac srcdir="${src.plugins}/magellan"
+           destdir="${classes}"
+           includes="**"
+           source="${compile.target}"
+           target="${compile.target}"
+           optimize="${optimize}"
+           fork="true"
+           memoryInitialSize="128m"
+           memoryMaximumSize="256m"
+           debug="${debug}">
+      <!--<compilerarg value="-Xlint:unchecked"/>-->
+      <!--<compilerarg value="-Xlint:deprecation"/>-->
+      <classpath refid="magellan.class.path"/>
+    </javac>
+  	
+    <echo message="Building Magellan PlugIns JAR file" />
+  	
+    <!-- delete old library -->
+    <delete file="${release}/magellan-plugins.jar" failonerror="false" />
+    
+    <!-- JAR File erzeugen -->
+    <jar jarfile="${release}/magellan-plugins.jar" basedir="${classes}">
+      <manifest>
+        <attribute name="Built-By" value="${user.name}" />
+        <attribute name="Specification-Title" value="Magellan PlugIns [build ${build.number}]" />
+        <attribute name="Specification-Vendor" value="Magellan Development Team"/>
+      </manifest>
+    </jar>
+  	
+    <antcall target="clear-classes"/>
+  </target>
+
+  <!-- *************************************************************** -->
+  <!-- *                                                             * -->
   <!-- *  This target compiles and packs the magellan help files.    * -->
   <!-- *                                                             * -->
   <!-- *************************************************************** -->
@@ -224,6 +269,10 @@
     </antcall>
     
     <antcall target="build_client">
+      <param name="build.number" value="${build.number}"/>
+    </antcall>
+    
+    <antcall target="build_plugins">
       <param name="build.number" value="${build.number}"/>
     </antcall>
     

@@ -2607,7 +2607,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		if(carriers.size() > 0) {
 			DefaultMutableTreeNode carriersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.carriers"),
 					null,
-					carriers));
+					carriers,"carriers"));
 			parent.add(carriersNode);
 			expandableNodes.add(new NodeWrapper(carriersNode,
 					"EMapDetailsPanel.UnitCarriersExpanded"));
@@ -2625,7 +2625,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		if(passengers.size() > 0) {
 			DefaultMutableTreeNode passengersNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.passengers"),
 					null,
-					passengers));
+					passengers,"passengers"));
 			parent.add(passengersNode);
 			expandableNodes.add(new NodeWrapper(passengersNode,
 					"EMapDetailsPanel.UnitPassengersExpanded"));
@@ -2656,7 +2656,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		if(attacks.size() > 0) {
 			DefaultMutableTreeNode attacksNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.attacks"),
 					null,
-					attacks));
+					attacks,"victim"));
 			parent.add(attacksNode);
 			expandableNodes.add(new NodeWrapper(attacksNode,
 					"EMapDetailsPanel.UnitAttacksExpanded"));
@@ -2675,7 +2675,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		if(attackedBy.size() > 0) {
 			DefaultMutableTreeNode attackedByNode = new DefaultMutableTreeNode(new UnitListNodeWrapper(Resources.get("emapdetailspanel.node.attackedBy"),
 					null,
-					attackedBy));
+					attackedBy,"attacker"));
 			parent.add(attackedByNode);
 			expandableNodes.add(new NodeWrapper(attackedByNode,
 					"EMapDetailsPanel.UnitAttackedByExpanded"));

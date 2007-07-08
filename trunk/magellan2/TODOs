@@ -44,3 +44,20 @@ Mit + ist in Arbeit
 - Sonstige Bugfixes
 
 - evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
+
+- Optionsfenster überarbeiten
+    System > Look & Feel (überarbeiten)
+    System > Datei History (nach System und überarbeiten)
+    System > Dateinamensgenerierung (nach System verschieben und überarbeiten)
+    System > Namensgenerierung (nach System verschieben und überarbeiten)
+    System > Textkodierung (komplett)
+    Desktop (an DockingFramework anpassen und komplett überarbeiten)
+    Regionsanzeige > Talentreihenfole (funktioniert nicht)
+    Detailanzeige (überarbeiten & funktioniert nicht richtig)
+    Detailanzeige > Befehlseditor (überarbeiten)
+    Karte (überarbeiten)
+    Nachrichten (nach System verschieben)
+    Ressourcen (überarbeiten)
+    Ressourcen > Pfade (nach System verschieben)
+    Ressourcen > Externe Module (überarbeiten)
+    OK & Abbrechen überarbeiten

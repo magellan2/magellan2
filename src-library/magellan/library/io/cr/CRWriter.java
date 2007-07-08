@@ -96,6 +96,8 @@ public class CRWriter extends BufferedWriter {
 	
 	// fiete: see no other choice to find the familiarmage - unit
 	private GameData data = null;
+  
+  private String encoding = FileType.DEFAULT_ENCODING;
 
 	/**
 	 * Escape quotation marks in <tt>text</tt> with a backslash.
@@ -391,6 +393,7 @@ public class CRWriter extends BufferedWriter {
 		// The Echecker of German Atlantis has problems with the locale line
 		// so we check the game name
 		if (!world.name.startsWith("GAV")){
+      writeQuotedTag(encoding,"charset");
 			if(world.getLocale() != null) {
 				writeQuotedTag(world.getLocale().toString(), "locale");
 			}
@@ -2157,8 +2160,8 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public CRWriter(FileType fileType) throws IOException {
-		super(fileType.createWriter());
+	public CRWriter(FileType fileType, String encoding) throws IOException {
+		super(fileType.createWriter(encoding));
 	}
 
 	private boolean includeRegions = true;

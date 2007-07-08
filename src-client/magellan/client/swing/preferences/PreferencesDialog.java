@@ -18,8 +18,8 @@ import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -115,8 +115,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 
 		setContentPane(getMainPane());
 
-		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "640"));
-		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "400"));
+		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "760"));
+		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "500"));
 		setSize(width, height);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -129,11 +129,6 @@ public class PreferencesDialog extends InternationalizedDialog {
 
 	/**
 	 * Creates a new PreferencesDialog object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public PreferencesDialog(Frame owner, boolean modal, Properties settings,
 							 Collection prefAdapters) {
@@ -193,7 +188,9 @@ public class PreferencesDialog extends InternationalizedDialog {
 	}
 
 	private Container getMainPane() {
+    Dimension preferredSize = new Dimension(100,24);
 		JButton okButton = new JButton(Resources.get("preferences.preferencesdialog.btn.ok.caption"));
+    okButton.setPreferredSize(preferredSize);
 		okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					applyPreferences();
@@ -202,6 +199,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 			});
 
 		JButton cancelButton = new JButton(Resources.get("preferences.preferencesdialog.btn.cancel.caption"));
+    cancelButton.setPreferredSize(preferredSize);
 		cancelButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					//reloadPreferences();
@@ -210,19 +208,18 @@ public class PreferencesDialog extends InternationalizedDialog {
 			});
 
 		JButton applyButton = new JButton(Resources.get("preferences.preferencesdialog.btn.apply.caption"));
+    applyButton.setPreferredSize(preferredSize);
 		applyButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					applyPreferences();
 				}
 			});
 
-		JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 0));
+		JPanel buttonPanel = new JPanel(new FlowLayout());
 		buttonPanel.setBorder(new EmptyBorder(5, 0, 0, 0));
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
 
-		// pavkovic 2003.09.09: deactivated until better preferences implementation
-		// buttonPanel.add(applyButton);
 		dialogtree = new DialogTree();
 
 		JPanel main = new JPanel(new BorderLayout());

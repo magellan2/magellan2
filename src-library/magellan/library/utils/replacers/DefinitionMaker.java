@@ -86,17 +86,9 @@ public class DefinitionMaker {
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
-	public static ReplacerSystem createDefinition(String defStr, String cmdChars,
-												  ReplacerFactory factory, String unknown) {
+	public static ReplacerSystem createDefinition(String defStr, String cmdChars, ReplacerFactory factory, String unknown) {
 		ReplacerSystem sys = new ReplacerSystem();
 
 		if((defStr == null) || (defStr.length() == 0)) {

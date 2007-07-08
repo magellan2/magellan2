@@ -20,7 +20,6 @@ import magellan.client.utils.ImageFactory;
 import magellan.client.utils.NameGenerator;
 import magellan.library.GameData;
 import magellan.library.utils.IDBaseConverter;
-import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerHelp;
 

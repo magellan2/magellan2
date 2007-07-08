@@ -288,26 +288,26 @@ public class JVorlage extends InternationalizedDialog {
 			});
 
 		txtVorlageFile = new JTextField(settings.getProperty("JVorlage.vorlageFile", ""));
-		txtVorlageFile.setEditable(true);
+		txtVorlageFile.setEditable(false);
 		txtVorlageFile.setToolTipText(Resources.get("jvorlage.txt.vorlagefile.tooltip"));
 
 		JLabel lblVorlageFile = new JLabel(Resources.get("jvorlage.lbl.vorlagefile.caption"));
 		lblVorlageFile.setLabelFor(txtVorlageFile);
 		lblVorlageFile.setToolTipText(txtVorlageFile.getToolTipText());
-
-		JButton btnVorlageFile = new JButton("...");
-		btnVorlageFile.setToolTipText(Resources.get("jvorlage.btn.vorlagefile.tooltip"));
-		btnVorlageFile.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					String vorlageFile = getFileName(txtVorlageFile.getText(), false,
-													 new EresseaFileFilter("exe",
-																		   Resources.get("jvorlage.filter.executable.description")));
-
-					if(vorlageFile != null) {
-						txtVorlageFile.setText(vorlageFile);
-					}
-				}
-			});
+//
+//		JButton btnVorlageFile = new JButton("...");
+//		btnVorlageFile.setToolTipText(Resources.get("jvorlage.btn.vorlagefile.tooltip"));
+//		btnVorlageFile.addActionListener(new ActionListener() {
+//				public void actionPerformed(ActionEvent e) {
+//					String vorlageFile = getFileName(txtVorlageFile.getText(), false,
+//													 new EresseaFileFilter("exe",
+//																		   Resources.get("jvorlage.filter.executable.description")));
+//
+//					if(vorlageFile != null) {
+//						txtVorlageFile.setText(vorlageFile);
+//					}
+//				}
+//			});
 
 		JPanel pnlFiles = new JPanel(new GridBagLayout());
 		pnlFiles.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
@@ -421,15 +421,15 @@ public class JVorlage extends InternationalizedDialog {
 		c.weightx = 0.1;
 		c.weighty = 0.0;
 		pnlFiles.add(txtVorlageFile, c);
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridx = 2;
-		c.gridy = 3;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		pnlFiles.add(btnVorlageFile, c);
+//		c.anchor = GridBagConstraints.CENTER;
+//		c.gridx = 2;
+//		c.gridy = 3;
+//		c.gridwidth = 1;
+//		c.gridheight = 1;
+//		c.fill = GridBagConstraints.NONE;
+//		c.weightx = 0.0;
+//		c.weighty = 0.0;
+//		pnlFiles.add(btnVorlageFile, c);
 
 		return pnlFiles;
 	}
@@ -552,7 +552,7 @@ public class JVorlage extends InternationalizedDialog {
 		settings.setProperty("JVorlage.inputFile", getString(comboInputFile));
 		settings.setProperty("JVorlage.outputFile", getString(comboOutputFile));
 		settings.setProperty("JVorlage.scriptFile", getString(comboScriptFile));
-		settings.setProperty("JVorlage.vorlageFile", txtVorlageFile.getText());
+		//settings.setProperty("JVorlage.vorlageFile", txtVorlageFile.getText());
 
 		settings.setProperty("JVorlage.optionCR", String.valueOf(chkOptionCR.isSelected()));
 		settings.setProperty("JVorlage.options", txtOptions.getText());
@@ -579,7 +579,7 @@ public class JVorlage extends InternationalizedDialog {
 		StringBuffer sb = null;
 		FileReader reader = null;
 		File tempFile = null;
-		File vorlage = new File(txtVorlageFile.getText());
+		File vorlage = new File(settings.getProperty("JVorlage.vorlageFile"));
 
 		if((vorlage.exists() == false) || (vorlage.canRead() == false)) {
 			JOptionPane.showMessageDialog(this, Resources.get("jvorlage.msg.invalidvorlage.text"),

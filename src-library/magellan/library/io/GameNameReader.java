@@ -18,21 +18,18 @@ import java.io.IOException;
 import magellan.library.io.cr.CRGameNameIO;
 import magellan.library.io.file.FileType;
 import magellan.library.io.xml.XMLGameNameIO;
+import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
  *
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class GameNameReader {
+  private static final Logger log = Logger.getInstance(GameNameReader.class);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public static String getGameName(FileType filetype) {
@@ -41,6 +38,7 @@ public class GameNameReader {
 
 			return (gameName != null) ? gameName : new XMLGameNameIO().getGameName(filetype);
 		} catch(IOException e) {
+      log.error(e);
 			return null;
 		}
 	}

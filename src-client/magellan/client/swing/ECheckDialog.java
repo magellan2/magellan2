@@ -17,14 +17,10 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Properties;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -42,27 +38,13 @@ public class ECheckDialog extends InternationalizedDataDialog {
 
 	/**
 	 * Create a new ECheckDialog object as a dialog with a parent window.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
-	public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
-						Properties p) {
+	public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData, Properties p) {
 		this(owner, modal, ed, initData, p, null);
 	}
 
 	/**
 	 * Create a new ECheckDialog object as a dialog with a parent window.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public ECheckDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
 						Properties p, Collection<Region> regions) {
@@ -97,41 +79,11 @@ public class ECheckDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getMainPane() {
-		JPanel buttonPanel = new JPanel(new BorderLayout());
-		buttonPanel.add(getButtonPanel(), BorderLayout.NORTH);
-
 		JPanel mainPanel = new JPanel(new BorderLayout(6, 0));
 		mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 		mainPanel.add(pnlECheck, BorderLayout.CENTER);
-		mainPanel.add(buttonPanel, BorderLayout.EAST);
 
 		return mainPanel;
-	}
-
-	private Container getButtonPanel() {
-		JButton btnRun = new JButton(Resources.get("echeckdialog.btn.run.caption"));
-		btnRun.setMnemonic(Resources.get("echeckdialog.btn.run.mnemonic").charAt(0));
-		btnRun.setDefaultCapable(true);
-		btnRun.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					pnlECheck.runECheck();
-				}
-			});
-		this.getRootPane().setDefaultButton(btnRun);
-
-		JButton btnClose = new JButton(Resources.get("echeckdialog.btn.close.caption"));
-		btnClose.setMnemonic(Resources.get("echeckdialog.btn.close.mnemonic").charAt(0));
-		btnClose.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					quit();
-				}
-			});
-
-		JPanel buttonPanel = new JPanel(new GridLayout(2, 0, 0, 4));
-		buttonPanel.add(btnRun);
-		buttonPanel.add(btnClose);
-
-		return buttonPanel;
 	}
 
 	private void storeSettings() {

@@ -16,6 +16,7 @@ package magellan.client.desktop;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,11 +28,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
+import javax.swing.JMenu;
 import javax.swing.JSplitPane;
 
 import magellan.client.Client;
 import magellan.client.utils.ErrorWindow;
+import magellan.client.utils.MagellanObjectInputStream;
+import magellan.client.utils.MagellanObjectOutputStream;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
@@ -51,8 +56,8 @@ import net.infonode.util.Direction;
  * @author Andreas
  * @version
  */
-public class SplitBuilder  {
-  private static final Logger log = Logger.getInstance(SplitBuilder.class);
+public class DockingFrameworkBuilder  {
+  private static final Logger log = Logger.getInstance(DockingFrameworkBuilder.class);
 	private List<Component> componentsUsed;
   private StringViewMap viewMap = null;
 
@@ -61,11 +66,11 @@ public class SplitBuilder  {
 	private static Dimension minSize;
 
 	/**
-	 * Creates new SplitBuilder
+	 * Creates new DockingFrameworkBuilder
 	 *
 	 * 
 	 */
-	public SplitBuilder(Rectangle s) {
+	public DockingFrameworkBuilder(Rectangle s) {
 		componentsUsed = new LinkedList<Component>();
 		screen = s;
 
@@ -141,6 +146,12 @@ public class SplitBuilder  {
     window.getWindowBar(Direction.DOWN).setEnabled(true);
     window.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());
     window.setPopupMenuFactory(new MagellanPopupMenuFactory(viewMap));
+    
+    window.getRootWindowProperties().getWindowAreaProperties().setBackgroundColor(null).setBorder(null);
+    window.getRootWindowProperties().getWindowAreaShapedPanelProperties().setComponentPainter(null);
+    window.getRootWindowProperties().getComponentProperties().setBackgroundColor(null);
+    window.getRootWindowProperties().getShapedPanelProperties().setComponentPainter(null);
+
     return window;
   }
   
@@ -150,7 +161,7 @@ public class SplitBuilder  {
   
   public void write(File serializedViewData, RootWindow window) throws IOException {
     FileOutputStream fos = new FileOutputStream(serializedViewData);
-    ObjectOutputStream oos = new ObjectOutputStream(fos);
+    ObjectOutputStream oos = new MagellanObjectOutputStream(fos);
     window.write(oos, true);
     oos.close();
     fos.close();
@@ -160,7 +171,7 @@ public class SplitBuilder  {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
     
     FileInputStream fis = new FileInputStream(serializedViewData);
-    ObjectInputStream ois = new ObjectInputStream(fis);
+    ObjectInputStream ois = new MagellanObjectInputStream(fis);
     window.read(ois, true);
     ois.close();
     fis.close();
@@ -179,20 +190,49 @@ public class SplitBuilder  {
     View details = views.get("DETAILS");
     View orders = views.get("ORDERS");
     View name = views.get("NAME&DESCRIPTION");
+    View echeck = views.get("ECHECK");
     
-    TabWindow bottomLeft = new TabWindow(new DockingWindow[]{history,minimap});
+    TabWindow bottomLeft = new TabWindow(new DockingWindow[]{minimap,history});
+    bottomLeft.setSelectedTab(0);
     SplitWindow left = new SplitWindow(false,overview,bottomLeft);
+    left.setDividerLocation(0.6f);
     
-    SplitWindow middle = new SplitWindow(false,map,messages);
+    TabWindow bottomCenter = new TabWindow(new DockingWindow[]{messages,echeck});
+    bottomCenter.setSelectedTab(0);
+    SplitWindow middle = new SplitWindow(false,map,bottomCenter);
+    middle.setDividerLocation(0.6f);
     
     SplitWindow topRight = new SplitWindow(false,name,details);
     SplitWindow right = new SplitWindow(false,topRight,orders);
     
     SplitWindow splitWindow = new SplitWindow(true,left,new SplitWindow(true,middle,right));
+    splitWindow.setDividerLocation(0.3f);
     
     window.setWindow(splitWindow);
     
     return window;
+  }
+  
+  public static JMenu createDesktopMenu(Map<String,Component> components, ActionListener listener) {
+    JMenu desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
+    desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
+    
+    if(components.size() > 0) {
+      for (String key : components.keySet()) {
+        if (key.equals("COMMANDS")) continue; // deprecated
+        if (key.equals("NAME")) continue; // deprecated
+        if (key.equals("DESCRIPTION")) continue; // deprecated
+        if (key.equals("OVERVIEW&HISTORY")) continue; // deprecated
+        
+        Component component = components.get(key);
+        JCheckBoxMenuItem item = new JCheckBoxMenuItem(Resources.get("dock."+key+".title"), false);
+        item.setActionCommand("menu."+key);
+        desktopMenu.add(item);
+        item.addActionListener(listener);
+      }
+    }
+    
+    return desktopMenu;
   }
   
 	protected FrameTreeNode checkTree(FrameTreeNode node, Map comp) {

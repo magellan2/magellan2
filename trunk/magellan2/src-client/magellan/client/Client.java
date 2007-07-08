@@ -118,6 +118,7 @@ import magellan.client.event.UnitOrdersListener;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.resource.ResourceSettingsFactory;
+import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MagellanLookAndFeel;
 import magellan.client.swing.MapperPanel;
@@ -273,6 +274,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (settings == null) {
       log.info("Client.loadSettings: settings file " + "magellan.ini" + " does not exist, using default values.");
       settings = new SelfCleaningProperties();
+      settings.setProperty("Client.lookAndFeel","Windows");
       settings.setProperty("AdvancedShapeRenderer.Sets",",Einkaufsgut");
       settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Cur","\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
       settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Max","10");
@@ -548,6 +550,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     components.put("OVERVIEW&HISTORY", overviewPanel);
     nodeWrapperFactories.add(overviewPanel.getNodeWrapperFactory());
     topLevel.add(overviewPanel);
+    
+    ECheckPanel echeckpanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
+    components.put("ECHECK", echeckpanel);
 
     return components;
   }
@@ -601,7 +606,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     
     // desktop and extras last
     menuBar.add(desktop.getDesktopMenu());
-    menuBar.add(createExtrasMenu());
 
     // add external modules if some can be found
     JMenu plugInMenu = null;
@@ -621,6 +625,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
+    menuBar.add(createExtrasMenu());
     return menuBar;
   }
 

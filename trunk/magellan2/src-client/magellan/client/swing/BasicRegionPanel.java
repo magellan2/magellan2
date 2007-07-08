@@ -23,9 +23,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -280,33 +278,6 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		def = d;
 		parseDefinition(def);
 		show(lastRegion);
-	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("prefs.title", "Region short info");
-			/**
-			defaultTranslations.put("default",
-									"<html>\n<body>\n<table  cellpadding=0 width=100%>\n<tr>\n<td>Peasants:</td>\n<td align=right>\u00A7peasants\u00A7</td>\n<td></td>\n<td>Trade:</td>\n<td align=right>\u00A7maxtrade\u00A7</td>\n</tr>\n<tr>\n<td>Recruits:</td>\n<td align=right>\u00A7recruit\u00A7</td>\n<td></td>\n<td>Trees/Mallorn:</td>\n<td align=right>\u00A7+\u00A7trees\u00A7mallorn\u00A7</td>\n</tr>\n<tr>\n<td>Max. taxes:</td>\n<td align=right>\u00A7if\u00A7<\u00A7peasants\u00A7maxWorkers\u00A7*\u00A7peasants\u00A7-\u00A7peasantWage\u00A710\u00A7else\u00A7-\u00A7*\u00A7maxWorkers\u00A7peasantWage\u00A7*\u00A710\u00A7peasants\u00A7end\u00A7</td>\n<td></td>\n<td>Young trees:</td>\n<td align=right>\u00A7sprouts\u00A7</td>\n</tr>\n<tr>\n<td>Max. Entertain.:</td>\n<td align=right>\u00A7entertain\u00A7</td>\n<td></td>\n<td>Horses:</td>\n<td align=right>\u00A7horses\u00A7</td>\n</tr>\n<tr>\n<td>Pool-silver:</td>\n<td align=right>\u00A7priv\u00A7100\u00A7item\u00A7Silber\u00A7priv\u00A7clear\u00A7</td>\n<td></td>\n<td>Iron/Laen:</td>\n<td align=right>\u00A7+\u00A7laen\u00A7iron\u00A7</td>\n</tr>\n</table>\n</body>\n</html>");
-			*/
-			defaultTranslations.put("default",
-			 						"<html>\n<body>\n<table  cellpadding=0 width=100%>\n<tr>\n<td>Peasants:</td>\n<td align=right>\u00A7peasants\u00A7</td>\n<td width=5%></td>\n<td>\u00A7if\u00A7<\u00A70\u00A7mallorn\u00A7Mallorn:\u00A7else\u00A7Trees:\u00A7end\u00A7</td>\n<td align=right>\u00A7if\u00A7>\u00A7mallorn\u00A70\u00A7mallorn\u00A7else\u00A7trees\u00A7end\u00A7</td>\n</tr>\n<tr>\n<td>Recruits:</td>\n<td align=right>\u00A7recruit\u00A7</td>\n<td></td>\n<td>Saplings:</td>\n<td align=right>\u00A7sprouts\u00A7</td>\n</tr>\n<tr>\n<td>Max. taxes:</td>\n<td align=right>\u00A7if\u00A7<\u00A7peasants\u00A7maxWorkers\u00A7*\u00A7peasants\u00A7-\u00A7peasantWage\u00A710\u00A7else\u00A7-\u00A7*\u00A7maxWorkers\u00A7peasantWage\u00A7*\u00A710\u00A7peasants\u00A7end\u00A7</td>\n<td></td>\n<td>Horses:</td>\n<td align=right>\u00A7horses\u00A7</td>\n</tr>\n<tr>\n<td>Max. Entertain.:</td>\n<td align=right>\u00A7entertain\u00A7</td>\n<td></td>\n<td>\u00A7if\u00A7<\u00A70\u00A7laen\u00A7if\u00A7<\u00A70\u00A7iron\u00A7Iron/Laen:\u00A7else\u00A7Laen:\u00A7end\u00A7else\u00A7Iron:\u00A7end\u00A7</td>\n<td align=right>\u00A7if\u00A7<\u00A70\u00A7laen\u00A7if\u00A7<\u00A70\u00A7iron\u00A7iron\u00A7 / \u00A7laen\u00A7else\u00A7laen\u00A7end\u00A7else\u00A7if\u00A7<\u00A70\u00A7iron\u00A7iron\u00A7else\u00A7-?-\u00A7end\u00A7end\u00A7</td>\n</tr>\n<tr>\n<td>Pool-silver:</td>\n<td align=right>\u00A7priv\u00A7100\u00A7item\u00A7Silber\u00A7priv\u00A7clear\u00A7</td>\n<td></td>\n<td>Stones:</td>\n<td align=right>\u00A7stones\u00A7</td>\n</tr>\n<tr>\n<td>Trade:</td>\n<td align=right>\u00A7maxtrade\u00A7</td>\n<td></td>\n<td>Herb:</td>\n<td align=right>\u00A7herb\u00A7</td>\n</tr>\n</table>\n</body>\n</html>");
-		}
-		
-		return defaultTranslations;
 	}
 
 	protected class BRPPreferences extends JPanel implements PreferencesAdapter {

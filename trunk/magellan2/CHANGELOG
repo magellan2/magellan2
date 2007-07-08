@@ -1,3 +1,10 @@
+2007-07-08 Thoralf (thoralf@m84.de)
+    * Checking the encoding in CR Reports (Read/Write)
+    * Docking configuration is loaded/saved as Text (still under construction)
+    * Created new Echeck docking window
+    * Disabled editable textfields in JVorlage and Echeck panel (bug #53)
+    * Disabled Options-Desktop Splitpane/frame chooser (because of docking framework)
+
 2007-07-07 Fiete (sf@fietefietz.de)
 	* herb icons from khadar
 	* new magic spell component icons

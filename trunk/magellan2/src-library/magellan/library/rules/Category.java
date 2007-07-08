@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import magellan.library.ID;
-import magellan.library.utils.Umlaut;
 
 /**
  * DOCUMENT-ME

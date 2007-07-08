@@ -79,6 +79,7 @@ import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.logging.Logger;
 
@@ -845,12 +846,12 @@ public class CRParser implements RulesIO, GameDataIO {
 		sc.getNextToken(); // skip "VERSION xx"
 
 		while(!sc.eof) {
-			if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Spiel")) {
+      if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Spiel")) {
 				game = sc.argv[0];
 				sc.getNextToken();
-			} else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Konfiguration")) {
-				configuration = sc.argv[0];
-				sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Konfiguration")) {
+        configuration = sc.argv[0];
+        sc.getNextToken();
 			} else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Koordinaten")) {
 				coordinates = sc.argv[0];
 				sc.getNextToken();
@@ -951,8 +952,11 @@ public class CRParser implements RulesIO, GameDataIO {
 				parseMessageTypes(world);
 			} else if((sc.argc == 1) && sc.argv[0].startsWith("MESSAGETYPE ")) {
 				parseMessageType(world);
-			} else if((sc.argc == 1) && sc.argv[0].equals("TRANSLATION")) {
-				parseTranslation(world);
+      } else if((sc.argc == 1) && sc.argv[0].equals("TRANSLATION")) {
+        parseTranslation(world);
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("CHARSET")) {
+        // do nothing
+        sc.getNextToken();
 			} else {
 				unknown("VERSION", true);
 			}
@@ -2918,9 +2922,9 @@ public class CRParser implements RulesIO, GameDataIO {
 	public synchronized GameData read(Reader in, GameData world) throws IOException {
 		boolean bCorruptReportMsg = false;
 		int regionSortIndex = 0;
-		// Fiete 20061208
-        // set finalizer prio to max
-		magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
+    // Fiete 20061208
+    // set finalizer prio to max
+		MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 		
 		
 		this.world = world;
@@ -2945,7 +2949,7 @@ public class CRParser implements RulesIO, GameDataIO {
 			}
 			
 			// Fiete 20061208  check Memory
-			if (!magellan.library.utils.MemoryManagment.isFreeMemory()){
+			if (!MemoryManagment.isFreeMemory()){
 				// we have a problem..
 				// like in startup of client..we reset the data
 				this.world = new MissingData();

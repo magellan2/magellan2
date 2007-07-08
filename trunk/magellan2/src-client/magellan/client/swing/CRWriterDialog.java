@@ -56,6 +56,7 @@ import magellan.library.Ship;
 import magellan.library.Spell;
 import magellan.library.Unit;
 import magellan.library.io.cr.CRWriter;
+import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -191,8 +192,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 					File outputFile = new File((String) comboOutputFile.getSelectedItem());
 
 					try {
-						write(FileTypeFactory.singleton().createFileType(outputFile, false)
-											 .createWriter());
+						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(FileType.DEFAULT_ENCODING));
 						quit();
 					} catch(IOException ioe) {
 						log.error(ioe);

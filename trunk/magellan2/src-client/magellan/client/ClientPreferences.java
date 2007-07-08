@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -544,12 +545,16 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			panel.add(editFontSize, con);
 
 			con.gridx = 2;
-			panel.add(new JLabel("%"), con);
+      JLabel l = new JLabel("%");
+			panel.add(l, con);
 
 			JTextArea help = new JTextArea( Resources.get("clientpreferences.txt.restartforfontsize.caption"));
 			help.setEditable(false);
 			help.setLineWrap(true);
 			help.setWrapStyleWord(true);
+      help.setSelectionColor(getBackground());
+      help.setSelectedTextColor(getForeground());
+      help.setFont(l.getFont());
 			help.setMinimumSize(new java.awt.Dimension(546, 20));
 			help.setBackground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.background"));
 			help.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
@@ -681,8 +686,8 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 															GridBagConstraints.NORTHWEST,
 															GridBagConstraints.HORIZONTAL,
 															new Insets(0, 0, 0, 0), 0, 0);
-
-			help.add(new JLabel( Resources.get("clientpreferences.lbl.filehistoryentries.caption")), con);
+      JLabel l = new JLabel( Resources.get("clientpreferences.lbl.filehistoryentries.caption"));
+			help.add(l, con);
 			con.gridx = 1;
 			con.weightx = 1;
 			txtFileHistorySize = new JTextField(Integer.toString(source.getMaxFileHistorySize()));
@@ -702,6 +707,9 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			txtFoo.setWrapStyleWord(true);
 			txtFoo.setEditable(false);
 			txtFoo.setOpaque(false);
+      txtFoo.setSelectionColor(getBackground());
+      txtFoo.setSelectedTextColor(getForeground());
+      txtFoo.setFont(l.getFont());
 			txtFoo.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
 			help.add(txtFoo, con);
 

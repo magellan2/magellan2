@@ -192,7 +192,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	private JComponent splitRoot;
 
 	/** Holds the client frame. This is for (de)iconification compares. */
-	private Frame client;
+	private Client client;
 
 	/** Holds the frame rect for Magellan in Split-Mode. */
 	private Rectangle splitRect;
@@ -208,7 +208,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	private Timer timer;
 
 	// Split mode objects
-	private SplitBuilder splitBuilder;
+	private DockingFrameworkBuilder splitBuilder;
 	private Map<String,FrameTreeNode> splitSets;
 	private String splitName;
 
@@ -242,7 +242,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/**
 	 * Creates new MagellanDesktop
 	 */
-	public MagellanDesktop(Frame client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
+	public MagellanDesktop(Client client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
 		this.client = client;
     this.context = context;
 
@@ -564,113 +564,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	 * sub-menu for all available split sets and at last a sub-menu with all layouts.
 	 */
 	protected void initDesktopMenu() {
-		desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
-		desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
-    
-    if(frames.size() > 0) {
-      Iterator<FrameRectangle> iterator = frames.values().iterator();
-      while(iterator.hasNext()) {
-        FrameRectangle frame = iterator.next();
-        if(frame == null) continue;
-        JCheckBoxMenuItem item = new JCheckBoxMenuItem(frame.getFrameTitle(), false);
-        item.setActionCommand("menu."+frame.getFrameComponent());
-        desktopMenu.add(item);
-        item.addActionListener(this);
-      }
-    }
-    
-    // TR 2007-06-20 useless in docking environment 
-    /*
-		framesMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.frames.caption"));
-		framesMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.frames.menmonic").charAt(0));
+		desktopMenu = DockingFrameworkBuilder.createDesktopMenu(components,this);
 
-		if(frames.size() > 0) {
-			JMenuItem mitem = new JMenuItem(Resources.get("desktop.magellandesktop.menu.frames.activate"));
-			mitem.addActionListener(this);
-			framesMenu.add(mitem);
-			framesMenu.addSeparator();
-
-			Iterator it = frames.values().iterator();
-
-			while(it.hasNext()) {
-				FrameRectangle f = (FrameRectangle) it.next();
-
-				if(f == null) {
-					continue;
-				}
-
-				JCheckBoxMenuItem mi = new JCheckBoxMenuItem(f.getFrameTitle(), false);
-				framesMenu.add(mi);
-				mi.addActionListener(this);
-			}
-		}
-
-		framesMenu.setEnabled(frames.size() > 0);
-		desktopMenu.add(framesMenu);
-		setMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.set.caption"));
-		setMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.set.mnemonic").charAt(0));
-		setMenuGroup = new ButtonGroup();
-
-		int index = 0;
-
-		if((splitSets != null) && (splitSets.size() > 0)) {
-			index = 1;
-			String prefix = Resources.get("desktop.magellandesktop.menu.set.caption").substring(0,1).toUpperCase();
-			for (Iterator iter = splitSets.keySet().iterator(); iter.hasNext(); ) {
-				String name = (String) iter.next();
-
-				JMenuItem mi = null;
-
-				ActivateSplitSetAction ase = new ActivateSplitSetAction(name, 
-																		prefix+ index + ": " + name, 
-																		Resources.get("desktop.magellandesktop.menu.set.caption")+ " "+name);
-
-				mi = new JCheckBoxMenuItem(ase);
-
-				if(index <= 10) {
-					mi.setMnemonic(Character.forDigit(index%10, 10));
-				}
-
-				setMenu.add(mi);
-				setMenuGroup.add(mi);
-				index++;
-			}
-		} else {
-			setMenu.setEnabled(false);
-		}
-
-		desktopMenu.add(setMenu);
-		layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.layout.caption"));
-		layoutMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.layout.mnemonic").charAt(0));
-
-		if((layoutComponents != null) && (layoutComponents.size() > 0)) {
-			index = 1;
-			String prefix = Resources.get("desktop.magellandesktop.menu.layout.caption").substring(0,1).toUpperCase();
-			for(Iterator iter = layoutComponents.keySet().iterator(); iter.hasNext(); ) {
-				String name = (String) iter.next();
-
-				JMenuItem mi = null;
-
-				ActivateLayoutAction action = new ActivateLayoutAction(name, 
-																	   prefix+ index + ": " + name, 
-																	   Resources.get("desktop.magellandesktop.menu.layout.caption")+ " "+name);
-				mi = new JCheckBoxMenuItem(action);
-
-				if(index <= 10) {
-					mi.setMnemonic(Character.forDigit(index%10, 10));
-				}
-
-				layoutMenu.add(mi);
-				setMenuGroup.add(mi);
-			
-				index++;
-			}
-		} else {
-			layoutMenu.setEnabled(false);
-		}
-    
-		desktopMenu.add(layoutMenu);
-    */
 	}
 
 	/**
@@ -1208,7 +1103,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 					frameRect.y = 0;
 				}
 			}
-
 			client.setBounds(frameRect);
 		}
 	}
@@ -1297,13 +1191,13 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		r.height -= 23;
 
 		if(splitBuilder == null) {
-			splitBuilder = new SplitBuilder(r);
+			splitBuilder = new DockingFrameworkBuilder(r);
 		}
 
 		splitBuilder.setScreen(r);
     
 		try {
-			splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"docks.bin"));
+			splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"default.dock"));
       if (splitRoot != null && splitRoot instanceof RootWindow) {
         ((RootWindow)splitRoot).addListener(this);
       }
@@ -1985,12 +1879,17 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
             // open dock via name
             View view = splitBuilder.getViewMap().getView(name);
             if (view != null) {
-              // TODO what do we have to do here????
+              view.restore();
             }
           } else {
             // close dock
             DockingWindow window = findDockingWindow(root, name);
-            if (window != null) window.close();
+            if (window != null) {
+              window.close();
+            } else {
+              menu.setSelected(false);
+            }
+            
           }
           
         }
@@ -2504,6 +2403,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 
 		if(mode.equals(Mode.SPLIT)) {
+      splitRoot.setBorder(null);
 			splitRoot.repaint();
 		}
 
@@ -2625,7 +2525,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		saveTranslations();
     
     try {
-      splitBuilder.write(new File(magellanDir,"docks.bin"), (RootWindow)splitRoot);
+      splitBuilder.write(new File(magellanDir,"default.dock"), (RootWindow)splitRoot);
     } catch (Throwable t) {
       log.fatal(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
@@ -3064,7 +2964,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 	/////////////////////////
 	// PREFERENCES ADAPTER //
 	/////////////////////////
-	/* (non-Javadoc)
+	/**
 	 * @see com.eressea.swing.preferences.PreferencesFactory#createPreferencesAdapter()
 	 */
 	public PreferencesAdapter createPreferencesAdapter() {
@@ -3113,6 +3013,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			modeBox = new JComboBox(modeItems);
 			modeBox.setSelectedIndex(getMode().ordinal());
 			modeBox.addActionListener(this);
+      modeBox.setEnabled(false);
 			up.add(modeBox);
 			
 			enableWorkSpaceChooser = new JCheckBox(Resources.get("desktop.magellandesktop.prefs.displaychooser"), workSpace.isEnabledChooser());;

@@ -65,7 +65,7 @@ public class Loader {
 			filetype.setCreateBackup(false);
 			
 			// write cr to file
-			CRWriter crw = new CRWriter(filetype);
+			CRWriter crw = new CRWriter(filetype,FileType.DEFAULT_ENCODING);
 
 			try {
 				crw.write(data);

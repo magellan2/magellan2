@@ -28,7 +28,6 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 
 import sun.misc.BASE64Encoder;
 
@@ -66,8 +65,9 @@ public class MagellanObjectOutputStream extends ObjectOutputStream {
    */
   @Override
   public void write(byte[] buf, int off, int len) throws IOException {
-    byte[] newbuf = Arrays.copyOfRange(buf, off, off+len);
-    out.println("byte[]:"+base64.encode(newbuf));
+    byte[] copy = new byte[len];
+    System.arraycopy(buf, off, copy, 0, Math.min(buf.length - off, len));
+    out.println("byte[]:"+base64.encode(copy));
   }
 
 

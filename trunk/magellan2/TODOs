@@ -15,9 +15,9 @@ Mit + ist in Arbeit
 
 - Icons in der Karte (Optionen & Anzeige)
 
-- Minimap speichert den ARR Renderer nicht
+- Minimap speichert den ARR Renderer nicht (Bug #64)
 
-- Sonstige Bugfixes
+- Sonstige Bugfixes (Bugs #44, #48, #51, #52, ....)
 
 - evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
 

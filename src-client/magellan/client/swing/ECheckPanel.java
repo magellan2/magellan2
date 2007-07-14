@@ -145,7 +145,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         }
       });
 
-    JButton btnClose = new JButton(Resources.get("echeckdialog.btn.close.caption"));
+    /*JButton btnClose = new JButton(Resources.get("echeckdialog.btn.close.caption"));
     btnClose.setMnemonic(Resources.get("echeckdialog.btn.close.mnemonic").charAt(0));
     btnClose.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -153,10 +153,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         }
       });
     btnClose.setEnabled(false);
+    */
 
     JPanel buttonPanel = new JPanel(new GridLayout(2, 0, 0, 4));
     buttonPanel.add(btnRun);
-    buttonPanel.add(btnClose);
+    //buttonPanel.add(btnClose);
 
     return buttonPanel;
   }

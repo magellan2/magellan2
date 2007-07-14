@@ -87,22 +87,22 @@ public class PathCellRenderer extends ImageCellRenderer {
 		passivePastFilter = new AlphaFilter(ALPHALEVEL, new GrayFilter(false, 50));
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
+   */
+  @Override
 	public void render(Object obj, boolean active, boolean selected) {
 		try {
 			if(obj instanceof Unit) {
+        log.info("render "+obj);
 				render((Unit) obj);
 			} else if(obj instanceof Ship) {
+        log.info("render "+obj);
 				render(((Ship) obj).getOwnerUnit());
-			}
+      } else {
+        log.info("render NOT "+obj.getClass().getName());
+      }
 		} catch(Exception e) {
-			// FIXME(pavkovic): rendering may NOT fail! so we need this 
 			log.error(e);
 		}
 	}
@@ -305,6 +305,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 				rect.translate(-offset.x, -offset.y);
 
 				Image img = getImage("Pfeil" + dir, imageType);
+        
+        log.info("Image: "+img);
 
 				if(img != null) {
 					graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);

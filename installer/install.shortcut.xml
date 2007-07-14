@@ -1,0 +1,34 @@
+<shortcuts>
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+  <programGroup defaultName="Magellan" location="applications"/>
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+  <shortcut 
+    name="Magellan"
+    target="$INSTALL_PATH/magellan.bat"
+    workingDirectory="$INSTALL_PATH"
+    description="Magellan Client for Eressea etc."
+    iconFile="$INSTALL_PATH/etc/images/favicon.ico"
+    initialState="noShow"
+    programGroup="yes"
+    desktop="yes" 
+    applications="no" 
+    startMenu="no" 
+    startup="no">
+    <createForPack name="Magellan"/>
+  </shortcut>
+  <shortcut 
+    name="Uninstall"
+    target="$INSTALL_PATH/UnInstall.bat"
+    workingDirectory="$INSTALL_PATH"
+    description=""
+    initialState="noShow"
+    programGroup="yes"
+    desktop="no" 
+    applications="no" 
+    startMenu="no" 
+    startup="no">
+    <createForPack name="Magellan"/>
+  </shortcut>
+  <!-- +++++++++++++++++++++++++++++++++++++++++++ -->
+</shortcuts>
+

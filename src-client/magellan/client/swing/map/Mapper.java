@@ -658,23 +658,24 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a sublist of regions to render according to the state of the given
    * int. Values are interpreted as those of RenderingPlane.
    */
-  protected List<Region> createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
-    List<Region> main = null;
+  protected List createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
+    // okay, the result could contain Regions or Units or whatever...
+    List main = null;
 
     if ((inPaint < 2) || (paintNumber == 0) || (duration > 0)) {
       main = regionList;
     }
 
     if (main == null) {
-      main = new LinkedList<Region>();
+      main = new LinkedList<Object>();
     } else {
       main.clear();
     }
 
     if ((condition & RenderingPlane.ACTIVE_OBJECT) != 0) {
       // simply add the first region found
-      if (activeObject != null && activeObject instanceof Region) {
-        main.add((Region)activeObject);
+      if (activeObject != null) {
+        main.add(activeObject);
       }
 
       return main;

@@ -306,8 +306,6 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 				Image img = getImage("Pfeil" + dir, imageType);
         
-        log.info("Image: "+img);
-
 				if(img != null) {
 					graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
 				}

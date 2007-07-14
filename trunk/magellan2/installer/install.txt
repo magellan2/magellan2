@@ -1,0 +1,10 @@
+Okay, folgendes muß getan werden, um den Installer zu benutzen.
+
+1. IzPack-install.jar installieren (angenommen wird c:\programme\IzPack) http://izpack.org
+2. Das Distributionsverzeichnis von http://odyssey.log-out.net/magellan2 irgendwohin packen
+3. Dorthin die Dateien install.xml, install.shortcut.xml und LiesMich.txt kopieren.
+4. Eine Shell im Distributionsordner öffnen.
+5. Dort deb Befehl 
+     c:\programme\IzPack\bin\compile.bat install.xml -b . -o install.jar -k standard
+   ausführen.
+6. Fertig!

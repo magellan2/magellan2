@@ -94,13 +94,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 	public void render(Object obj, boolean active, boolean selected) {
 		try {
 			if(obj instanceof Unit) {
-        log.info("render "+obj);
 				render((Unit) obj);
 			} else if(obj instanceof Ship) {
-        log.info("render "+obj);
 				render(((Ship) obj).getOwnerUnit());
-      } else {
-        log.info("render NOT "+obj.getClass().getName());
       }
 		} catch(Exception e) {
 			log.error(e);

@@ -249,7 +249,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     int modifiedUnitsCounter = 0;
     int tempUnitsCounter = 0;
     int modifiedPersonCounter = 0;
-    Faction f = null;
     rootNode.removeAllChildren();
 
     /**
@@ -260,9 +259,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     Collection<Unit> heroes = new LinkedList<Unit>();
     int heros_count = 0;
 
-    if (factions.size() == 1) {
-      f = factions.values().iterator().next();
-    }
     SkillStats skillStats = new SkillStats();
 
     for (Iterator<Region> iter = regions.values().iterator(); iter.hasNext();) {
@@ -333,7 +329,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     rootNode.add(n);
 
-    if (f != null) {
+    if (factions.size() == 1) {
+      Faction f = null;
+      f = factions.values().iterator().next();
       if (f.getType() != null) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.race")
@@ -522,6 +520,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       }
     }
+    
+
+    unitsTools.addItemNode(factions.values().iterator().next().getData().rules.getItemType("Silber"), rootNode, null, units.values(), null, true, nodeWrapperFactory);
+
     // earned amount of money
     // it is necessary to parse messages to get this information
     for (Iterator<Faction> fIter = factions.values().iterator(); fIter.hasNext();) {
@@ -660,7 +662,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // show items and clear categories
     unitsTools.addCategorizedUnitItems(units.values(), rootNode, null, null, true, nodeWrapperFactory);
-
+    
     // add buildings
     // maps BuildingTypes to a List, containing the single buildings
     Map<UnitContainerType, List<Building>> buildingsCounter = new Hashtable<UnitContainerType, List<Building>>();
@@ -953,7 +955,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // Fiete: Displaying Faction-Items
     // only if one faction is selected
-    if (f != null) {
+    if (factions.size()==1) {
+      Faction f = factions.values().iterator().next();
       if (f.getItems() != null) {
         if (f.getItems().size() > 0) {
           DefaultMutableTreeNode factionPoolNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.factionpool"), "factionpool"));

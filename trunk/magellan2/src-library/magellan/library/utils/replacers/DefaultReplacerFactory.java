@@ -21,6 +21,9 @@ package magellan.library.utils.replacers;
 import java.util.HashMap;
 import java.util.Map;
 
+import magellan.client.EMapOverviewPanel;
+import magellan.library.utils.logging.Logger;
+
 /**
  * DOCUMENT ME!
  *
@@ -28,6 +31,7 @@ import java.util.Map;
  * @version
  */
 public class DefaultReplacerFactory implements ReplacerFactory {
+  private static final Logger log = Logger.getInstance(DefaultReplacerFactory.class);
 	protected Map<String,ReplacerInfo> replacers;
 
 	/**
@@ -118,6 +122,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 
 			return (Replacer) repInfo.replacerClass.getConstructor(repInfo.argClasses).newInstance(repInfo.args);
 		} catch(Exception exc) {
+      log.warn(exc);
 		}
 
 		return null;

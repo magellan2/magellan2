@@ -1141,7 +1141,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public void selectionChanged(SelectionEvent se) {
     // update the selection in the context manager
     if (se.getSelectionType() != SelectionEvent.ST_REGIONS) {
-      contextManager.setSelection(se.getSelectedObjects());
+      if (se.getSelectedObjects()!=null)
+        contextManager.setSelection(se.getSelectedObjects());
     }
 
     // try to prevent notification loops, i.e. that calling this

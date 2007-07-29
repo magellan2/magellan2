@@ -837,7 +837,14 @@ ITEM "Samen"
 "Samen";name
 0.1;weight
 "Kräuterkunde";makeskill
-1;makeskilllevel
+3;makeskilllevel
+"resources";category
+
+ITEM "Mallornsamen"
+"Mallornsamen";name
+0.1;weight
+"Kräuterkunde";makeskill
+4;makeskilllevel
 "resources";category
 
 ITEM "Wagen"

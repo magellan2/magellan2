@@ -2341,6 +2341,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonfoot") +
 																									 ": " +
 																									 Resources.get("emapdetailspanel.node.overloadedby") +
+                                                   " " +
 																									 weightNumberFormat.format(free) +
 																									 " " +
 																									 Resources.get("emapdetailspanel.node.weightunits"),
@@ -2380,6 +2381,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				capacityNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.capacityonhorse") +
 																									 ": " +
 																									 Resources.get("emapdetailspanel.node.overloadedby") +
+                                                   " " +
 																									 weightNumberFormat.format(free) +
 																									 " " +
 																									 Resources.get("emapdetailspanel.node.weightunits"),
@@ -3567,6 +3569,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.load") +
 					 ": " +
 					 Resources.get("emapdetailspanel.node.overloadedby") +
+           " " +
 					 weightNumberFormat.format(new Float((s.getModifiedLoad() - s.getMaxCapacity()) / 100.0F)) +
 					 " " +
 					 Resources.get("emapdetailspanel.node.weightunits"),

@@ -1785,8 +1785,13 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 			f.toFront();
 		}
 
+    if (splitRoot != null && splitRoot instanceof RootWindow) {
+      restoreView(id);
+    }
+
 		// search in component table to activate directly
-		((Component) components.get(id)).requestFocus();
+    if (components.get(id)!=null)
+      ((Component) components.get(id)).requestFocus();
 	}
 
 	/**
@@ -1877,10 +1882,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
           RootWindow root = (RootWindow)splitRoot;
           if (menu.isSelected()) {
             // open dock via name
-            View view = splitBuilder.getViewMap().getView(name);
-            if (view != null) {
-              view.restore();
-            }
+            restoreView(name);
           } else {
             // close dock
             DockingWindow window = findDockingWindow(root, name);
@@ -1929,7 +1931,20 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 		}
 	}
 
-	///////////////////////////////////////
+   /** 
+   * Makes a view visible.
+   * 
+   * @param name
+   */
+  private void restoreView(String name) {
+    View view = splitBuilder.getViewMap().getView(name);
+    if (view != null) {
+      view.restore();
+      view.makeVisible();
+    }
+  }
+
+  ///////////////////////////////////////
 	//                                   //
 	//  S H O R T C U T - H A N D L E R  //
 	//                                   //

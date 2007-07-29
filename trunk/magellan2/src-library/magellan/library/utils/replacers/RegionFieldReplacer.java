@@ -14,8 +14,10 @@
 package magellan.library.utils.replacers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import magellan.library.Region;
+import magellan.library.impl.MagellanRegionImpl;
 import magellan.library.utils.Resources;
 
 
@@ -47,7 +49,9 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
 	 */
 	public RegionFieldReplacer(String field, int mode) {
 		try {
-			this.field = Region.class.getField(field);
+			this.field = MagellanRegionImpl.class.getField(field);
+      
+      
 		} catch(Exception exc) {
 			throw new RuntimeException("Error retrieving region field " + field);
 		}

@@ -858,12 +858,12 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EACH)
 				+ " " + Resources.getOrderTranslation(EresseaConstants.O_AMOUNT), Resources
-				.getOrderTranslation(EresseaConstants.O_EACH), " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AMOUNT), "", ""));
+				.getOrderTranslation(EresseaConstants.O_EACH)+" 1", " "));
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AMOUNT), "1", " "));
 	}
 
 	void cmpltGibJe() {
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AMOUNT), "", ""));
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AMOUNT), "1", ""));
 	}
 
 	/**
@@ -883,7 +883,7 @@ public class EresseaOrderCompleter implements Completer {
 			for(Iterator iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
 				ItemType iType = (ItemType) iter.next();
 
-				if(iType.getResources().hasNext() // necessary resources are known
+				if(iType.getResources()!=null && iType.getResources().hasNext() // necessary resources are known
 					    &&checkForMaterials(iType.getResources(), i)) { // necessary resources are available
 
 					boolean suggest = true;
@@ -1999,7 +1999,7 @@ public class EresseaOrderCompleter implements Completer {
 	private boolean checkForMaterials(Iterator iter, int amount) {
 		boolean canMake = true;
 
-		while(iter.hasNext() && canMake) {
+		while(iter!=null && iter.hasNext() && canMake) {
 			Item ingredient = (Item) iter.next();
 
 			// be careful, units cannot own peasants although one is required for the potion "Bauernblut"

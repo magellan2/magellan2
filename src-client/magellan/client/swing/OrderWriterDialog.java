@@ -297,7 +297,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getControlsPanel() {
-		int fixedWidth = Integer.parseInt(settings.getProperty("OrderWriter.fixedWidth", "-76"));
+		int fixedWidth = Integer.parseInt(settings.getProperty("OrderWriter.fixedWidth", "76"));
 		chkFixedWidth = new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
 		chkFixedWidth.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {

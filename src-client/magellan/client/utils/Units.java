@@ -206,13 +206,13 @@ public class Units {
 	 * 		   ItemCategory or null if the categorization of the items failed.
 	 */
 	public Collection addCategorizedUnitItems(Collection<Unit> units, DefaultMutableTreeNode parentNode,
-											  Comparator itemComparator, Comparator unitComparator,
+											  Comparator<Item> itemComparator, Comparator<Unit> unitComparator,
 											  boolean showUnits, NodeWrapperFactory factory) {
 		
 		DefaultMutableTreeNode categoryNode = null;
 		Collection<TreeNode> categoryNodes = new LinkedList<TreeNode>();
 
-		Collection listOfCategorizedItems = categorizeUnitItems(units);
+		Collection<StatItemContainer> listOfCategorizedItems = categorizeUnitItems(units);
 
 		if(listOfCategorizedItems == null) {
 			log.warn("addCategorizedUnitItems(): categorizing unit items failed!");
@@ -220,8 +220,8 @@ public class Units {
 			return null;
 		}
 
-		for(Iterator contIter = listOfCategorizedItems.iterator(); contIter.hasNext();) {
-			StatItemContainer currentCategoryMap = (StatItemContainer) contIter.next();
+		for(Iterator<StatItemContainer> contIter = listOfCategorizedItems.iterator(); contIter.hasNext();) {
+			StatItemContainer currentCategoryMap = contIter.next();
 
 			if(currentCategoryMap.size() > 0) {
 				
@@ -254,90 +254,8 @@ public class Units {
 				}
 				for(Iterator<StatItem> iter = sortedItems.iterator(); iter.hasNext();) {
 					StatItem currentItem = iter.next();
-					catNumber += currentItem.getAmount();
-
-					ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u,currentItem);
-					DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
-
-// 					DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(si.getItemType()
-// 																												   .getName() +
-// 																												 ": " +
-// 																												 si.getAmount(),
-// 																												 "items/" +
-// 																												 si.getItemType()
-// 																												   .getIconName()));
-					categoryNode.add(itemNode);
-
-					if(!showUnits && units.size() == 1) {
-						boolean addItemNode = false;
-
-						for(Iterator reservedIterator = u.getItemReserveRelations(currentItem.getItemType()).iterator(); reservedIterator.hasNext();) {
-							ReserveRelation itr = (ReserveRelation) reservedIterator.next();
-							String text = String.valueOf(itr.amount) + " ";
-							List<String> icons = new LinkedList<String>();
-							if (itr.warning){
-								itemNodeWrapper.setWarningFlag(true);
-								text = String.valueOf(itr.amount) + " (!!!) "; //TODO: use append
-								icons.add("warnung");
-							}
-							text = text + Resources.get("util.units.node.reserved");
-							icons.add("reserve");
-							
-							SimpleNodeWrapper reserveNodeWrapper = factory.createSimpleNodeWrapper(text, icons);
-							
-							itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
-							
-							addItemNode = true;
-						}
-						
-						for(Iterator iter2 = u.getItemTransferRelations(currentItem.getItemType()).iterator(); iter2.hasNext();) {
-							ItemTransferRelation currentRelation = (ItemTransferRelation) iter2.next();
-							String prefix = String.valueOf(currentRelation.amount) + " ";
-							if (currentRelation.warning){
-								itemNodeWrapper.setWarningFlag(true);
-								// TODO: use append
-								prefix = String.valueOf(currentRelation.amount) + " (!!!) ";
-								
-							}
-							
-							String addIcon = null;
-							Unit u2 = null;
-							
-							if(currentRelation.source == u) {
-								addIcon = "get";
-								u2 = currentRelation.target;
-							} else if(currentRelation.target == u) {
-								addIcon = "give";
-								u2 = currentRelation.source;
-							}
-							
-							UnitNodeWrapper giveNodeWrapper = factory.createUnitNodeWrapper(u2, prefix,
-																				u2.getPersons(),
-																				u2.getModifiedPersons());
-							giveNodeWrapper.setReverseOrder(true);
-							giveNodeWrapper.setAdditionalIcon(addIcon);
-
-
-							itemNode.add(new DefaultMutableTreeNode(giveNodeWrapper));
-
-							addItemNode = true;
-						}
-						if(addItemNode) {
-							// FIXME: we return different objects here!!
-							categoryNode.add(itemNode);
-						}
-					}
-
-					if(showUnits && (currentItem.units != null)) {
-						Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
-
-						for(Iterator it = currentItem.units.iterator(); it.hasNext();) {
-							UnitWrapper uw = (UnitWrapper) it.next();
-							itemNode.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(uw.getUnit(),
-																								  uw.getAmount())));
-						}
-					}
-				}
+          catNumber += addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory);
+        }
 					
 				if((catNumber > 0) &&
 					   !currentCategoryMap.category.equals(rules.getItemCategory(StringID.create("misc")))) {
@@ -349,7 +267,100 @@ public class Units {
 		return categoryNodes;
 	}
 
-	private static class StatItem extends Item implements Comparable {
+  public int addItemNode(ItemType item, DefaultMutableTreeNode categoryNode, Unit u, Collection<Unit> units, Comparator unitComparator, boolean showUnits, NodeWrapperFactory factory) {
+    categorizeUnitItems(units);
+    for (StatItemContainer itemContainer : itemCategoriesMap.values()){
+      if (itemContainer.get(item.getID())!=null)
+        addItemNode(itemContainer.get(item.getID()), categoryNode, u, units, unitComparator, showUnits, factory);
+    }
+    
+    return 0;
+  }
+  
+	/**
+   * @param currentItem
+   */
+  private int addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u, Collection<Unit> units, Comparator unitComparator, boolean showUnits, NodeWrapperFactory factory) {
+
+    ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u,currentItem);
+    DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
+
+    categoryNode.add(itemNode);
+
+    if(!showUnits && units.size() == 1) {
+      boolean addItemNode = false;
+
+      for(Iterator reservedIterator = u.getItemReserveRelations(currentItem.getItemType()).iterator(); reservedIterator.hasNext();) {
+        ReserveRelation itr = (ReserveRelation) reservedIterator.next();
+        String text = String.valueOf(itr.amount) + " ";
+        List<String> icons = new LinkedList<String>();
+        if (itr.warning){
+          itemNodeWrapper.setWarningFlag(true);
+          text = String.valueOf(itr.amount) + " (!!!) "; //TODO: use append
+          icons.add("warnung");
+        }
+        text = text + Resources.get("util.units.node.reserved");
+        icons.add("reserve");
+        
+        SimpleNodeWrapper reserveNodeWrapper = factory.createSimpleNodeWrapper(text, icons);
+        
+        itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
+        
+        addItemNode = true;
+      }
+      
+      for(Iterator iter2 = u.getItemTransferRelations(currentItem.getItemType()).iterator(); iter2.hasNext();) {
+        ItemTransferRelation currentRelation = (ItemTransferRelation) iter2.next();
+        String prefix = String.valueOf(currentRelation.amount) + " ";
+        if (currentRelation.warning){
+          itemNodeWrapper.setWarningFlag(true);
+          // TODO: use append
+          prefix = String.valueOf(currentRelation.amount) + " (!!!) ";
+          
+        }
+        
+        String addIcon = null;
+        Unit u2 = null;
+        
+        if(currentRelation.source == u) {
+          addIcon = "get";
+          u2 = currentRelation.target;
+        } else if(currentRelation.target == u) {
+          addIcon = "give";
+          u2 = currentRelation.source;
+        }
+        
+        UnitNodeWrapper giveNodeWrapper = factory.createUnitNodeWrapper(u2, prefix,
+                                  u2.getPersons(),
+                                  u2.getModifiedPersons());
+        giveNodeWrapper.setReverseOrder(true);
+        giveNodeWrapper.setAdditionalIcon(addIcon);
+
+
+        itemNode.add(new DefaultMutableTreeNode(giveNodeWrapper));
+
+        addItemNode = true;
+      }
+      if(addItemNode) {
+        // FIXME: we return different objects here!!
+        categoryNode.add(itemNode);
+      }
+    }
+
+    if(showUnits && (currentItem.units != null)) {
+      Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
+
+      for(Iterator it = currentItem.units.iterator(); it.hasNext();) {
+        UnitWrapper uw = (UnitWrapper) it.next();
+        itemNode.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(uw.getUnit(),
+                                            uw.getAmount())));
+      }
+    }
+    return currentItem.getAmount();
+    
+  }
+
+  private static class StatItem extends Item implements Comparable<StatItem> {
 		/** DOCUMENT-ME */
 		public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
 
@@ -370,7 +381,7 @@ public class Units {
 		 *
 		 * 
 		 */
-		public int compareTo(Object o) {
+		public int compareTo(StatItem o) {
 			return this.getItemType().getName().compareTo(((StatItem) o).getItemType().getName());
 		}
 	}

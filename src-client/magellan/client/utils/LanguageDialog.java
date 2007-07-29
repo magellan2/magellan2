@@ -143,7 +143,7 @@ public class LanguageDialog {
 		 * 
 		 */
 		public String toString() {
-			return locale.getDisplayLanguage();
+      	return locale.getDisplayLanguage(locale);
 		}
 
     public int compareTo(Lang o) {

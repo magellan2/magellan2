@@ -46,7 +46,7 @@ public class RegionMethodReplacer extends AbstractRegionReplacer {
 	 */
 	public RegionMethodReplacer(String method, int mode) {
 		try {
-			this.method = Class.forName("magellan.library.Region").getMethod(method, (Class)null);
+			this.method = Class.forName("magellan.library.impl.MagellanRegionImpl").getMethod(method);
 		} catch(Exception exc) {
 			throw new RuntimeException("Error retrieving region method " + method);
 		}

@@ -1,3 +1,13 @@
+2007-07-29 stm (stm_@users.sourceforge.net)
+    * Added Mallornsamen to eressea.cr and adjusted talent level
+    * improved support for echeck as dockable panel
+    * added silver as top level item to faction stats
+    * registered map as shortcut listener
+    * made "wrap long lines" default for order writer dialog
+    * fixed nullpointer bug in order completion
+    * fixed region details -?- bug
+    * added space to "overloaded" display
+
 2007-07-14 Thoralf (thoralf@m84.de)
     * Bugfixes #76, #79
     * Added favicon.ico

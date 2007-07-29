@@ -190,6 +190,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private MessagePanel messagePanel = null;
 
+  private ECheckPanel echeckpanel = null;
+  
   /**
    * DOCUMENT ME!
    * 
@@ -551,7 +553,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     nodeWrapperFactories.add(overviewPanel.getNodeWrapperFactory());
     topLevel.add(overviewPanel);
     
-    ECheckPanel echeckpanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
+    echeckpanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
     components.put("ECHECK", echeckpanel);
 
     return components;

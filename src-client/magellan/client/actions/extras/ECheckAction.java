@@ -54,9 +54,7 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
 	 * 
 	 */
 	public void menuActionPerformed(java.awt.event.ActionEvent e) {
-		ECheckDialog d = new ECheckDialog(client, false, client.getDispatcher(), client.getData(),
-										  client.getProperties(), client.getSelectedRegions().values());
-		d.setVisible(true);
+	  requestFocus();
 	}
 
 	/**
@@ -65,13 +63,17 @@ public class ECheckAction extends MenuAction implements ShortcutListener {
 	 * 
 	 */
 	public void shortCut(javax.swing.KeyStroke shortcut) {
-		ECheckDialog d = new ECheckDialog(client, false, client.getDispatcher(), client.getData(),
-										  client.getProperties(), client.getSelectedRegions().values());
-		d.setVisible(true);
-		d.exec();
+      requestFocus();
 	}
 
 	/**
+   * 
+   */
+  private void requestFocus() {
+    magellan.client.desktop.DesktopEnvironment.requestFocus("ECHECK");
+  }
+
+  /**
 	 * DOCUMENT-ME
 	 *
 	 * 

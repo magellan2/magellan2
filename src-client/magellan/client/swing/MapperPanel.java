@@ -63,6 +63,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import magellan.client.MagellanContext;
+import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ExtendedShortcutListener;
 import magellan.client.desktop.Initializable;
 import magellan.client.desktop.ShortcutListener;
@@ -423,6 +424,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     // tooltips
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+    
+    DesktopEnvironment.registerShortcutListener(this);
   }
 
   protected void initMinimap() {

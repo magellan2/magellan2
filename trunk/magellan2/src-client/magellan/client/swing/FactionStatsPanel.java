@@ -521,9 +521,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
     }
     
-
-    unitsTools.addItemNode(factions.values().iterator().next().getData().rules.getItemType("Silber"), rootNode, null, units.values(), null, true, nodeWrapperFactory);
-
     // earned amount of money
     // it is necessary to parse messages to get this information
     for (Iterator<Faction> fIter = factions.values().iterator(); fIter.hasNext();) {
@@ -868,7 +865,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   }
 
                   if (itemCategory == null) {
-                    log.info(resource);
+                    log.info("Item without category: "+resource);
                   } else {
                     // add the data
                     Map<String, ProductionStats> h = production.get(itemCategory);

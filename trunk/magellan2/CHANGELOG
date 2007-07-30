@@ -1,3 +1,8 @@
+2007-07-30 stm (stm_@users.sourceforge.net)
+    * minor errors in eressea.cr: rusty items, Samen, Nestwürme
+    * new item category "silver"
+    * minor bug in FactionStatsPanel
+
 2007-07-30 Thoralf (thoralf@m84.de)
     * Added Khadars icons
     * Renamed tobig to toobig in check-panel

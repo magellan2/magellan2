@@ -5,6 +5,8 @@
     * minor errors in eressea.cr: rusty items, Samen, Nestwürme
     * new item category "silver"
     * minor bug in FactionStatsPanel
+    * added AttackInspector
+    * integrated TaskPanel in docking
 
 2007-07-30 Thoralf (thoralf@m84.de)
     * Added Khadars icons

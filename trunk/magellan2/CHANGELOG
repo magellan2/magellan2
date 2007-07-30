@@ -1,3 +1,7 @@
+2007-07-30 Thoralf (thoralf@m84.de)
+    * Added Khadars icons
+    * Renamed tobig to toobig in check-panel
+
 2007-07-29 stm (stm_@users.sourceforge.net)
     * Added Mallornsamen to eressea.cr and adjusted talent level
     * improved support for echeck as dockable panel

@@ -3,9 +3,6 @@ Mit - fehlt noch.
 Mit + ist in Arbeit
 
 ----- noch zu tun -----
-- Inseln werden nicht richtig erfasst (zumindest passiert da
-  bei mir nichts)
-
 - Darstellungsfehler bei den Docks korrigieren (Theme vs.
   L&F mit Abständen)
 
@@ -42,6 +39,9 @@ Mit + ist in Arbeit
     OK & Abbrechen überarbeiten
 
 ------ erledigt -------
+* Inseln werden nicht richtig erfasst (zumindest passiert da
+  bei mir nichts)
+
 * Mischmasch der Sprachen bei englischen Reports (englische
   Templates & deutsche Eressea Trees (zum Beispiel: Gewürze),
   etc.

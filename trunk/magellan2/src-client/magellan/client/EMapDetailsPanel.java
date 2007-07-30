@@ -1968,7 +1968,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       if (getMagellanContext().getImageFactory().imageIconSizeCheck(customUnitIconFileName,40,40)){ 
         customUnitIconNode = createSimpleNode(u.getModifiedName(), customUnitIconFileName);
       } else {
-        customUnitIconNode = createSimpleNode(u.getModifiedName(), "tobig");
+        customUnitIconNode = createSimpleNode(u.getModifiedName(), "toobig");
       }
       parent.add(customUnitIconNode);
     }
@@ -2070,7 +2070,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (getMagellanContext().getImageFactory().imageIconSizeCheck(customFactionIconFileName,40,40)){ 
           fNode = createSimpleNode(f.toString(), customFactionIconFileName);
         } else {
-          fNode = createSimpleNode(f.toString(), "tobig");
+          fNode = createSimpleNode(f.toString(), "toobig");
         }
         
       } else {

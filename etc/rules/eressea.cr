@@ -103,6 +103,10 @@ ALLIANCECATEGORY "PARTEITARNUNG"
 "ALLES";parent
 32;bitmask
 
+ITEMCATEGORY "silver"
+"Silber";name
+0;naturalorder
+
 ITEMCATEGORY "weapons"
 "Waffen";name
 0;naturalorder
@@ -707,7 +711,7 @@ RACE "Ghoule"
 ITEM "Silber"
 "Silber";name
 0.01;weight
-"misc";category
+"silver";category
 
 ITEM "Juwel"
 "Juwel";name
@@ -833,14 +837,14 @@ ITEM "Kräuter"
 1;makeskilllevel
 "resources";category
 
-ITEM "Samen"
+ITEM "Same"
 "Samen";name
 0.1;weight
 "Kräuterkunde";makeskill
 3;makeskilllevel
 "resources";category
 
-ITEM "Mallornsamen"
+ITEM "Mallornsame"
 "Mallornsamen";name
 0.1;weight
 "Kräuterkunde";makeskill
@@ -926,6 +930,12 @@ ITEM "Bihänder"
 RESOURCES
 2;Eisen
 
+ITEM "Rostiger Zweihänder"
+"Rostiger Zweihänder";name
+2;weight
+"Hiebwaffen";useskill
+"weapons";category
+
 ITEM "Speer"
 "Speer";name
 1;weight
@@ -957,6 +967,12 @@ RESOURCES
 1;Eisen
 2;Holz
 
+ITEM "Rostige Hellebarde"
+"Rostige Hellebarde";name
+2;weight
+"Stangenwaffen";useskill
+"weapons";category
+
 ITEM "Kriegsaxt"
 "Kriegsaxt";name
 2;weight
@@ -967,6 +983,12 @@ ITEM "Kriegsaxt"
 RESOURCES
 1;Eisen
 1;Holz
+
+ITEM "Rostige Kriegsaxt"
+"Rostige Kriegsaxt";name
+2;weight
+"Hiebwaffen";useskill
+"weapons";category
 
 ITEM "Armbrust"
 "Armbrust";name
@@ -1070,6 +1092,11 @@ ITEM "Plattenpanzer"
 RESOURCES
 5;Eisen
 
+ITEM "Rostiger Plattenpanzer"
+"Rostiger Plattenpanzer";name
+4;weight
+"armour";category
+
 ITEM "Schild"
 "Schild";name
 1;weight
@@ -1080,6 +1107,11 @@ RESOURCES
 1;Eisen
 
 ITEM "Rostiger Schild"
+"Rostiger Schild";name
+"shield";category
+1;weight
+
+ITEM "Rostiges Schild"
 "Rostiger Schild";name
 "shield";category
 1;weight
@@ -1191,8 +1223,8 @@ RESOURCES
 1;Höhlenglimm
 1;Fjordwuchs
 
-ITEM "Nestwürme"
-"Nestwürme";name
+ITEM "Nestwärme"
+"Nestwärme";name
 "Alchemie";makeskill
 6;makeskilllevel
 "potions";category
@@ -1273,11 +1305,11 @@ ITEM "Kraeuterbeutel"
 
 ITEM "Silberbeutel"
 "Silberbeutel";name
-"misc";category
+"silver";category
 
 ITEM "Silberkassette"
 "Silberkassette";name
-"misc";category
+"silver";category
 
 ITEM "Trollhorn"
 "Trollhorn";name

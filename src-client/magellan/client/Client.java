@@ -896,15 +896,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // set finalizer prio to max
       magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 
-      // initialize start window
-      Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
-
-      startWindow = new StartWindow(startIcon, 5);
-
-      startWindow.setVisible(true);
-
-      startWindow.progress(0, Resources.get("clientstart.0"));
-
       /* determine default value for files directory */
       fileDir = MagellanFinder.findMagellanDirectory();
 
@@ -926,8 +917,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
           if (level != null) {
             level = level.toUpperCase();
-            log.info("Client.main: Set logging to " + level);
             Logger.setLevel(level);
+            log.info("Client.main: Set logging to " + level);
 
             if ("A".equals(level)) {
               log.awt("Start logging of awt events to awtdebug.txt.");
@@ -956,6 +947,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         i++;
       }
 
+      // initialize start window
+      Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
+
+      startWindow = new StartWindow(startIcon, 5);
+
+      startWindow.setVisible(true);
+
+      startWindow.progress(0, Resources.get("clientstart.0"));
+
       settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
 
       // tell the user where we expect ini files and errors.txt
@@ -966,7 +966,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Log LOG = new Log(fileDir);
       System.setErr(LOG.getPrintStream());
 
-      log.error("Start writing error file with encoding " + LOG.encoding);
+      log.info("Start writing error file with encoding " + LOG.encoding);
 
       String version = VersionInfo.getVersion();
       if (version == null) {

@@ -21,7 +21,6 @@ package magellan.library.utils.replacers;
 import java.util.HashMap;
 import java.util.Map;
 
-import magellan.client.EMapOverviewPanel;
 import magellan.library.utils.logging.Logger;
 
 /**

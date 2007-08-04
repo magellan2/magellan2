@@ -67,13 +67,11 @@ import magellan.client.actions.edit.FindAction;
 import magellan.client.actions.edit.RedoAction;
 import magellan.client.actions.edit.UndoAction;
 import magellan.client.actions.extras.ArmyStatsAction;
-import magellan.client.actions.extras.ECheckAction;
 import magellan.client.actions.extras.FactionStatsAction;
 import magellan.client.actions.extras.HelpAction;
 import magellan.client.actions.extras.InfoAction;
 import magellan.client.actions.extras.OptionAction;
 import magellan.client.actions.extras.RepaintAction;
-import magellan.client.actions.extras.TaskTableAction;
 import magellan.client.actions.extras.TileSetAction;
 import magellan.client.actions.extras.TipOfTheDayAction;
 import magellan.client.actions.extras.TradeOrganizerAction;
@@ -130,6 +128,7 @@ import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
+import magellan.client.swing.tasks.TaskTablePanel;
 import magellan.client.swing.tree.IconAdapterFactory;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.utils.BookmarkManager;
@@ -190,7 +189,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private MessagePanel messagePanel = null;
 
-  private ECheckPanel echeckpanel = null;
+  private ECheckPanel echeckPanel = null;
+  
+  private TaskTablePanel taskPanel = null;
   
   /**
    * DOCUMENT ME!
@@ -547,14 +548,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     overviewPanel = new EMapOverviewPanel(getDispatcher(), getProperties());
     overviewPanel.setMinimumSize(new Dimension(100, 10));
     panels.add(overviewPanel);
-    components.put("OVERVIEW", overviewPanel.getOverviewComponent());
+    components.put(EMapOverviewPanel.IDENTIFIER, overviewPanel.getOverviewComponent());
     components.put("HISTORY", overviewPanel.getHistoryComponent());
     components.put("OVERVIEW&HISTORY", overviewPanel);
     nodeWrapperFactories.add(overviewPanel.getNodeWrapperFactory());
     topLevel.add(overviewPanel);
     
-    echeckpanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
-    components.put("ECHECK", echeckpanel);
+    echeckPanel = new ECheckPanel(getDispatcher(), getData(), getProperties(), getSelectedRegions().values());
+    components.put(ECheckPanel.IDENTIFIER, echeckPanel);
+    
+    taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
+    components.put(TaskTablePanel.IDENTIFIER, taskPanel);
 
     return components;
   }
@@ -796,8 +800,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(extras, new ArmyStatsAction(this));
     addMenuItem(extras, new TradeOrganizerAction(this));
 
-    addMenuItem(extras, new TaskTableAction(this));
-    addMenuItem(extras, new ECheckAction(this));
+//    addMenuItem(extras, new TaskTableAction(this));
+//    addMenuItem(extras, new ECheckAction(this));
     addMenuItem(extras, new VorlageAction(this));
     extras.addSeparator();
     addMenuItem(extras, new RepaintAction(this));

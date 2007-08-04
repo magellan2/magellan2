@@ -24,6 +24,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -51,6 +52,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -59,6 +61,8 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -81,9 +85,12 @@ import magellan.library.utils.logging.Logger;
 /**
  * A panel for showing statistics about factions.
  */
-public class ECheckPanel extends InternationalizedDataPanel implements SelectionListener {
+public class ECheckPanel extends InternationalizedDataPanel implements SelectionListener, ShortcutListener {
 	private static final Logger log = Logger.getInstance(ECheckPanel.class);
-	private JTextField txtECheckEXE = null;
+
+  public static final String IDENTIFIER = "ECHECK";
+  
+  private JTextField txtECheckEXE = null;
 	private JList lstMessages = null;
 	private JComboBox cmbFactions = null;
 	private JTextArea txtOutput = null;
@@ -93,6 +100,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	private JCheckBox chkConfirmedOnly = null;
 	private JCheckBox chkSelRegionsOnly = null;
 	private Collection<Region> regions = null;
+
+  // shortcuts
+  private List<KeyStroke> shortcuts;
 
 	/**
 	 * Creates a new ECheckPanel object.
@@ -133,6 +143,15 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     this.setLayout(new BorderLayout());
     this.add(mainPanel,BorderLayout.CENTER);
+    
+    // initialize shortcuts
+    shortcuts = new ArrayList<KeyStroke>(1);
+
+    // 0: Focus
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+
+    // register for shortcuts
+    DesktopEnvironment.registerShortcutListener(this);
 	}
   
   private Container getButtonPanel() {
@@ -812,5 +831,52 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	public void setConfirmedOnly(boolean b) {
 		chkConfirmedOnly.setSelected(b);
 	}
+
+  /**
+   * Should return all short cuts this class want to be informed. The elements
+   * should be of type javax.swing.KeyStroke
+   * 
+   * 
+   */
+  public Iterator<KeyStroke> getShortCuts() {
+    return shortcuts.iterator();
+  }
+
+  /**
+   * This method is called when a shortcut from getShortCuts() is recognized.
+   * 
+   * @param shortcut
+   *          DOCUMENT-ME
+   */
+  public void shortCut(javax.swing.KeyStroke shortcut) {
+    int index = shortcuts.indexOf(shortcut);
+
+    switch (index) {
+    case -1:
+      break; // unknown shortcut
+
+    case 0:
+      DesktopEnvironment.requestFocus(IDENTIFIER);
+      break; 
+    }
+  }
+  
+  /**
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   */
+  public String getShortcutDescription(Object stroke) {
+    int index = shortcuts.indexOf(stroke);
+
+    return Resources.get("echeckpanel.shortcut.description." + String.valueOf(index));
+  }
+
+  /**
+   * DOCUMENT-ME
+   * 
+   * 
+   */
+  public String getListenerDescription() {
+    return Resources.get("echeckpanel.shortcut.title");
+  }
 
 }

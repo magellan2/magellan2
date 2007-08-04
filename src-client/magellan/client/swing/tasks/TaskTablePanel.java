@@ -14,6 +14,7 @@
 package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -26,9 +27,12 @@ import java.util.Vector;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
@@ -41,6 +45,7 @@ import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.Problem;
@@ -54,14 +59,19 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-																		  SelectionListener
+																		  SelectionListener, ShortcutListener
 {
 	private static final Logger log = Logger.getInstance(TaskTablePanel.class);
-	
+
+  public static final String IDENTIFIER = "TASKS";
+
 	protected JTable table;
 	TableSorter sorter;
 	TaskTableModel model;
 	protected List<Inspector> inspectors;
+
+  // shortcuts
+  private List<KeyStroke> shortcuts;
 
 	/**
 	 * Creates a new TaskTablePanel object.
@@ -134,6 +144,16 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		// layout component
 		this.setLayout(new BorderLayout());
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
+    
+    // initialize shortcuts
+    shortcuts = new ArrayList<KeyStroke>(1);
+
+    // 0: Focus
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+
+    // register for shortcuts
+    DesktopEnvironment.registerShortcutListener(this);
+
 	}
 
 	private void selectObjectOnRow(int row) {
@@ -144,6 +164,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	private static final int RECALL_IN_MS = 10;
 	// TODO make this configurable
 	private static final boolean REGIONS_WITH_UNCONFIRMED_UNITS_ONLY = true;
+
 	private Timer timer;
 	private Iterator regionsIterator;
 
@@ -217,6 +238,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		inspectors.add(ToDoInspector.getInstance());
 		inspectors.add(MovementInspector.getInstance());
 		inspectors.add(ShipInspector.getInstance());
+    inspectors.add(AttackInspector.getInstance());
 	}
 
 	/**
@@ -422,4 +444,52 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			}
 		}
 	}
+  
+  /**
+   * Should return all short cuts this class want to be informed. The elements
+   * should be of type javax.swing.KeyStroke
+   * 
+   * 
+   */
+  public Iterator<KeyStroke> getShortCuts() {
+    return shortcuts.iterator();
+  }
+
+  /**
+   * This method is called when a shortcut from getShortCuts() is recognized.
+   * 
+   * @param shortcut
+   *          DOCUMENT-ME
+   */
+  public void shortCut(javax.swing.KeyStroke shortcut) {
+    int index = shortcuts.indexOf(shortcut);
+
+    switch (index) {
+    case -1:
+      break; // unknown shortcut
+
+    case 0:
+      DesktopEnvironment.requestFocus(IDENTIFIER);
+      break; 
+    }
+  }
+  
+  /**
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   */
+  public String getShortcutDescription(Object stroke) {
+    int index = shortcuts.indexOf(stroke);
+
+    return Resources.get("tasks.shortcut.description." + String.valueOf(index));
+  }
+
+  /**
+   * DOCUMENT-ME
+   * 
+   * 
+   */
+  public String getListenerDescription() {
+    return Resources.get("tasks.shortcut.title");
+  }
+
 }

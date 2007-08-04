@@ -185,9 +185,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 	private void initGUI() {
 		readSettings();
-
+    
 		content = new ScrollPanel();
-
 		// content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		scpContent = new JScrollPane(content);
@@ -336,8 +335,20 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				if(se.getActiveObject() instanceof Unit &&
 					   EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) se.getActiveObject())) {
 					Unit u = (Unit) se.getActiveObject();
-
-					loadEditors(u);
+          
+          // we have to carefully think when to load the new editors
+          // when the editor of the selected unit already exists, loading all
+          // editors again may trigger (via focusGained) a new selection event
+          // on the wrong unit (Mantis Bug #78)
+          boolean isNull = u == null || currentUnit == null;
+          boolean regionChanged = isNull || u.getRegion() != currentUnit.getRegion();
+          boolean factionChanged = isNull || u.getFaction() != currentUnit.getFaction();
+          boolean islandChanged = isNull || u.getRegion().getIsland() != currentUnit.getRegion().getIsland();
+          boolean islandMode = ((listMode >> LIST_ISLAND) & 1) != 0;
+          boolean regionMode = ((listMode >> LIST_REGION) & 1) != 0;
+          boolean factionMode = ((listMode >> LIST_FACTION) & 1) != 0;
+					if (isNull || islandChanged || (!islandMode && regionChanged) || (factionMode && factionChanged))
+              loadEditors(u);
 
 					// only jump to a different unit
 					if((currentUnit == null) || !currentUnit.equals(u)) {
@@ -381,7 +392,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 						units.clear();
 						removeListenersFromAll();
 						content.removeAll();
-						repaint();
 					}
 				} else if(se.getActiveObject() instanceof Island) {
 					currentRegion = null;
@@ -394,7 +404,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					units.clear();
 					removeListenersFromAll();
 					content.removeAll();
-					repaint();
 				}
 			} else {
 				currentUnit = null;
@@ -403,9 +412,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				units.clear();
 				removeListenersFromAll();
 				content.removeAll();
-				repaint();
 			}
 
+      repaint();
 			// make the UI component refresh itself - necessary at least under Windows
 			revalidate();
 		} else {
@@ -2358,6 +2367,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			}
 		}
 
+
+      
+    
 		/**
 		 * DOCUMENT-ME
 		 *

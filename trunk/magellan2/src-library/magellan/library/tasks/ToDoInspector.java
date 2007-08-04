@@ -21,16 +21,17 @@ import magellan.library.Unit;
 
 
 /**
- * An Inspector inspects the given resource and returns a list of problems.
+ * This Inspector inspects a unit's orders and reports an item for every comment
+ * that starts with "TODO".
  */
 public class ToDoInspector extends AbstractInspector implements Inspector {
-	/** DOCUMENT-ME */
+	/** The singleton instance. */
 	public static final ToDoInspector INSPECTOR = new ToDoInspector();
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns a (singleton) instance.
 	 * 
+   * @return An instance of this class
 	 */
 	public static ToDoInspector getInstance() {
 		return INSPECTOR;
@@ -40,12 +41,7 @@ public class ToDoInspector extends AbstractInspector implements Inspector {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
 	 */
 	public List<AbstractProblem> reviewUnit(Unit u, int type) {
 		if((u == null) || u.ordersAreNull()) {

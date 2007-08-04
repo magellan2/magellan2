@@ -641,6 +641,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
           if (earned[i] != wanted[i]) {
             msgArgs = new Object[] { new Integer(wanted[i]) };
+            sb.append(" ");
             sb.append((new java.text.MessageFormat(Resources.get("factionstatspanel.node.incomewanted"))).format(msgArgs));
           }
 

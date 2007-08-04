@@ -969,4 +969,5 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			}
 		}
 	}
-}
+  }
+

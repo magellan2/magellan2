@@ -223,6 +223,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
   private static final Comparator<Named> nameCmp = new NameComparator<Unique>(idCmp);
 
+  public static final String IDENTIFIER = "OVERVIEW";
+
   /**
    * Creates a new EMapOverviewPanel object.
    * 
@@ -288,7 +290,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     lstHistory.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getSelectedValue()));
+          if (lstHistory.getSelectedValue()!=null){
+            dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getSelectedValue()));
+          }
         }
       }
     });
@@ -585,12 +589,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         Region selectedRegion = getSelectedRegion(node);
 
-        if ((selectedRegion != null) && (selectedRegion.equals(previousRegion) == false)) {
-          previousRegion = selectedRegion;
+        if ((selectedRegion != null)){
+          if(!selectedRegion.equals(previousRegion)) {
 
-          // fire to make clear we have another region
-          dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            // fire to make clear we have another region
+            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+          }          
         }
+        previousRegion = selectedRegion;
 
         Faction f = (Faction) activeObject;
 
@@ -602,12 +608,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         Region selectedRegion = getSelectedRegion(node);
 
-        if ((selectedRegion != null) && !selectedRegion.equals(previousRegion)) {
-          previousRegion = selectedRegion;
+        if ((selectedRegion != null)){
+          if(!selectedRegion.equals(previousRegion)) {
 
-          // fire to make clear we have another region
-          dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            // fire to make clear we have another region
+            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+          }
         }
+        previousRegion = selectedRegion;
 
         setAlliances(g.allies(), g.getFaction());
       } else if (o instanceof UnitNodeWrapper) {
@@ -616,12 +624,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         Region selectedRegion = getSelectedRegion(node);
 
-        if ((selectedRegion != null) && !selectedRegion.equals(previousRegion)) {
-          previousRegion = selectedRegion;
+        if ((selectedRegion != null)){
+          if(!selectedRegion.equals(previousRegion)) {
 
-          // fire to make clear we have another region
-          dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            // fire to make clear we have another region
+            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+          }
         }
+        previousRegion = selectedRegion;
 
         Group g = ((Unit) activeObject).getGroup();
 
@@ -638,12 +648,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
           Region selectedRegion = ((HasRegion) activeObject).getRegion();
 
-          if ((selectedRegion != null) && (selectedRegion.equals(previousRegion) == false)) {
-            previousRegion = selectedRegion;
+          if ((selectedRegion != null)){
+            if(!selectedRegion.equals(previousRegion)) {
 
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+              // fire to make clear we have another region
+              dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            }
           }
+          previousRegion = selectedRegion;
         }
 
         if (!activeAlliancesAreDefault) {
@@ -656,12 +668,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         Region selectedRegion = getSelectedRegion(node);
 
-        if ((selectedRegion != null) && (selectedRegion.equals(previousRegion) == false)) {
-          previousRegion = selectedRegion;
+        if ((selectedRegion != null)){
+          if(!selectedRegion.equals(previousRegion)) {
 
-          // fire to make clear we have another region
-          dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            // fire to make clear we have another region
+            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+          }
         }
+        previousRegion = selectedRegion;
 
         if (!activeAlliancesAreDefault) {
           setDefaultAlliances();
@@ -675,17 +689,20 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           setDefaultAlliances();
           tree.repaint();
         }
+        previousRegion=null;
       } else if (o instanceof SimpleNodeWrapper) {
         activeObject = null;
 
         Region selectedRegion = getSelectedRegion(node);
 
-        if ((selectedRegion != null) && (selectedRegion.equals(previousRegion) == false)) {
-          previousRegion = selectedRegion;
+        if ((selectedRegion != null)){
+          if(!selectedRegion.equals(previousRegion)) {
 
-          // fire to make clear we have another region
-          dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+            // fire to make clear we have another region
+            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
+          }
         }
+        previousRegion = selectedRegion;
 
         // not a very smart implementation
         // this is basically a workaround for those nodes
@@ -1582,7 +1599,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     case 0:
     case 1:
-      DesktopEnvironment.requestFocus("OVERVIEW");
+      DesktopEnvironment.requestFocus(IDENTIFIER);
       tree.requestFocus(); // activate the tree, not the scrollpane
 
       break;

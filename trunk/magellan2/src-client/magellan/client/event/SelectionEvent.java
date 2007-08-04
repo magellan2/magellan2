@@ -16,6 +16,8 @@ package magellan.client.event;
 import java.util.Collection;
 import java.util.EventObject;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * An event issued when the user activates a different object or selects a number of objects. This
  * might occur for example when the user clicks on a region on the map.
@@ -24,6 +26,8 @@ import java.util.EventObject;
  * @see EventDispatcher
  */
 public class SelectionEvent extends EventObject {
+  private static final Logger log = Logger.getInstance(SelectionEvent.class);
+  
 	/**
 	 * Some flags to specify what to do with SE or where they come from etc. Please document, where
 	 * an whatfor they are used
@@ -40,6 +44,7 @@ public class SelectionEvent extends EventObject {
 	 * treat selections of regions on the map and other selections in different ways.)
 	 */
 	public static final int ST_REGIONS = 1;
+  
 	private Collection selectedObjects;
 	private Object activeObject;
 	private int selectionType;
@@ -62,14 +67,27 @@ public class SelectionEvent extends EventObject {
 		this(source, selectedObjects, activeObject, SelectionEvent.ST_DEFAULT);
 	}
 
-	/**
-	 * Creates a new SelectionEvent object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
+  /**
+   * Constructs a new selection event with selectionType = ST_DEFAULT.
+   * <p>
+   * Usually such an event indicates only a change of the active object which is
+   * indicated by activeObject != null and selectedObjects == null.
+   * </p>
+   * 
+   * @param source
+   *          the object issuing the event.
+   * @param selectedObjects
+   *          the objects selected by the user. This collection does not
+   *          necessarily contain activeObject. Specifying null for this
+   *          parameter indicates that the selected objects did actually not
+   *          change.
+   * @param activeObject
+   *          the single object activated by the user.
+   * @param selectionType
+   *          The type of selection event. Currently supportet types are
+   *          {@link SelectionEvent#ST_DEFAULT},
+   *          {@link SelectionEvent#ST_REGIONS}.
+   */
 	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject,
 						  int selectionType) {
 		super(source);

@@ -24,7 +24,6 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ShortcutListener;
-import magellan.client.swing.ECheckDialog;
 import magellan.library.utils.Resources;
 
 

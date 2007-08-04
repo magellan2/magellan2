@@ -28,6 +28,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import magellan.client.Client;
+import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
@@ -120,7 +121,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 		}
 
 		// repaint since command confirmation status may have changed
-		client.getDesktop().repaint("OVERVIEW");
+		client.getDesktop().repaint(EMapOverviewPanel.IDENTIFIER);
 	}
 
 	/* (non-Javadoc)

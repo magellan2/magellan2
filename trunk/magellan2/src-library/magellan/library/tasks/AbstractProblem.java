@@ -31,8 +31,10 @@ public abstract class AbstractProblem implements Problem {
 	/**
 	 * Creates a new AbstractProblem object.
 	 *
-	 * 
-	 * 
+	 * @param s The origin of the problem
+   * @param o The object that this problem critisizes
+	 * @param i The Inspector that reported this problem
+   * @param m The message text of the problem  
 	 * 
 	 * 
 	 */
@@ -43,13 +45,13 @@ public abstract class AbstractProblem implements Problem {
 	/**
 	 * Creates a new AbstractProblem object.
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+   * @param s The origin of the problem
+   * @param o The object that this problem critisizes
+   * @param i The Inspector that reported this problem
+   * @param m The message text of the problem
+   * @param l The line number where the problem occured  
 	 *
-	 * @throws NullPointerException DOCUMENT-ME
+	 * @throws NullPointerException if any of the parameters is null
 	 */
 	public AbstractProblem(Object s, HasRegion o, Inspector i, String m, int l) {
 		if((s == null) || (o == null) || (i == null) || (m == null)) {

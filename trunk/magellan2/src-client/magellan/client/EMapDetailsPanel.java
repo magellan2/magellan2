@@ -861,7 +861,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.recruit") + ": " +
 										  getDiffString(r.maxRecruit(), r.maxRecruit(),
 														r.modifiedRecruit()) + " " +
-										  Resources.get("emapdetailspanel.node.of") + r.maxRecruit(), "rekruten"));
+										  Resources.get("emapdetailspanel.node.of") + " " + r.maxRecruit(), "rekruten"));
 
 		// silver
 		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " +
@@ -2178,7 +2178,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 		// disguise
 		if(u.getGuiseFaction() != null) {
-			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") + u.getGuiseFaction(),
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.disguisedas") +" "+ u.getGuiseFaction(),
 										((stealth != null)
 										 ? stealth.getSkillType().getID().toString() : "tarnung")));
 		}

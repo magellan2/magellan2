@@ -702,14 +702,20 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void refillChangeFactionConfirmation(JMenu aMenu, int aConfirmationType) {
     if (aMenu.getItemCount() == 0) {
       // fill basic faction "all units"
-      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, false));
-      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, true));
+      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, false, false));
+      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, true, false));
+      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, false, true));
+      addMenuItem(aMenu, new ChangeFactionConfirmationAction(this, null, aConfirmationType, true, true));
     } else {
-      JMenuItem one = aMenu.getItem(0);
-      JMenuItem two = aMenu.getItem(1);
+      JMenuItem all = aMenu.getItem(0);
+      JMenuItem allSel = aMenu.getItem(1);
+      JMenuItem spy = aMenu.getItem(2);
+      JMenuItem spySel = aMenu.getItem(3);
       aMenu.removeAll();
-      aMenu.add(one);
-      aMenu.add(two);
+      aMenu.add(all);
+      aMenu.add(allSel);
+      aMenu.add(spy);
+      aMenu.add(spySel);
     }
 
     if (getData() != null) {
@@ -718,8 +724,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Faction f = (Faction) iter.next();
 
         if ((f.isPrivileged()) && !f.units().isEmpty()) {
-          aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, false));
-          aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, true));
+          aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, false, false));
+          aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, true, false));
         }
       }
     }

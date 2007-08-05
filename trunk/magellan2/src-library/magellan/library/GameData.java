@@ -779,7 +779,7 @@ public abstract class GameData implements Cloneable {
    * inherits the rules and name from <b>newerGD</b>.
    * 
    * @param olderGD
-   *          A GaemData object, must be the newer one of the two
+   *          A GameData object, must be the newer one of the two
    * @param newerGD
    *          The older GameData object.
    * @return the merged GameData
@@ -1286,27 +1286,27 @@ public abstract class GameData implements Cloneable {
      * retrieved.
      */
     for (Iterator it = resultGD.units().values().iterator(); it.hasNext();) {
-      Unit newUnit = (Unit) it.next();
+      Unit resultUnit = (Unit) it.next();
 
       // find the second first since we may need the temp id
-      Unit curUnit2 = newerGD.findUnit(newUnit.getID(), null, null);
+      Unit newerUnit = newerGD.findUnit(resultUnit.getID(), null, null);
 
       // find a temp ID to gather information out of the temp unit
       ID tempID = null;
       Region newRegion = null;
 
-      if ((curUnit2 != null) && !sameRound) { // only use temp ID if reports
+      if ((newerUnit != null) && !sameRound) { // only use temp ID if reports
                                               // have different date
-        tempID = curUnit2.getTempID();
+        tempID = newerUnit.getTempID();
 
         if (tempID != null) {
           tempID = UnitID.createUnitID(-((UnitID) tempID).intValue(), newerGD.base);
         }
 
-        newRegion = curUnit2.getRegion();
+        newRegion = newerUnit.getRegion();
       }
 
-      Unit curUnit1 = olderGD.findUnit(newUnit.getID(), tempID, newRegion); // now
+      Unit olderUnit = olderGD.findUnit(resultUnit.getID(), tempID, newRegion); // now
                                                                             // get
                                                                             // the
                                                                             // unit
@@ -1316,20 +1316,20 @@ public abstract class GameData implements Cloneable {
                                                                             // report
 
       // first merge step
-      if (curUnit1 != null) {
+      if (olderUnit != null) {
         if (sameRound) { // full merge
-          MagellanFactory.mergeUnit(olderGD, curUnit1, resultGD, newUnit, sameRound);
+          MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound);
         } else { // only copy the skills to get change-level base
 
-          if ((curUnit2.getSkills() != null) || (curUnit1.getFaction().isPrivileged())) {
-            MagellanFactory.copySkills(curUnit1, newUnit);
+          if ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged())) {
+            MagellanFactory.copySkills(olderUnit, resultUnit);
           }
         }
       }
 
       // second merge step
-      if (curUnit2 != null) {
-        MagellanFactory.mergeUnit(newerGD, curUnit2, resultGD, newUnit, sameRound);
+      if (newerUnit != null) {
+        MagellanFactory.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound);
       }
     }
 

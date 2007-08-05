@@ -131,6 +131,7 @@ public class ReportMerger extends Object {
 	public class SwingUserInterface implements UserInterface {
 		// user interface
 		ProgressDlg dlg = null;
+    boolean showing;
 
 		public SwingUserInterface(JFrame parent) {
 			init(parent);
@@ -142,6 +143,7 @@ public class ReportMerger extends Object {
 		 * 
 		 */
 		private void init(JFrame parent) {
+      log.info("init");
 			dlg = new ProgressDlg(parent, true);
 			dlg.labelText.setText(Resources.get("util.reportmerger.status.merge"));
 			dlg.progressBar.setMinimum(0);
@@ -149,12 +151,13 @@ public class ReportMerger extends Object {
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Shows the dialog.
 		 */
 		public void show() {
-			new Thread(new Runnable() {public void run() {
+      showing=true;
+      SwingUtilities.invokeLater((new Runnable() {public void run() {
 				SwingUserInterface.this.dlg.setVisible(true);
-			}}).start();
+			}})); 
 		}
 
 		private class Confirm implements Runnable {
@@ -227,16 +230,25 @@ public class ReportMerger extends Object {
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Notifies the userface that the task is done. Destroys progress dialog.
 		 */
 		public void ready() {
-			SwingUtilities.invokeLater(new Runnable() {
-					public void run() {
-						SwingUserInterface.this.dlg.setVisible(false);
-						SwingUserInterface.this.dlg.dispose();
-					}
-				});
-		}
+      if (showing) {
+        // wait for dialog to come up in the first place
+        while (!SwingUserInterface.this.dlg.isShowing()) {
+          log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+      showing = false;
+      log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
+      SwingUserInterface.this.dlg.setVisible(false);
+      SwingUserInterface.this.dlg.dispose();
+    }
 	}
 
 	UserInterface ui;

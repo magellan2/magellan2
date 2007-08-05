@@ -1,3 +1,11 @@
+2007-08-05 stm (stm_@users.sourceforge.net)
+    * fixed bug of not disappearing merge progress dialog
+	* improved autoexpand/collapse in region overview
+	* improved merging of spies
+	* added option "spies" in order confirmation menu; confirmation of spies now possible
+	* added options for RESERVIERE auto completion
+	* added faction column and improved refreshing for TaskTablePanel
+	
 2007-08-04 stm (stm_@users.sourceforge.net)
     * added AttackInspector
     * integrated TaskPanel in docking

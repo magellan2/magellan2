@@ -340,14 +340,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
           // when the editor of the selected unit already exists, loading all
           // editors again may trigger (via focusGained) a new selection event
           // on the wrong unit (Mantis Bug #78)
-          boolean isNull = u == null || currentUnit == null;
-          boolean regionChanged = isNull || u.getRegion() != currentUnit.getRegion();
-          boolean factionChanged = isNull || u.getFaction() != currentUnit.getFaction();
-          boolean islandChanged = isNull || u.getRegion().getIsland() != currentUnit.getRegion().getIsland();
+          boolean noUnit = u == null || currentUnit == null;
+          boolean regionChanged = noUnit || u.getRegion() != currentUnit.getRegion();
+          boolean factionChanged = noUnit || u.getFaction() != currentUnit.getFaction();
+          boolean islandChanged = noUnit || u.getRegion().getIsland() != currentUnit.getRegion().getIsland();
           boolean islandMode = ((listMode >> LIST_ISLAND) & 1) != 0;
           boolean regionMode = ((listMode >> LIST_REGION) & 1) != 0;
           boolean factionMode = ((listMode >> LIST_FACTION) & 1) != 0;
-					if (isNull || islandChanged || (!islandMode && regionChanged) || (factionMode && factionChanged))
+					if (noUnit || islandChanged || (!islandMode && regionChanged) || (factionMode && factionChanged))
               loadEditors(u);
 
 					// only jump to a different unit
@@ -459,11 +459,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 
 		// restore focus
-		if(((DesktopEnvironment.getMode() == DesktopEnvironment.FRAME) || restoreFocus) &&
-			   (currentUnit != null) && (currentUnit.getCache() != null) &&
-			   (currentUnit.getCache().orderEditor != null)) {
-			requestFocus(currentUnit.getCache().orderEditor);
-		}
+    if (((DesktopEnvironment.getMode() == DesktopEnvironment.FRAME) || restoreFocus) && 
+        (currentUnit != null) && (currentUnit.getCache() != null) && 
+        (currentUnit.getCache().orderEditor != null)) {
+      SwingUtilities.invokeLater(new Runnable() {
+        /**
+         * @see java.lang.Runnable#run()
+         */
+        public void run() {
+          requestFocus(currentUnit.getCache().orderEditor);
+        }
+      });
+    }
 
 		// update button state
 		buttons.currentUnitChanged();

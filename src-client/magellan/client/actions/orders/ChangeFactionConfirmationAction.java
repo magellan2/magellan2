@@ -43,23 +43,24 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 	private Faction faction;
 	private int confirmation; // one of the values above, should be selfexplaining
 	private boolean selectedRegionsOnly; // only change confirmation in selected regions
+  private boolean spies; // only change confirmation of spies
 
 	/**
 	 * Creates a new ChangeFactionConfirmationAction object.
+   * 
+   * <code>conf</code> is currently one of {@link ChangeFactionConfirmationAction#SETCONFIRMATION}, {@link ChangeFactionConfirmationAction#REMOVECONFIRMATION}, {@link ChangeFactionConfirmationAction#INVERTCONFIRMATION}.
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
+   * @param client 
+   * @param f The faction for this action. <code>null</code> means all factions.
+   * @param conf The type of action
+   * @param r If <code>true</code>, only selected regions shall be affected.
+   * @param spy If <code>true</code>, only spies will be affected.
 	 *
 	 * @throws IllegalArgumentException DOCUMENT-ME
 	 */
-	public ChangeFactionConfirmationAction(Client client, Faction f, int conf, boolean r) {
+	public ChangeFactionConfirmationAction(Client client, Faction f, int conf, boolean r, boolean spy) {
 		super(client);
 
-		if(f != null) {
-			setName(f.toString());
-		}
 
 		faction = f;
 
@@ -69,10 +70,18 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 
 		confirmation = conf;
 		selectedRegionsOnly = r;
+    spies = spy;
 
-		if(selectedRegionsOnly) {
-			setName(getName() + " " + Resources.get("actions.changefactionconfirmationaction.name.postfix.selected"));
-		}
+    StringBuffer sb = new StringBuffer(100);
+    if (spies)
+      sb.append(Resources.get("actions.changefactionconfirmationaction.spies"));
+    else if(faction == null) 
+      sb.append(Resources.get("actions.changefactionconfirmationaction.all"));
+    else
+      sb.append(faction.toString());
+    if (selectedRegionsOnly)
+      sb.append(" "+Resources.get("actions.changefactionconfirmationaction.postfix.selected"));
+    setName(sb.toString());
 	}
 
 	/**
@@ -95,7 +104,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 			for(Iterator iter = units.iterator(); iter.hasNext();) {
 				Unit unit = (Unit) iter.next();
 
-				if(!unit.isSpy()) {
+				if(spies==unit.isSpy()) {
 					// this is slow but ok for this situation (normally one would iterate over the
 					// regions and check the containment once per region)
 					if(selectedRegionsOnly &&

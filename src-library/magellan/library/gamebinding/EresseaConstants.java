@@ -77,9 +77,6 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final ID C_MISC = StringID.create("MISC");
 	
-	/** A placeholder for an "amount" of something, i.e. a number */
-	public static final String O_AMOUNT = "<amount>";
-
 	/** DOCUMENT-ME */
 	public static final String O_ADDRESSES = "ADDRESSES";
 

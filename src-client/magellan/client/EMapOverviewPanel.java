@@ -740,7 +740,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       } else if (o instanceof SimpleNodeWrapper) {
         o = ((SimpleNodeWrapper) o).getObject();
       } else {
-        log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown. Please report to http://eressea.upb.de/magellan/bugs/ :" + o.toString());
+        log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown:" + o.toString());
       }
 
       if (tse.isAddedPath(path)) {
@@ -1034,24 +1034,24 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   protected void doExpandAndCollapse(Collection<TreePath> newSelection) {
     // filter collapse info that would be re-expanded
     Iterator it = collapseInfo.iterator();
-    Map<TreeNode, TreePath> buf1 = new HashMap<TreeNode, TreePath>();
-    Map<TreeNode, TreePath> buf2 = new HashMap<TreeNode, TreePath>();
+    Map<TreeNode, TreePath> pathsToCollapse = new HashMap<TreeNode, TreePath>();
+    Map<TreeNode, TreePath> pathsToExpand = new HashMap<TreeNode, TreePath>();
 
     while (it.hasNext()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
       TreePath path = new TreePath(node.getPath());
-      buf1.put(node, path);
+      pathsToCollapse.put(node, path);
 
       Iterator it2 = expandInfo.iterator();
 
       while (it2.hasNext()) {
         DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) it2.next();
 
-        if (!buf2.containsKey(node2)) {
-          buf2.put(node2, new TreePath(node2.getPath()));
+        if (!pathsToExpand.containsKey(node2)) {
+          pathsToExpand.put(node2, new TreePath(node2.getPath()));
         }
 
-        TreePath path2 = (TreePath) buf2.get(node2);
+        TreePath path2 = (TreePath) pathsToExpand.get(node2);
 
         if (path.isDescendant(path2)) {
           it.remove();
@@ -1073,8 +1073,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
       TreePath path = null;
 
-      if (buf2.containsKey(node)) {
-        path = (TreePath) buf2.get(node);
+      if (pathsToExpand.containsKey(node)) {
+        path = (TreePath) pathsToExpand.get(node);
       } else {
         path = new TreePath(node.getPath());
       }
@@ -1117,10 +1117,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     while (it.hasNext()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
-      TreePath path = (TreePath) buf1.get(node);
+      TreePath path = (TreePath) pathsToCollapse.get(node);
 
       if (tree.isExpanded(path)) {
         tree.collapsePath(path);
+        it.remove();
       }
     }
   }
@@ -1273,7 +1274,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
 
       doExpandAndCollapse(newSel);
-
+        
       if (path != null) {
         // center on the selected item if it is outside the view port
         SwingUtilities.invokeLater(new ScrollerRunnable(tree.getPathBounds(path)));
@@ -1787,27 +1788,27 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       for (Iterator iter = r.units().iterator(); iter.hasNext();) {
         Unit u = (Unit) iter.next();
 
-        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+//        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
           if (first) {
             confirm = !u.isOrdersConfirmed();
             first = false;
           }
 
           u.setOrdersConfirmed(confirm);
-        }
+//        }
       }
 
       dispatcher.fire(new OrderConfirmEvent(this, r.units()));
     } else if (activeObject instanceof Unit) {
       Unit u = (Unit) activeObject;
 
-      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+//      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
         u.setOrdersConfirmed(!u.isOrdersConfirmed());
 
         List<Unit> units = new LinkedList<Unit>();
         units.add(u);
         dispatcher.fire(new OrderConfirmEvent(this, units));
-      }
+//      }
     }
 
     tree.invalidate();

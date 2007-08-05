@@ -44,6 +44,7 @@ import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.Inspector;
@@ -169,6 +170,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	private Iterator regionsIterator;
 
 	private void refreshProblems() {
+    if(timer != null) {
+      timer.cancel();
+      timer = null;
+    }
 		if(model != null) {
 			model.clearProblems();
 		}
@@ -186,11 +191,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			}
 		} else {
 			regionsIterator = null;
-
-			if(timer != null) {
-				timer.cancel();
-				timer = null;
-			}
 		}
 	}
 
@@ -354,11 +354,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	}
 
 	private Vector<String> getHeaderTitles() {
-		Vector<String> v = new Vector<String>(6);
+		Vector<String> v = new Vector<String>(7);
 		v.add(Resources.get("tasks.tasktablepanel.header.type"));
 		v.add(Resources.get("tasks.tasktablepanel.header.description"));
 		v.add(Resources.get("tasks.tasktablepanel.header.object"));
 		v.add(Resources.get("tasks.tasktablepanel.header.region"));
+		v.add(Resources.get("tasks.tasktablepanel.header.faction"));
 		v.add(Resources.get("tasks.tasktablepanel.header.line"));
 //		v.add(Resources.get("tasks.tasktablepanel.header.unknown"));
 
@@ -409,8 +410,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		private static final int PROBLEM_POS = 1;
 		private static final int OBJECT_POS = 2;
 		private static final int REGION_POS = 3;
-		private static final int LINE_POS = 4;
-//		private static final int UNKNOWN_POS = 5;
+		private static final int FACTION_POS = 4;
+		private static final int LINE_POS = 5;
+		private static final int NUMBEROF_POS = 6;
 
 		/**
 		 * Add a problem to this model.
@@ -418,12 +420,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		 * @param p 
 		 */
 		public void addProblem(Problem p) {
-      Object[] o = new Object[6];
+      Object[] o = new Object[NUMBEROF_POS+1];
       int i=0;
 			o[i++] = Integer.toString(p.getType());
 			o[i++] = p;
-      o[i++] = p.getObject();
-      o[i++] = p.getObject().getRegion();
+      HasRegion hasR = p.getObject();
+      o[i++] = hasR;
+      o[i++] = hasR.getRegion();
+      if (hasR instanceof Unit)
+      o[i++] = ((Unit) hasR).getFaction();
+      else if(hasR instanceof UnitContainer)
+        o[i++]=((UnitContainer) hasR).getOwner().getFaction();
+      else
+        o[i++]="";
       o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
       o[i++] = null;
 			this.addRow(o);

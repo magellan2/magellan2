@@ -1580,7 +1580,7 @@ public abstract class MagellanFactory {
       newUnit.setGuiseFaction(newGD.getFaction(curUnit.getGuiseFaction().getID()));
     }
 
-    newUnit.setSpy(curUnit.isSpy() && (newUnit.getGuiseFaction() == null));
+    newUnit.setSpy((curUnit.isSpy() || newUnit.isSpy()) && (newUnit.getGuiseFaction() == null));
 
     if(curUnit.getHealth() != null) {
       newUnit.setHealth(curUnit.getHealth());

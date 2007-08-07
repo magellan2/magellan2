@@ -1521,7 +1521,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
           }
         });
         this.setLocationRelativeTo(getOwner());
-        this.show();
+        this.setVisible(true);
 
         return retVal;
       }

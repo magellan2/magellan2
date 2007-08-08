@@ -105,10 +105,12 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+   * Set the logging level. Currently supported levels are {@link Logger#FATAL},
+   * {@link Logger#ERROR}, {@link Logger#WARN}, {@link Logger#INFO},
+   * {@link Logger#DEBUG}, {@link Logger#AWT}.
+   * 
+   * @param level The new log level.
+   */
 	public static void setLevel(int level) {
 		verboseLevel = level;
 	}

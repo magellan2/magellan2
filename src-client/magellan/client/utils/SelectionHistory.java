@@ -23,6 +23,8 @@ import javax.swing.event.ChangeListener;
 
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.event.TempUnitEvent;
+import magellan.client.event.TempUnitListener;
 import magellan.library.utils.Bucket;
 
 
@@ -33,7 +35,7 @@ import magellan.library.utils.Bucket;
  * @version $Revision: 171 $
  */
 public class SelectionHistory {
-	private static SelectionListener eventHook = new EventHook();
+	private static EventHook eventHook = new EventHook();
 	private static Bucket<Object> history = new Bucket<Object>(10);
 	private static Collection<Object> ignoredSources = new HashSet<Object>();
 	private static List<ChangeListener> listeners = new ArrayList<ChangeListener>();
@@ -43,9 +45,13 @@ public class SelectionHistory {
 	 *
 	 * 
 	 */
-	public static SelectionListener getEventHook() {
+	public static SelectionListener getSelectionEventHook() {
 		return eventHook;
 	}
+
+  public static TempUnitListener getTempUnitEventHook() {
+    return eventHook;
+  }
 
 	/**
 	 * DOCUMENT-ME
@@ -53,7 +59,7 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void selectionChanged(SelectionEvent e) {
-		if((e.getActiveObject() != null) && !ignoredSources.contains(e.getSource())) {
+		if((e.getActiveObject() != null) && !ignoredSources.contains(e.getSource())){
 			history.add(e.getActiveObject());
 			informListeners();
 		}
@@ -123,14 +129,34 @@ public class SelectionHistory {
 		history.clear();
 	}
 
-	private static class EventHook implements SelectionListener {
+	private static class EventHook implements SelectionListener, TempUnitListener {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
 		 */
 		public void selectionChanged(SelectionEvent e) {
 			SelectionHistory.selectionChanged(e);
 		}
+
+    /**
+     * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
+     */
+    public void tempUnitCreated(TempUnitEvent e) {
+      
+    }
+
+    /**
+     * @see magellan.client.event.TempUnitListener#tempUnitDeleting(magellan.client.event.TempUnitEvent)
+     */
+    public void tempUnitDeleting(TempUnitEvent e) {
+      SelectionHistory.tempUnitDeleting(e);
+    }
 	}
+
+  /**
+   * @param e
+   */
+  public static void tempUnitDeleting(TempUnitEvent e) {
+    getHistory().remove(e.getTempUnit());
+    
+  }
 }

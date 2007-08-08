@@ -16,6 +16,8 @@ package magellan.client.event;
 import java.util.Collection;
 import java.util.EventObject;
 
+import javax.swing.JComponent;
+
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -40,35 +42,42 @@ public class SelectionEvent extends EventObject {
 	 * SelectionActions classes and in the Mapper class. These selections have to be ignored by
 	 * some components (like EMapOverviewPanel) as the selectionstate of the map is not mirrored
 	 * in the tree in EMapOverviewPanel. On the other hand the Mapper class should ignore all
-	 * SelectionEvents with a type different to ST_REGIONS (This makes it possible for the user to
+	 * SelectionEvents with a type different to <code>ST_REGIONS</code> (This makes it possible for the user to
 	 * treat selections of regions on the map and other selections in different ways.)
 	 */
 	public static final int ST_REGIONS = 1;
-  
+
+
 	private Collection selectedObjects;
 	private Object activeObject;
+  private Collection path;
 	private int selectionType;
 
 	/**
-	 * Constructs a new selection event with selectionType = ST_DEFAULT.
-	 * 
-	 * <p>
-	 * Usually such an event indicates only a change of the active object which is indicated by
-	 * activeObject != null and selectedObjects == null.
-	 * </p>
-	 *
-	 * @param source the object issuing the event.
-	 * @param selectedObjects the objects selected by the user. This collection does not
-	 * 		  necessarily contain activeObject. Specifying null for this parameter indicates that
-	 * 		  the selected objects did actually not change.
-	 * @param activeObject the single object activated by the user.
+	 * Constructs a new selection event with selectionType = ST_DEFAULT and empty path.
 	 */
 	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject) {
-		this(source, selectedObjects, activeObject, SelectionEvent.ST_DEFAULT);
+		this(source, selectedObjects, activeObject, null, SelectionEvent.ST_DEFAULT);
 	}
 
   /**
-   * Constructs a new selection event with selectionType = ST_DEFAULT.
+   * Constructs a new selection event with empty path.
+   */
+	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject,
+						  int selectionType) {
+    this(source, selectedObjects, activeObject, null, selectionType);
+  }
+
+
+  /**
+   * Constructs a new selection event with empty path with <code>selectionType ST_DEFAULT</code>.
+   */
+  public SelectionEvent(Object source, Collection selectedObjects, Object activeObject, Collection selectionPath) {
+    this(source, selectedObjects, activeObject, selectionPath, ST_DEFAULT);
+  }
+
+  /**
+   * Constructs a new selection event.
    * <p>
    * Usually such an event indicates only a change of the active object which is
    * indicated by activeObject != null and selectedObjects == null.
@@ -83,20 +92,25 @@ public class SelectionEvent extends EventObject {
    *          change.
    * @param activeObject
    *          the single object activated by the user.
+   * @param path
+   *          a sequence of object that are "parents" of the active object.
    * @param selectionType
    *          The type of selection event. Currently supportet types are
    *          {@link SelectionEvent#ST_DEFAULT},
-   *          {@link SelectionEvent#ST_REGIONS}.
-   */
-	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject,
-						  int selectionType) {
-		super(source);
+   *          {@link SelectionEvent#ST_REGIONS}, 
+   */          
+  public SelectionEvent(Object source, Collection selectedObjects, Object activeObject, Collection path,
+      int selectionType) {
+    super(source);
 		this.selectedObjects = selectedObjects;
 		this.activeObject = activeObject;
 		this.selectionType = selectionType;
+    this.path=path;
+		if (log.isDebugEnabled())
+		  log.debug("selected "+activeObject+","+selectedObjects+" by "+source.getClass()+", "+((source instanceof JComponent)?((JComponent) source).getName():""));
 	}
 
-	/**
+  /**
 	 * Returns the possibly mulitple objects selected by the user. They do not necessarrily include
 	 * the active object. A value of null indicates that previously selected objects are not
 	 * affected by this event.
@@ -125,4 +139,12 @@ public class SelectionEvent extends EventObject {
 	public int getSelectionType() {
 		return selectionType;
 	}
+  
+  /**
+   * Returns the path for the active object. This information can be used to
+   * help identify the active object by specifying its "parents".
+   */
+  public Collection getPath(){
+    return path;
+  }
 }

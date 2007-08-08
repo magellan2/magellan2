@@ -634,8 +634,8 @@ public class EventDispatcher implements EventDispatcherInterface {
             try {
               if (e.getType() == TempUnitEvent.CREATED) {
                 l.tempUnitCreated(e);
-              } else if (e.getType() == TempUnitEvent.DELETED) {
-                l.tempUnitDeleted(e);
+              } else if (e.getType() == TempUnitEvent.DELETING) {
+                l.tempUnitDeleting(e);
               }
             } catch (Exception ex) {
               log.error("An Exception occured in the EventDispatcher", ex);

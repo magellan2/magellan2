@@ -307,7 +307,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     initUI();
 
     // create management and observer objects
-    dispatcher.addSelectionListener(SelectionHistory.getEventHook());
+    dispatcher.addSelectionListener(SelectionHistory.getSelectionEventHook());
+    dispatcher.addTempUnitListener(SelectionHistory.getTempUnitEventHook());
     bookmarkManager = new BookmarkManager(dispatcher, settings);
     undoMgr = new MagellanUndoManager();
     reportState = new ReportObserver(dispatcher);
@@ -1916,11 +1917,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
+
     /**
-     * DOCUMENT-ME
-     * 
-     * @param e
-     *          DOCUMENT-ME
+     * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
      */
     public void tempUnitCreated(TempUnitEvent e) {
       if (lastClear < e.getTimestamp()) {
@@ -1929,12 +1928,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param e
-     *          DOCUMENT-ME
+     * @see magellan.client.event.TempUnitListener#tempUnitDeleting(magellan.client.event.TempUnitEvent)
      */
-    public void tempUnitDeleted(TempUnitEvent e) {
+    public void tempUnitDeleting(TempUnitEvent e) {
       if (lastClear < e.getTimestamp()) {
         stateChanged = true;
       }

@@ -74,7 +74,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
 	 * @return Border object as string.
 	 */
 	public String toString() {
-		if(buildRatio == 100) {
+		if(buildRatio == 100 || buildRatio <0) {
 			return type + ": " + Direction.toString(direction);
 		} else {
 			return type + ": " + Direction.toString(direction) + " (" + buildRatio + "%)";

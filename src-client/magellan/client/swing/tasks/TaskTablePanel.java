@@ -429,9 +429,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       o[i++] = hasR.getRegion();
       if (hasR instanceof Unit)
       o[i++] = ((Unit) hasR).getFaction();
-      else if(hasR instanceof UnitContainer)
-        o[i++]=((UnitContainer) hasR).getOwner().getFaction();
-      else
+      else if(hasR instanceof UnitContainer){
+        Unit owner = ((UnitContainer) hasR).getOwner();
+        o[i++]=owner!=null?owner.getFaction():"";
+      }else
         o[i++]="";
       o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
       o[i++] = null;

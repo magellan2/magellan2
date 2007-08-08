@@ -68,7 +68,7 @@ public class OpenCRAction extends MenuAction {
 		fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
 
 		int lastFileFilter = Integer.parseInt(settings.getProperty("Client.lastSelectedOpenCRFileFilter",
-																   "3"));
+																   "5"));
 		lastFileFilter = Math.min(fc.getChoosableFileFilters().length - 1, lastFileFilter);
 		fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
 

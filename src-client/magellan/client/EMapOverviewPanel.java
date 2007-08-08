@@ -443,6 +443,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     treeBuilder.buildTree(rootNode, data);
 
+    tree.setShowsRootHandles(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+
     treeModel.reload();
     this.selectionChanged(new SelectionEvent(treeModel, oldSelectedObjects, oldActiveObject));
 
@@ -813,7 +815,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if (node.getChildCount() > 0) {
       TreePath path = new TreePath(((DefaultMutableTreeNode) node.getLastChild()).getPath());
 
-      rec.add(tree.getPathBounds(path));
+      if (tree.getPathBounds(path)!=null)
+        rec.add(tree.getPathBounds(path));
     }
 
     SwingUtilities.invokeLater(new ScrollerRunnable(rec));
@@ -2208,6 +2211,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      */
     public JCheckBox chkRegionTreeBuilder_withComments = null;
 
+    /** if true, region tree's top nodes will have handles */
+    public JCheckBox chkRootHandles = null;
+    
     // use the topmost skill in (selfdefined) skilltype-list to sort it
 
     /** DOCUMENT-ME */
@@ -2251,9 +2257,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       chkDisplayIslands = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showislands"));
 
-      chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treebuildings"));
-      chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treeships"));
-      chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("emapoverviewpanel.prefs_treecomments"));
+      chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treebuildings"));
+      chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treeships"));
+      chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
+
+      chkRootHandles = new JCheckBox(Resources.get("emapoverviewpanel.prefs.roothandles"));
 
       JPanel pnlTreeStructure = new JPanel();
       pnlTreeStructure.setLayout(new GridBagLayout());
@@ -2498,6 +2506,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       c.weightx = 0.0;
       this.add(chkRegionTreeBuilder_withComments, c);
 
+      c.anchor = GridBagConstraints.WEST;
+      c.gridy++;
+      c.insets.left = 10;
+      c.fill = GridBagConstraints.NONE;
+      c.weightx = 0.0;
+      this.add(chkRootHandles, c);
+
       c.insets.left = 0;
       c.anchor = GridBagConstraints.CENTER;
       c.gridy++;
@@ -2531,6 +2546,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true));
       chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
       chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
+
+      chkRootHandles.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
       rdbSortRegionsCoordinates.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
       rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands"));
@@ -2578,6 +2595,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       settings.setProperty("EMapOverviewPanel.treeBuilderWithShips", String.valueOf(chkRegionTreeBuilder_withShips.isSelected()));
 
       settings.setProperty("EMapOverviewPanel.treeBuilderWithComments", String.valueOf(chkRegionTreeBuilder_withComments.isSelected()));
+
+      settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles.isSelected()));
 
       // workaround to support EMapOverviewPanel.filters
       int newFilter = TreeBuilder.UNITS;
@@ -3470,9 +3489,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       defaultTranslations.put("menu.filter.3", "Comments");
       defaultTranslations.put("menu.supertitle", "Tree");
 
-      defaultTranslations.put("prefs_treebuildings", "Additional include regions with information of buildings");
-      defaultTranslations.put("prefs_treeships", "Additional include regions with information of ships");
-      defaultTranslations.put("prefs_treecomments", "Additional include regions with known comments");
+      defaultTranslations.put("prefs.treebuildings", "Additional include regions with information of buildings");
+      defaultTranslations.put("prefs.treeships", "Additional include regions with information of ships");
+      defaultTranslations.put("prefs.treecomments", "Additional include regions with known comments");
+      defaultTranslations.put("prefs.roothandles", "Show handles of topmost nodes");
 
     }
 

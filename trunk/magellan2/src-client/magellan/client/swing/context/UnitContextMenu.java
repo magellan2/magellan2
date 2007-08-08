@@ -99,7 +99,10 @@ public class UnitContextMenu extends JPopupMenu {
 		this.data = data;
 		this.dispatcher = dispatcher;
 
-		init(selectedObjects);
+        if (selectedObjects.contains(unit))
+		    init(selectedObjects);
+        else
+            init(Collections.singletonList(unit));
 	}
 
 	private void init(Collection<Unit> selectedObjects) {
@@ -111,7 +114,7 @@ public class UnitContextMenu extends JPopupMenu {
 			initMultiple();
 		}
 
-		initBoth(selectedObjects);
+      initBoth(selectedObjects);
 	}
 
 	private void initBoth(Collection<Unit> selectedObjects) {

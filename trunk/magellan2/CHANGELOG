@@ -2,6 +2,12 @@
 	* redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
 	* added optional path argument to SelectionEvent for better identification of selections
 	* fixed temp unit bug in SelectionHistory
+	* fixed border (-1%) bug 
+	* don't display handle of top level tree nodes in overview (optional, bug #59)
+	* "all report files" is now default for open cr/save cr file type selection
+	* added order completion for destroy for entering, non-owning units (bug #39)
+	* added a tip of the day
+	* changed unit context menu (bug #9)
 	* updated build number (66)
 	
 2007-08-05 stm (stm_@users.sourceforge.net)

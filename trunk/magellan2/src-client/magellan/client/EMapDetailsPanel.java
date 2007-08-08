@@ -3940,7 +3940,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent se) {
-		addTag.setEnabled(false);
+    addTag.setEnabled(false);
 		removeTag.setEnabled(false);
 		
 		/**
@@ -4085,7 +4085,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		} catch(Exception e) {
 			// something very evil happens. Empty tree and expandableNodes
-			log.error("EMapDetailsPanel.show hitting on exception", e);
+			log.error("EMapDetailsPanel.show hitting on exception, args "+o+", "+flag, e);
 			myExpandableNodes.clear();
 			rootNode.removeAllChildren();
 		}

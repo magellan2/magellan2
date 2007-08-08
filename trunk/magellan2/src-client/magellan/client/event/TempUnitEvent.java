@@ -26,8 +26,9 @@ public class TempUnitEvent extends TimeStampedEvent {
 	/** An event indicating that a temp unit was created. */
 	public static final int CREATED = 1;
 
-	/** An event indicating that a temp unit was deleted. */
-	public static final int DELETED = 2;
+	/** An event indicating that a temp unit is about to be deleted. */
+	public static final int DELETING = 2;
+  
 	private magellan.library.TempUnit tempUnit = null;
 	private int eventType = 0;
 
@@ -36,7 +37,7 @@ public class TempUnitEvent extends TimeStampedEvent {
 	 *
 	 * @param source the object that originated the event.
 	 * @param temp the temporary unit affected by this event.
-	 * @param type specifies whether the temp unit was created or deleted.
+	 * @param type specifies whether the temp unit was created or is being deleted.
 	 */
 	public TempUnitEvent(Object source, magellan.library.TempUnit temp, int type) {
 		super(source);

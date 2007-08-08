@@ -364,7 +364,8 @@ public class EresseaRelationFactory implements RelationFactory {
               if (parseItem) {
                 if (rel.amount == -1) { // -1 means that the amount could not
                                         // determined
-                  log.warn("Unit.updateRelations(): cannot parse amount in order " + order);
+                  // we could issue a warning to the user here
+                  log.info("EresseaRelationFactory.createRelations(Unit): cannot parse amount in order " + order);
                 } else {
                   t = (OrderToken) tokens.get(itemIndex);
 
@@ -470,7 +471,7 @@ public class EresseaRelationFactory implements RelationFactory {
           RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), line);
           relations.add(rel);
         } else {
-          log.warn("Unit.updateRelations(): invalid amount in order " + order);
+          log.info("Unit.updateRelations(): invalid amount in order " + order);
         }
 
         continue;
@@ -488,7 +489,7 @@ public class EresseaRelationFactory implements RelationFactory {
           LeaveRelation rel = new LeaveRelation(u, uc, line);
           relations.add(rel);
         } else {
-          log.warn("Unit.refreshRelations(): unit " + u + " cannot leave a ship or a building as indicated by order " + order);
+          log.info("Unit.refreshRelations(): unit " + u + " cannot leave a ship or a building as indicated by order " + order);
         }
 
         continue;
@@ -699,7 +700,7 @@ public class EresseaRelationFactory implements RelationFactory {
             }
           }
         } else {
-          log.warn("Unit.updateRelations(): cannot parse amount in order " + order);
+          log.info("Unit.updateRelations(): cannot parse amount in order " + order);
         }
       }
     }
@@ -721,7 +722,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
       return r.getUnit(id);
     } catch (NumberFormatException e) {
-      log.warn("Unit.getTargetUnit(): cannot parse unit id \"" + t.getText() + "\"!");
+      log.info("Unit.getTargetUnit(): cannot parse unit id \"" + t.getText() + "\"!");
     }
 
     return null;

@@ -1,3 +1,9 @@
+2007-08-08 stm (stm_@users.sourceforge.net)
+	* redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
+	* added optional path argument to SelectionEvent for better identification of selections
+	* fixed temp unit bug in SelectionHistory
+	* updated build number (66)
+	
 2007-08-05 stm (stm_@users.sourceforge.net)
     * fixed bug of not disappearing merge progress dialog
 	* improved autoexpand/collapse in region overview

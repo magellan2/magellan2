@@ -86,7 +86,7 @@ public abstract class InternationalizedDataPanel extends InternationalizedPanel 
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
     this.data = e.getGameData();

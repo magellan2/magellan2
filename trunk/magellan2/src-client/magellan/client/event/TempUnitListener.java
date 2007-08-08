@@ -28,7 +28,9 @@ public interface TempUnitListener {
 	public void tempUnitCreated(TempUnitEvent e);
 
 	/**
-	 * Invoked when a temporary unit is deleted.
+	 * Invoked when a temporary unit is deleted. Beware! It is not clear if the temp unit has 
+     * already been deleted from the GameData or not. You should not assume that it is in a sane
+     * state. This might be a FIXME.
 	 */
-	public void tempUnitDeleted(TempUnitEvent e);
+	public void tempUnitDeleting(TempUnitEvent e);
 }

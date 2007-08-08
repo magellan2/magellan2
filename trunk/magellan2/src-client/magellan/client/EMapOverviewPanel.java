@@ -178,7 +178,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private boolean ignoreTreeSelections = false;
 
   // region with previously selected item
-  private Region previousRegion = null;
   private Object activeObject = null;
   private List<Unique> selectedObjects = new LinkedList<Unique>();
 
@@ -577,7 +576,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // region node selected?
       if (o instanceof RegionNodeWrapper) {
         activeObject = ((RegionNodeWrapper) o).getRegion();
-        previousRegion = ((RegionNodeWrapper) o).getRegion();
 
         if (!activeAlliancesAreDefault) {
           setDefaultAlliances();
@@ -587,17 +585,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         // faction node selected?
         activeObject = ((FactionNodeWrapper) o).getFaction();
 
-        Region selectedRegion = getSelectedRegion(node);
-
-        if ((selectedRegion != null)){
-          if(!selectedRegion.equals(previousRegion)) {
-
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-          }          
-        }
-        previousRegion = selectedRegion;
-
         Faction f = (Faction) activeObject;
 
         setAlliances(f.getAllies(), f);
@@ -606,32 +593,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         Group g = ((GroupNodeWrapper) o).getGroup();
         activeObject = g;
 
-        Region selectedRegion = getSelectedRegion(node);
-
-        if ((selectedRegion != null)){
-          if(!selectedRegion.equals(previousRegion)) {
-
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-          }
-        }
-        previousRegion = selectedRegion;
-
         setAlliances(g.allies(), g.getFaction());
       } else if (o instanceof UnitNodeWrapper) {
         // unit node selected?
         activeObject = ((UnitNodeWrapper) o).getUnit();
-
-        Region selectedRegion = getSelectedRegion(node);
-
-        if ((selectedRegion != null)){
-          if(!selectedRegion.equals(previousRegion)) {
-
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-          }
-        }
-        previousRegion = selectedRegion;
 
         Group g = ((Unit) activeObject).getGroup();
 
@@ -646,16 +611,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         if (((UnitContainerNodeWrapper) o).getUnitContainer() instanceof Building || ((UnitContainerNodeWrapper) o).getUnitContainer() instanceof Ship) {
           activeObject = ((UnitContainerNodeWrapper) o).getUnitContainer();
 
-          Region selectedRegion = ((HasRegion) activeObject).getRegion();
-
-          if ((selectedRegion != null)){
-            if(!selectedRegion.equals(previousRegion)) {
-
-              // fire to make clear we have another region
-              dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-            }
-          }
-          previousRegion = selectedRegion;
         }
 
         if (!activeAlliancesAreDefault) {
@@ -665,17 +620,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       } else if (o instanceof BorderNodeWrapper) {
         // border node selected?
         activeObject = ((BorderNodeWrapper) o).getBorder();
-
-        Region selectedRegion = getSelectedRegion(node);
-
-        if ((selectedRegion != null)){
-          if(!selectedRegion.equals(previousRegion)) {
-
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-          }
-        }
-        previousRegion = selectedRegion;
 
         if (!activeAlliancesAreDefault) {
           setDefaultAlliances();
@@ -689,24 +633,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           setDefaultAlliances();
           tree.repaint();
         }
-        previousRegion=null;
       } else if (o instanceof SimpleNodeWrapper) {
         activeObject = null;
-
-        Region selectedRegion = getSelectedRegion(node);
-
-        if ((selectedRegion != null)){
-          if(!selectedRegion.equals(previousRegion)) {
-
-            // fire to make clear we have another region
-            dispatcher.fire(new SelectionEvent(this, null, selectedRegion));
-          }
-        }
-        previousRegion = selectedRegion;
-
-        // not a very smart implementation
-        // this is basically a workaround for those nodes
-        // that represent health- or combat-status.
       }
     }
 
@@ -721,36 +649,56 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       TreePath path = paths[i];
       node = (DefaultMutableTreeNode) path.getLastPathComponent();
 
-      Object o = node.getUserObject();
+      Object o = getNodeSubject(node); 
 
-      if (o instanceof RegionNodeWrapper) {
-        o = ((RegionNodeWrapper) o).getRegion();
-      } else if (o instanceof FactionNodeWrapper) {
-        o = ((FactionNodeWrapper) o).getFaction();
-      } else if (o instanceof GroupNodeWrapper) {
-        o = ((GroupNodeWrapper) o).getGroup();
-      } else if (o instanceof UnitNodeWrapper) {
-        o = ((UnitNodeWrapper) o).getUnit();
-      } else if (o instanceof UnitContainerNodeWrapper) {
-        o = ((UnitContainerNodeWrapper) o).getUnitContainer();
-      } else if (o instanceof BorderNodeWrapper) {
-        o = ((BorderNodeWrapper) o).getBorder();
-      } else if (o instanceof IslandNodeWrapper) {
-        o = ((IslandNodeWrapper) o).getIsland();
-      } else if (o instanceof SimpleNodeWrapper) {
-        o = ((SimpleNodeWrapper) o).getObject();
-      } else {
-        log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown:" + o.toString());
-      }
-
-      if (tse.isAddedPath(path)) {
-        selectedObjects.add((Unique) o);
-      } else {
-        selectedObjects.remove(o);
+      if (o instanceof Unique){
+        if (tse.isAddedPath(path)) {
+          selectedObjects.add((Unique) o);
+        } else {
+          selectedObjects.remove(o);
+        }
       }
     }
+    
+    Collection<Object> selectionPath = new ArrayList<Object>();
+    if (tree!=null && tree.getSelectionPath()!=null)
+    for (Object o : tree.getSelectionPath().getPath()){
+      selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
+    }
+    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
+  }
 
-    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject));
+  /**
+   * Returns the (Report) object that belongs to this node, for example a region, a unit or a group.
+   * 
+   * @param node
+   * @return
+   */
+  private Object getNodeSubject(DefaultMutableTreeNode node) {
+    Object o = node.getUserObject();
+    if (o==null)
+      return null;
+
+    if (o instanceof RegionNodeWrapper) {
+      o = ((RegionNodeWrapper) o).getRegion();
+    } else if (o instanceof FactionNodeWrapper) {
+      o = ((FactionNodeWrapper) o).getFaction();
+    } else if (o instanceof GroupNodeWrapper) {
+      o = ((GroupNodeWrapper) o).getGroup();
+    } else if (o instanceof UnitNodeWrapper) {
+      o = ((UnitNodeWrapper) o).getUnit();
+    } else if (o instanceof UnitContainerNodeWrapper) {
+      o = ((UnitContainerNodeWrapper) o).getUnitContainer();
+    } else if (o instanceof BorderNodeWrapper) {
+      o = ((BorderNodeWrapper) o).getBorder();
+    } else if (o instanceof IslandNodeWrapper) {
+      o = ((IslandNodeWrapper) o).getIsland();
+    } else if (o instanceof SimpleNodeWrapper) {
+      o = ((SimpleNodeWrapper) o).getObject();
+    } else {
+      log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown:" + o);
+    }
+    return o;
   }
 
   /**
@@ -1097,17 +1045,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     selectionTransfer.addAll(newSelection);
-
+    
+    
     // transfer the selection
-    TreePath paths[] = new TreePath[selectionTransfer.size()];
-    it = selectionTransfer.iterator();
-
-    int i = 0;
-
-    while (it.hasNext()) {
-      paths[i] = (TreePath) it.next();
-      i++;
-    }
+    TreePath paths[] = (TreePath []) selectionTransfer.toArray(new TreePath[0]);
 
     tree.setSelectionPaths(paths);
 
@@ -1181,27 +1122,25 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     Collection<TreePath> newSel = new LinkedList<TreePath>();
 
-    /** HANDLE activeObject : */
-    Object o = se.getActiveObject();
-
-    if (o != null) {
-      activeObject = o;
+    /** HANDLE activeObject : change alliance settings and expand info*/
+    if (se.getActiveObject() != null) {
+      activeObject = se.getActiveObject();
 
       // The path of the selected object (if contained in the tree)
       TreePath path = null;
 
       // region selected?
-      if (o instanceof ZeroUnit) {
-        o = ((ZeroUnit) o).getRegion();
+      if (activeObject instanceof ZeroUnit) {
+        activeObject = ((ZeroUnit) activeObject).getRegion();
       }
 
-      if (o instanceof Region) {
+      if (activeObject instanceof Region) {
         if (!activeAlliancesAreDefault) {
           setDefaultAlliances();
           tree.repaint();
         }
 
-        Region i = (Region) o;
+        Region i = (Region) activeObject;
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) regionNodes.get(i.getID());
 
         if (node != null) {
@@ -1211,8 +1150,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       } else
       // unit selected?
-      if (o instanceof Unit) {
-        Unit i = (Unit) o;
+      if (activeObject instanceof Unit) {
+        Unit i = (Unit) activeObject;
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) unitNodes.get(i.getID());
 
         if (node != null) {
@@ -1229,8 +1168,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       } else
       // ship selected?
-      if (o instanceof Ship) {
-        Ship i = (Ship) o;
+      if (activeObject instanceof Ship) {
+        Ship i = (Ship) activeObject;
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) shipNodes.get(i.getID());
 
         if (node != null) {
@@ -1244,8 +1183,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       } else
       // building selected?
-      if (o instanceof Building) {
-        Building i = (Building) o;
+      if (activeObject instanceof Building) {
+        Building i = (Building) activeObject;
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) buildingNodes.get(i.getID());
 
         if (node != null) {
@@ -1295,7 +1234,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       tree.clearSelection();
 
       for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
-        o = iter.next();
+        Object o = iter.next();
 
         DefaultMutableTreeNode node = null;
 
@@ -1515,7 +1454,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @param e
    *          DOCUMENT-ME
    */
-  public void tempUnitDeleted(TempUnitEvent e) {
+  public void tempUnitDeleting(TempUnitEvent e) {
     TempUnit t = e.getTempUnit();
     DefaultMutableTreeNode unitNode = (DefaultMutableTreeNode) unitNodes.get(t.getID());
     unitNodes.remove(t.getID());
@@ -1674,7 +1613,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         log.debug("EMapOverviewPanel.shortCut_N(): firing Selection Event with Unit " + u + " (" + u.isOrdersConfirmed() + ")");
       }
 
-      previousRegion = u.getRegion();
 
       // event source u? yeah, just provide some
       // stupid value here, null is prohibited, else

@@ -38,10 +38,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -49,6 +49,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -91,6 +93,7 @@ import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Group;
 import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.StringID;
@@ -117,17 +120,27 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 269 $
  */
 public class MultiEditorOrderEditorList extends InternationalizedDataPanel
-	implements OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener,
+	implements OrderEditorList, KeyListener, SelectionListener, TempUnitListener, FocusListener, MouseListener, 
 			   CacheHandler
 {
 	private static final Logger log = Logger.getInstance(MultiEditorOrderEditorList.class);
-	private boolean multiEditorLayout = false;
+
+  private boolean multiEditorLayout = false;
 	private boolean hideButtons = false;
-	private List<Unit> units = new LinkedList<Unit>();
+	private SortedSet<Unit> units;
+
+  // currently selected entities
+  private Island currentIsland = null;
+  private Region currentRegion = null;
+  private Faction currentFaction = null;
 	private Unit currentUnit = null;
-	private Region currentRegion = null;
-	private int currentUnitIndex = -1;
-	private Color standardBgColor = null;
+	
+  // for remembering transitional selections
+  private Region transitionalRegion=null;
+  private Island transitionalIsland = null;
+  private Faction transitionalFaction = null;
+
+  private Color standardBgColor = null;
 	private Color activeBgColor = null;
 	private Color standardBgColorConfirmed = null;
 	private Color activeBgColorConfirmed = null;
@@ -168,7 +181,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	public MultiEditorOrderEditorList(EventDispatcher d, GameData initData, Properties settings,
 									  UndoManager _undoMgr) {
 		super(d, initData, settings);
-
+    
 		loadListProperty();
 
 		d.addTempUnitListener(this);
@@ -179,14 +192,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		undoMgr = _undoMgr;
 		initGUI();
-
+		initContent();
 		//startTimer();
 	}
 
 	private void initGUI() {
 		readSettings();
     
+    units = new TreeSet<Unit>(EMapOverviewPanel.getUnitSorting(settings)); //new ArrayList<Unit>();
 		content = new ScrollPanel();
+    
 		// content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		scpContent = new JScrollPane(content);
@@ -212,19 +227,19 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 						for(Iterator iter = e.getUnits().iterator(); iter.hasNext();) {
 							Unit u = (Unit) iter.next();
 
-							if((u.getCache() != null) && (u.getCache().orderEditor != null)) {
+							if(getEditor(u)!=null) {
 								if(u.equals(currentUnit)) {
 									// u is active unit
 									if(u.isOrdersConfirmed()) {
-										u.getCache().orderEditor.setBackground(activeBgColorConfirmed);
+                    getEditor(u).setBackground(activeBgColorConfirmed);
 									} else {
-										u.getCache().orderEditor.setBackground(activeBgColor);
+                    getEditor(u).setBackground(activeBgColor);
 									}
 								} else {
 									if(u.isOrdersConfirmed()) {
-										u.getCache().orderEditor.setBackground(standardBgColorConfirmed);
+                    getEditor(u).setBackground(standardBgColorConfirmed);
 									} else {
-										u.getCache().orderEditor.setBackground(standardBgColor);
+                    getEditor(u).setBackground(standardBgColor);
 									}
 								}
 							}
@@ -235,18 +250,31 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
-
-		// rebuild order editors
-		// startTimer();
+    initContent();
 	}
 
-	private void readSettings() {
+	/**
+   * 
+   */
+  private void initContent() {
+    clearUnits();
+    currentIsland = null;
+    currentRegion = null;
+    currentFaction = null;
+    currentUnit = null;
+    
+    transitionalRegion=null;
+    transitionalIsland = null;
+    transitionalFaction = null;
+
+    // startTimer();
+  }
+
+  private void readSettings() {
 		multiEditorLayout = Boolean.valueOf(settings.getProperty("OrderEditor.multiEditorLayout",
 																 Boolean.TRUE.toString()))
 								   .booleanValue();
@@ -263,6 +291,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	private boolean swingGlitch = false;
+
+
 
 	/**
 	 * DOCUMENT-ME
@@ -284,200 +314,222 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Updates the editors after a new object has been selected. 
 	 *
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent se) {
-		if(log.isDebugEnabled()) {
-			log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject());
-		}
+	  if (log.isDebugEnabled()) {
+      log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject());
 
-		if(se.getActiveObject() != null) {
-			log.debug("MultiEditorOrderEditorList.selectionChanged: " +
-					  se.getActiveObject().getClass());
-		}
+      if (se.getActiveObject() != null) {
+        log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject().getClass());
+      }
 
-		if(log.isDebugEnabled()) {
-			log.debug("MultiEditorOrderEditorList.selectionChanged: " + (se.getSource() == this));
-		}
+      log.debug("MultiEditorOrderEditorList.selectionChanged: " + (se.getSource() == this));
+    }
 
-		boolean restoreFocus = ((currentUnit != null) && (currentUnit.getCache() != null) &&
-							   (currentUnit.getCache().orderEditor != null) &&
-							   currentUnit.getCache().orderEditor.hasFocus());
-
+    // remember if we want to have the focus (see below)
+		boolean restoreFocus = (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus() || hasFocus();
 		// if WE triggered the selection change, the new unit DOES get the focus
 		restoreFocus = restoreFocus || (se.getSource() == this);
 
 		if(multiEditorLayout) {
-			// reset old unit's editor border to normal
-			if((currentUnit != null) && (currentUnit.getCache() != null) &&
-				   (currentUnit.getCache().orderEditor != null)) {
-				currentUnit.getCache().orderEditor.setBorder(new TitledBorder(standardBorder,currentUnit.toString() + ": " + currentUnit.getPersons()));
-
-				if(currentUnit.isOrdersConfirmed()) {
-					currentUnit.getCache().orderEditor.setBackground(standardBgColorConfirmed);
-				} else {
-					currentUnit.getCache().orderEditor.setBackground(standardBgColor);
-				}
-
-				// deactivate visibility call
-				currentUnit.getCache().orderEditor.setKeepVisible(false);
-
-				// make the old editor do the syntax highlighting again later
-				if(currentUnit.getCache().orderEditor.isModified()) {
-					updateThread.e = currentUnit.getCache().orderEditor;
-					SwingUtilities.invokeLater(updateThread);
-				}
-			}
-
-			if(se.getActiveObject() != null) {
-				if(se.getActiveObject() instanceof Unit &&
-					   EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) se.getActiveObject())) {
-					Unit u = (Unit) se.getActiveObject();
-          
-          // we have to carefully think when to load the new editors
-          // when the editor of the selected unit already exists, loading all
-          // editors again may trigger (via focusGained) a new selection event
-          // on the wrong unit (Mantis Bug #78)
-          boolean noUnit = u == null || currentUnit == null;
-          boolean regionChanged = noUnit || u.getRegion() != currentUnit.getRegion();
-          boolean factionChanged = noUnit || u.getFaction() != currentUnit.getFaction();
-          boolean islandChanged = noUnit || u.getRegion().getIsland() != currentUnit.getRegion().getIsland();
-          boolean islandMode = ((listMode >> LIST_ISLAND) & 1) != 0;
-          boolean regionMode = ((listMode >> LIST_REGION) & 1) != 0;
-          boolean factionMode = ((listMode >> LIST_FACTION) & 1) != 0;
-					if (noUnit || islandChanged || (!islandMode && regionChanged) || (factionMode && factionChanged))
-              loadEditors(u);
-
-					// only jump to a different unit
-					if((currentUnit == null) || !currentUnit.equals(u)) {
-						currentUnit = u;
-						currentUnitIndex = units.indexOf(currentUnit);
-					}
-
-					// set different border for selected editor
-					if((currentUnit.getCache() != null) && (currentUnit.getCache().orderEditor != null)) {
-						currentUnit.getCache().orderEditor.setBorder(new TitledBorder(activeBorder,
-																				 currentUnit.toString() +
-																				 ": " +
-																				 currentUnit.getPersons()));
-
-						if(currentUnit.isOrdersConfirmed()) {
-							currentUnit.getCache().orderEditor.setBackground(activeBgColorConfirmed);
-						} else {
-							currentUnit.getCache().orderEditor.setBackground(activeBgColor);
-						}
-
-						// activate visibility call
-						currentUnit.getCache().orderEditor.setKeepVisible(true);
-
-						// we use a call to repaint to force the execution of paint()
-						// so we call SwingGlitchThread.run() indirectly AFTER painting
-						// tricky and dirty, but it works...
-						SwingUtilities.invokeLater(swingGlitchThread);
-					}
-				} else if(se.getActiveObject() instanceof Region) {
-					currentRegion = (Region) se.getActiveObject();
-					currentUnit = null;
-					currentUnitIndex = -1;
-					loadEditors(currentRegion);
-				} else if(se.getActiveObject() instanceof Faction) {
-					currentUnit = null;
-					currentUnitIndex = -1;
-
-					if(((Faction) se.getActiveObject()).isPrivileged() && (currentRegion != null)) {
-						loadEditors((Faction) se.getActiveObject(), currentRegion);
-					} else {
-						units.clear();
-						removeListenersFromAll();
-						content.removeAll();
-					}
-				} else if(se.getActiveObject() instanceof Island) {
-					currentRegion = null;
-					currentUnit = null;
-					currentUnitIndex = -1;
-					loadEditors((Island) se.getActiveObject());
-				} else {
-					currentUnit = null;
-					currentUnitIndex = -1;
-					units.clear();
-					removeListenersFromAll();
-					content.removeAll();
-				}
-			} else {
-				currentUnit = null;
-				currentRegion = null;
-				currentUnitIndex = -1;
-				units.clear();
-				removeListenersFromAll();
-				content.removeAll();
-			}
-
-      repaint();
-			// make the UI component refresh itself - necessary at least under Windows
-			revalidate();
+      deselectEditor(currentUnit);
+      loadEditors(se.getActiveObject(), se.getPath());
+      
 		} else {
 			// single editor mode
 			Object activeObject = se.getActiveObject();
 
 			if(activeObject instanceof Unit &&
 				   EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject)) {
-				currentUnit = (Unit) activeObject;
-				editor.setUnit(currentUnit);
-
-				if(currentUnit.getCache() == null) {
-					currentUnit.setCache(new Cache());
-				}
-
-				currentUnit.getCache().orderEditor = editor;
-
-				currentUnit.getCache().orderEditor.setBorder(new TitledBorder(activeBorder,
-																		 currentUnit.toString() +
-																		 ": " +
-																		 currentUnit.getPersons()));
-
-				if(currentUnit.isOrdersConfirmed()) {
-					currentUnit.getCache().orderEditor.setBackground(activeBgColorConfirmed);
-				} else {
-					currentUnit.getCache().orderEditor.setBackground(activeBgColor);
-				}
-
-				editor.setEditable(true);
+				// update editor
+        currentUnit = (Unit) activeObject;
+        attachOrderEditor(currentUnit, editor);
+        selectEditor(currentUnit, editor);
 			} else {
+        // no unit selected --> no editor active
 				if(currentUnit != null) {
-					if(currentUnit.getCache() != null) {
-						currentUnit.getCache().orderEditor = null;
-					}
-
+          setEditor(currentUnit, null);
+          deselectEditor(editor);
+          editor.setBorder(new TitledBorder(standardBorder,""));
 					currentUnit = null;
 					currentRegion = null;
+          currentFaction=null;
+          currentIsland=null;
 					editor.setUnit(null);
 					editor.setEditable(false);
 				}
 			}
 		}
 
-		// restore focus
-    if (((DesktopEnvironment.getMode() == DesktopEnvironment.FRAME) || restoreFocus) && 
-        (currentUnit != null) && (currentUnit.getCache() != null) && 
-        (currentUnit.getCache().orderEditor != null)) {
-      SwingUtilities.invokeLater(new Runnable() {
-        /**
-         * @see java.lang.Runnable#run()
-         */
-        public void run() {
-          requestFocus(currentUnit.getCache().orderEditor);
-        }
-      });
+    // Restore focus. If we had the focus before, we want to ensure that the new current editor
+    // gets the focus.
+    if (((DesktopEnvironment.getMode() == DesktopEnvironment.FRAME) || restoreFocus)){
+      requestFocus();
     }
 
-		// update button state
-		buttons.currentUnitChanged();
+    // update button state
+    buttons.currentUnitChanged();
 	}
 
 	/**
-	 * DOCUMENT-ME
+   * Ensures that the correct editors are loaded and selected for the active object.
+   * 
+   * @param activeObject
+   */
+  private void loadEditors(Object activeObject, Collection path) {
+    if (path!=null){
+      for (Object o: path){
+        if (o instanceof Island){
+          transitionalIsland = (Island) o;
+        }
+        if (o instanceof Region){
+          transitionalRegion = (Region) o;
+          transitionalIsland = transitionalRegion.getIsland();
+        }
+        if (o instanceof Faction){
+          transitionalFaction = (Faction) o;
+        }
+      }
+    }
+    Island newIsland = transitionalIsland;
+    Region newRegion = transitionalRegion;
+    Faction newFaction = transitionalFaction;
+    Unit newUnit = null;
+    if(activeObject != null) {
+      if(activeObject instanceof Unit &&
+           EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject)) {
+        newUnit = (Unit) activeObject;
+        newRegion = newUnit.getRegion();
+        newIsland = newRegion.getIsland();
+        newFaction = newUnit.getFaction();
+      } else if(activeObject instanceof Region) {
+        newRegion = (Region) activeObject;
+        newIsland = newRegion.getIsland();
+      } else if(activeObject instanceof Faction) {
+        newFaction = (Faction) activeObject;
+      } else if(activeObject instanceof Group) {
+        newFaction = ((Group) activeObject).getFaction();
+      } else if(activeObject instanceof Island) {
+        newIsland = (Island) activeObject;
+      } else{ // some other node or non privileged unit selected
+        transitionalIsland=null;
+        transitionalRegion=null;
+        transitionalFaction=null;
+        newIsland=null;
+        newRegion=null;
+        newFaction=null;
+        newUnit=null;
+      }
+    } 
+
+    if ((newUnit == currentUnit && newUnit!=null) || 
+        (newUnit!=null && currentUnit!=null && 
+            newUnit.getRegion()==currentUnit.getRegion() && 
+            newUnit.getFaction() == currentUnit.getFaction()))
+      ; // no change necessary
+    else{
+      loadEditors(newIsland, newRegion, newFaction, newUnit);
+    }
+    
+    selectEditor(newUnit);
+
+    repaint();
+    // make the UI component refresh itself - necessary at least under Windows
+    revalidate();
+
+  }
+
+  /**
+   * Sets appearance for editor corresponding to <code>newUnit</code> in multieditor mode.
+   * 
+   * @param newUnit If <code>null</code>, no editor is selected.
+   * 
+   */
+  private void selectEditor(Unit newUnit) {
+    if (getEditor(currentUnit)!=null)
+      deselectEditor(currentUnit);
+    if (newUnit!=null)
+      selectEditor(newUnit, getEditor(newUnit));
+    this.currentUnit=newUnit;
+    if (newUnit!=null){
+      this.currentFaction=newUnit.getFaction();
+      this.currentIsland=newUnit.getRegion().getIsland();
+      this.currentRegion=newUnit.getRegion();
+    }
+  }    
+  
+  /**
+   * Sets appearance of an editor acording to the state of a unit.
+   * 
+   * @param newUnit Must not be <code>null</code>.
+   * @param editor 
+   */
+  private void selectEditor(Unit newUnit, OrderEditor editor){
+    if (newUnit==null)
+      throw new NullPointerException();
+    if(editor != null) {
+      editor.setBorder(new TitledBorder(activeBorder,
+                                   newUnit.toString() +
+                                   ": " +
+                                   newUnit.getPersons()));
+
+      if(newUnit.isOrdersConfirmed()) {
+        editor.setBackground(activeBgColorConfirmed);
+      } else {
+        editor.setBackground(activeBgColor);
+      }
+
+      // activate visibility call
+      editor.setKeepVisible(true);
+      editor.setEditable(true);
+
+      // we use a call to repaint to force the execution of paint()
+      // so we call SwingGlitchThread.run() indirectly AFTER painting
+      // tricky and dirty, but it works...
+      SwingUtilities.invokeLater(swingGlitchThread);
+    }
+  }
+
+  /**
+   * Reset a unit's editor border to normal.
+   * 
+   * @param currentUnit
+   */
+  private void deselectEditor(Unit currentUnit) {
+    if(getEditor(currentUnit)!=null) {
+      deselectEditor(getEditor(currentUnit));
+    }
+  }
+  
+  /**
+   * Reset editor border to normal.
+   * 
+   * @param editor Must not be <code>null</code>.
+   */
+  private void deselectEditor(OrderEditor editor){
+      editor.setBorder(new TitledBorder(standardBorder,currentUnit.toString() + ": " + currentUnit.getPersons()));
+
+      if(currentUnit.isOrdersConfirmed()) {
+        editor.setBackground(standardBgColorConfirmed);
+      } else {
+        editor.setBackground(standardBgColor);
+      }
+
+      // deactivate visibility call
+      editor.setKeepVisible(false);
+
+      // make the old editor do the syntax highlighting again later
+      if(editor.isModified()) {
+        updateThread.e = editor;
+        SwingUtilities.invokeLater(updateThread);
+      }
+  }
+
+  /**
+	 * Ensures that the correct editors are loaded if a temp unit was created.
 	 *
 	 * 
 	 */
@@ -487,37 +539,39 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 
 		if((currentUnit != null) && multiEditorLayout) {
-			loadEditors(currentRegion);
+			addUnit(e.getTempUnit());
+//      loadEditors(currentUnit.getRegion().getIsland(), currentUnit.getRegion(), currentUnit.getFaction(), currentUnit);
+      
 			this.revalidate();
 
 			if(log.isDebugEnabled()) {
 				log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit().getCache());
-				log.debug("MultiEditorOrderEditorList.tempUnitCreated: " +
-						  e.getTempUnit().getCache().orderEditor);
+				log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + getEditor(e.getTempUnit()));
 			}
 
-			if((e.getTempUnit().getCache() != null) && (e.getTempUnit().getCache().orderEditor != null)) {
-				// pavkovic 2002.02.15: here we don't request focus in an invokeLater runnable
-				// because this would lead to intense focus change between parent and temp unit.
-				e.getTempUnit().getCache().orderEditor.requestFocus();
-				//requestFocus(e.getTempUnit().cache.orderEditor);
-			}
+//			if(getEditor(e.getTempUnit()) != null) {
+//				// pavkovic 2002.02.15: here we don't request focus in an invokeLater runnable
+//				// because this would lead to intense focus change between parent and temp unit.
+//				getEditor(e.getTempUnit()).requestFocus();
+//				//requestFocus(e.getTempUnit().cache.orderEditor);
+//			}
 		}
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Ensures that the right editors are loaded if a temp unit was created.
 	 *
 	 * 
 	 */
-	public void tempUnitDeleted(TempUnitEvent e) {
-		if((currentUnit != null) && multiEditorLayout) {
-			loadEditors(currentRegion);
-			this.revalidate();
+	public void tempUnitDeleting(TempUnitEvent e) {
+    if (multiEditorLayout){
+      removeUnit(e.getTempUnit(), null);
+      this.revalidate();
 		}
 	}
 
-	/**
+  
+  /**
 	 * DOCUMENT-ME
 	 *
 	 * 
@@ -527,41 +581,35 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			if(multiEditorLayout) {
 				switch(e.getKeyCode()) {
 				case KeyEvent.VK_DOWN:
-
-					if(currentUnitIndex < (units.size() - 1)) {
+				  Unit u = getNextUnit();
+					if(u!=null) {
 						/* refreshing the relations here is
 						 necessary because this is the only place
 						 where a different unit is selected and the
 						 focusLost event in the order editor does
 						 not occur before the selection event */
-						if((currentUnit != null) && (currentUnit.getCache() != null) &&
-							   (currentUnit.getCache().orderEditor != null) &&
-							   currentUnit.getCache().orderEditor.isModified()) {
+						if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
 							currentUnit.refreshRelations();
 						}
-
-						Unit u = ((Unit) units.get(currentUnitIndex + 1));
-
+						
 						dispatcher.fire(new SelectionEvent(this, null, u));
 					}
 
 					break;
 
 				case KeyEvent.VK_UP:
-
-					if(currentUnitIndex > 0) {
+				  u = getPreviousUnit();
+					if(u!=null) {
 						/* refreshing the relations here is
 						 necessary because this is the only place
 						 where a different unit is selected and the
 						 focusLost event in the order editor does
 						 not occur before the selection event */
-						if((currentUnit != null) && (currentUnit.getCache() != null) &&
-							   (currentUnit.getCache().orderEditor != null) &&
-							   currentUnit.getCache().orderEditor.isModified()) {
+						if (getEditor(currentUnit) != null && getEditor(currentUnit).isModified()) {
 							currentUnit.refreshRelations();
 						}
 
-						Unit u = ((Unit) units.get(currentUnitIndex - 1));
+						
 
 						dispatcher.fire(new SelectionEvent(this, null, u));
 					}
@@ -572,7 +620,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 	}
 
-	/**
+  /**
 	 * DOCUMENT-ME
 	 *
 	 * 
@@ -594,14 +642,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	public void focusGained(FocusEvent e) {
-		if(multiEditorLayout && e.getSource() instanceof OrderEditor) {
-			if((currentUnit == null) ||
-				   ((currentUnit.getCache() != null) &&
-				   (currentUnit.getCache().orderEditor != e.getSource()))) {
-				dispatcher.fire(new SelectionEvent(this, null,
-												   ((OrderEditor) e.getSource()).getUnit()));
-			}
-		}
+//    log.info("fcg: "+((OrderEditor)e.getSource()).getUnit());
+//		if(multiEditorLayout && e.getSource() instanceof OrderEditor) {
+//			if((currentUnit == null) || (getEditor(currentUnit) != e.getSource())) {
+//				dispatcher.fire(new SelectionEvent(this, null,
+//												   ((OrderEditor) e.getSource()).getUnit()));
+//			}
+//		}
 	}
 
 	/**
@@ -611,6 +658,43 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 */
 	public void focusLost(FocusEvent e) {
 	}
+
+  /**
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(MouseEvent e) {
+    if (log.isDebugEnabled()){
+      log.debug("mouseClicked "+e.getSource());
+    }
+    if (e.getSource() instanceof OrderEditor){
+      if (multiEditorLayout)
+        dispatcher.fire(new SelectionEvent(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
+    }
+  }
+
+  /**
+   * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+   */
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  /**
+   * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+   */
+  public void mouseExited(MouseEvent e) {
+  }
+
+  /**
+   * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+   */
+  public void mousePressed(MouseEvent e) {
+  }
+
+  /**
+   * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+   */
+  public void mouseReleased(MouseEvent e) {
+  }
 
 	/**
 	 * DOCUMENT-ME
@@ -655,9 +739,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				for(Iterator iter = data.units().values().iterator(); iter.hasNext();) {
 					Unit u = (Unit) iter.next();
 
-					if((u.getCache() != null) && (u.getCache().orderEditor != null)) {
+					if(getEditor(u) != null) {
 						foundEditor = true;
-						u.getCache().orderEditor.setUseSyntaxHighlighting(bool);
+            getEditor(u).setUseSyntaxHighlighting(bool);
 					}
 				}
 			}
@@ -695,9 +779,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				for(Iterator iter = data.units().values().iterator(); iter.hasNext();) {
 					Unit u = (Unit) iter.next();
 
-					if((u.getCache() != null) && (u.getCache().orderEditor != null)) {
+					if(getEditor(u) != null) {
 						foundEditor = true;
-						u.getCache().orderEditor.setTokenColor(styleName, color);
+						getEditor(u).setTokenColor(styleName, color);
 					}
 				}
 			}
@@ -736,8 +820,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				for(Iterator iter = data.units().values().iterator(); iter.hasNext();) {
 					Unit u = (Unit) iter.next();
 
-					if((u.getCache() != null) && (u.getCache().orderEditor != null)) {
-						u.getCache().orderEditor.setBackground(c);
+					if(getEditor(u) != null) {
+            getEditor(u).setBackground(c);
 					}
 				}
 			}
@@ -769,8 +853,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				for(Iterator iter = data.units().values().iterator(); iter.hasNext();) {
 					Unit u = (Unit) iter.next();
 
-					if((u.getCache() != null) && (u.getCache().orderEditor != null)) {
-						u.getCache().orderEditor.setBackground(c);
+					if(getEditor(u) != null) {
+            getEditor(u).setBackground(c);
 					}
 				}
 			}
@@ -820,8 +904,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * 
+	 * @return <code>true</code> iff currently in multi editor layout
 	 * 
 	 */
 	public boolean isMultiEditorLayout() {
@@ -829,32 +913,34 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Does initialization (of content resp. editor) for the specified mode.
 	 *
-	 * 
+	 * @param multi If <code>true</code> multi editor layout is initialized, else single editor mode.
 	 */
-	public void setMultiEditorLayout(boolean bool) {
-		if(bool != multiEditorLayout) {
-			settings.setProperty("OrderEditor.multiEditorLayout", String.valueOf(bool));
+	public void setMultiEditorLayout(boolean multi) {
+		if(multi != multiEditorLayout) {
+			settings.setProperty("OrderEditor.multiEditorLayout", String.valueOf(multi));
 			clearUnits();
+			synchronized (content) {
+			  if(multi && (editor != null)) {
+			    // if before there was only one editor and now we
+			    // switch to multi editor layout
+			    content.removeAll();
+			    removeListeners(editor);
+			    editor = null;
+			  } else {
+			    editor = new OrderEditor(data, settings, undoMgr, dispatcher);
+			    editor.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 
-			if(bool && (editor != null)) {
-				// if before there was only one editor and now we
-				// switch to multi editor layout
-				content.removeAll();
-				removeListeners(editor);
-				editor = null;
-			} else {
-				editor = new OrderEditor(data, settings, undoMgr, dispatcher);
-				editor.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-
-				// add listeners
-				addListeners(editor);
-				content.add(editor);
+			    // add listeners
+			    addListeners(editor);
+			    content.add(editor);
+			  }
 			}
 
-			multiEditorLayout = bool;
+			multiEditorLayout = multi;
 			repaint();
+      
 		}
 	}
 
@@ -902,6 +988,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		j.removeFocusListener(focusAdapter);
 		j.removeKeyListener(keyAdapter);
 		j.removeCaretListener(caretAdapter);
+    j.removeMouseListener(this);
+
 	}
 
 	/**
@@ -929,201 +1017,335 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		j.addFocusListener(focusAdapter);
 		j.addKeyListener(keyAdapter);
 		j.addCaretListener(caretAdapter);
+    j.addMouseListener(this);
 	}
 
-	private void loadEditors(Island i) {
-		List<Unit> l = new LinkedList<Unit>();
-
-		if((listMode >> LIST_ISLAND) != 0) {
-			// list units of specified Island
-			for(Iterator<Region> iter = i.regions().iterator(); iter.hasNext();) {
-				Region r = iter.next();
-				Collection<Unit> c = r.units();
-
-				if(c != null) {
-					l.addAll(c);
-				}
-			}
-		}
-
-		loadEditors(l);
+	/**
+	 * @param type A mode constant
+	 * @return True iff current listMode is of <code>type</code>
+	 */
+	private boolean isListMode(int type) {
+	  return ((listMode >> type) & 1) != 0;
 	}
 
-	private void loadEditors(Faction f, Region r) {
-		currentRegion = r;
+  /**
+   * Load editors belonging to the specified island and faction depending on listMode.
+   * 
+   * @param r
+   * @param f
+   */
+	private void loadEditors(Island i, Faction f) {
+	  List<Unit> l = new LinkedList<Unit>();
+	  if (!isListMode(LIST_FACTION))
+	    f = null;
+	  if (isListMode(LIST_ISLAND)) {
+	    // list units of specified Island
+	    for (Region r : i.regions()) {
+	      for (Unit u : r.units())
+	        if (f == null || u.getFaction().equals(f))
+	          l.add(u);
+	    }
+	  }
 
-		if((listMode >> LIST_FACTION) != 0) {
-			// list some units
-			if(((listMode >> LIST_FACTION) & 1) != 0) {
-				// list units in region of specified faction
-				List<Unit> l = new LinkedList<Unit>(r.units());
-
-				if(f != null) {
-					for(Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
-						Unit u = iter.next();
-
-						if(!f.equals(u.getFaction())) {
-							iter.remove();
-						}
-					}
-				}
-
-				loadEditors(l);
-			} else {
-				// list all units in region
-				loadEditors(r);
-			}
-		} else {
-			// dont list any units
-			loadEditors((List<Unit>) null);
-		}
+	  loadEditors(l);
 	}
 
-	private void loadEditors(Region r) {
-		currentRegion = r;
+	/**
+   * Load editors belonging to the specified region and faction depending on listMode.
+   * 
+	 * @param r
+	 * @param f
+	 */
+	private void loadEditors(Region r, Faction f) {
+	  if (!isListMode(LIST_REGION) && r.getIsland()!=null){
+	    if (isListMode(LIST_ISLAND))
+	      loadEditors(r.getIsland(), f);
+	    else
+	      loadEditors(Collections.<Unit>emptyList());
+	    return;
+	  }
+	  if (!isListMode(LIST_FACTION))
+	    f = null;
 
-		if((listMode >> LIST_REGION) != 0) {
-			if(((listMode >> LIST_REGION) & 1) != 0) {
-				if(r != null) {
-					Collection<Unit> c = r.units();
+	  List<Unit> l = new LinkedList<Unit>(r.units());
 
-					if(c != null) {
-						loadEditors(new LinkedList<Unit>(c));
-					} else {
-						// dont list any units
-						loadEditors((List<Unit>) null);
-					}
-				} else {
-					// Region is null
-					// dont list any units
-					loadEditors((List<Unit>) null);
-				}
-			} else {
-				Island i = r.getIsland();
+	  if(f != null) {
+	    for(Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
+	      Unit u = iter.next();
 
-				if(i != null) {
-					loadEditors(i);
-				} else {
-					if(r != null) {
-						Collection<Unit> c = r.units();
-
-						if(c != null) {
-							loadEditors(new LinkedList<Unit>(c));
-						} else {
-							// dont list any units
-							loadEditors((List<Unit>) null);
-						}
-					} else {
-						// dont list any units
-						loadEditors((List<Unit>) null);
-					}
-				}
-			}
-		} else {
-			// dont list any units
-			loadEditors((List<Unit>) null);
-		}
+	      if(!f.equals(u.getFaction())) {
+	        iter.remove();
+	      }
+	    }
+	  }
+	  loadEditors(l);
 	}
 
+
+	/**
+	 * Loads editors for the specified unit depending on <code>listMode</code>.
+	 * 
+	 * @param u
+	 */
 	private void loadEditors(Unit u) {
-		if((listMode >> LIST_UNIT) != 0) {
-			if(((listMode >> LIST_UNIT) & 1) != 0) {
-				// don't know what to do in this case
-				loadEditors(u.getFaction(), u.getRegion());
-			} else {
-				loadEditors(u.getFaction(), u.getRegion());
-			}
-		} else {
-			loadEditors((List<Unit>) null);
-		}
+	  if (isListMode(LIST_REGION))
+	    if (isListMode(LIST_FACTION))
+	      loadEditors(u.getRegion(), u.getFaction());
+	    else 
+	      loadEditors(u.getRegion(), (Faction) null);
+	  else if (isListMode(LIST_ISLAND))
+	    if (isListMode(LIST_FACTION)) 
+	      loadEditors(u.getRegion().getIsland(), u.getFaction());
+	    else
+	      loadEditors(u.getRegion().getIsland(), (Faction) null);
+	  else 
+	    loadEditors(Collections.singletonList(u));
+	}
+
+
+	/**
+   * Loads and displays the editors that best correspond to the selected
+   * entities. This depends on the current
+   * {@link MultiEditorOrderEditorList#listMode}. 
+   * 
+   *  <code>
+   *                   listMode (ISLAND/REGION/FACTION)
+   *  selected:        000    100     010     001    110      101             011            111
+   *  island           empty  island  empty   empty  island  island          empty           island
+   *  region           empty  island  region  empty  region  island          region/faction  region
+   *  faction/group    empty  island  region  empty  region  faction/island  region/faction  faction/region
+   *  unit             unit   island  region  unit   region  faction/island  region/faction  faction/region
+   *  other             ===  like parent  ===
+   * </code>
+   * 
+   * @param newIsland
+   * @param newRegion
+   * @param newFaction
+   * @param newUnit
+   */
+	private void loadEditors(Island newIsland, Region newRegion, Faction newFaction, Unit newUnit) {
+    if (newUnit!=null){
+      loadEditors(newUnit);
+    }else if (newRegion!=null && newFaction!=null){
+	    loadEditors(newRegion, newFaction);
+	  }else if (newRegion!=null){ // newFaction == null
+	    loadEditors(newRegion, (Faction) null);
+	  }else if (newIsland!=null){
+	    loadEditors(newIsland, newFaction);
+	  }else {
+	    loadEditors(Collections.<Unit>emptyList());
+	  }
+    currentIsland = newIsland;
+    currentRegion  = newRegion;
+    currentFaction = newFaction;
+    currentUnit = newUnit;
+    transitionalIsland=null;
+    transitionalRegion=null;
+    transitionalFaction=null;
 	}
 
 	/**
-	 * Adds editors for all units in privileged factions that are in the specified list to this
-	 * component. OrderEditors are created if necessary, else the cached version are used.
-	 *
-	 * 
-	 */
-	private void loadEditors(List<Unit> unitsToAdd) {
-		int unitIndex = 0;
-		List<Unit> allUnits = unitsToAdd;
-
-		removeListenersFromAll();
-		content.removeAll();
-		units.clear();
-
-		if((allUnits == null) || (allUnits.size() == 0)) {
-			return;
-		}
-
-		// sort like in EMapOverviewPanel
-		Comparator<Unit> cmp = EMapOverviewPanel.getUnitSorting(settings);
-		Collections.sort(allUnits, cmp);
-
-		for(Iterator<Unit> unitIter = allUnits.listIterator(); unitIter.hasNext();) {
-			Unit regionUnit = unitIter.next();
-
-			if(EMapDetailsPanel.isPrivilegedAndNoSpy(regionUnit)) {
-				addUnit(regionUnit);
-
-				// this is done in order to find out the index of the
-				// currently selected unit
-				if(regionUnit.equals(currentUnit)) {
-					currentUnitIndex = unitIndex;
-				}
-
-				unitIndex++;
-			}
-		}
-
-		this.invalidate();
-		this.validate();
+   * Adds editors for all units in privileged factions that are in the specified
+   * list to this component and removes unused ones. OrderEditors are created if
+   * necessary, else the cached version are used.
+   */
+	private void loadEditors(List<Unit> unitsToShow) {
+    clearUnits();
+    for (Unit u: unitsToShow){
+      units.add(u);
+    }
+    for (Unit u: units){
+      OrderEditor editor = buildOrderEditor(u);
+      content.add(editor);
+      addListeners(editor);
+    }
+    
+	  this.invalidate();
+	  this.validate();
 	}
 
 	/**
-	 * Adds the specified unit to this component. This includes creating and adding a new order
-	 * editor and updating the internal data structures.
-	 *
-	 * 
-	 */
+   * Returns the cached editor for a unit.
+   * 
+   * @param u A unit, may be <code>null</code>.
+   * @return The cached editor for <code>u</code> or null if none exists 
+   */
+  private OrderEditor getEditor(Unit u) {
+    if(u!=null && u.getCache() != null && u.getCache().orderEditor != null) 
+      return (OrderEditor) u.getCache().orderEditor;
+    else
+      return null;
+  }
+
+  /**
+   * Sets the cached editor of the specified unit.
+   * 
+   * @param u
+   *          The unit, not <code>null</code>.
+   * @param editor
+   *          The new editor or <code>null</code> to dispose the currently
+   *          cached editor of <code>u</code>.
+   */
+  private void setEditor(Unit u, CacheableOrderEditor editor) {
+    if(u.getCache() == null) {
+      if (editor==null)
+        return;
+      u.setCache(new Cache());
+    }
+    u.getCache().orderEditor=editor;
+  }
+
+  
+  /**
+   * Removes the specified unit from the content. This includes removing editor
+   * and listeners for it and the unit itself from <code>units</code>.
+   * 
+   * @param u
+   * @param it
+   *          An iterator on <code>units</code>. If not <code>null</code>,
+   *          the unit is removed via this iterator, if <code>null</code> it is removed via
+   *          <code>units.remove</code>.
+   */
+	private void removeUnit(Unit u, Iterator<Unit> it) {
+    if (log.isDebugEnabled())
+      log.debug("MultiEditor.removeUnit  "+u);
+	  JTextComponent c = getEditor(u);
+	  synchronized (content) {
+	    if (c==null)
+	      log.error(this.getClass()+": unit already removed; "+u);
+	    else{
+	      content.remove(c);
+	      removeListeners(c);
+	    }
+	    if (it!=null)
+	      it.remove();
+	    else
+	      units.remove(u);
+	    if (content.getComponentCount()==0 && this.content.hasFocus())
+	      this.requestFocus();
+	  }
+	}
+
+	/**
+   * Adds the specified unit to the content. This includes creating and adding a
+   * new order editor and updating the internal data structures. If possible,
+   * the new editor is inserted at the right position in the unit order, else it
+   * is inserted at the end.
+   * 
+   * @param u
+   *          The unit for the new editor.
+   */
 	private void addUnit(Unit u) {
-		buildOrderEditor(u);
+	  if (!units.contains(u)){
+      if (log.isDebugEnabled())
+        log.debug("MultiEditor.add: "+u);
+	    buildOrderEditor(u);
 
-		content.add((Component)u.getCache().orderEditor);
-		addListeners((JTextComponent)u.getCache().orderEditor);
-		units.add(u);
+      units.add(u);
+      if (units.first()==u)
+        content.add(getEditor(u), 0);
+      else{
+        Unit predUnit = getPreviousUnit(u);
+        if (predUnit==null){
+          content.add(getEditor(u));
+        }else{ 
+          content.add(getEditor(u), content.getComponentZOrder(getEditor(predUnit))+1);
+        }
+      }
+	    addListeners(getEditor(u));
+	  }else{
+      if (log.isDebugEnabled())
+        log.debug("MultiEditor.not add: "+u);
+    }
 	}
 
 	/**
+	 * @return The unit following on currentUnit in the unit sorting of {@link EMapOverviewPanel}
+	 */
+	protected Unit getNextUnit() {
+	  return getNextUnit(currentUnit);
+  }
+
+    
+  /**
+   * @return The unit following on u in the unit sorting of {@link EMapOverviewPanel}
+   * 
+   */
+    protected Unit getNextUnit(Unit u) {
+      Iterator<Unit> it = units.tailSet(u).iterator();
+      if (!it.hasNext())
+        return null;
+      it.next(); // skip the currentUnit
+      if (it.hasNext())
+        return it.next();
+      else
+        return null;
+//	  return ( units.get(units.indexOf(currentUnit) + 1));
+	}
+
+  /**
+   * @return The unit preceding the currentUnit in the unit sorting of {@link EMapOverviewPanel}
+   */
+	private Unit getPreviousUnit() {
+   return getPreviousUnit(currentUnit);
+  }
+
+    
+    /**
+     * @return The unit preceding on <code>u</code> in the unit sorting of {@link EMapOverviewPanel}
+     */
+    private Unit getPreviousUnit(Unit u) {
+      SortedSet<Unit> pre = units.headSet(u);
+      if (pre.isEmpty())
+        return null;
+      else
+        return pre.last();
+	}
+
+  /**
 	 * Builds and attaches the order editor for and to the given unit.
-	 *
 	 * 
 	 */
-	private void buildOrderEditor(Unit u) {
-		if((u.getCache() == null) || (u.getCache().orderEditor == null)) {
-			OrderEditor ce = new OrderEditor(data, settings, undoMgr, dispatcher);
+	private OrderEditor buildOrderEditor(Unit u) {
+    if (u==null){
+      return null;
+    }
+    OrderEditor editor = getEditor(u);
+    boolean created = false;
+		if(editor == null) {
+			editor = new OrderEditor(data, settings, undoMgr, dispatcher);
+      created = true;
+    }
+		attachOrderEditor(u, editor);
+    if (created){
+      u.getCache().addHandler(this);
+    }
+    return editor;
+  }
+  
+  /**
+   * Attaches a unit to an editor and vice versa.
+   * 
+   * @param u
+   * @param editor
+   */
+  private void attachOrderEditor(Unit u, OrderEditor editor){
+		editor.setBorder(new TitledBorder(standardBorder, u.toString() + ": " + u.getPersons()));
 
-			ce.setBorder(new TitledBorder(standardBorder, u.toString() + ": " + u.getPersons()));
-
-			if(u.isOrdersConfirmed()) {
-				ce.setBackground(standardBgColorConfirmed);
-			} else {
-				ce.setBackground(standardBgColor);
-			}
-
-			// deactivate visibility call
-			ce.setKeepVisible(false);
-			ce.setFont(new Font("Monospaced", Font.PLAIN, ce.getFont().getSize()));
-			ce.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-			ce.setUnit(u);
-
-			if(u.getCache() == null) {
-				u.setCache(new Cache());
-			}
-
-			u.getCache().orderEditor = ce;
-			u.getCache().addHandler(this);
+		if(u.isOrdersConfirmed()) {
+		  editor.setBackground(standardBgColorConfirmed);
+		} else {
+		  editor.setBackground(standardBgColor);
 		}
+
+		// deactivate visibility call
+		editor.setKeepVisible(false);
+		editor.setFont(new Font("Monospaced", Font.PLAIN, editor.getFont().getSize()));
+		editor.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+
+		editor.setUnit(u);
+
+		setEditor(u, editor);
 	}
 
 	/**
@@ -1131,19 +1353,21 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * editors
 	 */
 	private void clearUnits() {
+    log.debug("clearUnits called");
 		if(multiEditorLayout) {
-			if(units != null) {
-				units.clear();
-			}
+		  synchronized(content) {
+		    if(units != null) {
+		      units.clear();
+		    }
 
-			removeListenersFromAll();
-			content.removeAll();
-			currentUnitIndex = -1;
+		    removeListenersFromAll();
+		    content.removeAll();
+		  }
 		} else {
 			if(currentUnit != null) {
-				if(currentUnit.getCache() != null) {
-					removeListeners((JTextComponent)currentUnit.getCache().orderEditor);
-					currentUnit.getCache().orderEditor = null;
+				if(getEditor(currentUnit) != null) {
+					removeListeners(getEditor(currentUnit));
+					setEditor(currentUnit, null);
 				}
 
 				editor.setUnit(null);
@@ -1156,26 +1380,31 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	private void requestFocus(final CacheableOrderEditor editor) {
+    // stm 2007.08.06 hack removed, still works
 		// pavkovic 2004.02.14
 		// THIS IS A HACK: I don't know why the focus 
 		// gets lost somehow so put it at the end of the 
 		// event dispatching thread.
 		// It may be EMapOverviewPanel (SwingUtilities.invokeLater(new ScrollerRunnable()))).
-		SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
+//		SwingUtilities.invokeLater(new Runnable() {
+//				public void run() {
 					editor.requestFocus();
-				}
-			});
+//				}
+//			});
 	}
 
 	/**
 	 * Ensures that the right order editor gets the focus.
 	 */
 	public void requestFocus() {
-		if((currentUnit != null) && (currentUnit.getCache() != null) &&
-			   (currentUnit.getCache().orderEditor != null)) {
-			requestFocus(currentUnit.getCache().orderEditor);
-		}
+	  if (multiEditorLayout){
+	    if(getEditor(currentUnit) != null) {
+	      requestFocus(getEditor(currentUnit));
+	    }else
+	      super.requestFocus();
+	  }else{
+	    editor.requestFocus();
+	  }
 	}
 
 	protected void loadListProperty() {
@@ -1651,8 +1880,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 */
 	public JTextComponent getCurrentEditor() {
 		if(multiEditorLayout) {
-			if((currentUnit != null) && (currentUnit.getCache() != null)) {
-				return (JTextComponent)currentUnit.getCache().orderEditor;
+			if(getEditor(currentUnit) != null) {
+				return getEditor(currentUnit);
 			} else {
 				return null;
 			}
@@ -1894,9 +2123,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 						  viewRect);
 			}
 
-			if((currentUnit != null) && (currentUnit.getCache() != null) &&
-				   (currentUnit.getCache().orderEditor != null)) {
-				Rectangle bounds = currentUnit.getCache().orderEditor.getBounds();
+			if(getEditor(currentUnit) != null) {
+				Rectangle bounds = getEditor(currentUnit).getBounds();
 				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
 				while(!viewRect.contains(viewRect.x, bounds.y, viewRect.width,
@@ -1924,7 +2152,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 					// scpContent.getViewport().setViewPosition(newPos);
 					viewRect = scpContent.getViewport().getViewRect();
-					bounds = currentUnit.getCache().orderEditor.getBounds();
+					bounds = getEditor(currentUnit).getBounds();
 
 					if(++loopCounter > 3) {
 						loopCounter = 0;
@@ -2124,18 +2352,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		private void createTempImpl(Unit parentUnit, Region parentRegion) {
             UnitID id = UnitID.createTempID(data, settings, parentUnit);
 
-			//			for(newIDInt = unitIntID; newIDInt != (unitIntID - 1);
-			//					newIDInt = (newIDInt + (1 % IDBaseConverter.getMaxId()))) {
-			//				if(parentRegion.getUnit(UnitID.createUnitID(-newIDInt)) == null) {
-			//					break;
-			//				}
-			//			}
 			if(!settings.getProperty("MultiEditorOrderEditorList.ButtonPanel.ShowTempUnitDialog",
 										 "true").equalsIgnoreCase("true")) {
 				// don't show any dialogs, simply create the tempunit and finish.
 				TempUnit tempUnit = parentUnit.createTemp(id);
 				dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
-				//dispatcher.fire(new SelectionEvent(this, null, tempUnit));
+				dispatcher.fire(new SelectionEvent(this, null, tempUnit));
 			} else {
 				// do all the tempunit-dialog-stuff
 				UnitID newID = UnitID.createUnitID(-id.intValue(),data.base); // unit id is non-negative on views
@@ -2265,7 +2487,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 								// data update
 								dispatcher.fire(new TempUnitEvent(this, tempUnit,
-																  TempUnitEvent.CREATED));
+																  TempUnitEvent.CREATED), true);
+                selectEditor(tempUnit);
+                if (getEditor(tempUnit)!=null)
+                  getEditor(tempUnit).requestFocus();
+                dispatcher.fire(new SelectionEvent(this, null, tempUnit));
 								return;
 							} else {
 								JOptionPane.showMessageDialog(this,
@@ -2289,12 +2515,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		protected void deleteTempUnit() {
 			if((currentUnit != null) && currentUnit instanceof TempUnit) {
-				Unit u = ((TempUnit) currentUnit).getParent();
-
-				dispatcher.fire(new TempUnitEvent(this, (TempUnit) currentUnit,
-												  TempUnitEvent.DELETED), true);
-				u.deleteTemp(currentUnit.getID(), data);
-				dispatcher.fire(new SelectionEvent(this, null, u));
+        TempUnit tempUnit = (TempUnit) currentUnit;
+				Unit parentUnit = tempUnit.getParent();
+				selectEditor(parentUnit);
+        if (getEditor(currentUnit)!=null)
+          getEditor(currentUnit).requestFocus();
+        dispatcher.fire(new SelectionEvent(this, null, parentUnit), true);
+        dispatcher.fire(new TempUnitEvent(this, tempUnit,
+            TempUnitEvent.DELETING), true);
+				parentUnit.deleteTemp(tempUnit.getID(), data);
 			}
 		}
 
@@ -2478,4 +2707,5 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			return false;
 		}
 	}
+
 }

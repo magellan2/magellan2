@@ -655,7 +655,7 @@ public class UnitContextMenu extends JPopupMenu {
 		for (Iterator iter = selectedUnits.iterator(); iter.hasNext();) {
 			Unit u = (Unit) iter.next();
 
-			if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+			if (EMapDetailsPanel.isPrivileged(u.getFaction())) {
 				return true;
 			}
 		}

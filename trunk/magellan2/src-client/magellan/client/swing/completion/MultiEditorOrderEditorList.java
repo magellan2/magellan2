@@ -1042,7 +1042,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	    // list units of specified Island
 	    for (Region r : i.regions()) {
 	      for (Unit u : r.units())
-	        if (f == null || u.getFaction().equals(f))
+	        if (EMapDetailsPanel.isPrivileged(f) && (f == null || u.getFaction().equals(f)))
 	          l.add(u);
 	    }
 	  }
@@ -1069,13 +1069,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 	  List<Unit> l = new LinkedList<Unit>(r.units());
 
-	  if(f != null) {
-	    for(Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
-	      Unit u = iter.next();
+	  for(Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
+	    Unit u = iter.next();
 
-	      if(!f.equals(u.getFaction())) {
-	        iter.remove();
-	      }
+	    if(!EMapDetailsPanel.isPrivileged(u.getFaction()) || (f!=null &&  !f.equals(u.getFaction()))) {
+	      iter.remove();
 	    }
 	  }
 	  loadEditors(l);
@@ -1088,6 +1086,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * @param u
 	 */
 	private void loadEditors(Unit u) {
+    if (!EMapDetailsPanel.isPrivilegedAndNoSpy(u)){
+      loadEditors(Collections.<Unit>emptyList());
+      return;
+    }
+    
 	  if (isListMode(LIST_REGION))
 	    if (isListMode(LIST_FACTION))
 	      loadEditors(u.getRegion(), u.getFaction());

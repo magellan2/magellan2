@@ -1,3 +1,6 @@
+2007-08-10  stm  <stm_@users.sourceforge.net>
+  * deactivated undo
+  
 2007-08-08 stm (stm_@users.sourceforge.net)
 	* redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
 	* added optional path argument to SelectionEvent for better identification of selections

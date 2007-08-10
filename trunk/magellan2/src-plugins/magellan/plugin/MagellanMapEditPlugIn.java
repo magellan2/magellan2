@@ -280,7 +280,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
         r.setName(newName);
         this.updateClient();
       } else {
-        // Paste wohl nicht
+        // Passte wohl nicht
         ErrorWindow errorWindow = new ErrorWindow(
             Resources.get("mapedit.error.unwantedcharacter.message"),
               Resources.get("mapedit.error.unwantedcharacter.description"),null);

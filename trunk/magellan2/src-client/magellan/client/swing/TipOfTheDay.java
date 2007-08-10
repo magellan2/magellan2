@@ -77,13 +77,13 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	protected static final String NEXT = "next";
 
 	/** DOCUMENT-ME */
-	public static final String HTML_START = "<html><body style=\"margin-left: 40px;margin-top: 15px\"><font color=#4f3f30><b>";
+	public static final String HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 15px\"><font color=#4f3f30><b>";
 
 	/** DOCUMENT-ME */
 	public static final String HTML_END = "</b></font></body></html>";
 
 	/** DOCUMENT-ME */
-	public static final String E_HTML_START = "<html><body style=\"margin-left: 40px;margin-top: 2px\"><font color=#4f3f30><b>";
+	public static final String E_HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 2px\"><font color=#4f3f30><b>";
 
 	/** DOCUMENT-ME */
 	public static final String E_HTML_END = "</b></font></body></html>";
@@ -197,7 +197,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		content.setBackground(foreground);
 		content.add(didyouknow, BorderLayout.NORTH);
 		content.add(pane, BorderLayout.CENTER);
-		content.setPreferredSize(new Dimension(300, 200));
+		content.setPreferredSize(new Dimension(350, 200));
 
 		panel.add(content, BorderLayout.CENTER);
 

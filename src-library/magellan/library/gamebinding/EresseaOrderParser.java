@@ -1135,7 +1135,7 @@ public class EresseaOrderParser implements OrderParser {
 	/**
 	 * For multiple-line-completion like the creation of give-orders for the resources of an item
 	 * in OrderCompleter.cmpltGibUIDAmount it is necessary to save the unit's id and the amount to
-	 * be given. This is done by:
+	 * be given. This is done by this method.
 	 *
 	 * 
 	 * @param uid the unit's id

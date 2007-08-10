@@ -838,14 +838,14 @@ ITEM "Kräuter"
 "resources";category
 
 ITEM "Same"
-"Samen";name
+"Same";name
 0.1;weight
 "Kräuterkunde";makeskill
 3;makeskilllevel
 "resources";category
 
 ITEM "Mallornsame"
-"Mallornsamen";name
+"Mallornsame";name
 0.1;weight
 "Kräuterkunde";makeskill
 4;makeskilllevel

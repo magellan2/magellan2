@@ -34,7 +34,7 @@ import magellan.library.utils.Resources;
  * @version
  */
 public class UndoAction extends MenuAction implements PropertyChangeListener {
-	private MagellanUndoManager undo;
+	private MagellanUndoManager undoManager;
 	private String name = null;
 
 	/**
@@ -45,14 +45,14 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 	public UndoAction(Client client, MagellanUndoManager m) {
         super(client);
 		this.name = getName();
-		undo = m;
-		setEnabled(undo.canUndo());
+		undoManager = m;
+		setEnabled(undoManager.canUndo());
 
 		if(isEnabled()) {
-			putValue(Action.NAME, name + ": " + undo.getUndoPresentationName());
+			putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
 		}
 
-		undo.addPropertyChangeListener(MagellanUndoManager.UNDO, this);
+		undoManager.addPropertyChangeListener(MagellanUndoManager.UNDO, this);
 	}
 
 	/**
@@ -70,8 +70,8 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 	 * 
 	 */
 	public void menuActionPerformed(ActionEvent e) {
-		if (undo.canUndo())
-			undo.undo();
+		if (undoManager.canUndo())
+			undoManager.undo();
 	}
 
 	/**
@@ -80,10 +80,10 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 	 * 
 	 */
 	public void propertyChange(PropertyChangeEvent p1) {
-		boolean enabled = ((Boolean) p1.getNewValue()).booleanValue();
+		boolean enabled = (Boolean) p1.getNewValue();
 
 		if(enabled) {
-			putValue(Action.NAME, name + ": " + undo.getUndoPresentationName());
+			putValue(Action.NAME, name + ": " + undoManager.getUndoPresentationName());
 		} else {
 			putValue(Action.NAME, name);
 		}

@@ -1375,14 +1375,22 @@ public class EresseaOrderCompleter implements Completer {
     for (Item item : unit.getItems()){
       completions.add(new Completion(item.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.allamount"), item.getAmount()+" "+item.getName(),""));
     }
-    
+
+    addMaxReserve(unit);
+
+	}
+
+	/**
+   * @param otherUnit
+   */
+  private void addMaxReserve(Unit otherUnit) {
     // reserve the maximim the unit can carry
-    int modLoad = unit.getModifiedLoad();
+    int modLoad = otherUnit.getModifiedLoad();
     ItemType horses = data.rules.getItemType(StringID.create("Pferd"));
     ItemType carts = data.rules.getItemType(StringID.create("Wagen"));
     ItemType silver = data.rules.getItemType(StringID.create("Silber"));
-    int maxOnFoot = unit.getPayloadOnFoot();
-    int maxOnHorse = unit.getPayloadOnHorse();
+    int maxOnFoot = otherUnit.getPayloadOnFoot();
+    int maxOnHorse = otherUnit.getPayloadOnHorse();
     Float maxFoot = 0f;
     Float freeFoot = 0f;
     if(maxOnFoot != Unit.CAP_UNSKILLED) {
@@ -1396,12 +1404,11 @@ public class EresseaOrderCompleter implements Completer {
       freeHorse = new Float(Math.abs(maxOnHorse - modLoad) / 100.0F);
     }
 
-    for(Iterator iter = unit.getRegion().allItems().iterator(); iter.hasNext();) {
+    for(Iterator iter = otherUnit.getRegion().allItems().iterator(); iter.hasNext();) {
       Item item = (Item) iter.next();
       ItemType type = item.getItemType();
 
-      if((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts) &&
-          !type.equals(silver)) {
+      if((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)) {
         int weight = (int) (type.getWeight() * 100);
         if((maxOnFoot - modLoad) > 0) {
           completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxfootamount"), (maxOnFoot-modLoad) / weight+" "+type.getName(),""));
@@ -1411,10 +1418,9 @@ public class EresseaOrderCompleter implements Completer {
         }
       }
     } 
+  }
 
-	}
-
-	void cmpltReserviereJe() {
+  void cmpltReserviereJe() {
 		completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "", ""));
 	}
 

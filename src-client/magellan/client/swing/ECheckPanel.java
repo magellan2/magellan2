@@ -90,7 +90,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
   public static final String IDENTIFIER = "ECHECK";
   
-  private JTextField txtECheckEXE = null;
+//  private JTextField txtECheckEXE = null;
 	private JList lstMessages = null;
 	private JComboBox cmbFactions = null;
 	private JTextArea txtOutput = null;
@@ -413,11 +413,11 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	private Container getControlsPanel() {
 		usedOptions.setEditable(true);
 
-		JLabel lblECheckEXE = new JLabel(Resources.get("echeckpanel.lbl.echeck.caption"));
-		lblECheckEXE.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.echeck.mnemonic").charAt(0));
-		txtECheckEXE = new JTextField(settings.getProperty("JECheckPanel.echeckEXE", ""));
-    txtECheckEXE.setEnabled(false);
-		lblECheckEXE.setLabelFor(txtECheckEXE);
+//		JLabel lblECheckEXE = new JLabel(Resources.get("echeckpanel.lbl.echeck.caption"));
+//		lblECheckEXE.setDisplayedMnemonic(Resources.get("echeckpanel.lbl.echeck.mnemonic").charAt(0));
+//		txtECheckEXE = new JTextField(settings.getProperty("JECheckPanel.echeckEXE", ""));
+//    txtECheckEXE.setEnabled(false);
+//		lblECheckEXE.setLabelFor(txtECheckEXE);
 
 		//JButton btnBrowse = new JButton("...");
 		//btnBrowse.addActionListener(new ActionListener() {
@@ -497,20 +497,21 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		GridBagConstraints c = new GridBagConstraints();
 		c.anchor = GridBagConstraints.WEST;
 		c.insets = new Insets(2, 1, 2, 1);
-
-		c.gridx = 0;
 		c.gridy = 0;
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		controls.add(lblECheckEXE, c);
-
-		c.gridx = 1;
-		c.gridy = 0;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
-		c.weighty = 0.0;
-		controls.add(txtECheckEXE, c);
+    
+//		c.gridx = 0;
+//		c.gridy = 0;
+//		c.fill = GridBagConstraints.NONE;
+//		c.weightx = 0.0;
+//		c.weighty = 0.0;
+//		controls.add(lblECheckEXE, c);
+//
+//		c.gridx = 1;
+//		c.gridy = 0;
+//		c.fill = GridBagConstraints.HORIZONTAL;
+//		c.weightx = 1.0;
+//		c.weighty = 0.0;
+//		controls.add(txtECheckEXE, c);
 //
 //		c.gridx = 2;
 //		c.gridy = 0;
@@ -520,14 +521,14 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 //		controls.add(btnBrowse, c);
 
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy++;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		controls.add(lblFactions, c);
 
 		c.gridx = 1;
-		c.gridy = 1;
+//		c.gridy = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 0.0;
@@ -535,7 +536,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		controls.add(cmbFactions, c);
 
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy++;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.0;
 		c.weighty = 0.0;
@@ -543,7 +544,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		controls.add(lblOptions, c);
 
 		c.gridx = 1;
-		c.gridy = 2;
+//		c.gridy = 2;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 0.0;
@@ -551,7 +552,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		controls.add(usedOptions, c);
 
 		c.gridx = 1;
-		c.gridy = 3;
+		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 0.0;
@@ -559,7 +560,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		controls.add(chkConfirmedOnly, c);
 
 		c.gridx = 1;
-		c.gridy = 4;
+		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 1.0;
 		c.weighty = 0.0;

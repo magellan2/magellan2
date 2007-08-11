@@ -482,8 +482,8 @@ public class ReportMerger extends Object {
 			report.regionMap = new HashMap<String, Region>();
 			report.schemeMap = new HashMap<String, Collection<Region>>();
 
-			for(Iterator iter = report.data.regions().values().iterator(); iter.hasNext();) {
-				Region region = (Region) iter.next();
+			for(Iterator<Region> iter = report.data.regions().values().iterator(); iter.hasNext();) {
+				Region region = iter.next();
 
 				if((region.getName() != null) && (region.getName().length() > 0)) {
 					/*if (report.regionMap.containsKey(region.getName())) {
@@ -496,8 +496,8 @@ public class ReportMerger extends Object {
 
 				if(region.getCoordinate().z == 1) {
 					reportHasAstralRegions=true;
-					for(Iterator schemes = region.schemes().iterator(); schemes.hasNext();) {
-						Scheme scheme = (Scheme) schemes.next();
+					for(Iterator<Scheme> schemes = region.schemes().iterator(); schemes.hasNext();) {
+						Scheme scheme = schemes.next();
 						Collection<Region> col = report.schemeMap.get(scheme.getName());
 
 						if(col == null) {
@@ -528,8 +528,8 @@ public class ReportMerger extends Object {
 		Map<CoordinateID,Integer> translationMap = new Hashtable<CoordinateID, Integer>();
 		Map<CoordinateID,Integer> astralTranslationMap = new Hashtable<CoordinateID, Integer>();
 
-		for(Iterator iter = data.regions().values().iterator(); iter.hasNext();) {
-			Region region = (Region) iter.next();
+		for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
+			Region region = iter.next();
 
 			CoordinateID coord = region.getCoordinate();
 
@@ -540,10 +540,9 @@ public class ReportMerger extends Object {
 					if(foundRegion != null) {
 						CoordinateID foundCoord = foundRegion.getCoordinate();
 
-						CoordinateID translation = new CoordinateID(foundCoord.x - coord.x,
-																foundCoord.y - coord.y);
+						CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
 
-						Integer count = (Integer) translationMap.get(translation);
+						Integer count = translationMap.get(translation);
 
 						if(count == null) {
 							count = new Integer(1);
@@ -563,8 +562,8 @@ public class ReportMerger extends Object {
 				// match really is one, we have to look at all schemes.
 				dataHasAstralRegions=true;
 				if(!region.schemes().isEmpty()) {
-					Scheme scheme = (Scheme) region.schemes().iterator().next();
-					Object o = report.schemeMap.get(scheme.getName());
+					Scheme scheme = region.schemes().iterator().next();
+					Collection<Region> o = report.schemeMap.get(scheme.getName());
 
 					if(o != null) {
 						// we found some astral region that shares at least
@@ -572,21 +571,19 @@ public class ReportMerger extends Object {
 						// doesn't mean a lot, since schemes belong to several
 						// astral regions.
 						// check whether any of those regions shares all schemes
-						for(Iterator regIter = ((Collection) o).iterator(); regIter.hasNext();) {
-							Region foundRegion = (Region) regIter.next();
+						for(Iterator<Region> regIter = o.iterator(); regIter.hasNext();) {
+							Region foundRegion = regIter.next();
 
 							if(foundRegion.schemes().size() == region.schemes().size()) {
 								// at least the size fits
 								boolean mismatch = false;
 
-								for(Iterator schemes1 = region.schemes().iterator();
-										schemes1.hasNext() && !mismatch;) {
-									Scheme s1 = (Scheme) schemes1.next();
+								for(Iterator<Scheme> schemes1 = region.schemes().iterator(); schemes1.hasNext() && !mismatch;) {
+									Scheme s1 = schemes1.next();
 									boolean found = false;
 
-									for(Iterator schemes2 = foundRegion.schemes().iterator();
-											schemes2.hasNext() && !found;) {
-										Scheme s2 = (Scheme) schemes2.next();
+									for(Iterator<Scheme> schemes2 = foundRegion.schemes().iterator(); schemes2.hasNext() && !found;) {
+										Scheme s2 = schemes2.next();
 
 										if(s1.getName().equals(s2.getName())) {
 											found = true; // found a scheme match
@@ -601,10 +598,8 @@ public class ReportMerger extends Object {
 								if(!mismatch) {
 									// allright, seems we found a valid translation
 									CoordinateID foundCoord = foundRegion.getCoordinate();
-									CoordinateID translation = new CoordinateID(foundCoord.x - coord.x,
-																			foundCoord.y - coord.y,
-																			1);
-									Integer count = (Integer) astralTranslationMap.get(translation);
+									CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, 1);
+									Integer count = astralTranslationMap.get(translation);
 
 									if(count == null) {
 										count = new Integer(1);
@@ -635,14 +630,14 @@ public class ReportMerger extends Object {
 		RegionType activeVolcanoTerrain = data.rules.getRegionType(StringID.create("Aktiver Vulkan"));
 		RegionType volcanoTerrain = data.rules.getRegionType(StringID.create("Vulkan"));
 
-		for(Iterator iter = translationMap.keySet().iterator(); iter.hasNext();) {
-			CoordinateID translation = (CoordinateID) iter.next();
+		for(Iterator<CoordinateID> iter = translationMap.keySet().iterator(); iter.hasNext();) {
+			CoordinateID translation = iter.next();
 			int mismatches = 0; // the number of regions not having the same region type at the current translations
 
 			/* for each traslations we have to compare the regions'
 			   terrains */
-			for(Iterator regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
-				Region r = (Region) regionIter.next();
+			for(Iterator<Region> regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
+				Region r = regionIter.next();
 
 				if((r.getType() == null) || r.getType().equals(RegionType.unknown)) {
 					continue;
@@ -657,7 +652,7 @@ public class ReportMerger extends Object {
 					loopCoord.y = c.y;
 					loopCoord.translate(translation);
 
-					Region reportDataRegion = (Region) report.data.regions().get(loopCoord);
+					Region reportDataRegion = report.data.regions().get(loopCoord);
 
 					/* the hit count for the current translation must
 					   only be modified, if there actually are regions
@@ -709,15 +704,15 @@ public class ReportMerger extends Object {
 		 * space regions have schemes, they shouldn't differ. If they do, somethink is probably
 		 * wrong!
 		 */
-		for(Iterator iter = astralTranslationMap.keySet().iterator(); iter.hasNext();) {
-			CoordinateID translation = (CoordinateID) iter.next();
+		for(Iterator<CoordinateID> iter = astralTranslationMap.keySet().iterator(); iter.hasNext();) {
+			CoordinateID translation = iter.next();
 
 			// the number of astral space region where a scheme mismatch was found.
 			int mismatches = 0;
 
 			/* for each traslations we have to compare the regions' schemes */
-			for(Iterator regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
-				Region r = (Region) regionIter.next();
+			for(Iterator<Region> regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
+				Region r = regionIter.next();
 
 				if(r.getCoordinate().z != 1) {
 					continue;
@@ -730,7 +725,7 @@ public class ReportMerger extends Object {
 				loopCoord.x = c.x + translation.x;
 				loopCoord.y = c.y + translation.y;
 
-				Region reportDataRegion = (Region) report.data.regions().get(loopCoord);
+				Region reportDataRegion = report.data.regions().get(loopCoord);
 
 				if((reportDataRegion != null) && !reportDataRegion.schemes().isEmpty() &&
 					   !r.schemes().isEmpty()) {
@@ -738,13 +733,12 @@ public class ReportMerger extends Object {
 					boolean mismatch = reportDataRegion.schemes().size() != r.schemes().size();
 
 					// if number is ok, use nested loop to compare scheme names
-					for(Iterator schemes1 = reportDataRegion.schemes().iterator();
-							schemes1.hasNext() && !mismatch;) {
-						Scheme s1 = (Scheme) schemes1.next();
+					for(Iterator<Scheme> schemes1 = reportDataRegion.schemes().iterator(); schemes1.hasNext() && !mismatch;) {
+						Scheme s1 = schemes1.next();
 						boolean foundname = false;
 
-						for(Iterator schemes2 = r.schemes().iterator(); schemes2.hasNext();) {
-							Scheme s2 = (Scheme) schemes2.next();
+						for(Iterator<Scheme> schemes2 = r.schemes().iterator(); schemes2.hasNext();) {
+							Scheme s2 = schemes2.next();
 
 							if(s1.getName().equals(s2.getName())) {
 								foundname = true; // found a scheme match
@@ -765,7 +759,7 @@ public class ReportMerger extends Object {
 			}
 
 			// decrease hit count of this translation for each mismatch
-			Integer i = (Integer) astralTranslationMap.get(translation);
+			Integer i = astralTranslationMap.get(translation);
 			Integer i2 = new Integer(i.intValue() - mismatches);
 			astralTranslationMap.put(translation, i2);
 		}
@@ -776,16 +770,14 @@ public class ReportMerger extends Object {
 		boolean bEqual = false;
 
 		// search highest hit count
-		Iterator iter = translationMap.entrySet().iterator();
+		Iterator<Map.Entry<CoordinateID,Integer>> iter = translationMap.entrySet().iterator();
 
 		while(iter.hasNext()) {
-			Map.Entry entry = (Map.Entry) iter.next();
+			Map.Entry<CoordinateID,Integer> entry = iter.next();
 
-			CoordinateID translation = (CoordinateID) entry.getKey();
-			int count = ((Integer) entry.getValue()).intValue();
+			CoordinateID translation = entry.getKey();
+			int count = entry.getValue().intValue();
 
-			/*System.out.println( "Translation X:" + translation.x + " Y:" + translation.y +
-			    " Hits:" + count );*/
 			if(count > iCount) {
 				iDX = translation.x;
 				iDY = translation.y;
@@ -802,9 +794,9 @@ public class ReportMerger extends Object {
 		CoordinateID bestAstralTranslation = new CoordinateID(0, 0, 1);
 		int bestHitCount = -1;
 
-		for(iter = astralTranslationMap.keySet().iterator(); iter.hasNext();) {
-			CoordinateID translation = (CoordinateID) iter.next();
-			int count = ((Integer) astralTranslationMap.get(translation)).intValue();
+		for(Iterator<CoordinateID> iterator = astralTranslationMap.keySet().iterator(); iterator.hasNext();) {
+			CoordinateID translation = iterator.next();
+			int count = astralTranslationMap.get(translation).intValue();
 
 			if(count > bestHitCount) {
 				bestHitCount = count;

@@ -742,10 +742,8 @@ public abstract class GameData implements Cloneable {
   /**
    * Merges the specified dataset with this dataset.
    * 
-   * @param gd1
-   *          the first game data object for merging
-   * @param gd2
-   *          the second game data object for merging
+   * @param gd1 the first game data object for merging
+   * @param gd2 the second game data object for merging
    * @return the new merged game data object
    * @throws IllegalArgumentException
    *           if first and second game data object are from different game

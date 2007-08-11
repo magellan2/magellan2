@@ -19,8 +19,8 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 
+import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -89,7 +89,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 												(float) minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
-		fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(this.font);
+		fontMetrics = Client.getDefaultFontMetrics(this.font);
 		fontHeight = this.fontMetrics.getHeight();
 	}
 
@@ -119,10 +119,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 
 	protected FontMetrics getFontMetrics() {
 		if(fontMetrics == null) {
-			fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(new Font("TimesRoman",
-																			  Font.PLAIN, 10));
-
-			//fontMetrics = graphics.getFontMetrics(new Font("TimesRoman", Font.PLAIN, 10));
+			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
 		}
 
 		return fontMetrics;

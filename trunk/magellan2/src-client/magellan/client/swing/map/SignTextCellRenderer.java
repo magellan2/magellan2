@@ -23,7 +23,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -39,6 +38,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
@@ -142,7 +142,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 												(float) minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
-		fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(this.font);
+		fontMetrics = Client.getDefaultFontMetrics(this.font);
 		fontHeight = this.fontMetrics.getHeight();
 	}
 
@@ -180,10 +180,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
 	protected FontMetrics getFontMetrics() {
 		if(fontMetrics == null) {
-			fontMetrics = Toolkit.getDefaultToolkit().getFontMetrics(new Font("TimesRoman",
-																			  Font.PLAIN, 10));
-
-			//fontMetrics = graphics.getFontMetrics(new Font("TimesRoman", Font.PLAIN, 10));
+			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
 		}
 
 		return fontMetrics;

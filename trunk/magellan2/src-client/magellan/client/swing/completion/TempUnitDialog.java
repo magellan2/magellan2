@@ -17,6 +17,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FlowLayout;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -39,6 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
 import magellan.client.swing.InternationalizedDialog;
+import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.utils.NameGenerator;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Resources;
@@ -287,20 +290,20 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 	}
 
 	protected void setFocusList(boolean extended) {
-		id.setNextFocusableComponent(name);
-
-		if(extended) {
-			name.setNextFocusableComponent(recruit);
-			recruit.setNextFocusableComponent(order);
-			order.setNextFocusableComponent(descript);
-			descript.setNextFocusableComponent(more);
-		} else {
-			name.setNextFocusableComponent(more);
-		}
-
-		more.setNextFocusableComponent(ok);
-		ok.setNextFocusableComponent(cancel);
-		cancel.setNextFocusableComponent(id);
+    Vector<Component> components = new Vector<Component>();
+    components.add(id);
+    components.add(name);
+    if (extended) {
+      components.add(recruit);
+      components.add(order);
+      components.add(descript);
+    }
+    components.add(more);
+    components.add(ok);
+    components.add(cancel);
+    
+    FocusTraversalPolicy policy = new MagellanFocusTraversalPolicy(components);
+    setFocusTraversalPolicy(policy);
 	}
 
 	/**

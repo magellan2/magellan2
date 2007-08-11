@@ -119,7 +119,6 @@ import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.HasRegion;
 import magellan.library.ID;
 import magellan.library.Island;
 import magellan.library.Named;

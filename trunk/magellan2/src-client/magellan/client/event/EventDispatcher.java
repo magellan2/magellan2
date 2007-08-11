@@ -32,7 +32,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class EventDispatcher implements EventDispatcherInterface {
   private static final Logger log = Logger.getInstance(EventDispatcher.class);
-  private List<Object> listeners[];
+  private List listeners[];
   private boolean notifierIsAliveOnList[];
   private boolean notifierIsAlive = false;
   private boolean stopNotification = false;
@@ -69,7 +69,10 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   /**
-   * @deprecated don't use, will be thrown away soon - what is the replacement?
+   * Returns the Magellan Context.
+   * 
+   * TR: This method was deprecated. But I don't know what to do 
+   * if I need the magellan context.
    */
   public MagellanContext getMagellanContext() {
     return context;
@@ -78,7 +81,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   private MagellanContext context;
 
   /**
-   * TODO DOCUMENT ME!
+   * Sets the Magellan Context.
    */
   public void setMagellanContext(MagellanContext context) {
     this.context = context;

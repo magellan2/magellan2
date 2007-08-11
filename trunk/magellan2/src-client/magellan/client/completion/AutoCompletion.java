@@ -64,6 +64,7 @@ import magellan.client.MagellanContext;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.swing.InternationalizedDialog;
+import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.completion.ListCompletionGUI;
 import magellan.client.swing.completion.MarkedTextCompletionGUI;
@@ -1504,11 +1505,19 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         c.gridy = 1;
         c.anchor = GridBagConstraints.NORTH;
         cp.add(cancel, c);
-
-        name.setNextFocusableComponent(value);
-        value.setNextFocusableComponent(ok);
-        ok.setNextFocusableComponent(cancel);
-        cancel.setNextFocusableComponent(name);
+        
+        Vector<Component> components = new Vector<Component>();
+        components.add(name);
+        components.add(value);
+        components.add(ok);
+        components.add(cancel);
+        
+        setFocusTraversalPolicy(new MagellanFocusTraversalPolicy(components));
+//
+//        name.setNextFocusableComponent(value);
+//        value.setNextFocusableComponent(ok);
+//        ok.setNextFocusableComponent(cancel);
+//        cancel.setNextFocusableComponent(name);
       }
 
       private String[] getNewCompletionNameAndValue() {

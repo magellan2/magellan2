@@ -71,10 +71,6 @@ public class RegionType extends UnitContainerType {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * 
-	 *
-	 * @deprecated
 	 */
 	public int getRoadStones() {
 		for(Iterator iter = resources.iterator(); iter.hasNext();) {
@@ -90,8 +86,6 @@ public class RegionType extends UnitContainerType {
 
 	/**
 	 * DOCUMENT ME!
-	 *
-	 * @deprecated
 	 */
 	public BuildingType getRoadSupportBuilding() {
 		for(Iterator<Resource> iter = resources.iterator(); iter.hasNext();) {

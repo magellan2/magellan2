@@ -44,8 +44,6 @@ import javax.swing.JTextPane;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 
-import magellan.client.desktop.DesktopEnvironment;
-import magellan.client.desktop.MagellanDesktop;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 
@@ -123,15 +121,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 	protected void setLocation(Component parent) {
 		// center if using frame mode
-		if(DesktopEnvironment.getMode().equals(MagellanDesktop.Mode.FRAMES)) {
-			Dimension screen = getToolkit().getScreenSize();
-			Dimension size = getSize();
-			int x = (screen.width - size.width) / 2;
-			int y = (screen.height - size.height) / 2;
-			setLocation(x, y);
-		} else {
-			setLocationRelativeTo(parent);
-		}
+	  setLocationRelativeTo(parent);
 	}
 
 	/* initializes the dialog

@@ -1,6 +1,7 @@
 2007-08-11  Thoralf (thoralf@m84.de)
     * Enlarged the default window size of the faction statistics window
     * Open the Details View of the New Temp Unit dialog by default
+    * Removed some code (Frame- and Layout-Mode) and some warnings...
 
 2007-08-10  stm (stm_@users.sourceforge.net)
     * deactivated undo

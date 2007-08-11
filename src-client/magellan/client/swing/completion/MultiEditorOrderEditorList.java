@@ -366,7 +366,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
     // Restore focus. If we had the focus before, we want to ensure that the new current editor
     // gets the focus.
-    if (((DesktopEnvironment.getMode() == DesktopEnvironment.FRAME) || restoreFocus)){
+    if (restoreFocus) {
       requestFocus();
     }
 

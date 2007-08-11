@@ -17,8 +17,10 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -836,6 +838,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     return extras;
   }
+  
+  public static FontMetrics getDefaultFontMetrics(Font font) {
+    return Toolkit.getDefaultToolkit().getFontMetrics(font);
+  }
+
 
   private class ToggleBookmarkAction implements ActionListener, SelectionListener {
     private Object activeObject;
@@ -2011,5 +2018,4 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
     return result;
   }
-  
 }

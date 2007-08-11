@@ -33,15 +33,6 @@ public class DesktopEnvironment extends Object {
 	/** */
 	private static MagellanDesktop desktop;
 
-	/** */
-	public static final MagellanDesktop.Mode SPLIT = MagellanDesktop.Mode.SPLIT;
-
-	/** */
-	public static final MagellanDesktop.Mode FRAME = MagellanDesktop.Mode.FRAMES;
-
-	/** */
-	public static final MagellanDesktop.Mode LAYOUT = MagellanDesktop.Mode.LAYOUT;
-
 	// init state
 	private static boolean initialized = false;
 	private static List<ShortcutListener> pendingSCListeners;
@@ -188,16 +179,5 @@ public class DesktopEnvironment extends Object {
 		if(initialized) {
 			getDesktop().updateLaF();
 		}
-	}
-
-	/**
-	 * 
-	 */
-	public static MagellanDesktop.Mode getMode() {
-		if(initialized) {
-			return getDesktop().getMode();
-		}
-
-		return MagellanDesktop.Mode.SPLIT;
 	}
 }

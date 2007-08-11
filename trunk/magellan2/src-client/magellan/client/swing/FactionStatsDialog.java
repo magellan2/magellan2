@@ -113,8 +113,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		setContentPane(getMainPane());
 		setTitle(Resources.get("factionstatsdialog.window.title"));
 
-		int width = Integer.parseInt(settings.getProperty("FactionStatsDialog.width", "500"));
-		int height = Integer.parseInt(settings.getProperty("FactionStatsDialog.height", "300"));
+		int width = Integer.parseInt(settings.getProperty("FactionStatsDialog.width", "800"));
+		int height = Integer.parseInt(settings.getProperty("FactionStatsDialog.height", "540"));
 		setSize(width, height);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -123,8 +123,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		int y = Integer.parseInt(settings.getProperty("FactionStatsDialog.y",
 													  ((screen.height - getHeight()) / 2) + ""));
 		setLocation(x, y);
-		splFaction.setDividerLocation(Integer.parseInt(settings.getProperty("FactionStatsDialog.split",
-																			(width / 2) + "")));
+		splFaction.setDividerLocation(Integer.parseInt(settings.getProperty("FactionStatsDialog.split","340")));
 
 		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID",
 																   "-1"), 10);

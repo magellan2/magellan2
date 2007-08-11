@@ -1,5 +1,9 @@
-2007-08-10  stm  <stm_@users.sourceforge.net>
-  * deactivated undo
+2007-08-11  Thoralf (thoralf@m84.de)
+    * Enlarged the default window size of the faction statistics window
+    * Open the Details View of the New Temp Unit dialog by default
+
+2007-08-10  stm (stm_@users.sourceforge.net)
+    * deactivated undo
   
 2007-08-08 stm (stm_@users.sourceforge.net)
 	* redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code

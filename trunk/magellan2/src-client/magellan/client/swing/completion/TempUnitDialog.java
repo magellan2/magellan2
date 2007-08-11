@@ -201,7 +201,10 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			if(s.equalsIgnoreCase("true")) {
 				open = true;
 			}
-		}
+		} else {
+      open = true;  
+    }
+      
 
 		if(open) {
 			changeDialog();

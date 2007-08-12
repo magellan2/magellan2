@@ -192,7 +192,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 					File outputFile = new File((String) comboOutputFile.getSelectedItem());
 
 					try {
-						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(FileType.DEFAULT_ENCODING));
+						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(data.getEncoding()));
 						quit();
 					} catch(IOException ioe) {
 						log.error(ioe);

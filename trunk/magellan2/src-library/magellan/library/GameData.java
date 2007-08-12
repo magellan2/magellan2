@@ -56,6 +56,9 @@ public abstract class GameData implements Cloneable {
   /** The name of the game. */
   public final String name;
 
+  /** encoding */
+  protected String encoding = FileType.DEFAULT_ENCODING;
+
   /**
    * TODO: Comment for <code>ownerFaction</code>
    */
@@ -1672,4 +1675,11 @@ public abstract class GameData implements Cloneable {
     this.maxSortIndex = maxSortIndex;
   }
 
+  public void setEncoding(String encoding) {
+    this.encoding = encoding;
+  }
+  
+  public String getEncoding() {
+    return encoding;
+  }
 }

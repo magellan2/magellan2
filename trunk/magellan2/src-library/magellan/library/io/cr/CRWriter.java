@@ -2162,6 +2162,7 @@ public class CRWriter extends BufferedWriter {
 	 */
 	public CRWriter(FileType fileType, String encoding) throws IOException {
 		super(fileType.createWriter(encoding));
+    this.encoding = encoding;
 	}
 
 	private boolean includeRegions = true;

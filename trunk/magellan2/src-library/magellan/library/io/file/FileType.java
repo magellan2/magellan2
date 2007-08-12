@@ -37,7 +37,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class FileType {
   private final static Logger log = Logger.getInstance(FileType.class);
-  
+
   /** A String representation of the default encoding. */
   public static final String DEFAULT_ENCODING = "ISO-8859-1";
 

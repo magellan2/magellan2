@@ -1,3 +1,6 @@
+2007-08-12  Thoralf (thoralf@m84.de)
+    * pay attention during CR-write-out about loaded-CR encoding.
+    
 2007-08-11  Thoralf (thoralf@m84.de)
     * Enlarged the default window size of the faction statistics window
     * Open the Details View of the New Temp Unit dialog by default

@@ -956,6 +956,7 @@ public class CRParser implements RulesIO, GameDataIO {
         parseTranslation(world);
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("CHARSET")) {
         // do nothing
+        world.setEncoding(sc.argv[0]);
         sc.getNextToken();
 			} else {
 				unknown("VERSION", true);

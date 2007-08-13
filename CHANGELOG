@@ -1,3 +1,6 @@
+2007-08-13  Thoralf (thoralf@m84.de)
+    * Implementation for Orders Write-Out in UTF-8 (is not activated)
+    
 2007-08-12  Thoralf (thoralf@m84.de)
     * pay attention during CR-write-out about loaded-CR encoding.
     

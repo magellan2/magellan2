@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
+import magellan.library.utils.Encoding;
 import magellan.library.utils.logging.Logger;
 
 
@@ -39,7 +40,7 @@ public class FileType {
   private final static Logger log = Logger.getInstance(FileType.class);
 
   /** A String representation of the default encoding. */
-  public static final String DEFAULT_ENCODING = "ISO-8859-1";
+  public static final Encoding DEFAULT_ENCODING = Encoding.ISO;
 
     
 	// basically identified file types
@@ -303,7 +304,7 @@ public class FileType {
    * This method tries to find the encoding tag in
    * the CR file.
    */
-  public String getEncoding() {
+  protected String getEncoding() {
     try {
       
       InputStream stream = createInputStream();
@@ -311,7 +312,7 @@ public class FileType {
       
       // read at least 5 lines
       String line;
-      String encoding = DEFAULT_ENCODING;
+      String encoding = DEFAULT_ENCODING.toString();
       int counter = 0;
       while ((line = reader.readLine()) != null) {
         if (line.contains(";charset")) {

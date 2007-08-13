@@ -90,7 +90,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 					r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
 				} else {
 					// new: force our default = ISO
-					Reader stream = new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()), FileType.DEFAULT_ENCODING);
+					Reader stream = new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()), FileType.DEFAULT_ENCODING.toString());
 					r.read(stream);
 				}
 

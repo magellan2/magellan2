@@ -54,9 +54,7 @@ public class Log {
 	 * @throws IOException DOCUMENT-ME
 	 */
 	public PrintStream getPrintStream() throws IOException {
-		OutputStreamWriter osw = FileType.createEncodingWriter(new FileOutputStream(new File(baseDir,
-																							 "errors.txt").getAbsolutePath(),
-																					true),FileType.DEFAULT_ENCODING);
+		OutputStreamWriter osw = FileType.createEncodingWriter(new FileOutputStream(new File(baseDir,"errors.txt").getAbsolutePath(),true),FileType.DEFAULT_ENCODING.toString());
 		encoding = osw.getEncoding();
 
 		return new PrintStream(new StreamWrapper(new BufferedWriter(osw)));

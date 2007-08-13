@@ -158,7 +158,7 @@ public class JECheck extends Reader {
 				outputReader = new FileReader(tempFile);
 			} else {
 				// new: force our default = ISO
-				outputReader = new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING);	
+				outputReader = new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING.toString());	
 			}
 		} catch(Exception e) {
 			log.error("JECheck.JECheck(): cannot create a file reader on the temporary output file",

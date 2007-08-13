@@ -97,7 +97,7 @@ public class CRWriter extends BufferedWriter {
 	// fiete: see no other choice to find the familiarmage - unit
 	private GameData data = null;
   
-  private String encoding = FileType.DEFAULT_ENCODING;
+  private String encoding = FileType.DEFAULT_ENCODING.toString();
 
 	/**
 	 * Escape quotation marks in <tt>text</tt> with a backslash.

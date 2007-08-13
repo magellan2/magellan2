@@ -32,109 +32,92 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * With the help of this action it is possible to save the given orders
  *
  * @author Andreas
- * @version
  */
 public class SaveOrdersAction extends MenuAction implements ShortcutListener,GameDataListener {
-	private List<KeyStroke> shortCuts;
+  private List<KeyStroke> shortCuts;
 
-	/**
-	 * Creates new OpenCRAction
-	 *
-	 * @param client
-	 */
-	public SaveOrdersAction(Client client) {
-        super(client);
+  /**
+   * Creates new OpenCRAction
+   *
+   * @param client
+   */
+  public SaveOrdersAction(Client client) {
+    super(client);
 
-		shortCuts = new ArrayList<KeyStroke>(2);
-		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK |
-											 KeyEvent.SHIFT_MASK));
-		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK |
-											 KeyEvent.SHIFT_MASK));
-		DesktopEnvironment.registerShortcutListener(this);
-        setEnabled(false);
-        client.getDispatcher().addGameDataListener(this);
-	}
+    shortCuts = new ArrayList<KeyStroke>(2);
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+    DesktopEnvironment.registerShortcutListener(this);
+    setEnabled(false);
+    client.getDispatcher().addGameDataListener(this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void menuActionPerformed(ActionEvent e) {
-		OrderWriterDialog d = new OrderWriterDialog(client, true, client.getData(),
-													client.getProperties(),
-													client.getSelectedRegions().values());
-		d.setVisible(true);
-	}
+  /**
+   * 
+   */
+  public void menuActionPerformed(ActionEvent e) {
+    OrderWriterDialog d = new OrderWriterDialog(client, true, client.getData(),client.getProperties(),client.getSelectedRegions().values());
+    d.setVisible(true);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void shortCut(KeyStroke shortcut) {
-		int index = shortCuts.indexOf(shortcut);
+  /**
+   * 
+   */
+  public void shortCut(KeyStroke shortcut) {
+    int index = shortCuts.indexOf(shortcut);
 
-		if((index >= 0) && (index < 3)) {
-			switch(index) {
-			case 0:
-				new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
-									  client.getSelectedRegions().values()).runClipboard();
+    if((index >= 0) && (index < 3)) {
+      switch(index) {
+        case 0: {
+          new OrderWriterDialog(client, true, client.getData(), client.getProperties(),client.getSelectedRegions().values()).runClipboard();
+          break;
+        }
+        case 1: {
+          new OrderWriterDialog(client, true, client.getData(), client.getProperties(),client.getSelectedRegions().values()).runMail();
+          break;
+        }
+      }
+    }
+  }
 
-				break;
+  /**
+   * Should return all short cuts this class want to be informed. The elements should be of type
+   * javax.swing.KeyStroke
+   */
+  public Iterator<KeyStroke> getShortCuts() {
+    return shortCuts.iterator();
+  }
 
-			case 1:
-				new OrderWriterDialog(client, true, client.getData(), client.getProperties(),
-									  client.getSelectedRegions().values()).runMail();
+  /**
+   * 
+   */
+  public String getShortcutDescription(java.lang.Object obj) {
+    int index = shortCuts.indexOf(obj);
 
-				break;
-			}
-		}
-	}
+    return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(index));
+  }
 
-	/**
-	 * Should return all short cuts this class want to be informed. The elements should be of type
-	 * javax.swing.KeyStroke
-	 *
-	 * 
-	 */
-	public Iterator<KeyStroke> getShortCuts() {
-		return shortCuts.iterator();
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String getShortcutDescription(java.lang.Object obj) {
-		int index = shortCuts.indexOf(obj);
-
-		return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(index));
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public java.lang.String getListenerDescription() {
-		return Resources.get("actions.saveordersaction.shortcuts.title");
-	}
-	
-	public void gameDataChanged(GameDataEvent e) {
-		int i = e.getGameData().regions().size();
-		if (i>0) {
-			setEnabled(true);
-		} else {
-			setEnabled(false);
-		}
-	}
+  /**
+   * 
+   */
+  public java.lang.String getListenerDescription() {
+    return Resources.get("actions.saveordersaction.shortcuts.title");
+  }
+  
+  /**
+   * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
+   */
+  public void gameDataChanged(GameDataEvent e) {
+    int i = e.getGameData().regions().size();
+    if (i>0) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }
   
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()

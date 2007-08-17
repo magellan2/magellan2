@@ -1,3 +1,7 @@
+2007-08-10  stm (stm_@users.sourceforge.net)
+    * added BOMReader (for reading files with Unicode BOM)
+    * added support for SMTP authentication
+  
 2007-08-13  Thoralf (thoralf@m84.de)
     * Implementation for Orders Write-Out in UTF-8 (is not activated)
     

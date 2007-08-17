@@ -245,7 +245,7 @@ public class Resources {
    * the method tries to find the resource in the default locale
    * of this machine and if it is not available in this locale
    * too then it tries the default resource.
-   * If the key could not be found in any resource the key
+   * If the key could not be found in any resource, the key
    * is returned.
    */
   public static String get(String key, Locale locale, boolean returnKey) {
@@ -311,10 +311,25 @@ public class Resources {
     return caller1;
   }
    
+  /**
+   * Attempts to get the translation of the given order key in the current order locale.
+   * If no translation is found, the key is returned.
+   * 
+   * @param key    An order key
+   * @return The translation as found in the Resources or the key if no translation is found
+   */
   public static String getOrderTranslation(String key) {
     return getOrderTranslation(key, Locales.getOrderLocale());
   }
   
+  /**
+   * Attempts to get the translation of the given order key in the given locale.
+   * If no translation is found, the key is returned.
+   * 
+   * @param key    An order key
+   * @param locale 
+   * @return The translation as found in the Resources or the key if no translation is found
+   */
   public static String getOrderTranslation(String key, Locale locale) {
     Resources resources = getInstance();
     key = "orders."+key;

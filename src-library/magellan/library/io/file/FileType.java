@@ -27,7 +27,9 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.charset.CharsetDecoder;
 
+import magellan.library.io.BOMReader;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.logging.Logger;
 
@@ -61,6 +63,8 @@ public class FileType {
 	protected boolean readonly = false;
 	protected boolean createBackup = true;
   
+	private BOMReader reader;
+
 	FileType(File aFile, boolean readonly) throws IOException {
 		if(aFile == null) {
 			throw new IOException();
@@ -166,8 +170,10 @@ public class FileType {
 	 * @throws IOException
 	 */
 	public Reader createReader() throws IOException {
+		reader = null;
     String encoding = getEncoding();
-		return new BufferedReader(FileType.createEncodingReader(createInputStream(),encoding));
+		reader = FileType.createEncodingReader(createInputStream(),encoding);
+		return reader;
 	}
 
 	/**
@@ -213,8 +219,12 @@ public class FileType {
 		return new FileOutputStream(filename);
 	}
 
-	/**
-	 * Creates a Reader with the default encoding iso-8859-1.
+  
+  /**
+	 * Creates a Reader.
+      *
+	 * Tries to determine encoding by looking at the BOM. If it cannot determine the encoding, the
+	 * given <code>encoding</code> is used.
 	 *
 	 * @param is the InputStream
 	 *
@@ -222,8 +232,8 @@ public class FileType {
 	 *
 	 * @throws IOException
 	 */
-	public static Reader createEncodingReader(InputStream is, String encoding) throws IOException {
-		return new InputStreamReader(is, encoding);
+	public static BOMReader createEncodingReader(InputStream is, String encoding) throws IOException {
+		return new BOMReader(is, encoding);
 	}
 
 	/**
@@ -301,29 +311,49 @@ public class FileType {
 	}	
 	
   /**
+	 * TODO: DOCUMENT ME!
+	 *
+	 * @author $author$
+	 * @version $Revision: 476 $
+	 */
+	public static class ReadOnlyException extends IOException {
+	}
+
+	/**
    * This method tries to find the encoding tag in
    * the CR file.
    */
-  protected String getEncoding() {
+	public String getEncoding() {
+		if (reader!=null)
+			return reader.getEncoding();
     try {
       
+			// use UnicodeReader to determine encoding
       InputStream stream = createInputStream();
-      LineNumberReader reader = new LineNumberReader(new InputStreamReader(stream));
+			BOMReader localReader = new BOMReader(stream, DEFAULT_ENCODING.toString());
       
-      // read at least 5 lines
-      String line;
-      String encoding = DEFAULT_ENCODING.toString();
-      int counter = 0;
-      while ((line = reader.readLine()) != null) {
-        if (line.contains(";charset")) {
-          // found line with charset. Format is "<encoding>";charset
-          encoding = line.substring(1,line.indexOf(";charset")-1);
+			String encoding = findCharset(localReader);
+
+			if (encoding==null){
+				// maybe UnicodeReader was wrong, try reading in default encoding
+				stream.close();
+				stream = createInputStream();
+				InputStreamReader fallbackReader = new InputStreamReader(stream, DEFAULT_ENCODING.toString());
+				encoding = findCharset(fallbackReader);
         }
-        counter++;
-        if (counter >=5) break;
-      }
       
       stream.close();
+
+			if (encoding == null ){
+				log.info("no charset tag found in "+getName());
+				encoding=localReader.getEncoding();
+			}else if (localReader.hasBOM()!=null && localReader.hasBOM().booleanValue() && 
+					!localReader.getEncoding().equals(encoding)){
+				// UnicodeReader found an encoding different from the encoding of the charset tag
+				log.warn("given encoding of "+getName()+" does not match encoding given by BOM. ;charset says "+encoding+" but using "+localReader.getEncoding());
+				encoding=localReader.getEncoding();
+			}
+
       return encoding;
       
     } catch (Exception exception) {
@@ -333,10 +363,28 @@ public class FileType {
   }
 	
 	/**
+	 * Look for and evaluate the ";charset" tag. 
 	 *
-	 * @author $Author: $
-	 * @version $Revision: 305 $
+	 * @param localReader
+	 * @return The value of the tag, if found, else <code>null</code> 
+	 * @throws IOException 
 	 */
-	public static class ReadOnlyException extends IOException {
+	private String findCharset(Reader localReader) throws IOException {
+		LineNumberReader reader = new LineNumberReader(localReader);
+
+		// read at least 5 lines
+		String line;
+		String encoding = DEFAULT_ENCODING.toString();
+		int counter = 0;
+		while ((line = reader.readLine()) != null) {
+			if (line.lastIndexOf(";charset") > 0) {
+				// found line with charset. Format is "<encoding>";charset
+				return encoding = line.substring(1, line.indexOf(";charset") - 1);
+	}
+			counter++;
+			if (counter >= 5)
+				break;
+}
+		return encoding;
 	}
 }

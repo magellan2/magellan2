@@ -14,6 +14,14 @@ Class-Path: magellan-client.jar
             lib/jimi.jar 
             lib/jh.jar 
             lib/looks-1.3b1.jar 
+            lib/activation.jar 
+            lib/commons-email-1.0.jar 
+            lib/dsn.jar.jar 
+            lib/imap.jar 
+            lib/mail.jar 
+            lib/mailapi.jar 
+            lib/pop3.jar 
+            lib/smtp.jar.jar 
             lib/skins/xplookandfeel.jar
             lib/skins/kunststoff.jar 
             lib/skins/metouia.jar

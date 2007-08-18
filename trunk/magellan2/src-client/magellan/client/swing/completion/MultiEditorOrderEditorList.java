@@ -1361,6 +1361,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		  synchronized(content) {
 		    if(units != null) {
 		      units.clear();
+          units = new TreeSet<Unit>(EMapOverviewPanel.getUnitSorting(settings));
 		    }
 
 		    removeListenersFromAll();

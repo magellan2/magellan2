@@ -40,14 +40,11 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -83,7 +80,6 @@ import magellan.library.utils.logging.Logger;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
-import org.apache.tools.mail.MailMessage;
 
 /**
  * A GUI for writing orders to a file or copy them to the clipboard. This class can be used as a

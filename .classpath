@@ -16,13 +16,13 @@
 	<classpathentry kind="lib" path="lib/idw-gpl.jar" sourcepath="C:/Users/thoralf/Downloads/infonode docking framework/idw-gpl-1.5.0-src.zip"/>
 	<classpathentry kind="lib" path="lib/looks-1.3b1.jar"/>
 	<classpathentry kind="lib" path="lib/jh.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/mail.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/lib/smtp.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/lib/dsn.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/lib/imap.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/lib/mailapi.jar"/>
-	<classpathentry kind="lib" path="lib/javamail-1.4/lib/pop3.jar"/>
-	<classpathentry kind="lib" path="lib/jaf-1.1/activation.jar"/>
-	<classpathentry kind="lib" path="lib/commons-email-1.0/commons-email-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/commons-email-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/dsn.jar"/>
+	<classpathentry kind="lib" path="lib/imap.jar"/>
+	<classpathentry kind="lib" path="lib/mail.jar"/>
+	<classpathentry kind="lib" path="lib/mailapi.jar"/>
+	<classpathentry kind="lib" path="lib/pop3.jar"/>
+	<classpathentry kind="lib" path="lib/smtp.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

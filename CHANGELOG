@@ -1,3 +1,7 @@
+2007-08-25  Thoralf (thoralf@m84.de)
+    * added a feature to verify and show all faction race
+    * added a bugfix for island detection
+
 2007-08-10  stm (stm_@users.sourceforge.net)
     * added BOMReader (for reading files with Unicode BOM)
     * added support for SMTP authentication

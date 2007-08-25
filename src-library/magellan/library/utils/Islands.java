@@ -60,15 +60,13 @@ public class Islands {
 		unassignedPool.putAll(regions);
 
 		// completely update all known islands
-		for(Iterator<Island> iter = islands.values().iterator(); iter.hasNext();) {
-			Island curIsland = iter.next();
+		for(Island curIsland : islands.values()) {
 			Collection oldRegions = curIsland.regions();
 
 			if(oldRegions.size() > 0) {
 				Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, (Region) oldRegions.iterator().next());
 
-				for(Iterator<Region> it = islandRegions.values().iterator(); it.hasNext();) {
-					Region curRegion = it.next();
+				for(Region curRegion : islandRegions.values()) {
 					curRegion.setIsland(curIsland);
 					unassignedPool.remove(curRegion.getID());
 				}
@@ -81,6 +79,8 @@ public class Islands {
 		while(unassignedPool.size() > 0) {
 			Region curRegion = unassignedPool.remove(unassignedPool.keySet().iterator().next());
 			Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, curRegion);
+      
+      log.info("Islands: "+islandRegions);
 
 			if(islandRegions.size() > 0) {
 				while(islands.containsKey(newID)) {
@@ -131,7 +131,7 @@ public class Islands {
 
 		Map<CoordinateID,Region> unchecked = new Hashtable<CoordinateID, Region>();
 
-		if(!r.getRegionType().isOcean()) {
+		if(!excludedRegionTypes.containsValue(r.getRegionType())) {
 			unchecked.put((CoordinateID)r.getID(), r);
 		}
 
@@ -140,16 +140,20 @@ public class Islands {
 			checked.put((CoordinateID)currentRegion.getID(), currentRegion);
 
 			Map<CoordinateID,Region> neighbours = Regions.getAllNeighbours(regions, currentRegion.getID(), 1, excludedRegionTypes);
+      
+      log.info("unchecked.size():"+unchecked.size());
+      log.info("currentRegion: "+currentRegion.getName() + " ("+currentRegion.getID()+")" + " "+currentRegion.getType());
+      log.info("Neighbours: "+neighbours);
 
-			for(Iterator<Region> iter = neighbours.values().iterator(); iter.hasNext();) {
-				Region neighbour = iter.next();
-
+			for(Region neighbour : neighbours.values()) {
 				if(!checked.containsKey(neighbour.getID())) {
 					unchecked.put((CoordinateID)neighbour.getID(), neighbour);
 				}
 			}
 		}
 
+    log.info("checked.size():"+checked.size());
+    log.info("------");
 		return checked;
 	}
 }

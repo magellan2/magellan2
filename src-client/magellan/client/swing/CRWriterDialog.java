@@ -56,7 +56,6 @@ import magellan.library.Ship;
 import magellan.library.Spell;
 import magellan.library.Unit;
 import magellan.library.io.cr.CRWriter;
-import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;

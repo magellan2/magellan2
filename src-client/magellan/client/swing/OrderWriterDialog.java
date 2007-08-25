@@ -1083,7 +1083,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     } catch(EmailException e) {
       ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-
+      
       Object msgArgs[] = { mailHost, e.toString() };
       JOptionPane.showMessageDialog(ae,
           (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.smtpserverunreachable.text"))).format(msgArgs),
@@ -1101,28 +1101,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     write(mailWriter, false, false);
 
     mailMessage.setContent(mailWriter.toString(), contentType);
-//  mailMessage.setCharset("ISO-8859-1");
-//  mailMessage.setMsg(mailWriter.toString());
-//  mailMessage.addPart(mailWriter.toString(), "text/plain; charset=ISO-8859-1");
 
     if (username!=null && password!=null){
       mailMessage.setAuthentication(username, password);
     }
     mailMessage.setSmtpPort(port);
 
+
     // TODO support for POP befor SMTP?
 //  mailMessage.setPopBeforeSmtp(true, "host", "username", "password");
-
-    // stm: this is a hack described at http://www.jguru.com/faq/view.jsp?EID=237257
-    // shouldn't be necessary!
-//  add handlers for main MIME types
-//  MailcapCommandMap mc = (MailcapCommandMap)CommandMap.getDefaultCommandMap();
-//  mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html");
-//  mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
-//  mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
-//  mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-//  mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
-//  CommandMap.setDefaultCommandMap(mc);
 
     try {
       log.info("sending...");
@@ -1168,130 +1155,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     panel.add(passwdLabel);
     panel.add(passwd);
     int value = JOptionPane.showOptionDialog(ae, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-//    JDialog dialog = pane.createDialog();
-//    passwd.requestFocus();
-//    dialog.setVisible(true);
-//    dialog.dispose();
-//
-//    Object value = pane.getInputValue();
     if (value==0)
       return new String(passwd.getPassword());
     else
       return null;
   }
-
-
-  public class SecurePrompt extends javax.swing.JDialog {
-    public SecurePrompt(Frame parent, String title, String label) {
-      super(parent, true);
-
-      //{{INIT_CONTROLS
-      setTitle(title);
-      getContentPane().setLayout(null);
-      setSize(403, 129);
-      setVisible(false);
-//      JLabel1.setText("User ID:");
-//      getContentPane().add(JLabel1);
-//      JLabel1.setBounds(12, 12, 48, 24);
-      JLabel2.setText(label);
-      getContentPane().add(JLabel2);
-      JLabel2.setBounds(12, 48, 72, 24);
-      _ok.setText("OK");
-      getContentPane().add(_ok);
-      _ok.setBounds(60, 84, 84, 24);
-      getContentPane().add(_pwd);
-      _pwd.setBounds(72, 48, 324, 24);
-      _cancel.setText("Cancel");
-      getContentPane().add(_cancel);
-      _cancel.setBounds(264, 84, 84, 24);
-      //}}
-
-      //{{REGISTER_LISTENERS
-      SymAction lSymAction = new SymAction();
-      _ok.addActionListener(lSymAction);
-      _cancel.addActionListener(lSymAction);
-      //}}
-    }
-
-    public void setVisible(boolean b) {
-      if (b)
-        setLocation(50, 50);
-      super.setVisible(b);
-    }
-
-    public void addNotify() {
-      // Record the size of the window prior to calling parents addNotify.
-      Dimension size = getSize();
-
-      super.addNotify();
-
-      if (frameSizeAdjusted)
-        return;
-      frameSizeAdjusted = true;
-
-      // Adjust size of frame according to the insets
-      Insets insets = getInsets();
-      setSize(insets.left + insets.right + size.width, insets.top
-          + insets.bottom + size.height);
-    }
-
-    // Used by addNotify
-    boolean frameSizeAdjusted = false;
-
-    //{{DECLARE_CONTROLS
-    javax.swing.JLabel JLabel1 = new javax.swing.JLabel();
-
-    javax.swing.JLabel JLabel2 = new javax.swing.JLabel();
-
-    /**
-     * The user ID entered.
-     */
-    javax.swing.JTextField _uid = new javax.swing.JTextField();
-
-    /**
-     */
-    javax.swing.JButton _ok = new javax.swing.JButton();
-
-    /**
-     * The password is entered.
-     */
-    javax.swing.JPasswordField _pwd = new javax.swing.JPasswordField();
-
-    javax.swing.JButton _cancel = new javax.swing.JButton();
-
-    //}}
-
-    class SymAction implements java.awt.event.ActionListener {
-      public void actionPerformed(java.awt.event.ActionEvent event) {
-        Object object = event.getSource();
-        if (object == _ok)
-          Ok_actionPerformed(event);
-        else if (object == _cancel)
-          Cancel_actionPerformed(event);
-      }
-    }
-
-    /**
-     * Called when ok is clicked.
-     * 
-     * @param event
-     */
-    void Ok_actionPerformed(java.awt.event.ActionEvent event) {
-      setVisible(false);
-    }
-
-    /**
-     * Called when cancel is clicked.
-     * 
-     * @param event
-     */
-    void Cancel_actionPerformed(java.awt.event.ActionEvent event) {
-      _uid.setText("");
-      _pwd.setText("");
-      setVisible(false);
-    }
-  }
- 
   
   /**
    * DOCUMENT-ME

@@ -283,6 +283,8 @@
     <antcall target="copy_release_data">
       <param name="build.number" value="${build.number}"/>
     </antcall>
+  	
+  	<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
     
     <echo message="Creating ZIP Distribution"/>
     <delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>

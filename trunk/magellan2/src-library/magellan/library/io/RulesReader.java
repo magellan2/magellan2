@@ -42,12 +42,6 @@ public class RulesReader {
 	/**
 	 * Reads the rules of the given gamedata. Right now it first tries to read it from an xml. If
 	 * this fails it  possibly reads the cr
-	 *
-	 * 
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
 	public Rules readRules(String name) throws IOException {
 		try {
@@ -57,8 +51,7 @@ public class RulesReader {
 			   we haven't tried that yet. */
 			if(name.equalsIgnoreCase("eressea")) {
 				/* This is bad. We don't even have the default rules. */
-				log.warn("The default ruleset couldn't be found! Operating with an empty ruleset.",
-						 e);
+				log.warn("The default ruleset couldn't be found! Operating with an empty ruleset.",e);
 
 				return new GenericRules();
 			} else {
@@ -68,13 +61,7 @@ public class RulesReader {
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * 
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
 	private Rules loadRules(String name) throws IOException {
 		String ending = new File("XML").exists() ? ".xml" : ".cr";
@@ -83,9 +70,7 @@ public class RulesReader {
 			log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
 		}
 
-		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File("etc/rules/" +
-																						name +
-																						ending));
+		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File("etc/rules/" + name + ending));
 
 		return new CRParser().readRules(filetype);
 	}

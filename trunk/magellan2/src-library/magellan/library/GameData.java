@@ -1499,7 +1499,8 @@ public abstract class GameData implements Cloneable {
   private boolean postProcessed = false;
 
   /**
-   * DOCUMENT-ME
+   * This method can be called after loading or merging a report to avoid
+   * double messages and to set some game specific stuff.
    */
   public void postProcess() {
     if (postProcessed) {
@@ -1521,7 +1522,7 @@ public abstract class GameData implements Cloneable {
     // TheVoid
     // make it optional
     // postProcessTheVoid();
-
+    
     postProcessed = true;
   }
 

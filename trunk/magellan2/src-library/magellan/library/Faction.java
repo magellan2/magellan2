@@ -64,7 +64,7 @@ public interface Faction extends UnitContainer {
 	 * Returns the race of this faction. This method is an alias for the getType() method.
 	 */
 	public Race getRace();
-
+  
 	/**
 	 * Returns a string representation of this faction.
 	 */

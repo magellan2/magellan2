@@ -131,9 +131,6 @@ public class CellGeometry {
 	 * Sets the hexagon coordinates of the cell geometry, the supplied arrays are expected to be of
 	 * size 6 and the values are expected to confirm with the restrictions given in the
 	 * constructor description.
-	 *
-	 * 
-	 * 
 	 */
 	public void setGeometry(int xpoints[], int ypoints[]) {
 		if((xpoints.length != 6) || (ypoints.length != 6)) {
@@ -247,11 +244,6 @@ public class CellGeometry {
 	/**
 	 * Returns the scaled pixel position where to draw an image to exactly match the position of
 	 * the cell with the map coordinates mapX and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public Point getImagePosition(int mapX, int mapY) {
 		Point p = new Point(getCellPosition(mapX, mapY));
@@ -272,11 +264,6 @@ public class CellGeometry {
 	/**
 	 * Returns the scaled pixel position and size of an image to exactly match the position of the
 	 * cell with the map coordinate mapX and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public Rectangle getImageRect(int mapX, int mapY) {
 		return new Rectangle(getImagePosition(mapX, mapY), scaledImgSize);
@@ -285,11 +272,6 @@ public class CellGeometry {
 	/**
 	 * Returns the unscaled pixel position on the x-axis of a cell with the map coordinates mapX
 	 * and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public float getUnscaledCellPositionX(int mapX, int mapY) {
 		return (mapX * cellShiftXX) + (mapY * cellShiftXY);
@@ -298,11 +280,6 @@ public class CellGeometry {
 	/**
 	 * Returns the unscaled pixel position on the y-axis of a cell with the map coordinates mapX
 	 * and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public float getUnscaledCellPositionY(int mapX, int mapY) {
 		return mapY * cellShiftYY;
@@ -312,10 +289,6 @@ public class CellGeometry {
 	 * Returns the scaled pixel position on the x-axis of a cell with the map coordinates mapX and
 	 * mapY.
 	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public int getCellPositionX(int mapX, int mapY) {
 		return (int) (getUnscaledCellPositionX(mapX, mapY) * scaleFactor);
@@ -324,11 +297,6 @@ public class CellGeometry {
 	/**
 	 * Returns the scaled pixel position on the y-axis of a cell with the map coordinates mapX and
 	 * mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public int getCellPositionY(int mapX, int mapY) {
 		return (int) (getUnscaledCellPositionY(mapX, mapY) * scaleFactor);
@@ -336,11 +304,6 @@ public class CellGeometry {
 
 	/**
 	 * Returns the scaled pixel position of a cell with the map coordinates mapX and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public Point getCellPosition(int mapX, int mapY) {
 		return new Point(getCellPositionX(mapX, mapY), getCellPositionY(mapX, mapY));
@@ -348,11 +311,6 @@ public class CellGeometry {
 
 	/**
 	 * Returns the scaled pixel position and size of a cell with the map coordinates mapX and mapY.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public Rectangle getCellRect(int mapX, int mapY) {
 		return new Rectangle(getCellPosition(mapX, mapY), getCellSize());
@@ -361,12 +319,6 @@ public class CellGeometry {
 	/**
 	 * Returns the map coordinate of a cell containing the pixels sx and sy. The z-value of the
 	 * returned coordinate is z.
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public magellan.library.CoordinateID getCoordinate(int sx, int sy, int z) {
 		int mx = 0;

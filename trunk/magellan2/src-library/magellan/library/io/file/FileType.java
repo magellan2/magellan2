@@ -13,7 +13,6 @@
 
 package magellan.library.io.file;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -27,7 +26,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.nio.charset.CharsetDecoder;
 
 import magellan.library.io.BOMReader;
 import magellan.library.utils.Encoding;

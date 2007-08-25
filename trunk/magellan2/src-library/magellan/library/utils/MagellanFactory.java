@@ -25,6 +25,7 @@ package magellan.library.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -78,6 +79,7 @@ import magellan.library.impl.MagellanZeroUnitImpl;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.Options;
+import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.logging.Logger;
@@ -1916,15 +1918,16 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Postprocess of Island objects. The Regions of the GameData are attached to their Island.
+   * Postprocess of Island objects.
+   *  
+   * The Regions of the GameData are attached to their Island.
+   * The Factions got their Race settings. 
    */
   public static void postProcess(GameData data) {
     // create a map of region maps for every Island
     Map<Island,Map<CoordinateID,Region>> islandMap = new Hashtable<Island, Map<CoordinateID,Region>>();
 
-    for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
-      Region r = iter.next();
-
+    for(Region r : data.regions().values()) {
       if(r.getIsland() != null) {
         Map<CoordinateID,Region> actRegionMap = islandMap.get(r.getIsland());
 
@@ -1938,10 +1941,49 @@ public abstract class MagellanFactory {
     }
 
     // setRegions for every Island in the map of region maps.
-    for(Iterator<Island> iter = islandMap.keySet().iterator(); iter.hasNext();) {
-      Island island = iter.next();
+    for(Island island : islandMap.keySet()) {
       Map<CoordinateID,Region> actRegionMap = islandMap.get(island);
       island.setRegions(actRegionMap);
+    }
+    
+    
+    
+    // search for the races of the factions in the report.
+    Map<ID,Faction> factions = data.factions();
+    
+    for (ID id : factions.keySet()) {
+      Faction faction = factions.get(id);
+      
+      // if the race is already set in the report ignore this algorithm
+      if (faction.getType() != null) continue;
+      
+      Map<Race,Integer> personsPerRace = new HashMap<Race, Integer>();
+      
+      // iterate thru all units and count the races of them
+      Collection<Unit> units = faction.units();
+      for (Unit unit : units) {
+        Race race = unit.getRace();
+        if (race == null) continue;
+        if (personsPerRace.containsKey(race)) {
+          int amount = personsPerRace.get(race) + unit.getPersons();
+          personsPerRace.put(race, amount);
+        } else {
+          personsPerRace.put(race, unit.getPersons());
+        }
+      }
+      
+      // find the race with the most persons in it - this is the race of the faction.
+      int maxPersons = 0;
+      Race race = null;
+      for (Race aRace : personsPerRace.keySet()) {
+        int amount = personsPerRace.get(aRace);
+        if (amount > maxPersons) {
+          maxPersons = amount;
+          race = aRace;
+        }
+      }
+      
+      if (race != null) faction.setType(race);
     }
   }
 }

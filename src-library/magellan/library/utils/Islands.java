@@ -80,8 +80,6 @@ public class Islands {
 			Region curRegion = unassignedPool.remove(unassignedPool.keySet().iterator().next());
 			Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, curRegion);
       
-      log.info("Islands: "+islandRegions);
-
 			if(islandRegions.size() > 0) {
 				while(islands.containsKey(newID)) {
 					newID = IntegerID.create(newID.intValue() + 1);
@@ -141,10 +139,6 @@ public class Islands {
 
 			Map<CoordinateID,Region> neighbours = Regions.getAllNeighbours(regions, currentRegion.getID(), 1, excludedRegionTypes);
       
-      log.info("unchecked.size():"+unchecked.size());
-      log.info("currentRegion: "+currentRegion.getName() + " ("+currentRegion.getID()+")" + " "+currentRegion.getType());
-      log.info("Neighbours: "+neighbours);
-
 			for(Region neighbour : neighbours.values()) {
 				if(!checked.containsKey(neighbour.getID())) {
 					unchecked.put((CoordinateID)neighbour.getID(), neighbour);
@@ -152,8 +146,6 @@ public class Islands {
 			}
 		}
 
-    log.info("checked.size():"+checked.size());
-    log.info("------");
 		return checked;
 	}
 }

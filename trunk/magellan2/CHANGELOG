@@ -1,3 +1,9 @@
+2007-08-26  Thoralf (thoralf@m84.de)
+    * When you select a different renderer for the minimap via the popup, this
+      settings will now be saved in the configuration. The problem that all
+      configurations for the minimap isn't saved, is still not corrected. 
+      We've to rewrite that code...
+
 2007-08-25  Thoralf (thoralf@m84.de)
     * added a feature to verify and show all faction race
     * added a bugfix for island detection

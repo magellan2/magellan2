@@ -148,9 +148,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			final JPanel temp = new JPanel(cards);
 			temp.add(new JPanel(), "NONE");
 
-			for(Iterator iterator = source.getRenderers(plane.getIndex()).iterator();
-					iterator.hasNext();) {
-				MapCellRenderer r = (MapCellRenderer) iterator.next();
+			for(MapCellRenderer r : source.getRenderers(plane.getIndex())) {
 				availableRenderers.addItem(r);
 
 				PreferencesAdapter adap = r.getPreferencesAdapter();

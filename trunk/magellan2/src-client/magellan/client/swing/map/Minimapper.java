@@ -13,13 +13,11 @@
 
 package magellan.client.swing.map;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import javax.swing.ToolTipManager;
 
 import magellan.client.MagellanContext;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -29,6 +27,7 @@ import magellan.library.utils.Resources;
  * @version
  */
 public class Minimapper extends Mapper {
+  private static final Logger log = Logger.getInstance(Minimapper.class);
 	private RegionShapeCellRenderer myRenderer;
 	protected int minimapLastType = -1;
 
@@ -37,7 +36,7 @@ public class Minimapper extends Mapper {
 	 *
 	 * @param context
 	 */
-    public Minimapper(MagellanContext context) {
+  public Minimapper(MagellanContext context) {
 		super(context, null, new CellGeometry("cellgeometry.txt"));
 
 		// if Mapper has registered us, we don't want this
@@ -53,11 +52,17 @@ public class Minimapper extends Mapper {
 	public void setShowTooltip(boolean b) {
 		// never show tooltips
 	}
+  
+  /**
+   * @see magellan.client.swing.map.Mapper#setRenderer(magellan.client.swing.map.MapCellRenderer)
+   */
+  public void setRenderer(MapCellRenderer renderer) {
+    log.info("Minimapper.setRenderer()"+renderer);
+    super.setRenderer(renderer);
+    settings.setProperty("Minimap.Renderer",renderer.getClass().getName());
+  }
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void setRenderer(MapCellRenderer renderer, int plane) {
@@ -66,6 +71,9 @@ public class Minimapper extends Mapper {
 		settings.setProperty("Mapper.Planes." + plane, old);
 	}
 
+  /**
+   * @see magellan.client.swing.map.Mapper#initRenderingPlanes()
+   */
 	protected RenderingPlane[] initRenderingPlanes() {
 		RenderingPlane p[] = new RenderingPlane[1];
 		p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"), 1);
@@ -79,8 +87,6 @@ public class Minimapper extends Mapper {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public MapCellRenderer getMinimapRenderer() {
@@ -130,26 +136,5 @@ public class Minimapper extends Mapper {
 
 	protected int getLastRegionRenderingType() {
 		return minimapLastType;
-	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("plane.region.name", "Regions");
-		}
-
-		return defaultTranslations;
 	}
 }

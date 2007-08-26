@@ -428,6 +428,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     DesktopEnvironment.registerShortcutListener(this);
   }
 
+  /**
+   * Creates the Minimap Panel.
+   */
   protected void initMinimap() {
     minimap = new Minimapper(context);
     minimapGeometry = minimap.getCellGeometry();
@@ -450,6 +453,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     resizeMinimap = settings.getProperty("Minimap.AutoScale", "false").equals("true");
     minimapScaler = new MinimapScaler();
     minimapPane.addComponentListener(minimapScaler);
+    
+    String minimapRenderClassName = settings.getProperty("Minimap.Renderer");
+    if (minimapRenderClassName != null && minimap.getAvailableRenderers() != null) {
+      for (MapCellRenderer renderer : minimap.getAvailableRenderers()) {
+        if (renderer.getClass().getName().equals(minimapRenderClassName)) {
+          minimap.setRenderer(renderer);
+        }
+      }
+    }
   }
 
   /**

@@ -642,6 +642,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   public boolean getScrollableTracksViewportWidth() {
     return false;
   }
+  
+  /**
+   * Returns a list of available rendereres in this map.
+   */
+  public Collection<MapCellRenderer> getAvailableRenderers() {
+    return availableRenderers;
+  }
 
   /**
    * DOCUMENT-ME

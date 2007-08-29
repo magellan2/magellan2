@@ -1,3 +1,7 @@
+2007-08-29 Fiete (sf@fietefietz.de)
+	* Added all known Look & Feels, adjusted manifest.template
+	* moved all_looks from lib to lib/skins
+
 2007-08-26  Thoralf (thoralf@m84.de)
     * When you select a different renderer for the minimap via the popup, this
       settings will now be saved in the configuration. The problem that all

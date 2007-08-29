@@ -6,6 +6,7 @@ Main-Class: magellan.client.Client
 Class-Path: magellan-client.jar
             magellan-library.jar 
             magellan-help.jar
+            magellan-plugins.jar
             lib/ant-1.5.3.jar 
             lib/forms-1.0.4.jar 
             lib/idw-gpl.jar
@@ -13,7 +14,6 @@ Class-Path: magellan-client.jar
             lib/jfreechart.jar 
             lib/jimi.jar 
             lib/jh.jar 
-            lib/looks-1.3b1.jar 
             lib/activation.jar 
             lib/commons-email-1.0.jar 
             lib/dsn.jar.jar 
@@ -25,3 +25,5 @@ Class-Path: magellan-client.jar
             lib/skins/xplookandfeel.jar
             lib/skins/kunststoff.jar 
             lib/skins/metouia.jar
+            lib/skins/looks-1.3b1.jar 
+            lib/skins/skinsCollected.jar

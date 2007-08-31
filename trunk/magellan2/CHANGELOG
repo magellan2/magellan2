@@ -1,3 +1,6 @@
+2007-09-01 Fiete (sf@fietefietz.de)
+	* added spy.gif and updated EMapDetailsPanel to use spy.gif
+
 2007-08-29 Fiete (sf@fietefietz.de)
 	* Added all known Look & Feels, adjusted manifest.template
 	* moved all_looks from lib to lib/skins

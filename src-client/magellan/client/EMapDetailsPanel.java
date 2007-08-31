@@ -1888,7 +1888,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// spy
 		if(u.isSpy()) {
-			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spy"), "spion"));
+			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.spy"), "spy"));
 		}
 
 		// Gebaeude-/Schiffsanzeige

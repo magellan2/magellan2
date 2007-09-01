@@ -1,3 +1,10 @@
+2007-09-01  Thoralf (thoralf@m84.de)
+    * Try to match UTF8 with UTF-8 by ignoring all "-" (Problems with BOMReader 
+      that returns UTF8 instead of UTF-8 from the BOM)
+    * Merging two reports with different encodings uses now UTF-8 or the encoding
+      of the newer file (if no file uses UTF-8). If both reports use the same
+      encoding the resulting report uses this encoding too.
+
 2007-09-01 Fiete (sf@fietefietz.de)
 	* added spy.gif and updated EMapDetailsPanel to use spy.gif
 

@@ -14,7 +14,6 @@
 	<classpathentry kind="lib" path="lib/skins/metouia.jar"/>
 	<classpathentry kind="lib" path="lib/skins/xplookandfeel.jar"/>
 	<classpathentry kind="lib" path="lib/idw-gpl.jar" sourcepath="C:/Users/thoralf/Downloads/infonode docking framework/idw-gpl-1.5.0-src.zip"/>
-	<classpathentry kind="lib" path="lib/looks-1.3b1.jar"/>
 	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/commons-email-1.0.jar"/>
@@ -24,5 +23,7 @@
 	<classpathentry kind="lib" path="lib/mailapi.jar"/>
 	<classpathentry kind="lib" path="lib/pop3.jar"/>
 	<classpathentry kind="lib" path="lib/smtp.jar"/>
+	<classpathentry kind="lib" path="lib/skins/looks-1.3b1.jar"/>
+	<classpathentry kind="lib" path="lib/skins/skinsCollected.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

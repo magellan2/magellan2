@@ -67,8 +67,7 @@ public class BOMReader extends Reader {
 	 * initialize it.
 	 */
 	public String getEncoding() {
-		if (internalIn2 == null)
-			return null;
+		if (internalIn2 == null) return null;
 		return internalIn2.getEncoding();
 	}
 
@@ -145,40 +144,4 @@ public class BOMReader extends Reader {
 		init();
 		return internalIn2.read(cbuf, off, len);
 	}
-
-	// public void mark(int arg0) throws IOException {
-	// super.mark(arg0);
-	// 		
-	// }
-	//
-	// public boolean markSupported() {
-	// // TODO Auto-generated method stub
-	// throw new UnsupportedOperationException("not implemented");
-	// 		
-	// }
-	//
-	// public int read() throws IOException {
-	// // TODO Auto-generated method stub
-	// throw new UnsupportedOperationException("not implemented");
-	// 		
-	// }
-	//
-	// public int read(char[] arg0) throws IOException {
-	// // TODO Auto-generated method stub
-	// throw new UnsupportedOperationException("not implemented");
-	// 		
-	// }
-	//
-	// public void reset() throws IOException {
-	// // TODO Auto-generated method stub
-	// throw new UnsupportedOperationException("not implemented");
-	// 		
-	// }
-	//
-	// public long skip(long arg0) throws IOException {
-	// // TODO Auto-generated method stub
-	// throw new UnsupportedOperationException("not implemented");
-	// 		
-	// }
-
 }

@@ -371,11 +371,11 @@ public class ReportMerger extends Object {
 					for(int i = 0; i < reports.length; i++) {
 						if(!reports[i].merged) {
 							iProgress += 2;
-							ui.setProgress(reports[i].file.getName() + " - " +
-                  Resources.get("util.reportmerger.status.merging"), iProgress);
+							ui.setProgress(reports[i].file.getName() + " - " + Resources.get("util.reportmerger.status.merging"), iProgress);
 
 							//data.mergeWith( reports[i].data );
 							data = GameData.merge(data, reports[i].data);
+              
 							reports[i].merged = true;
 
 							reports[i].data = null;
@@ -469,7 +469,7 @@ public class ReportMerger extends Object {
 		} else {
 			report.data.setCurTempID(-1);
 		}
-
+    
 		boolean reportHasAstralRegions=false;
 		boolean dataHasAstralRegions=false;
 
@@ -848,7 +848,6 @@ public class ReportMerger extends Object {
 
 		}
 		
-
 		CoordinateID usedTranslation = null;
 
 		if ((data.getDate() == null) || (report.data.getDate() == null)) {

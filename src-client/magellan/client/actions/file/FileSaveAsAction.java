@@ -155,6 +155,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 			
 			// log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
 			// write cr to file
+      log.info("Using encoding: "+client.getData().getEncoding());
 			CRWriter crw = new CRWriter(filetype,client.getData().getEncoding());
 			crw.write(client.getData());
 			crw.close();

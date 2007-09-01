@@ -27,6 +27,7 @@ import magellan.library.rules.Date;
 import magellan.library.rules.EresseaDate;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Encoding;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
@@ -796,6 +797,37 @@ public abstract class GameData implements Cloneable {
     EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
     date.setEpoch(((EresseaDate) newerGD.getDate()).getEpoch());
     resultGD.setDate(date);
+    
+    // verify the encodings of the two reports
+    String oldEncoding = olderGD.getEncoding();
+    String newEncoding = newerGD.getEncoding();
+    
+    log.info("Old Encoding: "+oldEncoding);
+    log.info("New Encoding: "+newEncoding);
+    
+    if (oldEncoding != null && newEncoding != null) {
+      if (oldEncoding.equalsIgnoreCase(newEncoding)) {
+        // do nothing
+        log.info("Do nothing");
+        resultGD.setEncoding(oldEncoding);
+      } else if (oldEncoding.equalsIgnoreCase(Encoding.UTF8.toString()) || newEncoding.equalsIgnoreCase(Encoding.UTF8.toString())) {
+        // if one of the reports has UTF-8 Encoding, we use it always.
+        log.info("Set UTF-8 because one report match");
+        resultGD.setEncoding(Encoding.UTF8.toString());
+      } else {
+        // okay, we have differnt encodings, but none of them is UTF-8 - what now?
+        log.info("Encoding does not match ("+oldEncoding+" vs. "+newEncoding+"), using new encoding");
+        resultGD.setEncoding(newEncoding);
+      }
+    } else {
+      // okay, this should never happen (no encoding in the reports)
+      // so, we set the default encoding
+      log.info("Set UTF-8 as default");
+      resultGD.setEncoding(Encoding.UTF8.toString());
+    }
+    
+    log.info("Result: "+resultGD.getEncoding());
+    
 
     boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
 

@@ -164,6 +164,7 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
+import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
 
@@ -261,11 +262,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * </p>
    * 
    * @param gd
-   *          DOCUMENT-ME
    * @param fileDir
-   *          DOCUMENT-ME
    * @param settingsDir
-   *          DOCUMENT-ME
    */
   public Client(GameData gd, File fileDir, File settingsDir) {
     filesDirectory = fileDir;
@@ -294,8 +292,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     showStatus = PropertiesHelper.getboolean(settings, "Client.ShowOrderStatus", false);
 
     Properties completionSettings = loadSettings(settingsDirectory, "magellan_completions.ini");
-    if (completionSettings == null)
-      completionSettings = new SelfCleaningProperties();
+    if (completionSettings == null) completionSettings = new SelfCleaningProperties();
 
     // initialize the context, this has to be very early.
     context = new MagellanContext(this);
@@ -1016,11 +1013,23 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       c.setReportChanged(false);
       
+      String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
+      if (!Utils.isEmpty(newestVersion)) {
+        String currentVersion = VersionInfo.getVersion();
+        log.info("Newest Version on server: "+newestVersion);
+        log.info("Current Version: "+currentVersion);
+        if (VersionInfo.isNewer(currentVersion, newestVersion)) {
+          JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
+        }
+      }
+
+      
       startWindow.progress(5, Resources.get("clientstart.5"));
       c.setAllVisible(true);
       startWindow.setVisible(false);
       startWindow.dispose();
       startWindow = null;
+      
 
       // show tip of the day window
       if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {

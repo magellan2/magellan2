@@ -15,7 +15,10 @@ Class-Path: magellan-client.jar
             lib/jimi.jar 
             lib/jh.jar 
             lib/activation.jar 
+            lib/commons-codec-1.3.jar 
             lib/commons-email-1.0.jar 
+            lib/commons-httpclient-3.0.1.jar 
+            lib/commons-logging-1.1.jar 
             lib/dsn.jar.jar 
             lib/imap.jar 
             lib/mail.jar 

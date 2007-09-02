@@ -66,7 +66,7 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * This is the panel for the client settings.
  *
  * @author $Author: $
  * @version $Revision: 350 $
@@ -95,7 +95,8 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 	private JRadioButton descendingOrder;
 	private JCheckBox showTempUnitDialog;
 	private JCheckBox showProgress;
-	private JCheckBox createVoidRegions;	
+	private JCheckBox createVoidRegions;
+  private JCheckBox checkForUpdates;
 	protected List<PreferencesAdapter> subAdapters;
 
 	/**
@@ -175,6 +176,13 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		
 		// create void regions panel
 		add(getCreateVoidPanel(), c);
+    
+    GridBagHelper.setConstraints(c, 0, 4, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, /* different weighty!*/
+         GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
+         c.insets, 0, 0);
+
+    // add the misc panel...
+    add(getMiscPanel(),c);
 		
 	}
 
@@ -189,16 +197,27 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		return progressPanel;
 	}
 	
-	private Component getCreateVoidPanel() {
-		// create Void Regions
-		JPanel voidPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
-		voidPanel.setBorder(new TitledBorder( Resources.get("clientpreferences.create.void.regions.border")));
+  private Component getCreateVoidPanel() {
+    // create Void Regions
+    JPanel voidPanel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+    voidPanel.setBorder(new TitledBorder( Resources.get("clientpreferences.create.void.regions.border")));
 
-		createVoidRegions = new JCheckBox( Resources.get("clientpreferences.create.void.regions.caption"), PropertiesHelper.getboolean(settings, "map.creating.void", false));
-		voidPanel.add(createVoidRegions);
+    createVoidRegions = new JCheckBox( Resources.get("clientpreferences.create.void.regions.caption"), PropertiesHelper.getboolean(settings, "map.creating.void", false));
+    voidPanel.add(createVoidRegions);
 
-		return voidPanel;
-	}
+    return voidPanel;
+  }
+
+  private Component getMiscPanel() {
+    // check for updates
+    JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEADING));
+    panel.setBorder(new TitledBorder( Resources.get("clientpreferences.misc.border")));
+
+    checkForUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkforupdates.caption"), PropertiesHelper.getboolean(settings, "UpdateCheck.Check", true));
+    panel.add(checkForUpdates);
+
+    return panel;
+  }
 
 	private Component getTempUnitPanel() {
 		// tempUnitIDs
@@ -394,6 +413,8 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 
 		settings.setProperty("map.creating.void",
 							String.valueOf(createVoidRegions.isSelected()));
+    
+    settings.setProperty("UpdateCheck.Check",String.valueOf(checkForUpdates.isSelected()));
 		
 		source.setShowStatus(showProgress.isSelected());
 	}

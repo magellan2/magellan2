@@ -29,7 +29,7 @@ import java.io.ObjectStreamClass;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 import magellan.library.utils.logging.Logger;
 
@@ -48,7 +48,7 @@ import magellan.library.utils.logging.Logger;
 public class MagellanObjectOutputStream extends ObjectOutputStream {
   private static final Logger log = Logger.getInstance(MagellanObjectOutputStream.class);
   private PrintStream out;
-  private static final BASE64Encoder base64 = new BASE64Encoder();
+  private static final Base64 base64 = new Base64();
 
   /**
    * @see ObjectOutputStream
@@ -67,7 +67,7 @@ public class MagellanObjectOutputStream extends ObjectOutputStream {
   public void write(byte[] buf, int off, int len) throws IOException {
     byte[] copy = new byte[len];
     System.arraycopy(buf, off, copy, 0, Math.min(buf.length - off, len));
-    out.println("byte[]:"+base64.encode(copy));
+    out.println("byte[]:"+new String(base64.encode(copy)));
   }
 
 

@@ -196,7 +196,7 @@ public class Resources {
   public static String get(String key, Object[] args) {
     String value = get(key);
     if (value != null) {
-      new MessageFormat(value).format(args);
+      value = new MessageFormat(value).format(args);
     }
     return value;
   }

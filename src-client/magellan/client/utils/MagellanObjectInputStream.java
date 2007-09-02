@@ -29,7 +29,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.ObjectInputStream;
 
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * This is a wrapper of the object input stream to reads
@@ -45,7 +45,7 @@ import sun.misc.BASE64Decoder;
  */
 public class MagellanObjectInputStream extends ObjectInputStream {
   private LineNumberReader in;
-  private static final BASE64Decoder base64 = new BASE64Decoder();
+  private static final Base64 base64 = new Base64();
 
   /**
    * 
@@ -62,7 +62,7 @@ public class MagellanObjectInputStream extends ObjectInputStream {
     String line = in.readLine();
     if (line == null || !line.startsWith("byte[]:")) throw new IOException("Could not read byte[] from input stream");
     String data = line.substring("byte[]:".length());
-    byte[] abuf = base64.decodeBuffer(data);
+    byte[] abuf = base64.decode(data.getBytes());
     int x=0;
     for (int i=off; i<(off+len); i++) {
       buf[i] = abuf[x];
@@ -79,7 +79,7 @@ public class MagellanObjectInputStream extends ObjectInputStream {
     String line = in.readLine();
     if (line == null || !line.startsWith("byte[]:")) throw new IOException("Could not read byte[] from input stream");
     String data = line.substring("byte[]:".length());
-    byte[] abuf = base64.decodeBuffer(data);
+    byte[] abuf = base64.decode(data.getBytes());
     for (int i=0; i<abuf.length; i++) {
       buf[i] = abuf[i];
     }

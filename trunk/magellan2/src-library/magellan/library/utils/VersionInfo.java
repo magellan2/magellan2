@@ -16,8 +16,7 @@ package magellan.library.utils;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -88,10 +87,8 @@ public class VersionInfo {
         HTTPResult result = client.get(urlstring);
         if (result != null && result.getStatus() == 200) {
           // okay, lets get the version from the downloaded file
-          String encoding = result.getEncoding();
-          if (encoding == null) encoding = Encoding.DEFAULT.toString();
-          Reader reader = new InputStreamReader(new ByteArrayInputStream(result.getResult()),encoding);
-          ResourceBundle bundle = new PropertyResourceBundle(reader);
+          InputStream inputStream = new ByteArrayInputStream(result.getResult());
+          ResourceBundle bundle = new PropertyResourceBundle(inputStream);
           newestVersion = bundle.getString("VERSION");
         }
       } catch (Exception exception) {

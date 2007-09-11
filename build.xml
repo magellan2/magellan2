@@ -24,6 +24,7 @@
   <property name="help"              location="${basedir}/help"/>
   <property name="etc"               location="${basedir}/etc"/>
   <property name="doc"               location="${basedir}/doc"/>
+  <property name="javadoc.api"       location="${basedir}/doc/api"/>
   <property name="lib"               location="${basedir}/lib"/>
   <property name="bin"               location="${basedir}/bin"/>
   <property name="release"           location="${basedir}/release"/>
@@ -311,6 +312,20 @@
     <antcall target="clear-release"/>
   </target>
   
+  <!-- *************************************************************** -->
+  <!-- *                                                             * -->
+  <!-- *************************************************************** -->
+  <target name="doc" description="==> Creates the JavaDocs">
+    <echo message="Running JavaDoc" />
+    <javadoc packagenames="magellan.*" destdir="${javadoc.api}" author="true" version="true" use="true" private="false" windowtitle="Magellan ${VERSION.POINTED}" doctitle="Magellan ${VERSION.POINTED}" maxmemory="256M" encoding="UTF-8" locale="de_DE">
+      <classpath refid="magellan.class.path" />
+      <link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
+      <fileset dir="${basedir}">
+        <include name="**/*.java"/>
+        <exclude name="magellan/test/**"/>
+      </fileset>
+    </javadoc>
+  </target>
   
   <!-- *************************************************************** -->
   <!-- *                                                             * -->

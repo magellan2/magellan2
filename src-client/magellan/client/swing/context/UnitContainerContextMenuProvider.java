@@ -1,11 +1,10 @@
 package magellan.client.swing.context;
 
-import java.util.Collection;
-
 import javax.swing.JMenuItem;
 
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
+import magellan.library.UnitContainer;
 
 /**
  * 
@@ -15,10 +14,10 @@ import magellan.library.GameData;
  * @author Fiete
  * @version 1.0, 05.07.2007
  */
-public interface ContextMenuProvider {
+public interface UnitContainerContextMenuProvider {
     
   /**
    * creates a JMenuItem. Will be called on right-clicking units.
    */
-  public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, Collection selectedObjects);
+  public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, UnitContainer container);
 }

@@ -64,6 +64,7 @@ import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.ContextMenuProvider;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.GameData;
+import magellan.library.Item;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -239,7 +240,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
     // find the commands for this unit.
     commands.execute(data, unit);
     
-    client.repaint();
+    unit.getCache().orderEditor.reloadOrders();
+    
   }
   
   
@@ -545,8 +547,29 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       this.unit = unit;
     }
     
-    public boolean isInRegion(String regionName) {
+    public boolean unitIsInRegion(String regionName) {
       return unit.getRegion().getName().equalsIgnoreCase(regionName);
+    }
+    
+    public Unit getUnitInRegion(String unitId) {
+      return unit.getRegion().getUnit(UnitID.createUnitID(unitId, world.base));
+    }
+    
+    public boolean unitSeesOtherUnit(String unitId) {
+      Unit otherunit = getUnitInRegion(unitId);
+      return otherunit != null;
+    }
+    
+    public int getItemCount(Unit unit, String itemTypeName) {
+      Collection<Item> items = unit.getItems();
+      if (items != null) {
+        for (Item item : items) {
+          if (item.getItemType().getName().equalsIgnoreCase(itemTypeName)) {
+            return item.getAmount();
+          }
+        }
+      }
+      return 0;
     }
     
     public void addOrder(String order) {

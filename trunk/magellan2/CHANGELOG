@@ -1,3 +1,6 @@
+2007-09-11  Thoralf (thoralf@m84.de)
+    * Found a problem with magic items (resources not found). It tries to use Resources.getOrderTranslation(). That isn't useful.
+
 2007-09-02  Thoralf (thoralf@m84.de)
     * Added check for updates feature. This can be disabled in the options.
 

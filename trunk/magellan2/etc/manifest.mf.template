@@ -8,9 +8,9 @@ Class-Path: magellan-client.jar
             magellan-help.jar
             magellan-plugins.jar
             lib/ant-1.5.3.jar 
-            lib/bsh-2.0b4.jar
+            lib/bsh-2.0b4.jar 
             lib/forms-1.0.4.jar 
-            lib/idw-gpl.jar
+            lib/idw-gpl.jar 
             lib/jflap4_0b7.jar 
             lib/jfreechart.jar 
             lib/jimi.jar 

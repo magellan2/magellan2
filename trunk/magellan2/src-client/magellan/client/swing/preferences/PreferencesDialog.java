@@ -157,10 +157,12 @@ public class PreferencesDialog extends InternationalizedDialog {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void show() {
-        initPreferences();
-		dialogtree.showFirst();
-		super.setVisible(true);
+	public void setVisible(boolean isVisible) {
+    if (isVisible) {
+      initPreferences();
+  		dialogtree.showFirst();
+    }
+		super.setVisible(isVisible);
 	}
 
 	/**

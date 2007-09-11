@@ -64,7 +64,7 @@ public class OptionAction extends MenuAction {
 			buildDialog();
 		}
 
-		dialog.show();
+		dialog.setVisible(true);
 		dialog = null;
 	}
 

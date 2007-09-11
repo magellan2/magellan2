@@ -47,7 +47,10 @@ public interface CacheableOrderEditor {
 
   public void setTokenColor(String styleName, Color color);
 
-  
+  /**
+   * Refresh the editor's contents.
+   */
+  public void reloadOrders();
   
   //
   // Swing specific methods

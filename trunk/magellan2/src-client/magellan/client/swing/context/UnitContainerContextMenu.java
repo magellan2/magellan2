@@ -17,6 +17,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
@@ -25,9 +26,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import magellan.client.Client;
 import magellan.client.EMapDetailsPanel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.UnitOrdersEvent;
+import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.FactionStatsDialog;
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RoutingDialog;
@@ -139,8 +142,35 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			add(shipOrders);
 		}
 		
-		
+    initContextMenuProviders(uc);
 	}
+  
+
+  private void initContextMenuProviders(UnitContainer unitContainer) {
+    Collection<UnitContainerContextMenuProvider> cmpList = getContextMenuProviders();
+    if (!cmpList.isEmpty()) {
+      addSeparator();
+    }
+    
+    for (UnitContainerContextMenuProvider cmp : cmpList) {
+      add(cmp.createContextMenu(dispatcher, data, unitContainer));
+    }
+
+  }
+
+  /**
+   * Searchs for Context Menu Providers in the plugins and adds them to the menu.
+   */
+  private Collection<UnitContainerContextMenuProvider> getContextMenuProviders() {
+    Collection<UnitContainerContextMenuProvider> cmpList = new ArrayList<UnitContainerContextMenuProvider>();
+    for (MagellanPlugIn plugIn : Client.INSTANCE.getPlugIns()) {
+      if (plugIn instanceof UnitContainerContextMenuProvider) {
+        cmpList.add((UnitContainerContextMenuProvider)plugIn);
+      }
+    }
+    return cmpList;
+  }
+
 
 	/**
 	 * Copies the ID of the UnitContainer to the clipboard.

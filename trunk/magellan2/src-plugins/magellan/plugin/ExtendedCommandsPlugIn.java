@@ -61,13 +61,22 @@ import bsh.Interpreter;
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
-import magellan.client.swing.context.ContextMenuProvider;
+import magellan.client.swing.context.UnitContainerContextMenuProvider;
+import magellan.client.swing.context.UnitContextMenuProvider;
 import magellan.client.utils.ErrorWindow;
+import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.rules.BuildingType;
+import magellan.library.rules.Race;
+import magellan.library.rules.RegionType;
+import magellan.library.rules.ShipType;
+import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
@@ -88,7 +97,7 @@ import magellan.library.utils.logging.Logger;
  * @author Thoralf Rickert
  * @version 1.0, 28.05.2007
  */
-public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvider, ActionListener {
+public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuProvider, UnitContainerContextMenuProvider, ActionListener {
   private static Logger log = null;
   private Client client = null;
   private JMenuItem executeMenu = null;
@@ -132,6 +141,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
     JMenuItem configureMenu = new JMenuItem(Resources.get("mainmenu.configure.title"));
     configureMenu.setActionCommand(PlugInAction.CONFIGURE_ALL.getID());
     configureMenu.addActionListener(this);
+    configureMenu.setEnabled(false);
     menu.add(configureMenu);    
 
     return items;
@@ -145,13 +155,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
   }
 
   /**
-   * @see magellan.client.swing.context.ContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection)
+   * @see magellan.client.swing.context.UnitContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection)
    */
-  public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data, Object argument, Collection selectedObjects) {
-    if (!(argument instanceof Unit)) return null;
-    
-    final Unit unit = (Unit)argument;
-    
+  public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data, final Unit unit, Collection selectedObjects) {
     JMenu menu = new JMenu(Resources.get("popupmenu.title"));
     
     JMenuItem editMenu = new JMenuItem(Resources.get("popupmenu.edit.title", new Object[]{unit.getName(),unit.getID().toString()}));
@@ -173,7 +179,39 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
     
     return menu;
   }
-
+  
+  /**
+   * @see magellan.client.swing.context.UnitContainerContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, magellan.library.UnitContainer)
+   */
+  public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data, final UnitContainer container) {
+    ContainerType type = ContainerType.getType(container.getType());
+    if (type.equals(ContainerType.UNKNOWN)) {
+      log.error("Unknown containertype "+container.getType());
+      return null;
+    }
+    
+    JMenu menu = new JMenu(Resources.get("popupmenu.title"));
+    
+    JMenuItem editMenu = new JMenuItem(Resources.get("popupmenu.edit.title", new Object[]{container.getName(),container.getID().toString()}));
+    editMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        editCommands(data,container);
+      }
+    });
+    menu.add(editMenu);
+    
+    JMenuItem executeMenu = new JMenuItem(Resources.get("popupmenu.execute.title", new Object[]{container.getName(),container.getID().toString()})); 
+    executeMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        executeCommands(data,container);
+      }
+    });
+    executeMenu.setEnabled(commands.hasCommands(container));
+    menu.add(executeMenu);
+    
+    return menu;
+  }
+  
   /**
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
@@ -181,12 +219,12 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
     log.info(e.getActionCommand());
     switch (PlugInAction.getAction(e)) {
       case EXECUTE_ALL: {
-        log.info("Execute all");
+        log.info("Execute all...");
         executeCommands(client.getData());
         break;
       }
       case CONFIGURE_ALL: {
-        log.info("Execute all");
+        log.info("Configure...");
         // TODO must be implemented.... 
         break;
       }
@@ -199,7 +237,27 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
   public void quit(boolean storeSettings) {
     commands.save();
   }
-  
+
+  /**
+   * Opens a Dialog for editing the commands for the given Unitcontainer.
+   */
+  protected void editCommands(GameData data, UnitContainer container) {
+    log.info("Edit Command for UnitContainer "+container);
+    
+    // find the commands for this unit or set them to "".
+    String script = commands.getCommands(container);
+    if (script == null) {
+      // show some examples for beginners...
+      script = "// example for beginners...\n";
+      script+= "//\n";
+      script+= "//...";
+    }
+    
+    // open a dialog for the commands...
+    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,container,script);
+    dialog.setVisible(true);
+  }
+
   /**
    * Opens a Dialog for editing the commands for the given Unit.
    */
@@ -229,6 +287,23 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
     for (Unit unit : units) {
       commands.execute(data, unit);
     }
+    List<UnitContainer> containers = commands.getUnitContainersWithCommands();
+    for (UnitContainer container : containers) {
+      commands.execute(data, container);
+    }
+  }
+
+  /**
+   * Executes the commands for a given unitcontainer.
+   */
+  protected void executeCommands(GameData data, UnitContainer container) {
+    log.info("Execute Command for UnitContainer "+container);
+    
+    // find the commands for this unit.
+    commands.execute(data, container);
+    
+    container.getCache().orderEditor.reloadOrders();
+    
   }
   
   /**
@@ -279,6 +354,43 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       return UNKNOWN;
     }
   }
+
+  /**
+   * An enum for all container types in this plugin.
+   *
+   * @author Thoralf Rickert
+   * @version 1.0, 11.09.2007
+   */
+  private enum ContainerType {
+    REGIONTYPE,
+    RACE,
+    BUILDINGTYPE,
+    SHIPTYPE,
+    UNKNOWN;
+    
+    public String toString() {
+      return name().toLowerCase();
+    }
+    
+    public static ContainerType getType(String name) {
+      if (Utils.isEmpty(name)) return UNKNOWN;
+      for (ContainerType type : values()) {
+        if (type.toString().equalsIgnoreCase(name)) return type;
+      }
+      return UNKNOWN;
+    }
+    
+    public static ContainerType getType(UnitContainerType uctype) {
+      if (Utils.isEmpty(uctype)) return UNKNOWN;
+      if (uctype instanceof RegionType) return REGIONTYPE;
+      if (uctype instanceof Race) return RACE;
+      if (uctype instanceof BuildingType) return BUILDINGTYPE;
+      if (uctype instanceof ShipType) return SHIPTYPE;
+      return UNKNOWN;
+    }
+    
+    
+  }
   
 
   /**
@@ -289,30 +401,45 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
    */
   class ExtendedCommands {
     private Logger log = Logger.getInstance(ExtendedCommands.class);
-    private File commandsFile;
+    private File unitCommandsFile;
     private Client client;
-    private Hashtable<String, String> commands = new Hashtable<String, String>();
+    private Hashtable<String, String> unitCommands = new Hashtable<String, String>();
+    
+    private Hashtable<String, String> unitContainerCommands = new Hashtable<String, String>();
+    private Hashtable<String, ContainerType> unitContainerTypes = new Hashtable<String, ContainerType>();
+    
     
     public ExtendedCommands(Client client) {
       this.client = client;
       Properties properties = client.getProperties();
-      String commandsFilename = properties.getProperty("extendedcommands.commands");
+      String commandsFilename = properties.getProperty("extendedcommands.unitCommands");
       if (Utils.isEmpty(commandsFilename)) commandsFilename = "extendedcommands.xml";
       
-      commandsFile = new File(commandsFilename);
-      if (!commandsFile.exists()) {
+      unitCommandsFile = new File(commandsFilename);
+      if (!unitCommandsFile.exists()) {
         // file doesn't exist. create it with an empty set.
-        write(commandsFile);
+        write(unitCommandsFile);
       }
       
-      read(commandsFile);
+      read(unitCommandsFile);
     }
     
     /**
      * Returns true if there are any commands set.
      */
     public boolean hasCommands() {
-      return commands.size() > 0;
+      return unitCommands.size() > 0 || unitContainerCommands.size() > 0;
+    }
+    
+    /**
+     * Returns true if there is a command for the given unitcontainer.
+     */
+    public boolean hasCommands(UnitContainer container) {
+      if (!hasCommands()) return false;
+      if (container == null) return false;
+      if (container.getID() == null) return false;
+      if (!unitContainerCommands.containsKey(container.getID().toString())) return false;
+      return true;
     }
     
     /**
@@ -323,8 +450,16 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       if (unit == null) return false;
       if (unit instanceof TempUnit) return false;
       if (unit.getID() == null) return false;
-      if (!commands.containsKey(unit.getID().toString())) return false;
+      if (!unitCommands.containsKey(unit.getID().toString())) return false;
       return true;
+    }
+    
+    /**
+     * Returns the command script for the given unitcontainer.
+     */
+    public String getCommands(UnitContainer container) {
+      if (!hasCommands(container)) return null;
+      return unitContainerCommands.get(container.getID().toString());
     }
     
     /**
@@ -332,7 +467,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
      */
     public String getCommands(Unit unit) {
       if (!hasCommands(unit)) return null;
-      return commands.get(unit.getID().toString());
+      return unitCommands.get(unit.getID().toString());
     }
     
     /**
@@ -344,9 +479,26 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       if (unit.getID() == null) return;
       
       if (Utils.isEmpty(script) && hasCommands(unit)) {
-        commands.remove(unit.getID().toString());
+        unitCommands.remove(unit.getID().toString());
       } else {
-        commands.put(unit.getID().toString(), script);
+        unitCommands.put(unit.getID().toString(), script);
+      }
+      
+      executeMenu.setEnabled(hasCommands());
+    }
+    
+    /**
+     * Sets the commands for a given unit.
+     */
+    public void setCommands(UnitContainer container, String script) {
+      if (container == null) return;
+      if (container.getID() == null) return;
+      
+      if (Utils.isEmpty(script) && hasCommands(container)) {
+        unitContainerCommands.remove(container.getID().toString());
+      } else {
+        unitContainerCommands.put(container.getID().toString(), script);
+        unitContainerTypes.put(container.getID().toString(), ContainerType.getType(container.getType()));
       }
       
       executeMenu.setEnabled(hasCommands());
@@ -359,13 +511,49 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       List<Unit> units = new ArrayList<Unit>();
       GameData world = client.getData();
       
-      for (String unitId : commands.keySet()) {
+      for (String unitId : unitCommands.keySet()) {
         Unit unit = world.getUnit(UnitID.createUnitID(unitId,world.base));
         if (unit != null) units.add(unit);
       }
       
       return units;
     }
+    
+    /**
+     * Returns a list of all unitcontainerss with commands.
+     */
+    public List<UnitContainer> getUnitContainersWithCommands() {
+      List<UnitContainer> containers = new ArrayList<UnitContainer>();
+      GameData world = client.getData();
+      
+      for (String unitContainerId : unitContainerCommands.keySet()) {
+        switch (unitContainerTypes.get(unitContainerId)) {
+          case REGIONTYPE: {
+            UnitContainer container = world.getRegion(CoordinateID.parse(unitContainerId, ", "));
+            if (container != null) containers.add(container);
+            break;
+          }
+          case RACE: {
+            UnitContainer container = world.getFaction(EntityID.createEntityID(unitContainerId,world.base));
+            if (container != null) containers.add(container);
+            break;
+          }
+          case BUILDINGTYPE: {
+            UnitContainer container = world.getBuilding(EntityID.createEntityID(unitContainerId,world.base));
+            if (container != null) containers.add(container);
+            break;
+          }
+          case SHIPTYPE: {
+            UnitContainer container = world.getShip(EntityID.createEntityID(unitContainerId,world.base));
+            if (container != null) containers.add(container);
+            break;
+          }
+        }
+      }
+      
+      return containers;
+    }
+    
     
     /**
      * Executes the commands/script for a given unit.
@@ -380,6 +568,26 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
         interpreter.set("helper", new ExtendedCommandHelper(world,unit));
         interpreter.eval(getCommands(unit));
         unit.setOrdersChanged(true);
+      } catch (Throwable throwable) {
+        log.error("",throwable);
+        ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
+        errorWindow.setShutdownOnCancel(false);
+        errorWindow.setVisible(true);
+      }
+    }
+    
+    /**
+     * Executes the commands/script for a given unitcontainer.
+     */
+    public void execute(GameData world, UnitContainer container) {
+      if (!hasCommands(container)) return;
+      
+      try {
+        Interpreter interpreter = new Interpreter();
+        interpreter.set("world",world);
+        interpreter.set("container",container);
+        interpreter.set("helper", new ExtendedCommandHelper(world,container));
+        interpreter.eval(getCommands(container));
       } catch (Throwable throwable) {
         log.error("",throwable);
         ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
@@ -404,13 +612,24 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
           log.error("This is NOT an extended command configuration file");
           return;
         }
-        NodeList nodes = rootNode.getElementsByTagName("unit");
+        NodeList nodes = rootNode.getElementsByTagName("container");
+        log.info("Found "+nodes.getLength()+" unitcontainer commands");
+        for( int i=0; i<nodes.getLength(); i++ ) {
+          Element node = (Element)nodes.item(i);
+          String id = node.getAttribute("id");
+          String type = node.getAttribute("type");
+          String command = node.getFirstChild().getNodeValue();
+          unitContainerCommands.put(id,command);
+          unitContainerTypes.put(id, ContainerType.getType(type));
+        }
+        
+        nodes = rootNode.getElementsByTagName("unit");
         log.info("Found "+nodes.getLength()+" unit commands");
         for( int i=0; i<nodes.getLength(); i++ ) {
           Element node = (Element)nodes.item(i);
           String id = node.getAttribute("id");
           String command = node.getFirstChild().getNodeValue();
-          commands.put(id,command);
+          unitCommands.put(id,command);
         }
         
       } catch (Throwable throwable) {
@@ -425,7 +644,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
      *
      */
     public void save() {
-      write(commandsFile);
+      write(unitCommandsFile);
     }
     
     /**
@@ -439,8 +658,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
         
         writer.println("<?xml version=\"1.0\" encoding=\""+Encoding.UTF8.toString()+"\"?>");
         writer.println("<extended_commands>");
-        for (String unitId : commands.keySet()) {
-          writer.println(" <unit id=\""+unitId+"\"><![CDATA["+commands.get(unitId)+"]]></unit>");
+        for (String unitContainerId : unitContainerCommands.keySet()) {
+          writer.println(" <container id=\""+unitContainerId+"\" type=\""+unitContainerTypes.get(unitContainerId)+"\"><![CDATA["+unitContainerCommands.get(unitContainerId)+"]]></container>");
+        }
+        for (String unitId : unitCommands.keySet()) {
+          writer.println(" <unit id=\""+unitId+"\"><![CDATA["+unitCommands.get(unitId)+"]]></unit>");
         }
         writer.println("</extended_commands>");
         
@@ -466,6 +688,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
   class ExtendedCommandsDialog extends JDialog implements ActionListener {
     private JTextArea scriptingArea = null;
     private Unit unit = null;
+    private UnitContainer container = null;
     private ExtendedCommands commands = null;
     
     public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Unit unit, String script) {
@@ -474,6 +697,19 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       this.commands = commands;
       this.unit = unit;
       
+      init(script);
+    }
+    
+    public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, UnitContainer container, String script) {
+      super(client,true);
+      
+      this.commands = commands;
+      this.container = container;
+      
+      init(script);
+    }
+    
+    protected void init(String script) {
       setLayout(new BorderLayout());
       setWindowSize(640, 480);
       
@@ -510,7 +746,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
       if (e.getActionCommand().equalsIgnoreCase("button.ok")) {
         setVisible(false);
         String script = scriptingArea.getText();
-        commands.setCommands(unit,script);
+        if (unit != null) commands.setCommands(unit,script);
+        if (container != null) commands.setCommands(container,script);
       } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
         setVisible(false);
       }
@@ -541,10 +778,16 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, ContextMenuProvid
   public class ExtendedCommandHelper {
     private GameData world = null;
     private Unit unit = null;
+    private UnitContainer container = null;
     
     public ExtendedCommandHelper(GameData world, Unit unit) {
       this.world = world;
       this.unit = unit;
+    }
+    
+    public ExtendedCommandHelper(GameData world, UnitContainer container) {
+      this.world = world;
+      this.container = container;
     }
     
     public boolean unitIsInRegion(String regionName) {

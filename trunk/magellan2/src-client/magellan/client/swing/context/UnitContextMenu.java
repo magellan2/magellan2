@@ -219,12 +219,13 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private void initContextMenuProviders(Collection selectedObjects) {
-    Collection<ContextMenuProvider> cmpList = getContextMenuProviders();
+    Collection<UnitContextMenuProvider> cmpList = getContextMenuProviders();
     if (!cmpList.isEmpty()) {
       addSeparator();
     }
-    for (ContextMenuProvider cmp : cmpList) {
-      add(cmp.createContextMenu(dispatcher, data, (Object) unit, selectedObjects));
+    
+    for (UnitContextMenuProvider cmp : cmpList) {
+      add(cmp.createContextMenu(dispatcher, data, unit, selectedObjects));
     }
 
   }
@@ -232,11 +233,11 @@ public class UnitContextMenu extends JPopupMenu {
   /**
    * Searchs for Context Menu Providers in the plugins and adds them to the menu.
    */
-  private Collection<ContextMenuProvider> getContextMenuProviders() {
-    Collection<ContextMenuProvider> cmpList = new ArrayList<ContextMenuProvider>();
+  private Collection<UnitContextMenuProvider> getContextMenuProviders() {
+    Collection<UnitContextMenuProvider> cmpList = new ArrayList<UnitContextMenuProvider>();
     for (MagellanPlugIn plugIn : Client.INSTANCE.getPlugIns()) {
-      if (plugIn instanceof ContextMenuProvider) {
-        cmpList.add((ContextMenuProvider)plugIn);
+      if (plugIn instanceof UnitContextMenuProvider) {
+        cmpList.add((UnitContextMenuProvider)plugIn);
       }
     }
     return cmpList;

@@ -323,6 +323,7 @@
       <fileset dir="${basedir}">
         <include name="**/*.java"/>
         <exclude name="magellan/test/**"/>
+        <exclude name="magellan/client/**"/>
       </fileset>
     </javadoc>
   </target>

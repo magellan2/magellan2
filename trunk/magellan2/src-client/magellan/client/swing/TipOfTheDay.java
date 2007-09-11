@@ -391,7 +391,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 */
 	public void show() {
 		active = true;
-		super.show();
+		super.setVisible(true);
 	}
 
 	/**

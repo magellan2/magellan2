@@ -1105,6 +1105,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         return; // cancel or exception
       }
     }
+    
+    for (MagellanPlugIn plugIn : getPlugIns()) {
+      plugIn.quit(storeSettings);
+    }
 
     saveExtendedState();
     this.setVisible(false);

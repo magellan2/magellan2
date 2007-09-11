@@ -153,7 +153,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		order.addActionListener(okButtonAction);
 		pack();
 		setLocationRelativeTo(getOwner());
-		show();
+		setVisible(true);
 
 		return retVal;
 	}

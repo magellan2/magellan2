@@ -42,10 +42,10 @@ import magellan.library.utils.ShipRoutePlanner;
 
 
 /**
- * DOCUMENT ME!
+ * A context menu for UnitContainers like ships or buildings. Providing copy
+ * ID and copy ID+name.
  *
- * @author Ulrich Küster A context menu for UnitContainers like ships or buildings. Providing copy
- * 		   ID and copy ID+name.
+ * @author Ulrich Küster 
  */
 public class UnitContainerContextMenu extends JPopupMenu {
 	private UnitContainer uc;
@@ -56,11 +56,6 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
 	/**
 	 * Creates a new UnitContainerContextMenu object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public UnitContainerContextMenu(UnitContainer uc, EventDispatcher dispatcher, GameData data,
 									Properties settings,Collection selectedObjects) {

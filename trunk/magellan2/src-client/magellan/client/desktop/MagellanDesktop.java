@@ -2743,7 +2743,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
           td = new TranslateStroke((Dialog) top);
         }
 
-        td.show();
+        td.setVisible(true);
 
         KeyStroke newStroke = td.getStroke();
 

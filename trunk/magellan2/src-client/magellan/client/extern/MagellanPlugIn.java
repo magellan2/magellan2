@@ -74,4 +74,9 @@ public interface MagellanPlugIn {
    */
   public List<JMenuItem> getMenuItems();
   
+  /**
+   * This method is called whenever the application
+   * stops.
+   */
+  public void quit(boolean storeSettings);
 }

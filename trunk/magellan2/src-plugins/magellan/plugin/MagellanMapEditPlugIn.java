@@ -218,7 +218,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @see magellan.client.extern.MagellanPlugIn#getName()
    */
   public String getName() {
-    return null;
+    return "MapEditPlugIn";
   }
   
   /**
@@ -244,7 +244,13 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     this.addTerrains(this.setTerrain);
   }
 
-  
+  /**
+   * @see magellan.client.extern.MagellanPlugIn#quit(boolean)
+   */
+  public void quit(boolean storeSettings) {
+    // do nothing
+  }
+
   /**
    * handels the event that one of our Items was selected
    * @param e the event

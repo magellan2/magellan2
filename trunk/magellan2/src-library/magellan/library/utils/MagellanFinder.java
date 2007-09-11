@@ -227,7 +227,7 @@ public class MagellanFinder {
 	}
 
 	/**
-	 * Checks if the given file is a zip and contains a "com/eressea/demo/Client.class". These are
+	 * Checks if the given file is a zip and contains a "magellan/client/Client.class". These are
 	 * the conditions for the file to be a valid magellan Java Archive (JAR).
 	 *
 	 * 
@@ -238,7 +238,7 @@ public class MagellanFinder {
 		try {
 			ZipFile zipped = new ZipFile(file);
 
-			if(zipped.getInputStream(zipped.getEntry("com/eressea/demo/Client.class")) != null) {
+			if(zipped.getInputStream(zipped.getEntry("magellan/client/Client.class")) != null) {
 				zipped.close();
 
 				return true;

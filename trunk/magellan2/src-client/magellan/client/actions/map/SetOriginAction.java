@@ -49,7 +49,7 @@ public class SetOriginAction extends MenuAction {
 	 */
 	public void menuActionPerformed(ActionEvent e) {
 		SetOriginDialog dialog = new SetOriginDialog(client, client.getDispatcher(), client.getData());
-		dialog.show();
+		dialog.setVisible(true);
 		if (dialog.approved()){
 			client.setOrigin(dialog.getNewOrigin());
 		}

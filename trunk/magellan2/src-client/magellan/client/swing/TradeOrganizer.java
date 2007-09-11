@@ -126,7 +126,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 		init();
 		setRegions((newRegions == null) ? Collections.EMPTY_SET : newRegions);
-		show();
+		setVisible(true);
 	}
 
 	protected void init() {

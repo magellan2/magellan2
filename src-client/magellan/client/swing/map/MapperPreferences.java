@@ -292,7 +292,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			}
 		}
 
-		ttsDialog.show();
+		ttsDialog.setVisible(true);
 		dialogShown = true;
 	}
 
@@ -366,7 +366,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 				list.setListData(rList.toArray());
 
-				super.show();
+				super.setVisible(true);
 			}
 
 			/**
@@ -494,7 +494,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 									this.pack();
 									this.setLocationRelativeTo(parent);
 									approved = false;
-									this.show();
+									this.setVisible(true);
 
 									if(approved) {
 										int indices[] = list.getSelectedIndices();
@@ -527,7 +527,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 							this.pack();
 							this.setLocationRelativeTo(parent);
 							approved = false;
-							this.show();
+							this.setVisible(true);
 
 							if(approved) {
 								int indices[] = list.getSelectedIndices();
@@ -778,7 +778,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				this.pack();
 				this.setLocationRelativeTo(this.getParent());
 
-				super.show();
+				super.setVisible(true);
 			}
 
 			protected String removePSigns(String s) {
@@ -968,7 +968,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				this.pack();
 				this.setLocationRelativeTo(this.getParent());
 
-				super.show();
+				super.setVisible(true);
 			}
 
 			protected void initComponents(Container content) {
@@ -1409,7 +1409,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				new ImExportDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.exportdialog.title")).showDialog(false);
 			} else if(e.getSource() == add) {
 				new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title"), null,
-									 null, -1).show();
+									 null, -1).setVisible(true);
 				recreate();
 			} else if(e.getSource() == mask) {
 				if(maskDialog == null) {
@@ -1439,7 +1439,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
           AddTooltipDialog dialog = new AddTooltipDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addtooltipdialog.title2"),
 										 tooltipList.getSelectedValue().toString(),
 										 tooltips.get(index), index * 2);
-          dialog.show();
+          dialog.setVisible(true);
 					recreate();
 				}
 			} else if(e.getSource() == delete) {

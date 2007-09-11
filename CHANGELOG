@@ -1,5 +1,10 @@
 2007-09-11  Thoralf (thoralf@m84.de)
     * Found a problem with magic items (resources not found). It tries to use Resources.getOrderTranslation(). That isn't useful.
+    * ErrorWindow is now localized.
+    * New event for PlugIns - quit() is called when client is shutting down.
+    * Replaced all deprecated Container.show() with setVisible(true)
+    * Added bsh jar for scripting
+    * Implemented ExtendedCommands.
 
 2007-09-02  Thoralf (thoralf@m84.de)
     * Added check for updates feature. This can be disabled in the options.

@@ -315,7 +315,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 		ok.addActionListener(okButtonAction);
 		pack();
 		setLocationRelativeTo(getOwner());
-		show();
+    setVisible(true);
 
 		if(retVal.dest == null) {
 			return null;

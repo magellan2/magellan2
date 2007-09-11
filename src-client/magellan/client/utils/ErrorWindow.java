@@ -48,6 +48,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -65,11 +66,11 @@ import magellan.library.utils.logging.Logger;
 public class ErrorWindow extends JDialog implements ActionListener,WindowCloseable {
   private static final Logger log = Logger.getInstance(ErrorWindow.class);
 
-  private static final String SHOW_DETAILS_BUTTON = "Details >>";
+  private static final String SHOW_DETAILS_BUTTON = Resources.get("buttons.details.more");
 
-  private static final String HIDE_DETAILS_BUTTON = "Details <<";
+  private static final String HIDE_DETAILS_BUTTON = Resources.get("buttons.details.more");
 
-  public static final String UNKNOWN_ERROR_MESSAGE = "Es ist ein unbekannter Fehler im Programm aufgetreten.\n\nSoll das Programm jetzt beendet werden?";
+  public static final String UNKNOWN_ERROR_MESSAGE = Resources.get("errorwindow.unknown");
 
   protected JTextArea errorMessage = null;
 
@@ -286,7 +287,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
 
   /**
-   * Liefert den StackTrace als String zurÃ¼ck.
+   * Liefert den StackTrace als String zurück.
    */
   private String getExceptionAsString(Throwable exception) {
     try {
@@ -316,7 +317,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    okButton = new JButton("OK");
+    okButton = new JButton(Resources.get("button.ok"));
     okButton.setRequestFocusEnabled(false);
     okButton.setActionCommand(ActionCommand.OK.toString());
     okButton.addActionListener(this);
@@ -325,7 +326,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
     buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    cancelButton = new JButton("Abbrechen");
+    cancelButton = new JButton(Resources.get("button.cancel"));
     cancelButton.setRequestFocusEnabled(false);
     cancelButton.setActionCommand(ActionCommand.CANCEL.toString());
     cancelButton.addActionListener(this);
@@ -662,10 +663,10 @@ interface WindowCloseable {
 }
 
 /**
- * Dies ist ein Bugfix fÃ¼r JEditorPane in Verbindung mit JScrollPane. Nach dem
- * EinfÃ¼gen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
- * oben nach unten lesen zu kÃ¶nnen. AuÃŸerdem wird beim Disablen die Farbe der
- * Komponente geÃ¤ndert und nicht wirklich disabled (weil sieht scheiÃŸe aus...)
+ * Dies ist ein Bugfix für JEditorPane in Verbindung mit JScrollPane. Nach dem
+ * Einfügen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
+ * oben nach unten lesen zu können. Außerdem wird beim Disablen die Farbe der
+ * Komponente geändert und nicht wirklich disabled (weil sieht scheißŸe aus...)
  * 
  * @author Thoralf Rickert
  * @version 29.10.2003

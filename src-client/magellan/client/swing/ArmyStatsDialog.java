@@ -305,7 +305,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 				ExcludeDialog ed = new ExcludeDialog(this, Resources.get("armystatsdialog.exclude.title"), data,
 													 excludeNames, excludeSkills,
 													 excludeCombatStates);
-				ed.show();
+				ed.setVisible(true);
 				excludeNames = ed.getExcludedNames();
 				excludeSkills = ed.getExcludedSkills();
 				excludeCombatStates = ed.getExcludeCombatStates();

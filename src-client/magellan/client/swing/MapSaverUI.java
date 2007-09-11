@@ -16,6 +16,7 @@ package magellan.client.swing;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -84,6 +85,7 @@ public class MapSaverUI extends InternationalizedDialog {
 		rbtnCount.setSelected(true);
 
 		pack();
+    centerWindow();
 
 		outComponent = cmpSave;
 	}
@@ -247,6 +249,22 @@ public class MapSaverUI extends InternationalizedDialog {
 		gridBagConstraints1.insets = new java.awt.Insets(0, 0, 5, 5);
 		getContentPane().add(btnSave, gridBagConstraints1);
 	}
+
+  /**
+   * This method sets the window dimension and positions the window to the
+   * center of the screen.
+   */
+
+  public void centerWindow() {
+    int xSize = (int)getBounds().getWidth();
+    int ySize = (int)getBounds().getHeight();
+    if (xSize > 0 && ySize > 0) {
+      int x = (int) getToolkit().getScreenSize().width;
+      int y = (int) getToolkit().getScreenSize().height;
+      setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+    }
+  }
+
 
 	private void btnCancelAction(java.awt.event.ActionEvent evt) {
 		setVisible(false);

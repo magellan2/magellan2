@@ -46,7 +46,7 @@ public class InfoAction extends MenuAction {
 	 * 
 	 */
 	public void menuActionPerformed(ActionEvent e) {
-		new InfoDlg(client).show();
+		new InfoDlg(client).setVisible(true);
 	}
 
 	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class

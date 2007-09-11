@@ -13,6 +13,8 @@
 
 package magellan.client;
 
+import java.awt.Point;
+
 import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -46,10 +48,11 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 	 * @param _data The corresponding GameData
 	 * 
  	 */
-	public SetOriginDialog(java.awt.Frame parent, EventDispatcher ed, GameData _data) {
-		super(parent, true, ed, _data, new java.util.Properties());
+	public SetOriginDialog(java.awt.Frame parent, EventDispatcher ed, GameData data) {
+		super(parent, true, ed, data, new java.util.Properties());
 		initComponents();
 		pack();
+    centerWindow();    
 		approved = false;
 	}
 
@@ -181,6 +184,22 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 		gridBagConstraints1.weighty = 1.0;
 		getContentPane().add(jPanel2, gridBagConstraints1);
 	}
+  
+
+  /**
+   * This method sets the window dimension and positions the window to the
+   * center of the screen.
+   */
+
+  public void centerWindow() {
+    int xSize = (int)getBounds().getWidth();
+    int ySize = (int)getBounds().getHeight();
+    if (xSize > 0 && ySize > 0) {
+      int x = (int) getToolkit().getScreenSize().width;
+      int y = (int) getToolkit().getScreenSize().height;
+      setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+    }
+  }
 
 	private void btnOKActionPerformed(java.awt.event.ActionEvent evt) {
 		int iX;

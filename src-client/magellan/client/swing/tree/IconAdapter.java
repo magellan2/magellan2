@@ -649,7 +649,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 			}
 
 			if(p1.getSource() == buttons[4]) {
-				dialog.show();
+				dialog.setVisible(true);
 			}
 		}
 

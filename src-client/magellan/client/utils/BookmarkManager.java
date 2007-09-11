@@ -286,7 +286,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 		}
 
 		dialog = new BookmarkDialog(owner);
-		dialog.show();
+		dialog.setVisible(true);
 	}
 
 	/**

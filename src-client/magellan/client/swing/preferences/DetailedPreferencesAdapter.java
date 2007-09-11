@@ -327,7 +327,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 				dialog.init(detailContainers[index], detailHelps[index]);
 				dialog.pack();
 				dialog.setLocationRelativeTo(src);
-				dialog.show();
+				dialog.setVisible(true);
 			}
 		}
 	}

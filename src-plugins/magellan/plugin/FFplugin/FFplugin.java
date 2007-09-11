@@ -77,4 +77,11 @@ public class FFplugin implements MagellanPlugIn{
   public String getName() {
     return "FFplugin";
   }
+
+  /**
+   * @see magellan.client.extern.MagellanPlugIn#quit(boolean)
+   */
+  public void quit(boolean storeSettings) {
+    // do nothing
+  }
 }

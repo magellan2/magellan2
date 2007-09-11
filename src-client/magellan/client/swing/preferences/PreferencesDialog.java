@@ -160,7 +160,7 @@ public class PreferencesDialog extends InternationalizedDialog {
 	public void show() {
         initPreferences();
 		dialogtree.showFirst();
-		super.show();
+		super.setVisible(true);
 	}
 
 	/**

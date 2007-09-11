@@ -3808,11 +3808,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							String usage = val.substring(0, blankPos);
 							String getLevelAtDays = val.substring(blankPos + 1, val.length());
 							if(getLevelAtDays.equals("0")) {
-								compNode = createSimpleNode(usage + " " + Resources.getOrderTranslation(key), "items/" + key);
+                // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
+								compNode = createSimpleNode(usage + " " + key, "items/" + key);
 							} else if(getLevelAtDays.equals("1")) {
-								compNode = createSimpleNode(usage + " " + Resources.getOrderTranslation(key) + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
+                // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
+								compNode = createSimpleNode(usage + " " + key + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							} else {
-								compNode = createSimpleNode(usage + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
+  							compNode = createSimpleNode(usage + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
 															" * " + getLevelAtDays + " * " +
 															Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							}

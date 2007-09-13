@@ -1,3 +1,6 @@
+2007-09-13  Thoralf (thoralf@m84.de)
+    * Changed SMTP-Password-Field in OrderWriterDialog from JTextfield to JPasswordField.
+
 2007-09-11  Thoralf (thoralf@m84.de)
     * Found a problem with magic items (resources not found). It tries to use Resources.getOrderTranslation(). That isn't useful.
     * ErrorWindow is now localized.

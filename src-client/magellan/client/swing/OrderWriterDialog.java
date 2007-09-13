@@ -108,7 +108,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private JTextField txtMailSender = null;
   private JTextField txtMailSubject = null;
   private JTextField txtServerUsername = null;
-  private JTextField txtServerPassword = null;
+  private JPasswordField txtServerPassword = null;
   private JCheckBox chkUseAuth = null;
   private JCheckBox chkAskPassword = null;
  
@@ -467,7 +467,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblServerUsername.setLabelFor(txtServerUsername);
 
     lblServerPassword = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.password"));
-    txtServerPassword = new JTextField(settings.getProperty("OrderWriter.serverPassword", ""),20);
+    txtServerPassword = new JPasswordField(settings.getProperty("OrderWriter.serverPassword", ""),20);
     lblServerPassword.setLabelFor(txtServerPassword);
     
 
@@ -748,7 +748,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty("OrderWriter.askPassword", String.valueOf(chkAskPassword.isSelected()));
     // for security reasons only store password if the user explicitly wants it
     if (!chkAskPassword.isSelected() && chkUseAuth.isSelected())
-      settings.setProperty("OrderWriter.serverPassword", txtServerPassword.getText());
+      settings.setProperty("OrderWriter.serverPassword", new String(txtServerPassword.getPassword()));
     else
       settings.setProperty("OrderWriter.serverPassword", "");
       
@@ -981,7 +981,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if (chkUseAuth.isSelected()){
       username = txtServerUsername.getText();
       if (!chkAskPassword.isSelected())
-        password = txtServerPassword.getText();
+        password = new String(txtServerPassword.getPassword());
     }
     String recipient = txtMailRecipient.getText();
     String sender = txtMailSender.getText();

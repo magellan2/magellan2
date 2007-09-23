@@ -1,3 +1,10 @@
+2007-09-23  Thoralf (thoralf@m84.de)
+    * Bug 68. Maybe this helps... (do not bring the startwindow to the front, only toBack())
+      Actually this bug cannot be resolved at all, because the dialogs are children of
+      the Client-Frame and the Startwindow isn't a child of Client. So a simple click
+      somewhere on the screen destroys the generated layers (startwindow on top, Client behind
+      it). 
+
 2007-09-13  Thoralf (thoralf@m84.de)
     * Changed SMTP-Password-Field in OrderWriterDialog from JTextfield to JPasswordField.
 

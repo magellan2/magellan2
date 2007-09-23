@@ -389,7 +389,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (ld.languagesFound()) {
         startWindow.toBack();
         Locale locale = ld.showDialog(startWindow);
-        startWindow.toFront();
         
         if (locale == null) {
           // without this decision we cannot start the application
@@ -1019,6 +1018,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         log.info("Newest Version on server: "+newestVersion);
         log.info("Current Version: "+currentVersion);
         if (VersionInfo.isNewer(currentVersion, newestVersion)) {
+          startWindow.toBack();
           JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
         }
       }

@@ -389,7 +389,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void show() {
+	public void showTipDialog() {
 		active = true;
 		super.setVisible(true);
 	}

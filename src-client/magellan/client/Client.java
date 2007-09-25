@@ -387,7 +387,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       LanguageDialog ld = new LanguageDialog(settings);
 
       if (ld.languagesFound()) {
-        startWindow.toBack();
+        // startWindow.toBack();
         Locale locale = ld.showDialog(startWindow);
         
         if (locale == null) {
@@ -1036,7 +1036,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
 
         if (totd.doShow()) {
-          totd.setVisible(true);
+          // totd.setVisible(true);
+          totd.showTipDialog();
           totd.showNextTip();
         }
       }

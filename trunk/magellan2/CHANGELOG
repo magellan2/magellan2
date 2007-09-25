@@ -1,3 +1,6 @@
+2007-09-25 Fiete (sf@fietefietz.de)
+	* Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
+	
 2007-09-23  Thoralf (thoralf@m84.de)
     * Bug 68. Maybe this helps... (do not bring the startwindow to the front, only toBack())
       Actually this bug cannot be resolved at all, because the dialogs are children of

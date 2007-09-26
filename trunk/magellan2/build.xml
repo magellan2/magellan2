@@ -34,6 +34,7 @@
   <property name="optimize"          value="off" />
   <property name="build.compiler"    value="javac1.5"/>
   <property name="compile.target"    value="1.5"/>
+	<property name="compile.encoding"  value="ISO-8859-1"/>
 
   <path id="magellan.class.path">
     <pathelement path="${java.class.path}/" />
@@ -60,6 +61,7 @@
            includes="**"
            source="${compile.target}"
            target="${compile.target}"
+           encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
            memoryInitialSize="128m"
@@ -103,6 +105,7 @@
            includes="**"
            source="${compile.target}"
            target="${compile.target}"
+           encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
            memoryInitialSize="128m"
@@ -150,6 +153,7 @@
            includes="**"
            source="${compile.target}"
            target="${compile.target}"
+           encoding="${compile.encoding}"
            optimize="${optimize}"
            fork="true"
            memoryInitialSize="128m"

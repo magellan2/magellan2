@@ -18,12 +18,7 @@
 	<classpathentry kind="lib" path="lib/jh.jar"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/commons-email-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/dsn.jar"/>
-	<classpathentry kind="lib" path="lib/imap.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry kind="lib" path="lib/mailapi.jar"/>
-	<classpathentry kind="lib" path="lib/pop3.jar"/>
-	<classpathentry kind="lib" path="lib/smtp.jar"/>
 	<classpathentry kind="lib" path="lib/skins/looks-1.3b1.jar"/>
 	<classpathentry kind="lib" path="lib/skins/skinsCollected.jar"/>
 	<classpathentry kind="lib" path="lib/commons-httpclient-3.0.1.jar"/>

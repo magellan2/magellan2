@@ -1113,14 +1113,14 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeSkills(Iterator skills, int persons) throws IOException {
+	public void writeSkills(Iterator<Skill> skills, int persons) throws IOException {
 		if(skills.hasNext()) {
 			write("TALENTE");
 			newLine();
 		}
 
 		while(skills.hasNext()) {
-			writeSkill((Skill) skills.next(), persons);
+			writeSkill(skills.next(), persons);
 		}
 	}
 

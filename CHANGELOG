@@ -1,3 +1,7 @@
+2007-10-28 Thoralf (thoralf@m84.de)
+    * Added some more functions to the extended commands plugin helper
+    * Fixes refresh problems with extended commands.
+
 2007-09-25 Fiete (sf@fietefietz.de)
 	* Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
 	

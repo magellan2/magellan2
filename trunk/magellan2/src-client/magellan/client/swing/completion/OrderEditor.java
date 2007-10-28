@@ -310,6 +310,19 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			dispatcher.fire(e);
 		}
 	}
+  
+  public void fireOrdersChangedEvent() {
+    System.out.println("huhz");
+    if (unit !=null) {
+      System.out.println("jo");
+      
+      UnitOrdersEvent e = new UnitOrdersEvent(this, unit);
+      unit.setOrders(getOrders());
+      // we also need to notify that the unit orders are now unmodified
+      setModified(false);
+      dispatcher.fire(e);
+    }
+  }
 
 	/**
 	 * Returns the unit currently registered with this editor.

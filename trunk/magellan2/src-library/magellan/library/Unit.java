@@ -560,7 +560,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public Collection<Item> getModifiedItems();
 
   /**
-   * DOCUMENT-ME
+   * Returns the number of persons in this unit.
    */
   public int getPersons();
 

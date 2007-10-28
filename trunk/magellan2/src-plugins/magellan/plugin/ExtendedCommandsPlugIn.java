@@ -68,6 +68,7 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.Item;
+import magellan.library.Skill;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -316,7 +317,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     commands.execute(data, unit);
     
     unit.getCache().orderEditor.reloadOrders();
-    
+    unit.getCache().orderEditor.fireOrdersChangedEvent();
   }
   
   
@@ -790,19 +791,38 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       this.container = container;
     }
     
+    /**
+     * Returns true, if the current unit is in the region with the
+     * given name.
+     */
     public boolean unitIsInRegion(String regionName) {
       return unit.getRegion().getName().equalsIgnoreCase(regionName);
     }
     
+    /**
+     * Returns the unit with the given Unit-ID in the current region.
+     */
     public Unit getUnitInRegion(String unitId) {
       return unit.getRegion().getUnit(UnitID.createUnitID(unitId, world.base));
     }
     
+    /**
+     * Returns true, if the current unit sees another unit with
+     * the given unit id.
+     */
     public boolean unitSeesOtherUnit(String unitId) {
       Unit otherunit = getUnitInRegion(unitId);
       return otherunit != null;
     }
     
+    /**
+     * Returns the number of items of a unit with the given
+     * item name. For example:
+     * 
+     *  int horses = getItemCount(unit,"Pferd")
+     *  
+     * returns the number of horses of the given unit.
+     */
     public int getItemCount(Unit unit, String itemTypeName) {
       Collection<Item> items = unit.getItems();
       if (items != null) {
@@ -815,6 +835,42 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       return 0;
     }
     
+    /**
+     * This method returns the amount of silver of the given
+     * unit. This is a shortcut for
+     *  
+     *  getItemCount(unit,"Silber")
+     */
+    public int getSilver(Unit unit) {
+      return getItemCount(unit, "Silber");
+    }
+    
+    /**
+     * Returns the number of persons in this unit.
+     */
+    public int getPersons(Unit unit) {
+      return unit.getPersons();
+    }
+    
+    /**
+     * Returns the skill level of a unit. For example
+     *  getLevel(unit,"Unterhaltung")
+     */
+    public int getLevel(Unit unit, String skillName) {
+      Collection<Skill> skills = unit.getSkills();
+      if (skills != null) {
+        for (Skill skill : skills) {
+          if (skill.getSkillType().getName().equalsIgnoreCase(skillName)) {
+            return skill.getLevel();
+          }
+        }
+      }
+      return 0;
+    }
+    
+    /**
+     * Adds an order to the current unit.
+     */
     public void addOrder(String order) {
       unit.addOrder(order, false, 0);
     }

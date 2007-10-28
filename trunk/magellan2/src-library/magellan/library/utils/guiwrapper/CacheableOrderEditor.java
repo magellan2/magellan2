@@ -78,4 +78,6 @@ public interface CacheableOrderEditor {
   public void setCursor(Cursor cursor);
 
   public Rectangle getBounds();
+  
+  public void fireOrdersChangedEvent();
 }

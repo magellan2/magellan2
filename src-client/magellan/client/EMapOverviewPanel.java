@@ -530,7 +530,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if (ignoreTreeSelections) {
       return;
     }
-
+    
     DefaultMutableTreeNode firstNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
     TreePath paths[] = tse.getPaths();
 
@@ -1112,7 +1112,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if (se.getSource() == this) {
       return;
     }
-
+    
     // clear current selection to avoid intermediate selections through
     // expand and collapse
     ignoreTreeSelections = true;

@@ -3944,6 +3944,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	public void selectionChanged(SelectionEvent se) {
     addTag.setEnabled(false);
 		removeTag.setEnabled(false);
+    
+    if (se.getActiveObject() instanceof Region) {
+      // inform the gamedata about a new selected region.
+      log.warn("Region selected "+se.getActiveObject());
+      Region region = (Region)se.getActiveObject();
+      region.setActive(true);
+    }
 		
 		/**
 		 * @author Fiete

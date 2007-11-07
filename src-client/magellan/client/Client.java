@@ -125,6 +125,7 @@ import magellan.client.swing.MapperPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.StartWindow;
+import magellan.client.swing.SwingUserInterface;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
@@ -164,6 +165,7 @@ import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
@@ -1007,7 +1009,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         c.dataFile = crFile;
 
         // load new data
-        c.setData(c.loadCR(crFile));
+        //c.setData(c.loadCR(crFile));
+        c.loadCRThread(crFile);
       }
 
       c.setReportChanged(false);
@@ -1157,36 +1160,67 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   // //////////////////
   // GAME DATA Code //
   // //////////////////
+  
+  public GameData loadCR(UserInterface ui, File fileName) {
+    GameData data = null;
+    Client client = this;
+    if (ui == null) ui = new SwingUserInterface(client);
+    
+    try {
+      data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
+      everLoadedReport = true;
+    } catch (FileTypeFactory.NoValidEntryException e) {
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+    } catch (Exception exc) {
+      // here we also catch RuntimeExceptions on purpose!
+      // } catch (IOException exc) {
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc.toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+      log.error(exc);
+    }
+
+    if (data.outOfMemory) {
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+      log.error(Resources.get("client.msg.outofmemory.text"));
+    }
+    
+    return data;
+  }
 
   /**
-   * DOCUMENT ME!
+   * This method loads a CR into the client.
    * 
    * @param fileName
    *          The file name to be loaded.
    * @return a new <tt>GameData</tt> object filled with the data from the CR.
    */
-  public GameData loadCR(File fileName) {
-    GameData d = null;
-
-    try {
-      d = new GameDataReader().readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(this)));
-      everLoadedReport = true;
-    } catch (FileTypeFactory.NoValidEntryException e) {
-      JOptionPane.showMessageDialog(this, Resources.get("client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
-    } catch (Exception exc) {
-      // here we also catch RuntimeExceptions on purpose!
-      // } catch (IOException exc) {
-      JOptionPane.showMessageDialog(this, Resources.get("client.msg.loadcr.error.text") + exc.toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
-      log.error(exc);
-    }
-
-    if (d.outOfMemory) {
-      JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-      log.error(Resources.get("client.msg.outofmemory.text"));
-    }
-    return d;
+  public void loadCRThread(final File fileName) {
+    
+    final UserInterface ui = new SwingUserInterface(this);
+    
+    new Thread(new Runnable() {
+      public void run() {
+        Client client = Client.INSTANCE;
+        GameData data = null;
+    
+        data = loadCR(ui,fileName);
+        
+        if(data != null) {
+          client.setData(data);
+          client.setReportChanged(false);
+          
+          if (client.getSelectedObjects()!=null){
+            client.getDispatcher().fire(new SelectionEvent(this,client.getSelectedObjects(),null));
+          }
+          
+          Region activeRegion = data.getActiveRegion();
+          if (activeRegion != null) {
+            client.getDispatcher().fire(new SelectionEvent(client, new ArrayList(), activeRegion, SelectionEvent.ST_REGIONS));
+          }
+        }
+      }
+    }).start();
   }
-
+  
   /**
    * Sets the origin of this client's data to newOrigin.
    * 

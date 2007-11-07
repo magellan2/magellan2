@@ -47,22 +47,31 @@ public class Islands {
 	 *
 	 * 
 	 */
-	public static Map<ID,Island> getIslands(Rules rules, Map<CoordinateID,Region> regions, Map<ID,Island> islands, GameData data) {
+	public static Map<ID,Island> getIslands(UserInterface ui, Rules rules, Map<CoordinateID,Region> regions, Map<ID,Island> islands, GameData data) {
 		if((regions == null) || (regions.size() == 0)) {
 			return new Hashtable<ID, Island>();
 		}
-
+    
 		if(islands == null) {
 			islands = new Hashtable<ID,Island>();
 		}
+    
+    if (ui == null) ui = new NullUserInterface();
+    ui.setTitle(Resources.get("progressdialog.islands.title"));
+    ui.setMaximum(islands.size());
+    ui.show();
+    int counter = 0;
+
 
 		Map<CoordinateID,Region> unassignedPool = new Hashtable<CoordinateID,Region>();
 		unassignedPool.putAll(regions);
 
 		// completely update all known islands
 		for(Island curIsland : islands.values()) {
-			Collection oldRegions = curIsland.regions();
+      ui.setProgress(Resources.get("progressdialog.islands.step01"), ++counter);
 
+			Collection oldRegions = curIsland.regions();
+      
 			if(oldRegions.size() > 0) {
 				Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, (Region) oldRegions.iterator().next());
 
@@ -72,11 +81,17 @@ public class Islands {
 				}
 			}
 		}
+    
+    ui.setProgress("", 0);
+    ui.setMaximum(unassignedPool.size());
+    counter = 0;
 
 		// assign new islands to remaining regions
 		IntegerID newID = IntegerID.create(0);
 
 		while(unassignedPool.size() > 0) {
+      ui.setProgress(Resources.get("progressdialog.islands.step02"), ++counter);
+
 			Region curRegion = unassignedPool.remove(unassignedPool.keySet().iterator().next());
 			Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, curRegion);
       
@@ -96,6 +111,8 @@ public class Islands {
 				}
 			}
 		}
+    
+    ui.ready();
 
 		return islands;
 	}

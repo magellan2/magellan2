@@ -827,4 +827,18 @@ public interface Region extends UnitContainer {
    * @param wage The value for wage.
    */
   public void setWage(int wage);
+  
+  /**
+   * Sets the value of isActive.
+   *
+   * @param isActive The value for isActive.
+   */
+  public void setActive(boolean isActive);
+
+  /**
+   * Returns the value of isActive.
+   * 
+   * @return Returns isActive.
+   */
+  public boolean isActive();
 }

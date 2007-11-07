@@ -147,4 +147,15 @@ public class SelectionEvent extends EventObject {
   public Collection getPath(){
     return path;
   }
+  
+  public String toString() {
+    StringBuffer buffer = new StringBuffer();
+    buffer.append("SelectionEvent{\n");
+    buffer.append("selectedObjects:").append(selectedObjects).append("\n");
+    buffer.append("activeObject:").append(activeObject).append("\n");
+    buffer.append("path:").append(path).append("\n");
+    buffer.append("selectionType:").append(selectionType).append("\n");
+    buffer.append("}\n");
+    return buffer.toString();
+  }
 }

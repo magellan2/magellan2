@@ -1715,4 +1715,15 @@ public abstract class GameData implements Cloneable {
   public String getEncoding() {
     return encoding;
   }
+  
+  /**
+   * Returns the current active region.
+   */
+  public Region getActiveRegion() {
+    for (Region r : regions().values()) {
+      if (r.isActive()) return r;
+    }
+    
+    return null;
+  }
 }

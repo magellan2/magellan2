@@ -28,7 +28,9 @@ import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.filechooser.FileFilter;
 
+import magellan.client.Client;
 import magellan.library.utils.Resources;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
 import com.sun.jimi.core.Jimi;
@@ -277,15 +279,13 @@ public class MapSaverUI extends InternationalizedDialog {
 			String strBase;
 
 			switch(cbFormat.getSelectedIndex()) {
-			case 0:
-				iType = SAVEAS_IMAGETYPE_JPEG;
-
-				break;
-
-			case 1:
-				iType = SAVEAS_IMAGETYPE_PNG;
-
-				break;
+  			case 0:
+  				iType = SAVEAS_IMAGETYPE_JPEG;
+  				break;
+  
+  			case 1:
+  				iType = SAVEAS_IMAGETYPE_PNG;
+  				break;
 			}
       
 			javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
@@ -297,19 +297,45 @@ public class MapSaverUI extends InternationalizedDialog {
 			if(fc.showSaveDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
 				strBase = fc.getSelectedFile().toString();
 
-				int quality = qSlider.getValue() * 10;
-
-				if(rbtnCount.isSelected()) {
-					saveAs_SC(strBase, Integer.parseInt(textX.getText()),
-							  Integer.parseInt(textY.getText()), quality, iType);
-				} else {
-					saveAs(strBase, Integer.parseInt(textX.getText()),
-						   Integer.parseInt(textY.getText()), quality, iType);
-				}
-
-				System.gc();
-				setVisible(false);
-				dispose();
+        final String fileName = strBase;
+				final int quality = qSlider.getValue() * 10;
+        final int imageType = iType;
+        final UserInterface ui = new SwingUserInterface(this);
+        ui.setTitle(Resources.get("progressdialog.map.title"));
+        ui.show();
+        ui.setProgress(Resources.get(""), 1);
+        
+        new Thread(new Runnable() {
+          public void run() {
+            
+            try {
+      				if(rbtnCount.isSelected()) {
+      					saveAs_SC(ui, fileName, Integer.parseInt(textX.getText()),
+      							  Integer.parseInt(textY.getText()), quality, imageType);
+      				} else {
+      					saveAs(ui, fileName, Integer.parseInt(textX.getText()),
+      						   Integer.parseInt(textY.getText()), quality, imageType);
+      				}
+            } catch(OutOfMemoryError oomError) {
+              log.error(oomError);
+              javax.swing.JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("mapsaverui.msg.outofmem.text"),
+                                    Resources.get("mapsaverui.msg.outofmem.title"),
+                                    javax.swing.JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+              ui.ready();
+              setVisible(false);
+              System.gc();
+              dispose();
+              throw new RuntimeException(ex);
+            }
+    
+            ui.ready();
+    				System.gc();
+    				setVisible(false);
+    				dispose();
+            
+          }
+        }).start();
 			}
 		} catch(Exception ex) {
 			log.error(ex);
@@ -356,16 +382,11 @@ public class MapSaverUI extends InternationalizedDialog {
 		dispose();
 	}
 
-	/*final static public int SAVEAS_IMAGETYPE_PNG256 = 2;
-	 final static public int SAVEAS_IMAGETYPE_PNG16 = 3;*/
-	public void saveAs(String strOut, int iWidth, int iHeight, int fQuality, int iSaveType)
-				throws Exception
-	{
+	public void saveAs(UserInterface ui, String strOut, int iWidth, int iHeight, int fQuality, int iSaveType) throws Exception {
 		int iX = 0;
 		int iY = 0;
 		BufferedImage bimg = new BufferedImage(iWidth, iHeight, BufferedImage.TYPE_INT_RGB);
-		Dimension dim = new Dimension(outComponent.getBounds().width,
-									  outComponent.getBounds().height);
+		Dimension dim = new Dimension(outComponent.getBounds().width, outComponent.getBounds().height);
 		Graphics2D g2 = null;
 
 		iX = (int) (dim.getWidth() / iWidth);
@@ -381,10 +402,13 @@ public class MapSaverUI extends InternationalizedDialog {
 		}
 
 		dim = null;
+    
+    int size = iX*iY;
 
 		try {
 			for(int y = 0; y < iY; y++) {
 				for(int x = 0; x < iX; x++) {
+          ui.setProgress(Resources.get("progressdialog.map.step01"), x*y);
 					g2 = bimg.createGraphics();
 					g2.setClip(0, 0, iWidth, iHeight);
 
@@ -423,11 +447,8 @@ public class MapSaverUI extends InternationalizedDialog {
 	 *
 	 * @throws Exception DOCUMENT-ME
 	 */
-	public void saveAs_SC(String strOut, int iCountX, int iCountY, int fQuality, int iSaveType)
-				   throws Exception
-	{
-		Dimension dim = new Dimension(outComponent.getBounds().width,
-									  outComponent.getBounds().height);
+	public void saveAs_SC(UserInterface ui, String strOut, int iCountX, int iCountY, int fQuality, int iSaveType) throws Exception {
+		Dimension dim = new Dimension(outComponent.getBounds().width, outComponent.getBounds().height);
 
 		int iWidth = ((int) dim.getWidth()) / iCountX;
 
@@ -441,7 +462,7 @@ public class MapSaverUI extends InternationalizedDialog {
 			iHeight++;
 		}
 
-		saveAs(strOut, iWidth, iHeight, fQuality, iSaveType);
+		saveAs(ui, strOut, iWidth, iHeight, fQuality, iSaveType);
 	}
 
   /**

@@ -47,6 +47,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import magellan.client.Client;
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -435,11 +436,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		return retVal;
 	}
 
+  /**
+   */
 	private void write(Writer out) {
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 		try {
-			CRWriter crw = new CRWriter(out);
+			CRWriter crw = new CRWriter(new SwingUserInterface(Client.INSTANCE),out);
 			crw.setServerConformance(chkServerConformance.isSelected());
 			crw.setIncludeIslands(chkIslands.isSelected());
 			crw.setIncludeRegions(chkRegions.isSelected());

@@ -72,6 +72,6 @@ public class RulesReader {
 
 		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File("etc/rules/" + name + ending));
 
-		return new CRParser().readRules(filetype);
+		return new CRParser(null).readRules(filetype);
 	}
 }

@@ -38,7 +38,7 @@ public class MapSaveAction extends MenuAction {
 	 * 
 	 */
 	public MapSaveAction(Client client, MapperPanel m) {
-        super(client);
+    super(client);
 		map = m;
 	}
 

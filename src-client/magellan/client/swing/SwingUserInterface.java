@@ -190,7 +190,7 @@ public class SwingUserInterface implements UserInterface {
       labelText.setPreferredSize(new Dimension(250, 16));
       labelText.setMinimumSize(new Dimension(250, 16));
       labelText.setText("jLabel1");
-      labelText.setHorizontalAlignment(SwingConstants.CENTER);
+      labelText.setHorizontalAlignment(SwingConstants.LEFT);
       labelText.setMaximumSize(new Dimension(32767, 16));
 
       gridBagConstraints1 = new GridBagConstraints();

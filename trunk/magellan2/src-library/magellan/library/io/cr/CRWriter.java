@@ -1668,10 +1668,25 @@ public class CRWriter extends BufferedWriter {
 		if(regions == null) {
 			return;
 		}
+    
+    ui.setMaximum(regions.size());
+    int counter = 0;
 
 		for(Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
-			writeRegion(iter.next());
+      Region region = iter.next();
+      
+      if (ui != null) {
+        if (region.getName() != null) {
+          ui.setProgress(Resources.get("orderwriterdialog.progress.07a",new Object[]{region.getName()}), counter++);
+        } else {
+          ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
+        }
+      }
+      
+			writeRegion(region);
 		}
+    ui.setMaximum(11);
+    ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
 	}
 
 	/**
@@ -1685,7 +1700,6 @@ public class CRWriter extends BufferedWriter {
 		if (region.getRegionType().equals(data.rules.getRegionType("Leere"))){
 			return;
 		}
-		
 		
 		write("REGION " + region.getID().toString(" "));
 		newLine();

@@ -25,9 +25,12 @@ package magellan.library.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.net.Proxy;
+import java.net.ProxySelector;
 import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -91,7 +94,27 @@ public class HTTPClient {
     HostConfiguration config = client.getHostConfiguration();
     if (config == null) config = new HostConfiguration();
     config.setProxy(host,port);
+    
     proxy = new ProxyHost(host, port); 
+  }
+  
+  /**
+   * Sets the Proxy server.
+   */
+  public void setProxy(Proxy proxy) {
+    switch (proxy.type()) {
+      case DIRECT: {
+        break;
+      }
+      case HTTP: {
+        //...
+        break;
+      }
+      case SOCKS: {
+        // ...
+        break;
+      }
+    }
   }
   
   /**
@@ -112,6 +135,13 @@ public class HTTPClient {
   public HTTPResult get(URI uri) {
     GetMethod method = new GetMethod(uri.toString());
     try {
+      // verify proxy settings
+      ProxySelector selector = ProxySelector.getDefault();
+      List<Proxy> proxies = selector.select(uri);
+      if (proxies.size()>0) {
+        setProxy(proxies.get(0));
+      }
+      
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {

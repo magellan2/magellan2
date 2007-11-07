@@ -25,8 +25,6 @@ import javax.swing.JMenu;
 
 import magellan.client.Client;
 import magellan.client.actions.file.FileHistoryAction;
-import magellan.client.event.SelectionEvent;
-import magellan.library.GameData;
 import magellan.library.utils.Bucket;
 import magellan.library.utils.PropertiesHelper;
 

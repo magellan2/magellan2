@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
+import magellan.client.swing.SwingUserInterface;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.cr.CRWriter;
@@ -156,7 +157,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 			// log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
 			// write cr to file
       log.info("Using encoding: "+client.getData().getEncoding());
-			CRWriter crw = new CRWriter(filetype,client.getData().getEncoding());
+			CRWriter crw = new CRWriter(new SwingUserInterface(client),filetype,client.getData().getEncoding());
 			crw.write(client.getData());
 			crw.close();
 

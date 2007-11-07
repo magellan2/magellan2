@@ -13,11 +13,6 @@
 
 package magellan.library.utils;
 
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,14 +20,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
-
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 
 import magellan.library.CoordinateID;
 import magellan.library.Faction;
@@ -51,32 +38,20 @@ public class ReportMerger extends Object {
 	private static final Logger log = Logger.getInstance(ReportMerger.class);
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * @author $Author: $
-	 * @version $Revision: 344 $
 	 */
 	public interface Loader {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public GameData load(File file);
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * @author $Author: $
-	 * @version $Revision: 344 $
 	 */
 	public interface AssignData {
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void assign(GameData _data);
@@ -111,145 +86,6 @@ public class ReportMerger extends Object {
 
 	// data assign interface
 	AssignData assignData = null;
-
-	public interface UserInterface {
-		public void ready();
-		public void show();
-		public void setProgress(String strMessage, int iProgress);
-		public boolean confirm(String strMessage, String strTitle);
-	}
-
-	public class NullUserInterface implements UserInterface {
-		public void ready() {}
-		public void show() {}
-		public void setProgress(String strMessage, int iProgress) {}
-		public boolean confirm(String strMessage, String strTitle) {
-			return true;
-		}
-	}
-
-	public class SwingUserInterface implements UserInterface {
-		// user interface
-		ProgressDlg dlg = null;
-    boolean showing;
-
-		public SwingUserInterface(JFrame parent) {
-			init(parent);
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		private void init(JFrame parent) {
-      log.info("init");
-			dlg = new ProgressDlg(parent, true);
-			dlg.labelText.setText(Resources.get("util.reportmerger.status.merge"));
-			dlg.progressBar.setMinimum(0);
-			dlg.progressBar.setMaximum(reports.length * 4);
-		}
-
-		/**
-		 * Shows the dialog.
-		 */
-		public void show() {
-      showing=true;
-      SwingUtilities.invokeLater((new Runnable() {public void run() {
-				SwingUserInterface.this.dlg.setVisible(true);
-			}})); 
-		}
-
-		private class Confirm implements Runnable {
-			String strMessage;
-			String strTitle;
-			boolean bResult = false;
-
-			/**
-			 * DOCUMENT-ME
-			 */
-			public void run() {
-				if(JOptionPane.showConfirmDialog(dlg, strMessage,
-            Resources.get("util.reportmerger.msg.confirmmerge.title"),
-													 JOptionPane.YES_NO_OPTION,
-													 JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-					bResult = true;
-				} else {
-					bResult = false;
-				}
-			}
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
-		 */
-		public boolean confirm(String strMessage, String strTitle) {
-			Confirm conf = new Confirm();
-			conf.strMessage = strMessage;
-			conf.strTitle = strTitle;
-
-			try {
-				SwingUtilities.invokeAndWait(conf);
-			} catch(Exception e) {
-				log.error(e);
-			}
-
-			return conf.bResult;
-		}
-
-		private class Progress implements Runnable {
-			String strMessage;
-			int iProgress;
-
-			/**
-			 * DOCUMENT-ME
-			 */
-			public void run() {
-				dlg.labelText.setText(strMessage);
-				dlg.progressBar.setValue(iProgress);
-			}
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 */
-		public void setProgress(String strMessage, int iProgress) {
-			Progress progress = new Progress();
-			progress.strMessage = strMessage;
-			progress.iProgress = iProgress;
-
-			SwingUtilities.invokeLater(progress);
-		}
-
-		/**
-		 * Notifies the userface that the task is done. Destroys progress dialog.
-		 */
-		public void ready() {
-      if (showing) {
-        // wait for dialog to come up in the first place
-        while (!SwingUserInterface.this.dlg.isShowing()) {
-          log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-      showing = false;
-      log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
-      SwingUserInterface.this.dlg.setVisible(false);
-      SwingUserInterface.this.dlg.dispose();
-    }
-	}
 
 	UserInterface ui;
 	int iProgress;
@@ -295,12 +131,19 @@ public class ReportMerger extends Object {
 		assignData = _assignData;
 	}
 
+  /**
+   * 
+   */
 	public GameData merge() {
 		return merge(new NullUserInterface(), false);
 	}
 
+  /**
+   * 
+   */
 	public GameData merge(UserInterface aUI, boolean async) {
 		ui = aUI;
+    if (ui != null) ui.setMaximum(reports.length*4); // four steps per report 
 		if(async) {
 			new Thread(new Runnable() {
 					public void run() {
@@ -313,13 +156,9 @@ public class ReportMerger extends Object {
 		}
 	}
 
-	/**
-	 * Starts merging. Parent is used as parent for the userinterface.
-	 */
-	public GameData merge(JFrame parent) {
-		return merge(new SwingUserInterface(parent),true);
-	}
-
+  /**
+   * 
+   */
 	private GameData mergeThread() {
 		if(ui != null) {
 			ui.show();
@@ -906,70 +745,5 @@ public class ReportMerger extends Object {
 		}
 
 		return report.merged;
-	}
-
-	private class ProgressDlg extends JDialog {
-		/**
-		 * Creates new form ProgressDlg
-		 *
-		 * 
-		 * 
-		 */
-		public ProgressDlg(Frame parent, boolean modal) {
-			super(parent, modal);
-			initComponents();
-			pack();
-		}
-
-		private void initComponents() {
-			labelText = new JLabel();
-			progressBar = new JProgressBar();
-			getContentPane().setLayout(new GridBagLayout());
-
-			GridBagConstraints gridBagConstraints1;
-			setTitle(Resources.get("util.reportmerger.window.title"));
-
-			/*addWindowListener(new java.awt.event.WindowAdapter() {
-			    public void windowClosing(java.awt.event.WindowEvent evt) {
-			        closeDialog(evt);
-			    }
-			}
-			);*/
-			labelText.setPreferredSize(new Dimension(250, 16));
-			labelText.setMinimumSize(new Dimension(250, 16));
-			labelText.setText("jLabel1");
-			labelText.setHorizontalAlignment(SwingConstants.CENTER);
-			labelText.setMaximumSize(new Dimension(32767, 16));
-
-			gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.gridx = 0;
-			gridBagConstraints1.gridy = 1;
-			gridBagConstraints1.fill = GridBagConstraints.BOTH;
-			gridBagConstraints1.insets = new Insets(0, 5, 5, 5);
-			gridBagConstraints1.weightx = 1.0;
-			gridBagConstraints1.weighty = 0.5;
-			getContentPane().add(labelText, gridBagConstraints1);
-
-			progressBar.setPreferredSize(new Dimension(250, 14));
-			progressBar.setMinimumSize(new Dimension(250, 14));
-
-			gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.fill = GridBagConstraints.BOTH;
-			gridBagConstraints1.insets = new Insets(5, 5, 5, 5);
-			gridBagConstraints1.weightx = 1.0;
-			gridBagConstraints1.weighty = 0.5;
-			getContentPane().add(progressBar, gridBagConstraints1);
-		}
-
-		/** Closes the dialog */
-
-		/*private void closeDialog(java.awt.event.WindowEvent evt) {
-		    setVisible (false);
-		    dispose ();
-		}*/
-		public JLabel labelText;
-
-		/** DOCUMENT-ME */
-		public JProgressBar progressBar;
 	}
 }

@@ -61,8 +61,11 @@ import magellan.library.rules.OptionCategory;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.NullUserInterface;
+import magellan.library.utils.Resources;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.logging.Logger;
@@ -98,6 +101,35 @@ public class CRWriter extends BufferedWriter {
 	private GameData data = null;
   
   private String encoding = FileType.DEFAULT_ENCODING.toString();
+  
+  private UserInterface ui = null;
+  private boolean savingInProgress = false;
+
+
+  /**
+   * Creates a CR writer with a default-sized ouput buffer.
+   *
+   * @param out the stream to write output to.
+   */
+  public CRWriter(UserInterface ui, Writer out) {
+    super(out);
+    this.ui = ui;
+    if (this.ui == null) ui = new NullUserInterface();
+  }
+
+  /**
+   * Creates a CR writer with a ouput buffer of the specified size.
+   *
+   * @param fileType the filetype to write to
+   *
+   * @throws IOException DOCUMENT-ME
+   */
+  public CRWriter(UserInterface ui, FileType fileType, String encoding) throws IOException {
+    super(fileType.createWriter(encoding));
+    this.ui = ui;
+    this.encoding = encoding;
+    if (this.ui == null) ui = new NullUserInterface();
+  }
 
 	/**
 	 * Escape quotation marks in <tt>text</tt> with a backslash.
@@ -1618,10 +1650,8 @@ public class CRWriter extends BufferedWriter {
 	 * @param map a map containing the region to write. The keys are expected to be
 	 * 		  <tt>Integer</tt> objects containing the ids of the regions. The values are expected
 	 * 		  to be instances of class <tt>Region</tt>.
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeRegions(Map map) throws IOException {
+	public void writeRegions(Map<CoordinateID,Region> map) throws IOException {
 		if(map == null) {
 			return;
 		}
@@ -1633,25 +1663,19 @@ public class CRWriter extends BufferedWriter {
 	 * Write a sequence of region (REGION) blocks to the underlying stream.
 	 *
 	 * @param regions a collection containing the regions to write.
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeRegions(Collection regions) throws IOException {
+	public void writeRegions(Collection<Region> regions) throws IOException {
 		if(regions == null) {
 			return;
 		}
 
-		for(Iterator iter = regions.iterator(); iter.hasNext();) {
-			writeRegion((Region) iter.next());
+		for(Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+			writeRegion(iter.next());
 		}
 	}
 
 	/**
 	 * Write the cr representation of a <tt>Region</tt> object to the underlying stream.
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
 	 */
 	public void writeRegion(Region region) throws IOException {
 		
@@ -1844,6 +1868,11 @@ public class CRWriter extends BufferedWriter {
 				write("1;Verorkt");
 				newLine();
 			}
+      
+      if(!serverConformance && region.isActive()) {
+        write("1;aktiveRegion");
+        newLine();
+      }
 
 			if(region.getVisibility() != null) {
 				writeQuotedTag(region.getVisibility(), "visibility");
@@ -2057,35 +2086,77 @@ public class CRWriter extends BufferedWriter {
 	 * Write the complete game data from <tt>world</tt> in the cr format.
 	 *
 	 * @param world the game data to write.
-	 *
-	 * @throws IOException DOCUMENT-ME
-	 * @throws NullPointerException DOCUMENT-ME
 	 */
-	public void write(GameData world) throws IOException, NullPointerException {
+	public void write(final GameData world) throws IOException, NullPointerException {
 		if(world == null) {
 			throw new NullPointerException("CRWriter.write(GameData): argument world is null");
 		}
+    this.data = world;
+    savingInProgress = true;
+    
+    if (ui != null) {
+      new Thread(new Runnable() {
+        public void run() {
+          try {
+            writeThread(world);
+            close();
+          } catch (Exception exception) {
+            throw new RuntimeException(exception);
+          }
+        }
+      }).start();
+    } else {
+      writeThread(world);
+    }
+  }
+  
+  /**
+   * @see java.io.BufferedWriter#close()
+   */
+  public void close() throws IOException {
+    if (savingInProgress) return;
+    super.close();
+  }
+  
+  /**
+   * Write the complete game data from <tt>world</tt> in the cr format.
+   * This method is called by the public method write(GameData). This
+   * method can be run in a thread.
+   *
+   * @param world the game data to write.
+   */
+  protected void writeThread(GameData world) throws IOException, NullPointerException {
 
-		this.data = world;
-		
+    if (ui != null) ui.setMaximum(11);
+    if (ui != null) ui.setTitle(Resources.get("orderwriterdialog.progress.title"));
+    if (ui != null) ui.show();
+    
+    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.01"), 1);
 		writeVersion(world);
 
 		if(!serverConformance) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.02"), 2);
 			writeHotSpots(world.hotSpots());
 		}
 
+    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.03"), 3);
 		writeFactions(world.factions());
 
 		if(includeSpellsAndPotions) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.04"), 4);
 			writeSpells(world.spells());
+      
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.05"), 5);
 			writePotions(world.potions());
 		}
 
 		if(!serverConformance && includeIslands) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.06"), 6);
 			writeIslands(world.islands());
 		}
 
 		if(includeRegions) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.07"), 7);
 			if((regions != null) && (regions.size() > 0)) {
 				writeRegions(regions);
 			} else {
@@ -2094,12 +2165,15 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if(includeMessages) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.08"), 8);
 			writeMsgTypes(world.msgTypes());
 		}
 
+    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.09"), 9);
 		writeTranslations(world.translations());
 
 		if(includeRegions && includeUnits && ((regions == null) || (regions.size() == 0))) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.10"), 10);
 			if(world.units() != null) {
 				if(world.units().size() != unitsWritten) {
 					int homelessUnitsCounter = 0;
@@ -2120,6 +2194,11 @@ public class CRWriter extends BufferedWriter {
 				}
 			}
 		}
+
+    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.11"), 11);
+    savingInProgress = false;
+    
+    if (ui != null) ui.ready();
 	}
 
 	/**
@@ -2132,37 +2211,6 @@ public class CRWriter extends BufferedWriter {
 	 */
 	public void setTildeEscapes(boolean bool) {
 		useTildesForQuotes = true;
-	}
-
-	/**
-	 * Creates a CR writer with a default-sized ouput buffer.
-	 *
-	 * @param out the stream to write output to.
-	 */
-	public CRWriter(Writer out) {
-		super(out);
-	}
-
-	/**
-	 * Creates a CR writer with a ouput buffer of the specified size.
-	 *
-	 * @param out the stream to write output to.
-	 * @param sz the size of the output buffer.
-	 */
-	public CRWriter(Writer out, int sz) {
-		super(out, sz);
-	}
-
-	/**
-	 * Creates a CR writer with a ouput buffer of the specified size.
-	 *
-	 * @param fileType the filetype to write to
-	 *
-	 * @throws IOException DOCUMENT-ME
-	 */
-	public CRWriter(FileType fileType, String encoding) throws IOException {
-		super(fileType.createWriter(encoding));
-    this.encoding = encoding;
 	}
 
 	private boolean includeRegions = true;
@@ -2441,14 +2489,14 @@ public class CRWriter extends BufferedWriter {
 		writeQuotedTag(h.getCenter().toString(" "), "coord");
 	}
 
-	private Collection regions = null;
+	private Collection<Region> regions = null;
 
 	/**
 	 * Returns the regions this object writes to the underlying stream.
 	 *
 	 * 
 	 */
-	public Collection getRegions() {
+	public Collection<Region> getRegions() {
 		return this.regions;
 	}
 
@@ -2460,19 +2508,19 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * 
 	 */
-	public void setRegions(Collection regions) {
+	public void setRegions(Collection<Region> regions) {
 		this.regions = regions;
 	}
 
 
-	private Collection units = null;
+	private Collection<Unit> units = null;
 
 	/**
 	 * Returns the units this object writes to the underlying stream.
 	 *
 	 * 
 	 */
-	public Collection getUnits() {
+	public Collection<Unit> getUnits() {
 		return this.units;
 	}
 
@@ -2484,7 +2532,7 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * 
 	 */
-	public void setUnits(Collection units) {
+	public void setUnits(Collection<Unit> units) {
 		this.units = units;
 	}
 

@@ -65,7 +65,7 @@ public class Loader {
 			filetype.setCreateBackup(false);
 			
 			// write cr to file
-			CRWriter crw = new CRWriter(filetype,data.getEncoding());
+			CRWriter crw = new CRWriter(null,filetype,data.getEncoding());
 
 			try {
 				crw.write(data);
@@ -73,7 +73,7 @@ public class Loader {
 				crw.close();
 			}
 			
-			GameData newData = new GameDataReader().readGameData(filetype, newOrigin);
+			GameData newData = new GameDataReader(null).readGameData(filetype, newOrigin);
 			newData.filetype = data.filetype;
 			tempFile.delete();
 			

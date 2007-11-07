@@ -476,7 +476,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       public void actionPerformed(ActionEvent e) {
         int answer=0;
         if (!chkAskPassword.isSelected()){
-          answer=JOptionPane.showConfirmDialog(chkAskPassword, Resources.get("orderwirterdialog.msg.passwordwarning"),"",JOptionPane.YES_NO_OPTION);
+          answer=JOptionPane.showConfirmDialog(chkAskPassword, Resources.get("orderwriterdialog.msg.passwordwarning"),"",JOptionPane.YES_NO_OPTION);
         }
         if (answer==0){
           lblServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());

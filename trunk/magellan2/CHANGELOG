@@ -1,3 +1,8 @@
+2007-11-07 Thoralf (thoralf@m84.de)
+    * Added more OutOfMemory try-catch-blocks during saving image map and loading cr's
+    * Added some progress bars during loading, saving, etc.
+    * Added a feature to save last active region in report.
+
 2007-10-28 Thoralf (thoralf@m84.de)
     * Added some more functions to the extended commands plugin helper
     * Fixes refresh problems with extended commands.

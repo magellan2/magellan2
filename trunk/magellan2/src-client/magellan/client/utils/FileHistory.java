@@ -186,14 +186,14 @@ public class FileHistory {
 
 		Collection selectedObjects = client.getSelectedObjects();
 		
-		GameData data = client.loadCR(file);
+		client.loadCRThread(file);
 
-		if(data != null) {
-			client.setData(data);
-			client.setReportChanged(false);
-			if (selectedObjects!=null){
-				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
-			}
-		}
+//		if(data != null) {
+//			client.setData(data);
+//			client.setReportChanged(false);
+//			if (selectedObjects!=null){
+//				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
+//			}
+//		}
 	}
 }

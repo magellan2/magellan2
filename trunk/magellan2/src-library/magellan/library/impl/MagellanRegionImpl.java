@@ -141,6 +141,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	/** DOCUMENT-ME */
 	public int oldRecruits = -1;
 	
+  protected boolean isActive = false;
 	
 	// fiete 2207.02.12: we add sign support - 2 lines allowed
 	private List<Sign> signs = null;
@@ -1789,5 +1790,23 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setWage(int wage) {
     this.wage = wage;
+  }
+
+  /**
+   * @see magellan.library.Region#isActive()
+   */
+  public boolean isActive() {
+    return isActive;
+  }
+
+  /**
+   * @see magellan.library.Region#setActive(boolean)
+   */
+  public void setActive(boolean isActive) {
+    if (isActive) {
+      // remove old active region...
+      for (Region r : getData().regions().values()) r.setActive(false);
+    }
+    this.isActive = isActive;
   }
 }

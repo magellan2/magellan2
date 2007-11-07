@@ -16,18 +16,14 @@ package magellan.client.actions.file;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
-import magellan.client.event.SelectionEvent;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.HistoryAccessory;
-import magellan.library.GameData;
 import magellan.library.utils.Resources;
 
 
@@ -129,8 +125,8 @@ public class OpenCRAction extends MenuAction {
          * @see java.lang.Runnable#run()
          */
         public void run() {
-            GameData data = client.loadCR(file);
-            
+            client.loadCRThread(file);
+            /*
             if(data != null) {
                 client.setData(data);
                 client.setReportChanged(false);
@@ -139,34 +135,9 @@ public class OpenCRAction extends MenuAction {
                 	client.getDispatcher().fire(new SelectionEvent(this,this.selectedObjects,null));
                 }
                 
-            }
+            }*/
         }
     }
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Open...");
-			defaultTranslations.put("mnemonic", "o");
-			defaultTranslations.put("accelerator", "ctrl O");
-			defaultTranslations.put("tooltip", "");
-
-			defaultTranslations.put("title", "Open cr file");
-		}
-
-		return defaultTranslations;
-	}
   
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()

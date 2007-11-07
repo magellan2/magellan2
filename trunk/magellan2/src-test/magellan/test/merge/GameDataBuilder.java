@@ -39,7 +39,7 @@ public class GameDataBuilder {
 	}
 
 	private GameData createSimplestGameData(int round, boolean addUnit, boolean postProcess) throws Exception {
-		GameData data = new GameDataReader().createGameData("Eressea");
+		GameData data = new GameDataReader(null).createGameData("Eressea");
 		
 		data.base=36;
 		// this is sadly needed

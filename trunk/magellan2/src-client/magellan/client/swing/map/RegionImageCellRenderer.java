@@ -31,13 +31,14 @@ import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
+import magellan.library.rules.Date;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * This renderer writes an image per region onto the screen.
  *
  * @author $Author: $
  * @version $Revision: 299 $
@@ -105,17 +106,32 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 			UnitContainerType type = r.getType();
 
 			if(type != null) {
-				Image img = getImage(type.getID().toString());
+			  String imageName = type.getID().toString();
+        
+        // first try a season specific icon
+			  if (r.getData().getDate() != null) {
+			    switch (r.getData().getDate().getSeason()) {
+            case Date.SPRING: imageName+="_spring"; break;
+            case Date.SUMMER: imageName+="_summer"; break;
+            case Date.AUTUMN: imageName+="_autumn"; break;
+            case Date.WINTER: imageName+="_winter"; break;
+			    }
+			  }
+				Image img = getImage(imageName);
+				
+				// if we cannot find it, try a default icon.
+				if (img == null) {
+	        imageName = type.getID().toString(); 
+				  img = getImage(imageName);
+				}
 
 				if(img != null) {
 					drawImage(r, getImage(type.getID().toString()), rect);
 				} else {
-					log.warn("RegionImageCellRenderer.render(): image is null (" + type.getID() +
-							 ")");
+					log.warn("RegionImageCellRenderer.render(): image is null (" + imageName + ")");
 				}
 			} else {
-				log.warn("RegionImageCellRenderer.render(): Couldn't determine region type for region: " +
-						 r.toString());
+				log.warn("RegionImageCellRenderer.render(): Couldn't determine region type for region: " + r.toString());
 			}
 		}
 	}

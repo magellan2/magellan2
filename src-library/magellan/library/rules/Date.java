@@ -16,18 +16,17 @@ package magellan.library.rules;
 import magellan.library.ID;
 
 /**
- * DOCUMENT ME!
+ * This class represents a Magellan Date.
  *
  * @author Sebastian
- * @version
  */
 public abstract class Date extends Object implements ID {
 	protected int iDate = 0;
 
-	/** DOCUMENT-ME */
+	/** Short format */
 	public static final int TYPE_SHORT = 0;
 
-	/** DOCUMENT-ME */
+	/** Long format */
 	public static final int TYPE_LONG = 1;
 
 	/** DOCUMENT-ME */
@@ -35,6 +34,17 @@ public abstract class Date extends Object implements ID {
 
 	/** DOCUMENT-ME */
 	public static final int TYPE_PHRASE_AND_SEASON = 3;
+	
+  /** a constant representing the season "unknown" */
+  public static final int UNKNOWN = 0;
+  /** a constant representing the season spring */
+  public static final int SPRING = 1;
+  /** a constant representing the season summer */
+	public static final int SUMMER = 2;
+  /** a constant representing the season autumn */
+	public static final int AUTUMN = 3;
+  /** a constant representing the season winter */
+	public static final int WINTER = 4;
 
 	/**
 	 * Creates new Date
@@ -133,6 +143,13 @@ public abstract class Date extends Object implements ID {
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
+	
+	/**
+	 * Returns the season of this date.
+	 * 
+	 * @return {@link Date.SPRING}, {@link Date.SUMMER}, {@link Date.AUTUMN}, {@link Date.WINTER} or  {@link Date.UNKNOWN}
+	 */
+	public abstract int getSeason();
 
 	/**
 	 * DOCUMENT-ME

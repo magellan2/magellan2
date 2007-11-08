@@ -3947,7 +3947,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     
     if (se.getActiveObject() instanceof Region) {
       // inform the gamedata about a new selected region.
-      log.warn("Region selected "+se.getActiveObject());
       Region region = (Region)se.getActiveObject();
       region.setActive(true);
     }

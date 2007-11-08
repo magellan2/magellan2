@@ -1,3 +1,6 @@
+2007-11-08 Thoralf (thoralf@m84.de)
+    * Added season specific map images (currently just a copy of the original).
+
 2007-11-07 Thoralf (thoralf@m84.de)
     * Added more OutOfMemory try-catch-blocks during saving image map and loading cr's
     * Added some progress bars during loading, saving, etc.

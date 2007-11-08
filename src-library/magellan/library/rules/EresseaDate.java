@@ -16,10 +16,9 @@ package magellan.library.rules;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * This class represents an Eressea Date.
  * 
  * @author Sebastian
- * @version
  */
 public class EresseaDate extends Date {
   private static final String months_old[] = { "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember" };
@@ -233,6 +232,32 @@ public class EresseaDate extends Date {
    */
   public magellan.library.ID copy() {
     return new EresseaDate(this.iDate);
+  }
+  
+  /** 
+   * @see magellan.library.rules.Date#getSeason()
+   */
+  public int getSeason() {
+    if (getEpoch()<2) return UNKNOWN;
+    
+    int time = iDate;
+
+    if (time >= 184) {
+      time -= 184;
+    }
+
+    switch ((time / 3) % 9) {
+      case 0: return SUMMER;
+      case 1: return AUTUMN;
+      case 2: return AUTUMN;
+      case 3: return WINTER;
+      case 4: return WINTER;
+      case 5: return WINTER;
+      case 6: return SPRING;
+      case 7: return SPRING;
+      case 8: return SUMMER;
+      default: return UNKNOWN;
+    }
   }
 
   // /////////////////////////////

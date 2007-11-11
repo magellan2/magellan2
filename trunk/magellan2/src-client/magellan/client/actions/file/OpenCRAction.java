@@ -51,7 +51,7 @@ public class OpenCRAction extends MenuAction {
 	 * 
 	 */
 	public void menuActionPerformed(ActionEvent e) {
-		if(!client.askToSave()) {
+		if(!client.askToSave(false)) {
 			return;
 		}
 

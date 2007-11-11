@@ -2101,15 +2101,17 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @param world the game data to write.
 	 */
-	public void write(final GameData world) throws IOException, NullPointerException {
+	public Thread write(final GameData world) throws IOException, NullPointerException {
 		if(world == null) {
 			throw new NullPointerException("CRWriter.write(GameData): argument world is null");
 		}
     this.data = world;
     savingInProgress = true;
     
+    Thread t = null;
+    
     if (ui != null) {
-      new Thread(new Runnable() {
+      t = new Thread(new Runnable() {
         public void run() {
           try {
             writeThread(world);
@@ -2118,10 +2120,13 @@ public class CRWriter extends BufferedWriter {
             throw new RuntimeException(exception);
           }
         }
-      }).start();
+      });
+      t.start();
     } else {
       writeThread(world);
     }
+    
+    return t;
   }
   
   /**

@@ -117,6 +117,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
             case Date.WINTER: imageName+="_winter"; break;
 			    }
 			  }
+        
 				Image img = getImage(imageName);
 				
 				// if we cannot find it, try a default icon.
@@ -126,6 +127,8 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 				}
 
 				if(img != null) {
+          // TODO.....
+          // HEEEEEE; why don't use the already loaded image...
 					drawImage(r, getImage(type.getID().toString()), rect);
 				} else {
 					log.warn("RegionImageCellRenderer.render(): image is null (" + imageName + ")");
@@ -217,27 +220,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
     return Resources.get("map.regionimagecellrenderer.name");
   }
 
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Region renderer");
-			defaultTranslations.put("chk.showfow.caption", "Enable fog of war");
-		}
-
-		return defaultTranslations;
-	}
 
 	private class Preferences extends JPanel implements PreferencesAdapter {
 		// The source component to configure

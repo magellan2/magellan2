@@ -120,8 +120,8 @@ public class SwingUserInterface implements UserInterface {
   public void ready() {
     if (showing) {
       // wait for dialog to come up in the first place
-      while (!SwingUserInterface.this.dlg.isShowing()) {
-        log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
+      while (!dlg.isShowing()) {
+        log.debug("ready " + dlg.isShowing());
         try {
           Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -130,9 +130,13 @@ public class SwingUserInterface implements UserInterface {
       }
     }
     showing = false;
-    log.debug("ready " + SwingUserInterface.this.dlg.isShowing());
-    SwingUserInterface.this.dlg.setVisible(false);
-    SwingUserInterface.this.dlg.dispose();
+    log.debug("ready " + dlg.isShowing());
+    dlg.setVisible(false);
+    dlg.dispose();
+  }
+  
+  public boolean isVisible() {
+    return dlg.isVisible();
   }
 
   /**

@@ -1065,7 +1065,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @return whether the action shall be continued (user did not press cancel
    *         button)
    */
-  public boolean askToSave() {
+  public boolean askToSave(boolean wait) {
     if (reportState.isStateChanged()) {
       String msg = null;
 
@@ -1080,7 +1080,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       case JOptionPane.YES_OPTION:
 
         try {
-          saveReport(getData().filetype);
+          CRWriter crw = saveReport(getData().filetype);
+          if (wait) {
+            while (crw.savingInProgress()) {
+              try {
+                this.wait(1000);
+              } catch (Exception e) {}
+            }
+          }
         } catch (Exception e) {
           log.error(e);
 
@@ -1097,14 +1104,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     return true;
   }
   
-  public void saveReport(FileType filetype) {
+  public CRWriter saveReport(FileType filetype) {
+    CRWriter crw = null;
     try {
       
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
       log.info("Using encoding: "+getData().getEncoding());
       SwingUserInterface ui = new SwingUserInterface(this);
-      CRWriter crw = new CRWriter(ui,filetype,getData().getEncoding());
+      crw = new CRWriter(ui,filetype,getData().getEncoding());
       crw.write(getData());
       crw.close();
 
@@ -1119,6 +1127,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           Resources.get("actions.filesaveaction.msg.filesave.error.title"),
                       JOptionPane.ERROR_MESSAGE);
     }
+    return crw;
   }
 
   /**
@@ -1131,7 +1140,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    */
   public void quit(boolean storeSettings) {
     if (reportState!=null && reportState.isStateChanged()) {
-      if (!askToSave()) {
+      if (!askToSave(true)) {
         return; // cancel or exception
       }
     }

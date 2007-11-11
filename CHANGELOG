@@ -1,5 +1,7 @@
 2007-11-11 Thoralf (thoralf@m84.de)
     * NPE when merging two reports.
+    * Bug when saving a report during shutdown
+    * Added winter maps for map (is not active because of a bug in RegionImageCellRenderer)...
 
 2007-11-08 Thoralf (thoralf@m84.de)
     * Added season specific map images (currently just a copy of the original).

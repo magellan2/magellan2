@@ -168,7 +168,7 @@ public class FileHistory {
 	 * 
 	 */
 	public void loadFile(File file) {
-		if(!client.askToSave()) {
+		if(!client.askToSave(false)) {
 			return;
 		}
 

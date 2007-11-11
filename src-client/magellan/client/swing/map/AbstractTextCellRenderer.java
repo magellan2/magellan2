@@ -276,7 +276,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 		graphics.drawString(text, X, Y);
 	}
 
-	protected void shortenStrings(String str[], int maxWidth) {
+	protected synchronized void shortenStrings(String str[], int maxWidth) {
 		if(shortenStrings && (str != null) && (str.length > 0)) {
 			for(int i = 0; i < str.length; i++) {
 				if(str[i] != null) {

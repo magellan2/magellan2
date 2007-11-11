@@ -1669,7 +1669,7 @@ public class CRWriter extends BufferedWriter {
 			return;
 		}
     
-    ui.setMaximum(regions.size());
+    if (ui != null) ui.setMaximum(regions.size());
     int counter = 0;
 
 		for(Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
@@ -1685,8 +1685,8 @@ public class CRWriter extends BufferedWriter {
       
 			writeRegion(region);
 		}
-    ui.setMaximum(11);
-    ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
+    if (ui != null) ui.setMaximum(11);
+    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
 	}
 
 	/**
@@ -2214,6 +2214,10 @@ public class CRWriter extends BufferedWriter {
     
     if (ui != null) ui.ready();
 	}
+  
+  public boolean savingInProgress() {
+    return savingInProgress;
+  }
 
 	/**
 	 * Change the quote escape behaviour of this CRWriter. Tilde escapes look like: 'a "b c"' -> 

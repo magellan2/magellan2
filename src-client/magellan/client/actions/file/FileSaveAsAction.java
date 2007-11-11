@@ -152,26 +152,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	}
 
 	protected void doSaveAction(FileType filetype) {
-		try {
-			
-			// log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
-			// write cr to file
-      log.info("Using encoding: "+client.getData().getEncoding());
-			CRWriter crw = new CRWriter(new SwingUserInterface(client),filetype,client.getData().getEncoding());
-			crw.write(client.getData());
-			crw.close();
-
-			// everything worked fine, so reset reportchanged state and also store new FileType settings
-			client.setReportChanged(false);
-			client.getData().filetype = filetype;
-			client.getData().resetToUnchanged();
-			client.getProperties().setProperty("Client.lastCRSaved", filetype.getName());
-		} catch(IOException exc) {
-			log.error(exc);
-			JOptionPane.showMessageDialog(client, exc.toString(),
-          Resources.get("actions.filesaveaction.msg.filesave.error.title"),
-										  JOptionPane.ERROR_MESSAGE);
-		}
+    client.saveReport(filetype);
 	}
 
 	/**
@@ -183,6 +164,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	protected FileType getFile() {
 		return null;
 	}
+  
 	public void gameDataChanged(GameDataEvent e) {
 		int i = e.getGameData().regions().size();
 		if (i>0) {

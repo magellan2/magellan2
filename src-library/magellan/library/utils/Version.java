@@ -30,6 +30,7 @@ public class Version implements Comparable {
 	private String major = "0";
 	private String minor = "0";
 	private String build = "0";
+  private String devel = "0";
   
   private boolean isNumber = false;
 
@@ -58,6 +59,10 @@ public class Version implements Comparable {
         major = st.nextToken();
         minor = st.nextToken();
         build = st.nextToken();
+        if (build.indexOf(" (build ")>0) {
+          devel = build.substring(build.indexOf(" (build ")+8,build.length()-1);
+          build = build.substring(0,build.indexOf(" (")).trim();
+        }
       }
     } else {
       throw new NumberFormatException("Unable to parse the specified version string \"" + str + "\" with the delimiter \"" + delim + "\"");
@@ -107,9 +112,22 @@ public class Version implements Comparable {
 	public int compareTo(Object o) {
 		Version v = (Version) o;
 
-		if(this.getMajor().equalsIgnoreCase(v.getMajor())) {
-			if(this.getMinor().equalsIgnoreCase(v.getMinor())) {
-				return this.getBuild().compareTo(v.getBuild());
+		if (this.getMajor().equalsIgnoreCase(v.getMajor())) {
+			if (this.getMinor().equalsIgnoreCase(v.getMinor())) {
+				if (this.getBuild().equalsIgnoreCase(v.getBuild())) {
+          String a = this.devel;
+          String b = v.devel;
+          while (a.length()<b.length()) {
+            a = "0"+a;
+          }
+          while (b.length()<a.length()) {
+            b = "0"+b;
+          }
+          System.err.println(a + " vs. " + b);
+          return a.compareTo(b);
+        } else {
+          return this.getBuild().compareTo(v.getBuild()); 
+        }
 			} else {
 				return this.getMinor().compareTo(v.getMinor());
 			}

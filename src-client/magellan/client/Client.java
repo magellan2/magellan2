@@ -153,7 +153,9 @@ import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.GameDataReader;
+import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileBackup;
+import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.EresseaDate;
 import magellan.library.utils.JVMUtilities;
@@ -1078,7 +1080,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       case JOptionPane.YES_OPTION:
 
         try {
-          saveAction.actionPerformed(null);
+          saveReport(getData().filetype);
         } catch (Exception e) {
           log.error(e);
 
@@ -1093,6 +1095,30 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     return true;
+  }
+  
+  public void saveReport(FileType filetype) {
+    try {
+      
+      // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
+      // write cr to file
+      log.info("Using encoding: "+getData().getEncoding());
+      SwingUserInterface ui = new SwingUserInterface(this);
+      CRWriter crw = new CRWriter(ui,filetype,getData().getEncoding());
+      crw.write(getData());
+      crw.close();
+
+      // everything worked fine, so reset reportchanged state and also store new FileType settings
+      setReportChanged(false);
+      getData().filetype = filetype;
+      getData().resetToUnchanged();
+      getProperties().setProperty("Client.lastCRSaved", filetype.getName());
+    } catch(IOException exc) {
+      log.error(exc);
+      JOptionPane.showMessageDialog(this, exc.toString(),
+          Resources.get("actions.filesaveaction.msg.filesave.error.title"),
+                      JOptionPane.ERROR_MESSAGE);
+    }
   }
 
   /**

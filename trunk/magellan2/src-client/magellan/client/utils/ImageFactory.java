@@ -123,7 +123,12 @@ public class ImageFactory implements GameDataListener {
       icon = MagellanImages.getImageIcon(imageName + ".gif");
 
 			if(icon != null) {
-        alphaIcon = MagellanImages.getImageIcon(imageName + "-alpha.gif");
+        String iName = imageName;
+        if (iName.endsWith("_summer")) iName=iName.substring(0,iName.length()-7);
+        if (iName.endsWith("_winter")) iName=iName.substring(0,iName.length()-7);
+        if (iName.endsWith("_autumn")) iName=iName.substring(0,iName.length()-7);
+        if (iName.endsWith("_spring")) iName=iName.substring(0,iName.length()-7);
+        alphaIcon = MagellanImages.getImageIcon(iName + "-alpha.gif");
 			}
 		}
 

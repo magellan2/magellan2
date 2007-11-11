@@ -303,7 +303,7 @@ public class MapSaverUI extends InternationalizedDialog {
         final UserInterface ui = new SwingUserInterface(this);
         ui.setTitle(Resources.get("progressdialog.map.title"));
         ui.show();
-        ui.setProgress(Resources.get(""), 1);
+        ui.setProgress("", 1);
         
         new Thread(new Runnable() {
           public void run() {

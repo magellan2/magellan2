@@ -16,8 +16,6 @@ package magellan.client.swing.map;
 import java.awt.Component;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JCheckBox;
@@ -53,9 +51,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 
 	/**
 	 * Creates a new RegionImageCellRenderer object.
-	 *
-	 * 
-	 * 
 	 */
 	public RegionImageCellRenderer(CellGeometry geo, MagellanContext context) {
 		super(geo, context);
@@ -73,15 +68,14 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 			});
 	}
 
+  /**
+   * 
+   */
 	protected Properties getSettings() {
 		return settings;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
 	 * 
 	 */
 	public void render(Object obj, boolean active, boolean selected) {
@@ -127,9 +121,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 				}
 
 				if(img != null) {
-          // TODO.....
-          // HEEEEEE; why don't use the already loaded image...
-					drawImage(r, getImage(type.getID().toString()), rect);
+					drawImage(r, img, rect);
 				} else {
 					log.warn("RegionImageCellRenderer.render(): image is null (" + imageName + ")");
 				}
@@ -139,6 +131,9 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 		}
 	}
 
+  /**
+   * 
+   */
 	protected void drawImage(Region r, Image img, Rectangle rect) {
 		if(img != null) {
 			graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
@@ -156,8 +151,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public int getPlaneIndex() {
@@ -165,8 +158,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean getFogOfWar() {
@@ -174,8 +165,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void setFogOfWar(boolean bool) {
@@ -185,8 +174,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public PreferencesAdapter getPreferencesAdapter() {
@@ -194,8 +181,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public JMenuItem getContextAdapter() {
@@ -203,8 +188,6 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void setContextObserver(ContextObserver co) {
@@ -220,7 +203,11 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
     return Resources.get("map.regionimagecellrenderer.name");
   }
 
-
+  /**
+   *
+   * @author ...
+   * @version 1.0, 11.11.2007
+   */
 	private class Preferences extends JPanel implements PreferencesAdapter {
 		// The source component to configure
 		private RegionImageCellRenderer source = null;

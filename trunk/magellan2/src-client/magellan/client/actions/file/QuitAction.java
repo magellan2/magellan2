@@ -14,8 +14,6 @@
 package magellan.client.actions.file;
 
 import java.awt.event.ActionEvent;
-import java.util.Hashtable;
-import java.util.Map;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;

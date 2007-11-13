@@ -43,18 +43,18 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
-public class SwingUserInterface implements UserInterface {
-  private static final Logger log = Logger.getInstance(SwingUserInterface.class);
+public class ProgessBarUI implements UserInterface {
+  private static final Logger log = Logger.getInstance(ProgessBarUI.class);
   // user interface
   protected ProgressDlg dlg = null;
   protected boolean showing;
 
-  public SwingUserInterface(JFrame parent) {
+  public ProgessBarUI(JFrame parent) {
     dlg = new ProgressDlg(parent, true);
     init();
   }
 
-  public SwingUserInterface(JDialog parent) {
+  public ProgessBarUI(JDialog parent) {
     dlg = new ProgressDlg(parent, true);
     init();
   }
@@ -82,7 +82,7 @@ public class SwingUserInterface implements UserInterface {
   public void show() {
     showing=true;
     SwingUtilities.invokeLater((new Runnable() {public void run() {
-      SwingUserInterface.this.dlg.setVisible(true);
+      ProgessBarUI.this.dlg.setVisible(true);
     }})); 
   }
 

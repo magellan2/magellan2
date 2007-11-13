@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
-import magellan.client.swing.SwingUserInterface;
+import magellan.client.swing.ProgessBarUI;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Islands;
@@ -51,7 +51,7 @@ public class IslandAction extends MenuAction {
       public void run() {
         GameData data = client.getData();
     		client.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-    		data.islands().putAll(Islands.getIslands(new SwingUserInterface(client), data.rules, data.regions(), data.islands(), data));
+    		data.islands().putAll(Islands.getIslands(new ProgessBarUI(client), data.rules, data.regions(), data.islands(), data));
     		client.getDispatcher().fire(new GameDataEvent(this, data));
     		client.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       }

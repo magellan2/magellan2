@@ -125,7 +125,7 @@ import magellan.client.swing.MapperPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.StartWindow;
-import magellan.client.swing.SwingUserInterface;
+import magellan.client.swing.ProgessBarUI;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
@@ -1111,7 +1111,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
       log.info("Using encoding: "+getData().getEncoding());
-      SwingUserInterface ui = new SwingUserInterface(this);
+      ProgessBarUI ui = new ProgessBarUI(this);
       crw = new CRWriter(ui,filetype,getData().getEncoding());
       crw.write(getData());
       crw.close();
@@ -1199,7 +1199,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public GameData loadCR(UserInterface ui, File fileName) {
     GameData data = null;
     Client client = this;
-    if (ui == null) ui = new SwingUserInterface(client);
+    if (ui == null) ui = new ProgessBarUI(client);
     
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
@@ -1230,7 +1230,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    */
   public void loadCRThread(final File fileName) {
     
-    final UserInterface ui = new SwingUserInterface(this);
+    final UserInterface ui = new ProgessBarUI(this);
     
     new Thread(new Runnable() {
       public void run() {

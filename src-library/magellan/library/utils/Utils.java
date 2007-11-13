@@ -24,10 +24,13 @@
 package magellan.library.utils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
@@ -151,4 +154,24 @@ public class Utils {
     return xmlString;
   }
   
+  public static List<Element> getChildNodes(Element root, String name) {
+    NodeList subnodes = root.getChildNodes();
+    List<Element> result = new ArrayList<Element>();
+    for (int i=0; i<subnodes.getLength(); i++) {
+      Node node = subnodes.item(i);
+      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+      if (!node.getNodeName().equalsIgnoreCase(name)) continue;
+      result.add((Element)node);
+    }
+    return result;
+  }
+  public static Element getChildNode(Element root) {
+    NodeList subnodes = root.getChildNodes();
+    for (int i=0; i<subnodes.getLength(); i++) {
+      Node node = subnodes.item(i);
+      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+      return (Element)node;
+    }
+    return null;
+  }
 }

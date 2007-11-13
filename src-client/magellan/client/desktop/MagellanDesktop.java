@@ -564,7 +564,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     // make sure there's a default set or even any set
     if(!loadedNames.contains("Standard")) {
       loadedNames.add("Standard");
-      loadedBlocks.add(createStandardSplitSet());
+      //loadedBlocks.add(createStandardSplitSet());
       log.info("Creating \"Standard\" Split-Set.");
     }
 
@@ -610,7 +610,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       splitSets = new Hashtable<String, FrameTreeNode>();
 
       try {
-        builder.buildTree(createStandardSplitSet().iterator());
+        //builder.buildTree(createStandardSplitSet().iterator());
         splitSets.put("Standard", builder.getRoot());
       } catch(Exception exc) {
       }
@@ -626,33 +626,33 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   /**
    * Creates the default Split set. Current implementation emulates old-style Magellan.
    */
-  protected List<String> createStandardSplitSet() {
-    List<String> st = new ArrayList<String>(22);
-    st.add("SPLIT 400 H");
-    st.add("SPLIT 200 H");
-    st.add("SPLIT 400 V");
-    st.add("SPLIT 300 V");
-    st.add("COMPONENT OVERVIEW");
-    st.add("COMPONENT HISTORY");
-    st.add("/SPLIT");
-    st.add("COMPONENT MINIMAP");
-    st.add("/SPLIT");
-    st.add("SPLIT 400 V");
-    st.add("COMPONENT MAP");
-    st.add("COMPONENT MESSAGES");
-    st.add("/SPLIT");
-    st.add("/SPLIT");
-    st.add("SPLIT 400 V");
-    st.add("SPLIT 200 V");
-    st.add("COMPONENT NAME&DESCRIPTION");
-    st.add("COMPONENT DETAILS");
-    st.add("/SPLIT");
-    st.add("COMPONENT ORDERS");
-    st.add("/SPLIT");
-    st.add("/SPLIT");
-
-    return st;
-  }
+//  protected List<String> createStandardSplitSet() {
+//    List<String> st = new ArrayList<String>(22);
+//    st.add("SPLIT 400 H");
+//    st.add("SPLIT 200 H");
+//    st.add("SPLIT 400 V");
+//    st.add("SPLIT 300 V");
+//    st.add("COMPONENT OVERVIEW");
+//    st.add("COMPONENT HISTORY");
+//    st.add("/SPLIT");
+//    st.add("COMPONENT MINIMAP");
+//    st.add("/SPLIT");
+//    st.add("SPLIT 400 V");
+//    st.add("COMPONENT MAP");
+//    st.add("COMPONENT MESSAGES");
+//    st.add("/SPLIT");
+//    st.add("/SPLIT");
+//    st.add("SPLIT 400 V");
+//    st.add("SPLIT 200 V");
+//    st.add("COMPONENT NAME&DESCRIPTION");
+//    st.add("COMPONENT DETAILS");
+//    st.add("/SPLIT");
+//    st.add("COMPONENT ORDERS");
+//    st.add("/SPLIT");
+//    st.add("/SPLIT");
+//
+//    return st;
+//  }
 
   /**
    * Creates a default layout. Current implementation emulates old-style Magellan.
@@ -931,7 +931,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     splitBuilder.setScreen(r);
     
     try {
-      splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"default.dock"));
+      splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"dock-default.xml"));
       if (splitRoot != null && splitRoot instanceof RootWindow) {
         ((RootWindow)splitRoot).addListener(this);
       }
@@ -1803,7 +1803,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     saveTranslations();
     
     try {
-      splitBuilder.write(new File(magellanDir,"default.dock"), (RootWindow)splitRoot);
+      splitBuilder.write(new File(magellanDir,"dock-default.xml"), (RootWindow)splitRoot);
     } catch (Throwable t) {
       log.fatal(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);

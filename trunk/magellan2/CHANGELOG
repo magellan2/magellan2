@@ -1,3 +1,6 @@
+2007-11-13 Thoralf (thoralf@m84.de)
+    * Now we have an installable JAR file, made with IzPack.
+
 2007-11-11 Thoralf (thoralf@m84.de)
     * NPE when merging two reports.
     * NPE when exporting map to image.

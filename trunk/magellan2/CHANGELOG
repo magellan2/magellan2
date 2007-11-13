@@ -1,6 +1,7 @@
 2007-11-13 Thoralf (thoralf@m84.de)
     * Now we have an installable JAR file, made with IzPack.
     * Docking Framework saves information in XML file instead of Object Stream.
+    * Renamed SwingUserInterface to ProgressBarUI
 
 2007-11-11 Thoralf (thoralf@m84.de)
     * NPE when merging two reports.

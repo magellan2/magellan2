@@ -21,8 +21,8 @@
     * Fixes refresh problems with extended commands.
 
 2007-09-25 Fiete (sf@fietefietz.de)
-	* Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
-	
+    * Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
+    
 2007-09-23  Thoralf (thoralf@m84.de)
     * Bug 68. Maybe this helps... (do not bring the startwindow to the front, only toBack())
       Actually this bug cannot be resolved at all, because the dialogs are children of
@@ -52,11 +52,11 @@
       encoding the resulting report uses this encoding too.
 
 2007-09-01 Fiete (sf@fietefietz.de)
-	* added spy.gif and updated EMapDetailsPanel to use spy.gif
+    * added spy.gif and updated EMapDetailsPanel to use spy.gif
 
 2007-08-29 Fiete (sf@fietefietz.de)
-	* Added all known Look & Feels, adjusted manifest.template
-	* moved all_looks from lib to lib/skins
+    * Added all known Look & Feels, adjusted manifest.template
+    * moved all_looks from lib to lib/skins
 
 2007-08-26  Thoralf (thoralf@m84.de)
     * When you select a different renderer for the minimap via the popup, this
@@ -87,25 +87,25 @@
     * deactivated undo
   
 2007-08-08 stm (stm_@users.sourceforge.net)
-	* redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
-	* added optional path argument to SelectionEvent for better identification of selections
-	* fixed temp unit bug in SelectionHistory
-	* fixed border (-1%) bug 
-	* don't display handle of top level tree nodes in overview (optional, bug #59)
-	* "all report files" is now default for open cr/save cr file type selection
-	* added order completion for destroy for entering, non-owning units (bug #39)
-	* added a tip of the day
-	* changed unit context menu (bug #9)
-	* updated build number (66)
-	
+    * redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
+    * added optional path argument to SelectionEvent for better identification of selections
+    * fixed temp unit bug in SelectionHistory
+    * fixed border (-1%) bug 
+    * don't display handle of top level tree nodes in overview (optional, bug #59)
+    * "all report files" is now default for open cr/save cr file type selection
+    * added order completion for destroy for entering, non-owning units (bug #39)
+    * added a tip of the day
+    * changed unit context menu (bug #9)
+    * updated build number (66)
+    
 2007-08-05 stm (stm_@users.sourceforge.net)
     * fixed bug of not disappearing merge progress dialog
-	* improved autoexpand/collapse in region overview
-	* improved merging of spies
-	* added option "spies" in order confirmation menu; confirmation of spies now possible
-	* added options for RESERVIERE auto completion
-	* added faction column and improved refreshing for TaskTablePanel
-	
+    * improved autoexpand/collapse in region overview
+    * improved merging of spies
+    * added option "spies" in order confirmation menu; confirmation of spies now possible
+    * added options for RESERVIERE auto completion
+    * added faction column and improved refreshing for TaskTablePanel
+    
 2007-08-04 stm (stm_@users.sourceforge.net)
     * added AttackInspector
     * integrated TaskPanel in docking
@@ -113,9 +113,9 @@
     * fixed bug #78
 
 2007-07-30 Fiete (sf@fietefietz.de)
-	* added carriers.gif
-	* updated 3 more icons (Khadar)
-	
+    * added carriers.gif
+    * updated 3 more icons (Khadar)
+    
 2007-07-30 stm (stm_@users.sourceforge.net)
     * minor errors in eressea.cr: rusty items, Samen, Nestwürme
     * new item category "silver"
@@ -140,8 +140,8 @@
     * Added favicon.ico
 
 2007-07-08 Fiete (sf@fietefietz.de)
-	* Icons prepared: Victom/Attackers + Carriers/Passengers
-	* 2 Mallorn-icons added
+    * Icons prepared: Victom/Attackers + Carriers/Passengers
+    * 2 Mallorn-icons added
 
 2007-07-08 Thoralf (thoralf@m84.de)
     * Checking the encoding in CR Reports (Read/Write)
@@ -151,32 +151,32 @@
     * Disabled Options-Desktop Splitpane/frame chooser (because of docking framework)
 
 2007-07-07 Fiete (sf@fietefietz.de)
-	* herb icons from khadar
-	* new magic spell component icons
-	* fixed checkSize for custom icons
-	* for existIcon-tests no error msg is produced anymore
+    * herb icons from khadar
+    * new magic spell component icons
+    * fixed checkSize for custom icons
+    * for existIcon-tests no error msg is produced anymore
 
 2007-07-06 Fiete (sf@fietefietz.de)
-	* Completed MapEditPlugIn
-	* added maxSortIndex to GameData (set by CRParser)
-	* Changed path handling from paths in AbstractMagellanPlugInLoader to decode "%20"
+    * Completed MapEditPlugIn
+    * added maxSortIndex to GameData (set by CRParser)
+    * Changed path handling from paths in AbstractMagellanPlugInLoader to decode "%20"
 
 2007-07-06 Thoralf (thoralf@m84.de)
     * Added Resources.initialize(String) to load special resources for plugins
     * Changed MapEditPlugIn to use Resources instead of hard coded Strings
 
 2007-07-05 Fiete (sf@fietefietz.de)
-	* fixed addTranslation and nameChange
-	* prepared MapContextMenuProvider (for MapEditPlugin)
-	* added getRegionTypes to Rules
-	* cleared vinyambar.cr from umlaut-errors
+    * fixed addTranslation and nameChange
+    * prepared MapContextMenuProvider (for MapEditPlugin)
+    * added getRegionTypes to Rules
+    * cleared vinyambar.cr from umlaut-errors
 
 2007-07-04 Fiete (sf@fietefietz.de)
-	* fixed english order completion, use "default" bundle for Locale.English
-	* static resource paths are loaded to resources - now shown in options again
-	* switched addObject and getObject in GenericRules to use normalized Strings as Keys
-	* (solved display of herbs - bug)
-	* added icon for race "Schneemaenner"
+    * fixed english order completion, use "default" bundle for Locale.English
+    * static resource paths are loaded to resources - now shown in options again
+    * switched addObject and getObject in GenericRules to use normalized Strings as Keys
+    * (solved display of herbs - bug)
+    * added icon for race "Schneemaenner"
 
 2007-07-03 Thoralf (thoralf@m84.de)
     * Added InfoNode DockingFramework

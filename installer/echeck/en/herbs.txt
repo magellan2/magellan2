@@ -1,0 +1,30 @@
+######################  herbs.txt   ECheck V4 and above  ####################
+# This file contains the list of herbs
+#
+# You can obtain the list of commands using "echeck -hc"
+#
+# Please no double entries, if singular is similar to plural.
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+shallow roots
+spicy dragongrass
+owl's eyes
+green spiderons
+blue treevine
+elvenlove
+gargleherbs
+tangled suckroots
+pustule funguses
+water finders
+cactus syrups
+sand reekers
+wind pouches
+fjord growers
+mandrakes
+stone biters
+crevice growers
+cave's glints
+ice flowers
+white rage
+snow crystals

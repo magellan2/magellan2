@@ -1,0 +1,198 @@
+#################  meldungen.txt      ECheck V4 und höher ##################
+# Diese Datei enthält die Liste aller Meldungen von ECheck.
+#
+# Die Schlüsselworte kann man mit "echeck -hm" erhalten
+#
+# Führende Leerzeichen bitte als ~ schreiben. Für Zeilenumbrüche \n benutzen.
+#
+# Bitte auf die Parameter achten. Anzahl und Reihenfolge der "%s" und "%d"
+# ist wichtig! Fehler können zu Abstürzen von ECheck führen.
+# 
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+# Diese Datei am besten nicht modifizieren
+
+0PERSONSLEARN, Einheit %s hat 0 Personen und wird von Einheit 
+0PERSONSTEACH, Einheit %s hat 0 Personen und lehrt Einheit 
+1ATTACKPERUNIT, Pro Einheit muß ein ATTACKIERE-Befehl gegeben werden
+1CARRYPERUNIT, Pro Einheit muß ein TRANSPORTIERE-Befehl gegeben werden
+1PERSONPERMAGEUNIT, Magiereinheiten dürfen nur eine Person haben
+ACTIVATED, ~aktiviert.
+ALREADYUSEDINLINE, "TEMP %s" wurde in Zeile %d schon gebraucht
+AND, ~und
+ASSUMING200STUDYCOSTS, Lernkosten mit 200 Silber angenommen
+AWARNING, ~eine Warnung
+BEFOREINCOME, vor den Einnahmen 
+BREEDHORSESORHERBS, ZÜCHTE PFERDE oder ZÜCHTE KRÄUTER
+BUILDINGNEEDSSILVER, Einheit %s braucht noch %d Silber, um ein Gebäude zu unterhalten.
+BUTDOESNTLEARN, ~gelehrt, lernt aber nicht.
+BUYALLNOTPOSSIBLE, KAUFE geht nicht mit ALLES
+CANTATTACKTEMP, TEMP-Einheiten kann man nicht ATTACKIEREn
+CANTDESCRIBEOBJECT, Objekt kann nicht beschrieben werden
+CANTENTEROBJECT, Objekt kann nicht betreten werden
+CANTFINDUNIT, Konnte Einheit %s nicht ermitteln
+CANTHANDLEPERSONCOMMENT, Kann Kommentar zu Personen nicht auswerten
+CANTHANDLESILVERCOMMENT, Kann Kommentar zu Silber nicht auswerten
+CANTMAINTAINBUILDING, Einheit %s kann ein Gebäude nicht erhalten, es fehlen noch %d Silber!
+CANTMAKETHAT, Sowas kann man nicht machen
+CANTREADFILE, Kann Datei '%s' nicht lesen\n
+CANTRENAMEOBJECT, Objekt kann nicht umbenannt werden
+CHECKYOURORDERS, \nBitte überprüfe, ob Du die Befehle korrekt eingesandt hast.\nBeachte dabei besonders, daß die Befehle nicht als HTML, Word-Dokument\noder als Attachment (Anlage) eingeschickt werden dürfen.\n
+COMBATSPELLSET, Kampfzauber gesetzt
+DELIVERYTO, ; Zustellung an 
+DIRECTION, <richtung>
+DISCOVERED, ~entdeckt.\n
+DOESNTCARRY, Einheit %s fährt mit Einheit %s, diese transportiert aber nicht
+DOESNTRIDE, Einheit %s transportiert Einheit %s, diese fährt aber nicht
+ECHECK, ECheck (Version %s, %s), Zug-Checker für Eressea - Freeware!\n\n
+ENDWITHOUTTEMP, ENDE ohne MACHE TEMP
+ERRORCOORDINATES, Fehler bei Regions-Koordinaten
+ERRORHELP, Helfe-Status falsch
+ERRORINLINE, Fehler in Zeile
+ERRORLEVELPARAMETERS, Fehler bei STUFE-Parameter
+ERRORNAMEFOREIGN, BENENNE FREMD nicht mit %s
+ERROROPINION, Nummer der Meinung muß größer 0 sein
+ERRORREGION, REGION fehlerhaft
+ERRORREGIONPARAMETER, Fehler bei REGION-Parameter
+ERRORSPELLSYNTAX, [ ] und  < >  dürfen nicht mit eingegeben werden!
+ERRORSURVEY, Nummer der Umfrage muß größer 0 sein
+FACTION0USED, Partei 0 verwendet
+FACTIONINVALID, Partei "%s" ungültig
+FACTIONMISSING, Partei fehlt
+FACTIONS, Parteien
+FOLLOW, FOLGE EINHEIT xx, FOLGE SCHIFF xx oder FOLGE
+FOUNDERROR, Es wurde ein Fehler
+FOUNDERRORS, Es wurden %d Fehler
+FOUNDORDERS, Befehle für Partei %s gefunden.\n
+GIVEWHAT, Was übergeben?
+HINTNOVERSION, Hinweis: es wurde keine ECheck-Version angegeben (-v%s)\n\n
+INTERNALCHECK, <interner Check>
+INVALIDEMAIL, Ungültige eMail-Adresse
+ISCOMBATSPELL, "%s" ist %sein Kampfzauber
+ISUSEDIN2REGIONS, "TEMP %s" wird in Region %d,%d und Region %d,%d (Zeile %d) gebraucht
+ISNOTCOMBATSPELL, k
+ITEM, Gegenstand
+LINETOOLONG, Zeile zu lang
+LONGCOMBATNOLONGORDER, Längere Kämpfe schließen den langen Befehl aus
+LONGORDERMISSING, Einheit %s hat keinen langen Befehl bekommen
+MAGIC, Magie
+MISSINGFILES, Es fehlen Dateien für:
+MISSFILEPARAM, Parameter
+MISSFILECMD, Befehle
+MISSFILEITEM, Gegenstände
+MISSFILESKILL, Talente
+MISSFILEDIR, Richtungen
+MISSFILEMSG, Meldungen
+MISSINGQUOTES, Fehlende "
+MISSINGDISGUISEPARAMETERS, TARNE ohne Parameter
+MISSINGEND, TEMP-Einheit %s wird nicht durch ENDE abgeschlossen
+MISSINGFACTIONNUMBER, Keine Parteinummer
+MISSINGNEXT, NÄCHSTER fehlt
+MISSINGNUMRECRUITS, Anzahl Rekruten fehlt
+MISSINGOFFER, Geldgebot fehlt
+MISSINGPARAMETERS, Parameter STUFE oder REGION fehlt
+MISSINGPASSWORD, Kein Passwort angeben
+MISSINGUNITNUMBER, Keine Einheitsnummer
+MOVENOTPOSSIBLEWITHPAUSE, NACH geht nicht mit PAUSE
+MSGTO, BOTSCHAFT AN PARTEI, BOTSCHAFT AN EINHEIT oder BOTSCHAFT AN REGION
+NAMECONTAINSBRACKETS, Namen dürfen keine Klammern enthalten
+NEEDBOTHCOORDINATES, Beide Koordinaten müssen angegeben werden
+NOCARRIER, Kann zu transportierende Einheit nicht ermitteln
+NOFIND, FINDE wurde gegen OPTION ADRESSEN ersetzt
+NOLUXURY, Kein Luxusgut
+NORMALUNITSONLY, %s geht nur mit normalen Einheiten
+NOSEND, SENDE wurde in OPTION umbenannt
+NOTEMPNUMBER, Keine TEMP-Nummer
+NOTEXECUTED, Wird von keiner Einheit ausgeführt
+NOTEXT, Kein Text
+NOTFOUND, nicht gefunden
+NTOOBIG, Zahl zu groß
+NUMBER0SENSELESS, Anzahl 0 macht keinen Sinn
+NUMBERNOTPOSSIBLE, Anzahl hier nicht möglich
+NUMCASTLEMISSING, Nummer der Burg fehlt
+NUMLUXURIESMISSING, Anzahl Luxusgüter fehlt
+NUMMISSING, Anzahl Gegenstände/Personen/Silber fehlt
+OBJECTNUMBERMISSING, Nummer des Objektes fehlt
+ONLYSABOTAGESHIP, Bislang gibt es nur SABOTIERE SCHIFF
+ORDERNUMBER, NUMMER SCHIFF, NUMMER BURG, NUMMER PARTEI oder NUMMER EINHEIT
+ORDERSOK, Die Befehle scheinen in Ordnung zu sein.\n
+ORDERSREAD, \nEs wurden Befehle für %d %s und %d %s gelesen.\n
+PASSWORDCLEARED, Passwort gelöscht
+PASSWORDMSG1, Nicht das korrekte Passwort eingesetzt
+PASSWORDMSG2, \n\n  ****  A C H T U N G !  ****\n\n  ****  Passwort fehlt!  ****\n\n
+PASSWORDMSG3, ~** FEHLER!! ** 
+POST, Post-
+PRE, Prä-
+PROCESSINGFILE, Verarbeite Datei '%s'.
+QUITMSG, Achtung! STIRB gegeben! Die Partei wird aufgelöst!
+RECRUITCOSTSSET, Rekrutierungskosten auf %d Silber gesetzt, 
+REGIONMISSSILVER, Das Silber in %s (%d,%d) reicht evtl. nicht zum Leben; es fehlen %d Silber.
+RESEARCHHERBSONLY, Es gibt nur FORSCHE KRÄUTER
+RESERVE0SENSELESS, RESERVIERE 0 xxx macht keinen Sinn
+RESERVEDTOOMUCH, In %s (%d,%d) wurde mehr Silber reserviert (%d) als vorhanden (%d).
+RESERVEWHAT, RESERVIERE was?
+RESTARTMSG, NEUSTART befohlen!
+RIDESWRONGUNIT, Einheit %s wird von Einheit %s transportiert, fährt aber mit 
+ROUTENOTCYCLIC, ROUTE ist kein Kreis; (%d,%d) -> (%d,%d)
+ROUTESTARTSWITHPAUSE, ROUTE beginnt mit PAUSE
+SCHOOLCHOSEN, Magiegebiet '%s' gewählt
+SEARCHPATHIS, Suchpfad ist
+SILVERPOOL, Silberpool aktiviert.
+SORT, SORTIERE VOR oder HINTER <einheit>
+SUPPLYISOBSOLETE, LIEFERE ist obsolet, bitte @GIB benutzen
+TEACHED, ~gelehrt.
+TEACHWHO, Wen lehren?
+TEMPHASNTPERSONS, Einheit TEMP %s hat nicht rekrutiert und keine Personen bekommen
+TEMPNOTTEMP, Einheit TEMP %s wurde nicht mit MACHE TEMP generiert
+TEMPUNITSCANTRESERVE, TEMP-Einheiten können nichts reservieren! Bitte GIB benutzen
+TEXTTOOLONG, Text zu lang (max. %d)
+THERE, Es 
+UNIT0NOTPOSSIBLE, Einheit 0 bzw. Bauern geht hier nicht
+UNIT0USED, Einheit 0 verwendet
+UNITALREADYHAS, Einheit %s hat schon einen 
+UNITALREADYHASLONGORDERS, Einheit %s hat schon einen langen Befehl in Zeile %d ("%s")
+UNITALREADYHASMOVED, Einheit %s hat sich schon bewegt
+UNITALREADYHASORDERS, Einheit %s hat schon in Zeile %d Befehle bekommen. 
+UNITCANSTILLTEACH, Einheit %s kann noch %d Schüler lehren.
+UNITHASNTPERSONS, Einheit TEMP %s hat nicht rekrutiert und keine Personen bekommen! Sie verliert Silber und evtl. Gegenstände
+UNITHASPERSONS, Einheit %s hat %d Personen!
+UNITHASSILVER, Einheit %s hat %s%d Silber!
+UNITISTEACHED, Einheit %s wird von Einheit 
+UNITLOSESITEMS, Einheit %s verliert Silber und evtl. Gegenstände
+UNITMISSCONTROL, Einheit %s hat evtl. nicht das Kommando über Schiff %s
+UNITMISSING, Einheit fehlt
+UNITMISSPERSON, Einheit %s hat evtl. zu wenig Personen
+UNITMISSSILVER, Einheit %s hat evtl. zu wenig Silber
+UNITMOVESSHIP, Einheit %s will Schiff %s bewegen und hat evtl. kein Kommando
+UNITMOVESTOOFAR, Einheit %s bewegt sich evtl. zu weit
+UNITMUSTBEONSHIP, Einheit muß in einer Burg, in einem Gebäude oder auf einem Schiff sein
+UNITNEEDSTEACHERS, Einheit %s kann noch %d Lehrer gebrauchen.
+UNITNOTONSHIPBUTONSHIP, Einheit %s ist evtl. nicht auf Schiff %s sondern auf Schiff %s
+UNITNOTPOSSIBLEHERE, Einheit '%s' geht hier nicht
+UNITONSHIPHASMOVED, Einheit %s auf Schiff %s hat sich schon bewegt
+UNITS, Einheiten
+UNRECOGNIZEDDIRECTION, Richtung nicht erkannt
+UNRECOGNIZEDOBJECT, Objekt nicht erkannt
+UNRECOGNIZEDOPTION, Option unbekannt
+UNRECOGNIZEDORDER, Befehl nicht erkannt
+UNRECOGNIZEDPOTION, Unbekannter Trank
+UNRECOGNIZEDRACE, Unbekannte Rasse
+UNRECOGNIZEDREPORTOPTION, Unbekannte Report-Option
+UNRECOGNIZEDSCHOOL, Magiegebiet '%s' gibt es nicht
+UNRECOGNIZEDSKILL, Talent nicht erkannt
+UNRECOGNIZEDSPELL, Zauberspruch nicht erkannt
+USED1, Stattdessen 1 benutzt
+USEEMAIL, eMail bitte mit EMAIL setzen
+USINGUNITINSTEAD, Benutze stattdessen Einheit 
+WARNINGS, ~%d Warnungen
+WARNINGLEVEL, Warning Level %d.\n
+WARNINGLINE, Warnung zur Zeile
+WAS, wurde
+WERE, wurden
+WRONGFACTIONNUMBER, Falsche Parteinummer
+WRONGFIGHTSTATE, Falscher Kampfstatus
+WRONGNUMBER, Falsche Nummer
+WRONGOUTPUTLEVEL, falscher Ausgabe-Level
+WRONGPARAMETER, Falscher Parameter
+CANTCHANGELOCALE, Kann die Sprache nicht im laufenden Programm ändern.\nBitte mit entsprechendem "-L"-Parameter neu starten
+MAINTAINANCEMOVED, Gebäudeunterhalt von Einheit %s nach Einheit %s verschoben

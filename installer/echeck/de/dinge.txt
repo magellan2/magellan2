@@ -1,0 +1,53 @@
+# Liste der Items für ECheck V4 und höher - Faroul
+# Alle Items stehen hier mit allen dem Server bekannten Namen.
+# Pro Zeile gilt:
+#   erster Eintrag: Einzahl;
+#   zweiter Eintrag: Mehrzahl
+#   dritter und weitere Einträge: weitere Alternativen
+#	ist der dritte Eintrag eine Zahl, so ist dies der Einkaufspreis
+#	für ein Luxusgut!
+# Umlaute müssen nicht umschrieben werden, sondern als ISO-Latin1
+# benutzt:	ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß
+# Trennzeichen ist , oder ;
+
+Balsam; Balsam, 4
+Gewürz; Gewürze; 5
+Juwel; Juwelen, 7
+Myrrhe; Myrrhe, 5
+Öl; Öl, 3
+Seide; Seide, 6
+Weihrauch; Weihrauch, 4
+
+Eisen; Eisen
+Holz; Holz
+Stein; Steine
+Pferd; Pferde
+Wagen; Wagen
+Katapult; Katapulte
+Schwert; Schwerter
+Speer; Speere
+Armbrust; Armbrüste
+Bogen; Bögen
+#Langbogen; Langbögen
+Kettenhemd; Kettenhemden
+Plattenpanzer; Plattenpanzer
+Bihänder; Bihänder
+#Zweihänder
+Kriegsaxt; Kriegsäxte
+#Axt; Äxte
+Elfenbogen; Elfenbögen
+Laenschwert; Laenschwerter
+Laenschild; Laenschilde
+Laenkettenhemd; Laenkettenhemden
+Laen; Laen
+Schild; Schilde
+Hellebarde; Hellebarden
+Lanze; Lanzen
+Mallorn; Mallorn
+
+# So, das waren die offiziellen Items; diese Liste sollte man nicht ändern,
+# wenn man auf das Ergebnis von ECheck Wert legt...
+# Man kann aber neue Items anhängen; nein, ich werde keine Fragen zu
+# etwaigen neuen Items beantworten, ebensowenig jemand anders aus dem
+# Design-Team - Faroul
+

@@ -1,0 +1,27 @@
+######################  spells.txt   ECheck V4 and above  ###################
+# This file contains the list of spells
+#
+# These are all spells with their complete names
+# Per line applies:
+#	first entry: name of spell
+#	second entry: casting cost (silver)
+#	third entry: spell type		0 = "normal" spell
+#					1 = combat spell
+#					2 = post-combat spell
+#					3 = pre-combat spell
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+# This list intentionally does not contain "real" spells.
+# It should be obvious for anyone to adjust and extend this list
+
+magic pea soup; 0; 1	# a combat spell of the smelling kind
+sunshine; 50; 0		# you never know when you need it...
+far investment; 500; 0	# interest: -100%
+flash; 0; 1		# cheese!
+magic lametta; 5; 2	# not again...
+plague breath; 0; 3	# discover the hidden features of garlic!
+shadow games; 50; 0	# always entertaining
+
+# We won't answer any questions concerning possible new spells
+# - Faroul and the design team

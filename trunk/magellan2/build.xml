@@ -10,7 +10,7 @@
 
   <property name="VERSION.MAJOR"         value="2"/>
   <property name="VERSION.MINOR"         value="0"/>
-  <property name="VERSION.SUB"           value="alpha"/>
+  <property name="VERSION.SUB"           value="beta"/>
 
   <property name="VERSION"               value="${VERSION.MAJOR}_${VERSION.MINOR}_${VERSION.SUB}"/>
   <property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>
@@ -250,11 +250,15 @@
     </copy>
     
     <copy todir="${release}/" overwrite="true">
-      <fileset dir="${basedir}">
-        <include name="CHANGELOG"/>
-        <include name="COPYING"/>
-        <include name="LICENSE"/>
-      </fileset>
+        <fileset dir="${basedir}">
+          <include name="CHANGELOG"/>
+          <include name="COPYING"/>
+          <include name="LICENSE"/>
+          <include name="README.txt"/>
+        </fileset>
+        <fileset dir="${basedir}/installer">
+          <include name="*.bat"/>
+        </fileset>
     </copy>
   </target>
   <!-- *************************************************************** -->
@@ -290,7 +294,26 @@
     </antcall>
   	
   	<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+  	
+    <property name="installer" location="${basedir}/installer"/>
     
+  	<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
+      <arg value="${installer}/izpack-install.xml"/>
+      <arg value="-b"/>
+      <arg value="."/>
+      <arg value="-o"/>
+      <arg value="magellan_v${VERSION.POINTED}.jar"/>
+      <arg value="-k"/>
+      <arg value="standard"/>
+ 
+      <classpath>
+        <pathelement path="${java.class.path}/" />
+        <fileset dir="${installer}/izpack/">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+  	</java>
+  	
     <echo message="Creating ZIP Distribution"/>
     <delete file="${basedir}/magellan_v${VERSION.POINTED}.zip" failonerror="false"/>
     <zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">

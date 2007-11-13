@@ -2,7 +2,7 @@
 <installation version="1.0">
   <info>
     <appname>Magellan</appname>
-    <appversion>2.0 Build 62</appversion>
+    <appversion>2.0 Build 98</appversion>
     <authors>
       <author name="Roger Butenuth" email=""/>
       <author name="Enno Rehling" email=""/>
@@ -23,7 +23,7 @@
       <author name="Ilja Pavkovic" email=""/>
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
     </authors>
-    <url>http://eressea.sourceforge.net/magellan/</url>
+    <url>http://magellan-client.sourceforge.net/</url>
     <uninstaller write="yes"/>
     <javaversion>1.5</javaversion>
   </info>
@@ -36,10 +36,10 @@
   </locale>
   
   <resources>
-    <res id="InfoPanel.info"   src="ReadMe.txt"/>
-    <res id="useNativeLAF"     src="ReadMe.txt"/>
+    <res id="InfoPanel.info"   src="release/README.txt"/>
+    <res id="useNativeLAF"     src="release/README.txt"/>
     <!--<res id="Installer.image" src="...."/>-->
-    <res id="shortcutSpec.xml" src="install.shortcut.xml"/>
+    <res id="shortcutSpec.xml" src="installer/install.shortcut.xml"/>
   </resources>
 
   <panels>
@@ -55,32 +55,33 @@
   <packs>
     <pack name="Magellan" required="yes">
       <description>This is the main application with all libraries and icons.</description>
-      <file src="doc"                               targetdir="$INSTALL_PATH"/>
-      <file src="etc"                               targetdir="$INSTALL_PATH"/>
-      <file src="lib"                               targetdir="$INSTALL_PATH"/>
-      <file src="magellan.bat"                      targetdir="$INSTALL_PATH"/>
-      <file src="magellan-client.jar"               targetdir="$INSTALL_PATH"/>
-      <file src="magellan-library.jar"              targetdir="$INSTALL_PATH"/>
-      <file src="CHANGELOG"                         targetdir="$INSTALL_PATH"/>
-      <file src="COPYING"                           targetdir="$INSTALL_PATH"/>
-      <file src="LICENSE"                           targetdir="$INSTALL_PATH"/>
-      <file src="UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
+      <file src="release/doc"                               targetdir="$INSTALL_PATH"/>
+      <file src="release/etc"                               targetdir="$INSTALL_PATH"/>
+      <file src="release/lib"                               targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan.bat"                      targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan-client.jar"               targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan-library.jar"              targetdir="$INSTALL_PATH"/>
+      <file src="release/CHANGELOG"                         targetdir="$INSTALL_PATH"/>
+      <file src="release/COPYING"                           targetdir="$INSTALL_PATH"/>
+      <file src="release/LICENSE"                           targetdir="$INSTALL_PATH"/>
+      <file src="release/README.txt"                        targetdir="$INSTALL_PATH"/>
+      <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Help" required="no" preselected="yes">
       <description>The help files</description>
-      <file src="magellan-help.jar"                 targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan-help.jar"                 targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Additional PlugIns" required="no" preselected="yes">
       <description>Some additional plugins for Magellan</description>
-      <file src="magellan-plugins.jar"              targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan-plugins.jar"              targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Additional Skins" required="no" preselected="yes">
       <description>Some more skins</description>
-      <file src="lib/skins"                         targetdir="$INSTALL_PATH"/>
+      <file src="release/lib/skins"                         targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="ECheck" required="no" preselected="yes">
       <description>A tool for order verification</description>
-      <file src="echeck"                            targetdir="$INSTALL_PATH"/>
+      <file src="installer/echeck"                          targetdir="$INSTALL_PATH"/>
     </pack>
   </packs>
   

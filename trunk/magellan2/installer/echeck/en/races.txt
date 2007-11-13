@@ -1,0 +1,17 @@
+######################  races.txt   ECheck V4 and above  ####################
+# This file contains the list of races
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+Humans
+Dwarves
+Elves
+Orcs
+Demons
+Aquarians
+Halflings
+Trolls
+Goblins
+Cats
+Insects

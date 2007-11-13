@@ -1,0 +1,40 @@
+Dies sind die deutschen Zusatzdateien für ECheck Version 4 und höher.
+
+Folgende Dateien gibt es:
+
+  - befehle.txt
+  - gebaeude.txt
+  - hilfe.txt
+  - gegenstaende.txt
+  - kraeuter.txt
+  - meldungen.txt
+  - optionen.txt
+  - parameter.txt
+  - rassen.txt
+  - richtungen.txt
+  - schiffe.txt
+  - talente.txt
+  - traenke.txt
+  - zauber.txt
+
+Sie enthalten jeweils die Texte der Teilbereiche. Man kann einige oder alle
+Teilbereiche in der Datei
+
+  - tokens.txt
+
+zusammenfassen, wenn sie dort mit entsprechenden Präfix-Schlüsselworten
+versehen sind. Diese Schlüsselworte kann man mit "echeck -hs" abfragen.
+
+Weitere Erklärungen sind in den Dateien enthalten.
+
+Für DOS (nur 8.3-Dateinamen) gehen auch
+
+ - params.txt		statt parameter.txt
+ - dinge.txt		statt gegenstaende.txt
+ - richtung.txt		statt richtungen.txt
+ - meldung.txt		statt meldungen.txt
+
+Eine Liste aller Dateien gibt es mit "echeck -hf"
+
+	Faroul	(echeck@faroul.de)
+

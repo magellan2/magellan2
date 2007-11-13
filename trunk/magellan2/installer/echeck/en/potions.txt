@@ -1,0 +1,31 @@
+#####################  potions.txt   ECheck V4 and above  ###################
+# This file contains the list of potions
+#
+# You can obtain the list of commands using "echeck -hc"
+#
+# Please no double entries, if singular equals to plural
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+Seven Miles Teas
+Goliath Potions
+Water Of Life
+Waters Of Life
+Potion Of Truth
+Potions Of Truth
+Maker's Potions
+Wound Salves
+Peasant's Blood
+Peasants' Blood
+Brain Wax
+Dumbnerd's Breads
+Nest's Heat
+Nest Heat
+Horse Luck
+Berserkers Blood
+Berserkers' Blood
+Peasant's Love
+Peasants' Love
+Elixir Of Power
+Elixirs Of Power
+Healing Potions

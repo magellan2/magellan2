@@ -22,6 +22,7 @@
       <author name="Jake Hofer" email=""/>
       <author name="Ilja Pavkovic" email=""/>
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
+      <author name="Fiete" email="sf@fietefietz.de"/>
     </authors>
     <url>http://magellan-client.sourceforge.net/</url>
     <uninstaller write="yes"/>

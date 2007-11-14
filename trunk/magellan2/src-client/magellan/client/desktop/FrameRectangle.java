@@ -23,7 +23,7 @@ import java.awt.event.WindowListener;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FrameRectangle extends java.awt.Rectangle implements ComponentListener, WindowListener {
 	protected Frame myFrame;

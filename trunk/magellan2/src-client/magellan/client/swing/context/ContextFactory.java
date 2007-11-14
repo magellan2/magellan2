@@ -27,7 +27,7 @@ import magellan.library.Unit;
  * Interface for automated context menu creation.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ContextFactory {
 	/**

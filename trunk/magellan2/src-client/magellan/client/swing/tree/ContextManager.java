@@ -40,7 +40,7 @@ import magellan.library.utils.logging.Logger;
  * A context management class for trees.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ContextManager extends MouseAdapter {
 	private static final Logger log = Logger.getInstance(ContextManager.class);

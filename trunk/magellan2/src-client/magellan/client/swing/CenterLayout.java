@@ -23,7 +23,7 @@ import java.awt.LayoutManager;
  * area if the corresponding mode is set.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class CenterLayout implements LayoutManager {
 	private static final Dimension NULL = new Dimension(0, 0);

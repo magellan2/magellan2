@@ -78,6 +78,7 @@ import magellan.library.utils.logging.Logger;
  * @author Ulrich Küster
  */
 public class TradeOrganizer extends InternationalizedDataDialog implements SelectionListener {
+  public static final String IDENTIFIER = "TRADES";
   private static final Logger log = Logger.getInstance(TradeOrganizer.class);
 	protected List<Region> regions = new LinkedList<Region>();
 	protected int minSellMultiplier = 1;

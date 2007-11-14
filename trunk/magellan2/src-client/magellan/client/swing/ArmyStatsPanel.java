@@ -68,11 +68,13 @@ import magellan.library.utils.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSelectionListener,
 																		  SelectionListener
 {
+  public static final String IDENTIFIER = "ARMYSTATS";
+
 	private static final Logger log = Logger.getInstance(ArmyStatsPanel.class);
 	protected NodeWrapperFactory factory;
 	protected CopyTree tree;

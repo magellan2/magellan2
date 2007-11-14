@@ -18,7 +18,7 @@ package magellan.client.swing.map;
  * some Mapper properties.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface MapperAware {
 	/**

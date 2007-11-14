@@ -24,7 +24,7 @@ import javax.swing.tree.TreeCellRenderer;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class MixedTreeCellRenderer implements TreeCellRenderer {
 	protected Map<Class,TreeCellRenderer> renderers;

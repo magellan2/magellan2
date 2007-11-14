@@ -17,7 +17,7 @@ package magellan.client.swing.completion;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public abstract class AbstractCompletionGUI implements CompletionGUI {
 	/**

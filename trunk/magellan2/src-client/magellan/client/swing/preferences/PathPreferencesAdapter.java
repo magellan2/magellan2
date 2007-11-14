@@ -37,7 +37,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter {
 	protected List<JTextField> textFields;

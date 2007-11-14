@@ -36,7 +36,7 @@ import magellan.library.utils.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class LanguageDialog {
 	private static final Logger log = Logger.getInstance(LanguageDialog.class);

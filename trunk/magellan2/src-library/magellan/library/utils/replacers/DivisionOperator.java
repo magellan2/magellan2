@@ -23,7 +23,7 @@ package magellan.library.utils.replacers;
  * </p>
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class DivisionOperator extends AbstractOperator {
 	/**

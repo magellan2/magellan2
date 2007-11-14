@@ -34,7 +34,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FindAction extends MenuAction implements SelectionListener, GameDataListener {
 	private Collection<Region> selectedRegions = new LinkedList<Region>();

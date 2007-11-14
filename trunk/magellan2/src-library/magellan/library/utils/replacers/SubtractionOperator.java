@@ -19,7 +19,7 @@ package magellan.library.utils.replacers;
  * An subtraction operator.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class SubtractionOperator extends AbstractOperator {
 	/**

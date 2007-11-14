@@ -30,7 +30,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class UnitCountReplacer extends AbstractRegionReplacer implements EnvironmentDependent {
 	private static final Integer ZERO = new Integer(0);

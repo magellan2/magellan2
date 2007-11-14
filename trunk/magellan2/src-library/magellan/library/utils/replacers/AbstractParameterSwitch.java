@@ -22,7 +22,7 @@ package magellan.library.utils.replacers;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public abstract class AbstractParameterSwitch extends AbstractSwitch implements ParameterReplacer {
 	protected Object parameters[];

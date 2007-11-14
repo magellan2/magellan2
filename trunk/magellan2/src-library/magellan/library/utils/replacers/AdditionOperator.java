@@ -18,7 +18,7 @@ package magellan.library.utils.replacers;
  * An addition operator summing the given numbers.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class AdditionOperator extends AbstractOperator {
 	/**

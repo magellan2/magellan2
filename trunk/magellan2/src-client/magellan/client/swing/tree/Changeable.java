@@ -20,7 +20,7 @@ import magellan.client.swing.context.ContextFactory;
  * context menus are supported.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface Changeable {
 	/** DOCUMENT-ME */

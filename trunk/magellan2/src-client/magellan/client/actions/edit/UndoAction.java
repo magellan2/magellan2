@@ -31,7 +31,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class UndoAction extends MenuAction implements PropertyChangeListener {
 	private MagellanUndoManager undoManager;

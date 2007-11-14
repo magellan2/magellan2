@@ -22,7 +22,7 @@ import java.util.Properties;
  * they want to encode as icons.
  *
  * @author Sebastian
- * @version
+ * @version 1.0
  */
 public interface CellObject {
 	NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter);

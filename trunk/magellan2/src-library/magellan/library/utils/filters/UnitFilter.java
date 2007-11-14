@@ -26,7 +26,7 @@ import magellan.library.utils.Resources;
  * abstract class to have a short-cut for Collections implemented. ,
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public abstract class UnitFilter {
 	/**

@@ -22,7 +22,7 @@ import magellan.library.Region;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public class RegionMethodReplacer extends AbstractRegionReplacer {
 	/** DOCUMENT-ME */

@@ -20,7 +20,7 @@ import java.util.ResourceBundle;
  * through normal getString()).
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ExternalMapCellRenderer extends MapCellRenderer {
 	/**

@@ -27,7 +27,7 @@ import javax.swing.JSplitPane;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FrameTreeBuilder extends Object {
 	/** DOCUMENT-ME */

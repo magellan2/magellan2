@@ -44,7 +44,7 @@ import javax.swing.tree.TreePath;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, ComponentListener {
 	protected DefaultTreeCellRenderer defaultRenderer;

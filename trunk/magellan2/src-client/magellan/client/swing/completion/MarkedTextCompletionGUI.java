@@ -33,7 +33,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements KeyListener {
 	protected boolean addLinebreak = false;

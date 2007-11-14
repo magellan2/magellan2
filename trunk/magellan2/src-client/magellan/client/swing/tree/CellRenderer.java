@@ -56,7 +56,7 @@ import magellan.library.utils.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Sebastian
- * @version
+ * @version 1.0
  */
 public class CellRenderer extends JPanel implements TreeCellRenderer {
 	private static final Logger log = Logger.getInstance(CellRenderer.class);

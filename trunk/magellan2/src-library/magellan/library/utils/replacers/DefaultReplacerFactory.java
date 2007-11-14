@@ -27,7 +27,7 @@ import magellan.library.utils.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class DefaultReplacerFactory implements ReplacerFactory {
   private static final Logger log = Logger.getInstance(DefaultReplacerFactory.class);

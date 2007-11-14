@@ -20,7 +20,7 @@ import javax.swing.KeyStroke;
  * following short-cut to a given listener.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ExtendedShortcutListener extends ShortcutListener {
 	/**

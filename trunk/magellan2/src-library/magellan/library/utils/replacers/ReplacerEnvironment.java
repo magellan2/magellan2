@@ -21,7 +21,7 @@ import java.util.Map;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ReplacerEnvironment {
 	/** DOCUMENT-ME */

@@ -28,7 +28,7 @@ import magellan.library.Unit;
  * Context Factory for unit contexts.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class UnitContextFactory implements ContextFactory {
 	/**

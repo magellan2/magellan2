@@ -50,7 +50,7 @@ import magellan.library.utils.VersionInfo;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class StartWindow extends JWindow {
 	protected Collection images;

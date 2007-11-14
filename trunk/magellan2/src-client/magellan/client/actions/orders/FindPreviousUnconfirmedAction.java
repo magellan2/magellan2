@@ -27,7 +27,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FindPreviousUnconfirmedAction extends MenuAction {
 	private EMapOverviewPanel target;

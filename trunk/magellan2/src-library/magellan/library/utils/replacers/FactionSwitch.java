@@ -28,7 +28,7 @@ import magellan.library.utils.filters.UnitFactionFilter;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FactionSwitch extends AbstractParameterReplacer implements EnvironmentDependent,
 																		SwitchOnly

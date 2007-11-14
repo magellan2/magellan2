@@ -24,7 +24,7 @@ import java.util.EventObject;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public abstract class TimeStampedEvent extends EventObject {
 	private long timestamp;

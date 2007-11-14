@@ -41,7 +41,7 @@ import com.sun.jimi.core.options.JPGOptions;
  * DOCUMENT ME!
  *
  * @author Sebastian
- * @version
+ * @version 1.0
  */
 public class MapSaverUI extends InternationalizedDialog {
 	private static final Logger log = Logger.getInstance(MapSaverUI.class);

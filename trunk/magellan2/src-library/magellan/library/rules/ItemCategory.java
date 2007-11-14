@@ -24,7 +24,7 @@ import magellan.library.ID;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ItemCategory extends Category {
 	/**

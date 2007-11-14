@@ -21,7 +21,7 @@ import magellan.library.utils.filters.UnitFilter;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FilterSwitch implements ParameterReplacer, BranchReplacer, EnvironmentDependent {
 	protected Object branch;

@@ -24,7 +24,7 @@ import java.util.Set;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ReplacerFactory {
 	/**

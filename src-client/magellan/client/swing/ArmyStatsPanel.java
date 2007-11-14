@@ -569,6 +569,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 				while(regIt.hasNext()) {
 					Region reg = regIt.next();
+          if (reg.units().size()==0) continue;
 					allRegions.remove(reg);
 
 					Collection<Army> col = createRegionArmies(reg, cat);
@@ -632,11 +633,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		// rest
 		Collections.sort(allRegions, nameComp);
 
-		Iterator regIt = allRegions.iterator();
+		Iterator<Region> regIt = allRegions.iterator();
 		List<RegionArmies> allRegArmies = new LinkedList<RegionArmies>();
 
 		while(regIt.hasNext()) {
-			Region reg = (Region) regIt.next();
+			Region reg = regIt.next();
+      if (reg.units().size()==0) continue;
 			Collection<Army> col = createRegionArmies(reg, cat);
 
 			if(col.size() > 0) {

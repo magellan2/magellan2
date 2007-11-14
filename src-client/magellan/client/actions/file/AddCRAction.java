@@ -25,7 +25,7 @@ import magellan.client.actions.MenuAction;
 import magellan.client.event.SelectionEvent;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.HistoryAccessory;
-import magellan.client.swing.ProgessBarUI;
+import magellan.client.swing.ProgressBarUI;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -141,7 +141,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 				settings.setProperty("Client.lastCRAdded", files[files.length - 1].getAbsolutePath());
 			}
 
-			merger.merge(new ProgessBarUI(client),true);
+			merger.merge(new ProgressBarUI(client),true);
 			if (selectedObjects!=null){
 				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
 			}

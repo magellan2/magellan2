@@ -199,8 +199,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
 	/**
 	 * Returns an unmodifiable collection of all the units in this container.
-	 *
-	 * 
 	 */
 	public Collection<Unit> units() {
 		// note that there is a consistency problem here. If units is
@@ -224,10 +222,6 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
 	/**
 	 * Retrieve a unit in this container by id.
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	public Unit getUnit(ID key) {
 		if(units != null) {

@@ -24,7 +24,7 @@ import magellan.library.rules.ItemType;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public class LuxuryPriceReplacer extends AbstractParameterReplacer {
 	/**

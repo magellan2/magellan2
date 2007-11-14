@@ -19,7 +19,7 @@ import magellan.library.Region;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public abstract class AbstractRegionReplacer implements Replacer {
 	/**

@@ -45,7 +45,7 @@ import magellan.library.utils.logging.Logger;
  *
  * @author Andreas Gampe
  * @author Ilja Pavkovic
- * @version
+ * @version 1.0
  */
 public class MagellanLookAndFeel {
 	private static final Logger log = Logger.getInstance(MagellanLookAndFeel.class);

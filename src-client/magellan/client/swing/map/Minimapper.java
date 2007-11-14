@@ -24,7 +24,7 @@ import magellan.library.utils.logging.Logger;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class Minimapper extends Mapper {
   private static final Logger log = Logger.getInstance(Minimapper.class);

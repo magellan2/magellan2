@@ -118,6 +118,7 @@ import magellan.client.event.UnitOrdersListener;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.resource.ResourceSettingsFactory;
+import magellan.client.swing.ArmyStatsPanel;
 import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MagellanLookAndFeel;
@@ -127,6 +128,7 @@ import magellan.client.swing.MessagePanel;
 import magellan.client.swing.StartWindow;
 import magellan.client.swing.ProgessBarUI;
 import magellan.client.swing.TipOfTheDay;
+import magellan.client.swing.TradeOrganizer;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -199,6 +201,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private ECheckPanel echeckPanel = null;
   
   private TaskTablePanel taskPanel = null;
+  
+  private ArmyStatsPanel armyStatsPanel = null;
+  
+  private TradeOrganizer tradeOrganizer = null;
   
   /**
    * DOCUMENT ME!
@@ -562,6 +568,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
     components.put(TaskTablePanel.IDENTIFIER, taskPanel);
+
+//    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
+//    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
+
+//    tradeOrganizer = new TradeOrganizer(this, getDispatcher(), getData(), getProperties());
+//    components.put(TradeOrganizer.IDENTIFIER, tradeOrganizer);
 
     return components;
   }

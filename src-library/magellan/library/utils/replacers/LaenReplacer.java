@@ -23,7 +23,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Fiete
- * @version
+ * @version 1.0
  */
 public class LaenReplacer extends AbstractRegionReplacer {
 	/**

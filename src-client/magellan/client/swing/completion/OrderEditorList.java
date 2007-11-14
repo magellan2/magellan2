@@ -27,7 +27,7 @@ import magellan.library.Unit;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface OrderEditorList extends magellan.client.event.SelectionListener {
 	/**

@@ -62,7 +62,7 @@ import net.infonode.util.Direction;
  *
  * @author Andreas
  * @author Thoralf
- * @version
+ * @version 1.0
  */
 public class DockingFrameworkBuilder  {
   private static final Logger log = Logger.getInstance(DockingFrameworkBuilder.class);

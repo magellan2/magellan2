@@ -24,7 +24,7 @@ import java.util.List;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPolicy {
 	protected List<WeakReference> nodes;

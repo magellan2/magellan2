@@ -26,7 +26,7 @@ import java.util.List;
  * in the options tree. All big preference adapters should use this interface.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ExtendedPreferencesAdapter extends PreferencesAdapter {
 	/**

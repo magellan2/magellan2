@@ -31,8 +31,7 @@ import magellan.library.UnitContainer;
  * Context Factory for unit-container contexts.
  *
  * @author Andreas
- * @version
- */
+ * @version 1.0rn */
 public class UnitContainerContextFactory implements ContextFactory {
 	protected Properties settings;
 

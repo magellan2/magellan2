@@ -25,7 +25,7 @@ import magellan.library.utils.logging.Logger;
  * file.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class MagellanFinder {
 	private static final Logger log = Logger.getInstance(MagellanFinder.class);

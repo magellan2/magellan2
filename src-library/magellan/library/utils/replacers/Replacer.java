@@ -17,7 +17,7 @@ package magellan.library.utils.replacers;
  * Base interface for Replacer architecture.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface Replacer {
 	/** DOCUMENT-ME */

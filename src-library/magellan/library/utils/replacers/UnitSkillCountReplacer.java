@@ -32,7 +32,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class UnitSkillCountReplacer extends AbstractParameterReplacer
 	implements EnvironmentDependent

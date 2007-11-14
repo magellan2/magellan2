@@ -20,7 +20,7 @@ package magellan.client.swing.preferences;
  * action) should know what to do.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface PreferencesFactory {
 	/**

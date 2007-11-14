@@ -18,7 +18,7 @@ package magellan.library.utils.replacers;
  * "real" output.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface SwitchOnly {
 }

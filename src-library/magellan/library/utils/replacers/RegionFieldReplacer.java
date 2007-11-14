@@ -24,8 +24,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
- */
+ * @version 1.0rn */
 public class RegionFieldReplacer extends AbstractRegionReplacer {
 	/** DOCUMENT-ME */
 	public static final int MODE_ALL = 0;

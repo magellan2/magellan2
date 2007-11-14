@@ -25,7 +25,7 @@ import magellan.library.completion.Completion;
  * Simple base interface for all elements that show the user possible completions.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface CompletionGUI {
 	/**

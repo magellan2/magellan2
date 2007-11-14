@@ -22,7 +22,7 @@ import magellan.library.utils.Resources;
  * that if both are null the switch is inactive!</i>
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class LessReplacer extends AbstractParameterSwitch {
 	/**

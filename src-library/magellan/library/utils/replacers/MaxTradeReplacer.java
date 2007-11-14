@@ -21,7 +21,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public class MaxTradeReplacer extends AbstractRegionReplacer {
 	protected static final Integer ZERO = new Integer(0);

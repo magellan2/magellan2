@@ -25,7 +25,7 @@ import java.awt.event.MouseEvent;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ContextListener {
 	/**

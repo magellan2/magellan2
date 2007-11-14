@@ -22,8 +22,7 @@ package magellan.library.utils.replacers;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
- */
+ * @version 1.0rn */
 public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	protected Object criterion;
 	protected Object branches[] = new Object[2];

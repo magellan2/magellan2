@@ -33,7 +33,7 @@ import magellan.library.utils.PropertiesHelper;
  * A kind of wrapper for the file history (menu) functionality.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FileHistory {
 	protected Bucket<FileHistoryAction> history;

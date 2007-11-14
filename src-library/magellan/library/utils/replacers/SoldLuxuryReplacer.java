@@ -30,7 +30,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class SoldLuxuryReplacer extends AbstractRegionReplacer {
 	protected int mode;

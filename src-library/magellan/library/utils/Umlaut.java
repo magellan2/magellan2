@@ -21,7 +21,7 @@ import java.util.Map;
  * DOCUMENT ME!
  *
  * @author Sebastian
- * @version
+ * @version 1.0
  */
 public class Umlaut {
 	private static final char UMLAUTS[] = { 'Ä', 'Ö', 'Ü', 'ä', 'ö', 'ü', 'ß' };

@@ -22,7 +22,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT-ME
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FileSaveAction extends FileSaveAsAction {
 	// pavkovic 2003.05.20: this object is essentially doing the same as FileSaveAsAction

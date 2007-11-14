@@ -26,7 +26,7 @@ import java.util.List;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ListReplacer implements Replacer {
 	protected StringBuffer buffer;

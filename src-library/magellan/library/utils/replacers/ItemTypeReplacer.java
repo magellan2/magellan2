@@ -26,7 +26,7 @@ import magellan.library.rules.ItemType;
  * Replaces a item name string with the number of that item in the given region.
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public class ItemTypeReplacer extends AbstractParameterReplacer implements EnvironmentDependent {
 	private static final Integer ZERO = new Integer(0);

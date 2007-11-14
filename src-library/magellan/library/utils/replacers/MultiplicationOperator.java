@@ -19,7 +19,7 @@ package magellan.library.utils.replacers;
  * An multiplication operator.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class MultiplicationOperator extends AbstractOperator {
 	/**

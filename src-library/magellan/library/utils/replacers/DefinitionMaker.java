@@ -28,7 +28,7 @@ import java.util.StringTokenizer;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class DefinitionMaker {
 	/** DOCUMENT-ME */

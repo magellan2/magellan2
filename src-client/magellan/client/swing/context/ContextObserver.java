@@ -22,7 +22,7 @@ package magellan.client.swing.context;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface ContextObserver {
 	/**

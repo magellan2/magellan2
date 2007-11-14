@@ -35,7 +35,7 @@ import magellan.library.utils.StringFactory;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 	// Achtung: Das modifizierte Item!

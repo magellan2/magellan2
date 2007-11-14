@@ -52,7 +52,7 @@ import magellan.library.utils.Resources;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class TipOfTheDay extends InternationalizedDialog implements ActionListener {
 	// the pane to display the text

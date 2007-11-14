@@ -96,7 +96,7 @@ import magellan.library.utils.replacers.ReplacerSystem;
  * DOCUMENT ME!
  * 
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRenderer implements GameDataListener, ContextChangeable, ActionListener, MapperAware {
   private static final Logger log = Logger.getInstance(AdvancedRegionShapeCellRenderer.class);

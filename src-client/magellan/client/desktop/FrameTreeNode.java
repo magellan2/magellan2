@@ -23,7 +23,7 @@ import javax.swing.JSplitPane;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FrameTreeNode implements PropertyChangeListener {
 	/** Holds value of property leaf. */

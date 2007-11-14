@@ -29,7 +29,7 @@ import magellan.client.utils.FileHistory;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class FileHistoryAction extends AbstractAction {
 	private File file;

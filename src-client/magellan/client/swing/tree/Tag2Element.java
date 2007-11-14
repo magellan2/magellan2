@@ -27,7 +27,7 @@ import magellan.library.UnitContainer;
  * apply a style to various GraphicsElements.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class Tag2Element {
 	protected static String lastStyle = null;

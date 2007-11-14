@@ -25,7 +25,7 @@ import java.util.Properties;
  * DOCUMENT ME!
  *
  * @author Andreas Gampe
- * @version
+ * @version 1.0
  */
 public class OrderedOutputProperties extends Properties {
 	/**

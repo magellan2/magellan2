@@ -32,7 +32,7 @@ import magellan.library.utils.filters.UnitFilter;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class UnitSelection extends EnvironmentPart {
 	protected List<UnitFilter> filters = new LinkedList<UnitFilter>();

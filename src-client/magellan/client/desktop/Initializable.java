@@ -22,7 +22,7 @@ package magellan.client.desktop;
  * through the getComponentConfiguration() (if this is not the very first init) and stored.
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public interface Initializable {
 	/**

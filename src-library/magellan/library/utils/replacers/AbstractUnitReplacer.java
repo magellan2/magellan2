@@ -19,7 +19,7 @@ import magellan.library.Unit;
  * DOCUMENT ME!
  *
  * @author unknown
- * @version
+ * @version 1.0
  */
 public abstract class AbstractUnitReplacer implements Replacer {
 	/**

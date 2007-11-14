@@ -26,7 +26,7 @@ import magellan.library.utils.Taggable;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class TagReplacer extends AbstractParameterReplacer {
 	protected boolean mode;

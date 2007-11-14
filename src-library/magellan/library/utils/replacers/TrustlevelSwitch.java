@@ -21,7 +21,7 @@ import magellan.library.utils.filters.UnitFactionTLFilter;
  * DOCUMENT ME!
  *
  * @author Andreas
- * @version
+ * @version 1.0
  */
 public class TrustlevelSwitch extends AbstractParameterReplacer implements EnvironmentDependent,
 																		   SwitchOnly

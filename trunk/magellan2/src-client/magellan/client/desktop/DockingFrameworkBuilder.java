@@ -19,9 +19,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -173,19 +171,13 @@ public class DockingFrameworkBuilder  {
    * This method writes a docking configuration to the given file.
    */
   public void write(File serializedViewData, RootWindow window) throws IOException {
-//    FileOutputStream fos = new FileOutputStream(serializedViewData);
-//    ObjectOutputStream oos = new MagellanObjectOutputStream(fos);
-//    window.write(oos, true);
-//    oos.close();
-//    fos.close();
-    
     StringBuffer buffer = new StringBuffer();
     buffer.append("<?xml version='1.0' encoding='"+Encoding.DEFAULT.toString()+"'?>\r\n");
     buffer.append("<dock>\r\n");
     save(buffer,window," ");
     buffer.append("</dock>\r\n");
     
-    System.out.println(buffer);
+//    System.out.println(buffer);
     
     PrintWriter pw = new PrintWriter(serializedViewData,Encoding.DEFAULT.toString());
     pw.println(buffer.toString());
@@ -256,8 +248,6 @@ public class DockingFrameworkBuilder  {
     buffer.append(offset+"</windowbar>\r\n");
   }
   protected synchronized void save(StringBuffer buffer, FloatingWindow window, String offset) {
-//    return;
-    // TODO TR: This works, but loading it destroys the whole layout... I don't know, why...
     buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
     for (int i=0; i<window.getChildWindowCount(); i++) {
       save(buffer,window.getChildWindow(i),offset+"  ");
@@ -289,11 +279,6 @@ public class DockingFrameworkBuilder  {
       log.error(e);
     }
     
-//    FileInputStream fis = new FileInputStream(serializedViewData);
-//    ObjectInputStream ois = new MagellanObjectInputStream(fis);
-//    window.read(ois, true);
-//    ois.close();
-//    fis.close();
     return window;
   }
   protected synchronized DockingWindow load(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {

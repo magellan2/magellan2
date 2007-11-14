@@ -544,12 +544,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		List<Region> allRegions = null;
 
 		if((regions != null) && (regions.size() > 0)) {
-			allRegions = new LinkedList<Region>(regions);
+			allRegions = new ArrayList<Region>(regions);
 		} else {
-			allRegions = new LinkedList<Region>(data.regions().values());
+			allRegions = new ArrayList<Region>(data.regions().values());
 		}
 
-		List<Island> islList = new LinkedList<Island>(data.islands().values());
+		List<Island> islList = new ArrayList<Island>(data.islands().values());
 		Collections.sort(islList, nameComp);
 
 		Iterator<Island> islIt = islList.iterator();
@@ -561,7 +561,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				armyMap.clear();
 
 				Island isl = islIt.next();
-				List<Region> iregions = new LinkedList<Region>(isl.regions());
+				List<Region> iregions = new ArrayList<Region>(isl.regions());
 				Collections.sort(iregions, nameComp);
 
 				Iterator<Region> regIt = iregions.iterator();
@@ -570,7 +570,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				while(regIt.hasNext()) {
 					Region reg = regIt.next();
           if (reg.units().size()==0) continue;
-					allRegions.remove(reg);
+					allRegions.remove(reg);  
 
 					Collection<Army> col = createRegionArmies(reg, cat);
 					Iterator<Army> colIt1 = col.iterator();
@@ -582,7 +582,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 						map.put(army.owner, army);
 					}
 
-					List<Faction> list = new LinkedList<Faction>(map.keySet());
+					List<Faction> list = new ArrayList<Faction>(map.keySet());
 					Collections.sort(list, compare);
 					Iterator<Faction> colIt2 = list.iterator();
 
@@ -596,7 +596,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 							armyMap.put(fac, new IslandArmy(fac, isl));
 						}
 
-						IslandArmy islArmy = (IslandArmy) armyMap.get(fac);
+						IslandArmy islArmy = armyMap.get(fac);
 						islArmy.addArmy(army);
 					}
 
@@ -606,17 +606,17 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				}
 
 				if(armyMap.size() > 0) {
-					List<Faction> list = new LinkedList<Faction>(armyMap.keySet());
+					List<Faction> list = new ArrayList<Faction>(armyMap.keySet());
 					Collections.sort(list, compare);
 
 					Iterator iarmies = list.iterator();
 
 					while(iarmies.hasNext()) {
-						IslandArmy ia = (IslandArmy) armyMap.get(iarmies.next());
+						IslandArmy ia = armyMap.get(iarmies.next());
 						islArmies.addArmy(ia);
 
 						if(!facMap.containsKey(ia.owner)) {
-							facMap.put(ia.owner, new LinkedList<Object>());
+							facMap.put(ia.owner, new ArrayList<Object>());
 						}
 
 						facMap.get(ia.owner).add(ia);
@@ -634,7 +634,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		Collections.sort(allRegions, nameComp);
 
 		Iterator<Region> regIt = allRegions.iterator();
-		List<RegionArmies> allRegArmies = new LinkedList<RegionArmies>();
+		List<RegionArmies> allRegArmies = new ArrayList<RegionArmies>();
 
 		while(regIt.hasNext()) {
 			Region reg = regIt.next();
@@ -651,7 +651,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					map.put(army.owner, army);
 				}
 
-				List<Faction> list = new LinkedList<Faction>(map.keySet());
+				List<Faction> list = new ArrayList<Faction>(map.keySet());
 				Collections.sort(list, compare);
 				Iterator<Faction> colIt2 = list.iterator();
 
@@ -660,7 +660,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					regArmies.addArmy(army);
 
 					if(!facMap.containsKey(army.owner)) {
-						facMap.put(army.owner, new LinkedList<Object>());
+						facMap.put(army.owner, new ArrayList<Object>());
 					}
 
 					facMap.get(army.owner).add(army);
@@ -675,7 +675,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 		// now create the WholeArmy objects
 		if(facMap.size() > 0) {
-			List<Faction> wholeList = new LinkedList<Faction>(facMap.keySet());
+			List<Faction> wholeList = new ArrayList<Faction>(facMap.keySet());
 			Collections.sort(wholeList, compare);
 
 			Iterator<Faction> facIt = wholeList.iterator();
@@ -683,7 +683,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			while(facIt.hasNext()) {
 				Faction fac = facIt.next();
 				WholeArmy wa = new WholeArmy(fac);
-				Iterator facIt2 = ((Collection) facMap.get(fac)).iterator();
+				Iterator<Object> facIt2 = facMap.get(fac).iterator();
 
 				while(facIt2.hasNext()) {
 					Object o = facIt2.next();

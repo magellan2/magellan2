@@ -442,7 +442,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 		try {
-			CRWriter crw = new CRWriter(new ProgessBarUI(Client.INSTANCE),out);
+			CRWriter crw = new CRWriter(new ProgressBarUI(Client.INSTANCE),out);
 			crw.setServerConformance(chkServerConformance.isSelected());
 			crw.setIncludeIslands(chkIslands.isSelected());
 			crw.setIncludeRegions(chkRegions.isSelected());

@@ -126,7 +126,7 @@ import magellan.client.swing.MapperPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
 import magellan.client.swing.StartWindow;
-import magellan.client.swing.ProgessBarUI;
+import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.TradeOrganizer;
 import magellan.client.swing.map.CellGeometry;
@@ -569,8 +569,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
     components.put(TaskTablePanel.IDENTIFIER, taskPanel);
 
-    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
-    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
+//    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
+//    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
 
 //    tradeOrganizer = new TradeOrganizer(this, getDispatcher(), getData(), getProperties());
 //    components.put(TradeOrganizer.IDENTIFIER, tradeOrganizer);
@@ -818,7 +818,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     JMenu extras = new JMenu(Resources.get("client.menu.extras.caption"));
     extras.setMnemonic(Resources.get("client.menu.extras.mnemonic").charAt(0));
     addMenuItem(extras, new FactionStatsAction(this));
-//    addMenuItem(extras, new ArmyStatsAction(this));
+    addMenuItem(extras, new ArmyStatsAction(this));
     addMenuItem(extras, new TradeOrganizerAction(this));
 
 //    addMenuItem(extras, new TaskTableAction(this));
@@ -1123,7 +1123,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
       log.info("Using encoding: "+getData().getEncoding());
-      ProgessBarUI ui = new ProgessBarUI(this);
+      ProgressBarUI ui = new ProgressBarUI(this);
       crw = new CRWriter(ui,filetype,getData().getEncoding());
       crw.write(getData());
       crw.close();
@@ -1211,7 +1211,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public GameData loadCR(UserInterface ui, File fileName) {
     GameData data = null;
     Client client = this;
-    if (ui == null) ui = new ProgessBarUI(client);
+    if (ui == null) ui = new ProgressBarUI(client);
     
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
@@ -1242,7 +1242,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    */
   public void loadCRThread(final File fileName) {
     
-    final UserInterface ui = new ProgessBarUI(this);
+    final UserInterface ui = new ProgressBarUI(this);
     
     new Thread(new Runnable() {
       public void run() {

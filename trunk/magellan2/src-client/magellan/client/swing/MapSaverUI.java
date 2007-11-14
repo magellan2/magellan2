@@ -300,7 +300,7 @@ public class MapSaverUI extends InternationalizedDialog {
         final String fileName = strBase;
 				final int quality = qSlider.getValue() * 10;
         final int imageType = iType;
-        final UserInterface ui = new ProgessBarUI(this);
+        final UserInterface ui = new ProgressBarUI(this);
         ui.setTitle(Resources.get("progressdialog.map.title"));
         ui.show();
         ui.setProgress("", 1);

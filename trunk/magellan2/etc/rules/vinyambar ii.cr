@@ -1535,6 +1535,9 @@ MAINTENANCE
 300;Silber
 MAINTENANCE
 1;Holz
+TALENTBONI
+1;Rüstungsbau
+1;Waffenbau
 RAWMATERIALS
 5;Stein
 5;Holz

@@ -254,11 +254,13 @@ public class DockingFrameworkBuilder  {
     buffer.append(offset+"</windowbar>\r\n");
   }
   protected synchronized void save(StringBuffer buffer, FloatingWindow window, String offset) {
-    buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
-    for (int i=0; i<window.getChildWindowCount(); i++) {
-      save(buffer,window.getChildWindow(i),offset+"  ");
-    }
-    buffer.append(offset+"</floatingwindow>\r\n");
+    return;
+    // TODO TR: This works, but loading it destroys the whole layout... I don't know, why...
+//    buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
+//    for (int i=0; i<window.getChildWindowCount(); i++) {
+//      save(buffer,window.getChildWindow(i),offset+"  ");
+//    }
+//    buffer.append(offset+"</floatingwindow>\r\n");
   }
   
   /**
@@ -303,6 +305,7 @@ public class DockingFrameworkBuilder  {
           if (child instanceof FloatingWindow) continue;
           if (child instanceof WindowBar) continue;
           window.setWindow(child);
+          break;
         }
       }
     } else if (root.getNodeName().equalsIgnoreCase("windowbar")) {
@@ -387,6 +390,7 @@ public class DockingFrameworkBuilder  {
     int height = Utils.getIntValue(root.getAttribute("height"));
     
     FloatingWindow floatWindow = window.createFloatingWindow(new Point(x,y), new Dimension(width,height), child);
+    floatWindow.getRootPane().setVisible(true);
     return floatWindow;
   }
   

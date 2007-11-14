@@ -242,11 +242,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     if(!initSplitSet(settings.getProperty("Desktop.SplitSet", "Standard"))) {
       //try to load default
       if(!initSplitSet("Standard")) {
-        Iterator it = splitSets.keySet().iterator();
+        Iterator<String> it = splitSets.keySet().iterator();
         boolean loaded = false;
 
         while(!loaded && it.hasNext()) {
-          loaded = initSplitSet((String) it.next());
+          loaded = initSplitSet(it.next());
         }
 
         if(!loaded) { //Sorry, cannot load -> build new default set
@@ -564,7 +564,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     // make sure there's a default set or even any set
     if(!loadedNames.contains("Standard")) {
       loadedNames.add("Standard");
-      //loadedBlocks.add(createStandardSplitSet());
+      loadedBlocks.add(createStandardSplitSet());
       log.info("Creating \"Standard\" Split-Set.");
     }
 
@@ -626,33 +626,33 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   /**
    * Creates the default Split set. Current implementation emulates old-style Magellan.
    */
-//  protected List<String> createStandardSplitSet() {
-//    List<String> st = new ArrayList<String>(22);
-//    st.add("SPLIT 400 H");
-//    st.add("SPLIT 200 H");
-//    st.add("SPLIT 400 V");
-//    st.add("SPLIT 300 V");
-//    st.add("COMPONENT OVERVIEW");
-//    st.add("COMPONENT HISTORY");
-//    st.add("/SPLIT");
-//    st.add("COMPONENT MINIMAP");
-//    st.add("/SPLIT");
-//    st.add("SPLIT 400 V");
-//    st.add("COMPONENT MAP");
-//    st.add("COMPONENT MESSAGES");
-//    st.add("/SPLIT");
-//    st.add("/SPLIT");
-//    st.add("SPLIT 400 V");
-//    st.add("SPLIT 200 V");
-//    st.add("COMPONENT NAME&DESCRIPTION");
-//    st.add("COMPONENT DETAILS");
-//    st.add("/SPLIT");
-//    st.add("COMPONENT ORDERS");
-//    st.add("/SPLIT");
-//    st.add("/SPLIT");
-//
-//    return st;
-//  }
+  protected List<String> createStandardSplitSet() {
+    List<String> st = new ArrayList<String>(22);
+    st.add("SPLIT 400 H");
+    st.add("SPLIT 200 H");
+    st.add("SPLIT 400 V");
+    st.add("SPLIT 300 V");
+    st.add("COMPONENT OVERVIEW");
+    st.add("COMPONENT HISTORY");
+    st.add("/SPLIT");
+    st.add("COMPONENT MINIMAP");
+    st.add("/SPLIT");
+    st.add("SPLIT 400 V");
+    st.add("COMPONENT MAP");
+    st.add("COMPONENT MESSAGES");
+    st.add("/SPLIT");
+    st.add("/SPLIT");
+    st.add("SPLIT 400 V");
+    st.add("SPLIT 200 V");
+    st.add("COMPONENT NAME&DESCRIPTION");
+    st.add("COMPONENT DETAILS");
+    st.add("/SPLIT");
+    st.add("COMPONENT ORDERS");
+    st.add("/SPLIT");
+    st.add("/SPLIT");
+
+    return st;
+  }
 
   /**
    * Creates a default layout. Current implementation emulates old-style Magellan.
@@ -677,7 +677,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   /**
    * Loads a layout with name lName out of the given definition.
    */
-  protected void loadLayout(String lName, List def) {
+  protected void loadLayout(String lName, List<String> def) {
     String msg = "Loading layout \"" + lName + "\"...";
 
     if(lManager == null) {
@@ -685,10 +685,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
 
     Map<String,DesktopLayoutManager.CPref> lMap = new HashMap<String, DesktopLayoutManager.CPref>();
-    Iterator it = def.iterator();
+    Iterator<String> it = def.iterator();
 
     while(it.hasNext()) {
-      String sdef = (String) it.next();
+      String sdef = it.next();
 
       if(sdef.indexOf('=') < 1) { //syntax is COMPONENT=x;y;w;h[;configuration]
 

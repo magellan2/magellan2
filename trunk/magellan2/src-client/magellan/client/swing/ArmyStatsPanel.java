@@ -57,6 +57,8 @@ import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.event.GameDataEvent;
+import magellan.library.event.GameDataListener;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
@@ -70,9 +72,7 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas
  * @version 1.0
  */
-public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSelectionListener,
-																		  SelectionListener
-{
+public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSelectionListener, SelectionListener, GameDataListener {
   public static final String IDENTIFIER = "ARMYSTATS";
 
 	private static final Logger log = Logger.getInstance(ArmyStatsPanel.class);
@@ -98,11 +98,6 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 	/**
 	 * Creates new ArmyStatsPanel
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public ArmyStatsPanel(EventDispatcher ed, GameData data, Properties settings,
 						  boolean doCategorize) {
@@ -111,12 +106,6 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 	/**
 	 * Creates a new ArmyStatsPanel object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public ArmyStatsPanel(EventDispatcher ed, GameData data, Properties settings,
 						  boolean doCategorize, Collection<Region> selRegions) {
@@ -124,6 +113,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 		lastSelected = selRegions;
 
+    ed.addGameDataListener(this);
 		ed.addSelectionListener(this);
 
 		factory = new NodeWrapperFactory(settings, "EMapOverviewPanel", "Dummy-Factory");
@@ -147,10 +137,20 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		setLayout(new java.awt.BorderLayout());
 		add(content, java.awt.BorderLayout.CENTER);
 	}
+  
+  /**
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
+   */
+	@Override
+  public void gameDataChanged(GameDataEvent e) {
+    super.gameDataChanged(e);
+    
+    GameData data = e.getGameData();
+    createArmies(data);
+    createTrees();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
+  /**
 	 * 
 	 */
 	public void setCategorized(boolean b) {

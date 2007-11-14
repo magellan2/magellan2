@@ -569,8 +569,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
     components.put(TaskTablePanel.IDENTIFIER, taskPanel);
 
-//    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
-//    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
+    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
+    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
 
 //    tradeOrganizer = new TradeOrganizer(this, getDispatcher(), getData(), getProperties());
 //    components.put(TradeOrganizer.IDENTIFIER, tradeOrganizer);
@@ -818,7 +818,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     JMenu extras = new JMenu(Resources.get("client.menu.extras.caption"));
     extras.setMnemonic(Resources.get("client.menu.extras.mnemonic").charAt(0));
     addMenuItem(extras, new FactionStatsAction(this));
-    addMenuItem(extras, new ArmyStatsAction(this));
+//    addMenuItem(extras, new ArmyStatsAction(this));
     addMenuItem(extras, new TradeOrganizerAction(this));
 
 //    addMenuItem(extras, new TaskTableAction(this));

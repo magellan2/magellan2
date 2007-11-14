@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -125,7 +126,12 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		d.addSelectionListener(this);
     JPanel echeckPanel = new JPanel();
     echeckPanel.setLayout(new BorderLayout());
-    echeckPanel.add(getControlsPanel(), BorderLayout.NORTH);
+    
+    JPanel northPanel = new JPanel(new BorderLayout());
+    northPanel.add(getControlsPanel(), BorderLayout.CENTER);
+    northPanel.add(getButtonPanel(), BorderLayout.SOUTH);
+    
+    echeckPanel.add(northPanel, BorderLayout.NORTH);
 
 		JPanel pnlOutput = new JPanel(new GridLayout(0, 2));
 		pnlOutput.add(getMessagesPanel());
@@ -133,13 +139,10 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     echeckPanel.add(pnlOutput, BorderLayout.CENTER);
     
-    JPanel buttonPanel = new JPanel(new BorderLayout());
-    buttonPanel.add(getButtonPanel(), BorderLayout.NORTH);
 
     JPanel mainPanel = new JPanel(new BorderLayout(6, 0));
     mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
     mainPanel.add(echeckPanel, BorderLayout.CENTER);
-    mainPanel.add(buttonPanel, BorderLayout.EAST);
 
     this.setLayout(new BorderLayout());
     this.add(mainPanel,BorderLayout.CENTER);
@@ -174,7 +177,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     btnClose.setEnabled(false);
     */
 
-    JPanel buttonPanel = new JPanel(new GridLayout(2, 0, 0, 4));
+    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(btnRun);
     //buttonPanel.add(btnClose);
 

@@ -19,7 +19,9 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -180,10 +182,10 @@ public class DockingFrameworkBuilder  {
     StringBuffer buffer = new StringBuffer();
     buffer.append("<?xml version='1.0' encoding='"+Encoding.DEFAULT.toString()+"'?>\r\n");
     buffer.append("<dock>\r\n");
-    save(buffer,window,"");
+    save(buffer,window," ");
     buffer.append("</dock>\r\n");
     
-//    System.out.println(buffer);
+    System.out.println(buffer);
     
     PrintWriter pw = new PrintWriter(serializedViewData,Encoding.DEFAULT.toString());
     pw.println(buffer.toString());
@@ -254,13 +256,13 @@ public class DockingFrameworkBuilder  {
     buffer.append(offset+"</windowbar>\r\n");
   }
   protected synchronized void save(StringBuffer buffer, FloatingWindow window, String offset) {
-    return;
+//    return;
     // TODO TR: This works, but loading it destroys the whole layout... I don't know, why...
-//    buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
-//    for (int i=0; i<window.getChildWindowCount(); i++) {
-//      save(buffer,window.getChildWindow(i),offset+"  ");
-//    }
-//    buffer.append(offset+"</floatingwindow>\r\n");
+    buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
+    for (int i=0; i<window.getChildWindowCount(); i++) {
+      save(buffer,window.getChildWindow(i),offset+"  ");
+    }
+    buffer.append(offset+"</floatingwindow>\r\n");
   }
   
   /**
@@ -268,6 +270,15 @@ public class DockingFrameworkBuilder  {
    */
   public synchronized RootWindow read(StringViewMap viewMap, Map<String,View> views, File serializedViewData) throws IOException {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
+    
+//    FileReader fr = new FileReader(serializedViewData);
+//    LineNumberReader lnr = new LineNumberReader(fr);
+//    String line = null;
+//    while ((line = lnr.readLine()) != null) {
+//System.out.println(line);
+//    }
+//    lnr.close();
+//    fr.close();
     
     try {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -286,6 +297,7 @@ public class DockingFrameworkBuilder  {
     return window;
   }
   protected synchronized DockingWindow load(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+//System.out.println("Element: "+root.getNodeName());
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       NodeList subnodes = root.getChildNodes();
       for (int i=0; i<subnodes.getLength(); i++) {
@@ -304,6 +316,7 @@ public class DockingFrameworkBuilder  {
           if (child == null) continue;
           if (child instanceof FloatingWindow) continue;
           if (child instanceof WindowBar) continue;
+//System.out.println("Setze Root "+child.getClass().getName());
           window.setWindow(child);
           break;
         }
@@ -359,9 +372,13 @@ public class DockingFrameworkBuilder  {
       boolean isActive = Boolean.valueOf(e.getAttribute("isActive"));
       if (isActive) selected = i;
       
-      DockingWindow tab = load(window,viewMap,views,Utils.getChildNode(e));
-      if (tab == null) continue;
-      tabWindow.addTab(tab);
+      try {
+        DockingWindow tab = load(window,viewMap,views,Utils.getChildNode(e));
+        if (tab == null) continue;
+        tabWindow.addTab(tab);
+      } catch (Throwable t) {
+        log.error(t);
+      }
     }
     
     tabWindow.setSelectedTab(selected);
@@ -370,7 +387,12 @@ public class DockingFrameworkBuilder  {
   }
   protected synchronized DockingWindow loadView(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
     String key = root.getAttribute("title");
-    View view = views.get(key);
+    View view = null;
+    try {
+      view = views.get(key);
+    } catch (Throwable t) {
+      log.error(t);
+    }
     return view;
   }
   protected synchronized FloatingWindow loadFloatingWindow(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {

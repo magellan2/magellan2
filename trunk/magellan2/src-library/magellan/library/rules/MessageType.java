@@ -101,4 +101,8 @@ public class MessageType extends MagellanIdentifiableImpl {
 			newMsgType.setSection(curMsgType.getSection());
 		}
 	}
+  
+  public String toString() {
+    return "MessageType:{id:"+getID()+",section:"+section+",pattern:"+pattern+"}";
+  }
 }

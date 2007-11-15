@@ -23,6 +23,7 @@
 // 
 package magellan.library.utils;
 
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -183,5 +184,73 @@ public class Utils {
       return (Element)node;
     }
     return null;
+  }
+  
+  /**
+   * This method returns a Color object coresponding
+   * to the format: #RRGGBB oder RRGGBB
+   * 
+   * @return A color oder null.
+   */
+  public static Color getColor(String colorAsString) {
+    if (isEmpty(colorAsString)) return null;
+    int red   = 0;
+    int green = 0;
+    int blue  = 0;
+    if (colorAsString.startsWith("#") &&  colorAsString.length() == 7) {
+      red   = hexadecimalToDecimal(colorAsString.substring(1,3));
+      green = hexadecimalToDecimal(colorAsString.substring(3,5));
+      blue  = hexadecimalToDecimal(colorAsString.substring(5,7));
+    } else if (colorAsString.length() == 6) {
+      red   = hexadecimalToDecimal(colorAsString.substring(0,2));
+      green = hexadecimalToDecimal(colorAsString.substring(2,4));
+      blue  = hexadecimalToDecimal(colorAsString.substring(4,6));
+    } else {
+      return null;
+    }
+    
+    if (red < 0) red = 0;
+    if (red > 255) red = 255;
+    
+    if (green < 0) green = 0;
+    if (green > 255) green = 255;
+
+    if (blue < 0) blue = 0;
+    if (blue > 255) blue = 255;
+    
+    return new Color(red,green,blue);
+  }
+
+  public static int hexadecimalToDecimal(String hexadecimal) {
+    int power=1, decimal=0, number=0;
+    String digit;
+    
+    
+    
+    for(int i=hexadecimal.length()-1; i>=0; i--) {
+      digit = hexadecimal.toUpperCase().substring(i,i+1);
+
+      if(digit.equals("1"))      number=1;
+      else if(digit.equals("2")) number=2;
+      else if(digit.equals("3")) number=3;
+      else if(digit.equals("4")) number=4;
+      else if(digit.equals("5")) number=5;
+      else if(digit.equals("6")) number=6;
+      else if(digit.equals("7")) number=7;
+      else if(digit.equals("8")) number=8;
+      else if(digit.equals("9")) number=9;
+      else if(digit.equals("A")) number=10;
+      else if(digit.equals("B")) number=11;
+      else if(digit.equals("C")) number=12;
+      else if(digit.equals("D")) number=13;
+      else if(digit.equals("E")) number=14;
+      else if(digit.equals("F")) number=15;
+         
+      decimal = decimal+(number*power);
+      number = 0;
+      power*=16;
+    }
+    
+    return decimal;
   }
 }

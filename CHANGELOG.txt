@@ -2,6 +2,7 @@
     * Fixed a bug during linewrapped messages in MessagePanel
     * Renamed CHANGELOG etc. because of installer and start menu entries
     * New Help entry in Windows start menu.
+    * Enabled FloatingWindow
 
 2007-11-15 Fiete (sf@fietefietz.de)
     * fixed fillselectionaction: name + mnemonic

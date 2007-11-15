@@ -154,6 +154,16 @@ public class Utils {
     return xmlString;
   }
   
+  public static List<Element> getChildNodes(Element root) {
+    NodeList subnodes = root.getChildNodes();
+    List<Element> result = new ArrayList<Element>();
+    for (int i=0; i<subnodes.getLength(); i++) {
+      Node node = subnodes.item(i);
+      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+      result.add((Element)node);
+    }
+    return result;
+  }
   public static List<Element> getChildNodes(Element root, String name) {
     NodeList subnodes = root.getChildNodes();
     List<Element> result = new ArrayList<Element>();

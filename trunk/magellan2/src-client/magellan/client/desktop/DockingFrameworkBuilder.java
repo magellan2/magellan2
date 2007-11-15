@@ -177,8 +177,6 @@ public class DockingFrameworkBuilder  {
     save(buffer,window," ");
     buffer.append("</dock>\r\n");
     
-//    System.out.println(buffer);
-    
     PrintWriter pw = new PrintWriter(serializedViewData,Encoding.DEFAULT.toString());
     pw.println(buffer.toString());
     pw.close();
@@ -248,7 +246,9 @@ public class DockingFrameworkBuilder  {
     buffer.append(offset+"</windowbar>\r\n");
   }
   protected synchronized void save(StringBuffer buffer, FloatingWindow window, String offset) {
-    buffer.append(offset+"<floatingwindow x='"+((int)window.getLocation().getX())+"' y='"+((int)window.getLocation().getY())+"' width='"+((int)window.getSize().getWidth())+"' height='"+((int)window.getSize().getHeight())+"'>\r\n");
+    Point location = window.getTopLevelAncestor().getLocation();
+    Dimension dimension = window.getTopLevelAncestor().getSize();
+    buffer.append(offset+"<floatingwindow x='"+((int)location.getX())+"' y='"+((int)location.getY())+"' width='"+((int)dimension.getWidth())+"' height='"+((int)dimension.getHeight())+"'>\r\n");
     for (int i=0; i<window.getChildWindowCount(); i++) {
       save(buffer,window.getChildWindow(i),offset+"  ");
     }
@@ -282,7 +282,6 @@ public class DockingFrameworkBuilder  {
     return window;
   }
   protected synchronized DockingWindow load(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
-//System.out.println("Element: "+root.getNodeName());
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       NodeList subnodes = root.getChildNodes();
       for (int i=0; i<subnodes.getLength(); i++) {
@@ -301,9 +300,7 @@ public class DockingFrameworkBuilder  {
           if (child == null) continue;
           if (child instanceof FloatingWindow) continue;
           if (child instanceof WindowBar) continue;
-//System.out.println("Setze Root "+child.getClass().getName());
           window.setWindow(child);
-          break;
         }
       }
     } else if (root.getNodeName().equalsIgnoreCase("windowbar")) {
@@ -382,22 +379,20 @@ public class DockingFrameworkBuilder  {
   }
   protected synchronized FloatingWindow loadFloatingWindow(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
     DockingWindow child = null;
-    NodeList subnodes = root.getChildNodes();
-    for (int i=0; i<subnodes.getLength(); i++) {
-      Node node = subnodes.item(i);
-      if (node.getNodeType() == Node.ELEMENT_NODE) {
-        child = load(window,viewMap,views,(Element)node);
-        if (child != null) break;
-      }
+    List<Element> subnodes = Utils.getChildNodes(root);
+    for (int i=0; i<subnodes.size(); i++) {
+      Element element = subnodes.get(i);
+      child = load(window,viewMap,views,element);
+      if (child != null) break;
     }
     if (child == null) return null;
     int x = Utils.getIntValue(root.getAttribute("x"));
     int y = Utils.getIntValue(root.getAttribute("y"));
     int width = Utils.getIntValue(root.getAttribute("width"));
     int height = Utils.getIntValue(root.getAttribute("height"));
-    
+
     FloatingWindow floatWindow = window.createFloatingWindow(new Point(x,y), new Dimension(width,height), child);
-    floatWindow.getRootPane().setVisible(true);
+    floatWindow.getTopLevelAncestor().setVisible(true);
     return floatWindow;
   }
   

@@ -69,8 +69,9 @@
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Help" required="no" preselected="yes">
-      <description>The help files</description>
+      <description>The help files for Magellan and Eressea</description>
       <file src="release/magellan-help.jar"                 targetdir="$INSTALL_PATH"/>
+      <file src="release/help.bat"                          targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Additional PlugIns" required="no" preselected="yes">
       <description>Some additional plugins for Magellan</description>

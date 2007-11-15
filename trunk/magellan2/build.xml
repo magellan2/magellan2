@@ -251,9 +251,9 @@
     
     <copy todir="${release}/" overwrite="true">
         <fileset dir="${basedir}">
-          <include name="CHANGELOG"/>
-          <include name="COPYING"/>
-          <include name="LICENSE"/>
+          <include name="CHANGELOG.txt"/>
+          <include name="COPYING.txt"/>
+          <include name="LICENSE.txt"/>
           <include name="README.txt"/>
         </fileset>
         <fileset dir="${basedir}/installer">

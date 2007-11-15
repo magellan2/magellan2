@@ -2,7 +2,7 @@
 <installation version="1.0">
   <info>
     <appname>Magellan</appname>
-    <appversion>2.0.beta (build 98)</appversion>
+    <appversion>2.0.beta (build 99)</appversion>
     <authors>
       <author name="Roger Butenuth" email=""/>
       <author name="Enno Rehling" email=""/>
@@ -62,9 +62,9 @@
       <file src="release/magellan.bat"                      targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-client.jar"               targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-library.jar"              targetdir="$INSTALL_PATH"/>
-      <file src="release/CHANGELOG"                         targetdir="$INSTALL_PATH"/>
-      <file src="release/COPYING"                           targetdir="$INSTALL_PATH"/>
-      <file src="release/LICENSE"                           targetdir="$INSTALL_PATH"/>
+      <file src="release/CHANGELOG.txt"                     targetdir="$INSTALL_PATH"/>
+      <file src="release/COPYING.txt"                       targetdir="$INSTALL_PATH"/>
+      <file src="release/LICENSE.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/README.txt"                        targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
     </pack>

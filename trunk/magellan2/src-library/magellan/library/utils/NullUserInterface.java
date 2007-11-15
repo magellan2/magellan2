@@ -34,6 +34,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class NullUserInterface implements UserInterface {
   private static final Logger log = Logger.getInstance(NullUserInterface.class);
+  private int max = 100;
   
   /**
    * @see magellan.library.utils.UserInterface#ready()
@@ -49,7 +50,12 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    log.info(strMessage);
+    log.info("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
+  }
+  
+  protected int getPercent(int progress) {
+    if (max==0) return 0;
+    return progress*100/max;
   }
   
   /**
@@ -62,7 +68,9 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
-  public void setMaximum(int maxProgress) {}
+  public void setMaximum(int maxProgress) {
+    this.max = maxProgress;
+  }
 
   /**
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)

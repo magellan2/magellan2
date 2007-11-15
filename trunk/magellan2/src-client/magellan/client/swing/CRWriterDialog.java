@@ -51,9 +51,13 @@ import magellan.client.Client;
 import magellan.library.Building;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Item;
 import magellan.library.Message;
+import magellan.library.Potion;
 import magellan.library.Region;
+import magellan.library.RegionResource;
 import magellan.library.Ship;
+import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.Unit;
 import magellan.library.io.cr.CRWriter;
@@ -120,15 +124,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	/**
 	 * Create a new CRWriterDialog object as a dialog with a parent window and a set of selected
 	 * regions.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
-	public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p,
-						  Collection<Region> selectedRegions) {
+	public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p, Collection<Region> selectedRegions) {
 		super(owner, modal, null, initData, p);
 		this.regions = selectedRegions;
 		init();
@@ -438,7 +435,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
   /**
    */
-	private void write(Writer out) {
+	private synchronized void write(Writer out) {
 		setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
 		try {
@@ -459,40 +456,37 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				try {
 					newData = (GameData) data.clone();
 				} catch(CloneNotSupportedException e) {
-					log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",
-							  e);
+					log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
 					newData = GameData.merge(data, data);
 				}
 
-				/* delete points, person counts, spell school, alliances, messages
-				 * of privileged factions
-				 **/
+				// delete points, person counts, spell school, alliances, messages
+				// of privileged factions
+			  //
 				if(newData.factions() != null) {
-					Iterator it = newData.factions().values().iterator();
-					boolean excludeBRegions = (crw.getIncludeMessages() &&
-											  chkSelRegionsOnly.isSelected() && (regions != null) &&
-											  (regions.size() > 0));
+					Iterator<Faction> it1 = newData.factions().values().iterator();
+					boolean excludeBRegions = (crw.getIncludeMessages() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0));
 
-					while(it.hasNext()) {
-						Faction f = (Faction) it.next();
+					while(it1.hasNext()) {
+						Faction f = it1.next();
 						boolean found = true;
 
 						if(excludeBRegions) {
-							Iterator it2 = regions.iterator();
+							Iterator<Region> it2 = regions.iterator();
 							found = false;
 
 							while(!found && it2.hasNext()) {
-								Region reg = (Region) it2.next();
-								Iterator it3 = reg.units().iterator();
+								Region reg = it2.next();
+								Iterator<Unit> it3 = reg.units().iterator();
 
 								while(!found && it3.hasNext()) {
-									Unit unit = (Unit) it3.next();
+									Unit unit = it3.next();
 									found = f.equals(unit.getFaction());
 								}
 							}
 
 							if(!found) {
-								it.remove();
+                it1.remove(); // ???? TR: why removing it from the iterator...
 							}
 						}
 
@@ -513,13 +507,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 									Message mes = it2.next();
 									found = false;
 
-									Iterator it3 = regions.iterator();
+									Iterator<Region> it3 = regions.iterator();
 
 									while(it3.hasNext() && !found) {
-										Region reg = (Region) it3.next();
+										Region reg = it3.next();
 
 										if(reg.getMessages() != null) {
-											Iterator it4 = reg.getMessages().iterator();
+											Iterator<Message> it4 = reg.getMessages().iterator();
 
 											while(!found && it4.hasNext()) {
 												found = mes.equals(it4.next());
@@ -546,7 +540,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				trans.remove("Person");
 				trans.remove("verwundet");
 				trans.remove("schwer verwundet");
-				trans.remove("erschï¿½pft");
+				trans.remove("erschöpft");
 
 				Collection<Region> lookup = data.regions().values();
 
@@ -554,100 +548,105 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 					lookup = regions;
 				}
 
-				Iterator it = lookup.iterator();
-				Iterator it2 = null;
-				Iterator it3 = null;
+				Iterator<Region> regionIterator = lookup.iterator();
+				Iterator<RegionResource> resourceIterator = null;
+        Iterator<Ship> shipIterator = null;
+				Iterator<Building> buildingIterator = null;
+        Iterator<Unit> unitIterator = null;
+        Iterator<Item> itemIterator = null;
+        Iterator<Potion> potionIterator = null;
+        Iterator<Spell> spellIterator = null;
+        Iterator<Skill> skillIterator = null;
+        Iterator<String> stringIterator = null;
 				boolean checkShips = chkShips.isSelected();
 				boolean checkUnits = chkUnits.isSelected();
 				boolean checkBuildings = chkBuildings.isSelected();
 				boolean checkSpells = chkSpellsAndPotions.isSelected();
 				boolean checkRegDetails = chkRegionDetails.isSelected();
 
-				while(it.hasNext()) {
-					Region r = (Region) it.next();
+				while(regionIterator.hasNext()) {
+					Region r = regionIterator.next();
 					trans.remove(r.getType().getID().toString());
 
 					if(checkRegDetails) {
-						it2 = r.resources().iterator();
+            resourceIterator = r.resources().iterator();
 
-						while(it2.hasNext()) {
-							magellan.library.RegionResource res = (magellan.library.RegionResource) it2.next();
+						while(resourceIterator.hasNext()) {
+							magellan.library.RegionResource res = resourceIterator.next();
 							trans.remove(res.getID().toString());
 							trans.remove(res.getType().getID().toString());
 						}
 					}
 
 					if(checkShips) {
-						it2 = r.ships().iterator();
+            shipIterator = r.ships().iterator();
 
-						while(it2.hasNext()) {
-							trans.remove(((Ship) it2.next()).getType().getID().toString());
+						while(shipIterator.hasNext()) {
+							trans.remove((shipIterator.next()).getType().getID().toString());
 						}
 					}
 
 					if(checkBuildings) {
-						it2 = r.buildings().iterator();
+						buildingIterator = r.buildings().iterator();
 
-						while(it2.hasNext()) {
-							trans.remove(((Building) it2.next()).getType().getID().toString());
+						while(buildingIterator.hasNext()) {
+							trans.remove((buildingIterator.next()).getType().getID().toString());
 						}
 					}
 
 					if(checkUnits) {
-						it2 = r.units().iterator();
+						unitIterator = r.units().iterator();
 
-						while(it2.hasNext()) {
-							Unit u = (Unit) it2.next();
+						while(unitIterator.hasNext()) {
+							Unit u = unitIterator.next();
 							trans.remove(u.getRace().getID().toString());
 
 							if(u.getRaceNamePrefix() != null) {
 								trans.remove(u.getRaceNamePrefix());
 							} else {
-								if((u.getFaction() != null) &&
-									   (u.getFaction().getRaceNamePrefix() != null)) {
+								if((u.getFaction() != null) && (u.getFaction().getRaceNamePrefix() != null)) {
 									trans.remove(u.getFaction().getRaceNamePrefix());
 								}
 							}
 
-							it3 = u.getItems().iterator();
+							itemIterator = u.getItems().iterator();
 
-							while(it3.hasNext()) {
-								trans.remove(((magellan.library.Item) it3.next()).getItemType().getID()
-											  .toString());
+							while(itemIterator.hasNext()) {
+								trans.remove((itemIterator.next()).getItemType().getID().toString());
 							}
 
-							it3 = u.getSkills().iterator();
+							skillIterator = u.getSkills().iterator();
 
-							while(it3.hasNext()) {
-								trans.remove(((magellan.library.Skill) it3.next()).getSkillType().getID()
-											  .toString());
+							while(skillIterator.hasNext()) {
+								trans.remove((skillIterator.next()).getSkillType().getID().toString());
 							}
 						}
 					}
 				}
 
 				if(checkSpells) {
-					it = data.spells().values().iterator();
+					spellIterator = data.spells().values().iterator();
 
-					while(it.hasNext()) {
-						Spell sp = (Spell) it.next();
+					while(spellIterator.hasNext()) {
+						Spell sp = spellIterator.next();
 						trans.remove(sp.getID().toString());
-                        trans.remove(sp.getName());
-                        it2 = sp.getComponents().keySet().iterator();
-                        while(it2.hasNext()) {
-                        	trans.remove(it2.next());
-                        }
+            trans.remove(sp.getName());
+            
+            stringIterator = sp.getComponents().keySet().iterator();
+            while(stringIterator.hasNext()) {
+            	trans.remove(stringIterator.next());
+            }
 					}
 
-					it = data.potions().values().iterator();
+					potionIterator = data.potions().values().iterator();
 
-					while(it.hasNext()) {
-						magellan.library.Potion sp = (magellan.library.Potion) it.next();
+					while(potionIterator.hasNext()) {
+						Potion sp = potionIterator.next();
 						trans.remove(sp.getID().toString());
-						it2 = sp.ingredients().iterator();
+						itemIterator = sp.ingredients().iterator();
 
-						while(it2.hasNext()) {
-							trans.remove(((magellan.library.Item) it2.next()).getItemType().getID()
+						while(itemIterator.hasNext()) {
+							trans.remove(itemIterator.next().getItemType().getID()
 									.toString());
 						}
 					}
@@ -655,12 +654,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 				if(trans.size() > 0) {
 					log.debug("Following translations will be removed:");
-					it = trans.iterator();
+					stringIterator = trans.iterator();
 
-					java.util.Map newTrans = newData.translations();
+					java.util.Map<String,String> newTrans = newData.translations();
 
-					while(it.hasNext()) {
-						Object o = it.next();
+					while(stringIterator.hasNext()) {
+						Object o = stringIterator.next();
 						newTrans.remove(o);
 
 						if(log.isDebugEnabled()) {

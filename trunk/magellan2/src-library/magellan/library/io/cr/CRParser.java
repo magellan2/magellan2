@@ -2925,6 +2925,7 @@ public class CRParser implements RulesIO, GameDataIO {
     // set finalizer prio to max
     MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
     
+    log.warn("Lade Report");
     ui.setTitle(Resources.get("progressdialog.loadcr.title"));
     ui.setMaximum(10000);
     ui.setProgress(Resources.get("progressdialog.loadcr.step01"), 1);
@@ -2973,6 +2974,7 @@ public class CRParser implements RulesIO, GameDataIO {
     }
     this.world.setMaxSortIndex(++regionSortIndex);
     ui.ready();
+    log.warn("Done.");
     return this.world;
   }
 

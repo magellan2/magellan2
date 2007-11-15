@@ -2110,7 +2110,7 @@ public class CRWriter extends BufferedWriter {
     
     Thread t = null;
     
-    if (ui != null) {
+    if (ui != null && !(ui instanceof NullUserInterface)) {
       t = new Thread(new Runnable() {
         public void run() {
           try {
@@ -2123,7 +2123,9 @@ public class CRWriter extends BufferedWriter {
       });
       t.start();
     } else {
+      log.warn("Saving Report");
       writeThread(world);
+      log.warn("Done.");
     }
     
     return t;

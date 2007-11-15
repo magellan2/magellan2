@@ -71,8 +71,6 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void registerTree(JTree tree) {
@@ -80,14 +78,15 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void unregisterTree(JTree tree) {
 		tree.removeComponentListener(this);
 	}
 
+  /**
+   * 
+   */
 	protected int getIndent(JTree tree, BasicTreeUI tui, int row) {
 		int width = tui.getLeftChildIndent() + tui.getRightChildIndent();
 		TreePath path = tree.getPathForRow(row);
@@ -100,6 +99,9 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		return (width * j);
 	}
 
+  /**
+   * 
+   */
 	protected boolean computeSize(JTree tree, BasicTreeUI ui, int row) {
 		int treeWidth = tree.getSize().width;
 
@@ -148,7 +150,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 
 		setPreferredSize(new Dimension(treeWidth - indent - 1, height + in.top + in.bottom + 2));
-
+    setMinimumSize(getPreferredSize());
+    setMaximumSize(getMinimumSize());
 		return true;
 	}
 
@@ -165,8 +168,6 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void paintComponent(Graphics g) {
@@ -228,10 +229,10 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 
 			help = 0;
 
-			Iterator it2 = buf.iterator();
+			Iterator<TextLayout> it2 = buf.iterator();
 
 			while(it2.hasNext()) {
-				TextLayout tl = (TextLayout) it2.next();
+				TextLayout tl = it2.next();
 				help += tl.getAscent();
 				tl.draw(g2, x, help);
 				help += tl.getDescent();
@@ -252,7 +253,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 				g.setColor(textBackground);
 				g.fillRect(x, 0, width, height);
 			}
-
+      
 			g.setColor(textColor);
 			g.drawString(text, x, fm.getAscent());
 		}
@@ -266,31 +267,18 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
 	 * 
 	 */
-	public java.awt.Component getTreeCellRendererComponent(javax.swing.JTree jTree,
-														   java.lang.Object obj, boolean param,
-														   boolean param3, boolean param4,
-														   int param5, boolean param6) {
+	public java.awt.Component getTreeCellRendererComponent(JTree jTree, Object obj, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
 		icon = null;
 		textBackground = null;
 		textFocus = null;
 		lastLength = -1;
 
-		text = jTree.convertValueToText(obj, param, param3, param4, param5, param6);
+		text = jTree.convertValueToText(obj, selected, expanded, leaf, row, hasFocus);
 
 		if(defaultRenderer != null) {
-			if(param) {
+			if(selected) {
 				textBackground = defaultRenderer.getBackgroundSelectionColor();
 				textColor = defaultRenderer.getTextSelectionColor();
 				textFocus = defaultRenderer.getBorderSelectionColor();
@@ -299,17 +287,17 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 				textColor = defaultRenderer.getTextNonSelectionColor();
 			}
 
-			if(param4) {
+			if(leaf) {
 				icon = defaultRenderer.getLeafIcon();
 			} else {
-				if(param3) {
+				if(expanded) {
 					icon = defaultRenderer.getOpenIcon();
 				} else {
 					icon = defaultRenderer.getClosedIcon();
 				}
 			}
 		} else {
-			if(param) {
+			if(selected) {
 				textBackground = Color.blue.brighter();
 				textFocus = Color.blue;
 			} else {
@@ -324,7 +312,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 
 		if(lineWrap && ui instanceof BasicTreeUI) {
 			try {
-				init = computeSize(jTree, (BasicTreeUI) ui, param5);
+				init = computeSize(jTree, (BasicTreeUI) ui, row);
 			} catch(Exception exc) {
 			}
 		}
@@ -336,16 +324,19 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		return this;
 	}
 
+  /**
+   * 
+   */
 	protected void updateTree(JTree tree) {
 		TreeUI ui = tree.getUI();
 
-		/* Since there seems to be a kind of bug with JTree.treeDidChange(),
-		 * we have to try to let the UI compute the bounds manually.
-		 *
-		 * I have only found the way to temporary change indent values in BasicTreeUI
-		 * to let the cache be cleared.
-		 *                                  Andreas
-		 */
+		// Since there seems to be a kind of bug with JTree.treeDidChange(),
+		// we have to try to let the UI compute the bounds manually.
+		//
+		// I have only found the way to temporary change indent values in BasicTreeUI
+		// to let the cache be cleared.
+		//                                  Andreas
+		//
 		if(ui instanceof BasicTreeUI) {
 			BasicTreeUI tui = (BasicTreeUI) ui;
 			int i = tui.getLeftChildIndent();
@@ -354,12 +345,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 	}
 
-	/**
-	 * Informs trees on size changes to recompute their row bounds.
-	 *
-	 * 
-	 */
-	public void componentResized(java.awt.event.ComponentEvent componentEvent) {
+  /**
+   * Informs trees on size changes to recompute their row bounds.
+   * 
+   * @see java.awt.event.ComponentListener#componentResized(java.awt.event.ComponentEvent)
+   */  
+  public void componentResized(java.awt.event.ComponentEvent componentEvent) {
 		Object o = componentEvent.getSource();
 
 		if(o instanceof JTree) {
@@ -367,27 +358,21 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see java.awt.event.ComponentListener#componentMoved(java.awt.event.ComponentEvent)
+   */
 	public void componentMoved(java.awt.event.ComponentEvent componentEvent) {
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see java.awt.event.ComponentListener#componentShown(java.awt.event.ComponentEvent)
+   */
 	public void componentShown(java.awt.event.ComponentEvent componentEvent) {
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see java.awt.event.ComponentListener#componentHidden(java.awt.event.ComponentEvent)
+   */
 	public void componentHidden(java.awt.event.ComponentEvent componentEvent) {
 	}
 
@@ -409,15 +394,17 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		this.lineWrap = lineWrap;
 	}
 
+  // **********************************************************************
+  /**
+   *
+   * @author ...
+   * @version 1.0, 15.11.2007
+   */
 	protected class SimpleLayout implements LayoutManager {
 		protected Dimension inDim = new Dimension(0, 0);
 		protected boolean inCompute = false;
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public java.awt.Dimension minimumLayoutSize(java.awt.Container container) {
@@ -438,17 +425,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 * 
 		 */
 		public void addLayoutComponent(java.lang.String str, java.awt.Component component) {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void layoutContainer(java.awt.Container container) {
@@ -465,18 +447,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
 		public void removeLayoutComponent(java.awt.Component component) {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
 		public java.awt.Dimension preferredLayoutSize(java.awt.Container container) {

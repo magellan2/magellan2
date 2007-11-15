@@ -154,22 +154,24 @@ public class TreeHelper {
 		// add ships
 		List<Ship> sortedShips = new ArrayList<Ship>(r.ships());
 		Collections.sort(sortedShips, shipComparator);
-		for(Iterator iter = sortedShips.iterator(); iter.hasNext(); ) {
-			Ship s = (Ship) iter.next();
-            if(shipNodes == null || !shipNodes.containsKey(s.getID())) {
-                node = new DefaultMutableTreeNode(factory.createUnitContainerNodeWrapper(s));
-                if(sortUnderUnitParent && s.getOwnerUnit() != null) {
-                    DefaultMutableTreeNode unitNode = (DefaultMutableTreeNode) 
-                        unitNodes.get(s.getOwnerUnit().getID());
-                    ((DefaultMutableTreeNode) unitNode.getParent()).add(node);
-                } else {
-                    regionNode.add(node);                    
-                }
-			
-                if(shipNodes != null) {
-                    shipNodes.put(s.getID(), node);
-                }
-            }
+		for(Iterator<Ship> iter = sortedShips.iterator(); iter.hasNext(); ) {
+			Ship s = iter.next();
+      if(shipNodes == null || !shipNodes.containsKey(s.getID())) {
+        node = new DefaultMutableTreeNode(factory.createUnitContainerNodeWrapper(s));
+        if(sortUnderUnitParent && s.getOwnerUnit() != null) {
+          DefaultMutableTreeNode unitNode = (DefaultMutableTreeNode)unitNodes.get(s.getOwnerUnit().getID());
+          if (unitNode != null) {
+            DefaultMutableTreeNode parent = (DefaultMutableTreeNode) unitNode.getParent();
+            parent.add(node);
+          }
+        } else {
+          regionNode.add(node);                    
+        }
+
+        if(shipNodes != null) {
+          shipNodes.put(s.getID(), node);
+        }
+      }
 		}
 
 		// add buildings

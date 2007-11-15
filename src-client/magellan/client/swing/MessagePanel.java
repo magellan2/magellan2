@@ -249,7 +249,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       Iterator<Message> iter = r.getPlayerMessages().iterator();
 
       while(iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next().getText()));
+        node.add(new DefaultMutableTreeNode(iter.next()));
       }
     }
 
@@ -260,7 +260,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       Iterator<Message> iter = r.getEvents().iterator();
 
       while(iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next().getText()));
+        node.add(new DefaultMutableTreeNode(iter.next()));
       }
     }
 
@@ -271,7 +271,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       Iterator<Message> iter = r.getSurroundings().iterator();
 
       while(iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next().getText()));
+        node.add(new DefaultMutableTreeNode(iter.next()));
       }
     }
 
@@ -284,7 +284,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
         Iterator<Message> iter = r.getTravelThru().iterator();
 
         while(iter.hasNext() == true) {
-          node.add(new DefaultMutableTreeNode(iter.next().getText()));
+          node.add(new DefaultMutableTreeNode(iter.next()));
         }
       }
 
@@ -292,7 +292,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
         Iterator<Message> iter = r.getTravelThruShips().iterator();
 
         while(iter.hasNext() == true) {
-          node.add(new DefaultMutableTreeNode(iter.next().getText()));
+          node.add(new DefaultMutableTreeNode(iter.next()));
         }
       }
     }
@@ -354,10 +354,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.errors"));
       parent.add(node);
 
-      Iterator msgs = f.getErrors().iterator();
+      Iterator<String> msgs = f.getErrors().iterator();
 
       while(msgs.hasNext() == true) {
-        show((String) msgs.next(), node);
+        show(msgs.next(), node);
       }
     }
 
@@ -407,7 +407,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       Iterator<Message> iter = u.getUnitMessages().iterator();
 
       while(iter.hasNext() == true) {
-        node.add(new DefaultMutableTreeNode(iter.next().getText()));
+        node.add(new DefaultMutableTreeNode(iter.next()));
       }
     }
 
@@ -429,7 +429,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
               // it would be cleaner to compare UnitID
               // objects here but that's too expensive 
               if(((UnitID) u.getID()).intValue() == i) {
-                node = new DefaultMutableTreeNode(msg.getText());
+                node = new DefaultMutableTreeNode(msg);
                 parent.add(node);
               }
             } catch(NumberFormatException e) {
@@ -466,7 +466,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
     while(msgs.hasNext()) {
       Message msg = msgs.next();
-      subNode = new DefaultMutableTreeNode(msg.getText());
+      subNode = new DefaultMutableTreeNode(msg);
       node.add(subNode);
     }
   }
@@ -534,7 +534,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     DefaultMutableTreeNode node = null;
     DefaultMutableTreeNode subNode = null;
 
-    node = new DefaultMutableTreeNode(m.getText());
+    node = new DefaultMutableTreeNode(m);
     parent.add(node);
 
     if(m.getAttributes() != null) {
@@ -675,12 +675,12 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    * Adds the given messages to the parent node, categorized by the section of the messagetypes
    * and then sorted by messagetypes.
    */
-  private void addCategorizedMessages(Collection messages, DefaultMutableTreeNode parent) {
+  private void addCategorizedMessages(Collection<Message> messages, DefaultMutableTreeNode parent) {
     Map<String,List<Message>> categories = new Hashtable<String, List<Message>>();
 
     // categorize messages
-    for(Iterator iter = messages.iterator(); iter.hasNext();) {
-      Message message = (Message) iter.next();
+    for(Iterator<Message> iter = messages.iterator(); iter.hasNext();) {
+      Message message = iter.next();
       String section = null;
 
       if(message.getMessageType() != null) {

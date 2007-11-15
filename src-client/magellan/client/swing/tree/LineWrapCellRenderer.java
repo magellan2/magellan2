@@ -36,9 +36,16 @@ import javax.swing.JPanel;
 import javax.swing.JTree;
 import javax.swing.plaf.TreeUI;
 import javax.swing.plaf.basic.BasicTreeUI;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
+
+import magellan.client.Client;
+import magellan.library.Message;
+import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
+import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT ME!
@@ -47,6 +54,7 @@ import javax.swing.tree.TreePath;
  * @version 1.0
  */
 public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, ComponentListener {
+  private static final Logger log = Logger.getInstance(LineWrapCellRenderer.class);
 	protected DefaultTreeCellRenderer defaultRenderer;
 	protected Icon icon;
 	protected String text;
@@ -274,8 +282,34 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		textBackground = null;
 		textFocus = null;
 		lastLength = -1;
-
-		text = jTree.convertValueToText(obj, selected, expanded, leaf, row, hasFocus);
+    
+    Object userObject = null;
+    
+    if (obj instanceof DefaultMutableTreeNode) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode)obj;
+      userObject = node.getUserObject();
+    } else {
+      userObject = obj;
+    }
+    
+    String string = "";
+    Color backgroundColor = null;
+    if (userObject instanceof Message) {
+      Message message = (Message)userObject;
+      string = message.getText();
+      String colorName = "messagetype.section."+message.getMessageType().getSection()+".color";
+      String color = Client.INSTANCE.getProperties().getProperty(colorName);
+      if (color != null) {
+        // color for message type found.
+        backgroundColor = Utils.getColor(color);
+      } else {
+        log.warn("Property "+colorName+" not found.");
+      }
+    } else {
+      string = userObject.toString();
+    }
+    
+		text = jTree.convertValueToText(string, selected, expanded, leaf, row, hasFocus);
 
 		if(defaultRenderer != null) {
 			if(selected) {
@@ -283,7 +317,11 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 				textColor = defaultRenderer.getTextSelectionColor();
 				textFocus = defaultRenderer.getBorderSelectionColor();
 			} else {
-				textBackground = defaultRenderer.getBackgroundNonSelectionColor();
+        if (backgroundColor != null) {
+          textBackground = backgroundColor; 
+        } else {
+          textBackground = defaultRenderer.getBackgroundNonSelectionColor();
+        }
 				textColor = defaultRenderer.getTextNonSelectionColor();
 			}
 

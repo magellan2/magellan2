@@ -294,6 +294,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Colors","0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
       settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Values","0.0;0.0;1.0;1.0");
       settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Min","0");
+      settings.setProperty("messagetype.section.events.color","#ffccff");
+      settings.setProperty("messagetype.section.movement.color","#ffffcc");
+      settings.setProperty("messagetype.section.economy.color","#ffccaa");
+      settings.setProperty("messagetype.section.magic.color","#ffaacc");
+      settings.setProperty("messagetype.section.study.color","#ffcc88");
+      settings.setProperty("messagetype.section.production.color","#ffaa77");
+      settings.setProperty("messagetype.section.errors.color","#ff7777");
+      
       initLocales(settings, true);
     } else {
       initLocales(settings, false);

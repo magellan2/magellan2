@@ -13,10 +13,12 @@
 
 package magellan.client.swing.tree;
 
+import java.awt.Component;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeCellRenderer;
 
@@ -28,22 +30,19 @@ import javax.swing.tree.TreeCellRenderer;
  */
 public class MixedTreeCellRenderer implements TreeCellRenderer {
 	protected Map<Class,TreeCellRenderer> renderers;
-	protected TreeCellRenderer def;
+	protected TreeCellRenderer defaultRenderer;
 
 	/**
 	 * Creates new Template
 	 *
 	 * 
 	 */
-	public MixedTreeCellRenderer(TreeCellRenderer def) {
-		this.def = def;
+	public MixedTreeCellRenderer(TreeCellRenderer defaultRenderer) {
+		this.defaultRenderer = defaultRenderer;
 		renderers = new HashMap<Class, TreeCellRenderer>();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void putRenderer(Object o, TreeCellRenderer r) {
@@ -54,9 +53,12 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 		}
 	}
 
+  /**
+   * 
+   */
 	protected TreeCellRenderer findRenderer(Class c) {
 		if(renderers.containsKey(c)) {
-			return (TreeCellRenderer) renderers.get(c);
+			return renderers.get(c);
 		}
 
 		Iterator<Class> it = renderers.keySet().iterator();
@@ -69,26 +71,16 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 			}
 		}
 
-		return def;
+		return defaultRenderer;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
 	 * 
 	 */
-	public java.awt.Component getTreeCellRendererComponent(javax.swing.JTree jTree,
-														   java.lang.Object obj, boolean param,
-														   boolean param3, boolean param4,
-														   int param5, boolean param6) {
+	public Component getTreeCellRendererComponent(JTree jTree,
+														   Object obj, boolean selected,
+														   boolean expanded, boolean leaf,
+														   int row, boolean hasFocus) {
 		Object o = obj;
 
 		if(obj instanceof DefaultMutableTreeNode) {
@@ -98,8 +90,7 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 		TreeCellRenderer tcr = findRenderer(o.getClass());
 
 		if(tcr != null) {
-			return tcr.getTreeCellRendererComponent(jTree, obj, param, param3, param4, param5,
-													param6);
+      return tcr.getTreeCellRendererComponent(jTree, obj, selected, expanded, leaf, row, hasFocus);
 		}
 
 		return null;

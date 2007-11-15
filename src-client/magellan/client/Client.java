@@ -954,6 +954,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               log.awt("Start logging of awt events to awtdebug.txt.");
             }
           }
+        } else if (args[i].equals("--help")) {
+          Help.open(args);
+          return;
         } else if (args[i].equals("-d") && (args.length > (i + 1))) {
           i++;
 
@@ -976,7 +979,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
         i++;
       }
-
+      
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
 

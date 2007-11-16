@@ -1,0 +1,71 @@
+#####################  commands.txt   ECheck V4 and above  ##################
+# This file contains the list of commands ECheck understands.
+#
+# You can obtain the list of commands using "echeck -hc"
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+WORK,   Work
+ATTACK,   Attack
+STEAL,    Steal
+SIEGE,    Siege
+NAME,   Name
+USE,    Use
+DESCRIBE, Describe
+ENTER,    Enter
+GUARD,    Guard
+MESSAGE,  Message
+END,    End
+RIDE,   Ride
+FOLLOW,   Follow
+RESEARCH, Research
+GIVE,   Give
+HELP,   Help
+FIGHT,    Fight
+COMBATMAGIC,  Combatspell
+BUY,    Buy
+CONTACT,  Contact
+TEACH,    Teach
+STUDY,    Learn
+DELIVER,  Supply
+MAKE,   Make
+MOVE,   Move
+PASSWORD, Password
+PLANT,    Plant
+RECRUIT,  Recruit
+REPORT,   Report
+OPTION,   Option
+SPY,    Spy
+SETSTEALTH, Hide
+CARRY,    Carry
+QUIT,   Quit
+TAX,    Tax
+ENTERTAIN,  Entertain
+SELL,   Sell
+LEAVE,    Leave
+CAST,   Cast
+SHOW,   Show
+DESTROY,  Destroy
+FORGET,   Forget
+DEFAULT,  Default
+COMMENT,  //
+ROUTE,    Route
+SABOTAGE, Sabotage
+BREED,    Breed
+ORIGIN,   Origin
+EMAIL,    Email
+RESERVE,  Reserve
+BANNER,   Banner
+OPINION,  Opinion
+NUMBER,   Number
+SCHOOL,   School
+PIRACY,   Piracy
+RESTART,  Restart
+GROUP,    Group
+SORT,   Sort
+PREFIX,   Prefix
+PROMOTION,  Promotion
+# NEXT, Next  is NO COMMAND for ECheck, it's an parameter.
+# this is for internal reasons, please enter at required place
+

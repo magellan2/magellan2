@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: TRANSPORTIERE</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><B>TRANSPORTIERE einheit-nr</B></p>
+
+<P> Mit diesem Befehl nimmt man andere Einheiten auf der Reise mit. Die zu transportierenden Einheiten müssen bei dem Befehl <A
+HREF="fahre.html"><TT>FAHRE</TT></A> die transportierende Einheit angeben. Der
+<TT>TRANSPORTIERE</TT>-Befehl muß für jede Einheit, die transportiert
+werden soll, einzeln gegeben werden.
+
+<PRE>
+PARTEI 125 "FooBar"
+EINHEIT 311
+FAHRE 456 ; ich will mitfahren
+[...]
+
+PARTEI 300 "BarFoo"
+EINHEIT 456
+TRANSPORTIERE 311 ; Lasse 311 mitfahren
+</PRE>
+</P>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: transportiere.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

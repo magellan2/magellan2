@@ -1,0 +1,230 @@
+2007-11-15 Thoralf (thoralf@m84.de)
+    * Fixed a bug during linewrapped messages in MessagePanel
+    * Renamed CHANGELOG etc. because of installer and start menu entries
+    * New Help entry in Windows start menu.
+    * Enabled FloatingWindow
+    * MessagePanel with colors.
+
+2007-11-15 Fiete (sf@fietefietz.de)
+    * fixed fillselectionaction: name + mnemonic
+
+2007-11-14 Thoralf (thoralf@m84.de)
+    * ArrayIndexOutOfBoundsException during initSplitSets()
+    * Problems with the IDF during load resolved (bad layout)
+    * Made ArmyStatsPanel as Dock (but disabled, because of performance problems).
+
+2007-11-14 Fiete (sf@fietefietz.de)
+    * added rules.cr: TALENTBONI for Schmiede 
+    * just put my name on the authors-list. *proud*
+	
+2007-11-13 Thoralf (thoralf@m84.de)
+    * Now we have an installable JAR file, made with IzPack.
+    * Docking Framework saves information in XML file instead of Object Stream.
+    * Renamed SwingUserInterface to ProgressBarUI
+
+2007-11-11 Thoralf (thoralf@m84.de)
+    * NPE when merging two reports.
+    * NPE when exporting map to image.
+    * Bug when saving a report during shutdown
+    * Added winter maps for map 
+    * Changed behaviour of Version comparison so future version number are working 100>99.
+    
+2007-11-08 Thoralf (thoralf@m84.de)
+    * Added season specific map images (currently just a copy of the original).
+
+2007-11-07 Thoralf (thoralf@m84.de)
+    * Added more OutOfMemory try-catch-blocks during saving image map and loading cr's
+    * Added some progress bars during loading, saving, etc.
+    * Added a feature to save last active region in report.
+
+2007-10-28 Thoralf (thoralf@m84.de)
+    * Added some more functions to the extended commands plugin helper
+    * Fixes refresh problems with extended commands.
+
+2007-09-25 Fiete (sf@fietefietz.de)
+    * Renamed TipOfTheDay.show() to TipOfTheDay.showTipDialog to fix Bug #96.
+    
+2007-09-23  Thoralf (thoralf@m84.de)
+    * Bug 68. Maybe this helps... (do not bring the startwindow to the front, only toBack())
+      Actually this bug cannot be resolved at all, because the dialogs are children of
+      the Client-Frame and the Startwindow isn't a child of Client. So a simple click
+      somewhere on the screen destroys the generated layers (startwindow on top, Client behind
+      it). 
+
+2007-09-13  Thoralf (thoralf@m84.de)
+    * Changed SMTP-Password-Field in OrderWriterDialog from JTextfield to JPasswordField.
+
+2007-09-11  Thoralf (thoralf@m84.de)
+    * Found a problem with magic items (resources not found). It tries to use Resources.getOrderTranslation(). That isn't useful.
+    * ErrorWindow is now localized.
+    * New event for PlugIns - quit() is called when client is shutting down.
+    * Replaced all deprecated Container.show() with setVisible(true)
+    * Added bsh jar for scripting
+    * Implemented ExtendedCommands.
+
+2007-09-02  Thoralf (thoralf@m84.de)
+    * Added check for updates feature. This can be disabled in the options.
+
+2007-09-01  Thoralf (thoralf@m84.de)
+    * Try to match UTF8 with UTF-8 by ignoring all "-" (Problems with BOMReader 
+      that returns UTF8 instead of UTF-8 from the BOM)
+    * Merging two reports with different encodings uses now UTF-8 or the encoding
+      of the newer file (if no file uses UTF-8). If both reports use the same
+      encoding the resulting report uses this encoding too.
+
+2007-09-01 Fiete (sf@fietefietz.de)
+    * added spy.gif and updated EMapDetailsPanel to use spy.gif
+
+2007-08-29 Fiete (sf@fietefietz.de)
+    * Added all known Look & Feels, adjusted manifest.template
+    * moved all_looks from lib to lib/skins
+
+2007-08-26  Thoralf (thoralf@m84.de)
+    * When you select a different renderer for the minimap via the popup, this
+      settings will now be saved in the configuration. The problem that all
+      configurations for the minimap isn't saved, is still not corrected. 
+      We've to rewrite that code...
+
+2007-08-25  Thoralf (thoralf@m84.de)
+    * added a feature to verify and show all faction race
+    * added a bugfix for island detection
+
+2007-08-10  stm (stm_@users.sourceforge.net)
+    * added BOMReader (for reading files with Unicode BOM)
+    * added support for SMTP authentication
+  
+2007-08-13  Thoralf (thoralf@m84.de)
+    * Implementation for Orders Write-Out in UTF-8 (is not activated)
+    
+2007-08-12  Thoralf (thoralf@m84.de)
+    * pay attention during CR-write-out about loaded-CR encoding.
+    
+2007-08-11  Thoralf (thoralf@m84.de)
+    * Enlarged the default window size of the faction statistics window
+    * Open the Details View of the New Temp Unit dialog by default
+    * Removed some code (Frame- and Layout-Mode) and some warnings...
+
+2007-08-10  stm (stm_@users.sourceforge.net)
+    * deactivated undo
+  
+2007-08-08 stm (stm_@users.sourceforge.net)
+    * redid loading of editors in MultiEditorOrderEditorList (bug #78) and cleaned up code
+    * added optional path argument to SelectionEvent for better identification of selections
+    * fixed temp unit bug in SelectionHistory
+    * fixed border (-1%) bug 
+    * don't display handle of top level tree nodes in overview (optional, bug #59)
+    * "all report files" is now default for open cr/save cr file type selection
+    * added order completion for destroy for entering, non-owning units (bug #39)
+    * added a tip of the day
+    * changed unit context menu (bug #9)
+    * updated build number (66)
+    
+2007-08-05 stm (stm_@users.sourceforge.net)
+    * fixed bug of not disappearing merge progress dialog
+    * improved autoexpand/collapse in region overview
+    * improved merging of spies
+    * added option "spies" in order confirmation menu; confirmation of spies now possible
+    * added options for RESERVIERE auto completion
+    * added faction column and improved refreshing for TaskTablePanel
+    
+2007-08-04 stm (stm_@users.sourceforge.net)
+    * added AttackInspector
+    * integrated TaskPanel in docking
+    * several spaces added (#83)
+    * fixed bug #78
+
+2007-07-30 Fiete (sf@fietefietz.de)
+    * added carriers.gif
+    * updated 3 more icons (Khadar)
+    
+2007-07-30 stm (stm_@users.sourceforge.net)
+    * minor errors in eressea.cr: rusty items, Samen, Nestwürme
+    * new item category "silver"
+    * minor bug in FactionStatsPanel
+
+2007-07-30 Thoralf (thoralf@m84.de)
+    * Added Khadars icons
+    * Renamed tobig to toobig in check-panel
+
+2007-07-29 stm (stm_@users.sourceforge.net)
+    * Added Mallornsamen to eressea.cr and adjusted talent level
+    * improved support for echeck as dockable panel
+    * added silver as top level item to faction stats
+    * registered map as shortcut listener
+    * made "wrap long lines" default for order writer dialog
+    * fixed nullpointer bug in order completion
+    * fixed region details -?- bug
+    * added space to "overloaded" display
+
+2007-07-14 Thoralf (thoralf@m84.de)
+    * Bugfixes #76, #79
+    * Added favicon.ico
+
+2007-07-08 Fiete (sf@fietefietz.de)
+    * Icons prepared: Victom/Attackers + Carriers/Passengers
+    * 2 Mallorn-icons added
+
+2007-07-08 Thoralf (thoralf@m84.de)
+    * Checking the encoding in CR Reports (Read/Write)
+    * Docking configuration is loaded/saved as Text (still under construction)
+    * Created new Echeck docking window
+    * Disabled editable textfields in JVorlage and Echeck panel (bug #53)
+    * Disabled Options-Desktop Splitpane/frame chooser (because of docking framework)
+
+2007-07-07 Fiete (sf@fietefietz.de)
+    * herb icons from khadar
+    * new magic spell component icons
+    * fixed checkSize for custom icons
+    * for existIcon-tests no error msg is produced anymore
+
+2007-07-06 Fiete (sf@fietefietz.de)
+    * Completed MapEditPlugIn
+    * added maxSortIndex to GameData (set by CRParser)
+    * Changed path handling from paths in AbstractMagellanPlugInLoader to decode "%20"
+
+2007-07-06 Thoralf (thoralf@m84.de)
+    * Added Resources.initialize(String) to load special resources for plugins
+    * Changed MapEditPlugIn to use Resources instead of hard coded Strings
+
+2007-07-05 Fiete (sf@fietefietz.de)
+    * fixed addTranslation and nameChange
+    * prepared MapContextMenuProvider (for MapEditPlugin)
+    * added getRegionTypes to Rules
+    * cleared vinyambar.cr from umlaut-errors
+
+2007-07-04 Fiete (sf@fietefietz.de)
+    * fixed english order completion, use "default" bundle for Locale.English
+    * static resource paths are loaded to resources - now shown in options again
+    * switched addObject and getObject in GenericRules to use normalized Strings as Keys
+    * (solved display of herbs - bug)
+    * added icon for race "Schneemaenner"
+
+2007-07-03 Thoralf (thoralf@m84.de)
+    * Added InfoNode DockingFramework
+
+2007-06-22 Thoralf (thoralf@m84.de)
+    * Added some more icons for the map (thanks to Mar'ek Khadar)
+    * Removed some unnecessary code 
+    * Bugfix #58, #61
+
+2007-06-19 Thoralf (thoralf@m84.de)
+    * New subnode in faction statistics panel for locale presentation
+    * Removed magellan. prefix from resource keys.
+
+2007-06-16 Thoralf (thoralf@m84.de)
+    * Added some more english translations to the resources (bug #43)
+    * Added some icons (herbs, potions, shields) - copied from kraeuter, traenke and schilde
+
+2007-06-15 Thoralf (thoralf@m84.de)
+    * Replaced all UTF-8 encoded files with ISO-8859-1 encodings.
+    * Added findClass() to the ResourceClassLoader for plugin initializing (still problems)
+
+2007-06-09 Thoralf (thoralf@m84.de)
+    * Bugfix for some Umlaut problems in eressea date
+    * Release contains now the LICENSE,COPYING an CHANGELOG files... (mantis bug #50)
+
+2007-06-05 Thoralf (thoralf@m84.de)
+    * Bugfix for 1.6er getKeys() instead of get keySet() method for Maps in Resources.
+
+2007-06-04 Thoralf (thoralf@m84.de)
+    * Import of magellan2 into sf.net from private svn server

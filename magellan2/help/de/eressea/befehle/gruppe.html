@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: GRUPPE</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><b>GRUPPE ["name"]</b></p>
+
+<p> Mit dem Befehl <tt>GRUPPE</tt> kann man die Partei in Untergruppen zerteilen, die einen anderen <a HREF="helfe.html"><tt>HELFE</tt></a>-Status haben als der Rest der Partei. Dadurch kann man z.B. ein Söldnerheer aufstellen, das auf der Insel des Auftragsgebers ihm hilft, w?hrend der Rest der Partei es nicht tut.</p>
+
+<p>Ebenso kann man für Teilnehmer eines Turnieres alle <tt>HELFE KÄMPFE</tt> Zuordnungen auflösen, damit man nicht in einen Zweikampf eingreift. Auch Angriffe auf Verbündete, mit einem parteigetarnten Trupp von Einheiten sind möglich, ohne das man sich durch das Lösen von <tt>HELFE KÄMPFE</tt> auf Parteiebene verrät. Und wer z.B. seine Wälder auch vor Verbündeten schützen will, der stellt eine Truppe von Waldwächtern auf, die niemandem <tt>HELFE BEWACHE</tt> geben.</p>
+
+<p>Eine Einheit gibt zum Beispiel den Befehl <tt>GRUPPE "Freibeuter der Meere"</tt>, um in eine Gruppe einzutreten. Wenn es eine Gruppe dieses Namens noch nicht gibt, wird eine angelegt, die anfangs den gleichen HELFE-Status wie die Partei hat. Mit <tt>GRUPPE</tt> ohne Namen verläßt man eine Gruppe. Jede Einheit kann nur einer Gruppe angehören. Eine Einheit, die einen <tt>HELFE</tt> Befehl gibt, ändert den Status ihrer Gruppe, wenn sie einer Gruppe zugeteilt ist, oder den Status der Partei, wenn sie keiner Gruppe angehört.</p>
+
+<p>In einem Kampf wird aus jeder Gruppe ein getrenntes Heer, so wie es auch schon passiert, wenn Einheiten parteigetarnt sind.</p>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: gruppe.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

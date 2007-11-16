@@ -1,0 +1,19 @@
+####################  directions.txt   ECheck V4 and above  #################
+# This file contains the list of directions
+#
+# You can obtain the list of directions using "echeck -hd"
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+EAST,		East
+WEST,		West
+PAUSE,		Pause
+NORTHEAST,	Northeast
+NORTHWEST,	Northwest
+NORTHEAST,	NE
+NORTHWEST,	NW
+SOUTHEAST,	Southeast
+SOUTHWEST,	Southwest
+SOUTHEAST,	SE
+SOUTHWEST,	SW

@@ -1,0 +1,96 @@
+body {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: normal;
+		color: #584635;
+}
+
+p {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: normal;
+		color: #584635;
+		text-decoration: none;
+}
+
+p.tiny {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 10pt;
+		font-weight: medium;
+		font-style: normal;
+		color: #584635;
+		text-decoration: none;
+}
+
+pre {
+		font-family:Courier;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: normal;
+		color: #584635;
+}
+
+td {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: normal;
+		color: #584635;
+		text-decoration: none;
+}
+
+a:link {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: normal;
+		text-decoration: underline;
+		color: #600000;
+}
+
+a:visited {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: medium;
+		font-style: none;
+		text-decoration: underline;
+		color: #584635;
+}
+
+h1 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 16pt;
+		font-weight: bold;
+		font-style: none;
+		color: #584635;
+		text-decoration: none;
+}
+
+h2 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 14pt;
+		font-weight: bold;
+		font-style: normal;
+		color: #584635;
+		text-decoration: none;
+}
+
+h3 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		font-style: none;
+		color: #584635;
+}
+
+h4 {
+		font-family: Arial, Helvetica, sans-serif;
+		font-size: 12pt;
+		font-weight: bold;
+		font-style: none;
+		color: #584635;
+}
+
+/* $Id: default.css 8 2003-10-12 21:05:43Z eressea $ */

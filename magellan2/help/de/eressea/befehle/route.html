@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: ROUTE</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><B>ROUTE himmelsrichtung [himmelsrichtung [etc.]]&nbsp;&nbsp;&nbsp;&lt;L&gt;</B></p>
+
+<P> Mit dem Befehl <TT>ROUTE</TT> bewegt sich die Einheit genauso wie
+mit dem Befehl <A HREF="nach.html"><TT>NACH</TT></A> durch die Welt von
+Eressea. </P>
+<P> Mit dem <TT>ROUTE</TT>-Befehl kann jedoch eine "Kreisbewegung" erstellen,
+so da&szlig; eine Einheit immer zwischen zwei oder mehr Punkten pendelt. Alle
+Bewegungen, die abgearbeitet wurden, werden wieder hinten an den
+<TT>ROUTE</TT>-Befehl angeh&auml;ngt. </P>
+<P> Um eine Bewegung vorzeitig abzubrechen (z.B. bei Schiffen, die nicht
+so weit segeln sollen, wie sie k&ouml;nnen), kann man ein <TT>PAUSE</TT>
+(kann <TT>P</TT> abgek&uuml;rzt werden) einf&uuml;gen. Hat eine Einheit ihre Bewegung
+vollendet und als n&auml;chstes kommt ein <TT>PAUSE</TT>, so wird dies mit
+hinten angeh&auml;ngt, obwohl die Einheit bereits stoppt. </P>
+
+<P>
+<BLOCKQUOTE>Ein Reiter kommt mit Stra&szlig;en drei Regionen weit. Er bekommt
+folgenden <TT>ROUTE</TT>-Befehl:
+<PRE>
+ROUTE NO Osten Pause Osten Osten SO Westen Westen Pause SW Westen NW
+</PRE>
+N&auml;chste Runde sieht der Befehl so aus:
+<PRE>
+ROUTE Osten Osten SO Westen Westen Pause SW Westen NW NO Osten Pause
+</PRE>
+Und in der Runde darauf:
+<PRE>
+ROUTE Westen Westen Pause SW Westen NW NO Osten Pause Osten Osten SO
+</PRE>
+Und in der Runde darauf:
+<PRE>
+ROUTE SW Westen NW NO Osten Pause Osten Osten SO Westen Westen Pause
+</PRE>
+Und schlie&szlig;lich wieder wie am Anfang.
+</BLOCKQUOTE>
+</P>
+
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: route.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

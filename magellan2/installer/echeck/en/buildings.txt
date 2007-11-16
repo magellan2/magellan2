@@ -1,0 +1,22 @@
+#####################  buildings.txt   ECheck V4 and above  #################
+# This file contains the list of buildings
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+castle
+lighthouse
+mine
+quarry
+port
+academy
+wizardtower
+smithy
+sawmill
+stable
+monument
+dam
+caravanserai
+tunnel
+tavern
+university

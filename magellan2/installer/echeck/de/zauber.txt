@@ -1,0 +1,30 @@
+###################  zauber.txt      ECheck V4 und höher ###################
+# Diese Datei enthält die Liste aller Zauber
+#
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Alle Zauber stehen hier mit dem kompletten Namen
+# Pro Zeile gilt:
+#   erster Eintrag: Name des Zaubers
+#   zweiter Eintrag: Silberkosten für den Zauber
+#   dritter Eintrag: Typ des Zaubers	0 = "normaler" Zauber
+#					1 = Kampfzauber
+#					2 = Post-Kampfzauber
+#					3 = Prae-Kampfzauber
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+# Diese Liste enthält absichtlich keine "echten" Zauber.
+# Es sollte jedem leicht fallen, die Liste anzupassen und zu erweitern.
+
+Magische Erbsensuppe; 0; 1	# ein Kampfzauber der stinkenden Art
+Sonnenschein; 50; 0		# braucht man ja immer mal...
+Ferne Investition; 500; 0	# Zinsen: -100%
+Blitzlicht; 0; 1		# Cheese!
+Magisches Lametta; 5; 2		# ja, is' denn scho' wieder Weihnachten?
+Pesthauch; 0; 3			# was man nicht alles mit Knoblauch hinbekommt
+Schattenspiele; 50; 0		# immer wieder unterhaltsam
+
+# Wir werden keine Fragen zu etwaigen neuen Zaubern beantworten.
+#  - Faroul und das Design-Team

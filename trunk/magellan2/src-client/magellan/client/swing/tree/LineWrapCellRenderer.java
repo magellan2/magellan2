@@ -43,7 +43,6 @@ import javax.swing.tree.TreePath;
 
 import magellan.client.Client;
 import magellan.library.Message;
-import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 

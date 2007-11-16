@@ -1,0 +1,11 @@
+######################  ships.txt   ECheck V4 and above  ####################
+# This file contains the list of ships
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+Boat
+Longboat
+Longship
+Caravel
+Trireme

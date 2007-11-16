@@ -1,0 +1,56 @@
+######################  items.txt   ECheck V4 and above  ####################
+# This file contains the list of items
+#
+# These are all items with all their names as known by the server
+# Per line applies:
+#    first entry: singular
+#    second entry: plural
+#    third and additional entries: further alternatives
+#	if the third entry is a numeric value, this is the basic-price
+#	for buying a luxury
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+balm; balms, 4
+spice; spice; spices, 5
+gem; gems, 7
+myrrh; myrrh, 5
+oil; oil, 3
+silk; silk, 6
+incense; incense, 4
+
+iron; iron
+wood; wood
+stone; stones
+horse; horses
+cart; carts
+catapult; catapults
+sword; swords
+spear; spears
+crossbow; crossbows
+bow; bows
+mallornspear; mallornspears
+mallorncrossbow; mallorncrossbows
+mallornbow; mallornbows
+seed; seeds
+chainmail; chainmails
+platemail; platemails
+broadsword; broadswords
+axe; axes
+great bow; great bows
+laensword; laenswords; laen sword; laen swords
+laenshield; laenshields; laen shield; laen shields
+laenmail; laenmails; laen mail; laen mails
+laen; laen
+shield; shields
+halberd; halberds
+lance; lances
+mallorn; mallorn
+catapult ammunition; catapult ammunition
+
+# Ok, these were the official items; you shouldn't change this list
+# if you count on the results of ECheck...
+# However, you can append additional items; no, I won't answer any
+# questions related to possible new items, as well as anyone else
+# of the design-team - Faroul
+

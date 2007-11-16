@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: BENENNE</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><b>BENENNE [FREMDE] EINHEIT "name"<br>
+BENENNE [FREMDE] PARTEI "name"<br>
+BENENNE [FREMDE] BURG "name"<br>
+BENENNE [FREMDES] SCHIFF "name"<br>
+BENENNE REGION "name"</b></p>
+
+<p> Benenne das aufgeführte Objekt neu. Für alle Arten von Gebäuden nimmt
+      man <tt>BURG</tt>. Schiffe und Gebäude können nur umbenannt werden,
+      wenn die Einheit auch das Kommando über das Gebäude oder das Schiff
+      hat (sie muß also die erste Einheit unter dem Gebäude oder dem Schiff
+      in der Auswertung sein). Eine Region kann nur vom Burgherr der mächtigsten
+      Burg einer Region umbenannt werden. </p>
+<p> Der neue Name kann bis zu 80 Zeichen lang sein und darf keine Klammern
+      enthalten. Längere Beschreibungen fügt man mit dem Befehl
+      <tt><a href="beschreibe.html">BESCHREIBE</a></tt> an. </p>
+<p>Durch den Zusatz <tt>FREMDE</tt> (bzw. <tt>FREMDES</tt>) kann man
+      Einheiten, Schiffe und sogar Gebäude (nicht nur Burgen) anderer
+      Parteien benennen, sofern diese noch keinen Namen haben (Einheiten
+      also als "Nummer abc" benannt sind). Man kann sogar eine fremde Partei
+      benennen, sofern diese älter als zehn Runden ist.</p>
+<p> Auch das Benennen der Partei muß von einer Einheit ausgeführt werden.
+    <pre>
+PARTEI 7 "sieben"
+     BENENNE PARTEI "Falsch" ; kein Effekt
+     EINHEIT 89
+       BENENNE PARTEI "Richtig"
+</pre>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: benenne.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

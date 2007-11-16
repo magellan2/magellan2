@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Patch-Source: http://eressea.upb.de/magellan/downloads/pkg/help/
+Package-Source: http://eressea.upb.de/magellan/downloads/magellan-help.jar

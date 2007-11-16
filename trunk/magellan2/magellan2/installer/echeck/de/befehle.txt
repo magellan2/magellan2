@@ -1,0 +1,75 @@
+##################  befehle.txt      ECheck V4 und höher ###################
+# Diese Datei enthält die Liste aller Befehle, die ECheck versteht.
+#
+# Die Schlüsselworte kann man mit "echeck -hb" erhalten
+# 
+# Umlaute dürfen nicht umschrieben werden, sondern als ISO-Latin1 benutzt:
+# ae=ä, oe=ö, ue=ü, Ae=Ä, Oe=Ö, Ue=Ü, sz=ß. Trennzeichen ist , oder ;
+#
+# Kommentare mit einem # davor; Leerzeilen sind erlaubt
+############################################################################
+
+WORK,         Arbeiten
+ATTACK,       Attackieren
+STEAL,        Beklauen
+SIEGE,        Belagere
+NAME,         Benennen
+USE,          Benutzen
+DESCRIBE,     Beschreiben
+ENTER,        Betreten
+GUARD,        Bewachen
+MESSAGE,      Botschaft
+END,          Ende
+RIDE,         Fahren
+FOLLOW,       Folgen
+RESEARCH,     Forschen
+GIVE,         Gib
+HELP,         Helfen
+FIGHT,        Kämpfen
+COMBATMAGIC,  Kampfzauber
+BUY,          Kaufen
+CONTACT,      Kontaktieren
+TEACH,        Lehren
+STUDY,        Lernen
+DELIVER,      Liefere
+MAKE,         Machen
+MOVE,         Nach
+PASSWORD,     Passwort
+PLANT,        Pflanzen
+RECRUIT,      Rekrutieren
+REPORT,       Report
+OPTION,       Option
+SPY,          Spionieren
+SETSTEALTH,   Tarnen
+CARRY,        Transportieren
+QUIT,         Stirb
+TAX,          Treiben
+ENTERTAIN,    Unterhalten
+SELL,         Verkaufen
+LEAVE,        Verlassen
+CAST,         Zaubere
+SHOW,         Zeigen
+DESTROY,      Zerstören
+FORGET,       Vergessen
+DEFAULT,      Default
+COMMENT,      //
+ROUTE,        Route
+SABOTAGE,     Sabotieren
+BREED,        Züchten
+ORIGIN,       Ursprung
+EMAIL,        Email
+RESERVE,      Reservieren
+BANNER,       Banner
+OPINION,      Meinung
+NUMBER,       Nummer
+SCHOOL,       Magiegebiet
+PIRACY,       Piraterie
+RESTART,      Neustart
+GROUP,        Gruppe
+SORT,         Sortieren
+PREFIX,       Präfix
+PROMOTION,    Beförderung
+
+# NEXT, Nächster     ist KEIN BEFEHL für ECheck, sondern ein PARAMETER!
+# dies ist aus internen Gründen notwendig, also entsprechend dort eintragen
+

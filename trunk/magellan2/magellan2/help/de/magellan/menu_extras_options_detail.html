@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Optionen: Detailanzeige</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel=stylesheet href="../default.css" type="text/css">
+</head>
+
+<body <!--#include virtual="../../bgcolor.ssi"-->
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Detailanzeige</h1>
+
+<p>In diesem Dialog können die Optionen der Detailanzeige und der Befehlsergänzung konfiguriert werden:</p>
+
+<p align="center"><img src="images/menu_extras_options_detail.gif" width=696 height=290 alt="Optionen - Detailanzeige" border=0></p>
+
+<h3>Datenanzeige</h3>
+
+<ul>
+	<li><b>Gegenstände in der Parteizusammenfassung gruppieren</b><br>
+	Ist diese Option aktiviert, werden die Gegenstände in der Regionsparteistatistik nach Waffen, Rüstungen, Ressourcen, Luxusgüter, Kräuter usw. gruppiert.
+	<li><b>Zeige Tag-Buttons</b><br>
+	Ist diese Option aktiviert werden in der Detailanzeige zwei Schaltflächen zum Hinzufügen und Enfernen von zusätzlichen CR-tags angezeigt, die man dann z.B. mit Vorlage auswerten kann.
+</ul>
+
+<h3>Region-Kurzinfo</h3>
+
+<ul>
+	In diesem Feld können die Regionsinhalte bestimmt werden, die permanent in dem grauen Bereich oberhalb der Detailanzeige eingeblendet werden.
+</ul>
+
+<h2>Befehlseditor</h2>
+
+<p align="center"><img src="images/menu_extras_options_detail_orders.gif" width=696 height=413 alt="Optionen - Detailanzeige - Befehlseditor" border=0></p>
+
+<ul>
+	<li><b>Multi-Editor Layout</b><br>
+	Wird diese Option aktiviert, stehen die Befehle aller Einheiten der Region untereinander im Befehlsfenster.<br>
+	Ist das Multi-Editor Layout deaktiviert, stehen nur die Befehle der gerade gewählten Einheit im Befehlsfenster.
+	<li><b>Farben</b><br>
+	Der Hintergrund der Befehlsbox kann dabei für die aktive Einheit anders eingefärbt werden als für die übrigen Einheiten. Dazu klickt man einfach auf das jeweilige Farbfeld.
+	<li><b>Syntaxhighlighting</b><br>
+	Hier kann man das Syntaxhighlighting (syntaxabhängige Färbung der Befehle) aktivieren und die Farben einstellen.
+	<li><b>Editor-Liste</b><br>
+	Die Einstellungen beeinflussen die Menge der dargestellten Einheiten im der Befehlsliste. Einschränken lässt sich diese Menge der dargestellten Einheiten auf Inseln, Regionen und Parteien.
+
+</ul>
+
+<h3>Befehlsvervollständigung</h3>
+
+<p align="center"><img src="images/menu_extras_options_detail_ordercompletion.gif" width=697 height=417 alt="Optionen - Befehlsvervollständigung" border=0></p>
+
+<p>Die automatische Befehlsvervollständigung erleichtert das Eingeben von Befehlen für die Einheiten. Dabei werden je nach Kontext sinnvolle bzw. mögliche Befehle vorgeschlagen und können mit wenigen Tastendrücken oder Klicks ausgewählt werden.<br>
+Beispiel:<br>
+Man tippt ein "G". Nun werden alle Befehle, die mit "G" beginnen zur Auswahl angezeigt. Nach Auswahl des Befehls "GIB" folgt hier  eine Liste aller Einheiten in der Region. Nachdem so die Einheitennummer eingegeben wurde erscheint eine Liste mit allen Gegenständen, die die Einheit besitzt.</p>
+
+<ul>
+	<li><b>Autovervollständigen aktivieren:</b><br>
+	Hier kann man die automatisch Befehlsvervollständigung de- und aktivieren.
+
+	<li><b>MACHEN-Ergänzung einschränken:</b><br>
+	Wenn diese Option gewählt ist, werden beim MACHEN-Befehl nur Gegenstände vorgeschlagen für die die notwendigen Ressourcen verfügbar sind.
+
+	<li><b>Sofortige Anzeige:</b><br>
+	Aktiviert die sofortige Anzeige der Befehlvorschläge nach der Eingabe eines Befehls. Das bedeutet, daß der nächste Teilbefehl vorgeschlagen wird, bevor der Wortanfang getippt wurde. Ist diese Option deaktiviert, muß man vor dem Befehlsvorschlag min. 1 Zeichen tippen.
+
+	<li><b>Zeit:</b><br>
+	Im Feld <i>Zeit</i> kann man die Verzögerung für die Anzeige des Befehlsvorschlages in ms einstellen.
+
+	<li><b>Modus:</b><br>
+	Für die Autovervollständigung stehen zwei Modi zur Verfügung:
+	<ul>
+		<li>Liste<br>
+		Sobald ein oder mehrere Zeichen eingegeben wurden, erscheint eine Liste mit möglichen Ergänzungen. Jede weitere Eingabe von Zeichen schränkt die Auswahl weiter ein.<br>
+		Beispiel:<br>
+		L -> "LEHREN, LERNEN, LIEFERE"<br>
+		LE -> "LEHREN, LERNEN"<br>
+		LEH -> "LEHREN"<br>
+		Man kann in der Liste mittels der Cursortasten nach oben und unten wandern. Ein Druck auf die TAB-Taste oder ein Doppelklick auf den Eintrag vervollständigt den Befehl.<br>
+
+		<li>Markierter Text<br>
+		Statt der Auswahlliste wird das Wort bis zur nächsten Unterscheidungsmöglichkeit vervollständigt. Der eingefügte Text ist markiert und wird so beim weitertippen überschrieben. Den Vorschlag übernimmt man auch hier mit der TAB-Taste.<br>
+
+		<li>Keine Anzeige<br>
+		Schaltet die Anzeige der Vorschläge ab. Das Einfügen der (unsichtbaren) Vorschläge ist dennoch möglich.
+	</ul>
+
+	<li>Bei den Eingabefeldern für <b>Vorwärts, Rückwärts, Einsetzen</b> und <b>Abbrechen</b> kann man die Tastenkombinationen für die jeweiligen Funktionen einstellen. <b>Vorwärts</b> springt einen Vorschlag vor, <b>Rückwärts</b> springt einen Vorschlag zurück, <b>Einsetzen</b> setzt den aktuellen Vorschlag ein und mit <b>Abbrechen</b> wird die Eingabe abgebrochen.<br>
+
+	<li><b>Selbstdefinierte Befehlsergänzungen</b><br>
+	Im unteren Bereich des Fensters hat man die Möglichkeit, selbst beliebige Kürzel zu definieren, die dann bei den Befehlsergänzungen vor den normalen Befehlen angezeigt werden. Hat man z.B. das Kürzel <I>lh</I> für <I>lernen Hiebwaffen</I> definiert, so wird das analog dem obigen Beispiel folgendermaßen angezeigt:<br>
+	L -> "lh, LEHREN, LERNEN, LIEFERE"<br>
+	LE -> "LEHREN, LERNEN"<br>
+	Wählt man während der Befehlserstellung das Kürzel aus, so wird der definierte Textbaustein anstatt des Kürzels eingesetzt. Dieser Baustein kann auch länger als eine Zeile sein.<br>
+	Im linken Teil der Anzeige befindet sich eine Liste der bisher definierten Kürzel. Wählt man eines der Kürzel mit der Maus aus, so wird im rechten Teil der Anzeige der dazugehörige Textbaustein angezeigt. Mittels der Schaltfläche <I><b>Hinzufügen</b></I> lassen sich neue Kürzel definieren, während die Schaltfläche <I><b>Entfernen</b></I> das gerade ausgewählte Kürzel aus der Liste löscht.
+	
+</ul>
+
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: menu_extras_options_detail.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

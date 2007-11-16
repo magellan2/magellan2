@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehl: GIB</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+
+<body bgcolor="#ffffff">
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<p><b>GIB einheit-nr KRÄUTER<br>
+GIB einheit-nr KOMMANDO<br>
+GIB einheit-nr EINHEIT<br>
+GIB einheit-nr anzahl SILBER<br>
+GIB einheit-nr anzahl PERSONEN<br>
+GIB einheit-nr anzahl gegenstand<br>
+GIB einheit-nr ALLES SILBER<br>
+GIB einheit-nr ALLE PERSONEN<br>
+GIB einheit-nr ALLES [gegenstand]<br>
+GIB 0 anzahl SILBER<br>
+GIB 0 anzahl PERSONEN<br>
+GIB 0 anzahl gegenstand</b></p>
+
+<p>Mit <tt>GIB</tt> können Einheiten alle Waren, die sie haben, an andere Einheiten geben. Bedingung ist, daß die angegebene Einheit Sachen annimmt. Dies tut sie nur, wenn sie zur eigenen oder einer alliierten Partei gehört (<a HREF="helfe.html"><tt>HELFE GIB</tt></a>), oder wenn sie diese Runde den Befehl <a HREF="kontaktiere.html"><tt>KONTAKTIERE</tt></a> für die Gebereinheit gegeben hat. Die meisten Sachen können zudem auch
+weggeworfen werden (<tt>GIB 0 ...</tt>).</p>
+
+<p>Geber- wie Empfängereinheit müssen sich natürlich in der selben Region aufhalten. Die Übergabe klappt auch auf hoher See, zwischen Schiffen und von Schiffen an Land und umgekehrt.</p>
+
+<p>Gegenstände und Silber, die mit <tt>GIB</tt> übergeben wurden, sind automatisch reserviert und können vom Materialpool und mit
+<a HREF="reserviere.html"><tt>RESERVIERE</tt></a> nicht von der Einheit genommen werden.</p>
+
+<p>Ausgenommen von dieser Regelung sind Gegenstände, die an eine fremde Partei übergeben wurden.<br>
+Außerdem wird <tt>GIB</tt> in zwei Phasen abgewickelt: Zuerst werden alle Fremdübergaben, dann erst übergaben an eigene Einheiten durchgeführt. So kann man über alle Gegenstände, die man von einer fremden Partei bekommt, schon in der selben Runde verfügen, fast so als wenn man sie zu Beginn der Runde gehabt hätte.</p>
+
+<p>Statt einer Anzahl kann man auch den Parameter <tt>ALLES</tt> (oder <tt>ALLE</tt>) benutzen. <tt>GIB einheit-nr ALLE Schwerter</tt> übergibt zum Beispiel alle Schwerter, die die Einheit zu dem Zeitpunkt hat. <tt>GIB einheit-nr ALLES</tt> übergibt sämtliche Gegenstände, Kräuter, Tränke und Silber, nicht aber die Personen der Einheit. Gibt man explizit <tt>GIB einheit-nr ALLE PERSONEN</tt>, so werden alle Personen übergeben und die Einheit aufgelöst.</p>
+
+<p>Will man Personen verschiedener Einheiten zusammenführen, so geschieht dies mit <tt>GIB einheit-nr anzahl PERSONEN</tt>. Dabei werden dann auch die Talente vermischt, und man sollte die Gegenstände nicht vergessen, da sie sonst evtl. den Bauern zufallen.</p>
+
+<p>Mit <tt>GIB einheit-nr EINHEIT</tt> wird die komplette Einheit mit allen Gegenst?nden einer anderen Partei gegeben, d.h. sie wechselt zur Partei der Empfänger-Einheit, und wird nicht zur Empfängereinheit zugefügt! Dabei können maximal 5 Personen pro Runde von einer Partei aufgenommen werden.</p>
+
+<p>Will man Personen oder eine Einheit an eine fremde Partei geben, ist dies nur möglich, wenn die Empfänger-Einheit mit <a HREF="kontaktiere.html"><tt>KONTAKTIERE</tt></a> die Geber-Einheit kontaktiert hat - auch dann, wenn sich die beiden Parteien mit <a HREF="helfe.html"><tt>HELFE GIB</tt></a> unterstützen. Dabei können maximal 5 Personen pro Runde die Partei wechseln.</p>
+
+<p> Hat die Einheit zudem ein Schiff oder ein Gebäude unter ihrem Kommando - ist sie also die erste aufgeführte Einheit im Schiff oder in dem Gebäude - kann sie das Kommando auch an eine andere Einheit übergeben. Die Einheit mit dem Kommando bestimmt, welche anderen Einheiten das Schiff oder das Gebäude betreten dürfen.</p>
+
+<p><tt>GIB einheit KOMMANDO</tt> sollte man immer anwenden, auch wenn  die Einheit mit dem Kommando das Schiff oder die Burg verläßt und die folgende Einheit das Kommando erhalten soll. Die Reihenfolge der Einheiten ist während der Auswertung nicht immer die dem Report entsprechende.</p>
+
+<p><tt>GIB k3f 300 Silber</tt><br>
+Gibt der Einheit <tt>k3f</tt> 300 Silber.</p>
+
+<p><tt>GIB 0 5 Steine</tt><br>
+Wirft 5 Steine weg.</p>
+
+<p><tt>GIB TEMP 3 7 PERSONEN</tt><br>
+Gibt der neu geschaffenen Einheit <tt>TEMP 3</tt> 7 Personen.</p>
+
+<p>Vorsicht: Zwischen <tt>MACHE TEMP</tt> und <tt>ENDE</tt> stehen Befehle für die neue Einheit - und diese hat kein Geld. Folgendes funktioniert also <b>nicht</b>:</p>
+<pre>
+MACHE TEMP 1
+  GIB TEMP 1 200 Silber  ;  sinnlos!
+  REKRUTIERE 2
+  NACH WESTEN
+ENDE
+</pre>
+<p>Sondern muß so geschrieben werden:</p>
+<pre>
+GIB TEMP 1 200 Silber
+MACHE TEMP 1
+  REKRUTIERE 2
+  NACH WESTEN
+ENDE
+; GIB TEMP 1 200 Silber  ;  oder hier!
+</pre>
+
+<!-- Inhalt - Ende -->
+
+<p>&nbsp;</p>
+<p align="right" class="tiny">$Id: gib.html 8 2003-10-12 21:05:43Z eressea $</p>
+<p>&nbsp;</p>
+</body>
+</html>

@@ -1,0 +1,15 @@
+#####################  options.txt   ECheck V4 and above  ###################
+# This file contains the list of options
+#
+# Comments start with a #; empty lines are allowed.
+#############################################################################
+
+plaintext
+computer
+statistics
+zipped
+template
+silverpool
+itempool
+addresses
+bzip2

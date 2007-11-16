@@ -1,0 +1,63 @@
+Mit * ist erledigt. 
+Mit - fehlt noch. 
+Mit + ist in Arbeit
+
+----- noch zu tun -----
+- Darstellungsfehler bei den Docks korrigieren (Theme vs.
+  L&F mit Abständen)
+
+- Ausblenden von Tab-Buttons
+
+- Mehrere Layouts für Docks zulassen (umschaltbare Views)
+
+- Icons in der Karte (Optionen & Anzeige)
+
+- Minimap speichert den ARR Renderer nicht (Bug #64)
+
+- Sonstige Bugfixes (Bugs #44, #48, #51, #52, ....)
+
+- evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
+
+------ in Arbeit ------
+
++ Probleme mit den PlugIns
+
++ Magellan Hilfe überarbeiten und an neue Gegebenheiten
+  anpassen
+
++ Optionsfenster überarbeiten
+    System > Textkodierung (komplett überarbeiten)
+    Desktop (an DockingFramework anpassen und komplett überarbeiten)
+    Regionsanzeige > Talentreihenfole (funktioniert nicht)
+    Detailanzeige (überarbeiten & funktioniert nicht richtig)
+    Detailanzeige > Befehlseditor (überarbeiten)
+    Karte (überarbeiten)
+    Nachrichten (nach System verschieben)
+    Ressourcen (überarbeiten)
+    Ressourcen > Pfade (nach System verschieben)
+    Ressourcen > Externe Module (überarbeiten)
+    OK & Abbrechen überarbeiten
+
+------ erledigt -------
+* Inseln werden nicht richtig erfasst (zumindest passiert da
+  bei mir nichts)
+
+* Mischmasch der Sprachen bei englischen Reports (englische
+  Templates & deutsche Eressea Trees (zum Beispiel: Gewürze),
+  etc.
+
+* Dockkonfiguration nicht binär sondern textuell speichern
+  (XML oder so).
+
+* Docks wieder einblenden
+
+* Probleme mit Order Completion (Bug #49)
+
+* ECheck als Dock
+
+* Nur eine Einstellung für den ECheck-Pfad (Bug #65)
+
+* Manuelles Anlegen von fehlenden Regionen (via Popup in
+  Karte)
+
+* UTF Encoding für CRs implementieren

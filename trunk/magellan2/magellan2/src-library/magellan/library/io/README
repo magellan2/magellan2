@@ -1,0 +1,36 @@
+How to read or write a file
+-------------------------------------------------------------------
+a) A file is selected by the user. Valid endings shall be: 
+  - .cr , .cr.bz , .cr.gz     These annotate cr files
+  - .xml, .xml.bz, .xml.gz    These annotate xml files
+  - .zip                      These annotate zip files
+b) If it is a zip archive, we have to look inside the file to choose 
+   an appropriate file. Valid endings inside shall be
+  - .cr   These annotate cr files
+  - .xml   These annotate xml files
+  If there are more than one file, a given interface may be asked for 
+  a selection of one of these files.
+With this information we are able to create a kind of FileType for reading and writing files.
+
+
+How to read a file
+-------------------------------------------------------------------
+Presumptions: 
+- a valid FileType is given
+
+A GameDataReader now has to determine some things:
+- check if it is a cr or xml file (perhaps we should keep this information in FileType?)
+- read the game name out of the file to determine the game specific loader
+- Read the rules of the game
+- delegate the reading of the gamedata to the gamespecific reader (or to a generic reader if 
+  no special reader found). 
+
+
+How to write a file
+-------------------------------------------------------------------
+Presumptions: 
+- a valid FileType is given
+- a valid GameData object is given
+
+A GameDataWriter now has to do the following steps
+- delegate writing of the gamedata to the gamespecific writer

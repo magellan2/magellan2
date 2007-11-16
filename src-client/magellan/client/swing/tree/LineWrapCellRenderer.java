@@ -292,17 +292,21 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     }
     
     String string = "";
-    Color backgroundColor = null;
+    // FF: Default: white
+    Color backgroundColor = Color.WHITE;
+
     if (userObject instanceof Message) {
       Message message = (Message)userObject;
       string = message.getText();
-      String colorName = "messagetype.section."+message.getMessageType().getSection()+".color";
-      String color = Client.INSTANCE.getProperties().getProperty(colorName);
-      if (color != null) {
-        // color for message type found.
-        backgroundColor = Utils.getColor(color);
-      } else {
-        log.warn("Property "+colorName+" not found.");
+      if (message.getMessageType()!=null){
+        String colorName = "messagetype.section."+message.getMessageType().getSection()+".color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color != null) {
+          // color for message type found.
+          backgroundColor = Utils.getColor(color);
+        } else {
+          log.warn("Property "+colorName+" not found.");
+        }
       }
     } else {
       string = userObject.toString();

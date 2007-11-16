@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +40,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import magellan.client.Client;
+import magellan.client.actions.desktop.LayoutDeleteMenu;
+import magellan.client.actions.desktop.LayoutExportMenu;
+import magellan.client.actions.desktop.LayoutImportMenu;
+import magellan.client.actions.desktop.LayoutSaveMenu;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.Resources;
@@ -72,6 +77,9 @@ public class DockingFrameworkBuilder  {
 	/** Holds value of property screen. */
 	private Rectangle screen;
 	private static Dimension minSize;
+  
+  private static JMenu layoutMenu = null;
+  private static List<DockingLayout> layouts = new ArrayList<DockingLayout>();
 
 	/**
 	 * Creates new DockingFrameworkBuilder
@@ -292,6 +300,14 @@ public class DockingFrameworkBuilder  {
       }
     } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
       NodeList subnodes = root.getChildNodes();
+      String layoutName = root.getAttribute("name");
+      boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"),true);
+      if (Utils.isEmpty(layoutName)) layoutName = "Standard";
+      
+      DockingLayout layout = new DockingLayout(layoutName,root);
+      layout.setActive(isActive);
+      layouts.add(layout);
+      
       DockingWindow child = null;
       for (int i=0; i<subnodes.getLength(); i++) {
         Node node = subnodes.item(i);
@@ -400,6 +416,8 @@ public class DockingFrameworkBuilder  {
   protected synchronized RootWindow createDefault(StringViewMap viewMap, Map<String,View> views) {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
     
+    layouts.add(new DockingLayout("Standard",null));
+    
     View overview = views.get("OVERVIEW");
     View history = views.get("HISTORY");
     View minimap = views.get("MINIMAP");
@@ -435,6 +453,22 @@ public class DockingFrameworkBuilder  {
     JMenu desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
+    layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
+    
+    for (DockingLayout layout : layouts) {
+      JCheckBoxMenuItem item = new JCheckBoxMenuItem(layout.getName());
+      item.setSelected(layout.isActive());
+      layoutMenu.add(item);
+    }
+    layoutMenu.addSeparator();
+    layoutMenu.add(new LayoutExportMenu());
+    layoutMenu.add(new LayoutImportMenu());
+    layoutMenu.add(new LayoutSaveMenu());
+    layoutMenu.add(new LayoutDeleteMenu());
+    
+    desktopMenu.add(layoutMenu);
+    desktopMenu.addSeparator();
+    
     if(components.size() > 0) {
       for (String key : components.keySet()) {
         if (key.equals("COMMANDS")) continue; // deprecated
@@ -451,6 +485,22 @@ public class DockingFrameworkBuilder  {
     }
     
     return desktopMenu;
+  }
+  
+  public static void updateLayoutMenu() {
+    if (layoutMenu == null) return;
+    
+    for (int i=0; i<layoutMenu.getItemCount(); i++) {
+      if (layoutMenu.getItem(i) instanceof JCheckBoxMenuItem) layoutMenu.remove(i);
+    }
+    
+    int i=0;
+    for (DockingLayout layout : layouts) {
+      JCheckBoxMenuItem item = new JCheckBoxMenuItem(layout.getName());
+      item.setSelected(layout.isActive());
+      layoutMenu.insert(item,i++);
+    }
+    
   }
   
 	protected FrameTreeNode checkTree(FrameTreeNode node, Map comp) {
@@ -670,4 +720,71 @@ public class DockingFrameworkBuilder  {
 	public void setScreen(Rectangle screen) {
 		this.screen = screen;
 	}
+}
+
+class DockingLayout {
+  private String name = null;
+  private Element root = null;
+  private boolean isActive = false;
+  
+  /**
+   * Creates a new Docking Framework Layout Container.
+   */
+  public DockingLayout(String name, Element root) {
+    setName(name);
+    setRoot(root);
+  }
+  
+  /**
+   * Returns the value of name.
+   * 
+   * @return Returns name.
+   */
+  public String getName() {
+    return name;
+  }
+  /**
+   * Sets the value of name.
+   *
+   * @param name The value for name.
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
+  /**
+   * Returns the value of root.
+   * 
+   * @return Returns root.
+   */
+  public Element getRoot() {
+    return root;
+  }
+  /**
+   * Sets the value of root.
+   *
+   * @param root The value for root.
+   */
+  public void setRoot(Element root) {
+    this.root = root;
+  }
+
+  /**
+   * Returns the value of isActive.
+   * 
+   * @return Returns isActive.
+   */
+  public boolean isActive() {
+    return isActive;
+  }
+
+  /**
+   * Sets the value of isActive.
+   *
+   * @param isActive The value for isActive.
+   */
+  public void setActive(boolean isActive) {
+    this.isActive = isActive;
+  }
+  
+  
 }

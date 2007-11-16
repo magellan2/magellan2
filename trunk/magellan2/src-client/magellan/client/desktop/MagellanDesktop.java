@@ -75,6 +75,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -490,7 +491,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    */
   protected void initDesktopMenu() {
     desktopMenu = DockingFrameworkBuilder.createDesktopMenu(components,this);
-
   }
 
   /**
@@ -893,13 +893,18 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     if (splitRoot != null && splitRoot instanceof RootWindow) {
       RootWindow root = (RootWindow)splitRoot;
       for (int i=0; i<desktopMenu.getItemCount(); i++) {
-        JCheckBoxMenuItem item = (JCheckBoxMenuItem)desktopMenu.getItem(i);
-        String name = item.getActionCommand().substring(5);
-        DockingWindow window = findDockingWindow(root, name);
-        if (window != null) {
-          item.setSelected(true);
+        JMenuItem menuItem = desktopMenu.getItem(i);
+        if (menuItem instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem item = (JCheckBoxMenuItem)menuItem;
+          String name = item.getActionCommand().substring(5);
+          DockingWindow window = findDockingWindow(root, name);
+          if (window != null) {
+            item.setSelected(true);
+          }
         }
       }
+      
+      DockingFrameworkBuilder.updateLayoutMenu();
     }
   }
 

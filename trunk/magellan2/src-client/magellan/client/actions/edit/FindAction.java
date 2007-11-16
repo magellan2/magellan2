@@ -45,25 +45,20 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
 	 * @param client
 	 */
 	public FindAction(Client client) {
-        super(client);
-        client.getDispatcher().addGameDataListener(this);
+    super(client);
+    client.getDispatcher().addGameDataListener(this);
 		client.getDispatcher().addSelectionListener(this);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void menuActionPerformed(ActionEvent e) {
-		FindDialog f = new FindDialog(client, false, client.getDispatcher(), client.getData(),
-									  client.getProperties(), selectedRegions);
+		FindDialog f = new FindDialog(client, false, client.getDispatcher(), client.getData(), client.getProperties(), selectedRegions);
 		f.setVisible(true);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent s) {
@@ -77,38 +72,11 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		selectedRegions.clear();
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Find...");
-			defaultTranslations.put("mnemonic", "f");
-			defaultTranslations.put("accelerator", "ctrl F");
-			defaultTranslations.put("tooltip", "");
-		}
-
-		return defaultTranslations;
-	}
-  
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()

@@ -55,6 +55,15 @@ public class Utils {
     }
   }
   
+  public static boolean getBoolValue(String value, boolean defaultValue) {
+    if (value == null) return defaultValue;
+    try {
+      return Boolean.parseBoolean(value);
+    } catch (Exception exception) {
+      return defaultValue;
+    }
+  }
+  
   public static boolean isEmpty(Object object) {
     return (object==null);
   }

@@ -1,3 +1,6 @@
+2007-11-16 Fiete (sf@fietefietz.de)
+	* fixed NPE in LineWrapCellRenderer for Messages "Durchreise"
+	
 2007-11-16 Thoralf (thoralf@m84.de)
     * Created Release 2.0.b99
     * First steps for multiple docking layouts

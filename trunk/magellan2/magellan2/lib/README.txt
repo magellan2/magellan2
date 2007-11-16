@@ -1,1 +1,0 @@
-This folder contains all libraries that this application needs.

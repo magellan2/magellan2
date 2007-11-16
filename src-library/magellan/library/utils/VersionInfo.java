@@ -36,7 +36,7 @@ public class VersionInfo {
   public static final String PROPERTY_KEY_UPDATECHECK_URL    = "UpdateCheck.URL";
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
   
-  private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/magellan2/nightly-build/VERSION";
+  private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/magellan2/release/VERSION";
 
 	/**
 	 * Gets the Version of this Instance.

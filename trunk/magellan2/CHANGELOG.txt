@@ -1,5 +1,10 @@
+2007-11-17 Thoralf (thoralf@m84.de)
+    * Added some more multiple Docking Layout functions (loading/saving multiple RootWindows)
+      Now the XML file contains all layout-settings. It's still not possible to "switch"
+      between the layouts. That's the next part....
+
 2007-11-16 Fiete (sf@fietefietz.de)
-	* fixed NPE in LineWrapCellRenderer for Messages "Durchreise"
+    * fixed NPE in LineWrapCellRenderer for Messages "Durchreise"
 	
 2007-11-16 Thoralf (thoralf@m84.de)
     * Created Release 2.0.b99

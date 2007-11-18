@@ -88,6 +88,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private JCheckBox chkSelRegionsOnly = null;
 	private JCheckBox chkDelStats = null;
 	private JCheckBox chkDelTrans = null;
+	private JCheckBox chkDelEmptyFactions = null;
 
 	/**
 	 * Create a stand-alone instance of CRWriterDialog.
@@ -134,7 +135,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private void init() {
 		setContentPane(getMainPane());
 		setTitle(Resources.get("crwriterdialog.window.title"));
-		setSize(450, 250);
+		setSize(700, 300);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = Integer.parseInt(settings.getProperty("CRWriterDialog.x",
@@ -329,6 +330,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		chkDelTrans = new JCheckBox(Resources.get("crwriterdialog.chk.deltrans.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.delTrans",
 																	  "false"))).booleanValue());
+		chkDelEmptyFactions= new JCheckBox(Resources.get("crwriterdialog.chk.delemptyfactions.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.delEmptyFactions",
+                          "false"))).booleanValue());
 
 		JPanel pnlOptions = new JPanel(new GridLayout(6, 2));
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
@@ -345,6 +349,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		pnlOptions.add(chkSelRegionsOnly);
 		pnlOptions.add(chkDelStats);
 		pnlOptions.add(chkDelTrans);
+		pnlOptions.add(chkDelEmptyFactions);
 
 		return pnlOptions;
 	}
@@ -377,6 +382,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							 String.valueOf(chkDelStats.isSelected()));
 		settings.setProperty("CRWriterDialog.delTrans",
 							 String.valueOf(chkDelTrans.isSelected()));
+		settings.setProperty("CRWriterDialog.delEmptyFactions",
+        String.valueOf(chkDelEmptyFactions.isSelected()));
+		
 
 		if(chkSelRegionsOnly.isEnabled()) {
 			settings.setProperty("CRWriterDialog.includeSelRegionsOnly",
@@ -464,6 +472,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				// of privileged factions
 			  //
 				if(newData.factions() != null) {
+				  
+				  // ArrayList of Factions to be removed
+				  ArrayList<Faction>factionRemoveList=null;
+				  
 					Iterator<Faction> it1 = newData.factions().values().iterator();
 					boolean excludeBRegions = (crw.getIncludeMessages() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0));
 
@@ -485,8 +497,15 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 								}
 							}
 
-							if(!found) {
-                it1.remove(); // ???? TR: why removing it from the iterator...
+							if(!found && this.chkDelEmptyFactions.isSelected()) {
+							  // "remove" removed 
+                // it1.remove(); // ???? TR: why removing it from the iterator...
+							  if (factionRemoveList==null){
+							    factionRemoveList = new ArrayList<Faction>();
+							  }
+							  if (!factionRemoveList.contains(f)){
+							    factionRemoveList.add(f);
+							  }
 							}
 						}
 
@@ -498,11 +517,16 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							f.setMaxMigrants(-1);
 							f.setSpellSchool(null);
 							f.setAllies(null);
-							// TODO: heroes?
-
+							// FIXED: heroes?  (Fiete)
+							f.setHeroes(-1);
+							f.setMaxHeroes(-1);
+							
 							if(excludeBRegions && (f.getMessages() != null)) {
 								Iterator<Message> it2 = f.getMessages().iterator();
-
+								
+								// ArrayList of Messages to be removed
+								ArrayList<Message>messageRemoveList=null;
+								
 								while(it2.hasNext()) {
 									Message mes = it2.next();
 									found = false;
@@ -522,12 +546,38 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 									}
 
 									if(!found) {
-										it2.remove();
+									  // removed the remove from used iterator
+										// it2.remove();
+									  // adding this message to our removeList
+									  if (messageRemoveList==null){
+									    messageRemoveList= new ArrayList<Message>();
+									  }
+									  if (!messageRemoveList.contains(mes)){
+									    messageRemoveList.add(mes);
+									  }
 									}
+								}
+								
+								// check if some messages should be removed 
+								if (messageRemoveList!=null && messageRemoveList.size()>0){
+								    for (Iterator iter = messageRemoveList.iterator();iter.hasNext();){
+								      Message removeM = (Message)iter.next();
+								      f.getMessages().remove(removeM);
+								    }
 								}
 							}
 						}
 					}
+					
+					// check if factions should be removed
+					if (factionRemoveList!=null && factionRemoveList.size()>0){
+					    for (Iterator iter = factionRemoveList.iterator();iter.hasNext();){
+					      Faction removeF = (Faction)iter.next();
+					      // Removing the faction from newData
+					      newData.factions().remove(removeF.getID());
+					    }
+					}
+					
 				}
 			}
 

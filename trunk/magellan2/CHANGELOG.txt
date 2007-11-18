@@ -1,3 +1,7 @@
+2007-11-18 Fiete (sf@fietefietz.de)
+	* fixed Bug #107
+	* introduced extra CR Export option: delete empty factions
+
 2007-11-17 Thoralf (thoralf@m84.de)
     * Added some more multiple Docking Layout functions (loading/saving multiple RootWindows)
       Now the XML file contains all layout-settings. It's still not possible to "switch"

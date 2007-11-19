@@ -222,6 +222,15 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_ONE];
 	}
 
+  /**
+   * DOCUMENT-ME
+   *
+   * 
+   */
+  public boolean isShowingSkillsLessThanTwo() {
+    return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_TWO];
+  }
+  
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -304,11 +313,17 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 		if(isShowingSkillIcons() && (u.getSkills() != null)) {
 			boolean bool = isShowingSkillsLessThanOne();
-
+      boolean bool2 = isShowingSkillsLessThanTwo();
 			for(Iterator iter = u.getSkills().iterator(); iter.hasNext();) {
 				Skill s = (Skill) iter.next();
-
-				if((s.getLevel() > 0) || bool) {
+				boolean addSkill=true;
+        if (s.getLevel()<1 && !bool){
+          addSkill=false;
+        }
+        if (s.getLevel()<2 && !bool2){
+          addSkill=false;
+        }
+				if(addSkill) {
 					skills.add(s);
 				}
 			}
@@ -673,35 +688,38 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/** DOCUMENT-ME */
 		public final int SHOW_SKILL_LESS_ONE = 3;
 
+    /** DOCUMENT-ME */
+    public final int SHOW_SKILL_LESS_TWO = 4;
+    
 		/** DOCUMENT-ME */
-		public final int SHOW_OTHER = 4;
+		public final int SHOW_OTHER = 5;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_TEXT = 5;
+		public final int SHOW_TEXT = 6;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_NAMEFIRST = 6;
+		public final int SHOW_NAMEFIRST = 7;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_EXPECTED_ONLY = 7;
+		public final int SHOW_EXPECTED_ONLY = 8;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGES = 8;
+		public final int SHOW_CHANGES = 9;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGE_STYLED = 9;
+		public final int SHOW_CHANGE_STYLED = 10;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGE_TEXT = 10;
+		public final int SHOW_CHANGE_TEXT = 11;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CATEGORIZED = 11;
+		public final int SHOW_CATEGORIZED = 12;
 
 		/** DOCUMENT-ME */
-		public final int CATEGORIZE_START = 12;
+		public final int CATEGORIZE_START = 13;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_WARNINGS = 19;
+		public final int SHOW_WARNINGS = 20;
 		protected String categories[] = {
 											"weapons", "armour", "resources", "luxuries", "herbs",
 											"potions", "misc"
@@ -722,12 +740,13 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		 */
 		public UnitNodeWrapperDrawPolicy(Properties settings, String prefix) {
 			// super(5, new int[] {6, 2, 7, -1, -1}, settings, prefix,new String[][] {
-			super(4, new int[] { 7, 2, 7, 0 }, settings, prefix,
+			super(4, new int[] { 8, 2, 7, 0 }, settings, prefix,
 				  new String[][] {
 					  { "showAdditional", "true" },
 					  { "showContainerIcons", "true" },
 					  { "showSkillIcons", "true" },
 					  { "showSkillLessThanOneIcons", "false" },
+            { "showSkillLessThanTwoIcons", "true" },
 					  { "showOtherIcons", "true" },
 					  { "showIconText", "true" },
 					  { "showNamesFirst", "false" },
@@ -750,7 +769,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 				  },
 				  new String[] {
 					  "prefs.additional.text", "prefs.container.text", "prefs.skill.text",
-					  "prefs.skilllessthanone.text", "prefs.other.text", "prefs.icontext.text",
+					  "prefs.skilllessthanone.text", "prefs.skilllessthantwo.text", "prefs.other.text", "prefs.icontext.text",
 					  "prefs.nfirst.text", "prefs.showExpectedOnly",
 					  
 			"prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text",

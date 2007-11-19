@@ -4,6 +4,10 @@
 
 2007-11-19 Fiete (sf@fietefietz.de)
     * fixed last parts og bug #44: icons for alliances and income in faction stats
+    * fixed bug #35: harbours in ship moving inspector
+    * feature request #42: added shipItemInfo to detailsPanel
+    * fixed bug #37: merging roads with regions only seen by "neighbour"
+    * feature reuqest #40: do not show skills below 2 (optional)
 
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons

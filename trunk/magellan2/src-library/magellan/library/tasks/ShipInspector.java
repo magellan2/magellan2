@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.Rules;
@@ -139,10 +140,15 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 			// If ship is shored, it can only move deviate by one from the shore direction and only
 			// move to an ocean region
 			Direction d = Regions.getDirectionObjectsOfCoordinates(modifiedMovement).get(0);
-
 			if (Math.abs(s.getShoreId() - d.getDir()) > 1 && Math.abs(s.getShoreId() - d.getDir()) < 5) {
-				problems.add(new CriticizedError(s.getRegion(), s, this,
+				if (!this.hasHarbourInRegion(s.getRegion())){
+          problems.add(new CriticizedError(s.getRegion(), s, this,
 						Resources.get("tasks.shipinspector.error.wrongshore.description")));
+        } else {
+          // harbour in Region -> just warn, no error
+          problems.add(new CriticizedWarning(s.getRegion(), s, this,
+              Resources.get("tasks.shipinspector.error.wrongshore.harbour.description")));
+        }
 				return problems;
 			}
 			if (!nextRegion.getRegionType().equals(ozean)) {
@@ -159,13 +165,16 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 
 		while (nextRegion != null) {
 			// if ship is not a boat and on ocean , it can only move to ocean, plain or forest
+      // FF 20071119: don´t forget Harbors
 			if (!(s.getType().equals(rules.getShipType("Boot")) || (nextRegion.getRegionType()
 					.equals(ozean)
 					|| nextRegion.getRegionType().equals(wald) || nextRegion.getRegionType()
 					.equals(ebene)))) {
-				problems.add(new CriticizedError(s.getRegion(), s, this,
-						Resources.get("tasks.shipinspector.error.shipwreck.description")));
-				return problems;
+            if (!this.hasHarbourInRegion(nextRegion)){
+              problems.add(new CriticizedError(s.getRegion(), s, this,
+                  Resources.get("tasks.shipinspector.error.shipwreck.description")));
+              return problems;
+            }
 			}
 			if (movementIterator.hasNext()) {
 				nextRegionCoord = (CoordinateID) movementIterator.next();
@@ -176,4 +185,30 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 
 		return problems;
 	}
+  
+  /**
+   * checks, if an harbor is in the region and its size == maxSize
+   * !checks no alliance status
+   * @param nextRegion
+   * @return
+   */
+  private boolean hasHarbourInRegion(Region nextRegion){
+    if (nextRegion.buildings()!=null && nextRegion.buildings().size()>0){
+      // check all buildings
+      // i have no reference to the rules, do I?
+      // so we have to check for Harbour by BuildingTypeName
+      for (Iterator iter = nextRegion.buildings().iterator();iter.hasNext();){
+        Building b = (Building)iter.next();
+        if (b.getBuildingType().getName().equalsIgnoreCase("Hafen")){
+          // lets check size
+          if (b.getSize()>=b.getBuildingType().getMaxSize()){
+            // ok...there is an harbour
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+  
 }

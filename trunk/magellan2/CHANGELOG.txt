@@ -1,3 +1,6 @@
+2007-11-19 Fiete (sf@fietefietz.de)
+    * fixed last parts og bug #44: icons for alliances and income in faction stats
+
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons
     * added List of potions to show to avoid multiple nodes of same potion

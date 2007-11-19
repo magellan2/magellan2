@@ -303,6 +303,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty("messagetype.section.production.color","-");// Format: #RRGGBB
       settings.setProperty("messagetype.section.errors.color","-");// Format: #RRGGBB
 
+      // try to set path to ECheck
+      this.initECheckPath(settings);
       
       initLocales(settings, true);
     } else {
@@ -2126,4 +2128,33 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
     return result;
   }
+  
+  /**
+   * on windows-OS tries to locate the included ECheck.exe and
+   * if found save the path into properties
+   */
+  public void initECheckPath(Properties settings){
+    // check if we have a windows os
+    String osName = System.getProperty("os.name");
+    osName = osName.toLowerCase();
+    if (osName.indexOf("windows")>-1){
+      log.info("new ini. windows OS detected. (" + osName + ")");
+      // we have a windows OS
+      // lets asume the location
+      String actPath = settingsDirectory + File.separator + "echeck" + File.separator + "ECheck.exe";
+      log.info("checking for ECheck: " + actPath);
+      File echeckFile = new File(actPath);
+      if (echeckFile.exists()){
+        // yep, we have an ECheck.exe here
+        // lets add to the properties
+        settings.setProperty("JECheckPanel.echeckEXE", echeckFile.toString());
+        log.info("set echeckEXE to: " + echeckFile.toString());
+      } else {
+        log.info("ECheck.exe not found"); 
+      }
+    } else {
+      log.info("new ini. non - windows OS detected. (" + osName + ")");
+    }
+  }
+  
 }

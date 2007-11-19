@@ -3228,9 +3228,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     // inform desktopmenu
     if (addedWindow.getName() != null) {
       for (int index=0; index<desktopMenu.getItemCount(); index++) {
-        JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-        if (menu.getActionCommand().equals("menu."+addedWindow.getName())) {
-          menu.setSelected(true);
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+addedWindow.getName())) {
+            menu.setSelected(true);
+          }
         }
       }
     }

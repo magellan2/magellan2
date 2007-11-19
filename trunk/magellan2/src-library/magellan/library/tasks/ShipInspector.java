@@ -127,6 +127,14 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 
 		Iterator movementIterator = modifiedMovement.iterator();
 		movementIterator.next();
+		if (!movementIterator.hasNext()){
+		  // this happens when we have some kind of movement and an startRegion
+		  // but no next region
+		  // example: ROUTE PAUSE NO
+		  problems.add(new CriticizedError(s.getRegion(), s, this,
+          Resources.get("tasks.shipinspector.error.nonextregion.description")));
+      return problems;
+		}
 		CoordinateID nextRegionCoord = (CoordinateID) movementIterator.next();
 		Region nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
 
@@ -137,6 +145,11 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		// TODO: We should consider harbours, too. But this is difficult because we don't know if
 		// harbour owner is allied with ship owner etc. We better leave it up to the user to decide...
 		if (s.getShoreId() != -1) {
+		  if (!nextRegion.getRegionType().equals(ozean)) {
+        problems.add(new CriticizedError(s.getRegion(), s, this,
+            Resources.get("tasks.shipinspector.error.noocean.description")));
+        return problems;
+      }
 			// If ship is shored, it can only move deviate by one from the shore direction and only
 			// move to an ocean region
 			Direction d = Regions.getDirectionObjectsOfCoordinates(modifiedMovement).get(0);
@@ -151,11 +164,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
         }
 				return problems;
 			}
-			if (!nextRegion.getRegionType().equals(ozean)) {
-				problems.add(new CriticizedError(s.getRegion(), s, this,
-						Resources.get("tasks.shipinspector.error.noocean.description")));
-				return problems;
-			}
+			
 			if (movementIterator.hasNext()) {
 				nextRegionCoord = (CoordinateID) movementIterator.next();
 				nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);

@@ -9,6 +9,10 @@
     * fixed bug #37: merging roads with regions only seen by "neighbour"
     * feature reuqest #40: do not show skills below 2 (optional)
     * fixed bug #73: HIDE race only for demons
+    * added in shipMovingInspector: Error in movement order. (ROUTE PAUSE ..)
+    * added for ECheck default warning level -w2
+    * added automatic ECheck-Path init at first startup, only on windows OS
+    * fixed part of bug #74: spell name in syntax in german
 
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons

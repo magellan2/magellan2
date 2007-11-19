@@ -137,8 +137,8 @@ public abstract class MagellanFactory {
     return new MagellanUnitImpl(id);
   }
   
-  public static Spell createSpell(ID id) {
-    return new MagellanSpellImpl(id);
+  public static Spell createSpell(ID id, GameData data) {
+    return new MagellanSpellImpl(id,data);
   }
 
   public static Battle createBattle(ID id) {

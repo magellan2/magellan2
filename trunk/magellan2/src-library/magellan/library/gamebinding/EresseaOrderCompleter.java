@@ -1564,7 +1564,7 @@ public class EresseaOrderCompleter implements Completer {
 		if((data != null) && (data.rules != null)) {
 			Race demons = data.rules.getRace(EresseaConstants.R_DAEMONEN);
 
-			if((demons == null) || (unit.getRealRace() == null) || unit.getRealRace().equals(demons)) {
+			if((demons == null) || (unit.getRealRace() != null && unit.getRealRace().equals(demons)) || (unit.getRace().equals(demons))) {
 				for(Iterator iter = data.rules.getRaceIterator(); iter.hasNext();) {
 					Race r = (Race) iter.next();
 					completions.add(new Completion(r.getName()));

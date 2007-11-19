@@ -258,6 +258,7 @@
         </fileset>
         <fileset dir="${basedir}/installer">
           <include name="*.bat"/>
+          <include name="*.sh"/>
         </fileset>
     </copy>
   </target>

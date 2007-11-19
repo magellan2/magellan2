@@ -15,9 +15,7 @@ package magellan.client.actions.edit;
 
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.LinkedList;
-import java.util.Map;
 
 import magellan.client.Client;
 import magellan.client.FindDialog;

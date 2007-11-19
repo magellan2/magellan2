@@ -1,4 +1,4 @@
-// class magellan.client.actions.desktop.LayoutExportMenu
+// class magellan.client.actions.desktop.LayoutDeleteMenu
 // created on 16.11.2007
 //
 // Copyright 2003-2007 by magellan project team
@@ -27,14 +27,23 @@ import java.awt.event.ActionEvent;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
-public class LayoutExportAction extends MenuAction {
+/**
+ * With the help of the action it is possible to create new docking layouts.
+ *
+ * @author ...
+ * @version 1.0, 19.11.2007
+ */
+public class LayoutNewAction extends MenuAction {
+  private static final Logger log = Logger.getInstance(LayoutNewAction.class);
   
   /**
    * 
    */
-  public LayoutExportAction() {
+  public LayoutNewAction() {
     super(Client.INSTANCE);
   }
   
@@ -43,7 +52,7 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.new.accelerator",false);
   }
 
   /**
@@ -51,7 +60,7 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic",false);
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.new.mnemonic",false);
   }
 
   /**
@@ -59,7 +68,7 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.caption");
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.new.caption");
   }
 
   /**
@@ -75,7 +84,8 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+    log.info(e);
+    DockingFrameworkBuilder.getInstance().createNewLayout("New Layout");
   }
 
 }

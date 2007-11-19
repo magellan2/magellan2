@@ -861,6 +861,28 @@ public abstract class MagellanFactory {
       }
     }
 
+    //  TODO
+    if(!sameTurn) {
+      /* as long as both reports are from different turns we
+       can just overwrite the visibility status with the newer
+       version */
+      newRegion.setVisibility(curRegion.getVisibility());
+    } else {
+      /* this where trouble begins: reports from the same turn
+       so we basically have 4 visibility status:
+       1 contains units (implicit)
+       2 travel (explicit)
+       3 lighthouse (explicit)
+       4 next to a unit containing region (implicit)
+       now - how do we merge this?
+       for a start, we just make sure that the visibility
+       value is not lost */
+      if(curRegion.getVisibility() != null) {
+        newRegion.setVisibility(curRegion.getVisibility());
+      }
+    }
+    
+    
     /*
         // from Region.java.~1.19~
     // pavkovic 2002.04.12: This logic seems to be more reasonable:
@@ -894,10 +916,22 @@ public abstract class MagellanFactory {
     if(!curRegion.units().isEmpty() || (newRegion.units().isEmpty() && curRegion.borders != null &&!(curRegion.borders.isEmpty()))) {
     */
     
-    // if we have units in the current region wins.
+    // if we have units in the current region the current region wins.
     // if we are not in the same turn the current region wins.
     // if we dont have units in the new region the current region wins.
-    if(!curRegion.units().isEmpty() || !sameTurn || newRegion.units().isEmpty()) {
+    // if(!curRegion.units().isEmpty() || !sameTurn || newRegion.units().isEmpty()) {
+    
+    // test: determine, if newregion is seen just bei neighbour
+    // bug #37: such regions only contain borders to regions we have units in....
+    // we will try to the currentRegion win in that case, because newRegionData is not complete
+    boolean newregionSeenByNeighbour = false;
+    if (newRegion.getVisibility()!=null && newRegion.getVisibility().equalsIgnoreCase("neighbour")){
+      newregionSeenByNeighbour=true;
+    }
+    
+    if((!curRegion.units().isEmpty() || !sameTurn || newRegion.units().isEmpty()) && !newregionSeenByNeighbour) {
+      // currentRegion wins
+      // take borders for new region from current
       newRegion.clearBorders();
 
       for(Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
@@ -1138,26 +1172,7 @@ public abstract class MagellanFactory {
       newRegion.setTrees(curRegion.getTrees());
     }
 
-    // TODO
-    if(!sameTurn) {
-      /* as long as both reports are from different turns we
-       can just overwrite the visibility status with the newer
-       version */
-      newRegion.setVisibility(curRegion.getVisibility());
-    } else {
-      /* this where trouble begins: reports from the same turn
-       so we basically have 4 visibility status:
-       1 contains units (implicit)
-       2 travel (explicit)
-       3 lighthouse (explicit)
-       4 next to a unit containing region (implicit)
-       now - how do we merge this?
-       for a start, we just make sure that the visibility
-       value is not lost */
-      if(curRegion.getVisibility() != null) {
-        newRegion.setVisibility(curRegion.getVisibility());
-      }
-    }
+    
 
     if(curRegion.getWage() != -1) {
       newRegion.setWage(curRegion.getWage());

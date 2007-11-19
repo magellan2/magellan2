@@ -2442,6 +2442,62 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 	}
 
+  /**
+   * Append information about all things on the ship
+   * 
+   * @param s  The ship
+   * @param parent Mother-Tree-Node
+   * @param expandableNodes
+   */
+  private void appendShipItemInfo(Ship s, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
+    // items
+    List<Unit> units = new LinkedList<Unit>(s.units()); // the collection of units currently on the ship
+    Collections.sort(units, sortIndexComparator);
+
+    Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
+    Collection<Unit> allInmates = new LinkedList<Unit>();
+    allInmates.addAll(units);
+    for (Iterator iter = modUnits.iterator();iter.hasNext();){
+      Unit aU = (Unit)iter.next();
+      if (!allInmates.contains(aU)){
+        allInmates.add(aU);
+      }
+    }
+   
+      //DefaultMutableTreeNode itemsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.items"));
+      DefaultMutableTreeNode itemsNode = createSimpleNode(Resources.get("emapdetailspanel.node.items"), "things");
+      parent.add(itemsNode);
+      expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.ShipItemsExpanded"));
+  
+      Collection catNodes = unitsTools.addCategorizedUnitItems(allInmates, itemsNode, null, null, true, nodeWrapperFactory); 
+      if(catNodes != null) {
+        for(Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
+          DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
+          Object o = node.getUserObject();
+          ID id = null;
+          if(o instanceof ItemCategoryNodeWrapper) {
+            id = (((ItemCategoryNodeWrapper) o).getItemCategory()).getID();
+          } else {
+            if(o instanceof ItemCategory) {
+              id = ((ItemCategory) o).getID();
+            } else {
+              if(o instanceof ItemNodeWrapper) {
+                id = ((ItemNodeWrapper) o).getItem().getItemType().getID();
+              }
+            }
+          }
+          
+          if(id != null) {
+            expandableNodes.add(new NodeWrapper(node,
+                              "EMapDetailsPanel.ShipItems"+id+"Expanded"));
+          }
+        }
+      }
+    }
+  
+  
+  
+  
 	/** 
 	 * Append information on the skills of this unit.
 	 * 
@@ -3348,6 +3404,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// Insassen
 		appendShipInmateInfo(s, parent, expandableNodes);
+    
+    // Things on the ship
+    appendShipItemInfo(s, parent, expandableNodes);
 		
 		// Baukosten info
 		appendShipCosts(s, parent, expandableNodes);

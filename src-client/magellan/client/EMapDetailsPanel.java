@@ -2747,19 +2747,39 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				Skill alchSkill = u.getSkillMap().get(EresseaConstants.S_ALCHEMIE);
 				List<Potion> potions = new LinkedList<Potion>(data.potions().values());
 				Collections.sort(potions, new PotionLevelComparator<Named>(new NameComparator<Unique>(null)));
-
+				
+				// we have after merging multiple potion-definitions within the CR
+				// lets build a list of potions to show
+				LinkedList<Potion>potionList = null;
+				
 				for(Iterator iter = potions.iterator(); iter.hasNext();) {
 					Potion p = (Potion) iter.next();
 
 					if((p.getLevel() * 2) <= alchSkill.getLevel()) {
-						int max = getBrewablePotions(data.rules, p, u.getRegion());
-						potionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createPotionNodeWrapper(p,
-						                                                                data.getTranslation(p),
-																											  ": " +
-																											  max)));
+					  
+					  // lets add this potion to the list of potions to show
+					  if (potionList==null){
+					    potionList = new LinkedList<Potion>();
+					  }
+					  if (!potionList.contains(p)){
+					    potionList.add(p);
+					  }
+						
 					}
 				}
-
+				// lets see if we have potions to display
+				if (potionList!=null && potionList.size()>0){
+				  for (Iterator iter = potionList.iterator();iter.hasNext();){
+				    Potion p = (Potion)iter.next();
+				    int max = getBrewablePotions(data.rules, p, u.getRegion());
+            potionsNode.add(new DefaultMutableTreeNode(nodeWrapperFactory.createPotionNodeWrapper(p,
+                                                                            data.getTranslation(p),
+                                                        ": " +
+                                                        max)));
+				  }
+				}
+				
+				
 				if(potionsNode.getChildCount() > 0) {
 					parent.add(potionsNode);
 					expandableNodes.add(new NodeWrapper(potionsNode,

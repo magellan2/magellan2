@@ -13,6 +13,7 @@
 
 package magellan.client.swing.tree;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -29,6 +30,10 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
 	private Potion potion = null;
     private String name = null;
     private String postfix = null;
+    /*
+     * We want Icons besides PotionNodes
+     */
+    protected List<String> icon;
 
 	/**
 	 * Creates a new PotionNodeWrapper object.
@@ -77,7 +82,15 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
 	 * 
 	 */
 	public List getIconNames() {
-		return null;
+	  if(icon == null) {
+      icon = new ArrayList<String>(1);
+
+      if(potion != null) {
+        icon.add("items/" + potion.getName());
+      }
+    }
+
+    return icon;
 	}
 
 	/**

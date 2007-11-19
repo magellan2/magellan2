@@ -1,6 +1,10 @@
 2007-11-18 Fiete (sf@fietefietz.de)
-	* fixed Bug #107
-	* introduced extra CR Export option: delete empty factions
+    * fixed Bug #69, potions an alchemist can make now with icons
+    * added List of potions to show to avoid multiple nodes of same potion
+	 
+2007-11-18 Fiete (sf@fietefietz.de)
+    * fixed Bug #107
+    * introduced extra CR Export option: delete empty factions
 
 2007-11-17 Thoralf (thoralf@m84.de)
     * Added some more multiple Docking Layout functions (loading/saving multiple RootWindows)

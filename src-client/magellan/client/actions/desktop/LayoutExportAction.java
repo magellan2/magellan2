@@ -1,4 +1,4 @@
-// class magellan.client.actions.desktop.LayoutImportMenu
+// class magellan.client.actions.desktop.LayoutExportMenu
 // created on 16.11.2007
 //
 // Copyright 2003-2007 by magellan project team
@@ -29,14 +29,15 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-public class LayoutImportMenu extends MenuAction {
+public class LayoutExportAction extends MenuAction {
+  
   /**
    * 
    */
-  public LayoutImportMenu() {
+  public LayoutExportAction() {
     super(Client.INSTANCE);
   }
-
+  
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
@@ -58,7 +59,7 @@ public class LayoutImportMenu extends MenuAction {
    */
   @Override
   protected String getNameTranslated() {
-    return Resources.get("desktop.magellandesktop.menu.desktop.layout.import.caption");
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.caption");
   }
 
   /**

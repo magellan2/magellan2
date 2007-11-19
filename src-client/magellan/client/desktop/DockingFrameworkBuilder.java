@@ -14,8 +14,6 @@
 package magellan.client.desktop;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
@@ -26,10 +24,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.swing.JSplitPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -37,10 +35,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import magellan.client.Client;
-import magellan.client.actions.desktop.LayoutDeleteMenu;
-import magellan.client.actions.desktop.LayoutExportMenu;
-import magellan.client.actions.desktop.LayoutImportMenu;
-import magellan.client.actions.desktop.LayoutSaveMenu;
+import magellan.client.actions.desktop.LayoutCheckboxMenuItem;
+import magellan.client.actions.desktop.LayoutDeleteAction;
+import magellan.client.actions.desktop.LayoutExportAction;
+import magellan.client.actions.desktop.LayoutImportAction;
+import magellan.client.actions.desktop.LayoutSaveAction;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.Resources;
@@ -63,12 +62,11 @@ import net.infonode.util.Direction;
  */
 public class DockingFrameworkBuilder  {
   private static final Logger log = Logger.getInstance(DockingFrameworkBuilder.class);
+  private static DockingFrameworkBuilder _instance = null;
 	private List<Component> componentsUsed;
   private StringViewMap viewMap = null;
 
 	/** Holds value of property screen. */
-	private Rectangle screen;
-	private static Dimension minSize;
   
   private static JMenu layoutMenu = null;
   private static List<DockingLayout> layouts = new ArrayList<DockingLayout>();
@@ -77,14 +75,14 @@ public class DockingFrameworkBuilder  {
 	/**
 	 * Creates new DockingFrameworkBuilder
 	 */
-	public DockingFrameworkBuilder(Rectangle s) {
+	private DockingFrameworkBuilder() {
 		componentsUsed = new LinkedList<Component>();
-		screen = s;
-
-		if(minSize == null) {
-			minSize = new Dimension(100, 10);
-		}
 	}
+  
+  public static DockingFrameworkBuilder getInstance() {
+    if (_instance == null) _instance = new DockingFrameworkBuilder();
+    return _instance;
+  }
 
 	/**
 	 * This method builds the desktop. This is the main component inside Magellan
@@ -92,26 +90,18 @@ public class DockingFrameworkBuilder  {
 	 */
 	public JComponent buildDesktop(FrameTreeNode root, Map<String,Component> components, File serializedView) {
 		componentsUsed.clear();
-		root = checkTree(root, components);
-
-		if(root == null) {
-			return null;
-		}
-
-		if(root.isLeaf()) {
-			componentsUsed.add(components.get(root.getName()));
-
-			return (JComponent) components.get(root.getName());
-		}
+    for (Component component : components.values()) {
+      componentsUsed.add(component);
+    }
     
     // we have a tree of settings and a list of components. Let's build a root window here...
-    return createRootWindow(components,screen,serializedView);
+    return createRootWindow(components,serializedView);
 	}
   
   /**
    * This method tries to setup the infonode docking framework.
    */
-  protected JComponent createRootWindow(Map<String,Component> components, Rectangle size, File serializedViewData) {
+  protected JComponent createRootWindow(Map<String,Component> components, File serializedViewData) {
     Map<String,View> views = new HashMap<String,View>();
     viewMap = new StringViewMap();
 
@@ -179,6 +169,8 @@ public class DockingFrameworkBuilder  {
     }
     buffer.append("</dock>\r\n");
     
+    System.out.println(buffer);
+    
     PrintWriter pw = new PrintWriter(serializedViewData,Encoding.DEFAULT.toString());
     pw.println(buffer.toString());
     pw.close();
@@ -200,7 +192,7 @@ public class DockingFrameworkBuilder  {
         log.fatal("The file "+serializedViewData+" does NOT contain Docking-layouts for Magellan. Missing XML root element 'dock'");
         return null;
       }
-      load(document.getDocumentElement());
+      load(document.getDocumentElement(), viewMap, views);
       
       log.info("Loaded "+layouts.size()+" Docking layouts.");
       for (DockingLayout layout : layouts) {
@@ -212,7 +204,7 @@ public class DockingFrameworkBuilder  {
       
       if (activeLayout == null && layouts.size()>0) activeLayout = layouts.get(0);
       
-      activeLayout.open(window,viewMap,views);
+      activeLayout.open(window);
       
     } catch (Exception exception) {
       log.error(exception);
@@ -222,13 +214,13 @@ public class DockingFrameworkBuilder  {
     
     return window;
   }
-  protected synchronized void load(Element root) {
+  protected synchronized void load(Element root, StringViewMap viewMap, Map<String,View> views) {
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       List<Element> subnodes = Utils.getChildNodes(root);
       log.info("Found "+subnodes.size()+" Docking layouts.");
       for (int i=0; i<subnodes.size(); i++) {
         Element node = subnodes.get(i);
-        load(node);
+        load(node, viewMap, views);
       }
     } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
       String layoutName = root.getAttribute("name");
@@ -236,7 +228,7 @@ public class DockingFrameworkBuilder  {
       boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"),true);
       
       log.warn("Lade Layout "+layoutName);
-      DockingLayout layout = new DockingLayout(layoutName,root);
+      DockingLayout layout = new DockingLayout(layoutName,root, viewMap, views);
       layout.setActive(isActive);
       layouts.add(layout);
     }
@@ -250,12 +242,12 @@ public class DockingFrameworkBuilder  {
       ErrorWindow errorWindow = new ErrorWindow("Could not create default docking layout.");
       errorWindow.open();
     }
-    DockingLayout defaultLayout = new DockingLayout("Standard",root);
+    DockingLayout defaultLayout = new DockingLayout("Standard", root, viewMap, views);
     defaultLayout.setActive(true);
     layouts.add(defaultLayout);
     
     activeLayout = defaultLayout;
-    activeLayout.open(window,viewMap,views);
+    activeLayout.open(window);
     
     return window;
   }
@@ -270,16 +262,17 @@ public class DockingFrameworkBuilder  {
     
     layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
     
+    ButtonGroup group = new ButtonGroup();
     for (DockingLayout layout : layouts) {
-      JCheckBoxMenuItem item = new JCheckBoxMenuItem(layout.getName());
-      item.setSelected(layout.isActive());
+      LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      group.add(item);
       layoutMenu.add(item);
     }
     layoutMenu.addSeparator();
-    layoutMenu.add(new LayoutExportMenu());
-    layoutMenu.add(new LayoutImportMenu());
-    layoutMenu.add(new LayoutSaveMenu());
-    layoutMenu.add(new LayoutDeleteMenu());
+    layoutMenu.add(new LayoutExportAction());
+    layoutMenu.add(new LayoutImportAction());
+    layoutMenu.add(new LayoutSaveAction());
+    layoutMenu.add(new LayoutDeleteAction());
     
     desktopMenu.add(layoutMenu);
     desktopMenu.addSeparator();
@@ -302,214 +295,40 @@ public class DockingFrameworkBuilder  {
     return desktopMenu;
   }
   
+  /**
+   * Updates all Docking Layouts in the Desktop>Layout menu by removing
+   * them and recreate the list of available docking layouts.
+   */
   public static void updateLayoutMenu() {
     if (layoutMenu == null) return;
     
+    // remove all layout items from the menu
     for (int i=0; i<layoutMenu.getItemCount(); i++) {
-      if (layoutMenu.getItem(i) instanceof JCheckBoxMenuItem) layoutMenu.remove(i);
+      if (layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) layoutMenu.remove(i);
     }
     
+    // add all available items.
     int i=0;
+    ButtonGroup group = new ButtonGroup();
     for (DockingLayout layout : layouts) {
-      JCheckBoxMenuItem item = new JCheckBoxMenuItem(layout.getName());
-      item.setSelected(layout.isActive());
+      LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
+      group.add(item);
       layoutMenu.insert(item,i++);
     }
-    
   }
   
-	protected FrameTreeNode checkTree(FrameTreeNode node, Map comp) {
-		if(node == null) {
-			return null;
-		}
-
-		if(node.isLeaf()) {
-			if(comp.containsKey(node.getName())) {
-				return node;
-			} else {
-				return null;
-			}
-		}
-
-		FrameTreeNode left = checkTree(node.getChild(0), comp);
-		FrameTreeNode right = checkTree(node.getChild(1), comp);
-		node.setChild(0, left);
-		node.setChild(1, right);
-
-		if(left == null) {
-			return right;
-		}
-
-		if(right == null) {
-			return left;
-		}
-
-		return node;
-	}
-
-	protected JComponent createSplit(FrameTreeNode current, Map components, Rectangle sourceRect) {
-		int orient = current.getOrientation();
-		JSplitPane jsp = magellan.client.swing.ui.UIFactory.createBorderlessJSplitPane(orient);
-		Rectangle left = new Rectangle();
-		Rectangle right = new Rectangle();
-		left.x = sourceRect.x;
-		left.y = sourceRect.y;
-
-		if(current.isAbsolute()) {
-			int divider = (int) Math.round(current.getPercentage());
-			divider = checkDividerInRectangle(divider, orient, sourceRect);
-			jsp.setDividerLocation(divider);
-			createRects(orient, divider, sourceRect, left, right);
-		} else {
-			int divider = createRects(orient, current.getPercentage(), sourceRect, left, right);
-			jsp.setDividerLocation(divider);
-		}
-
-		// pavkovic 2004.04.02: remove one touch expander
-		jsp.setOneTouchExpandable(false);
-
-		// connect the split pane and the node
-		current.connectToSplitPane(jsp);
-
-		if(current.getChild(0).isLeaf()) {
-			JComponent jc = (JComponent) components.get(current.getChild(0).getName());
-
-            {
-                Object name = current.getChild(0).getName();
-                String configuration = current.getChild(0).getConfiguration();
-                // special meaning of overview
-                if("OVERVIEW".equals(name))  {
-                    name = "OVERVIEW&HISTORY";
-                } 
-                if(components.get(name) instanceof Initializable && configuration != null) {
-                    ((Initializable) components.get(name)).initComponent(configuration);
-                }
-            }
-
-			jc.setMinimumSize(minSize);
-
-			if(current.getChild(0).getName() == null) {
-				jsp.setTopComponent(jc);
-			} else {
-				jsp.setTopComponent(new magellan.client.swing.ui.InternalFrame(current.getChild(0)
-																				  .getName(), jc));
-			}
-
-			if(!componentsUsed.contains(jc)) {
-				componentsUsed.add(jc);
-			}
-		} else {
-			JComponent jc = createSplit(current.getChild(0), components, left);
-
-			if(current.getChild(0).getName() == null) {
-				jsp.setTopComponent(jc);
-			} else {
-				jsp.setTopComponent(new magellan.client.swing.ui.InternalFrame(current.getChild(0)
-																				  .getName(), jc));
-			}
-		}
-
-		if(current.getChild(1).isLeaf()) {
-			JComponent jc = (JComponent) components.get(current.getChild(1).getName());
-
-			if((jc instanceof Initializable) && (current.getChild(1).getConfiguration() != null)) {
-				((Initializable) jc).initComponent(current.getChild(1).getConfiguration());
-			}
-
-			jc.setMinimumSize(minSize);
-
-			if(current.getChild(1).getName() == null) {
-				jsp.setBottomComponent(jc);
-			} else {
-				jsp.setBottomComponent(new magellan.client.swing.ui.InternalFrame(current.getChild(1)
-																					 .getName(), jc));
-			}
-
-			if(!componentsUsed.contains(jc)) {
-				componentsUsed.add(jc);
-			}
-		} else {
-			// jsp.setBottomComponent(createSplit(current.getChild(1), components, right));
-			JComponent jc = createSplit(current.getChild(1), components, right);
-
-			if(current.getChild(1).getName() == null) {
-				jsp.setBottomComponent(jc);
-			} else {
-				jsp.setBottomComponent(new magellan.client.swing.ui.InternalFrame(current.getChild(1)
-																					 .getName(), jc));
-			}
-		}
-
-		return jsp;
-	}
-
-	private void createRects(int orient, int divider, Rectangle source, Rectangle left,
-							 Rectangle right) {
-		if(orient == JSplitPane.HORIZONTAL_SPLIT) {
-			left.width = divider - left.x;
-			left.height = source.height;
-			right.x = divider;
-			right.y = left.y;
-			right.width = source.width - left.width;
-			right.height = left.height;
-		} else {
-			left.width = source.width;
-			left.height = divider - source.y;
-			right.x = source.x;
-			right.y = divider;
-			right.width = source.width;
-			right.height = source.height - left.height;
-		}
-	}
-
-	private int createRects(int orient, double div, Rectangle source, Rectangle left,
-							Rectangle right) {
-		int divider;
-
-		if(orient == JSplitPane.HORIZONTAL_SPLIT) {
-			divider = source.x + (int) (div * source.width);
-			left.width = divider - left.x;
-			left.height = source.height;
-			right.x = divider;
-			right.y = left.y;
-			right.width = source.width - left.width;
-			right.height = left.height;
-			divider = left.width;
-		} else {
-			divider = source.y + (int) (div * source.height);
-			left.width = source.width;
-			left.height = divider - source.y;
-			right.x = source.x;
-			right.y = divider;
-			right.width = source.width;
-			right.height = source.height - left.height;
-			divider = left.height;
-		}
-
-		return divider;
-	}
-
-	private int checkDividerInRectangle(int divider, int orient, Rectangle bounds) {
-		if(orient == JSplitPane.HORIZONTAL_SPLIT) {
-			if(divider < 0) {
-				return 1;
-			}
-
-			if(divider > bounds.width) {
-				return bounds.width - 1;
-			}
-		} else {
-			if(divider < 0) {
-				return 1;
-			}
-
-			if(divider > bounds.height) {
-				return bounds.height - 1;
-			}
-		}
-
-		return divider;
-	}
+  public void setActiveLayout(DockingLayout layout) {
+    RootWindow window = null;
+    if (activeLayout != null) {
+      activeLayout.setActive(false);
+      activeLayout.dispose();
+      window = activeLayout.getRootWindow();
+    }
+    activeLayout = layout;
+    activeLayout.setActive(true);
+    activeLayout.open(window);
+    
+  }
 
 	/**
 	 * 
@@ -518,21 +337,4 @@ public class DockingFrameworkBuilder  {
 		return componentsUsed;
 	}
 
-	/**
-	 * Getter for property screen.
-	 *
-	 * @return Value of property screen.
-	 */
-	public Rectangle getScreen() {
-		return screen;
-	}
-
-	/**
-	 * Setter for property screen.
-	 *
-	 * @param screen New value of property screen.
-	 */
-	public void setScreen(Rectangle screen) {
-		this.screen = screen;
-	}
 }

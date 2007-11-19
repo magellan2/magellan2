@@ -64,54 +64,97 @@ public class DockingLayout {
   private Element root = null;
   private boolean isActive = false;
   private RootWindow window = null;
+  private StringViewMap viewMap = null;
+  private Map<String,View> views = null;
   
   /**
    * Creates a new Docking Framework Layout Container.
    */
-  public DockingLayout(String name, Element root) {
+  public DockingLayout(String name, Element root, StringViewMap viewMap, Map<String,View> views) {
     setName(name);
     setRoot(root);
+    this.viewMap = viewMap;
+    this.views = views;
   }
   
   /**
+   * Removes all views from the root window.
+   */
+  public void dispose() {
+    if (window == null) return;
+    log.info("Dispose Docking Layout "+name);
+    
+    // save the current layout
+    setActive(false);
+    root = save();
+    
+    dispose(window);
+    
+    if (views != null) {
+      for (View view : views.values()) {
+        log.info("Remove View "+view.getName());
+        window.removeView(view);
+      }
+    }
+    window.updateUI();
+  }
+    
+  protected void dispose(DockingWindow window) {
+    for (int i=0; i<window.getChildWindowCount(); i++) {
+      DockingWindow child = window.getChildWindow(i);
+      if (child == null) return;
+      
+      RootWindow root = child.getRootWindow();
+      if (child instanceof View) {
+        log.info("Remove View "+child.getName());
+        root.removeView((View)child);
+      } else {
+        dispose(child);
+        window.remove(child);
+      }
+    }
+  }
+
+  /**
    * Creates the Docking Layout inside the RootWindow.
    */
-  public void open(RootWindow window, StringViewMap viewMap, Map<String,View> views) {
-    this.window = window;
-    open(window,viewMap,views,root);
+  public void open(RootWindow window) {
+    if (window == null) log.error("RootWindow is null");
+    setRootWindow(window);
+    open(window,root);
   }
   
   /**
    * Creates the Docking Layout inside the rootwindow.
    */
-  protected DockingWindow open(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected DockingWindow open(RootWindow window, Element root) {
     if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
       DockingWindow child = null;
       
       List<Element> subnodes = Utils.getChildNodes(root);
       for (int i=0; i<subnodes.size(); i++) {
         Element node = subnodes.get(i);
-        child = open(window,viewMap,views,node);
+        child = open(window,node);
         if (child == null) continue;
         if (child instanceof FloatingWindow) continue;
         if (child instanceof WindowBar) continue;
         window.setWindow(child);
       }
     } else if (root.getNodeName().equalsIgnoreCase("windowbar")) {
-      return loadWindowBar(window,viewMap,views,root);
+      return loadWindowBar(window,root);
     } else if (root.getNodeName().equalsIgnoreCase("floatingwindow")) {
-      return loadFloatingWindow(window,viewMap,views,root);
+      return loadFloatingWindow(window,root);
     } else if (root.getNodeName().equalsIgnoreCase("splitwindow")) {
-      return loadSplitWindow(window,viewMap,views,root);
+      return loadSplitWindow(window,root);
     } else if (root.getNodeName().equalsIgnoreCase("tabwindow")) {
-      return loadTabWindow(window,viewMap,views,root);
+      return loadTabWindow(window,root);
     } else if (root.getNodeName().equalsIgnoreCase("view")) {
-      return loadView(window,viewMap,views,root);
+      return loadView(window,root);
     } else {
       List<Element> subnodes = Utils.getChildNodes(root);
       for (int i=0; i<subnodes.size(); i++) {
         Element node = subnodes.get(i);
-        return open(window,viewMap,views,node);
+        return open(window,node);
       }
     }
     return null;
@@ -120,15 +163,15 @@ public class DockingLayout {
   /**
    * Creates a SplitWindow inside a Dock.
    */
-  protected synchronized DockingWindow loadSplitWindow(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected synchronized DockingWindow loadSplitWindow(RootWindow window, Element root) {
     boolean isHorizontal = Boolean.valueOf(root.getAttribute("horizontal"));
     float divider = Float.valueOf(root.getAttribute("divider"));
     List<Element> nodes = Utils.getChildNodes(root,"split");
     
     SplitWindow splitWindow = null;
     if (nodes.size()==2) {
-      DockingWindow left = open(window,viewMap,views,Utils.getChildNode(nodes.get(0)));
-      DockingWindow right = open(window,viewMap,views,Utils.getChildNode(nodes.get(1)));
+      DockingWindow left = open(window,Utils.getChildNode(nodes.get(0)));
+      DockingWindow right = open(window,Utils.getChildNode(nodes.get(1)));
       splitWindow = new SplitWindow(isHorizontal,left,right);
     } else {
       splitWindow = new SplitWindow(isHorizontal);
@@ -141,7 +184,7 @@ public class DockingLayout {
   /**
    * Creates a TabWindow inside a dock
    */
-  protected synchronized DockingWindow loadTabWindow(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected synchronized DockingWindow loadTabWindow(RootWindow window, Element root) {
     List<Element> nodes = Utils.getChildNodes(root,"tab");
     
     TabWindow tabWindow = new TabWindow();
@@ -154,7 +197,7 @@ public class DockingLayout {
       if (isActive) selected = i;
       
       try {
-        DockingWindow tab = open(window,viewMap,views,Utils.getChildNode(e));
+        DockingWindow tab = open(window,Utils.getChildNode(e));
         if (tab == null) continue;
         tabWindow.addTab(tab);
       } catch (Throwable t) {
@@ -170,7 +213,7 @@ public class DockingLayout {
   /**
    * Created a View inside a Dock.
    */
-  protected synchronized DockingWindow loadView(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected synchronized DockingWindow loadView(RootWindow window, Element root) {
     String key = root.getAttribute("title");
     View view = null;
     try {
@@ -184,12 +227,12 @@ public class DockingLayout {
   /**
    * Creates a floatingwindow inside the rootwindow.
    */
-  protected synchronized FloatingWindow loadFloatingWindow(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected synchronized FloatingWindow loadFloatingWindow(RootWindow window, Element root) {
     DockingWindow child = null;
     List<Element> subnodes = Utils.getChildNodes(root);
     for (int i=0; i<subnodes.size(); i++) {
       Element element = subnodes.get(i);
-      child = open(window,viewMap,views,element);
+      child = open(window,element);
       if (child != null) break;
     }
     if (child == null) return null;
@@ -206,7 +249,7 @@ public class DockingLayout {
   /**
    * Creates a windowbar inside the rootwindow.
    */
-  protected synchronized WindowBar loadWindowBar(RootWindow window, StringViewMap viewMap, Map<String,View> views, Element root) {
+  protected synchronized WindowBar loadWindowBar(RootWindow window, Element root) {
     String directionName = root.getAttribute("direction");
     WindowBar windowBar = null;
     
@@ -226,12 +269,29 @@ public class DockingLayout {
       List<Element> subnodes = Utils.getChildNodes(root);
       for (int i=0; i<subnodes.size(); i++) {
         Element element = subnodes.get(i);
-        DockingWindow child = open(window,viewMap,views,element);
+        DockingWindow child = open(window,element);
         if (child != null) windowBar.addTab(child);
       }
     }
     
     return windowBar;
+  }
+  
+  /**
+   * Saves this Docking Layout in a XML Element
+   */
+  public Element save() {
+    try {
+      StringBuffer buffer = new StringBuffer();
+      save(buffer,window," ");
+      
+      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document document = builder.parse(new StringInputStream(buffer.toString()));
+      return document.getDocumentElement();
+    } catch (Exception exception) {
+      log.error(exception);
+    }
+    return null;
   }
   
   /**
@@ -242,7 +302,7 @@ public class DockingLayout {
    * 3. Save a default set.
    */
   public void save(StringBuffer buffer) {
-    if (window != null) {
+    if (window != null && isActive) {
       // save the active layout
       save(buffer,window," ");
     } else if (root != null) {
@@ -297,7 +357,7 @@ public class DockingLayout {
    * Writes all informations about the RootWindow into the StringBuffer as XML.
    */
   protected synchronized void save(StringBuffer buffer, RootWindow window, String offset) {
-    buffer.append(offset+"<rootwindow name='Standard' isActive='true'>\r\n");
+    buffer.append(offset+"<rootwindow name='"+name+"' isActive='"+isActive+"'>\r\n");
     for (int i=0; i<window.getChildWindowCount(); i++) {
       save(buffer,window.getChildWindow(i),offset+"  ");
     }
@@ -525,6 +585,60 @@ public class DockingLayout {
    */
   public void setActive(boolean isActive) {
     this.isActive = isActive;
+  }
+
+  /**
+   * Returns the value of viewMap.
+   * 
+   * @return Returns viewMap.
+   */
+  public StringViewMap getViewMap() {
+    return viewMap;
+  }
+
+  /**
+   * Sets the value of viewMap.
+   *
+   * @param viewMap The value for viewMap.
+   */
+  public void setViewMap(StringViewMap viewMap) {
+    this.viewMap = viewMap;
+  }
+
+  /**
+   * Returns the value of views.
+   * 
+   * @return Returns views.
+   */
+  public Map<String, View> getViews() {
+    return views;
+  }
+
+  /**
+   * Sets the value of views.
+   *
+   * @param views The value for views.
+   */
+  public void setViews(Map<String, View> views) {
+    this.views = views;
+  }
+
+  /**
+   * Returns the value of window.
+   * 
+   * @return Returns window.
+   */
+  public RootWindow getRootWindow() {
+    return window;
+  }
+
+  /**
+   * Sets the value of window.
+   *
+   * @param window The value for window.
+   */
+  public void setRootWindow(RootWindow window) {
+    this.window = window;
   }
   
 }

@@ -44,6 +44,7 @@ Schild; Schilde
 Hellebarde; Hellebarden
 Lanze; Lanzen
 Mallorn; Mallorn
+Mallornarmbrust; Mallornarmbrüste
 
 # So, das waren die offiziellen Items; diese Liste sollte man nicht ändern,
 # wenn man auf das Ergebnis von ECheck Wert legt...

@@ -8,6 +8,7 @@
     * feature request #42: added shipItemInfo to detailsPanel
     * fixed bug #37: merging roads with regions only seen by "neighbour"
     * feature reuqest #40: do not show skills below 2 (optional)
+    * fixed bug #73: HIDE race only for demons
 
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons

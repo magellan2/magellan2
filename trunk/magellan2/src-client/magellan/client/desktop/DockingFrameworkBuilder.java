@@ -39,6 +39,7 @@ import magellan.client.actions.desktop.LayoutCheckboxMenuItem;
 import magellan.client.actions.desktop.LayoutDeleteAction;
 import magellan.client.actions.desktop.LayoutExportAction;
 import magellan.client.actions.desktop.LayoutImportAction;
+import magellan.client.actions.desktop.LayoutNewAction;
 import magellan.client.actions.desktop.LayoutSaveAction;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
@@ -65,6 +66,7 @@ public class DockingFrameworkBuilder  {
   private static DockingFrameworkBuilder _instance = null;
 	private List<Component> componentsUsed;
   private StringViewMap viewMap = null;
+  private Map<String,View> views = null;
 
 	/** Holds value of property screen. */
   
@@ -102,7 +104,7 @@ public class DockingFrameworkBuilder  {
    * This method tries to setup the infonode docking framework.
    */
   protected JComponent createRootWindow(Map<String,Component> components, File serializedViewData) {
-    Map<String,View> views = new HashMap<String,View>();
+    views = new HashMap<String,View>();
     viewMap = new StringViewMap();
 
     for (String key : components.keySet()) {
@@ -169,7 +171,7 @@ public class DockingFrameworkBuilder  {
     }
     buffer.append("</dock>\r\n");
     
-    System.out.println(buffer);
+    //System.out.println(buffer);
     
     PrintWriter pw = new PrintWriter(serializedViewData,Encoding.DEFAULT.toString());
     pw.println(buffer.toString());
@@ -256,7 +258,7 @@ public class DockingFrameworkBuilder  {
    * This method creates the desktop menu. It contains the layout submenu and all
    * dock components. 
    */
-  public static JMenu createDesktopMenu(Map<String,Component> components, ActionListener listener) {
+  public JMenu createDesktopMenu(Map<String,Component> components, ActionListener listener) {
     JMenu desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
@@ -271,6 +273,8 @@ public class DockingFrameworkBuilder  {
     layoutMenu.addSeparator();
     layoutMenu.add(new LayoutExportAction());
     layoutMenu.add(new LayoutImportAction());
+    layoutMenu.addSeparator();
+    layoutMenu.add(new LayoutNewAction());
     layoutMenu.add(new LayoutSaveAction());
     layoutMenu.add(new LayoutDeleteAction());
     
@@ -299,7 +303,7 @@ public class DockingFrameworkBuilder  {
    * Updates all Docking Layouts in the Desktop>Layout menu by removing
    * them and recreate the list of available docking layouts.
    */
-  public static void updateLayoutMenu() {
+  public void updateLayoutMenu() {
     if (layoutMenu == null) return;
     
     // remove all layout items from the menu
@@ -317,6 +321,19 @@ public class DockingFrameworkBuilder  {
     }
   }
   
+  public void createNewLayout(String name) {
+    
+    Element root = DockingLayout.createDefaultLayout(name, false);
+    
+    DockingLayout layout = new DockingLayout(name,root,viewMap,views);
+    layouts.add(layout);
+    
+    updateLayoutMenu();
+  }
+  
+  /**
+   * Enabled the specified docking layout.
+   */
   public void setActiveLayout(DockingLayout layout) {
     RootWindow window = null;
     if (activeLayout != null) {

@@ -490,7 +490,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * sub-menu for all available split sets and at last a sub-menu with all layouts.
    */
   protected void initDesktopMenu() {
-    desktopMenu = DockingFrameworkBuilder.createDesktopMenu(components,this);
+    desktopMenu = DockingFrameworkBuilder.getInstance().createDesktopMenu(components,this);
   }
 
   /**
@@ -904,7 +904,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         }
       }
       
-      DockingFrameworkBuilder.updateLayoutMenu();
+      DockingFrameworkBuilder.getInstance().updateLayoutMenu();
     }
   }
 

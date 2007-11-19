@@ -42,7 +42,7 @@ public class LayoutSaveAction extends MenuAction {
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return null;
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.accelerator",false);
   }
 
   /**
@@ -50,7 +50,7 @@ public class LayoutSaveAction extends MenuAction {
    */
   @Override
   protected String getMnemonicTranslated() {
-    return null;
+    return Resources.get("desktop.magellandesktop.menu.desktop.layout.export.mnemonic",false);
   }
 
   /**

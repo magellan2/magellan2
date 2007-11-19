@@ -29,11 +29,11 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.Resources;
 
-public class LayoutDeleteMenu extends MenuAction {
+public class LayoutDeleteAction extends MenuAction {
   /**
    * 
    */
-  public LayoutDeleteMenu() {
+  public LayoutDeleteAction() {
     super(Client.INSTANCE);
   }
   

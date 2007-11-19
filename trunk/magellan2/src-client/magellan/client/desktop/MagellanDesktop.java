@@ -183,7 +183,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   private Timer timer;
 
   // Split mode objects
-  private DockingFrameworkBuilder splitBuilder;
+  private DockingFrameworkBuilder dockingFrameworkBuilder;
   private Map<String,FrameTreeNode> splitSets;
   private String splitName;
 
@@ -929,14 +929,14 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     r.width -= 6;
     r.height -= 23;
 
-    if(splitBuilder == null) {
-      splitBuilder = new DockingFrameworkBuilder(r);
+    if(dockingFrameworkBuilder == null) {
+      dockingFrameworkBuilder = DockingFrameworkBuilder.getInstance();
     }
 
-    splitBuilder.setScreen(r);
+   // dockingFrameworkBuilder.setScreen(r);
     
     try {
-      splitRoot = splitBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"dock-default.xml"));
+      splitRoot = dockingFrameworkBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"dock-default.xml"));
       if (splitRoot != null && splitRoot instanceof RootWindow) {
         ((RootWindow)splitRoot).addListener(this);
       }
@@ -951,7 +951,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     splitName = setName;
     workSpace.setContent(splitRoot);
-    buildShortCutTable(splitBuilder.getComponentsUsed());
+    buildShortCutTable(dockingFrameworkBuilder.getComponentsUsed());
 
     modeInitialized = true;
 
@@ -1335,7 +1335,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * @param name
    */
   private void restoreView(String name) {
-    View view = splitBuilder.getViewMap().getView(name);
+    View view = dockingFrameworkBuilder.getViewMap().getView(name);
     if (view != null) {
       view.restore();
       view.makeVisible();
@@ -1808,7 +1808,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     saveTranslations();
     
     try {
-      splitBuilder.write(new File(magellanDir,"dock-default.xml"), (RootWindow)splitRoot);
+      dockingFrameworkBuilder.write(new File(magellanDir,"dock-default.xml"), (RootWindow)splitRoot);
     } catch (Throwable t) {
       log.fatal(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
@@ -3314,9 +3314,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     // inform desktopmenu
     if (removedWindow.getName() != null) {
       for (int index=0; index<desktopMenu.getItemCount(); index++) {
-        JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-        if (menu.getActionCommand().equals("menu."+removedWindow.getName())) {
-          menu.setSelected(false);
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+removedWindow.getName())) {
+            menu.setSelected(false);
+          }
         }
       }
     }

@@ -1,3 +1,7 @@
+2007-11-19 Thoralf (thoralf@m84.de)
+    * Switching between Docking Layouts is now possible. Currently you have to create
+      a second rootwindow-Element in the dock-default.xml to see the effect.
+
 2007-11-19 Fiete (sf@fietefietz.de)
     * fixed last parts og bug #44: icons for alliances and income in faction stats
 

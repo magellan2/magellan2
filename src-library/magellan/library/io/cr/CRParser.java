@@ -424,7 +424,7 @@ public class CRParser implements RulesIO, GameDataIO {
       Spell s = world.getSpell(id);
 
       if(s == null) {
-        s = MagellanFactory.createSpell(id);
+        s = MagellanFactory.createSpell(id,world);
         s.setName(sc.argv[0]);
         world.addSpell(s);
       }
@@ -467,7 +467,7 @@ public class CRParser implements RulesIO, GameDataIO {
         if(spell == null) {
           log.warn("CRParser.parseUnitCombatSpells(): a combat spell refers to an unknown spell (line " +
                sc.lnr + ")");
-          spell = MagellanFactory.createSpell(spellID);
+          spell = MagellanFactory.createSpell(spellID,world);
           spell.setName(sc.argv[0]);
           world.addSpell(spell);
         }
@@ -634,7 +634,7 @@ public class CRParser implements RulesIO, GameDataIO {
       ID id = IntegerID.create(sc.argv[0].substring(7).trim());
 
       // not adding spell immediately is required here, please do not change this, unless you really know, what you're doing!
-      Spell spell = MagellanFactory.createSpell(id);
+      Spell spell = MagellanFactory.createSpell(id,world);
       spell.setBlockID(((IntegerID) id).intValue());
       sc.getNextToken(); // skip ZAUBER nr
 

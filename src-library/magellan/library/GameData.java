@@ -925,7 +925,7 @@ public abstract class GameData implements Cloneable {
         Spell newSpell = null;
 
         try {
-          newSpell = MagellanFactory.createSpell((ID) spell.getID().clone());
+          newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(),resultGD);
         } catch (CloneNotSupportedException e) {
           log.error(e);
         }
@@ -942,7 +942,7 @@ public abstract class GameData implements Cloneable {
 
         if (newSpell == null) {
           try {
-            newSpell = MagellanFactory.createSpell((ID) spell.getID().clone());
+            newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(),resultGD);
           } catch (CloneNotSupportedException e) {
             log.error(e);
           }

@@ -15,6 +15,7 @@ package magellan.library.impl;
 
 import java.util.Map;
 
+import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Spell;
 import magellan.library.StringID;
@@ -36,6 +37,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	private boolean onOcean = false;
 	private boolean isFamiliar = false;
 	private boolean isFar = false;
+	
+	private GameData data = null;
+	
 	private Map<String,String> components = null; // map of String objects
 	
 	private String syntax = null; // FF 20070221 new CR tag syntax
@@ -49,8 +53,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	 *
 	 * 
 	 */
-	public MagellanSpellImpl(ID id) {
+	public MagellanSpellImpl(ID id, GameData _data) {
 		super(id);
+		this.data = _data;
 	}
 
 	// TODO: this is bad, but right now i dont have a better idea
@@ -272,7 +277,13 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		if (retVal.length()>0){
 			retVal += " ";
 		}
-		retVal += "\"" + this.getName() + "\"";
+		
+		String spellName = this.getName();
+		if (this.data!=null){
+		  spellName = this.data.getTranslation(spellName);
+		}
+		
+		retVal += "\"" + spellName + "\"";
 		
 		// Syntax
 		if (this.getSpellSyntax()!=null && this.getSpellSyntax().toString()!=null){

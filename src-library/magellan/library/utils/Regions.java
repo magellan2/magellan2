@@ -815,6 +815,7 @@ public class Regions {
 	 */
 	public static RegionType getFeuerwandRegionType(Rules rules, GameData data){
 		String actFeuerwandName = "Feuerwand";
+		// TODO:we do not need a translation here (FF)!
 		if (data != null) {
 			actFeuerwandName = data.getTranslation("Feuerwand");
 		}

@@ -682,6 +682,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		if(f.getLocale() != null) {
 			options += (" -L" + f.getLocale().getLanguage());
 		}
+		
+		// Warning Level
+		options += " -w2";
 
 		return options;
 	}

@@ -1,3 +1,11 @@
+2007-11-20 Darcduck (sf.net@duckstein.net)
+	* added interface Localized
+	* merge respects Locale for messagetypes, messages, translations, potions, 
+	  spells and effects
+	* enhanced weight and load calculation 
+	  delta load for ships -> more precise
+	  unit load and weight recognizes magic bag
+
 2007-11-20 Fiete (sf@fietefietz.de)
     * Fixed 80% of bug #51: Skilltype sorting in preferences
 

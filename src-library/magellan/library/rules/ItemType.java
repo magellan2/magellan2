@@ -36,7 +36,8 @@ public class ItemType extends ObjectType implements Comparable {
 	private Skill useSkill = null;
 	private ItemCategory category = null;
 	private Map<ID,Item> resources = null;
-
+  private boolean storableInBonw = false;
+  
 	/**
 	 * Creates a new ItemType object.
 	 *
@@ -193,6 +194,23 @@ public class ItemType extends ObjectType implements Comparable {
 		iconName = iName;
 		iconNameEvaluated = false;
 	}
+  
+  /**
+   * store the attribute if the item can be stored in a bag of negative weight
+   *
+   */
+  public void setStoreableInBonw(int bonw) {
+    storableInBonw = bonw > 0;
+  }
+
+  /**
+   *
+   * @return the status if an item can be stored in a bag of negative weight
+   */
+  public boolean isStoreableInBonw() {
+    return storableInBonw;
+  }
+  
 	public int compareTo(Object o){
 		ItemType cmpItemType = (ItemType)o;
 		return this.getName().compareTo(cmpItemType.getName());

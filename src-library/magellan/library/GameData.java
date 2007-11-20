@@ -875,14 +875,51 @@ public abstract class GameData implements Cloneable {
     }
 
     // LOCALE
-    if (newerGD.getLocale() != null) {
-      resultGD.setLocale(newerGD.getLocale());
+    if (sameRound) {
+      // if the added report is from the same round it is the newer
+      // one, but we would stay then with the current locale
+      if (olderGD.getLocale() != null) {
+        resultGD.setLocale(olderGD.getLocale());
+      } else {
+        resultGD.setLocale(newerGD.getLocale());
+      }
     } else {
-      resultGD.setLocale(olderGD.getLocale());
+      // if we dont have the same round then we use the newer local
+      // as we must have a chance to change the local by adding a report
+      // but we don't want that if we add an older report.
+      if (newerGD.getLocale() != null) {
+        resultGD.setLocale(newerGD.getLocale());
+      } else {
+        resultGD.setLocale(olderGD.getLocale());
+      }      
+    }     
+
+    // TRANSLATIONS
+    // simple objects, created and merged in one step
+    // for safety we should merge the translation directly 
+    // after setting the local of the result report  
+    if (resultGD.translations() != null) {
+      if (olderGD.getLocale().equals(resultGD.getLocale())) {
+        for (Iterator iter = olderGD.translations().keySet().iterator(); iter.hasNext();) {
+          String key = (String) iter.next();
+          String translation = (String) olderGD.translations().get(key);
+          resultGD.addTranslation(key, translation);
+        }
+      } else {
+        resultGD.translations().clear();
+      }
+      if (newerGD.getLocale().equals(resultGD.getLocale())) {
+        for (Iterator iter = newerGD.translations().keySet().iterator(); iter.hasNext();) {
+          String key = (String) iter.next();
+          String translation = (String) newerGD.translations().get(key);
+          resultGD.addTranslation(key, translation);
+        }
+      }
     }
 
     // MESSAGETYPES
     // simple objects, created and merged in one step
+    // locale has to be considered. 
     if (olderGD.msgTypes() != null) {
       for (Iterator iter = olderGD.msgTypes().values().iterator(); iter.hasNext();) {
         MessageType mt = (MessageType) iter.next();
@@ -986,18 +1023,6 @@ public abstract class GameData implements Cloneable {
 
         MagellanFactory.mergePotion(newerGD, potion, resultGD, newPotion);
         resultGD.addPotion(newPotion);
-      }
-    }
-
-    // TRANSLATIONS
-    // simple objects, created and merged in one step
-    if (resultGD.translations() != null) {
-      if (olderGD.translations() != null) {
-        resultGD.translations().putAll(olderGD.translations());
-      }
-
-      if ((newerGD.translations() != null) && olderGD.getLocale().equals(newerGD.getLocale())) {
-        resultGD.translations().putAll(newerGD.translations());
       }
     }
 

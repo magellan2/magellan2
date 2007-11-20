@@ -71,4 +71,23 @@ public interface MovementEvaluator {
 	 * 
 	 */
 	public int getModifiedLoad(Unit unit);
+  
+  /**
+   * The initial weight of the unit as it appears in 
+   * the report. This should be the game dependent version used
+   * to calculate the weight if the information is not available
+   * in the report. 
+   *
+   * @return the weight of the unit in silver (GE 100).
+   */
+  public int getWeight(Unit unit);
+
+  /**
+   * The modified weight is calculated from the modified number 
+   * of persons and the modified items. Due to some game 
+   * dependencies this is done in this class.
+   *
+   * @return the modified weight of the unit in silver (GE 100).
+   */
+  public int getModifiedWeight(Unit unit);
 }

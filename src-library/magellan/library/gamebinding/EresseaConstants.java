@@ -577,6 +577,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final ID I_GOTS = StringID.create("Gürtel der Trollstärke");
 
+  /** Bag of negative weight - this bad weights 1 GE but stores 200 GE. However not all items can be stored in the bag. */
+  public static final ID I_BONW = StringID.create("Zauberbeutel");
+
 	/** DOCUMENT-ME */
 	public static final ID RT_OCEAN = StringID.create("Ozean");
 

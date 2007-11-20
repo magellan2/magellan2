@@ -14,6 +14,7 @@
 package magellan.library.impl;
 
 import java.util.Map;
+import java.util.Locale;
 
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -41,6 +42,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	private GameData data = null;
 	
 	private Map<String,String> components = null; // map of String objects
+  private Locale locale = null;
 	
 	private String syntax = null; // FF 20070221 new CR tag syntax
 	/**
@@ -353,6 +355,29 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		
 		return this.spellSyntax;
 	}
+
+  /**
+   * Only returns the locale of the spell
+   * 
+   * @see magellan.library.Localized#getLocale()
+   * 
+   * @return the locale of the spell
+   */
+  public Locale getLocale() {
+    return locale;
+  }
+
+  /**
+   * Sets the locale and invalidates the description if required.
+   * 
+   * @see magellan.library.Localized#setLocale(java.util.Locale)
+   */
+  public void setLocale(Locale locale) {
+    if ((locale != null) && (!locale.equals(this.locale))) {
+      super.setDescription(null);
+      this.locale = locale;
+    } 
+  }
 	
 	
 }

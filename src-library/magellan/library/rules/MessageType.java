@@ -13,9 +13,12 @@
 
 package magellan.library.rules;
 
+import java.util.Locale;
+
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.impl.MagellanIdentifiableImpl;
+import magellan.library.Localized;
 
 /**
  * DOCUMENT-ME
@@ -23,9 +26,10 @@ import magellan.library.impl.MagellanIdentifiableImpl;
  * @author $Author: $
  * @version $Revision: 203 $
  */
-public class MessageType extends MagellanIdentifiableImpl {
+public class MessageType extends MagellanIdentifiableImpl implements Localized {
 	private String pattern = null;
 	private String section = null;
+  private Locale locale = null;
 
 	/**
 	 * Creates a new MessageType object.
@@ -93,14 +97,46 @@ public class MessageType extends MagellanIdentifiableImpl {
 	 */
 	public static void merge(GameData curGD, MessageType curMsgType, GameData newGD,
 							 MessageType newMsgType) {
-		if(curMsgType.getPattern() != null) {
-			newMsgType.setPattern(curMsgType.getPattern());
-		}
-
+    
+    if(curMsgType.getPattern() != null) {
+      // if we don't have a message type for a new locale we stay on the old one
+      // however when merging other reports later we are not aware that some of the message types
+      // doesn't match the local of the report
+      // probably we should store the locale of a messagetype in the message type when diffent to
+      // GameData
+      // But as we overwrite message types with new information each time the report is newer or 
+      // same turn and same locale the wrong localized messagetypes should disappear.
+      if ((newGD.getLocale().equals(curGD.getLocale())) || (newMsgType.getPattern() == null)) {
+          newMsgType.setPattern(curMsgType.getPattern());
+      }
+    }     
+    
 		if(curMsgType.getSection() != null) {
 			newMsgType.setSection(curMsgType.getSection());
 		}
 	}
+ 
+	/**
+   * Get the Locale of the MessageType.  
+   *   
+   * @see magellan.library.Localized#getLocale()
+   * @return the locale of the MessageType.
+	 */
+  public Locale getLocale() {
+    return locale;
+  }
+
+  /**
+   * Sets the locale and invalidates the pattern of the MessageType if required.
+   * 
+   * @see magellan.library.Localized#setLocale(java.util.Locale)
+   */
+  public void setLocale(Locale locale) {
+    if ((locale != null) && (!locale.equals(this.locale))) {
+      this.locale = locale;
+      this.setPattern(null);
+    }
+  }
   
   public String toString() {
     return "MessageType:{id:"+getID()+",section:"+section+",pattern:"+pattern+"}";

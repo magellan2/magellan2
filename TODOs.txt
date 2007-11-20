@@ -14,7 +14,7 @@ Mit + ist in Arbeit
 
 - Minimap speichert den ARR Renderer nicht (Bug #64)
 
-- Sonstige Bugfixes (Bugs #48, #51, #52, ....)
+- Sonstige Bugfixes (Bugs #52, ....)
 
 - evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
 
@@ -37,6 +37,8 @@ Mit + ist in Arbeit
     Ressourcen > Pfade (nach System verschieben)
     Ressourcen > Externe Module (überarbeiten)
     OK & Abbrechen überarbeiten
+    
++ Bug #51, create own translation list
 
 ------ erledigt -------
 * Inseln werden nicht richtig erfasst (zumindest passiert da
@@ -63,3 +65,4 @@ Mit + ist in Arbeit
 * UTF Encoding für CRs implementieren
 
 * Bug #44 (Icons in FactionStats for Alliances and Income
+* Bug #48 (HTML setup region details)

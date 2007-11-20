@@ -154,19 +154,33 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	}
 	
 	/**
-	 * Returns the weight of all units of this ship that are not horses or carts in silver based
-	 * on the modified units.
+	 * Returns the weight of all units of this ship. The method does some
+   * delta calculation to be more precise. The initial load is substracted 
+   * by the initial weight of the initial units and added by the modified
+   * weight of the modified units. 
 	 *
-	 * @return The modified weight of the modified units on the ship
+	 * @return The modified load of the ship
 	 */
 	public int getModifiedLoad() {
-		int modLoad = 0;
+    // we do a delta calculation
+    // therefore start with the cargo given in the report
+		int modLoad = getCargo();
 
+    // substract all units initially on the ship with their initial weight
+    for(Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
+      modLoad -= u.getWeight();
+    }
+    // now we generally should have modLoad zero or near zero.
+    // the difference to zero is the weight that we don't see or know
+    // (i.e.) silver from factions where we don't have a report or
+    // items/races where we don't know the weight 
+    
+    // add now the current calculated weight of the units
 		for(Iterator<Unit> iter = modifiedUnits().iterator(); iter.hasNext();) {
 			Unit u = iter.next();
 			modLoad += u.getModifiedWeight();
 		}
-
 		return modLoad;
 	}
 

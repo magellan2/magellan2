@@ -21,7 +21,7 @@ import magellan.library.utils.SpellSyntax;
  * Container class for a spell based on its representation in a cr version >=
  * 42.
  */
-public interface Spell extends Described {
+public interface Spell extends Described, Localized {
 
   /**
    * Returns the integer serving as the block id in the cr.

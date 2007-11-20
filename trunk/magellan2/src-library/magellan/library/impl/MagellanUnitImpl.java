@@ -1865,6 +1865,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
+  
+/*  
 	public static int getWeight(int persons, float personWeight, Iterator items) {
 		int weight = 0;
 
@@ -1881,7 +1883,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
 		return weight;
 	}
-
+*/
+  
 	/**
 	 * @return true if weight is well known and NOT evaluated by Magellan
 	 */
@@ -1890,9 +1893,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 	
 	/**
-	 * Returns the overall weight of this unit (persons and items) in silver
+	 * Returns the initial overall weight of this unit (persons and items)
+   * in silver. If this information is available from the report we use
+   * this. Otherwise we call the game specific weight calculation.
 	 *
-	 * 
+	 * @return the initial weight of the unit
 	 */
 	public int getWeight() {
 		if(weight != -1) {
@@ -1904,10 +1909,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		if(cache.unitWeight == -1) {
-			cache.unitWeight = getWeight(this.getPersons(),
-										 (this.realRace != null) ? this.realRace.getWeight()
-																 : this.race.getWeight(),
-										 this.getItems().iterator());
+			cache.unitWeight = getRegion().getData().getGameSpecificStuff()
+                         .getMovementEvaluator().getWeight(this);
 		}
 
 		return cache.unitWeight;
@@ -1997,10 +2000,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	/**
-	 * Returns the overall weight (persons, items) of this unit in silver based on the modified
-	 * items and persons.
-	 *
+	 * Returns the overall weight (persons, items) of this unit in silver by 
+   * calling the game specific calculation for the modified weight.   
+	 * Generally this should take care of modified persons and modified items.
 	 * 
+   * @return the modified weight of the unit
 	 */
 	public int getModifiedWeight() {
 		if(cache == null) {
@@ -2008,10 +2012,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		if(cache.modifiedUnitWeight == -1) {
-			cache.modifiedUnitWeight = getWeight(this.getModifiedPersons(),
-												 (this.realRace != null)
-												 ? this.realRace.getWeight() : this.race.getWeight(),
-												 this.getModifiedItems().iterator());
+			cache.modifiedUnitWeight = getRegion().getData().getGameSpecificStuff()
+                                 .getMovementEvaluator().getModifiedWeight(this);
 		}
 
 		return cache.modifiedUnitWeight;

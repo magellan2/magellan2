@@ -250,9 +250,11 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	}
 
 	private int getLoad(Unit unit, Collection items) {
-		int load = 0;
+    int load = 0;
 		ItemType horse = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_HORSE);
 		ItemType cart = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_CART);
+    // darcduck 2007-10-31: take care of bags of negative weight
+    ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
 
 		for(Iterator iter = items.iterator(); iter.hasNext();) {
 			Item i = (Item) iter.next();
@@ -262,9 +264,96 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 				if(i.getAmount() > 0) {
 					load += (((int) (i.getItemType().getWeight() * 100)) * i.getAmount());
 				}
-			}
+			}      
+      // darcduck 2007-10-31: take care of bags of negative weight
+      if(i.getItemType().equals(bonw)) {
+        load -= getBonwLoad(unit, items, i);
+      }
 		}
 
 		return load;
 	}
+  
+  /**
+   * Returns the load in GE 100 of the bag of negatvie weight (bonw).
+   * This might be 0 if nothing can be stored in the bag up to 200 per bag.
+   * Items are only considered to be stored in the bonw if this is set in the rules.
+   * ItemType returns this in method isStoreableInBonw()
+   *
+   * @return the load of the bonw in GE 100. 
+   */
+  private int getBonwLoad(Unit unit, Collection items, Item i_bonw) {
+    final int I_BONW_CAP = 20000;
+    int bonwload = 0;
+    int bonwcap = 0;
+    
+    if (i_bonw != null) {
+      bonwcap = i_bonw.getAmount() * I_BONW_CAP;
+
+      for(Iterator iter = items.iterator(); iter.hasNext()&&(bonwload<bonwcap);) {
+        Item i = (Item) iter.next();
+
+        if ((i.getAmount() > 0)&&(i.getItemType().isStoreableInBonw())) {
+          bonwload += (((int) (i.getItemType().getWeight() * 100)) * i.getAmount());
+        }
+      }
+      bonwload = Math.min(bonwcap, bonwload);
+    }
+    return bonwload;
+  }
+  
+  
+  /**
+   * The initial weight of the unit as it appear in 
+   * the report. This is the eressea version used to 
+   * calculate the weight if the information is not available
+   * in the report. 
+   *
+   * @return the weight of the unit in silver (GE 100).
+   */
+  public int getWeight(Unit unit) {
+    return getWeight(unit, unit.getItems(), unit.getPersons());
+  }
+
+  /**
+   * The modified weight is calculated from the modified number 
+   * of persons and the modified items. Due to some eressea 
+   * dependencies this is done in this class.
+   *
+   * @return the modified weight of the unit in silver (GE 100).
+   */
+  public int getModifiedWeight(Unit unit) {
+    return getWeight(unit, unit.getModifiedItems(), unit.getModifiedPersons());
+  }
+  
+  /**
+   * DOCUMENT-ME
+   *
+   * 
+   *
+   * 
+   */
+  private int getWeight(Unit unit, Collection items, int persons) {
+    int weight = 0;
+    float personWeight = getRace(unit).getWeight();
+    // darcduck 2007-10-31: take care of bags of negative weight
+    ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
+    
+    for(Iterator iter = items.iterator(); iter.hasNext();) {
+      Item item = (Item) iter.next();
+
+      // pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount
+      if(item.getAmount() > 0) {
+        weight += (item.getAmount() * (int) (item.getItemType().getWeight() * 100));
+      }
+      // darcduck 2007-10-31: take care of bags of negative weight
+      if(item.getItemType().equals(bonw)) {
+        weight -= getBonwLoad(unit, items, item);
+      }
+    }
+
+    weight += (persons * (int) (personWeight * 100));
+
+    return weight;
+  }
 }

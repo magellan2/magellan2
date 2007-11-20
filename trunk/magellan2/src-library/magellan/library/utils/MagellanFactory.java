@@ -510,12 +510,19 @@ public abstract class MagellanFactory {
       newMsg.getAttributes().putAll(curMsg.getAttributes());
     }
 
-    if(curMsg.getText() != null) {
-      newMsg.setText(curMsg.getText());
-    }
-
+    // first update the message type - this was already localized
     if(curMsg.getMessageType() != null) {
       newMsg.setType(newGD.getMsgType(curMsg.getMessageType().getID()));
+    }
+
+    if (curMsg.getText() != null) {
+      if (curGD.getLocale().equals(newGD.getLocale())) {
+        // we can only copy the text if it matches the locale
+        newMsg.setText(curMsg.getText());
+      } else {
+        // otherwise we can render the text from the probably localized messagetype
+        newMsg.render(newGD);
+      }
     }
   }
 
@@ -527,7 +534,7 @@ public abstract class MagellanFactory {
       newPotion.setName(curPotion.getName());
     }
 
-    if(curPotion.getDescription() != null) {
+    if((curPotion.getDescription() != null) && (curGD.getLocale().equals(newGD.getLocale()))) {
       newPotion.setDescription(curPotion.getDescription());
     }
 
@@ -1396,7 +1403,7 @@ public abstract class MagellanFactory {
       newSpell.setName(curSpell.getName());
     }
 
-    if(curSpell.getDescription() != null) {
+    if((curSpell.getDescription() != null) && (curGD.getLocale().equals(newGD.getLocale()))) {
       newSpell.setDescription(curSpell.getDescription());
     }
 

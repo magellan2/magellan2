@@ -1065,6 +1065,13 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
   }
+  
+  /**
+   * Parses the ITEM and HERB blocks in the game specific rules CR file.  
+   * 
+   * @param rules
+   * @throws IOException
+   */
 
   private void parseItemType(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
@@ -1114,6 +1121,10 @@ public class CRParser implements RulesIO, GameDataIO {
         Skill useSkill = new Skill(rules.getSkillType(StringID.create(sc.argv[0]), true),
                        0, 1, 0, false);
         itemType.setUseSkill(useSkill);
+        sc.getNextToken();
+        // darcduck - 20.11.2007 added magic bag tag that indicates if an item can be stored in the magic bag
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("storeinbonw")) {
+        itemType.setStoreableInBonw(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if(sc.isBlock && sc.argv[0].equals("RESOURCES")) {
         parseItemTypeResources(itemType, rules);

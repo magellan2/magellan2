@@ -1,3 +1,6 @@
+2007-11-20 Fiete (sf@fietefietz.de)
+    * Fixed 80% of bug #51: Skilltype sorting in preferences
+
 2007-11-19 Thoralf (thoralf@m84.de)
     * Switching between Docking Layouts is now possible. Currently you have to create
       a second rootwindow-Element in the dock-default.xml to see the effect.

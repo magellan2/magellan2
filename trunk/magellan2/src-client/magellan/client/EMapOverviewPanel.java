@@ -61,6 +61,7 @@ import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -113,6 +114,7 @@ import magellan.client.swing.tree.TreeHelper;
 import magellan.client.swing.tree.TreeUpdate;
 import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.client.swing.tree.UnitNodeWrapper;
+import magellan.client.utils.ImageFactory;
 import magellan.client.utils.SelectionHistory;
 import magellan.library.Alliance;
 import magellan.library.Building;
@@ -130,12 +132,14 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.GameDataListener;
 import magellan.library.relation.TransferRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Umlaut;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -233,7 +237,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public EMapOverviewPanel(EventDispatcher d, Properties p) {
     super(d, p);
-
     loadExpandProperties();
     loadCollapseProperty();
 
@@ -1928,36 +1931,129 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     return Resources.get("emapoverviewpanel.shortcut.title");
   }
 
+  /**
+   * 
+   * Provides Panel (Extended Preferences Adapter) for Preferences
+   *
+   * @author ...
+   * @version 1.0, 20.11.2007
+   */
   private class EMapOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
-    private class SkillPreferences extends JPanel implements PreferencesAdapter {
+    
+    /**
+     * 
+     * Panel for maintainig the SkillTypeList for sorting after 
+     * skillType
+     *
+     * @author ...
+     * @version 1.0, 20.11.2007
+     */
+    private class SkillPreferences extends JPanel implements PreferencesAdapter, GameDataListener {
+      
+        /**
+         * 
+         * An extra cell renderer to display the skills in the list
+         *
+         * @author ...
+         * @version 1.0, 20.11.2007
+         */
+        private class MyCellRenderer extends JLabel implements ListCellRenderer {
+          // we need a reference to the translations
+          private GameData data=null;
+          // we need a reference to the ImageFactory
+          private ImageFactory imageFactory=null;
+          
+          /**
+           * Constructs a new extra cell renderer for our skill list
+           * @param _data
+           * @param _imageFactory
+           */
+           
+          public MyCellRenderer(GameData _data, ImageFactory _imageFactory){
+            this.data = _data;
+            this.imageFactory = _imageFactory;
+          }
+          
+          /**
+           * returns the JLabel to display in our skill list
+           * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
+           */
+          public Component getListCellRendererComponent(
+            JList list,
+            Object value,            // value to display
+            int index,               // cell index
+            boolean isSelected,      // is the cell selected
+            boolean cellHasFocus)    // the list and the cell have the focus
+          {
+              String s = value.toString();
+              String normalizedIconName = Umlaut.convertUmlauts(s).toLowerCase();
+              s = this.data.getTranslation(s);
+              setText(s);
+              setIcon(this.imageFactory.loadImageIcon(normalizedIconName));
+              if (isSelected) {
+                setBackground(list.getSelectionBackground());
+                  setForeground(list.getSelectionForeground());
+              } else {
+                    setBackground(list.getBackground());
+                    setForeground(list.getForeground());
+              }
+              setEnabled(list.isEnabled());
+              setFont(list.getFont());
+              setOpaque(true);
+              return this;
+          }
+      }
+      
+      /**
+       * 
+       * a small comparator to compare translated skillNames
+       *
+       * @author ...
+       * @version 1.0, 20.11.2007
+       */  
+      private class SkillTypeComparator implements Comparator<SkillType> {
+        
+        // Reference to Translations
+        private GameData data=null;
+        
+        /**
+         * constructs new Comparator
+         * @param _data
+         */
+        public SkillTypeComparator(GameData _data){
+          this.data = _data;
+        }
+        
+        public int compare(SkillType o1,SkillType o2){
+          String s1 = data.getTranslation(o1.getName());
+          String s2 = data.getTranslation(o2.getName());
+          return s1.compareToIgnoreCase(s2);
+        }
+      }
+        
+      
       /** DOCUMENT-ME */
       public JList skillList = null;
       private JButton upButton = null;
       private JButton downButton = null;
       private JButton refreshListButton = null;
+      
+      private SkillTypeComparator skillTypeComparator = null;
 
       /**
        * Creates a new SkillPreferences object.
        */
-      public SkillPreferences() {
+      public SkillPreferences(EventDispatcher d, ImageFactory imageFactory) {
         this.setLayout(new BorderLayout());
         this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.skillorder")));
-
+        
+        d.addGameDataListener(this);
+        
         skillList = new JList();
         skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-
-        if (data != null) {
-          List<SkillType> v = new LinkedList<SkillType>();
-
-          for (Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
-            SkillType type = (SkillType) iter.next();
-            v.add(type);
-          }
-
-          Collections.sort(v, new SkillTypeRankComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT), EMapOverviewPanel.this.settings));
-          skillList.setListData(v.toArray());
-        }
-
+        skillList.setCellRenderer(new MyCellRenderer(data,imageFactory));
+        // entries for List are updated in initPreferences
+        
         this.add(new JScrollPane(skillList), BorderLayout.CENTER);
 
         JPanel buttons = new JPanel(new GridBagLayout());
@@ -2091,21 +2187,24 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
             }
 
             ListModel listData = skillList.getModel();
-            List v = new LinkedList();
+            List<SkillType> v = new LinkedList<SkillType>();
 
             for (int index = 0; index < listData.getSize(); index++) {
-              v.add(listData.getElementAt(index));
+              v.add((SkillType)listData.getElementAt(index));
             }
-
-            Collections.sort(v);
+            
+            if (skillTypeComparator==null){
+              skillTypeComparator = new SkillTypeComparator(data);
+            }
+            
+            Collections.sort(v,skillTypeComparator);
             skillList.setListData(v.toArray());
           }
         });
         buttons.add(refreshListButton, c);
 
         this.add(buttons, BorderLayout.EAST);
-
-        setEnabled(rdbSortUnitsSkills.isSelected());
+        this.initPreferences();
       }
 
       /**
@@ -2122,12 +2221,35 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         refreshListButton.setEnabled(enable);
       }
 
+      // Game Data has changed
+      public void gameDataChanged(GameDataEvent e){
+        data = e.getGameData();
+        this.initPreferences();
+      }
+      
       /**
        * fills the values
        */
-
       public void initPreferences() {
-        // TODO: Implement it
+        if (data != null) {
+          List<SkillType> v = new LinkedList<SkillType>();
+
+          for (Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
+            SkillType type = (SkillType) iter.next();
+            v.add(type);
+          }
+
+          Collections.sort(v, new SkillTypeRankComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT), EMapOverviewPanel.this.settings));
+          skillList.setListData(v.toArray());
+          
+          if (v.size()>0){
+            setEnabled(true);
+          } else {
+            setEnabled(false);
+          }
+        } else {
+          setEnabled(false);
+        }
       }
 
       /**
@@ -2530,9 +2652,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       this.add(help, c);
 
       subAdapter = new ArrayList<SkillPreferences>(1);
-      subAdapter.add(skillSort = new SkillPreferences());
+      subAdapter.add(skillSort = new SkillPreferences(parent.dispatcher,parent.dispatcher.getMagellanContext().getImageFactory()));
     }
 
+    
+    
+    
     /*
      * (non-Javadoc)
      * 

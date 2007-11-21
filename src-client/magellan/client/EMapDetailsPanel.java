@@ -483,7 +483,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 											(String)tree.getCellEditor().getCellEditorValue());
 						}
 						show(displayedObject,false);
-					}
+					} else {
+            // undo the changes
+            show(displayedObject,false);
+          }
 				}
 			});
 		tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
@@ -1202,6 +1205,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
     private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
+      DefaultMutableTreeNode test = new DefaultMutableTreeNode();
+      
         return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj,this.data.getTranslation(obj),(Object) icons));
     }
 	/**

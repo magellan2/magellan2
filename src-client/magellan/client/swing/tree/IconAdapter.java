@@ -1672,6 +1672,7 @@ public class IconAdapter extends InternationalizedPanel implements ExtendedPrefe
 
         public void initPreferences() {
             // TODO: implement it
+          updatePreferences();
         }
 
 		/**

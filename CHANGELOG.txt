@@ -2,6 +2,11 @@
 	* fixed Bug #51: Skilltype sorting in preferences
 	* added default magellan translation for skilltypes
 	* talent-sort-order is working again (in preferences)
+	* fixed bug #52: icon styles for talent changes
+	* fixd bug #111: inspectors not updated after order changed
+	* fixed bug #114: undo editing of nodes in DetailView
+	* fixed bug #101: CRWriter created shipinfo without ships and buildingInfo without buildings
+	* request #80: localized icons
 
 2007-11-20 Darcduck (sf.net@duckstein.net)
 	* added interface Localized

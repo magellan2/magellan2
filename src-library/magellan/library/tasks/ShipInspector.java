@@ -94,15 +94,17 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		List<AbstractProblem> problems = new ArrayList<AbstractProblem>();
 		int nominalShipSize = s.getShipType().getMaxSize();
 
+    // also if not ready yet, there should be someone to take care..
+    if (s.modifiedUnits().isEmpty()) {
+      problems.add(new CriticizedError(s.getRegion(), s, this,
+          Resources.get("tasks.shipinspector.error.nocrew.description")));
+    }
+    
 		if (s.getSize() != nominalShipSize) {
 			// ship will be built, so dont review ship
 			return new ArrayList<AbstractProblem>();
 		}
 
-		if (s.modifiedUnits().isEmpty()) {
-			problems.add(new CriticizedError(s.getRegion(), s, this,
-					Resources.get("tasks.shipinspector.error.nocrew.description")));
-		}
 
 		if (s.getModifiedLoad() > (s.getMaxCapacity())) {
 			problems.add(new CriticizedError(s.getRegion(), s, this,

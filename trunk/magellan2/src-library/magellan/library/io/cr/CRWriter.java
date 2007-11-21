@@ -64,6 +64,8 @@ import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Sorted;
+import magellan.library.utils.TranslationType;
+import magellan.library.utils.Translations;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.comparator.IDComparator;
@@ -2568,14 +2570,24 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeTranslations(Map<String,String> m) throws IOException {
+	public void writeTranslations(Translations m) throws IOException {
 		if((m == null) || (m.size() == 0)) {
 			return;
 		}
 
 		write("TRANSLATION");
 		newLine();
-
+		
+		for (Iterator<String> iter = m.getKeyTreeSet().iterator();iter.hasNext();){
+		  String key = iter.next();
+		  String value = m.getTranslation(key, TranslationType.sourceCR);
+		  if (value!=null){
+		    writeQuotedTag(value, key);
+		  }
+		}
+		
+		
+		/*
 		List<String> sorted = new LinkedList<String>(m.keySet());
 		Collections.sort(sorted);
 
@@ -2584,5 +2596,6 @@ public class CRWriter extends BufferedWriter {
 			String value = m.get(key);
 			writeQuotedTag(value, key);
 		}
+		*/
 	}
 }

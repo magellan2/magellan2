@@ -27,6 +27,7 @@ import magellan.library.rules.Date;
 import magellan.library.rules.EresseaDate;
 import magellan.library.rules.MessageType;
 import magellan.library.rules.RegionType;
+import magellan.library.rules.SkillType;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
@@ -34,6 +35,8 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TranslationType;
+import magellan.library.utils.Translations;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -226,7 +229,7 @@ public abstract class GameData implements Cloneable {
   /**
    * Represents the table of translations from the report.
    */
-  public abstract Map<String, String> translations();
+  public abstract Translations translations();
 
   /**
    * is set to true, if while proceeding some functions (e.g. CRParse) and we
@@ -575,7 +578,16 @@ public abstract class GameData implements Cloneable {
    * @param to
    *          the language dependent translation of key.
    */
-  public void addTranslation(String from, String to) {
+  public void addTranslation(String from, String to, int source) {
+    
+    this.translations().addTranslation(from, to, source);
+    if (rules != null) {
+      // dynamically add translation key to rules to access object by name
+      rules.changeName(from, to);
+    }
+    
+    
+    /*
     if (translations() != null) {
       translations().put(from, to);
 
@@ -584,6 +596,7 @@ public abstract class GameData implements Cloneable {
         rules.changeName(from, to);
       }
     }
+    */
   }
 
   /**
@@ -607,9 +620,13 @@ public abstract class GameData implements Cloneable {
    *         found, the key is returned.
    */
   public String getTranslation(String key) {
+    
+    return this.translations().getTranslation(key);
+    /*
     String retVal = (key == null || translations() == null) ? null : (String) translations().get(key);
 
     return retVal != null ? retVal : key;
+    */
   }
 
   /**
@@ -900,20 +917,26 @@ public abstract class GameData implements Cloneable {
     // after setting the local of the result report  
     if (resultGD.translations() != null) {
       if (olderGD.getLocale().equals(resultGD.getLocale())) {
+        resultGD.translations().addAll(olderGD.translations());
+        /*
         for (Iterator iter = olderGD.translations().keySet().iterator(); iter.hasNext();) {
           String key = (String) iter.next();
           String translation = (String) olderGD.translations().get(key);
           resultGD.addTranslation(key, translation);
         }
+        */
       } else {
         resultGD.translations().clear();
       }
       if (newerGD.getLocale().equals(resultGD.getLocale())) {
+        resultGD.translations().addAll(newerGD.translations());
+        /*
         for (Iterator iter = newerGD.translations().keySet().iterator(); iter.hasNext();) {
           String key = (String) iter.next();
           String translation = (String) newerGD.translations().get(key);
           resultGD.addTranslation(key, translation);
         }
+        */
       }
     }
 
@@ -1575,14 +1598,31 @@ public abstract class GameData implements Cloneable {
 
     // do game specific post processing
     getGameSpecificStuff().postProcess(this);
-
-    // TheVoid
-    // make it optional
-    // postProcessTheVoid();
+    
+    // adding Default Translations to the translations
+    postProcessDefaultTranslations();
     
     postProcessed = true;
   }
 
+  /**
+   * adding Default Translations to the translations
+   */
+  private void postProcessDefaultTranslations(){
+    // Skilltypes
+    for (Iterator<SkillType> iter = this.rules.getSkillTypeIterator();iter.hasNext();){
+      SkillType skillType = (SkillType)iter.next();
+      String key = skillType.getID().toString();
+      if (!this.translations().contains(key)){
+        // we have to add
+        String translated = Resources.getRuleItemTranslation(key);
+        this.addTranslation(key, translated, TranslationType.sourceMagellan);
+      }
+    }
+  }
+  
+  
+  
   /**
    * scans the regions for missing regions, for regions with regionType "The
    * Void" or "Leere" These Regions are not created in the world on the server,
@@ -1625,7 +1665,7 @@ public abstract class GameData implements Cloneable {
               r.setName(Resources.get("completedata.region.thevoid.name"));
               r.setDescription(Resources.get("completedata.region.thevoid..beschr"));
               newRegions.add(r);
-              this.addTranslation("Leere", Resources.get("completedata.region.thevoid.name"));
+              this.addTranslation("Leere", Resources.get("completedata.region.thevoid.name"),TranslationType.sourceMagellan);
             }
           }
         }

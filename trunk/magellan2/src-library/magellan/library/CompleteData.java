@@ -20,6 +20,7 @@ import java.util.TreeMap;
 
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.Translations;
 
 
 /**
@@ -40,7 +41,7 @@ public class CompleteData extends GameData {
 	protected Map<ID,Spell> spells = new OrderedHashtable<ID, Spell>();
 	protected Map<ID,Potion> potions = new OrderedHashtable<ID, Potion>();
 	protected Map<ID,HotSpot> hotSpots = new OrderedHashtable<ID, HotSpot>();
-	protected Map<String,String> translations = new OrderedHashtable<String, String>();
+	protected Translations translations = new Translations();
 	protected Locale locale = null;
 	protected Map<CoordinateID,Region> selectedRegions = new TreeMap<CoordinateID, Region>();
 
@@ -170,7 +171,7 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<String,String> translations() {
+	public Translations translations() {
 		return translations;
 	}
 

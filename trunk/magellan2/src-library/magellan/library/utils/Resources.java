@@ -323,6 +323,55 @@ public class Resources {
   }
   
   /**
+   * Attempts to get the translation of the given rulesItem (german) key in the current order locale.
+   * If no translation is found, the key is returned.
+   * 
+   * @param key    An string key of a name of an Item in rules.cr
+   * @return The translation as found in the Resources or the key if no translation is found
+   */
+  public static String getRuleItemTranslation(String key) {
+    return getRuleItemTranslation(key, Locales.getOrderLocale());
+  }
+  
+  /**
+   * Attempts to get the translation of the given order key in the given locale.
+   * If no translation is found, the key is returned.
+   * 
+   * @param key    An order key
+   * @param locale 
+   * @return The translation as found in the Resources or the key if no translation is found
+   */
+  public static String getRuleItemTranslation(String key, Locale locale) {
+    Resources resources = getInstance();
+    key = "ruleitem."+key;
+    String translation = resources.getResource(key, locale);
+
+    if (translation != null) {
+      if (log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
+        log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + translation + "\"");
+        loggedOrderTranslations.add(key);
+      }
+
+      return translation;
+    }
+
+    // no translation found, give back key
+    if(log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
+      log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key + "\"");
+      loggedOrderTranslations.add(key);
+    }
+
+    // no translation found, give back key
+    if(!Locale.GERMAN.equals(locale)) {
+      log.warn("Resources.getOrderTranslation(" + key + "," + locale +"): no valid translation found, returning key");
+    }
+
+    return key;
+
+  }
+  
+  
+  /**
    * Attempts to get the translation of the given order key in the given locale.
    * If no translation is found, the key is returned.
    * 

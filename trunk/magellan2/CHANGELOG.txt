@@ -8,6 +8,8 @@
 	* fixed bug #101: CRWriter created shipinfo without ships and buildingInfo without buildings
 	* request #80: localized icons
 	* shipInspector: no crew is also report when a ship is under construction (or damaged)
+	* added 2 more AR-RR-Translation methods from Mag1 to ReportMerger
+	* replaced 6 map icons with the new ones from khadar
 
 2007-11-20 Darcduck (sf.net@duckstein.net)
 	* added interface Localized

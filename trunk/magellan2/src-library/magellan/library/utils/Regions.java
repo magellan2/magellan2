@@ -877,6 +877,25 @@ public class Regions {
 		return erg;
 	}
 	
-	
+	/** Contributed by Hubert Mackenberg. Thanks.
+   * x und y Abstand zwischen x1 und x2 berechnen
+  **/
+  public static int getRegionDist(CoordinateID r1, CoordinateID r2){
+    int dx = r1.x - r2.x;
+    int dy = r1.y - r2.y;
+    /* Bei negativem dy am Ursprung spiegeln, das veraendert
+     * den Abstand nicht
+    */
+    if (dy<0){
+      dy = dy * -1;
+      dx = dx * -1;
+    }
+    /*
+       * dy ist jetzt >=0, fuer dx sind 3 Faelle zu untescheiden
+       */
+      if      ( dx >= 0 ) return dx + dy;
+      else if (-dx >= dy) return -dx;
+      else                return dy;
+  }
 	
 }

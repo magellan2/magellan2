@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+
 /**
  * A class encapsulating a scheme object indicating the position of a region in the 'Astralraum'
  * relative to the standard Eressea map.
@@ -22,4 +23,13 @@ public interface Scheme extends Named {
 	 * DOCUMENT-ME
 	 */
 	public String toString();
+	
+	/**
+   * Returns the coordinate of this region. This method is only a type-safe short cut for
+   * retrieving and converting the ID object of this region.
+   *
+   * @return 
+   */
+  public CoordinateID getCoordinate();
+	
 }

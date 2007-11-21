@@ -13,8 +13,10 @@
 
 package magellan.library.impl;
 
+import magellan.library.CoordinateID;
 import magellan.library.ID;
 import magellan.library.Scheme;
+
 
 /**
  * A class encapsulating a scheme object indicating the position of a region in the 'Astralraum'
@@ -38,4 +40,14 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
 	public String toString() {
 		return getName() + " (" + this.id.toString() + ")";
 	}
+	
+	/**
+   * Returns the coordinate of this region. This method is only a type-safe short cut for
+   * retrieving and converting the ID object of this region.
+   *
+   * @return 
+   */
+  public CoordinateID getCoordinate() {
+          return (CoordinateID) this.getID();
+  }
 }

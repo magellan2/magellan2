@@ -14,6 +14,7 @@
 package magellan.library.utils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -311,7 +312,94 @@ public class ReportMerger extends Object {
     
 		boolean reportHasAstralRegions=false;
 		boolean dataHasAstralRegions=false;
+		
+		/**
+     *      Astral:         A...B
+     *                              |   |
+     *      Real:           A---B
+     *
+     *  To merge two non-overlapping Astral Spaces we need:
+     *  - an astral to real mapping of report A
+     *  - an overlapping real world between both reports
+     *  - an astral to real mapping of report B
+     *
+     *  Astral to real mapping can be done by two ways:
+     *  1. from two neighbour astral spaces with schemes
+     *     (there can be seen exactly one same scheme from both astral regions)
+     *  2. from several astral regions with schemes, calculating the "extend" of the schemes
+     *
+     *  ==> Having only one astral region with schemes will often not be enough
+     *      to calculate the mapping between astral and real space
+     *
+     *  Variant 2 not jet implemented!
+     **/
 
+    CoordinateID reportAstralToReal = null;
+    CoordinateID dataAstralToReal = null;
+    CoordinateID minExtend = null;
+    CoordinateID maxExtend = null;
+    Map<String,Collection> dataSchemeMap = new HashMap<String, Collection>();
+    for(Iterator iter = data.regions().values().iterator(); iter.hasNext()&&(dataAstralToReal==null);) {
+            Region region = (Region) iter.next();
+            if(region.getCoordinate().z == 1) {
+                    for(Iterator schemes = region.schemes().iterator(); schemes.hasNext()&&(dataAstralToReal==null);) {
+                            Scheme scheme = (Scheme) schemes.next();
+                            Collection<Region> col = (Collection) dataSchemeMap.get(scheme.getName());
+                            if(col == null) {
+                                    col = new LinkedList<Region>();
+                                    dataSchemeMap.put(scheme.getName(), col);
+                            } else {
+                                    /**
+                                     * This is the second astral region showing the same scheme.
+                                     * From this we can calculate an astral to real mapping for the gamedata by variant 1
+                                     */
+                                    // in case of errors in the current Astral Regions (merged schemes) we will get a wrong mapping here. Therefore a scheme consistency check should be done in advance. (several posibilities)
+                                    CoordinateID firstCoord = ((Region) col.iterator().next()).getCoordinate();
+                                    CoordinateID secondCoord = region.getCoordinate();
+                                    CoordinateID schemeCoord = scheme.getCoordinate();
+                                    dataAstralToReal = new CoordinateID(
+                                            schemeCoord.x - 2 * (firstCoord.x + secondCoord.x),
+                                            schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
+                            }
+                            // we may not find any astral to real mapping by variant 1 above
+                            // therefore also do calculations for variant 2 here
+                            // we "normalize" all schemes to be in the area
+                            int nx = scheme.getCoordinate().x - 4 * region.getCoordinate().x;
+                            int ny = scheme.getCoordinate().y - 4 * region.getCoordinate().y;
+                            // this is a virtual 3 axis diagonal to x and y in the same level, but we store it in the z coordinate
+                            int nd = nx + ny;
+                            if (minExtend == null) {
+                                    minExtend = new CoordinateID(nx, ny, nd);
+                                    maxExtend = new CoordinateID(nx, ny, nd);
+                            } else {
+                                    minExtend.x = Math.min(minExtend.x, nx);
+                                    minExtend.y = Math.min(minExtend.y, ny);
+                                    minExtend.z = Math.min(minExtend.z, nd);
+                                    maxExtend.x = Math.max(maxExtend.x, nx);
+                                    maxExtend.y = Math.max(maxExtend.y, ny);
+                                    maxExtend.z = Math.max(maxExtend.z, nd);
+                            }
+                            // now check if we found an "extend of 4" in at least two directions of the three directions
+                            boolean dx = maxExtend.x-minExtend.x==4;
+                            boolean dy = maxExtend.y-minExtend.y==4;
+                            boolean dd = maxExtend.z-minExtend.z==4;
+                            if (dx&&dy) {
+                                    dataAstralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.y - 2);
+                            } else if (dx&&dd) {
+                                    dataAstralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.z - maxExtend.x);
+                            } else if (dy&&dd) {
+                                    dataAstralToReal = new CoordinateID(maxExtend.z - maxExtend.y, maxExtend.y - 2);
+                            }
+                    }
+            }
+    }
+
+    // free up min and max, we use them again for the report astral to real mapping
+    minExtend = null;
+    maxExtend = null;
+		
+		
+		
 		// it is safe to assume, that when regionMap is null, schemeMap is null, too
 		if(report.regionMap == null) {
 			iProgress += 1;
@@ -325,12 +413,7 @@ public class ReportMerger extends Object {
 				Region region = iter.next();
 
 				if((region.getName() != null) && (region.getName().length() > 0)) {
-					/*if (report.regionMap.containsKey(region.getName())) {
-					    report.regionMap.put(region.getName(), null);
-					}else{*/
 					report.regionMap.put(region.getName(), region);
-
-					//}
 				}
 
 				if(region.getCoordinate().z == 1) {
@@ -338,13 +421,60 @@ public class ReportMerger extends Object {
 					for(Iterator<Scheme> schemes = region.schemes().iterator(); schemes.hasNext();) {
 						Scheme scheme = schemes.next();
 						Collection<Region> col = report.schemeMap.get(scheme.getName());
-
 						if(col == null) {
 							col = new LinkedList<Region>();
 							report.schemeMap.put(scheme.getName(), col);
+						}else {
+              /**
+               * This is the second astral region showing the same scheme.
+               * From this we can calculate an astral to real mapping for the new report by variant 1
+               */
+              // only if not already found a mapping
+              if (reportAstralToReal == null) {
+                      CoordinateID firstCoord = ((Region) col.iterator().next()).getCoordinate();
+                      CoordinateID secondCoord = region.getCoordinate();
+                      CoordinateID schemeCoord = scheme.getCoordinate();
+                      reportAstralToReal = new CoordinateID(
+                              schemeCoord.x - 2 * (firstCoord.x + secondCoord.x),
+                              schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
+              }
 						}
 
 						col.add(region);
+						
+					  // we may not find any astral to real mapping by variant 1 above
+            // therefore also do calculations for variant 2 here
+            // we "normalize" all schemes to be in the area
+            // only if not already found a mapping
+            if (reportAstralToReal == null) {
+                int nx = scheme.getCoordinate().x - 4 * region.getCoordinate().x;
+                int ny = scheme.getCoordinate().y - 4 * region.getCoordinate().y;
+                // this is a virtual 3 axis diagonal to x and y in the same level, but we store it in the z coordinate
+                int nd = nx + ny;
+                if (minExtend == null) {
+                        minExtend = new CoordinateID(nx, ny, nd);
+                        maxExtend = new CoordinateID(nx, ny, nd);
+                } else {
+                        minExtend.x = Math.min(minExtend.x, nx);
+                        minExtend.y = Math.min(minExtend.y, ny);
+                        minExtend.z = Math.min(minExtend.z, nd);
+                        maxExtend.x = Math.max(maxExtend.x, nx);
+                        maxExtend.y = Math.max(maxExtend.y, ny);
+                        maxExtend.z = Math.max(maxExtend.z, nd);
+                }
+                // now check if we found an "extend of 4" in at least two directions of the three directions
+                boolean dx = maxExtend.x-minExtend.x==4;
+                boolean dy = maxExtend.y-minExtend.y==4;
+                boolean dd = maxExtend.z-minExtend.z==4;
+                if (dx&&dy) {
+                        reportAstralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.y - 2);
+                } else if (dx&&dd) {
+                        reportAstralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.z - maxExtend.x);
+                } else if (dy&&dd) {
+                        reportAstralToReal = new CoordinateID(maxExtend.z - maxExtend.y, maxExtend.y - 2);
+                }
+            }
+						
 					}
 				}
 			}
@@ -629,6 +759,38 @@ public class ReportMerger extends Object {
 			}
 		}
 
+	  // Put AstralTranslation via Real Space Translation
+    if ((dataAstralToReal!=null)&&(reportAstralToReal!=null)) {
+            log.info("ReportMerger: Data   AR-Real: " + dataAstralToReal);
+            log.info("ReportMerger: Report AR-Real: " + reportAstralToReal);
+            log.info("ReportMerger: Real Data-Report: " + iDX + ", " + iDY );
+
+            CoordinateID astralTrans = new CoordinateID(
+                (new Integer((dataAstralToReal.x - reportAstralToReal.x + iDX) / 4)).intValue(),
+                (new Integer((dataAstralToReal.y - reportAstralToReal.y + iDY) / 4)).intValue(),
+                1 );
+            astralTranslationMap.put(astralTrans,new Integer(99999));
+            log.info("ReportMerger: Real-Space-trans, Resulting Trans: " + astralTrans);
+    } else {
+      log.info("ReportMerger: no valid Translation found (Real Space Translation)");
+    }
+		
+    // Fiete - added OneRegion Astral-Real-Mapping
+    CoordinateID dataAstralToReal_OneRegion = this.getOneRegion_AR_RR_Translation(data);
+    CoordinateID reportAstralToReal_OneRegion = this.getOneRegion_AR_RR_Translation(report.data);
+    if ((dataAstralToReal_OneRegion!=null)&&(reportAstralToReal_OneRegion!=null)) {
+        log.info("ReportMerger (OneRegion): Data   AR-Real: " + dataAstralToReal_OneRegion);
+        log.info("ReportMerger (OneRegion): Report AR-Real: " + reportAstralToReal_OneRegion);
+        CoordinateID astralTrans = new CoordinateID(
+                (new Integer((dataAstralToReal_OneRegion.x - reportAstralToReal_OneRegion.x + iDX ) / 4)).intValue(),
+                (new Integer((dataAstralToReal_OneRegion.y - reportAstralToReal_OneRegion.y  + iDY) / 4)).intValue(),
+                1 );
+        log.info("ReportMerger (OneRegion): Resulting Trans: " + astralTrans);
+        astralTranslationMap.put(astralTrans,new Integer(100000));
+    } else {
+      log.info("ReportMerger: no valid Translation found (One-Region-Translation)");
+    }
+		
 		// search for best astral translation
 		CoordinateID bestAstralTranslation = new CoordinateID(0, 0, 1);
 		int bestHitCount = -1;
@@ -746,4 +908,210 @@ public class ReportMerger extends Object {
 
 		return report.merged;
 	}
+	
+	/**
+   * Weiterer Versuch des Findens eines AR-RR Mappings
+   * Hierbei soll EINE AR Region mit ausreichend Schemen reichen
+   * @param data
+   * @return
+   */
+  private CoordinateID getOneRegion_AR_RR_Translation(GameData data){
+    /**
+     * Ansatz:
+     * Sind die Schemen günstig verteilt, reicht eine AR Region und ihre Schemen
+     * zum Bestimmen des Mappings AR->RR
+     * Dazu wird versucht, die RR-Region genau unter der AR-Region zu finden.
+     * Diese darf maximal 2 Regionen von allen Schemen entfernt sein.
+     * Die Entfernung dieser Region zu benachbarten Regionen der Schemen, die NICHT 
+     * selbst Schemen sind, muss allerdings > 2 sein
+     * (da sonst auch diese Region in den Schemen enthalten sein müsste)
+     * Die endgültieg Region unter der AR-Region kann Ozean sein und muss daher
+     * nicht in den Schemen sichtbar sein.
+     * Daher wird zuerst ein Pool von möglichen Regionen gebildet, indem 
+     * alle Schemen, ihre Nachbarn und wiederum deren Nachbarn erfasst werden.
+     * Dann werden nicht in Frage kommende Region sukkzessive eliminiert
+     * 
+     * 
+     */
+    // Das Ergebnis des Vorganges...
+    CoordinateID erg = null;
+    
+    // regionen durchlaufen und AR Regionen bearbeiten
+    for(Iterator iter = data.regions().values().iterator(); iter.hasNext()&&(erg==null);) {
+      Region actAR_Region = (Region) iter.next();
+      if (actAR_Region.getCoordinate().z==1){
+        // Es ist eine AR Region
+        erg = this.getOneRegion_processARRegion(data, actAR_Region);
+        // wenn ergebnis !=null, abbruch
+        if (erg!=null){
+          return erg;
+        }
+      }
+    }
+    
+    return erg;
+  }
+  
+  /**
+   * Bearbeitet eine AR-Region
+   * @param data
+   * @param r
+   * @return
+   */
+  private CoordinateID getOneRegion_processARRegion(GameData data,Region r){
+    CoordinateID erg = null;
+    
+    // wir brechen ab, wenn gar keine Schemen vorhanden sind...16 Felder Ozean!
+    if (r.schemes()==null){
+      return null;
+    }
+    
+    ArrayList<Region> possibleRR_Regions = new ArrayList<Region>(0);
+    // possibleRR_Regions sind erstmal alle Schemen
+    for(Iterator iter = r.schemes().iterator(); iter.hasNext();) {
+      Scheme actScheme = (Scheme) iter.next();
+      Region actSchemeRegion = data.getRegion(actScheme.getCoordinate());
+      // fail safe...
+      if (actSchemeRegion==null){
+        continue;
+      }
+      if (!possibleRR_Regions.contains(actSchemeRegion)){
+        possibleRR_Regions.add(actSchemeRegion);
+      }
+    }
+    // sollte die Liste jetzt leer sein (unwahrscheinlich), brechen wir ab
+    if (possibleRR_Regions.size()==0){
+      // log.warn?
+      return null;
+    }
+    // die schemen erfahren eine sonderbehandlung, diese extra listen
+    ArrayList<Region> actSchemeRegions = new ArrayList<Region>(0);
+    actSchemeRegions.addAll(possibleRR_Regions);
+    // die possible Regions mit Nachbarn füllen, für den ungünstigsten
+    // Fall sind 4 Läufe notwendig
+    for (int i = 0;i<4;i++){
+      possibleRR_Regions = this.getOneRegion_explodeRegionList(data, possibleRR_Regions);
+    }
+    
+    // Ab jetzt versuchen, unmögliche Regionen zu entfernen...
+    // erste bedingung: alle regionen, die sich auch nur von einer schemenRegionen
+    // weiter entfernt befinden als 2 Regionen können raus.
+    possibleRR_Regions = this.getOneRegion_deleteIfDist(data,actSchemeRegions, possibleRR_Regions, 2,true);
+    
+    // zweite bedingung: Randregionen von schemen (nicht ozean-Regionen...), die nicht selbst schemen sind, dürfen nicht weniger als 3
+    // Regionen entfernt sein.
+    // Dazu: Randregionen basteln
+    ArrayList<Region> schemenRandRegionen = new ArrayList<Region>(0);
+    schemenRandRegionen = this.getOneRegion_explodeRegionList(data, actSchemeRegions);
+    // schemen selbst abziehen
+    schemenRandRegionen.removeAll(actSchemeRegions);
+    // Ozeanfelder löschen
+    schemenRandRegionen = this.getOneRegion_deleteOceans(schemenRandRegionen);
+    // alle löschen, die weniger als 3 Regionen an den randregionen dranne sind
+    possibleRR_Regions = this.getOneRegion_deleteIfDist(data, schemenRandRegionen, possibleRR_Regions, 3,false);
+    // jetzt sollte im Idealfall nur noch eine Region vorhanden sein ;-))
+    if (possibleRR_Regions.size()==1){
+      // Treffer, wir können Translation bestimmen
+      // Verständnisfrage: ist gesichert, dass sich das einzige
+      // Element einer ArrayList immer auf Index=0 befindet?
+      for (Iterator iter = possibleRR_Regions.iterator();iter.hasNext();){
+        Region RR_Region = (Region)iter.next();
+        erg = new CoordinateID(RR_Region.getCoordinate().x - 4*r.getCoordinate().x,RR_Region.getCoordinate().y - 4*r.getCoordinate().y);
+        break;
+      }
+    }
+    return erg;
+  }
+  
+  /**
+   * Löscht die Regionen aus regionList, welche nicht von allen Regionen in 
+   * schemen mindestens einen abstand von dist haben
+   * @param schemen
+   * @param regionen
+   * @param abstand
+   * @return
+   */
+  private ArrayList<Region> getOneRegion_deleteIfDist(GameData data, ArrayList<Region> schemen, ArrayList<Region> regionList, int abstand,boolean innerhalb){
+    ArrayList<Region> regionsToDel = new ArrayList<Region>(0);
+    for(Iterator<Region> iter = regionList.iterator(); iter.hasNext();) {
+      Region actRegion = (Region) iter.next();
+      // nur die betrachten, die nicht schon in del sind
+      if (!regionsToDel.contains(actRegion)){
+        // Durch alle Schemen laufen und Abstand berechnen
+        for(Iterator<Region> iter2= schemen.iterator(); iter2.hasNext();) {
+          Region actSchemenRegion = (Region)iter2.next();
+          // Abstand berechnen
+          
+         
+          int dist = Regions.getRegionDist(actRegion.getCoordinate(), actSchemenRegion.getCoordinate());
+          
+          if ((dist > abstand && innerhalb) || (dist < abstand && !innerhalb)){
+            // actRegion ist weiter als abstand von actSchemenregion entfernt
+            // muss gelöscht werden
+            regionsToDel.add(actRegion);
+            break;
+          }
+        }
+      }
+    }
+    // Löschung durchführen
+    ArrayList<Region> erg = new ArrayList<Region>(0);
+    erg.addAll(regionList);
+    erg.removeAll(regionsToDel);
+    return erg;
+  }
+  
+  /**
+   * Löscht die Regionen aus regionList, welche als Ozean deklariert
+   * sind
+   * @param regionen
+   * @return
+   */
+  private ArrayList<Region> getOneRegion_deleteOceans(ArrayList<Region> regionList){
+    ArrayList<Region> regionsToDel = new ArrayList<Region>(0);
+    for(Iterator iter = regionList.iterator(); iter.hasNext();) {
+      Region actRegion = (Region) iter.next();
+      if (actRegion.getRegionType().isOcean() && !regionsToDel.contains(actRegion)){
+        regionsToDel.add(actRegion);
+      }
+      
+    }
+    // Löschung durchführen
+    ArrayList<Region> erg = new ArrayList<Region>(0);
+    erg.addAll(regionList);
+    erg.removeAll(regionsToDel);
+    return erg;
+  }
+  
+  /**
+   * Erweitert die Liste der Regionen um die Nachbarn der aktuellen Regionen
+   * @param data
+   * @param regionList
+   * @return
+   */
+  private ArrayList<Region> getOneRegion_explodeRegionList(GameData data, ArrayList<Region> regionList){
+    // Liste verlängern nach durchlauf
+    ArrayList<Region> regionsToAdd = new ArrayList<Region>();
+    for(Iterator<Region> iter = regionList.iterator(); iter.hasNext();) {
+      Region actRegion = (Region) iter.next();
+      // liefert die IDs der Nachbarregionen
+      Collection neighbors = actRegion.getNeighbours();
+      for(Iterator iter2 = neighbors.iterator(); iter2.hasNext();) {
+        CoordinateID newRegionID = (CoordinateID)iter2.next();
+        Region newRegion = data.getRegion(newRegionID);
+        // hinzufügen, wenn noch nicht vorhanden
+        if (!regionList.contains(newRegion) && !regionsToAdd.contains(newRegion)){
+          regionsToAdd.add(newRegion);
+        }
+      }
+      
+    }
+    // alle hinzufügen
+    ArrayList<Region> erg = new ArrayList<Region>(0);
+    erg.addAll(regionList);
+    erg.addAll(regionsToAdd);
+    return erg;
+  }
+	
+	
 }

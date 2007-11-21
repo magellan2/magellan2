@@ -14,7 +14,7 @@ Mit + ist in Arbeit
 
 - Minimap speichert den ARR Renderer nicht (Bug #64)
 
-- Sonstige Bugfixes (Bugs #52, ....)
+- Sonstige Bugfixes (liste abgearbeitet)
 
 - evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
 
@@ -66,3 +66,4 @@ Mit + ist in Arbeit
 
 * Bug #44 (Icons in FactionStats for Alliances and Income
 * Bug #48 (HTML setup region details)
+* Bug #52 (Icon Style Definition for Talent Changes)

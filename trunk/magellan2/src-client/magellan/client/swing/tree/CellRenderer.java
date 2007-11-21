@@ -141,18 +141,36 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	}
 
 	protected void loadTypesets() {
-		typeSets = new GraphicsStyleset[4];
+		typeSets = new GraphicsStyleset[12];
 
 		// load the stylesets
 		loadStyleset("SIMPLE");
 		loadStyleset("MAIN");
 		loadStyleset("ADDITIONAL");
 		loadStyleset("DEFAULT");
+    
+    // load predifined "custom" sets
+    loadStyleset("Talent>");
+    loadStyleset("Talent>.Talent1");
+    loadStyleset("Talent>.Talent2");
+    loadStyleset("Talent>.Talent3");
+    loadStyleset("Talent<");
+    loadStyleset("Talent<.Talent-1");
+    loadStyleset("Talent<.Talent-2");
+    loadStyleset("Talent<.Talent-3");
 
 		typeSets[0] = (GraphicsStyleset) stylesets.get("SIMPLE");
 		typeSets[1] = (GraphicsStyleset) stylesets.get("MAIN");
 		typeSets[2] = (GraphicsStyleset) stylesets.get("ADDITIONAL");
-		typeSets[3] = (GraphicsStyleset) stylesets.get("DEFAULT");
+		typeSets[3] = (GraphicsStyleset) stylesets.get("Talent>");
+    typeSets[4] = (GraphicsStyleset) stylesets.get("Talent>.Talent1");
+    typeSets[5] = (GraphicsStyleset) stylesets.get("Talent>.Talent2");
+    typeSets[6] = (GraphicsStyleset) stylesets.get("Talent>.Talent3");
+    typeSets[7] = (GraphicsStyleset) stylesets.get("Talent<");
+    typeSets[8] = (GraphicsStyleset) stylesets.get("Talent<.Talent-1");
+    typeSets[9] = (GraphicsStyleset) stylesets.get("Talent<.Talent-2");
+    typeSets[10] = (GraphicsStyleset) stylesets.get("Talent<.Talent-3");
+    typeSets[11] = (GraphicsStyleset) stylesets.get("DEFAULT");
 
 		typeSets[0].setParent("DEFAULT");
 		typeSets[1].setParent("DEFAULT");
@@ -300,10 +318,10 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	protected void applyUIDefaults() {
 		defaultRenderer = new DefaultTreeCellRenderer();
 
-		typeSets[3].setForeground((Color) UIManager.getDefaults().get("Tree.textForeground"));
-		typeSets[3].setBackground((Color) UIManager.getDefaults().get("Tree.textBackground"));
-		typeSets[3].setSelectedForeground((Color) UIManager.getDefaults().get("Tree.selectionForeground"));
-		typeSets[3].setSelectedBackground((Color) UIManager.getDefaults().get("Tree.selectionBackground"));
+		typeSets[11].setForeground((Color) UIManager.getDefaults().get("Tree.textForeground"));
+		typeSets[11].setBackground((Color) UIManager.getDefaults().get("Tree.textBackground"));
+		typeSets[11].setSelectedForeground((Color) UIManager.getDefaults().get("Tree.selectionForeground"));
+		typeSets[11].setSelectedBackground((Color) UIManager.getDefaults().get("Tree.selectionBackground"));
 
 		// pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
 		focusedBorder = new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
@@ -312,8 +330,8 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
 		this.setOpaque(false);
 		this.setLayout(new SameHeightBoxLayout());
-		this.setBackground(typeSets[3].getBackground());
-		this.setForeground(typeSets[3].getBackground());
+		this.setBackground(typeSets[11].getBackground());
+		this.setForeground(typeSets[11].getBackground());
 
 		label = new JLabel();
 		label.setOpaque(false);
@@ -322,7 +340,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		this.add(label);
 
 		Font plainFont = label.getFont().deriveFont(Font.PLAIN);
-		typeSets[3].setFont(plainFont);
+		typeSets[11].setFont(plainFont);
 
 		GraphicsStyleset set = getStyleset(1);
 		defaultRenderer.setFont(set.getFont());

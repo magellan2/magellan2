@@ -21,6 +21,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.MemoryImageSource;
 import java.awt.image.PixelGrabber;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
@@ -28,6 +29,7 @@ import javax.swing.ImageIcon;
 import magellan.client.event.EventDispatcher;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.logging.Logger;
@@ -108,7 +110,32 @@ public class ImageFactory implements GameDataListener {
 		return img;
 	}
 
-	private ImageIcon doLoadImage(String imageName) {
+  
+  /**
+   * basic class to load an Icon
+   * @param imageName
+   * @return
+   */
+  private ImageIcon doLoadImage(String imageName) {
+    ImageIcon icon=null;
+    // if we have an OrderLocale != German try to
+    // load localized icon
+    if (Locales.getGUILocale()!=null && !Locales.getGUILocale().equals(Locale.GERMAN)){
+      icon = doLoadImageLocales(imageName + "_" + Locales.getGUILocale().toString());
+    }
+    if (icon==null){
+      icon = doLoadImageLocales(imageName);
+    }
+    
+    return icon;
+  }
+  
+  /**
+   * basic class to load an icon, imageName may be extended by locale_string
+   * @param imageName
+   * @return
+   */
+	private ImageIcon doLoadImageLocales(String imageName) {
 		//  try to find a .png
 		ImageIcon icon = MagellanImages.getImageIcon(imageName + ".png");
 		ImageIcon alphaIcon = null;

@@ -241,7 +241,8 @@ public class EresseaOrderCompleter implements Completer {
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EMAIL),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_END)));
+    // we focus auf our temp generation dialog FF
+		// completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_END)));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RIDE),
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW),
@@ -278,9 +279,10 @@ public class EresseaOrderCompleter implements Completer {
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEARN),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY),
-									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MAKE),
+//   removed: FF SUPPLY is not supported anymore...in eressea
+    // 	completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY),
+		//							   " "));
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MAKE),
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MOVE),
 									   " "));
@@ -1149,8 +1151,9 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltMache() {
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEMP),
-									   " "));
+    // we focus on our temp creation dialog
+		// completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEMP),
+		//							   " "));
 		cmpltMacheAmount();
 	}
 

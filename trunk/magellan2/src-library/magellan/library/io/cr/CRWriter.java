@@ -1416,12 +1416,12 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(unit.getShip() != null) {
+		if(unit.getShip() != null && includeShips) {
 			write(((EntityID) unit.getShip().getID()).intValue() + ";Schiff");
 			newLine();
 		}
 
-		if(unit.getBuilding() != null) {
+		if(unit.getBuilding() != null && includeBuildings) {
 			write(((EntityID) unit.getBuilding().getID()).intValue() + ";Burg");
 			newLine();
 		}

@@ -7,6 +7,7 @@
 	* fixed bug #114: undo editing of nodes in DetailView
 	* fixed bug #101: CRWriter created shipinfo without ships and buildingInfo without buildings
 	* request #80: localized icons
+	* shipInspector: no crew is also report when a ship is under construction (or damaged)
 
 2007-11-20 Darcduck (sf.net@duckstein.net)
 	* added interface Localized

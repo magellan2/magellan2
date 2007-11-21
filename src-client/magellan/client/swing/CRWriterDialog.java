@@ -64,6 +64,7 @@ import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Translations;
 import magellan.library.utils.logging.Logger;
 
 
@@ -583,7 +584,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 			if(chkDelTrans.isSelected()) {
 				// clean translation table
-				List<String> trans = new LinkedList<String>(newData.translations().keySet());
+			  List<String> trans = new LinkedList<String>(newData.translations().getKeyTreeSet());
+				// List<String> trans = new LinkedList<String>(newData.translations().keySet());
+				
 
 				// some static data that is not connected but needed
 				trans.remove("Einheit");
@@ -706,11 +709,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 					log.debug("Following translations will be removed:");
 					stringIterator = trans.iterator();
 
-					java.util.Map<String,String> newTrans = newData.translations();
+					// java.util.Map<String,String> newTrans = newData.translations();
+					Translations newTrans = newData.translations();
 
 					while(stringIterator.hasNext()) {
 						Object o = stringIterator.next();
-						newTrans.remove(o);
+						newTrans.remove((String)o);
 
 						if(log.isDebugEnabled()) {
 							log.debug("Removing: " + o);

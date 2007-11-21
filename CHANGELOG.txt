@@ -1,3 +1,8 @@
+2007-11-21 Fiete (sf@fietefietz.de)
+	* fixed Bug #51: Skilltype sorting in preferences
+	* added default magellan translation for skilltypes
+	* talent-sort-order is working again (in preferences)
+
 2007-11-20 Darcduck (sf.net@duckstein.net)
 	* added interface Localized
 	* merge respects Locale for messagetypes, messages, translations, potions, 

@@ -83,6 +83,7 @@ import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TranslationType;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
@@ -2999,7 +3000,8 @@ public class CRParser implements RulesIO, GameDataIO {
 
     while(!sc.eof) {
       if(sc.argc == 2) {
-        data.addTranslation(sc.argv[1], sc.argv[0]);
+        // data.addTranslation(sc.argv[1], sc.argv[0]);
+        data.addTranslation(sc.argv[1], sc.argv[0],TranslationType.sourceCR);
         sc.getNextToken();
       } else if(sc.isBlock) {
         break;

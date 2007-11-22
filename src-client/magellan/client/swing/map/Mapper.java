@@ -1296,7 +1296,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
-
+    
     Iterator iter = data.regions().values().iterator();
 
     while (iter.hasNext()) {
@@ -1312,6 +1312,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       }
     }
 
+    // provide a small border...
+    int bordersize=10;
+    upperLeft.translate(cellGeometry.getCellSize().width * bordersize * -1,cellGeometry.getCellSize().height * bordersize * -1);
+    lowerRight.translate(cellGeometry.getCellSize().width * bordersize,cellGeometry.getCellSize().height * bordersize);
+    
     lowerRight.x += (cellGeometry.getCellSize().width + 1);
     lowerRight.y += (cellGeometry.getCellSize().height + 1);
 

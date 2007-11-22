@@ -1009,9 +1009,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     rootNode = new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.rootName"));
     treeModel = new DefaultTreeModel(rootNode);
     tree = new CopyTree(treeModel);
-    tree.setRootVisible(true);
+    // tree.setRootVisible(true);
+    tree.setRootVisible(false);
+    
     tree.addTreeSelectionListener(this);
-
+    tree.setShowsRootHandles(true);
     CellRenderer tr = new CellRenderer(getMagellanContext());
     tree.setCellRenderer(tr);
 

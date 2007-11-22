@@ -1,3 +1,8 @@
+2007-11-22 Fiete (sf@fietefietz.de)
+	* fixed bug #82: movement path out of map -> map has border now
+	* feature #91: no root node in faction statistics
+	* fixed bug #74: untranslated text in spell components
+
 2007-11-21 Fiete (sf@fietefietz.de)
 	* fixed Bug #51: Skilltype sorting in preferences
 	* added default magellan translation for skilltypes

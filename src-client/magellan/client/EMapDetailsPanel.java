@@ -160,6 +160,7 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
+import magellan.library.utils.Translations;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.comparator.AllianceFactionComparator;
 import magellan.library.utils.comparator.BestSkillComparator;
@@ -3861,7 +3862,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							}
 	
 						} else {
-							compNode = createSimpleNode(key + ": " + val, "aura");
+							compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "aura");
 						}
 					} else if(key.equalsIgnoreCase("permanente Aura")){
 						int blankPos = val.indexOf(" ");
@@ -3882,10 +3883,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							}
 	
 						} else {
-							compNode = createSimpleNode(key + ": " + val, "permanentaura");
+							compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "permanentaura");
 						}
 						
 					} else {
+					  
 						int blankPos = val.indexOf(" ");
 	
 						if((blankPos > 0) && (blankPos < val.length())) {
@@ -3893,17 +3895,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							String getLevelAtDays = val.substring(blankPos + 1, val.length());
 							if(getLevelAtDays.equals("0")) {
                 // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
-								compNode = createSimpleNode(usage + " " + key, "items/" + key);
+							  // okay (FF), now using the correct translation
+								compNode = createSimpleNode(usage + " " + data.getTranslation(key), "items/" + key);
 							} else if(getLevelAtDays.equals("1")) {
                 // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
-								compNode = createSimpleNode(usage + " " + key + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
+							  // okay (FF), now using the correct translation
+								compNode = createSimpleNode(usage + " " + data.getTranslation(key) + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							} else {
   							compNode = createSimpleNode(usage + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
 															" * " + getLevelAtDays + " * " +
 															Resources.get("emapdetailspanel.node.level"), "items/" + key);
 							}
 						} else {
-							compNode = createSimpleNode(key + ": " + val, "items/" + key);
+							compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "items/" + key);
 						}
 					}
 					componentsNode.add(compNode);

@@ -263,6 +263,7 @@ public class DockingFrameworkBuilder  {
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
     layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
+    layoutMenu.setEnabled(false);
     
     ButtonGroup group = new ButtonGroup();
     for (DockingLayout layout : layouts) {

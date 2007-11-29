@@ -24,9 +24,14 @@
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.JFileChooser;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.DockingFrameworkBuilder;
+import magellan.client.utils.XMLFileFilter;
 import magellan.library.utils.Resources;
 
 public class LayoutImportAction extends MenuAction {
@@ -35,7 +40,6 @@ public class LayoutImportAction extends MenuAction {
    */
   public LayoutImportAction() {
     super(Client.INSTANCE);
-    setEnabled(false);
   }
 
   /**
@@ -75,7 +79,19 @@ public class LayoutImportAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setSelectedFile(new File("docks.xml"));
+    fileChooser.setMultiSelectionEnabled(false);
+    fileChooser.setFileFilter(new XMLFileFilter());
+    if (fileChooser.showOpenDialog(Client.INSTANCE) == JFileChooser.APPROVE_OPTION) {
+      if (fileChooser.getSelectedFile().exists()) {
+        try {
+          DockingFrameworkBuilder.getInstance().addLayouts(fileChooser.getSelectedFile());
+        } catch (Exception exception) {
+          throw new RuntimeException(exception);
+        }
+      }
+    }
   }
 
 }

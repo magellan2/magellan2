@@ -1,6 +1,7 @@
 2007-11-29 Thoralf (thoralf@m84.de)
     * added timestamp to log-output.
     * implemented GUI for saving and creating docking layout.
+    * implemented GUI for exporting/importing docking layout settings
 
 2007-11-22 Fiete (sf@fietefietz.de)
     * fixed bug #82: movement path out of map -> map has border now

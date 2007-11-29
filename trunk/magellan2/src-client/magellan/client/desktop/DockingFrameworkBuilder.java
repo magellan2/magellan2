@@ -28,10 +28,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import magellan.client.Client;
@@ -44,7 +41,6 @@ import magellan.client.actions.desktop.LayoutSaveAction;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.RootWindow;
 import net.infonode.docking.View;
@@ -187,16 +183,13 @@ public class DockingFrameworkBuilder  {
   public synchronized RootWindow read(StringViewMap viewMap, Map<String,View> views, File serializedViewData) throws IOException {
     log.info("Loading Docking Layouts");
     
+    this.viewMap = viewMap;
+    this.views = views;
+    
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
     
     try {
-      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-      Document document = builder.parse(serializedViewData);
-      if (!document.getDocumentElement().getNodeName().equals("dock")) {
-        log.fatal("The file "+serializedViewData+" does NOT contain Docking-layouts for Magellan. Missing XML root element 'dock'");
-        return null;
-      }
-      load(document.getDocumentElement(), viewMap, views);
+      layouts = DockingLayout.load(serializedViewData, viewMap, views);
       
       log.info("Loaded "+layouts.size()+" Docking layouts.");
       for (DockingLayout layout : layouts) {
@@ -220,26 +213,35 @@ public class DockingFrameworkBuilder  {
   }
   
   /**
-   * Loads a Docking Layout from the XML file.
+   * Adds all docking layouts from the given file to the currently
+   * available layouts. all layouts are disabled and layouts with the
+   * same name are renamed
    */
-  protected synchronized void load(Element root, StringViewMap viewMap, Map<String,View> views) {
-    if (root.getNodeName().equalsIgnoreCase("dock")) {
-      List<Element> subnodes = Utils.getChildNodes(root);
-      log.info("Found "+subnodes.size()+" Docking layouts.");
-      for (int i=0; i<subnodes.size(); i++) {
-        Element node = subnodes.get(i);
-        load(node, viewMap, views);
+  public synchronized void addLayouts(File file) {
+    List<DockingLayout> newLayouts = DockingLayout.load(file, viewMap, views);
+    if (newLayouts != null) {
+      for (DockingLayout layout : newLayouts) {
+        layout.setActive(false);
+        layout.setName(findNewName(layouts,layout.getName(),layout.getName(),0));
+        layouts.add(layout);
       }
-    } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
-      String layoutName = root.getAttribute("name");
-      if (Utils.isEmpty(layoutName)) layoutName = "Standard";
-      boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"),true);
-      
-      log.warn("Lade Layout "+layoutName);
-      DockingLayout layout = new DockingLayout(layoutName,root, viewMap, views);
-      layout.setActive(isActive);
-      layouts.add(layout);
+      updateLayoutMenu();
     }
+  }
+  
+  /**
+   * Searches for a layout with the given name. If it is not found,
+   * then the name is returned. If it is found, then it returns
+   * the name "name (x)".
+   */
+  private synchronized String findNewName(List<DockingLayout> layouts, String originalName, String name, int suffix) {
+    for (DockingLayout layout : layouts) {
+      if (layout.getName().equalsIgnoreCase(name)) {
+        String newName = originalName+" ("+(++suffix)+")";
+        return findNewName(layouts,originalName,newName,suffix);
+      }
+    }
+    return name;
   }
 
   /**

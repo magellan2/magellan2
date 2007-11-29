@@ -105,7 +105,9 @@ public class DockingLayout {
       if (child == null) return;
       
       RootWindow root = child.getRootWindow();
+      if (root == null) root = this.window;
       if (child instanceof View) {
+        if (root == null) continue;
         log.info("Remove View "+child.getName());
         root.removeView((View)child);
       } else {

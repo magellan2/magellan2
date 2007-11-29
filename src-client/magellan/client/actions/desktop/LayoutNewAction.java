@@ -102,6 +102,7 @@ public class LayoutNewAction extends MenuAction {
     
     if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {
       JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.new.exists"));
+      return;
     }
     
     DockingFrameworkBuilder.getInstance().createNewLayout(newLayoutName);

@@ -35,6 +35,7 @@ public class LayoutImportAction extends MenuAction {
    */
   public LayoutImportAction() {
     super(Client.INSTANCE);
+    setEnabled(false);
   }
 
   /**

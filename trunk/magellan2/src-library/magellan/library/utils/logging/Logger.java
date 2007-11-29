@@ -13,12 +13,16 @@
 
 package magellan.library.utils.logging;
 
+import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
+
+import magellan.library.utils.Utils;
 
 
 //import org.apache.log4j.*;
@@ -49,29 +53,22 @@ public class Logger {
 
 	/** AWT messages are printed for debugging awt purposes */
 	public static final int AWT = 6;
+
+  private static Logger DEFAULT = new Logger("");
 	private static int verboseLevel = INFO;
 	private static Object awtLogger = null;
 	private static boolean searchAwtLogger = true;
+  private static LogListener DEFAULTLOGLISTENER = new DefaultLogListener();
 
 	private Logger(String aBase) {
 		// be fail-fast
 		if(aBase == null) {
 			throw new NullPointerException();
 		}
-
-		//ivTraceLog = Category.getInstance(aBase);
 	}
 
-	private static Logger DEFAULT = new Logger("");
-
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
-	 *
-	 * 
-	 *
-	 * @throws NullPointerException DOCUMENT-ME
 	 */
 	public static Logger getInstance(Class aClass) {
 		// be fail-fast
@@ -83,13 +80,7 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
-	 *
-	 * 
-	 *
-	 * @throws NullPointerException DOCUMENT-ME
 	 */
 	public static Logger getInstance(String aBase) {
 		// be fail-fast
@@ -116,8 +107,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public static void setLevel(String aLevel) {
@@ -153,10 +142,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public static String getLevel(int level) {
@@ -185,13 +170,16 @@ public class Logger {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void log(int aLevel, Object aObj, Throwable aThrowable) {
 		if(verboseLevel >= aLevel) {
 			if(logListeners.isEmpty()) {
 				DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
 			} else {
-				for(Iterator iter = logListeners.iterator(); iter.hasNext(); ) {
-					LogListener l = (LogListener) iter.next();
+				for(Iterator<LogListener> iter = logListeners.iterator(); iter.hasNext(); ) {
+					LogListener l = iter.next();
 					l.log(aLevel, aObj, aThrowable);
 				}
 			}
@@ -199,8 +187,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void fatal(Object aObj) {
@@ -208,9 +194,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void fatal(Object aObj, Throwable aThrowable) {
@@ -218,8 +201,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isFatalEnabled() {
@@ -227,8 +208,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void error(Object aObj) {
@@ -236,9 +215,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void error(Object aObj, Throwable aThrowable) {
@@ -246,8 +222,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isErrorEnabled() {
@@ -255,8 +229,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void warn(Object aObj) {
@@ -264,9 +236,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void warn(Object aObj, Throwable aThrowable) {
@@ -274,8 +243,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isWarnEnabled() {
@@ -283,8 +250,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void info(Object aObj) {
@@ -292,9 +257,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void info(Object aObj, Throwable aThrowable) {
@@ -302,8 +264,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isInfoEnabled() {
@@ -311,8 +271,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void debug(Object aObj) {
@@ -320,9 +278,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void debug(Object aObj, Throwable aThrowable) {
@@ -330,8 +285,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isDebugEnabled() {
@@ -339,8 +292,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void awt(Object aObj) {
@@ -348,9 +299,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 * 
 	 */
 	public void awt(Object aObj, Throwable aThrowable) {
@@ -389,8 +337,6 @@ public class Logger {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public boolean isAwtEnabled() {
@@ -407,30 +353,43 @@ public class Logger {
 		logListeners.remove(l);
 	}
 
-	private static LogListener DEFAULTLOGLISTENER = new DefaultLogListener();
-
+	
 	private static class DefaultLogListener implements LogListener {
+	  private Calendar calendar = Calendar.getInstance();
+	  
 		public void log(int aLevel, Object aObj, Throwable aThrowable) {
 			log(System.err, aLevel, aObj, aThrowable);
 		} 
 		
 		private void log(PrintStream aOut, int aLevel, Object aObj, Throwable aThrowable) {
+		  
+		  ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		  PrintStream ps = new PrintStream(baos);
+		  
+		  calendar.setTimeInMillis(System.currentTimeMillis());
+		  
+		  ps.print(Utils.toDayAndTime(calendar.getTime()));
+		  ps.print(": ");
+		  
 			if(aObj != null) {
 				if(aObj instanceof Throwable) {
-					((Throwable) aObj).printStackTrace(aOut);
+					((Throwable) aObj).printStackTrace(ps);
 				} else {
-					aOut.println(aObj);
+					ps.println(aObj);
 				}
 			}
 			
 			if(aThrowable != null) {
-				aThrowable.printStackTrace(aOut);
+				aThrowable.printStackTrace(ps);
 			} else {
-				if((aObj != null) && !(aObj instanceof Throwable) &&
-				   aObj.toString().endsWith("Error")) {
-					new Exception("SELF GENERATED STACK TRACE").printStackTrace(aOut);
+				if((aObj != null) && !(aObj instanceof Throwable) && aObj.toString().endsWith("Error")) {
+					new Exception("SELF GENERATED STACK TRACE").printStackTrace(ps);
 				}
 			}
+			
+			ps.close();
+			
+			aOut.print(baos.toString());
 		}
 	}
 }

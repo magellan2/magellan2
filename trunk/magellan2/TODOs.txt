@@ -8,15 +8,9 @@ Mit + ist in Arbeit
 
 - Ausblenden von Tab-Buttons
 
-- Mehrere Layouts für Docks zulassen (umschaltbare Views)
-
 - Icons in der Karte (Optionen & Anzeige)
 
 - Minimap speichert den ARR Renderer nicht (Bug #64)
-
-- Sonstige Bugfixes (liste abgearbeitet)
-
-- evtl. Auslagern von Nicht-Basis-Funktionalität in PlugIns 
 
 ------ in Arbeit ------
 
@@ -39,6 +33,8 @@ Mit + ist in Arbeit
     OK & Abbrechen überarbeiten
     
 + Bug #51, create own translation list
+
++ Mehrere Layouts für Docks zulassen (umschaltbare Views)
 
 ------ erledigt -------
 * Inseln werden nicht richtig erfasst (zumindest passiert da

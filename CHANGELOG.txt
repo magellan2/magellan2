@@ -1,28 +1,31 @@
+2007-11-29 Thoralf (thoralf@m84.de)
+    * added timestamp to log-output.
+
 2007-11-22 Fiete (sf@fietefietz.de)
-	* fixed bug #82: movement path out of map -> map has border now
-	* feature #91: no root node in faction statistics
-	* fixed bug #74: untranslated text in spell components
+    * fixed bug #82: movement path out of map -> map has border now
+    * feature #91: no root node in faction statistics
+    * fixed bug #74: untranslated text in spell components
 
 2007-11-21 Fiete (sf@fietefietz.de)
-	* fixed Bug #51: Skilltype sorting in preferences
-	* added default magellan translation for skilltypes
-	* talent-sort-order is working again (in preferences)
-	* fixed bug #52: icon styles for talent changes
-	* fixd bug #111: inspectors not updated after order changed
-	* fixed bug #114: undo editing of nodes in DetailView
-	* fixed bug #101: CRWriter created shipinfo without ships and buildingInfo without buildings
-	* request #80: localized icons
-	* shipInspector: no crew is also report when a ship is under construction (or damaged)
-	* added 2 more AR-RR-Translation methods from Mag1 to ReportMerger
-	* replaced 6 map icons with the new ones from khadar
+    * fixed Bug #51: Skilltype sorting in preferences
+    * added default magellan translation for skilltypes
+    * talent-sort-order is working again (in preferences)
+    * fixed bug #52: icon styles for talent changes
+    * fixd bug #111: inspectors not updated after order changed
+    * fixed bug #114: undo editing of nodes in DetailView
+    * fixed bug #101: CRWriter created shipinfo without ships and buildingInfo without buildings
+    * request #80: localized icons
+    * shipInspector: no crew is also report when a ship is under construction (or damaged)
+    * added 2 more AR-RR-Translation methods from Mag1 to ReportMerger
+    * replaced 6 map icons with the new ones from khadar
 
 2007-11-20 Darcduck (sf.net@duckstein.net)
-	* added interface Localized
-	* merge respects Locale for messagetypes, messages, translations, potions, 
-	  spells and effects
-	* enhanced weight and load calculation 
-	  delta load for ships -> more precise
-	  unit load and weight recognizes magic bag
+    * added interface Localized
+    * merge respects Locale for messagetypes, messages, translations, potions, 
+      spells and effects
+    * enhanced weight and load calculation 
+      delta load for ships -> more precise
+      unit load and weight recognizes magic bag
 
 2007-11-20 Fiete (sf@fietefietz.de)
     * Fixed 80% of bug #51: Skilltype sorting in preferences
@@ -46,7 +49,7 @@
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #69, potions an alchemist can make now with icons
     * added List of potions to show to avoid multiple nodes of same potion
-	 
+     
 2007-11-18 Fiete (sf@fietefietz.de)
     * fixed Bug #107
     * introduced extra CR Export option: delete empty factions
@@ -58,7 +61,7 @@
 
 2007-11-16 Fiete (sf@fietefietz.de)
     * fixed NPE in LineWrapCellRenderer for Messages "Durchreise"
-	
+    
 2007-11-16 Thoralf (thoralf@m84.de)
     * Created Release 2.0.b99
     * First steps for multiple docking layouts
@@ -81,7 +84,7 @@
 2007-11-14 Fiete (sf@fietefietz.de)
     * added rules.cr: TALENTBONI for Schmiede 
     * just put my name on the authors-list. *proud*
-	
+    
 2007-11-13 Thoralf (thoralf@m84.de)
     * Now we have an installable JAR file, made with IzPack.
     * Docking Framework saves information in XML file instead of Object Stream.

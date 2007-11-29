@@ -25,6 +25,7 @@ package magellan.library.utils;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -261,5 +262,15 @@ public class Utils {
     }
     
     return decimal;
+  }
+  
+
+  /**
+   * Returns the date in the form "DD.MM.YYYY HH:MM:ss"
+   */
+  public static String toDayAndTime(Date date) {
+    if (date == null) return "-";
+    SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+    return format.format(date);
   }
 }

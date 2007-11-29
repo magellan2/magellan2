@@ -163,6 +163,7 @@ public class DockingFrameworkBuilder  {
    * This method writes a docking configuration to the given file.
    */
   public void write(File serializedViewData) throws IOException {
+    log.info("Storing docking layout in "+serializedViewData);
     StringBuffer buffer = new StringBuffer();
     buffer.append("<?xml version='1.0' encoding='"+Encoding.DEFAULT.toString()+"'?>\r\n");
     buffer.append("<dock version='1.0'>\r\n");
@@ -205,7 +206,7 @@ public class DockingFrameworkBuilder  {
       }
       
       if (activeLayout == null && layouts.size()>0) activeLayout = layouts.get(0);
-      
+      activeLayout.setActive(true);
       activeLayout.open(window);
       
     } catch (Exception exception) {
@@ -216,6 +217,10 @@ public class DockingFrameworkBuilder  {
     
     return window;
   }
+  
+  /**
+   * Loads a Docking Layout from the XML file.
+   */
   protected synchronized void load(Element root, StringViewMap viewMap, Map<String,View> views) {
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       List<Element> subnodes = Utils.getChildNodes(root);
@@ -236,7 +241,9 @@ public class DockingFrameworkBuilder  {
     }
   }
 
-  
+  /**
+   * Creates a default Docking layout set.
+   */
   protected synchronized RootWindow createDefault(StringViewMap viewMap, Map<String,View> views) {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
     Element root = DockingLayout.createDefaultLayout("Standard", true);
@@ -351,28 +358,25 @@ public class DockingFrameworkBuilder  {
    */
   public void deleteCurrentLayout() {
     if (layouts.size()<=1) return; // nene...
-    int index = layouts.indexOf(activeLayout);
-    if (index == 0) index++;
-    setActiveLayout(layouts.get(index));
-    layouts.remove(activeLayout);
-    /*
-    RootWindow window = null;
-    if (activeLayout != null) {
-      activeLayout.setActive(false);
-      activeLayout.dispose();
-      window = activeLayout.getRootWindow();
-    }
+    if (activeLayout == null) return; // ham we nich.
     
-    activeLayout = layouts.get(0);
-    activeLayout.setActive(true);
-    activeLayout.open(window);
-    */
+    DockingLayout deletableLayout = activeLayout;
+    log.info("Remove docking layout '"+deletableLayout.getName()+"'");
+    int index = layouts.indexOf(activeLayout);
+    if (index == 0) index++; // if the first layout is active, use the second layout.
+    
+    setActiveLayout(layouts.get(index));
+    
+    layouts.remove(deletableLayout);
+    
+    updateLayoutMenu();
   }
   
   /**
    * Enabled the specified docking layout.
    */
   public void setActiveLayout(DockingLayout layout) {
+    log.info("Set docking layout '"+layout.getName()+"'");
     RootWindow window = null;
     if (activeLayout != null) {
       activeLayout.setActive(false);

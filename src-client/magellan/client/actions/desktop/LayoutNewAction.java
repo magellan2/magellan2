@@ -25,6 +25,8 @@ package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
+
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.desktop.DockingFrameworkBuilder;
@@ -84,8 +86,25 @@ public class LayoutNewAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    log.info(e);
-    DockingFrameworkBuilder.getInstance().createNewLayout("New Layout");
+    log.info("LayoutNewAction.actionPerformed() called");
+    
+    Object result = JOptionPane.showInputDialog(
+        Client.INSTANCE, 
+        Resources.get("desktop.magellandesktop.msg.layout.new.caption"),
+        Resources.get("desktop.magellandesktop.msg.layout.new.title"),
+        JOptionPane.PLAIN_MESSAGE,
+        null,
+        null,
+        Resources.get("desktop.magellandesktop.msg.layout.new.default")
+        );
+    if (result == null) return;
+    String newLayoutName = result.toString();
+    
+    if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {
+      JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.new.exists"));
+    }
+    
+    DockingFrameworkBuilder.getInstance().createNewLayout(newLayoutName);
   }
 
 }

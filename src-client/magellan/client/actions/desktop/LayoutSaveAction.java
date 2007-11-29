@@ -24,9 +24,14 @@
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.JOptionPane;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.DockingFrameworkBuilder;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.library.utils.Resources;
 
 public class LayoutSaveAction extends MenuAction {
@@ -74,7 +79,12 @@ public class LayoutSaveAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+    try {
+      DockingFrameworkBuilder.getInstance().write(new File(Client.getSettingsDirectory(),MagellanDesktop.DOCKING_LAYOUT_FILE));
+      JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.save.caption"));
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
   }
 
 }

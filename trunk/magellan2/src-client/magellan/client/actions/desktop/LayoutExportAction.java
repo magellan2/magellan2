@@ -24,9 +24,15 @@
 package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.DockingFrameworkBuilder;
+import magellan.client.utils.XMLFileFilter;
 import magellan.library.utils.Resources;
 
 public class LayoutExportAction extends MenuAction {
@@ -75,7 +81,22 @@ public class LayoutExportAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setSelectedFile(new File("docks.xml"));
+    fileChooser.setMultiSelectionEnabled(false);
+    fileChooser.setFileFilter(new XMLFileFilter());
+    if (fileChooser.showSaveDialog(Client.INSTANCE) == JFileChooser.APPROVE_OPTION) {
+      if (fileChooser.getSelectedFile().exists()) {
+        int result = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.export.caption"), Resources.get("desktop.magellandesktop.msg.layout.export.title"), JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+          try {
+            DockingFrameworkBuilder.getInstance().write(fileChooser.getSelectedFile());
+          } catch (Exception exception) {
+            throw new RuntimeException(exception);
+          }
+        }
+      }
+    }
   }
 
 }

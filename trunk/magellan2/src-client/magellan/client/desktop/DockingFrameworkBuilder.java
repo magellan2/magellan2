@@ -67,10 +67,11 @@ public class DockingFrameworkBuilder  {
 	private List<Component> componentsUsed;
   private StringViewMap viewMap = null;
   private Map<String,View> views = null;
-
+  
 	/** Holds value of property screen. */
   
   private static JMenu layoutMenu = null;
+  private static LayoutDeleteAction deleteMenu = null;
   private static List<DockingLayout> layouts = new ArrayList<DockingLayout>();
   private static DockingLayout activeLayout = null;
 
@@ -270,7 +271,6 @@ public class DockingFrameworkBuilder  {
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
     layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
-    layoutMenu.setEnabled(false);
     
     ButtonGroup group = new ButtonGroup();
     for (DockingLayout layout : layouts) {
@@ -278,13 +278,17 @@ public class DockingFrameworkBuilder  {
       group.add(item);
       layoutMenu.add(item);
     }
+    
+    deleteMenu = new LayoutDeleteAction();
+    deleteMenu.setEnabled(layouts.size()>1);
+    
     layoutMenu.addSeparator();
     layoutMenu.add(new LayoutExportAction());
     layoutMenu.add(new LayoutImportAction());
     layoutMenu.addSeparator();
     layoutMenu.add(new LayoutNewAction());
     layoutMenu.add(new LayoutSaveAction());
-    layoutMenu.add(new LayoutDeleteAction());
+    layoutMenu.add(deleteMenu);
     
     desktopMenu.add(layoutMenu);
     desktopMenu.addSeparator();
@@ -316,7 +320,13 @@ public class DockingFrameworkBuilder  {
     
     // remove all layout items from the menu
     for (int i=0; i<layoutMenu.getItemCount(); i++) {
-      if (layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) layoutMenu.remove(i);
+      if (layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) {
+        log.info("Removing Layout Menu Entry "+layoutMenu.getItem(i).getText());
+        layoutMenu.remove(i);
+        i--;
+      } else if (layoutMenu.getItem(i) != null) {
+        log.info("Don't remove Menu Entry "+layoutMenu.getItem(i).getText()+" ("+layoutMenu.getItem(i).getClass().getName()+")");
+      }
     }
     
     // add all available items.
@@ -325,8 +335,11 @@ public class DockingFrameworkBuilder  {
     for (DockingLayout layout : layouts) {
       LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
       group.add(item);
+      log.info("Add Layout Menu Entry ("+i+"): "+layout.getName());
       layoutMenu.insert(item,i++);
     }
+    
+    deleteMenu.setEnabled(layouts.size()>1);
   }
   
   /**
@@ -363,8 +376,8 @@ public class DockingFrameworkBuilder  {
     DockingLayout deletableLayout = activeLayout;
     log.info("Remove docking layout '"+deletableLayout.getName()+"'");
     int index = layouts.indexOf(activeLayout);
-    if (index == 0) index++; // if the first layout is active, use the second layout.
-    
+    if (index == 0) index=1; else index=0; // if the first layout is active, use the second layout.
+    log.info("index:"+index);
     setActiveLayout(layouts.get(index));
     
     layouts.remove(deletableLayout);

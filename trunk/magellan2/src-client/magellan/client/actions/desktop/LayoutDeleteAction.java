@@ -25,8 +25,11 @@ package magellan.client.actions.desktop;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JOptionPane;
+
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
+import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.library.utils.Resources;
 
 public class LayoutDeleteAction extends MenuAction {
@@ -74,7 +77,10 @@ public class LayoutDeleteAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    
+    int answer = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.delete.caption"), Resources.get("desktop.magellandesktop.msg.layout.delete.title"), JOptionPane.YES_NO_OPTION);
+    if (answer == JOptionPane.YES_OPTION) {
+      DockingFrameworkBuilder.getInstance().deleteCurrentLayout();
+    }
   }
 
 }

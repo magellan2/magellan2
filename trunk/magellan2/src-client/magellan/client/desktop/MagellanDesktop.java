@@ -130,6 +130,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
   /** All frames are move to front if any frame is activated. */
   public static final int ACTIVATION_MODE_ANY = 2;
+  
+  /** The name of the docking layout file */
+  public static final String DOCKING_LAYOUT_FILE = "dock-default.xml";
 
   /**
    * Holds all the components. The key is the global id like NAME or OVERVIEW, the value is the
@@ -344,6 +347,13 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     // return the default
     return new File(magellanDir, "magellan_desktop.ini");
+  }
+  
+  /**
+   * Returns the home directory of Magellan.
+   */
+  public File getMagellanSettingsDir() {
+    return magellanDir;
   }
 
   /*
@@ -936,7 +946,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    // dockingFrameworkBuilder.setScreen(r);
     
     try {
-      splitRoot = dockingFrameworkBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,"dock-default.xml"));
+      splitRoot = dockingFrameworkBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,DOCKING_LAYOUT_FILE));
       if (splitRoot != null && splitRoot instanceof RootWindow) {
         ((RootWindow)splitRoot).addListener(this);
       }
@@ -1808,7 +1818,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     saveTranslations();
     
     try {
-      dockingFrameworkBuilder.write(new File(magellanDir,"dock-default.xml"), (RootWindow)splitRoot);
+      dockingFrameworkBuilder.write(new File(magellanDir,DOCKING_LAYOUT_FILE));
     } catch (Throwable t) {
       log.fatal(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);

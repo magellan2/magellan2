@@ -207,17 +207,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private TradeOrganizer tradeOrganizer = null;
   
   /**
-   * DOCUMENT ME!
-   * 
    * @deprecated, use info from GameData
    */
   private File dataFile = null;
 
-  private boolean everLoadedReport = false; // indicates that the user
-  // loaded a report at least once
-  // in order to decide about
-  // showing a save dialog when
-  // quitting
+  /** 
+   * indicates that the user loaded a report at least once
+   * in order to decide about showing a save dialog when
+   * quitting
+   */
+  private boolean everLoadedReport = false; // 
 
   private FileHistory fileHistory;
 
@@ -245,23 +244,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** Central undo manager - specialized to deliver change events */
   private MagellanUndoManager undoMgr = null;
 
-  // Directories
-  private static File filesDirectory = null; // Magellan directory
+  /** Magellan Directories */
+  private static File filesDirectory = null;
 
-  private static File settingsDirectory = null; // Directory of
-  // "magellan.ini"
+  /** Directory of "magellan.ini" etc. */
+  private static File settingsDirectory = null;  
 
-  // show order status in title
+  /** show order status in title */
   protected boolean showStatus = false;
 
   protected JMenuItem progressItem;
 
-  // start window, disposed after first init
+  /** start window, disposed after first init */
   protected static StartWindow startWindow;
   
   protected Collection<MagellanPlugIn> plugIns = new ArrayList<MagellanPlugIn>();
-
-//  protected static ResourceBundle startBundle;
 
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
@@ -1788,17 +1785,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   /**
    * Returns the directory the local copy of Magellan is inside.
-   * 
-   * 
    */
   public static File getMagellanDirectory() {
     return filesDirectory;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns the directory for the Magellan settings. 
    */
   public static File getSettingsDirectory() {
     return settingsDirectory;

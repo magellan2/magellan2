@@ -162,7 +162,7 @@ public class DockingFrameworkBuilder  {
   /**
    * This method writes a docking configuration to the given file.
    */
-  public void write(File serializedViewData, RootWindow window) throws IOException {
+  public void write(File serializedViewData) throws IOException {
     StringBuffer buffer = new StringBuffer();
     buffer.append("<?xml version='1.0' encoding='"+Encoding.DEFAULT.toString()+"'?>\r\n");
     buffer.append("<dock version='1.0'>\r\n");
@@ -322,14 +322,51 @@ public class DockingFrameworkBuilder  {
     }
   }
   
+  /**
+   * Returns the docking layout with the given name
+   * or null, if there is no layout with this name.
+   */
+  public DockingLayout getLayout(String name) {
+    for (DockingLayout layout : layouts) {
+      if (layout.getName().equalsIgnoreCase(name)) return layout;
+    }
+    return null;
+  }
+  
+  /**
+   * This method creates a new layout with the given name and the 
+   * default settings.
+   */
   public void createNewLayout(String name) {
-    
     Element root = DockingLayout.createDefaultLayout(name, false);
     
     DockingLayout layout = new DockingLayout(name,root,viewMap,views);
     layouts.add(layout);
     
     updateLayoutMenu();
+  }
+  
+  /**
+   * Deletes the current layout and selects the first layout.
+   */
+  public void deleteCurrentLayout() {
+    if (layouts.size()<=1) return; // nene...
+    int index = layouts.indexOf(activeLayout);
+    if (index == 0) index++;
+    setActiveLayout(layouts.get(index));
+    layouts.remove(activeLayout);
+    /*
+    RootWindow window = null;
+    if (activeLayout != null) {
+      activeLayout.setActive(false);
+      activeLayout.dispose();
+      window = activeLayout.getRootWindow();
+    }
+    
+    activeLayout = layouts.get(0);
+    activeLayout.setActive(true);
+    activeLayout.open(window);
+    */
   }
   
   /**
@@ -349,9 +386,9 @@ public class DockingFrameworkBuilder  {
   }
 
 	/**
-	 * 
+	 * Returns the list of used components
 	 */
-	public List getComponentsUsed() {
+	public List<Component> getComponentsUsed() {
 		return componentsUsed;
 	}
 

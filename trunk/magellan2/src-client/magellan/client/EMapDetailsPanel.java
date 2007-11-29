@@ -160,7 +160,6 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
-import magellan.library.utils.Translations;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.comparator.AllianceFactionComparator;
 import magellan.library.utils.comparator.BestSkillComparator;

@@ -25,7 +25,9 @@ package magellan.client.desktop;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.io.File;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +38,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
@@ -75,6 +78,51 @@ public class DockingLayout {
     setRoot(root);
     this.viewMap = viewMap;
     this.views = views;
+  }
+  
+  /**
+   * Loads a List of docking layouts from the given File.
+   */
+  public static List<DockingLayout> load(File file, StringViewMap viewMap, Map<String,View> views) {
+    List<DockingLayout> layouts = new ArrayList<DockingLayout>();
+    try {
+      DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      Document document = builder.parse(file);
+      if (!document.getDocumentElement().getNodeName().equals("dock")) {
+        log.fatal("The file "+file+" does NOT contain Docking-layouts for Magellan. Missing XML root element 'dock'");
+        return null;
+      }
+      
+      load(layouts,document.getDocumentElement(), viewMap, views);
+    } catch (Exception exception) {
+      log.error(exception);
+      ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.",exception);
+      errorWindow.open();
+    }
+    return layouts;
+  }
+
+  /**
+   * Loads a Docking Layout from the XML file.
+   */
+  protected static synchronized void load(List<DockingLayout> layouts, Element root, StringViewMap viewMap, Map<String,View> views) {
+    if (root.getNodeName().equalsIgnoreCase("dock")) {
+      List<Element> subnodes = Utils.getChildNodes(root);
+      log.info("Found "+subnodes.size()+" Docking layouts.");
+      for (int i=0; i<subnodes.size(); i++) {
+        Element node = subnodes.get(i);
+        load(layouts, node, viewMap, views);
+      }
+    } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
+      String layoutName = root.getAttribute("name");
+      if (Utils.isEmpty(layoutName)) layoutName = "Standard";
+      boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"),true);
+      
+      log.warn("Lade Layout "+layoutName);
+      DockingLayout layout = new DockingLayout(layoutName,root, viewMap, views);
+      layout.setActive(isActive);
+      layouts.add(layout);
+    }
   }
   
   /**

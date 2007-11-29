@@ -88,13 +88,14 @@ public class LayoutExportAction extends MenuAction {
     if (fileChooser.showSaveDialog(Client.INSTANCE) == JFileChooser.APPROVE_OPTION) {
       if (fileChooser.getSelectedFile().exists()) {
         int result = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("desktop.magellandesktop.msg.layout.export.caption"), Resources.get("desktop.magellandesktop.msg.layout.export.title"), JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-          try {
-            DockingFrameworkBuilder.getInstance().write(fileChooser.getSelectedFile());
-          } catch (Exception exception) {
-            throw new RuntimeException(exception);
-          }
+        if (result != JOptionPane.YES_OPTION) {
+          return;
         }
+      }
+      try {
+        DockingFrameworkBuilder.getInstance().write(fileChooser.getSelectedFile());
+      } catch (Exception exception) {
+        throw new RuntimeException(exception);
       }
     }
   }

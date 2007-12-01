@@ -23,6 +23,8 @@
 // 
 package magellan.library.utils;
 
+import magellan.library.Rules;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -149,7 +151,7 @@ public class Translations {
    * the actual contents is not cleared!
    * @param translations
    */
-  public void addAll(Translations translations){
+  public void addAll(Translations translations, Rules rules){
     if (translations!=null && translations.iteratorKeys()!=null){
       if (this.translationMap==null){
         this.translationMap = new HashMap<String, TranslationType>();
@@ -159,6 +161,7 @@ public class Translations {
         TranslationType translationType = translations.getTranslationType(original);
         if (translationType!=null){
           this.translationMap.put(original, translationType);
+          rules.changeName(original, translationType.getTranslation());
         }
       }
     }

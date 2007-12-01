@@ -30,6 +30,7 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
 	private String pattern = null;
 	private String section = null;
   private Locale locale = null;
+  private GameData data = null;
 
 	/**
 	 * Creates a new MessageType object.
@@ -114,8 +115,36 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
 		if(curMsgType.getSection() != null) {
 			newMsgType.setSection(curMsgType.getSection());
 		}
+    
+    // set the GameData were this message type belongs to
+    // this is required to render messages of this type
+    newMsgType.setGameData(newGD);
 	}
- 
+
+	/**
+   * Probably we should set the GameData together with the pattern 
+   * as we only need it if a pattern is assigned but in this case 
+   * it is most probably required! 
+	 */
+  
+  /**
+   * Set the GameData were this message type belongs to
+   * this is required to render messages of this type
+   * 
+   * @param data The GameData
+   */
+  public void setGameData(GameData data) {
+    this.data = data;
+  }
+  /**
+   * Returns the GameData were this msgtype belongs to.
+   * this is required to render messages of this type
+   * 
+   * @return the GameData
+   */
+  public GameData getGameData() {
+    return data;
+  }
 	/**
    * Get the Locale of the MessageType.  
    *   

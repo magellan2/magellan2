@@ -117,4 +117,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 	public OrderParser getOrderParser(GameData data) {
 		return new EresseaOrderParser(data);
 	}
+  
+  public MessageRenderer getMessageRenderer(GameData data) {
+    return new EresseaMessageRenderer(data);
+  }
 }

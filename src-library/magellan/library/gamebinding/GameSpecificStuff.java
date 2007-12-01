@@ -103,4 +103,6 @@ public interface GameSpecificStuff {
 	 * 
 	 */
 	public Completer getCompleter(GameData data, CompleterSettingsProvider csp);
+  
+  public MessageRenderer getMessageRenderer(GameData data);
 }

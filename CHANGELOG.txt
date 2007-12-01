@@ -1,3 +1,7 @@
+2007-12-01 Darcduck (sf.net@duckstein.net)
+	* Message rendering implemented if rendered tag not available or locale changed
+	* Translation merge changed so that also the objects in gamedata.rules are updated
+
 2007-12-01 Thoralf (thoralf@m84.de)
     * If creating a new docking layout it is active by default.
 

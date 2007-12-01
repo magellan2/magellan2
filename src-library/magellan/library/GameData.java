@@ -917,7 +917,7 @@ public abstract class GameData implements Cloneable {
     // after setting the local of the result report  
     if (resultGD.translations() != null) {
       if (olderGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(olderGD.translations());
+        resultGD.translations().addAll(olderGD.translations(), resultGD.rules);
         /*
         for (Iterator iter = olderGD.translations().keySet().iterator(); iter.hasNext();) {
           String key = (String) iter.next();
@@ -929,7 +929,7 @@ public abstract class GameData implements Cloneable {
         resultGD.translations().clear();
       }
       if (newerGD.getLocale().equals(resultGD.getLocale())) {
-        resultGD.translations().addAll(newerGD.translations());
+        resultGD.translations().addAll(newerGD.translations(), resultGD.rules);
         /*
         for (Iterator iter = newerGD.translations().keySet().iterator(); iter.hasNext();) {
           String key = (String) iter.next();
@@ -1791,4 +1791,21 @@ public abstract class GameData implements Cloneable {
     
     return null;
   }
+  
+  /**
+   * Sets the mapping for astral to real space.
+   * 
+   * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the 
+   * astral space region with CoordinateID <0,0,1>.
+   */
+  public abstract void setAstralMapping(CoordinateID c);
+  
+  /**
+   * Returns the mapping for astral to real space.
+   * 
+   * @return the <code>CoordinateID</code> of the real space region which is the center
+   * of the astral space region with CoordinateID <0,0,1>.
+   */
+  public abstract CoordinateID getAstralMapping();
+
 }

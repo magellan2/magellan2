@@ -118,6 +118,8 @@ import magellan.library.utils.logging.Logger;
  */
 public class MagellanDesktop extends JPanel implements WindowListener, ActionListener, PreferencesFactory, DockingWindowListener {
   private static final Logger log = Logger.getInstance(MagellanDesktop.class);
+  
+  private static MagellanDesktop _instance = null;
 
   /** the workSpace associated with this MagellanDesktop */
   private WorkSpace workSpace;
@@ -206,11 +208,23 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     
   /** the current context */
   MagellanContext context;
+  
+  /**
+   * Creates new MagellanDesktop
+   */
+  private MagellanDesktop() {
+    // do nothing
+  }
+  
+  public static MagellanDesktop getInstance() {
+    if (_instance == null) _instance = new MagellanDesktop();
+    return _instance;
+  }
     
   /**
    * Creates new MagellanDesktop
    */
-  public MagellanDesktop(Client client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
+  public void init(Client client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
     this.client = client;
     this.context = context;
 
@@ -3230,6 +3244,40 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void viewFocusChanged(View previouslyFocusedView, View focusedView) {
     // do nothing
   }
+  
+  /**
+   * Enabled a desktop menu entry for the given View
+   */
+  public void setActive(String viewName) {
+    // inform desktopmenu
+    if (viewName != null) {
+      for (int index=0; index<desktopMenu.getItemCount(); index++) {
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+viewName)) {
+            menu.setSelected(true);
+          }
+        }
+      }
+    }
+  }
+  
+  /**
+   * Disables a desktop menu entry for the given View
+   */
+  public void setInActive(String viewName) {
+    // inform desktopmenu
+    if (viewName != null) {
+      for (int index=0; index<desktopMenu.getItemCount(); index++) {
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+viewName)) {
+            menu.setSelected(false);
+          }
+        }
+      }
+    }
+  }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
@@ -3255,9 +3303,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     // inform desktopmenu
     if (window.getName() != null) {
       for (int index=0; index<desktopMenu.getItemCount(); index++) {
-        JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-        if (menu.getActionCommand().equals("menu."+window.getName())) {
-          menu.setSelected(false);
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+window.getName())) {
+            menu.setSelected(false);
+          }
         }
       }
     }

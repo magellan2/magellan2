@@ -141,6 +141,7 @@ public class DockingLayout {
     if (views != null) {
       for (View view : views.values()) {
         log.info("Remove View "+view.getName());
+        DockingFrameworkBuilder.getInstance().setInActive(view);
         window.removeView(view);
       }
     }
@@ -268,6 +269,7 @@ public class DockingLayout {
     View view = null;
     try {
       view = views.get(key);
+      DockingFrameworkBuilder.getInstance().setActive(view);
     } catch (Throwable t) {
       log.error(t);
     }

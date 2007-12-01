@@ -1,3 +1,6 @@
+2007-12-01 Thoralf (thoralf@m84.de)
+    * If creating a new docking layout it is active by default.
+
 2007-11-29 Thoralf (thoralf@m84.de)
     * added timestamp to log-output.
     * implemented GUI for saving and creating docking layout.

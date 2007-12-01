@@ -348,7 +348,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (bounds != null)
       setBounds(bounds);
 
-    desktop = new MagellanDesktop(this, context, settings, components, settingsDirectory);
+    desktop = MagellanDesktop.getInstance();
+    desktop.init(this, context, settings, components, settingsDirectory);
 
     setContentPane(desktop);
     

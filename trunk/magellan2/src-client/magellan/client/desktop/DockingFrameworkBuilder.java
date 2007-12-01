@@ -365,6 +365,8 @@ public class DockingFrameworkBuilder  {
     DockingLayout layout = new DockingLayout(name,root,viewMap,views);
     layouts.add(layout);
     
+    setActiveLayout(layout);
+    
     updateLayoutMenu();
   }
   
@@ -401,8 +403,24 @@ public class DockingFrameworkBuilder  {
     activeLayout = layout;
     activeLayout.setActive(true);
     activeLayout.open(window);
-    
   }
+  
+  /**
+   * Enables a desktop menu entry for the given View
+   */
+  public void setActive(View view) {
+    if (view == null) return;
+    MagellanDesktop.getInstance().setActive(view.getName());
+  }
+  
+  /**
+   * Disables a desktop menu entry for the given View
+   */
+  public void setInActive(View view) {
+    if (view == null) return;
+    MagellanDesktop.getInstance().setInActive(view.getName());
+  }
+  
 
 	/**
 	 * Returns the list of used components

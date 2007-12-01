@@ -25,6 +25,7 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.gamebinding.MessageRenderer;
 
 
 /**
@@ -172,6 +173,11 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 * @return The message text
 	 */
 	public String getText() {
+    if (text == null) {
+      if (type != null) {
+        render(type.getGameData());
+      }
+    }
 		return text;
 	}
 
@@ -288,7 +294,11 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 * @param data The GameData for replacing unit IDs and region coordinates
 	 */
 	public void render(GameData data) {
-		setText(MagellanMessageImpl.render(data, type.getPattern(), attributes));
+    if (data != null) {
+      MessageRenderer mr = data.getGameSpecificStuff().getMessageRenderer(data);
+      setText(mr.renderMessage(this));
+    }
+//		setText(MagellanMessageImpl.render(data, type.getPattern(), attributes));
 	}
 
 	/**

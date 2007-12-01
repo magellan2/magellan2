@@ -493,6 +493,13 @@ public abstract class MagellanFactory {
 
   /**
    * Transfers all available information from the current message to the new one.
+   * 
+   * This is generally a localization problem:
+   * if newMsg.text == null then newMsg=curMsg (also in case the locale is different)
+   * if curMsg.locale == newGD.local then newMsg=curMsg
+   * => if correct locale available use it
+   * => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype is available in locale
+   * => you can notice this half localized msg because msg.locale=gm.locale, also msg.rerender=true 
    *
    * @param curGD fully loaded game data
    * @param curMsg a fully initialized and valid message
@@ -516,12 +523,18 @@ public abstract class MagellanFactory {
     }
 
     if (curMsg.getText() != null) {
+      // TODO save the locale of the message. If msg.locale matches the newGD.locale then we can use the text
+      // currently we check the GameData as the msg locale is not implemented.
       if (curGD.getLocale().equals(newGD.getLocale())) {
         // we can only copy the text if it matches the locale
         newMsg.setText(curMsg.getText());
       } else {
         // otherwise we can render the text from the probably localized messagetype
-        newMsg.render(newGD);
+        /*
+         * we dont render it here as the new GameData is not fully initialized.
+         * as the text is null, it will be rendered on the first usage.
+        ewMsg.render(newGD);
+        */
       }
     }
   }

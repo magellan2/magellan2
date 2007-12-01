@@ -44,6 +44,7 @@ public class CompleteData extends GameData {
 	protected Translations translations = new Translations();
 	protected Locale locale = null;
 	protected Map<CoordinateID,Region> selectedRegions = new TreeMap<CoordinateID, Region>();
+  protected CoordinateID astralMapping = null;
 
 	/**
 	 * DOCUMENT-ME
@@ -211,4 +212,24 @@ public class CompleteData extends GameData {
 	public CompleteData(Rules rules, String name) {
 		super(rules, name);
 	}
+	
+  /**
+   * Sets the mapping for astral to real space.
+   * 
+   * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the 
+   * astral space region with CoordinateID <0,0,1>.
+   */
+  public void setAstralMapping(CoordinateID c) {
+    this.astralMapping = c;
+  }
+  
+  /**
+   * Returns the mapping for astral to real space.
+   * 
+   * @return the <code>CoordinateID</code> of the real space region which is the center
+   * of the astral space region with CoordinateID <0,0,1>.
+   */
+  public CoordinateID getAstralMapping() {
+    return this.astralMapping;
+  }
 }

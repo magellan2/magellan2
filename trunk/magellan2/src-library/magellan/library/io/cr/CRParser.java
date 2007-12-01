@@ -301,6 +301,9 @@ public class CRParser implements RulesIO, GameDataIO {
             data.addMsgType(mt);
           } else {
             mt.setPattern(sc.argv[0]);
+            // set the GameData were this message type belongs to
+            // this is required to render messages of this type
+            mt.setGameData(data);
           }
           
           list.add(mt);
@@ -337,6 +340,9 @@ public class CRParser implements RulesIO, GameDataIO {
     while(!sc.eof && !sc.isBlock) {
       if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("text")) {
         mt.setPattern(sc.argv[0]);
+        // set the GameData were this message type belongs to
+        // this is required to render messages of this type
+        mt.setGameData(data);
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("section")) {
         mt.setSection(sc.argv[0]);
       } else {
@@ -518,7 +524,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
           msg.setType(mt);
         } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("rendered")) {
-          msg.setText(originTranslate(sc.argv[0]));
+//          msg.setText(originTranslate(sc.argv[0]));
         } else if(sc.argc == 2) {
           if(msg.getAttributes() == null) {
             msg.setAttributes(new OrderedHashtable<String, String>());

@@ -52,8 +52,8 @@ import net.infonode.util.Direction;
 
 
 /**
+ * This is a factory for working with the infonode docking framework. 
  *
- * @author Andreas
  * @author Thoralf
  * @version 1.0
  */

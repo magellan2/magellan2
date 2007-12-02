@@ -347,13 +347,14 @@ public class ReportMerger extends Object {
                             Collection<Region> col = (Collection) dataSchemeMap.get(scheme.getName());
                             if(col == null) {
                                     col = new LinkedList<Region>();
+                                    col.add(region);
                                     dataSchemeMap.put(scheme.getName(), col);
                             } else {
                                     /**
                                      * This is the second astral region showing the same scheme.
                                      * From this we can calculate an astral to real mapping for the gamedata by variant 1
                                      */
-                                    // in case of errors in the current Astral Regions (merged schemes) we will get a wrong mapping here. Therefore a scheme consistency check should be done in advance. (several posibilities)
+                                    // in case of errors in the current Astral Regions (merged schemes) we will get a wrong mapping here. Therefore a scheme consistency check should be done in advance. (several possibilities)
                                     CoordinateID firstCoord = ((Region) col.iterator().next()).getCoordinate();
                                     CoordinateID secondCoord = region.getCoordinate();
                                     CoordinateID schemeCoord = scheme.getCoordinate();

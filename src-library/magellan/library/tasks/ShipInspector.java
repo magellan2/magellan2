@@ -147,7 +147,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		// TODO: We should consider harbours, too. But this is difficult because we don't know if
 		// harbour owner is allied with ship owner etc. We better leave it up to the user to decide...
 		if (s.getShoreId() != -1) {
-		  if (!nextRegion.getRegionType().equals(ozean)) {
+		  if (nextRegion!=null && !nextRegion.getRegionType().equals(ozean)) {
         problems.add(new CriticizedError(s.getRegion(), s, this,
             Resources.get("tasks.shipinspector.error.noocean.description")));
         return problems;

@@ -118,6 +118,11 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 		return new EresseaOrderParser(data);
 	}
   
+  /**
+   * Delivers the Eressea specific Message Renderer (as of CR VERSION 41)
+   * @param data - A GameData object to enrich the messages with names of units, regions ,...
+   * @return the new EresseaMessageRenderer for rendering ONE message 
+   */
   public MessageRenderer getMessageRenderer(GameData data) {
     return new EresseaMessageRenderer(data);
   }

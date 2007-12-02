@@ -1495,7 +1495,7 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(unit.getWeight() != -1) {
+		if(unit.isWeightWellKnown()) {
 			write(unit.getWeight()+";weight");
 			newLine();
 		}

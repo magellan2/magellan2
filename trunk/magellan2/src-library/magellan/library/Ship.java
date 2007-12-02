@@ -55,7 +55,7 @@ public interface Ship extends UnitContainer, HasRegion {
 	/**
 	 * Returns the cargo load of this ship.
 	 * 
-	 * @return Returns the cargo load of this ship
+	 * @return Returns the cargo load of this ship or -1 if unknown
 	 */
 	public int getCargo();
 	

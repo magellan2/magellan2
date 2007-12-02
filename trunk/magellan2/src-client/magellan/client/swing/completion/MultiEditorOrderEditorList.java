@@ -332,7 +332,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     // remember if we want to have the focus (see below)
 		boolean restoreFocus = (getEditor(currentUnit) != null && getEditor(currentUnit).hasFocus()) || content.hasFocus() || hasFocus();
 		// if WE triggered the selection change, the new unit DOES get the focus
-		restoreFocus = restoreFocus || (se.getSource() == this);
+		restoreFocus = restoreFocus || (se.getSource() == this) || (se.getSource().getClass().equals(OrderEditor.class));
 
 		if(multiEditorLayout) {
       deselectEditor(currentUnit);

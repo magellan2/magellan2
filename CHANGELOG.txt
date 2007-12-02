@@ -1,3 +1,11 @@
+2007-12-02  stm (stm_@users.sourceforge.net)
+    * OrderEditor now always gets focus after click
+    * MagellanShipImpl now returns -1 if cargo unknown
+    * fixed bug in getModifiedLoad for unknown cargo
+    * CRWriter: unit weight and ship cargo only written if known
+    * ShipInspector: fixed null pointer bug
+    * ReportMerger: fixed NoSuchElementException in astral space mapping
+    
 2007-12-01 Darcduck (sf.net@duckstein.net)
 	* Message rendering implemented if rendered tag not available or locale changed
 	* Translation merge changed so that also the objects in gamedata.rules are updated

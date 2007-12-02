@@ -39,16 +39,45 @@ import java.util.regex.*;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 /**
- * TODO This class must be commented
+ * A Renderer for Eressea Messages
+ * 
+ * Messages in Eressea look like this:
+ * MESSAGE 350568592
+ * 5281483;type
+ * "Whio (whio) übergibt 10 Silber an Darin Jerekop (djer).";rendered
+ * 1515696;unit
+ * 10;amount
+ * "Silber";resource
+ * 631683;target
+ * 
+ * The rendered tag can be rendered by this Renderer using the Message, 
+ * the Messagetype and Translations
+ * 
+ * Messagetypes look like this:
+ * 
+ * MESSAGETYPE 5281483
+ * "\"$unit($unit) übergibt $int($amount) $resource($resource,$amount) an $unit($target).\"";text
+ * "economy";section
  *
  * @author ...
  * @version 1.0, 28.11.2007
  */
-public class EresseaMessageRenderer extends MessageRenderer {
+public class EresseaMessageRenderer implements MessageRenderer {
+  /**
+   * The GameData as we need a lot of "background" information from it. 
+   */
   private GameData gd = null;
-  // we have to add the . since i found $unit.dative($unit) as a function
+  
+  /**
+   * A regexp pattern that will be initialzed in the constructor to find 
+   * attributes and functions
+   */
   private Pattern literalsPattern;
   
+  /**
+   * The Constructor 
+   * @param gd - The GameData - required for a lot of functions
+   */
   public EresseaMessageRenderer(GameData gd) {
     this.gd = gd; 
     try {
@@ -59,6 +88,8 @@ public class EresseaMessageRenderer extends MessageRenderer {
   }
   
   /**
+   * Renders the Message
+   * 
    * @see magellan.library.gamebinding.MessageRenderer#renderMessage(magellan.library.Message)
    */
   public String renderMessage(Message msg) {
@@ -70,6 +101,14 @@ public class EresseaMessageRenderer extends MessageRenderer {
     }
   }
   
+  /**
+   * Renders a String part of the message.
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return a String containing the fully rendered String part
+   * @throws ParseException if any problem occured parsing the msg
+   */
   private String renderString(StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     // remove trailing spaces
     while (unparsed.charAt(0)==' ') {
@@ -114,6 +153,14 @@ public class EresseaMessageRenderer extends MessageRenderer {
     }
   }
   
+  /**
+   * mainly decides if we have a attribute or function following the $ sign
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return a String or Array of int could also be NULL
+   * @throws ParseException if any problem occured parsing the msg
+   */
   private Object renderDollar(StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     if (unparsed.charAt(0)=='{') {
       int pos = unparsed.indexOf("}");
@@ -146,33 +193,28 @@ public class EresseaMessageRenderer extends MessageRenderer {
     }
   }
   
-  private String renderAttribute(String name, Map<String,String> attributes) throws ParseException {
+  /**
+   * Returns the attribute value for a given attribute name.
+   * 
+   * @param name - the name of the attribute
+   * @param attributes - the mapping of atributes to values of the message
+   * @return The attribute value as String
+   */
+  private String renderAttribute(String name, Map<String,String> attributes) {
     return attributes.get(name);
-/*
-    // String value?
-    if (attrval.charAt(0)=='"') {
-      return attrval.substring(1, attrval.length()-1);
-    // Integer or Integer triple?
-    } else {
-      final Pattern numbersPattern = Pattern.compile("-?[0-9]+( -?[0-9]+)*");
-      // parse constant integers
-      Matcher m=numbersPattern.matcher(attrval);
-      if (m.find() && m.start() == 0) {
-        StringTokenizer st = new StringTokenizer(m.group());
-        int[] ar = new int[st.countTokens()];
-        int i = 0;
-        while (st.hasMoreTokens()) {
-          ar[i] = Integer.parseInt(st.nextToken());
-          i++;
-        }
-        return ar;
-      } else {
-        throw new ParseException("ERROR: Attribute interpretion failed "+name+" "+attrval, 0);
-      }
-    }
-*/
   }
   
+  /**
+   * Interpretes the functions. This is the most "complex" part of the message rendering. 
+   * If a unknown function arises it has to be implemented here.
+   * 
+   * @param name - the name of the function without dollar "$" but with the opening bracket "("
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return a String or Array of int could also be NULL
+   * @throws ParseException if any problem occured parsing the msg
+   */
   private Object renderFunction(String name, StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     Object value;
     // $int()
@@ -359,6 +401,16 @@ public class EresseaMessageRenderer extends MessageRenderer {
     }
   }
   
+  /**
+   * Tries to render an integer. This could of course also be a return value 
+   * of a function or an attribute value. The return of attributes and functions 
+   * are treated like constants. 
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return an Array of int
+   * @throws ParseException if any problem occured parsing the msg
+   */
   private int[] renderInteger(StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     // remove trailing spaces
     while (unparsed.charAt(0)==' ') {
@@ -394,6 +446,15 @@ public class EresseaMessageRenderer extends MessageRenderer {
       throw new ParseException("ERROR: No Integer constant found", unparsed.length());
     }
   }
+  
+  /**
+   * Tries to render a constant value NULL or returns the value of an attribute or function. 
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return something that may be NULL
+   * @throws ParseException if any problem occured parsing the msg, i.e. a constant STRING or integer is found
+   */
 
   private Object renderNull(StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     // remove trailing spaces

@@ -104,5 +104,10 @@ public interface GameSpecificStuff {
 	 */
 	public Completer getCompleter(GameData data, CompleterSettingsProvider csp);
   
+  /**
+   * Delivers a game specific Message Renderer
+   * @param data - A GameData object to enrich the messages with names of units, regions ,...
+   * @return the MessageRenderer for rendering ONE Message
+   */
   public MessageRenderer getMessageRenderer(GameData data);
 }

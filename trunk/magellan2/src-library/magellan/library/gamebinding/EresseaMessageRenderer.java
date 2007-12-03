@@ -219,7 +219,12 @@ public class EresseaMessageRenderer implements MessageRenderer {
     Object value;
     // $int()
     if (name.equals("int(")) {
-      value = Integer.toString(renderInteger(unparsed, attributes)[0]);
+      int[] ar = renderInteger(unparsed, attributes);
+      if (ar != null) {
+        value = Integer.toString(ar[0]);
+      } else {
+        throw new ParseException("ERROR: argument of int() returns NULL", unparsed.length());
+      }
     // $unit() 
     // $unit.dative()  
     } else if (name.equals("unit(")||name.equals("unit.dative(")) {
@@ -267,7 +272,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       EntityID sid = EntityID.createEntityID(renderInteger(unparsed, attributes)[0], gd.base);
       Ship ship = gd.getShip(sid);
       if (ship != null) {
-        value = ship.toString();
+        value = ship.toString(false);
       } else {
         value = Resources.get("ship.ship")+" ("+sid.toString()+")";
       }        
@@ -282,16 +287,25 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }        
     // $eq()
     } else if (name.equals("eq(")) {
-      int a = renderInteger(unparsed, attributes)[0];
+      int[] ar = renderInteger(unparsed, attributes);
       int pos = unparsed.indexOf(",");
-      if (pos>=0) {
+      if (pos >= 0) {
         unparsed.delete(0, pos+1);
-        int b = renderInteger(unparsed, attributes)[0];
         int[] i = new int[1];
-        if (a == b) {
-          i[0] = 1;
-        } else {
+        if (ar == null) {
           i[0] = 0;
+        } else {
+          int a = ar[0];
+          ar = renderInteger(unparsed, attributes);
+          if (ar == null) {
+            i[0] = 0;
+          } else {
+            if (a == ar[0]) {
+              i[0] = 1;
+            } else {
+              i[0] = 0;
+            }
+          }
         }
         value = i;
       } else {
@@ -299,20 +313,21 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
     // $add()
     } else if (name.equals("add(")) {
-      int a = renderInteger(unparsed, attributes)[0];
+      int[] ar = renderInteger(unparsed, attributes);
       int pos = unparsed.indexOf(",");
-      if (pos>=0) {
+      if ((pos >= 0) && (ar != null)) {
         unparsed.delete(0, pos+1);
-        int b = renderInteger(unparsed, attributes)[0];
-        int[] i = new int[1];
-        if (a == b) {
-          i[0] = 1;
+        int a = ar[0];
+        ar = renderInteger(unparsed, attributes);
+        if (ar != null) {
+          int[] i = new int[1];
+          i[0] = a + ar[0];
+          value = i;
         } else {
-          i[0] = 0;
+          throw new ParseException("ERROR: second argument of add() returns NULL", unparsed.length());
         }
-        value = i;
       } else {
-        throw new ParseException("ERROR: wrong arguments for eq()", unparsed.length());
+        throw new ParseException("ERROR: wrong arguments for add()", unparsed.length());
       }
     // $if()
     } else if (name.equals("if(")) {
@@ -352,7 +367,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       if (obj == null) {
         i[0] = 1;
       } else {
-        i[1] = 0;
+        i[0] = 0;
       }
       value = i;  
     // $resource()
@@ -361,8 +376,8 @@ public class EresseaMessageRenderer implements MessageRenderer {
       int pos = unparsed.indexOf(",");
       if (pos>=0) {
         unparsed.delete(0, pos+1);
-        int amount = renderInteger(unparsed, attributes)[0];
-        // TODO use amount if possible
+        int[] ar = renderInteger(unparsed, attributes);
+        // TODO use amount=ar[0] if possible
         value = gd.getTranslation(item);
       } else {
         throw new ParseException("ERROR: wrong arguments for resource()", unparsed.length());
@@ -376,17 +391,31 @@ public class EresseaMessageRenderer implements MessageRenderer {
       value = gd.getTranslation(str);
     // $weight()
     } else if (name.equals("weight(")) {
-      int weight = renderInteger(unparsed, attributes)[0];
-      value = (weight/100)+" GE"; 
+      int[] ar = renderInteger(unparsed, attributes);
+      if (ar != null) {
+        value = (ar[0]/100)+" GE";
+      } else {
+        throw new ParseException("ERROR: "+name+") requires an int parameter != NULL", unparsed.length());
+      }
     // $resources()
     } else if (name.equals("resources(")) {
       value = renderString(unparsed, attributes);
-      
-      
-    // TODO more functions to implement:
-
     // $direction()
-      
+    } else if (name.equals("direction(")) {
+      int[] ar = renderInteger(unparsed, attributes);
+      if (ar != null) {
+        switch (ar[0]) {
+          case 0: value = Resources.get("orders.NW"); break;
+          case 1: value = Resources.get("orders.NE"); break;
+          case 2: value = Resources.get("orders.E");  break;
+          case 3: value = Resources.get("orders.SE"); break;
+          case 4: value = Resources.get("orders.SW"); break;
+          case 5: value = Resources.get("orders.W");  break;
+          default: value = "?";
+        }
+      } else {
+        throw new ParseException("ERROR: "+name+") requires an int parameter != NULL", unparsed.length());
+      }
     } else {
       throw new ParseException("ERROR: unknown function "+name+")", unparsed.length());     
     }

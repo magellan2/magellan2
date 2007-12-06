@@ -1,3 +1,6 @@
+2007-12-06 Thoralf (thoralf@m84.de)
+    * Groups in Tree now with number of persons.
+
 2007-12-03 Darcduck (sf.net@duckstein.net)
 	* Fixed some issues with message rendering reported by solthar
 

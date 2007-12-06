@@ -60,8 +60,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
 	private Unit unit = null;
 	private int amount = -1;
-    private int modified = -1;
-    private String prfx = null;
+  private int modified = -1;
+  private String prfx = null;
 	private String text = null;
 	private boolean iconNamesCreated = false;
 	private List iconNames = null;
@@ -314,8 +314,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		if(isShowingSkillIcons() && (u.getSkills() != null)) {
 			boolean bool = isShowingSkillsLessThanOne();
       boolean bool2 = isShowingSkillsLessThanTwo();
-			for(Iterator iter = u.getSkills().iterator(); iter.hasNext();) {
-				Skill s = (Skill) iter.next();
+			for(Iterator<Skill> iter = u.getSkills().iterator(); iter.hasNext();) {
+				Skill s = iter.next();
 				boolean addSkill=true;
         if (s.getLevel()<1 && !bool){
           addSkill=false;

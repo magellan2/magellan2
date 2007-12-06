@@ -49,6 +49,8 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 		if(icon == null) {
 			icon = UIManager.getIcon("Tree.closedIcon");
 		}
+    
+    if (g != null) setAmount(g.units().size());
 	}
 
 	/**
@@ -67,7 +69,7 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 	 */
 	public List<GraphicsElement> getGraphicsElements() {
 		if(GE == null) {
-			GraphicsElement ge = new GroupGraphicsElement(group, icon, null, null);
+			GraphicsElement ge = new GroupGraphicsElement(toString(), icon, null, null);
 			Tag2Element.start(group);
 			Tag2Element.apply(ge);
 			ge.setType(GraphicsElement.MAIN);
@@ -146,7 +148,7 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 		if(this.amount == -1) {
 			return group.toString();
 		} else {
-			return group.toString() + ": " + amount;
+			return group.toString() + ": "+amount;
 		}
 	}
 

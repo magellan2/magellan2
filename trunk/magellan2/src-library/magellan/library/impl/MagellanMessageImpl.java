@@ -364,10 +364,16 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 */
 	private boolean isComplexEquals(MagellanMessageImpl o) {
 		// this means: this.ID == o.ID ( != ambiguousID ) || (<IDs are not equal> this.text == o.text && this.messageType == o.messageType)
+    /*
+     * this returns equal for same text but different ID. This will eleminate messages from one report as duplicates! 
 		return !this.getID().equals(ambiguousID) &&
 			   (this.getID().equals(o.getID()) ||
 			   (equalObjects(this.getText(), o.getText()) &&
 			   equalObjects(this.getMessageType(), o.getMessageType())));
+    */
+    return (!this.getID().equals(ambiguousID) && 
+             this.getID().equals(o.getID()) &&
+             equalObjects(this.getMessageType(), o.getMessageType()));
 	}
 
 	private static final boolean equalObjects(Object a, Object b) {

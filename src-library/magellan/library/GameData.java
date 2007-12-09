@@ -15,6 +15,7 @@ package magellan.library;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -1049,6 +1050,19 @@ public abstract class GameData implements Cloneable {
       }
     }
 
+    if (olderGD.ownerFaction!=null){
+      resultGD.ownerFaction=olderGD.ownerFaction;
+    } else {
+      resultGD.ownerFaction=newerGD.ownerFaction;
+    }
+    
+    if (resultGD.ownerFaction==olderGD.ownerFaction){
+      resultGD.coordinateTranslations = new HashMap<ID, CoordinateID>(olderGD.coordinateTranslations);
+      resultGD.astralCoordinateTranslations = new HashMap<ID, CoordinateID>(olderGD.astralCoordinateTranslations);
+    }else{
+      log.info("owner faction changed, removing stored translations");
+    }
+
     // FIXME (stm): Allies do not get merged correctly. We have to either swap
     // the order here or correct
     // something in the section "// MERGE FACTIONS" below
@@ -1807,5 +1821,27 @@ public abstract class GameData implements Cloneable {
    * of the astral space region with CoordinateID <0,0,1>.
    */
   public abstract CoordinateID getAstralMapping();
+
+  
+  private Map<ID, CoordinateID> coordinateTranslations = new HashMap<ID, CoordinateID>();
+
+  private Map<ID, CoordinateID> astralCoordinateTranslations = new HashMap<ID, CoordinateID>();
+
+
+  public CoordinateID getAstralCoordinateTranslation(EntityID otherFaction) {
+    return astralCoordinateTranslations.get(otherFaction);
+  }
+
+  public CoordinateID getCoordinateTranslation(EntityID otherFaction) {
+    return coordinateTranslations.get(otherFaction);
+  }
+
+  public void setCoordinateTranslation(EntityID otherFaction, CoordinateID usedTranslation) {
+    coordinateTranslations.put(otherFaction, usedTranslation);
+  }
+  
+  public void setAstralCoordinateTranslation(EntityID otherFaction, CoordinateID usedAstralTranslation) {
+    astralCoordinateTranslations.put(otherFaction, usedAstralTranslation);
+  }
 
 }

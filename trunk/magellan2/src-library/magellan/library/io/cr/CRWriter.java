@@ -818,22 +818,25 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeFactions(Map<ID,Faction> map) throws IOException {
-		if(map == null) {
-			return;
-		}
+	public void writeFactions(Map<ID, Faction> map) throws IOException {
+    if (map == null) {
+      return;
+    }
 
-		// this assumes that if somebody doesn't write units
-		// also factions aren't necessary; maybe this needs further
-		// specification
-		if(includeUnits) {
-			List<Faction> sorted = new LinkedList<Faction>(map.values());
-			Collections.sort(sorted, sortIndexComparator);
+    // write owner first
+    Faction ownerFaction = null;
+    if (map.values().size() > 0)
+      ownerFaction = map.values().iterator().next();
+    if (ownerFaction != null)
+      writeFaction(ownerFaction);
+    List<Faction> sorted = new LinkedList<Faction>(map.values());
+    Collections.sort(sorted, sortIndexComparator);
 
-			for(Iterator iter = sorted.iterator(); iter.hasNext();) {
-				writeFaction((Faction) iter.next());
-			}
-		}
+    // write other factions
+    for (Faction f : sorted) {
+      if (ownerFaction == null || !f.equals(ownerFaction))
+        writeFaction(f);
+    }
 	}
 
 	/**
@@ -2116,28 +2119,43 @@ public class CRWriter extends BufferedWriter {
       t = new Thread(new Runnable() {
         public void run() {
           try {
+            // Bug #117: make sure that savingInProgress is true, until the
+            // writer is closed or writer could remain open in multi-threaded
+            // execution.
             writeThread(world);
-            close();
+            close(true);
+            savingInProgress=false;
           } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            ui.throwException(exception);
           }
         }
       });
       t.start();
     } else {
-      log.warn("Saving Report");
       writeThread(world);
-      log.warn("Done.");
+      close(true);
+      savingInProgress=false;
     }
     
     return t;
   }
   
   /**
+   * Close, even if saving in progress.
+   * 
+   * @param b
+   * @throws IOException 
+   */
+  private void close(boolean b) throws IOException {
+    super.close();
+  }
+
+  /**
    * @see java.io.BufferedWriter#close()
    */
   public void close() throws IOException {
-    if (savingInProgress) return;
+    if (savingInProgress) 
+      return;
     super.close();
   }
   
@@ -2149,6 +2167,7 @@ public class CRWriter extends BufferedWriter {
    * @param world the game data to write.
    */
   protected void writeThread(GameData world) throws IOException, NullPointerException {
+    log.info("Saving report.");
 
     if (ui != null) ui.setMaximum(11);
     if (ui != null) ui.setTitle(Resources.get("orderwriterdialog.progress.title"));
@@ -2162,9 +2181,14 @@ public class CRWriter extends BufferedWriter {
 			writeHotSpots(world.hotSpots());
 		}
 
-    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.03"), 3);
-		writeFactions(world.factions());
-
+    // this assumes that if somebody doesn't write units
+    // also factions aren't necessary; maybe this needs further
+    // specification
+    if(includeUnits) {
+      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.03"), 3);
+      writeFactions(world.factions());
+    }
+    
 		if(includeSpellsAndPotions) {
       if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.04"), 4);
 			writeSpells(world.spells());
@@ -2219,9 +2243,9 @@ public class CRWriter extends BufferedWriter {
 		}
 
     if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.11"), 11);
-    savingInProgress = false;
     
     if (ui != null) ui.ready();
+    log.info("Done saving report");
 	}
   
   public boolean savingInProgress() {

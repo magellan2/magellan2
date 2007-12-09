@@ -365,7 +365,7 @@ public class EresseaRelationFactory implements RelationFactory {
                 if (rel.amount == -1) { // -1 means that the amount could not
                                         // determined
                   // we could issue a warning to the user here
-                  log.info("EresseaRelationFactory.createRelations(Unit): cannot parse amount in order " + order);
+                  log.debug("EresseaRelationFactory.createRelations(Unit): cannot parse amount in order " + order);
                 } else {
                   t = (OrderToken) tokens.get(itemIndex);
 
@@ -471,7 +471,7 @@ public class EresseaRelationFactory implements RelationFactory {
           RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), line);
           relations.add(rel);
         } else {
-          log.info("Unit.updateRelations(): invalid amount in order " + order);
+          log.debug("Unit.updateRelations(): invalid amount in order " + order);
         }
 
         continue;
@@ -489,7 +489,7 @@ public class EresseaRelationFactory implements RelationFactory {
           LeaveRelation rel = new LeaveRelation(u, uc, line);
           relations.add(rel);
         } else {
-          log.info("Unit.refreshRelations(): unit " + u + " cannot leave a ship or a building as indicated by order " + order);
+          log.debug("Unit.refreshRelations(): unit " + u + " cannot leave a ship or a building as indicated by order " + order);
         }
 
         continue;
@@ -700,7 +700,7 @@ public class EresseaRelationFactory implements RelationFactory {
             }
           }
         } else {
-          log.info("Unit.updateRelations(): cannot parse amount in order " + order);
+          log.debug("Unit.updateRelations(): cannot parse amount in order " + order);
         }
       }
     }
@@ -722,7 +722,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
       return r.getUnit(id);
     } catch (NumberFormatException e) {
-      log.info("Unit.getTargetUnit(): cannot parse unit id \"" + t.getText() + "\"!");
+      log.debug("Unit.getTargetUnit(): cannot parse unit id \"" + t.getText() + "\"!");
     }
 
     return null;

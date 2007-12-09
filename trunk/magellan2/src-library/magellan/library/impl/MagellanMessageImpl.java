@@ -37,11 +37,11 @@ import magellan.library.gamebinding.MessageRenderer;
  * </p>
  * 
  * <p>
- * Two special attributes are available directly via the corresping get/set methods.
+ * Two special attributes are available directly via the corresponding get/set methods.
  * </p>
  * 
  * <p>
- * First, this is the type attribte (tag ;type in the cr)  denoting the type of the message. It is
+ * First, this is the type attribute (tag ;type in the cr)  denoting the type of the message. It is
  * transformed into a  <tt>MessageType</tt> object.
  * </p>
  * 
@@ -49,7 +49,7 @@ import magellan.library.gamebinding.MessageRenderer;
  * Second, there is the text attribute (tag ;rendered in the cr). By design this attribute should
  * actually be created by rendering the message according to the message type's pattern and the
  * other attributes. This class does contain a <tt>render()</tt> method, still, it is too
- * primitive to yield acceptable results, so it is preferrable to take the rendered message text
+ * primitive to yield acceptable results, so it is preferable to take the rendered message text
  * directly from the cr.
  * </p>
  * 
@@ -176,6 +176,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
     if (text == null) {
       if (type != null) {
         render(type.getGameData());
+      }else{
+      	return "";
       }
     }
 		return text;

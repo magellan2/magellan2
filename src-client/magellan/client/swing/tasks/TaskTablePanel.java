@@ -46,6 +46,7 @@ import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
+import magellan.library.event.GameDataListener;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
@@ -60,7 +61,7 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-																		  SelectionListener, ShortcutListener
+																		  SelectionListener, ShortcutListener, GameDataListener
 {
 	private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
@@ -88,6 +89,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	private void init(EventDispatcher d) {
 		d.addUnitOrdersListener(this);
+		d.addGameDataListener(this);
+
 		// TODO (stm): this is broken, so for now we don't care about selection
 //		d.addSelectionListener(this);
 
@@ -175,7 +178,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       timer = null;
     }
 		if(model != null) {
-			model.clearProblems();
+	    synchronized (model) {
+	      model.clearProblems();
+	    }
 		}
 
 		if((data != null) && (data.regions() != null)) {
@@ -185,7 +190,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 				timer = new Timer(true);
 				timer.scheduleAtFixedRate(new TimerTask() {
 						public void run() {
-							inspectNextRegion();
+						  inspectNextRegion();
 						}
 					}, RECALL_IN_MS, RECALL_IN_MS);
 			}
@@ -334,26 +339,28 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	}
 
 	private void reviewObjects(Unit u, Region r) {
-		for(Iterator iter = inspectors.iterator(); iter.hasNext();) {
-			Inspector c = (Inspector) iter.next();
-			if(r != null) {
-				// remove previous problems of this unit AND the given inspector
-				model.removeProblems(c, r);
+	  synchronized (model) {
+      for (Iterator iter = inspectors.iterator(); iter.hasNext();) {
+        Inspector c = (Inspector) iter.next();
+        if (r != null) {
+          // remove previous problems of this unit AND the given inspector
+          model.removeProblems(c, r);
 
-				// add new problems if found
-				List problems = c.reviewRegion(r);
-				model.addProblems(problems);
-			}
+          // add new problems if found
+          List problems = c.reviewRegion(r);
+          model.addProblems(problems);
+        }
 
-			if(u != null) {
-				// remove previous problems of this unit AND the given inspector
-				model.removeProblems(c, u);
+        if (u != null) {
+          // remove previous problems of this unit AND the given inspector
+          model.removeProblems(c, u);
 
-				// add new problems if found
-				List problems = c.reviewUnit(u);
-				model.addProblems(problems);
-			}
-		}
+          // add new problems if found
+          List problems = c.reviewUnit(u);
+          model.addProblems(problems);
+        }
+      }
+    }
 	}
 
 	private Vector<String> getHeaderTitles() {
@@ -447,6 +454,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			Vector dataVector = getDataVector();
 
 			for(int i = getRowCount() - 1; i >= 0; i--) {
+	      if (i>=dataVector.size())
+	        log.info("TaskTablePanel: synchronization problem");
+        if (i>=dataVector.size())
+          log.info("TaskTablePanel: synchronization problem");
 				Vector v = (Vector) dataVector.get(i);
 				Problem p = (Problem) v.get(PROBLEM_POS);
 

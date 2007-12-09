@@ -50,7 +50,7 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    log.info("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
+    log.debug("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
   }
   
   protected int getPercent(int progress) {
@@ -66,6 +66,13 @@ public class NullUserInterface implements UserInterface {
   }
   
   /**
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
+   */
+  public String input(String strMessage, String strTitle) {
+    return null;
+  }
+  
+  /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int maxProgress) {
@@ -76,4 +83,8 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
    */
   public void setTitle(String title) {}
+
+  public void throwException(Exception exception) {
+    throw new RuntimeException(exception);
+  }
 }

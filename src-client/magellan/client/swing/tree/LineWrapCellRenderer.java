@@ -195,7 +195,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		int height = 0;
 		int width = 0;
 
-		if((lastLength != -1) && (g instanceof Graphics2D)) {
+		if((lastLength != -1) && (g instanceof Graphics2D) && text.length()>0) {
 			// break text
 			Graphics2D g2 = (Graphics2D) g;
 

@@ -23,6 +23,7 @@ import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.UserInterface;
+import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -32,6 +33,8 @@ import magellan.library.utils.UserInterface;
  * @version $Revision: 302 $
  */
 public class GameDataReader {
+  private static final Logger log = Logger.getInstance(GameDataReader.class);
+
   protected UserInterface ui = null;
   
   /**
@@ -144,6 +147,7 @@ public class GameDataReader {
     Reader reader = aFileType.createReader();
 
     try {
+      log.info("Loading report "+aFileType.getFile().getName());
       new CRParser(ui,newOrigin).read(reader, newData);
     } finally {
       try {

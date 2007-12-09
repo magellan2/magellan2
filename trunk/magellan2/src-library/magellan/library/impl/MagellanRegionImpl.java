@@ -1105,13 +1105,13 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		}
 	}
 
-	private Collection neighbours;
+	private Collection<CoordinateID> neighbours;
 
 	/**
 	 * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
 	 * <tt>neighbours</tt> is null they will be evaluated.
 	 */
-	public void setNeighbours(Collection neighbours) {
+	public void setNeighbours(Collection<CoordinateID> neighbours) {
 		this.neighbours = neighbours;
 	}
 
@@ -1120,7 +1120,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * neighbours is null it will be calculated from the game data). This function may be
 	 * necessary for new xml reports.
 	 */
-	public Collection getNeighbours() {
+	public Collection<CoordinateID> getNeighbours() {
 		if(neighbours == null) {
 			neighbours = evaluateNeighbours();
 		}
@@ -1128,12 +1128,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		return neighbours;
 	}
 
-	private Collection evaluateNeighbours() {
+	private Collection<CoordinateID> evaluateNeighbours() {
 		if((getData() == null) || (getData().regions() == null)) {
 			return null;
 		}
 
-		Collection c = Regions.getAllNeighbours(getData().regions(), getID(), 1, null).keySet();
+		Collection<CoordinateID> c = Regions.getAllNeighbours(getData().regions(), getID(), 1, null).keySet();
 		c.remove(getID());
 
 		return c;

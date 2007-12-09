@@ -339,14 +339,14 @@ public interface Region extends UnitContainer {
    * Sets the collection of ids for reachable regions to <tt>neighbours</tt>.
    * If <tt>neighbours</tt> is null they will be evaluated.
    */
-  public void setNeighbours(Collection neighbours);
+  public void setNeighbours(Collection<CoordinateID> neighbours);
 
   /**
    * returns a collection of ids for reachable neighbours. This may be set by
    * setNeighbours() if neighbours is null it will be calculated from the game
    * data). This function may be necessary for new xml reports.
    */
-  public Collection getNeighbours();
+  public Collection<CoordinateID> getNeighbours();
 
   /**
    * @return the ozeanWithCoast

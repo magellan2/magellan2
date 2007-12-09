@@ -1661,6 +1661,10 @@ public class CRParser implements RulesIO, GameDataIO {
     EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
     sc.getNextToken(); // skip PARTEI nr
 
+    // first faction is report owner
+    if (world.ownerFaction==null)
+      world.ownerFaction=id;
+
     Faction faction = getAddFaction(world, id);
     faction.setSortIndex(sortIndex);
 
@@ -2943,7 +2947,6 @@ public class CRParser implements RulesIO, GameDataIO {
     // set finalizer prio to max
     MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
     
-    log.warn("Lade Report");
     ui.setTitle(Resources.get("progressdialog.loadcr.title"));
     ui.setMaximum(10000);
     ui.setProgress(Resources.get("progressdialog.loadcr.step01"), 1);
@@ -2992,7 +2995,7 @@ public class CRParser implements RulesIO, GameDataIO {
     }
     this.world.setMaxSortIndex(++regionSortIndex);
     ui.ready();
-    log.warn("Done.");
+    log.info("Done.");
     return this.world;
   }
 

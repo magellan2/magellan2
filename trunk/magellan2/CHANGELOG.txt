@@ -1,3 +1,6 @@
+2007-11-22 Fiete (sf@fietefietz.de)
+	* empty message-lines in Message : "" -> " "
+
 2007-12-06 Darcduck (sf.net@duckstein.net)
 	* Fixed bug #97: Wrong duplicate message elemination 
 

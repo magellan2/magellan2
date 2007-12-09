@@ -190,6 +190,9 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 */
 	public void setText(String text) {
 		this.text = text;
+		if (this.text.length()==0){
+		  this.text=" ";
+		}
 	}
 
 	/**

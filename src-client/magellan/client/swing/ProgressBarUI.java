@@ -23,6 +23,8 @@
 // 
 package magellan.client.swing;
 
+import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -30,6 +32,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -39,6 +42,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
@@ -103,6 +107,23 @@ public class ProgressBarUI implements UserInterface {
     return conf.bResult;
   }
 
+
+  /**
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
+   */
+  public String input(String strMessage, String strTitle) {
+    Input input = new Input();
+    input.strMessage = strMessage;
+    input.strTitle = strTitle;
+    try {
+      SwingUtilities.invokeAndWait(input);
+    } catch (Exception e) {
+      log.error(e);
+    }
+    return input.sResult;
+  }
+
+  
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
@@ -152,6 +173,20 @@ public class ProgressBarUI implements UserInterface {
    */
   private class ProgressDlg extends JDialog {
 
+    @Override
+    protected void processEvent(AWTEvent e) {
+      if (e instanceof WindowEvent){
+        WindowEvent we = (WindowEvent) e;
+        if (we.getID()!=WindowEvent.WINDOW_CLOSING || JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+          super.processEvent(e);
+        else
+          log.info("abort aborted");
+      }else
+        super.processEvent(e);
+
+    }
+
+
     public JLabel labelText;
     public JProgressBar progressBar;
     
@@ -160,6 +195,7 @@ public class ProgressBarUI implements UserInterface {
      */
     public ProgressDlg(Dialog parent, boolean modal) {
       super(parent, modal);
+      setUndecorated(true);
       init();
     }
     
@@ -168,6 +204,7 @@ public class ProgressBarUI implements UserInterface {
      */
     public ProgressDlg(Frame parent, boolean modal) {
       super(parent, modal);
+      setUndecorated(true);
       init();
     }
     
@@ -257,6 +294,28 @@ public class ProgressBarUI implements UserInterface {
      }
    }
  }
+
+ private class Input implements Runnable {
+   String strMessage;
+   String strTitle;
+   String sResult = null;
+
+   /**
+    * 
+    */
+   public void run() {
+     sResult = JOptionPane.showInputDialog(dlg, strMessage,
+         strTitle, JOptionPane.QUESTION_MESSAGE);
+   }
+ }
+
+public void throwException(Exception exception) {
+  ErrorWindow ew = new ErrorWindow(exception);
+  ew.setVisible(true);
+  
+  throw new RuntimeException(exception);
+  
+}
 
 }
 

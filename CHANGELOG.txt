@@ -1,4 +1,12 @@
-2007-11-22 Fiete (sf@fietefietz.de)
+2007-12-09  stm (stm_@users.sourceforge.net)
+    * fixed language dialog
+    * fixed problem with 0-length message texts in LineWrapCellRenderer
+    * made progress bar more foolproof
+    * tried to fix exception in TaskTablePanel by synchronization
+    * prepared improvements to coordinate translation of different reports in GameData   
+    * implemented ownerFaction
+
+2007-12-09 Fiete (sf@fietefietz.de)
 	* empty message-lines in Message : "" -> " "
 
 2007-12-06 Darcduck (sf.net@duckstein.net)

@@ -19,6 +19,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -404,11 +405,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   protected void initLocales(Properties settings, boolean ask) {
     if (ask) {
-      LanguageDialog ld = new LanguageDialog(settings);
+      LanguageDialog ld = new LanguageDialog(startWindow, settings);
 
       if (ld.languagesFound()) {
-        // startWindow.toBack();
-        Locale locale = ld.showDialog(startWindow);
+        startWindow.toBack();
+        Point p = startWindow.getLocation();
+        ld.setLocation((int) p.getX()+(startWindow.getWidth()-ld.getWidth())/2, (int) p.getY()-ld.getHeight()/2);
+        Locale locale = ld.show();
         
         if (locale == null) {
           // without this decision we cannot start the application

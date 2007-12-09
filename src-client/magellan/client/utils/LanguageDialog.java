@@ -26,45 +26,57 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * DOCUMENT ME!
- *
+ * 
  * @author Andreas
  * @version 1.0
  */
 public class LanguageDialog {
-	private static final Logger log = Logger.getInstance(LanguageDialog.class);
+  private static final Logger log = Logger.getInstance(LanguageDialog.class);
 
-	// the settings needed for the resource loader
-	protected Properties settings;
+  // the settings needed for the resource loader
+  protected Properties settings;
 
-	// a list containing all installed languages as Lang objects
-	protected List<Lang> languageList;
+  // a list containing all installed languages as Lang objects
+  protected List<Lang> languageList;
 
-	// a Lang object defining the system default language
-	protected Lang sysDefault;
+  // a Lang object defining the system default language
+  protected Lang sysDefault;
 
-	/**
-	 * Creates new LanguageDialog
-	 *
-	 * 
-	 * 
-	 */
-	public LanguageDialog(Properties settings) {
-		this.settings = settings;
+  private JOptionPane pane;
 
-		Resources.getInstance();
+  private JDialog dialog;
 
-		findLanguages();
-	}
+  private String message = Resources.get("util.languagedialog.choose");
 
-	protected void findLanguages() {
+  private String title = Resources.get("util.languagedialog.title");
+
+  
+  /**
+   * Creates new LanguageDialog
+   * 
+   * @param parent The parent component
+   * @param settings The settings needed for the resource loader
+   * 
+   */
+  public LanguageDialog(Component parent, Properties settings) {
+    this.settings = settings;
+
+    Resources.getInstance();
+
+    findLanguages();
+    
+    initDialog(parent);
+  }
+
+  protected void findLanguages() {
     List<Locale> locales = Resources.getAvailableLocales();
 
     final Locale defaultLocale = Locale.getDefault();
@@ -75,110 +87,157 @@ public class LanguageDialog {
         break;
       }
     }
-    
-    if (sysDefault == null) new Lang(Locale.ENGLISH);
-    
+
+    if (sysDefault == null)
+      new Lang(Locale.ENGLISH);
+
     languageList = new LinkedList<Lang>();
     for (Locale locale : locales) {
       languageList.add(new Lang(locale));
     }
-	}
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Locale showDialog(Component parent) {
-		if(languagesFound()) {
-			Object ret = JOptionPane.showInputDialog(parent,
-													 Resources.get("util.languagedialog.choose"),
-                           Resources.get("util.languagedialog.title"),
-													 JOptionPane.QUESTION_MESSAGE, null,
-													 languageList.toArray(), sysDefault);
+  private void initDialog(Component parent) {
+    if (languagesFound()){
+      pane = new JOptionPane(message, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null, null);
 
-			if(ret != null) {
-				return ((Lang) ret).locale;
-			}
-		}
+      pane.setWantsInput(true);
+      pane.setSelectionValues(languageList.toArray());
+      pane.setInitialSelectionValue(sysDefault);
+      pane.setComponentOrientation(((parent == null) ?
+          JOptionPane.getRootFrame() : parent).getComponentOrientation());
 
-		return null;
-	}
+      dialog = pane.createDialog(parent, title);
+    } else { 
+      pane = new JOptionPane("No languages found!", JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION, null, null, null);
+      dialog = pane.createDialog(parent, title);
+    }
+      
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean languagesFound() {
-		return languageList.size() > 0;
-	}
+  /**
+     * Moves this component to a new location. The top-left corner of
+     * the new location is specified by the <code>x</code> and <code>y</code>
+     * parameters in the coordinate space of this component's parent.
+     * @param x the <i>x</i>-coordinate of the new location's 
+     *          top-left corner in the parent's coordinate space
+     * @param y the <i>y</i>-coordinate of the new location's 
+     *          top-left corner in the parent's coordinate space
+   */
+  public void setLocation(int x, int y){
+    dialog.setLocation(x, y);
+  }
+  
+  /**
+   * @return Width of the dialog
+   */
+  public int getWidth(){
+    return dialog.getWidth();
+  }
+  
+  /**
+   * @return Height of the dialog 
+   */
+  public int getHeight(){
+    return dialog.getHeight();
+  }
+  
+  /**
+   * Display the dialog and return user's choice.
+   * 
+   */
+  public Locale show() {
+    if (languagesFound()) {
+      pane.selectInitialValue();
 
-	protected class Lang implements Comparable<Lang> {
-		protected Locale locale;
+      dialog.setVisible(true);
+      dialog.dispose();
+      
+      Object value = pane.getInputValue();
+      if (value == JOptionPane.UNINITIALIZED_VALUE) {
+        return null;
+        }
+        return ((Lang)value).locale;
+    }else{
+      dialog.setVisible(true);
+      dialog.dispose();
+      return null;
+    }
+  }
 
-		/**
-		 * Creates a new Lang object.
-		 *
-		 * 
-		 */
-		public Lang(String lang) {
-			locale = new Locale(lang, "");
-		}
+  /**
+   * 
+   * @return <code>true</code> iff at least one language has been found
+   */
+  public boolean languagesFound() {
+    return languageList.size() > 0;
+  }
 
-		/**
-		 * Creates a new Lang object.
-		 *
-		 * 
-		 */
-		public Lang(Locale l) {
-			locale = l;
-		}
+  protected class Lang implements Comparable<Lang> {
+    protected Locale locale;
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String toString() {
-      	return locale.getDisplayLanguage(locale);
-		}
+    /**
+     * Creates a new Lang object.
+     * 
+     * 
+     */
+    public Lang(String lang) {
+      locale = new Locale(lang, "");
+    }
+
+    /**
+     * Creates a new Lang object.
+     * 
+     * 
+     */
+    public Lang(Locale l) {
+      locale = l;
+    }
+
+    /**
+     * DOCUMENT-ME
+     * 
+     * 
+     */
+    public String toString() {
+      return locale.getDisplayLanguage(locale);
+    }
 
     public int compareTo(Lang o) {
       return toString().compareTo(o.toString());
     }
-    
+
     public boolean equals(Object o) {
       if (o instanceof Lang) {
-        Lang l = (Lang)o;
+        Lang l = (Lang) o;
         return toString().equalsIgnoreCase(l.toString());
       }
       return false;
     }
-	}
+  }
 
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
+  // pavkovic 2003.01.28: this is a Map of the default Translations mapped to
+  // this class
+  // it is called by reflection (we could force the implementation of an
+  // interface,
+  // this way it is more flexible.)
+  // Pls use this mechanism, so the translation files can be created
+  // automagically
+  // by inspecting all classes.
+  private static Map<String, String> defaultTranslations;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("choose",
-									"The following languages were found. Please choose one.");
-			defaultTranslations.put("title", "Choose a language");
-		}
+  /**
+   * DOCUMENT-ME
+   * 
+   * 
+   */
+  public static synchronized Map<String, String> getDefaultTranslations() {
+    if (defaultTranslations == null) {
+      defaultTranslations = new Hashtable<String, String>();
+      defaultTranslations.put("choose", "The following languages were found. Please choose one.");
+      defaultTranslations.put("title", "Choose a language");
+    }
 
-		return defaultTranslations;
-	}
+    return defaultTranslations;
+  }
 }

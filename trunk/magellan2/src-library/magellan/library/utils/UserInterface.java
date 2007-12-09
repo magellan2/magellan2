@@ -58,7 +58,14 @@ public interface UserInterface {
   public boolean confirm(String strMessage, String strTitle);
   
   /**
+   * Opens an input dialog.
+   */
+  public String input(String strMessage, String strTitle);
+  
+  /**
    * Sets the title of the progress dialog.
    */
   public void setTitle(String title);
+
+  public void throwException(Exception exception);
 }

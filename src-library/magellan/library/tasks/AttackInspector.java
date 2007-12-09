@@ -80,7 +80,7 @@ public class AttackInspector extends AbstractInspector {
           if (relation.source.getFaction().getAllies().containsKey(relation.target.getFaction().getID()))
             problems.add(new CriticizedWarning(u, u, this, Resources.get("tasks.attackinspector.warning.friendlyfire"), relation.line));
         }
-        // TODO define as constants
+        // TODO define as constants, use modified combat status
         // pre 57:
         // 0: VORNE
         // 1: HINTEN

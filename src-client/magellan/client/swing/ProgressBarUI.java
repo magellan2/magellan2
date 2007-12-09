@@ -51,7 +51,8 @@ public class ProgressBarUI implements UserInterface {
   private static final Logger log = Logger.getInstance(ProgressBarUI.class);
   // user interface
   protected ProgressDlg dlg = null;
-  protected boolean showing;
+  protected boolean showing=false;
+  protected boolean ready=false;
 
   public ProgressBarUI(JFrame parent) {
     dlg = new ProgressDlg(parent, true);
@@ -84,9 +85,11 @@ public class ProgressBarUI implements UserInterface {
    * @see magellan.library.utils.UserInterface#show()
    */
   public void show() {
-    showing=true;
     SwingUtilities.invokeLater((new Runnable() {public void run() {
-      ProgressBarUI.this.dlg.setVisible(true);
+      if (!ready){
+        showing=true;
+        ProgressBarUI.this.dlg.setVisible(true);
+      }
     }})); 
   }
 
@@ -139,21 +142,13 @@ public class ProgressBarUI implements UserInterface {
    * @see magellan.library.utils.UserInterface#ready()
    */
   public void ready() {
-    if (showing) {
-      // wait for dialog to come up in the first place
-      while (!dlg.isShowing()) {
-        log.debug("ready " + dlg.isShowing());
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      }
-    }
-    showing = false;
-    log.debug("ready " + dlg.isShowing());
+    ready=true;
     dlg.setVisible(false);
-    dlg.dispose();
+    // if the progress dialog hasn't been set visible, because invokeLater is
+    // waiting for an event, we cannot dispose the dialog, because this would
+    // wait, too and could cause a deadlock. Therefore we only dispose if it has already been shown.
+    if (showing)
+      dlg.dispose();
   }
   
   public boolean isVisible() {
@@ -177,9 +172,11 @@ public class ProgressBarUI implements UserInterface {
     protected void processEvent(AWTEvent e) {
       if (e instanceof WindowEvent){
         WindowEvent we = (WindowEvent) e;
-        if (we.getID()!=WindowEvent.WINDOW_CLOSING || JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION)
+        if (we.getID()!=WindowEvent.WINDOW_CLOSING)
           super.processEvent(e);
-        else
+        else if (JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+          log.info("aborted");
+        }else
           log.info("abort aborted");
       }else
         super.processEvent(e);
@@ -195,7 +192,7 @@ public class ProgressBarUI implements UserInterface {
      */
     public ProgressDlg(Dialog parent, boolean modal) {
       super(parent, modal);
-      setUndecorated(true);
+//      setUndecorated(true);
       init();
     }
     
@@ -204,7 +201,7 @@ public class ProgressBarUI implements UserInterface {
      */
     public ProgressDlg(Frame parent, boolean modal) {
       super(parent, modal);
-      setUndecorated(true);
+//      setUndecorated(true);
       init();
     }
     

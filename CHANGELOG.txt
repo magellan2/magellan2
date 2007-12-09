@@ -5,6 +5,7 @@
     * tried to fix exception in TaskTablePanel by synchronization
     * prepared improvements to coordinate translation of different reports in GameData   
     * implemented ownerFaction
+    * fixed bug where Writer was not closed on save on quit 
 
 2007-12-09 Fiete (sf@fietefietz.de)
 	* empty message-lines in Message : "" -> " "

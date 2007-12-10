@@ -300,7 +300,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty("messagetype.section.study.color","-");// Format: #RRGGBB
       settings.setProperty("messagetype.section.production.color","-");// Format: #RRGGBB
       settings.setProperty("messagetype.section.errors.color","-");// Format: #RRGGBB
-
+      settings.setProperty("messagetype.section.battle.color","-");// Format: #RRGGBB
+      
       // try to set path to ECheck
       this.initECheckPath(settings);
       

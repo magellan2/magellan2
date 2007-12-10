@@ -524,7 +524,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
           msg.setType(mt);
         } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("rendered")) {
-//          msg.setText(originTranslate(sc.argv[0]));
+          msg.setText(originTranslate(sc.argv[0]));
         } else if(sc.argc == 2) {
           if(msg.getAttributes() == null) {
             msg.setAttributes(new OrderedHashtable<String, String>());

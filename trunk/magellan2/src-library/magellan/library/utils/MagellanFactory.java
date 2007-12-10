@@ -881,26 +881,7 @@ public abstract class MagellanFactory {
       }
     }
 
-    //  TODO
-    if(!sameTurn) {
-      /* as long as both reports are from different turns we
-       can just overwrite the visibility status with the newer
-       version */
-      newRegion.setVisibility(curRegion.getVisibility());
-    } else {
-      /* this where trouble begins: reports from the same turn
-       so we basically have 4 visibility status:
-       1 contains units (implicit)
-       2 travel (explicit)
-       3 lighthouse (explicit)
-       4 next to a unit containing region (implicit)
-       now - how do we merge this?
-       for a start, we just make sure that the visibility
-       value is not lost */
-      if(curRegion.getVisibility() != null) {
-        newRegion.setVisibility(curRegion.getVisibility());
-      }
-    }
+   
     
     
     /*
@@ -944,6 +925,7 @@ public abstract class MagellanFactory {
     // test: determine, if newregion is seen just bei neighbour
     // bug #37: such regions only contain borders to regions we have units in....
     // we will try to the currentRegion win in that case, because newRegionData is not complete
+    /*
     boolean newregionSeenByNeighbour = false;
     if (newRegion.getVisibility()!=null && newRegion.getVisibility().equalsIgnoreCase("neighbour")){
       newregionSeenByNeighbour=true;
@@ -966,7 +948,124 @@ public abstract class MagellanFactory {
         newRegion.addBorder(newBorder);
       }
     }
+    */
+    
+    /* next try, and pay attention to this:
+     * neighbouring region; curRegion has no borders 
+     * newRegion has a border because of vis=neighbour
+     * -> we should add the border ... it´s there!
+     * same situation next turn
+     * curRegion has Border, newRegion as no Borders but Vis=0
+     * -> we should NOT delete the border, could still be there
+     * 
+     *  so: delete only, if you are really sure, otherwise only add
+     */
+    
+    
+    // Debug
+    if (newRegion.getCoordX()==0 && newRegion.getCoordY()==-1){
+      int i22=0;
+      i22++;
+    }
+    
+    // *** borders ***
+    if (curRegion.getVisibilityInteger()==4){
+      // curRegion wins
+     
+      newRegion.clearBorders();
 
+      for(Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
+        Border curBorder = (Border) iter.next();
+        Border newBorder = null;
+
+        try {
+          newBorder = MagellanFactory.createBorder((ID) curBorder.getID().clone(), curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
+        } catch(CloneNotSupportedException e) {
+        }
+
+        newRegion.addBorder(newBorder);
+      }
+     
+    } else {
+      // just add new Borders
+      for(Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
+        Border curBorder = (Border) iter.next();
+        
+        // do we have already this border?
+        boolean curBorderPresent=false;
+        for(Iterator iter2 = newRegion.borders().iterator(); iter2.hasNext();) {
+          Border actNewBorder = (Border)iter2.next();
+          if (actNewBorder.getType().equalsIgnoreCase(curBorder.getType()) && actNewBorder.getDirection()==curBorder.getDirection()){
+            curBorderPresent = true;
+            break;
+          }
+        }
+        
+        if (!curBorderPresent){
+          Border newBorder = null;
+          ID newID = Regions.getNewBorderID(newRegion,curBorder);
+         
+          newBorder = MagellanFactory.createBorder((ID) newID, curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
+         
+          if (newBorder!=null){
+            newRegion.addBorder(newBorder);
+          }
+        }
+      }
+    }
+
+    //  TODO
+    if(!sameTurn) {
+      /* as long as both reports are from different turns we
+       can just overwrite the visibility status with the newer
+       version */
+      newRegion.setVisibility(curRegion.getVisibility());
+    } else {
+      /* this where trouble begins: reports from the same turn
+       so we basically have 4 visibility status:
+       1 contains units (implicit)
+       2 travel (explicit)
+       3 lighthouse (explicit)
+       4 next to a unit containing region (implicit)
+       Fiete: 4 is "neighbour" and explicit too
+       now - how do we merge this?
+       for a start, we just make sure that the visibility
+       value is not lost */
+      if(curRegion.getVisibility() != null) {
+        /* we should sort visisbilites like the server
+        here is the list from http://dose.0wnz.at/thewhitewolf/cr-format#region
+        ""   Entweder befindet sich eine eigene Einheit in der Region, oder es befindet sich weder eine Einheit in der Region noch trifft einer der unteren Fälle zu.
+        "travel"  Eine eigene Einheit hat diese Region durchreist
+        "lighthouse"  Diese Region wird mittels Leuchtturm erblickt
+        "neighbour"   Diese Region ist zumindest einer Region benachbart, in welcher man eigene Einheiten besitzt.
+
+        */
+        
+        int curRegionVis = curRegion.getVisibilityInteger();
+        int actNewRegionVis = newRegion.getVisibilityInteger();
+        int result = Math.max(curRegionVis, actNewRegionVis);
+        newRegion.setVisibility(result);
+        
+      } else {
+        /* curRegion.getVis == null !
+         -> either no info at all or a unit in the region
+         if in curRegion is a "owned" unit, we should set
+         visibility of newRegion also to null
+         owned unit means a unit with e.g. status info !=-1
+         (not units seen by travel-through in buildings)
+         lets search for them first
+         -> outsourced to Region
+        */
+               
+        if (curRegion.getVisibilityInteger()==4){
+          // OKAY, we change Visibility to NULL
+          // result: we asume, we have good info about this region
+          newRegion.setVisibility(null);
+        }
+      }
+    }
+    
+    
     if(curRegion.getHerb() != null) {
       newRegion.setHerb(newGD.rules.getItemType(curRegion.getHerb().getID(), true));
     }

@@ -28,6 +28,7 @@ import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Rules;
@@ -898,4 +899,30 @@ public class Regions {
       else                return dy;
   }
 	
+  /**
+   * Returns an ID for an new Border to be add
+   * @param r
+   * @param border
+   * @return
+   */
+  public static ID getNewBorderID(Region r,Border border){
+    ID erg = border.getID();
+    // checks, of border with this ID es already present
+    if (r.getBorder(erg)!=null){
+      // OK, we have a problem
+      // try to find a new one
+      boolean IDisFree = false;
+      int i = 1;
+      while (!IDisFree){
+        ID newID = IntegerID.create(i);
+        if (r.getBorder(newID)==null){
+          return newID;
+        }
+        i++;
+      }
+    }
+    return erg;
+  }
+  
+  
 }

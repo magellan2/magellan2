@@ -751,8 +751,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendRegionInfo(Region r, DefaultMutableTreeNode parent,
 								  Collection<NodeWrapper> expandableNodes) {
 		// terrain type
+	  /*
 		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": " + r.getType().getName(),
 									r.getType().getID() + "-detail"));
+		*/
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": " + r.getType().getName() + " (" + r.getVisibilityInteger() + ")",
+        r.getType().getID() + "-detail"));
 
 		// terrain coordinates
 		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.coordinates") + ": " + r.getID(), "koordinaten"));

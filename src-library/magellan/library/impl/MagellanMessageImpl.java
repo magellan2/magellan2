@@ -61,6 +61,7 @@ import magellan.library.gamebinding.MessageRenderer;
 public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Message {
 	private String text = null;
 	private MessageType type = null;
+  private boolean isRendered = false; 
 
 	/**
 	 * The attributes of this message. The keys are the keys of the attribute, the values object
@@ -173,7 +174,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 * @return The message text
 	 */
 	public String getText() {
-    if (text == null) {
+    if ((text == null)||(isRendered == false)) {
       if (type != null) {
         render(type.getGameData());
       }else{
@@ -301,7 +302,18 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	public void render(GameData data) {
     if (data != null) {
       MessageRenderer mr = data.getGameSpecificStuff().getMessageRenderer(data);
-      setText(mr.renderMessage(this));
+      String rendered = mr.renderMessage(this);
+      if (rendered != null) {
+        setText(rendered);
+      } else {
+        rendered = this.text;
+        if (rendered != null) {
+          setText(rendered+" MAGELLAN MESSAGE RENDERING FAILS!");
+        } else {
+          setText("MAGELLAN MESSAGE RENDERING FAILS!");
+        }
+      }
+      this.isRendered = true;
     }
 //		setText(MagellanMessageImpl.render(data, type.getPattern(), attributes));
 	}

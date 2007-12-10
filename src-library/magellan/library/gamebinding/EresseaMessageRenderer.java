@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.Message;
+import magellan.library.rules.MessageType;
 import magellan.library.GameData;
 import magellan.library.EntityID;
 import magellan.library.CoordinateID;
@@ -33,7 +34,9 @@ import magellan.library.Faction;
 import magellan.library.Ship;
 import magellan.library.Building;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.regex.*;
 import java.text.ParseException;
@@ -63,6 +66,8 @@ import java.util.StringTokenizer;
  * @version 1.0, 28.11.2007
  */
 public class EresseaMessageRenderer implements MessageRenderer {
+  private static final Logger log = Logger.getInstance(EresseaMessageRenderer.class);
+  private static final Map<MessageType, MessageType> loggedTypes = new Hashtable<MessageType, MessageType>();;  
   /**
    * The GameData as we need a lot of "background" information from it. 
    */
@@ -75,6 +80,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
   private Pattern literalsPattern;
   
   /**
+   * A unit with id 1 is an unknown unit
+   */
+  private EntityID unknownUnit; 
+  
+  /**
    * The Constructor 
    * @param gd - The GameData - required for a lot of functions
    */
@@ -82,8 +92,9 @@ public class EresseaMessageRenderer implements MessageRenderer {
     this.gd = gd; 
     try {
       this.literalsPattern = Pattern.compile("[a-z.]+\\(?");
+      this.unknownUnit = EntityID.createEntityID(1, gd.base);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(e.getMessage(), e);
     }
   }
   
@@ -95,9 +106,25 @@ public class EresseaMessageRenderer implements MessageRenderer {
   public String renderMessage(Message msg) {
     String pat = msg.getMessageType().getPattern();
     try {
-      return renderString(new StringBuffer(pat), msg.getAttributes());
+      String rendered = renderString(new StringBuffer(pat), msg.getAttributes());
+      if ((rendered == null) || (rendered.equals(""))) {
+        // fix for empty strings, that cause trouble in the message panel
+        return " ";
+      } else {
+        return rendered;
+      }
     } catch (ParseException e) {
-      return pat+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset());
+      if (!loggedTypes.containsKey(msg.getMessageType())) {
+        loggedTypes.put(msg.getMessageType(), msg.getMessageType());
+        log.warn("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);
+      }
+      return null;
+    } catch (Exception e) {
+      if (!loggedTypes.containsKey(msg.getMessageType())) {
+        loggedTypes.put(msg.getMessageType(), msg.getMessageType());
+        log.error("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage(), e);
+      }
+      return null; 
     }
   }
   
@@ -139,17 +166,17 @@ public class EresseaMessageRenderer implements MessageRenderer {
         unparsed.delete(0, posq+1);
         return parsed.toString();
       } else {
-        throw new ParseException("ERROR: no matching quote \"", unparsed.length());
+        throw new ParseException("no matching quote \"", unparsed.length());
       }
     } else if (unparsed.charAt(0)=='$') {
       unparsed.deleteCharAt(0);
       try {
         return (String)renderDollar(unparsed, attributes);
       } catch (ClassCastException e) {
-        throw new ParseException("ERROR: String expected", unparsed.length());
+        throw new ParseException("String expected", unparsed.length());
       }
     } else {
-      throw new ParseException("ERROR: No string found", unparsed.length());
+      throw new ParseException("No string found", unparsed.length());
     }
   }
   
@@ -170,7 +197,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
         return renderAttribute(name, attributes);
       } else {
         // ERROR: no matching }
-        throw new ParseException("ERROR: no matching bracket '}'", unparsed.length());
+        throw new ParseException("no matching bracket '}'", unparsed.length());
       }
     } else {
       Matcher m=literalsPattern.matcher(unparsed);
@@ -188,7 +215,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
           return renderAttribute(name, attributes);
         }
       } else {
-        throw new ParseException("ERROR: $ without literals", unparsed.length());
+        throw new ParseException("$ without literals", unparsed.length());
       }
     }
   }
@@ -201,7 +228,13 @@ public class EresseaMessageRenderer implements MessageRenderer {
    * @return The attribute value as String
    */
   private String renderAttribute(String name, Map<String,String> attributes) {
-    return attributes.get(name);
+    String attr = attributes.get(name);
+    if ((attr == null) || (attr.equals(""))) {
+      // fix for empty attributes ->->--^
+      return null;
+    } else {
+      return attr;
+    }
   }
   
   /**
@@ -217,25 +250,29 @@ public class EresseaMessageRenderer implements MessageRenderer {
    */
   private Object renderFunction(String name, StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
     Object value;
-    // $int()
+    // $int(<int>)
     if (name.equals("int(")) {
       int[] ar = renderInteger(unparsed, attributes);
       if (ar != null) {
         value = Integer.toString(ar[0]);
       } else {
-        throw new ParseException("ERROR: argument of int() returns NULL", unparsed.length());
+        throw new ParseException("argument of int() returns NULL", unparsed.length());
       }
-    // $unit() 
-    // $unit.dative()  
+    // $unit(<ID>) 
+    // $unit.dative(<ID>)  
     } else if (name.equals("unit(")||name.equals("unit.dative(")) {
-      EntityID uid = EntityID.createEntityID(renderInteger(unparsed, attributes)[0], gd.base);
-      Unit unit = gd.getUnit(uid);
-      if (unit != null) {
-        value = unit.toString();
+      EntityID uid = renderEntityID(unparsed, attributes);
+      if ((uid == null) || (uid.equals(unknownUnit))) {
+        value = Resources.get("eresseamsgrenderer.func.unit.unknown");
       } else {
-        value = Resources.get("unit.unit")+" ("+uid.toString()+")";
-      }        
-    // $region()
+        Unit unit = gd.getUnit(uid);
+        if (unit != null) {
+          value = unit.toString();
+        } else {
+          value = Resources.get("eresseamsgrenderer.func.unit.unit")+" ("+uid.toString()+")";
+        }        
+      }
+    // $region(<int int int>)
     } else if (name.equals("region(")) {
       int[] i_ar = renderInteger(unparsed, attributes);
       if ((i_ar != null)&&(i_ar.length>=2)) {
@@ -249,43 +286,94 @@ public class EresseaMessageRenderer implements MessageRenderer {
         if (r != null) {
           value = r.toString();
         } else {
-          value = "??? ("+rid.toString()+")";
+          value = Resources.get("eresseamsgrenderer.func.region.unknown")+" ("+rid.toString()+")";
         }
       } else {
         if (i_ar == null) {
-          value = "NULL (???)";
+          value = Resources.get("eresseamsgrenderer.func.region.unknown");
         } else {
-          throw new ParseException("ERROR: wrong arguments for region()", unparsed.length());
+          throw new ParseException("wrong arguments for region()", unparsed.length());
         }
       }
-    // $faction()
+      // $trail(<string>)
+    } else if (name.equals("trail(")) {
+      String trailparam = renderString(unparsed, attributes);
+      StringBuffer trail = new StringBuffer();
+      if (trailparam != null) {
+        String[] regions = trailparam.split(",");
+        for (int i=0; i<regions.length; i++) {
+          String[] coords = regions[i].trim().split(" ");
+          if ((coords != null) && (coords.length>=2)) {
+            CoordinateID rid;
+            if (coords.length == 2) {
+              rid = new CoordinateID(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]));
+            } else {
+              rid = new CoordinateID(Integer.parseInt(coords[0]), Integer.parseInt(coords[1]), Integer.parseInt(coords[2]));
+            }
+            Region r = gd.getRegion(rid);
+            if (r != null) {
+              // TODO include "the plains of" in the return String
+              // this is hard as we need to know the correct german artikel
+              // die Ebene, die Wüste (, die Berge)
+              // der Gletscher, der Sumpf, der Vulkan, der Aktive Vulkan, der Wald
+              // das Hochland, das Bergland
+              trail.append(r.toString());
+            } else {
+              trail.append(Resources.get("eresseamsgrenderer.func.region.unknown")+" ("+rid.toString()+")");
+            }
+            switch (regions.length-i) {
+              case 1: break;
+              case 2: trail.append(" "+Resources.get("eresseamsgrenderer.func.trail.and")+" "); break;
+              default: trail.append(", "); 
+            }
+          } else {
+            // we add nothing - leave string empty 
+          }
+        }
+        value = trail.toString();
+      } else {
+        value = "";
+      }      
+    // $faction(<ID>)
     } else if (name.equals("faction(")) {
-      EntityID fid = EntityID.createEntityID(renderInteger(unparsed, attributes)[0], gd.base);
-      Faction faction = gd.getFaction(fid);
-      if (faction != null) {
-        value = faction.toString();
+      EntityID fid = renderEntityID(unparsed, attributes);
+      if (fid == null) {
+        value = Resources.get("eresseamsgrenderer.func.faction.unknown");
       } else {
-        value = Resources.get("faction.faction")+" ("+fid.toString()+")";
-      }        
-    // $ship()
+        Faction faction = gd.getFaction(fid);
+        if (faction != null) {
+          value = faction.toString();
+        } else {
+          value = Resources.get("eresseamsgrenderer.func.faction.faction")+" ("+fid.toString()+")";
+        }     
+      }
+    // $ship(<ID>)
     } else if (name.equals("ship(")) {
-      EntityID sid = EntityID.createEntityID(renderInteger(unparsed, attributes)[0], gd.base);
-      Ship ship = gd.getShip(sid);
-      if (ship != null) {
-        value = ship.toString(false);
+      EntityID sid = renderEntityID(unparsed, attributes);
+      if (sid == null) {
+        value = Resources.get("eresseamsgrenderer.func.ship.unknown");
       } else {
-        value = Resources.get("ship.ship")+" ("+sid.toString()+")";
-      }        
-    // $building()
+        Ship ship = gd.getShip(sid);
+        if (ship != null) {
+          value = ship.toString(false);
+        } else {
+          value = Resources.get("eresseamsgrenderer.func.ship.ship")+" ("+sid.toString()+")";
+        }        
+      }
+    // $building(<ID>)
     } else if (name.equals("building(")) {
-      EntityID bid = EntityID.createEntityID(renderInteger(unparsed, attributes)[0], gd.base);
-      Building building = gd.getBuilding(bid);
-      if (building != null) {
-        value = building.toString();
+      EntityID bid = renderEntityID(unparsed, attributes);
+      if (bid == null) {
+        value = Resources.get("eresseamsgrenderer.func.building.unknown");
       } else {
-        value = Resources.get("building.building")+" ("+bid.toString()+")";
-      }        
-    // $eq()
+        Building building = gd.getBuilding(bid);
+        if (building != null) {
+          value = building.toString();
+        } else {
+          value = Resources.get("eresseamsgrenderer.func.building.building")+" ("+bid.toString()+")";
+        }        
+      }
+    // $eq(<int>,<int>)
     } else if (name.equals("eq(")) {
       int[] ar = renderInteger(unparsed, attributes);
       int pos = unparsed.indexOf(",");
@@ -309,9 +397,9 @@ public class EresseaMessageRenderer implements MessageRenderer {
         }
         value = i;
       } else {
-        throw new ParseException("ERROR: wrong arguments for eq()", unparsed.length());
+        throw new ParseException("wrong arguments for eq()", unparsed.length());
       }
-    // $add()
+    // $add(<int>,<int>)
     } else if (name.equals("add(")) {
       int[] ar = renderInteger(unparsed, attributes);
       int pos = unparsed.indexOf(",");
@@ -324,12 +412,12 @@ public class EresseaMessageRenderer implements MessageRenderer {
           i[0] = a + ar[0];
           value = i;
         } else {
-          throw new ParseException("ERROR: second argument of add() returns NULL", unparsed.length());
+          throw new ParseException("second argument of add() returns NULL", unparsed.length());
         }
       } else {
-        throw new ParseException("ERROR: wrong arguments for add()", unparsed.length());
+        throw new ParseException("wrong arguments for add()", unparsed.length());
       }
-    // $if()
+    // $if(<int>,<string>,<string>)
     } else if (name.equals("if(")) {
       int cond = renderInteger(unparsed, attributes)[0];
       int pos = unparsed.indexOf(",");
@@ -346,21 +434,21 @@ public class EresseaMessageRenderer implements MessageRenderer {
             value = do_false;
           }
         } else {
-          throw new ParseException("ERROR: wrong arguments for if()", unparsed.length());
+          throw new ParseException("wrong arguments for if()", unparsed.length());
         }
       } else {
-        throw new ParseException("ERROR: wrong arguments for if()", unparsed.length());
+        throw new ParseException("wrong arguments for if()", unparsed.length());
       }
-    // $strlen()
+    // $strlen(<string>)
     } else if (name.equals("strlen(")) {
       String content = renderString(unparsed, attributes);
       int[] i = new int[1];
       i[0] = content.length();
       value = i;
-    // $order()
+    // $order(<string>)
     } else if (name.equals("order(")) {
       value = renderString(unparsed, attributes);
-    // $isnull()
+    // $isnull(<any>)
     } else if (name.equals("isnull(")) {
       Object obj = renderNull(unparsed, attributes);
       int[] i = new int[1];
@@ -370,54 +458,50 @@ public class EresseaMessageRenderer implements MessageRenderer {
         i[0] = 0;
       }
       value = i;  
-    // $resource()
+    // $resource(<string>,<int>)
     } else if (name.equals("resource(")) {
       String item = renderString(unparsed, attributes);
       int pos = unparsed.indexOf(",");
       if (pos>=0) {
         unparsed.delete(0, pos+1);
         int[] ar = renderInteger(unparsed, attributes);
-        // TODO use amount=ar[0] if possible
+        // TODO use amount(=ar[0]) if possible to spell the item names correctly
         value = gd.getTranslation(item);
       } else {
-        throw new ParseException("ERROR: wrong arguments for resource()", unparsed.length());
+        throw new ParseException("wrong arguments for resource()", unparsed.length());
       }
-    // $localize()
-    // $skill()
-    // $spell()
-    // $race()
+    // $localize(<string>)
+    // $skill(<string>)
+    // $spell(<string>)
+    // $race(<string>)
     } else if (name.equals("localize(")||name.equals("skill(")||name.equals("spell(")||name.equals("race(")) {
       String str = renderString(unparsed, attributes);
       value = gd.getTranslation(str);
-    // $weight()
+    // $weight(<int>)
     } else if (name.equals("weight(")) {
       int[] ar = renderInteger(unparsed, attributes);
       if (ar != null) {
         value = (ar[0]/100)+" GE";
       } else {
-        throw new ParseException("ERROR: "+name+") requires an int parameter != NULL", unparsed.length());
+        throw new ParseException(name+") requires an int parameter != NULL", unparsed.length());
       }
-    // $resources()
+    // $resources(<string>)
     } else if (name.equals("resources(")) {
       value = renderString(unparsed, attributes);
-    // $direction()
+    // $direction(<int>)
     } else if (name.equals("direction(")) {
       int[] ar = renderInteger(unparsed, attributes);
-      if (ar != null) {
-        switch (ar[0]) {
-          case 0: value = Resources.get("orders.NW"); break;
-          case 1: value = Resources.get("orders.NE"); break;
-          case 2: value = Resources.get("orders.E");  break;
-          case 3: value = Resources.get("orders.SE"); break;
-          case 4: value = Resources.get("orders.SW"); break;
-          case 5: value = Resources.get("orders.W");  break;
-          default: value = "?";
+      if ((ar != null) && (ar.length > 0)) {
+        if ((ar[0] >= 0) && (ar[0] <= 5)) {
+          value = Resources.get("eresseamsgrenderer.func.direction."+ar[0]);
+        } else {
+          throw new ParseException("direction() requires an int parameter between 0 and 5", unparsed.length());
         }
       } else {
-        throw new ParseException("ERROR: "+name+") requires an int parameter != NULL", unparsed.length());
+        throw new ParseException("direction() requires an int parameter != NULL", unparsed.length());
       }
     } else {
-      throw new ParseException("ERROR: unknown function "+name+")", unparsed.length());     
+      value = "unknown:"+name+renderString(unparsed, attributes)+")";     
     }
 
     // delete closing bracket before returning the value
@@ -426,7 +510,27 @@ public class EresseaMessageRenderer implements MessageRenderer {
       unparsed.delete(0, close+1);
       return value;
     } else {
-      throw new ParseException("ERROR: no matching bracket ')'", unparsed.length());
+      throw new ParseException("no matching bracket ')'", unparsed.length());
+    }
+  }
+  
+  /**
+   * Tries to render an id of a unit, faction, .... This could of course also be a return value 
+   * of a function or an attribute value. Calls renderInteger to obtain the value. If a null array is returned 
+   * or an array of zero values this method returns null. 
+   * 
+   * @param unparsed - the rightmost part that is not parsed up to now - the method manipulates this!
+   * @param attributes - the mapping of atributes to values of the message
+   * @return an EntityID
+   * @throws ParseException if any problem occured parsing the msg
+   */
+  
+  private EntityID renderEntityID(StringBuffer unparsed, Map<String,String> attributes) throws ParseException {
+    int[] i_ar = renderInteger(unparsed, attributes);
+    if ((i_ar != null) && (i_ar.length >= 1)) {
+      return EntityID.createEntityID(i_ar[0], gd.base);
+    } else {
+      return null;
     }
   }
   
@@ -454,7 +558,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
         try {
           unparsed.insert(0, ((String)obj).replaceAll(",", " "));
         } catch (ClassCastException estr) {
-          throw new ParseException("ERROR: Integer[] expected", unparsed.length());
+          throw new ParseException("Integer[] expected", unparsed.length());
         }
       }
     } 
@@ -472,7 +576,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       unparsed.delete(0, m.end());
       return ar;
     } else {
-      throw new ParseException("ERROR: No Integer constant found", unparsed.length());
+      throw new ParseException("No Integer constant found", unparsed.length());
     }
   }
   
@@ -492,12 +596,12 @@ public class EresseaMessageRenderer implements MessageRenderer {
     }
     if (unparsed.charAt(0)=='$') {
       unparsed.deleteCharAt(0);
-      return renderDollar(unparsed, attributes);  
+      return renderDollar(unparsed, attributes); 
     } else if (unparsed.indexOf("NULL")==0) {
       unparsed.delete(0, 4);
       return null;
     } else {
-      throw new ParseException("ERROR: Attribute expected for isnull()", unparsed.length());
+      throw new ParseException("Attribute expected for isnull()", unparsed.length());
     }
   }
 }

@@ -1,3 +1,6 @@
+2007-12-10 Fiete (sf@fietefietz.de)
+	* again reworked merging of borders
+
 2007-12-09  stm (stm_@users.sourceforge.net)
     * fixed language dialog
     * fixed problem with 0-length message texts in LineWrapCellRenderer

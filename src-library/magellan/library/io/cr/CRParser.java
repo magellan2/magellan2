@@ -2452,8 +2452,8 @@ public class CRParser implements RulesIO, GameDataIO {
           b.setDirection(Integer.parseInt(sc.argv[0]));
         } catch(NumberFormatException e) {
           final String dirNames[] = {
-                          "Nordwesten", "Nordosten", "Osten", "Sï¿½dosten",
-                          "Sï¿½dwesten", "Westen"
+                          "Nordwesten", "Nordosten", "Osten", "Südosten",
+                          "Südwesten", "Westen"
                         };
 
           for(int i = 0; i < dirNames.length; i++) {

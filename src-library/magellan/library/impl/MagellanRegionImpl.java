@@ -143,7 +143,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	
   protected boolean isActive = false;
 	
-	// fiete 2207.02.12: we add sign support - 2 lines allowed
+	// fiete 2007.02.12: we add sign support - 2 lines allowed
 	private List<Sign> signs = null;
 	
 	/**
@@ -162,6 +162,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	private ID mallornSproutsID = StringID.create("Mallornsch?sslinge");
 	
 
+	/** Informs about the reason why this region is visible. */
+  private String visibility = null;
+	
 	/**
 	 * Constructs a new Region object uniquely identifiable by the specified id.
 	 */
@@ -274,8 +277,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		return this.island;
 	}
 
-	/** Informs about the reason why this region is visible. */
-	private String visibility = null;
 
 	/**
 	 * A string constant indicating why this region is visible.
@@ -286,6 +287,54 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		return this.visibility;
 	}
 
+	
+	/**
+	 * Represents the quality of the visibility as an int value
+	 * 0..very poor - no info (->visibility=null) 
+	 * 1..neighbour
+	 * 2..lighthouse
+	 * 3..travel
+	 * 4..qualified unit in region (->visibility=null)
+	 * @return
+	 */
+	public int getVisibilityInteger(){
+	  // the result, some call it res
+	  int erg = 0;
+	  if (this.visibility==null){
+	    // we have 0 or 4
+	    // check for qualified units
+	    boolean qualifiedUnitInCurRegion=false;
+      if (this.units()!=null && this.units().size()>0){
+        for (Iterator<Unit> iter = this.units().iterator();iter.hasNext();){
+          Unit actUnit = (Unit)iter.next();
+          if (actUnit.getCombatStatus()!=-1){
+            // -1 is default for this int and stays, if no info is available
+            qualifiedUnitInCurRegion=true;
+            break;
+          }
+        }
+      }
+      if (qualifiedUnitInCurRegion){
+        return 4;
+      } else {
+        return 0;
+      }
+	  } else {
+	    // we have a visibility ... choose right int
+	    if (this.visibility.equalsIgnoreCase("neighbour")){
+	      return 1;
+	    }
+	    if (this.visibility.equalsIgnoreCase("lighthouse")){
+        return 2;
+      }
+	    if (this.visibility.equalsIgnoreCase("travel")){
+        return 3;
+      }
+	  }
+	  return erg;
+	}
+	
+	
 	/**
 	 * Sets a string constant indicating why this region is visible.
 	 *
@@ -295,6 +344,30 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		this.visibility = vis;
 	}
 
+	/**
+	 * 0..very poor - no info (->visibility=null) 
+   * 1..neighbour
+   * 2..lighthouse
+   * 3..travel
+   * 4..qualified unit in region (->visibility=null)
+	 * 
+	 * @param i
+	 */
+	public void setVisibility(int i){
+	  if (i==0 || i==4){
+	    this.visibility=null;
+	  }
+	  if (i==1){
+	    this.visibility="neighbour";
+	  }
+	  if (i==2){
+      this.visibility="lighthouse";
+    }
+	  if (i==3){
+      this.visibility="travel";
+    }
+	}
+	
 	/**
 	 * The prices for luxury goods in this region. The map contains the name of the luxury good as
 	 * instance of class <tt>StringID</tt> as key and instances of class <tt>LuxuryPrice</tt> as

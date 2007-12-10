@@ -79,7 +79,32 @@ public interface Region extends UnitContainer {
    *          a String object or null to indicate that the visibility cannot be
    *          determined.
    */
+  
+  /**
+   * Represents the quality of the visibility as an int value
+   * 0..very poor - no info (->visibility=null) 
+   * 1..neighbour
+   * 2..lighthouse
+   * 3..travel
+   * 4..qualified unit in region (->visibility=null)
+   * @return
+   */
+  public int getVisibilityInteger();
+  
+  
   public void setVisibility(String vis);
+  
+  /**
+   * 0..very poor - no info (->visibility=null) 
+   * 1..neighbour
+   * 2..lighthouse
+   * 3..travel
+   * 4..qualified unit in region (->visibility=null)
+   * 
+   * @param i
+   */
+  public void setVisibility(int i);
+  
 
   /**
    * Returns all resources of this region.

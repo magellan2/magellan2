@@ -1643,8 +1643,8 @@ public abstract class MagellanFactory {
     if(curUnit.getFamiliarmageID() != null) {
       newUnit.setFamiliarmageID(curUnit.getFamiliarmageID());
     }
-    
-    if(curUnit.getWeight() != -1) {
+
+    if (curUnit.isWeightWellKnown()) {
       newUnit.setWeight(curUnit.getWeight());
     }
     

@@ -174,13 +174,13 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 * @return The message text
 	 */
 	public String getText() {
-    if ((text == null)||(isRendered == false)) {
+	  if (!isRendered){
       if (type != null) {
         render(type.getGameData());
       }else{
-      	return "";
+        return text==null?"":text;
       }
-    }
+	  }
 		return text;
 	}
 

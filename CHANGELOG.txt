@@ -1,3 +1,6 @@
+2007-12-11  stm (stm_@users.sourceforge.net)
+    * fixed DURCHREISE messages not displaying
+    
 2007-12-06 Darcduck (sf.net@duckstein.net)
 	* Message rendering: added trail() function
 	* Message rendering: changed exception behavior

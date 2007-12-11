@@ -1287,8 +1287,8 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltMacheBuilding(String typeName) {
-		// TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Gebï¿½ude ï¿½ber den 
-		// ï¿½bersetzten Namen gefunden werden!!!
+		// TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Gebäude über den 
+		// übersetzten Namen gefunden werden!!!
 		// BuildingType type = ((Eressea) data.rules).getBuildingType(typeName);
 		BuildingType type = data.rules.getBuildingType(StringID.create(typeName));
 

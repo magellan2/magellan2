@@ -547,7 +547,7 @@ public class EresseaConstants {
 
 	//public static final int A_SILVER = 1 << 0;
 
-	/** A state selector for the "Helfe KÃ¤mpfe" state. */
+	/** A state selector for the "Helfe Kämpfe" state. */
 
 	//public static final int A_COMBAT = 1 << 1;
 
@@ -575,7 +575,7 @@ public class EresseaConstants {
 	public static final ID I_CART = StringID.create("Wagen");
 
 	/** DOCUMENT-ME */
-	public static final ID I_GOTS = StringID.create("GÃ¼rtel der TrollstÃ¤rke");
+	public static final ID I_GOTS = StringID.create("Gürtel der Trollstärke");
 
   /** Bag of negative weight - this bad weights 1 GE but stores 200 GE. However not all items can be stored in the bag. */
   public static final ID I_BONW = StringID.create("Zauberbeutel");

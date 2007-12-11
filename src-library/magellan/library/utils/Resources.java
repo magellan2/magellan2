@@ -293,7 +293,7 @@ public class Resources {
     boolean t = true;
     while (tokenizer.hasMoreTokens()) {
       String token = tokenizer.nextToken();
-      // die erste Zeile enth√§lt unser Throwable
+      // die erste Zeile enth‰lt unser Throwable
       if (t) {
         t = false;
         continue;

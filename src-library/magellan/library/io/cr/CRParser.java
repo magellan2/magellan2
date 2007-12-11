@@ -1232,7 +1232,7 @@ public class CRParser implements RulesIO, GameDataIO {
       bType = rules.getCastleType(StringID.create(id), true);
     }
 
-    sc.getNextToken(); // skip GEBï¿½UDETYP xx
+    sc.getNextToken(); // skip GEBÄUDETYP xx
 
     while(!sc.eof) {
       if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
@@ -1377,7 +1377,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if(sc.argc == 2) {
         unknown("REGIONTYPE", true);
       } else {
-        unknown("GEBï¿½UDETYP", true);
+        unknown("GEBÄUDETYP", true);
       }
     }
   }
@@ -2088,10 +2088,10 @@ public class CRParser implements RulesIO, GameDataIO {
         //
         // 57 and later:
         // 0 AGGRESSIV: 1. Reihe, flieht nie.
-        // 1 VORNE: 1. Reihe, kämpfen bis 20% HP
-        // 2 HINTEN: 2. Reihe, kämpfen bis 20% HP
-        // 3 DEFENSIV: 2. Reihe, kämpfen bis 90% HP
-        // 4 NICHT: 3. Reihe, kämpfen bis 90% HP
+        // 1 VORNE: 1. Reihe, kaempfen bis 20% HP
+        // 2 HINTEN: 2. Reihe, kaempfen bis 20% HP
+        // 3 DEFENSIV: 2. Reihe, kaempfen bis 90% HP
+        // 4 NICHT: 3. Reihe, kaempfen bis 90% HP
         // 5 FLIEHE: 4. Reihe, flieht immer.
         unit.setCombatStatus(Integer.parseInt(sc.argv[0]));
 

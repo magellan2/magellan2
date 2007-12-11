@@ -2787,7 +2787,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return;
 		}
 	
-		DefaultMutableTreeNode combatSpells = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.combatspells"));
+		// DefaultMutableTreeNode combatSpells = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.combatspells"));
+		DefaultMutableTreeNode combatSpells = createSimpleNode(Resources.get("emapdetailspanel.node.combatspells"), "combatspell");
 		parent.add(combatSpells);
 		expandableNodes.add(new NodeWrapper(combatSpells,
 											"EMapDetailsPanel.UnitCombatSpellsExpanded"));

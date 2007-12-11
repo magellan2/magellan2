@@ -501,7 +501,8 @@ public class EresseaMessageRenderer implements MessageRenderer {
         throw new ParseException("direction() requires an int parameter != NULL", unparsed.length());
       }
     } else {
-      value = "unknown:"+name+renderString(unparsed, attributes)+")";     
+      value = "unknown:"+name+renderString(unparsed, attributes)+")";
+      throw new ParseException("unknown token: "+name, unparsed.length());
     }
 
     // delete closing bracket before returning the value

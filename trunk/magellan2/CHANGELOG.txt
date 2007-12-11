@@ -1,3 +1,6 @@
+2007-12-11 Fiete (sf@fietefietz.de)
+	* added 4 GIFs: arbeiten, combatspell, stealth, tarnung (khadar)
+	
 2007-12-11 Darcduck (sf.net@duckstein.net)
 	* fixed merging of unit weight
 	

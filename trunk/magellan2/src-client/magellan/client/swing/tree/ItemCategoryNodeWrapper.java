@@ -27,7 +27,7 @@ import magellan.library.rules.ItemCategory;
 /**
  * DOCUMENT ME!
  *
- * @author Ulrich KÃ¶ster
+ * @author Ulrich Küster
  */
 public class ItemCategoryNodeWrapper implements CellObject{
 	private int amount = -1;

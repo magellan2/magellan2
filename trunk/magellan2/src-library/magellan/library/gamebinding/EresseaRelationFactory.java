@@ -390,8 +390,8 @@ public class EresseaRelationFactory implements RelationFactory {
                       modPersons = Math.max(0, modPersons - rel.amount);
                     } else if (itemName.length() > 0) {
                       // TODO(pavkovic): korrigieren!!! Hier soll eigentlich
-                      // das Item Ã¼ber den
-                      // Ã¼bersetzten Namen gefunden werden!!!
+                      // das Item über den
+                      // übersetzten Namen gefunden werden!!!
                       ItemType iType = data.rules.getItemType(itemName);
 
                       // ItemType iType =
@@ -648,8 +648,8 @@ public class EresseaRelationFactory implements RelationFactory {
 
               if (itemName.length() > 0) {
                 // TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Item
-                // Ã¼ber den
-                // Ã¼bersetzten Namen gefunden werden!!!
+                // über den
+                // übersetzten Namen gefunden werden!!!
                 ItemType iType = data.rules.getItemType(itemName);
 
                 if (iType != null) {

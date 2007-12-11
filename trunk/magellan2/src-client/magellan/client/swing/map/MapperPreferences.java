@@ -782,11 +782,11 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			}
 
 			protected String removePSigns(String s) {
-				while(s.startsWith("ï¿½")) {
+				while(s.startsWith("§")) {
 					s = s.substring(1);
 				}
 
-				while(s.endsWith("ï¿½")) {
+				while(s.endsWith("§")) {
 					try {
 						s = s.substring(0, s.length() - 1);
 					} catch(Exception exc) {

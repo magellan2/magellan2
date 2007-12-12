@@ -1,3 +1,6 @@
+2007-12-12 Fiete (sf@fietefietz.de)
+	* added more gifs and support for random ocean tiles
+
 2007-12-11 Fiete (sf@fietefietz.de)
 	* added 4 GIFs: arbeiten, combatspell, stealth, tarnung (khadar)
 	* added nebel-X.gif

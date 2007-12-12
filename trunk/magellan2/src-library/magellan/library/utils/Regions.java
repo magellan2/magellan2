@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import magellan.library.Border;
 import magellan.library.Building;
@@ -922,6 +923,76 @@ public class Regions {
       }
     }
     return erg;
+  }
+  
+  /**
+   * Checks all regions and recalculates the BitMap
+   * for the borders, where is ocean and where not
+   * @param data GameData
+   */
+  public static void calculateCoastBorders(GameData data){
+    // Bit masks for dir 0 to 5
+    int[] bitMaskArray = {1,2,4,8,16,32,64,128};
+    
+    // % part of regions with no borders which will
+    // be changed as well
+    double noBorderCoverage = 0.5;
+    
+    Random r = new Random(System.currentTimeMillis());
+    
+    long cnt = 0;
+    log.info("starting calculation of coasts");
+    for (Iterator<Region> iter = data.regions().values().iterator();iter.hasNext();){
+      Region actRegion = (Region)iter.next();
+      if (actRegion.getRegionType().isOcean()){
+        // we have an ocean in front
+        // the result
+        int erg = 0;
+        CoordinateID cID = (CoordinateID)actRegion.getID();
+        Map<CoordinateID,Region> n = getAllNeighbours(data.regions(), cID, null);
+        n.remove(cID);
+        // checking all neighbours
+        for (Iterator iter2 = n.keySet().iterator();iter2.hasNext();){
+          CoordinateID checkID = (CoordinateID)iter2.next();
+          Region checkR = n.get(checkID);
+          if (!checkR.getRegionType().isOcean()){
+            // not ocean! we should set an 1
+            // what is relative coordinate ?
+            CoordinateID diffCoord = new CoordinateID(checkID.x - cID.x, checkID.y - cID.y, 0);
+            int intDir = Direction.toInt(diffCoord);
+            int bitMask = bitMaskArray[intDir];
+            erg = erg | bitMask;
+            cnt++;
+          }
+        }
+        if (erg>0){
+          actRegion.setCoastBitMap(new Integer(erg));
+        } else {
+          // we have no borders...lets see, if we want ice anyway
+          double nextR = r.nextDouble();
+          if (nextR<noBorderCoverage){
+            // ok, we want to add a random graphic 0..3
+            // putting this info on bit 7 and 8
+            int intR = r.nextInt(4);
+            // this is poor but I have no better idea..sorry
+            switch (intR) {
+            case 1: erg = erg | bitMaskArray[7];break;
+            case 2: erg = erg | bitMaskArray[6];break;
+            case 3: erg = erg | bitMaskArray[6];
+                    erg = erg | bitMaskArray[7];
+                    break;
+            }
+            actRegion.setCoastBitMap(new Integer(erg));
+          } else {
+            actRegion.setCoastBitMap(null);
+          }
+        }
+      } else {
+        // we do not recalculate non-oceans
+        actRegion.setCoastBitMap(null);
+      }
+    }
+    log.info("finished calculation of coasts, found " + cnt + " coasts.");
   }
   
   

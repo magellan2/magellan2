@@ -164,6 +164,18 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
 	/** Informs about the reason why this region is visible. */
   private String visibility = null;
+  
+  /**
+   * The Integer is an BitMap representing the info,
+   * if neighboriing regions are ozean or not
+   * BitMask 1: dir = 0
+   * BitMask 2: dir = 1
+   * BitMask 4: dir = 2  ....
+   * Bit = 1 -> there is land!
+   * Bit = 0 -> there is ozean!
+   */
+  private Integer coastBitMask = null;
+  
 	
 	/**
 	 * Constructs a new Region object uniquely identifiable by the specified id.
@@ -1882,4 +1894,34 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     }
     this.isActive = isActive;
   }
+  
+  /**
+   * The returned integer is an BitMap representing the info,
+   * if neighboriing regions are ozean or not
+   * BitMask 1: dir = 0
+   * BitMask 2: dir = 1
+   * BitMask 4: dir = 2  ....
+   * Bit = 1 -> there is land!
+   * Bit = 0 -> there is ozean!
+   * @return an Integer as BitMap
+   */
+  public Integer getCoastBitMap(){
+    return this.coastBitMask;
+  }
+  
+  /**
+   * The returned integer is an BitMap representing the info,
+   * if neighboriing regions are ozean or not
+   * BitMask 1: dir = 0
+   * BitMask 2: dir = 1
+   * BitMask 4: dir = 2  ....
+   * Bit = 1 -> there is land!
+   * Bit = 0 -> there is ozean!
+   * @return an Integer as BitMap
+   */
+  public void setCoastBitMap(Integer bitMap){
+    this.coastBitMask = bitMap;
+  }
+  
+  
 }

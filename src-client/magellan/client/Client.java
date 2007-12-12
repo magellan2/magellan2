@@ -126,8 +126,8 @@ import magellan.client.swing.MagellanLookAndFeel;
 import magellan.client.swing.MapperPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.MessagePanel;
-import magellan.client.swing.StartWindow;
 import magellan.client.swing.ProgressBarUI;
+import magellan.client.swing.StartWindow;
 import magellan.client.swing.TipOfTheDay;
 import magellan.client.swing.TradeOrganizer;
 import magellan.client.swing.map.CellGeometry;
@@ -167,6 +167,7 @@ import magellan.library.utils.Log;
 import magellan.library.utils.MagellanFinder;
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.PropertiesHelper;
+import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
@@ -1437,6 +1438,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (privFacsWoPwd) { // no password set for any faction
         JOptionPane.showMessageDialog(getRootPane(), Resources.get("client.msg.postprocessloadedcr.missingpassword.text"));
       }
+      
+      // recalculate the status of regions - coastal or not?
+      Regions.calculateCoastBorders(aData);
     }
   }
 

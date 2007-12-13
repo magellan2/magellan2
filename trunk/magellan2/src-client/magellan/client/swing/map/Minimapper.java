@@ -66,9 +66,9 @@ public class Minimapper extends Mapper {
 	 * 
 	 */
 	public void setRenderer(MapCellRenderer renderer, int plane) {
-		String old = settings.getProperty("Mapper.Planes." + plane);
+		String old = settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane]);
 		super.setRenderer(renderer, plane);
-		settings.setProperty("Mapper.Planes." + plane, old);
+		settings.setProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane], old);
 	}
 
   /**
@@ -76,8 +76,8 @@ public class Minimapper extends Mapper {
    */
 	protected RenderingPlane[] initRenderingPlanes() {
 		RenderingPlane p[] = new RenderingPlane[1];
-		p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"), 1);
-		p[PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
+		p[0] = new RenderingPlane(0, Resources.get("map.mapper.plane.region.name"), 1);
+		p[0].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
 																			 context,
 																			 "Minimap.FactionColors",
 																			 "Minimap.RegionColors",

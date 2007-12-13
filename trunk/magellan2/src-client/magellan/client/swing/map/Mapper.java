@@ -86,38 +86,44 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * a mapping for int positions of planes to logical names. Will be used for
    * magellan_desktop.ini
    */
-  public static final String PLANE_STRINGS[] = { "REGION", "BORDER", "BUILDING", "SHIP", "TEXT", "PATH", "HIGHLIGHT", "MARKINGS", "SCHEMES", "SIGNS" };
+  public static final String PLANE_STRINGS[] = { "BACKGROUND", "BEHIND", "REGION", "BORDER", "BUILDING", "SHIP", "TEXT", "PATH", "HIGHLIGHT", "MARKINGS", "SCHEMES", "SIGNS" };
+
+  /** Plane for general background renderer, like background image renderer */
+  public static final int PLANE_BACKGROUND = 0;
+  
+  /** Plane for something to be rendered behind the regions, makes only sense when regions have transparent parts, used for schemes of the real world shining through the dust of the astral space */
+  public static final int PLANE_BEHIND = 1;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_REGION = 0;
+  public static final int PLANE_REGION = 2;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_BORDER = 1;
+  public static final int PLANE_BORDER = 3;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_BUILDING = 2;
+  public static final int PLANE_BUILDING = 4;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_SHIP = 3;
+  public static final int PLANE_SHIP = 5;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_TEXT = 4;
+  public static final int PLANE_TEXT = 6;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_PATH = 5;
+  public static final int PLANE_PATH = 7;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_HIGHLIGHT = 6;
+  public static final int PLANE_HIGHLIGHT = 8;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_MARKINGS = 7;
+  public static final int PLANE_MARKINGS = 9;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_SCHEMES = 8;
+  public static final int PLANE_SCHEMES = 10;
 
   /** DOCUMENT-ME */
-  public static final int PLANE_SIGNS = 9;
-  private static final int PLANES = 10;
+  public static final int PLANE_SIGNS = 11;
+  private static final int PLANES = 12;
   private RenderingPlane planes[] = null;
   private Collection<MapCellRenderer> availableRenderers = null;
   private MediaTracker tracker = null;
@@ -448,7 +454,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         className = renderer.getClass().getName();
       }
 
-      settings.setProperty("Mapper.Planes." + plane, className);
+      settings.setProperty("Mapper.Planes." + PLANE_STRINGS[plane], className);
       conMenu.updateRenderers(this);
     } else {
       log.warn("Mapper.setRenderer(): invalid argument: plane out of bounds");
@@ -1325,29 +1331,35 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[PLANES];
+    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
+//    p[PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BACKGROUND], RegionImageCellRenderer.class.getName())));
+
+    p[PLANE_BEHIND] = new RenderingPlane(PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"), RenderingPlane.ACTIVE_OBJECT);
+//    p[PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BEHIND], RegionImageCellRenderer.class.getName())));
+
     p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"));
-    p[PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_REGION, RegionImageCellRenderer.class.getName())));
+    p[PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_REGION], RegionImageCellRenderer.class.getName())));
 
     p[PLANE_BORDER] = new RenderingPlane(PLANE_BORDER, Resources.get("map.mapper.plane.border.name"));
-    p[PLANE_BORDER].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_BORDER, BorderCellRenderer.class.getName())));
+    p[PLANE_BORDER].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BORDER], BorderCellRenderer.class.getName())));
 
     p[PLANE_BUILDING] = new RenderingPlane(PLANE_BUILDING, Resources.get("map.mapper.plane.building.name"));
-    p[PLANE_BUILDING].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_BUILDING, BuildingCellRenderer.class.getName())));
+    p[PLANE_BUILDING].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BUILDING], BuildingCellRenderer.class.getName())));
 
     p[PLANE_SHIP] = new RenderingPlane(PLANE_SHIP, Resources.get("map.mapper.plane.ship.name"));
-    p[PLANE_SHIP].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_SHIP, ShipCellRenderer.class.getName())));
+    p[PLANE_SHIP].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_SHIP], ShipCellRenderer.class.getName())));
 
     p[PLANE_TEXT] = new RenderingPlane(PLANE_TEXT, Resources.get("map.mapper.plane.text.name"));
-    p[PLANE_TEXT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_TEXT, TextCellRenderer.class.getName())));
+    p[PLANE_TEXT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_TEXT], TextCellRenderer.class.getName())));
 
     p[PLANE_PATH] = new RenderingPlane(PLANE_PATH, Resources.get("map.mapper.plane.path.name"), RenderingPlane.ACTIVE_OBJECT);
-    p[PLANE_PATH].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_PATH, PathCellRenderer.class.getName())));
+    p[PLANE_PATH].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_PATH], PathCellRenderer.class.getName())));
 
     p[PLANE_HIGHLIGHT] = new RenderingPlane(PLANE_HIGHLIGHT, Resources.get("map.mapper.plane.highlight.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED);
-    p[PLANE_HIGHLIGHT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_HIGHLIGHT, HighlightImageCellRenderer.class.getName())));
+    p[PLANE_HIGHLIGHT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_HIGHLIGHT], HighlightImageCellRenderer.class.getName())));
 
     p[PLANE_MARKINGS] = new RenderingPlane(PLANE_MARKINGS, Resources.get("map.mapper.plane.markings.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.TAGGED_REGIONS);
-    p[PLANE_MARKINGS].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_MARKINGS, MarkingsImageCellRenderer.class.getName())));
+    p[PLANE_MARKINGS].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_MARKINGS], MarkingsImageCellRenderer.class.getName())));
 
     p[PLANE_SCHEMES] = new RenderingPlane(PLANE_SCHEMES, Resources.get("map.mapper.plane.schemes.name"), RenderingPlane.VISIBLE_REGIONS);
     p[PLANE_SCHEMES].setRenderer(getRenderer(SchemeCellRenderer.class.getName()));

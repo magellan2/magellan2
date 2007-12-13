@@ -1,3 +1,7 @@
+2007-12-13 Fiete (sf@fietefietz.de)
+	* added map-icons for irrlichter and feuerwand
+	* BorderCellRenderer upgraded to support new images
+
 2007-12-13 Darcduck (sf.net@duckstein.net)
 	* prepared Mapper to handle additional rendering panes
 	* Property names changes from Mapper.Panes.<Pane index> to Mapper.Panes.<Pane name>

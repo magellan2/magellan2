@@ -1,3 +1,6 @@
+2007-12-13  stm (stm_@users.sourceforge.net)
+    * improved debugging output
+
 2007-12-13 Fiete (sf@fietefietz.de)
 	* added map-icons for irrlichter and feuerwand
 	* BorderCellRenderer upgraded to support new images

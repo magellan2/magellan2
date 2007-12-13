@@ -2,6 +2,7 @@
 	* added map-icons for irrlichter and feuerwand
 	* BorderCellRenderer upgraded to support new images
 	* made seasonal images optional, renamed border renderer
+	* fixed bug writing wrong ;charset tag in CRWriter. Now encodingString from GameData is used for sure.
 
 2007-12-13 Darcduck (sf.net@duckstein.net)
 	* prepared Mapper to handle additional rendering panes

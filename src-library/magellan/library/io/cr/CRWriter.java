@@ -2167,8 +2167,11 @@ public class CRWriter extends BufferedWriter {
    * @param world the game data to write.
    */
   protected void writeThread(GameData world) throws IOException, NullPointerException {
-    log.info("Saving report.");
-
+    log.info("Saving report. Encoding: " + encoding);
+    if (!encoding.equalsIgnoreCase(world.getEncoding())){
+      log.warn("Encodings differ while writing CR: writer users " + encoding + ", gamadata is set to " + world.getEncoding() + ", setting charset to:" + world.getEncoding());
+      this.encoding = world.getEncoding();
+    }
     if (ui != null) ui.setMaximum(11);
     if (ui != null) ui.setTitle(Resources.get("orderwriterdialog.progress.title"));
     if (ui != null) ui.show();

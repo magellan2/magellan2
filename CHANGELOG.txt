@@ -1,3 +1,6 @@
+2007-12-13 Fiete (sf@fietefietz.de)
+	* added copy shiplist to unitcontainermenu
+
 2007-12-13  stm (stm_@users.sourceforge.net)
     * improved debugging output
 

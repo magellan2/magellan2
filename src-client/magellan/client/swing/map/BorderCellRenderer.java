@@ -16,7 +16,6 @@ package magellan.client.swing.map;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -43,6 +42,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
   
   // for border specific region images
   int[] bitMaskArray = {1,2,4,8,16,32,64,128};
+  
+  // the border type names we can handle in renderOtherBorders
+  String[] borderTypes = {"FEUERWAND","IRRLICHTER"};
   
   
   /**
@@ -97,13 +99,50 @@ public class BorderCellRenderer extends ImageCellRenderer {
 
 							graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
 						}
-					}
+					} else {
+					  renderOtherBorders(b,r);
+          }
+          
 				}
 			}
 			renderCoastals(r);
 		}
 	}
 
+  
+  /**
+   * deals with more (classic) borders: firewalls and "Irrlichter"
+   * no prozent
+   * @param b the border to check
+   * @param r region we are in
+   */
+	private void renderOtherBorders(Border b, Region r){
+    CoordinateID c = null;
+    Point pos = null;
+    Dimension size = null;
+	  // size of array of type names
+    int bMax = this.borderTypes.length;
+    // loop throuh them
+    for (int i=0;i<bMax;i++){
+      String actBorderTypeName = this.borderTypes[i];
+      if(magellan.library.utils.Umlaut.normalize(b.getType()).equals(actBorderTypeName) &&
+           (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
+        Image img = getImage("" + actBorderTypeName.toLowerCase() + b.getDirection());
+        if(img != null) {
+          if(c == null) {
+            c = r.getCoordinate();
+            pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+            pos.translate(-offset.x, -offset.y);
+            size = cellGeo.getImageSize();
+          }
+          graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
+        }
+      }
+    }
+  }
+  
+  
+  
 	/**
 	 * Adds some coastal things to ocean regions
 	 * depending on season and direction of non-ocean
@@ -147,6 +186,11 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	  }
 	}
 	
+  
+  
+  
+  
+  
 	private void drawMyImage(String imageNameDefault, Region r){
 	  CoordinateID c = null;
     Point pos = null;

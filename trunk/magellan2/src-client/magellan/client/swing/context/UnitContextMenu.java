@@ -644,15 +644,26 @@ public class UnitContextMenu extends JPopupMenu {
 
   private void event_copyMultipleNameIDPersonCount(ActionEvent e) {
     String s = "";
-
+    int cntUnits=0;
+    int cntPersons = 0;
+    int cntModifiedPersons=0;
     for (Unit u : selectedUnits) {
       s += (u.toString() + ":" + u.getPersons());
       if (u.getModifiedPersons()!=u.getPersons()){
         s+="(" + u.getModifiedPersons() + ")";
       }
       s += "\n";
+      cntUnits++;
+      cntPersons+=u.getPersons();
+      cntModifiedPersons+=u.getModifiedPersons();
     }
-
+    if (cntUnits>0){
+      s+=cntUnits + " units with " + cntPersons + "(" + cntModifiedPersons + ") individuals.";
+    } else {
+      s="no units";
+    }
+    
+    
     StringSelection strSel = new StringSelection(s);
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);

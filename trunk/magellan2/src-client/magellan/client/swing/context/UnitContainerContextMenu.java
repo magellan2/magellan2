@@ -17,6 +17,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -51,6 +52,7 @@ import magellan.library.utils.ShipRoutePlanner;
  * @author Ulrich Küster 
  */
 public class UnitContainerContextMenu extends JPopupMenu {
+  private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
 	private UnitContainer uc;
 	private EventDispatcher dispatcher;
 	private GameData data;
@@ -140,6 +142,14 @@ public class UnitContainerContextMenu extends JPopupMenu {
 				}
 			});
 			add(shipOrders);
+			
+			JMenuItem shipList = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.shiplist.caption"));
+      shipList.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          event_shipList();
+        }
+      });
+      add(shipList);
 		}
 		
     initContextMenuProviders(uc);
@@ -245,4 +255,37 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			}
 		}
 	}
+	
+	/**
+   * Copies Info about selected ships to the clipboard
+   */
+  private void event_shipList() {
+    String s = "";
+    int cntShips = 0;
+    int cntActModifiedLoad = 0;
+    int cntMaxLoad = 0;
+    for(Iterator iter = this.selectedObjects.iterator(); iter.hasNext();) {
+      Object o = iter.next();
+      if (o instanceof Ship){
+        Ship ship = (Ship)o;
+        cntShips++;
+        cntActModifiedLoad+=ship.getModifiedLoad();
+        cntMaxLoad += ship.getMaxCapacity();
+        s+=ship.toString(true);
+        s+=":";
+        s+=weightNumberFormat.format(new Float((ship.getMaxCapacity()-ship.getModifiedLoad()) / 100.0F));
+        s+="\n";
+      }
+    }
+    if (cntShips>0){
+      s+=cntShips + " ships with " + weightNumberFormat.format(new Float((cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
+      s+="\n";
+    } else {
+      s="no ships.";
+    }
+    StringSelection strSel = new StringSelection(s);
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+  }
+	
 }

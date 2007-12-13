@@ -264,6 +264,14 @@ public class UnitContextMenu extends JPopupMenu {
       }
     });
     add(copyMultipleNameID);
+    
+    JMenuItem copyMultipleNameIDPersonCount = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidsandnamesandcounts.caption"));
+    copyMultipleNameIDPersonCount.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        event_copyMultipleNameIDPersonCount(e);
+      }
+    });
+    add(copyMultipleNameIDPersonCount);
 
   }
 
@@ -288,6 +296,14 @@ public class UnitContextMenu extends JPopupMenu {
       }
     });
     add(copyUnitNameID);
+    
+    JMenuItem copyUnitNameIDPersonCount = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidandnameandcount.caption"));
+    copyUnitNameIDPersonCount.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        event_copyNameIDPersonCount(e);
+      }
+    });
+    add(copyUnitNameIDPersonCount);
 
     if (EMapDetailsPanel.isPrivilegedAndNoSpy(unit)) {
       JMenuItem hideID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.disguise.caption"));
@@ -567,6 +583,21 @@ public class UnitContextMenu extends JPopupMenu {
     unit = null;
     selectedUnits.clear();
   }
+  
+  private void event_copyNameIDPersonCount(ActionEvent e) {
+    String s = unit.toString();
+    s += ":" + unit.getPersons();
+    if (unit.getModifiedPersons() != unit.getPersons()){
+      s += "(" + unit.getModifiedPersons() + ")";
+    }
+    StringSelection strSel = new StringSelection(s);
+    Clipboard cb = getToolkit().getSystemClipboard();
+
+    cb.setContents(strSel, null);
+
+    unit = null;
+    selectedUnits.clear();
+  }
 
   private void event_hideID(ActionEvent e) {
     data.getGameSpecificStuff().getOrderChanger().addMultipleHideOrder(unit);
@@ -611,6 +642,25 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits.clear();
   }
 
+  private void event_copyMultipleNameIDPersonCount(ActionEvent e) {
+    String s = "";
+
+    for (Unit u : selectedUnits) {
+      s += (u.toString() + ":" + u.getPersons());
+      if (u.getModifiedPersons()!=u.getPersons()){
+        s+="(" + u.getModifiedPersons() + ")";
+      }
+      s += "\n";
+    }
+
+    StringSelection strSel = new StringSelection(s);
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+
+    unit = null;
+    selectedUnits.clear();
+  }
+  
   private void planRoute(ActionEvent e) {
     if (UnitRoutePlanner.planUnitRoute(unit, data, this, selectedUnits)) {
       if (selectedUnits != null) {

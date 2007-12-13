@@ -6,6 +6,8 @@
 	* BorderCellRenderer upgraded to support new images
 	* made seasonal images optional, renamed border renderer
 	* fixed bug writing wrong ;charset tag in CRWriter. Now encodingString from GameData is used for sure.
+	* Options -> Icons -> Detail Entries -> Skills->added help text (bug #70)
+	* feature request 95: copy unit name, unit id and person count
 
 2007-12-13 Darcduck (sf.net@duckstein.net)
 	* prepared Mapper to handle additional rendering panes

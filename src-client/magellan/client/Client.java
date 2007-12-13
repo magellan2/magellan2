@@ -1014,15 +1014,27 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Log LOG = new Log(fileDir);
       System.setErr(LOG.getPrintStream());
 
-      log.info("Start writing error file with encoding " + LOG.encoding);
+      log.warn("Start writing error file with encoding " + LOG.encoding + ", log level " + Logger.getLevel(Logger.getLevel()));
 
       String version = VersionInfo.getVersion();
       if (version == null) {
-        log.info("no magellan version available");
+        log.warn("no magellan version available");
       } else {
-        log.info("This is Magellan Version " + version);
+        log.warn("This is Magellan Version " + version);
       }
-
+      
+      
+      try {
+        log.warn("OS: "+System.getProperty("os.name")+" "+System.getProperty("os.arch")+" "+System.getProperty("os.version"));
+        log.warn("Java Version: "+System.getProperty("java.version")+" "+System.getProperty("java.vendor"));
+        log.warn("Java Spec: "+System.getProperty("java.specification.version")+" "+System.getProperty("java.specification.vendor")+" "+System.getProperty("java.specification.name"));
+        log.warn("VM Version: "+System.getProperty("java.vm.version")+" "+System.getProperty("java.vm.vendor")+" "+System.getProperty("java.vm.name"));
+        log.warn("VM Specification: "+System.getProperty("java.vm.specification.version")+" "+System.getProperty("java.vm.specification.vendor")+" "+System.getProperty("java.vm.specification.name"));
+        log.warn("Java Class Version: "+System.getProperty("java.class.version"));
+      } catch (SecurityException e) {
+        log.warn("Unable to retrieve system properties: "+e);
+      }
+           
       // can't call loadRules from here, so we initially work with an
       // empty ruleset.
       // This is not very nice, though...

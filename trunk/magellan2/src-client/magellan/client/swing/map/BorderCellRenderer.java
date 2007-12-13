@@ -13,15 +13,33 @@
 
 package magellan.client.swing.map;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import javax.swing.JCheckBox;
+import javax.swing.JColorChooser;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import magellan.client.MagellanContext;
+import magellan.client.swing.map.SignTextCellRenderer.Preferences;
+import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Border;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
@@ -47,6 +65,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
   String[] borderTypes = {"FEUERWAND","IRRLICHTER"};
   
   
+  private boolean useSeasonImages = true;
+  
   /**
 	 * Creates a new BorderCellRenderer object.
 	 *
@@ -55,6 +75,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	 */
 	public BorderCellRenderer(CellGeometry geo, MagellanContext context ) {
 		super(geo, context);
+    setUseSeasonImages((Boolean.valueOf(settings.getProperty("BoderCellRenderer.useSeasonImages",
+     "true"))).booleanValue());
+    
 	}
 
 	/**
@@ -196,8 +219,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
     Point pos = null;
     Dimension size = null;
 	  String imageName = imageNameDefault;
-    // first try a season specific icon
-    if (r.getData().getDate() != null) {
+    Image img = null;
+    // first try a season specific icon, if preferences say so!
+    if (r.getData().getDate() != null && this.useSeasonImages) {
       switch (r.getData().getDate().getSeason()) {
         case Date.SPRING: imageName+="_spring"; break;
         case Date.SUMMER: imageName+="_summer"; break;
@@ -205,8 +229,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
         case Date.WINTER: imageName+="_winter"; break;
       }
     }
-    
-    Image img = getImage(imageName);
+    img = getImage(imageName);
     
     // if we cannot find it, try a default icon.
     if (img == null) {
@@ -264,4 +287,82 @@ public class BorderCellRenderer extends ImageCellRenderer {
     return Resources.get("map.bordercellrenderer.name");
   }
 
+  
+  protected class Preferences extends JPanel implements PreferencesAdapter {
+    // The source component to configure
+    protected BorderCellRenderer source = null;
+    private final Logger log = Logger.getInstance(Preferences.class);
+
+    // GUI elements
+
+    private JCheckBox chkUseSeasonImages = null;
+    /**
+     * Creates a new Preferences object.
+     *
+     * 
+     */
+    public Preferences(BorderCellRenderer r) {
+      this.source = r;
+      init();
+    }
+
+    private void init() {
+      
+      chkUseSeasonImages = new JCheckBox(Resources.get("map.bordercellrenderer.useseasonimages"), source.isUseSeasonImages());
+
+      this.setLayout(new GridBagLayout());
+
+      GridBagConstraints c = new GridBagConstraints();
+      c.anchor = GridBagConstraints.WEST;
+      c.gridx = 0;
+      c.gridy = 0;
+      this.add(chkUseSeasonImages, c);
+      
+    }
+
+    public void initPreferences() {
+        // TODO: implement it
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public void applyPreferences() {
+      source.setUseSeasonImages(chkUseSeasonImages.isSelected());
+    }
+
+    /**
+     * DOCUMENT-ME
+     *
+     * 
+     */
+    public Component getComponent() {
+      return this;
+    }
+
+    /**
+     * DOCUMENT-ME
+     *
+     * 
+     */
+    public String getTitle() {
+      return source.getName();
+    }
+  }
+
+
+  public boolean isUseSeasonImages() {
+    return useSeasonImages;
+  }
+
+  public void setUseSeasonImages(boolean useSeasonImages) {
+    this.useSeasonImages = useSeasonImages;
+    settings.setProperty("BoderCellRenderer.useSeasonImages",
+         String.valueOf(useSeasonImages));
+  }
+  
+  public PreferencesAdapter getPreferencesAdapter() {
+    return new Preferences(this);
+  }
+  
 }

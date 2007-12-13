@@ -142,7 +142,15 @@ public class Logger {
 	}
 
 	/**
+	 * @return The current verbosity level
+	 */
+	public static int getLevel(){
+	  return verboseLevel;
+	}
+	
+	/**
 	 * 
+	 * @return The string representation of <code>level</code> 
 	 */
 	public static String getLevel(int level) {
 		if(level <= OFF) {

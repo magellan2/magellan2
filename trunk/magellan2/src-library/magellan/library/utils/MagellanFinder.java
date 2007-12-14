@@ -95,12 +95,11 @@ public class MagellanFinder {
 		}
 
 		if(!magFile.exists()) {
-			msg.append("Not found.\nUsing default directory " + magDirectory.getAbsolutePath() +
-					   ".");
+			msg.append("Not found.\nUsing default directory " + magDirectory.getAbsolutePath() + ".");
 			log.info(msg);
 			settFileDir = magDirectory;
 		} else {
-			log.info("Using directory " + settFileDir.getAbsolutePath() + ".");
+			log.info("Using directory '" + settFileDir.getAbsolutePath() + "'.");
 			log.info(msg);
 		}
 

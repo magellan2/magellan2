@@ -1,3 +1,6 @@
+2007-12-14 Thoralf (thoralf@m84.de)
+	* Resources use now the magellan directory.
+
 2007-12-14 Fiete (sf@fietefietz.de)
 	* from Khadar: new map-icons for irrlichter and feuerwand
 

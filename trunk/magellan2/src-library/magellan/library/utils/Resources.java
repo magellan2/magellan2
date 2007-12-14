@@ -78,8 +78,6 @@ public class Resources {
    * This constructor loads all available resources into a hashtable.
    */
   private Resources() {
-    log.info("Initializing resources...");
-    initialize("");
   }
   
   /**
@@ -96,10 +94,26 @@ public class Resources {
    * F.e. call initialize("mapedit_") to search and load resource 
    * files from files called "mapedit_resources.properties".
    */
-  public void initialize(String prefix) {
+  public void initialize(File magellanDirectory, String prefix) {
     if (prefix == null) prefix = "";
-    File resourceDirectory = new File("etc/");
-    for (File file : resourceDirectory.listFiles(new ResourceFilenameFilter(prefix))) {
+    log.info("Initializing resources for prefix...'"+prefix+"'");
+    
+    File resourceDirectory = new File(magellanDirectory,"etc");
+    
+    if (!resourceDirectory.exists()) {
+      // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
+      resourceDirectory = new File(magellanDirectory.getParentFile(),"etc");
+      if (!resourceDirectory.exists()) {
+        // okay, I'll give up...
+        throw new RuntimeException("Could NOT find location Magellan");
+      }
+    }
+    
+    log.info("Searching resources in "+resourceDirectory);
+    File[] files = resourceDirectory.listFiles(new ResourceFilenameFilter(prefix));
+    log.info(""+files);
+    
+    for (File file : files) {
       String resourceName = file.getName();
       if (resourceName.equalsIgnoreCase(prefix+"resources.properties")) {
         // default resource...

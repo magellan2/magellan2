@@ -111,7 +111,6 @@ public class Resources {
     
     log.info("Searching resources in "+resourceDirectory);
     File[] files = resourceDirectory.listFiles(new ResourceFilenameFilter(prefix));
-    log.info(""+files);
     
     for (File file : files) {
       String resourceName = file.getName();

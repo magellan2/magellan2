@@ -228,7 +228,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   public void init(Client client, Properties properties) {
     // init the plugin
     log = Logger.getInstance(MagellanMapEditPlugIn.class);
-    Resources.getInstance().initialize("mapedit_");
+    Resources.getInstance().initialize(Client.getSettingsDirectory(),"mapedit_");
     log.info("MapEdit initialized...(client)");
     this.client = client;
     // System.err.println(Resources.get("mapedit.menu.setterrain"));

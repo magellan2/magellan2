@@ -24,7 +24,6 @@
 package magellan.client.swing;
 
 import java.awt.AWTEvent;
-import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;

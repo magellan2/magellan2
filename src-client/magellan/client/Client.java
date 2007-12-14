@@ -995,6 +995,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         i++;
       }
       
+      settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
+      Resources.getInstance().initialize(fileDir, "");
+      
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
 
@@ -1004,8 +1007,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       startWindow.progress(0, Resources.get("clientstart.0"));
 
-      settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
 
+      
       // tell the user where we expect ini files and errors.txt
       log.info("Client.main(): directory used for ini files: " + settFileDir.toString());
 

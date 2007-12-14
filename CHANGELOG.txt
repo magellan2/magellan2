@@ -3,6 +3,8 @@
 
 2007-12-14 Fiete (sf@fietefietz.de)
 	* from Khadar: new map-icons for irrlichter and feuerwand
+	* disabled warning image not found for seasonal and random images
+	* changed naming of ocean_nocoast_X images
 
 2007-12-13 Fiete (sf@fietefietz.de)
 	* added copy shiplist to unitcontainermenu

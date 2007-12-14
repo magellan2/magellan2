@@ -253,6 +253,23 @@ public class ImageFactory implements GameDataListener {
 	}
 
 	/**
+   * Load an image by file name. This procedure tries different file formats in the following
+   * order: .png, if not found then .gif. If a .gif file is available, an optional -alpha.gif
+   * file is used for alpha-channel information. If no such -alpha.gif file can be found, the
+   * optional alpha information in the .gif file is used. If no such file seems to exist, null
+   * is returned. All file names are prepended with the path 'images/map/'+gamename enforcing
+   * that the files are located in such a sub-directory of the resources root directory /res. If
+   * no such image is found, the fallback to 'images/map/' is used to load the file
+   *
+   * @param imageName a file name without extension.
+   *
+   * @return the image loaded from fileName, or null if not file could be found.
+   */
+  public Image loadMapImage(String imageName) {
+    return loadMapImage(imageName,true);
+  }
+	
+	/**
 	 * Load an image by file name. This procedure tries different file formats in the following
 	 * order: .png, if not found then .gif. If a .gif file is available, an optional -alpha.gif
 	 * file is used for alpha-channel information. If no such -alpha.gif file can be found, the
@@ -265,8 +282,8 @@ public class ImageFactory implements GameDataListener {
 	 *
 	 * @return the image loaded from fileName, or null if not file could be found.
 	 */
-	public Image loadMapImage(String imageName) {
-    ImageIcon icon = loadImage("etc/images/map/" + imageName);
+	public Image loadMapImage(String imageName,boolean errorIfNotFound) {
+    ImageIcon icon = loadImage("etc/images/map/" + imageName,errorIfNotFound);
     if (icon != null) return icon.getImage();
     return null;
 	}

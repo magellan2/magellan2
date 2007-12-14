@@ -114,10 +114,32 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 		tracker = t;
 	}
 
+	
 	protected Image loadFile(String fileName) {
-		return context.getImageFactory().loadMapImage(fileName);
+    return loadFile(fileName, true);
+  }
+	
+	protected Image loadFile(String fileName,boolean errorIfNotFound) {
+		return context.getImageFactory().loadMapImage(fileName,errorIfNotFound);
 	}
 
+	/**
+   * Returns an image that is associated with name. If name has never been supplied to this
+   * function before, it attempts to load an image with a file name of name. If no such file
+   * exists, there will be no further attempts to load the file when this function is called
+   * with the same value for name.
+   *
+   * @param name a name identifying the image to get. This name is also used as a file name
+   *      without extension to load the image from a file.
+   *
+   * @return the image associated with name or null, if there is no such image and it cannot be
+   *       loaded.
+   */
+  protected Image getImage(String name) {
+    return getImage(name, true);
+  }
+	
+	
 	/**
 	 * Returns an image that is associated with name. If name has never been supplied to this
 	 * function before, it attempts to load an image with a file name of name. If no such file
@@ -130,7 +152,7 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 	 * @return the image associated with name or null, if there is no such image and it cannot be
 	 * 		   loaded.
 	 */
-	protected Image getImage(String name) {
+	protected Image getImage(String name,boolean errorIfNotFound) {
 		Image img = null;
 
 		if(name != null) {
@@ -143,7 +165,7 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 					img = c.scaled;
 				}
 			} else {
-				img = loadFile(normName);
+				img = loadFile(normName,errorIfNotFound);
 
 				if(img != null) {
 					// add loaded image to map

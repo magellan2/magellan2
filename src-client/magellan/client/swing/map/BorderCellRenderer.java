@@ -46,6 +46,7 @@ import magellan.library.utils.logging.Logger;
 public class BorderCellRenderer extends ImageCellRenderer {
   private static final Logger log = Logger.getInstance(BorderCellRenderer.class);
   
+  private static int noRandomImages = -1;
   
   // for border specific region images
   int[] bitMaskArray = {1,2,4,8,16,32,64,128};
@@ -178,7 +179,14 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	      // hit
 	      borderAdded=true;
 	      String imageNameDefault = "ocean_coast_" + i;
-	      drawMyImage(imageNameDefault, r);
+	      int erg=0;
+	      if ((bitArray & bitMaskArray[7])>0){
+	        erg++;
+	      }
+	      if ((bitArray & bitMaskArray[6])>0){
+	        erg+=2;
+	      }
+	      drawMyImage(imageNameDefault, r,erg,false);
 	    }
 	  }
 	  if (!borderAdded){
@@ -192,9 +200,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	    if ((bitArray & bitMaskArray[6])>0){
         erg+=2;
       }
-	    String imageNameDefault = "ocean_nocoast_" + erg;
-	    drawMyImage(imageNameDefault, r);
-      
+	    String imageNameDefault = "ocean_nocoast";
+	    drawMyImage(imageNameDefault, r,erg,false);
 	  }
 	}
 	
@@ -203,7 +210,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
   
   
   
-	private void drawMyImage(String imageNameDefault, Region r){
+	private void drawMyImage(String imageNameDefault, Region r,int randomImageNumber, boolean errorIfNotFound){
 	  CoordinateID c = null;
     Point pos = null;
     Dimension size = null;
@@ -218,12 +225,24 @@ public class BorderCellRenderer extends ImageCellRenderer {
         case Date.WINTER: imageName+="_winter"; break;
       }
     }
-    img = getImage(imageName);
+    String seasonalImageName = imageName;
+    // first first we try to add a random number 0..3 to the seasonal
+    if (randomImageNumber!=BorderCellRenderer.noRandomImages){
+      imageName = seasonalImageName + "_" + randomImageNumber;
+      img = getImage(imageName,false);
+      if (img==null){
+        // if no randomized image is found we try just the 
+        // seasonal one...switching back somehow
+        imageName=seasonalImageName;
+      }
+    }
+    // seasonal allways without error msg
+    img = getImage(imageName,false);
     
     // if we cannot find it, try a default icon.
     if (img == null) {
       imageName = imageNameDefault; 
-      img = getImage(imageName);
+      img = getImage(imageName,errorIfNotFound);
     }
     if(img != null) {
       c = r.getCoordinate();

@@ -159,7 +159,8 @@ public class CellGeometry {
 	 * 
 	 */
 	public void setImageOffset(int x, int y) {
-		if((x < 0) || (y < 0)) {
+/*
+    if((x < 0) || (y < 0)) {
 			log.warn("CellGraphicsSet.setImageOffsets(): Invalid offset value");
 
 			return;
@@ -170,11 +171,19 @@ public class CellGeometry {
 
 			return;
 		}
-
+*/
 		imgOffset = new Point(x, y);
-		scaledImgOffset = new Point((int) (x * scaleFactor), (int) (y * scaleFactor));
+		scaledImgOffset = new Point((int)(x * scaleFactor), (int)(y * scaleFactor));
 	}
 
+  /**
+   * Only use for retrieving all Cell Geo data to consturct a related CellGeometry 
+   * @return
+   */
+  public Point getImageOffset() {
+    return imgOffset;
+  }
+  
 	/**
 	 * Sets the size of graphics files used together with this cell geometry.
 	 *
@@ -183,7 +192,7 @@ public class CellGeometry {
 	 */
 	public void setImageSize(int width, int height) {
 		imgSize = new Dimension(width, height);
-		scaledImgSize = new Dimension((int) (width * scaleFactor), (int) (height * scaleFactor));
+		scaledImgSize = new Dimension((int)Math.ceil(width * scaleFactor), (int)Math.ceil(height * scaleFactor));
 	}
 
 	/**
@@ -195,14 +204,14 @@ public class CellGeometry {
 		this.scaleFactor = scaleFactor;
 
 		scaledPoly = scalePolygon(scaleFactor);
-		scaledCellSize.width = (int) (unscaledCellSize.width * scaleFactor);
-		scaledCellSize.height = (int) (unscaledCellSize.height * scaleFactor);
+		scaledCellSize.width = (int)(unscaledCellSize.width * scaleFactor);
+		scaledCellSize.height = (int)(unscaledCellSize.height * scaleFactor);
 
-		scaledImgOffset.x = (int) (imgOffset.x * scaleFactor);
-		scaledImgOffset.y = (int) (imgOffset.y * scaleFactor);
+		scaledImgOffset.x = (int)(imgOffset.x * scaleFactor);
+		scaledImgOffset.y = (int)(imgOffset.y * scaleFactor);
 
-		scaledImgSize.width = (int) (imgSize.width * scaleFactor);
-		scaledImgSize.height = (int) (imgSize.height * scaleFactor);
+		scaledImgSize.width = (int)Math.ceil(imgSize.width * scaleFactor);
+		scaledImgSize.height = (int)Math.ceil(imgSize.height * scaleFactor);
 	}
 
 	/**
@@ -291,7 +300,7 @@ public class CellGeometry {
 	 *
 	 */
 	public int getCellPositionX(int mapX, int mapY) {
-		return (int) (getUnscaledCellPositionX(mapX, mapY) * scaleFactor);
+		return (int)(getUnscaledCellPositionX(mapX, mapY) * scaleFactor);
 	}
 
 	/**
@@ -299,7 +308,7 @@ public class CellGeometry {
 	 * mapY.
 	 */
 	public int getCellPositionY(int mapX, int mapY) {
-		return (int) (getUnscaledCellPositionY(mapX, mapY) * scaleFactor);
+		return (int)(getUnscaledCellPositionY(mapX, mapY) * scaleFactor);
 	}
 
 	/**
@@ -358,8 +367,8 @@ public class CellGeometry {
 		Polygon scaledPoly = new Polygon(cell.xpoints, cell.ypoints, cell.npoints);
 
 		for(int i = 0; i < scaledPoly.npoints; i++) {
-			scaledPoly.xpoints[i] = (int) (scaledPoly.xpoints[i] * scaleFactor);
-			scaledPoly.ypoints[i] = (int) (scaledPoly.ypoints[i] * scaleFactor);
+			scaledPoly.xpoints[i] = (int)(scaledPoly.xpoints[i] * scaleFactor);
+			scaledPoly.ypoints[i] = (int)(scaledPoly.ypoints[i] * scaleFactor);
 		}
 
 		return scaledPoly;

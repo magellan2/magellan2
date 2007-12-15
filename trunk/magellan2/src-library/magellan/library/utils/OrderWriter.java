@@ -165,8 +165,8 @@ public class OrderWriter {
 			writeln(stream, "; ECHECK " + echeckOptions);
 		}
 
-		if(!addECheckComments && VersionInfo.getVersion() != null) {
-			writeln(stream, "; VERSION Magellan " + VersionInfo.getVersion());
+		if(!addECheckComments && VersionInfo.getVersion(null) != null) {
+			writeln(stream, "; VERSION Magellan " + VersionInfo.getVersion(null));
 		}
 
 		// pavkovic 2003.09.11: use system locale and NOT faction locale!

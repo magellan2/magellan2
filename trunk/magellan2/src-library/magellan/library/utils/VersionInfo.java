@@ -14,6 +14,7 @@
 package magellan.library.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,13 +39,40 @@ public class VersionInfo {
   
   private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/magellan2/release/VERSION";
 
+  private static String Version = null;
+  private static boolean versionIsSet=false;
+  
+  
 	/**
 	 * Gets the Version of this Instance.
 	 */
-	public static String getVersion() {
+	public static String getVersion(File magellanDirectory) {
+	  if (versionIsSet){
+	    return Version;
+	  }
+	  if (magellanDirectory==null){
+	    return null;
+	  }
+	  versionIsSet=true;
 		try {
-			ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream("etc/VERSION"));
-			return bundle.getString("VERSION");
+		  File versionFile = new File(magellanDirectory,"etc/VERSION");
+		  if (!versionFile.exists()) {
+	      // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
+	      versionFile = new File(magellanDirectory.getParentFile(),"etc/VERSION");
+	      if (!versionFile.exists()) {
+	        // last try, eclipse special...try just Mag2 Dir
+	        versionFile = new File(magellanDirectory.getParentFile(),"VERSION");
+	        if (!versionFile.exists()) {
+  	        // okay, I'll give up...
+  	        return null;
+	        }
+	      }
+	    }
+		  
+			// ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream("etc/VERSION"));
+			ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream(versionFile));
+			Version = bundle.getString("VERSION");
+			return Version;
 		} catch(IOException e) {
 		} catch(MissingResourceException e) {
 		}

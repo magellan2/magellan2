@@ -277,7 +277,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public Client(GameData gd, File fileDir, File settingsDir) {
     filesDirectory = fileDir;
     settingsDirectory = settingsDir;
-
+    
     // get new dispatcher
     EventDispatcher dispatcher = new EventDispatcher();
 
@@ -997,11 +997,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       
       settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
       Resources.getInstance().initialize(fileDir, "");
+      MagellanLookAndFeel.setMagellanDirectory(fileDir);
+      MagellanImages.setMagellanDirectory(fileDir);
+      
       
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
 
-      startWindow = new StartWindow(startIcon, 5);
+      startWindow = new StartWindow(startIcon, 5,fileDir);
 
       startWindow.setVisible(true);
 
@@ -1019,7 +1022,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       log.warn("Start writing error file with encoding " + LOG.encoding + ", log level " + Logger.getLevel(Logger.getLevel()));
 
-      String version = VersionInfo.getVersion();
+      String version = VersionInfo.getVersion(fileDir);
       if (version == null) {
         log.warn("no magellan version available");
       } else {
@@ -1064,7 +1067,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       
       String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
       if (!Utils.isEmpty(newestVersion)) {
-        String currentVersion = VersionInfo.getVersion();
+        String currentVersion = VersionInfo.getVersion(fileDir);
         log.info("Newest Version on server: "+newestVersion);
         log.info("Current Version: "+currentVersion);
         if (VersionInfo.isNewer(currentVersion, newestVersion)) {
@@ -1478,7 +1481,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // set frame title (date)
     String title = "Magellan";
 
-    String version = VersionInfo.getVersion();
+    String version = VersionInfo.getVersion(filesDirectory);
 
     if (version != null) {
       title += (" " + version);

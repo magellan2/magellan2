@@ -14,6 +14,7 @@
 package magellan.client.swing;
 
 import java.awt.Color;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -50,6 +51,9 @@ import magellan.library.utils.logging.Logger;
 public class MagellanLookAndFeel {
 	private static final Logger log = Logger.getInstance(MagellanLookAndFeel.class);
 
+	private static File magellanDirectory=null;
+	
+	
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -146,7 +150,20 @@ public class MagellanLookAndFeel {
 
 			//Map defaultMap   = CollectionFactory.createTreeMap();
 			try {
-				FileInputStream ir = new FileInputStream("etc/plaf.ini");
+			  
+			  // Trying to find plaf.ini
+			  File plafFile = new File("etc/plaf.ini");
+			  if (!plafFile.exists()){
+			    // use magDir
+			    plafFile = new File(magellanDirectory,"etc/plaf.ini");
+			    if (!plafFile.exists()){
+			      // OK give up here
+			      log.error("MagellanLookAndfeel.getLookAndFeels(): Unable to read property file plaf.ini");
+			      return null;
+			    }
+			  }
+			  
+				FileInputStream ir = new FileInputStream(plafFile);
 
 				if(ir != null) {
 					Properties plaf_ini = new Properties();
@@ -541,4 +558,13 @@ public class MagellanLookAndFeel {
 		}
 		*/
 	}
+
+  /**
+   * Sets the value of magellanDirectory.
+   *
+   * @param magellanDirectory The value for magellanDirectory.
+   */
+  public static void setMagellanDirectory(File magellanDirectory) {
+    MagellanLookAndFeel.magellanDirectory = magellanDirectory;
+  }
 }

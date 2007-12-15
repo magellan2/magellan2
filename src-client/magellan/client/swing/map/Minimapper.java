@@ -57,9 +57,11 @@ public class Minimapper extends Mapper {
    * @see magellan.client.swing.map.Mapper#setRenderer(magellan.client.swing.map.MapCellRenderer)
    */
   public void setRenderer(MapCellRenderer renderer) {
-    log.info("Minimapper.setRenderer()"+renderer);
-    super.setRenderer(renderer);
-    settings.setProperty("Minimap.Renderer",renderer.getClass().getName());
+    if (renderer.getPlaneIndex()==Mapper.PLANE_REGION) {
+      log.info("Minimapper.setRenderer()"+renderer);
+      super.setRenderer(renderer);
+      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
+    }
   }
 
 	/**
@@ -75,9 +77,9 @@ public class Minimapper extends Mapper {
    * @see magellan.client.swing.map.Mapper#initRenderingPlanes()
    */
 	protected RenderingPlane[] initRenderingPlanes() {
-		RenderingPlane p[] = new RenderingPlane[1];
-		p[0] = new RenderingPlane(0, Resources.get("map.mapper.plane.region.name"), 1);
-		p[0].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
+		RenderingPlane p[] = new RenderingPlane[3];
+		p[Mapper.PLANE_REGION] = new RenderingPlane(0, Resources.get("map.mapper.plane.region.name"), 1);
+		p[Mapper.PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
 																			 context,
 																			 "Minimap.FactionColors",
 																			 "Minimap.RegionColors",

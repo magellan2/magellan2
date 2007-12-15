@@ -315,7 +315,7 @@ public class ReportMerger extends Object {
 		
 		/**
      *      Astral:         A...B
-     *                              |   |
+     *                      |   |
      *      Real:           A---B
      *
      *  To merge two non-overlapping Astral Spaces we need:
@@ -331,7 +331,6 @@ public class ReportMerger extends Object {
      *  ==> Having only one astral region with schemes will often not be enough
      *      to calculate the mapping between astral and real space
      *
-     *  Variant 2 not jet implemented!
      **/
 
     CoordinateID reportAstralToReal = null;

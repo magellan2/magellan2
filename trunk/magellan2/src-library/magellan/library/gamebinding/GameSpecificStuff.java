@@ -110,4 +110,10 @@ public interface GameSpecificStuff {
    * @return the MessageRenderer for rendering ONE Message
    */
   public MessageRenderer getMessageRenderer(GameData data);
+  
+  /**
+   * 
+   * @return
+   */
+  public MapMergeEvaluator getMapMergeEvaluator();
 }

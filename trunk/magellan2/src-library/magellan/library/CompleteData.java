@@ -18,10 +18,12 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import magellan.library.gamebinding.EresseaMapMergeEvaluator;
+import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Translations;
-
+import magellan.library.gamebinding.EresseaSpecificStuff;
 
 /**
  * An implementation of the <tt>GameData</tt> supporting all of the attributes defined there. No
@@ -45,6 +47,7 @@ public class CompleteData extends GameData {
 	protected Locale locale = null;
 	protected Map<CoordinateID,Region> selectedRegions = new TreeMap<CoordinateID, Region>();
   protected CoordinateID astralMapping = null;
+  private boolean astralMappingImpossible = false;
 
 	/**
 	 * DOCUMENT-ME
@@ -230,6 +233,15 @@ public class CompleteData extends GameData {
    * of the astral space region with CoordinateID <0,0,1>.
    */
   public CoordinateID getAstralMapping() {
+    if (!(this.getGameSpecificStuff() instanceof EresseaSpecificStuff)) 
+      return null;
+    if (this.astralMappingImpossible) 
+      return null;
+    if (this.astralMapping == null) {
+      EresseaMapMergeEvaluator mme = (EresseaMapMergeEvaluator) this.getGameSpecificStuff().getMapMergeEvaluator();
+      this.astralMapping = mme.getAstral2RealMapping(this);
+      this.astralMappingImpossible = this.astralMapping == null;
+    }
     return this.astralMapping;
   }
 }

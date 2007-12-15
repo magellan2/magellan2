@@ -126,4 +126,12 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   public MessageRenderer getMessageRenderer(GameData data) {
     return new EresseaMessageRenderer(data);
   }
+  
+  /**
+   * 
+   * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
+   */
+  public MapMergeEvaluator getMapMergeEvaluator() {
+    return EresseaMapMergeEvaluator.getSingleton();
+  }
 }

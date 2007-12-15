@@ -105,6 +105,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
    */
   public String renderMessage(Message msg) {
     String pat = msg.getMessageType().getPattern();
+    if (pat == null) return null;
     try {
       String rendered = renderString(new StringBuffer(pat), msg.getAttributes());
       if ((rendered == null) || (rendered.equals(""))) {
@@ -116,13 +117,21 @@ public class EresseaMessageRenderer implements MessageRenderer {
     } catch (ParseException e) {
       if (!loggedTypes.containsKey(msg.getMessageType())) {
         loggedTypes.put(msg.getMessageType(), msg.getMessageType());
-        log.warn("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);
+        if (msg.getAttributes() == null) {
+          log.warn("Message Rendering Error: "+pat+" null "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);          
+        } else {
+          log.warn("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);
+        }
       }
       return null;
     } catch (Exception e) {
       if (!loggedTypes.containsKey(msg.getMessageType())) {
         loggedTypes.put(msg.getMessageType(), msg.getMessageType());
-        log.error("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage(), e);
+        if (msg.getAttributes() == null) {
+          log.warn("Message Rendering Error: "+pat+" null "+e.getMessage(), e);          
+        } else {
+          log.error("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage(), e);
+        }
       }
       return null; 
     }
@@ -474,7 +483,8 @@ public class EresseaMessageRenderer implements MessageRenderer {
     // $skill(<string>)
     // $spell(<string>)
     // $race(<string>)
-    } else if (name.equals("localize(")||name.equals("skill(")||name.equals("spell(")||name.equals("race(")) {
+    // $terrain(<string>)      
+    } else if (name.equals("localize(")||name.equals("skill(")||name.equals("spell(")||name.equals("race(")||name.equals("terrain(")) {
       String str = renderString(unparsed, attributes);
       value = gd.getTranslation(str);
     // $weight(<int>)
@@ -502,7 +512,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       }
     } else {
       value = "unknown:"+name+renderString(unparsed, attributes)+")";
-      throw new ParseException("unknown token: "+name, unparsed.length());
+//      throw new ParseException("unknown token: "+name, unparsed.length());
     }
 
     // delete closing bracket before returning the value

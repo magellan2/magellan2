@@ -1331,11 +1331,11 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[PLANES];
-    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
+    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"));
 //    p[PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BACKGROUND], RegionImageCellRenderer.class.getName())));
 
-    p[PLANE_BEHIND] = new RenderingPlane(PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"), RenderingPlane.ACTIVE_OBJECT);
-//    p[PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BEHIND], RegionImageCellRenderer.class.getName())));
+    p[PLANE_BEHIND] = new RenderingPlane(PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"));
+    p[PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BEHIND], EresseaSchemesCellRenderer.class.getName())));
 
     p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"));
     p[PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_REGION], RegionImageCellRenderer.class.getName())));
@@ -1387,6 +1387,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     renderers.add(new MarkingsImageCellRenderer(geo, context));
     renderers.add(new SchemeCellRenderer(geo, context));
     renderers.add(new SignTextCellRenderer(geo, context));
+    renderers.add(new EresseaSchemesCellRenderer(geo, context));
 
     if (cRenderers != null) {
       for (Iterator<MapCellRenderer> iter = cRenderers.iterator(); iter.hasNext();) {

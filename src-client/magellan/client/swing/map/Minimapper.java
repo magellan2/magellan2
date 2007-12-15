@@ -68,9 +68,16 @@ public class Minimapper extends Mapper {
 	 * 
 	 */
 	public void setRenderer(MapCellRenderer renderer, int plane) {
-		String old = settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane]);
-		super.setRenderer(renderer, plane);
-		settings.setProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane], old);
+    if (plane==Mapper.PLANE_REGION) {
+      log.info("Minimapper.setRenderer()"+renderer);
+      super.setRenderer(renderer, plane);
+      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
+      /*
+      String old = settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane]);
+      super.setRenderer(renderer, plane);
+      settings.setProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane], old);
+      */
+    }
 	}
 
   /**
@@ -78,13 +85,17 @@ public class Minimapper extends Mapper {
    */
 	protected RenderingPlane[] initRenderingPlanes() {
 		RenderingPlane p[] = new RenderingPlane[3];
-		p[Mapper.PLANE_REGION] = new RenderingPlane(0, Resources.get("map.mapper.plane.region.name"), 1);
+		p[Mapper.PLANE_REGION] = new RenderingPlane(Mapper.PLANE_REGION, Resources.get("map.mapper.plane.region.name"), RenderingPlane.VISIBLE_REGIONS);
 		p[Mapper.PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
 																			 context,
 																			 "Minimap.FactionColors",
 																			 "Minimap.RegionColors",
 																			 "Minimap.PoliticsMode"));
-
+    /*
+    for (int i=0; i<p.length; i++) {
+      if (p[i] == null) p[i]=new RenderingPlane(i, "not used", RenderingPlane.ACTIVE_OBJECT);
+    }
+    */
 		return p;
 	}
 

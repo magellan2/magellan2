@@ -388,14 +388,11 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		renderer.removeAll();
 
 		// add renderers that are context changeable
-		Collection pl = source.getPlanes();
-		Iterator it = pl.iterator();
 		boolean added = false;
 
-		while(it.hasNext()) {
-			RenderingPlane rp = (RenderingPlane) it.next();
+		for (RenderingPlane rp : source.getPlanes()) {
+      if (rp == null) continue; 
 			MapCellRenderer r = rp.getRenderer();
-
 			if((r != null) && (r instanceof ContextChangeable)) {
 				JMenuItem mi = ((ContextChangeable) r).getContextAdapter();
 
@@ -417,12 +414,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			renderer.addSeparator();
 		}
 
-		pl = source.getPlanes();
-		it = pl.iterator();
-
-		while(it.hasNext()) {
-			RenderingPlane rp = (RenderingPlane) it.next();
-			JMenu help = new JMenu(rp.getName());
+    for (RenderingPlane rp : source.getPlanes()) {
+      if (rp == null) continue; 
+      JMenu help = new JMenu(rp.getName());
 			Collection rs = source.getRenderers(rp.getIndex());
 			boolean addedi = false;
 

@@ -355,12 +355,15 @@ public class ReportMerger extends Object {
                                      * From this we can calculate an astral to real mapping for the gamedata by variant 1
                                      */
                                     // in case of errors in the current Astral Regions (merged schemes) we will get a wrong mapping here. Therefore a scheme consistency check should be done in advance. (several possibilities)
-                                    CoordinateID firstCoord = ((Region) col.iterator().next()).getCoordinate();
-                                    CoordinateID secondCoord = region.getCoordinate();
-                                    CoordinateID schemeCoord = scheme.getCoordinate();
-                                    dataAstralToReal = new CoordinateID(
-                                            schemeCoord.x - 2 * (firstCoord.x + secondCoord.x),
-                                            schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
+                                    // Fiete 20071215: avoid NPE: #0128
+                                    if (col.iterator().hasNext()){
+                                      CoordinateID firstCoord = ((Region) col.iterator().next()).getCoordinate();
+                                      CoordinateID secondCoord = region.getCoordinate();
+                                      CoordinateID schemeCoord = scheme.getCoordinate();
+                                      dataAstralToReal = new CoordinateID(
+                                              schemeCoord.x - 2 * (firstCoord.x + secondCoord.x),
+                                              schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
+                                    }
                             }
                             // we may not find any astral to real mapping by variant 1 above
                             // therefore also do calculations for variant 2 here

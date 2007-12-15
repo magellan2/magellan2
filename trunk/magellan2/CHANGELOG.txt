@@ -1,5 +1,7 @@
 2007-12-15 Darcduck (sf.net@duckstein.net)
-	* added function $terrain() for EresseaMessageRenderer
+	* fixed bug #124: added function $terrain() for EresseaMessageRenderer
+	* hopefully fixed bug #123: added some checks to overcome NPE
+	* Some changes in Minimapper to overcome NPE reported by eMail
 
 2007-12-15 Fiete (sf@fietefietz.de)
 	* all image loads, loading of plaf.ini and Cellgeometry using now magellan dir

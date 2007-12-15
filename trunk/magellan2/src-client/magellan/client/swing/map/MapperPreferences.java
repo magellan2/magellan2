@@ -134,8 +134,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		planes = new JTabbedPane();
 		rendererPanel.add(planes, BorderLayout.CENTER);
 
-		for(Iterator iter = source.getPlanes().listIterator(); iter.hasNext();) {
-			RenderingPlane plane = (RenderingPlane) iter.next();
+		for(RenderingPlane plane : source.getPlanes()) {
+      if (plane == null) continue;
 			JPanel aRendererPanel = new JPanel(new GridBagLayout());
 			gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
 										 GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);

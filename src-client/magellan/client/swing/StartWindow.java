@@ -23,6 +23,7 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -61,6 +62,8 @@ public class StartWindow extends JWindow {
 	protected JTextPane text;
 	protected JTextPane versionText;
 	protected static final JFrame parent = new JFrame();
+	
+	private File magellanDir = null;
 
 	/**
 	 * Creates new StartWindow
@@ -68,8 +71,9 @@ public class StartWindow extends JWindow {
 	 * 
 	 * 
 	 */
-	public StartWindow(Icon icon, int steps) {
+	public StartWindow(Icon icon, int steps, File magellanDirectory) {
 		super(parent);
+		this.magellanDir = magellanDirectory;
 		init(icon, steps);
 	}
 
@@ -79,8 +83,9 @@ public class StartWindow extends JWindow {
 	 * 
 	 * 
 	 */
-	public StartWindow(Collection<Icon> icons, int steps) {
+	public StartWindow(Collection<Icon> icons, int steps,File magellanDirectory) {
 		super(parent);
+		this.magellanDir = magellanDirectory;
 		init(icons, steps);
 	}
 
@@ -167,7 +172,7 @@ public class StartWindow extends JWindow {
 		cont.add(text);
 		
 		// Fiete 20060911: trying to add Version info to start screen (bottom)
-		String version = VersionInfo.getVersion();
+		String version = VersionInfo.getVersion(this.magellanDir);
 		
 		if (version == null) {
 			version = "version not available";

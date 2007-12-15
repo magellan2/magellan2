@@ -100,7 +100,7 @@ public class InfoDlg extends InternationalizedDialog {
   }
 
   private String getVersionString() {
-    String versionInfo = VersionInfo.getVersion();
+    String versionInfo = VersionInfo.getVersion(null);
     if (versionInfo == null) {
       versionInfo = "not available";
     }

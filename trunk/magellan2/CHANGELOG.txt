@@ -1,3 +1,6 @@
+2007-12-15 Darcduck (sf.net@duckstein.net)
+	* added function $terrain() for EresseaMessageRenderer
+
 2007-12-15 Fiete (sf@fietefietz.de)
 	* all image loads, loading of plaf.ini and Cellgeometry using now magellan dir
 	* work on #127: unitcontextmenu for pupils, NPE fixed 

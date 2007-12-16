@@ -453,14 +453,19 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       if (renderer != null) {
         className = renderer.getClass().getName();
       }
-
-      settings.setProperty("Mapper.Planes." + PLANE_STRINGS[plane], className);
+      log.info("Mapper.setRenderer("+className+")");
+      log.info("Mapper.getPropertyName("+plane+")="+getPropertyName(plane));      
+      settings.setProperty(getPropertyName(plane), className);
       conMenu.updateRenderers(this);
     } else {
       log.warn("Mapper.setRenderer(): invalid argument: plane out of bounds");
     }
   }
 
+  protected String getPropertyName(int plane) {
+    return "Mapper.Planes." + PLANE_STRINGS[plane];
+  }
+  
   /**
    * Get the cell renderer objects that are available for a certain rendering
    * plane. It is suggested that these objects are used for calling one of the

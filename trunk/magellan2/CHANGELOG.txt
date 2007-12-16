@@ -1,4 +1,7 @@
 2007-12-15 Darcduck (sf.net@duckstein.net)
+	* Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
+
+2007-12-15 Darcduck (sf.net@duckstein.net)
 	* fixed bug #124: added function $terrain() for EresseaMessageRenderer
 	* hopefully fixed bug #123: added some checks to overcome NPE
 	* fixed bug #71 (also reported by email): Several changes in Minimapper, MapperPreferences to overcome NPE

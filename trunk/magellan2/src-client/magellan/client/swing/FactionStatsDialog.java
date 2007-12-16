@@ -72,21 +72,13 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	private JSplitPane splFaction = null;
 	private JTabbedPane tabPane = null;
 
-	//private EresseaOptionPanel optionPanel = null;
 	private static FactionTrustComparator<Named> factionTrustComparator = FactionTrustComparator.DEFAULT_COMPARATOR;
 	private static NameComparator<Unique> nameComparator = new NameComparator<Unique>(IDComparator.DEFAULT);
 
 	/**
 	 * Create a new FactionStatsDialog object as a dialog with a parent window.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
-	public FactionStatsDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
-							  Properties p) {
+	public FactionStatsDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData, Properties p) {
 		super(owner, modal, ed, initData, p);
 		pnlStats = new FactionStatsPanel(dispatcher, data, p);
 		init();
@@ -95,13 +87,6 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	/**
 	 * Create a new FactionStatsDialog object as a dialog with a parent window and with the given
 	 * faction selected.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	public FactionStatsDialog(Frame owner, boolean modal, EventDispatcher ed, GameData initData,
 							  Properties p, Faction f) {
@@ -109,6 +94,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		lstFaction.setSelectedValue(f, true);
 	}
 
+  /**
+   *
+   */
 	private void init() {
 		setContentPane(getMainPane());
 		setTitle(Resources.get("factionstatsdialog.window.title"));
@@ -118,15 +106,12 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		setSize(width, height);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		int x = Integer.parseInt(settings.getProperty("FactionStatsDialog.x",
-													  ((screen.width - getWidth()) / 2) + ""));
-		int y = Integer.parseInt(settings.getProperty("FactionStatsDialog.y",
-													  ((screen.height - getHeight()) / 2) + ""));
+		int x = Integer.parseInt(settings.getProperty("FactionStatsDialog.x", ((screen.width - getWidth()) / 2) + ""));
+		int y = Integer.parseInt(settings.getProperty("FactionStatsDialog.y", ((screen.height - getHeight()) / 2) + ""));
 		setLocation(x, y);
 		splFaction.setDividerLocation(Integer.parseInt(settings.getProperty("FactionStatsDialog.split","340")));
 
-		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID",
-																   "-1"), 10);
+		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10);
 		Faction selFac = data.getFaction(selFacID);
 
 		if(selFac != null) {
@@ -136,6 +121,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		}
 	}
 
+  /**
+   * 
+   */
 	private Container getMainPane() {
 		JPanel mainPanel = new JPanel(new BorderLayout(0, 5));
 		mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
@@ -159,6 +147,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		return mainPanel;
 	}
 
+  /**
+   * 
+   */
 	private Container getButtonPanel() {
 		JButton btnClose = new JButton(Resources.get("factionstatsdialog.btn.close.caption"));
 		btnClose.setMnemonic(Resources.get("factionstatsdialog.btn.close.menmonic").charAt(0));
@@ -174,11 +165,13 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		return buttonPanel;
 	}
 
+  /**
+   * 
+   */
 	private Container getFactionPanel() {
 		factions = new LinkedList<Faction>(data.factions().values());
 
-		String sortByTrustLevel = settings.getProperty("FactionStatsDialog.SortByTrustLevel",
-				"true");
+		String sortByTrustLevel = settings.getProperty("FactionStatsDialog.SortByTrustLevel", "true");
 
 		// sort factions
 		if(sortByTrustLevel.equals("true")) {
@@ -192,33 +185,6 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		final FactionStatsDialog d = this;
 		lstFaction = new JList(factions.toArray());
 		
-		// (stm): The L&F should do this automatically, see j2sdk-1.4.2-doc/api/javax/swing/doc-files/Key-Index.html#JList
-//		// to jump to first faction which name starts with the typed key
-//		lstFaction.addKeyListener(new KeyAdapter() {
-//				public void keyPressed(KeyEvent e) {
-//					Faction dummy = new Faction(IntegerID.create(-2), null);
-//					char c = e.getKeyChar();
-//
-//					if(!Character.isLetter(c)) {
-//						return;
-//					}
-//
-//					dummy.setName(String.valueOf(c));
-//
-//					int index = Collections.binarySearch(factions, dummy, nameComparator);
-//
-//					if(index < 0) {
-//						index = -index - 1;
-//					}
-//
-//					if(index == lstFaction.getModel().getSize()) {
-//						index--;
-//					}
-//
-//					Object o = lstFaction.getModel().getElementAt(index);
-//					lstFaction.setSelectedValue(o, true);
-//				}
-//			});
 		lstFaction.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		lstFaction.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
@@ -231,8 +197,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					JList list = (JList) e.getSource();
 
 					if((list.getModel().getSize() > 0) && !list.isSelectionEmpty()) {
-						se = new SelectionEvent(d, Arrays.asList(list.getSelectedValues()),
-												list.getSelectedValue());
+						se = new SelectionEvent(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
 					} else {
 						se = new SelectionEvent(d, new LinkedList(), null);
 					}
@@ -282,13 +247,12 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 						sortByTrust="false";
 						sort.setText(Resources.get("factionstatsdialog.btn.sort.trustlevel.caption"));
 						Collections.sort(factions, nameComparator);
-					}else{
+					} else {
 						sortByTrust="true";
 						sort.setText(Resources.get("factionstatsdialog.btn.sort.detailed.caption"));
 						Collections.sort(factions, factionTrustComparator);
 					}
-					settings.setProperty("FactionStatsDialog.SortByTrustLevel",
-										 String.valueOf(sortByTrust));
+					settings.setProperty("FactionStatsDialog.SortByTrustLevel", String.valueOf(sortByTrust));
 
 					Object o = lstFaction.getSelectedValue();
 					lstFaction.setListData(factions.toArray());
@@ -309,23 +273,23 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 						Faction f = iter.next();
 						boolean veto = false;
 
+            // we don't delete factions with units. This units are visible and it would
+            // be fatal to delete their faction "container".
 						if(f.units().size() > 0) {
 							Object msgArgs[] = { f };
-							JOptionPane.showMessageDialog(d,
-														  (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factioncontainsunits.text"))).format(msgArgs));
+							JOptionPane.showMessageDialog(d,(new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factioncontainsunits.text"))).format(msgArgs));
 							veto = true;
 						}
 
 						if(!veto) {
-							for(Iterator allFactions = data.factions().values().iterator();
-									allFactions.hasNext();) {
-								Faction dummy = (Faction) allFactions.next();
-
-								if((dummy.units().size() > 0) && (dummy.getAllies() != null) &&
-									   dummy.getAllies().containsKey(f.getID())) {
+							for(Iterator<Faction> allFactions = data.factions().values().iterator(); allFactions.hasNext();) {
+								Faction dummy = allFactions.next();
+                
+                // let's check, if one faction outside the selection has an alliance with this
+                // faction. If so, we should NOT delete the faction.
+								if((dummy.units().size() > 0) && !victims.contains(dummy) && (dummy.getAllies() != null) && dummy.getAllies().containsKey(f.getID())) {
 									Object msgArgs[] = { f, dummy.getAllies().get(f.getID()) };
-									JOptionPane.showMessageDialog(d,
-																  (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
+									JOptionPane.showMessageDialog(d, (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.factionisallied.text"))).format(msgArgs));
 									veto = true;
 
 									break;

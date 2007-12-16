@@ -1,61 +1,65 @@
+2007-12-16 Thoralf (thoralf@m84.de)
+    * Small fix for faction deletion, if a faction is in an alliance with one of the deleted faction.
+      Fix is that we check that this faction is also deleted.
+    
 2007-12-15 Darcduck (sf.net@duckstein.net)
-	* Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
+    * Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
 
 2007-12-15 Darcduck (sf.net@duckstein.net)
-	* fixed bug #124: added function $terrain() for EresseaMessageRenderer
-	* hopefully fixed bug #123: added some checks to overcome NPE
-	* fixed bug #71 (also reported by email): Several changes in Minimapper, MapperPreferences to overcome NPE
+    * fixed bug #124: added function $terrain() for EresseaMessageRenderer
+    * hopefully fixed bug #123: added some checks to overcome NPE
+    * fixed bug #71 (also reported by email): Several changes in Minimapper, MapperPreferences to overcome NPE
 
 2007-12-15 Fiete (sf@fietefietz.de)
-	* all image loads, loading of plaf.ini and Cellgeometry using now magellan dir
-	* work on #127: unitcontextmenu for pupils, NPE fixed 
-	* avoid NPE: #0128 in ReportMerger
+    * all image loads, loading of plaf.ini and Cellgeometry using now magellan dir
+    * work on #127: unitcontextmenu for pupils, NPE fixed 
+    * avoid NPE: #0128 in ReportMerger
 
 2007-12-14 Thoralf (thoralf@m84.de)
-	* Resources use now the magellan directory.
+    * Resources use now the magellan directory.
 
 2007-12-14 Fiete (sf@fietefietz.de)
-	* from Khadar: new map-icons for irrlichter and feuerwand
-	* disabled warning image not found for seasonal and random images
-	* changed naming of ocean_nocoast_X images
+    * from Khadar: new map-icons for irrlichter and feuerwand
+    * disabled warning image not found for seasonal and random images
+    * changed naming of ocean_nocoast_X images
 
 2007-12-13 Fiete (sf@fietefietz.de)
-	* added copy shiplist to unitcontainermenu
+    * added copy shiplist to unitcontainermenu
 
 2007-12-13  stm (stm_@users.sourceforge.net)
     * improved debugging output
 
 2007-12-13 Fiete (sf@fietefietz.de)
-	* added map-icons for irrlichter and feuerwand
-	* BorderCellRenderer upgraded to support new images
-	* made seasonal images optional, renamed border renderer
-	* fixed bug writing wrong ;charset tag in CRWriter. Now encodingString from GameData is used for sure.
-	* Options -> Icons -> Detail Entries -> Skills->added help text (bug #70)
-	* feature request 95: copy unit name, unit id and person count
+    * added map-icons for irrlichter and feuerwand
+    * BorderCellRenderer upgraded to support new images
+    * made seasonal images optional, renamed border renderer
+    * fixed bug writing wrong ;charset tag in CRWriter. Now encodingString from GameData is used for sure.
+    * Options -> Icons -> Detail Entries -> Skills->added help text (bug #70)
+    * feature request 95: copy unit name, unit id and person count
 
 2007-12-13 Darcduck (sf.net@duckstein.net)
-	* prepared Mapper to handle additional rendering panes
-	* Property names changes from Mapper.Panes.<Pane index> to Mapper.Panes.<Pane name>
+    * prepared Mapper to handle additional rendering panes
+    * Property names changes from Mapper.Panes.<Pane index> to Mapper.Panes.<Pane name>
 
 2007-12-12 Fiete (sf@fietefietz.de)
-	* added more gifs and support for random ocean tiles
+    * added more gifs and support for random ocean tiles
 
 2007-12-11 Fiete (sf@fietefietz.de)
-	* added 4 GIFs: arbeiten, combatspell, stealth, tarnung (khadar)
-	* added nebel-X.gif
-	
+    * added 4 GIFs: arbeiten, combatspell, stealth, tarnung (khadar)
+    * added nebel-X.gif
+    
 2007-12-11 Darcduck (sf.net@duckstein.net)
-	* fixed merging of unit weight
-	
+    * fixed merging of unit weight
+    
 2007-12-11  stm (stm_@users.sourceforge.net)
     * fixed DURCHREISE messages not displaying
     
 2007-12-10 Darcduck (sf.net@duckstein.net)
-	* Message rendering: added trail() function
-	* Message rendering: changed exception behavior
+    * Message rendering: added trail() function
+    * Message rendering: changed exception behavior
 
 2007-12-10 Fiete (sf@fietefietz.de)
-	* again reworked merging of borders
+    * again reworked merging of borders
 
 2007-12-09  stm (stm_@users.sourceforge.net)
     * fixed language dialog
@@ -67,16 +71,16 @@
     * fixed bug where Writer was not closed on save on quit 
 
 2007-12-09 Fiete (sf@fietefietz.de)
-	* empty message-lines in Message : "" -> " "
+    * empty message-lines in Message : "" -> " "
 
 2007-12-06 Darcduck (sf.net@duckstein.net)
-	* Fixed bug #97: Wrong duplicate message elemination 
+    * Fixed bug #97: Wrong duplicate message elemination 
 
 2007-12-06 Thoralf (thoralf@m84.de)
     * Groups in Tree now with number of persons.
 
 2007-12-03 Darcduck (sf.net@duckstein.net)
-	* Fixed some issues with message rendering reported by solthar
+    * Fixed some issues with message rendering reported by solthar
 
 2007-12-02  stm (stm_@users.sourceforge.net)
     * OrderEditor now always gets focus after click
@@ -87,8 +91,8 @@
     * ReportMerger: fixed NoSuchElementException in astral space mapping
     
 2007-12-01 Darcduck (sf.net@duckstein.net)
-	* Message rendering implemented if rendered tag not available or locale changed
-	* Translation merge changed so that also the objects in gamedata.rules are updated
+    * Message rendering implemented if rendered tag not available or locale changed
+    * Translation merge changed so that also the objects in gamedata.rules are updated
 
 2007-12-01 Thoralf (thoralf@m84.de)
     * If creating a new docking layout it is active by default.

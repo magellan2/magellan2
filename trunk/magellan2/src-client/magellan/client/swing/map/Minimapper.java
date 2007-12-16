@@ -58,9 +58,9 @@ public class Minimapper extends Mapper {
    */
   public void setRenderer(MapCellRenderer renderer) {
     if (renderer.getPlaneIndex()==Mapper.PLANE_REGION) {
-      log.info("Minimapper.setRenderer()"+renderer);
+      log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer);
-      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
+//      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
     }
   }
 
@@ -69,9 +69,9 @@ public class Minimapper extends Mapper {
 	 */
 	public void setRenderer(MapCellRenderer renderer, int plane) {
     if (plane==Mapper.PLANE_REGION) {
-      log.info("Minimapper.setRenderer()"+renderer);
+      log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer, plane);
-      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
+//      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
       /*
       String old = settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane]);
       super.setRenderer(renderer, plane);
@@ -79,6 +79,10 @@ public class Minimapper extends Mapper {
       */
     }
 	}
+  
+  protected String getPropertyName(int plane) {
+    return "Minimap.Renderer";
+  }
 
   /**
    * @see magellan.client.swing.map.Mapper#initRenderingPlanes()

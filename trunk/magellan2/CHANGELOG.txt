@@ -4,6 +4,7 @@
     
 2007-12-15 Darcduck (sf.net@duckstein.net)
     * Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
+	* fixed bug #64: Property of Minimapper doesn't overwrite Mapper.Region anymore
 
 2007-12-15 Darcduck (sf.net@duckstein.net)
     * fixed bug #124: added function $terrain() for EresseaMessageRenderer

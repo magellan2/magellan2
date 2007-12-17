@@ -34,6 +34,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -48,9 +49,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
+import magellan.library.Alliance;
+import magellan.library.Battle;
 import magellan.library.Building;
+import magellan.library.CoordinateID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Group;
+import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Potion;
@@ -60,6 +66,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.utils.PropertiesHelper;
@@ -460,23 +467,24 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.setIncludeSpellsAndPotions(chkSpellsAndPotions.isSelected());
 
 			GameData newData = data;
+			
+			// if delemptyfactions is selected we need to have the newData cloned too
+			if (chkDelEmptyFactions.isSelected() || chkDelStats.isSelected() || chkSelRegionsOnly.isSelected()){
+			  // make the clone here already.
+			  try {
+          newData = (GameData) data.clone();
+        } catch(CloneNotSupportedException e) {
+          log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
+          newData = GameData.merge(data, data);
+        }
+			}
+			
 
 			if(chkDelStats.isSelected()) {
-				try {
-					newData = (GameData) data.clone();
-				} catch(CloneNotSupportedException e) {
-					log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
-					newData = GameData.merge(data, data);
-				}
-
 				// delete points, person counts, spell school, alliances, messages
 				// of privileged factions
 			  //
 				if(newData.factions() != null) {
-				  
-				  // ArrayList of Factions to be removed
-				  ArrayList<Faction>factionRemoveList=null;
-				  
 					Iterator<Faction> it1 = newData.factions().values().iterator();
 					boolean excludeBRegions = (crw.getIncludeMessages() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0));
 
@@ -496,17 +504,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 									Unit unit = it3.next();
 									found = f.equals(unit.getFaction());
 								}
-							}
-
-							if(!found && this.chkDelEmptyFactions.isSelected()) {
-							  // "remove" removed 
-                // it1.remove(); // ???? TR: why removing it from the iterator...
-							  if (factionRemoveList==null){
-							    factionRemoveList = new ArrayList<Faction>();
-							  }
-							  if (!factionRemoveList.contains(f)){
-							    factionRemoveList.add(f);
-							  }
 							}
 						}
 
@@ -569,16 +566,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							}
 						}
 					}
-					
-					// check if factions should be removed
-					if (factionRemoveList!=null && factionRemoveList.size()>0){
-					    for (Iterator iter = factionRemoveList.iterator();iter.hasNext();){
-					      Faction removeF = (Faction)iter.next();
-					      // Removing the faction from newData
-					      newData.factions().remove(removeF.getID());
-					    }
-					}
-					
 				}
 			}
 
@@ -723,6 +710,68 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				}
 			}
 
+			// Deleting empty Factions
+			if (this.chkDelEmptyFactions.isSelected()){
+  			Collection<Region> lookup = data.regions().values();
+        if(chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
+          lookup = regions;
+        }
+        // ArrayList of Factions to be removed
+        ArrayList<Faction>factionRemoveList=null;
+        // Looping through the factions
+        if(newData.factions() != null) {
+          for (Iterator<Faction> it1 = newData.factions().values().iterator();it1.hasNext();){
+            Faction actF = (Faction)it1.next();
+            boolean found = false;
+            // Looping through exportet regions or all regions, lookup is set already
+            if (lookup!=null && lookup.size()>0){
+              Iterator<Region> it2=lookup.iterator();it2.hasNext();
+              while(!found && it2.hasNext()) {
+                Region reg = it2.next();
+                Iterator<Unit> it3 = reg.units().iterator();
+                while(!found && it3.hasNext()) {
+                  Unit unit = it3.next();
+                  if (actF.equals(unit.getFaction())){
+                    int i22=0;
+                  }
+                  found = actF.equals(unit.getFaction());
+                }
+              }
+               
+              if(!found) {
+                // "remove" removed 
+                // it1.remove(); // ???? TR: why removing it from the iterator...
+                if (factionRemoveList==null){
+                  factionRemoveList = new ArrayList<Faction>();
+                }
+                if (!factionRemoveList.contains(actF)){
+                  factionRemoveList.add(actF);
+                }
+              }
+            }
+          }
+        }
+        
+        // remove code
+        // check if factions should be removed
+        if (factionRemoveList!=null && factionRemoveList.size()>0){
+            for (Iterator iter = factionRemoveList.iterator();iter.hasNext();){
+              Faction removeF = (Faction)iter.next();
+              // Removing the faction from newData
+              newData.factions().remove(removeF.getID());
+              // alliances...if one of the partners is our delete Faction->delete
+              this.cleanAllianzes(newData, removeF); 
+            }
+        }
+			}
+			
+			// Messages: remove all messages concerning regions not in selection
+			if(chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
+			  this.cleanMessages(newData, regions);
+			  this.cleanBattles(newData, regions);
+			}
+			
+			
 			if(chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
 				crw.setRegions(regions);
 			}
@@ -738,4 +787,285 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
+	
+	/**
+	 * removes all alliances from all factions to the specific faction
+	 * @param data
+	 * @param factionToDel
+	 */
+	private void cleanAllianzes(GameData data, Faction factionToDel){
+	  Iterator<Faction> i1 = data.factions().values().iterator();
+	  while (i1.hasNext()){
+	    Faction actF = i1.next();
+	    if (!actF.equals(factionToDel)){
+	      this.cleanAllies(actF.getAllies(), factionToDel);
+	      // groups too
+	      if (actF.getGroups()!=null){
+	        Iterator<Group> i2 = actF.getGroups().values().iterator();
+	        while (i2.hasNext()){
+	          Group actG = i2.next();
+	          this.cleanAllies(actG.allies(), factionToDel);
+	        }
+	      }
+	    }
+	  }
+	}
+	
+	/**
+	 * Removes alliances to specific factions
+	 * @param allies
+	 * @param factionToDel
+	 */
+	private void cleanAllies(Map<ID,Alliance> allies, Faction factionToDel){
+	  ArrayList<ID> allianceRemoveList = null;
+    if (allies!=null && allies.keySet()!=null){
+      Iterator<ID> i2 = allies.keySet().iterator();
+      while(i2.hasNext()){
+        ID allianceID = i2.next();
+        Alliance actAlliance = allies.get(allianceID);
+        if (actAlliance.getFaction().equals(factionToDel)){
+          // jip! delete it!
+          if (allianceRemoveList==null){
+            allianceRemoveList = new ArrayList<ID>();
+          }
+          allianceRemoveList.add(allianceID);
+        }
+      }
+    }
+    // something to delete?
+    if (allianceRemoveList!=null && allianceRemoveList.size()>0){
+      Iterator<ID> i3 = allianceRemoveList.iterator();
+      while (i3.hasNext()){
+        allies.remove(i3.next());
+      }
+    }
+	}
+	
+	/**
+	 * Removes all Messages linking to regions not in regionList
+	 * @param data
+	 * @param regionList
+	 */
+	private void cleanMessages(GameData data,Collection<Region> regionList){
+	  // Messages of factions
+	  if (data.factions()!=null){
+	    Iterator<Faction> i1 = data.factions().values().iterator();
+	    while (i1.hasNext()){
+	      this.cleanMessages(data,i1.next(), regionList);
+	    }
+	  }
+	  // Messages of regions
+	  if (data.regions()!=null){
+	    Iterator<Region> i1 = data.regions().values().iterator();
+      while (i1.hasNext()){
+        this.cleanMessages(data,i1.next(), regionList);
+      }
+	  }
+	}
+	
+	/**
+   * Removes all Messages of the faction linking to regions not in regionList
+   * @param data
+   * @param regionList
+   */
+  private void cleanMessages(GameData data,Faction f,Collection<Region> regionList){
+    if (f==null || f.getMessages()==null || f.getMessages().size()==0){
+      return;
+    }
+    this.cleanMessages(data,f.getMessages(), regionList);
+  }
+	
+  /**
+   * Removes all Messages of the faction linking to regions not in regionList
+   * @param data
+   * @param regionList
+   */
+  private void cleanMessages(GameData data,Region r,Collection<Region> regionList){
+    if (r==null || r.getMessages()==null || r.getMessages().size()==0){
+      return;
+    }
+    this.cleanMessages(data,r.getMessages(), regionList);
+  }
+  
+  /**
+   * Removes all Messages of the faction linking to regions not in regionList
+   * checkimg msg-tags: region, target, unit, student, teacher
+   * @param data
+   * @param regionList
+   */
+  private void cleanMessages(GameData data,List<Message>msgList,Collection<Region> regionList){
+    if (msgList==null || msgList.size()==0 || regionList==null || regionList.size()==0){
+      return;
+    }
+    
+    ArrayList<Message> keepList = null;
+    Iterator<Message> i1 = msgList.iterator();
+    while (i1.hasNext()){
+      Message msg = i1.next();
+      if (msg.getAttributes() != null) {
+        // check whether the message belongs to one of the selected regions
+        String value = msg.getAttributes().get("region");
+
+        if (value != null) {
+          String regionCoordinate = value;
+          CoordinateID coordinate = CoordinateID.parse(regionCoordinate, ",");
+
+          if (coordinate == null) {
+            coordinate = CoordinateID.parse(regionCoordinate, " ");
+          }
+          if (coordinate==null){
+            continue;
+          }
+          Region mR = data.getRegion(coordinate);
+          if (mR==null){
+            continue;
+          }
+          if (!regionList.contains(mR)) {
+            continue;
+          }
+        } else {
+          // some messages, for instance of type 170076 don't have
+          // a region tag but a unit tag. Therefore get the region
+          // via the unit of that message!
+          value = msg.getAttributes().get("unit");
+
+          if (value != null) {
+            String number = value;
+            UnitID id = UnitID.createUnitID(number, 10);
+            Unit unit = data.units().get(id);
+
+            if (unit != null) {
+              Region r = unit.getRegion();
+
+              if (r != null) {
+                if (!regionList.contains(r)) {
+                  continue;
+                }
+              }
+            }
+          }
+          
+          // same with target
+          value = msg.getAttributes().get("target");
+
+          if (value != null) {
+            String number = value;
+            UnitID id = UnitID.createUnitID(number, 10);
+            Unit unit = data.units().get(id);
+
+            if (unit != null) {
+              Region r = unit.getRegion();
+
+              if (r != null) {
+                if (!regionList.contains(r)) {
+                  continue;
+                }
+              }
+            }
+          }
+          
+          if (this.msgAttributeNotInRegionList(data, msg, "unit", regionList)
+            || this.msgAttributeNotInRegionList(data, msg, "teacher", regionList)
+            || this.msgAttributeNotInRegionList(data, msg, "student", regionList)
+            || this.msgAttributeNotInRegionList(data, msg, "target", regionList)){
+            continue;
+          }
+          
+          
+        }
+      }
+      // checks done, what left here should be kept
+      if (keepList==null){
+        keepList = new ArrayList<Message>();
+      }
+      keepList.add(msg);
+    }
+    
+    // ready...now delete all messages and add the keep list
+    msgList.clear();
+    if (keepList!=null && keepList.size()>0){
+      msgList.addAll(keepList);
+    }
+  }
+  
+  /**
+   * true, if the Attribute tagName of the Message msg links
+   * to a region in regionLists
+   * 
+   * 
+   * @param data
+   * @param tagName
+   * @param regionList
+   * @return
+   */
+  private boolean msgAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
+    boolean erg = false;
+    String value = msg.getAttributes().get(tagName);
+    if (value != null) {
+      String number = value;
+      UnitID id = UnitID.createUnitID(number, 10);
+      Unit unit = data.units().get(id);
+
+      if (unit != null) {
+        Region r = unit.getRegion();
+
+        if (r != null) {
+          if (!regionList.contains(r)) {
+            return true;
+          }
+        }
+      }
+    }
+    return erg;
+  }
+  
+  /**
+   * clean up the battles outsinde regionList
+   * @param data
+   * @param regionList
+   */
+  private void cleanBattles(GameData data,Collection<Region> regionList){
+    if (data.factions()!=null){
+      Iterator<Faction> i1 = data.factions().values().iterator();
+      while (i1.hasNext()){
+        Faction actF = i1.next();
+        if (actF.getBattles()!=null && actF.getBattles().size()>0){
+          this.cleanBattles(data,actF,regionList);
+        }
+      }
+    }
+    
+  }
+  
+  
+  /**
+   * removes all battles from the faction which
+   * took place outside the regions in regionList
+   * @param data
+   * @param f
+   * @param regionList
+   */
+  private void cleanBattles(GameData data,Faction f,Collection<Region> regionList){
+    if (f.getBattles()==null || f.getBattles().size()==0){
+      return;
+    }
+    ArrayList<Battle>battleRemoveList=null;
+    Iterator<Battle> it1 = f.getBattles().iterator();
+    while (it1.hasNext()){
+      Battle actBattle = it1.next();
+      Region actR = data.getRegion((CoordinateID)actBattle.getID());
+      if (actR!=null && !regionList.contains(actR)){
+        // we have to remove the battle
+        if (battleRemoveList==null){
+          battleRemoveList = new ArrayList<Battle>();
+        }
+        battleRemoveList.add(actBattle);
+      }
+    }
+    if (battleRemoveList!=null && battleRemoveList.size()>0){
+      f.getBattles().removeAll(battleRemoveList);
+    }
+  }
+  
+  
 }

@@ -904,75 +904,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       Message msg = i1.next();
       if (msg.getAttributes() != null) {
         // check whether the message belongs to one of the selected regions
-        String value = msg.getAttributes().get("region");
-
-        if (value != null) {
-          String regionCoordinate = value;
-          CoordinateID coordinate = CoordinateID.parse(regionCoordinate, ",");
-
-          if (coordinate == null) {
-            coordinate = CoordinateID.parse(regionCoordinate, " ");
-          }
-          if (coordinate==null){
-            continue;
-          }
-          Region mR = data.getRegion(coordinate);
-          if (mR==null){
-            continue;
-          }
-          if (!regionList.contains(mR)) {
-            continue;
-          }
-        } else {
-          // some messages, for instance of type 170076 don't have
-          // a region tag but a unit tag. Therefore get the region
-          // via the unit of that message!
-          value = msg.getAttributes().get("unit");
-
-          if (value != null) {
-            String number = value;
-            UnitID id = UnitID.createUnitID(number, 10);
-            Unit unit = data.units().get(id);
-
-            if (unit != null) {
-              Region r = unit.getRegion();
-
-              if (r != null) {
-                if (!regionList.contains(r)) {
-                  continue;
-                }
-              }
-            }
-          }
-          
-          // same with target
-          value = msg.getAttributes().get("target");
-
-          if (value != null) {
-            String number = value;
-            UnitID id = UnitID.createUnitID(number, 10);
-            Unit unit = data.units().get(id);
-
-            if (unit != null) {
-              Region r = unit.getRegion();
-
-              if (r != null) {
-                if (!regionList.contains(r)) {
-                  continue;
-                }
-              }
-            }
-          }
-          
-          if (this.msgAttributeNotInRegionList(data, msg, "unit", regionList)
-            || this.msgAttributeNotInRegionList(data, msg, "teacher", regionList)
-            || this.msgAttributeNotInRegionList(data, msg, "student", regionList)
-            || this.msgAttributeNotInRegionList(data, msg, "target", regionList)){
-            continue;
-          }
-          
-          
+        // region related messages:
+        if (this.msgRegionAttributeNotInRegionList(data, msg, "region", regionList)
+          || this.msgRegionAttributeNotInRegionList(data, msg, "from", regionList)
+          || this.msgRegionAttributeNotInRegionList(data, msg, "to", regionList)){
+          continue;
         }
+        // unit related messages
+        if (this.msgUnitAttributeNotInRegionList(data, msg, "unit", regionList)
+          || this.msgUnitAttributeNotInRegionList(data, msg, "teacher", regionList)
+          || this.msgUnitAttributeNotInRegionList(data, msg, "student", regionList)
+          || this.msgUnitAttributeNotInRegionList(data, msg, "target", regionList)){
+          continue;
+        }  
       }
       // checks done, what left here should be kept
       if (keepList==null){
@@ -989,7 +933,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
   
   /**
-   * true, if the Attribute tagName of the Message msg links
+   * true, if the Attribute tagName of the Message msg links not
    * to a region in regionLists
    * 
    * 
@@ -998,10 +942,11 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * @param regionList
    * @return
    */
-  private boolean msgAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
+  private boolean msgUnitAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
     boolean erg = false;
     String value = msg.getAttributes().get(tagName);
     if (value != null) {
+      erg = true;
       String number = value;
       UnitID id = UnitID.createUnitID(number, 10);
       Unit unit = data.units().get(id);
@@ -1010,14 +955,49 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         Region r = unit.getRegion();
 
         if (r != null) {
-          if (!regionList.contains(r)) {
-            return true;
+          if (regionList.contains(r)) {
+            return false;
           }
         }
       }
     }
     return erg;
   }
+  
+  /**
+   * true, if the Attribute tagName of the Message msg links not
+   * to a region in regionLists
+   * 
+   * 
+   * @param data
+   * @param tagName
+   * @param regionList
+   * @return
+   */
+  private boolean msgRegionAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
+    boolean erg = false;
+    String value = msg.getAttributes().get(tagName);
+    if (value != null) {
+      erg = true;
+      String regionCoordinate = value;
+      CoordinateID coordinate = CoordinateID.parse(regionCoordinate, ",");
+      if (coordinate == null) {
+        coordinate = CoordinateID.parse(regionCoordinate, " ");
+      }
+      if (coordinate!=null){
+        Region mR = data.getRegion(coordinate);
+        if (mR!=null){
+          if (regionList.contains(mR)) {
+            return false;
+          }
+        }
+      }
+    }
+    return erg;
+  }
+  
+  
+  
   
   /**
    * clean up the battles outsinde regionList
@@ -1054,7 +1034,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     while (it1.hasNext()){
       Battle actBattle = it1.next();
       Region actR = data.getRegion((CoordinateID)actBattle.getID());
-      if (actR!=null && !regionList.contains(actR)){
+      if (actR==null || !regionList.contains(actR)){
         // we have to remove the battle
         if (battleRemoveList==null){
           battleRemoveList = new ArrayList<Battle>();

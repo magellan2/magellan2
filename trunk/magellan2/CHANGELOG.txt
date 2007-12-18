@@ -1,3 +1,6 @@
+2007-12-18 Fiete (sf@fietefietz.de)
+	* CRWriterDialog: shipMsgs from not exported regions are not exported as well (forgot yesterday)
+
 2007-12-17 Fiete (sf@fietefietz.de)
 	* reworked CRWriterDialog: if selected Regions to export
 	  also *all* Messages outside the regions are removed

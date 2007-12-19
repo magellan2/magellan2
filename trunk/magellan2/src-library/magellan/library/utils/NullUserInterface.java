@@ -68,7 +68,7 @@ public class NullUserInterface implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
    */
-  public String input(String strMessage, String strTitle) {
+  public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
     return null;
   }
   
@@ -84,7 +84,7 @@ public class NullUserInterface implements UserInterface {
    */
   public void setTitle(String title) {}
 
-  public void throwException(Exception exception) {
+  public void showException(String message, String description, Exception exception) {
     throw new RuntimeException(exception);
   }
 }

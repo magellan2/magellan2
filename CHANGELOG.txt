@@ -7,6 +7,10 @@
 	* Delete empty factions fixed, took care of alliances to this
 	  faction too (also from groups)
 
+2007-12-18 Thoralf (thoralf@m84.de)
+    * Small fix to avoid a NPE at startup. The IDF initialization needs an AWT thread, so
+      Client.main() uses now a SwingUtils.invokeLater().
+      
 2007-12-16 Thoralf (thoralf@m84.de)
     * Small fix for faction deletion, if a faction is in an alliance with one of the deleted faction.
       Fix is that we check that this faction is also deleted.

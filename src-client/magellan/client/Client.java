@@ -932,6 +932,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       String report = null; // the report to be loaded on startup
       File fileDir = null; // the directory to store ini files and
+      File settFileDir = null;
       // stuff in
 
       /* set the stderr to stdout while there is no log attached */
@@ -944,7 +945,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       /* determine default value for files directory */
       fileDir = MagellanFinder.findMagellanDirectory();
 
-      File settFileDir = null;
 
       /* process command line parameters */
       int i = 0;
@@ -1040,60 +1040,69 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       } catch (SecurityException e) {
         log.warn("Unable to retrieve system properties: "+e);
       }
-           
-      // can't call loadRules from here, so we initially work with an
-      // empty ruleset.
-      // This is not very nice, though...
-      GameData data = new MissingData();
-
-      // new CompleteData(new com.eressea.rules.Eressea(), "void");
-      Client c = new Client(data, fileDir, settFileDir);
-      // setup a singleton instance of this client
-      INSTANCE = c;
-
-      if (report != null) {
-        startWindow.progress(4, Resources.get("clientstart.4"));
-
-        File crFile = new File(report);
-
-        c.dataFile = crFile;
-
-        // load new data
-        //c.setData(c.loadCR(crFile));
-        c.loadCRThread(crFile);
-      }
-
-      c.setReportChanged(false);
       
-      String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
-      if (!Utils.isEmpty(newestVersion)) {
-        String currentVersion = VersionInfo.getVersion(fileDir);
-        log.info("Newest Version on server: "+newestVersion);
-        log.info("Current Version: "+currentVersion);
-        if (VersionInfo.isNewer(currentVersion, newestVersion)) {
-          startWindow.toBack();
-          JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
+      final File tFileDir = fileDir;
+      final File tsettFileDir = settFileDir;
+      final String tReport = report;
+      
+
+      SwingUtilities.invokeLater(new Runnable() {
+        public void run() {
+          // can't call loadRules from here, so we initially work with an
+          // empty ruleset.
+          // This is not very nice, though...
+          GameData data = new MissingData();
+          
+          // new CompleteData(new com.eressea.rules.Eressea(), "void");
+          Client c = new Client(data, tFileDir, tsettFileDir);
+          // setup a singleton instance of this client
+          INSTANCE = c;
+    
+          if (tReport != null) {
+            startWindow.progress(4, Resources.get("clientstart.4"));
+    
+            File crFile = new File(tReport);
+    
+            c.dataFile = crFile;
+    
+            // load new data
+            //c.setData(c.loadCR(crFile));
+            c.loadCRThread(crFile);
+          }
+    
+          c.setReportChanged(false);
+          
+          String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
+          if (!Utils.isEmpty(newestVersion)) {
+            String currentVersion = VersionInfo.getVersion(tFileDir);
+            log.info("Newest Version on server: "+newestVersion);
+            log.info("Current Version: "+currentVersion);
+            if (VersionInfo.isNewer(currentVersion, newestVersion)) {
+              startWindow.toBack();
+              JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
+            }
+          }
+    
+          
+          startWindow.progress(5, Resources.get("clientstart.5"));
+          c.setAllVisible(true);
+          startWindow.setVisible(false);
+          startWindow.dispose();
+          startWindow = null;
+          
+    
+          // show tip of the day window
+          if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
+            TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
+    
+            if (totd.doShow()) {
+              // totd.setVisible(true);
+              totd.showTipDialog();
+              totd.showNextTip();
+            }
+          }
         }
-      }
-
-      
-      startWindow.progress(5, Resources.get("clientstart.5"));
-      c.setAllVisible(true);
-      startWindow.setVisible(false);
-      startWindow.dispose();
-      startWindow = null;
-      
-
-      // show tip of the day window
-      if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
-        TipOfTheDay totd = new TipOfTheDay(c, c.getProperties());
-
-        if (totd.doShow()) {
-          // totd.setVisible(true);
-          totd.showTipDialog();
-          totd.showNextTip();
-        }
-      }
+      });
     } catch (Throwable exc) { // any fatal error
       log.error(exc); // print it so it can be written to errors.txt
 

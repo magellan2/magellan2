@@ -1048,18 +1048,19 @@ public abstract class GameData implements Cloneable {
     }
 
     if (olderGD.getOwnerFaction()!=null){
-      resultGD.setOwnerFaction(olderGD.getOwnerFaction());
-    } else {
-      resultGD.setOwnerFaction(newerGD.getOwnerFaction());
-    }
+      if (olderGD.getOwnerFaction()!=null)
+        resultGD.setOwnerFaction(olderGD.getOwnerFaction());
+    } // else {
+//      resultGD.setOwnerFaction(newerGD.getOwnerFaction());
+//    }
     
-    if (resultGD.getOwnerFaction()==olderGD.getOwnerFaction()){
+    if (resultGD.getOwnerFaction()!=null && (resultGD.getOwnerFaction().equals(olderGD.getOwnerFaction()))){
       // TODO maybe a shallow copy would suffice
       for (EntityID factionID : olderGD.coordinateTranslations.keySet()){
         resultGD.coordinateTranslations.put(factionID, new HashMap<Integer, CoordinateID>(olderGD.coordinateTranslations.get(factionID)));
       }
     }else{
-      log.info("owner faction changed, forgetting stored translations");
+      log.info("owner faction changed or null, forgetting stored translations");
     }
 
     // FIXME (stm): Allies do not get merged correctly. We have to either swap
@@ -1845,7 +1846,7 @@ public abstract class GameData implements Cloneable {
     if (layerMap == null)
       return null;
     else
-      return layerMap.get(otherFaction);
+      return layerMap.get(layer);
   }
 
   /**
@@ -1886,10 +1887,16 @@ public abstract class GameData implements Cloneable {
     Map<Integer, CoordinateID> layerMap = coordinateTranslations.get(otherFaction);
     if (layerMap==null){
       layerMap = new HashMap<Integer, CoordinateID>();
+      coordinateTranslations.put(otherFaction, layerMap);
     }
     layerMap.put(layer, usedTranslation);
   }
   
+  /**
+   * The faction that this report is for.
+   * 
+   * @return The owner faction. <code>null</code> for unknown is possible.
+   */
   public EntityID getOwnerFaction() {
     return ownerFaction;
   }

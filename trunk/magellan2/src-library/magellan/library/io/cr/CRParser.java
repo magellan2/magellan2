@@ -106,6 +106,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private Collection<String> warnedLines = new HashSet<String>();
   
   private UserInterface ui = null;
+  private Faction firstFaction;
 
   /**
    * Creates a new parser.
@@ -937,6 +938,10 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("mailto")) {
         world.mailTo = sc.argv[0];
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("reportowner")) {
+        if (world.getOwnerFaction()==null && !configuration.equals("Standard"))
+          world.setOwnerFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        sc.getNextToken();
       } else if((sc.argc == 1) && sc.argv[0].startsWith("RULES")) {
         parseRules(world.rules);
       } else if((sc.argc == 1) && sc.argv[0].startsWith("HOTSPOT ")) {
@@ -1661,13 +1666,12 @@ public class CRParser implements RulesIO, GameDataIO {
     EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(7)), world.base);
     sc.getNextToken(); // skip PARTEI nr
 
-    // first faction is report owner
-    if (world.getOwnerFaction()==null)
-      world.setOwnerFaction(id);
-
     Faction faction = getAddFaction(world, id);
     faction.setSortIndex(sortIndex);
 
+    if (firstFaction==null)
+      firstFaction = faction;
+    
     while(!sc.eof && !sc.argv[0].startsWith("PARTEI ")) {
       if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Runde")) {
         magellan.library.rules.Date d = world.getDate();
@@ -2994,6 +2998,15 @@ public class CRParser implements RulesIO, GameDataIO {
       
     }
     this.world.setMaxSortIndex(++regionSortIndex);
+    if (world.getOwnerFaction()==null){
+      if (configuration.equals("Standard") && firstFaction!=null)
+        world.setOwnerFaction((EntityID) firstFaction.getID());
+      else {
+        Object result = ui.input(Resources.get("crparser.msg.inputowner.msg"), Resources.get("crparser.msg.inputowner.title"), world.factions().values().toArray(), firstFaction);
+        if (result!=null && result instanceof Faction)
+          world.setOwnerFaction((EntityID) ((Faction)result).getID());
+      }
+    }
     ui.ready();
     log.info("Done.");
     return this.world;

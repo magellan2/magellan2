@@ -128,6 +128,8 @@ public class EntityID extends IntegerID {
 	 * 		   and o match.
 	 */
 	public boolean equals(Object o) {
+	  if (o==null)
+	    return false;
 		try {
 			return (this == o) || id == ((EntityID) o).id;
 		} catch(ClassCastException e) {

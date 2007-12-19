@@ -486,6 +486,11 @@ public class CRWriter extends BufferedWriter {
 		if(world.mailSubject != null) {
 			writeQuotedTag(world.mailSubject, "mailcmd");
 		}
+		
+		if (!serverConformance && world.getOwnerFaction()!=null){
+		  write(world.getOwnerFaction().intValue()+ ";reportowner");
+		  newLine();
+		}
 	}
 
 	/**

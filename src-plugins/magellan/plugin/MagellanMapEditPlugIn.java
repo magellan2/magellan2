@@ -326,7 +326,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.updateClient();
     } else {
       // konnte nicht entfernt werden
-      log.error("MapEdit runDelRegion: removing region not succesfull");
+      log.error("MapEdit runDelRegion: removing region not successful");
     }
   }
   

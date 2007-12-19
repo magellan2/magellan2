@@ -375,7 +375,32 @@ public class Logger {
 		  PrintStream ps = new PrintStream(baos);
 		  
 		  calendar.setTimeInMillis(System.currentTimeMillis());
-		  
+
+		  String prefix = "(--)";
+		  switch (aLevel) {
+      case FATAL:
+        prefix = "(FF)";
+        break;
+      case ERROR:
+        prefix = "(EE)";
+        break;
+      case WARN:
+        prefix = "(WW)";
+        break;
+      case INFO:
+        prefix = "(II)";
+        break;
+      case DEBUG:
+        prefix = "(DD)";
+        break;
+      case AWT: 
+        prefix = "(AA)";
+        break;
+      default:
+        prefix = "(--)";
+        break;
+      }
+		  ps.print(prefix+" ");
 		  ps.print(Utils.toDayAndTime(calendar.getTime()));
 		  ps.print(": ");
 		  

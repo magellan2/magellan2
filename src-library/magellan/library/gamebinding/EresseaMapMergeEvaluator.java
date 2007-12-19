@@ -23,17 +23,13 @@
 // 
 package magellan.library.gamebinding;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
-import magellan.library.gamebinding.MapMergeEvaluator;
 /**
  * TODO This class must be commented
  *

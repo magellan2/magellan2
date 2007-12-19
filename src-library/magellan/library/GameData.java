@@ -15,6 +15,7 @@ package magellan.library;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -67,11 +68,7 @@ public abstract class GameData implements Cloneable {
   /**
    * TODO: Comment for <code>ownerFaction</code>
    */
-  public EntityID ownerFaction;
-  /**
-   * TODO: Comment for <code>recommendedOffset</code>
-   */
-  public String recommendedOffset;
+  private EntityID ownerFaction;
 
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's
@@ -826,7 +823,7 @@ public abstract class GameData implements Cloneable {
     if (oldEncoding != null && newEncoding != null) {
       if (oldEncoding.equalsIgnoreCase(newEncoding)) {
         // do nothing
-        log.info("Do nothing");
+        log.debug("Do nothing");
         resultGD.setEncoding(oldEncoding);
       } else if (oldEncoding.equalsIgnoreCase(Encoding.UTF8.toString()) || newEncoding.equalsIgnoreCase(Encoding.UTF8.toString())) {
         // if one of the reports has UTF-8 Encoding, we use it always.
@@ -1050,17 +1047,19 @@ public abstract class GameData implements Cloneable {
       }
     }
 
-    if (olderGD.ownerFaction!=null){
-      resultGD.ownerFaction=olderGD.ownerFaction;
+    if (olderGD.getOwnerFaction()!=null){
+      resultGD.setOwnerFaction(olderGD.getOwnerFaction());
     } else {
-      resultGD.ownerFaction=newerGD.ownerFaction;
+      resultGD.setOwnerFaction(newerGD.getOwnerFaction());
     }
     
-    if (resultGD.ownerFaction==olderGD.ownerFaction){
-      resultGD.coordinateTranslations = new HashMap<ID, CoordinateID>(olderGD.coordinateTranslations);
-      resultGD.astralCoordinateTranslations = new HashMap<ID, CoordinateID>(olderGD.astralCoordinateTranslations);
+    if (resultGD.getOwnerFaction()==olderGD.getOwnerFaction()){
+      // TODO maybe a shallow copy would suffice
+      for (EntityID factionID : olderGD.coordinateTranslations.keySet()){
+        resultGD.coordinateTranslations.put(factionID, new HashMap<Integer, CoordinateID>(olderGD.coordinateTranslations.get(factionID)));
+      }
     }else{
-      log.info("owner faction changed, removing stored translations");
+      log.info("owner faction changed, forgetting stored translations");
     }
 
     // FIXME (stm): Allies do not get merged correctly. We have to either swap
@@ -1823,25 +1822,89 @@ public abstract class GameData implements Cloneable {
   public abstract CoordinateID getAstralMapping();
 
   
-  private Map<ID, CoordinateID> coordinateTranslations = new HashMap<ID, CoordinateID>();
-
-  private Map<ID, CoordinateID> astralCoordinateTranslations = new HashMap<ID, CoordinateID>();
+  private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations = new HashMap<EntityID, Map<Integer,CoordinateID>>();
 
 
-  public CoordinateID getAstralCoordinateTranslation(EntityID otherFaction) {
-    return astralCoordinateTranslations.get(otherFaction);
+  /**
+   * Returns a coordinate translation of <code>otherFaction</code> to the
+   * owner faction. This is the coordinate vector that has to be added to the
+   * coordinates of <code>otherFaction</code>'s coordinate with z-coordinate
+   * <code>layer</code> to get coordinates of the owner faction. The
+   * coordinate translation of the owner faction is always (0, 0, layer).
+   * 
+   * @param otherFaction
+   * @param layer
+   * @return The coordinate translation of <code>otherFaction</code> to
+   *         the owner faction
+   */
+  public CoordinateID getCoordinateTranslation(EntityID otherFaction, int layer) {
+    if (otherFaction.equals(getOwnerFaction()))
+      return new CoordinateID(0,0,layer);
+    
+    Map<Integer, CoordinateID> layerMap = getCoordinateTranslationMap(otherFaction);
+    if (layerMap == null)
+      return null;
+    else
+      return layerMap.get(otherFaction);
   }
 
-  public CoordinateID getCoordinateTranslation(EntityID otherFaction) {
-    return coordinateTranslations.get(otherFaction);
-  }
-
-  public void setCoordinateTranslation(EntityID otherFaction, CoordinateID usedTranslation) {
-    coordinateTranslations.put(otherFaction, usedTranslation);
+  /**
+   * Returns the unmodifiable map of all known coordinate translations of <code>otherFaction</code>. 
+   * This is a mapping of layers to coordinateIDs. An
+   * entry is the vector that has to be added to the coordinates of
+   * <code>otherFaction</code>'s coordinate with z-coordinate
+   * <code>layer</code> to get coordinates of the owner faction. 
+   * If <code>otherFaction</code> equals the owner faction, this map is empty.
+   * 
+   * @param layer
+   * @return The map of coordinate translations of faction <code>otherFaction</code>
+   * @see #getCoordinateTranslation(EntityID, int)
+   */
+  public Map<Integer, CoordinateID> getCoordinateTranslationMap(EntityID otherFaction) {
+    if (otherFaction.equals(getOwnerFaction()))
+      return Collections.emptyMap();
+    if (coordinateTranslations.get(otherFaction)==null)
+      return null;
+    return Collections.unmodifiableMap(coordinateTranslations.get(otherFaction));
   }
   
-  public void setAstralCoordinateTranslation(EntityID otherFaction, CoordinateID usedAstralTranslation) {
-    astralCoordinateTranslations.put(otherFaction, usedAstralTranslation);
+  /**
+   * Sets the coordinate translation of <code>otherFaction</code> to the
+   * owner faction. This is the coordinate vector that has to be added to the
+   * coordinates of <code>otherFaction</code>'s coordinate with z-coordinate
+   * <code>layer</code> to get coordinates of the owner faction. The
+   * coordinate translation of the owner faction is always (0, 0, layer).
+   * 
+   * @param otherFaction 
+   * @param layer
+   * @param usedTranslation
+   * @throws IllegalArgumentException if otherFaction equals the owner faction
+   */
+  public void setCoordinateTranslation(EntityID otherFaction, int layer, CoordinateID usedTranslation) {
+    if (otherFaction.equals(getOwnerFaction()))
+      throw new IllegalArgumentException("cannot set translation for owner faction");
+    Map<Integer, CoordinateID> layerMap = coordinateTranslations.get(otherFaction);
+    if (layerMap==null){
+      layerMap = new HashMap<Integer, CoordinateID>();
+    }
+    layerMap.put(layer, usedTranslation);
+  }
+  
+  public EntityID getOwnerFaction() {
+    return ownerFaction;
+  }
+
+  /**
+   * Changes the owner faction. Clears all coordinate translations.
+   * 
+   * @param ownerFaction
+   */
+  public void setOwnerFaction(EntityID ownerFaction) {
+    if (this.ownerFaction!=null)
+      log.warn("owner faction changed");
+    this.ownerFaction = ownerFaction;
+    coordinateTranslations.clear();
+    coordinateTranslations = new HashMap<EntityID, Map<Integer,CoordinateID>>();
   }
 
 }

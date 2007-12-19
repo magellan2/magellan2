@@ -27,6 +27,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -50,6 +52,7 @@ import magellan.client.utils.Units;
 import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -249,9 +252,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   private void updateTree() {
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-    DefaultMutableTreeNode n = null;
-    DefaultMutableTreeNode m = null;
-    DefaultMutableTreeNode o = null;
+    DefaultMutableTreeNode currentNode = null;
+    DefaultMutableTreeNode subNode = null;
     Map<ID, Unit> units = new Hashtable<ID, Unit>();
     int personCounter = 0;
     int modifiedUnitsCounter = 0;
@@ -325,73 +327,108 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
      * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.units") +
      * (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")");
      */
-    n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.units") + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")", "units"));
+    currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.units") + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")", "units"));
 
-    rootNode.add(n);
+    rootNode.add(currentNode);
     /**
      * n = new
      * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.persons") +
      * personCounter + " (" + modifiedPersonCounter + ")");
      */
-    n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.persons") + personCounter + " (" + modifiedPersonCounter + ")", "persons"));
+    currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.persons") + personCounter + " (" + modifiedPersonCounter + ")", "persons"));
 
-    rootNode.add(n);
+    rootNode.add(currentNode);
 
     if (factions.size() == 1) {
       Faction f = null;
       f = factions.values().iterator().next();
+      
+      /* Race node */
       if (f.getType() != null) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.race")
         // + f.getType().getName());
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName(), "race"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName(), "race"));
+        rootNode.add(currentNode);
       }
 
+      /* Age node */
       if (f.getAge() > -1) {
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.age") + ": " + f.getAge(), "age"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.age") + ": " + f.getAge(), "age"));
+        rootNode.add(currentNode);
       }
       
+      /* Locale node */
       if (f.getLocale() != null) {
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.locale") + ": " + f.getLocale(), "locale"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.locale") + ": " + f.getLocale(), "locale"));
+        rootNode.add(currentNode);
       }
 
+      /* Magic node */
       if (f.getSpellSchool() != null) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.magicschool")
         // + f.spellSchool);
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.magicschool") + f.getSpellSchool(), "magicschool"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.magicschool") + f.getSpellSchool(), "magicschool"));
+        rootNode.add(currentNode);
       }
 
+      /* Description node */
       String description = f.getDescription();
-
       if ((description != null) && (description.length() > 0)) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.banner")
         // + description);
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.banner") + description, "banner"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.banner") + description, "banner"));
+        rootNode.add(currentNode);
       }
 
+      /* Email node */
       if (f.getEmail() != null) {
         // n = new DefaultMutableTreeNode(new
         // SimpleNodeWrapper(Resources.get("factionstatspanel.node.e-mail")
         // + f.email, f.email));
         // added email icon
-        n = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.e-mail") + f.getEmail(), "email2"));
+        currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.e-mail") + f.getEmail(), "email2"));
 
-        rootNode.add(n);
+        rootNode.add(currentNode);
       }
 
+      { /* Trustlevel node */
       String nodeLabel = FactionTrustComparator.getTrustLevelLabel(FactionTrustComparator.getTrustLevel(f.getTrustLevel()));
       nodeLabel += (" (" + f.getTrustLevel() + ")");
       // n = new DefaultMutableTreeNode(nodeLabel);
-      n = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "trust"));
-      rootNode.add(n);
+      currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "trust"));
+      rootNode.add(currentNode);
+      }
+      
+      /* Report owner node */
+      if (f.getID().equals(data.getOwnerFaction())){
+        currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.reportowner"), "reportowner"));
+        rootNode.add(currentNode);
+      }else{
 
+        /* Translation node */
+        if (f.getID() instanceof EntityID) {
+          StringBuffer nodeLabel = new StringBuffer();
+          Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID)f.getID());
+          if (map!=null){
+            SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
+            for (Integer i: layers){
+              CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
+              if (nodeLabel.length() != 0)
+                nodeLabel.append(" ");
+              nodeLabel.append(Resources.get("factionstatspanel.node.translation") + " " + translation);
+            }
+            currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "translation"));
+            rootNode.add(currentNode);
+          }
+        } else {
+          log.warn("faction ID is not EntityID");
+        }
+      }
+      
+      /* score node */
       if (f.getScore() > 0) {
         /**
          * n = new
@@ -400,19 +437,20 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
          * f.averageScore) + "%)");
          */
         String scoreLabel = Resources.get("factionstatspanel.node.score") + f.getScore() + "/" + f.getAverageScore() + " (" + (int) ((100.0 * f.getScore()) / f.getAverageScore()) + "%)";
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(scoreLabel, "score"));
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(scoreLabel, "score"));
 
-        rootNode.add(n);
+        rootNode.add(currentNode);
       }
 
+      /* prefix node */
       if (f.getRaceNamePrefix() != null) {
         /**
          * n = new
          * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.racenameprefix") +
          * f.getRaceNamePrefix());
          */
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.racenameprefix") + f.getRaceNamePrefix(), "prefix"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.racenameprefix") + f.getRaceNamePrefix(), "prefix"));
+        rootNode.add(currentNode);
       }
 
       if (f.getMigrants() > 0) {
@@ -421,41 +459,41 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
          * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.migrants") +
          * f.migrants + "/" + f.maxMigrants);
          */
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.migrants") + f.getMigrants() + "/" + f.getMaxMigrants(), "migrants"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.migrants") + f.getMigrants() + "/" + f.getMaxMigrants(), "migrants"));
+        rootNode.add(currentNode);
       }
 
       if ((f.getAllies() != null) && (f.getAllies().size() > 0)) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.alliances"));
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.alliances"), "alliance"));
-        rootNode.add(n);
-        showAlliances(f.getAllies(), n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.alliances"), "alliance"));
+        rootNode.add(currentNode);
+        showAlliances(f.getAllies(), currentNode);
       }
 
       if ((f.getGroups() != null) && (f.getGroups().size() > 0)) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.groups"));
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.groups"), "groups"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.groups"), "groups"));
+        rootNode.add(currentNode);
 
         for (Iterator iter = f.getGroups().values().iterator(); iter.hasNext();) {
           Group g = (Group) iter.next();
-          m = new DefaultMutableTreeNode(g);
-          n.add(m);
+          subNode = new DefaultMutableTreeNode(g);
+          currentNode.add(subNode);
 
           if (g.getRaceNamePrefix() != null) {
-            m.add(new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.racenameprefix") + g.getRaceNamePrefix()));
+            subNode.add(new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.racenameprefix") + g.getRaceNamePrefix()));
           }
 
-          showAlliances(g.allies(), m);
+          showAlliances(g.allies(), subNode);
         }
       }
       if (specialPersons.size() > 0) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.otherrace"));
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
+        rootNode.add(currentNode);
 
         for (Iterator iter = specialPersons.keySet().iterator(); iter.hasNext();) {
           Object obj = iter.next();
@@ -474,7 +512,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             iconPersonName = actRealRaceName;
           }
 
-          m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count, iconPersonName));
+          subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count, iconPersonName));
           /**
            * String raceNameLang =
            * com.eressea.util.Umlaut.convertUmlauts(obj.toString()); String
@@ -484,12 +522,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
            * DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " +
            * count, iconNameEn)); }
            */
-          n.add(m);
+          currentNode.add(subNode);
 
           for (Iterator iterator = v.iterator(); iterator.hasNext();) {
             Unit actUnit = (Unit) iterator.next();
-            o = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(actUnit, actUnit.getPersons()));
-            m.add(o);
+            DefaultMutableTreeNode o = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(actUnit, actUnit.getPersons()));
+            subNode.add(o);
           }
         }
       }
@@ -516,14 +554,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           actHeroes = Resources.get("factionstatspanel.node.heroes") + " " + heros_count + "/" + maxHeros2;
         }
 
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actHeroes, "heroes"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actHeroes, "heroes"));
+        rootNode.add(currentNode);
 
         for (Iterator iter = heroes.iterator(); iter.hasNext();) {
           Unit u = (Unit) iter.next();
 
-          m = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, u.getPersons()));
-          n.add(m);
+          subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, u.getPersons()));
+          currentNode.add(subNode);
         }
 
       }
@@ -641,8 +679,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         Object msgArgs[] = { new Integer(totalIncome), new Integer(totalWanted) };
         // n = new DefaultMutableTreeNode((new
         // java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs));
-        n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs), "income"));
-        rootNode.add(n);
+        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs), "income"));
+        rootNode.add(currentNode);
       }
 
       for (int i = 0; i < earned.length; i++) {
@@ -657,16 +695,16 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             sb.append((new java.text.MessageFormat(Resources.get("factionstatspanel.node.incomewanted"))).format(msgArgs));
           }
 
-          m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(), incomeGroupIcon[i]));
-          n.add(m);
+          subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(), incomeGroupIcon[i]));
+          currentNode.add(subNode);
         }
       }
 
       if (spentForTrade != 0) {
         Object msgArgs[] = { new Integer(-spentForTrade) };
         String s = (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade")).format(msgArgs));
-        m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s,"Handeln"));
-        n.add(m);
+        subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s,"Handeln"));
+        currentNode.add(subNode);
       }
     }
 
@@ -699,8 +737,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.buildings"));
 
-      n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.buildings"), "buildings"));
-      rootNode.add(n);
+      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.buildings"), "buildings"));
+      rootNode.add(currentNode);
     }
 
     for (Iterator iter = buildingsCounter.keySet().iterator(); iter.hasNext();) {
@@ -710,13 +748,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // ((List) buildingsCounter.get(buildingType)).size());
 
       String buildingIconName = StringFactory.getFactory().intern(buildingType.getID().toString());
-      m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(buildingType.getName() + ": " + ((List) buildingsCounter.get(buildingType)).size(), buildingIconName));
+      subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(buildingType.getName() + ": " + ((List) buildingsCounter.get(buildingType)).size(), buildingIconName));
 
-      n.add(m);
+      currentNode.add(subNode);
 
       for (Iterator i = ((List) buildingsCounter.get(buildingType)).iterator(); i.hasNext();) {
         UnitContainerNodeWrapper uc = nodeWrapperFactory.createUnitContainerNodeWrapper((Building) i.next());
-        m.add(new DefaultMutableTreeNode(uc));
+        subNode.add(new DefaultMutableTreeNode(uc));
       }
     }
 
@@ -745,8 +783,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     if (shipsCounter.keySet().size() > 0) {
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.ships"));
-      n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.ships"), "ships"));
-      rootNode.add(n);
+      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.ships"), "ships"));
+      rootNode.add(currentNode);
     }
 
     for (Iterator iter = shipsCounter.keySet().iterator(); iter.hasNext();) {
@@ -759,13 +797,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // Fiete 20060915: get rid of english icon names...using stringfactory to
       // get the orginal names
       String shipIconName = StringFactory.getFactory().intern(shipType.getID().toString());
-      m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName() + ": " + ((List) shipsCounter.get(shipType)).size(), shipIconName));
+      subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName() + ": " + ((List) shipsCounter.get(shipType)).size(), shipIconName));
 
-      n.add(m);
+      currentNode.add(subNode);
 
       for (Iterator i = ((List) shipsCounter.get(shipType)).iterator(); i.hasNext();) {
         UnitContainerNodeWrapper uc = nodeWrapperFactory.createUnitContainerNodeWrapper((Ship) i.next());
-        m.add(new DefaultMutableTreeNode(uc));
+        subNode.add(new DefaultMutableTreeNode(uc));
       }
     }
 
@@ -775,8 +813,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     if (sortedSkillTypes.size() > 0) {
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.skills"));
-      n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.skills"), "skills"));
-      rootNode.add(n);
+      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.skills"), "skills"));
+      rootNode.add(currentNode);
 
       for (Iterator iter = sortedSkillTypes.iterator(); iter.hasNext();) {
         SkillType type = (SkillType) iter.next();
@@ -784,8 +822,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
         for (Iterator i = sortedSkills.iterator(); i.hasNext();) {
           Skill skill = (Skill) i.next();
-          m = new DefaultMutableTreeNode(new SimpleNodeWrapper(type.getName() + " T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill), type.getName()));
-          n.add(m);
+          subNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(type.getName() + " T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill), type.getName()));
+          currentNode.add(subNode);
 
           List<Unit> unitList = skillStats.getUnits(skill);
 
@@ -816,7 +854,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             }
 
             UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(u, text);
-            m.add(new DefaultMutableTreeNode(w));
+            subNode.add(new DefaultMutableTreeNode(w));
           }
         }
       }
@@ -929,9 +967,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       ItemCategory iCategory = (ItemCategory) iter.next();
       String catIconName = magellan.library.utils.Umlaut.convertUmlauts(iCategory.getName());
       String nodeName = Resources.get("factionstatspanel." + catIconName);
-      m = createSimpleNode(nodeName, catIconName);
+      subNode = createSimpleNode(nodeName, catIconName);
       // m = new DefaultMutableTreeNode();
-      prodNode.add(m);
+      prodNode.add(subNode);
 
       Map h = (Map) production.get(iCategory);
       int totalAmount = 0;
@@ -940,6 +978,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         String resource = (String) iterator.next();
         ProductionStats stats = (ProductionStats) h.get(resource);
         totalAmount += stats.totalAmount;
+        DefaultMutableTreeNode o = null;
         // o = new DefaultMutableTreeNode(resource + ": " + stats.totalAmount);
         if (catIconName.equalsIgnoreCase("kraeuter")) {
           o = createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/" + "kraeuter");
@@ -947,7 +986,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           o = createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/" + resource);
         }
 
-        m.add(o);
+        subNode.add(o);
 
         for (Iterator i = stats.units.keySet().iterator(); i.hasNext();) {
           Unit u = (Unit) i.next();
@@ -955,7 +994,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }
-      // Fiete: zerst?rt das Icon...erstmal raus
+      // Fiete: zerstoert das Icon...erstmal raus
       // m.setUserObject(iCategory.toString() + ": " + totalAmount);
     }
 

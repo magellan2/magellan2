@@ -1682,16 +1682,16 @@ public class CRWriter extends BufferedWriter {
       
       if (ui != null) {
         if (region.getName() != null) {
-          ui.setProgress(Resources.get("orderwriterdialog.progress.07a",new Object[]{region.getName()}), counter++);
+          ui.setProgress(Resources.get("crwriterdialog.progress.07a",new Object[]{region.getName()}), counter++);
         } else {
-          ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
+          ui.setProgress(Resources.get("crwriterdialog.progress.07"), counter++);
         }
       }
       
 			writeRegion(region);
 		}
     if (ui != null) ui.setMaximum(11);
-    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.07"), counter++);
+    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.07"), counter++);
 	}
 
 	/**
@@ -2126,7 +2126,8 @@ public class CRWriter extends BufferedWriter {
             close(true);
             savingInProgress=false;
           } catch (Exception exception) {
-            ui.throwException(exception);
+            log.error(exception);
+            ui.showException(Resources.get("crwriterdialog.exception"), null, exception);
           }
         }
       });
@@ -2167,20 +2168,21 @@ public class CRWriter extends BufferedWriter {
    * @param world the game data to write.
    */
   protected void writeThread(GameData world) throws IOException, NullPointerException {
+    
     log.info("Saving report. Encoding: " + encoding);
     if (!encoding.equalsIgnoreCase(world.getEncoding())){
       log.warn("Encodings differ while writing CR: writer users " + encoding + ", gamadata is set to " + world.getEncoding() + ", setting charset to:" + world.getEncoding());
       this.encoding = world.getEncoding();
     }
     if (ui != null) ui.setMaximum(11);
-    if (ui != null) ui.setTitle(Resources.get("orderwriterdialog.progress.title"));
+    if (ui != null) ui.setTitle(Resources.get("crwriterdialog.progress.title"));
     if (ui != null) ui.show();
     
-    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.01"), 1);
+    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.01"), 1);
 		writeVersion(world);
 
 		if(!serverConformance) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.02"), 2);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
 			writeHotSpots(world.hotSpots());
 		}
 
@@ -2188,25 +2190,25 @@ public class CRWriter extends BufferedWriter {
     // also factions aren't necessary; maybe this needs further
     // specification
     if(includeUnits) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.03"), 3);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
       writeFactions(world.factions());
     }
     
 		if(includeSpellsAndPotions) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.04"), 4);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.04"), 4);
 			writeSpells(world.spells());
       
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.05"), 5);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.05"), 5);
 			writePotions(world.potions());
 		}
 
 		if(!serverConformance && includeIslands) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.06"), 6);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.06"), 6);
 			writeIslands(world.islands());
 		}
 
 		if(includeRegions) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.07"), 7);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.07"), 7);
 			if((regions != null) && (regions.size() > 0)) {
 				writeRegions(regions);
 			} else {
@@ -2215,15 +2217,15 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if(includeMessages) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.08"), 8);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.08"), 8);
 			writeMsgTypes(world.msgTypes());
 		}
 
-    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.09"), 9);
+    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.09"), 9);
 		writeTranslations(world.translations());
 
 		if(includeRegions && includeUnits && ((regions == null) || (regions.size() == 0))) {
-      if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.10"), 10);
+      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.10"), 10);
 			if(world.units() != null) {
 				if(world.units().size() != unitsWritten) {
 					int homelessUnitsCounter = 0;
@@ -2245,7 +2247,7 @@ public class CRWriter extends BufferedWriter {
 			}
 		}
 
-    if (ui != null) ui.setProgress(Resources.get("orderwriterdialog.progress.11"), 11);
+    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.11"), 11);
     
     if (ui != null) ui.ready();
     log.info("Done saving report");

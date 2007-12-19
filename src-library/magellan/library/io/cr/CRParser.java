@@ -1662,8 +1662,8 @@ public class CRParser implements RulesIO, GameDataIO {
     sc.getNextToken(); // skip PARTEI nr
 
     // first faction is report owner
-    if (world.ownerFaction==null)
-      world.ownerFaction=id;
+    if (world.getOwnerFaction()==null)
+      world.setOwnerFaction(id);
 
     Faction faction = getAddFaction(world, id);
     faction.setSortIndex(sortIndex);

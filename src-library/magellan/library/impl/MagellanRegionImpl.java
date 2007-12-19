@@ -1133,26 +1133,26 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
         refreshUnitRelations(false);
     }
     
-    /**
-     * Refreshes all the relations of all units in this region. It is preferrable to call this
-     * method instead of refreshing the unit relations 'manually'.
-     * 
-     * @param forceRefresh to enforce refreshment, false for one refreshment only
-     */
+	/**
+	 * Refreshes all the relations of all units in this region. It is preferrable to call this
+	 * method instead of refreshing the unit relations 'manually'.
+	 * 
+	 * @param forceRefresh to enforce refreshment, false for one refreshment only
+	 */
 
-    public synchronized void refreshUnitRelations(boolean forceRefresh) {
+	public synchronized void refreshUnitRelations(boolean forceRefresh) {
 
-        if(unitRelationsRefreshed == false || forceRefresh) {
-			unitRelationsRefreshed = true;
+	  if(unitRelationsRefreshed == false || forceRefresh) {
+	    unitRelationsRefreshed = true;
 
-			for(Iterator iter = this.units().iterator(); iter.hasNext();) {
-				Unit u = (Unit) iter.next();
-				u.refreshRelations();
-			}
+	    for(Iterator iter = this.units().iterator(); iter.hasNext();) {
+	      Unit u = (Unit) iter.next();
+	      u.refreshRelations();
+	    }
 
-			getZeroUnit().refreshRelations();
-            
-		}
+	    getZeroUnit().refreshRelations();
+
+	  }
 	}
 
 	/** Guarding units of this region. The list contains instances of class <tt>Unit</tt>. */

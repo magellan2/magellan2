@@ -307,7 +307,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    */
 
-  public void setup() {
+  protected void setup() {
     log.debug("ErrorWindow setup...");
 
     addWindowListener(new WindowClosingDispatcher(this));
@@ -535,9 +535,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   /**
    * @param cleanShutdown
    *          Wenn der Wert wahr ist, dann wird ein sauberer Shutdown
-   *          durchgefï¿½hrt und HVPWindow.shutdown aufgerufen. Wenn der Wert
+   *          durchgeführt und ErrorWindow.shutdown aufgerufen. Wenn der Wert
    *          falsch ist, dann wird direkt System.exit aufgerufen und nur noch
-   *          der Start-ShutdownHook ProzeÃŸ wird gestartet.
+   *          der Start-ShutdownHook Prozess wird gestartet.
    */
   public void setCleanShutdown(boolean cleanShutdown) {
     this.cleanShutdown = cleanShutdown;
@@ -545,10 +545,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 }
 
 /**
- * Dies ist ein Bugfix fÃ¼r JTextArea in Verbindung mit JScrollPane. Nach dem
- * EinfÃ¼gen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
- * oben nach unten lesen zu kÃ¶nnen. AuÃŸerdem wird beim Disablen die Farbe der
- * Komponente geÃ¤ndert und nicht wirklich disabled (weil sieht scheiÃŸe aus...)
+ * Dies ist ein Bugfix für JTextArea in Verbindung mit JScrollPane. Nach dem
+ * Einfügen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
+ * oben nach unten lesen zu können. Außerdem wird beim Disablen die Farbe der
+ * Komponente geändert und nicht wirklich disabled (weil sieht scheiße aus...)
  * 
  * @author Thoralf Rickert
  * @version 29.10.2003
@@ -666,7 +666,7 @@ interface WindowCloseable {
  * Dies ist ein Bugfix für JEditorPane in Verbindung mit JScrollPane. Nach dem
  * Einfügen von Text wird die CaretPosition auf 0 gesetzt, um den Textinhalt von
  * oben nach unten lesen zu können. Außerdem wird beim Disablen die Farbe der
- * Komponente geändert und nicht wirklich disabled (weil sieht scheißŸe aus...)
+ * Komponente geändert und nicht wirklich disabled (weil sieht scheiße aus...)
  * 
  * @author Thoralf Rickert
  * @version 29.10.2003

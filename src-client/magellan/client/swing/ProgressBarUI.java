@@ -113,10 +113,8 @@ public class ProgressBarUI implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
    */
-  public String input(String strMessage, String strTitle) {
-    Input input = new Input();
-    input.strMessage = strMessage;
-    input.strTitle = strTitle;
+  public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
+    Input input = new Input(strMessage, strTitle, values, initialSelection);
     try {
       SwingUtilities.invokeAndWait(input);
     } catch (Exception e) {
@@ -142,12 +140,14 @@ public class ProgressBarUI implements UserInterface {
    */
   public void ready() {
     ready=true;
-    dlg.setVisible(false);
+    if (dlg.isVisible())
+      dlg.setVisible(false);
     // if the progress dialog hasn't been set visible, because invokeLater is
     // waiting for an event, we cannot dispose the dialog, because this would
     // wait, too and could cause a deadlock. Therefore we only dispose if it has already been shown.
-    if (showing)
+    if (showing) {
       dlg.dispose();
+    }
   }
   
   public boolean isVisible() {
@@ -161,7 +161,14 @@ public class ProgressBarUI implements UserInterface {
     dlg.setTitle(title);
   }
 
-  
+  public void showException(String message, String description, Exception exception) {
+    ErrorWindow ew = message==null?new ErrorWindow(Resources.get("progressbarui.message.unknownerror"), exception):new ErrorWindow(message, description, exception);
+    ew.setShutdownOnCancel(false);
+    ew.setVisible(true);
+
+//    throw new RuntimeException(exception);
+  }
+
   /**
    *
    */
@@ -175,6 +182,7 @@ public class ProgressBarUI implements UserInterface {
           super.processEvent(e);
         else if (JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
           log.info("aborted");
+          super.processEvent(e);
         }else
           log.info("abort aborted");
       }else
@@ -294,24 +302,27 @@ public class ProgressBarUI implements UserInterface {
  private class Input implements Runnable {
    String strMessage;
    String strTitle;
-   String sResult = null;
 
+   Object [] values;
+   Object initialSelection;
+   
+   Object sResult = null;
+   
+   public Input(String m, String t, Object [] val, Object initial){
+     strMessage = m;
+     strTitle = t;
+     values = val;
+     initialSelection = initial;
+   }
+   
    /**
     * 
     */
    public void run() {
      sResult = JOptionPane.showInputDialog(dlg, strMessage,
-         strTitle, JOptionPane.QUESTION_MESSAGE);
+         strTitle, JOptionPane.QUESTION_MESSAGE, null, values, initialSelection);
    }
  }
-
-public void throwException(Exception exception) {
-  ErrorWindow ew = new ErrorWindow(exception);
-  ew.setVisible(true);
-  
-  throw new RuntimeException(exception);
-  
-}
 
 }
 

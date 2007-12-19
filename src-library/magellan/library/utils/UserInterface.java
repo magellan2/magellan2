@@ -60,12 +60,20 @@ public interface UserInterface {
   /**
    * Opens an input dialog.
    */
-  public String input(String strMessage, String strTitle);
+  public Object input(String strMessage, String strTitle, Object [] values, Object initial);
   
   /**
    * Sets the title of the progress dialog.
    */
   public void setTitle(String title);
 
-  public void throwException(Exception exception);
+  
+  /**
+   * Displays an error window
+   * 
+   * @param message A message for the user, may be <code>null</code>.
+   * @param description An explanatory text, may be <code>null</code>
+   * @param exception  
+   */
+  public void showException(String message, String description, Exception exception);
 }

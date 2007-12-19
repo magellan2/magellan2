@@ -1,3 +1,10 @@
+2007-12-19  stm (stm_@users.sourceforge.net)
+    * restructured ReportMerger but only little changes in behaviour
+    * (re-)implemented owner faction = first faction in report (affects faction sorting and FactionStatsPanel, too)
+    * implemented real space and astral space transformation for owner party to other parties
+    * tweaked interface of UserInterface (and ProgressBarUI)
+    * small editorial changes
+
 2007-12-18 Fiete (sf@fietefietz.de)
 	* CRWriterDialog: shipMsgs from not exported regions are not exported as well (forgot yesterday)
 

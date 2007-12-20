@@ -24,7 +24,6 @@
 package magellan.client.swing.map;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import magellan.client.MagellanContext;
@@ -33,12 +32,13 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
- * TODO This class must be commented
+ * Renders the real space regions of level 0 behind the astral space regions of level 1.
  *
- * @author ...
+ * @author darcduck
  * @version 1.0, 13.12.2007
  */
 public class EresseaSchemesCellRenderer extends ImageCellRenderer {
@@ -51,7 +51,6 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   public EresseaSchemesCellRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
     // construct new geometry
-    this.offset = new Point();
     this.setCellGeometry(geo);
     // TODO Auto-generated constructor stub
   }
@@ -62,7 +61,6 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     newGeo.setImageOffset(geo.getImageOffset().x-96, geo.getImageOffset().y-96);
     newGeo.setImageSize(geo.getImageSize().width, geo.getImageSize().height);
     newGeo.setScaleFactor(geo.getScaleFactor() * (float)0.25);
-//    trans.setSize((geo.getScaledPolygon().getBounds().width+1)*3/8, (geo.getScaledPolygon().getBounds().height+1)*3/8);
     super.setCellGeometry(newGeo);
   }
   
@@ -70,19 +68,17 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
    * @see magellan.client.swing.map.HexCellRenderer#getName()
    */
   public String getName() {
-    // TODO localization
-    return "Schemen / Schemes";
+    return Resources.get("map.eresseaschemescellrenderer.name");
   }
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
   public int getPlaneIndex() {
-    // HIGHTODO Automatisch generierte Methode implementieren
     return Mapper.PLANE_BEHIND;
   }
 
-  public void init(GameData data, Graphics g, Point offset) {
+  public void init(GameData data, Graphics g, Rectangle offset) {
     this.mapping = data.getAstralMapping();
     super.init(data, g, offset);
   }
@@ -115,7 +111,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   }
 
   public void scale(float scaleFactor) {
-    scaleFactor *= 0.25;
+    scaleFactor *= 0.25f;
     super.scale(scaleFactor);
   }
   

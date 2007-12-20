@@ -14,7 +14,6 @@
 package magellan.library.gamebinding;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import magellan.library.Item;
 import magellan.library.Skill;
@@ -249,16 +248,14 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		return getLoad(unit, unit.getModifiedItems());
 	}
 
-	private int getLoad(Unit unit, Collection items) {
+	private int getLoad(Unit unit, Collection<Item> items) {
     int load = 0;
 		ItemType horse = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_HORSE);
 		ItemType cart = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_CART);
     // darcduck 2007-10-31: take care of bags of negative weight
     ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
 
-		for(Iterator iter = items.iterator(); iter.hasNext();) {
-			Item i = (Item) iter.next();
-
+		for(Item i : items) {
 			if(!i.getItemType().equals(horse) && !i.getItemType().equals(cart)) {
 				// pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount
 				if(i.getAmount() > 0) {
@@ -282,7 +279,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *
    * @return the load of the bonw in GE 100. 
    */
-  private int getBonwLoad(Unit unit, Collection items, Item i_bonw) {
+  private int getBonwLoad(Unit unit, Collection<Item> items, Item i_bonw) {
     final int I_BONW_CAP = 20000;
     int bonwload = 0;
     int bonwcap = 0;
@@ -290,9 +287,8 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     if (i_bonw != null) {
       bonwcap = i_bonw.getAmount() * I_BONW_CAP;
 
-      for(Iterator iter = items.iterator(); iter.hasNext()&&(bonwload<bonwcap);) {
-        Item i = (Item) iter.next();
-
+      for(Item i : items) {
+        if (bonwload>=bonwcap) break;
         if ((i.getAmount() > 0)&&(i.getItemType().isStoreableInBonw())) {
           bonwload += (((int) (i.getItemType().getWeight() * 100)) * i.getAmount());
         }
@@ -333,15 +329,13 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *
    * 
    */
-  private int getWeight(Unit unit, Collection items, int persons) {
+  private int getWeight(Unit unit, Collection<Item> items, int persons) {
     int weight = 0;
     float personWeight = getRace(unit).getWeight();
     // darcduck 2007-10-31: take care of bags of negative weight
     ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
     
-    for(Iterator iter = items.iterator(); iter.hasNext();) {
-      Item item = (Item) iter.next();
-
+    for(Item item : items) {
       // pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount
       if(item.getAmount() > 0) {
         weight += (item.getAmount() * (int) (item.getItemType().getWeight() * 100));

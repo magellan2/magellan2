@@ -217,7 +217,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void init(GameData data, Graphics g, Point offset) {
+	public void init(GameData data, Graphics g, Rectangle offset) {
 		super.init(data, g, offset);
 
 		if(isScalingFont) {

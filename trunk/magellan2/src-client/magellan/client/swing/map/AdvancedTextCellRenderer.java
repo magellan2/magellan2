@@ -306,7 +306,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 * 
 	 * 
 	 */
-	public void init(GameData data, Graphics g, Point offset) {
+	public void init(GameData data, Graphics g, Rectangle offset) {
 		if(cellGeo.getScaleFactor() != lastScale) {
 			set.clearCache();
 			lastScale = cellGeo.getScaleFactor();

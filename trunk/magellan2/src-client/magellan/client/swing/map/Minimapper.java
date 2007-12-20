@@ -88,7 +88,7 @@ public class Minimapper extends Mapper {
    * @see magellan.client.swing.map.Mapper#initRenderingPlanes()
    */
 	protected RenderingPlane[] initRenderingPlanes() {
-		RenderingPlane p[] = new RenderingPlane[3];
+		RenderingPlane p[] = new RenderingPlane[Mapper.PLANE_REGION+1];
 		p[Mapper.PLANE_REGION] = new RenderingPlane(Mapper.PLANE_REGION, Resources.get("map.mapper.plane.region.name"), RenderingPlane.VISIBLE_REGIONS);
 		p[Mapper.PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
 																			 context,

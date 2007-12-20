@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import magellan.library.gamebinding.EresseaMapMergeEvaluator;
-import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Translations;

@@ -1,3 +1,6 @@
+2007-12-16 Darcduck (sf.net@duckstein.net)
+	* Added BackgroundImageRenderer including properties dialog
+
 2007-12-19  stm (stm_@users.sourceforge.net)
     * restructured ReportMerger but only little changes in behaviour
     * (re-)implemented owner faction = first faction in report (affects faction sorting and FactionStatsPanel, too)
@@ -22,7 +25,7 @@
     * Small fix for faction deletion, if a faction is in an alliance with one of the deleted faction.
       Fix is that we check that this faction is also deleted.
     
-2007-12-15 Darcduck (sf.net@duckstein.net)
+2007-12-16 Darcduck (sf.net@duckstein.net)
     * Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
 	* fixed bug #64: Property of Minimapper doesn't overwrite Mapper.Region anymore
 

@@ -15,6 +15,7 @@ package magellan.client.swing.map;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.GameData;
@@ -60,7 +61,8 @@ public interface MapCellRenderer {
 	 * Initializes the renderer for one rendering pass. All supplied informations stays constant
 	 * during a pass and is therefore not transferred with each render() call.
 	 */
-	public void init(GameData data, Graphics g, Point offset);
+//	public void init(GameData data, Graphics g, Point offset);
+  public void init(GameData data, Graphics g, Rectangle offset);
 
 	/**
 	 * Tells the renderer that it should re-adjust the scale factor it uses for rendering.

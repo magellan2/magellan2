@@ -14,7 +14,6 @@
 package magellan.library.impl;
 
 import java.math.BigDecimal;
-import java.util.Iterator;
 
 import magellan.library.GameData;
 import magellan.library.HasRegion;
@@ -171,10 +170,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
 		if (modLoad<0) {
 		  modLoad=0;
-		}else{
+		} else {
 		  // subtract all units initially on the ship with their initial weight
-		  for(Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
-		    Unit u = iter.next();
+		  for(Unit u : units()) {
 		    modLoad -= u.getWeight();
 		  }
 		}
@@ -185,8 +183,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     // items/races where we don't know the weight 
     
     // add now the current calculated weight of the units
-		for(Iterator<Unit> iter = modifiedUnits().iterator(); iter.hasNext();) {
-			Unit u = iter.next();
+    for(Unit u : modifiedUnits()) {
 			modLoad += u.getModifiedWeight();
 		}
 		return modLoad;
@@ -235,6 +232,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 			}
 
 			if(damageRatio != 0) {
+        // TODO localize
 				sb.append(", ").append(damageRatio).append("% Beschädigung");
 			}
 		}

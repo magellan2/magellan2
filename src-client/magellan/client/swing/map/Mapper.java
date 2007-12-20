@@ -821,7 +821,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     List regList = regionList;
 
     // super.paint(g);
-    Point offset = new Point(mapToScreenBounds.x + clipBounds.x, mapToScreenBounds.y + clipBounds.y);
+    Rectangle offset = new Rectangle(mapToScreenBounds.x + clipBounds.x, mapToScreenBounds.y + clipBounds.y, clipBounds.width, clipBounds.height);
     CoordinateID upperLeftCorner = cellGeometry.getCoordinate(offset.x, offset.y, showLevel);
     CoordinateID lowerRightCorner = cellGeometry.getCoordinate(offset.x + clipBounds.width, offset.y + clipBounds.height, showLevel);
 
@@ -1336,8 +1336,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[PLANES];
-    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"));
-//    p[PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BACKGROUND], RegionImageCellRenderer.class.getName())));
+    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
+    p[PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BACKGROUND], BackgroundImageRenderer.class.getName())));
 
     p[PLANE_BEHIND] = new RenderingPlane(PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"));
     p[PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BEHIND], EresseaSchemesCellRenderer.class.getName())));
@@ -1393,6 +1393,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     renderers.add(new SchemeCellRenderer(geo, context));
     renderers.add(new SignTextCellRenderer(geo, context));
     renderers.add(new EresseaSchemesCellRenderer(geo, context));
+    renderers.add(new BackgroundImageRenderer(geo, context));
 
     if (cRenderers != null) {
       for (Iterator<MapCellRenderer> iter = cRenderers.iterator(); iter.hasNext();) {

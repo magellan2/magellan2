@@ -1,4 +1,8 @@
-2007-12-16 Darcduck (sf.net@duckstein.net)
+2007-12-23 Darcduck (sf.net@duckstein.net)
+	* Some fixes in OrderCompleter (NPE)
+	* changed scroll behavior for MultiEditorLayout=false
+	
+2007-12-20 Darcduck (sf.net@duckstein.net)
 	* Added BackgroundImageRenderer including properties dialog
 
 2007-12-19  stm (stm_@users.sourceforge.net)

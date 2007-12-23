@@ -2175,16 +2175,14 @@ public class EresseaOrderCompleter implements Completer {
 		 * 
 		 */
 		public int compare(Object o1, Object o2) {
-			int retVal = 0;
-
 			if(o1 instanceof String && o2 instanceof String) {
-				retVal = ((String) o1).compareToIgnoreCase((String) o2);
+				return ((String) o1).compareToIgnoreCase((String) o2);
 			} else if(o1 instanceof Completion && o2 instanceof Completion) {
 				Completion c1 = (Completion) o1;
 				Completion c2 = (Completion) o2;
 
 				if(c1.getName() == null) {
-					return (c1.getName() == null) ? 0 : 1;
+					return (c2.getName() == null) ? 0 : 1;
 				} else {
 					return (c2.getName() == null) ? (-1)
 												  : c1.getName().compareToIgnoreCase(c2.getName());
@@ -2192,14 +2190,22 @@ public class EresseaOrderCompleter implements Completer {
 			} else if(o1 instanceof Completion && o2 instanceof String) {
 				String s1 = ((Completion) o1).getName();
 				String s2 = (String) o2;
-				retVal = s1.compareToIgnoreCase(s2);
+        if (s1 == null) {
+          return (s2 == null) ? 0 : 1;
+        } else {
+          return s1.compareToIgnoreCase(s2);
+        }
 			} else if(o1 instanceof String && o2 instanceof Completion) {
 				String s1 = (String) o1;
 				String s2 = ((Completion) o2).getName();
-				retVal = s1.compareToIgnoreCase(s2);
+        if (s2 == null) {
+          return (s1 == null) ? 0 : -1;
+        } else {
+          return s2.compareToIgnoreCase(s1);
+        }
 			}
 
-			return retVal;
+			return 0;
 		}
 
 		/**

@@ -102,7 +102,12 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
   }
 
   public void setType(String type) {
-    this.type = type;
+    // fix for reports turn 551 (english) and 552 (all)
+    if (type.equalsIgnoreCase("road")) {
+      this.type = "Straﬂe";
+    } else {
+      this.type = type;      
+    }
   }
 
   public void setBuildRatio(int buildratio) {

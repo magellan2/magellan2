@@ -2624,6 +2624,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			if(orientation == SwingConstants.HORIZONTAL) {
 				return visibleRect.width / 5;
 			} else {
+        if (!MultiEditorOrderEditorList.this.isMultiEditorLayout()) return visibleRect.height/10;
 				Component lastVisibleComponent = null;
 				Component nextComponent = null;
 

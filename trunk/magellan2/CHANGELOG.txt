@@ -1,3 +1,8 @@
+2007-12-24 Darcduck (sf.net@duckstein.net)
+	* some enhancements to EresseaOrderCompleter:
+	* added #118: "GIVE <unit> <amount>" lists items/persons available in this amount first
+	* "GIVE <unit> <amount> ALL" multiline completion to easy split units
+
 2007-12-23 Darcduck (sf.net@duckstein.net)
 	* Some fixes in OrderCompleter (NPE)
 	* changed scroll behavior for MultiEditorLayout=false

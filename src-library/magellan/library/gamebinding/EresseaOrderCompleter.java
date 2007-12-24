@@ -275,8 +275,10 @@ public class EresseaOrderCompleter implements Completer {
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEACH),
-									   " "));
+		if (hasSkills(unit, 2)) {
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEACH),
+       " "));      
+    }
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEARN),
 									   " "));
 //   removed: FF SUPPLY is not supported anymore...in eressea
@@ -855,10 +857,14 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT)));
 
-		//		if (unit.getBuilding() != null && unit.equals(unit.getBuilding().getOwnerUnit()) ||
-		//			unit.getShip() != null && unit.equals(unit.getShip().getOwnerUnit()))
-		//		{
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CONTROL)));
+		/*		if (unit.getBuilding() != null && unit.equals(unit.getBuilding().getOwnerUnit()) ||
+		  		unit.getShip() != null && unit.equals(unit.getShip().getOwnerUnit()))
+		 	    {
+     */
+    // if we do not move into or stay in a ship or building we can't give control to another unit  
+    if ((unit.getModifiedShip() != null) || (unit.getModifiedBuilding() != null)) {
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CONTROL)));      
+    }
 
 		//		}
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
@@ -882,10 +888,10 @@ public class EresseaOrderCompleter implements Completer {
 	 * @param persons Whether to add "PERSONEN" or not
 	 */
 	void cmpltGibUIDAmount(UnitID uid, int i, boolean persons) {
-		addUnitItems("");
+		addUnitItems(i, "");
 
-		// add completions, that create multiple Give-Orders for the resources of an item
 		if((i != 0) && (uid != null)) {
+      // add completions, that create multiple Give-Orders for the resources of an item
 			for(Iterator iter = data.rules.getItemTypeIterator(); iter.hasNext();) {
 				ItemType iType = (ItemType) iter.next();
 
@@ -895,7 +901,7 @@ public class EresseaOrderCompleter implements Completer {
 					boolean suggest = true;
 					int loopCount = 0;
 					String order = "";
-
+          
 					for(Iterator iterator = iType.getResources(); iterator.hasNext() && suggest;
 							loopCount++) {
 						Item resource = (Item) iterator.next();
@@ -926,10 +932,38 @@ public class EresseaOrderCompleter implements Completer {
 					}
 				}
 			}
+      /**
+       * Add multiple GIVE orders for if we enter ALL
+       * i.e.
+       * assume the unit has 200 sword, shild, plate and 80 horses
+       * GIVE abcd 100 [ALL]
+       * will complete to
+       * GIVE abcd 100 sword
+       * GIVE abcd 100 shild
+       * GIVE abcd 100 plate
+       * as we have not at least 100 horses. This is perfect to split units
+       */  
+      String order = "";
+      String tounit = (uid.intValue()>=0) ? uid.toString() : Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + uid.toString();
+      if (persons&&(unit.getPersons()>=i))
+        order = Resources.getOrderTranslation(EresseaConstants.O_MEN);
+      for (Item item : unit.getItems()) {
+        if (item.getAmount()>=i) {
+          if("".equals(order)) {
+            order += item.getName();
+          } else {
+            order += ("\n" +
+            Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " " +
+            tounit + " " + i + " " + item.getName());
+          }
+        }
+      }
+      if(!"".equals(order)) 
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), order, ""));
 		}
-
+    
 		if (persons)
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN), (unit.getPersons()>=i) ? 0 : 10));
 
 	}
 
@@ -1875,19 +1909,23 @@ public class EresseaOrderCompleter implements Completer {
       }
     }
   }
-    
-	private void addUnitItems(String postfix) {
-		for(Iterator<Item> items = unit.getItems().iterator(); items.hasNext();) {
-			Item i = items.next();
-			String name = i.getName();
-			
-			if(name != null) {
-				if(name.indexOf(" ") > -1) {
-					completions.add(new Completion(name, "\"" + name + "\"", postfix));
-				} else {
-					completions.add(new Completion(name, postfix));
-				}
-			}
+
+  private void addUnitItems(String postfix) {
+    addUnitItems(0, postfix);
+  }
+
+  
+	private void addUnitItems(int amount, String postfix) {
+		for(Item i : unit.getItems()) {
+      String name = i.getName();
+      
+      if(name != null) {
+        if(name.indexOf(" ") > -1) {
+          completions.add(new Completion(name, "\"" + name + "\"", postfix, (i.getAmount()>=amount) ? 0 : 10));
+        } else {
+          completions.add(new Completion(name, postfix, (i.getAmount()>=amount) ? 0 : 10));
+        }
+      }        
 		}
 	}
 
@@ -2103,13 +2141,19 @@ public class EresseaOrderCompleter implements Completer {
 		return retVal.reverse().toString();
 	}
 
+  /**
+   * Determines whether the unit has any skill of at least the given level
+   * Used i.e. for determining if someone can teach
+   */
+  private boolean hasSkills(Unit u, int level) {
+    for (Skill s : u.getModifiedSkills()) {
+      if (s.getLevel()>=level) return true;
+    }
+    return false;
+  }
+  
 	/**
 	 * Determines whether the specified unit has a skill.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	private boolean hasSkill(Unit u, ID id) {
 		return hasSkill(u, id, 1);
@@ -2120,12 +2164,6 @@ public class EresseaOrderCompleter implements Completer {
 	 * the specified skill is unknown.
 	 * 
 	 * FF: changed to reflect modified skill
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	private boolean hasSkill(Unit u, ID id, int level) {
 		boolean retVal = false;

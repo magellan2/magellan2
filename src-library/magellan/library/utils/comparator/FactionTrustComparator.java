@@ -79,7 +79,9 @@ public class FactionTrustComparator<E> implements Comparator<Faction> {
 	 * 		   is returned.
 	 */
 	public int compare(Faction o1, Faction o2) {
-	  if (o1.getData().getOwnerFaction() !=null && o2.getData().getOwnerFaction()!=null){
+	  // owner faction should always be first
+	  if (o1.getData() != null && o2.getData() != null && o1.getData().equals(o2.getData()) 
+	      && o1.getData().getOwnerFaction() != null && o2.getData().getOwnerFaction() != null) {
 	    if (o1.getData().getOwnerFaction().equals(o1.getID()) && !o1.equals(o2))
 	      return -999;
 	    if (o2.getData().getOwnerFaction().equals(o2.getID()) && !o1.equals(o2))

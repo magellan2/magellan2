@@ -82,6 +82,8 @@ public class CoordinateID implements ID {
 	 * 
 	 */
 	public boolean equals(Object o) {
+	  if (o==null)
+	    return false;
 		try {
 			CoordinateID c = (CoordinateID) o;
 			
@@ -201,6 +203,21 @@ public class CoordinateID implements ID {
 		return this;
 	}
 
+	/**
+   * Translates this CoordinateID by -c.x on the x-axis and -c.y on the y-axis and -c.z on the z-axis.
+   * Be careful when using this method on a coordinate used as a key in a hash map: modifying
+   * the x, y and z values changes the hash value.
+   *
+   * @param c the relative CoordinateID to translate the current one by.
+   *
+   * @return this.
+   */
+	public CoordinateID subtract(CoordinateID c) {
+    x -= c.x;
+    y -= c.y;
+    z -= c.z;
+	  return this;
+	}
 
 	/**
 	 * Creates the distance coordinate from this coordinate to the given coordinate 

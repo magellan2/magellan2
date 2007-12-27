@@ -16,11 +16,11 @@ package magellan.library.io.cr;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -274,6 +274,21 @@ public class CRWriter extends BufferedWriter {
 
 		newLine();
 	}
+
+  private void writeCoordinateTranslations(GameData world) throws IOException {
+    for (ID f: world.factions().keySet()){
+      EntityID fID = (EntityID) f;
+      Map<Integer, CoordinateID> map = world.getCoordinateTranslationMap(fID);
+      if (map!=null && !map.isEmpty()){
+        write("COORDTRANS " + (fID).intValue());
+        newLine();
+        for (CoordinateID t : map.values()){
+          write(t.toString(" ")+";translation");
+          newLine();
+        }
+      }
+    }
+  }
 
 	/**
 	 * Write a sequence of message blocks to the underlying stream.
@@ -834,7 +849,7 @@ public class CRWriter extends BufferedWriter {
       ownerFaction = map.values().iterator().next();
     if (ownerFaction != null)
       writeFaction(ownerFaction);
-    List<Faction> sorted = new LinkedList<Faction>(map.values());
+    List<Faction> sorted = new ArrayList<Faction>(map.values());
     Collections.sort(sorted, sortIndexComparator);
 
     // write other factions
@@ -981,7 +996,7 @@ public class CRWriter extends BufferedWriter {
 			return;
 		}
 
-		List<Ship> sorted = new LinkedList<Ship>(ships);
+		List<Ship> sorted = new ArrayList<Ship>(ships);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Ship> iter = sorted.iterator(); iter.hasNext();) {
@@ -1080,7 +1095,7 @@ public class CRWriter extends BufferedWriter {
 			return;
 		}
 
-		List<Building> sorted = new LinkedList<Building>(buildings);
+		List<Building> sorted = new ArrayList<Building>(buildings);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Building> iter = sorted.iterator(); iter.hasNext();) {
@@ -1330,7 +1345,7 @@ public class CRWriter extends BufferedWriter {
 			return;
 		}
 
-		List<Unit> sorted = new LinkedList<Unit>(units);
+		List<Unit> sorted = new ArrayList<Unit>(units);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Unit> iter = sorted.iterator(); iter.hasNext();) {
@@ -2186,6 +2201,10 @@ public class CRWriter extends BufferedWriter {
     if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.01"), 1);
 		writeVersion(world);
 
+    if(!serverConformance) {
+      writeCoordinateTranslations(world);
+    }
+
 		if(!serverConformance) {
       if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
 			writeHotSpots(world.hotSpots());
@@ -2622,7 +2641,7 @@ public class CRWriter extends BufferedWriter {
 		
 		
 		/*
-		List<String> sorted = new LinkedList<String>(m.keySet());
+		List<String> sorted = new ArrayList<String>(m.keySet());
 		Collections.sort(sorted);
 
 		for(Iterator<String> iter = sorted.iterator(); iter.hasNext();) {

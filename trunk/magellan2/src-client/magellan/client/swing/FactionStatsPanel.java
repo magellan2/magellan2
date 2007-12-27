@@ -406,23 +406,23 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (f.getID().equals(data.getOwnerFaction())){
         currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.reportowner"), "reportowner"));
         rootNode.add(currentNode);
-      }else{
-        /* Translation node */
-        if (f.getID() instanceof EntityID) {
-          Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID)f.getID());
-          if (map!=null){
-            currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.translations"), "translations"));
-            SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
-            for (Integer i: layers){
-              CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
-              DefaultMutableTreeNode translationNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer"))).format(new Integer [] { i })+" "+translation, null));
-              currentNode.add(translationNode);
-            }
-           rootNode.add(currentNode);
+      }
+      
+      /* Translation node */
+      if (f.getID() instanceof EntityID) {
+        Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID)f.getID());
+        if (map!=null){
+          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.translations"), "translations"));
+          SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
+          for (Integer i: layers){
+            CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
+            DefaultMutableTreeNode translationNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer"))).format(new Integer [] { i })+" "+translation, null));
+            currentNode.add(translationNode);
           }
-        } else {
-          log.warn("faction ID is not EntityID");
+          rootNode.add(currentNode);
         }
+      } else {
+        log.warn("faction ID is not EntityID");
       }
       
       /* score node */

@@ -1,3 +1,6 @@
+2007-12-26  stm (stm_@users.sourceforge.net)
+    * improved origin translation in Reportmerger, including CR-I/O
+
 2007-12-24 Darcduck (sf.net@duckstein.net)
 	* some enhancements to EresseaOrderCompleter:
 	* added #118: "GIVE <unit> <amount>" lists items/persons available in this amount first

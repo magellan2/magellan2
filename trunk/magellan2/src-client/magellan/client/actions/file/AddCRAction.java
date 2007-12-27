@@ -23,8 +23,8 @@ import javax.swing.JFileChooser;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.event.SelectionEvent;
+import magellan.client.swing.AddCRAccessory;
 import magellan.client.swing.EresseaFileFilter;
-import magellan.client.swing.HistoryAccessory;
 import magellan.client.swing.ProgressBarUI;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
@@ -77,12 +77,12 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 		int lastFileFilter = Integer.parseInt(settings.getProperty("Client.lastSelectedAddCRFileFilter",
 																   "3"));
 		// bugzilla #861
-        if(lastFileFilter < 0) {
-            lastFileFilter = 0;
-        } else {
-            lastFileFilter = Math.min(lastFileFilter,fc.getChoosableFileFilters().length-1);
-        }
-        
+		if(lastFileFilter < 0) {
+		  lastFileFilter = 0;
+		} else {
+		  lastFileFilter = Math.min(lastFileFilter,fc.getChoosableFileFilters().length-1);
+		}
+
 		fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
 
 		File file = new File(settings.getProperty("Client.lastCRAdded", ""));
@@ -92,7 +92,10 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 			fc.setCurrentDirectory(file.getParentFile());
 		}
 
-		HistoryAccessory acc = new HistoryAccessory(settings, fc);
+		AddCRAccessory acc = new AddCRAccessory(settings, fc);
+		acc.setSort(false);
+		acc.setInteractive(true);
+		  	
 		fc.setAccessory(acc);
 		fc.setDialogTitle(Resources.get("actions.addcraction.title"));
 
@@ -141,7 +144,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 				settings.setProperty("Client.lastCRAdded", files[files.length - 1].getAbsolutePath());
 			}
 
-			merger.merge(new ProgressBarUI(client),true);
+			merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);
 			if (selectedObjects!=null){
 				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
 			}

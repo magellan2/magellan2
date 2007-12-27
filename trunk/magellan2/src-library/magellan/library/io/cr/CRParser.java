@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -141,6 +142,17 @@ public class CRParser implements RulesIO, GameDataIO {
       if (c.z == newOrigin.z){
         c.x-=newOrigin.x;
         c.y-=newOrigin.y;
+      }
+      return c;
+    }
+    
+    /**
+     * 
+     */
+    CoordinateID inverseOriginTranslate(CoordinateID c){
+      if (c.z == newOrigin.z){
+        c.x+=newOrigin.x;
+        c.y+=newOrigin.y;
       }
       return c;
     }
@@ -276,6 +288,17 @@ public class CRParser implements RulesIO, GameDataIO {
     }
 
     return ship;
+  }
+
+  public String getConfiguration() {
+    return configuration;
+  }
+
+  /**
+   * @return The first faction encountered while parsing, <code>null</code> if not applicable
+   */
+  public Faction getFirstFaction() {
+    return firstFaction;
   }
 
   /**
@@ -942,6 +965,8 @@ public class CRParser implements RulesIO, GameDataIO {
         if (world.getOwnerFaction()==null && !configuration.equals("Standard"))
           world.setOwnerFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
         sc.getNextToken();
+      } else if((sc.argc == 1) && sc.argv[0].startsWith("COORDTRANS")) {
+        parseCoordinateTransformation(world);
       } else if((sc.argc == 1) && sc.argv[0].startsWith("RULES")) {
         parseRules(world.rules);
       } else if((sc.argc == 1) && sc.argv[0].startsWith("HOTSPOT ")) {
@@ -1412,6 +1437,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if(sc.argc == 2) {
         unknown("ITEMCATEGORY", false);
       } else {
+        // FIXME (stm) really break on unkown tag?
         break;
       }
     }
@@ -1436,6 +1462,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if(sc.argc == 2) {
         unknown("SKILLCATEGORY", false);
       } else {
+        // FIXME (stm) really break on unkown tag?
         break;
       }
 
@@ -1526,6 +1553,25 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
+  private void parseCoordinateTransformation(GameData world) throws IOException {
+    EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring("COORDTRANS".length()+1)), world.base);
+    sc.getNextToken();
+
+    CoordinateID translation = null;
+
+    while(!sc.eof && !sc.isBlock) {
+      if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("translation")) {
+        translation = CoordinateID.parse(sc.argv[0], " ");
+        inverseOriginTranslate(translation);
+        world.setCoordinateTranslation(id, translation);
+        sc.getNextToken();
+      } else {
+        unknown("COORDTRANS", true); 
+      }
+    }
+  }
+
+
   private void parseOptionCategory(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
@@ -1549,6 +1595,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if(sc.argc == 2) {
         unknown("OPTIONCATEGORY", true);
       } else {
+        // FIXME (stm) really break on unknown token?
         break;
       }
 
@@ -1574,6 +1621,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if(sc.argc == 2) {
         unknown("ALLIANCECATEGORY", true);
       } else {
+        // FIXME (stm) really break on unk
         break;
       }
 
@@ -1604,7 +1652,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else {
         unknown("ALLIANZ", true); // loop within one ALLIANZ
-
+        // FIXME (stm) really break on unk
         break;
       }
     }
@@ -1802,6 +1850,7 @@ public class CRParser implements RulesIO, GameDataIO {
         if(!sc.isIdBlock) {
           unknown("PARTEI", false);
         }
+        // FIXME (stm) really break?
 
         break;
       } else {
@@ -1863,6 +1912,7 @@ public class CRParser implements RulesIO, GameDataIO {
         break;
       } else {
         unknown("GRUPPE", true);
+        // FIXME (stm) really break on unknown token?
 
         break;
       }
@@ -2548,6 +2598,7 @@ public class CRParser implements RulesIO, GameDataIO {
   
     if(c == null) {
       unknown("REGION", true);
+      // FIXME (stm) really break on unknown token?
 
       return;
     }
@@ -2851,6 +2902,7 @@ public class CRParser implements RulesIO, GameDataIO {
         break;
       } else {
         unknown("SPEZIALREGION", true);
+        // FIXME (stm) really break on unknown token?
 
         break;
       }
@@ -2905,6 +2957,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     if(c == null) {
       unknown("SCHEMEN", true);
+      // FIXME (stm) really break on unknown token?
 
       return;
     }
@@ -2922,6 +2975,7 @@ public class CRParser implements RulesIO, GameDataIO {
         break;
       } else {
         unknown("SCHEMEN", true);
+        // FIXME (stm) really break on unknown token?
 
         break;
       }
@@ -2983,6 +3037,8 @@ public class CRParser implements RulesIO, GameDataIO {
         oome = true;
       }
       
+      setOwner(world);
+      
       // Fiete 20061208  check Memory
       if (!MemoryManagment.isFreeMemory() || oome){
         // we have a problem..
@@ -2998,18 +3054,28 @@ public class CRParser implements RulesIO, GameDataIO {
       
     }
     this.world.setMaxSortIndex(++regionSortIndex);
-    if (world.getOwnerFaction()==null){
-      if (configuration.equals("Standard") && firstFaction!=null)
-        world.setOwnerFaction((EntityID) firstFaction.getID());
-      else {
-        Object result = ui.input(Resources.get("crparser.msg.inputowner.msg"), Resources.get("crparser.msg.inputowner.title"), world.factions().values().toArray(), firstFaction);
-        if (result!=null && result instanceof Faction)
-          world.setOwnerFaction((EntityID) ((Faction)result).getID());
-      }
-    }
     ui.ready();
     log.info("Done.");
     return this.world;
+  }
+
+  private void setOwner(GameData newData) {
+    if (newData.getOwnerFaction()==null){
+      // in standard reports, the first faction of the report should always be the owner faction 
+      Faction firstFaction = getFirstFaction();
+      if (getConfiguration().equals("Standard") && firstFaction!=null){
+        newData.setOwnerFaction((EntityID) firstFaction.getID());
+        
+        // set translation to (0,0,...) in all existing layers
+        Set<Integer> layers = new HashSet<Integer>();
+        for (CoordinateID coord : newData.regions().keySet()){
+          if (!layers.contains(coord.z)){
+            newData.setCoordinateTranslation((EntityID) firstFaction.getID(), new CoordinateID(0,0,coord.z));
+            layers.add(coord.z);
+          }
+        }
+      }    
+    }
   }
 
   private void invalidParam(String method, String msg) {
@@ -3029,9 +3095,11 @@ public class CRParser implements RulesIO, GameDataIO {
         break;
       } else {
         unknown("TRANSLATION", true);
+        // FIXME (stm) really break on unknown token?
 
         break;
       }
     }
   }
+
 }

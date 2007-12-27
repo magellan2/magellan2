@@ -284,6 +284,21 @@ public class Resources {
     }
     return result;
   }
+ 
+  /**
+   * Returns the resource for the resource key in the default
+   * locale of the running machine. If the resource is
+   * not available in this locale, this method tries to find
+   * the resource in the default resources.
+   */
+  public static String getFormatted(String key, Object... args){
+    String message = get(key, false);
+    if (message==null){
+      log.warn("Could not find the resource key '"+key+"' in the resources. See "+getLine()+" for more details");
+      return key;
+    }
+    return (new java.text.MessageFormat(message)).format(args);
+  }
   
   protected static StringWriter sw = new StringWriter();
   protected static PrintWriter pw = new PrintWriter(sw);

@@ -1,0 +1,10 @@
+Mantis Bug #???
+
+Einheit 1 hat ein Burg-Tag (666;Burg) aber die Burg existiert nicht (solche
+Reports gibt es nach CR-Export). Das kann an mehreren Stellen zur NPE führen:
+
+Anzeige:
+	at magellan.client.swing.tree.UnitContainerNodeWrapper.getIconNames(UnitContainerNodeWrapper.java:103)
+
+Merge:
+	at magellan.library.GameData.mergeIt(GameData.java:1133)

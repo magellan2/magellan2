@@ -17,14 +17,11 @@ import java.io.IOException;
 import java.io.Reader;
 
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
-import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Rules;
 import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.utils.NullUserInterface;
-import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
@@ -153,11 +150,6 @@ public class GameDataReader {
       log.info("Loading report "+aFileType.getFile().getName());
       CRParser parser = new CRParser(ui,newOrigin);
       parser.read(reader, newData);
-      if (newData.getOwnerFaction()==null){
-        Object result = ui.input(Resources.getFormatted("crparser.msg.inputowner.msg", aFileType.getFile().getName()), Resources.get("crparser.msg.inputowner.title"), newData.factions().values().toArray(), parser.getFirstFaction());
-        if (result!=null && result instanceof Faction)
-          newData.setOwnerFaction((EntityID) ((Faction)result).getID());
-      }
     } finally {
       try {
         reader.close();

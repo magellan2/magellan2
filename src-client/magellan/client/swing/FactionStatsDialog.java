@@ -23,6 +23,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -46,6 +47,7 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.skillchart.SkillChartPanel;
+import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -339,45 +341,51 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 					Faction f = (Faction) lstFaction.getSelectedValue();
 
-					String pwd = "";
+					FactionPropertiesDialog dialog = new FactionPropertiesDialog(null, true, dispatcher, data, getSettings(), f);
+					
+					dialog.setVisible(true);
+					
+					if (dialog.approved()){
+					  String pwd = dialog.getPassword();
 
-					if(f.getPassword() != null) {
-						pwd = f.getPassword();
+					  if(pwd != null) { // if user did not hit the cancel button
+
+					    if(!pwd.equals("")) { // if this password is valid
+					      f.setPassword(pwd);
+					    } else {
+					      f.setPassword(null);
+					    }
+
+					    // store the password to the settings even if it is invalid
+					    settings.setProperty("Faction.password." +
+					                         ((EntityID) f.getID()).intValue(),
+					                         (f.getPassword() != null) ? f.getPassword() : "");
+
+					    // if the pw is valid increase this faction's trust level
+					    if(f.getPassword() != null) {
+					      f.setTrustLevel(Faction.TL_PRIVILEGED);
+					    } else {
+					      // default is okay here, combat ally trust levels are restored
+					      // in the next loop anyway
+					      f.setTrustLevel(Faction.TL_DEFAULT);
+					    }
+
+					    TrustLevels.recalculateTrustLevels(data);
+					  }
+					  
+					  if (dialog.isOwner())
+					    data.setOwnerFaction((EntityID) f.getID());
+					  else if (data.getOwnerFaction()!=null && data.getOwnerFaction().equals(f.getID()))
+					    data.setOwnerFaction(null);
+					  
+					  Collection<CoordinateID> translations = dialog.getTranslations();
+					  if (translations!=null){
+	            data.clearTranslations((EntityID) f.getID());
+					    for (CoordinateID translation : translations){
+		            data.setCoordinateTranslation((EntityID) f.getID(), translation);
+					    }
+					  }
 					}
-
-					// ask user for password
-					Object msgArgs[] = { f };
-					pwd = (String) JOptionPane.showInputDialog(getRootPane(),
-															   (new java.text.MessageFormat(Resources.get("factionstatsdialog.msg.passwdinput.text"))).format(msgArgs),
-															   Resources.get("factionstatsdialog.msg.passwdinput.title"),
-															   JOptionPane.QUESTION_MESSAGE, null,
-															   null, pwd);
-
-					if(pwd != null) { // if user did not hit the cancel button
-
-						if(!pwd.equals("")) { // if this password is valid
-							f.setPassword(pwd);
-						} else {
-							f.setPassword(null);
-						}
-
-						// store the password to the settings even if it is invalid
-						settings.setProperty("Faction.password." +
-											 ((EntityID) f.getID()).intValue(),
-											 (f.getPassword() != null) ? f.getPassword() : "");
-
-						// if the pw is valid increase this faction's trust level
-						if(f.getPassword() != null) {
-							f.setTrustLevel(Faction.TL_PRIVILEGED);
-						} else {
-							// default is okay here, combat ally trust levels are restored
-							// in the next loop anyway
-							f.setTrustLevel(Faction.TL_DEFAULT);
-						}
-
-						TrustLevels.recalculateTrustLevels(data);
-					}
-
 					// notify game data listeners
 					dispatcher.fire(new GameDataEvent(this, data));
 				}

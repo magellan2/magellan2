@@ -17,7 +17,7 @@ import magellan.library.UnitContainer;
 public interface UnitContainerContextMenuProvider {
     
   /**
-   * creates a JMenuItem. Will be called on right-clicking units.
+   * creates a JMenuItem. Will be called on right-clicking unit containers.
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, UnitContainer container);
 }

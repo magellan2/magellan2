@@ -11,7 +11,7 @@
  *
  */
 
-package magellan.client;
+package magellan.client.swing;
 
 import java.awt.Point;
 

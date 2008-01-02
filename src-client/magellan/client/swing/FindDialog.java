@@ -11,7 +11,7 @@
  *
  */
 
-package magellan.client;
+package magellan.client.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -48,10 +48,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
+import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
-import magellan.client.swing.InternationalizedDataDialog;
 import magellan.library.Building;
 import magellan.library.Described;
 import magellan.library.Faction;

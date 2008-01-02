@@ -705,23 +705,10 @@ public class ReportMerger extends Object {
     Collection<RatedTranslation> translationList = addTranslationCandidates(newReport);
     adjustTranslationScore(newReport, translationList);
     
-    EntityID newReportOwner = newReport.getData().getOwnerFaction();
 
     // try to find a translation for the new report's owner faction in the
     // global data's owner faction
-    RatedTranslation savedTranslation = null;
-    if (newReportOwner != null) {
-      // translation from newReportOwner to data report owner
-      CoordinateID oldTrans = globalData.getCoordinateTranslation(newReportOwner, 0);
-      // translation from newReportOwner to newReport
-      CoordinateID newTrans = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
-      if (oldTrans != null && newTrans !=null) {
-        oldTrans = new CoordinateID(oldTrans);
-        newTrans = new CoordinateID(newTrans);
-        newTrans.z=0;
-        savedTranslation = new RatedTranslation(oldTrans.subtract(newTrans), 0, Type.SAVED);
-      }
-    }
+    RatedTranslation savedTranslation = findSavedTranslation(dataReport, newReport, 0);
 
     // decide, which translation to choose
     RatedTranslation bestTranslation=null;
@@ -752,19 +739,8 @@ public class ReportMerger extends Object {
 
         // try to find a translation for the new report's owner faction in the
         // global data's owner faction
-        RatedTranslation savedAstralTranslation = null;
-        if (newReportOwner != null) {
-          // translation from newReportOwner to data report owner
-          CoordinateID oldTrans = globalData.getCoordinateTranslation(newReportOwner, 1);
-          // translation from newReportOwner to newReport
-          CoordinateID newTrans = newReport.getData().getCoordinateTranslation(newReportOwner, 1);
-          if (oldTrans != null && newTrans != null) {
-            oldTrans = new CoordinateID(oldTrans);
-            newTrans = new CoordinateID(newTrans);
-            newTrans.z = 0;
-            savedAstralTranslation = new RatedTranslation(oldTrans.subtract(newTrans), 0, Type.SAVED);
-          }
-        }
+        RatedTranslation savedAstralTranslation = findSavedTranslation(dataReport, newReport, 1);
+
         if (interactive)
           bestAstralTranslation = askTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
         else 
@@ -776,31 +752,51 @@ public class ReportMerger extends Object {
       if (bestAstralTranslation != null) {
         iProgress += 1;
         if (ui != null) {
-          ui.setProgress(newReport.getFile().getName() + " - " + Resources.get("util.reportmerger.status.translating"), iProgress);
+          ui.setProgress(newReport.getFile().getName() + " - "
+                         + Resources.get("util.reportmerger.status.translating"), iProgress);
         }
 
         log.info("Using this translation: " + bestTranslation.getTranslation());
         // store found translations
-        if (globalData.getCoordinateTranslation(newReportOwner, 0)!=null && !globalData.getCoordinateTranslation(newReportOwner, 0).equals(bestTranslation.getTranslation()))
-          log.warn("old translation "+globalData.getCoordinateTranslation(newReportOwner, 0) + " inconsistent with new translation "+bestTranslation.getTranslation());
-        if (bestTranslation.getScore()>=0 && newReportOwner!=null){
-          CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
-          if (correct!=null){
-            correct = new CoordinateID(bestTranslation.getTranslation().x+correct.x, bestTranslation.getTranslation().y+correct.y, 0);
-            globalData.setCoordinateTranslation(newReportOwner, correct);
+        EntityID newReportOwner = newReport.getData().getOwnerFaction();
+        if (newReportOwner != null) {
+          if (globalData.getCoordinateTranslation(newReportOwner, 0) != null
+              && !globalData.getCoordinateTranslation(newReportOwner, 0)
+                            .equals(bestTranslation.getTranslation()))
+            log.warn("old translation " + globalData.getCoordinateTranslation(newReportOwner, 0)
+                     + " inconsistent with new translation " + bestTranslation.getTranslation());
+          if (bestTranslation.getScore() >= 0) {
+            CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
+            if (correct != null) {
+              correct =
+                        new CoordinateID(bestTranslation.getTranslation().x + correct.x,
+                                         bestTranslation.getTranslation().y + correct.y, 0);
+              globalData.setCoordinateTranslation(newReportOwner, correct);
+            }
           }
         }
 
-        if (newReport.hasAstralRegions() && dataReport.hasAstralRegions()){ 
+        if (newReport.hasAstralRegions() && dataReport.hasAstralRegions()) {
           log.info("Using this astral translation: " + bestAstralTranslation.getTranslation());
 
-          if (globalData.getCoordinateTranslation(newReportOwner, 1)!=null && !globalData.getCoordinateTranslation(newReportOwner, 1).equals(bestAstralTranslation.getTranslation()))
-            log.warn("old astral translation "+globalData.getCoordinateTranslation(newReportOwner, 1) + " inconsistent with new translation "+bestAstralTranslation.getTranslation());
-          if (bestAstralTranslation.getScore()>=0 && newReportOwner!=null){
-            CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 1);
-            if (correct!=null){
-              correct = new CoordinateID(bestAstralTranslation.getTranslation().x+correct.x, bestAstralTranslation.getTranslation().y+correct.y, 1);
-              globalData.setCoordinateTranslation(newReportOwner, correct);
+          if (newReportOwner != null) {
+            if (globalData.getCoordinateTranslation(newReportOwner, 1) != null
+                && !globalData.getCoordinateTranslation(newReportOwner, 1)
+                              .equals(bestAstralTranslation.getTranslation()))
+              log.warn("old astral translation "
+                       + globalData.getCoordinateTranslation(newReportOwner, 1)
+                       + " inconsistent with new translation "
+                       + bestAstralTranslation.getTranslation());
+            if (bestAstralTranslation.getScore() >= 0) {
+              CoordinateID correct =
+                                     newReport.getData()
+                                              .getCoordinateTranslation(newReportOwner, 1);
+              if (correct != null) {
+                correct =
+                          new CoordinateID(bestAstralTranslation.getTranslation().x + correct.x,
+                                           bestAstralTranslation.getTranslation().y + correct.y, 1);
+                globalData.setCoordinateTranslation(newReportOwner, correct);
+              }
             }
           }
         }
@@ -852,6 +848,35 @@ public class ReportMerger extends Object {
     return newReport.isMerged();
   }
 
+  private RatedTranslation findSavedTranslation(ReportCache dataReport2, ReportCache newReport, int layer) {
+    EntityID newReportOwner = newReport.getData().getOwnerFaction();
+    // ask user if necessary
+    if (newReportOwner==null && interactive){
+      if (!newReport.getData().factions().isEmpty()){
+        Faction firstFaction = newReport.getData().factions().values().iterator().next();
+        Object result = ui.input(Resources.getFormatted("util.reportmerger.msg.inputowner.msg", newReport.getFile().getName()), Resources.get("util.reportmerger.msg.inputowner.title"), newReport.getData().factions().values().toArray(), firstFaction);
+        if (result!=null && result instanceof Faction)
+          newReport.getData().setOwnerFaction((EntityID) ((Faction)result).getID());
+      }
+    }
+
+    // TODO calculate translation with any faction existing in both reports, not just owner faction
+    RatedTranslation savedTranslation = null;
+    if (newReportOwner != null) {
+      // translation from newReportOwner to data report owner
+      CoordinateID oldTrans = globalData.getCoordinateTranslation(newReportOwner, layer);
+      // translation from newReportOwner to newReport
+      CoordinateID newTrans = newReport.getData().getCoordinateTranslation(newReportOwner, layer);
+      if (oldTrans != null && newTrans !=null) {
+        oldTrans = new CoordinateID(oldTrans);
+        newTrans = new CoordinateID(newTrans);
+        newTrans.z=0;
+        savedTranslation = new RatedTranslation(oldTrans.subtract(newTrans), 0, Type.SAVED);
+      }
+    }
+    return savedTranslation;
+  }
+
   /**
    * Chooses a translation among the translations in translationList and
    * savedTranslation. If no translation is acceptable, a default translation
@@ -884,6 +909,8 @@ public class ReportMerger extends Object {
         log.info("Using saved translation in layer "+layer);
         bestTranslation = savedTranslation;
       }
+    } else {
+      log.info("now known translation");
     }
     if (bestTranslation.getScore()<0)
       log.warn("No good translation found in layer "+layer);

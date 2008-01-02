@@ -18,8 +18,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import magellan.client.Client;
-import magellan.client.SetOriginDialog;
 import magellan.client.actions.MenuAction;
+import magellan.client.swing.SetOriginDialog;
 import magellan.library.utils.Resources;
 
 

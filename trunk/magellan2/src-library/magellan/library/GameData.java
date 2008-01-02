@@ -1744,6 +1744,15 @@ public abstract class GameData implements Cloneable {
   public abstract CoordinateID getAstralMapping();
 
   /**
+   * Removes all translations for Faction f.
+   * 
+   * @param f
+   */
+  public void clearTranslations(EntityID f) {
+    coordinateTranslations.remove(f);
+  }
+
+  /**
    * Returns a coordinate translation of <code>otherFaction</code> this
    * report. This is the coordinate vector that has to be added to the origin
    * (with z-coordinate <code>layer</code>) of this report to get the origin
@@ -1833,8 +1842,6 @@ public abstract class GameData implements Cloneable {
       log.warn("owner faction changed");
     }
     this.ownerFaction = ownerFaction;
-    coordinateTranslations.clear();
-    coordinateTranslations = new HashMap<EntityID, Map<Integer,CoordinateID>>();
   }
 
 }

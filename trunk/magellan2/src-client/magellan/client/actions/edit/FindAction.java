@@ -18,10 +18,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import magellan.client.Client;
-import magellan.client.FindDialog;
 import magellan.client.actions.MenuAction;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.swing.FindDialog;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;

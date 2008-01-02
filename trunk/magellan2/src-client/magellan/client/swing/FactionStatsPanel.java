@@ -412,11 +412,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (f.getID() instanceof EntityID) {
         Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID)f.getID());
         if (map!=null){
-          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.translations"), "translations"));
+          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.translations"), "coordinatetranslation"));
           SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
           for (Integer i: layers){
             CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
-            DefaultMutableTreeNode translationNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer"))).format(new Integer [] { i })+" "+translation, null));
+            DefaultMutableTreeNode translationNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer"))).format(new Integer [] { i })+" "+translation, "layer"));
             currentNode.add(translationNode);
           }
           rootNode.add(currentNode);

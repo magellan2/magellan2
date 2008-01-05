@@ -14,7 +14,6 @@
 package magellan.client.swing.map;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 
 import magellan.client.swing.preferences.PreferencesAdapter;

@@ -10,14 +10,9 @@ Mit + ist in Arbeit
 
 - Icons in der Karte (Optionen & Anzeige)
 
-- Minimap speichert den ARR Renderer nicht (Bug #64)
-
 ------ in Arbeit ------
 
 + Probleme mit den PlugIns
-
-+ Magellan Hilfe überarbeiten und an neue Gegebenheiten
-  anpassen
 
 + Optionsfenster überarbeiten
     System > Textkodierung (komplett überarbeiten)
@@ -32,7 +27,7 @@ Mit + ist in Arbeit
     Ressourcen > Externe Module (überarbeiten)
     OK & Abbrechen überarbeiten
     
-+ Bug #51, create own translation list
+* Bug #51, create own translation list
 
 + Mehrere Layouts für Docks zulassen (umschaltbare Views)
 
@@ -63,3 +58,8 @@ Mit + ist in Arbeit
 * Bug #44 (Icons in FactionStats for Alliances and Income
 * Bug #48 (HTML setup region details)
 * Bug #52 (Icon Style Definition for Talent Changes)
+* Minimap speichert den ARR Renderer nicht (Bug #64)
+
+* Magellan Hilfe überarbeiten und an neue Gegebenheiten
+  anpassen
+

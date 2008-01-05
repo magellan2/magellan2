@@ -15,7 +15,6 @@ package magellan.client.swing.map;
 
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Hashtable;
 import java.util.Map;

@@ -571,7 +571,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
         unit.setOrdersChanged(true);
       } catch (Throwable throwable) {
         log.error("",throwable);
-        ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
+        ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"Problems with unit "+unit.getName()+" ("+unit.getID()+")\n.See script:\n"+getCommands(unit),throwable);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
       }
@@ -591,7 +591,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
         interpreter.eval(getCommands(container));
       } catch (Throwable throwable) {
         log.error("",throwable);
-        ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
+        ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"Problems with unit "+container.getName()+" ("+container.getID()+")\n.See script:\n"+getCommands(container),throwable);
         errorWindow.setShutdownOnCancel(false);
         errorWindow.setVisible(true);
       }

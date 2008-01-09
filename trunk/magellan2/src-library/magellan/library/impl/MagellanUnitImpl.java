@@ -284,8 +284,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public Collection<String> getOrders() {
     List<String> orders = ordersObject.getOrders();
-    if (orders != null) return Collections.unmodifiableCollection(orders);
-    return new ArrayList<String>();
+    if (orders != null)
+      return Collections.unmodifiableCollection(orders);
+    return Collections.emptyList();
 	}
 
 	/** The number of persons of the unit */
@@ -853,7 +854,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	/**
-	 * Returns alle orders including the orders necessary to issue the creation of all the child
+	 * Returns all orders including the orders necessary to issue the creation of all the child
 	 * temp units of this unit.
 	 *
 	 * 
@@ -863,22 +864,24 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     }
         
     /**
-     * DOCUMENT-ME
+     * Returns all orders including the orders necessary to issue the creation of all the child
+     * temp units of this unit.
      * 
-     * @param writeUnitTagsAsVorlageComment
+     * @param writeUnitTagsAsVorlageComment If this is <code>true</code>, unit tags are
+     *   also added as Vorlage comments
      * 
      */
     public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment) {
 		List<String> cmds = new LinkedList<String>();
-		cmds.addAll(ordersObject.getOrders());
+		if (!ordersAreNull())
+		  cmds.addAll(ordersObject.getOrders());
 
-        if(writeUnitTagsAsVorlageComment && this.hasTags()) {
-            for(Iterator tagIter = this.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
-                String tag = (String) tagIter.next();
-                cmds.add("// #after 1 { #tag EINHEIT "+tag.replace(' ','~')+" '"+this.getTag(tag)+"' }");
-            }
-        }
-
+		if(writeUnitTagsAsVorlageComment && this.hasTags()) {
+		  for(Iterator tagIter = this.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
+		    String tag = (String) tagIter.next();
+		    cmds.add("// #after 1 { #tag EINHEIT "+tag.replace(' ','~')+" '"+this.getTag(tag)+"' }");
+		  }
+		}
         
 		cmds.addAll(getTempOrders(writeUnitTagsAsVorlageComment));
 
@@ -1157,16 +1160,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public List<CoordinateID> getModifiedMovement() {
 		if(this.ordersAreNull()) {
-			return new ArrayList<CoordinateID>();
+			return Collections.emptyList();
 		}
 
 		Collection movementRelations = getRelations(MovementRelation.class);
 
 		if(movementRelations.isEmpty()) {
-			return new ArrayList<CoordinateID>();
+			return Collections.emptyList();
 		}
 
-		return ((MovementRelation) movementRelations.iterator().next()).movement;
+		return Collections.unmodifiableList(((MovementRelation) movementRelations.iterator().next()).movement);
 	}
 
 	/**
@@ -1226,11 +1229,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
       if (cache.modifiedSkills.values() != null) {
         return Collections.unmodifiableCollection(cache.modifiedSkills.values());
       } else {
-        return new ArrayList<Skill>();
+        return Collections.emptyList();
       }
 		}
 
-		return new ArrayList<Skill>();
+		return Collections.emptyList();
 	}
 
 	/**
@@ -1527,7 +1530,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public Skill addSkill(Skill s) {
 		if(skills == null) {
-			skills = new OrderedHashtable<ID, Skill>();
+			skills = new OrderedHashtable<ID, Skill>(11);
 		}
 
 		skills.put(s.getSkillType().getID(), s);
@@ -1544,7 +1547,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     if (this.skills != null && this.skills.values() != null)
       return Collections.unmodifiableCollection(this.skills.values());
     else
-      return new ArrayList<Skill>();
+      return Collections.emptyList();
 	}
   
   public boolean isSkillsCopied() {
@@ -1579,7 +1582,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     if (this.items != null && this.items.values() != null)
       return Collections.unmodifiableCollection(this.items.values());
     else
-      return new ArrayList<Item>();
+      return Collections.emptyList();
 	}
   
   public void setItems(Map<ID,Item> items) {
@@ -1707,7 +1710,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     if (cache.modifiedItems != null && cache.modifiedItems.values() != null)
       return Collections.unmodifiableCollection(cache.modifiedItems.values());
     else
-      return new ArrayList<Item>();
+      return Collections.emptyList();
 	}
 
 	/**
@@ -1725,7 +1728,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		if(cache.modifiedItems == null) {
-			cache.modifiedItems = new Hashtable<ID, Item>();
+			cache.modifiedItems = new Hashtable<ID, Item>(getItems().size()+1);
 		}
 
 		// 1. check whether there is anything to do at all
@@ -2323,7 +2326,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		// if replace, delete matching orders first
-		if(replace) {
+		if(replace && !this.ordersAreNull()) {
 			boolean tempBlock = false;
 
 			// cycle through this unit's orders
@@ -2675,12 +2678,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+     * Returns the collection of orders which is backed by the orders and <i>not</i>
+     * immutable and may be <code>null</code>.
+     */
 		public List<String> getOrders() {
-      if (orders == null) return new ArrayList<String>();
+      if (orders == null)
+        return null;
       return orders;
 		}
 

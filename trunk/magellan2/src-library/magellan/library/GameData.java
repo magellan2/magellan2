@@ -47,7 +47,7 @@ import magellan.library.utils.logging.Logger;
  * <p>
  * The maps units, regions and so on are declared as abstract methods and the
  * getX and addX provide access to them. This allows for subclasses that
- * implicitely represent only a certain part of the game data by declaring
+ * implicitly represent only a certain part of the game data by declaring
  * certain maps as <tt>null</tt> and returning <tt>null</tt> on the
  * corresponding getX() methods. This concept has so far not been applied and
  * you usually operate on the <tt>CompleteData</tt> subclass.

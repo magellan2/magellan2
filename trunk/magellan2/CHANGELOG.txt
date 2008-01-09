@@ -1,7 +1,9 @@
+2008-01-08  stm (stm_@users.sourceforge.net)
+    * replaced a few "return new List()" by return Collections.emptyList() 
+
 2008-01-02  stm (stm_@users.sourceforge.net)
     * moved two dialogs to package client.swing
     * added dialog for setting of report owner and translations
-    * 
 
 2007-12-26  stm (stm_@users.sourceforge.net)
     * improved origin translation in Reportmerger, including CR-I/O

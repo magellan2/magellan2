@@ -1181,7 +1181,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     } catch(IOException exc) {
       log.error(exc);
       JOptionPane.showMessageDialog(this, exc.toString(),
-          Resources.get("actions.filesaveaction.msg.filesave.error.title"),
+          Resources.get("actions.filesaveasaction.msg.filesave.error.title"),
                       JOptionPane.ERROR_MESSAGE);
     }
     return crw;

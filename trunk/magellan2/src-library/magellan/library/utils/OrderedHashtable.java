@@ -13,6 +13,7 @@
 
 package magellan.library.utils;
 
+import java.lang.ref.SoftReference;
 import java.util.AbstractCollection;
 import java.util.AbstractSet;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * 0.75.
 	 */
 	public OrderedHashtable() {
-		this(11);
+		this(6);
 	}
 
 	/**
@@ -276,7 +277,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	}
 
 	/* a view on this hashtable */
-	private transient Collection<V> values = null;
+	private transient SoftReference<Collection<V> > values = null;
 
 	/**
 	 * Returns a Collection view of the values contained in this Hashtable. The Collection does not
@@ -286,11 +287,11 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * @return an ordered collection view of the values contained in this map.
 	 */
 	public Collection<V> values() {
-		if(values == null) {
-			values = Collections.synchronizedCollection(new ValueCollection());
+		if(values == null || values.get()==null) {
+			values = new SoftReference<Collection<V>>(Collections.synchronizedCollection(new ValueCollection()));
 		}
-
-		return values;
+		
+		return values.get();
 	}
 
 	private class ValueCollection extends AbstractCollection<V> {

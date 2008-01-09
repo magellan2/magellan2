@@ -15,6 +15,7 @@ package magellan.library.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -106,8 +107,9 @@ public class Options {
 			initOptions(rules);
 		}
 
-    if (options != null && options.values() != null) return options.values();
-    return new ArrayList<OptionCategory>();
+    if (options != null && options.values() != null) 
+      return Collections.unmodifiableCollection(options.values());
+    return Collections.emptyList();
 	}
 
 	private void initOptions(Rules rules) {

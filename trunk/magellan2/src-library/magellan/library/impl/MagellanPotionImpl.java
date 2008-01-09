@@ -13,7 +13,6 @@
 
 package magellan.library.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -67,7 +66,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
 	 */
 	public Collection<Item> ingredients() {
     if (ingredients != null && ingredients.values() != null) return Collections.unmodifiableCollection(ingredients.values());
-		return new ArrayList<Item>();
+		return Collections.emptyList();
 	}
 
 	/**

@@ -1202,7 +1202,7 @@ public class EresseaOrderCompleter implements Completer {
 						   t.containsRegionType(region.getRegionType()) &&
 						   hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getMinSkillLevel()) &&
 						   (!completerSettingsProvider.getLimitMakeCompletion() ||
-						   checkForMaterials(t.getRawMaterials()))) {
+						   checkForMaterials(t.getRawMaterials().iterator()))) {
 						completions.add(new Completion(t.getName(), " "));
 					}
 				}

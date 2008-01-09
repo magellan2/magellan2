@@ -713,7 +713,7 @@ public class EresseaRelationFactory implements RelationFactory {
 
   private List<UnitRelation> createRenameUnitContainerRelation(Unit unit, OrderToken containerToken, OrderToken name, int line) {
 
-    return new ArrayList<UnitRelation>();
+    return Collections.emptyList();
   }
 
   private Unit getTargetUnit(OrderToken t, Region r) {

@@ -65,13 +65,13 @@ public class SkillStats {
 		SkillStorage skillStorage = (SkillStorage) skillData.get(skill.getSkillType());
 
 		if(skillStorage == null) {
-			return new LinkedList<Unit>();
+			return Collections.emptyList();
 		} else {
 			Map<Integer,UnitVector> levelTable = skillStorage.levelTable;
 			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
 			if(uv == null) {
-				return new LinkedList<Unit>();
+				return Collections.emptyList();
 			} else {
 				return uv.units;
 			}
@@ -223,7 +223,7 @@ public class SkillStats {
 			SkillStorage skillStorage = (SkillStorage) skillData.get(type);
 
 			if(skillStorage == null) {
-				return new LinkedList<Skill>();
+				return Collections.emptyList();
 			} else {
 				Map levelTable = skillStorage.levelTable;
 				List<Skill> v = new LinkedList<Skill>();

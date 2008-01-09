@@ -13,7 +13,6 @@
 
 package magellan.library.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Hashtable;
@@ -159,7 +158,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 */
 	public Collection<Unit> units() {
 		if(units == null) {
-			return new ArrayList<Unit>();
+			return Collections.emptyList();
 		}
 
 		if(unitCollection == null) {

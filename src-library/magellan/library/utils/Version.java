@@ -123,7 +123,6 @@ public class Version implements Comparable {
           while (b.length()<a.length()) {
             b = "0"+b;
           }
-          System.err.println(a + " vs. " + b);
           return a.compareTo(b);
         } else {
           return this.getBuild().compareTo(v.getBuild()); 

@@ -14,6 +14,7 @@
 package magellan.library.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -57,23 +58,23 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	public List<AbstractProblem> reviewRegion(Region r, int type) {
 		// we notify errors only
 		if (type != Problem.ERROR) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 		// fail fast if prerequisites are not fulfilled
 		if ((r == null) || (r.units() == null) || r.units().isEmpty()) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 		// this inspector is only interested in ships
 		if ((r.ships() == null) || r.ships().isEmpty()) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 		List<AbstractProblem> problems = reviewShips(r);
 
 		if (problems.isEmpty()) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		} else {
 			return problems;
 		}
@@ -102,7 +103,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
     
 		if (s.getSize() != nominalShipSize) {
 			// ship will be built, so dont review ship
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 

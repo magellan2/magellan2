@@ -13,8 +13,8 @@
 
 package magellan.library.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -87,8 +87,8 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 			refreshRegions();
 		}
 
-    if (regions != null && regions.values() != null) return regions.values();
-		return new ArrayList<Region>();
+    if (regions != null && regions.values() != null) return Collections.unmodifiableCollection(regions.values());
+		return Collections.emptyList();
 	}
 
 	/**

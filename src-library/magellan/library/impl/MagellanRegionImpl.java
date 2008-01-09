@@ -557,14 +557,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public Collection<Scheme> schemes() {
 		if(schemes == null) {
-			return new ArrayList<Scheme>();
+			return Collections.emptyList();
 		}
 
 		if(schemeCollection == null) {
       if (schemes != null && schemes.values() != null) {
         schemeCollection = Collections.unmodifiableCollection(schemes.values());
       } else {
-        schemeCollection = new ArrayList<Scheme>();
+        schemeCollection = Collections.emptyList();
       }
 		}
 
@@ -653,14 +653,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public Collection<Border> borders() {
 		if(borders == null) {
-			return new ArrayList<Border>();
+			return Collections.emptyList();
 		}
 
 		if(borderCollection == null) {
       if (borders != null && borders.values() != null) {
         borderCollection = Collections.unmodifiableCollection(borders.values());
       } else {
-			  borderCollection = new ArrayList<Border>();
+			  borderCollection = Collections.emptyList();
       }
 		}
 
@@ -746,14 +746,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public Collection<Ship> ships() {
 		if(ships == null) {
-			return new ArrayList<Ship>();
+			return Collections.emptyList();
 		}
 
 		if(shipCollection == null) {
       if (ships != null && ships.values() != null) {
-        return Collections.unmodifiableCollection(ships.values());
+        shipCollection = Collections.unmodifiableCollection(ships.values());
       } else {
-        return new ArrayList<Ship>();
+        shipCollection = Collections.emptyList();
       }
 		}
 
@@ -812,14 +812,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public Collection<Building> buildings() {
 		if(buildings == null) {
-			return new ArrayList<Building>();
+			return Collections.emptyList();
 		}
 
 		if(buildingCollection == null) {
       if (buildings != null && buildings.values() != null) {
         return Collections.unmodifiableCollection(buildings.values());
       } else {
-        return new ArrayList<Building>();
+        return Collections.emptyList();
       }
 		}
 
@@ -882,7 +882,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (cache.regionItems != null && cache.regionItems.values() != null) {
       return Collections.unmodifiableCollection(cache.regionItems.values());
     } else {
-      return new ArrayList<Item>();
+      return Collections.emptyList();
     }
 	}
 	
@@ -900,7 +900,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (cache.allRegionItems != null && cache.allRegionItems.values() != null) {
       return Collections.unmodifiableCollection(cache.allRegionItems.values());
     } else {
-      return new ArrayList<Item>();
+      return Collections.emptyList();
     }
 	}
 

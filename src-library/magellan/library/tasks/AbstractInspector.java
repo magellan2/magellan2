@@ -14,6 +14,7 @@
 package magellan.library.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import magellan.library.Region;
@@ -56,7 +57,7 @@ public abstract class AbstractInspector implements Inspector {
 	 * 
 	 */
 	public List<AbstractProblem> reviewUnit(Unit u, int type) {
-		return new ArrayList<AbstractProblem>();
+		return Collections.emptyList();
 	}
 
 	/**
@@ -84,6 +85,6 @@ public abstract class AbstractInspector implements Inspector {
 	 * 
 	 */
 	public List<AbstractProblem> reviewRegion(Region r, int type) {
-		return new ArrayList<AbstractProblem>();
+		return Collections.emptyList();
 	}
 }

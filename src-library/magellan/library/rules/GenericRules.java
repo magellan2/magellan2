@@ -825,7 +825,7 @@ public class GenericRules implements Rules {
     if (m != null && m.values() != null)
       return new ClassIterator(c,Collections.unmodifiableCollection(m.values()).iterator());
     else
-      return new ClassIterator(c,Collections.unmodifiableCollection(new ArrayList<Object>()).iterator());
+      return new ClassIterator(c,Collections.emptyList().iterator());
 	}
 
 	/**

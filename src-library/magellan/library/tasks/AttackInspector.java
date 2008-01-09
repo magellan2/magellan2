@@ -24,6 +24,7 @@
 package magellan.library.tasks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import magellan.library.Unit;
@@ -58,11 +59,11 @@ public class AttackInspector extends AbstractInspector {
    */
   public List<AbstractProblem> reviewUnit(Unit u, int type) {
     if((u == null) || u.ordersAreNull()) {
-      return new ArrayList<AbstractProblem>();
+      return Collections.emptyList();
     }
 
     if(type == Problem.INFORMATION) {
-      return new ArrayList<AbstractProblem>();
+      return Collections.emptyList();
     }
 
     List<AbstractProblem> problems = new ArrayList<AbstractProblem>(2);
@@ -105,7 +106,7 @@ public class AttackInspector extends AbstractInspector {
         problems.add(new CriticizedError(u, u, this, Resources.get("tasks.attackinspector.warning.notfighting"), wrongStatus));
     }
     if(problems.isEmpty()) {
-      return new ArrayList<AbstractProblem>();
+      return Collections.emptyList();
     } else {
       return problems;
     }

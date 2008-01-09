@@ -15,8 +15,8 @@ package magellan.library.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 
 import magellan.library.ID;
@@ -64,9 +64,10 @@ public class BuildingType extends UnitContainerType {
 	 *
 	 * 
 	 */
-	public Iterator<Item> getRawMaterials() {
-    if (rawMaterials != null && rawMaterials.values() != null) return rawMaterials.values().iterator();
-		return new ArrayList<Item>().iterator();
+	public Collection<Item> getRawMaterials() {
+    if (rawMaterials != null && rawMaterials.values() != null) 
+      return Collections.unmodifiableCollection(rawMaterials.values());
+		return Collections.emptyList();
 	}
 
 	/**
@@ -102,9 +103,10 @@ public class BuildingType extends UnitContainerType {
 	 *
 	 * 
 	 */
-	public Iterator<Item> getMaintenanceItems() {
-    if (maintenance != null && maintenance.values() != null) return maintenance.values().iterator();
-    return new ArrayList<Item>().iterator();
+	public Collection<Item> getMaintenanceItems() {
+    if (maintenance != null && maintenance.values() != null) 
+      return Collections.unmodifiableCollection(maintenance.values());
+    return Collections.emptyList();
 	}
 
 	/**
@@ -223,7 +225,8 @@ public class BuildingType extends UnitContainerType {
 	 * 
 	 */
 	public Collection<RegionType> regionTypes() {
-    if (regionTypes != null && regionTypes.values() != null) return regionTypes.values();
-    return new ArrayList<RegionType>();
+    if (regionTypes != null && regionTypes.values() != null) 
+      return Collections.unmodifiableCollection(regionTypes.values());
+    return Collections.emptyList();
 	}
 }

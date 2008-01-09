@@ -133,7 +133,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     if (this.items != null && this.items.values() != null) {
       return Collections.unmodifiableCollection(this.items.values());
     } else {
-      return new ArrayList<Item>();
+      return Collections.emptyList();
     }
 	}
 
@@ -206,14 +206,14 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 		// added later we have to create a new collection object
 		// see addUnit()
 		if(units == null) {
-			return new ArrayList<Unit>();
+			return Collections.emptyList();
 		}
 
 		if(unitCollection == null) {
       if (units != null && units.values() != null) {
         unitCollection = Collections.unmodifiableCollection(units.values());
       } else {
-			  unitCollection = new ArrayList<Unit>();
+			  unitCollection = Collections.emptyList();
       }
 		}
 
@@ -283,10 +283,10 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       if (cache.modifiedContainerUnits.values() != null) {
         return Collections.unmodifiableCollection(cache.modifiedContainerUnits.values());
       } else {
-        return new ArrayList<Unit>();
+        return Collections.emptyList();
       }
 		} else {
-			return new ArrayList<Unit>();
+			return Collections.emptyList();
 		}
 	}
 

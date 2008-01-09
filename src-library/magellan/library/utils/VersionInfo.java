@@ -136,8 +136,8 @@ public class VersionInfo {
   public static boolean isNewer(String currentVersion, String newVersion) {
     if (Utils.isEmpty(currentVersion) || Utils.isEmpty(newVersion)) return false;
     
-    log.info("Current: "+currentVersion);
-    log.info("Newest : "+newVersion);
+    log.debug("Current: "+currentVersion);
+    log.debug("Newest : "+newVersion);
     
     Version a = new Version(currentVersion,".",false);
     Version b = new Version(newVersion,".",false);

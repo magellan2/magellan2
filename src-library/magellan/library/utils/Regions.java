@@ -271,7 +271,7 @@ public class Regions {
 		if((regions == null) || (start == null) || (dest == null)) {
 			log.warn("Regions.getPath(): invalid argument");
 
-			return new LinkedList<Region>();
+			return Collections.emptyList();
 		}
 
 		Map<CoordinateID,Double> distances = new Hashtable<CoordinateID, Double>();

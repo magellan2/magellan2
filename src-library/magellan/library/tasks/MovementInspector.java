@@ -48,12 +48,12 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 	 */
 	public List<AbstractProblem> reviewUnit(Unit u, int type) {
 		if ((u == null) || u.ordersAreNull()) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 		// we only warn
 		if (type != Problem.WARNING) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		}
 
 		List<AbstractProblem> problems = new ArrayList<AbstractProblem>();
@@ -81,7 +81,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 		}
 		*/
 		if(problems.isEmpty()) {
-			return new ArrayList<AbstractProblem>();
+			return Collections.emptyList();
 		} else {
 			return problems;
 		}
@@ -100,7 +100,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			return Collections.singletonList((AbstractProblem)(new CriticizedWarning(u, u, this, Resources.get("tasks.movementinspector.error.footoverloaded.description"))));
 		}
 
-		return new ArrayList<AbstractProblem>();
+		return Collections.emptyList();
 	}
 
 	private List<AbstractProblem> reviewUnitOnHorse(Unit u) {
@@ -120,6 +120,6 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			}
 		}
 
-		return new ArrayList<AbstractProblem>();
+		return Collections.emptyList();
 	}
 }

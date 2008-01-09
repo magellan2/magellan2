@@ -3117,7 +3117,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * @param expandableNodes 
 	 */
 	private void appendBuildingCosts(Building b, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
-		Iterator iter = b.getBuildingType().getRawMaterials();
+		Iterator iter = b.getBuildingType().getRawMaterials().iterator();
 
 		DefaultMutableTreeNode n;
 		if(iter.hasNext()) {
@@ -3178,7 +3178,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * @param expandableNodes 
 	 */
 	private void appendBuildingMaintenance(Building b, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
-		Iterator iter = b.getBuildingType().getMaintenanceItems();
+		Iterator<Item> iter = b.getBuildingType().getMaintenanceItems().iterator();
 
 		if(iter.hasNext()) {
 			//DefaultMutableTreeNode maintNode =  new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.upkeep"));
@@ -3187,7 +3187,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			expandableNodes.add(new NodeWrapper(maintNode, "EMapDetailsPanel.BuildingMaintenanceExpanded"));
 
 			while(iter.hasNext()) {
-				Item i = (Item) iter.next();
+				Item i = iter.next();
 				String text = i.getName();
 
 				DefaultMutableTreeNode m;

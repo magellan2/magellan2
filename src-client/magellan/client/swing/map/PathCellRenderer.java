@@ -24,6 +24,7 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -175,9 +176,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 
 		if(u.getCache().movementPath == null) {
-			return new ArrayList<CoordinateID>();
+			return Collections.emptyList();
 		} else {
-			return u.getCache().movementPath;
+			return Collections.unmodifiableList(u.getCache().movementPath);
 		}
 	}
 

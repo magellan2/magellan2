@@ -1,2 +1,3 @@
 #!/bin/sh
-java -Xmx400m -Xms400m -jar "magellan-client.jar" %1
+cd "$(dirname "$0")"
+java -Xmx400m -Xms200m -jar "magellan-client.jar" "$@"

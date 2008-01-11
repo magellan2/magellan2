@@ -23,6 +23,7 @@
       <author name="Ilja Pavkovic" email=""/>
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
       <author name="Fiete" email="sf@fietefietz.de"/>
+      <author name="Steffen Mecke" email="stm_@users.sourceforge.net"/>
     </authors>
     <url>http://magellan-client.sourceforge.net/</url>
     <uninstaller write="yes"/>
@@ -67,6 +68,7 @@
       <file src="release/LICENSE.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/README.txt"                        targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
+      <file src="release/UnInstall.sh"                      targetdir="$INSTALL_PATH"/>
     </pack>
     <pack name="Help" required="no" preselected="yes">
       <description>The help files for Magellan and Eressea</description>

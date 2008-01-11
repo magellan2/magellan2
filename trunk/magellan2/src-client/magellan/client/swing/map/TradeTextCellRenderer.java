@@ -50,7 +50,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 {
 	protected ItemType item;
 	protected String itemName;
-	protected boolean sellMode = false;
+	protected boolean sellMode = true;
 	protected Collection<ItemType> allLuxuries;
 	protected JMenu context;
 	protected static final String KEY = "LUXURY";
@@ -67,7 +67,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 		super(geo, context);
 		context.getEventDispatcher().addGameDataListener(this);
 		itemName = settings.getProperty("TradeTextCellRenderer.Item");
-		sellMode = settings.getProperty("TradeTextCellRenderer.SellMode", "false").equals("true");
+		sellMode = itemName==null; // settings.getProperty("TradeTextCellRenderer.SellMode", "true").equals("true");
 		findLuxuries();
 		createContextMenu();
 	}
@@ -184,25 +184,25 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 	protected void reprocessContextMenu() {
 		context.removeAll();
 
-		Iterator it = allLuxuries.iterator();
+    JMenuItem i = new JMenuItem(Resources.get("map.tradetextcellrenderer.sellMode"));
+    i.addActionListener(this);
+    context.add(i);
+
 		boolean added = false;
 
-		while(it.hasNext()) {
-			ItemType type = (ItemType) it.next();
-			JMenuItem i = new JMenuItem(type.getName());
-			i.addActionListener(this);
-			i.putClientProperty(KEY, type);
-			context.add(i);
+		for(ItemType type : allLuxuries) {
+	    if(!added) {
+	      context.addSeparator();
+	    }
+
+			JMenuItem item = new JMenuItem(type.getName());
+			item.addActionListener(this);
+			item.putClientProperty(KEY, type);
+			context.add(item);
 			added = true;
 		}
 
-		if(added) {
-			context.addSeparator();
-		}
 
-		JMenuItem i = new JMenuItem(Resources.get("map.tradetextcellrenderer.sellMode"));
-		i.addActionListener(this);
-		context.add(i);
 	}
 
 	/**
@@ -216,6 +216,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 
 		if(item == null) {
 			sellMode = true;
+      settings.remove("TradeTextCellRenderer.Item");
 		} else {
 			itemName = item.getID().toString();
 			settings.setProperty("TradeTextCellRenderer.Item", itemName);

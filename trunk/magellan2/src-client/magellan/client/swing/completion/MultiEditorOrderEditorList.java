@@ -1310,6 +1310,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	private OrderEditor buildOrderEditor(Unit u) {
+	  // TODO (stm) use SoftReferences
     if (u==null){
       return null;
     }

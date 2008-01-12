@@ -40,7 +40,7 @@ public class FileType {
   private final static Logger log = Logger.getInstance(FileType.class);
 
   /** A String representation of the default encoding. */
-  public static final Encoding DEFAULT_ENCODING = Encoding.ISO;
+  public static final Encoding DEFAULT_ENCODING = Encoding.UTF8;
 
     
   // basically identified file types
@@ -179,11 +179,16 @@ public class FileType {
    *
    * @return a Writer of the underlying File.
    *
-   * @throws IOException If file is marked as readonly or  another IOException occured.
-   * @throws ReadOnlyException DOCUMENT-ME
+   * @throws ReadOnlyException If file is marked as readonly or cannot be opened
+   * @throws IOException If another IOException occured
    */
   public Writer createWriter(String encoding) throws IOException {
     if(readonly) {
+      throw new ReadOnlyException();
+    }
+    try {
+      new FileOutputStream(filename);
+    } catch (IOException e){
       throw new ReadOnlyException();
     }
 
@@ -191,7 +196,10 @@ public class FileType {
             File backup = FileBackup.create(filename);
             log.info("Created backupfile " + backup +" (FileType.java)");
     }
-
+    
+    // NOTE (stm) If creating or writing fails for some reason, old backup
+    // files will have been deleted nevertheless. Sort of a data loss...
+    
     return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(),encoding));
   }
 

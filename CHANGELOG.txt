@@ -1,6 +1,8 @@
 2008-01-011  stm (stm_@users.sourceforge.net)
     * removed src-ext (moved to top-level magellan-ext)
     * changed default of TradeTextCellRenderer to "sell mode"
+    * improved start scripts
+    * fixed bug #139
 
 2008-01-09 Thoralf (thoralf@m84.de)
     * added more debug informations in Extended Command Plugin, if execution of script fails.

@@ -202,12 +202,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 						quit();
 					} catch(IOException ioe) {
 						log.error(ioe);
-
-						String msgArgs[] = { outputFile.getPath() };
 						JOptionPane.showMessageDialog((JButton) e.getSource(),
-													  (new java.text.MessageFormat(Resources.get("crwriterdialog.msg.writeerror.text"))).format(msgArgs),
-													  Resources.get("crwriterdialog.msg.exporterror.title"),
-													  JOptionPane.WARNING_MESSAGE);
+						    Resources.getFormatted("crwriterdialog.msg.writeerror.text",outputFile.getName(), ioe.toString()),
+						    Resources.get("crwriterdialog.msg.exporterror.title"),
+						    JOptionPane.WARNING_MESSAGE);
 					}
 				}
 			});
@@ -433,13 +431,36 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		}
 	}
 
-	private String getFileName(String defaultFile) {
+	private String getFileName(String filename) {
+	  File defaultFile = new File(filename);
 		String retVal = null;
 
 		JFileChooser fc = new JFileChooser();
+    EresseaFileFilter crFilter = new EresseaFileFilter(EresseaFileFilter.CR_FILTER);
+    fc.addChoosableFileFilter(crFilter);
 
+    EresseaFileFilter gzFilter = new EresseaFileFilter(EresseaFileFilter.GZ_FILTER);
+    fc.addChoosableFileFilter(gzFilter);
+
+    EresseaFileFilter bz2Filter = new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER);
+    fc.addChoosableFileFilter(bz2Filter);
+
+//    EresseaFileFilter zipFilter = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
+//    fc.addChoosableFileFilter(zipFilter);
+    
+    // select an active file filter
+    if(crFilter.accept(defaultFile)) {
+      fc.setFileFilter(crFilter);
+    } else if(gzFilter.accept(defaultFile)) {
+      fc.setFileFilter(gzFilter);
+    } else if(bz2Filter.accept(defaultFile)) {
+      fc.setFileFilter(bz2Filter);
+//    } else if(zipFilter.accept(defaultFile)) {
+//      fc.setFileFilter(zipFilter);
+    }
+		
 		if(defaultFile != null) {
-			fc.setSelectedFile(new File(defaultFile));
+			fc.setSelectedFile(defaultFile);
 		}
 
 		if(fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {

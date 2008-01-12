@@ -112,8 +112,8 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	 */
 	public boolean accept(File f) {
 		if (f.isDirectory()) return true;
-		for (Iterator it = extensions.iterator(); it.hasNext(); )
-			if (f.getName().toLowerCase().endsWith((String) it.next()))
+		for (String ext : extensions)
+			if (f.getName().toLowerCase().endsWith(ext))
 				return true;
 		return false;
 	}

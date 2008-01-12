@@ -40,7 +40,7 @@ public class FileType {
   private final static Logger log = Logger.getInstance(FileType.class);
 
   /** A String representation of the default encoding. */
-  public static final Encoding DEFAULT_ENCODING = Encoding.UTF8;
+  public static final Encoding DEFAULT_ENCODING = Encoding.ISO;
 
     
   // basically identified file types
@@ -243,9 +243,10 @@ public class FileType {
   }
 
   /**
-   * Creates a Writer with the default encoding iso-8859-1.
+   * Creates a Writer with the specified encoding.
    *
    * @param os the OutputStream
+   * @param encoding
    *
    * @return a Writer for the given OutputStream
    *

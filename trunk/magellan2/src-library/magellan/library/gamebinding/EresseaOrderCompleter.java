@@ -1610,6 +1610,7 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		completions.add(new Completion(EresseaConstants.O_NOT));
+		completions.add(new Completion("0"));
 	}
 
 	void cmpltTarnePartei() {

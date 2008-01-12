@@ -80,7 +80,7 @@ public class Loader {
 			return newData;
 		} catch(IOException ioe) {
 			log.error("Loader.cloneGameData failed!", ioe);
-			throw new CloneNotSupportedException();
+			throw new CloneNotSupportedException(ioe.toString());
 		}
 	}
 }

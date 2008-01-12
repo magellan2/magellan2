@@ -232,7 +232,8 @@ public class FileBackup {
 				String name = files[i].getName();
 
 				if(name.startsWith(filename)) {
-					if(getRevision(name) <= (currentRevision - backupLevel)) {
+				  int revision = getRevision(name);
+					if( revision>0 && revision <= (currentRevision - backupLevel)) {
 						files[i].delete();
 					}
 				}

@@ -91,12 +91,6 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import net.infonode.docking.DockingWindow;
-import net.infonode.docking.DockingWindowListener;
-import net.infonode.docking.OperationAbortedException;
-import net.infonode.docking.RootWindow;
-import net.infonode.docking.View;
-
 import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
@@ -109,6 +103,11 @@ import magellan.library.io.file.FileBackup;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.DockingWindowListener;
+import net.infonode.docking.OperationAbortedException;
+import net.infonode.docking.RootWindow;
+import net.infonode.docking.View;
 
 /**
  * This class represents the Magellan Desktop. It contains all visible
@@ -1827,7 +1826,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     saveSplitModeProperties();
     try {
       saveDesktopFile();
-    } catch(Exception exc) {}
+    } catch(Exception exc) {
+      log.error("could not write desktop file: "+exc.toString());
+    }
 
     saveTranslations();
     
@@ -1859,8 +1860,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
   /**
    * Saves the content of splitSets and layoutComponents to the desktop file.
+   * @throws IOException 
    */
-  protected void saveDesktopFile() throws Exception {
+  protected void saveDesktopFile() throws IOException  {
     File magFile = getDesktopFile(true);
 
     if(magFile.exists()) {

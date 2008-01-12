@@ -797,7 +797,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     JFileChooser fc = new JFileChooser();
     fc.setAccessory(new HistoryAccessory(settings, fc));
-
+    fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_FILTER));
+    
     if(defaultFile != null) {
       fc.setSelectedFile(new File(defaultFile));
     }
@@ -1202,9 +1203,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         quit(true);
       }
     } catch(IOException ioe) {
-      Object msgArgs[] = { outputFile.toString() };
       JOptionPane.showMessageDialog(this,
-                      (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.writeerror.text"))).format(msgArgs),
+                      Resources.getFormatted("orderwriterdialog.msg.writeerror.text", outputFile.toString(), ioe),
                       Resources.get("orderwriterdialog.msg.writeerror.title"),
                       JOptionPane.WARNING_MESSAGE);
     }

@@ -160,6 +160,7 @@ import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
+import magellan.library.io.file.FileType.ReadOnlyException;
 import magellan.library.rules.EresseaDate;
 import magellan.library.utils.JVMUtilities;
 import magellan.library.utils.Locales;
@@ -1178,6 +1179,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       getData().filetype = filetype;
       getData().resetToUnchanged();
       getProperties().setProperty("Client.lastCRSaved", filetype.getName());
+    } catch(ReadOnlyException exc) {
+      log.error(exc);
+      JOptionPane.showMessageDialog(this, Resources.getFormatted("actions.filesaveasaction.msg.filesave.readonly", filetype.getName()),
+          Resources.get("actions.filesaveasaction.msg.filesave.error.title"),
+                      JOptionPane.ERROR_MESSAGE);
     } catch(IOException exc) {
       log.error(exc);
       JOptionPane.showMessageDialog(this, exc.toString(),

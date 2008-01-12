@@ -31,7 +31,7 @@ package magellan.library.utils;
  */
 public enum Encoding {
   /** Default Encoding */
-  DEFAULT("ISO-8859-1"),
+  DEFAULT("UTF-8"),
   /** UTF-8 Encoding */
   UTF8("UTF-8"),
   /** ISO-8859 Encoding */

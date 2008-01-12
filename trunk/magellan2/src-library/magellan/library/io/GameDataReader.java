@@ -91,6 +91,7 @@ public class GameDataReader {
       return data;
     }
 
+    // TODO (stm) why do we need this?
     if(   aFileType.isZIPFile()
        || aFileType.isGZIPFile()
        || aFileType.isBZIP2File()

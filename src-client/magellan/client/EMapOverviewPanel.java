@@ -3227,7 +3227,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     private Map<ID,TreeNode> unitNodes;
     private Map<ID,TreeNode> buildingNodes;
     private Map<ID,TreeNode> shipNodes;
-    private Map activeAlliances;
+    private Map<ID, Alliance> activeAlliances;
     private Comparator unitComparator;
     private int treeStructure[];
     private boolean sortShipUnderUnitParent = true;
@@ -3343,7 +3343,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     /**
      * DOCUMENT-ME
      */
-    public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator unitSorting, Map activeAlliances, int treeStructure[], GameData data) {
+    public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
       boolean unitInteresting = (getDisplayMode() & UNITS) != 0;
       boolean buildingInteresting = (getDisplayMode() & BUILDINGS) != 0;
       boolean shipInteresting = (getDisplayMode() & SHIPS) != 0;

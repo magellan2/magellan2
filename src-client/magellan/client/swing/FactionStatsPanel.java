@@ -18,6 +18,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,9 +41,9 @@ import javax.swing.tree.DefaultTreeModel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.swing.tree.AllianceNodeWrapper;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.CopyTree;
-import magellan.client.swing.tree.FactionNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.swing.tree.SimpleNodeWrapper;
@@ -103,10 +104,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   private NodeWrapperFactory nodeWrapperFactory;
   private Units unitsTools = null;
   
-  //needed by FactionNodeWrapper to determine the active alliances
-  // keys: FactionIDs, values: Alliance-objects
-  private Map<ID, Alliance> activeAlliances = new Hashtable<ID, Alliance>();
-
   /**
    * Creates a new FactionStatsPanel object.
    */
@@ -120,9 +117,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     unitsTools = (data != null) ? new Units(data.rules) : new Units(null);
     nodeWrapperFactory = new NodeWrapperFactory(settings);
     
-    // activeAlliances
-    this.setDefaultAlliances();
-
     // to get the pref-adapter
     Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, data.base));
     nodeWrapperFactory.createUnitNodeWrapper(temp);
@@ -131,7 +125,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
@@ -149,7 +143,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
     if (e.getSource() == this) {
@@ -215,10 +209,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     updateTree();
   }
 
-  /**
-   * DOCUMENT-ME
-   */
-  public void valueChanged(TreeSelectionEvent e) {
+ /**
+ * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+ */
+public void valueChanged(TreeSelectionEvent e) {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
     if (node == null) {
@@ -450,6 +444,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         rootNode.add(currentNode);
       }
 
+      /* migrants node */
       if (f.getMigrants() > 0) {
         /**
          * n = new
@@ -460,17 +455,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         rootNode.add(currentNode);
       }
 
+      /* alliances node */
       if ((f.getAllies() != null) && (f.getAllies().size() > 0)) {
-        // n = new
-        // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.alliances"));
         currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
         showAlliances(f.getAllies(), currentNode);
       }
 
+      /* group alliances node */
       if ((f.getGroups() != null) && (f.getGroups().size() > 0)) {
-        // n = new
-        // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.groups"));
         currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.groups"), "groups"));
         rootNode.add(currentNode);
 
@@ -486,6 +479,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           showAlliances(g.allies(), subNode);
         }
       }
+      
+      /* other races node */
       if (specialPersons.size() > 0) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.otherrace"));
@@ -529,7 +524,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         }
       }
 
-      // if(!heroes.isEmpty()) {
+
+      /* heroes node */
       if (f.getMaxHeroes() > -1 || heros_count > 0) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.heroes"));
@@ -1026,15 +1022,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       return;
     }
 
-    List<Alliance> sortedAllies = new LinkedList<Alliance>(allies.values());
+    List<Alliance> sortedAllies = new ArrayList<Alliance>(allies.values());
     Collections.sort(sortedAllies, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
 
     for (Iterator iter = sortedAllies.iterator(); iter.hasNext();) {
-      // DefaultMutableTreeNode n = new DefaultMutableTreeNode(iter.next());
-      // Changing to FactionNodeWrapper
       Alliance actAlliance = (Alliance)iter.next();
-      
-      FactionNodeWrapper f = new FactionNodeWrapper(actAlliance.getFaction(),null,this.activeAlliances);
+      AllianceNodeWrapper f = new AllianceNodeWrapper(actAlliance.getFaction(),allies);
       DefaultMutableTreeNode n = new DefaultMutableTreeNode(f);
       
       rootNode.add(n);
@@ -1085,75 +1078,5 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // total amount produced by all units
     private int totalAmount;
   }
-  
-  /**
-   * This is a helper method to set this.activeAlliances to a usefull value, if
-   * no faction or group is active. The idea is to take all alliances of all
-   * privileged factions and combine their states by & (or in other words to
-   * take the intersection over all alliances of all privileged factions)
-   */
-  private void setDefaultAlliances() {
-
-    List<Faction> privilegedFactions = new LinkedList<Faction>();
-    activeAlliances.clear();
-
-    boolean privilegedWithoutAllies = false;
-
-    for (Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-      Faction f = (Faction) iter.next();
-
-      if (f.isPrivileged()) {
-        privilegedFactions.add(f);
-
-        if ((f.getAllies() == null) || (f.getAllies().values().size() <= 0)) {
-          // remember that one privileged faction had no allies
-          // so it is not necessary to do further calculations
-          privilegedWithoutAllies = true;
-        }
-      }
-    }
-
-    if (!privilegedWithoutAllies) {
-      // take the alliances of the first found privileged faction as
-      // activeAlliances
-      if (privilegedFactions.size() > 0) {
-        activeAlliances.putAll(((Faction) privilegedFactions.get(0)).getAllies());
-      }
-
-      // now check whether they are contained in the alliances-Maps of the other
-      // privileged factions and adjust their states if necessary
-      boolean delEntry = false;
-
-      for (Iterator iter = activeAlliances.keySet().iterator(); iter.hasNext();) {
-        ID id = (ID) iter.next();
-
-        for (int factionCount = 1; factionCount < privilegedFactions.size(); factionCount++) {
-          Faction f = (Faction) privilegedFactions.get(factionCount);
-
-          if (!f.getAllies().containsKey(id)) {
-            // mark this alliances as to be deleted out of activeAlliances
-            delEntry = true;
-
-            break;
-          } else {
-            Alliance a1 = (Alliance) activeAlliances.get(id);
-            Alliance a2 = (Alliance) f.getAllies().get(id);
-            a1.setState(a1.getState() & a2.getState());
-          }
-        }
-
-        if (delEntry) {
-          delEntry = false;
-          iter.remove();
-        }
-      }
-    }
-
-    // now add all privileged factions with alliance state Integer.MAX_VALUE
-    for (Iterator iter = privilegedFactions.iterator(); iter.hasNext();) {
-      Faction f = (Faction) iter.next();
-      activeAlliances.put(f.getID(), new Alliance(f, Integer.MAX_VALUE));
-    }
-  }
-  
+    
 }

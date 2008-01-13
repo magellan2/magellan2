@@ -1,4 +1,8 @@
 2008-01-011  stm (stm_@users.sourceforge.net)
+    * visibility of LanguageDialog and Version Dialog
+    * Alliances in faction stats panel
+    
+2008-01-11  stm (stm_@users.sourceforge.net)
     * removed src-ext (moved to top-level magellan-ext)
     * changed default of TradeTextCellRenderer to "sell mode"
     * improved start scripts

@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
+import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.Faction;
@@ -131,7 +132,7 @@ public class TreeHelper {
    * 
    */
   public TreeNode createRegionNode(Region r, NodeWrapperFactory factory,
-                      Map activeAlliances, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes,
+                      Map<ID, Alliance> activeAlliances, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes,
                       Map<ID,TreeNode> shipNodes, Comparator unitSorting,
                       int treeStructure[], GameData data, 
                       boolean sortUnderUnitParent) {
@@ -204,7 +205,7 @@ public class TreeHelper {
    *
    * @return the number of persons (not units) that were added
    */
-  private int addUnits(DefaultMutableTreeNode mother, int treeStructure[], int sortCriteria, List<Unit> units, NodeWrapperFactory factory, Map activeAlliances, Map<ID,TreeNode> unitNodes, GameData data) {
+  private int addUnits(DefaultMutableTreeNode mother, int treeStructure[], int sortCriteria, List<Unit> units, NodeWrapperFactory factory, Map<ID, Alliance> activeAlliances, Map<ID,TreeNode> unitNodes, GameData data) {
     SupportsEmphasizing se = null;
 
     if(mother.getUserObject() instanceof SupportsEmphasizing) {

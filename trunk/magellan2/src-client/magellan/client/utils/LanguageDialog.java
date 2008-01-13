@@ -150,6 +150,7 @@ public class LanguageDialog {
     if (languagesFound()) {
       pane.selectInitialValue();
 
+      dialog.setAlwaysOnTop(true);
       dialog.setVisible(true);
       dialog.dispose();
       

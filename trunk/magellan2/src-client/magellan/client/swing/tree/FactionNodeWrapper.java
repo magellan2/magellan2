@@ -23,6 +23,7 @@ import java.util.Properties;
 
 import magellan.library.Alliance;
 import magellan.library.Faction;
+import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -47,7 +48,7 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	 * that changes, when the user changes between units/factions/groups etc. in
 	 * EMapOverviewPanel. Don't change it's contents here!
 	 */
-	private Map activeAlliances;
+	private Map<ID, Alliance> activeAlliances;
 
 	/**
 	 * Creates a new FactionNodeWrapper object.
@@ -56,7 +57,7 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	 * 
 	 * 
 	 */
-	public FactionNodeWrapper(Faction f, Region r, Map activeAlliances) {
+	public FactionNodeWrapper(Faction f, Region r, Map<ID, Alliance> activeAlliances) {
 		this.activeAlliances = activeAlliances;
 		this.faction = f;
 		this.region = r;
@@ -80,6 +81,10 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 		return region;
 	}
 
+	public Map<ID, Alliance> getActiveAlliances() {
+	  return activeAlliances;
+	}
+	
 	/**
 	 * DOCUMENT-ME
 	 *

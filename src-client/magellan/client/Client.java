@@ -415,9 +415,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Point p = startWindow.getLocation();
         ld.setLocation((int) p.getX()+(startWindow.getWidth()-ld.getWidth())/2, (int) p.getY()-ld.getHeight()/2);
         Locale locale = ld.show();
-        
+        startWindow.toFront();
         if (locale == null) {
           // without this decision we cannot start the application
+          log.error("can't work without locale");
           quit(false);
         }
 
@@ -1073,24 +1074,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     
           c.setReportChanged(false);
           
-          String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
-          if (!Utils.isEmpty(newestVersion)) {
-            String currentVersion = VersionInfo.getVersion(tFileDir);
-            log.info("Newest Version on server: "+newestVersion);
-            log.info("Current Version: "+currentVersion);
-            if (VersionInfo.isNewer(currentVersion, newestVersion)) {
-              startWindow.toBack();
-              JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
-            }
-          }
-    
-          
           startWindow.progress(5, Resources.get("clientstart.5"));
           c.setAllVisible(true);
           startWindow.setVisible(false);
           startWindow.dispose();
           startWindow = null;
           
+          String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
+          if (!Utils.isEmpty(newestVersion)) {
+            String currentVersion = VersionInfo.getVersion(tFileDir);
+            log.info("Newest Version on server: "+newestVersion);
+            log.info("Current Version: "+currentVersion);
+            if (VersionInfo.isNewer(currentVersion, newestVersion)) {
+              JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
+            }
+          }
+    
     
           // show tip of the day window
           if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {

@@ -1,4 +1,7 @@
-2008-01-011  stm (stm_@users.sourceforge.net)
+2008-01-15 Thoralf (thoralf@m84.de)
+    * added setOrder(String) shortcut in Extended Command PlugIn.
+    
+2008-01-11  stm (stm_@users.sourceforge.net)
     * visibility of LanguageDialog and Version Dialog
     * Alliances in faction stats panel
     

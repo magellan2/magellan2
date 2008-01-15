@@ -874,5 +874,14 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     public void addOrder(String order) {
       unit.addOrder(order, false, 0);
     }
+    
+    /**
+     * Sets the order of the current unit.
+     */
+    public void setOrder(String order) {
+      List<String> orders = new ArrayList<String>();
+      orders.add(order);
+      unit.setOrders(orders);
+    }
   }
 }

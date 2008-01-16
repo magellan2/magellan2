@@ -1,3 +1,7 @@
+2008-01-16 Fiete (sf@fietefietz.de)
+	* added replacers:ironlevel,laenloevel,stoneslevel
+	* fixed call to tooltipinfo
+
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.
     

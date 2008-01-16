@@ -353,7 +353,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			/**
 			 * DOCUMENT-ME
 			 */
-			public void show() {
+			public void showDialog() {
 				replacerMap = magellan.library.utils.replacers.ReplacerHelp.getDefaultReplacerFactory();
 
 				if(rList == null) {
@@ -1458,7 +1458,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				}
 
 				if(!infoDialog.isVisible()) {
-					infoDialog.show();
+					infoDialog.showDialog();
 				}
 			} else {
 				this.setVisible(false);

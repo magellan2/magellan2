@@ -69,7 +69,11 @@ public class ReplacerHelp implements GameDataListener {
 		// args[0] = "iron";
 		// drf.putReplacer("iron", regionField, args);
 		drf.putReplacer("iron", IronReplacer.class);
-		
+    
+    drf.putReplacer("ironlevel", IronLevelReplacer.class);
+    drf.putReplacer("stoneslevel", StonesLevelReplacer.class);
+    drf.putReplacer("laenlevel", LaenLevelReplacer.class);
+    
 		// args[0] = "laen";
 		// drf.putReplacer("laen", regionField, args);
 		drf.putReplacer("laen", LaenReplacer.class);

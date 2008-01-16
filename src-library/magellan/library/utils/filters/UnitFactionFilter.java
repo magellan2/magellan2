@@ -56,7 +56,7 @@ public class UnitFactionFilter extends UnitFilter {
 
 		return (f != null) &&
 			   (((factionS != null) &&
-			   (factionS.equals(f.getName()) || factionS.equals(f.getID().toString()))) ||
+			   (factionS.equalsIgnoreCase(f.getName()) || factionS.equalsIgnoreCase(f.getID().toString()))) ||
 			   ((faction != null) && (faction.equals(f))));
 	}
 

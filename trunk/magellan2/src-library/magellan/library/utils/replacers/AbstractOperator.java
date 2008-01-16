@@ -93,7 +93,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 
 			if(!(param instanceof Number)) {
 				try {
-					Float fl = Float.valueOf(param.toString());
+					Float fl = Float.valueOf(param.toString().replace(".", ""));
 					numbers[i] = fl;
 				} catch(NumberFormatException exc) {
 					return null;

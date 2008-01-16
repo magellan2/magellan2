@@ -1,6 +1,7 @@
 2008-01-16 Fiete (sf@fietefietz.de)
 	* added replacers:ironlevel,laenloevel,stoneslevel
 	* fixed call to tooltipinfo
+	* replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")	
 
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.

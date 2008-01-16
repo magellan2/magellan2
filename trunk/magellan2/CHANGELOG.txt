@@ -2,6 +2,7 @@
 	* added replacers:ironlevel,laenloevel,stoneslevel
 	* fixed call to tooltipinfo
 	* replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")	
+	* changed One_region-AR-RR translation finder to work with CoordinateIDs, nit with Regions
 
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.

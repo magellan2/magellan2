@@ -30,6 +30,7 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.StringID;
@@ -910,7 +911,7 @@ public class ReportMerger extends Object {
         bestTranslation = savedTranslation;
       }
     } else {
-      log.info("now known translation");
+      log.info("no known translation");
     }
     if (bestTranslation.getScore()<0)
       log.warn("No good translation found in layer "+layer);
@@ -1447,7 +1448,7 @@ public class ReportMerger extends Object {
       return null;
     }
 
-    Collection<Region> possibleRR_Regions = new HashSet<Region>(0);
+    Collection<CoordinateID> possibleRR_Regions = new HashSet<CoordinateID>(0);
     // possibleRR_Regions sind erstmal alle Schemen
     for (Scheme actScheme : astralRegion.schemes()) {
       Region actSchemeRegion = data.getRegion(actScheme.getCoordinate());
@@ -1455,7 +1456,7 @@ public class ReportMerger extends Object {
       if (actSchemeRegion == null) {
         continue;
       }
-      possibleRR_Regions.add(actSchemeRegion);
+      possibleRR_Regions.add(actSchemeRegion.getCoordinate());
     }
     // sollte die Liste jetzt leer sein (unwahrscheinlich), brechen wir ab
     if (possibleRR_Regions.size() == 0) {
@@ -1463,7 +1464,7 @@ public class ReportMerger extends Object {
       return null;
     }
     // die schemen erfahren eine sonderbehandlung, diese extra listen
-    Collection<Region> actSchemeRegions = new HashSet<Region>(possibleRR_Regions);
+    Collection<CoordinateID> actSchemeRegions = new HashSet<CoordinateID>(possibleRR_Regions);
     // die possible Regions mit Nachbarn füllen, für den ungünstigsten
     // Fall sind 4 Läufe notwendig
     for (int i = 0; i < 4; i++) {
@@ -1480,21 +1481,23 @@ public class ReportMerger extends Object {
     // nicht selbst schemen sind, dürfen nicht weniger als 3
     // Regionen entfernt sein.
     // Dazu: Randregionen basteln
-    Collection<Region> schemenRandRegionen = new HashSet<Region>(0);
-    schemenRandRegionen = this.getOneRegion_explodeRegionList(data, actSchemeRegions);
+    Collection<CoordinateID> schemenRandRegionIDs = new HashSet<CoordinateID>(0);
+    schemenRandRegionIDs = this.getOneRegion_explodeRegionList(data, actSchemeRegions);
     // schemen selbst abziehen
-    schemenRandRegionen.removeAll(actSchemeRegions);
+    schemenRandRegionIDs.removeAll(actSchemeRegions);
     // Ozeanfelder löschen
-    schemenRandRegionen = this.getOneRegion_deleteOceans(schemenRandRegionen);
+    schemenRandRegionIDs = this.getOneRegion_deleteOceans(data,schemenRandRegionIDs);
     // alle löschen, die weniger als 3 Regionen an den randregionen dranne sind
-    possibleRR_Regions = this.getOneRegion_deleteIfDist(data, schemenRandRegionen, possibleRR_Regions, 3, false);
+    possibleRR_Regions = this.getOneRegion_deleteIfDist(data, schemenRandRegionIDs, possibleRR_Regions, 3, false);
     // jetzt sollte im Idealfall nur noch eine Region vorhanden sein ;-))
     if (possibleRR_Regions.size() == 1) {
       // Treffer, wir können Translation bestimmen
       // Verständnisfrage: ist gesichert, dass sich das einzige
       // Element einer ArrayList immer auf Index=0 befindet?
-      Region rrRegion = possibleRR_Regions.iterator().next();
-      translation = new CoordinateID(rrRegion.getCoordinate().x - 4 * astralRegion.getCoordinate().x, rrRegion.getCoordinate().y - 4 * astralRegion.getCoordinate().y);
+      // Region rrRegion = data.getRegion(possibleRR_Regions.iterator().next());
+      CoordinateID rrRegionID = possibleRR_Regions.iterator().next();
+      // translation = new CoordinateID(rrRegion.getCoordinate().x - 4 * astralRegion.getCoordinate().x, rrRegion.getCoordinate().y - 4 * astralRegion.getCoordinate().y);
+      translation = new CoordinateID(rrRegionID.x - 4 * astralRegion.getCoordinate().x, rrRegionID.y - 4 * astralRegion.getCoordinate().y);
     }
     return translation;
   }
@@ -1513,30 +1516,30 @@ public class ReportMerger extends Object {
    * @param radius
    * @return
    */
-  private Collection<Region> getOneRegion_deleteIfDist(GameData data, Collection<Region> schemen, Collection<Region> regionList, int radius, boolean innerhalb) {
-    Collection<Region> regionsToDel = new ArrayList<Region>(0);
-    for (Region actRegion : regionList) {
+  private Collection<CoordinateID> getOneRegion_deleteIfDist(GameData data, Collection<CoordinateID> schemenIDs, Collection<CoordinateID> regionIDList, int radius, boolean innerhalb) {
+    Collection<CoordinateID> regionsIDsToDel = new ArrayList<CoordinateID>(0);
+    for (CoordinateID actRegionID : regionIDList) {
       // nur die betrachten, die nicht schon in del sind
-      if (!regionsToDel.contains(actRegion)) {
+      if (!regionsIDsToDel.contains(actRegionID)) {
         // Durch alle Schemen laufen und Abstand berechnen
-        for (Region actSchemenRegion : schemen) {
+        for (CoordinateID actSchemenID : schemenIDs) {
           // Abstand berechnen
-          int dist = Regions.getRegionDist(actRegion.getCoordinate(), actSchemenRegion.getCoordinate());
+          int dist = Regions.getRegionDist(actRegionID, actSchemenID);
 
           if ((dist > radius && innerhalb) || (dist < radius && !innerhalb)) {
             // actRegion ist weiter/näher als radius von actSchemenregion
             // entfernt
             // muss gelöscht werden
-            regionsToDel.add(actRegion);
+            regionsIDsToDel.add(actRegionID);
             break;
           }
         }
       }
     }
     // Löschung durchführen
-    Collection<Region> erg = new HashSet<Region>(0);
-    erg.addAll(regionList);
-    erg.removeAll(regionsToDel);
+    Collection<CoordinateID> erg = new HashSet<CoordinateID>(0);
+    erg.addAll(regionIDList);
+    erg.removeAll(regionsIDsToDel);
     return erg;
   }
 
@@ -1546,14 +1549,14 @@ public class ReportMerger extends Object {
    * @param regionen
    * @return
    */
-  private Collection<Region> getOneRegion_deleteOceans(Collection<Region> regionList) {
-    Collection<Region> result = new HashSet<Region>();
+  private Collection<CoordinateID> getOneRegion_deleteOceans(GameData data,Collection<CoordinateID> regionIDList) {
+    Collection<CoordinateID> result = new HashSet<CoordinateID>();
 
-    for (Region actRegion : regionList) {
-      if (!actRegion.getRegionType().isOcean())
-        result.add(actRegion);
+    for (CoordinateID actRegionID : regionIDList) {
+      Region actRegion = data.getRegion(actRegionID);
+      if (actRegion!=null && !actRegion.getRegionType().isOcean())
+        result.add(actRegionID);
     }
-
     return result;
   }
 
@@ -1564,19 +1567,49 @@ public class ReportMerger extends Object {
    * @param regionList
    * @return
    */
-  private Collection<Region> getOneRegion_explodeRegionList(GameData data, Collection<Region> regionList) {
+  private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList) {
     // Liste verlängern nach durchlauf
-    Set<Region> neighborhood = new HashSet<Region>();
-    for (Region actRegion : regionList) {
+    Set<CoordinateID> neighborhood = new HashSet<CoordinateID>();
+    for (CoordinateID actRegionID : regionIDList) {
       // liefert die IDs der Nachbarregionen
-      Collection<CoordinateID> neighbors = actRegion.getNeighbours();
+      // Collection<CoordinateID> neighbors = actRegion.getNeighbours();
+      Collection<CoordinateID> neighbors = this.getOneRegion_getAllNeighbourIDs(actRegionID, 1);
       for (CoordinateID newRegionID : neighbors) {
-        Region newRegion = data.getRegion(newRegionID);
         // hinzufügen, wenn noch nicht vorhanden
-        neighborhood.add(newRegion);
+        neighborhood.add(newRegionID);
       }
     }
     return neighborhood;
   }
 
+  
+  /**
+   * Retrieve the regions within radius around region center.
+   * Creates new Regions if not already present
+   * @param regions a map containing the existing regions.
+   * @param center the region the neighbours of which are retrieved.
+   * @param radius the maximum distance between center and any region to be regarded as a
+   *      neighbour within radius.
+   * 
+   *
+   * @return a map with all neighbours that were found, including     region center. The keys are
+   *       instances of class Coordinate,     values are objects of class Region.
+   */
+  private ArrayList<CoordinateID> getOneRegion_getAllNeighbourIDs(CoordinateID center, int radius) {
+    ArrayList<CoordinateID> neighbours = new ArrayList<CoordinateID>();
+    
+
+    for(int dx = -radius; dx <= radius; dx++) {
+      for(int dy = (-radius + Math.abs(dx)) - ((dx > 0) ? dx : 0);
+          dy <= ((radius - Math.abs(dx)) - ((dx < 0) ? dx : 0)); dy++) {
+        CoordinateID c = new CoordinateID(0, 0, center.z);
+        c.x = center.x + dx;
+        c.y = center.y + dy;
+        neighbours.add(c);
+      }
+    }
+    return neighbours;
+  }
+  
+  
 }

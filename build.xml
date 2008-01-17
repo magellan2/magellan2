@@ -340,6 +340,63 @@
     <antcall target="clear-release"/>
   </target>
   
+	<!-- *************************************************************** -->
+	  <!-- *                                                             * -->
+	  <!-- *  This target compiles and packs the whole magellan app.     * -->
+	  <!-- *                                                             * -->
+	  <!-- *************************************************************** -->
+	  <target name="distributeNoPack" description=" This target compiles and packs the whole magellan application.">
+	    <buildnumber file=".build.number"/>
+	    
+	    <antcall target="clear-classes"/>
+	    <antcall target="clear-release"/>
+	    <mkdir dir="${classes}" />
+	    
+	    <antcall target="build_library">
+	      <param name="build.number" value="${build.number}"/>
+	    </antcall>
+	    
+	    <antcall target="build_client">
+	      <param name="build.number" value="${build.number}"/>
+	    </antcall>
+	    
+	    <antcall target="build_plugins">
+	      <param name="build.number" value="${build.number}"/>
+	    </antcall>
+	    
+	    <antcall target="build_help">
+	      <param name="build.number" value="${build.number}"/>
+	    </antcall>
+	    
+	    <antcall target="copy_release_data">
+	      <param name="build.number" value="${build.number}"/>
+	    </antcall>
+	  	
+	  	<copy file="${release}/etc/VERSION" tofile="${basedir}/VERSION" overwrite="yes"/>
+	  	
+	    <property name="installer" location="${basedir}/installer"/>
+	    
+	  	<java jar="${installer}/izpack/standalone-compiler.jar" fork="true" failonerror="true">
+	      <arg value="${installer}/izpack-install.xml"/>
+	      <arg value="-b"/>
+	      <arg value="."/>
+	      <arg value="-o"/>
+	      <arg value="magellan_v${VERSION.POINTED}.jar"/>
+	      <arg value="-k"/>
+	      <arg value="standard"/>
+	 
+	      <classpath>
+	        <pathelement path="${java.class.path}/" />
+	        <fileset dir="${installer}/izpack/">
+	          <include name="**/*.jar" />
+	        </fileset>
+	      </classpath>
+	  	</java>
+	    
+	    <antcall target="clear-release"/>
+	  </target>
+	
+	
   <!-- *************************************************************** -->
   <!-- *                                                             * -->
   <!-- *************************************************************** -->

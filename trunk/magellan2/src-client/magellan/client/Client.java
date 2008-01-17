@@ -2142,6 +2142,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void initPlugIns() {
     MagellanPlugInLoader loader = new MagellanPlugInLoader();
     Properties properties = getProperties();
+    // helper: stote Magellan-Dir in properties toBe changed
+    properties.setProperty("plugin.helper.magellandir", filesDirectory.toString());
     Collection<Class<MagellanPlugIn>> plugInClasses = loader.getExternalModuleClasses(properties);
     
     for (Class<MagellanPlugIn> plugInClass : plugInClasses) {

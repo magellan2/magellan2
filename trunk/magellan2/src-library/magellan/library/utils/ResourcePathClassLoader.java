@@ -74,9 +74,39 @@ public class ResourcePathClassLoader extends ClassLoader {
       } 
     }
     
+    /**
+     * just add found jars from pluginDir to RessourcePaths
+     */
+    resourcePaths.addAll(getPathsFromPlugInDir(settings));
+    
     return resourcePaths;
   }
 
+  private static List<URL> getPathsFromPlugInDir(Properties settings){
+    List<URL> paths = new ArrayList<URL>();
+    String magellanDirString = settings.getProperty("plugin.helper.magellandir");
+    File magPluginDir = new File(magellanDirString + File.separator + "plugins");
+    if (magPluginDir.exists() && magPluginDir.isDirectory()){
+      File[] files = magPluginDir.listFiles();
+      if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
+        for (int i = 0; i < files.length; i++) {
+          String entry = files[i].getAbsolutePath();
+          if (entry.endsWith(".jar")) {
+            entry = "jar:file:/" + entry + "!/";
+            try {
+              // log.info("PluginDir - found:" + entry);
+              paths.add(new URL(entry));
+            } catch(MalformedURLException e) {
+              log.error(e);
+            } 
+          }
+        }
+      }
+    }
+    return paths;
+  }
+  
+  
   /**
    * Returns the resource paths this loader operates on.
    */

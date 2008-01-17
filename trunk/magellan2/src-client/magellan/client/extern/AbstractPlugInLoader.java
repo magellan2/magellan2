@@ -79,7 +79,7 @@ public abstract class AbstractPlugInLoader<T> {
 
     return paths;
   }
-
+  
   /**
    * 
    */
@@ -208,7 +208,7 @@ public abstract class AbstractPlugInLoader<T> {
 
     // pathes to search
     Collection<String> paths = new ArrayList<String>();
-
+    
     // a) read possible paths from ResourcePathClassLoader
     // b) read property java.class.path and iterate over the entries
     if (settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader", "true").equals("true")) {
@@ -219,6 +219,9 @@ public abstract class AbstractPlugInLoader<T> {
       paths.addAll(getPathsFromClassPath());
     }
 
+    // search explicit the magellan dir for the magellan-plugins.jar
+    paths.add(settings.getProperty("plugin.helper.magellandir") + File.separator + "magellan-plugins.jar");    
+    
     for (Iterator<String> iter = paths.iterator(); iter.hasNext();) {
       String path = iter.next();
       classes.addAll(getClassesFromPath(resLoader, externalModuleClass, path));

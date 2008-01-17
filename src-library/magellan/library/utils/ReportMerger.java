@@ -893,8 +893,8 @@ public class ReportMerger extends Object {
     RatedTranslation bestTranslation = new RatedTranslation(new CoordinateID(0, 0, layer), -1, Type.DEFAULT);
 
     if (translationList!=null && translationList.size() > 0) {
-      log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName());
       bestTranslation = Collections.max(translationList);
+      log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + "(best(maxScore):" + bestTranslation.toString()+")");
     } else {
       log.info("No translation in layer "+ layer+" found for " + newReport.getFile().getName());
     }
@@ -911,7 +911,7 @@ public class ReportMerger extends Object {
         bestTranslation = savedTranslation;
       }
     } else {
-      log.info("no known translation");
+      log.info("no known translation (no translation saved in CR)");
     }
     if (bestTranslation.getScore()<0)
       log.warn("No good translation found in layer "+layer);
@@ -1205,16 +1205,16 @@ public class ReportMerger extends Object {
       log.info("no astral regions in report");
     // Put AstralTranslation via Real Space Translation
     if ((dataAstralToReal != null) && (reportAstralToReal != null)) {
-      log.info("ReportMerger: Data   AR-Real: " + dataAstralToReal);
-      log.info("ReportMerger: Report AR-Real: " + reportAstralToReal);
-      log.info("ReportMerger: Real Data-Report: " + realTranslation.x + ", " + realTranslation.y);
+      log.info("ReportMerger (Astral2Real): Data   AR-Real: " + dataAstralToReal);
+      log.info("ReportMerger (Astral2Real): Report AR-Real: " + reportAstralToReal);
+      log.info("ReportMerger (Astral2Real): Real Data-Report: " + realTranslation.x + ", " + realTranslation.y);
 
       CoordinateID astralTrans = new CoordinateID((new Integer((dataAstralToReal.x - reportAstralToReal.x + realTranslation.x) / 4)).intValue(), (new Integer((dataAstralToReal.y - reportAstralToReal.y + realTranslation.y) / 4)).intValue(), 1);
       astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL1));
-      log.info("ReportMerger: Real-Space-trans, Resulting Trans: " + astralTrans);
+      log.info("ReportMerger (Astral2Real): Resulting Trans: " + astralTrans);
     } else {
       if (dataHasAstralRegions && reportHasAstralRegions)
-        log.info("ReportMerger: no valid astral translation found (Real Space Translation)");
+        log.info("ReportMerger (Astral2Real): no valid astral translation found.");
     }
 
   }
@@ -1242,7 +1242,17 @@ public class ReportMerger extends Object {
       astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL2));
     } else {
       if (dataHasAstralRegions && reportHasAstralRegions)
-        log.info("ReportMerger: no valid astral translation found (One-Region-Translation)");
+        log.info("ReportMerger (OneRegion): no valid astral translation found.");
+        if (dataAstralToReal_OneRegion!=null){
+          log.info("ReportMerger (OneRegion): Translation found in existent (old) Data: " + dataAstralToReal_OneRegion.toString());
+        } else {
+          log.info("ReportMerger (OneRegion): No Translation found in existent (old) Data.");
+        }
+        if (reportAstralToReal_OneRegion!=null){
+          log.info("ReportMerger (OneRegion): Translation found in new Data: " + reportAstralToReal_OneRegion.toString());
+        } else {
+          log.info("ReportMerger (OneRegion): No Translation found in new Data.");
+        }
     }
   
   }
@@ -1465,11 +1475,13 @@ public class ReportMerger extends Object {
     }
     // die schemen erfahren eine sonderbehandlung, diese extra listen
     Collection<CoordinateID> actSchemeRegions = new HashSet<CoordinateID>(possibleRR_Regions);
+    
     // die possible Regions mit Nachbarn füllen, für den ungünstigsten
-    // Fall sind 4 Läufe notwendig
-    for (int i = 0; i < 4; i++) {
-      possibleRR_Regions = this.getOneRegion_explodeRegionList(data, possibleRR_Regions);
-    }
+    // Fall ist ein radius von 3 notwendig
+    // nicht vorhandene Regionen werden trotzdem aufgeführt
+    
+    possibleRR_Regions = this.getOneRegion_explodeRegionList(data, possibleRR_Regions,false,3);
+    
 
     // Ab jetzt versuchen, unmögliche Regionen zu entfernen...
     // erste bedingung: alle regionen, die sich auch nur von einer
@@ -1482,7 +1494,8 @@ public class ReportMerger extends Object {
     // Regionen entfernt sein.
     // Dazu: Randregionen basteln
     Collection<CoordinateID> schemenRandRegionIDs = new HashSet<CoordinateID>(0);
-    schemenRandRegionIDs = this.getOneRegion_explodeRegionList(data, actSchemeRegions);
+    schemenRandRegionIDs = this.getOneRegion_explodeRegionList(data, actSchemeRegions,true,5);
+ 
     // schemen selbst abziehen
     schemenRandRegionIDs.removeAll(actSchemeRegions);
     // Ozeanfelder löschen
@@ -1567,21 +1580,34 @@ public class ReportMerger extends Object {
    * @param regionList
    * @return
    */
-  private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList) {
+  private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList,boolean GameDataRegionsOnly) {
+    // Liste verlängern nach durchlauf
+    return this.getOneRegion_explodeRegionList(data, regionIDList, GameDataRegionsOnly, 1);
+  }
+
+  /**
+   * Erweitert die Liste der Regionen um die Nachbarn der aktuellen Regionen
+   * 
+   * @param data
+   * @param regionList
+   * @return
+   */
+  private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList,boolean GameDataRegionsOnly,int radius) {
     // Liste verlängern nach durchlauf
     Set<CoordinateID> neighborhood = new HashSet<CoordinateID>();
     for (CoordinateID actRegionID : regionIDList) {
       // liefert die IDs der Nachbarregionen
       // Collection<CoordinateID> neighbors = actRegion.getNeighbours();
-      Collection<CoordinateID> neighbors = this.getOneRegion_getAllNeighbourIDs(actRegionID, 1);
+      Collection<CoordinateID> neighbors = this.getOneRegion_getAllNeighbourIDs(actRegionID, radius);
       for (CoordinateID newRegionID : neighbors) {
         // hinzufügen, wenn noch nicht vorhanden
+        if (!GameDataRegionsOnly || data.getRegion(newRegionID)!=null)
         neighborhood.add(newRegionID);
       }
     }
     return neighborhood;
   }
-
+  
   
   /**
    * Retrieve the regions within radius around region center.

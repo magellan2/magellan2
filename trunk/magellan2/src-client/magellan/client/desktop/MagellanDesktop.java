@@ -108,6 +108,8 @@ import net.infonode.docking.DockingWindowListener;
 import net.infonode.docking.OperationAbortedException;
 import net.infonode.docking.RootWindow;
 import net.infonode.docking.View;
+import net.infonode.docking.properties.RootWindowProperties;
+import net.infonode.tabbedpanel.TabAreaVisiblePolicy;
 
 /**
  * This class represents the Magellan Desktop. It contains all visible
@@ -1348,6 +1350,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
           
         }
         
+      } else if (action != null && action.equals("hideTabs") && splitRoot instanceof RootWindow) {
+        RootWindow root = (RootWindow) splitRoot;
+        RootWindowProperties prop = root.getRootWindowProperties();
+        if (menu.isSelected()){
+          prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(
+              TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
+        }else{
+            prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(
+                TabAreaVisiblePolicy.ALWAYS);
+        }
       }
     }
   }

@@ -92,18 +92,17 @@ public class Scanner {
 		isBlock = false;
 		isIdBlock = false;
 		lnr++;
-
-		if(!stream.ready()) {
+    line = stream.readLine();
+		if(line==null) {
 			eof = true;
 			stream.close();
 
 			return;
 		}
 
-		line = stream.readLine();
 
 		// skip empty lines
-		if(line == null) {
+		if(line == "") {
 			getNextToken();
 
 			return;

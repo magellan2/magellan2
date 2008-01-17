@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import magellan.library.gamebinding.EresseaMapMergeEvaluator;
+import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Translations;
-import magellan.library.gamebinding.EresseaSpecificStuff;
 
 /**
  * An implementation of the <tt>GameData</tt> supporting all of the attributes defined there. No
@@ -242,5 +242,13 @@ public class CompleteData extends GameData {
       this.astralMappingImpossible = this.astralMapping == null;
     }
     return this.astralMapping;
+  }
+
+  /**
+   * @see magellan.library.GameData#estimateSize()
+   */
+  @Override
+  public long estimateSize() {
+    return  regions().size()*1000+units.size()*1000;
   }
 }

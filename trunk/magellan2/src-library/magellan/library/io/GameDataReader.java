@@ -60,7 +60,7 @@ public class GameDataReader {
   public GameData readGameData(FileType aFileType) throws IOException {
     return readGameData(aFileType, new CoordinateID(0,0));
   }
-  
+
   /**
    * Read a gamedata from a given File. At the beginning the game name is read by a
    * <code>GameNameReader</code>. With this name the corresponding rules and game
@@ -81,6 +81,10 @@ public class GameDataReader {
       throw new IOException("Unable to determine game name of file " + aFileType);
     }
     
+    return readGameData(aFileType, newOrigin, gameName);
+  }
+  
+  public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName) throws IOException {
     if(aFileType.isXMLFile()) {
       GameData data = readGameDataXML(aFileType, gameName, newOrigin);
 
@@ -148,7 +152,7 @@ public class GameDataReader {
     Reader reader = aFileType.createReader();
 
     try {
-      log.info("Loading report "+aFileType.getFile().getName());
+      log.info("Loading report "+aFileType.getName());
       CRParser parser = new CRParser(ui,newOrigin);
       parser.read(reader, newData);
     } finally {

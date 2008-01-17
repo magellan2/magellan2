@@ -14,6 +14,7 @@
 package magellan.client.desktop;
 
 import java.awt.Component;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
@@ -24,12 +25,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
-
-import org.w3c.dom.Element;
 
 import magellan.client.Client;
 import magellan.client.actions.desktop.LayoutCheckboxMenuItem;
@@ -44,11 +44,14 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.RootWindow;
 import net.infonode.docking.View;
+import net.infonode.docking.properties.RootWindowProperties;
 import net.infonode.docking.theme.DockingWindowsTheme;
 import net.infonode.docking.theme.ShapedGradientDockingTheme;
 import net.infonode.docking.util.DockingUtil;
 import net.infonode.docking.util.StringViewMap;
 import net.infonode.util.Direction;
+
+import org.w3c.dom.Element;
 
 
 /**
@@ -141,13 +144,29 @@ public class DockingFrameworkBuilder  {
     
     DockingWindowsTheme theme = new ShapedGradientDockingTheme();
     window.getWindowBar(Direction.DOWN).setEnabled(true);
-    window.getRootWindowProperties().addSuperObject(theme.getRootWindowProperties());
     window.setPopupMenuFactory(new MagellanPopupMenuFactory(viewMap));
+
+    RootWindowProperties prop = window.getRootWindowProperties();
+    prop.addSuperObject(theme.getRootWindowProperties());
     
-    window.getRootWindowProperties().getWindowAreaProperties().setBackgroundColor(null).setBorder(null);
-    window.getRootWindowProperties().getWindowAreaShapedPanelProperties().setComponentPainter(null);
-    window.getRootWindowProperties().getComponentProperties().setBackgroundColor(null);
-    window.getRootWindowProperties().getShapedPanelProperties().setComponentPainter(null);
+    prop.getWindowAreaProperties().setBackgroundColor(null).setBorder(null);
+    prop.getWindowAreaShapedPanelProperties().setComponentPainter(null);
+    prop.getComponentProperties().setBackgroundColor(null);
+    prop.getShapedPanelProperties().setComponentPainter(null);
+
+    prop.getWindowAreaProperties().setInsets(new Insets(0,0,0,0));
+    prop.getWindowAreaProperties().setBorder(BorderFactory.createEmptyBorder(0,0,3,0));
+    prop.getWindowBarProperties().getComponentProperties().setInsets(new Insets(0,0,0,0));
+    prop.getWindowBarProperties().getComponentProperties().setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+    prop.getComponentProperties().setBorder(BorderFactory.createEmptyBorder());
+    prop.getComponentProperties().setInsets(new Insets(5,5,5,5));
+    
+//  prop.getDockingWindowProperties().getTabProperties().getTitledTabProperties().setEnabled(true);
+//  prop.getDockingWindowProperties().getTabProperties().getFocusedProperties().setTitleComponentVisible(true);
+//  prop.getDockingWindowProperties().getTabProperties().getFocusedProperties().setTextVisible(true);
+//  prop.getViewProperties().getViewTitleBarProperties().setVisible(false);
+//  prop.getViewProperties().setAlwaysShowTitle(false);
+//  prop.getTabWindowProperties().getTabbedPanelProperties().setTabDropDownListVisiblePolicy(TabDropDownListVisiblePolicy.MORE_THAN_ONE_TAB);
 
     return window;
   }
@@ -293,6 +312,12 @@ public class DockingFrameworkBuilder  {
     layoutMenu.add(deleteMenu);
     
     desktopMenu.add(layoutMenu);
+    
+    JCheckBoxMenuItem hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), true);
+    hideTabs.setActionCommand("hideTabs");
+    desktopMenu.add(hideTabs);
+    hideTabs.addActionListener(listener);
+    
     desktopMenu.addSeparator();
     
     if(components.size() > 0) {

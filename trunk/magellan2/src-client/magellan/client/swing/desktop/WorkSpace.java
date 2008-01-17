@@ -94,7 +94,8 @@ public class WorkSpace extends JPanel {
 	}
 
 	private JPanel createContentPanel() {
-		return new JSplitPaneBorderedJPanel(new BorderLayout());
+	  return new JPanel(new BorderLayout());
+//		return new JSplitPaneBorderedJPanel(new BorderLayout());
 	}
 
 	private JPanel createDefaultStatus() {

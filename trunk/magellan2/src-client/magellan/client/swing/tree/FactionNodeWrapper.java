@@ -30,7 +30,7 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * Displays a faction node with alliance icon.
  *
  * @author $Author: $
  * @version $Revision: 171 $
@@ -81,8 +81,8 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 		return region;
 	}
 
-	public Map<ID, Alliance> getActiveAlliances() {
-	  return activeAlliances;
+	public Alliance getAlliance(ID faction) {
+	  return activeAlliances.get(faction);
 	}
 	
 	/**

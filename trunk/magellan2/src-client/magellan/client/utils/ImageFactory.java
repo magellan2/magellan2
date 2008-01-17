@@ -56,7 +56,7 @@ public class ImageFactory implements GameDataListener {
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		if(e.getGameData() != null) {
-			gamename = e.getGameData().name.toLowerCase();
+			gamename = e.getGameData().getGameName().toLowerCase();
 
 			if(log.isDebugEnabled()) {
 				log.debug("ImageFactory.gameDataChanged: set gamename to " + gamename);

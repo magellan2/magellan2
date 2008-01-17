@@ -34,6 +34,7 @@ import magellan.library.utils.Encoding;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
@@ -60,7 +61,7 @@ public abstract class GameData implements Cloneable {
   public final Rules rules;
 
   /** The name of the game. */
-  public final String name;
+  public String naame;
 
   /** encoding */
   protected String encoding = FileType.DEFAULT_ENCODING.toString();
@@ -262,7 +263,7 @@ public abstract class GameData implements Cloneable {
     }
 
     rules = _rules;
-    name = _name;
+    naame = _name;
   }
 
   /**
@@ -682,8 +683,8 @@ public abstract class GameData implements Cloneable {
    */
   public static GameData merge(GameData gd1, GameData gd2) {
     // make sure, the game types are the same.
-    if (!gd1.name.equalsIgnoreCase(gd2.name)) {
-      throw new IllegalArgumentException("GameData.merge(): Can't merge different game types. (" + gd1.name + " via " + gd2.name + ")");
+    if (!gd1.getGameName().equalsIgnoreCase(gd2.getGameName())) {
+      throw new IllegalArgumentException("GameData.merge(): Can't merge different game types. (" + gd1.getGameName() + " via " + gd2.getGameName() + ")");
     }
 
     // make sure that a date object is available
@@ -718,7 +719,7 @@ public abstract class GameData implements Cloneable {
     // them for the new GameData
     // FIXME(pavkovic) rules should be loaded instead of just used in this
     // situation
-    GameData resultGD = new CompleteData(newerGD.rules, newerGD.name);
+    GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
 
     // DATE
     EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
@@ -782,7 +783,7 @@ public abstract class GameData implements Cloneable {
      * Tracking an Bug warn, if we do not have 36 with eressea or vinyambar and
      * set it to 36
      */
-    String actGameName = newerGD.name.toLowerCase();
+    String actGameName = newerGD.getGameName().toLowerCase();
     if ((actGameName.indexOf("eressea") > -1 || actGameName.indexOf("vinyambar") > -1) && (newerGD.base != 36)) {
       // this should not happen
       log.warn("BASE ERROR !! merged report could have not base36 !! Changed to base36.");
@@ -1499,10 +1500,31 @@ public abstract class GameData implements Cloneable {
   public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
     if (newOrigin.x == 0 && newOrigin.y == 0)
       return this.clone();
-    else
-      return new Loader().cloneGameData(this, newOrigin);
+    else{
+      if (MemoryManagment.isFreeMemory(this.estimateSize()*3)){
+        log.info("cloning in memory");
+        GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);
+        if (clonedData==null || clonedData.outOfMemory){
+          log.info("cloning externally");
+          clonedData = new Loader().cloneGameData(this, newOrigin);
+        }
+        return clonedData;
+      }else {
+        log.info("cloning externally");
+        return new Loader().cloneGameData(this, newOrigin);
+      }
+    }
   }
 
+  /**
+   * Returns an estimate of the memory (in bytes) needed to store this game
+   * data. This can be a very rough estimate!
+   * 
+   * @return An estimate of the memory needed to store this game data
+   */
+  public abstract long estimateSize();
+  
+  
   /**
    * Provides the encapsulating of game specific stuff
    */
@@ -1843,5 +1865,12 @@ public abstract class GameData implements Cloneable {
     }
     this.ownerFaction = ownerFaction;
   }
+  
+  public String getGameName(){
+    return naame;
+  }
 
+  public void setGameName(String newName){
+    naame = newName;
+  }
 }

@@ -30,7 +30,7 @@ import magellan.library.Faction;
 import magellan.library.ID;
 
 /**
- * TODO This class must be commented
+ * Displays a alliance node with alliance as icon and text.
  *
  * @author ...
  * @version 1.0, Jan 13, 2008
@@ -49,7 +49,7 @@ public class AllianceNodeWrapper extends FactionNodeWrapper implements CellObjec
 
   @Override
   public String toString() {
-    Alliance a = getActiveAlliances().get(getFaction().getID());
+    Alliance a = getAlliance(getFaction().getID());
     if (a==null)
       return null;
     else

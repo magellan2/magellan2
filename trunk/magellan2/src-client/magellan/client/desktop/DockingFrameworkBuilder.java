@@ -313,7 +313,7 @@ public class DockingFrameworkBuilder  {
     
     desktopMenu.add(layoutMenu);
     
-    JCheckBoxMenuItem hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), true);
+    JCheckBoxMenuItem hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), false);
     hideTabs.setActionCommand("hideTabs");
     desktopMenu.add(hideTabs);
     hideTabs.addActionListener(listener);

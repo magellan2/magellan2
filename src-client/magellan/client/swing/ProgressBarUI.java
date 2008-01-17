@@ -67,16 +67,16 @@ public class ProgressBarUI implements UserInterface {
    * Initialize the user interface.
    */
   private void init() {
-    dlg.labelText.setText(Resources.get("util.reportmerger.status.merge"));
     dlg.progressBar.setMinimum(0);
     dlg.progressBar.setMaximum(100);
+    setTitle(Resources.get("progressbarui.title.default"));
+    setProgress(Resources.get("progressbarui.label.default"), 0);
   }
   
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
-    //dlg.progressBar.setMaximum(reports.length * 4);
     dlg.progressBar.setMaximum(progressmaximum);
   }
   
@@ -96,9 +96,7 @@ public class ProgressBarUI implements UserInterface {
    * @see magellan.library.utils.UserInterface#confirm(java.lang.String, java.lang.String)
    */
   public boolean confirm(String strMessage, String strTitle) {
-    Confirm conf = new Confirm();
-    conf.strMessage = strMessage;
-    conf.strTitle = strTitle;
+    Confirm conf = new Confirm(strTitle, strMessage);
 
     try {
       SwingUtilities.invokeAndWait(conf);
@@ -230,7 +228,7 @@ public class ProgressBarUI implements UserInterface {
       getContentPane().setLayout(new GridBagLayout());
 
       GridBagConstraints gridBagConstraints1;
-      setTitle(Resources.get("util.reportmerger.window.title"));
+      setTitle(Resources.get("progressbarui.title.default"));
 
       labelText.setPreferredSize(new Dimension(250, 16));
       labelText.setMinimumSize(new Dimension(250, 16));
@@ -284,19 +282,22 @@ public class ProgressBarUI implements UserInterface {
    String strTitle;
    boolean bResult = false;
 
+   public Confirm(String t, String m){
+     strTitle = t;
+     strMessage = m;
+   }
+   
    /**
     * 
     */
    public void run() {
-     if(JOptionPane.showConfirmDialog(dlg, strMessage,
-         Resources.get("util.reportmerger.msg.confirmmerge.title"),
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-       bResult = true;
-     } else {
-       bResult = false;
-     }
-   }
+     if (JOptionPane.showConfirmDialog(dlg, strMessage, strTitle, JOptionPane.YES_NO_OPTION,
+          JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+        bResult = true;
+      } else {
+        bResult = false;
+      }
+    }
  }
 
  private class Input implements Runnable {

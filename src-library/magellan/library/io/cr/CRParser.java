@@ -15,6 +15,7 @@ package magellan.library.io.cr;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -389,7 +390,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     while(!sc.eof && (sc.argc == 1) && sc.isString[0]) {
       if(msgs == null) {
-        msgs = new LinkedList<Message>();
+        msgs = new ArrayList<Message>();
       }
 
       // 2002.04.24 pavkovic: remove duplicate entries
@@ -898,8 +899,8 @@ public class CRParser implements RulesIO, GameDataIO {
          * asuing we have already the gamename we can make an additional check
          * Buck Tracking wrong base...
          */
-        if (world.name!=null){
-          String actGameName = world.name.toLowerCase();
+        if (world.getGameName()!=null){
+          String actGameName = world.getGameName().toLowerCase();
           if ((actGameName.indexOf("eressea")>-1 || actGameName.indexOf("vinyambar")>-1) && (world.base!=36)){
             // this should not happen
             log.warn("BASE ERROR !! read report could have not base36 !! Changed to base36.");
@@ -3034,6 +3035,7 @@ public class CRParser implements RulesIO, GameDataIO {
           unknown("top level", true);
         }
       } catch (OutOfMemoryError ome) {
+        log.error(ome);
         oome = true;
       }
       

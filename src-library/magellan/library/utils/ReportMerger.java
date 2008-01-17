@@ -554,8 +554,9 @@ public class ReportMerger extends Object {
    */
   private synchronized GameData mergeThread() {
     if (ui != null) {
+      ui.setTitle(Resources.get("util.reportmerger.window.title"));
       ui.show();
-      ui.setProgress(Resources.get("util.reportmerger.status.sorting"), 0);
+      ui.setProgress(Resources.get("util.reportmerger.status.merge"), 0);
     }
 
     if (sort){
@@ -641,6 +642,15 @@ public class ReportMerger extends Object {
       ui.showException("Exception while merging report", null, e);
     }
 
+    if (globalData!=null && globalData.outOfMemory) {
+      ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
+      log.error(Resources.get("client.msg.outofmemory.text"));
+    }
+    if (!MemoryManagment.isFreeMemory(globalData.estimateSize())){
+      ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
+    }
+
+    
     if (ui != null) {
       ui.ready();
     }
@@ -648,6 +658,7 @@ public class ReportMerger extends Object {
     if (assignData != null) {
       assignData.assign(globalData);
     }
+
 
     return globalData;
   }
@@ -748,7 +759,7 @@ public class ReportMerger extends Object {
           bestAstralTranslation = decideTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
       }
       /***************************************************************************
-       * 
+       * store translations
        */
       if (bestAstralTranslation != null) {
         iProgress += 1;
@@ -809,6 +820,13 @@ public class ReportMerger extends Object {
         if (bestTranslation.getTranslation().x != 0 || bestTranslation.getTranslation().y != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestTranslation.getTranslation());
+            if (clonedData!=null && clonedData.outOfMemory) {
+              ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
+              log.error(Resources.get("client.msg.outofmemory.text"));
+            }
+            if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())){
+              ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
+            }
           } catch (CloneNotSupportedException e) {
             log.error(e);
           }
@@ -1379,7 +1397,7 @@ public class ReportMerger extends Object {
    * @return
    */
   private boolean checkGameType(ReportCache newReport) {
-    if (newReport.getData() == null || !globalData.name.equalsIgnoreCase(newReport.getData().name)) {
+    if (newReport.getData() == null || !globalData.getGameName().equalsIgnoreCase(newReport.getData().getGameName())) {
       // no report loaded or
       // game types doesn't match. Make sure, it will not be tried again.
 

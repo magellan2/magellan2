@@ -441,7 +441,7 @@ public class CRWriter extends BufferedWriter {
 		
 		// The Echecker of German Atlantis has problems with the locale line
 		// so we check the game name
-		if (!world.name.startsWith("GAV")){
+		if (!world.getGameName().startsWith("GAV")){
       writeQuotedTag(encoding,"charset");
 			if(world.getLocale() != null) {
 				writeQuotedTag(world.getLocale().toString(), "locale");
@@ -456,7 +456,7 @@ public class CRWriter extends BufferedWriter {
 		newLine();
 
 		// keep the game type, when writing a CR.
-		writeQuotedTag(world.name, "Spiel");
+		writeQuotedTag(world.getGameName(), "Spiel");
 
 		if(serverConformance) {
 			writeQuotedTag("Standard", "Konfiguration");
@@ -467,7 +467,7 @@ public class CRWriter extends BufferedWriter {
 		writeQuotedTag("Hex", "Koordinaten");
 		
 		// Tracking a bug
-		String actGameName = world.name.toLowerCase();
+		String actGameName = world.getGameName().toLowerCase();
 		if ((actGameName.indexOf("eressea")>-1 || actGameName.indexOf("vinyambar")>-1) && (world.base!=36)){
 			// this should not happen
 			log.warn("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was " + world.base + ")");

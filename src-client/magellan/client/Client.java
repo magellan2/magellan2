@@ -167,6 +167,7 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.Log;
 import magellan.library.utils.MagellanFinder;
 import magellan.library.utils.MagellanImages;
+import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
@@ -1279,7 +1280,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
       log.error(Resources.get("client.msg.outofmemory.text"));
     }
-    
+    if (!MemoryManagment.isFreeMemory(data.estimateSize())){
+      JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+    }
+
     return data;
   }
 
@@ -1328,6 +1332,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     GameData newData = null;
     try {
       newData = (GameData) getData().clone(newOrigin);
+      if (newData!=null && newData.outOfMemory) {
+        JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+        log.error(Resources.get("client.msg.outofmemory.text"));
+      }
+      if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
+        JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+      }
     } catch (final CloneNotSupportedException e) {
       e.printStackTrace();
     }

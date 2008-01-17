@@ -14,6 +14,7 @@
 package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -21,14 +22,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
+import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import magellan.client.desktop.DesktopEnvironment;
@@ -39,6 +40,7 @@ import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
 import magellan.client.swing.InternationalizedDataPanel;
+import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.table.TableSorter;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
@@ -167,36 +169,78 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	private static final int RECALL_IN_MS = 10;
 	// TODO make this configurable
-	private static final boolean REGIONS_WITH_UNCONFIRMED_UNITS_ONLY = true;
+	private static final boolean REGIONS_WITH_UNCONFIRMED_UNITS_ONLY = false;
 
-	private Timer timer;
-	private Iterator regionsIterator;
+//	private Timer timer;
+//	private Iterator regionsIterator;
+
+  protected static int threadRunning=0;
 
 	private void refreshProblems() {
-    if(timer != null) {
-      timer.cancel();
-      timer = null;
-    }
-		if(model != null) {
-	    synchronized (model) {
-	      model.clearProblems();
-	    }
-		}
+	  
+	  Window w = SwingUtilities.getWindowAncestor(this);
+	  final ProgressBarUI ui = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
+	  ui.setMaximum(data.regions().size());
 
-		if((data != null) && (data.regions() != null)) {
-			regionsIterator = data.regions().values().iterator();
+	  new Thread(new Runnable() {
+	    final int myThread = ++threadRunning;
+	      
+      public void run() {
+        try {
+          int iProgress=0;
+//        log.info("started "+myThread);
+          ui.show();
+          synchronized (model) {
+            model.clearProblems();
+          }
+          for (Region r  : data.regions().values()){
+            if (threadRunning>myThread)
+              break;
+            ui.setProgress(r.getName(), ++iProgress);
+            r.refreshUnitRelations();
+            reviewRegionAndUnits(r);
+          }
+          if (threadRunning>myThread){
+            ui.setMaximum(1);
+            ui.setProgress("aborted", 1);
+//          log.info("aborted "+myThread);
+          }
+        }finally{
+          try {
+            ui.ready();
+          } catch (Exception e){
+            e.printStackTrace();
+          }
+        }
+      }
+    
+    }).start();
 
-			if(timer == null) {
-				timer = new Timer(true);
-				timer.scheduleAtFixedRate(new TimerTask() {
-						public void run() {
-						  inspectNextRegion();
-						}
-					}, RECALL_IN_MS, RECALL_IN_MS);
-			}
-		} else {
-			regionsIterator = null;
-		}
+	  
+//    if(timer != null) {
+//      timer.cancel();
+//      timer = null;
+//    }
+//		if(model != null) {
+//	    synchronized (model) {
+//	      model.clearProblems();
+//	    }
+//		}
+//
+//		if((data != null) && (data.regions() != null)) {
+//			regionsIterator = data.regions().values().iterator();
+//
+//			if(timer == null) {
+//				timer = new Timer(true);
+//				timer.scheduleAtFixedRate(new TimerTask() {
+//						public void run() {
+//						  inspectNextRegion();
+//						}
+//					}, RECALL_IN_MS, RECALL_IN_MS);
+//			}
+//		} else {
+//			regionsIterator = null;
+//		}
 	}
 
 	private boolean inspectNextRegion() {
@@ -211,29 +255,29 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	}
 
 	private Region getNextRegion() {
-		if(regionsIterator == null) {
-			return null;
-		}
-
-		// find next interesting region
-		while(regionsIterator.hasNext()) {
-			Region r = (Region) regionsIterator.next();
-
-			if((r.units() != null) && !r.units().isEmpty()) {
-				if(REGIONS_WITH_UNCONFIRMED_UNITS_ONLY) {
-					// only show regions with unconfirmed units
-					for(Iterator iter = r.units().iterator(); iter.hasNext();) {
-						Unit u = (Unit) iter.next();
-
-						if(!u.isOrdersConfirmed()) {
-							return r;
-						}
-					}
-				} else {
-					return r;
-				}
-			}
-		}
+//		if(regionsIterator == null) {
+//			return null;
+//		}
+//
+//		// find next interesting region
+//		while(regionsIterator.hasNext()) {
+//			Region r = (Region) regionsIterator.next();
+//
+//			if((r.units() != null) && !r.units().isEmpty()) {
+//				if(REGIONS_WITH_UNCONFIRMED_UNITS_ONLY) {
+//					// only show regions with unconfirmed units
+//					for(Iterator iter = r.units().iterator(); iter.hasNext();) {
+//						Unit u = (Unit) iter.next();
+//
+//						if(!u.isOrdersConfirmed()) {
+//							return r;
+//						}
+//					}
+//				} else {
+//					return r;
+//				}
+//			}
+//		}
 
 		return null;
 	}
@@ -258,8 +302,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		super.quit();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.eressea.swing.InternationalizedDataPanel#gameDataChanged(com.eressea.event.GameDataEvent)
+	/**
+	 * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
@@ -454,10 +498,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			Vector dataVector = getDataVector();
 
 			for(int i = getRowCount() - 1; i >= 0; i--) {
-	      if (i>=dataVector.size())
-	        log.info("TaskTablePanel: synchronization problem");
-        if (i>=dataVector.size())
-          log.info("TaskTablePanel: synchronization problem");
+        if (i>=dataVector.size()){
+          log.warn("TaskTablePanel: synchronization problem");
+          break;
+        }
 				Vector v = (Vector) dataVector.get(i);
 				Problem p = (Problem) v.get(PROBLEM_POS);
 

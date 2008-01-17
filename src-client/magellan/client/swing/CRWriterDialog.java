@@ -69,6 +69,7 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.io.cr.CRWriter;
 import magellan.library.io.file.FileTypeFactory;
+import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
@@ -494,6 +495,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			  // make the clone here already.
 			  try {
           newData = (GameData) data.clone();
+          if (newData!=null && newData.outOfMemory) {
+            JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
+            log.error(Resources.get("client.msg.outofmemory.text"));
+          }
+          if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
+            JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
+          }
         } catch(CloneNotSupportedException e) {
           log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
           newData = GameData.merge(data, data);

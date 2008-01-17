@@ -13,6 +13,9 @@
 
 package magellan.library.utils;
 
+import magellan.library.utils.logging.Logger;
+
+
 
 
 
@@ -22,6 +25,7 @@ package magellan.library.utils;
  * @version $326$
  */
 public class MemoryManagment {
+  public static Logger log = Logger.getInstance(MemoryManagment.class);
 	
 	/**
 	 * minimal amount of free memory after calling gc and sleeping for 3 seconds
@@ -31,7 +35,7 @@ public class MemoryManagment {
 	/**
 	 * after calling gc in case of low memory we wait this amount of millisecs
 	 */
-	static long waitingMillis=3000;
+	static long waitingMillis=2000;
 	
 	static Runtime r = java.lang.Runtime.getRuntime();
 	
@@ -70,6 +74,9 @@ public class MemoryManagment {
         } 
     }    
 
+    public static boolean isFreeMemory(){
+      return isFreeMemory(minMemory);
+    }
     
     /**
      * checks, if there es enough free memory fpr the JVM
@@ -78,34 +85,37 @@ public class MemoryManagment {
      * @return true, if enoug memory available
      * @author Fiete
      */
-    public static boolean isFreeMemory(){
+    public static boolean isFreeMemory(long min){
     	// Runtime r = java.lang.Runtime.getRuntime();
-    	if (checkFreeMemory()){
+    	if (checkFreeMemory(min)){
     		return true;
     	}
     	r.gc();
     	try {
-    		Thread.sleep(waitingMillis);
+    	  log.warn("waiting for garbage collection");
+    	  Thread.sleep(waitingMillis);
     	} catch (InterruptedException e){
     		// do nothing...
     	}
-    	if (checkFreeMemory()){
+    	if (checkFreeMemory(min)){
     		return true;
     	}
     	return false;
     }
     
-    private static boolean checkFreeMemory(){
-    	
-    	if (r.freeMemory()>minMemory){
+    private static boolean checkFreeMemory(long min){
+    	long free = r.freeMemory();
+      long tot = r.totalMemory();
+      long max = r.maxMemory();
+    	if (free>min){
     		return true;
     	}
     	
-    	// as long as we have totalMemory < maxMemory the gc will increase totalMemory
-    	// and may be we have not to worry...
-    	if (r.totalMemory()<r.maxMemory()){
-    		return true;
-    	}
+//    	// as long as we have totalMemory < maxMemory the gc will increase totalMemory
+//    	// and may be we have not to worry...
+//    	if (r.totalMemory()<r.maxMemory()){
+//    		return true;
+//    	}
     	return false;
     }
 	

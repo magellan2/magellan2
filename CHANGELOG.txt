@@ -1,3 +1,12 @@
+2008-01-11  stm (stm_@users.sourceforge.net)
+    * added low memory test and dialog after every loading of a report
+    * reduced borders sizes of components of root window
+    * added "hide tabs" to desktop menu
+    * cleaned ProgressBarUI
+    * tried to fix thread issues in TaskTable
+    * added "in memory cloning"
+    * fixed Scanner, where "ready()" was confused with "readLine()==null"
+
 2008-01-16 Fiete (sf@fietefietz.de)
 	* added replacers:ironlevel,laenloevel,stoneslevel
 	* fixed call to tooltipinfo

@@ -248,6 +248,11 @@
         <include name="**" />
       </fileset>
     </copy>
+  	
+  	<mkdir dir="${release}/plugins" />
+    <echo file="${release}/plugins/README.txt" append="false">
+    	This folder contains external plugins. Do not delete...Thanks.
+  	</echo>
     
     <copy todir="${release}/" overwrite="true">
         <fileset dir="${basedir}">

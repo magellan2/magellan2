@@ -5,7 +5,7 @@
     <appversion>2.0.beta (build 122)</appversion>
     <authors>
       <author name="Roger Butenuth" email=""/>
-      <author name="Enno Rehling" email=""/>
+      <author name="Enno Rehling" email="enno@eressea.de"/>
       <author name="Stefan Götz" email=""/>
       <author name="Klaas Prause" email=""/>
       <author name="Sebastian Tusk" email=""/>
@@ -24,6 +24,9 @@
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
       <author name="Fiete" email="sf@fietefietz.de"/>
       <author name="Steffen Mecke" email="stm_@users.sourceforge.net"/>
+      <author name="Steve Wagner" email="lanwin@users.sourceforge.net"/>
+      <author name="Ralf Duckstein" email="sf.net@duckstein.net"/>
+      <author name="Mar'ek Khadar" email="regdokhan@gmail.com"/>
     </authors>
     <url>http://magellan-client.sourceforge.net/</url>
     <uninstaller write="yes"/>
@@ -60,6 +63,7 @@
       <file src="release/doc"                               targetdir="$INSTALL_PATH"/>
       <file src="release/etc"                               targetdir="$INSTALL_PATH"/>
       <file src="release/lib"                               targetdir="$INSTALL_PATH"/>
+      <file src="release/plugins"                           targetdir="$INSTALL_PATH"/>
       <file src="release/magellan.bat"                      targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-client.jar"               targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-library.jar"              targetdir="$INSTALL_PATH"/>

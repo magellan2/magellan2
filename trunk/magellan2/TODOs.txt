@@ -3,11 +3,6 @@ Mit - fehlt noch.
 Mit + ist in Arbeit
 
 ----- noch zu tun -----
-- Darstellungsfehler bei den Docks korrigieren (Theme vs.
-  L&F mit Abständen)
-
-- Ausblenden von Tab-Buttons
-
 - Icons in der Karte (Optionen & Anzeige)
 
 ------ in Arbeit ------
@@ -27,9 +22,7 @@ Mit + ist in Arbeit
     Ressourcen > Externe Module (überarbeiten)
     OK & Abbrechen überarbeiten
     
-* Bug #51, create own translation list
-
-+ Mehrere Layouts für Docks zulassen (umschaltbare Views)
++ Ausblenden von Tab-Buttons (abspeichern fehlt noch)
 
 ------ erledigt -------
 * Inseln werden nicht richtig erfasst (zumindest passiert da
@@ -62,4 +55,11 @@ Mit + ist in Arbeit
 
 * Magellan Hilfe überarbeiten und an neue Gegebenheiten
   anpassen
+
+* Bug #51, create own translation list
+
+* Mehrere Layouts für Docks zulassen (umschaltbare Views)
+
+* Darstellungsfehler bei den Docks korrigieren (Theme vs.
+  L&F mit Abständen)
 

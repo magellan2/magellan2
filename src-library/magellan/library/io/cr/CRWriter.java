@@ -1514,7 +1514,9 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if(unit.getGuiseFaction() != null) {
-			write(((IntegerID) unit.getGuiseFaction().getID()).intValue() + ";Verkleidung");
+			// write(((IntegerID) unit.getGuiseFaction().getID()).intValue() + ";Verkleidung");
+			// Anderepartei
+			write(((IntegerID) unit.getGuiseFaction().getID()).intValue() + ";Anderepartei");
 			newLine();
 		}
 

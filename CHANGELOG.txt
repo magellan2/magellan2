@@ -1,3 +1,6 @@
+2008-01-20 Fiete (sf@fietefietz.de)
+	* CRWriter: Verkleidung->AnderePartei
+
 2008-01-18 Thoralf (thoralf@m84.de)
   * added plugins directory to install jar 
 

@@ -1176,7 +1176,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     File outputFile = new File((String) cmbOutputFile.getSelectedItem());
 
-    if(outputFile.exists()) {
+    if(outputFile.exists() && outputFile.canWrite()) {
       // create backup file
       try {
         File backup = FileBackup.create(outputFile);
@@ -1187,6 +1187,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     } 
     
     try {
+      if (outputFile.exists() && !outputFile.canWrite())
+        throw new IOException("cannot write "+outputFile);
+
       // apexo (Fiete) 20061205: if in properties, force ISO encoding
       Writer stream = null;
       if (PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false)) {

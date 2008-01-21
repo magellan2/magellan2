@@ -186,20 +186,15 @@ public class FileType {
     if(readonly) {
       throw new ReadOnlyException();
     }
-    try {
-      new FileOutputStream(filename);
-    } catch (IOException e){
-      throw new ReadOnlyException();
+    
+    if(createBackup && filename.exists() && filename.canWrite()) {
+      File backup = FileBackup.create(filename);
+      log.info("Created backupfile " + backup +" (FileType.java)");
     }
+    
+    if (filename.exists() && !filename.canWrite())
+      throw new IOException("cannot write "+filename);
 
-    if(createBackup) {
-            File backup = FileBackup.create(filename);
-            log.info("Created backupfile " + backup +" (FileType.java)");
-    }
-    
-    // NOTE (stm) If creating or writing fails for some reason, old backup
-    // files will have been deleted nevertheless. Sort of a data loss...
-    
     return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(),encoding));
   }
 

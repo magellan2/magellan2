@@ -117,7 +117,9 @@ public class FileBackup {
 		backup = new File(directory + File.separator +
 						  getVersionName(file.getName(), highestBackup + 1));
 		copy(file, backup);
-		removeObsoleteRevisions(highestBackup + 1, backupLevel, file.getName(), directory);
+		
+    if (file.canWrite())
+      removeObsoleteRevisions(highestBackup + 1, backupLevel, file.getName(), directory);
 
 		return backup;
 	}

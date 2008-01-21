@@ -132,7 +132,7 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 				client.getProperties().setProperty(getPropertyName(),
 												 fc.getSelectedFile().getAbsolutePath());
 
-				if(fc.getSelectedFile().exists()) {
+				if(fc.getSelectedFile().exists() && fc.getSelectedFile().canWrite()) {
 					// create backup file
 					try {
 						File backup = FileBackup.create(fc.getSelectedFile());
@@ -141,14 +141,17 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 						log.warn("Could not create backupfile for file " + fc.getSelectedFile());
 					}
 				} 
-				
-				pw = new PrintWriter(new BufferedWriter(new FileWriter(fc.getSelectedFile())));
+        if (fc.getSelectedFile().exists() && !fc.getSelectedFile().canWrite()){
+          throw new IOException("cannot write "+fc.getSelectedFile());
+        }else{
+          pw = new PrintWriter(new BufferedWriter(new FileWriter(fc.getSelectedFile())));
 
-				for(Iterator iter = selectedRegions.keySet().iterator(); iter.hasNext();) {
-					pw.println(((CoordinateID) iter.next()).toString(DELIMITER));
-				}
+          for(Iterator iter = selectedRegions.keySet().iterator(); iter.hasNext();) {
+            pw.println(((CoordinateID) iter.next()).toString(DELIMITER));
+          }
 
-				pw.close();
+          pw.close();
+        }
 			} catch(IOException exc) {
 				log.error(exc);
 				JOptionPane.showMessageDialog(client, exc.toString(),

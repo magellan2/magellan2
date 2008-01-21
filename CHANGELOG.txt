@@ -1,3 +1,7 @@
+2008-01-21 / Build 140 - Fiete (sf@fietefietz.de)
+	* fixed Message.Attributes (regions) in CRParser when changing origin
+	* changed Message.toString to .getText.
+	
 2008-01-21 / Build 139 - stm (stm_@users.sourceforge.net) 
 	* fixed empty backup file bug
 	

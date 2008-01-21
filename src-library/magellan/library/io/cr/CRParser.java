@@ -192,6 +192,54 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
+   * special sub to translate coords in ";regions" tags of messages
+   * expecting this form "x1 y1 z1, x2 y2 z2";regions
+   * @param string
+   * @return
+   */
+  private String originTranslateRegions(String string){
+    String result = string;
+    String helper = "";
+    boolean didSomething=false;
+    result = result.replace("\"","");
+    if (result.length()<3){
+      return string;
+    }
+    if (result.indexOf(",")>0){
+      // Split it
+      String[] s = result.split(",");
+      for(int i=0;i<s.length;i++){
+        String sC = s[i];
+        CoordinateID c = CoordinateID.parse(sC," ");
+        if (c!=null){
+          // we got valid coordinates - translate it
+          c = originTranslate(c);
+          didSomething=true;
+          sC=c.toString(" ", true);
+        }
+        // , between coords
+        if (helper.length()>0){
+          helper = helper.concat(", "); 
+        }
+        helper = helper.concat(sC);
+      }
+    } else {
+      CoordinateID c = CoordinateID.parse(result," ");
+      if (c!=null){
+        c = originTranslate(c);
+        didSomething=true;
+        helper=c.toString(" ", true);
+      }
+    }
+    
+    if (!didSomething){
+      return string;
+    }
+    
+    return helper;
+  }
+  
+  /**
    * Print an error message on the standard output channel.
    *
    * @param context The context (usually a block) within the error has been found.
@@ -567,7 +615,13 @@ public class CRParser implements RulesIO, GameDataIO {
               CoordinateID newCoord = originTranslate(coord);
               msg.getAttributes().put(sc.argv[1], newCoord.toString(" ", true));
             }else{
-              msg.getAttributes().put(sc.argv[1], sc.argv[0]);
+              // check for ;regions
+              if (sc.argv[1].equalsIgnoreCase("regions")){
+                // special dealing
+                msg.getAttributes().put(sc.argv[1], this.originTranslateRegions(sc.argv[0]));
+              } else {
+                msg.getAttributes().put(sc.argv[1], sc.argv[0]);
+              }
             }
           }
         }

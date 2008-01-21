@@ -1877,7 +1877,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   protected void saveDesktopFile() throws IOException  {
     File magFile = getDesktopFile(true);
 
-    if(magFile.exists()) {
+    if(magFile.exists() && magFile.canWrite()) {
       try {
         File backup = FileBackup.create(magFile);
         log.info("Created backupfile " + backup);
@@ -1885,6 +1885,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         log.warn("Could not create backupfile for file " + magFile);
       }
     }
+
+    if (magFile.exists() && !magFile.canWrite())
+      throw new IOException("cannot write "+magFile);
 
     log.info("Storing Magellan desktop configuration to " + magFile);
         

@@ -1,3 +1,6 @@
+2008-01-21 / Build 139 - stm (stm_@users.sourceforge.net) 
+	* fixed empty backup file bug
+	
 2008-01-20 Fiete (sf@fietefietz.de)
 	* CRWriter: Verkleidung->AnderePartei
 

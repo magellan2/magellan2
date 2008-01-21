@@ -1234,8 +1234,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       try {
         // if necessary, use settings file in local directory
         File settingsFile = new File(settingsDirectory, "magellan.ini");
-
-        if (settingsFile.exists()) {
+        
+        if (settingsFile.exists() && settingsFile.canWrite()) {
           try {
             File backup = FileBackup.create(settingsFile);
             log.info("Created backupfile " + backup);
@@ -1244,9 +1244,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           }
         }
 
-        log.info("Storing Magellan configuration to " + settingsFile);
+        if (settingsFile.exists() && !settingsFile.canWrite()){
+          throw new IOException("cannot write "+settingsFile);
+        }else{
+          log.info("Storing Magellan configuration to " + settingsFile);
 
-        getProperties().store(new FileOutputStream(settingsFile), "");
+          getProperties().store(new FileOutputStream(settingsFile), "");
+        }
       } catch (IOException ioe) {
         log.error(ioe);
       }

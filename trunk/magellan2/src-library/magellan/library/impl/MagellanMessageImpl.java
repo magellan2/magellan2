@@ -400,11 +400,18 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * Fiete 20080121
+   * toString is also copied to clipboard when using ctrl+c
+   * changing this now the the text value
+   * 
 	 */
 	public String toString() {
+    return getText();
+    
+    /*
 		return "Message[" + "id=" + id + "," + "type=" +
 			   ((type == null) ? "null" : (type.getID() + "")) + "," + "text=\"" + text + "\"," +
 			   "attributes=" + attributes + "]";
+    */
 	}
 }

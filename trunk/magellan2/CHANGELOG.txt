@@ -1,4 +1,4 @@
-2008-01-22 / Build 141 - Darcduck (sf.net@duckstein.net)
+2008-01-22 / Build 142 - Darcduck (sf.net@duckstein.net)
 	* added some test-crs for merging and coordinate translation
 	* added scheme cleaning in EresseaPostProcessor
 	* enhanced coordinate translation of astral to real in variant 2 (layout) - includes the OneRegion aproach now, by a few calculations only instead of set-operations

@@ -452,7 +452,11 @@ public class EresseaMessageRenderer implements MessageRenderer {
     } else if (name.equals("strlen(")) {
       String content = renderString(unparsed, attributes);
       int[] i = new int[1];
-      i[0] = content.length();
+      if (content == null) {
+        i[0] = 0;
+      } else {
+        i[0] = content.length();
+      }
       value = i;
     // $order(<string>)
     } else if (name.equals("order(")) {
@@ -479,6 +483,28 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else {
         throw new ParseException("wrong arguments for resource()", unparsed.length());
       }
+    // $resources(<string>)
+    } else if (name.equals("resources(")) {
+      // the string has the following style: "<amount1> <item1>, <amount2> <item2>, ..."
+      // beware <item> could include spaces!
+      String resparam = renderString(unparsed, attributes);
+      StringBuffer res = new StringBuffer();
+      if (resparam != null) {
+        String[] resources = resparam.split(",");
+        for (int i=0; i<resources.length; i++) {
+          String[] parts = resources[i].trim().split(" ", 2);
+          if (i > 0) {
+            res.append(", ");
+          }
+          res.append(parts[0]);
+          if (parts.length == 2) {
+            res.append(" ").append(gd.getTranslation(parts[1]));
+          }
+        }
+        value = res.toString();
+      } else {
+        value = "";
+      }      
     // $localize(<string>)
     // $skill(<string>)
     // $spell(<string>)
@@ -495,9 +521,6 @@ public class EresseaMessageRenderer implements MessageRenderer {
       } else {
         throw new ParseException(name+") requires an int parameter != NULL", unparsed.length());
       }
-    // $resources(<string>)
-    } else if (name.equals("resources(")) {
-      value = renderString(unparsed, attributes);
     // $direction(<int>)
     } else if (name.equals("direction(")) {
       int[] ar = renderInteger(unparsed, attributes);

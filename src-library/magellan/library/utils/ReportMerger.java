@@ -30,7 +30,6 @@ import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.StringID;
@@ -1089,7 +1088,6 @@ public class ReportMerger extends Object {
     RegionType glacierTerrain = globalData.rules.getRegionType(StringID.create("Gletscher"));
     RegionType activeVolcanoTerrain = globalData.rules.getRegionType(StringID.create("Aktiver Vulkan"));
     RegionType volcanoTerrain = globalData.rules.getRegionType(StringID.create("Vulkan"));
-  
     for (RatedTranslation translationCandidate : translationList) {
       /*
        * the number of regions not having the same region type at the current
@@ -1177,7 +1175,7 @@ public class ReportMerger extends Object {
         // Since all schemes have to match it's sufficient to look at the
         // first one to find a possible match. To check whether that
         // match really is one, we have to look at all schemes.
-        if (!region.schemes().isEmpty()) {
+        if (region.schemes().size()>=2) {
           Scheme scheme = region.schemes().iterator().next();
           Collection<Region> o = newReport.getAstralRegionBySchemeName(scheme.getName());
   
@@ -1188,7 +1186,7 @@ public class ReportMerger extends Object {
             // astral regions.
             // check whether any of those regions shares all schemes
             for (Region foundRegion : o) {
-              if (equals(foundRegion.schemes(), region.schemes())) {
+              if ((foundRegion.schemes().size()>=2) && equals(foundRegion.schemes(), region.schemes())) {
                 // all right, seems we found a valid translation
                 CoordinateID foundCoord = foundRegion.getCoordinate();
                 CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, 1);
@@ -1214,8 +1212,8 @@ public class ReportMerger extends Object {
     boolean reportHasAstralRegions = newReport.hasAstralRegions();
     boolean dataHasAstralRegions = dataReport.hasAstralRegions();
 
-    CoordinateID reportAstralToReal = newReport.getReportAstralToReal();
-    CoordinateID dataAstralToReal = dataReport.getReportAstralToReal();
+    CoordinateID reportAstralToReal = newReport.getData().getAstralMapping();
+    CoordinateID dataAstralToReal = dataReport.getData().getAstralMapping();
 
     if (!dataHasAstralRegions)
       log.info("no astral regions in data");
@@ -1499,8 +1497,7 @@ public class ReportMerger extends Object {
     // nicht vorhandene Regionen werden trotzdem aufgeführt
     
     possibleRR_Regions = this.getOneRegion_explodeRegionList(data, possibleRR_Regions,false,3);
-    
-
+        
     // Ab jetzt versuchen, unmögliche Regionen zu entfernen...
     // erste bedingung: alle regionen, die sich auch nur von einer
     // schemenRegionen

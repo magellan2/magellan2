@@ -1,0 +1,9 @@
+Astral to Real Space and Merging Test Reports:
+
+correct extrem cases:
+only Astral-Real-1: ar001.cr - two astral regions - each one scheme only - the same
+only Astral-Real-2: ar002.cr - two astral regions - tree different schemes spread over both astral regions - layout: dx=4 and dd=4 but dy<4
+only Astral-Real-3: ar003.cr - one astral region - one scheme not in center, not at outer circle, a few real regions outside the schemearea to define it.
+only Astral-Real-3: ar003ocean.cr - the same as above but filled with ocean regions in the real space
+
+more reports comming soon ...

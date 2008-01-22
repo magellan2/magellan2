@@ -474,6 +474,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		// pavkovic 2002.05.21: If some resources have an amount zero, we ignore it
 		if(resource.getAmount() != 0) {
 			this.resources.put(resource.getType(), resource);
+      if (this.resourceCollection != null) this.resourceCollection.add(resource);
 		}
 
 		// 		if(log.isDebugEnabled()) {

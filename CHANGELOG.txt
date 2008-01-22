@@ -1,3 +1,10 @@
+2008-01-22 / Build 141 - Darcduck (sf.net@duckstein.net)
+	* added some test-crs for merging and coordinate translation
+	* added scheme cleaning in EresseaPostProcessor
+	* enhanced coordinate translation of astral to real in variant 2 (layout) - includes the OneRegion aproach now, by a few calculations only instead of set-operations
+	* some fixes in EresseaMessageRenderer
+	* started to move all coordinate translation algorithms to MapMergeEvaluator and EresseaMapMergeEvaluator with flexible extensibility
+
 2008-01-21 / Build 140 - Fiete (sf@fietefietz.de)
 	* fixed Message.Attributes (regions) in CRParser when changing origin
 	* changed Message.toString to .getText.
@@ -60,11 +67,11 @@
 2007-12-24 Darcduck (sf.net@duckstein.net)
 	* some enhancements to EresseaOrderCompleter:
 	* added #118: "GIVE <unit> <amount>" lists items/persons available in this amount first
-	* "GIVE <unit> <amount> ALL" multiline completion to easy split units
+	* "GIVE <unit> <amount> ALL" multiline completion to easily split units
 
 2007-12-23 Darcduck (sf.net@duckstein.net)
 	* Some fixes in OrderCompleter (NPE)
-	* changed scroll behavior for MultiEditorLayout=false
+	* changed scroll behavior for MultiEditorLayout==false
 	
 2007-12-20 Darcduck (sf.net@duckstein.net)
 	* Added BackgroundImageRenderer including properties dialog

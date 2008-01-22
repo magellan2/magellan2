@@ -13,9 +13,11 @@
 
 package magellan.library.gamebinding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +32,7 @@ import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Region;
+import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
@@ -39,9 +42,11 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Regions;
+import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
+import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -51,9 +56,11 @@ import magellan.library.utils.comparator.SortIndexComparator;
  * @version $Revision: 345 $
  */
 public class EresseaPostProcessor {
-	private EresseaPostProcessor() {
+  private static final Logger log = Logger.getInstance(EresseaPostProcessor.class);
+  
+  private EresseaPostProcessor() {
 	}
-
+  
 	private static final EresseaPostProcessor singleton = new EresseaPostProcessor();
 
 	/**
@@ -74,6 +81,7 @@ public class EresseaPostProcessor {
 	 * @param data 
 	 */
 	public void postProcess(GameData data) {
+    cleanAstralSchemes(data);
 		/* scan the messages for additional information */
 		if((data != null) && (data.factions() != null)) {
 			for(Iterator factions = data.factions().values().iterator(); factions.hasNext();) {
@@ -430,4 +438,128 @@ public class EresseaPostProcessor {
 			}
 		}
 	}
+  
+  /**
+   * Deletes the schemes of astral regions in the case one of the following
+   * inconsistencies is detected
+   * 
+   * 1. more than 19 schemes per astral region
+   * 2. the region with the scheme coordinates has terrain ocean or 
+   *    firewall
+   * 3. layout, i.e. two scheme of the same astral region with a distance of >4
+   * 4. a scheme is seen from more than 2 astral regions
+   * 
+   * Only the scheme of the affected astral regions are deleted the others 
+   * will remain to allow a mapping of astral to real space.
+   * 
+   * Not implemented:
+   * 
+   * 5. global layout (similar alorithm as layout but normalizing all schemes
+   *    into the area of one astral region before) 
+   *    -> nearly impossible to determine the wrong schemes
+   * 6. diferent scheme/region name of same coordinate
+   *    -> may not be an wrong scheme, only outdated name.
+   * @param gd
+   */
+  private void cleanAstralSchemes(GameData gd) {
+    RegionType firewall = gd.rules.getRegionType(EresseaConstants.RT_FIREWALL);
+    Map<CoordinateID, Collection<Region>> schemeMap = new HashMap<CoordinateID, Collection<Region>>();
+    for (Region region : gd.regions().values()) {
+      if ((region.getCoordinate().z == 1)&&(region.schemes().size()>0)) {
+        // Check 1. (number)
+        if (region.schemes().size()>19) {
+          // Inconsistency of type 1. found
+          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: to many schemes");
+          log.warn(region);
+          region.clearSchemes();
+          continue;
+        }
+        // Check 2. (terrain) and 3. (extension)
+        boolean inconsistent = false;
+        CoordinateID min = null;
+        CoordinateID max = null;
+        
+        for (Scheme scheme : region.schemes()) {
+          CoordinateID schemeID = scheme.getCoordinate();
+          Region schemeRegion = gd.getRegion(schemeID);
+          // Check 2. (terrain)
+          if (schemeRegion != null) {
+            RegionType rt = schemeRegion.getRegionType();
+            if (rt.isOcean() || rt.equals(firewall)) {
+              inconsistent = true;
+              break;
+            }
+          }
+          // Check 3. (extension)
+          if (min == null) {
+            min = new CoordinateID(schemeID);
+            max = new CoordinateID(schemeID);
+            min.z = max.z = schemeID.x + schemeID.y;
+          } else {
+            min.x = Math.min(min.x, schemeID.x);
+            min.y = Math.min(min.y, schemeID.y);
+            min.z = Math.min(min.z, schemeID.x + schemeID.y);
+            max.x = Math.max(max.x, schemeID.x);
+            max.y = Math.max(max.y, schemeID.y);
+            max.z = Math.max(max.z, schemeID.x + schemeID.y);
+          }
+        }
+        if (inconsistent) {
+          // Inconsistency of type 2. found
+          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: terrain");
+          log.warn(region);
+          region.clearSchemes();
+          continue;          
+        }
+        boolean centerFound = false;
+        for (int x = max.x-2; (x <= min.x+2) && !centerFound; x++) {
+          for (int y = max.y-2; (y <= min.y+2) && !centerFound; y++) {
+            if ((max.z-2 <= x+y ) && (x+y <= min.z+2)) {
+              centerFound = true;
+            }
+          }
+        }
+        if (!centerFound) {
+          // Inconsistency of type 3. found
+          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: layout");
+          log.warn(region);
+          region.clearSchemes();
+          continue;                   
+        }
+        /*
+         * none of the other inconsistency checks fail. 
+         * therefore we can check for type 4 now.
+         * (this check eleminates the schemes from all astral
+         * regions having the scheme. Therefore eleminating other
+         * inconsistencies first allow to probably save some
+         * right schemes from beeing deleted)
+         * We only prepare the a map here that maps schemeIDs to regions
+         */  
+        for (Scheme scheme : region.schemes()) {
+          Collection<Region> regionCol = schemeMap.get(scheme.getCoordinate());
+          if (regionCol == null) {
+            regionCol = new ArrayList<Region>(2);
+            schemeMap.put(scheme.getCoordinate(), regionCol);
+          }
+          regionCol.add(region);
+        }
+      }
+    }
+    for (Collection<Region> regionCol : schemeMap.values()) {
+      if (regionCol.size() > 2) {
+        // Inconsistency of type 4. found
+        log.warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");        
+        for (Region region : regionCol) {
+          log.warn(region);
+          region.clearSchemes();
+        }
+      }
+    }
+  }
+  private void postProcessMessages(GameData data) {
+    // herb information from FIND HERBS/FORSCHE KRÄUTER or MAKE HERBS/MACHE KRÄUTER
+    // item information from SHOW/ZEIGE
+    // race information from SHOW/ZEIGE
+    // unit information from SPY/SPIONIERE
+  }
 }

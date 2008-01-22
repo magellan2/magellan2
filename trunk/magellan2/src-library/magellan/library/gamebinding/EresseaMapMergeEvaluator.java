@@ -23,13 +23,18 @@
 // 
 package magellan.library.gamebinding;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
+import magellan.library.StringID;
+import magellan.library.rules.RegionType;
+import magellan.library.utils.logging.Logger;
 /**
  * TODO This class must be commented
  *
@@ -37,8 +42,11 @@ import magellan.library.Scheme;
  * @version 1.0, 14.12.2007
  */
 public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
+  private static final Logger log = Logger.getInstance(EresseaMapMergeEvaluator.class);
 
   private static MapMergeEvaluator singleton = new EresseaMapMergeEvaluator();
+  protected static final Integer REAL_LAYER = Integer.valueOf(0); 
+  protected static final Integer ASTRAL_LAYER = Integer.valueOf(1);
   /**
    * 
    */
@@ -49,61 +57,110 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
   public static MapMergeEvaluator getSingleton() {
     return singleton;
   }
-  public CoordinateID getMapping(GameData main, GameData add, int level) {
-    if (level == 1) {
-      return getAstral2AstralMapping(main, add);
+  public Map<Integer, CoordinateID> getMappings(GameData main, GameData add) {
+    Map<Integer, CoordinateID> mappings = super.getMappings(main, add);
+
+    // now fallback calculation of astral mapping if no overlapping in the astral space
+    // we therefore calculate the mapping to real space for both reports and map them
+    // over the real space
+    // we only need to go on, if a real space mapping is available
+    if ((mappings.containsKey(ASTRAL_LAYER)) && (mappings.get(ASTRAL_LAYER) == null) && 
+        (mappings.get(REAL_LAYER) != null)) {
+      mappings.put(ASTRAL_LAYER, getAstralMappingByRealSpace(main, add, ASTRAL_LAYER.intValue(), mappings.get(REAL_LAYER))); 
+    }
+    return mappings;
+  }
+
+  public CoordinateID getMapping(GameData main, GameData add, int layer) {
+    if (ASTRAL_LAYER.intValue() == layer) { 
+      return getMappingByEqualSchemes(main, add, layer); 
     } else {
-      return getMappingByNameAndTerrain(main, add, level);
+      return getMappingByNameAndTerrain(main, add, layer); 
     }
   }
   
-  protected CoordinateID getAstral2AstralMapping(GameData main, GameData add) {
-    return getAstral2AstralMapping(main, add, getMappingByNameAndTerrain(main, add, 0));
-  }
-
-  protected CoordinateID getAstral2AstralMapping(GameData main, GameData add, CoordinateID real2real) {
+  protected CoordinateID getMappingByEqualSchemes(GameData main, GameData add, int layer) {
+    // create possible translations
+    // calculate score
+    // decide best translation
     return null;
   }
 
+  protected CoordinateID getAstralMappingByRealSpace(GameData main, GameData add, int layer, CoordinateID real2real) {
+    CoordinateID mainA2R = getAstral2RealMapping(main);
+    CoordinateID addA2R = getAstral2RealMapping(add);
+    if ((mainA2R != null) && (addA2R != null) && (real2real != null)) {
+      return new CoordinateID((mainA2R.x - addA2R.x + real2real.x)/4, (mainA2R.y - addA2R.y + real2real.y)/4, layer);
+    } else {
+      return null;
+    }
+  }
+
   public CoordinateID getAstral2RealMapping(GameData main) {
-    /**
-     *  Astral to real mapping can be done by some ways:
-     *  1. from two neighbour astral spaces with schemes
-     *     (there can be seen exactly one same scheme from both astral regions)
-     *  2. from several astral regions with schemes, calculating the "extend" of the schemes
-     *  3. proposed by Fiete: using one astral region only. Like variant 2 first the extend
-     *     is calculated (something similar with sets of schemes), but then regions in
-     *     real space not existing as scheme reduce the extend      
-     **/
+    CoordinateID c = getAstral2RealBySchemeOverlap(main, ASTRAL_LAYER, null);
+    if (c != null) return c;
+    c = getAstral2RealByNormalizedExtend(main, ASTRAL_LAYER);
+    return c;
+  }
+  
+  /**
+   *  Astral to real mapping from two neighbour astral spaces with schemes
+   *  (there can be seen exactly one same scheme from both astral regions)
+   **/
+  public CoordinateID getAstral2RealBySchemeOverlap(GameData data, int layer, Map<String, Collection<Region>> astralRegions) {
+
+    if (astralRegions == null) {
+      astralRegions = getAstralRegionsBySchemeName(data);
+    }
+
+    Map<CoordinateID,Region> dataSchemeMap = new HashMap<CoordinateID,Region>();
+    for(Region region : data.regions().values()) {
+      if(region.getCoordinate().z == ASTRAL_LAYER) {
+        for(Scheme scheme : region.schemes()) {
+          Collection<Region> regionsForScheme = astralRegions.get(scheme.getName());
+          if (regionsForScheme.size() > 1) {
+            if (regionsForScheme.size() > 2) {
+              log.error("Report corrupted: scheme visible from more than two regions: " + scheme);
+              break;
+            }
+            /**
+             * This is the second astral region showing the same scheme. From
+             * this we can calculate an astral to real mapping for the new
+             * report by variant 1
+             */
+            for (Region secondRegion : regionsForScheme) {
+              if (!secondRegion.equals(region)) {
+                CoordinateID firstCoord = region.getCoordinate();
+                CoordinateID secondCoord = secondRegion.getCoordinate();
+                CoordinateID schemeCoord = scheme.getCoordinate();
+                return new CoordinateID(schemeCoord.x - 2 * (firstCoord.x + secondCoord.x), schemeCoord.y - 2 * (firstCoord.y + secondCoord.y), schemeCoord.z);
+              }
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  /**
+   *  Astral to real mapping from several astral regions with schemes, calculating the
+   *  "extend" of the schemes
+   *  Proposed by Fiete: taking into account land regions in the neighbourhood that
+   *  would appear as schems, but don' do. So they further decrease the number of posibilities        
+   **/
+  public CoordinateID getAstral2RealByNormalizedExtend(GameData main, int astral) {
+
+    RegionType firewallTerrain = main.rules.getRegionType(StringID.create("Feuerwand"));
+    RegionType maelstromTerrain = main.rules.getRegionType(StringID.create("Mahlstrom"));
 
     CoordinateID astralToReal = null;
     CoordinateID minExtend = null;
     CoordinateID maxExtend = null;
-    Map<CoordinateID,Region> dataSchemeMap = new HashMap<CoordinateID,Region>();
     for(Region region : main.regions().values()) {
-      if (astralToReal != null) break;
-      if(region.getCoordinate().z == 1) {
+      if((region.getCoordinate().z == astral)&&(region.schemes().size()>0)) {
         for(Scheme scheme : region.schemes()) {
-          Region otherRegion = (Region) dataSchemeMap.get(scheme.getCoordinate());
-          if(otherRegion == null) {
-            dataSchemeMap.put(scheme.getCoordinate(), region);
-          } else {
-            /**
-             * 1.
-             * This is the second astral region showing the same scheme.
-             * From this we can calculate an astral to real mapping for the gamedata by variant 1
-             */
-            // in case of errors in the current Astral Regions (merged schemes) we will get a wrong mapping here. Therefore a scheme consistency check should be done in advance. (several possibilities)
-            CoordinateID firstCoord = region.getCoordinate();
-            CoordinateID secondCoord = otherRegion.getCoordinate();
-            CoordinateID schemeCoord = scheme.getCoordinate();
-            astralToReal = new CoordinateID(
-              schemeCoord.x - 2 * (firstCoord.x + secondCoord.x),
-              schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
-            break;
-          }
           /**
-           * 2.
            * we may not find any astral to real mapping by variant 1 above
            * therefore also do calculations for variant 2 here
            * we "normalize" all schemes to be in the area
@@ -123,16 +180,50 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
             maxExtend.y = Math.max(maxExtend.y, ny);
             maxExtend.z = Math.max(maxExtend.z, nd);
           }
-          // now check if we found an "extend of 4" in at least two directions of the three directions
-          boolean dx = maxExtend.x-minExtend.x==4;
-          boolean dy = maxExtend.y-minExtend.y==4;
-          boolean dd = maxExtend.z-minExtend.z==4;
-          if (dx&&dy) {
-            astralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.y - 2);
-          } else if (dx&&dd) {
-            astralToReal = new CoordinateID(maxExtend.x - 2, maxExtend.z - maxExtend.x);
-          } else if (dy&&dd) {
-            astralToReal = new CoordinateID(maxExtend.z - maxExtend.y, maxExtend.y - 2);
+        }
+        // look for near land regions not appearing as schemes
+        for (int x=maxExtend.x-4; x<=minExtend.x+4; x++) {
+          for (int y=maxExtend.y-4; y<=minExtend.y+4; y++) {
+            int d = x+y;
+            if ((maxExtend.z-4 <= d) && (d <= minExtend.z+4)) {
+              Region realRegion = main.regions().get(new CoordinateID(x + 4*region.getCoordinate().x, y + 4*region.getCoordinate().y, REAL_LAYER));
+              if (realRegion != null) {
+                RegionType rt=realRegion.getRegionType();
+                if (!rt.isOcean()&&
+                    !rt.equals(RegionType.unknown)&&
+                    !rt.equals(firewallTerrain)&&
+                    !rt.equals(maelstromTerrain)) {
+                  // this is a region that should be seen as scheme
+                  // if it's out of our ranges we dont see it, therefore 
+                  // the ranges need to be adjusted
+                  if (x < minExtend.x) { maxExtend.x = x+4; }
+                  if (y < minExtend.y) { maxExtend.y = y+4; }
+                  if (d < minExtend.z) { maxExtend.z = d+4; }
+                  if (x > maxExtend.x) { minExtend.x = x-4; }
+                  if (y > maxExtend.y) { minExtend.y = y-4; }
+                  if (d > maxExtend.z) { minExtend.z = d-4; }
+                }
+              }
+            }
+          }
+        }
+        // after each astral region has been process we can check if  
+        // the following prevents us from checking the set when there is definitly more than one mapping
+        if (maxExtend.x-minExtend.x+maxExtend.y-minExtend.y+maxExtend.z-minExtend.z >= 8) {
+          // now check if there is one possible mapping only
+          int cntr = 0;
+          for (int x=maxExtend.x-2; (x<=minExtend.x+2) && (cntr<2); x++) {
+            for (int y=maxExtend.y-2; (y<=minExtend.y+2) && (cntr<2); y++) {
+              if ((maxExtend.z-2 <= x+y) && (x+y <= minExtend.z+2)) {
+                astralToReal = new CoordinateID(x, y, REAL_LAYER);
+                cntr++;
+              }
+            }
+          }
+          if (cntr == 1) {
+            break;
+          } else {
+            astralToReal = null;
           }
         }
       }
@@ -146,4 +237,26 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
     return astralToReal;
   }
 
+  private Map<String, Collection<Region>> getAstralRegionsBySchemeName(GameData data) {
+    Map<String, Collection<Region>> astralRegions = new HashMap<String, Collection<Region>>(0);
+    if (data != null) {
+      for (Region region : data.regions().values()) {
+        if (region.getCoordinate().z == ASTRAL_LAYER) {
+          for (Scheme scheme : region.schemes()) {
+            String name = scheme.getName();
+            if ((name != null) && (name.length()>0)) {
+              Collection<Region> col = astralRegions.get(name);
+              if (col == null) {
+                astralRegions.put(name, col = new HashSet<Region>());
+              }
+              col.add(region);
+            }
+          }
+        }
+      }
+    }
+    return astralRegions;
+  }
+  
+  
 }

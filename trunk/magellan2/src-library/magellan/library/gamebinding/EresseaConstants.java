@@ -583,6 +583,10 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final ID RT_OCEAN = StringID.create("Ozean");
 
-	/** DOCUMENT-ME */
+  /** The RegionType firewall */
+  public static final ID RT_FIREWALL = StringID.create("Feuerwand");
+
+  /** DOCUMENT-ME */
 	public static final ID B_LIGHTTOWER = StringID.create("Leuchtturm");
+
 }

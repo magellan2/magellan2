@@ -1,4 +1,4 @@
-2008-01-21 / Build 143 - stm (stm_@users.sourceforge.net) 
+2008-01-23 / Build 143 - stm (stm_@users.sourceforge.net) 
 	* fixed "NPE on save on quit" bug
 	* added icons for feuerwand (border) and irrlichter (border)
 	* tweaked border sizes of root window

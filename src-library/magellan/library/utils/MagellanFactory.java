@@ -668,6 +668,7 @@ public abstract class MagellanFactory {
   public static void mergeRegion(GameData curGD, Region curRegion, GameData newGD, Region newRegion,boolean sameTurn) {
     mergeUnitContainer(curGD, curRegion, newGD, newRegion);
     
+    // *** OldTrees ****
     if(sameTurn) {
       // if both regions are from the same turn, "old" information is always assumed to be accurate. 
       // this is true, if curRegion is always younger for successive calls of Region.merge(). 
@@ -690,6 +691,8 @@ public abstract class MagellanFactory {
       }
     }
 
+    
+    // *** OldSprouts ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldSprouts() != -1) {
@@ -706,7 +709,8 @@ public abstract class MagellanFactory {
         }
       }
     }
-
+    
+    // *** OldIron ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldIron() != -1) {
@@ -724,6 +728,8 @@ public abstract class MagellanFactory {
       }
     }
 
+    
+    // *** OldLaen ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldLaen() != -1) {
@@ -741,6 +747,7 @@ public abstract class MagellanFactory {
       }
     }
 
+    // *** Orc infest ****
     if(sameTurn) {
       // region is considered orc infested if one of the two regions considers it orc infested.
       newRegion.setOrcInfested(newRegion.isOrcInfested() || curRegion.isOrcInfested());
@@ -748,6 +755,8 @@ public abstract class MagellanFactory {
       newRegion.setOrcInfested(curRegion.isOrcInfested());
     }
 
+    
+    // *** OldPeasants ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldPeasants() != -1) {
@@ -765,6 +774,7 @@ public abstract class MagellanFactory {
       }
     }
 
+    // *** OldSilver ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldSilver() != -1) {
@@ -782,6 +792,7 @@ public abstract class MagellanFactory {
       }
     }
 
+    // *** OldStones ****
     // same as with the old trees
     if(sameTurn) {
       if(curRegion.getOldStones() != -1) {
@@ -959,17 +970,15 @@ public abstract class MagellanFactory {
      * -> we should NOT delete the border, could still be there
      * 
      *  so: delete only, if you are really sure, otherwise only add
+     *  
+     *  Fiete 20080121: we have also full info about borders if we 
+     *  travelled (status==3) throug the region
+     *  
      */
     
     
-    // Debug
-    if (newRegion.getCoordX()==0 && newRegion.getCoordY()==-1){
-      int i22=0;
-      i22++;
-    }
-    
     // *** borders ***
-    if (curRegion.getVisibilityInteger()==4){
+    if (curRegion.getVisibilityInteger()==4 || curRegion.getVisibilityInteger()==3){
       // curRegion wins
      
       newRegion.clearBorders();

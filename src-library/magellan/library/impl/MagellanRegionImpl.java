@@ -159,7 +159,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	private ID treesID = StringID.create("Baeume");
 	private ID mallornID = StringID.create("Mallorn");
 	private ID sproutsID = StringID.create("Schoesslinge");
-	private ID mallornSproutsID = StringID.create("Mallornsch?sslinge");
+	private ID mallornSproutsID = StringID.create("Mallornschösslinge");
 	
 
 	/** Informs about the reason why this region is visible. */

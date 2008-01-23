@@ -192,8 +192,12 @@ public class ReplacerHelp implements GameDataListener {
 
 		// branch replacers
 		drf.putReplacer("if", IfBranchReplacer.class);
+    
+    // special: mallornregion
+    drf.putReplacer("mallornregion", MallornRegionSwitch.class);
 
 		reworkRegionSwitches(data);
+    
 
 		defaultFactory = drf;
 	}

@@ -320,19 +320,15 @@ public class TreeHelper {
             String verw = data.getTranslation("verwundet");
             String sverw = data.getTranslation("schwer verwundet");
             String ersch = data.getTranslation("erschöpft");
-            String hicon = "gesund";
+            String hicon = null;
             String text = prevUnit.getHealth();
 
-            if(text == null) {
+            if(text == null)  { 
               text = Resources.get("tree.treehelper.healthy");
-            } else if(text.equals(verw)) {
-              hicon = "verwundet";
-            } else if(text.equals(sverw)) {
-              hicon = "schwerverwundet";
-            } else if(text.equals(ersch)) {
-              hicon = "erschoepft";
-            }
-
+              hicon = "gesund";
+            }else
+              hicon = text;
+            
             //parent.add(createSimpleNode(u.health,hicon));
             SimpleNodeWrapper healthNodeWrapper = factory.createSimpleNodeWrapper(text,
                                                 hicon);
@@ -468,19 +464,15 @@ public class TreeHelper {
 
           String verw = data.getTranslation("verwundet");
           String sverw = data.getTranslation("schwer verwundet");
-          String ersch = data.getTranslation("ersch?pft");
-          String hicon = "gesund";
+          String ersch = data.getTranslation("erschöpft");
+          String hicon = null;
           String text = curUnit.getHealth();
 
-          if(text == null) {
+          if(text == null)  { 
             text = Resources.get("tree.treehelper.healthy");
-          } else if(text.equals(verw)) {
-            hicon = "verwundet";
-          } else if(text.equals(sverw)) {
-            hicon = "schwerverwundet";
-          } else if(text.equals(ersch)) {
-            hicon = "erschoepft";
-          }
+            hicon = "gesund";
+          }else
+            hicon = text;
 
           node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(text, hicon));
 

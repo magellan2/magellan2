@@ -1,0 +1,286 @@
+
+"academy";Akademie
+"Air Shield";Windschild
+"alchemy";Alchemie
+"ammunition";Katapultmunition
+"amulet";Amulett
+"amulet of true seeing";Amulett des wahren Sehens
+"aquarian scale";Meermenschschuppe
+"aquarians";Meermenschen
+"armoursmithing";Rüstungsbau
+"Astral Guardian Spirits";Astralschutzgeister
+"aura";Aura
+"Awakening Of The Ents";Erwecke Ents
+"axe";Kriegsaxt
+"badly wounded";schwer verwundet
+"bag of conservation";Magischer Kräuterbeutel
+"balm";Balsam
+"Banish Spirits";Geister bannen
+"Barkskin";Rindenhaut
+"berserkers blood potion";Berserkerblut
+"Bind Familiar";Vertrauten binden
+"birthday cake";Geburtstagstorte
+"black ";Düster
+"Blessed Harvest";Segen der Erde
+"Bless Mallorn Logs";Segne Mallornstecken
+"Bless Stone Circle";Segne Steinkreis
+"blood ";Blut
+"boat";Boot
+"bow";Bogen
+"bow";Bogenschießen
+"braineaters";Hirntöter
+"brain wax";Gehirnschmalz
+"bubblemorel";Blasenmorchel
+"bugleweed";Gurgelkraut
+"busybeer";Schaffenstrunk
+"caravanserei";Karawanserei
+"caravel";Karavelle
+"cartmaking";Wagenbau
+"cart";Wagen
+"castle";Burg
+"catapult";Katapult
+"catapult";Katapultbedienung
+"cats";Katzen
+"Cattle Healing";Viehheilung
+"cave lichen";Höhlenglimm
+"chainmail";Kettenhemd
+"chaos ";Chaos
+"christmas trees";Weihnachtsbäume
+"christmas tree";Weihnachtsbaum
+"citadel";Zitadelle
+"claymore";Bihänder
+"cobalt fungus";Blauer Baumringel
+"cold ";Frost
+"Create A Magical Herb Pouch";Erschaffe einen magischen Kräuterbeutel
+"Create An Amulet Of True Sight";Erschaffe ein Amulett des wahren Sehens
+"Create A Ring Of Invisibility";Erschaffe einen Ring der Unsichtbarkeit
+"Create Iron Golems";Erschaffe Eisengolems
+"Create Stone Golems";Erschaffe Steingolems
+"critically wounded";sehr stark
+"crossbow";Armbrust
+"crossbow";Armbrustschießen
+"dark ";Dunkel
+"demon blood";Dämonenblut
+"demons";Dämonen
+"desert";Wüste
+"dracoids";Dracoide
+"dragonblood";Drachenblut
+"dragon";Drache
+"dragonhead";Drachenkopf
+"dragons";Drachen
+"dragonship";Drachenschiff
+"duncebun";Dumpfbackenbrot
+"dwarven beard";Zwergenbart
+"dwarves";Zwerge
+"elixir of power";Elixier der Macht
+"elven bow";Elfenbogen
+"elvendear";Elfenlieb
+"elven ear";Elfenohr
+"elves";Elfen
+"endurance";Ausdauer
+"entertainment";Unterhaltung
+"ents";Ents
+"espionage";Spionage
+"exhausted";erschöpft
+"fairy boots";Feenstiefel
+"firewall";Feuerwand
+"Firun's Coat";Firuns Fell
+"fjord fungus";Fjordwuchs
+"flaming sword";Flammenschwert
+"flatroot";Flachwurz
+"fog";Nebel
+"Fog of Confusion";Nebel der Verwirrung
+"forestry";Holzfällen
+"forest";Wald
+"fortification";Befestigung
+"fortress";Festung
+"foundation";Grundmauern
+"gapgrowth";Spaltwachs
+"Gaze Of The Basilisk";Blick des Basilisken
+"Gehirnschmalz";Gehirnschmalz
+"gem";Juwel
+"ghoul";Ghoul
+"ghouls";Ghoule
+"giant turtles";Riesenschildkröten
+"glacier";Gletscher
+"gloom ";Finster
+"goblin head";Goblinkopf
+"goblins";Goblins
+"goliath water";Goliathwasser
+"grey ";Grau
+"Grove Of Oak Trees";Hainzauber
+"gully ";Klein
+"Hail";Hagel
+"halberd";Hellebarde
+"halfling foot";Halblingfuß
+"halflings";Halblinge
+"harbour";Hafen
+"Heal";Heilung
+"healing potion";Heiltrank
+"herbalism";Kräuterkunde
+"herbbag";Kräuterbeutel
+"high ";Hoch
+"highland";Hochland
+"hill ";Hügel
+"Homestone";Heimstein
+"horse";Pferd
+"horsepower potion";Pferdeglück
+"human scalp";Menschenskalp
+"humans";Menschen
+"ice begonia";Eisblume
+"imps";Teufelchen
+"incense";Weihrauch
+"insects";Insekten
+"iron";Eisen
+"juju-zombie";Juju-Zombie
+"juju-zombies";Juju-Zombies
+"knotroot";Knotiger Saugwurz
+"laen chainmail";Laenkettenhemd
+"laen";Laen
+"laen shield";Laenschild
+"laen sword";Laenschwert
+"lance";Lanze
+"lighthouse";Leuchtturm
+"light ";Licht
+"longboat";Langboot
+"lynx";Luchs
+"lynx";Luchse
+"mage tower";Magierturm
+"magic bag";Zauberbeutel
+"magic";Magie
+"Magic Path";Magischer Pfad
+"mallorn bow";Mallornbogen
+"mallorn crossbow";Mallornarmbrust
+"mallorn lance";Mallornlanze
+"mallorn";Mallorn
+"mallorn saplings";Mallornschößlinge
+"mallorn seed";Mallornsame
+"mallorn spear";Mallornspeer
+"mandrake";Alraune
+"masonry";Burgenbau
+"Meditate";Meditation
+"melee";Hiebwaffen
+"mine";Bergwerk
+"mining";Bergbau
+"mist ";Nebel
+"monument";Monument
+"moon ";Mond
+"mountain";Berge
+"Mountain Guardian";Bergwächter
+"myrrh";Myrrhe
+"nymphs";Nymphen
+"ocean";Ozean
+"oil";Öl
+"ointment";Wundsalbe
+"orcs";Orks
+"owls";Eulen
+"owlsgaze";Eulenauge
+"Path Of Trees";Weg der Bäume
+"peasant blood";Bauernblut
+"peasant love potion";Bauernlieb
+"perception";Wahrnehmung
+"permaura";permanente Aura
+"peyote";Kakteenschwitz
+"plain";Ebene
+"platemail";Plattenpanzer
+"polearm";Stangenwaffen
+"potion of nest warmth";Nestwärme
+"potion of truth";Trank der Wahrheit
+"pot of toadslime";Tiegel mit Krötenschleim
+"quarrying";Steinbau
+"quarry";Steinbruch
+"Rain Of Rust";Rostregen
+"rats";Ratten
+"riding";Reiten
+"ring of invisibility";Ring der Unsichtbarkeit
+"ring of power";Ring der Macht
+"roadwork";Straßenbau
+"rock weed";Steinbeißer
+"rusty axe";Rostige Kriegsaxt
+"rustychainmail";Rostiges Kettenhemd
+"rusty claymore";Rostiger Zweihänder
+"rusty halberd";Rostige Hellebarde
+"rusty shield";Rostiger Schild
+"rusty sword";Schartiges Schwert
+"Sacred Ground";Heiliger Boden
+"sailing";Segeln
+"sand reeker";Sandfäule
+"saplings";Schößlinge
+"sawmill";Sägewerk
+"sea ";See
+"seaserpenthead";Seeschlangenkopf
+"sea serpents";Seeschlangen
+"seashell";Muschel
+"seed";Same
+"seven mile tea";Siebenmeilentee
+"shadowdemons";Schattendämonen
+"shadow ";Schatten
+"shield";Schild
+"shipcraft";Schiffbau
+"silk";Seide
+"silverbag";Silberbeutel
+"silverchest";Silberkassette
+"silver";Silber
+"skeleton lords";Skelettherren
+"skeletons";Skelette
+"smithy";Schmiede
+"smurfs";Schlümpfe
+"snotlings";Snotlinge
+"snowball";Schneeball
+"snowcrystal petal";Schneekristall
+"snow ";Schnee
+"solar sail";Sonnensegel
+"spear";Speer
+"spice";Gewürz
+"spider ivy";Grüner Spinnerich
+"stable";Pferdezucht
+"stardust";Sternenstaub
+"stealth";Tarnung
+"stones";Steine
+"stone";Stein
+"Strong Wall And Sturdy Gate";Starkes Tor und feste Mauer
+"Summon Earth Elemental";Beschwöre einen Erdelementar
+"Summon Fire Elemental";Beschwörung eines Hitzeelementar
+"Summon Storm Elemental";Beschwöre einen Sturmelementar
+"Summon Water Elemental";Beschwörung eines Wasserelementares
+"sun ";Sonnen
+"swamp";Sumpf
+"sword";Schwert
+"tactics";Taktik
+"taming";Pferdedressur
+"tangy temerity";Würziger Wagemut
+"taxation";Steuereintreiben
+"thick fog";Dichter Nebel
+"Ties Of Life";Sog des Lebens
+"tiger";Tiger
+"Timber Wolves";Wolfsgeheul
+"toads";Kröten
+"tower";Turm
+"trade";Handeln
+"tradepost";Handelsposten
+"trees";Bäume
+"trireme";Trireme
+"trollbelt";Gürtel der Trollstärke
+"troll horn";Trollhorn
+"trolls";Trolle
+"tunnelworms";Tunnelwürmer
+"unarmed combat";Waffenloser Kampf
+"undead";Untote
+"valley ";Tal
+"vial";Phiole
+"waterfinder";Wasserfinder
+"water of life";Wasser des Lebens
+"weaponsmithing";Waffenbau
+"Whirlwind";Wirbelwind
+"white hemlock";Weißer Wüterich
+"wild ";Wild
+"will-o-wisp";Irrlichter
+"windbag";Windbeutel
+"wolf";Wolf
+"wood";Holz
+"wood ";Wald
+"wormhole";Wurmloch
+"wounded";verwundet
+"young dragon";Jungdrache
+"young dragons";Jungdrachen
+"zombies";Zombies

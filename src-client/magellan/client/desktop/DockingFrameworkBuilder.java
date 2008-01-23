@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
@@ -155,18 +154,11 @@ public class DockingFrameworkBuilder  {
     prop.getShapedPanelProperties().setComponentPainter(null);
 
     prop.getWindowAreaProperties().setInsets(new Insets(0,0,0,0));
-    prop.getWindowAreaProperties().setBorder(BorderFactory.createEmptyBorder(0,0,3,0));
-    prop.getWindowBarProperties().getComponentProperties().setInsets(new Insets(0,0,0,0));
-    prop.getWindowBarProperties().getComponentProperties().setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-    prop.getComponentProperties().setBorder(BorderFactory.createEmptyBorder());
-    prop.getComponentProperties().setInsets(new Insets(5,5,5,5));
-    
-//  prop.getDockingWindowProperties().getTabProperties().getTitledTabProperties().setEnabled(true);
-//  prop.getDockingWindowProperties().getTabProperties().getFocusedProperties().setTitleComponentVisible(true);
-//  prop.getDockingWindowProperties().getTabProperties().getFocusedProperties().setTextVisible(true);
-//  prop.getViewProperties().getViewTitleBarProperties().setVisible(false);
-//  prop.getViewProperties().setAlwaysShowTitle(false);
-//  prop.getTabWindowProperties().getTabbedPanelProperties().setTabDropDownListVisiblePolicy(TabDropDownListVisiblePolicy.MORE_THAN_ONE_TAB);
+    prop.getWindowAreaProperties().setBorder(null);
+    prop.getWindowBarProperties().getComponentProperties().setInsets(new Insets(3,0,3,0));
+    prop.getWindowBarProperties().getComponentProperties().setBorder(null);
+    prop.getComponentProperties().setInsets(new Insets(3,3,0,3));
+    prop.getComponentProperties().setBorder(null);
 
     return window;
   }

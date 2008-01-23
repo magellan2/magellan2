@@ -76,63 +76,73 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 		}
 	}
 
+	public static File getFile(Client client){
+	  Properties settings = client.getProperties();
+    JFileChooser fc = new JFileChooser();
+    fc.setAcceptAllFileFilterUsed(false);
+
+    EresseaFileFilter crFilter = new EresseaFileFilter(EresseaFileFilter.CR_FILTER);
+    fc.addChoosableFileFilter(crFilter);
+
+    EresseaFileFilter gzFilter = new EresseaFileFilter(EresseaFileFilter.GZ_FILTER);
+    fc.addChoosableFileFilter(gzFilter);
+
+    EresseaFileFilter bz2Filter = new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER);
+    fc.addChoosableFileFilter(bz2Filter);
+
+    //    EresseaFileFilter zipFilter = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
+    //    fc.addChoosableFileFilter(zipFilter);
+    File selectedFile = new File(settings.getProperty("Client.lastCRSaved", ""));
+    fc.setSelectedFile(selectedFile);
+
+    // select an active file filter
+    if(crFilter.accept(selectedFile)) {
+      fc.setFileFilter(crFilter);
+    } else if(gzFilter.accept(selectedFile)) {
+      fc.setFileFilter(gzFilter);
+    } else if(bz2Filter.accept(selectedFile)) {
+      fc.setFileFilter(bz2Filter);
+      
+      //      } else if(zipFilter.accept(selectedFile)) {
+      //        fc.setFileFilter(zipFilter);
+    }
+
+    fc.setAccessory(new magellan.client.swing.HistoryAccessory(settings, fc));
+    fc.setDialogTitle(Resources.get("actions.filesaveasaction.title"));
+    
+    if(fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
+      boolean bOpenEqualsSave = Boolean.valueOf(settings.getProperty("Client.openEqualsSave",
+                                       "false")).booleanValue();
+
+      if(bOpenEqualsSave) {
+        settings.setProperty("Client.lastCROpened", fc.getSelectedFile().getAbsolutePath());
+      }
+
+      File dataFile = fc.getSelectedFile();
+      EresseaFileFilter actFilter = (EresseaFileFilter) fc.getFileFilter();
+      dataFile = actFilter.addExtension(dataFile);
+
+      //if(dataFile.exists()) {
+        // FIXME(pavkovic) ask, if file should be overwritten
+        // stop execution of saveaction if necessary
+      //        try {
+      //          File backup = FileBackup.create(dataFile);
+      //          log.info("Created backupfile " + backup);
+      //        } catch(IOException ie) {
+      //          log.warn("Could not create backupfile for file " + dataFile);
+      //        }
+      //      }
+
+      return dataFile;
+    } else
+      return null;
+	}
+	
 	protected void doSaveAsAction() {
-		Properties settings = client.getProperties();
-		JFileChooser fc = new JFileChooser();
-		fc.setAcceptAllFileFilterUsed(false);
+		
+		File dataFile = getFile(client);
 
-		EresseaFileFilter crFilter = new EresseaFileFilter(EresseaFileFilter.CR_FILTER);
-		fc.addChoosableFileFilter(crFilter);
-
-		EresseaFileFilter gzFilter = new EresseaFileFilter(EresseaFileFilter.GZ_FILTER);
-		fc.addChoosableFileFilter(gzFilter);
-
-		EresseaFileFilter bz2Filter = new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER);
-		fc.addChoosableFileFilter(bz2Filter);
-
-		// 		EresseaFileFilter zipFilter = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
-		// 		fc.addChoosableFileFilter(zipFilter);
-		File selectedFile = new File(settings.getProperty("Client.lastCRSaved", ""));
-		fc.setSelectedFile(selectedFile);
-
-		// select an active file filter
-		if(crFilter.accept(selectedFile)) {
-			fc.setFileFilter(crFilter);
-		} else if(gzFilter.accept(selectedFile)) {
-			fc.setFileFilter(gzFilter);
-		} else if(bz2Filter.accept(selectedFile)) {
-			fc.setFileFilter(bz2Filter);
-			
-			// 			} else if(zipFilter.accept(selectedFile)) {
-			// 				fc.setFileFilter(zipFilter);
-		}
-
-		fc.setAccessory(new magellan.client.swing.HistoryAccessory(settings, fc));
-		fc.setDialogTitle(Resources.get("actions.filesaveasaction.title"));
-
-		if(fc.showSaveDialog(client) == JFileChooser.APPROVE_OPTION) {
-			boolean bOpenEqualsSave = Boolean.valueOf(settings.getProperty("Client.openEqualsSave",
-																		   "false")).booleanValue();
-
-			if(bOpenEqualsSave) {
-				settings.setProperty("Client.lastCROpened", fc.getSelectedFile().getAbsolutePath());
-			}
-
-			File dataFile = fc.getSelectedFile();
-			EresseaFileFilter actFilter = (EresseaFileFilter) fc.getFileFilter();
-			dataFile = actFilter.addExtension(dataFile);
-
-			//if(dataFile.exists()) {
-				// FIXME(pavkovic) ask, if file should be overwritten
-				// stop execution of saveaction if necessary
-			// 				try {
-			// 					File backup = FileBackup.create(dataFile);
-			// 					log.info("Created backupfile " + backup);
-			// 				} catch(IOException ie) {
-			// 					log.warn("Could not create backupfile for file " + dataFile);
-			// 				}
-			//			}
-			
+		if (dataFile!=null){
 			doSaveAction(dataFile);
 		}
 	}

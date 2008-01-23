@@ -42,7 +42,6 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Regions;
-import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.SortIndexComparator;

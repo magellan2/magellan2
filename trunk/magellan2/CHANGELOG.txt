@@ -1,3 +1,9 @@
+2008-01-23 / Build 143 - Fiete (sf@fietefietz.de)
+	* added mallornregion replacer
+	* removed FFplugin (Testplugin)
+	* some comments on ReportMerger
+	* removed some unused imports
+
 2008-01-23 / Build 143 - stm (stm_@users.sourceforge.net) 
 	* fixed "NPE on save on quit" bug
 	* added icons for feuerwand (border) and irrlichter (border)

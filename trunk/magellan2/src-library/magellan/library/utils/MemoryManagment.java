@@ -116,6 +116,7 @@ public class MemoryManagment {
 //    	if (r.totalMemory()<r.maxMemory()){
 //    		return true;
 //    	}
+    	log.warn("memory free: "+free+" needed: "+max+" total: "+tot);
     	return false;
     }
 	

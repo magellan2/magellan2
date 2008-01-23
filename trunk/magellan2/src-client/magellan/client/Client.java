@@ -1138,7 +1138,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       case JOptionPane.YES_OPTION:
 
         try {
-          CRWriter crw = saveReport(getData().filetype);
+          FileType filetype = getData().filetype;
+          if (filetype==null){
+            File file = FileSaveAsAction.getFile(this);
+            if (file!=null)
+              filetype = FileTypeFactory.singleton().createFileType(file, false);
+          }
+          if (filetype==null)
+            return false;
+          CRWriter crw = saveReport(filetype);
           if (wait) {
             while (crw.savingInProgress()) {
               try {

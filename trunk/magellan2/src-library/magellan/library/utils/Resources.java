@@ -371,7 +371,7 @@ public class Resources {
    */
   public static String getRuleItemTranslation(String key, Locale locale) {
     Resources resources = getInstance();
-    key = "ruleitem."+key;
+    key = "rules."+key;
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {

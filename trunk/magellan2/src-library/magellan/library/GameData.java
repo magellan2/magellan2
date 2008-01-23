@@ -1451,6 +1451,7 @@ public abstract class GameData implements Cloneable {
   /**
    * This function checks if the game data have been manipulated somehow (merge
    * will lead to a filetype null).
+   * TODO (stm) nobody uses this
    */
   public boolean gameDataChanged(GameData g) {
     if (g.filetype == null) {
@@ -1569,7 +1570,7 @@ public abstract class GameData implements Cloneable {
     // Skilltypes
     for (Iterator<SkillType> iter = this.rules.getSkillTypeIterator();iter.hasNext();){
       SkillType skillType = (SkillType)iter.next();
-      String key = skillType.getID().toString();
+      String key = "skill."+skillType.getID().toString();
       if (!this.translations().contains(key)){
         // we have to add
         String translated = Resources.getRuleItemTranslation(key);

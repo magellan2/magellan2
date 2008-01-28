@@ -92,6 +92,10 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 
     //    EresseaFileFilter zipFilter = new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
     //    fc.addChoosableFileFilter(zipFilter);
+
+    EresseaFileFilter allCrFilter = new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER);
+    fc.addChoosableFileFilter(allCrFilter);
+
     File selectedFile = new File(settings.getProperty("Client.lastCRSaved", ""));
     fc.setSelectedFile(selectedFile);
 

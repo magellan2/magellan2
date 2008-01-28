@@ -95,15 +95,6 @@ public class Alliance {
 	}
 
 	/**
-	 * Set the state bit-field of this alliance.
-	 *
-	 * @param state state bitfield.
-	 */
-	public void setState(int state) {
-		this.state = state;
-	}
-
-	/**
 	 * Determine whether a specific state of this alliance is set.
 	 *
 	 * @param selector specifying one of the constants in this class.

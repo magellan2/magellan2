@@ -908,12 +908,17 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * Handle the header, i.e.: VERSION 37 "Eressea";Spiel "Standard";Konfiguration
-   * "Hex";Koordinaten 36;Basis 1;Umlaute
-   *
+   * Handle the header, i.e.: <code> 
+   * VERSION 37 
+   * "Eressea";Spiel 
+   * "Standard";Konfiguration
+   * "Hex";Koordinaten 
+   * 36;Basis 
+   * 1;Umlaute
+   * </code>
    * 
-   *
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException
+   *           DOCUMENT-ME
    */
   private void parseHeader(GameData world) throws IOException {
     Region specialRegion = null;

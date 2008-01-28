@@ -1838,7 +1838,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           } else {
             Alliance a1 = (Alliance) activeAlliances.get(id);
             Alliance a2 = (Alliance) f.getAllies().get(id);
-            a1.setState(a1.getState() & a2.getState());
+            activeAlliances.put(id, new Alliance(a1.getFaction(), a1.getState() & a2.getState()));
           }
         }
 

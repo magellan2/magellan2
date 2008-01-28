@@ -199,7 +199,7 @@ public class GameDataBuilder {
 
 	public static Message createMessage(String text) {
 		// EINHEITSBOTSCHAFTEN
-		// "Eine Botschaft von Kr?uterlager (ax1a): 'MessMach99?99?99!Wundsalbe!xxxx'"
+		// "Eine Botschaft von Kräuterlager (ax1a): 'MessMach99?99?99!Wundsalbe!xxxx'"
 		return MagellanFactory.createMessage(text);
 	}
 

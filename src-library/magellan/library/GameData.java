@@ -992,9 +992,6 @@ public abstract class GameData implements Cloneable {
       }
     }
    
-    // FIXME (stm): Allies do not get merged correctly. We have to either swap
-    // the order here or correct
-    // something in the section "// MERGE FACTIONS" below
     // FACTIONS
     if (olderGD.factions() != null) {
       for (Iterator iter = olderGD.factions().values().iterator(); iter.hasNext();) {

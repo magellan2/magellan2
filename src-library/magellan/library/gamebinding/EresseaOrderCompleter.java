@@ -1098,9 +1098,8 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltKontaktiere() {
-		Alliance alliance = new Alliance(unit.getFaction());
-		alliance.setState(EresseaConstants.A_GIVE);
-		alliance.setState(EresseaConstants.A_GUARD);
+		Alliance alliance =
+        new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
 		addNotAlliedUnits(alliance, "");
 	}
 
@@ -1829,7 +1828,8 @@ public class EresseaOrderCompleter implements Completer {
 				addUnit(curUnit, postfix);
 			} else if(!f.equals(unit.getFaction())) {
 				Alliance testAlliance = unit.getFaction().getAllies().get(f.getID());
-
+				if (unit.getGroup()!=null)
+				  testAlliance = unit.getGroup().allies().get(f.getID());
 				if(testAlliance == null) {
 					// curUnit is not allied
 					addUnit(curUnit, postfix);

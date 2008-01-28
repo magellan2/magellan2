@@ -199,7 +199,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		
 		if((data != null) && (data.rules != null)) {
 			String help[] = new String[] {
-								"Balsam", "Gew?rz", "Juwel", "Myrrhe", "?l", "Seide", "Weihrauch"
+								"Balsam", "Gewürz", "Juwel", "Myrrhe", "Öl", "Seide", "Weihrauch"
 							};
 
 			for(int i = 0; i < help.length; i++) {

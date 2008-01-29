@@ -42,6 +42,7 @@ import magellan.library.utils.comparator.BuildingTypeComparator;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
+import magellan.library.utils.comparator.ShipTypeComparator;
 import magellan.library.utils.comparator.TaggableComparator;
 import magellan.library.utils.comparator.UnitCombatStatusComparator;
 import magellan.library.utils.comparator.UnitFactionComparator;
@@ -95,7 +96,7 @@ public class TreeHelper {
     
   private static final Comparator<Named> nameComparator = new NameComparator<Unique>(IDComparator.DEFAULT);
   private static final Comparator<Building> buildingCmp = new BuildingTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT));
-  private static final Comparator<Named> shipComparator = nameComparator;
+  private static final Comparator<Ship> shipComparator = new ShipTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT));
     private static final Comparator<Unit> healthCmp = new UnitHealthComparator(null);
 
     // pavkovic 2004.01.04: we dont want to sort groups by group id but name;

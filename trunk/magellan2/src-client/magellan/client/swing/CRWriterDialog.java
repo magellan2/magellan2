@@ -98,6 +98,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private JCheckBox chkDelStats = null;
 	private JCheckBox chkDelTrans = null;
 	private JCheckBox chkDelEmptyFactions = null;
+  private JCheckBox chkExportHotspots = null;
+  
+  private GameData data = null;
+  
 
 	/**
 	 * Create a stand-alone instance of CRWriterDialog.
@@ -107,7 +111,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	public CRWriterDialog(GameData data) {
 		super(null, false, null, data, new Properties());
 		standAlone = true;
-
+    this.data = data;
 		try {
 			settings.load(new FileInputStream(new File(System.getProperty("user.home"),
 													   "CRWriterDialog.ini")));
@@ -128,6 +132,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	 */
 	public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p) {
 		super(owner, modal, null, initData, p);
+    this.data = initData;
 		init();
 	}
 
@@ -138,6 +143,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	public CRWriterDialog(Frame owner, boolean modal, GameData initData, Properties p, Collection<Region> selectedRegions) {
 		super(owner, modal, null, initData, p);
 		this.regions = selectedRegions;
+    this.data = initData;
 		init();
 	}
 
@@ -300,6 +306,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 	private Container getOptionPanel() {
 		// TODO: add tooltips
+    // FIXED: tooltips (Fiete)
 		chkServerConformance = new JCheckBox(Resources.get("crwriterdialog.chk.servercompatibility.caption"),
 											 (Boolean.valueOf(settings.getProperty("CRWriterDialog.serverConformance",
 																			   "true"))).booleanValue());
@@ -340,7 +347,32 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		chkDelEmptyFactions= new JCheckBox(Resources.get("crwriterdialog.chk.delemptyfactions.caption"),
         (Boolean.valueOf(settings.getProperty("CRWriterDialog.delEmptyFactions",
                           "false"))).booleanValue());
-
+    chkExportHotspots= new JCheckBox(Resources.get("crwriterdialog.chk.exporthotspots.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.exportHotspots",
+                          "true"))).booleanValue());
+    
+    if (this.data!=null && this.data.hotSpots()!=null && this.data.hotSpots().size()>0){
+       chkExportHotspots.setEnabled(true);    
+    } else {
+       chkExportHotspots.setEnabled(false);
+    }
+    
+    // Tooltips
+    chkServerConformance.setToolTipText(Resources.get("crwriterdialog.chk.servercompatibility.tooltip"));
+    chkIslands.setToolTipText(Resources.get("crwriterdialog.chk.islands.tooltip"));
+    chkRegions.setToolTipText(Resources.get("crwriterdialog.chk.regions.tooltip"));
+    chkRegionDetails.setToolTipText(Resources.get("crwriterdialog.chk.regiondetails.tooltip"));
+    chkBuildings.setToolTipText(Resources.get("crwriterdialog.chk.buildings.tooltip"));
+    chkShips.setToolTipText(Resources.get("crwriterdialog.chk.ships.tooltip"));
+    chkUnits.setToolTipText(Resources.get("crwriterdialog.chk.units.tooltip"));
+    chkMessages.setToolTipText(Resources.get("crwriterdialog.chk.messages.tooltip"));
+    chkSpellsAndPotions.setToolTipText(Resources.get("crwriterdialog.chk.spellsandpotions.tooltip"));
+    chkSelRegionsOnly.setToolTipText(Resources.get("crwriterdialog.chk.selectedregions.tooltip"));
+    chkDelStats.setToolTipText(Resources.get("crwriterdialog.chk.delstats.tooltip"));
+    chkDelTrans.setToolTipText(Resources.get("crwriterdialog.chk.deltrans.tooltip"));
+    chkDelEmptyFactions.setToolTipText(Resources.get("crwriterdialog.chk.delemptyfactions.tooltip"));
+    chkExportHotspots.setToolTipText(Resources.get("crwriterdialog.chk.exporthotspots.tooltip"));
+    
 		JPanel pnlOptions = new JPanel(new GridLayout(6, 2));
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
 											  Resources.get("crwriterdialog.border.options")));
@@ -357,6 +389,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		pnlOptions.add(chkDelStats);
 		pnlOptions.add(chkDelTrans);
 		pnlOptions.add(chkDelEmptyFactions);
+    pnlOptions.add(chkExportHotspots);
 
 		return pnlOptions;
 	}
@@ -391,6 +424,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							 String.valueOf(chkDelTrans.isSelected()));
 		settings.setProperty("CRWriterDialog.delEmptyFactions",
         String.valueOf(chkDelEmptyFactions.isSelected()));
+    settings.setProperty("CRWriterDialog.exportHotspots",
+        String.valueOf(chkExportHotspots.isSelected()));
 		
 
 		if(chkSelRegionsOnly.isEnabled()) {
@@ -487,6 +522,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.setIncludeUnits(chkUnits.isSelected());
 			crw.setIncludeMessages(chkMessages.isSelected());
 			crw.setIncludeSpellsAndPotions(chkSpellsAndPotions.isSelected());
+      crw.setExportHotspots(chkExportHotspots.isSelected());
 
 			GameData newData = data;
 			

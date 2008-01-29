@@ -1,6 +1,7 @@
 2008-01-28 / Build 144 - stm (stm_@users.sourceforge.net) 
     * fixed nasty little bug with alliances
     * corrected a few illegal characters
+    * fixed bug #144
     
 2008-01-23 / Build 143 - Fiete (sf@fietefietz.de)
 	* added mallornregion replacer

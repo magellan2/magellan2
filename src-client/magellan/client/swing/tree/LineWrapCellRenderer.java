@@ -301,12 +301,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
       if (message.getMessageType()!=null){
         String colorName = "messagetype.section."+message.getMessageType().getSection()+".color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
-        if (color != null) {
-          // color for message type found.
-          backgroundColor = Utils.getColor(color);
-        } else {
+        if (color == null) {
           log.warn("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
+        // color for message type found.
+        backgroundColor = Utils.getColor(color);
       }
     } else {
       string = userObject.toString();

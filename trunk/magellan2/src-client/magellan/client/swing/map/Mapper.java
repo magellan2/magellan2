@@ -124,6 +124,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /** DOCUMENT-ME */
   public static final int PLANE_SIGNS = 11;
   private static final int PLANES = 12;
+
+  public static final String DEFAULT_TOOLTIP_DEFINITION = "<html><font=-1>§rname§</font></html>";
+  public static final String DEFAULT_TOOLTIP = "Standard~<html><font=-1>§rname§</font></html>";
+
+  private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
+  private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
+
   private RenderingPlane planes[] = null;
   private Collection<MapCellRenderer> availableRenderers = null;
   private MediaTracker tracker = null;
@@ -173,7 +180,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     conMenu = new MapContextMenu(context.getClient(), context.getEventDispatcher(), context.getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>§rname§</font></html>"));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", DEFAULT_TOOLTIP_DEFINITION));
 
     setShowTooltip(settings.getProperty("Mapper.showTooltips", "false").equals("true"));
 
@@ -374,7 +381,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", "<html><font=-1>§rname§</font></html>"));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", DEFAULT_TOOLTIP_DEFINITION));
   }
 
   /**
@@ -776,9 +783,6 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   protected int getLastRegionRenderingType() {
     return lastRegionRenderingType;
   }
-
-  private static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
-  private static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
   /**
    * DOCUMENT-ME
@@ -1509,7 +1513,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public List<String> getAllTooltipDefinitions() {
-    String s = settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>§rname§</font></html>");
+    String s = settings.getProperty("Mapper.ToolTip.Definitions", DEFAULT_TOOLTIP);
     StringTokenizer st = new StringTokenizer(s, "~");
     int j = st.countTokens();
 
@@ -1548,7 +1552,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
       }
     } else {
-      buf.append("Standard~<html><font=-1>§rname§</font></html>");
+      buf.append(DEFAULT_TOOLTIP);
     }
 
     settings.setProperty("Mapper.ToolTip.Definitions", buf.toString());
@@ -1560,7 +1564,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public void addTooltipDefinition(String name, String def) {
-    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", "Standard~<html><font=-1>§rname§</font></html>") + "~" + name + "~" + def);
+    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", DEFAULT_TOOLTIP) + "~" + name + "~" + def);
 
     conMenu.updateTooltips(this);
   }

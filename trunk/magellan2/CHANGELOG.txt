@@ -2,6 +2,7 @@
 	* added "Export Hot Spots" to export options in CRWriterDialog
 	* added Tooltips to Options in CRWriterDialog, en-translation is still poor
 	* changed ordering of ships from nameComparator to new ShipTypeComparator (do we need this optional?)
+	* added new short cut CTRL +/- for zooming the map
 
 2008-01-28 / Build 144 - stm (stm_@users.sourceforge.net) 
     * fixed nasty little bug with alliances

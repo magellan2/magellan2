@@ -413,18 +413,27 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // initialize Shortcuts
     tooltipShortcut = new TooltipShortcut();
 
-    shortcuts = new ArrayList<KeyStroke>(6);
+    shortcuts = new ArrayList<KeyStroke>(8);
+    // 0: request Focus
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_MASK));
+    // 1: request Focus
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
+    // 2: add Hotspot
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
+    // 3: remove Hotspot
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
-
-    // fog of war
+    // 4: fog of war
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
-
-    // tooltips
+    // 5: tooltips ? open open problems
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
     
+    // 6,7: Map Zoom in  First is numpad, scnd is normal key
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD  , KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS  , KeyEvent.CTRL_MASK));
+    //  8,9: Map Zoom out  
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.CTRL_MASK));
+
     DesktopEnvironment.registerShortcutListener(this);
   }
 
@@ -1008,13 +1017,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     case 0:
     case 1:
+      // request FOcus CTRL + 2 or ALT + 2
       magellan.client.desktop.DesktopEnvironment.requestFocus("MAP");
       mapper.requestFocus(); // activate the mapper, not the scrollpane
 
       break;
 
     case 2:
-
+      // insert Hotspot CTRL+H
       String input = JOptionPane.showInputDialog(Resources.get("mapperpanel.msg.enterhotspotname.text"));
 
       if ((input != null) && !input.equals("")) {
@@ -1024,7 +1034,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
 
     case 3:
-
+      // remove HotSpot CTRL + ALT + H
       HotSpot h = (HotSpot) cmbHotSpots.getSelectedItem();
 
       if (h != null) {
@@ -1034,7 +1044,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
 
     case 4:
-
+      // FoW CTRL + W
       Collection renderers = mapper.getRenderers(Mapper.PLANE_REGION);
 
       if ((renderers != null) && (renderers.size() > 0)) {
@@ -1051,8 +1061,34 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
 
     case 5:
+      // tooltips? open problems are opened CTRL+P
+      break;
+    
+    case 6:
+    case 7:
+      // Zoom in CTRL + "+"
+      CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+      float currentSF = this.getScaleFactor();
+      this.setScaleFactor(currentSF * 1.33f);
+      setCenter(center);
+      this.repaint(); 
+      break;
+    case 8:
+    case 9:  
+      // Zoom out CTRL + "-"
+      CoordinateID center2 = mapper.getCenter(scpMapper.getViewport().getViewRect());
+      float currentSF2 = this.getScaleFactor();
+      this.setScaleFactor(currentSF2 * 0.66f);
+      setCenter(center2);
+      this.repaint();
       break;
     }
+    
+    
+      
+    
+    
+    
   }
 
   /**

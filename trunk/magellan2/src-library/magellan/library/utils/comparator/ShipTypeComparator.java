@@ -16,7 +16,6 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.Ship;
-import magellan.library.rules.BuildingType;
 import magellan.library.rules.ShipType;
 
 

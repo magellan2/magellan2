@@ -2207,7 +2207,7 @@ public class CRWriter extends BufferedWriter {
       writeCoordinateTranslations(world);
     }
 
-		if(!serverConformance) {
+		if(!serverConformance && exportHotspots) {
       if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
 			writeHotSpots(world.hotSpots());
 		}
@@ -2449,6 +2449,31 @@ public class CRWriter extends BufferedWriter {
 		this.includeMessages = includeMessages;
 	}
 
+  
+  private boolean exportHotspots = true;
+  
+  /**
+   * Returns whether <tt>write(GameData data)</tt> writes Hotspots contained in the game data to
+   * the underlying stream.
+   *
+   * 
+   */
+  public boolean getExportHotspots() {
+    return this.exportHotspots;
+  }
+
+  /**
+   * Toggles whether <tt>write(GameData data)</tt> writes Hotspots contained in the game data to
+   * the underlying stream.
+   *
+   * 
+   */
+  public void setExportHotspots(boolean exportHotspots) {
+    this.exportHotspots = exportHotspots;
+  }
+  
+  
+  
 	private boolean includeSpellsAndPotions = true;
 
 	/**

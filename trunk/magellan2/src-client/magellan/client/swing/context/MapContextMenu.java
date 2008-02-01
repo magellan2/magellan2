@@ -36,6 +36,7 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.AddSignDialog;
+import magellan.client.swing.MapperPanel;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.map.Mapper;
 import magellan.client.swing.map.RenderingPlane;
@@ -79,6 +80,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	protected JMenuItem setOriginItem;
 	protected JMenuItem changeHotSpot;
 	protected JMenu signs;
+  protected JMenu levelSelect;
+  protected JMenu jumpToHotSpot;
 	protected JMenuItem armystats;
 	protected JMenu renderer;
 	protected JMenu tooltips;
@@ -165,6 +168,14 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 			});
 		add(armystats);
 		
+    levelSelect = new JMenu(Resources.get("context.mapcontextmenu.menu.levelselect")); 
+    levelSelect.setEnabled(false);
+    add(levelSelect);
+    
+    jumpToHotSpot = new JMenu(Resources.get("context.mapcontextmenu.menu.jumptohotspot")); 
+    jumpToHotSpot.setEnabled(false);
+    add(jumpToHotSpot);
+    
 		signs = new JMenu(Resources.get("context.mapcontextmenu.menu.signs"));
 		add(signs);
 		addSeparator();
@@ -234,6 +245,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		changeHotSpot.setEnabled(true);
 		armystats.setEnabled(true);
 		signs.setEnabled(true);
+    updateLevelSelect();
+    updateJumpToHotSpot();
 		updateSigns();
     
     updateMapContextMenuProvider(r,null);
@@ -274,6 +287,67 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     
 	}
 
+  /**
+   * Updates the level selector
+   *
+   */
+  private void updateLevelSelect(){
+    levelSelect.removeAll();
+    if (this.source.getLevels().size()>1){
+      levelSelect.setEnabled(true);
+      for (Iterator iter=this.source.getLevels().iterator();iter.hasNext();){
+        Integer actLevel = (Integer)iter.next();
+        JMenuItem levelSign = new JMenuItem(actLevel.toString());
+        levelSign.setActionCommand(actLevel.toString());
+        if (actLevel.intValue()!=this.source.getLevel()){
+          levelSign.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              MapperPanel mp = (MapperPanel)client.getDesktop().getManagedComponents().get("MAP");
+              mp.setLevel(Integer.parseInt(e.getActionCommand()));
+            }
+          });
+        } else {
+          levelSign.setEnabled(false);
+        }
+        levelSelect.add(levelSign);
+      }
+    } else {
+      levelSelect.setEnabled(false);
+    }
+  }
+  
+  /**
+   * Updates the level selector
+   *
+   */
+  private void updateJumpToHotSpot(){
+    jumpToHotSpot.removeAll();
+    if (data!=null && data.hotSpots()!=null && data.hotSpots().size()>0){
+      jumpToHotSpot.setEnabled(true);
+      for (Iterator iter = data.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot h = (HotSpot) iter.next();
+        JMenuItem levelSign = new JMenuItem(h.getName());
+        levelSign.setActionCommand(h.getID().toString());
+        levelSign.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            MapperPanel mp = (MapperPanel)client.getDesktop().getManagedComponents().get("MAP");
+            ID id = IntegerID.create(e.getActionCommand());
+            HotSpot h = data.getHotSpot(id);
+            if (h!=null){
+              mp.showHotSpot(h);
+            } else {
+              log.error("Hotspot not found: " + e.getActionCommand());
+            }
+          }
+        });
+        
+        jumpToHotSpot.add(levelSign);
+      }
+    } else {
+      jumpToHotSpot.setEnabled(false);
+    }
+  }
+  
 	/**
 	 * sets the option (submenuentries) in the signmenu
 	 * depends on status of signs of actual region

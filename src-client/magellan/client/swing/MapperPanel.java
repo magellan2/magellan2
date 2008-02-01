@@ -99,10 +99,17 @@ import magellan.library.utils.logging.Logger;
 public class MapperPanel extends InternationalizedDataPanel implements ActionListener, SelectionListener, ChangeListener, ExtendedShortcutListener, PreferencesFactory, Initializable {
   private static final Logger log = Logger.getInstance(MapperPanel.class);
 
+  /** fpr 3 step zoom in and zoom out our 3 scalings */
+  private final float level3Scale1 = 0.4f;
+  private final float level3Scale2 = 1.3f;
+  private final float level3Scale3 = 2.2f;
+  
+  
   /** The map component in this panel. */
   private Mapper mapper = null;
   private JScrollPane scpMapper = null;
   private JLabel lblLevel = null;
+  private JLabel lblScaling = null;
   private JComboBox cmbLevel = null;
   private JSlider sldScaling = null;
   private JComboBox cmbHotSpots = null;
@@ -134,10 +141,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     data = e.getGameData();
     mapper.gameDataChanged(e);
     minimap.gameDataChanged(e);
-
+    
+    boolean showNavi = context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true");
+    
+    lblScaling.setVisible(showNavi);
+    sldScaling.setVisible(showNavi);
     List levels = mapper.getLevels();
-    lblLevel.setVisible(levels.size() > 1);
-    cmbLevel.setVisible(levels.size() > 1);
+    lblLevel.setVisible((levels.size() > 1) && showNavi);
+    cmbLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.removeAllItems();
 
     for (int i = 0; i < levels.size(); i++) {
@@ -161,7 +172,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       cmbHotSpots.setModel(new DefaultComboBoxModel(hotSpots.toArray()));
     }
 
-    cmbHotSpots.setVisible(cmbHotSpots.getItemCount() > 0);
+    cmbHotSpots.setVisible((cmbHotSpots.getItemCount() > 0) && showNavi);
 
     rescale();
     minimapPane.doLayout();
@@ -413,7 +424,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // initialize Shortcuts
     tooltipShortcut = new TooltipShortcut();
 
-    shortcuts = new ArrayList<KeyStroke>(8);
+    shortcuts = new ArrayList<KeyStroke>(10);
     // 0: request Focus
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_MASK));
     // 1: request Focus
@@ -433,6 +444,12 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     //  8,9: Map Zoom out  
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , KeyEvent.CTRL_MASK));
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.CTRL_MASK));
+    
+    // 3 Level Zoom in
+    // 10 Fast Zoom In
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN , KeyEvent.CTRL_MASK));
+    // 11 Fast Zoom out
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP , KeyEvent.CTRL_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
   }
@@ -562,6 +579,17 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.setScaleFactor(fScale);
   }
 
+  /**
+   * sets new scale factor for map, centers on same position and repaints
+   * @param fScale
+   */
+  public void setNewScaleFactor(float fScale) {
+    CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
+    this.setScaleFactor(fScale);
+    setCenter(center);
+    this.repaint(); 
+  }
+  
   /**
    * Returns the current scaling factor applied to the map.
    * 
@@ -824,7 +852,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // ClearLook suggests to remove border
     scpMapper.setBorder(new EmptyBorder(0, 0, 0, 0));
 
-    JLabel lblScaling = new JLabel(Resources.get("mapperpanel.lbl.zoom.caption"));
+    JPanel mainPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    mainPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
+
+    
+    
+    lblScaling = new JLabel(Resources.get("mapperpanel.lbl.zoom.caption"));
     sldScaling = new JSlider(SwingConstants.HORIZONTAL);
     sldScaling.setMajorTickSpacing(5);
     sldScaling.setPaintTicks(true);
@@ -900,10 +934,12 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       }
     });
 
-    JPanel mainPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
-    mainPanel.setBorder(new EmptyBorder(2, 2, 2, 2));
-
+    // initial visibility...all other elements are invisisble at start up anyway
+    boolean showNavi = context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true");
+    sldScaling.setVisible(showNavi);
+    lblScaling.setVisible(showNavi);
+    
+    
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
     c.gridy = 0;
@@ -957,7 +993,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     c.weightx = 0.0;
     c.weighty = 0.0;
     mainPanel.add(cmbHotSpots, c);
-
+  
     c.anchor = GridBagConstraints.CENTER;
     c.gridx = 0;
     c.gridy = 1;
@@ -967,7 +1003,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     c.insets = new Insets(0, 0, 0, 0);
     c.weightx = 0.2;
     c.weighty = 0.2;
+    
     mainPanel.add(scpMapper, c);
+    
 
     return mainPanel;
   }
@@ -1067,25 +1105,38 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 6:
     case 7:
       // Zoom in CTRL + "+"
-      CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
-      float currentSF = this.getScaleFactor();
-      this.setScaleFactor(currentSF * 1.33f);
-      setCenter(center);
-      this.repaint(); 
+      float currentSF = this.getScaleFactor();      
+      this.setNewScaleFactor(currentSF * 1.33f);
       break;
     case 8:
     case 9:  
       // Zoom out CTRL + "-"
-      CoordinateID center2 = mapper.getCenter(scpMapper.getViewport().getViewRect());
       float currentSF2 = this.getScaleFactor();
-      this.setScaleFactor(currentSF2 * 0.66f);
-      setCenter(center2);
-      this.repaint();
+      this.setNewScaleFactor(currentSF2 * 0.66f);
       break;
-    }
-    
-    
       
+    case 10:
+      // 3 Step Zoom in CTRL+ PgDown
+      if (this.getScaleFactor()<this.level3Scale3){
+        float newScale = this.level3Scale3;
+        if (this.getScaleFactor()<this.level3Scale2){
+          newScale = this.level3Scale2;
+        }
+        this.setNewScaleFactor(newScale);
+      }
+      break;
+    case 11:
+      // 3 Step Zoom out CTRL + PgUP
+      if (this.getScaleFactor()>this.level3Scale1){
+        float newScale = this.level3Scale1;
+        if (this.getScaleFactor()>this.level3Scale2){
+          newScale = this.level3Scale2;
+        }
+        this.setNewScaleFactor(newScale);
+      }
+      break;
+    
+    }  
     
     
     
@@ -1174,6 +1225,51 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private class MapperPanelPreferences extends JPanel implements ExtendedPreferencesAdapter {
+    protected class MapperPanelDetailPreferences extends JPanel implements PreferencesAdapter {
+      private JCheckBox showNavigation;
+      
+      
+      public MapperPanelDetailPreferences() {
+        // Anzeige der oberen Leiste?
+        showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
+        
+        this.add(showNavigation);
+        
+      }
+      
+      /**
+       * DOCUMENT-ME
+       * 
+       * 
+       */
+      public Component getComponent() {
+        return this;
+      }
+
+      /**
+       * DOCUMENT-ME
+       * 
+       * 
+       */
+      public String getTitle() {
+        return Resources.get("mapperpanel.prefs.details.title");
+      }
+
+      public void initPreferences() {
+        // TODO: implement it
+      }
+
+      /**
+       * DOCUMENT-ME
+       */
+      public void applyPreferences() {
+        if (showNavigation.isSelected()!= context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
+          // we have a change here
+          context.getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
+          context.getEventDispatcher().fire(new GameDataEvent(this,data));
+        }
+      }
+    }
     protected class MinimapPreferences extends JPanel implements PreferencesAdapter {
       private JSlider sldZoom;
       private JComboBox cmbDisplayMode;
@@ -1338,7 +1434,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       this.source = m;
       prefMapper = mapper.getPreferencesAdapter();
 
-      subAdapter = new ArrayList<PreferencesAdapter>(1);
+      subAdapter = new ArrayList<PreferencesAdapter>(2);
+      subAdapter.add(new MapperPanelDetailPreferences());
       subAdapter.add(new MinimapPreferences());
     }
 

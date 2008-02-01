@@ -62,4 +62,6 @@ Mit + ist in Arbeit
 
 * Darstellungsfehler bei den Docks korrigieren (Theme vs.
   L&F mit Abständen)
+  
+* Navigationsleiste ausblendbar
 

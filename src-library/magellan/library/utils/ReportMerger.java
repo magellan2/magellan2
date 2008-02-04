@@ -911,6 +911,7 @@ public class ReportMerger extends Object {
 
     if (translationList!=null && translationList.size() > 0) {
       bestTranslation = Collections.max(translationList);
+
       log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + "(best(maxScore):" + bestTranslation.toString()+")");
     } else {
       log.info("No translation in layer "+ layer+" found for " + newReport.getFile().getName());
@@ -932,6 +933,8 @@ public class ReportMerger extends Object {
     }
     if (bestTranslation.getScore()<0)
       log.warn("No good translation found in layer "+layer);
+
+    
     return bestTranslation;
   }
     

@@ -35,6 +35,7 @@ import magellan.library.GameData;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.StringID;
+import magellan.library.Unit;
 import magellan.library.rules.RegionType;
 
 /**
@@ -279,4 +280,29 @@ public class MapMergeEvaluator {
       translationCandidate.setScore(translationCandidate.getScore() + addScore);
     }
   }
+  
+  protected CoordinateID getMappingByUnitID(GameData main, GameData add, int layer) {
+    // create possible translations by same units / ships in both reports from same turn!
+    if (!main.getDate().equals(add.getDate())) return null;
+    
+    for (Region region : main.regions().values()) {
+      if (region.getCoordinate().z == layer) {
+        for (Unit unit : region.units()) {
+          Unit sameUnit = add.getUnit(unit.getID());
+          if (sameUnit != null) {
+            // match found
+            Region sameRegion = sameUnit.getRegion();
+            if (sameRegion != null) {
+              CoordinateID sameCoord = sameRegion.getCoordinate();
+              if (sameCoord.z == layer) {
+                return new CoordinateID(sameCoord.x - region.getCoordinate().x , sameCoord.y - region.getCoordinate().y, layer);
+              }
+            }
+          }
+        }
+      }
+    }
+    return null;
+  }
+
 }

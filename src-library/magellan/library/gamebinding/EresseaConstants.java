@@ -586,6 +586,33 @@ public class EresseaConstants {
   /** The RegionType firewall */
   public static final ID RT_FIREWALL = StringID.create("Feuerwand");
 
+  /** The RegionType plain */
+  public static final ID RT_PLAIN = StringID.create("Ebene");
+  
+  /** The RegionType wood */
+  public static final ID RT_WOOD = StringID.create("Wald");
+  
+  /** The RegionType glacier */
+  public static final ID RT_GLACIER = StringID.create("Gletscher");
+
+  /** The RegionType swamp */
+  public static final ID RT_SWAMP = StringID.create("Sumpf");
+
+  /** The RegionType highland */
+  public static final ID RT_HIGHLAND = StringID.create("Hochland");
+  
+  /** The RegionType dessert */
+  public static final ID RT_DESSERT = StringID.create("Wüste");
+  
+  /** The RegionType mountain */
+  public static final ID RT_MOUNTAIN = StringID.create("Berge");
+
+  /** The RegionType volcano */
+  public static final ID RT_VOLCANO = StringID.create("Vulkan");
+
+  /** The RegionType active volcano */
+  public static final ID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
+
   /** DOCUMENT-ME */
 	public static final ID B_LIGHTTOWER = StringID.create("Leuchtturm");
 

@@ -26,6 +26,7 @@ package magellan.library.gamebinding;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
@@ -34,6 +35,7 @@ import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.StringID;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Regions;
 import magellan.library.utils.logging.Logger;
 /**
  * TODO This class must be commented
@@ -76,6 +78,7 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
       return getMappingByEqualSchemes(main, add, layer); 
     } else {
       return getMappingByNameAndTerrain(main, add, layer); 
+//      return getMappingByUnitID(main, add, layer);
     }
   }
   
@@ -150,10 +153,6 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
    *  would appear as schems, but don' do. So they further decrease the number of posibilities        
    **/
   public CoordinateID getAstral2RealByNormalizedExtend(GameData main, int astral) {
-
-    RegionType firewallTerrain = main.rules.getRegionType(StringID.create("Feuerwand"));
-    RegionType maelstromTerrain = main.rules.getRegionType(StringID.create("Mahlstrom"));
-
     CoordinateID astralToReal = null;
     CoordinateID minExtend = null;
     CoordinateID maxExtend = null;
@@ -181,33 +180,8 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
             maxExtend.z = Math.max(maxExtend.z, nd);
           }
         }
-        // look for near land regions not appearing as schemes
-        for (int x=maxExtend.x-4; x<=minExtend.x+4; x++) {
-          for (int y=maxExtend.y-4; y<=minExtend.y+4; y++) {
-            int d = x+y;
-            if ((maxExtend.z-4 <= d) && (d <= minExtend.z+4)) {
-              Region realRegion = main.regions().get(new CoordinateID(x + 4*region.getCoordinate().x, y + 4*region.getCoordinate().y, REAL_LAYER));
-              if (realRegion != null) {
-                RegionType rt=realRegion.getRegionType();
-                if (!rt.isOcean()&&
-                    !rt.equals(RegionType.unknown)&&
-                    !rt.equals(firewallTerrain)&&
-                    !rt.equals(maelstromTerrain)) {
-                  // this is a region that should be seen as scheme
-                  // if it's out of our ranges we dont see it, therefore 
-                  // the ranges need to be adjusted
-                  if (x < minExtend.x) { maxExtend.x = x+4; }
-                  if (y < minExtend.y) { maxExtend.y = y+4; }
-                  if (d < minExtend.z) { maxExtend.z = d+4; }
-                  if (x > maxExtend.x) { minExtend.x = x-4; }
-                  if (y > maxExtend.y) { minExtend.y = y-4; }
-                  if (d > maxExtend.z) { minExtend.z = d-4; }
-                }
-              }
-            }
-          }
-        }
-        // after each astral region has been process we can check if  
+
+        // after each astral region has been processed we can check if  
         // the following prevents us from checking the set when there is definitly more than one mapping
         if (maxExtend.x-minExtend.x+maxExtend.y-minExtend.y+maxExtend.z-minExtend.z >= 8) {
           // now check if there is one possible mapping only
@@ -228,15 +202,73 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
         }
       }
     }
-    /**
-     * 3. 
-     * If we are here and astralToReal is null then the extends of the schemes
-     * alone are not enough. We have to take Fietes idea to look for land regions
-     * near to the schemes to reduce number of possilbe mappings to 1.  
-     */
+    // we should have found a result in 95% of the reports up to here. The following
+    // includes fietes idea to look for other land regions out of the current scheme
+    // area, however we extend this to all astral regions with schemes by normalization
+    if ((astralToReal == null) && (minExtend != null) && (maxExtend != null)) {
+      // create possible mappings
+      HashSet<CoordinateID> mappings = new HashSet<CoordinateID>();
+      for (int x=maxExtend.x-2; (x<=minExtend.x+2); x++) {
+        for (int y=maxExtend.y-2; (y<=minExtend.y+2); y++) {
+          if ((maxExtend.z-2 <= x+y) && (x+y <= minExtend.z+2)) {
+            mappings.add(new CoordinateID(x, y, REAL_LAYER));
+          }
+        }
+      }
+      HashSet<RegionType> scheme_rt = new HashSet<RegionType>();
+      // create possible scheme terrains
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_PLAIN));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_WOOD));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_GLACIER));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_SWAMP));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_HIGHLAND));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_DESSERT));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_MOUNTAIN));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_VOLCANO));
+      scheme_rt.add(main.rules.getRegionType(EresseaConstants.RT_ACTIVE_VOLCANO));
+
+      // now loop over all surounding regions for all astral regions 
+      for(Region region : main.regions().values()) {
+        if((region.getCoordinate().z == astral)&&(region.schemes().size()>0)) {
+          // surounding regions
+          for (int x=maxExtend.x-4; (x<=minExtend.x+4); x++) {
+            for (int y=maxExtend.y-4; (y<=minExtend.y+4); y++) {
+              int d = x+y;
+              if ((maxExtend.z-4 <= d) && (d <= minExtend.z+4)) {
+                if (x < minExtend.x || x > maxExtend.x ||
+                    y < minExtend.y || y > maxExtend.y ||
+                    d < minExtend.z || d > maxExtend.z) {
+                  // check terrain
+                  Region realRegion = main.getRegion(new CoordinateID(x + 4 * region.getCoordinate().x,
+                                                                      y + 4 * region.getCoordinate().y, REAL_LAYER));
+                  if (realRegion != null) {
+                    if (scheme_rt.contains(realRegion.getRegionType())) {
+                      // distance check
+                      Iterator<CoordinateID> it = mappings.iterator();
+                      while (it.hasNext()) {
+                        CoordinateID realCoord = it.next();
+                        if (Math.abs(realCoord.x-x)<=2 &&
+                            Math.abs(realCoord.y-y)<=2 &&
+                            Math.abs(realCoord.x+realCoord.y-d)<=2) {
+                          it.remove();
+                        }
+                      }
+                      if (mappings.size() == 1) {
+                        return mappings.iterator().next();
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     return astralToReal;
   }
 
+  
   private Map<String, Collection<Region>> getAstralRegionsBySchemeName(GameData data) {
     Map<String, Collection<Region>> astralRegions = new HashMap<String, Collection<Region>>(0);
     if (data != null) {

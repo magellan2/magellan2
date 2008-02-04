@@ -1,3 +1,8 @@
+2008-02-04 / Build 147 - Darcduck (sf.net@duckstein.net)
+	* fixed an issue with the layout-based astral2real algorithm
+	* added another test cr, which is not supported by any other mapping algorithm
+	* added a unit-ID based mapping algorithm, but not integrated in ReportMerger (Should be integrated with RC2)
+
 2008-02-01 / Build 146 - Fiete (sf@fietefietz.de)
 	* added MapContextMenu: Levelchange, Goto Hotspot
 	* fixed ARR: Float.parse with formated float ("." - problem)

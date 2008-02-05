@@ -2313,8 +2313,17 @@ public class CRParser implements RulesIO, GameDataIO {
         if(sc.argc == 2) {
           unit.putTag(sc.argv[1], sc.argv[0]);
         }
-
-        unknown("EINHEIT", true);
+        // realy put unknown message out?
+        // check for wellknown tags...ejcTaggable etc...
+        boolean isUnknown = true;
+        if(sc.argc == 2) {
+          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator")){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator2")){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator3")){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator4")){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator5")){isUnknown=false;}
+        }
+        if (isUnknown){unknown("EINHEIT", true);}
       }
     }
 

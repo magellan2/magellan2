@@ -60,6 +60,10 @@ public class Logger {
 	private static boolean searchAwtLogger = true;
   private static LogListener DEFAULTLOGLISTENER = new DefaultLogListener();
 
+  private static ArrayList<Object> onceWarnings = null;
+  private static ArrayList<Object> onceErrors = null;
+  
+  
 	private Logger(String aBase) {
 		// be fail-fast
 		if(aBase == null) {
@@ -221,6 +225,25 @@ public class Logger {
 	public void error(Object aObj) {
 		error(aObj, null);
 	}
+  
+  /**
+   * 
+   */
+  public void errorOnce(Object aObj) {
+    if (onceErrors == null){
+      // create new list
+      onceErrors = new ArrayList<Object>();
+    }
+    if (onceErrors.contains(aObj)){
+      // already processed error
+      return;
+    }
+    // add to errors - list
+    onceErrors.add(aObj);
+    // normal call to Logger.error
+    error(aObj);
+  }
+  
 
 	/**
 	 * 
@@ -242,6 +265,26 @@ public class Logger {
 	public void warn(Object aObj) {
 		warn(aObj, null);
 	}
+  
+  /**
+   * processed all warnings only once
+   * 
+   */
+  public void warnOnce(Object aObj) {
+    if (onceWarnings == null){
+      // create new list
+      onceWarnings = new ArrayList<Object>();
+    }
+    if (onceWarnings.contains(aObj)){
+      // already processed warning
+      return;
+    }
+    // add to warnings - list
+    onceWarnings.add(aObj);
+    // normal call to Logger.warn
+    warn(aObj);
+  }
+  
 
 	/**
 	 * 

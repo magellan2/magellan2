@@ -1,3 +1,9 @@
+2008-02-05 / Build 147 - Fiete (sf@fietefietz.de)
+	* added warnOnce and errorOnce to Logger
+	* added notype - image for unnown regiontypes om RegionImageCellrenderer
+	* added wand and gang images
+	* supressed CR-Parser "unknowns" for "EINHEIT" when parsing taggabble comparators
+
 2008-02-04 / Build 147 - Darcduck (sf.net@duckstein.net)
 	* fixed an issue with the layout-based astral2real algorithm
 	* added another test cr, which is not supported by any other mapping algorithm

@@ -104,7 +104,7 @@ public class ImageFactory implements GameDataListener {
 		}
 
     if (img == null && errorIfNotFound) {
-		  log.error("ImageFactory.loadImage(" + imageName + "): found:" + (img != null));
+		  log.errorOnce("ImageFactory.loadImage(" + imageName + "): found:" + (img != null));
     }
     
 		return img;

@@ -112,7 +112,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 			    }
 			  }
         
-				Image img = getImage(imageName);
+				Image img = getImage(imageName,false);
 				
 				// if we cannot find it, try a default icon.
 				if (img == null) {
@@ -123,10 +123,16 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 				if(img != null) {
 					drawImage(r, img, rect);
 				} else {
-					log.warn("RegionImageCellRenderer.render(): image is null (" + imageName + ")");
+          img = getImage("notype",true);
+          if (img!=null){
+            drawImage(r, img, rect);
+            log.warnOnce("RegionImageCellRenderer.render(): using predifined notype-image for unknown type: " + imageName);
+          } else {
+            log.warnOnce("RegionImageCellRenderer.render(): predefined image not found: notype");
+          }
 				}
 			} else {
-				log.warn("RegionImageCellRenderer.render(): Couldn't determine region type for region: " + r.toString());
+				log.warnOnce("RegionImageCellRenderer.render(): Couldn't determine region type for region: " + r.toString());
 			}
 		}
 	}

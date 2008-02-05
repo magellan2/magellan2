@@ -178,7 +178,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
       if (type != null) {
         render(type.getGameData());
       }else{
-        return text==null?"":text;
+        return text==null?"unknown message":text;
       }
 	  }
 		return text;

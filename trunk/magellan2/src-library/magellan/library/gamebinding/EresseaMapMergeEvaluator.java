@@ -33,9 +33,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
-import magellan.library.StringID;
 import magellan.library.rules.RegionType;
-import magellan.library.utils.Regions;
 import magellan.library.utils.logging.Logger;
 /**
  * TODO This class must be commented

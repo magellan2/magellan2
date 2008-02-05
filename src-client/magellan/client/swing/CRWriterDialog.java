@@ -23,6 +23,8 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -351,11 +353,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         (Boolean.valueOf(settings.getProperty("CRWriterDialog.exportHotspots",
                           "true"))).booleanValue());
     
-    if (this.data!=null && this.data.hotSpots()!=null && this.data.hotSpots().size()>0){
-       chkExportHotspots.setEnabled(true);    
-    } else {
-       chkExportHotspots.setEnabled(false);
-    }
+    
     
     // Tooltips
     chkServerConformance.setToolTipText(Resources.get("crwriterdialog.chk.servercompatibility.tooltip"));
@@ -372,6 +370,42 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkDelTrans.setToolTipText(Resources.get("crwriterdialog.chk.deltrans.tooltip"));
     chkDelEmptyFactions.setToolTipText(Resources.get("crwriterdialog.chk.delemptyfactions.tooltip"));
     chkExportHotspots.setToolTipText(Resources.get("crwriterdialog.chk.exporthotspots.tooltip"));
+    
+   
+    // extra ActionListener
+    chkServerConformance.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (chkServerConformance.isSelected()){
+          chkIslands.setSelected(false);  
+          chkIslands.setEnabled(false);
+          chkExportHotspots.setSelected(false);
+          chkExportHotspots.setEnabled(false);
+          
+        } else {
+          chkIslands.setEnabled(true);
+          if (data!=null && data.hotSpots()!=null && data.hotSpots().size()>0){
+              chkExportHotspots.setEnabled(true);    
+           } else {
+              chkExportHotspots.setEnabled(false);
+           }
+        }
+      }
+    });
+    
+    // Relations
+    if (chkServerConformance.isSelected()){
+      chkIslands.setSelected(false);  
+      chkIslands.setEnabled(false);
+    } else {
+      chkIslands.setEnabled(true);
+    }
+    
+    if (!chkServerConformance.isSelected() && this.data!=null && this.data.hotSpots()!=null && this.data.hotSpots().size()>0){
+        chkExportHotspots.setEnabled(true);    
+     } else {
+        chkExportHotspots.setEnabled(false);
+     }
+    
     
 		JPanel pnlOptions = new JPanel(new GridLayout(6, 2));
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),

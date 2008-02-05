@@ -100,9 +100,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private static final Logger log = Logger.getInstance(MapperPanel.class);
 
   /** fpr 3 step zoom in and zoom out our 3 scalings */
-  private final float level3Scale1 = 0.4f;
+  private final float level3Scale1 = 0.3f;
   private final float level3Scale2 = 1.3f;
-  private final float level3Scale3 = 2.2f;
+  private final float level3Scale3 = 2.3f;
   
   
   /** The map component in this panel. */

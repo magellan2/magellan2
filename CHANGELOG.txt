@@ -3,6 +3,7 @@
 	* added notype - image for unnown regiontypes om RegionImageCellrenderer
 	* added wand and gang images
 	* supressed CR-Parser "unknowns" for "EINHEIT" when parsing taggabble comparators
+	* feature request #140: chkserverConformance->no islands, no hotspots
 
 2008-02-04 / Build 147 - Darcduck (sf.net@duckstein.net)
 	* fixed an issue with the layout-based astral2real algorithm

@@ -1,5 +1,10 @@
 2008-02-06 / Build 148 - Fiete (sf@fietefietz.de)
 	* fixed CR Parser Error when ejcTaggables are used
+	* Menu Caption PlugIns -> Plugins
+	* mapper.shortkcus.desc for new shortcuts
+	* center on 0,0 after load, if 0,0 is known AND no aktiveRegion is known
+	* feature request 141: more info in faction stats about expensures
+	* put option for map-navi-bar into mapperpanelpreferences, for stm
 
 2008-02-05 / Build 147 - Fiete (sf@fietefietz.de)
 	* added warnOnce and errorOnce to Logger

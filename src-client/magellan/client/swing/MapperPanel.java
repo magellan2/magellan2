@@ -1234,51 +1234,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   private class MapperPanelPreferences extends JPanel implements ExtendedPreferencesAdapter {
-    protected class MapperPanelDetailPreferences extends JPanel implements PreferencesAdapter {
-      private JCheckBox showNavigation;
-      
-      
-      public MapperPanelDetailPreferences() {
-        // Anzeige der oberen Leiste?
-        showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
-        
-        this.add(showNavigation);
-        
-      }
-      
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public Component getComponent() {
-        return this;
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public String getTitle() {
-        return Resources.get("mapperpanel.prefs.details.title");
-      }
-
-      public void initPreferences() {
-        // TODO: implement it
-      }
-
-      /**
-       * DOCUMENT-ME
-       */
-      public void applyPreferences() {
-        if (showNavigation.isSelected()!= context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
-          // we have a change here
-          context.getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
-          context.getEventDispatcher().fire(new GameDataEvent(this,data));
-        }
-      }
-    }
     protected class MinimapPreferences extends JPanel implements PreferencesAdapter {
       private JSlider sldZoom;
       private JComboBox cmbDisplayMode;
@@ -1432,6 +1387,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // GUI elements
     private PreferencesAdapter prefMapper = null;
     private List<PreferencesAdapter> subAdapter;
+    
+    private JCheckBox showNavigation;
 
     /**
      * Creates a new MapperPanelPreferences object.
@@ -1444,7 +1401,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       prefMapper = mapper.getPreferencesAdapter();
 
       subAdapter = new ArrayList<PreferencesAdapter>(2);
-      subAdapter.add(new MapperPanelDetailPreferences());
       subAdapter.add(new MinimapPreferences());
     }
 
@@ -1463,7 +1419,24 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * 
      */
     public Component getComponent() {
-      return prefMapper.getComponent();
+      JPanel erg = new JPanel(new GridBagLayout());
+      
+      JPanel helperPanel = new JPanel(new BorderLayout());
+      
+      helperPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("map.mapperpanelpreferences.border.caption")));
+      GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+          GridBagConstraints.HORIZONTAL,
+          new Insets(3, 3, 3, 3), 0, 0);
+      
+      showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
+      helperPanel.add(showNavigation,BorderLayout.WEST);
+      
+      erg.add(helperPanel,gbc);
+      gbc.gridy++;
+      erg.add(prefMapper.getComponent(),gbc);
+      erg.validate();
+      return erg;
+      // return prefMapper.getComponent();
     }
 
     public void initPreferences() {
@@ -1476,7 +1449,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     public void applyPreferences() {
       prefMapper.applyPreferences();
 
-      mapper.repaint(100);
+      if (showNavigation.isSelected()!= context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
+        // we have a change here
+        context.getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
+        context.getEventDispatcher().fire(new GameDataEvent(this,data));
+      } else {
+        mapper.repaint(100);
+      }
+      
     }
 
     /**

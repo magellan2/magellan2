@@ -2323,7 +2323,11 @@ public class CRParser implements RulesIO, GameDataIO {
           if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator4")){isUnknown=false;}
           if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator5")){isUnknown=false;}
         }
-        if (isUnknown){unknown("EINHEIT", true);}
+        if (isUnknown){
+          unknown("EINHEIT", true);
+        } else {
+          sc.getNextToken();
+        }
       }
     }
 

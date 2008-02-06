@@ -1324,10 +1324,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (client.getSelectedObjects()!=null){
             client.getDispatcher().fire(new SelectionEvent(this,client.getSelectedObjects(),null));
           }
-          
+          // if we have active Region, center on it
           Region activeRegion = data.getActiveRegion();
           if (activeRegion != null) {
             client.getDispatcher().fire(new SelectionEvent(client, new ArrayList(), activeRegion, SelectionEvent.ST_REGIONS));
+          } else {
+            // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
+            CoordinateID cID = new CoordinateID(0,0);
+            activeRegion = data.getRegion(cID);
+            if (activeRegion != null) {
+              client.getDispatcher().fire(new SelectionEvent(client, new ArrayList(), activeRegion, SelectionEvent.ST_REGIONS));
+            }
           }
         }
       }

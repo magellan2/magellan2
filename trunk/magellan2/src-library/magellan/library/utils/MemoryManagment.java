@@ -37,7 +37,7 @@ public class MemoryManagment {
 	 */
 	static long waitingMillis=2000;
 	
-	static Runtime r = java.lang.Runtime.getRuntime();
+	public static Runtime r = java.lang.Runtime.getRuntime();
 	
 	public MemoryManagment() {
 		

@@ -57,6 +57,8 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 			ImageContainer c = iter.next();
 
 			if(c != null) {
+			  // try to identify a memory leak
+			  c.scaled = null;
 				c.scaled = scale(c.unscaled);
 			}
 		}

@@ -99,11 +99,14 @@ import magellan.library.utils.logging.Logger;
 public class MapperPanel extends InternationalizedDataPanel implements ActionListener, SelectionListener, ChangeListener, ExtendedShortcutListener, PreferencesFactory, Initializable {
   private static final Logger log = Logger.getInstance(MapperPanel.class);
 
-  /** fpr 3 step zoom in and zoom out our 3 scalings */
+  /** for 3 step zoom in and zoom out our 3 scalings */
   private final float level3Scale1 = 0.3f;
   private final float level3Scale2 = 1.3f;
   private final float level3Scale3 = 2.3f;
   
+  /** fixed min and max factors for scaling */
+  private final float minScale = 0.3f;
+  private final float maxScale = 2.3f;
   
   /** The map component in this panel. */
   private Mapper mapper = null;
@@ -424,7 +427,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // initialize Shortcuts
     tooltipShortcut = new TooltipShortcut();
 
-    shortcuts = new ArrayList<KeyStroke>(10);
+    shortcuts = new ArrayList<KeyStroke>(13);
     // 0: request Focus
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_MASK));
     // 1: request Focus
@@ -446,10 +449,12 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.CTRL_MASK));
     
     // 3 Level Zoom in
-    // 10 Fast Zoom In
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN , KeyEvent.CTRL_MASK));
-    // 11 Fast Zoom out
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP , KeyEvent.CTRL_MASK));
+    // 10,11 Fast Zoom In
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD , KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS , KeyEvent.ALT_MASK));
+    // 12,13 Fast Zoom out
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.ALT_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
   }
@@ -573,9 +578,10 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    *          the new scaling factor, values may range from 0.3 to 2.3.
    */
   public void setScaleFactor(float fScale) {
-    fScale = Math.max(0.3f, fScale);
-    fScale = Math.min(fScale, (100.0f / 50.0f) + 0.3f);
-    sldScaling.setValue((int) ((fScale - 0.3) * 50.0));
+    fScale = Math.max(minScale, fScale);
+    // fScale = Math.min(fScale, (100.0f / 50.0f) + 0.3f);
+    fScale = Math.min(fScale, maxScale);
+    sldScaling.setValue((int) ((fScale - minScale) * 50.0));
     mapper.setScaleFactor(fScale);
   }
 
@@ -1105,31 +1111,37 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 6:
     case 7:
       // Zoom in CTRL + "+"
-      float currentSF = this.getScaleFactor();      
-      this.setNewScaleFactor(currentSF * 1.33f);
+      if (this.getScaleFactor()<maxScale){
+        float currentSF = this.getScaleFactor();      
+        this.setNewScaleFactor(currentSF * 1.33f);
+      }
       break;
     case 8:
     case 9:  
       // Zoom out CTRL + "-"
-      float currentSF2 = this.getScaleFactor();
-      this.setNewScaleFactor(currentSF2 * 0.66f);
+      if (this.getScaleFactor()>minScale){
+        float currentSF2 = this.getScaleFactor();
+        this.setNewScaleFactor(currentSF2 * 0.66f);
+      }
       break;
       
     case 10:
-      // 3 Step Zoom in CTRL+ PgDown
+    case 11:
+      // 3 Step Zoom in ALT + "+"
       if (this.getScaleFactor()<this.level3Scale3){
         float newScale = this.level3Scale3;
-        if (this.getScaleFactor()<this.level3Scale2){
+        if (this.getScaleFactor()<(this.level3Scale2 - 0.2f)){
           newScale = this.level3Scale2;
         }
         this.setNewScaleFactor(newScale);
       }
       break;
-    case 11:
-      // 3 Step Zoom out CTRL + PgUP
+    case 12:
+    case 13:
+      // 3 Step Zoom out ALT + "-"
       if (this.getScaleFactor()>this.level3Scale1){
         float newScale = this.level3Scale1;
-        if (this.getScaleFactor()>this.level3Scale2){
+        if (this.getScaleFactor()>this.level3Scale2 + 0.2f){
           newScale = this.level3Scale2;
         }
         this.setNewScaleFactor(newScale);
@@ -1137,9 +1149,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       break;
     
     }  
-    
-    
-    
   }
 
   /**

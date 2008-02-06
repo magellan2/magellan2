@@ -1,3 +1,6 @@
+2008-02-06 / Build 148 - Fiete (sf@fietefietz.de)
+	* fixed CR Parser Error when ejcTaggables are used
+
 2008-02-05 / Build 147 - Fiete (sf@fietefietz.de)
 	* added warnOnce and errorOnce to Logger
 	* added notype - image for unnown regiontypes om RegionImageCellrenderer

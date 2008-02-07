@@ -194,7 +194,19 @@ public class ItemType extends ObjectType implements Comparable {
 		iconName = iName;
 		iconNameEvaluated = false;
 	}
+
+  /**
+   * @return name quoted if required
+   */
   
+  public String getOrderName() {
+    if((getName().indexOf(" ") > -1)) { 
+      return "\"" + getName() + "\"";
+    } else {
+      return getName();
+    }
+  }
+
   /**
    * store the attribute if the item can be stored in a bag of negative weight
    *

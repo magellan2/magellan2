@@ -41,7 +41,8 @@ public class OrderToken {
 
 	/** A token making the order persistent */
 	public static final int TT_PERSIST = 7;
-	private String text = null; // the string representing this order token
+  
+  private String text = null; // the string representing this order token
 	private int start = 0; // the start position of the token in the stream the token was read from, -1 indicates that the position is invalid
 	private int end = 0; // the end position of the token in the stream the token was read from, -1 indicates that the position is invalid
 

@@ -389,7 +389,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			if(price.getPrice() < 0) {
 				newRegions.add(region);
-				total += (region.getPeasants() / 100);
+				total += region.maxLuxuries();
 			}
 		}
 
@@ -423,7 +423,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 			if(checkPrice(price)) {
 				newRegions.add(region);
 
-				int volume = region.getPeasants() / 100;
+				int volume = region.maxLuxuries();
 				total += volume;
 				totalPrice += (volume * price.getPrice());
 			}

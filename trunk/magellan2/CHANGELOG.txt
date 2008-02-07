@@ -1,3 +1,7 @@
+2008-02-04 / Build 148 - Darcduck (sf.net@duckstein.net)
+	* fixed #150: SELL Order Completion
+	* some more fixes/enhancements in Order Completion
+
 2008-02-06 / Build 148 - Fiete (sf@fietefietz.de)
 	* fixed CR Parser Error when ejcTaggables are used
 	* Menu Caption PlugIns -> Plugins
@@ -14,7 +18,7 @@
 	* feature request #140: chkserverConformance->no islands, no hotspots
 	* changed shortcuts for 3 level zoom to ALT + "+" and "-"
 
-2008-02-04 / Build 147 - Darcduck (sf.net@duckstein.net)
+2008-02-04 / Build 146 - Darcduck (sf.net@duckstein.net)
 	* fixed an issue with the layout-based astral2real algorithm
 	* added another test cr, which is not supported by any other mapping algorithm
 	* added a unit-ID based mapping algorithm, but not integrated in ReportMerger (Should be integrated with RC2)

@@ -91,9 +91,12 @@ public class Item {
 	/**
 	 * This method is a shortcut for calling this.getType().getName()
 	 *
-	 * 
 	 */
 	public String getName() {
 		return type.getName();
 	}
+  
+  public String getOrderName() {
+    return type.getOrderName();
+  }
 }

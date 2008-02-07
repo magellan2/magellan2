@@ -238,7 +238,7 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE),
 									   " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT),
-									   " "));
+                     " "));
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EMAIL),
 									   " "));
     // we focus auf our temp generation dialog FF
@@ -263,11 +263,6 @@ public class EresseaOrderCompleter implements Completer {
 
 		if(hasSkill(unit, EresseaConstants.S_MAGIE)) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL),
-										   " "));
-		}
-
-		if(hasSkill(unit, EresseaConstants.S_HANDELN)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BUY),
 										   " "));
 		}
 
@@ -355,7 +350,9 @@ public class EresseaOrderCompleter implements Completer {
 										   " "));
 		}
 
-		if(hasSkill(unit, EresseaConstants.S_HANDELN)) {
+    if(hasSkill(unit, EresseaConstants.S_HANDELN) && (region.maxLuxuries()>0)) {
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BUY),
+                       " "));
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SELL),
 										   " "));
 		}
@@ -911,18 +908,13 @@ public class EresseaOrderCompleter implements Completer {
 							// don't create a completion to give the resource for this ItemType
 							suggest = false;
 						} else {
-							String resourcename = resource.getName();
-
-							if((resourcename.indexOf(" ") > -1)) {
-								resourcename = "\"" + resourcename + "\"";
-							}
 
 							if("".equals(order)) {
-								order += resourcename;
+								order += resource.getOrderName();
 							} else {
 								order += ("\n" +
 								Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " " +
-								uid.toString() + " " + i + " " + resourcename);
+								uid.toString() + " " + i + " " + resource.getOrderName());
 							}
 						}
 					}
@@ -949,12 +941,13 @@ public class EresseaOrderCompleter implements Completer {
         order = Resources.getOrderTranslation(EresseaConstants.O_MEN);
       for (Item item : unit.getItems()) {
         if (item.getAmount()>=i) {
+
           if("".equals(order)) {
-            order += item.getName();
+            order = item.getOrderName();
           } else {
             order += ("\n" +
             Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " " +
-            tounit + " " + i + " " + item.getName());
+            tounit + " " + i + " " + item.getOrderName());
           }
         }
       }
@@ -1447,10 +1440,10 @@ public class EresseaOrderCompleter implements Completer {
       if((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)) {
         int weight = (int) (type.getWeight() * 100);
         if((maxOnFoot - modLoad) > 0) {
-          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxfootamount"), (maxOnFoot-modLoad) / weight+" "+type.getName(),""));
+          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxfootamount"), (maxOnFoot-modLoad) / weight+" "+type.getOrderName(),""));
         }
         if((maxOnFoot - modLoad) > 0) {
-          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxhorseamount"), (maxOnHorse-modLoad) / weight+" "+type.getName(),""));
+          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxhorseamount"), (maxOnHorse-modLoad) / weight+" "+type.getOrderName(),""));
         }
       }
     } 
@@ -1918,15 +1911,18 @@ public class EresseaOrderCompleter implements Completer {
   
 	private void addUnitItems(int amount, String postfix) {
 		for(Item i : unit.getItems()) {
+      completions.add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount()>=amount) ? 0 : 10));
+
+      /*
       String name = i.getName();
-      
       if(name != null) {
         if(name.indexOf(" ") > -1) {
           completions.add(new Completion(name, "\"" + name + "\"", postfix, (i.getAmount()>=amount) ? 0 : 10));
         } else {
           completions.add(new Completion(name, postfix, (i.getAmount()>=amount) ? 0 : 10));
         }
-      }        
+      } 
+      */       
 		}
 	}
 
@@ -2030,12 +2026,14 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		if((cat != null) && (unit != null)) {
-			for(Iterator items = unit.getModifiedItems().iterator(); items.hasNext();) {
-				Item i = (Item) items.next();
+			for(Item i : unit.getModifiedItems()) {
 				
 				if((i.getItemType().getCategory() != null) &&
 				   i.getItemType().getCategory().equals(cat)) {
-					completions.add(new Completion(i.getName(), postfix));
+          LuxuryPrice lp = unit.getRegion().getPrices().get(i.getItemType().getID());
+          if (lp!=null && lp.getPrice()>0) { 
+            completions.add(new Completion(i.getName(), i.getOrderName(), postfix));
+          }
 				}
 			}
 		}
@@ -2191,14 +2189,7 @@ public class EresseaOrderCompleter implements Completer {
 	 * 
 	 */
 	private void addItem(ItemType iType, String postfix) {
-		String name = iType.getName();
-		String quotedName = name;
-
-		if((name.indexOf(" ") > -1)) {
-			quotedName = "\"" + name + "\"";
-		}
-
-		completions.add(new Completion(name, quotedName, postfix));
+		completions.add(new Completion(iType.getName(), iType.getOrderName(), postfix));
 	}
 
 	/**

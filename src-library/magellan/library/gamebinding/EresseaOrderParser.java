@@ -260,7 +260,7 @@ public class EresseaOrderParser implements OrderParser {
 
 		return readOrder(t);
 	}
-
+  
 	//************* WORK (ARBEITE)
 	private boolean readWork(OrderToken token) {
 		token.ttype = OrderToken.TT_KEYWORD;

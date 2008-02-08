@@ -25,7 +25,7 @@
 
 2008-02-01 / Build 146 - Fiete (sf@fietefietz.de)
 	* added MapContextMenu: Levelchange, Goto Hotspot
-	* fixed ARR: Float.parse with formated float ("." - problem)
+	* fixed ARR: Float.parse with formatted float ("." - problem)
 	* added Option "Layout" to Map -> switch on/off of Navibar
 	* added short cuts for 3 level zoom CTRL+PGUP, CTRL+PGDN
 	

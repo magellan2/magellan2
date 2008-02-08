@@ -1138,7 +1138,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       case JOptionPane.YES_OPTION:
 
         try {
-          FileType filetype = getData().filetype;
+          FileType filetype = getData().getFileType();
           if (filetype==null){
             File file = FileSaveAsAction.getFile(this);
             if (file!=null)
@@ -1184,7 +1184,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       // everything worked fine, so reset reportchanged state and also store new FileType settings
       setReportChanged(false);
-      getData().filetype = filetype;
+      getData().setFileType(filetype);
       getData().resetToUnchanged();
       getProperties().setProperty("Client.lastCRSaved", filetype.getName());
     } catch(ReadOnlyException exc) {
@@ -1536,13 +1536,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       return title;
     }
 
-    if (data.filetype != null) {
+    if (data.getFileType() != null) {
       String file;
 
       try {
-        file = data.filetype.getFile().toString();
+        file = data.getFileType().getFile().toString();
       } catch (IOException e) {
-        file = data.filetype.toString();
+        file = data.getFileType().toString();
       }
 
       file = file.substring(file.lastIndexOf(File.separator) + 1);

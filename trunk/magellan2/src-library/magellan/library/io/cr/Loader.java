@@ -143,7 +143,7 @@ public class Loader {
         }
       }
       
-      newData[0].filetype=data.filetype;
+      newData[0].setFileType(data.getFileType());
       
 	    return newData[0];
 	  } catch(IOException ioe) {
@@ -180,7 +180,7 @@ public class Loader {
 	    }
 
 	    GameData newData = new GameDataReader(null).readGameData(filetype, newOrigin);
-	    newData.filetype = data.filetype;
+	    newData.setFileType(data.getFileType());
 	    tempFile.delete();
 
 	    return newData;

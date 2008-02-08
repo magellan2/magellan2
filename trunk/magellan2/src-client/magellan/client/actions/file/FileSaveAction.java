@@ -51,7 +51,7 @@ public class FileSaveAction extends FileSaveAsAction {
 	 * 
 	 */
 	protected FileType getFile() {
-		return (client.getData() == null) ? null : (client.getData().filetype);
+		return (client.getData() == null) ? null : (client.getData().getFileType());
 	}
 
   /**

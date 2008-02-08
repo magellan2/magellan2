@@ -110,7 +110,7 @@ public abstract class GameData implements Cloneable {
    * The current file attached to the game data. If it is null, the save as
    * dialog shall be opened.
    */
-  public FileType filetype = null;
+  private FileType filetype = null;
 
   /**
    * The 'round' this game data belongs to. Note that this imposes a restriction
@@ -1451,7 +1451,7 @@ public abstract class GameData implements Cloneable {
    * TODO (stm) nobody uses this
    */
   public boolean gameDataChanged(GameData g) {
-    if (g.filetype == null) {
+    if (g.getFileType() == null) {
       return true;
     }
 
@@ -1870,5 +1870,13 @@ public abstract class GameData implements Cloneable {
 
   public void setGameName(String newName){
     naame = newName;
+  }
+
+  public void setFileType(FileType filetype) {
+    this.filetype = filetype;
+  }
+
+  public FileType getFileType() {
+    return filetype;
   }
 }

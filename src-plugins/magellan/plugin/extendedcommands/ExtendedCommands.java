@@ -62,7 +62,7 @@ import bsh.Interpreter;
  */
 public class ExtendedCommands {
 
-  private Logger log = Logger.getInstance(ExtendedCommands.class);
+  private static final Logger log = Logger.getInstance(ExtendedCommands.class);
   private File unitCommandsFile;
   private Client client;
   private Hashtable<String, String> unitCommands = new Hashtable<String, String>();

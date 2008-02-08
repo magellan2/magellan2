@@ -23,14 +23,19 @@
 // 
 package magellan.plugin.extendedcommands;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import magellan.library.GameData;
 import magellan.library.Item;
 import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.rules.ItemCategory;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A Helper class to have some shortcuts
@@ -39,6 +44,8 @@ import magellan.library.UnitID;
  * @version 1.0, 11.09.2007
  */
 public class ExtendedCommandsHelper {
+  
+  private static final Logger log = Logger.getInstance(ExtendedCommandsHelper.class);
 
   private GameData world = null;
   private Unit unit = null;
@@ -136,5 +143,55 @@ public class ExtendedCommandsHelper {
    */
   public void addOrder(String order) {
     unit.addOrder(order, false, 0);
+  }
+  
+  /**
+   * Sets the command for the current unit and replaces all
+   * given commands.
+   */
+  public void setOrder(String order) {
+    List<String> orders = new ArrayList<String>();
+    orders.add(order);
+    unit.setOrders(orders);
+  }
+  
+  /**
+   * This method tries to find out, if the current unit
+   * has a weapon and a skill to use this weapon.
+   */
+  public boolean isSoldier() {
+    Collection<Item> items = unit.getItems();
+    ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"), false);
+    if (weapons == null) {
+      // we don't know something about weapons.
+      log.info("World has no weapons rules");
+      return false;
+    }
+    
+    for (Item item : items) {
+      ItemCategory itemCategory = item.getItemType().getCategory();
+      if (itemCategory == null) {
+        
+        continue;
+      }
+      if (itemCategory.equals(weapons)) {
+        log.info("Unit has a weapon");
+        // ah, a weapon...
+        Skill useSkill = item.getItemType().getUseSkill();
+        if (useSkill != null) {
+          log.info("Skill needed "+useSkill.getName());
+          // okay, has the unit the skill?
+          for (Skill skill : unit.getSkills()) {
+            log.info("Skill "+skill.getName());
+            if (useSkill.getSkillType().equals(skill.getSkillType())) {
+              log.info("Unit is a soldier.");
+              return true;
+            }
+          }
+        }
+      }
+    }
+    log.info("Unit is not a soldier.");
+    return false;
   }
 }

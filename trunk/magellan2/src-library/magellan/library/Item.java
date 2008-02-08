@@ -82,7 +82,7 @@ public class Item {
 	 *
 	 * 
 	 *
-	 * @deprecated
+	 * @deprecated Use getItemType() instead
 	 */
 	public ItemType getType() {
 		return getItemType();

@@ -37,7 +37,7 @@ public class MemoryManagment {
 	 */
 	static long waitingMillis=2000;
 	
-	public static Runtime r = java.lang.Runtime.getRuntime();
+	private static Runtime r = java.lang.Runtime.getRuntime();
 	
 	public MemoryManagment() {
 		
@@ -111,11 +111,6 @@ public class MemoryManagment {
     		return true;
     	}
     	
-//    	// as long as we have totalMemory < maxMemory the gc will increase totalMemory
-//    	// and may be we have not to worry...
-//    	if (r.totalMemory()<r.maxMemory()){
-//    		return true;
-//    	}
     	log.warn("memory free: "+free+" needed: "+max+" total: "+tot);
     	return false;
     }

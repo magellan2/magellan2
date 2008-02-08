@@ -20,7 +20,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import magellan.library.utils.Utils;
 
@@ -60,8 +62,8 @@ public class Logger {
 	private static boolean searchAwtLogger = true;
   private static LogListener DEFAULTLOGLISTENER = new DefaultLogListener();
 
-  private static ArrayList<Object> onceWarnings = null;
-  private static ArrayList<Object> onceErrors = null;
+  private static Set<Object> onceWarnings = null;
+  private static Set<Object> onceErrors = null;
   
   
 	private Logger(String aBase) {
@@ -232,7 +234,7 @@ public class Logger {
   public void errorOnce(Object aObj) {
     if (onceErrors == null){
       // create new list
-      onceErrors = new ArrayList<Object>();
+      onceErrors = new HashSet<Object>();
     }
     if (onceErrors.contains(aObj)){
       // already processed error
@@ -273,7 +275,7 @@ public class Logger {
   public void warnOnce(Object aObj) {
     if (onceWarnings == null){
       // create new list
-      onceWarnings = new ArrayList<Object>();
+      onceWarnings = new HashSet();
     }
     if (onceWarnings.contains(aObj)){
       // already processed warning

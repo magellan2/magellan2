@@ -147,7 +147,7 @@ public class GameDataReader {
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName, CoordinateID newOrigin) throws IOException {
     GameData newData = createGameData(aGameName);
-    newData.filetype = aFileType;
+    newData.setFileType(aFileType);
 
     Reader reader = aFileType.createReader();
 

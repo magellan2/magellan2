@@ -2017,6 +2017,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		if(cache.modifiedUnitWeight == -1) {
 			cache.modifiedUnitWeight = getRegion().getData().getGameSpecificStuff()
                                  .getMovementEvaluator().getModifiedWeight(this);
+      /* 
+       * if we have a weight tag in the report we know the current exact weight via getWeight()
+       * but we may not know the weight of some items or races which results in a 
+       * to less calculated (modified) weight. to overcome this, we do a delta calculation here, then
+       * we have a higher chance of a correct size, at least when noting is given away or received.
+       */  
+      if (isWeightWellKnown()) {
+        cache.modifiedUnitWeight += getWeight(); 
+        cache.modifiedUnitWeight -= getRegion().getData().getGameSpecificStuff()
+                                    .getMovementEvaluator().getWeight(this);
+      }
 		}
 
 		return cache.modifiedUnitWeight;

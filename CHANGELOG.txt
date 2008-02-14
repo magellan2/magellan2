@@ -1,3 +1,6 @@
+2008-02-14 / Build 148 - Darcduck (sf.net@duckstein.net)
+	* fixed #152: Unit weight calculation - now delta if weight is well known
+
 2008-02-04 / Build 148 - Darcduck (sf.net@duckstein.net)
 	* fixed #150: SELL Order Completion
 	* some more fixes/enhancements in Order Completion

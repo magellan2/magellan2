@@ -1,3 +1,6 @@
+2008-02-15 / Build 149 - Fiete (sf@fietefietz.de)
+	* switched "GiveOrder" to multiline-orders
+
 2008-02-14 / Build 148 - Darcduck (sf.net@duckstein.net)
 	* fixed #152: Unit weight calculation - now delta if weight is well known
 

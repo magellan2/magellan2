@@ -571,6 +571,7 @@ public class Units {
 			boolean replace = Boolean.valueOf(s[1]).booleanValue();
 			boolean keepComments = Boolean.valueOf(s[2]).booleanValue();
 			String position = s[3];
+      String[] newOrderArray = s[0].split("\n");
 
 			if(EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
 				if(replace) {
@@ -588,20 +589,32 @@ public class Units {
 						
 						System.err.println(position);
 						if (position.equals(GiveOrderDialog.FIRST_POS))
-							newOrders.add(0, s[0]);
+              for (String sHelp : newOrderArray){
+                newOrders.add(0, sHelp);
+              }
 						else
-							newOrders.add(newOrders.size(), s[0]);
-						u.setOrders(newOrders);
+              for (String sHelp : newOrderArray){
+                newOrders.add(newOrders.size(), sHelp);
+              }
+						  u.setOrders(newOrders);
 					} else {
-						u.setOrders(Collections.singleton(s[0]));
+            
+              List<String> newOrders = new LinkedList<String>();
+              for (String sHelp : newOrderArray){
+                newOrders.add(sHelp);
+              }
+              u.setOrders(newOrders);
 					}
 				} else {
 					if (position.equals(GiveOrderDialog.FIRST_POS))
-						u.addOrderAt(0, s[0], true);
+            for (String sHelp : newOrderArray){
+              u.addOrderAt(0, sHelp, true);
+            }
 					else
-						u.addOrderAt(u.getOrders().size(), s[0], true);
+            for (String sHelp : newOrderArray){
+              u.addOrderAt(u.getOrders().size(), sHelp, true);
+            }
 				}
-
 			}
 		}
 	}

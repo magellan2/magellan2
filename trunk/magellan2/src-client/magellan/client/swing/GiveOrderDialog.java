@@ -27,6 +27,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import magellan.library.utils.Resources;
@@ -48,7 +50,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 	private ButtonGroup position;
 	private JCheckBox replaceOrders;
 	private JCheckBox keepComments;
-	private JTextField order;
+	private JTextArea order;
 	private JButton ok;
 	private JButton cancel;
 
@@ -70,11 +72,15 @@ public class GiveOrderDialog extends InternationalizedDialog {
 
 		cp.add(new JLabel(Resources.get("giveorderdialog.window.message")), c);
 
-		order = new JTextField();
-		order.setPreferredSize(new Dimension(200, 25));
+		order = new JTextArea(3,25);
+		// order.setPreferredSize(new Dimension(200, 75));
+    
+    JScrollPane helperPane = new JScrollPane(order);
+    
+    
 		c.gridx = 1;
 		c.weightx = 0.5;
-		cp.add(order, c);
+		cp.add(helperPane, c);
 
 		JRadioButton firstButton = new JRadioButton(Resources.get("giveorderdialog.radio.first.title"));
 		firstButton.setActionCommand(FIRST_POS);
@@ -150,7 +156,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		};
 
 		ok.addActionListener(okButtonAction);
-		order.addActionListener(okButtonAction);
+		// order.addActionListener(okButtonAction);
 		pack();
 		setLocationRelativeTo(getOwner());
 		setVisible(true);

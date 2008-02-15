@@ -114,5 +114,9 @@ public class MemoryManagment {
     	log.warn("memory free: "+free+" needed: "+max+" total: "+tot);
     	return false;
     }
+
+    public static Runtime getR() {
+      return r;
+    }
 	
 }

@@ -30,6 +30,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,6 +40,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import magellan.client.utils.ErrorWindow;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
@@ -48,7 +50,9 @@ import net.infonode.docking.SplitWindow;
 import net.infonode.docking.TabWindow;
 import net.infonode.docking.View;
 import net.infonode.docking.WindowBar;
+import net.infonode.docking.properties.RootWindowProperties;
 import net.infonode.docking.util.StringViewMap;
+import net.infonode.tabbedpanel.TabAreaVisiblePolicy;
 import net.infonode.util.Direction;
 
 import org.apache.tools.ant.filters.StringInputStream;
@@ -169,10 +173,18 @@ public class DockingLayout {
   /**
    * Creates the Docking Layout inside the RootWindow.
    */
-  public void open(RootWindow window) {
+  public void open(RootWindow window, Properties settings) {
     if (window == null) log.error("RootWindow is null");
     setRootWindow(window);
     open(window,root);
+    
+    RootWindowProperties prop = window.getRootWindowProperties();
+    if (PropertiesHelper.getboolean(settings, "ClientPreferences.dontShowTabs", false)){
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
+    } else {
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.ALWAYS);
+    }
+
   }
   
   /**

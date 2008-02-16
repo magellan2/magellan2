@@ -11,8 +11,10 @@
  *
  */
 
-package magellan.client.swing.preferences;
+package magellan.client.preferences;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -28,8 +30,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
 
@@ -39,30 +43,54 @@ import magellan.library.utils.Resources;
  * @author Andreas
  * @version 1.0
  */
-public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter {
+public class ResourcePathPreferences extends JPanel implements PreferencesAdapter {
 	protected List<JTextField> textFields;
 	protected List<String> keys;
 	protected Properties settings;
 	protected GridBagConstraints con;
 	protected JFileChooser fchooser;
 	protected File file;
+  
+  protected JPanel panel;
 
 	/**
 	 * Creates new PathPreferencesAdapter
 	 *
 	 * 
 	 */
-	public PathPreferencesAdapter(Properties set) {
+	public ResourcePathPreferences(Properties set) {
 		settings = set;
+    
+    setLayout(new BorderLayout());
+    
+    panel = new JPanel(new GridBagLayout());
+    add(panel,BorderLayout.NORTH);
+    
+    con = new GridBagConstraints();
+    con.anchor = GridBagConstraints.CENTER;
+    con.fill = GridBagConstraints.HORIZONTAL;
+    con.weighty = 0;
+    con.gridy = 0;
 
-		// UI
-		setLayout(new GridBagLayout());
-		con = new GridBagConstraints();
-		con.anchor = GridBagConstraints.CENTER;
-		con.fill = GridBagConstraints.HORIZONTAL;
-		con.weighty = 0;
-		con.gridy = 0;
 
+    JTextArea comment = new JTextArea(Resources.get("resource.resourcesettings.comment"));
+    comment.setEditable(false);
+    comment.setWrapStyleWord(true);
+    comment.setLineWrap(true);
+    comment.setSelectionColor(panel.getBackground());
+    comment.setSelectedTextColor(panel.getForeground());
+    comment.setRequestFocusEnabled(false);
+    comment.setBackground(panel.getBackground());
+    comment.setSelectionColor(panel.getBackground());
+    comment.setSelectedTextColor(panel.getForeground());
+    comment.setFont(new JLabel().getFont());
+    
+    con.gridwidth=3;
+    
+    panel.add(comment,con);
+    con.gridy++;
+    con.gridwidth=1;
+    
 		// list
 		textFields = new LinkedList<JTextField>();
 		keys = new LinkedList<String>();
@@ -93,18 +121,21 @@ public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter
 	public void addPath(String label, String key) {
 		con.gridx = 0;
 		con.weightx = 0.25;
-		add(new JLabel(label), con);
+    JLabel l = new JLabel(label);
+    l.setHorizontalAlignment(JLabel.RIGHT);
+		panel.add(l, con);
 
 		JTextField tf = new JTextField(settings.getProperty(key));
 		con.gridx = 1;
 		con.weightx = 0.5;
-		add(tf, con);
+		panel.add(tf, con);
+    
 		textFields.add(tf);
 		keys.add(key);
 
 		con.gridx = 2;
 		con.weightx = 0.25;
-		add(new DirButton(tf), con);
+		panel.add(new DirButton(tf), con);
 
 		con.gridy++;
 
@@ -142,20 +173,16 @@ public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter
 		}
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public java.awt.Component getComponent() {
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
+   */
+	public Component getComponent() {
 		return this;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
+   */
 	public String getTitle() {
 		return Resources.get("preferences.pathpreferencesadapter.prefs.title");
 	}
@@ -165,11 +192,9 @@ public class PathPreferencesAdapter extends JPanel implements PreferencesAdapter
 
 		/**
 		 * Creates a new DirButton object.
-		 *
-		 * 
 		 */
 		public DirButton(JTextField jtf) {
-			super("...");
+			super(Resources.get("preferences.pathpreferencesadapter.prefs.btn"));
 			text = jtf;
 			addActionListener(this);
 		}

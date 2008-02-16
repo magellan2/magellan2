@@ -13,25 +13,9 @@
 
 package magellan.client.utils;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
-
-import magellan.client.swing.layout.GridBagHelper;
-import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.utils.FileNameGeneratorFeed;
-import magellan.library.utils.Resources;
 
 
 /**
@@ -40,7 +24,7 @@ import magellan.library.utils.Resources;
  * @author Fiete
  * @version 1.0
  */
-public class FileNameGenerator implements PreferencesFactory {
+public class FileNameGenerator {
 	
 	String ordersSaveFileNamePattern = null;
 	
@@ -90,109 +74,6 @@ public class FileNameGenerator implements PreferencesFactory {
 	}
 
 	
-
-	
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public PreferencesAdapter createPreferencesAdapter() {
-		return new FileNameGenPrefAdapter();
-	}
-
-	protected class FileNameGenPrefAdapter extends JPanel implements PreferencesAdapter {
-		
-		protected JTextField patternField;
-
-		/**
-		 * Creates a new FileNameGenPrefAdapter object.
-		 */
-		public FileNameGenPrefAdapter() {
-			initGUI();
-		}
-
-		private void initGUI() {
-			/*
-			*/
-
-			// set up the panel for the maximum file history size
-			// layout this container
-			setLayout(new GridBagLayout());
-
-			GridBagConstraints c = new GridBagConstraints();
-
-			c.insets.top = 10;
-			c.insets.bottom = 10;
-			GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
-										 GridBagConstraints.NORTHWEST,
-										 GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-			this.add(getFileNameGeneratorPanel(), c);
-
-		}
-
-		private Component getFileNameGeneratorPanel() {
-			JPanel fileNameGeneratorPanel = new JPanel();
-			fileNameGeneratorPanel.setLayout(new GridBagLayout());
-			fileNameGeneratorPanel.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-															   new EmptyBorder(0, 3, 3, 3)),
-											Resources.get("util.filenamegenerator.prefs.title")));
-
-			GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
-														  GridBagConstraints.WEST,
-														  GridBagConstraints.HORIZONTAL,
-														  new Insets(2, 10, 1, 10), 0, 0);
-
-			JLabel ordersSaveFileNamePatternLabel = new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNamePattern.label"));
-			fileNameGeneratorPanel.add(ordersSaveFileNamePatternLabel,c);
-			
-			c.gridy++;
-			patternField = new JTextField(settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern"),20);
-			fileNameGeneratorPanel.add(patternField, c);
-			
-			c.gridy++;
-			JLabel ordersSaveFileNamePatternInfo = new JLabel(Resources.get("util.filenamegenerator.field.ordersSaveFileNameInfo.label"));
-			fileNameGeneratorPanel.add(ordersSaveFileNamePatternInfo,c);
-
-			return fileNameGeneratorPanel;
-		}
-
-        public void initPreferences() {
-            // what to do?
-        }
-
-		/**
-		 * Saves the editid pattern to the properties or removes the entry if pattern is 
-		 * not fine
-		 */
-		public void applyPreferences() {
-			String newPattern = patternField.getText();
-			if (newPattern != null && newPattern.length()>2) {
-				settings.setProperty("FileNameGenerator.ordersSaveFileNamePattern", newPattern);
-			} else {
-				settings.remove("FileNameGenerator.ordersSaveFileNamePattern");
-			}
-		}
-
-		/**
-		 * Returns the component for showing in preferences dialog
-		 *
-		 * @return The Component
-		 */
-		public Component getComponent() {
-			return this;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String getTitle() {
-			return Resources.get("util.filenamegenerator.prefs.title");
-		}
-	}
 
 	/**
 	 * @return the ordersSaveFileNamePattern

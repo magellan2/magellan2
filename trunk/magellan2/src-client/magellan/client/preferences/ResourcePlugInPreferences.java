@@ -11,7 +11,7 @@
  *
  */
 
-package magellan.client.extern;
+package magellan.client.preferences;
 
 import java.awt.Component;
 import java.awt.GridBagConstraints;
@@ -34,7 +34,7 @@ import magellan.library.utils.Resources;
  * @author $Author: $
  * @version $Revision: 269 $
  */
-public class MagellanPlugInSettings extends InternationalizedPanel implements PreferencesAdapter {
+public class ResourcePlugInPreferences extends InternationalizedPanel implements PreferencesAdapter {
 	protected Properties settings;
 	protected JCheckBox chkSearchResources;
 	protected JCheckBox chkSearchClassPath;
@@ -44,7 +44,7 @@ public class MagellanPlugInSettings extends InternationalizedPanel implements Pr
 	 *
 	 * 
 	 */
-	public MagellanPlugInSettings(Properties settings) {
+	public ResourcePlugInPreferences(Properties settings) {
 		this.settings = settings;
 		initComponents();
 	}

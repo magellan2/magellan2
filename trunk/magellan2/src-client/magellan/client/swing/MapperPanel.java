@@ -42,10 +42,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,7 +55,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -69,13 +65,13 @@ import magellan.client.desktop.Initializable;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
+import magellan.client.preferences.MapPreferences;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.HexCellRenderer;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.map.Mapper;
 import magellan.client.swing.map.Minimapper;
 import magellan.client.swing.map.RegionImageCellRenderer;
-import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.CoordinateID;
@@ -330,9 +326,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * @param ae
-   *          DOCUMENT-ME
    */
   public void actionPerformed(ActionEvent ae) {
     setCursor(waitCursor);
@@ -497,9 +490,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * @param scale
-   *          DOCUMENT-ME
    */
   public void setMinimapScale(int scale) {
     Dimension size = minimapGeometry.getCellSize();
@@ -510,8 +500,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public int getMinimapScale() {
     return minimapGeometry.getCellSize().width;
@@ -1032,7 +1020,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * 
    * 
    */
-  public Component getMinimap() {
+  public Component getMinimapComponent() {
     return minimapPane;
   }
 
@@ -1157,7 +1145,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * 
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new MapperPanelPreferences(this);
+    return new MapPreferences(this);
   }
 
   /**
@@ -1174,9 +1162,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * @param p1
-   *          DOCUMENT-ME
    */
   public void initComponent(java.lang.String p1) {
     if (p1.indexOf(':') >= 0) {
@@ -1231,242 +1216,6 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public String getListenerDescription() {
     return Resources.get("mapperpanel.shortcuts.description");
-  }
-
-  private class MapperPanelPreferences extends JPanel implements ExtendedPreferencesAdapter {
-    protected class MinimapPreferences extends JPanel implements PreferencesAdapter {
-      private JSlider sldZoom;
-      private JComboBox cmbDisplayMode;
-      private JCheckBox autoScale;
-      private PreferencesAdapter renderers;
-
-      /**
-       * Creates a new MinimapPreferences object.
-       */
-      public MinimapPreferences() {
-        renderers = minimap.getPreferencesAdapter();
-
-        // display mode combo box
-        String items[] = new String[5];
-        items[0] = Resources.get("mapperpanel.prefs.minimapitems.terrain");
-        items[1] = Resources.get("mapperpanel.prefs.minimapitems.politics");
-        items[2] = Resources.get("mapperpanel.prefs.minimapitems.allfactions");
-        items[3] = Resources.get("mapperpanel.prefs.minimapitems.trustlevel");
-        items[4] = Resources.get("mapperpanel.prefs.minimapitems.trustlevelguard");
-        cmbDisplayMode = new JComboBox(items);
-        cmbDisplayMode.setSelectedIndex(source.getMinimapMode());
-
-        JLabel lblDisplayMode = new JLabel(Resources.get("mapperpanel.prefs.lbl.minimapoptions"));
-        lblDisplayMode.setLabelFor(cmbDisplayMode);
-        lblDisplayMode.setHorizontalTextPosition(JLabel.CENTER);
-
-        // color synching button
-        JButton btnSyncColors = new JButton(Resources.get("mapperpanel.prefs.lbl.synccolors.caption"));
-        btnSyncColors.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            MapperPanel.this.synchronizeMinimap();
-          }
-        });
-
-        // zoom slider
-        sldZoom = new JSlider(1, 25, 10);
-        sldZoom.setLabelTable(sldZoom.createStandardLabels(5));
-        sldZoom.setMajorTickSpacing(10);
-        sldZoom.setMinorTickSpacing(5);
-        sldZoom.setPaintLabels(true);
-        sldZoom.setPaintTicks(true);
-        sldZoom.setValue(getMinimapScale());
-
-        JLabel lblZoom = new JLabel(Resources.get("mapperpanel.prefs.lbl.zoom"));
-        lblZoom.setLabelFor(sldZoom);
-        lblZoom.setHorizontalTextPosition(JLabel.CENTER);
-
-        // auto scale checkbox
-        autoScale = new JCheckBox(Resources.get("mapperpanel.prefs.lbl.minimapautoscale"), source.isAutoScaling());
-
-        // panel grouping minimap stuff
-        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("mapperpanel.prefs.border.minimap")));
-
-        this.setLayout(new GridBagLayout());
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx = 0;
-        c.gridy = 0;
-        c.gridwidth = 4;
-        c.gridheight = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.1;
-        c.weighty = 1;
-        this.add(renderers.getComponent(), c);
-
-        /*
-         * this.add(lblDisplayMode, c); c.anchor = GridBagConstraints.CENTER;
-         * c.gridx = 1; c.gridy = 0; c.gridwidth = 2; c.gridheight = 1; c.fill =
-         * GridBagConstraints.HORIZONTAL; c.weightx = 1; c.weighty = 0;
-         * this.add(cmbDisplayMode, c); c.anchor = GridBagConstraints.CENTER;
-         * c.gridx = 3; c.gridy = 0; c.gridwidth = 1; c.gridheight = 1; c.fill =
-         * GridBagConstraints.NONE; c.weightx = 0; c.weighty = 0;
-         * this.add(btnSyncColors, c);
-         */
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx = 0;
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 0.1;
-        c.weighty = 0;
-        this.add(lblZoom, c);
-
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx = 1;
-        c.gridy = 1;
-        c.gridwidth = 2;
-        c.gridheight = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1;
-        c.weighty = 0;
-        this.add(sldZoom, c);
-
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridx = 3;
-        c.gridy = 1;
-        c.gridwidth = 1;
-        c.gridheight = 1;
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 1;
-        c.weighty = 0;
-        this.add(autoScale, c);
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public Component getComponent() {
-        return this;
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public String getTitle() {
-        return Resources.get("mapperpanel.prefs.border.minimap");
-      }
-
-      public void initPreferences() {
-        // TODO: implement it
-      }
-
-      /**
-       * DOCUMENT-ME
-       */
-      public void applyPreferences() {
-        renderers.applyPreferences();
-
-        // setMinimapMode(cmbDisplayMode.getSelectedIndex());
-        if (autoScale.isSelected()) {
-          setAutoScaling(true);
-        } else {
-          setAutoScaling(false);
-          setMinimapScale(sldZoom.getValue());
-        }
-
-        minimapPane.doLayout();
-        minimapPane.repaint(100);
-      }
-    }
-
-    // The source component to configure
-    private MapperPanel source = null;
-
-    // GUI elements
-    private PreferencesAdapter prefMapper = null;
-    private List<PreferencesAdapter> subAdapter;
-    
-    private JCheckBox showNavigation;
-
-    /**
-     * Creates a new MapperPanelPreferences object.
-     * 
-     * @param m
-     *          DOCUMENT-ME
-     */
-    public MapperPanelPreferences(MapperPanel m) {
-      this.source = m;
-      prefMapper = mapper.getPreferencesAdapter();
-
-      subAdapter = new ArrayList<PreferencesAdapter>(2);
-      subAdapter.add(new MinimapPreferences());
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public java.util.List getChildren() {
-      return subAdapter;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public Component getComponent() {
-      JPanel erg = new JPanel(new GridBagLayout());
-      
-      JPanel helperPanel = new JPanel(new BorderLayout());
-      
-      helperPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("map.mapperpanelpreferences.border.caption")));
-      GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-          GridBagConstraints.HORIZONTAL,
-          new Insets(3, 3, 3, 3), 0, 0);
-      
-      showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
-      helperPanel.add(showNavigation,BorderLayout.WEST);
-      
-      erg.add(helperPanel,gbc);
-      gbc.gridy++;
-      erg.add(prefMapper.getComponent(),gbc);
-      erg.validate();
-      return erg;
-      // return prefMapper.getComponent();
-    }
-
-    public void initPreferences() {
-      // TODO: implement it
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public void applyPreferences() {
-      prefMapper.applyPreferences();
-
-      if (showNavigation.isSelected()!= context.getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
-        // we have a change here
-        context.getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
-        context.getEventDispatcher().fire(new GameDataEvent(this,data));
-      } else {
-        mapper.repaint(100);
-      }
-      
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public String getTitle() {
-      return Resources.get("mapperpanel.prefs.title");
-    }
   }
 
   protected class MinimapScaler extends ComponentAdapter {
@@ -1609,5 +1358,48 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     public String getListenerDescription() {
       return Resources.get("mapperpanel.shortcuts.tooltips");
     }
+  }
+
+  /**
+   * Returns the value of mapper.
+   * 
+   * @return Returns mapper.
+   */
+  public Mapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * Sets the value of mapper.
+   *
+   * @param mapper The value for mapper.
+   */
+  public void setMapper(Mapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * Returns the value of context.
+   * 
+   * @return Returns context.
+   */
+  public MagellanContext getContext() {
+    return context;
+  }
+
+  /**
+   * Sets the value of context.
+   *
+   * @param context The value for context.
+   */
+  public void setContext(MagellanContext context) {
+    this.context = context;
+  }
+
+  /**
+   * Returns the value of minimap.
+   */
+  public Minimapper getMinimap() {
+    return minimap;
   }
 }

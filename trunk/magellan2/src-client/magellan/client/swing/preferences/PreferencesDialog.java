@@ -130,19 +130,12 @@ public class PreferencesDialog extends InternationalizedDialog {
 	/**
 	 * Creates a new PreferencesDialog object.
 	 */
-	public PreferencesDialog(Frame owner, boolean modal, Properties settings,
-							 Collection prefAdapters) {
+	public PreferencesDialog(Frame owner, boolean modal, Properties settings, Collection<PreferencesFactory> prefAdapters) {
 		this(owner, modal, settings);
 
-		for(Iterator iter = prefAdapters.iterator(); iter.hasNext();) {
-			Object obj = iter.next();
-
-			if(obj instanceof PreferencesAdapter) { // old style, direct adapter
-				this.addTab((PreferencesAdapter) obj);
-			} else if(obj instanceof PreferencesFactory) { // new style, create an adapter
-				this.addTab(((PreferencesFactory) obj).createPreferencesAdapter());
-			}
-		}
+		for (PreferencesFactory factory : prefAdapters) {
+      addTab(factory.createPreferencesAdapter());
+	  }
 	}
 
 	/**
@@ -331,9 +324,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 			content.add(pane, pa.getTitle());
 
 			if(pa instanceof ExtendedPreferencesAdapter) {
-				for(Iterator iter = ((ExtendedPreferencesAdapter) pa).getChildren().iterator();
-						iter.hasNext();) {
-					DefaultMutableTreeNode subNode = addAdapterImpl((PreferencesAdapter) iter.next());
+				for(Iterator<PreferencesAdapter> iter = ((ExtendedPreferencesAdapter) pa).getChildren().iterator(); iter.hasNext();) {
+					DefaultMutableTreeNode subNode = addAdapterImpl(iter.next());
 
 					if(subNode != null) {
 						node.add(subNode);

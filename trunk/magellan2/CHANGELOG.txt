@@ -1,3 +1,6 @@
+2008-02-16 / Build 150 - Thoralf (thoralf@m84.de)
+    * Made multiple changes to the settings
+    
 2008-02-15 / Build 149 - Fiete (sf@fietefietz.de)
 	* switched "GiveOrder" to multiline-orders
 

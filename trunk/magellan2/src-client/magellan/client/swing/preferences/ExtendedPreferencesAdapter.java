@@ -31,8 +31,6 @@ import java.util.List;
 public interface ExtendedPreferencesAdapter extends PreferencesAdapter {
 	/**
 	 * Returns a list of preferences adapters that should be displayed in the given order.
-	 *
-	 * 
 	 */
-	public List getChildren();
+  public List<PreferencesAdapter> getChildren();
 }

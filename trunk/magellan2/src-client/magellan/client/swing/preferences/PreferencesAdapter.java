@@ -16,17 +16,18 @@ package magellan.client.swing.preferences;
 import java.awt.Component;
 
 /**
- * DOCUMENT-ME
+ * This interface represents a component that contains preferences
+ * for one part of magellan.
  *
  * @author $Author: $
  * @version $Revision: 269 $
  */
 public interface PreferencesAdapter {
 
-    /**
-     * This function is called for initializing the preferences.
-     */
-    public void initPreferences(); 
+  /**
+   * This function is called for initializing the preferences.
+   */
+  public void initPreferences(); 
     
 	/**
 	 * This function is called for applying the preferences.
@@ -35,15 +36,11 @@ public interface PreferencesAdapter {
 
 	/**
 	 * This function delivers the gui for the preferences adapter.
-	 *
-	 * 
 	 */
 	public Component getComponent();
 
 	/**
 	 * This function delivers the visible name of the preferences adapter.
-	 *
-	 * 
 	 */
 	public String getTitle();
 }

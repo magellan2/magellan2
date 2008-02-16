@@ -11,10 +11,14 @@
  *
  */
 
-package magellan.client.resource;
+package magellan.client.preferences;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -27,15 +31,17 @@ import java.util.Properties;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import magellan.client.swing.InternationalizedPanel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
-import magellan.client.swing.preferences.PathPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
@@ -46,7 +52,7 @@ import magellan.library.utils.Resources;
  * @author $Author: $
  * @version $Revision: 269 $
  */
-public class ResourceSettings extends InternationalizedPanel implements ExtendedPreferencesAdapter {
+public class ResourcePreferences extends InternationalizedPanel implements ExtendedPreferencesAdapter {
 	private JButton btnAdd = null;
 	private JButton btnRemove = null;
 	private JButton btnEdit = null;
@@ -56,33 +62,35 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 
 	/**
 	 * Creates a new ResourceSettings object.
-	 *
-	 * 
 	 */
-	public ResourceSettings(Properties settings) {
+	public ResourcePreferences(Properties settings) {
 		this.settings = settings;
 		initComponents();
 	}
 
+  /**
+   * 
+   */
 	private void initComponents() {
-		this.setLayout(new java.awt.GridBagLayout());
+    this.setLayout(new BorderLayout());
+    JPanel panel = new JPanel(new java.awt.GridBagLayout());
 
-		this.lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
+		lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
     
-		this.lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		GridBagConstraints c = new java.awt.GridBagConstraints();
+		GridBagConstraints c = new GridBagConstraints();
 		c.gridheight = 3;
 		c.fill = GridBagConstraints.BOTH;
-		c.insets = new java.awt.Insets(5, 5, 5, 5);
+		c.insets = new Insets(5, 5, 5, 5);
 		c.weightx = 0.1;
 		c.weighty = 0.1;
-		this.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+    panel.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 								 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), c);
 
-		this.btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
-		this.btnAdd.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+		btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
+		btnAdd.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
 					btnAddActionPerformed(evt);
 				}
 			});
@@ -91,54 +99,71 @@ public class ResourceSettings extends InternationalizedPanel implements Extended
 		c.gridx = 1;
 		c.gridy = 0;
 		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		c.insets = new java.awt.Insets(5, 0, 5, 5);
+		c.insets = new Insets(5, 0, 5, 5);
 		c.weightx = 0.0;
 		c.weighty = 0.0;
-		this.add(btnAdd, c);
+    panel.add(btnAdd, c);
 
-		this.btnRemove = new JButton(Resources.get("resource.resourcesettings.btn.remove.caption"));
-		btnRemove.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+		btnRemove = new JButton(Resources.get("resource.resourcesettings.btn.remove.caption"));
+		btnRemove.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
 					btnRemoveActionPerformed(evt);
 				}
 			});
 
 		c.gridx = 1;
 		c.gridy = 1;
-		c.insets = new java.awt.Insets(0, 0, 5, 5);
-		add(btnRemove, c);
+		c.insets = new Insets(0, 0, 5, 5);
+    panel.add(btnRemove, c);
 
-		this.btnEdit = new JButton(Resources.get("resource.resourcesettings.btn.edit.caption"));
-		btnEdit.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent evt) {
+		btnEdit = new JButton(Resources.get("resource.resourcesettings.btn.edit.caption"));
+		btnEdit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
 					btnEditActionPerformed(evt);
 				}
 			});
 
 		c.gridx = 1;
 		c.gridy = 2;
-		c.insets = new java.awt.Insets(0, 0, 5, 5);
-		c.anchor = java.awt.GridBagConstraints.NORTH;
-		add(btnEdit, c);
+		c.insets = new Insets(0, 0, 5, 5);
+		c.anchor = GridBagConstraints.NORTH;
+    panel.add(btnEdit, c);
+    
+    JTextArea comment = new JTextArea(Resources.get("resource.resourcesettings.comment"));
+    comment.setEditable(false);
+    comment.setWrapStyleWord(true);
+    comment.setLineWrap(true);
+    comment.setSelectionColor(panel.getBackground());
+    comment.setSelectedTextColor(panel.getForeground());
+    comment.setRequestFocusEnabled(false);
+    comment.setBackground(panel.getBackground());
+    comment.setSelectionColor(panel.getBackground());
+    comment.setSelectedTextColor(panel.getForeground());
+    comment.setFont(new JLabel().getFont());
 
+    add(comment,BorderLayout.NORTH);
+    add(panel,BorderLayout.CENTER);
+    
+    
 		subAdapter = new ArrayList<PreferencesAdapter>(1);
 
-		PathPreferencesAdapter ppa = new PathPreferencesAdapter(settings);
+		ResourcePathPreferences ppa = new ResourcePathPreferences(settings);
 		ppa.addPath("ECheck:", "JECheckPanel.echeckEXE");
 		ppa.addPath("Vorlage:", "JVorlage.vorlageFile");
 		subAdapter.add(ppa);
-		subAdapter.add(new magellan.client.extern.MagellanPlugInSettings(settings));
+		subAdapter.add(new ResourcePlugInPreferences(settings));
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List getChildren() {
+  /**
+   * @see magellan.client.swing.preferences.ExtendedPreferencesAdapter#getChildren()
+   */
+	public List<PreferencesAdapter> getChildren() {
 		return subAdapter;
 	}
 
+  /**
+   * 
+   */
 	private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
 		if(lstPaths.getSelectedValue() == null) {
 			return;

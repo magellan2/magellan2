@@ -29,6 +29,7 @@ import java.util.Properties;
 import javax.swing.JMenuItem;
 
 import magellan.client.Client;
+import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.GameData;
 
 /**
@@ -79,4 +80,13 @@ public interface MagellanPlugIn {
    * stops.
    */
   public void quit(boolean storeSettings);
+  
+  /**
+   * This method is used to find out, if the plugin 
+   * has a preferences dialog that should be used
+   * inside the options window of Magellan. If you
+   * don't want to build a preferences dialog return
+   * null.
+   */
+  public PreferencesFactory getPreferencesProvider();
 }

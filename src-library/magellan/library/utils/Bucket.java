@@ -265,7 +265,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return the element at the specified index.
 	 */
-	public Object get(int index) {
+	public E get(int index) {
 		return data.get(index);
 	}
 }

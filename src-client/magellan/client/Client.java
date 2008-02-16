@@ -118,8 +118,9 @@ import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
-import magellan.client.resource.ResourceSettingsFactory;
+import magellan.client.preferences.ClientPreferences;
 import magellan.client.swing.ArmyStatsPanel;
+import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MagellanLookAndFeel;
@@ -135,14 +136,15 @@ import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tasks.TaskTablePanel;
-import magellan.client.swing.tree.IconAdapterFactory;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.utils.BookmarkManager;
 import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
+import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
 import magellan.client.utils.NameGenerator;
 import magellan.client.utils.RendererLoader;
+import magellan.client.utils.ResourceSettingsFactory;
 import magellan.client.utils.SelectionHistory;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
@@ -232,7 +234,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private List<NodeWrapperFactory> nodeWrapperFactories;
 
-  private List<Object> preferencesAdapterList;
+  private List<PreferencesFactory> preferencesAdapterList;
 
   private MenuAction saveAction;
 
@@ -449,6 +451,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public MagellanContext getMagellanContext() {
     return context;
   }
+  
+  /**
+   * Returns the message panel.
+   */
+  public MessagePanel getMessagePanel() {
+    return messagePanel;
+  }
 
   /**
    * Returns the application icon
@@ -543,7 +552,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     mapPanel.setScaleFactor(PropertiesHelper.getfloat(getProperties(), "Map.scaleFactor", 1.0f));
     panels.add(mapPanel);
     components.put("MAP", mapPanel);
-    components.put("MINIMAP", mapPanel.getMinimap());
+    components.put("MINIMAP", mapPanel.getMinimapComponent());
     topLevel.add(mapPanel);
 
     // configure and add message panel
@@ -846,15 +855,23 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(extras, new RepaintAction(this));
     addMenuItem(extras, new TileSetAction(this, mapPanel));
     extras.addSeparator();
-    preferencesAdapterList = new ArrayList<Object>(8);
+    preferencesAdapterList = new ArrayList<PreferencesFactory>(8);
     preferencesAdapterList.add(this);
     preferencesAdapterList.add(desktop);
     preferencesAdapterList.add(overviewPanel);
     preferencesAdapterList.add(detailsPanel);
     preferencesAdapterList.add(mapPanel);
-    preferencesAdapterList.add(messagePanel);
     preferencesAdapterList.add(new IconAdapterFactory(nodeWrapperFactories));
     preferencesAdapterList.add(new ResourceSettingsFactory(getProperties()));
+    
+    log.info("Checking for preferences-providers...(MagellanPlugIns)");
+    for (MagellanPlugIn plugIn : plugIns) {
+      PreferencesFactory plugInPreferenceFactory = plugIn.getPreferencesProvider();
+      if (plugInPreferenceFactory != null) {
+        preferencesAdapterList.add(plugInPreferenceFactory);
+      }
+    }
+    
     optionAction = new OptionAction(this, preferencesAdapterList);
     addMenuItem(extras, optionAction);
 
@@ -1060,11 +1077,27 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           Client c = new Client(data, tFileDir, tsettFileDir);
           // setup a singleton instance of this client
           INSTANCE = c;
+          
+          File crFile = null;
+          
+          if (tReport == null) {
+            // if no report is given on startup, we check if we can load the last
+            // loaded report.
+            boolean loadLastReport = PropertiesHelper.getboolean(c.getProperties(), "ClientPreferences.LoadLastReport", true);
+            if (loadLastReport) {
+              crFile = c.fileHistory.getLastExistingReport();
+              if (crFile == null) {
+                // okay, ask for a file...
+                crFile = OpenCRAction.getFileFromFileChooser(c);
+              }
+            }
+          } else {
+            crFile = new File(tReport);
+          }
+
     
-          if (tReport != null) {
+          if (crFile != null) {
             startWindow.progress(4, Resources.get("clientstart.4"));
-    
-            File crFile = new File(tReport);
     
             c.dataFile = crFile;
     
@@ -1422,11 +1455,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   private void postProcessLoadedCR(GameData aData) {
     // show a warning if no password is set for any of the privileged
     // factions
-    boolean privFacsWoPwd = true;
+    boolean factionsWithoutPassword = true;
+    
+    if (aData != null) {
+      if (aData.factions()==null || aData.factions().values().size()==0) factionsWithoutPassword = false;
+    }
 
     if ((aData != null) && (aData.factions() != null)) {
-      for (Iterator factions = aData.factions().values().iterator(); factions.hasNext();) {
-        Faction f = (Faction) factions.next();
+      for (Faction f : aData.factions().values()) {
 
         if (f.getPassword() == null) {
           // take password from settings but only if it is not an
@@ -1445,13 +1481,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
 
         if (f.getPassword() != null) {
-          privFacsWoPwd = false;
+          factionsWithoutPassword = false;
         }
 
         // check messages whether the password was changed
         if (f.getMessages() != null) {
-          for (Iterator<Message> iter = f.getMessages().iterator(); iter.hasNext();) {
-            Message m = iter.next();
+          for (Message m : f.getMessages()) {
 
             // check message id (new and old)
             if ((m.getMessageType() != null) && ((((IntegerID) m.getMessageType().getID()).intValue() == 1784377885) || (((IntegerID) m.getMessageType().getID()).intValue() == 19735))) {
@@ -1480,7 +1515,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
                         f.setTrustLevel(Faction.TL_PRIVILEGED);
                       }
 
-                      privFacsWoPwd = false;
+                      factionsWithoutPassword = false;
 
                       if (getProperties() != null) {
                         getProperties().setProperty("Faction.password." + ((EntityID) f.getID()).intValue(), f.getPassword());
@@ -1497,8 +1532,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // recalculate default-trustlevels after CR-Load
       TrustLevels.recalculateTrustLevels(aData);
 
-      if (privFacsWoPwd) { // no password set for any faction
-        JOptionPane.showMessageDialog(getRootPane(), Resources.get("client.msg.postprocessloadedcr.missingpassword.text"));
+      if (factionsWithoutPassword) { // no password set for any faction
+        // okay, let's ask if there is a passwort to set.
+        AskForPasswordDialog dialog = new AskForPasswordDialog(this,aData);
+        dialog.setVisible(true);
+//        JOptionPane.showMessageDialog(getRootPane(), Resources.get("client.msg.postprocessloadedcr.missingpassword.text"));
       }
       
       // recalculate the status of regions - coastal or not?

@@ -156,7 +156,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
       this.add(jpbtn, BorderLayout.NORTH);
       this.add(this.imgPanel, BorderLayout.CENTER);
     }
-
+    
     public void initPreferences() {
         // TODO: implement it
     }
@@ -219,15 +219,25 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
       }
       
       public void paintComponent(Graphics g) {
-        if (this.img != null) {
-          Dimension size = this.getSize();
-          int width = this.img.getWidth(null);
-          int height = this.img.getHeight(null);
-          g.setColor(this.getBackground());
+        if (img != null) {
+          Dimension size = getSize();
+          int width = img.getWidth(null);
+          int height = img.getHeight(null);
+          g.setColor(getBackground());
           g.fillRect(0, 0, size.width, size.height);
-          g.drawImage(this.img, (size.width-width)/2, (size.height-height)/2, null);
+          g.drawImage(img, (size.width-width)/2, (size.height-height)/2, null);
         }
       }
+
+      /**
+       * @see javax.swing.JComponent#getPreferredSize()
+       */
+      @Override
+      public Dimension getPreferredSize() {
+        if (img != null) return new Dimension(img.getWidth(null),img.getHeight(null));
+        return super.getPreferredSize();
+      }
+
     }
   }
 }

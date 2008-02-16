@@ -43,9 +43,9 @@ import javax.swing.tree.DefaultTreeModel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
-import magellan.client.swing.tree.AllianceNodeWrapper;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.CopyTree;
+import magellan.client.swing.tree.FactionNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.swing.tree.RegionNodeWrapper;
@@ -213,10 +213,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     updateTree();
   }
 
- /**
- * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
- */
-public void valueChanged(TreeSelectionEvent e) {
+  /**
+   * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
+   */
+  public void valueChanged(TreeSelectionEvent e) {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
     if (node == null) {
@@ -474,8 +474,8 @@ public void valueChanged(TreeSelectionEvent e) {
         currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.groups"), "groups"));
         rootNode.add(currentNode);
 
-        for (Iterator iter = f.getGroups().values().iterator(); iter.hasNext();) {
-          Group g = (Group) iter.next();
+        for (Iterator<Group> iter = f.getGroups().values().iterator(); iter.hasNext();) {
+          Group g = iter.next();
           subNode = new DefaultMutableTreeNode(g);
           currentNode.add(subNode);
 
@@ -1330,15 +1330,30 @@ public void valueChanged(TreeSelectionEvent e) {
       return;
     }
 
-    List<Alliance> sortedAllies = new ArrayList<Alliance>(allies.values());
-    Collections.sort(sortedAllies, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
-
-    for (Iterator iter = sortedAllies.iterator(); iter.hasNext();) {
-      Alliance actAlliance = (Alliance)iter.next();
-      AllianceNodeWrapper f = new AllianceNodeWrapper(actAlliance.getFaction(),allies);
-      DefaultMutableTreeNode n = new DefaultMutableTreeNode(f);
+    HashMap<String, List<Alliance>> alliances = new HashMap<String, List<Alliance>>();
+    for (Alliance alliance : allies.values()) {
+      String key = alliance.stateToString();
+      if (alliances.containsKey(key)) {
+        alliances.get(key).add(alliance);
+      } else {
+        List<Alliance> list = new LinkedList<Alliance>();
+        list.add(alliance);
+        alliances.put(key,list);
+      }
+    }
+    
+    for(String key : alliances.keySet()) {
+      List<Alliance> alliance = alliances.get(key);
+      Collections.sort(alliance, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
       
-      rootNode.add(n);
+      DefaultMutableTreeNode m = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",new Object[]{key}));
+      for (Alliance a : alliance) {
+        FactionNodeWrapper f = new FactionNodeWrapper(a.getFaction(), null, allies);
+        DefaultMutableTreeNode o = new DefaultMutableTreeNode(f);
+        m.add(o);
+      }
+      
+      rootNode.add(m);
     }
   }
 

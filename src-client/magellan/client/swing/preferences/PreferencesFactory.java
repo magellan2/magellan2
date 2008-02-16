@@ -24,9 +24,10 @@ package magellan.client.swing.preferences;
  */
 public interface PreferencesFactory {
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Creates the component for the preferences.
+   * 
+   * If you return a {@link ExtendedPreferencesAdapter} the dialog is
+   * able to generate subentries inside the options dialog. 
 	 */
 	public PreferencesAdapter createPreferencesAdapter();
 }

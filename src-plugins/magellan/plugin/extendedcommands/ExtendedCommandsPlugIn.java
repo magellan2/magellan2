@@ -38,6 +38,7 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.UnitContainerContextMenuProvider;
 import magellan.client.swing.context.UnitContextMenuProvider;
+import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -285,5 +286,12 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     unit.getCache().orderEditor.fireOrdersChangedEvent();
   }
   
- 
+  /**
+   * @see magellan.client.extern.MagellanPlugIn#getPreferencesProvider()
+   */
+  public PreferencesFactory getPreferencesProvider() {
+    // later we need a dialog for the library files.
+    return null;
+  }
+
 }

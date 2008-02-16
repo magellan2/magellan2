@@ -11,12 +11,14 @@
  *
  */
 
-package magellan.client.resource;
+package magellan.client.utils;
 
-import java.util.Properties;
+import java.util.List;
 
+import magellan.client.preferences.IconPreferences;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
+import magellan.client.swing.tree.NodeWrapperFactory;
 
 
 /**
@@ -24,24 +26,22 @@ import magellan.client.swing.preferences.PreferencesFactory;
  *
  * @author SirBacon
  */
-public class ResourceSettingsFactory implements PreferencesFactory {
-	Properties settings;
+public class IconAdapterFactory implements PreferencesFactory {
+	List<NodeWrapperFactory> nodeWrapperFactories;
 
 	/**
 	 * Creates a new instance of EresseaClass
 	 *
 	 * 
 	 */
-	public ResourceSettingsFactory(Properties settings) {
-		this.settings = settings;
+	public IconAdapterFactory(List<NodeWrapperFactory> nw) {
+		nodeWrapperFactories = nw;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
+   */
 	public PreferencesAdapter createPreferencesAdapter() {
-		return new ResourceSettings(settings);
+		return new IconPreferences(nodeWrapperFactories);
 	}
 }

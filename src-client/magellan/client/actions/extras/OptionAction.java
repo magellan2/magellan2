@@ -21,6 +21,7 @@ import java.util.TimerTask;
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.preferences.PreferencesDialog;
+import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.utils.Resources;
 
 
@@ -32,7 +33,7 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class OptionAction extends MenuAction {
-	private List adapters;
+	private List<PreferencesFactory> adapters;
 
 	/**
 	 * This timer object is used to rebuild the PreferencesDialog in background. If the
@@ -44,10 +45,10 @@ public class OptionAction extends MenuAction {
 	 * Creates a new OptionAction object.
 	 *
 	 * @param client
-	 * 
+	 * @param adapters Either PreferencesAdapter or PreferencesFactory (???)
 	 */
-	public OptionAction(Client client, List adapters) {
-        super(client);
+	public OptionAction(Client client, List<PreferencesFactory> adapters) {
+    super(client);
 		this.adapters = adapters;
 		initTimer();
 	}

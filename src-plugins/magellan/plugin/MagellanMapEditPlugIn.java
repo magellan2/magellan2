@@ -41,6 +41,7 @@ import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.context.MapContextMenuProvider;
+import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -406,5 +407,12 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     public int compare(RegionType arg0, RegionType arg1) {
       return arg0.getName().compareToIgnoreCase(arg1.getName());
     }
+  }
+
+  /**
+   * 
+   */
+  public PreferencesFactory getPreferencesProvider() {
+    return null;
   }
 }

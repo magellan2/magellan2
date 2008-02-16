@@ -91,4 +91,22 @@ public abstract class InternationalizedDataPanel extends InternationalizedPanel 
   public void gameDataChanged(GameDataEvent e) {
     this.data = e.getGameData();
   }
+
+  /**
+   * Returns the value of data.
+   * 
+   * @return Returns data.
+   */
+  public GameData getGameData() {
+    return data;
+  }
+
+  /**
+   * Sets the value of data.
+   *
+   * @param data The value for data.
+   */
+  public void setGameData(GameData data) {
+    this.data = data;
+  }
 }

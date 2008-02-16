@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
@@ -39,6 +40,7 @@ import magellan.client.actions.desktop.LayoutNewAction;
 import magellan.client.actions.desktop.LayoutSaveAction;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Encoding;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.RootWindow;
@@ -69,9 +71,11 @@ public class DockingFrameworkBuilder  {
 	/** Holds value of property screen. */
   
   private static JMenu layoutMenu = null;
+  private static JCheckBoxMenuItem hideTabs = null;
   private static LayoutDeleteAction deleteMenu = null;
   private static List<DockingLayout> layouts = new ArrayList<DockingLayout>();
   private static DockingLayout activeLayout = null;
+  private Properties settings = null;
 
 	/**
 	 * Creates new DockingFrameworkBuilder
@@ -212,7 +216,7 @@ public class DockingFrameworkBuilder  {
       
       if (activeLayout == null && layouts.size()>0) activeLayout = layouts.get(0);
       activeLayout.setActive(true);
-      activeLayout.open(window);
+      activeLayout.open(window,settings);
       
     } catch (Exception exception) {
       log.error(exception);
@@ -270,7 +274,7 @@ public class DockingFrameworkBuilder  {
     layouts.add(defaultLayout);
     
     activeLayout = defaultLayout;
-    activeLayout.open(window);
+    activeLayout.open(window,settings);
     
     return window;
   }
@@ -279,7 +283,7 @@ public class DockingFrameworkBuilder  {
    * This method creates the desktop menu. It contains the layout submenu and all
    * dock components. 
    */
-  public JMenu createDesktopMenu(Map<String,Component> components, ActionListener listener) {
+  public JMenu createDesktopMenu(Map<String,Component> components, Properties settings, ActionListener listener) {
     JMenu desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
@@ -305,7 +309,7 @@ public class DockingFrameworkBuilder  {
     
     desktopMenu.add(layoutMenu);
     
-    JCheckBoxMenuItem hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), false);
+    hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), PropertiesHelper.getboolean(settings, "ClientPreferences.dontShowTabs", false));
     hideTabs.setActionCommand("hideTabs");
     desktopMenu.add(hideTabs);
     hideTabs.addActionListener(listener);
@@ -359,6 +363,13 @@ public class DockingFrameworkBuilder  {
     }
     
     deleteMenu.setEnabled(layouts.size()>1);
+  }
+  
+  /**
+   * 
+   */
+  public void setTabVisibility(boolean showTabs) {
+    if (hideTabs != null) hideTabs.setSelected(!showTabs);
   }
   
   /**
@@ -419,7 +430,7 @@ public class DockingFrameworkBuilder  {
     }
     activeLayout = layout;
     activeLayout.setActive(true);
-    activeLayout.open(window);
+    activeLayout.open(window,settings);
   }
   
   /**
@@ -446,4 +457,10 @@ public class DockingFrameworkBuilder  {
 		return componentsUsed;
 	}
 
+  /**
+   * 
+   */
+  public void setProperties(Properties settings) {
+    this.settings = settings;
+  }
 }

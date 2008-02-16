@@ -30,7 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 import javax.swing.LookAndFeel;
 import javax.swing.plaf.basic.BasicHTML;
 import javax.swing.text.View;
@@ -252,8 +252,6 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * DOCUMENT-ME
-	 *
-	 * 
 	 */
 	public PreferencesAdapter getPreferredAdapter() {
 		return new BRPPreferences();
@@ -261,8 +259,6 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * DOCUMENT-ME
-	 *
-	 * 
 	 */
 	public String getDefinition() {
 		return def;
@@ -270,8 +266,6 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * DOCUMENT-ME
-	 *
-	 * 
 	 */
 	public void setDefinition(String d) {
 		settings.setProperty("BasicRegionPanel.Def", d);
@@ -281,25 +275,28 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	protected class BRPPreferences extends JPanel implements PreferencesAdapter {
-		protected JTextPane defText;
+		protected JTextArea defText;
 
 		/**
 		 * Creates a new BRPPreferences object.
 		 */
 		public BRPPreferences() {
 			this.setLayout(new BorderLayout());
-			this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-															Resources.get("basicregionpanel.prefs.title")));
+			this.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), Resources.get("basicregionpanel.prefs.title")));
+      JPanel panel = new JPanel(new BorderLayout());
 
 			//text pane
-			defText = new JTextPane();
-			defText.setText(getDefinition());
-			this.add(new JScrollPane(defText), BorderLayout.CENTER);
+			defText = new JTextArea(getDefinition());
+      
+      panel.setPreferredSize(new Dimension(300,300));
+      panel.add(new JScrollPane(defText), BorderLayout.CENTER);
+      
+			this.add(panel, BorderLayout.CENTER);
 		}
 
-        public void initPreferences() {
-            // TODO: implement it
-        }
+    public void initPreferences() {
+          // TODO: implement it
+    }
 
 		/**
 		 * DOCUMENT-ME

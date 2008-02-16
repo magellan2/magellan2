@@ -19,16 +19,13 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -36,17 +33,14 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.SortedSet;
@@ -56,14 +50,9 @@ import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.Scrollable;
@@ -89,6 +78,7 @@ import magellan.client.event.SelectionListener;
 import magellan.client.event.TempUnitEvent;
 import magellan.client.event.TempUnitListener;
 import magellan.client.event.UnitOrdersEvent;
+import magellan.client.preferences.DetailsViewOrderEditorPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Faction;
@@ -170,10 +160,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 	// editor list generation mode
 	protected int listMode = 1 << LIST_REGION;
-	private static final int LIST_UNIT = 0;
-	private static final int LIST_FACTION = 1;
-	private static final int LIST_REGION = 2;
-	private static final int LIST_ISLAND = 3;
+	public static final int LIST_UNIT = 0;
+  public static final int LIST_FACTION = 1;
+  public static final int LIST_REGION = 2;
+  public static final int LIST_ISLAND = 3;
 
 	/**
 	 * Creates a new MultiEditorOrderEditorList object.
@@ -1420,469 +1410,31 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 	}
 
-	protected void saveListProperty() {
+	public void saveListProperty() {
 		if(listMode == (1 << LIST_REGION)) {
 			settings.remove("OrderEditorList.listMode");
 		} else {
 			settings.setProperty("OrderEditorList.listMode", String.valueOf(listMode));
 		}
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("chk.orderconfirmation", "Orders confirmed");
-
-			defaultTranslations.put("msg.newtempid.text",
-									"Please enter an id for the new temporary unit:");
-			defaultTranslations.put("msg.newtempid.title", "New temp id");
-			defaultTranslations.put("msg.duplicatetempid.text",
-									"The specified temp id is already assigned to a unit. Please enter a different id.");
-			defaultTranslations.put("msg.duplicatetempid.title", "Temp id used");
-			defaultTranslations.put("msg.invalidtempid.text",
-									"The temp id you specified is invalid.");
-			defaultTranslations.put("prefs.listMode.text",
-									"This settings affects the units to be shown while selecting a game object. Only useful in Multieditor-Mode.");
-			defaultTranslations.put("prefs.listMode", "Editor Listing");
-			defaultTranslations.put("shortcuts.description.1", "Delete temp unit");
-			defaultTranslations.put("msg.invalidtempid.title", "Invalid temp id");
-
-			defaultTranslations.put("prefs.multieditorlayout", "Multi-editor layout");
-			defaultTranslations.put("prefs.hidebuttons", "Hide buttons");
-			defaultTranslations.put("prefs.syntaxhighlighting", "Syntax highlighting");
-			defaultTranslations.put("prefs.colors", "Colors");
-			defaultTranslations.put("prefs.orderautocompletion", "Auto-complete orders");
-			defaultTranslations.put("prefs.title", "Order editor");
-			defaultTranslations.put("prefs.colors.standard", "Default");
-			defaultTranslations.put("prefs.colors.keywords", "Keywords");
-			defaultTranslations.put("prefs.colors.strings", "Strings");
-			defaultTranslations.put("prefs.listMode.2.text",
-									"Shows all privileged units of the current Faction");
-			defaultTranslations.put("prefs.listMode.1.text",
-									"Shows all privileged units of the current region");
-			defaultTranslations.put("prefs.listMode.0.text",
-									"Shows all privileged units of the current island");
-			defaultTranslations.put("prefs.listMode.2", "Factions");
-			defaultTranslations.put("prefs.listMode.1", "Regions");
-			defaultTranslations.put("prefs.listMode.0", "Islands");
-			defaultTranslations.put("shortcuts.description.0", "Create temp unit");
-			defaultTranslations.put("shortcuts.title", "Temp units");
-			defaultTranslations.put("prefs.syntaxhighlighting.caption",
-									"Activate Syntax highlighting");
-			defaultTranslations.put("prefs.layout", "Layout");
-			defaultTranslations.put("prefs.colors.numbers", "Numbers");
-			defaultTranslations.put("prefs.colors.ids", "IDs");
-			defaultTranslations.put("prefs.colors.comments", "Comments");
-			defaultTranslations.put("prefs.inactivebackground", "Color of inactive editors");
-			defaultTranslations.put("prefs.inactivebackground.confirmed",
-									"Color of inactive and confirmed editors");
-			defaultTranslations.put("prefs.backgroundcolor", "Background color");
-			defaultTranslations.put("prefs.activebackground", "Color of active editor");
-			defaultTranslations.put("prefs.activebackground.confirmed",
-									"Color of active and confirmed editor");
-
-			defaultTranslations.put("tempunit.recruitCost", "recruitment costs");
-			defaultTranslations.put("tempunit.maintainCost", "maintainance costs");
-		}
-
-		return defaultTranslations;
-	}
-
-	class OrderEditorListPreferences extends JPanel implements PreferencesAdapter {
-		private MultiEditorOrderEditorList source = null;
-		private JPanel pnlStandardColor = null;
-		private JPanel pnlStandardColorConfirmed = null;
-		private JPanel pnlActiveColor = null;
-		private JPanel pnlActiveColorConfirmed = null;
-		private JPanel pnlStylesColor = null;
-		private JCheckBox chkMultiEditorLayout;
-		private JCheckBox chkHideButtons;
-		private JCheckBox chkSyntaxHighlighting;
-		private JComboBox comboSHColors = null;
-		private Dimension prefDim = new Dimension(20, 20);
-		private JCheckBox listModes[];
-
-		/**
-		 * Creates a new OrderEditorListPreferences object.
-		 *
-		 * 
-		 */
-		public OrderEditorListPreferences(MultiEditorOrderEditorList source) {
-			this.source = source;
-
-			this.setLayout(new GridBagLayout());
-
-			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-														  GridBagConstraints.WEST,
-														  GridBagConstraints.HORIZONTAL,
-														  new Insets(0, 0, 0, 0), 0, 0);
-
-			this.add(getLayoutPanel(), c);
-
-			c.gridy++;
-			this.add(getColorPanel(), c);
-
-			c.gridy++;
-			this.add(getHighlightPanel(), c);
-
-			c.gridy++;
-			this.add(getListModePanel(), c);
-		}
-
-		protected Container getLayoutPanel() {
-			JPanel content = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 0));
-			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.layout")));
-
-			chkMultiEditorLayout = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.multieditorlayout"),
-												 source.isMultiEditorLayout());
-			content.add(chkMultiEditorLayout);
-
-			chkHideButtons = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.hidebuttons"), source.isHideButtons());
-			content.add(chkHideButtons);
-
-			return content;
-		}
-
-		protected Container getColorPanel() {
-			JPanel content = new JPanel(new GridBagLayout());
-			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.colors")));
-
-			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-														  GridBagConstraints.WEST,
-														  GridBagConstraints.NONE,
-														  new Insets(0, 2, 1, 1), 0, 0);
-
-			JLabel lblStandardColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground") + ": ");
-
-			pnlStandardColor = new JPanel();
-			pnlStandardColor.setBorder(new LineBorder(Color.black));
-			pnlStandardColor.setPreferredSize(prefDim);
-			pnlStandardColor.setBackground(source.getStandardBackgroundColor());
-			pnlStandardColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
-						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-																  ((Component) e.getSource()).getBackground());
-
-						if(newColor != null) {
-							((Component) e.getSource()).setBackground(newColor);
-						}
-					}
-				});
-
-			JLabel lblStandardColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.inactivebackground.confirmed") +
-														  ": ");
-
-			pnlStandardColorConfirmed = new JPanel();
-			pnlStandardColorConfirmed.setBorder(new LineBorder(Color.black));
-			pnlStandardColorConfirmed.setPreferredSize(prefDim);
-			pnlStandardColorConfirmed.setBackground(source.getStandardBackgroundColorConfirmed());
-			pnlStandardColorConfirmed.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
-						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-																  ((Component) e.getSource()).getBackground());
-
-						if(newColor != null) {
-							((Component) e.getSource()).setBackground(newColor);
-						}
-					}
-				});
-
-			JLabel lblActiveColor = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground") + ": ");
-
-			pnlActiveColor = new JPanel();
-			pnlActiveColor.setBorder(new LineBorder(Color.black));
-			pnlActiveColor.setPreferredSize(prefDim);
-			pnlActiveColor.setBackground(source.getActiveBackgroundColor());
-			pnlActiveColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
-						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-																  ((Component) e.getSource()).getBackground());
-
-						if(newColor != null) {
-							((Component) e.getSource()).setBackground(newColor);
-						}
-					}
-				});
-
-			JLabel lblActiveColorConfirmed = new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.activebackground.confirmed") +
-														": ");
-
-			pnlActiveColorConfirmed = new JPanel();
-			pnlActiveColorConfirmed.setBorder(new LineBorder(Color.black));
-			pnlActiveColorConfirmed.setPreferredSize(prefDim);
-			pnlActiveColorConfirmed.setBackground(source.getActiveBackgroundColorConfirmed());
-			pnlActiveColorConfirmed.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
-						Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
-																  Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
-																  ((Component) e.getSource()).getBackground());
-
-						if(newColor != null) {
-							((Component) e.getSource()).setBackground(newColor);
-						}
-					}
-				});
-
-			content.add(lblActiveColor, c);
-			c.gridx++;
-			content.add(pnlActiveColor, c);
-
-			c.gridx = 0;
-			c.gridy++;
-
-			content.add(lblActiveColorConfirmed, c);
-			c.gridx++;
-			content.add(pnlActiveColorConfirmed, c);
-
-			c.gridx = 0;
-			c.gridy++;
-
-			content.add(lblStandardColor, c);
-			c.gridx++;
-			content.add(pnlStandardColor, c);
-
-			c.gridx = 0;
-			c.gridy++;
-
-			content.add(lblStandardColorConfirmed, c);
-			c.gridx++;
-			content.add(pnlStandardColorConfirmed, c);
-
-			return content;
-		}
-
-		protected Container getHighlightPanel() {
-			JPanel content = new JPanel(new GridBagLayout());
-			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting")));
-
-			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-														  GridBagConstraints.WEST,
-														  GridBagConstraints.NONE,
-														  new Insets(0, 2, 1, 1), 0, 0);
-
-			chkSyntaxHighlighting = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting.caption"),
-												  source.getUseSyntaxHighlighting());
-			content.add(chkSyntaxHighlighting, c);
-
-			c.gridy++;
-
-			Container styles = createStylesContainer();
-			content.add(styles, c);
-
-			return content;
-		}
-
-		protected Container getListModePanel() {
-			JPanel content = new JPanel(new BorderLayout(2, 2));
-			content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.listMode")));
-
-			JTextArea text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode.text"));
-			text.setBackground(content.getBackground());
-			text.setEditable(false);
-			text.setLineWrap(true);
-			text.setWrapStyleWord(true);
-			content.add(text, BorderLayout.NORTH);
-
-			JPanel help = new JPanel(new GridBagLayout());
-			GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0.5, 0,
-															GridBagConstraints.WEST,
-															GridBagConstraints.NONE,
-															new Insets(1, 1, 1, 1), 0, 0);
-			listModes = new JCheckBox[3];
-
-			for(int i = 0; i < 3; i++) {
-				listModes[i] = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i));
-				listModes[i].setSelected(((listMode >> (3 - i)) & 1) != 0);
-				help.add(listModes[i], con);
-				con.gridy++;
-			}
-
-			con.gridy = 0;
-			con.gridx = 1;
-			con.fill = GridBagConstraints.HORIZONTAL;
-
-			for(int i = 0; i < 3; i++) {
-				text = new JTextArea(Resources.get("completion.multieditorordereditorlist.prefs.listMode." + i + ".text"));
-				text.setBackground(content.getBackground());
-				text.setEditable(false);
-				text.setLineWrap(true);
-				text.setWrapStyleWord(true);
-				help.add(text, con);
-				con.gridy++;
-			}
-
-			content.add(help, BorderLayout.CENTER);
-
-			help = new JPanel();
-			help.setPreferredSize(new Dimension(15, 5));
-			content.add(help, BorderLayout.WEST);
-
-			return content;
-		}
-
-		protected Container createStylesContainer() {
-			JPanel content = new JPanel();
-
-			comboSHColors = new JComboBox(getStyles());
-			comboSHColors.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent ae) {
-						StyleContainer c = (StyleContainer) comboSHColors.getSelectedItem();
-						pnlStylesColor.setBackground(c.color);
-					}
-				});
-			content.add(comboSHColors);
-
-			pnlStylesColor = new JPanel();
-			pnlStylesColor.setBorder(new LineBorder(Color.black));
-			pnlStylesColor.setPreferredSize(prefDim);
-			pnlStylesColor.setBackground(((StyleContainer) comboSHColors.getItemAt(0)).color);
-			pnlStylesColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent me) {
-						StyleContainer sc = (StyleContainer) comboSHColors.getSelectedItem();
-						Color newColor = JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
-																  sc.description + " Farbe",
-																  sc.color);
-
-						if(newColor != null) {
-							sc.color = newColor;
-							pnlStylesColor.setBackground(newColor);
-						}
-					}
-				});
-			content.add(pnlStylesColor);
-
-			return content;
-		}
-
-		private Object[] getStyles() {
-			Object styles[] = new Object[6];
-
-			styles[0] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.standard"),
-										   OrderEditor.S_REGULAR,
-										   source.getTokenColor(OrderEditor.S_REGULAR));
-			styles[1] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.keywords"),
-										   OrderEditor.S_KEYWORD,
-										   source.getTokenColor(OrderEditor.S_KEYWORD));
-			styles[2] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.strings"), OrderEditor.S_STRING,
-										   source.getTokenColor(OrderEditor.S_STRING));
-			styles[3] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.numbers"), OrderEditor.S_NUMBER,
-										   source.getTokenColor(OrderEditor.S_NUMBER));
-			styles[4] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.ids"), OrderEditor.S_ID,
-										   source.getTokenColor(OrderEditor.S_ID));
-			styles[5] = new StyleContainer(Resources.get("completion.multieditorordereditorlist.prefs.colors.comments"),
-										   OrderEditor.S_COMMENT,
-										   source.getTokenColor(OrderEditor.S_COMMENT));
-
-			return styles;
-		}
-
-        public void initPreferences() {
-            // TODO: implement it
-        }
-		/**
-		 * DOCUMENT-ME
-		 */
-		public void applyPreferences() {
-			source.setActiveBackgroundColor(pnlActiveColor.getBackground());
-			source.setActiveBackgroundColorConfirmed(pnlActiveColorConfirmed.getBackground());
-			source.setStandardBackgroundColor(pnlStandardColor.getBackground());
-			source.setStandardBackgroundColorConfirmed(pnlStandardColorConfirmed.getBackground());
-			source.setMultiEditorLayout(chkMultiEditorLayout.isSelected());
-			source.setHideButtons(chkHideButtons.isSelected());
-			source.setUseSyntaxHighlighting(chkSyntaxHighlighting.isSelected());
-
-			for(int i = 0; i < comboSHColors.getItemCount(); i++) {
-				StyleContainer sc = (StyleContainer) comboSHColors.getItemAt(i);
-				source.setTokenColor(sc.name, sc.color);
-			}
-
-			listMode = 0;
-
-			for(int i = 0; i < 3; i++) {
-				if(listModes[i].isSelected()) {
-					listMode |= (1 << (3 - i));
-				}
-			}
-
-			if(listMode == 0) {
-				listMode = (1 << LIST_REGION);
-			}
-
-			saveListProperty();
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public Component getComponent() {
-			return this;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String getTitle() {
-			return Resources.get("completion.multieditorordereditorlist.prefs.title");
-		}
-
-		private class StyleContainer {
-			/** DOCUMENT-ME */
-			public String description;
-
-			/** DOCUMENT-ME */
-			public String name;
-
-			/** DOCUMENT-ME */
-			public Color color;
-
-			/**
-			 * Creates a new StyleContainer object.
-			 *
-			 * 
-			 * 
-			 * 
-			 */
-			public StyleContainer(String description, String name, Color color) {
-				this.description = description;
-				this.name = name;
-				this.color = color;
-			}
-
-			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
-			 */
-			public String toString() {
-				return description;
-			}
-		}
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  
+  /**
+   * Returns the variable listMode.
+   */
+  public int getListMode() {
+    return listMode;
+  }
+
+  /**
+   * Sets the variable listMode.
+   */
+  public void setListMode(int listMode) {
+    this.listMode = listMode;
+  }
+
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#getCurrentEditor()
+   */
 	public JTextComponent getCurrentEditor() {
 		if(multiEditorLayout) {
 			if(getEditor(currentUnit) != null) {
@@ -1895,74 +1447,59 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#getCurrentUnit()
+   */
 	public Unit getCurrentUnit() {
 		return currentUnit;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * 
+   * @see magellan.client.swing.completion.OrderEditorList#getPreferencesAdapter()
+   */
 	public PreferencesAdapter getPreferencesAdapter() {
-		return new OrderEditorListPreferences(this);
+		return new DetailsViewOrderEditorPreferences(this);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#addExternalKeyListener(java.awt.event.KeyListener)
+   */
 	public void addExternalKeyListener(KeyListener k) {
 		keyListeners.add(k);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#removeExternalKeyListener(java.awt.event.KeyListener)
+   */
 	public void removeExternalKeyListener(KeyListener k) {
 		keyListeners.remove(k);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#addExternalCaretListener(javax.swing.event.CaretListener)
+   */
 	public void addExternalCaretListener(CaretListener k) {
 		caretListeners.add(k);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#removeExternalCaretListener(javax.swing.event.CaretListener)
+   */
 	public void removeExternalCaretListener(CaretListener k) {
 		caretListeners.remove(k);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#addExternalFocusListener(java.awt.event.FocusListener)
+   */
 	public void addExternalFocusListener(FocusListener k) {
 		focusListeners.add(k);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.completion.OrderEditorList#removeExternalFocusListener(java.awt.event.FocusListener)
+   */
 	public void removeExternalFocusListener(FocusListener k) {
 		focusListeners.remove(k);
 	}
@@ -1979,11 +1516,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			source = s;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see java.awt.event.KeyAdapter#keyPressed(java.awt.event.KeyEvent)
+     */
 		public void keyPressed(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
@@ -1998,11 +1533,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			source.keyPressed(e);
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see java.awt.event.KeyAdapter#keyReleased(java.awt.event.KeyEvent)
+     */
 		public void keyReleased(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
@@ -2017,11 +1550,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			source.keyReleased(e);
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see java.awt.event.KeyAdapter#keyTyped(java.awt.event.KeyEvent)
+     */
 		public void keyTyped(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
@@ -2049,11 +1580,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			source = s;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see java.awt.event.FocusAdapter#focusGained(java.awt.event.FocusEvent)
+     */
 		public void focusGained(FocusEvent e) {
 			// first the source (maybe selection event!)
 			source.focusGained(e);
@@ -2064,11 +1593,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			}
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see java.awt.event.FocusAdapter#focusLost(java.awt.event.FocusEvent)
+     */
 		public void focusLost(FocusEvent e) {
 			// first external listeners
 			for(Iterator iter = source.focusListeners.iterator(); iter.hasNext();) {
@@ -2092,11 +1619,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			source = s;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
+    /**
+     * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
+     */
 		public void caretUpdate(CaretEvent e) {
 			for(Iterator iter = source.caretListeners.iterator(); iter.hasNext();) {
 				((CaretListener) iter.next()).caretUpdate(e);
@@ -2113,9 +1638,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		private int loopCounter = 0;
 
-		/**
-		 * DOCUMENT-ME
-		 */
+    /**
+     * @see java.lang.Runnable#run()
+     */
 		public void run() {
 			// waiting for isValid() to become true
 			// does not work, because when we really

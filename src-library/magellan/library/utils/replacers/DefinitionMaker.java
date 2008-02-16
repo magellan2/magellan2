@@ -150,7 +150,7 @@ public class DefinitionMaker {
 		// collect all structure data, but return false
 		for(int i = 0; i < branches; i++) {
 			String branchEnd = branch.getBranchSign(i + 1);
-			LinkedList subList = new LinkedList();
+			LinkedList<Object> subList = new LinkedList<Object>();
 			boolean endReached = false;
 			boolean repEndReached = false;
 
@@ -191,7 +191,7 @@ public class DefinitionMaker {
 														 ReplacerSystem env) {
 		String branchEnd = branch.getBranchSign(0);
 		String switchEnd = branch.getBranchSign(1);
-		LinkedList subList = new LinkedList();
+		LinkedList<Object> subList = new LinkedList<Object>();
 		boolean endReached = false;
 		int branchCount = 0;
 		boolean anything = false;
@@ -233,7 +233,7 @@ public class DefinitionMaker {
 
 	protected static Replacer createListReplacer(StringTokenizer st, ReplacerFactory factory,
 												 String unknown, ReplacerSystem env) {
-		List list = new LinkedList();
+		List<Object> list = new LinkedList<Object>();
 
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();

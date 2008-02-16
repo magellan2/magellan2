@@ -52,6 +52,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import bsh.EvalError;
 import bsh.Interpreter;
 
 /**
@@ -230,8 +231,15 @@ public class ExtendedCommands {
       interpreter.set("helper", new ExtendedCommandsHelper(world,unit));
       interpreter.eval(getCommands(unit));
       unit.setOrdersChanged(true);
+    } catch (EvalError error) {
+      String message = error.getMessage();
+      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      message+="\r\n"+error.getErrorText();
+      ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
+      errorWindow.setShutdownOnCancel(false);
+      errorWindow.setVisible(true);
     } catch (Throwable throwable) {
-      log.error("",throwable);
+      log.info("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -250,8 +258,15 @@ public class ExtendedCommands {
       interpreter.set("container",container);
       interpreter.set("helper", new ExtendedCommandsHelper(world,container));
       interpreter.eval(getCommands(container));
+    } catch (EvalError error) {
+      String message = error.getMessage();
+      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      message+="\r\n"+error.getErrorText();
+      ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
+      errorWindow.setShutdownOnCancel(false);
+      errorWindow.setVisible(true);
     } catch (Throwable throwable) {
-      log.error("",throwable);
+      log.info("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);

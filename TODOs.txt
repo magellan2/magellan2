@@ -9,21 +9,6 @@ Mit + ist in Arbeit
 
 + Probleme mit den PlugIns
 
-+ Optionsfenster überarbeiten
-    System > Textkodierung (komplett überarbeiten)
-    Desktop (an DockingFramework anpassen und komplett überarbeiten)
-    Regionsanzeige > Talentreihenfole (funktioniert nicht)
-    Detailanzeige (überarbeiten & funktioniert nicht richtig)
-    Detailanzeige > Befehlseditor (überarbeiten)
-    Karte (überarbeiten)
-    Nachrichten (nach System verschieben)
-    Ressourcen (überarbeiten)
-    Ressourcen > Pfade (nach System verschieben)
-    Ressourcen > Externe Module (überarbeiten)
-    OK & Abbrechen überarbeiten
-    
-+ Ausblenden von Tab-Buttons (abspeichern fehlt noch)
-
 ------ erledigt -------
 * Inseln werden nicht richtig erfasst (zumindest passiert da
   bei mir nichts)
@@ -65,3 +50,17 @@ Mit + ist in Arbeit
   
 * Navigationsleiste ausblendbar
 
+* Optionsfenster überarbeiten
+*    System > Textkodierung (komplett überarbeiten)
+*    Desktop (an DockingFramework anpassen und komplett überarbeiten)
+*    Regionsanzeige > Talentreihenfole (funktioniert nicht)
+*    Detailanzeige (überarbeiten & funktioniert nicht richtig)
+*    Detailanzeige > Befehlseditor (überarbeiten)
+*    Karte (überarbeiten)
+*    Nachrichten (nach System verschieben)
+*    Ressourcen (überarbeiten)
+*    Ressourcen > Pfade (nach System verschieben)
+*    Ressourcen > Externe Module (überarbeiten)
+*    OK & Abbrechen überarbeiten
+
+* Ausblenden von Tab-Buttons (abspeichern fehlt noch)

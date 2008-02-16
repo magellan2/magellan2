@@ -98,9 +98,8 @@ public class FileHistory {
 			history = new Bucket<FileHistoryAction>(getMaxFileHistorySize());
 		}
 
-		for(Iterator iter = PropertiesHelper.getList(settings, "Client.fileHistory").iterator();
-				iter.hasNext();) {
-			String file = (String) iter.next();
+		for(Iterator<String> iter = PropertiesHelper.getList(settings, "Client.fileHistory").iterator(); iter.hasNext();) {
+			String file = iter.next();
 			File f = new File(file);
 
 			if(f.exists()) {
@@ -108,6 +107,18 @@ public class FileHistory {
 			}
 		}
 	}
+  
+  /**
+   * Returns the last file loaded into Magellan.
+   */
+  public File getLastExistingReport() {
+    if (history == null || history.size()==0) return null;
+    for (FileHistoryAction action : history) {
+      File last = action.getFile();
+      if (last != null && last.exists()) return last;
+    }
+    return null;
+  }
 
 	/**
 	 * Uses the current contents of the file history bucket to remove these menu items from the

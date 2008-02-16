@@ -26,15 +26,20 @@ package magellan.plugin.extendedcommands;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import magellan.library.GameData;
+import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.LuxuryPrice;
+import magellan.library.Region;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.rules.ItemCategory;
+import magellan.library.rules.ItemType;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -73,7 +78,20 @@ public class ExtendedCommandsHelper {
    * Returns the unit with the given Unit-ID in the current region.
    */
   public Unit getUnitInRegion(String unitId) {
-    return unit.getRegion().getUnit(UnitID.createUnitID(unitId, world.base));
+    if (unit != null) {
+      return unit.getRegion().getUnit(UnitID.createUnitID(unitId, world.base));
+    } else {
+      return world.getUnit(UnitID.createUnitID(unitId, world.base));
+    }
+  }
+  
+  /**
+   * Returns the unit with the given Unit-ID in the current region.
+   */
+  public Unit getUnitInRegion(Region region, String unitId) {
+    if (region != null) {
+      return region.getUnit(UnitID.createUnitID(unitId, world.base));
+    } else return null;
   }
   
   /**
@@ -103,6 +121,19 @@ public class ExtendedCommandsHelper {
       }
     }
     return 0;
+  }
+  
+  /**
+   * Returns the luxury item for the given unit that you can
+   * purchase.
+   */
+  public ItemType getRegionLuxuryItem(Region region) {
+    if (region == null) return null;
+    Map<ID,LuxuryPrice> prices = region.getPrices();
+    for (LuxuryPrice price : prices.values()) {
+      if (price.getPrice()<0) return price.getItemType();
+    }
+    return null;
   }
   
   /**
@@ -142,6 +173,14 @@ public class ExtendedCommandsHelper {
    * Adds an order to the current unit.
    */
   public void addOrder(String order) {
+    addOrder(unit,order);
+  }
+  
+  /**
+   * Adds an order to the given unit.
+   */
+  public void addOrder(Unit unit, String order) {
+    if (unit == null) return;
     unit.addOrder(order, false, 0);
   }
   
@@ -150,6 +189,15 @@ public class ExtendedCommandsHelper {
    * given commands.
    */
   public void setOrder(String order) {
+    setOrder(unit,order);
+  }
+  
+  /**
+   * Sets the command for the given unit and replaces all
+   * given commands.
+   */
+  public void setOrder(Unit unit, String order) {
+    if (unit == null) return;
     List<String> orders = new ArrayList<String>();
     orders.add(order);
     unit.setOrders(orders);

@@ -14,15 +14,11 @@
 package magellan.client;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -39,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -52,9 +49,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -65,7 +60,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
@@ -84,6 +78,7 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
+import magellan.client.preferences.DetailsViewPreferences;
 import magellan.client.swing.BasicRegionPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
@@ -92,7 +87,6 @@ import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.client.swing.context.ContextFactory;
 import magellan.client.swing.context.UnitCapacityContextMenu;
 import magellan.client.swing.context.UnitContextMenu;
-import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tree.CellObject;
@@ -1697,20 +1691,38 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 			}
 
-			DefaultMutableTreeNode n = new DefaultMutableTreeNode(personCount + " " +
-																  Resources.get("emapdetailspanel.node.persons"));
+			DefaultMutableTreeNode n = new DefaultMutableTreeNode(personCount + " " + Resources.get("emapdetailspanel.node.persons"));
 			parent.add(n);
 
 			if((g.allies() != null) && (g.allies().values().size() > 0)) {
 				n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.alliances"));
 				parent.add(n);
 				expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
+        
+        HashMap<String, List<Alliance>> alliances = new HashMap<String, List<Alliance>>();
+        for (Alliance alliance : g.allies().values()) {
+          String key = alliance.stateToString();
+          if (alliances.containsKey(key)) {
+            alliances.get(key).add(alliance);
+          } else {
+            List<Alliance> list = new LinkedList<Alliance>();
+            list.add(alliance);
+            alliances.put(key,list);
+          }
+        }
 
-				List<Alliance> sortedAllies = new LinkedList<Alliance>(g.allies().values());
-				Collections.sort(sortedAllies, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
 
-				for(Iterator iter = sortedAllies.iterator(); iter.hasNext();) {
-					DefaultMutableTreeNode m = new DefaultMutableTreeNode(iter.next());
+				for(String key : alliances.keySet()) {
+          List<Alliance> alliance = alliances.get(key);
+          Collections.sort(alliance, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
+          
+					DefaultMutableTreeNode m = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",new Object[]{key}));
+          expandableNodes.add(new NodeWrapper(m, "EMapDetailsPanel.AlliancesExpandedFaction"));
+          for (Alliance a : alliance) {
+            DefaultMutableTreeNode o = new DefaultMutableTreeNode(a.getFaction().getName()+" ("+a.getFaction().getID()+")");
+            m.add(o);
+          }
+          
 					n.add(m);
 				}
 			}
@@ -2122,12 +2134,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendUnitGroupInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		if(u.getGroup() != null) {
 			Group group = u.getGroup();
-			DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.group") +
-					  ": \"" + group.getName() +
-					  "\"","groups"));
+			DefaultMutableTreeNode groupNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.group") + ": \"" + group.getName() + "\"","groups"));
 			
 			parent.add(groupNode);
-			expandableNodes.add(new NodeWrapper(groupNode, "EMapDetailsPanel.UnitGroupExpanded"));
+//			expandableNodes.add(new NodeWrapper(groupNode, "EMapDetailsPanel.UnitGroupExpanded"));
 			appendAlliances(group.allies(), groupNode);
 		}
 	
@@ -4343,23 +4353,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 	}
 	
-	
-	
-
-	// create a popup menu
-
-	/*private JPopupMenu getDetailsContextMenu(DefaultMutableTreeNode node) {
-	    if (displayedObject != null) {
-	        return new DetailsContextMenu(displayedObject, node);
-	    }
-	    return null;
-	  }*/
-
 	/**
 	 * Should return all short cuts this class want to be informed. The elements should be of type
 	 * javax.swing.KeyStroke
-	 *
-	 * 
 	 */
 	public Iterator<KeyStroke> getShortCuts() {
 		return shortCuts.iterator();
@@ -4367,8 +4363,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * This method is called when a shortcut from getShortCuts() is recognized.
-	 *
-	 * 
 	 */
 	public void shortCut(javax.swing.KeyStroke shortcut) {
 		int index = shortCuts.indexOf(shortcut);
@@ -4392,20 +4386,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
+   */
 	public PreferencesAdapter createPreferencesAdapter() {
-		return new EMapDetailsPreferences(settings, this);
+		return new DetailsViewPreferences(settings, this);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
 	public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 		if(actionEvent.getSource() == addTag) {
 			String key = JOptionPane.showInputDialog(tree, Resources.get("emapdetailspanel.addtag.tagname.message"));
@@ -4638,134 +4628,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return false;
 		}
 	}
-
-	class EMapDetailsPreferences extends JPanel implements ExtendedPreferencesAdapter {
-		private Properties settings = null;
-		private EMapDetailsPanel source = null;
-		private List<PreferencesAdapter> subAdapters;
-		private PreferencesAdapter regionPref;
-		private JCheckBox chkShowTagButtons;
-    private JCheckBox chkAllowCustomIcons;
-
-		/**
-		 * Creates a new EMapDetailsPreferences object.
-		 *
-		 * 
-		 * 
-		 */
-		public EMapDetailsPreferences(Properties settings, EMapDetailsPanel source) {
-			this.settings = settings;
-			this.source = source;
-
-			subAdapters = new ArrayList<PreferencesAdapter>(2);
-			subAdapters.add(editor.getPreferencesAdapter());
-			subAdapters.add(orders.getPreferencesAdapter());
-
-			// layout this container
-			/*
-			    setLayout(new GridBagLayout());
-			    GridBagConstraints c = new GridBagConstraints();
-			    GridBagHelper.setConstraints(
-			    c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 0.0,
-			    GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-			    // data view panel
-			    JPanel help = getDataViewPanel();
-			    this.add(help, c);
-			    GridBagHelper.setConstraints(
-			     c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, // different weighty!
-			    GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-			    // region panel information
-			    regionPref = regionPanel.getPreferredAdapter();
-			    this.add(regionPref.getComponent(), c);
-			 */
-			// layout this container
-			setLayout(new BorderLayout());
-
-			// data view panel
-			JPanel help = getDataViewPanel();
-			this.add(help, BorderLayout.NORTH);
-
-			// region panel information
-			regionPref = regionPanel.getPreferredAdapter();
-			this.add(regionPref.getComponent(), BorderLayout.CENTER);
-		}
-
-		private JPanel getDataViewPanel() {
-			JPanel help = new JPanel(new GridBagLayout());
-			help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											Resources.get("emapdetailspanel.prefs.datadisplay")));
-
-      GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1.0, 0,
-														  GridBagConstraints.NORTH,
-														  GridBagConstraints.HORIZONTAL,
-														  new Insets(3, 3, 3, 3), 0, 0);
-
-			c.anchor = GridBagConstraints.WEST;
-			c.gridx = 0;
-			c.gridy = 0;
-			c.fill = GridBagConstraints.HORIZONTAL;
-			c.weightx = 0.1;
-			chkShowTagButtons = new JCheckBox(Resources.get("emapdetailspanel.prefs.showTagButtons"),
-											  source.isShowingTagButtons());
-			help.add(chkShowTagButtons, c);
-
-      
-      c.gridy = 1;
-      chkAllowCustomIcons = new JCheckBox(Resources.get("emapdetailspanel.prefs.allowCustomIcons"),
-            source.isAllowingCustomIcons());
-      help.add(chkAllowCustomIcons, c);
-      
-      
-			return help;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public List getChildren() {
-			return subAdapters;
-		}
-
-        /**
-         * @deprecated not implemented?
-         * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-         */
-        public void initPreferences() {
-            regionPref.initPreferences();
-            // TODO: implement it
-        }
-
-		/**
-		 * preferences adapter code:
-		 * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
-		 */
-		public void applyPreferences() {
-			source.setShowTagButtons(chkShowTagButtons.isSelected());
-      source.setAllowCustomIcons(chkAllowCustomIcons.isSelected());
-			regionPref.applyPreferences();
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public Component getComponent() {
-			return this;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String getTitle() {
-			return Resources.get("emapdetailspanel.prefs.title");
-		}
-	}
-
 	/**
 	 * A class that can be used to interpret a tree entry as a button
 	 */
@@ -5487,16 +5349,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private class DetailsUnitContextFactory implements ContextFactory {
 		
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
-		 */
+    /**
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
+     */
 		public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, Collection<Unit> selectedObjects, DefaultMutableTreeNode node) {
 			
 			
@@ -5532,17 +5387,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 	}
 
+  /**
+   * 
+   */
 	private class RaceInfo {
 		int amount = 0;
 		int amount_modified = 0;
 		String raceNoPrefix = null;
 	}
 	
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.MenuProvider#getMenu()
+   */
 	public JMenu getMenu() {
 		JMenu tree = new JMenu(Resources.get("emapdetailspanel.menu.caption"));
 		tree.setMnemonic(Resources.get("emapdetailspanel.menu.mnemonic").charAt(0));
@@ -5551,24 +5407,41 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		return tree;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.MenuProvider#getSuperMenu()
+   */
 	public String getSuperMenu() {
 		return "tree";
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.MenuProvider#getSuperMenuTitle()
+   */
 	public String getSuperMenuTitle() {
 		return Resources.get("emapdetailspanel.menu.supertitle");
 	}
-	
+  
+  /**
+   * Returns the Order Editor component.
+   */
+  public MultiEditorOrderEditorList getEditor() {
+    return editor;
+  }
+  
+  /**
+   * Returns the AutoCompletion Editor component.
+   */
+  public AutoCompletion getOrders() {
+    return orders;
+  }
+  
+  /**
+   * Returns the Region Panel.
+   */
+  public BasicRegionPanel getRegionPanel() {
+    return regionPanel;
+  }
+  
 	/**
 	 * outsourced handling of changes in tree-selections
 	 * updating mySelectedUnits

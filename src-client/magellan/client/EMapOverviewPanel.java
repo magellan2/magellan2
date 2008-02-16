@@ -13,14 +13,8 @@
 
 package magellan.client;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -42,32 +36,16 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
-import javax.swing.border.AbstractBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -93,11 +71,11 @@ import magellan.client.event.TempUnitEvent;
 import magellan.client.event.TempUnitListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
+import magellan.client.preferences.RegionOverviewPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.context.UnitContainerContextFactory;
 import magellan.client.swing.context.UnitContextFactory;
-import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tree.BorderNodeWrapper;
@@ -114,15 +92,13 @@ import magellan.client.swing.tree.TreeHelper;
 import magellan.client.swing.tree.TreeUpdate;
 import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.client.swing.tree.UnitNodeWrapper;
-import magellan.client.utils.ImageFactory;
 import magellan.client.utils.SelectionHistory;
+import magellan.client.utils.TreeBuilder;
 import magellan.library.Alliance;
 import magellan.library.Building;
 import magellan.library.Faction;
-import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
-import magellan.library.Island;
 import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
@@ -132,18 +108,14 @@ import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.relation.TransferRelation;
 import magellan.library.relation.UnitRelation;
-import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Umlaut;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
-import magellan.library.utils.comparator.RegionIslandComparator;
 import magellan.library.utils.comparator.SkillComparator;
 import magellan.library.utils.comparator.SkillTypeComparator;
 import magellan.library.utils.comparator.SkillTypeRankComparator;
@@ -385,7 +357,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     setDefaultAlliances();
   }
 
-  protected void rebuildTree() {
+  public void rebuildTree() {
     Object oldActiveObject = activeObject;
     Collection<Unique> oldSelectedObjects = new LinkedList<Unique>(selectedObjects);
 
@@ -1487,34 +1459,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     treeModel.reload(parentNode);
   }
 
-  /**
-   * Sort a collection of regions in a specific order.
-   * 
-   * @param regions
-   *          DOCUMENT-ME
-   * 
-   */
-  private Collection sortRegions(Collection<Region> regions) {
-    if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true"))).booleanValue()) {
-      if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates")) {
-        List<Region> sortedRegions = new LinkedList<Region>(regions);
-        Collections.sort(sortedRegions, IDComparator.DEFAULT);
-
-        return sortedRegions;
-      } else if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands")) {
-        List<Region> sortedRegions = new LinkedList<Region>(regions);
-        Comparator<Unique> idCmp = IDComparator.DEFAULT;
-        Collections.sort(sortedRegions, new RegionIslandComparator(new NameComparator<Unique>(idCmp), idCmp, idCmp));
-
-        return sortedRegions;
-      } else {
-        return regions;
-      }
-    } else {
-      return regions;
-    }
-  }
-
   // ///////////////
   // Key handler //
   // ///////////////
@@ -1683,19 +1627,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new EMapOverviewPreferences(this, settings);
+    return new RegionOverviewPreferences(this, settings, data);
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param p1
-   *          DOCUMENT-ME
+   * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
    */
   public void stateChanged(javax.swing.event.ChangeEvent p1) {
     // update the history list
@@ -1870,11 +1809,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
-  protected void saveExpandProperties() {
-    settings.setProperty("EMapOverviewPanel.ExpandMode", String.valueOf(expandMode));
-    settings.setProperty("EMapOverviewPanel.ExpandTrustlevel", String.valueOf(expandTrustlevel));
-  }
-
   protected void loadCollapseProperty() {
     try {
       collapseMode = Integer.parseInt(settings.getProperty("EMapOverviewPanel.CollapseMode"));
@@ -1883,9 +1817,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
-  protected void saveCollapseProperty() {
-    settings.setProperty("EMapOverviewPanel.CollapseMode", String.valueOf(collapseMode));
-  }
 
   /**
    * DOCUMENT-ME
@@ -1929,1170 +1860,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public String getListenerDescription() {
     return Resources.get("emapoverviewpanel.shortcut.title");
-  }
-
-  /**
-   * 
-   * Provides Panel (Extended Preferences Adapter) for Preferences
-   *
-   * @author ...
-   * @version 1.0, 20.11.2007
-   */
-  private class EMapOverviewPreferences extends JPanel implements ExtendedPreferencesAdapter {
-    
-    /**
-     * 
-     * Panel for maintainig the SkillTypeList for sorting after 
-     * skillType
-     *
-     * @author ...
-     * @version 1.0, 20.11.2007
-     */
-    private class SkillPreferences extends JPanel implements PreferencesAdapter, GameDataListener {
-      
-        /**
-         * 
-         * An extra cell renderer to display the skills in the list
-         *
-         * @author ...
-         * @version 1.0, 20.11.2007
-         */
-        private class MyCellRenderer extends JLabel implements ListCellRenderer {
-          // we need a reference to the translations
-          private GameData data=null;
-          // we need a reference to the ImageFactory
-          private ImageFactory imageFactory=null;
-          
-          /**
-           * Constructs a new extra cell renderer for our skill list
-           * @param _data
-           * @param _imageFactory
-           */
-           
-          public MyCellRenderer(GameData _data, ImageFactory _imageFactory){
-            this.data = _data;
-            this.imageFactory = _imageFactory;
-          }
-          
-          /**
-           * returns the JLabel to display in our skill list
-           * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
-           */
-          public Component getListCellRendererComponent(
-            JList list,
-            Object value,            // value to display
-            int index,               // cell index
-            boolean isSelected,      // is the cell selected
-            boolean cellHasFocus)    // the list and the cell have the focus
-          {
-              String s = value.toString();
-              String normalizedIconName = Umlaut.convertUmlauts(s).toLowerCase();
-              s = this.data.getTranslation(s);
-              setText(s);
-              setIcon(this.imageFactory.loadImageIcon(normalizedIconName));
-              if (isSelected) {
-                setBackground(list.getSelectionBackground());
-                  setForeground(list.getSelectionForeground());
-              } else {
-                    setBackground(list.getBackground());
-                    setForeground(list.getForeground());
-              }
-              setEnabled(list.isEnabled());
-              setFont(list.getFont());
-              setOpaque(true);
-              return this;
-          }
-      }
-      
-      /**
-       * 
-       * a small comparator to compare translated skillNames
-       *
-       * @author ...
-       * @version 1.0, 20.11.2007
-       */  
-      private class SkillTypeComparator implements Comparator<SkillType> {
-        
-        // Reference to Translations
-        private GameData data=null;
-        
-        /**
-         * constructs new Comparator
-         * @param _data
-         */
-        public SkillTypeComparator(GameData _data){
-          this.data = _data;
-        }
-        
-        public int compare(SkillType o1,SkillType o2){
-          String s1 = data.getTranslation(o1.getName());
-          String s2 = data.getTranslation(o2.getName());
-          return s1.compareToIgnoreCase(s2);
-        }
-      }
-        
-      
-      /** DOCUMENT-ME */
-      public JList skillList = null;
-      private JButton upButton = null;
-      private JButton downButton = null;
-      private JButton refreshListButton = null;
-      
-      private SkillTypeComparator skillTypeComparator = null;
-
-      /**
-       * Creates a new SkillPreferences object.
-       */
-      public SkillPreferences(EventDispatcher d, ImageFactory imageFactory) {
-        this.setLayout(new BorderLayout());
-        this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.skillorder")));
-        
-        d.addGameDataListener(this);
-        
-        skillList = new JList();
-        skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        skillList.setCellRenderer(new MyCellRenderer(data,imageFactory));
-        // entries for List are updated in initPreferences
-        
-        this.add(new JScrollPane(skillList), BorderLayout.CENTER);
-
-        JPanel buttons = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 1, 2, 1), 0, 0);
-
-        upButton = new JButton(Resources.get("emapoverviewpanel.prefs.upbutton.caption"));
-        upButton.setPreferredSize(new Dimension(110, 40));
-        upButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
-              return;
-            }
-
-            int selIndices[] = skillList.getSelectedIndices();
-
-            if (selIndices.length == 0) {
-              return;
-            }
-
-            List newData = new LinkedList();
-            ListModel oldData = skillList.getModel();
-            List<Integer> newSelectedIndices = new LinkedList<Integer>();
-
-            for (int i = 0; i < oldData.getSize(); i++) {
-              Object o = oldData.getElementAt(i);
-
-              if (skillList.isSelectedIndex(i)) {
-                int newPos;
-
-                if ((i > 0) && !newSelectedIndices.contains(new Integer(i - 1))) {
-                  newPos = i - 1;
-                } else {
-                  newPos = i;
-                }
-
-                newData.add(newPos, o);
-                newSelectedIndices.add(new Integer(newPos));
-              } else {
-                newData.add(o);
-              }
-            }
-
-            skillList.setListData(newData.toArray());
-
-            int selection[] = new int[newSelectedIndices.size()];
-            int i = 0;
-
-            for (Iterator iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
-              selection[i] = ((Integer) iter.next()).intValue();
-            }
-
-            skillList.setSelectedIndices(selection);
-            skillList.ensureIndexIsVisible(selection[0]);
-          }
-        });
-        buttons.add(upButton, c);
-
-        c.gridy++;
-
-        downButton = new JButton(Resources.get("emapoverviewpanel.prefs.downbutton.caption"));
-        downButton.setPreferredSize(new Dimension(110, 40));
-        downButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
-              return;
-            }
-
-            int selIndices[] = skillList.getSelectedIndices();
-
-            if (selIndices.length == 0) {
-              return;
-            }
-
-            List<Object> newData = new LinkedList<Object>();
-            ListModel oldData = skillList.getModel();
-            List<Integer> newSelectedIndices = new LinkedList<Integer>();
-
-            for (int i = oldData.getSize() - 1; i >= 0; i--) {
-              Object o = oldData.getElementAt(i);
-
-              if (skillList.isSelectedIndex(i)) {
-                int newPos;
-
-                if ((i < (oldData.getSize() - 1)) && !newSelectedIndices.contains(new Integer(i + 1))) {
-                  newPos = i + 1;
-                  newData.add(1, o);
-                } else {
-                  newPos = i;
-                  newData.add(0, o);
-                }
-
-                newSelectedIndices.add(new Integer(newPos));
-              } else {
-                newData.add(0, o);
-              }
-            }
-
-            skillList.setListData(newData.toArray());
-
-            int selection[] = new int[newSelectedIndices.size()];
-            int i = 0;
-
-            for (Iterator iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
-              selection[i] = ((Integer) iter.next()).intValue();
-            }
-
-            skillList.setSelectedIndices(selection);
-            skillList.ensureIndexIsVisible(selection[0]);
-          }
-        });
-        buttons.add(downButton, c);
-
-        // add a filler
-        c.gridy++;
-        c.fill = GridBagConstraints.BOTH;
-        c.weighty = 1;
-        buttons.add(new JPanel(), c);
-
-        c.anchor = GridBagConstraints.SOUTHWEST;
-        c.gridy++;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weighty = 0;
-        c.insets.bottom = 0;
-
-        refreshListButton = new JButton(Resources.get("emapoverviewpanel.prefs.refreshlistbutton.caption"));
-        refreshListButton.setPreferredSize(new Dimension(110, 40));
-        refreshListButton.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if ((skillList.getModel() == null) || (skillList.getModel().getSize() == 0)) {
-              return;
-            }
-
-            ListModel listData = skillList.getModel();
-            List<SkillType> v = new LinkedList<SkillType>();
-
-            for (int index = 0; index < listData.getSize(); index++) {
-              v.add((SkillType)listData.getElementAt(index));
-            }
-            
-            if (skillTypeComparator==null){
-              skillTypeComparator = new SkillTypeComparator(data);
-            }
-            
-            Collections.sort(v,skillTypeComparator);
-            skillList.setListData(v.toArray());
-          }
-        });
-        buttons.add(refreshListButton, c);
-
-        this.add(buttons, BorderLayout.EAST);
-        this.initPreferences();
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * @param enable
-       *          DOCUMENT-ME
-       */
-      public void setEnabled(boolean enable) {
-        super.setEnabled(enable);
-        skillList.setEnabled(enable);
-        upButton.setEnabled(enable);
-        downButton.setEnabled(enable);
-        refreshListButton.setEnabled(enable);
-      }
-
-      // Game Data has changed
-      public void gameDataChanged(GameDataEvent e){
-        data = e.getGameData();
-        this.initPreferences();
-      }
-      
-      /**
-       * fills the values
-       */
-      public void initPreferences() {
-        if (data != null) {
-          List<SkillType> v = new LinkedList<SkillType>();
-
-          for (Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
-            SkillType type = (SkillType) iter.next();
-            v.add(type);
-          }
-
-          Collections.sort(v, new SkillTypeRankComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT), EMapOverviewPanel.this.settings));
-          skillList.setListData(v.toArray());
-          
-          if (v.size()>0){
-            setEnabled(true);
-          } else {
-            setEnabled(false);
-          }
-        } else {
-          setEnabled(false);
-        }
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public Component getComponent() {
-        return this;
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * 
-       */
-      public String getTitle() {
-        return Resources.get("emapoverviewpanel.prefs.skillorder");
-      }
-
-      /**
-       * DOCUMENT-ME
-       */
-      public void applyPreferences() {
-        ListModel listData = skillList.getModel();
-
-        for (int index = 0; index < listData.getSize(); index++) {
-          SkillType s = (SkillType) listData.getElementAt(index);
-          settings.setProperty("ClientPreferences.compareValue." + s.getID(), String.valueOf(index));
-
-        }
-      }
-    }
-
-    private EMapOverviewPanel overviewPanel = null;
-
-    /** DOCUMENT-ME */
-    public JCheckBox chkSortRegions = null;
-
-    /**
-     * TODO DOCUMENT ME! Comment for <code>chkSortShipUnderUnitParent</code>.
-     */
-    public JCheckBox chkSortShipUnderUnitParent = null;
-
-    /** DOCUMENT-ME */
-    public JRadioButton rdbSortRegionsCoordinates = null;
-
-    /** DOCUMENT-ME */
-    public JRadioButton rdbSortRegionsIslands = null;
-
-    /** DOCUMENT-ME */
-    public JCheckBox chkDisplayIslands = null;
-
-    /** DOCUMENT-ME */
-    public JRadioButton rdbSortUnitsUnsorted = null;
-
-    /** DOCUMENT-ME */
-    public JRadioButton rdbSortUnitsSkills = null;
-
-    // use the best skill of the unit to sort it
-
-    /** DOCUMENT-ME */
-    public JRadioButton useBestSkill = null;
-
-    /**
-     * if true, regiontree will contain regions without own units but with
-     * buildings known in it
-     */
-    public JCheckBox chkRegionTreeBuilder_withBuildings = null;
-
-    /**
-     * if true, regiontree will contain regions without own units but with Ships
-     * known in it
-     */
-    public JCheckBox chkRegionTreeBuilder_withShips = null;
-
-    /**
-     * if true, regiontree will contain regions without own units but with
-     * Comments known in it
-     */
-    public JCheckBox chkRegionTreeBuilder_withComments = null;
-
-    /** if true, region tree's top nodes will have handles */
-    public JCheckBox chkRootHandles = null;
-    
-    // use the topmost skill in (selfdefined) skilltype-list to sort it
-
-    /** DOCUMENT-ME */
-    public JRadioButton useTopmostSkill = null;
-
-    /** DOCUMENT-ME */
-    public JRadioButton rdbSortUnitsNames = null;
-    protected ExpandPanel ePanel;
-    protected CollapsePanel cPanel;
-    private SkillPreferences skillSort;
-    private List<SkillPreferences> subAdapter;
-    private JList useList;
-    private JList elementsList;
-
-    /**
-     * Creates a new EMapOverviewPreferences object.
-     * 
-     * @param settings
-     *          DOCUMENT-ME
-     */
-    public EMapOverviewPreferences(EMapOverviewPanel parent, Properties settings) {
-      overviewPanel = parent;
-      chkSortRegions = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortregions"));
-
-      chkSortShipUnderUnitParent = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortShipUnderUnitParent"));
-
-      rdbSortRegionsCoordinates = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbycoordinates"));
-
-      rdbSortRegionsIslands = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyislands"));
-
-      ButtonGroup regionSortButtons = new ButtonGroup();
-      regionSortButtons.add(rdbSortRegionsCoordinates);
-      regionSortButtons.add(rdbSortRegionsIslands);
-
-      JPanel pnlRegionSortButtons = new JPanel();
-      pnlRegionSortButtons.setLayout(new BoxLayout(pnlRegionSortButtons, BoxLayout.Y_AXIS));
-      pnlRegionSortButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.regionsorting")));
-      pnlRegionSortButtons.add(chkSortRegions);
-      pnlRegionSortButtons.add(rdbSortRegionsCoordinates);
-      pnlRegionSortButtons.add(rdbSortRegionsIslands);
-
-      chkDisplayIslands = new JCheckBox(Resources.get("emapoverviewpanel.prefs.showislands"));
-
-      chkRegionTreeBuilder_withBuildings = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treebuildings"));
-      chkRegionTreeBuilder_withShips = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treeships"));
-      chkRegionTreeBuilder_withComments = new JCheckBox(Resources.get("emapoverviewpanel.prefs.treecomments"));
-
-      chkRootHandles = new JCheckBox(Resources.get("emapoverviewpanel.prefs.roothandles"));
-
-      JPanel pnlTreeStructure = new JPanel();
-      pnlTreeStructure.setLayout(new GridBagLayout());
-
-      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
-      pnlTreeStructure.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure")));
-
-      JPanel elementsPanel = new JPanel();
-      elementsPanel.setLayout(new BorderLayout(0, 0));
-      elementsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.available")));
-
-      DefaultListModel elementsListModel = new DefaultListModel();
-      elementsListModel.add(TreeHelper.FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.faction"));
-      elementsListModel.add(TreeHelper.GROUP, Resources.get("emapoverviewpanel.prefs.treeStructure.element.group"));
-      elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.combat"));
-      elementsListModel.add(TreeHelper.HEALTH, Resources.get("emapoverviewpanel.prefs.treeStructure.element.health"));
-      elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
-      elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources.get("emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
-      elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING }));
-      elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING2 }));
-      elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING3 }));
-      elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING4 }));
-      elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING5 }));
-
-      elementsList = new JList(elementsListModel);
-
-      JScrollPane pane = new JScrollPane(elementsList);
-      elementsPanel.add(pane, BorderLayout.CENTER);
-
-      JPanel usePanel = new JPanel();
-      usePanel.setLayout(new GridBagLayout());
-      usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.treeStructure.use")));
-
-      useList = new JList();
-      useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-      pane = new JScrollPane(useList);
-      c.gridheight = 4;
-      usePanel.add(pane, c);
-
-      c.gridheight = 1;
-      c.gridx = 1;
-      c.weightx = 0;
-      usePanel.add(new JPanel(), c);
-
-      c.gridy++;
-      c.weighty = 0;
-
-      JButton up = new JButton(Resources.get("emapoverviewpanel.prefs.treeStructure.up"));
-      up.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          int pos = useList.getSelectedIndex();
-          DefaultListModel model = (DefaultListModel) useList.getModel();
-
-          if (pos == 0) {
-            return;
-          }
-
-          Object o = model.elementAt(pos);
-          model.remove(pos);
-          model.insertElementAt(o, pos - 1);
-          useList.setSelectedIndex(pos - 1);
-        }
-      });
-      usePanel.add(up, c);
-
-      c.gridy++;
-
-      JButton down = new JButton(Resources.get("emapoverviewpanel.prefs.treeStructure.down"));
-      down.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          int pos = useList.getSelectedIndex();
-          DefaultListModel model = (DefaultListModel) useList.getModel();
-
-          if (pos == (model.getSize() - 1)) {
-            return;
-          }
-
-          Object o = model.elementAt(pos);
-          model.remove(pos);
-          model.insertElementAt(o, pos + 1);
-          useList.setSelectedIndex(pos + 1);
-        }
-      });
-      usePanel.add(down, c);
-
-      c.gridy++;
-      c.weighty = 1.0;
-      usePanel.add(new JPanel(), c);
-
-      c.gridx = 0;
-      c.gridy = 0;
-      c.gridheight = 4;
-      c.weightx = 0.5;
-      c.weighty = 0.5;
-      pnlTreeStructure.add(elementsPanel, c);
-
-      c.gridx = 2;
-      pnlTreeStructure.add(usePanel, c);
-
-      c.gridx = 1;
-      c.gridheight = 1;
-      c.weightx = 0;
-      c.weighty = 1.0;
-      pnlTreeStructure.add(new JPanel(), c);
-
-      c.gridy++;
-      c.weighty = 0;
-
-      JButton right = new JButton("  -->  ");
-      right.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Object selection[] = elementsList.getSelectedValues();
-          DefaultListModel model = (DefaultListModel) useList.getModel();
-
-          for (int i = 0; i < selection.length; i++) {
-            if (!model.contains(selection[i])) {
-              model.add(model.getSize(), selection[i]);
-            }
-          }
-        }
-      });
-      pnlTreeStructure.add(right, c);
-
-      c.gridy++;
-
-      JButton left = new JButton("  <--  ");
-      left.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          DefaultListModel model = (DefaultListModel) useList.getModel();
-          Object selection[] = useList.getSelectedValues();
-
-          for (int i = 0; i < selection.length; i++) {
-            model.removeElement(selection[i]);
-          }
-        }
-      });
-      pnlTreeStructure.add(left, c);
-
-      c.gridy++;
-      c.weighty = 1;
-      pnlTreeStructure.add(new JPanel(), c);
-
-      // Unit sorting
-      rdbSortUnitsUnsorted = new JRadioButton(Resources.get("emapoverviewpanel.prefs.reportorder"));
-      rdbSortUnitsUnsorted.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          skillSort.setEnabled(false);
-          useBestSkill.setEnabled(false);
-          useTopmostSkill.setEnabled(false);
-        }
-      });
-
-      rdbSortUnitsSkills = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbyskills"));
-      rdbSortUnitsSkills.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          skillSort.setEnabled(true);
-          useBestSkill.setEnabled(true);
-          useTopmostSkill.setEnabled(true);
-        }
-      });
-
-      useBestSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usebestskill"));
-      useTopmostSkill = new JRadioButton(Resources.get("emapoverviewpanel.prefs.usetopmostskill"));
-
-      ButtonGroup whichSkillToUse = new ButtonGroup();
-      whichSkillToUse.add(useBestSkill);
-      whichSkillToUse.add(useTopmostSkill);
-      rdbSortUnitsNames = new JRadioButton(Resources.get("emapoverviewpanel.prefs.sortbynames"));
-      rdbSortUnitsNames.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          skillSort.setEnabled(false);
-          useBestSkill.setEnabled(false);
-          useTopmostSkill.setEnabled(false);
-        }
-      });
-
-      ButtonGroup unitsSortButtons = new ButtonGroup();
-      unitsSortButtons.add(rdbSortUnitsUnsorted);
-      unitsSortButtons.add(rdbSortUnitsSkills);
-      unitsSortButtons.add(rdbSortUnitsNames);
-
-      JPanel pnlUnitSort = new JPanel();
-      pnlUnitSort.setLayout(new GridBagLayout());
-      c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-      pnlUnitSort.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.unitsorting")));
-      pnlUnitSort.add(rdbSortUnitsUnsorted, c);
-      c.gridy = 1;
-      pnlUnitSort.add(rdbSortUnitsSkills, c);
-      c.gridy = 2;
-      c.insets = new Insets(0, 30, 0, 0);
-      pnlUnitSort.add(useBestSkill, c);
-      c.gridy = 3;
-      pnlUnitSort.add(useTopmostSkill, c);
-      c.gridy = 4;
-      c.ipadx = 0;
-      c.insets = new Insets(0, 0, 0, 0);
-      pnlUnitSort.add(rdbSortUnitsNames, c);
-
-      this.setLayout(new GridBagLayout());
-      c.anchor = GridBagConstraints.CENTER;
-      c.gridx = 0;
-      c.gridy = 0;
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.weightx = 1.0;
-      c.weighty = 0.0;
-      this.add(pnlRegionSortButtons, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkDisplayIslands, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkSortShipUnderUnitParent, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkRegionTreeBuilder_withBuildings, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkRegionTreeBuilder_withShips, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkRegionTreeBuilder_withComments, c);
-
-      c.anchor = GridBagConstraints.WEST;
-      c.gridy++;
-      c.insets.left = 10;
-      c.fill = GridBagConstraints.NONE;
-      c.weightx = 0.0;
-      this.add(chkRootHandles, c);
-
-      c.insets.left = 0;
-      c.anchor = GridBagConstraints.CENTER;
-      c.gridy++;
-      c.fill = GridBagConstraints.HORIZONTAL;
-      c.weightx = 1.0;
-      this.add(pnlTreeStructure, c);
-
-      c.gridy++;
-      this.add(pnlUnitSort, c);
-
-      JPanel help = new JPanel(new GridLayout(1, 2));
-      help.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.expand.title")));
-      help.add(ePanel = new ExpandPanel()); // , BorderLayout.WEST);
-      help.add(cPanel = new CollapsePanel()); // , BorderLayout.EAST);
-      c.gridy++;
-      this.add(help, c);
-
-      subAdapter = new ArrayList<SkillPreferences>(1);
-      subAdapter.add(skillSort = new SkillPreferences(parent.dispatcher,parent.dispatcher.getMagellanContext().getImageFactory()));
-    }
-
-    
-    
-    
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.eressea.swing.preferences.PreferencesAdapter#initPreferences()
-     */
-    public void initPreferences() {
-      chkSortRegions.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortRegions", true));
-      chkSortShipUnderUnitParent.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true));
-
-      chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true));
-      chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
-      chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
-
-      chkRootHandles.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
-
-      rdbSortRegionsCoordinates.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
-      rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands"));
-      chkDisplayIslands.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.displayIslands", true));
-
-      String criteria = settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " " + TreeHelper.GROUP);
-
-      DefaultListModel model2 = new DefaultListModel();
-
-      for (StringTokenizer tokenizer = new StringTokenizer(criteria); tokenizer.hasMoreTokens();) {
-        String s = tokenizer.nextToken();
-        try {
-          int i = Integer.parseInt(s);
-
-          try {
-            model2.add(model2.size(), elementsList.getModel().getElementAt(i));
-          } catch (ArrayIndexOutOfBoundsException e) {
-            model2.add(model2.size(), "unknown");
-          }
-        } catch (NumberFormatException e) {
-        }
-      }
-      useList.setModel(model2);
-
-      rdbSortUnitsUnsorted.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("unsorted"));
-      rdbSortUnitsSkills.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("skills"));
-      useBestSkill.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.useBestSkill", true));
-      useTopmostSkill.setSelected(!useBestSkill.isSelected());
-
-      rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("names"));
-
-      skillSort.initPreferences();
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public void applyPreferences() {
-      settings.setProperty("EMapOverviewPanel.sortRegions", String.valueOf(chkSortRegions.isSelected()));
-
-      settings.setProperty("EMapOverviewPanel.sortShipUnderUnitParent", String.valueOf(chkSortShipUnderUnitParent.isSelected()));
-
-      settings.setProperty("EMapOverviewPanel.treeBuilderWithBuildings", String.valueOf(chkRegionTreeBuilder_withBuildings.isSelected()));
-
-      settings.setProperty("EMapOverviewPanel.treeBuilderWithShips", String.valueOf(chkRegionTreeBuilder_withShips.isSelected()));
-
-      settings.setProperty("EMapOverviewPanel.treeBuilderWithComments", String.valueOf(chkRegionTreeBuilder_withComments.isSelected()));
-
-      settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles.isSelected()));
-
-      // workaround to support EMapOverviewPanel.filters
-      int newFilter = TreeBuilder.UNITS;
-      if (chkRegionTreeBuilder_withBuildings.isSelected())
-        newFilter = newFilter | TreeBuilder.BUILDINGS;
-      if (chkRegionTreeBuilder_withShips.isSelected())
-        newFilter = newFilter | TreeBuilder.SHIPS;
-      if (chkRegionTreeBuilder_withComments.isSelected())
-        newFilter = newFilter | TreeBuilder.COMMENTS;
-
-      settings.setProperty("EMapOverviewPanel.filters", String.valueOf(newFilter));
-
-      if (rdbSortRegionsCoordinates.isSelected()) {
-        settings.setProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates");
-      } else if (rdbSortRegionsIslands.isSelected()) {
-        settings.setProperty("EMapOverviewPanel.sortRegionsCriteria", "islands");
-      }
-
-      settings.setProperty("EMapOverviewPanel.displayIslands", String.valueOf(chkDisplayIslands.isSelected()));
-
-      if (rdbSortUnitsUnsorted.isSelected()) {
-        settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "unsorted");
-      } else if (rdbSortUnitsSkills.isSelected()) {
-        settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "skills");
-      } else if (rdbSortUnitsNames.isSelected()) {
-        settings.setProperty("EMapOverviewPanel.sortUnitsCriteria", "names");
-      }
-
-      settings.setProperty("EMapOverviewPanel.useBestSkill", String.valueOf(useBestSkill.isSelected()));
-
-      DefaultListModel useListModel = (DefaultListModel) useList.getModel();
-      StringBuffer definition = new StringBuffer("");
-
-      DefaultListModel elementsListModel = (DefaultListModel) elementsList.getModel();
-      for (int i = 0; i < useListModel.getSize(); i++) {
-        String s = (String) useListModel.getElementAt(i);
-
-        int pos = elementsListModel.indexOf(s);
-        definition.append(pos).append(" ");
-      }
-
-      settings.setProperty("EMapOverviewPanel.treeStructure", definition.toString());
-
-      ePanel.apply();
-      cPanel.apply();
-
-      // We have to assure, that SkillPreferences.applyPreferences is called
-      // before we rebuild the tree, i.e. before we call gameDataChanged().
-      skillSort.applyPreferences();
-
-      overviewPanel.rebuildTree();
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public Component getComponent() {
-      return this;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public String getTitle() {
-      return Resources.get("emapoverviewpanel.prefs.title");
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * 
-     */
-    public List getChildren() {
-      return subAdapter;
-    }
-
-    protected class ExpandPanel extends JPanel implements ActionListener {
-      protected JRadioButton radioButtons[];
-      protected JCheckBox checkBox;
-      protected JTextField trustlevel;
-
-      /**
-       * Creates a new ExpandPanel object.
-       */
-      public ExpandPanel() {
-        super(new GridBagLayout());
-
-        GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-        radioButtons = new JRadioButton[3];
-
-        ButtonGroup group = new ButtonGroup();
-
-        boolean expanded = (expandMode & EXPAND_FLAG) != 0;
-
-        radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.none"), !expanded);
-        group.add(radioButtons[0]);
-        this.add(radioButtons[0], con);
-
-        con.gridy++;
-        con.fill = GridBagConstraints.HORIZONTAL;
-        this.add(new JSeparator(JSeparator.HORIZONTAL), con);
-        con.fill = GridBagConstraints.NONE;
-
-        radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.faction"), (expanded && ((expandMode >> 2) == 0)));
-        group.add(radioButtons[1]);
-        con.gridy++;
-        this.add(radioButtons[1], con);
-
-        radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.full"), (expanded && ((expandMode >> 2) == 3)));
-        group.add(radioButtons[2]);
-        con.gridy++;
-        this.add(radioButtons[2], con);
-
-        trustlevel = new JTextField(String.valueOf(expandTrustlevel), 3);
-        trustlevel.setEnabled(radioButtons[2].isSelected());
-
-        JPanel help = new JPanel();
-        help.add(Box.createRigidArea(new Dimension(20, 5)));
-
-        String s = Resources.get("emapoverviewpanel.prefs.expand.trustlevel");
-        int index = s.indexOf("#T");
-
-        if (index == 0) {
-          help.add(trustlevel);
-          help.add(new JLabel(s.substring(2)));
-        } else if ((index == -1) || (index == (s.length() - 2))) {
-          if (index != -1) {
-            s = s.substring(0, index);
-          }
-
-          help.add(new JLabel(s));
-          help.add(trustlevel);
-        } else {
-          help.add(new JLabel(s.substring(0, index)));
-          help.add(trustlevel);
-          help.add(new JLabel(s.substring(index + 2)));
-        }
-
-        con.gridy++;
-        this.add(help, con);
-
-        con.gridy++;
-        checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.expand.ifinside"), (expandMode & EXPAND_IFINSIDE_FLAG) != 0);
-        checkBox.setEnabled(expanded);
-        this.add(checkBox, con);
-
-        registerListener();
-      }
-
-      protected void registerListener() {
-        for (int i = 0; i < radioButtons.length; i++) {
-          radioButtons[i].addActionListener(this);
-        }
-      }
-
-      /**
-       * DOCUMENT-ME
-       */
-      public void apply() {
-        if (radioButtons[0].isSelected()) {
-          expandMode = expandMode & (0xFFFFFFFF ^ EXPAND_FLAG);
-        } else {
-          expandMode = expandMode | EXPAND_FLAG;
-        }
-
-        if (checkBox.isSelected()) {
-          expandMode = expandMode | EXPAND_IFINSIDE_FLAG;
-        } else {
-          expandMode = expandMode & (0xFFFFFFFF ^ EXPAND_IFINSIDE_FLAG);
-        }
-
-        int i = expandMode >> 2;
-
-        if (radioButtons[1].isSelected()) {
-          i = 0;
-        } else if (radioButtons[2].isSelected()) {
-          i = 3;
-        }
-
-        expandMode = (expandMode & (EXPAND_FLAG | EXPAND_IFINSIDE_FLAG)) | (i << 2);
-
-        try {
-          expandTrustlevel = Integer.parseInt(trustlevel.getText());
-        } catch (NumberFormatException nfe) {
-        }
-
-        saveExpandProperties();
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * @param actionEvent
-       *          DOCUMENT-ME
-       */
-      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-        checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
-        trustlevel.setEnabled(actionEvent.getSource() == radioButtons[2]);
-      }
-    }
-
-    protected class CollapsePanel extends JPanel implements ActionListener {
-      protected JRadioButton radioButtons[];
-      protected JCheckBox checkBox;
-
-      /**
-       * Creates a new CollapsePanel object.
-       */
-      public CollapsePanel() {
-        super(new GridBagLayout());
-
-        this.setBorder(new LeftBorder());
-
-        GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 3, 0, 0), 0, 0);
-        radioButtons = new JRadioButton[3];
-
-        ButtonGroup group = new ButtonGroup();
-
-        boolean collapse = (collapseMode & COLLAPSE_FLAG) != 0;
-
-        radioButtons[0] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.none"), !collapse);
-        group.add(radioButtons[0]);
-        this.add(radioButtons[0], con);
-
-        con.gridy++;
-        con.fill = GridBagConstraints.HORIZONTAL;
-        con.insets.left = 0;
-        this.add(new JSeparator(JSeparator.HORIZONTAL), con);
-        con.insets.left = 3;
-        con.fill = GridBagConstraints.NONE;
-
-        radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.faction"), (collapse && ((collapseMode >> 2) == 0)));
-        group.add(radioButtons[1]);
-        con.gridy++;
-        this.add(radioButtons[1], con);
-
-        radioButtons[2] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.collapse.full"), (collapse && ((collapseMode >> 2) == 3)));
-        group.add(radioButtons[2]);
-        con.gridy++;
-        this.add(radioButtons[2], con);
-
-        con.gridy++;
-        checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.collapse.onlyautoexpanded"), (collapseMode & COLLAPSE_ONLY_EXPANDED) != 0);
-        this.add(checkBox, con);
-
-        // to make it equally high to ePanel
-        con.gridy++;
-        this.add(Box.createVerticalStrut(checkBox.getPreferredSize().height + 5), con);
-
-        /*
-         * con.gridx = 0; con.gridheight = con.gridy + 1; con.gridy = 0;
-         * con.fill = GridBagConstraints.VERTICAL; JComponent c = new
-         * JSeparator(JSeparator.VERTICAL); c.setMaximumSize(new Dimension(3,
-         * 1000)); this.add(c, con);
-         */
-        registerListener();
-      }
-
-      protected void registerListener() {
-        for (int i = 0; i < radioButtons.length; i++) {
-          radioButtons[i].addActionListener(this);
-        }
-      }
-
-      /**
-       * DOCUMENT-ME
-       * 
-       * @param actionEvent
-       *          DOCUMENT-ME
-       */
-      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-        checkBox.setEnabled(actionEvent.getSource() != radioButtons[0]);
-      }
-
-      /**
-       * DOCUMENT-ME
-       */
-      public void apply() {
-        if (radioButtons[0].isSelected()) {
-          collapseMode &= (0xFFFFFFFF ^ COLLAPSE_FLAG);
-        } else {
-          collapseMode |= COLLAPSE_FLAG;
-        }
-
-        if (checkBox.isSelected()) {
-          collapseMode |= COLLAPSE_ONLY_EXPANDED;
-        } else {
-          collapseMode &= (0xFFFFFFFF ^ COLLAPSE_ONLY_EXPANDED);
-        }
-
-        int i = collapseMode >> 2;
-
-        if (radioButtons[1].isSelected()) {
-          i = 0;
-        } else if (radioButtons[2].isSelected()) {
-          i = 3;
-        }
-
-        collapseMode = (collapseMode & (COLLAPSE_FLAG | COLLAPSE_ONLY_EXPANDED)) | (i << 2);
-
-        saveCollapseProperty();
-      }
-
-      protected class LeftBorder extends AbstractBorder {
-        protected JSeparator sep;
-
-        /**
-         * Creates a new LeftBorder object.
-         */
-        public LeftBorder() {
-          sep = new JSeparator(JSeparator.VERTICAL);
-        }
-
-        /**
-         * DOCUMENT-ME
-         * 
-         * @param c
-         *          DOCUMENT-ME
-         * 
-         */
-        public Insets getBorderInsets(Component c) {
-          return getBorderInsets(c, null);
-        }
-
-        /**
-         * DOCUMENT-ME
-         * 
-         * @param c
-         *          DOCUMENT-ME
-         * @param in
-         *          DOCUMENT-ME
-         * 
-         */
-        public Insets getBorderInsets(Component c, Insets in) {
-          if (in == null) {
-            in = new Insets(0, 0, 0, 0);
-          }
-
-          in.top = 0;
-          in.bottom = 0;
-          in.right = 0;
-          in.left = sep.getPreferredSize().width;
-
-          return in;
-        }
-
-        /**
-         * DOCUMENT-ME
-         * 
-         * @param c
-         *          DOCUMENT-ME
-         * @param g
-         *          DOCUMENT-ME
-         * @param x
-         *          DOCUMENT-ME
-         * @param y
-         *          DOCUMENT-ME
-         * @param width
-         *          DOCUMENT-ME
-         * @param height
-         *          DOCUMENT-ME
-         */
-        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
-          sep.setBounds(x, y, width, height);
-          SwingUtilities.paintComponent(g, sep, new JPanel(), x, y, width, height);
-        }
-      }
-    }
   }
 
   private class ScrollerRunnable implements Runnable {
@@ -3203,213 +1970,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
-  class TreeBuilder {
-    /** Units are interesting. */
-    public static final int UNITS = 1;
-
-    /** Buildings are interesting. */
-    public static final int BUILDINGS = 2;
-
-    /** Ships are interesting. */
-    public static final int SHIPS = 4;
-
-    /** Comments are interesting. */
-    public static final int COMMENTS = 8;
-
-    /** Islands should be displayed. */
-    public static final int CREATE_ISLANDS = 16384;
-
-    /** the mode controls which elements are displayed */
-    private int displayMode = UNITS | BUILDINGS | SHIPS | COMMENTS;
-
-    // TODO hides fields form EmapOverviewPanel! */
-    private Map<ID,TreeNode> regionNodes;
-    private Map<ID,TreeNode> unitNodes;
-    private Map<ID,TreeNode> buildingNodes;
-    private Map<ID,TreeNode> shipNodes;
-    private Map<ID, Alliance> activeAlliances;
-    private Comparator unitComparator;
-    private int treeStructure[];
-    private boolean sortShipUnderUnitParent = true;
-
-    /**
-     * Sets the display mode, which controls what elements to display.
-     * 
-     * @param mode
-     */
-    public void setDisplayMode(int mode) {
-      this.displayMode = mode;
-    }
-
-    /**
-     * Controls if ships nodes should be sorted under their parents node.
-     * 
-     * @param b
-     */
-    public void setSortShipUnderUnitParent(boolean b) {
-      sortShipUnderUnitParent = b;
-    }
-
-    /**
-     * Return the display mode, which controls what elements to display.
-     * 
-     * @return The current display mode.
-     */
-    public int getDisplayMode() {
-      return displayMode;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param regions
-     *          DOCUMENT-ME
-     */
-    public void setRegionNodes(Map<ID,TreeNode> regions) {
-      regionNodes = regions;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param units
-     *          DOCUMENT-ME
-     */
-    public void setUnitNodes(Map<ID,TreeNode> units) {
-      unitNodes = units;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param buildings
-     *          DOCUMENT-ME
-     */
-    public void setBuildingNodes(Map<ID,TreeNode> buildings) {
-      buildingNodes = buildings;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param ships
-     *          DOCUMENT-ME
-     */
-    public void setShipNodes(Map<ID,TreeNode> ships) {
-      shipNodes = ships;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param alliances
-     *          DOCUMENT-ME
-     */
-    public void setActiveAlliances(Map alliances) {
-      activeAlliances = alliances;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param compare
-     *          DOCUMENT-ME
-     */
-    public void setUnitComparator(Comparator compare) {
-      unitComparator = compare;
-    }
-
-    /**
-     * DOCUMENT-ME
-     * 
-     * @param structure
-     *          DOCUMENT-ME
-     */
-    public void setTreeStructure(int structure[]) {
-      treeStructure = structure;
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public void buildTree(DefaultMutableTreeNode rootNode, GameData data) {
-      if (data == null) {
-        return;
-      }
-
-      buildTree(rootNode, sortRegions(data.regions().values()), data.units().values(), regionNodes, unitNodes, buildingNodes, shipNodes, unitComparator, activeAlliances, treeStructure, data);
-    }
-
-    /**
-     * DOCUMENT-ME
-     */
-    public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
-      boolean unitInteresting = (getDisplayMode() & UNITS) != 0;
-      boolean buildingInteresting = (getDisplayMode() & BUILDINGS) != 0;
-      boolean shipInteresting = (getDisplayMode() & SHIPS) != 0;
-      boolean commentInteresting = (getDisplayMode() & COMMENTS) != 0;
-      boolean createIslandNodes = (getDisplayMode() & CREATE_ISLANDS) != 0;
-
-      DefaultMutableTreeNode islandNode = null;
-      DefaultMutableTreeNode regionNode = null;
-      Island curIsland = null;
-
-      TreeHelper treehelper = new TreeHelper();
-      for (Iterator regions = regionCollection.iterator(); regions.hasNext();) {
-        Region r = (Region) regions.next();
-
-        if (!((unitInteresting && !r.units().isEmpty()) || (buildingInteresting && !r.buildings().isEmpty()) || (shipInteresting && !r.ships().isEmpty()) || (commentInteresting && !((r.getComments() == null) || (r.getComments().size() == 0))))) {
-          continue;
-        }
-
-        // add region node to tree an node map
-        regionNode = (DefaultMutableTreeNode) treehelper.createRegionNode(r, nodeWrapperFactory, activeAlliances, unitNodes, buildingNodes, shipNodes, unitSorting, treeStructure, data, sortShipUnderUnitParent);
-
-        if (regionNode == null) {
-          continue;
-        }
-
-        // update island node
-        if (createIslandNodes) {
-          if (r.getIsland() != null) {
-            if (!r.getIsland().equals(curIsland)) {
-              curIsland = r.getIsland();
-              islandNode = new DefaultMutableTreeNode(nodeWrapperFactory.createIslandNodeWrapper(curIsland));
-              rootNode.add(islandNode);
-            }
-          } else {
-            islandNode = null;
-          }
-        }
-
-        if (islandNode != null) {
-          islandNode.add(regionNode);
-        } else {
-          rootNode.add(regionNode);
-        }
-
-        regionNodes.put(r.getID(), regionNode);
-      }
-
-      // add the homeless
-      DefaultMutableTreeNode n = new DefaultMutableTreeNode(Resources.get("emapoverviewpanel.node.regionlessunits"));
-
-      for (Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
-        Unit un = iter.next();
-
-        if (un.getRegion() == null) {
-          n.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(un)));
-        }
-      }
-
-      if (n.getChildCount() > 0) {
-        rootNode.add(n);
-      }
-    }
-  }
 
   protected TreeBuilder createTreeBuilder() {
-    TreeBuilder treeBuilder = new TreeBuilder();
+    TreeBuilder treeBuilder = new TreeBuilder(settings,nodeWrapperFactory);
     treeBuilder.setRegionNodes(regionNodes);
     treeBuilder.setUnitNodes(unitNodes);
     treeBuilder.setShipNodes(shipNodes);
@@ -3500,126 +2063,72 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.swing.MenuProvider#getSuperMenu()
    */
   public String getSuperMenu() {
     return "tree";
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.swing.MenuProvider#getSuperMenuTitle()
    */
   public String getSuperMenuTitle() {
     return Resources.get("emapoverviewpanel.menu.supertitle");
   }
 
+  /**
+   * 
+   */
   public Collection getSelectedObjects() {
     return this.contextManager.getSelection();
   }
-
-  // pavkovic 2003.01.28: this is a Map of the default Translations mapped to
-  // this class
-  // it is called by reflection (we could force the implementation of an
-  // interface,
-  // this way it is more flexible.)
-  // Pls use this mechanism, so the translation files can be created
-  // automagically
-  // by inspecting all classes.
-  private static Map<String, String> defaultTranslations;
+  
+  /**
+   * Returns the event dispatcher of this panel.
+   */
+  public EventDispatcher getEventDispatcher() {
+    return dispatcher;
+  }
+  
+  /**
+   * Returns the value of expandMode.
+   */
+  public int getExpandMode() {
+    return expandMode;
+  }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns the value of expandTrustLevel.
    */
-  public static synchronized Map<String, String> getDefaultTranslations() {
-    if (defaultTranslations == null) {
-      defaultTranslations = new Hashtable<String, String>();
-      defaultTranslations.put("prefs.title", "Regions");
-      defaultTranslations.put("prefs.sortregions", "Sort regions");
-      defaultTranslations.put("prefs.sortShipUnderUnitParent", "Sort ships under unit parent node");
-      defaultTranslations.put("prefs.sortbycoordinates", "By coordinate");
-      defaultTranslations.put("prefs.sortbyislands", "By island");
-      defaultTranslations.put("prefs.regionsorting", "Region sorting");
-      defaultTranslations.put("prefs.showislands", "Show islands");
-      defaultTranslations.put("prefs.reportorder", "Use report order");
-      defaultTranslations.put("prefs.sortbyskills", "By skill");
-      defaultTranslations.put("prefs.sortbynames", "By name");
-      defaultTranslations.put("prefs.unitsorting", "Unit sorting");
+  public int getExpandTrustLevel() {
+    return expandTrustlevel;
+  }
 
-      defaultTranslations.put("prefs.treeStructure", "Hierarchical tree structure");
-      defaultTranslations.put("prefs.treeStructure.available", "Available structure elements");
-      defaultTranslations.put("prefs.treeStructure.element.faction", "Faction");
-      defaultTranslations.put("prefs.treeStructure.element.group", "Group");
-      defaultTranslations.put("prefs.treeStructure.element.combat", "Combat status");
-      defaultTranslations.put("prefs.treeStructure.element.health", "Health status");
-      defaultTranslations.put("prefs.treeStructure.element.taggable", "Tag \"{0}\"");
-      defaultTranslations.put("prefs.treeStructure.element.factiondisguise", "Faction disguised");
-      defaultTranslations.put("prefs.treeStructure.element.trustlevel", "Trustlevel");
-      defaultTranslations.put("prefs.treeStructure.use", "Use");
-      defaultTranslations.put("prefs.treeStructure.up", "Up");
-      defaultTranslations.put("prefs.treeStructure.down", "Down");
+  /**
+   * Returns the value of collapseMode.
+   */
+  public int getCollapseMode() {
+    return collapseMode;
+  }
 
-      defaultTranslations.put("prefs.showskillicons", "Show skill icons");
-      defaultTranslations.put("prefs.showcontainericons", "Show building and ship icons");
-      defaultTranslations.put("prefs.uniticons", "Unit icons");
-      defaultTranslations.put("prefs.icontextcolor", "Color of icon text");
-      defaultTranslations.put("prefs.showskilllevel", "Show skill level");
-      defaultTranslations.put("prefs.skillorder", "Order of skills");
-      defaultTranslations.put("prefs.upbutton.caption", "Up");
-      defaultTranslations.put("prefs.downbutton.caption", "Down");
-      defaultTranslations.put("prefs.refreshlistbutton.caption", "Alphabetical");
-      defaultTranslations.put("prefs.usebestskill", "According to best skill");
-      defaultTranslations.put("prefs.usetopmostskill", "According topmost skill in list");
+  /**
+   * Sets the value of expandMode.
+   */
+  public void setExpandMode(int expandMode) {
+    this.expandMode = expandMode;
+  }
 
-      defaultTranslations.put("icontextdialog.title", "Tree icons labels");
-      defaultTranslations.put("icontextdialog.txt.info.text", "On the left, you can select the position of the icon labels (the center box indicates the position of the icon itself).");
-      defaultTranslations.put("icontextdialog.btn.ok.caption", "OK");
-      defaultTranslations.put("icontextdialog.btn.cancel.caption", "Cancel");
-      defaultTranslations.put("icontextdialog.lbl.font.caption", "Font");
-      defaultTranslations.put("icontextdialog.chk.bold.caption", "Bold");
-      defaultTranslations.put("icontextdialog.chk.italic.caption", "Italic");
-      defaultTranslations.put("icontextdialog.btn.color.caption", "Font color");
-      defaultTranslations.put("icontextdialog.colorchooser.title", "Font color of icon labels");
-      defaultTranslations.put("wrapperfactory.title", "Region Tree Entries");
-      defaultTranslations.put("prefs.collapse.onlyautoexpanded", "Collapse only auto-expanded elements");
-      defaultTranslations.put("prefs.collapse.full", "Full");
-      defaultTranslations.put("prefs.collapse.faction", "First level");
-      defaultTranslations.put("prefs.collapse.none", "No auto-collapse");
-      defaultTranslations.put("prefs.expand.ifinside", "Only if own units in region");
-      defaultTranslations.put("prefs.expand.trustlevel", "Only with trustlevel #T or higher");
-      defaultTranslations.put("prefs.expand.full", "Full");
-      defaultTranslations.put("prefs.expand.faction", "First level");
-      defaultTranslations.put("prefs.expand.title", "Tree-Expansion");
-      defaultTranslations.put("prefs.expand.none", "No expansion");
-      defaultTranslations.put("shortcut.description.5", "Backward through history");
-      defaultTranslations.put("shortcut.description.3", "Backward through history");
-      defaultTranslations.put("shortcut.description.4", "Forward through history");
-      defaultTranslations.put("shortcut.description.2", "Forward through history");
-      defaultTranslations.put("shortcut.description.1", "Request Focus");
-      defaultTranslations.put("shortcut.description.0", "Request Focus");
-      defaultTranslations.put("shortcut.title", "Overview");
+  /**
+   * Sets the value of expandTrustlevel.
+   */
+  public void setExpandTrustLevel(int expandTrustlevel) {
+    this.expandTrustlevel = expandTrustlevel;
+  }
 
-      defaultTranslations.put("menu.caption", "Region Overview");
-      defaultTranslations.put("menu.mnemonic", "R");
-      defaultTranslations.put("menu.filter", "Filters");
-      defaultTranslations.put("menu.filter.0", "Units");
-      defaultTranslations.put("menu.filter.1", "Buildings");
-      defaultTranslations.put("menu.filter.2", "Ships");
-      defaultTranslations.put("menu.filter.3", "Comments");
-      defaultTranslations.put("menu.supertitle", "Tree");
-
-      defaultTranslations.put("prefs.treebuildings", "Additional include regions with information of buildings");
-      defaultTranslations.put("prefs.treeships", "Additional include regions with information of ships");
-      defaultTranslations.put("prefs.treecomments", "Additional include regions with known comments");
-      defaultTranslations.put("prefs.roothandles", "Show handles of topmost nodes");
-
-    }
-
-    return defaultTranslations;
+  /**
+   * Sets the value of collapseMode.
+   */
+  public void setCollapseMode(int collapseMode) {
+    this.collapseMode = collapseMode;
   }
 }

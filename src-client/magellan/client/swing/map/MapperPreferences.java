@@ -152,7 +152,10 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				availableRenderers.addItem(r);
 
 				PreferencesAdapter adap = r.getPreferencesAdapter();
-				temp.add(adap.getComponent(), r.getName());
+        Component adapterComponent = adap.getComponent();
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(adapterComponent,BorderLayout.NORTH);
+				temp.add(panel, r.getName());
 				rendererAdapters.add(adap);
 			}
 

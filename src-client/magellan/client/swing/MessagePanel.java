@@ -13,12 +13,7 @@
 
 package magellan.client.swing;
 
-import java.awt.Component;
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -33,10 +28,7 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
 import javax.swing.JMenu;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -47,8 +39,6 @@ import javax.swing.tree.TreeSelectionModel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
-import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.CopyTree;
 import magellan.client.swing.tree.LineWrapCellRenderer;
@@ -83,7 +73,7 @@ import magellan.library.utils.comparator.MessageTypeComparator;
  * @author ...
  * @version 1.0
  */
-public class MessagePanel extends InternationalizedDataPanel implements SelectionListener, PreferencesFactory, MenuProvider {
+public class MessagePanel extends InternationalizedDataPanel implements SelectionListener, MenuProvider {
   // tree elements
   private CopyTree tree = null;
   private DefaultTreeModel treeModel = null;
@@ -730,13 +720,6 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   /**
    * 
    */
-  public PreferencesAdapter createPreferencesAdapter() {
-    return new Pref(this);
-  }
-
-  /**
-   * 
-   */
   public JMenu getMenu() {
     JMenu tree = new JMenu(Resources.get("messagepanel.menu.caption"));
     tree.setMnemonic(Resources.get("messagepanel.menu.mnemonic").charAt(0));
@@ -757,70 +740,5 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    */
   public String getSuperMenuTitle() {
     return Resources.get("messagepanel.menu.supertitle");
-  }
-
-  /**
-   * The preferences dialog for the message panel.
-   *
-   * @author ...
-   * @version 1.0, 15.11.2007
-   */
-  protected class Pref extends JPanel implements PreferencesAdapter {
-    protected MessagePanel src;
-    protected JCheckBox lineWrap;
-
-    /**
-     * Creates a new Pref object.
-     */
-    public Pref(MessagePanel src) {
-      super(new GridBagLayout());
-      this.src = src;
-
-      JPanel help = new JPanel(new FlowLayout(FlowLayout.LEADING));
-      help.setBorder(BorderFactory.createTitledBorder(Resources.get("messagepanel.prefs.border.title")));
-
-      lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), src.isLineWrap());
-      help.add(lineWrap);
-
-      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                              GridBagConstraints.WEST,
-                              GridBagConstraints.BOTH,
-                              new Insets(1, 1, 1, 1), 0, 0);
-      this.add(new JPanel(), c);
-      c.gridy = 2;
-      this.add(new JPanel(), c);
-
-      c.gridy = 1;
-      c.fill = GridBagConstraints.HORIZONTAL;
-      this.add(help, c);
-    }
-       
-    /**
-     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-     */
-    public void initPreferences() {
-      // TODO implement MessagePanel preference initializer
-    }
-
-    /**
-     * 
-     */
-    public void applyPreferences() {
-      src.setLineWrap(lineWrap.isSelected());
-    }
-
-    /**
-     * 
-     */
-    public Component getComponent() {
-      return this;
-    }
-
-    /**
-     * 
-     */
-    public String getTitle() {
-      return Resources.get("messagepanel.prefs.title");
-    }
   }
 }

@@ -14,31 +14,19 @@
 package magellan.client.desktop;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dialog;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.LayoutManager2;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,12 +34,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.text.Collator;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -65,37 +49,22 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.border.TitledBorder;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
+import magellan.client.preferences.DesktopPreferences;
 import magellan.client.swing.desktop.WorkSpace;
-import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.utils.ErrorWindow;
@@ -228,6 +197,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void init(Client client, MagellanContext context, Properties settings, Map<String,Component> components, File dir) {
     this.client = client;
     this.context = context;
+    this.settings = settings;
+    
+    DockingFrameworkBuilder.getInstance().setProperties(settings);
 
     magellanDir = dir;
     timer = new Timer(1000, this);
@@ -235,7 +207,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     timer.stop();
     keyHandler = new KeyHandler();
     client.addWindowListener(this);
-    this.settings = settings;
     setManagedComponents(components);
 
     try {
@@ -301,13 +272,28 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
     workSpace.setEnabledChooser(settings.getProperty("Desktop.EnableWorkSpaceChooser","true").equals("true"));
   }
+  
+  /**
+   * Returns the workspace of Magellan.
+   */
+  public WorkSpace getWorkSpace() {
+    return workSpace;
+  }
 
   /**
    * 
    */
-  private void setWorkSpaceChooser(boolean enabled) {
+  public void setWorkSpaceChooser(boolean enabled) {
     settings.setProperty("Desktop.EnableWorkSpaceChooser", String.valueOf(enabled));
     initWorkSpace();
+  }
+  
+  public Map<KeyStroke,Object> getShortCutListeners() {
+    return shortCutListeners;
+  }
+  
+  public Map<KeyStroke,KeyStroke> getShortCutTranslations() {
+    return shortCutTranslations;
   }
 
   /**
@@ -515,7 +501,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * sub-menu for all available split sets and at last a sub-menu with all layouts.
    */
   protected void initDesktopMenu() {
-    desktopMenu = DockingFrameworkBuilder.getInstance().createDesktopMenu(components,this);
+    desktopMenu = DockingFrameworkBuilder.getInstance().createDesktopMenu(components,settings,this);
   }
 
   /**
@@ -743,92 +729,6 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   }
 
   /**
-   * Loads the frame definitions out of the settings. If they don't exist, a default set is
-   * created using initFrameDefault().
-   */
-  /*
-  protected void initFrameRectangles() {
-    frames = new HashMap<String, FrameRectangle>();
-
-    // seems to be a valid properties object
-    if(settings.containsKey("Desktop.Frame0")) {
-      int count = 0;
-      String indexString = null;
-
-      do {
-        indexString = "Desktop.Frame" + String.valueOf(count);
-
-        // good, a key found
-        if(settings.containsKey(indexString)) {
-          String str = settings.getProperty(indexString);
-          str = replace(str, "COMMANDS", "ORDERS");
-
-          StringTokenizer st = new StringTokenizer(str, ",");
-
-          try {
-            String xS = st.nextToken();
-            String yS = st.nextToken();
-            String wS = st.nextToken();
-            String hS = st.nextToken();
-            String id = st.nextToken();
-
-            // String name 
-            st.nextToken();
-
-            String status = st.nextToken();
-            int x = 0;
-            int y = 0;
-            int w = 0;
-            int h = 0;
-            x = Integer.parseInt(xS);
-            y = Integer.parseInt(yS);
-            w = Integer.parseInt(wS);
-            h = Integer.parseInt(hS);
-
-            // juch-hu, a valid frame found
-            if(components.containsKey(id)) {
-              // FrameRectangle frame=new FrameRectangle(name,id);
-              FrameRectangle frame = createFrameRectangle(id);
-              frame.setBounds(x, y, w, h);
-              frames.put(id, frame);
-
-              if(status.equals("ICON")) {
-                frame.setState(Frame.ICONIFIED);
-              } else {
-                frame.setState(Frame.NORMAL);
-              }
-
-              // new token for visibility?
-              if(st.hasMoreTokens()) {
-                String visi = st.nextToken();
-
-                if(visi.equalsIgnoreCase("INVISIBLE")) {
-                  frame.setVisible(false);
-                } else {
-                  frame.setVisible(true);
-                }
-              }
-
-              if(st.hasMoreTokens()) {
-                frame.setConfiguration(st.nextToken());
-              }
-            }
-          } catch(Exception exc) {
-          }
-        }
-
-        count++;
-      } while(settings.containsKey(indexString));
-
-      if(frames.size() > 0) {
-        return;
-      }
-
-      // hu - no frames parsed, use default
-    }
-  }*/
-
-  /**
    * Computes the largest free rectangle on the screen: 
    * the biggest free place without the client frame.
    */
@@ -979,7 +879,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     buildShortCutTable(dockingFrameworkBuilder.getComponentsUsed());
 
     modeInitialized = true;
-
+    
     return true;
   }
 
@@ -1351,16 +1251,24 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         }
         
       } else if (action != null && action.equals("hideTabs") && splitRoot instanceof RootWindow) {
-        RootWindow root = (RootWindow) splitRoot;
-        RootWindowProperties prop = root.getRootWindowProperties();
-        if (menu.isSelected()){
-          prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(
-              TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
-        }else{
-            prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(
-                TabAreaVisiblePolicy.ALWAYS);
-        }
+        setTabVisibility(!menu.isSelected());
       }
+    }
+  }
+  
+  /**
+   * Enables or disables all docking tabs.
+   */
+  public void setTabVisibility(boolean showTabs) {
+    log.info("setTabVisibilty("+showTabs+")");
+    settings.setProperty("ClientPreferences.dontShowTabs", Boolean.toString(!showTabs));
+    
+    RootWindow root = (RootWindow) splitRoot;
+    RootWindowProperties prop = root.getRootWindowProperties();
+    if (!showTabs){
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
+    } else {
+      prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.ALWAYS);
     }
   }
 
@@ -2225,889 +2133,9 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * @see com.eressea.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
-    return new DesktopPreferences();
+    return new DesktopPreferences(this, client, settings);
   }
 
-  /**
-   * Encapsulates the preferences tab for the desktop.
-   */
-  private class DesktopPreferences extends JPanel implements ActionListener,
-                                 ExtendedPreferencesAdapter
-  {
-    JComboBox modeBox;
-    JTextArea actLabel;
-    JTextArea icoLabel;
-    JComboBox icoBox;
-    JComboBox actMode;
-    CardLayout card;
-    JPanel center;
-    List<ShortcutList> scList;
-    JCheckBox enableWorkSpaceChooser;
-
-    private final String act[] = {
-                     Resources.get("desktop.magellandesktop.prefs.activationdescription.single"),
-                     Resources.get("desktop.magellandesktop.prefs.activationdescription.main"),
-                     Resources.get("desktop.magellandesktop.prefs.activationdescription.all")
-                   };
-    private final String ico[] = {
-                     Resources.get("desktop.magellandesktop.prefs.iconifydescription.single"),
-                     Resources.get("desktop.magellandesktop.prefs.iconifydescription.main")
-                   };
-
-    /**
-     * Creates a new DesktopPreferences object.
-     */
-    public DesktopPreferences() {
-      this.setLayout(new BorderLayout());
-
-      JPanel up = new JPanel(new FlowLayout(FlowLayout.LEADING));
-      up.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.mode.caption")));
-
-      String modeItems[] = new String[1];
-      modeItems[0] = Resources.get("desktop.magellandesktop.prefs.modeitem.split");
-      modeBox = new JComboBox(modeItems);
-      modeBox.setSelectedIndex(0);
-      modeBox.addActionListener(this);
-      modeBox.setEnabled(false);
-      up.add(modeBox);
-      
-      enableWorkSpaceChooser = new JCheckBox(Resources.get("desktop.magellandesktop.prefs.displaychooser"), workSpace.isEnabledChooser());;
-      up.add(enableWorkSpaceChooser);
-      
-      this.add(up, BorderLayout.NORTH);
-
-      center = new JPanel();
-      center.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-                        Resources.get("desktop.magellandesktop.prefs.border.options")));
-      center.setLayout(card = new CardLayout());
-
-      JTextArea splitText = new JTextArea(Resources.get("desktop.magellandesktop.prefs.txt.split.text"));
-      splitText.setEditable(false);
-      splitText.setLineWrap(true);
-      splitText.setWrapStyleWord(true);
-      splitText.setBackground(center.getBackground());
-
-      JLabel cDummy = new JLabel();
-      splitText.setFont(cDummy.getFont());
-      splitText.setForeground(cDummy.getForeground());
-      center.add(splitText, "0");
-
-      JPanel panel = new JPanel();
-      panel.setLayout(new GridBagLayout());
-
-      GridBagConstraints con = new GridBagConstraints();
-
-      con.gridx = 0;
-      con.gridwidth = 1;
-      con.gridy = 0;
-      con.gridheight = 1;
-      con.fill = GridBagConstraints.HORIZONTAL;
-      con.anchor = GridBagConstraints.NORTHWEST;
-      con.weightx = 0.25;
-
-      panel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.activationmode.caption")), con);
-
-      con.gridx = 1;
-      con.gridwidth = 3;
-      con.weightx = 0.75;
-
-      String actItems[] = new String[3];
-      actItems[0] = Resources.get("desktop.magellandesktop.prefs.activationmode.single");
-      actItems[1] = Resources.get("desktop.magellandesktop.prefs.activationmode.main");
-      actItems[2] = Resources.get("desktop.magellandesktop.prefs.activationmode.all");
-      actMode = new JComboBox(actItems);
-      actMode.addActionListener(this);
-      actLabel = new JTextArea(act[getActivationMode()]);
-      actLabel.setEditable(false);
-      actLabel.setBackground(this.getBackground());
-      actLabel.setLineWrap(true);
-      actLabel.setWrapStyleWord(true);
-      actMode.setSelectedIndex(getActivationMode());
-      panel.add(actMode, con);
-      con.gridy = 1;
-      panel.add(actLabel, con);
-
-      con.gridx = 0;
-      con.gridy = 2;
-      con.gridwidth = 1;
-      con.weightx = 0.25;
-      panel.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.lbl.iconify.caption")), con);
-      con.gridx = 1;
-      con.gridwidth = 3;
-      con.weightx = 0.75;
-
-      String icoItems[] = new String[2];
-      icoItems[0] = Resources.get("desktop.magellandesktop.prefs.iconify.single");
-      icoItems[1] = Resources.get("desktop.magellandesktop.prefs.iconify.main");
-      icoBox = new JComboBox(icoItems);
-      icoBox.setSelectedIndex(isIconify() ? 1 : 0);
-      icoBox.addActionListener(this);
-      icoLabel = new JTextArea(isIconify() ? ico[1] : ico[0]);
-      icoLabel.setEditable(false);
-      icoLabel.setBackground(this.getBackground());
-      icoLabel.setLineWrap(true);
-      icoLabel.setWrapStyleWord(true);
-
-      panel.add(icoBox, con);
-      con.gridy = 3;
-      panel.add(icoLabel, con);
-
-      center.add(panel, "1");
-
-      splitText = new JTextArea(Resources.get("desktop.magellandesktop.prefs.txt.layout.text"));
-      splitText.setEditable(false);
-      splitText.setLineWrap(true);
-      splitText.setWrapStyleWord(true);
-      splitText.setBackground(center.getBackground());
-      splitText.setFont(cDummy.getFont());
-      splitText.setForeground(cDummy.getForeground());
-      center.add(splitText, "2");
-
-      this.add(center, BorderLayout.CENTER);
-
-      scList = new ArrayList<ShortcutList>(1);
-      scList.add(new ShortcutList());
-    }
-
-    /**
-     * 
-     */
-    public void actionPerformed(java.awt.event.ActionEvent p1) {
-      if(p1.getSource() == modeBox) { // change card
-
-        switch(modeBox.getSelectedIndex()) {
-        case 0:
-          card.first(center);
-
-          break;
-
-        case 1:
-          card.show(center, "1");
-
-          break;
-
-        case 2:
-          card.last(center);
-
-          break;
-        }
-      }
-
-      if(p1.getSource() == actMode) { // change label
-        actLabel.setText(act[actMode.getSelectedIndex()]);
-      }
-
-      if(p1.getSource() == icoBox) { // change label
-        icoLabel.setText(ico[icoBox.getSelectedIndex()]);
-      }
-    }
-
-    /**
-     * 
-     */
-    public boolean isModeIconify() {
-      return icoBox.getSelectedIndex() == 1;
-    }
-
-    /**
-     * 
-     */
-    public java.awt.Component getComponent() {
-      return this;
-    }
-
-    /**
-     * 
-     */
-    public java.lang.String getTitle() {
-      return Resources.get("desktop.magellandesktop.prefs.title");
-    }
-
-    /**
-     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-     * @deprecated TODO: implement it
-     */
-    public void initPreferences() {
-        // TODO: implement it
-    }
-        
-    /**
-     * 
-     */
-    public void applyPreferences() {
-      setIconify(isModeIconify());
-      setWorkSpaceChooser(enableWorkSpaceChooser.isSelected());
-    }
-
-    /**
-     * 
-     */
-    public List getChildren() {
-      return scList;
-    }
-
-    protected class ShortcutList extends JPanel implements PreferencesAdapter, ActionListener {
-      protected JTable table;
-      protected DefaultTableModel model;
-      protected Collator collator;
-      protected Set<KeyStroke> ownShortcuts;
-      protected Set<KeyStroke> otherShortcuts;
-
-      /**
-       * Creates a new ShortcutList object.
-       */
-      public ShortcutList() {
-        try {
-          collator = Collator.getInstance(magellan.library.utils.Locales.getGUILocale());
-        } catch(IllegalStateException exc) {
-          collator = Collator.getInstance();
-        }
-
-        if(shortCutListeners != null) {
-          Object columns[] = {
-                       Resources.get("desktop.magellandesktop.prefs.shortcuts.header1"),
-                       Resources.get("desktop.magellandesktop.prefs.shortcuts.header2")
-                     };
-
-          Map<Object,List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
-          Iterator it = shortCutListeners.entrySet().iterator();
-
-          while(it.hasNext()) {
-            Map.Entry entry = (Map.Entry) it.next();
-            Object value = entry.getValue();
-
-            if(!listeners.containsKey(value)) {
-              listeners.put(value, new LinkedList<KeyStroke>());
-            }
-
-            // try to find a translation
-            KeyStroke oldStroke = (KeyStroke) entry.getKey();
-            KeyStroke newStroke = findTranslation(oldStroke);
-
-            if(newStroke != null) {
-              listeners.get(value).add(newStroke);
-            } else {
-              listeners.get(value).add(oldStroke);
-            }
-          }
-
-          Object data[][] = new Object[shortCutListeners.size() + listeners.size()][2];
-
-          List<Object> list2 = new LinkedList<Object>(listeners.keySet());
-
-          Collections.sort(list2, new ListenerComparator());
-
-          it = list2.iterator();
-
-          int i = 0;
-
-          while(it.hasNext()) {
-            Object key = it.next();
-            ShortcutListener sl = null;
-
-            if(key instanceof ShortcutListener) {
-              sl = (ShortcutListener) key;
-              data[i][0] = sl.getListenerDescription();
-
-              if(data[i][0] == null) {
-                data[i][0] = sl;
-              }
-            } else {
-              data[i][0] = key;
-            }
-
-            data[i][1] = null;
-
-            i++;
-
-            List<KeyStroke> list = listeners.get(key);
-
-            Collections.sort(list, new KeyStrokeComparator());
-
-            Iterator it2 = list.iterator();
-
-            while(it2.hasNext()) {
-              Object obj = it2.next();
-              data[i][0] = obj;
-
-              if(sl != null) {
-                if(shortCutTranslations.containsKey(obj)) {
-                  obj = getTranslation((KeyStroke) obj);
-                }
-
-                try {
-                  data[i][1] = sl.getShortcutDescription(obj);
-
-                  if(data[i][1] == null) {
-                    data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-                  }
-                } catch(RuntimeException re) {
-                  data[i][1] = Resources.get("desktop.magellandesktop.prefs.shortcuts.unknown");
-                }
-              } else {
-                data[i][1] = key;
-              }
-
-              i++;
-            }
-          }
-
-          model = new DefaultTableModel(data, columns);
-
-          StrokeRenderer sr = new StrokeRenderer();
-          DefaultTableColumnModel tcm = new DefaultTableColumnModel();
-          TableColumn column = new TableColumn();
-          column.setHeaderValue(columns[0]);
-          column.setCellRenderer(sr);
-          column.setCellEditor(null);
-          tcm.addColumn(column);
-          column = new TableColumn(1);
-          column.setHeaderValue(columns[1]);
-          column.setCellRenderer(sr);
-          column.setCellEditor(null);
-          tcm.addColumn(column);
-
-          table = new JTable(model, tcm);
-          this.setLayout(new BorderLayout());
-          this.add(new JScrollPane(table), BorderLayout.CENTER);
-          table.addMouseListener(getMousePressedMouseListener());
-        }
-
-        // find all java keystrokes
-        Set<KeyStroke> set = new HashSet<KeyStroke>();
-        Collection<Frame> desk = new LinkedList<Frame>();
-        desk.add(client);
-
-        Iterator<Frame> it1 = desk.iterator();
-
-        while(it1.hasNext()) {
-          addKeyStrokes(it1.next(), set);
-        }
-
-        Set<KeyStroke> set2 = new HashSet<KeyStroke>(shortCutListeners.keySet());
-        Iterator<KeyStroke> it2 = shortCutTranslations.keySet().iterator();
-
-        while(it2.hasNext()) {
-          set2.remove(shortCutTranslations.get(it2.next()));
-        }
-
-        ownShortcuts = set2;
-        ownShortcuts.addAll(shortCutTranslations.keySet());
-        set.removeAll(set2);
-        set.removeAll(shortCutTranslations.keySet());
-        otherShortcuts = set;
-
-        JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        JButton help = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.help"));
-        help.addActionListener(this);
-        south.add(help);
-        this.add(south, BorderLayout.SOUTH);
-      }
-
-      protected void addKeyStrokes(Component c, Set<KeyStroke> set) {
-        if(c instanceof JComponent) {
-          KeyStroke str[] = ((JComponent) c).getRegisteredKeyStrokes();
-
-          if((str != null) && (str.length > 0)) {
-            for(int i = 0; i < str.length; i++) {
-              set.add(str[i]);
-            }
-          }
-        }
-
-        if(c instanceof Container) {
-          Container con = (Container) c;
-
-          if(con.getComponentCount() > 0) {
-            for(int i = 0; i < con.getComponentCount(); i++) {
-              addKeyStrokes(con.getComponent(i), set);
-            }
-          }
-        }
-      }
-
-      /**
-       * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
-       * @deprecated TODO: implement it!
-       */
-      public void initPreferences() {
-          // TODO: implement it
-      }
-            
-      /**
-       * 
-       */
-      public void applyPreferences() {
-      }
-
-      /**
-       * 
-       */
-      public Component getComponent() {
-        return this;
-      }
-
-      /**
-       * 
-       */
-      public String getTitle() {
-        return Resources.get("desktop.magellandesktop.prefs.shortcuts.title");
-      }
-
-      protected class ListenerComparator implements Comparator<Object> {
-        /**
-         * 
-         */
-        public int compare(Object o1, Object o2) {
-          String s1 = null;
-          String s2 = null;
-
-          if(o1 instanceof ShortcutListener) {
-            s1 = ((ShortcutListener) o1).getListenerDescription();
-          }
-
-          if(s1 == null) {
-            s1 = o1.toString();
-          }
-
-          if(o2 instanceof ShortcutListener) {
-            s2 = ((ShortcutListener) o2).getListenerDescription();
-          }
-
-          if(s2 == null) {
-            s2 = o2.toString();
-          }
-
-          if((s1 != null) && (s2 != null)) {
-            return collator.compare(s1, s2);
-          } else if((s1 == null) && (s2 != null)) {
-            return -1;
-          } else if((s1 != null) && (s2 == null)) {
-            return 1;
-          }
-
-          return 0;
-        }
-      }
-
-      protected class KeyStrokeComparator implements Comparator<KeyStroke> {
-        /**
-         * 
-         */
-        public int compare(KeyStroke o1, KeyStroke o2) {
-          KeyStroke k1 = (KeyStroke) o1;
-          KeyStroke k2 = (KeyStroke) o2;
-
-          if(k1.getModifiers() != k2.getModifiers()) {
-            int i1 = k1.getModifiers();
-            int i2 = 0;
-            int j1 = k2.getModifiers();
-            int j2 = 0;
-
-            while(i1 != 0) {
-              if((i1 % 2) == 1) {
-                i2++;
-              }
-
-              i1 /= 2;
-            }
-
-            while(j1 != 0) {
-              if((j1 % 2) == 1) {
-                j2++;
-              }
-
-              j1 /= 2;
-            }
-
-            if(i2 != j2) {
-              return i2 - j2;
-            }
-
-            return k1.getModifiers() - k2.getModifiers();
-          }
-
-          return k1.getKeyCode() - k2.getKeyCode();
-        }
-      }
-
-      protected class ListTableModel extends DefaultTableModel {
-        /**
-         * Creates a new ListTableModel object.
-         */
-        public ListTableModel(Object data[][], Object columns[]) {
-          super(data, columns);
-        }
-
-        /**
-         * 
-         */
-        public boolean isCellEditable(int r, int c) {
-          return false;
-        }
-      }
-
-      protected String getKeyStroke(KeyStroke stroke) {
-        String s = null;
-
-        if(stroke.getModifiers() != 0) {
-          s = KeyEvent.getKeyModifiersText(stroke.getModifiers()) + " + " +
-            KeyEvent.getKeyText(stroke.getKeyCode());
-        } else {
-          s = KeyEvent.getKeyText(stroke.getKeyCode());
-        }
-
-        return s;
-      }
-
-      protected MouseListener getMousePressedMouseListener() {
-        return new MouseAdapter() {
-            public void mousePressed(MouseEvent mouseEvent) {
-              if(mouseEvent.getClickCount() == 2) {
-                Point p = mouseEvent.getPoint();
-
-                if((table.columnAtPoint(p) == 0) && (table.rowAtPoint(p) >= 0)) {
-                  int row = table.rowAtPoint(p);
-                  Object value = table.getValueAt(row, 0);
-
-                  if(value instanceof KeyStroke) {
-                    editStroke((KeyStroke) value, row);
-                  }
-                }
-              }
-            }
-          };
-      }
-
-      protected void editStroke(KeyStroke stroke, int row) {
-        Component top = this.getTopLevelAncestor();
-        TranslateStroke td = null;
-
-        if(top instanceof Frame) {
-          td = new TranslateStroke((Frame) top);
-        } else if(top instanceof Dialog) {
-          td = new TranslateStroke((Dialog) top);
-        }
-
-        td.setVisible(true);
-
-        KeyStroke newStroke = td.getStroke();
-
-        if((newStroke != null) && !newStroke.equals(stroke)) {
-          if(ownShortcuts.contains(newStroke)) {
-            JOptionPane.showMessageDialog(this, Resources.get("desktop.magellandesktop.prefs.shortcuts.error"));
-          } else {
-            boolean doIt = true;
-
-            if(otherShortcuts.contains(newStroke)) {
-              int res = JOptionPane.showConfirmDialog(this,
-                                  Resources.get("desktop.magellandesktop.prefs.shortcuts.warning"),
-                                  Resources.get("desktop.magellandesktop.prefs.shortcuts.warningtitle"),
-                                  JOptionPane.YES_NO_OPTION);
-              doIt = (res == JOptionPane.YES_OPTION);
-            }
-
-            if(doIt) {
-              if(shortCutTranslations.containsKey(stroke)) {
-                KeyStroke oldStroke = (KeyStroke) shortCutTranslations.get(stroke);
-                removeTranslation(stroke);
-                stroke = oldStroke;
-              }
-
-              if(shortCutListeners.containsKey(stroke) &&
-                   (shortCutListeners.get(stroke) instanceof Action)) {
-                ((Action) shortCutListeners.get(stroke)).putValue("accelerator",
-                                          newStroke);
-              }
-
-              if(!newStroke.equals(stroke)) {
-                registerTranslation(newStroke, stroke);
-              }
-
-              model.setValueAt(newStroke, row, 0);
-            }
-          }
-        }
-      }
-
-      /**
-       * 
-       */
-      public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-      }
-
-      protected class InformDialog extends JDialog implements ActionListener {
-        /**
-         * Creates a new InformDialog object.
-         */
-        public InformDialog(Frame parent) {
-          super(parent, true);
-          init();
-        }
-
-        /**
-         * Creates a new InformDialog object.
-         */
-        public InformDialog(Dialog parent) {
-          super(parent, true);
-          init();
-        }
-
-        protected void init() {
-          JPanel con = new JPanel(new BorderLayout());
-
-          StringBuffer buf = new StringBuffer();
-
-          Object args[] = { new Integer(otherShortcuts.size()) };
-          buf.append(MessageFormat.format(Resources.get("desktop.magellandesktop.prefs.shortcuts.others"), args));
-          buf.append('\n');
-          buf.append('\n');
-
-          Iterator it = otherShortcuts.iterator();
-
-          while(it.hasNext()) {
-            buf.append(getKeyStroke((KeyStroke) it.next()));
-
-            if(it.hasNext()) {
-              buf.append(", ");
-            }
-          }
-
-          JTextArea java = new JTextArea(buf.toString());
-          java.setEditable(false);
-          java.setLineWrap(true);
-          java.setWrapStyleWord(true);
-          con.add(new JScrollPane(java), BorderLayout.SOUTH);
-
-          JPanel button = new JPanel(new FlowLayout(FlowLayout.CENTER));
-          JButton ok = new JButton("prefs.shortcuts.dialog.ok");
-          ok.addActionListener(this);
-          button.add(ok);
-          con.add(button, BorderLayout.SOUTH);
-          this.setContentPane(con);
-
-          this.pack();
-          this.setLocationRelativeTo(this.getParent());
-        }
-
-        /**
-         * 
-         */
-        public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-          this.setVisible(false);
-        }
-      }
-
-      protected class TranslateStroke extends JDialog implements ActionListener {
-        protected KeyTextField text;
-        protected JButton cancel;
-        protected KeyStroke stroke = null;
-
-        /**
-         * Creates a new TranslateStroke object.
-         */
-        public TranslateStroke(Frame parent) {
-          super(parent, true);
-          init();
-        }
-
-        /**
-         * Creates a new TranslateStroke object.
-         */
-        public TranslateStroke(Dialog parent) {
-          super(parent, true);
-          init();
-        }
-
-        protected void init() {
-          JPanel con = new JPanel(new BorderLayout());
-          con.add(new JLabel(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.label")),
-              BorderLayout.NORTH);
-          text = new KeyTextField();
-          con.add(text, BorderLayout.CENTER);
-
-          JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER));
-          JButton ok = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.ok"));
-          buttons.add(ok);
-          ok.addActionListener(this);
-          cancel = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.dialog.cancel"));
-          buttons.add(cancel);
-          cancel.addActionListener(this);
-          con.add(buttons, BorderLayout.SOUTH);
-          this.setContentPane(con);
-          this.pack();
-          this.setSize(this.getWidth() + 5, this.getHeight() + 5);
-          this.setLocationRelativeTo(this.getParent());
-        }
-
-        /**
-         * 
-         */
-        public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
-          if(actionEvent.getSource() != cancel) {
-            if(text.getKeyCode() != 0) {
-              stroke = KeyStroke.getKeyStroke(text.getKeyCode(), text.getModifiers());
-            }
-          }
-
-          this.setVisible(false);
-        }
-
-        /**
-         * 
-         */
-        public KeyStroke getStroke() {
-          return stroke;
-        }
-
-        private class KeyTextField extends JTextField implements KeyListener {
-          protected int modifiers = 0;
-          protected int key = 0;
-
-          /**
-           * Creates a new KeyTextField object.
-           */
-          public KeyTextField() {
-            super(20);
-            this.addKeyListener(this);
-          }
-
-          /**
-           * 
-           */
-          public void init(int modifiers, int key) {
-            this.key = key;
-            this.modifiers = modifiers;
-
-            String s = KeyEvent.getKeyModifiersText(modifiers);
-
-            if((s != null) && (s.length() > 0)) {
-              s += ('+' + KeyEvent.getKeyText(key));
-            } else {
-              s = KeyEvent.getKeyText(key);
-            }
-
-            setText(s);
-          }
-
-          /**
-           * 
-           */
-          public void keyReleased(KeyEvent p1) {
-            // maybe should delete any input if there's no "stable"(non-modifying) key
-          }
-
-          /**
-           * 
-           */
-          public void keyPressed(KeyEvent p1) {
-            modifiers = p1.getModifiers();
-            key = p1.getKeyCode();
-
-            // avoid double string
-            if((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) ||
-                 (key == KeyEvent.VK_ALT) || (key == KeyEvent.VK_ALT_GRAPH)) {
-              int xored = 0;
-
-              switch(key) {
-              case KeyEvent.VK_SHIFT:
-                xored = KeyEvent.SHIFT_MASK;
-
-                break;
-
-              case KeyEvent.VK_CONTROL:
-                xored = KeyEvent.CTRL_MASK;
-
-                break;
-
-              case KeyEvent.VK_ALT:
-                xored = KeyEvent.ALT_MASK;
-
-                break;
-
-              case KeyEvent.VK_ALT_GRAPH:
-                xored = KeyEvent.ALT_GRAPH_MASK;
-
-                break;
-              }
-
-              modifiers ^= xored;
-            }
-
-            String s = KeyEvent.getKeyModifiersText(modifiers);
-
-            if((s != null) && (s.length() > 0)) {
-              s += ('+' + KeyEvent.getKeyText(key));
-            } else {
-              s = KeyEvent.getKeyText(key);
-            }
-
-            setText(s);
-            p1.consume();
-          }
-
-          /**
-           * 
-           */
-          public void keyTyped(KeyEvent p1) {
-          }
-
-          /** 
-           * To allow "tab" as a key.
-           */
-          public boolean isManagingFocus() {
-            return true;
-          }
-
-          /**
-           * 
-           */
-          public int getKeyCode() {
-            return key;
-          }
-
-          /**
-           * 
-           */
-          public int getModifiers() {
-            return modifiers;
-          }
-        }
-      }
-
-      protected class StrokeRenderer extends DefaultTableCellRenderer {
-        protected Font bold;
-        protected Font norm;
-
-        /**
-         * Creates a new StrokeRenderer object.
-         */
-        public StrokeRenderer() {
-          norm = this.getFont();
-          bold = this.getFont().deriveFont(Font.BOLD);
-        }
-
-        /**
-         * 
-         */
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                                 boolean isSelected,
-                                 boolean hasFocus, int row, int column) {
-          this.setFont(norm);
-          super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
-                            column);
-
-          if(value instanceof KeyStroke) {
-            this.setText(getKeyStroke((KeyStroke) value));
-          } else if(column == 0) {
-            this.setFont(bold);
-          }
-
-          return this;
-        }
-      }
-    }
-  }
 
   protected class BackgroundPanel extends JPanel {
     /**

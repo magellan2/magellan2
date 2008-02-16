@@ -917,6 +917,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         info.setEditable(false);
         info.setBackground(this.getBackground());
         info.setBorder(BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.LOWERED));
+        info.setSelectionColor(mainPanel.getBackground());
+        info.setSelectedTextColor(mainPanel.getForeground());
+        info.setRequestFocusEnabled(false);
+        info.setBackground(mainPanel.getBackground());
+        info.setSelectionColor(mainPanel.getBackground());
+        info.setSelectedTextColor(mainPanel.getForeground());
+        info.setFont(new JLabel().getFont());
 
         Insets oldInsets = con.insets;
 

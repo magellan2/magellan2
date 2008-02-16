@@ -43,6 +43,10 @@ public class MemoryManagment {
 		
 	}
 
+  public static Runtime getRuntime() {
+    return r;
+  }
+  
 	 /** 
      * Ändert die Priotität des Finalizer-Threads. 
      * @param newPriority Die Priorität, die der Finalizer-Thread bekommen soll. 

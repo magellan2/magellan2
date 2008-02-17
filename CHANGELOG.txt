@@ -1,3 +1,6 @@
+2008-02-17 / Build 150 - stm (stm_@users.sourceforge.net) 
+    * moved "root handles option"
+    
 2008-02-16 / Build 150 - Thoralf (thoralf@m84.de)
     * Made multiple changes to the settings
     

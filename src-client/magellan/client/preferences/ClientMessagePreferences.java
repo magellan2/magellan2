@@ -27,13 +27,13 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import magellan.client.swing.MessagePanel;
+import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
@@ -61,16 +61,15 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), src.isLineWrap());
     help.add(lineWrap);
 
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.BOTH,
-                            new Insets(1, 1, 1, 1), 0, 0);
-    this.add(new JPanel(), c);
-    c.gridy = 2;
-    this.add(new JPanel(), c);
+    GridBagConstraints c = new GridBagConstraints();
 
-    c.gridy = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
+    setLayout(new GridBagLayout());
+    c.insets.top = 10;
+    c.insets.bottom = 10;
+    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
+                   GridBagConstraints.NORTHWEST,
+                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
+
     this.add(help, c);
   }
      

@@ -35,6 +35,7 @@ import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -51,6 +52,7 @@ import magellan.client.Client;
 import magellan.client.swing.MagellanLookAndFeel;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -62,8 +64,16 @@ import magellan.library.utils.logging.Logger;
  */
 public class ClientLookAndFeelPreferences extends JPanel implements PreferencesAdapter, ActionListener {
   private final Logger log = Logger.getInstance(ClientLookAndFeelPreferences.class);
+  
   protected JTextField editFontSize;
   protected JList jComboBoxLaF;
+
+  /** if selected, region overview's and faction stat's top nodes will have handles */
+  public JCheckBox chkRootHandles = null;
+
+//  /** if selected, messages are linewrapped */
+//  protected JCheckBox lineWrap;
+//
   protected Client source;
   protected Properties settings;
 
@@ -86,16 +96,25 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
                    GridBagConstraints.NORTHWEST,
                    GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
 
-    // font panel
-    add(createFontPanel(), c);
+    // Look And Feel Panel
+    add(createLAndFPanel(), c);
+
     c.insets.top = 0;
 
-    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, /* different weighty!*/
+    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 0.0, /* different weighty!*/
                    GridBagConstraints.NORTHWEST,
                    GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
 
-    // Look And Feel Panel
-    add(createLAndFPanel(), c);
+    // font panel
+    add(createFontPanel(), c);
+    
+    GridBagHelper.setConstraints(c, 0, 2, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, /* different weighty!*/
+        GridBagConstraints.NORTHWEST,
+        GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
+
+    //  font panel
+    add(createMiscPanel(), c);
+    
   }
 
   protected Container createFontPanel() {
@@ -185,6 +204,29 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
     return panel2;
   }
 
+  protected Container createMiscPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
+
+    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
+                            GridBagConstraints.NORTHWEST,
+                            GridBagConstraints.HORIZONTAL,
+                            new Insets(3, 3, 3, 3), 0, 0);
+
+    chkRootHandles = new JCheckBox(Resources.get("clientpreferences.lbl.roothandles"));
+    chkRootHandles.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    panel.add(chkRootHandles, con);
+
+//    lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), source.getMessagePanel().isLineWrap());
+//    panel.add(lineWrap);
+    
+    JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEADING));
+    panel2.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
+                                Resources.get("clientpreferences.border.misc")));
+    panel2.add(panel);
+
+    return panel2;
+  }
+
   /**
    * DOCUMENT-ME
    *
@@ -233,6 +275,10 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
 
     //source.setLookAndFeel((String)jComboBoxLaF.getSelectedItem());
     source.setLookAndFeel((String) jComboBoxLaF.getSelectedValue());
+    
+    settings.setProperty("EMapOverviewPanel.treeRootHandles", String.valueOf(chkRootHandles.isSelected()));
+
+//    source.getMessagePanel().setLineWrap(lineWrap.isSelected());
   }
 
   /**

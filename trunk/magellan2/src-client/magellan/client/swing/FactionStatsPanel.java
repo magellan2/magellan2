@@ -83,6 +83,7 @@ import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SkillStats;
 import magellan.library.utils.StringFactory;
@@ -251,6 +252,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    * that persons can be given to '0'.)
    */
   private void updateTree() {
+    tree.setShowsRootHandles(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
     DefaultMutableTreeNode currentNode = null;

@@ -9,6 +9,11 @@ Mit + ist in Arbeit
 
 + Probleme mit den PlugIns
 
++ Magellan Hilfe überarbeiten und an neue Gegebenheiten
+  anpassen
+  
++ ReportMerger gradebügeln, Neue einbauen
+
 ------ erledigt -------
 * Inseln werden nicht richtig erfasst (zumindest passiert da
   bei mir nichts)
@@ -37,9 +42,6 @@ Mit + ist in Arbeit
 * Bug #48 (HTML setup region details)
 * Bug #52 (Icon Style Definition for Talent Changes)
 * Minimap speichert den ARR Renderer nicht (Bug #64)
-
-* Magellan Hilfe überarbeiten und an neue Gegebenheiten
-  anpassen
 
 * Bug #51, create own translation list
 

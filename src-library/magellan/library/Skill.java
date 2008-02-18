@@ -163,7 +163,7 @@ public class Skill {
 	 *
 	 * 
 	 * 
-	 *
+	 * @deprecated (stm) This is not used by anyone and I'm not sure if it's correct any more.
 	 * 
 	 */
 	public int getModifiedLevel(Unit unit, boolean includeBuilding) {

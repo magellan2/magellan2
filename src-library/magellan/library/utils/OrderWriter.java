@@ -41,7 +41,10 @@ public class OrderWriter {
 
 	/** DOCUMENT-ME */
 	public static final String CONFIRMEDTEMP = CONFIRMED + "_temp";
-	private String echeckOptions = " -s -l -w4 -v4.01";
+	
+	public static final String ECHECKVERSION = "4.3.2";
+	
+	private String echeckOptions = " -s -l -w4 -v" + ECHECKVERSION;
 	private GameData world = null;
 	private Faction faction = null;
 	private Group group = null;
@@ -161,18 +164,14 @@ public class OrderWriter {
 		if (this.writeTimeStamp) {
 			writeln(stream, "; TIMESTAMP " + getTimeStamp());
 		}
+
+		writeln(stream, "; ECHECK VERSION Magellan "+VersionInfo.getVersion(null));
+
 		if(addECheckComments) {
 			writeln(stream, "; ECHECK " + echeckOptions);
 		}
-
-		if(!addECheckComments && VersionInfo.getVersion(null) != null) {
-			writeln(stream, "; VERSION Magellan " + VersionInfo.getVersion(null));
-		}
-
+    
 		// pavkovic 2003.09.11: use system locale and NOT faction locale!
-		// if (faction.getLocale() != null) {
-		// writeln(stream, "LOCALE " + faction.getLocale().getLanguage());
-		// }
 		writeln(stream, "LOCALE " + Locales.getOrderLocale().getLanguage());
 	}
 
@@ -283,9 +282,8 @@ public class OrderWriter {
 		return true;
 	}
 
-	private void writeOrders(Collection cmds, BufferedWriter stream) throws IOException {
-		for(Iterator it = cmds.iterator(); it.hasNext();) {
-			String cmd = (String) it.next();
+	private void writeOrders(Collection<String> cmds, BufferedWriter stream) throws IOException {
+		for(String cmd : cmds) {
 			String trimmedAndBurning = cmd.trim();
 
 			if((removeSCComments && trimmedAndBurning.startsWith(";")) ||

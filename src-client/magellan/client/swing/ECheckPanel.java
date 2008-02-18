@@ -105,6 +105,12 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   // shortcuts
   private List<KeyStroke> shortcuts;
 
+  private Container pnlEcheckOutput;
+
+  private JPanel pnlOutput;
+
+  private JButton btnHide;
+
 	/**
 	 * Creates a new ECheckPanel object.
 	 */
@@ -133,9 +139,12 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     
     echeckPanel.add(northPanel, BorderLayout.NORTH);
 
-		JPanel pnlOutput = new JPanel(new GridLayout(0, 2));
-		pnlOutput.add(getMessagesPanel());
-		pnlOutput.add(getOutputPanel());
+    pnlOutput = new JPanel(new GridLayout(0, 1));
+    pnlOutput.add(getMessagesPanel());
+    pnlEcheckOutput = getOutputPanel();
+    pnlEcheckOutput.setVisible(false);
+    // don't add here, it is added later
+    // pnlOutput.add(pnlEcheckOutput);
 
     echeckPanel.add(pnlOutput, BorderLayout.CENTER);
     
@@ -177,11 +186,54 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     btnClose.setEnabled(false);
     */
 
+    JButton btnHelp = new JButton(Resources.get("echeckdialog.btn.help.caption"));
+    btnHelp.setMnemonic(Resources.get("echeckdialog.btn.help.mnemonic").charAt(0));
+    btnHelp.setDefaultCapable(false);
+    btnHelp.addActionListener(new ActionListener() {
+    
+      public void actionPerformed(ActionEvent e) {
+        showHelp();
+      }
+
+    });
+    
+    btnHide = new JButton(Resources.get("echeckdialog.btn.details.caption.on"));
+    btnHide.setMnemonic(Resources.get("echeckdialog.btn.details.mnemonic").charAt(0));
+    btnHide.setDefaultCapable(false);
+    btnHide.addActionListener(new ActionListener() {
+    
+      public void actionPerformed(ActionEvent e) {
+        toggleECheckOutput();
+      }
+
+    });
+    
     JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(btnRun);
     //buttonPanel.add(btnClose);
+    buttonPanel.add(btnHelp);
+    buttonPanel.add(btnHide);
 
     return buttonPanel;
+  }
+
+
+  private void toggleECheckOutput() {
+    GridLayout l = (GridLayout)pnlOutput.getLayout();
+    if (pnlEcheckOutput.isVisible()){
+      pnlEcheckOutput.setVisible(false);
+      pnlOutput.remove(pnlEcheckOutput);
+      l.setColumns(1);
+      btnHide.setText(Resources.get("echeckdialog.btn.details.caption.on"));
+    }else{
+      pnlEcheckOutput.setVisible(true);
+      l.setColumns(2);
+      pnlOutput.add(pnlEcheckOutput);
+      btnHide.setText(Resources.get("echeckdialog.btn.details.caption.off"));
+    }
+//    invalidate();
+    validate();
+    repaint();
   }
 
 
@@ -227,6 +279,29 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       if (cmbFactions.getItemCount()>0) cmbFactions.setSelectedIndex(0);
     }
 	}
+
+  
+  private void showHelp() {
+    // check the given executable
+    File exeFile = new File(settings.getProperty("JECheckPanel.echeckEXE"));
+
+    if(!exeFile.exists()) {
+      JOptionPane.showMessageDialog(this.getRootPane(), Resources.get("echeckpanel.msg.echeckmissing.text"),
+                      Resources.get("echeckpanel.msg.echeckmissing.title"),
+                      JOptionPane.ERROR_MESSAGE);
+
+      return;
+    }
+
+    try {
+      ECheckMessage result = JECheck.getHelp(exeFile,settings);
+      txtOutput.setText("");
+      lstMessages.setListData(new Object [] { result });
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
 	/**
 	 * This method starts ECheck and tries to find any problems in
@@ -319,7 +394,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
         // new: force our default = UTF8
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.UTF8.toString());
 			} else {
-        // old = default = system dependend
+        // old = default = system dependent
         stream = new FileWriter(orderFile);
 			}
 			OrderWriter cmdWriter = new OrderWriter(data, selectedFaction, options);
@@ -366,12 +441,12 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
 			if(messages.size() > 0) {
 				JECheck.determineAffectedObjects(data, orderFile, messages);
-				lstMessages.setListData(messages.toArray());
 			} else {
 				JOptionPane.showMessageDialog(this.getRootPane(), Resources.get("echeckpanel.msg.noecheckmessages.text"),
 											  Resources.get("echeckpanel.msg.noecheckmessages.title"),
 											  JOptionPane.INFORMATION_MESSAGE);
 			}
+      lstMessages.setListData(messages.toArray());
 		} catch(IOException e) {
 			this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 			JOptionPane.showMessageDialog(this.getRootPane(), Resources.get("echeckpanel.msg.echeckerror.text") + e,
@@ -398,6 +473,10 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 			}
 		}
 
+    if(orderFile != null) {
+      orderFile.delete();
+      orderFile = null;
+    }
 		this.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 
@@ -584,7 +663,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 					if(!e.getValueIsAdjusting()) {
 						JECheck.ECheckMessage msg = (JECheck.ECheckMessage) lstMessages.getSelectedValue();
 
-						if(msg == null) {
+						if(msg == null || msg.getType() == ECheckMessage.MESSAGE) {
 							return;
 						}
 
@@ -617,7 +696,6 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		orders.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
 										  Resources.get("echeckpanel.border.orders")));
 		orders.add(new JScrollPane(txtOutput), BorderLayout.CENTER);
-
 		return orders;
 	}
 
@@ -775,13 +853,21 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 					}
 				}
 
-				if(m.getType() == JECheck.ECheckMessage.WARNING) {
-					lblCaption.setText(Resources.get("echeckpanel.celllbl.warning") + m.getLineNr());
-				} else {
-					lblCaption.setText(Resources.get("echeckpanel.celllbl.error") + m.getLineNr());
-				}
+				if (m==null){
+				  lblCaption.setText("");
+				  txtMessage.setText("");
+				}else{
 
-				txtMessage.setText(m.getMessage());
+				  if(m.getType() == JECheck.ECheckMessage.WARNING) {
+				    lblCaption.setText(Resources.get("echeckpanel.celllbl.warning", new Object [] { m.getLineNr() }));
+				  } else if(m.getType() == JECheck.ECheckMessage.ERROR) {
+				    lblCaption.setText(Resources.get("echeckpanel.celllbl.error", new Object [] { m.getLineNr() }));
+				  } else {
+				    lblCaption.setText("");
+				  }
+
+				  txtMessage.setText(m.getMessage());
+				}
 			} catch(ClassCastException e) {
 			}
 

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -91,9 +92,9 @@ public class JECheck extends Reader {
 
 		commandLine.add("-P" + eCheckExe.getParentFile().getAbsolutePath());
 
-		// TODO: make optionizable
-		commandLine.add("-nolost");
-		commandLine.add("-noroute");
+//		// TODO: make optionizable
+//		commandLine.add("-nolost");
+//		commandLine.add("-noroute");
 
 		StringTokenizer optiontokens = new StringTokenizer(options);
 
@@ -113,8 +114,7 @@ public class JECheck extends Reader {
 		}
 
 		// run the beast
-		// FIXME(pavkovic) log.debug("ECheck is executed with this command line:\n" + commandLine);
-		log.error("ECheck is executed with this command line:\n" + commandLine);
+		log.info("ECheck is executed with this command line:\n" + commandLine);
 		start = System.currentTimeMillis();
 
 		try {
@@ -596,6 +596,43 @@ public class JECheck extends Reader {
 	}
 
 	/**
+	 * Returns what ECheck returns when called with the -h option.
+	 * 
+	 * @param eCheckExe
+	 * @param settings
+	 * @return
+	 * @throws IOException
+	 */
+	public static ECheckMessage getHelp(File eCheckExe,Properties settings) throws IOException {
+    BufferedReader br = null;
+    StringBuffer buffer = new StringBuffer("HELP|-1|-1|");
+    
+    try {
+      br = new BufferedReader(new JECheck(eCheckExe, null, "-h",settings));
+      String line = br.readLine();
+      while (line !=null){
+        buffer.append(line+"\n");
+        line=br.readLine();
+      }
+      br.close();
+
+    } catch(Exception e) {
+      log.error(e);
+      br.close();
+      throw new IOException("Cannot retrieve help: " + e.toString());
+    }
+
+    try {
+      return new ECheckMessage(buffer.toString());
+    } catch (ParseException e) {
+      // cannot happen...
+      e.printStackTrace();
+      return null;
+    }
+    
+  }
+	
+	/**
 	 * Returns the version of the specified ECheck executable file.
 	 *
 	 * 
@@ -676,6 +713,10 @@ public class JECheck extends Reader {
 
 		/** A warning message */
 		public static final int WARNING = 2;
+
+		/** Some other message */
+		public static final int MESSAGE = -1;
+
 		private String fileName = null;
 		private int lineNr = 0;
 		private int type = 0;
@@ -699,7 +740,7 @@ public class JECheck extends Reader {
 					tokenizer.nextToken(); // skip file name
 					lineNr = Integer.parseInt(tokenizer.nextToken());
 					warnLevel = Integer.parseInt(tokenizer.nextToken());
-					type = (warnLevel == 0) ? ERROR : WARNING;
+					type = (warnLevel == 0) ? ERROR : (warnLevel > 0) ? WARNING : MESSAGE;
 					msg = tokenizer.nextToken();
 
 					while(tokenizer.hasMoreTokens()) {

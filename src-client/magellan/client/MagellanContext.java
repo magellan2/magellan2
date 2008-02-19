@@ -100,7 +100,7 @@ public class MagellanContext implements MagellanEnvironment {
 		// init the translations with the loaded settings
     Resources.getInstance();
    
-    // init the statuc resource paths
+    // init the static resource paths
     Resources.initStaticPaths(settings);
     
     // init the idbaseconverter

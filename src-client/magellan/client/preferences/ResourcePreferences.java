@@ -13,337 +13,547 @@
 
 package magellan.client.preferences;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 
+import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.InternationalizedPanel;
-import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT-ME
+ * Settings for all concerning resource paths
  *
  * @author $Author: $
  * @version $Revision: 269 $
  */
-public class ResourcePreferences extends InternationalizedPanel implements ExtendedPreferencesAdapter {
-	private JButton btnAdd = null;
-	private JButton btnRemove = null;
-	private JButton btnEdit = null;
-	private JList lstPaths = null;
-	private Properties settings = null;
-	private List<PreferencesAdapter> subAdapter;
+public class ResourcePreferences extends InternationalizedPanel implements PreferencesAdapter {
+  private JButton btnAdd = null;
+  private JButton btnRemove = null;
+  private JButton btnEdit = null;
+  private JList lstPaths = null;
+  private Properties settings = null;
+  private List<PreferencesAdapter> subAdapter;
+  private Collection<MagellanPlugIn> plugins;
 
-	/**
-	 * Creates a new ResourceSettings object.
-	 */
-	public ResourcePreferences(Properties settings) {
-		this.settings = settings;
-		initComponents();
-	}
+  /**
+   * Creates a new ResourceSettings object.
+   */
+  public ResourcePreferences(Collection<MagellanPlugIn> plugins, Properties settings) {
+    this.settings = settings;
+    this.plugins = plugins;
+
+    initComponents();
+  }
 
   /**
    * 
    */
-	private void initComponents() {
-    this.setLayout(new BorderLayout());
-    JPanel panel = new JPanel(new java.awt.GridBagLayout());
+  private void initComponents() {
+    this.setLayout(new java.awt.GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
 
-		lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
-    
-		lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-		GridBagConstraints c = new GridBagConstraints();
-		c.gridheight = 3;
-		c.fill = GridBagConstraints.BOTH;
-		c.insets = new Insets(5, 5, 5, 5);
-		c.weightx = 0.1;
-		c.weighty = 0.1;
-    panel.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-								 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), c);
-
-		btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
-		btnAdd.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					btnAddActionPerformed(evt);
-				}
-			});
-
-		c.gridheight = 1;
-		c.gridx = 1;
-		c.gridy = 0;
-		c.fill = java.awt.GridBagConstraints.HORIZONTAL;
-		c.insets = new Insets(5, 0, 5, 5);
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-    panel.add(btnAdd, c);
-
-		btnRemove = new JButton(Resources.get("resource.resourcesettings.btn.remove.caption"));
-		btnRemove.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					btnRemoveActionPerformed(evt);
-				}
-			});
-
-		c.gridx = 1;
-		c.gridy = 1;
-		c.insets = new Insets(0, 0, 5, 5);
-    panel.add(btnRemove, c);
-
-		btnEdit = new JButton(Resources.get("resource.resourcesettings.btn.edit.caption"));
-		btnEdit.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent evt) {
-					btnEditActionPerformed(evt);
-				}
-			});
-
-		c.gridx = 1;
-		c.gridy = 2;
-		c.insets = new Insets(0, 0, 5, 5);
-		c.anchor = GridBagConstraints.NORTH;
-    panel.add(btnEdit, c);
-    
     JTextArea comment = new JTextArea(Resources.get("resource.resourcesettings.comment"));
     comment.setEditable(false);
     comment.setWrapStyleWord(true);
     comment.setLineWrap(true);
-    comment.setSelectionColor(panel.getBackground());
-    comment.setSelectedTextColor(panel.getForeground());
+    comment.setSelectionColor(getBackground());
+    comment.setSelectedTextColor(getForeground());
     comment.setRequestFocusEnabled(false);
-    comment.setBackground(panel.getBackground());
-    comment.setSelectionColor(panel.getBackground());
-    comment.setSelectedTextColor(panel.getForeground());
+    comment.setBackground(getBackground());
+    comment.setSelectionColor(getBackground());
+    comment.setSelectedTextColor(getForeground());
     comment.setFont(new JLabel().getFont());
 
-    add(comment,BorderLayout.NORTH);
-    add(panel,BorderLayout.CENTER);
-    
-    
-		subAdapter = new ArrayList<PreferencesAdapter>(1);
+    c.gridwidth=3;
+    c.gridy=1;
+    add(new JPanel(), c);
+    c.gridy=2;
+    add(comment,c);
 
-		ResourcePathPreferences ppa = new ResourcePathPreferences(settings);
-		ppa.addPath("ECheck:", "JECheckPanel.echeckEXE");
-		ppa.addPath("Vorlage:", "JVorlage.vorlageFile");
-		subAdapter.add(ppa);
-		subAdapter.add(new ResourcePlugInPreferences(settings));
-	}
+    c.gridy = 3;
+    add(getSpecialPathsPanel(), c);
+
+    c.gridy = 4;
+    add(getExternalPanel(), c);
+
+    c.gridy=5;
+    c.weighty = 1;
+    add(getResourcePathsPanel(), c);
+
+  }
+
+  protected JCheckBox chkSearchResources;
+  protected JCheckBox chkSearchClassPath;
 
   /**
-   * @see magellan.client.swing.preferences.ExtendedPreferencesAdapter#getChildren()
-   */
-	public List<PreferencesAdapter> getChildren() {
-		return subAdapter;
-	}
-
-  /**
+   * Miscellaneous external modules settings
    * 
+   * @return
    */
-	private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
-		if(lstPaths.getSelectedValue() == null) {
-			return;
-		}
+  protected Component getExternalPanel() {
+    JPanel extPanel = new JPanel(new GridBagLayout());
 
-		Component parent = this.getTopLevelAncestor();
-		URLWrapper w = (URLWrapper) lstPaths.getSelectedValue();
+    JPanel pnl = new JPanel(new GridBagLayout());
+    pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
+        Resources.get("resource.externalmodulesettings.border.externalmodules")));
+    
+    GridBagConstraints c = new GridBagConstraints();
 
-		if((w != null) && (w.url != null)) {
-			Object selectionValues[] = { w.toString() };
-			String input = (String) JOptionPane.showInputDialog(parent, Resources.get("resource.resourcesettings.msg.edit.text"),
-																Resources.get("resource.resourcesettings.msg.edit.title"),
-																JOptionPane.PLAIN_MESSAGE, null,
-																null, selectionValues[0]);
+    chkSearchResources = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchResources"),
+        Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchResourcePathClassLoader",
+        "true")).booleanValue());
 
-			if(input != null) {
-				if(input.startsWith("http")) {
-					try {
-						w.url = new URL(input);
-					} catch(MalformedURLException mue) {
-						JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.invalidformat.text"));
-					}
-				} else {
-					File f = new File(input);
+    c.gridx = 0;
+    c.gridy = 0;
+    c.anchor = GridBagConstraints.WEST;
+    c.fill = GridBagConstraints.NONE;
+    c.weightx = 1.0;
+    c.weighty = 1.0;
+    pnl.add(chkSearchResources, c);
 
-					if(!f.exists()) {
-						if(JOptionPane.showConfirmDialog(parent,
-															 Resources.get("resource.resourcesettings.msg.usenonexisting.text"),
-															 Resources.get("resource.resourcesettings.msg.usenonexisting.title"),
-															 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-							try {
-								w.url = new URL(input);
-							} catch(MalformedURLException mue) {
-								JOptionPane.showMessageDialog(parent,
-															  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
-							}
-						}
-					} else {
-						try {
-							w.url = f.toURI().toURL();
-						} catch(MalformedURLException mue) {
-							JOptionPane.showMessageDialog(parent,
-														  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
-						}
-					}
-				}
-			}
-		}
-	}
+    chkSearchClassPath = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchClassPath"),
+        Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchClassPath",
+        "true")).booleanValue());
 
-	private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {
-		if(this.lstPaths.getSelectedValue() != null) {
-			((DefaultListModel) this.lstPaths.getModel()).removeElementAt(this.lstPaths.getSelectedIndex());
-		}
-	}
+    c.gridx = 0;
+    c.gridy = 1;
+    pnl.add(chkSearchClassPath, c);
 
-	private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
-		URLWrapper urlWrapper = null;
-		Component parent = this.getTopLevelAncestor();
+    c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
+        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
+    extPanel.add(pnl, c);
 
-		javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
-		fc.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+    return extPanel;
+  }
 
-		if(fc.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
-			java.io.File file = fc.getSelectedFile();
 
-			try {
-				if(file.exists()) {
-					if(file.isDirectory()) {
-						urlWrapper = new URLWrapper(file.toURI().toURL());
-					} else {
-						urlWrapper = new URLWrapper(new URL("jar:" + file.toURI().toString() +
-															"!/"));
-					}
-				} else {
-					String name = file.getName();
-					String parentName = "";
+  private List<JTextField> textFields;
+  private List<String> keys;
+  private JFileChooser fchooser;
+  private File file;
 
-					if(file.getParentFile() != null) {
-						parentName = file.getParentFile().getName();
-					}
+  private JPanel spPanel;
 
-					if(!name.equals("") && name.equals(parentName)) {
-						// in this case the user double clicked a directory instead of just selecting it
-						urlWrapper = new URLWrapper(file.getParentFile().toURI().toURL());
-					} else {
-						JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.nonexistingfile.text"));
-					}
-				}
-			} catch(MalformedURLException ex) {
-				JOptionPane.showMessageDialog(parent,
-											  Resources.get("resource.resourcesettings.msg.urlexception.text") + " " +
-											  ex.toString());
-			}
-		}
+  /**
+   * ECheck and Vorlage paths (and the like...)
+   * 
+   * @return
+   */
+  protected Component getSpecialPathsPanel() {
+    spPanel = new JPanel(new GridBagLayout());
+    spPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("resource.resourcesettings.special.title")));
 
-		((DefaultListModel) this.lstPaths.getModel()).insertElementAt(urlWrapper, 0);
-	}
+    GridBagConstraints con = new GridBagConstraints();
+    con.anchor = GridBagConstraints.CENTER;
+    con.fill = GridBagConstraints.HORIZONTAL;
+    con.weighty = 0;
+    con.gridy = 0;
 
-    public void initPreferences() {
-        // TODO: implement it
+
+    con.gridy++;
+    con.gridwidth=1;
+
+    // list
+    textFields = new LinkedList<JTextField>();
+    keys = new LinkedList<String>();
+
+    // files
+    fchooser = new JFileChooser();
+
+    try {
+      file = new File(".");
+
+      if(!file.isDirectory()) {
+        file = file.getParentFile();
+      }
+
+      if(file == null) {
+        file = new File(".");
+      }
+    } catch(Exception exc) {
     }
 
-	/**
-	 * DOCUMENT-ME
-	 */
-	public void applyPreferences() {
-		Collection<URL> resourcePaths = new LinkedList<URL>();
-		ListModel listModel = this.lstPaths.getModel();
+    addPath(con, "ECheck:", "JECheckPanel.echeckEXE");
+    addPath(con, "Vorlage:", "JVorlage.vorlageFile");
 
-		for(int j = 0; j < listModel.getSize(); j++) {
-			URLWrapper wrapper = (URLWrapper) listModel.getElementAt(j);
+    return spPanel;
+  }
 
-			if((wrapper != null) && (wrapper.url != null)) {
-				resourcePaths.add(wrapper.url);
-			}
-		}
 
-		Resources.setStaticPaths(resourcePaths);
+  protected void addPath(GridBagConstraints con, String label, String key) {
+    con.gridx = 0;
+    con.weightx = 0.25;
+    JLabel l = new JLabel(label);
+    l.setHorizontalAlignment(JLabel.RIGHT);
+    spPanel.add(l, con);
+
+    JTextField tf = new JTextField(settings.getProperty(key));
+    con.gridx = 1;
+    con.weightx = 0.5;
+    spPanel.add(tf, con);
+
+    textFields.add(tf);
+    keys.add(key);
+
+    con.gridx = 2;
+    con.weightx = 0.25;
+    spPanel.add(new DirButton(tf), con);
+
+    con.gridy++;
+
+    doLayout();
+  }
+
+  /**
+   * All other resource paths...
+   * 
+   * @return
+   */
+  protected Component getResourcePathsPanel(){
+    JPanel rpPanel = new JPanel(new java.awt.GridBagLayout());
+    rpPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("resource.resourcesettings.resourcepaths.title")));
+
+    lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
+
+    lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+    GridBagConstraints c = new GridBagConstraints();
+    c.gridheight = 3;
+    c.fill = GridBagConstraints.BOTH;
+    c.insets = new Insets(5, 5, 5, 5);
+    c.weightx = 0.1;
+    c.weighty = 0.1;
+    rpPanel.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+        JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), c);
+
+    btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
+    btnAdd.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        btnAddActionPerformed(evt);
+      }
+    });
+
+    c.gridheight = 1;
+    c.gridx = 1;
+    c.gridy = 0;
+    c.fill = java.awt.GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(5, 0, 5, 5);
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    rpPanel.add(btnAdd, c);
+
+    btnRemove = new JButton(Resources.get("resource.resourcesettings.btn.remove.caption"));
+    btnRemove.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        btnRemoveActionPerformed(evt);
+      }
+    });
+
+    c.gridx = 1;
+    c.gridy = 1;
+    c.insets = new Insets(0, 0, 5, 5);
+    rpPanel.add(btnRemove, c);
+
+    btnEdit = new JButton(Resources.get("resource.resourcesettings.btn.edit.caption"));
+    btnEdit.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent evt) {
+        btnEditActionPerformed(evt);
+      }
+    });
+
+    c.gridx = 1;
+    c.gridy = 2;
+    c.insets = new Insets(0, 0, 5, 5);
+    c.anchor = GridBagConstraints.NORTH;
+    rpPanel.add(btnEdit, c);
+
+    return rpPanel;
+  }
+
+  private DefaultListModel getWrappedURLs(Collection urls) {
+    DefaultListModel wrappers = new DefaultListModel();
+
+    for(Iterator iter = urls.iterator(); iter.hasNext();) {
+      wrappers.add(wrappers.getSize(), new URLWrapper((URL) iter.next()));
+    }
+
+    return wrappers;
+  }
+
+  /**
+   * Action for editing a resource path
+   */
+  private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {
+    if(lstPaths.getSelectedValue() == null) {
+      return;
+    }
+
+    Component parent = this.getTopLevelAncestor();
+    URLWrapper w = (URLWrapper) lstPaths.getSelectedValue();
+
+    if((w != null) && (w.getUrl() != null)) {
+      Object selectionValues[] = { w.toString() };
+      String input = (String) JOptionPane.showInputDialog(parent, Resources.get("resource.resourcesettings.msg.edit.text"),
+          Resources.get("resource.resourcesettings.msg.edit.title"),
+          JOptionPane.PLAIN_MESSAGE, null,
+          null, selectionValues[0]);
+
+      if(input != null) {
+        if(input.startsWith("http")) {
+          try {
+            w.setUrl(new URL(input));
+          } catch(MalformedURLException mue) {
+            JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+          }
+        } else {
+          File f = new File(input);
+
+          if(!f.exists()) {
+            if(JOptionPane.showConfirmDialog(parent,
+                Resources.get("resource.resourcesettings.msg.usenonexisting.text"),
+                Resources.get("resource.resourcesettings.msg.usenonexisting.title"),
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+              try {
+                w.setUrl(new URL(input));
+              } catch(MalformedURLException mue) {
+                JOptionPane.showMessageDialog(parent,
+                    Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+              }
+            }
+          } else {
+            try {
+              w.setUrl(f.toURI().toURL());
+            } catch(MalformedURLException mue) {
+              JOptionPane.showMessageDialog(parent,
+                  Resources.get("resource.resourcesettings.msg.invalidformat.text"));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {
+    if(this.lstPaths.getSelectedValue() != null) {
+      ((DefaultListModel) this.lstPaths.getModel()).removeElementAt(this.lstPaths.getSelectedIndex());
+    }
+  }
+
+  /**
+   * Button for adding a resource path.
+   * 
+   * @param evt
+   */
+  private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {
+    URLWrapper urlWrapper = null;
+    Component parent = this.getTopLevelAncestor();
+
+    javax.swing.JFileChooser fc = new javax.swing.JFileChooser();
+    fc.setFileSelectionMode(javax.swing.JFileChooser.FILES_AND_DIRECTORIES);
+
+    if(fc.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+      java.io.File file = fc.getSelectedFile();
+
+      try {
+        if(file.exists()) {
+          if(file.isDirectory()) {
+            urlWrapper = new URLWrapper(file.toURI().toURL());
+          } else {
+            urlWrapper = new URLWrapper(Resources.file2URL(file));
+          }
+        } else {
+          String name = file.getName();
+          String parentName = "";
+
+          if(file.getParentFile() != null) {
+            parentName = file.getParentFile().getName();
+          }
+
+          if(!name.equals("") && name.equals(parentName)) {
+            // in this case the user double clicked a directory instead of just selecting it
+            urlWrapper = new URLWrapper(file.getParentFile().toURI().toURL());
+          } else {
+            JOptionPane.showMessageDialog(parent, Resources.get("resource.resourcesettings.msg.nonexistingfile.text"));
+          }
+        }
+      } catch(MalformedURLException ex) {
+        JOptionPane.showMessageDialog(parent,
+            Resources.get("resource.resourcesettings.msg.urlexception.text") + " " +
+            ex.toString());
+      }
+    }
+
+    ((DefaultListModel) this.lstPaths.getModel()).insertElementAt(urlWrapper, 0);
+  }
+
+  public void initPreferences() {
+    // TODO: implement it
+  }
+
+  /**
+   * DOCUMENT-ME
+   *
+   * 
+   */
+  public void setVisible(boolean b) {
+    if(b && (textFields.size() > 0)) {
+      for(int i = 0, max = textFields.size(); i < max; i++) {
+        ((JTextField) textFields.get(i)).setText(settings.getProperty((String) keys.get(i)));
+      }
+    }
+
+    super.setVisible(b);
+  }
+
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
+   */
+  public void applyPreferences() {
+    // resource paths
+    Collection<URL> resourcePaths = new LinkedList<URL>();
+    ListModel listModel = this.lstPaths.getModel();
+
+    for(int j = 0; j < listModel.getSize(); j++) {
+      URLWrapper wrapper = (URLWrapper) listModel.getElementAt(j);
+
+      if((wrapper != null) && (wrapper.getUrl() != null)) {
+        resourcePaths.add(wrapper.getUrl());
+      }
+    }
+
+    Resources.setStaticPaths(resourcePaths);
     Resources.storePaths(resourcePaths, this.settings);
-	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Component getComponent() {
-		return this;
-	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getTitle() {
-		return Resources.get("resource.resourcesettings.title");
-	}
+    // special paths
+    if(textFields.size() > 0) {
+      for(int i = 0; i < textFields.size(); i++) {
+        settings.setProperty((String) keys.get(i),
+            ((JTextField) textFields.get(i)).getText());
+      }
+    }
+    
+    // external modules
+    settings.setProperty("ExternalModuleLoader.searchResourcePathClassLoader",
+        String.valueOf(chkSearchResources.isSelected()));
+    settings.setProperty("ExternalModuleLoader.searchClassPath",
+        String.valueOf(chkSearchClassPath.isSelected()));
 
-	private DefaultListModel getWrappedURLs(Collection urls) {
-		DefaultListModel wrappers = new DefaultListModel();
+  }
 
-		for(Iterator iter = urls.iterator(); iter.hasNext();) {
-			wrappers.add(wrappers.getSize(), new URLWrapper((URL) iter.next()));
-		}
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
+   */
+  public Component getComponent() {
+    return this;
+  }
 
-		return wrappers;
-	}
+  /**
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
+   */
+  public String getTitle() {
+    return Resources.get("resource.resourcesettings.title");
+  }
 
-	private class URLWrapper {
-		/** DOCUMENT-ME */
-		public URL url;
+  protected class DirButton extends JButton implements ActionListener {
+    protected JTextField text;
 
-		/**
-		 * Creates a new URLWrapper object.
-		 *
-		 * 
-		 */
-		public URLWrapper(URL url) {
-			this.url = url;
-		}
+    /**
+     * Creates a new DirButton object.
+     */
+    public DirButton(JTextField jtf) {
+      super(Resources.get("preferences.pathpreferencesadapter.prefs.btn"));
+      text = jtf;
+      addActionListener(this);
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public String toString() {
-			if(url.getProtocol().equals("file")) {
-				File f = new File(url.getPath());
+    /**
+     * DOCUMENT-ME
+     *
+     * 
+     */
+    public void actionPerformed(ActionEvent e) {
+      try {
+        fchooser.setSelectedFile(new File(text.getText()));
+      } catch(Exception exc) {
+        fchooser.setCurrentDirectory(file);
+      }
 
-				if(f.exists()) {
-					return f.toString();
-				} else {
-					return url.toString();
-				}
-			} else {
-				return url.toString();
-			}
-		}
-	}
+      if(fchooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+        text.setText(fchooser.getSelectedFile().toString());
+      }
+    }
+  }
+
+  private class URLWrapper {
+    /** DOCUMENT-ME */
+    private URL url;
+
+    /**
+     * Creates a new URLWrapper object.
+     *
+     * 
+     */
+    public URLWrapper(URL url) {
+      this.url = url;
+    }
+
+    public void setUrl(URL url) {
+      this.url = url;
+    }
+
+    public URL getUrl() {
+      return url;
+    }
+
+    /**
+     * DOCUMENT-ME
+     *
+     * 
+     */
+    public String toString() {
+      if(getUrl().getProtocol().equals("file")) {
+        File f = new File(getUrl().getPath());
+
+        if(f.exists()) {
+          return f.toString();
+        } else {
+          return getUrl().toString();
+        }
+      } else {
+        return getUrl().toString();
+      }
+    }
+  }
 }

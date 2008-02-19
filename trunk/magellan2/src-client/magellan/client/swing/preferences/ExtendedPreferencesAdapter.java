@@ -18,7 +18,7 @@
  */
 package magellan.client.swing.preferences;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * A class that has sub preference dialogs.  This is for layout purposes in the preferences dialog.
@@ -32,5 +32,5 @@ public interface ExtendedPreferencesAdapter extends PreferencesAdapter {
 	/**
 	 * Returns a list of preferences adapters that should be displayed in the given order.
 	 */
-  public List<PreferencesAdapter> getChildren();
+  public Collection<PreferencesAdapter> getChildren();
 }

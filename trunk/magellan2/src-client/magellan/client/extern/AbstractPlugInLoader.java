@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
@@ -55,8 +54,7 @@ public abstract class AbstractPlugInLoader<T> {
   protected Collection<String> getPathsFromResourcePathClassLoader(ResourcePathClassLoader resLoader, Properties settings) {
     Collection<String> paths = new ArrayList<String>();
 
-    for (Iterator<URL> iter = resLoader.getPaths().iterator(); iter.hasNext();) {
-      URL url = iter.next();
+    for (URL url : resLoader.getPaths()) {
       
       String path = null;
       try {
@@ -66,9 +64,12 @@ public abstract class AbstractPlugInLoader<T> {
         continue;
       }
 
-      if (path.startsWith("file:/")) {
-        path = path.substring(6, path.length());
+      if (path.startsWith("file:///")) {
+        path = path.substring(7, path.length());
+      } else if (path.startsWith("file:/")) {
+        path = path.substring(5, path.length());
       }
+
 
       if (path.endsWith("!/")) {
         path = path.substring(0, path.length() - 2);
@@ -222,8 +223,7 @@ public abstract class AbstractPlugInLoader<T> {
     // search explicit the magellan dir for the magellan-plugins.jar
     paths.add(settings.getProperty("plugin.helper.magellandir") + File.separator + "magellan-plugins.jar");    
     
-    for (Iterator<String> iter = paths.iterator(); iter.hasNext();) {
-      String path = iter.next();
+    for (String path : paths){
       classes.addAll(getClassesFromPath(resLoader, externalModuleClass, path));
     }
 

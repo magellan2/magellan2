@@ -143,6 +143,7 @@ import magellan.client.utils.FileHistory;
 import magellan.client.utils.IconAdapterFactory;
 import magellan.client.utils.LanguageDialog;
 import magellan.client.utils.NameGenerator;
+import magellan.client.utils.PluginSettingsFactory;
 import magellan.client.utils.RendererLoader;
 import magellan.client.utils.ResourceSettingsFactory;
 import magellan.client.utils.SelectionHistory;
@@ -862,15 +863,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     preferencesAdapterList.add(detailsPanel);
     preferencesAdapterList.add(mapPanel);
     preferencesAdapterList.add(new IconAdapterFactory(nodeWrapperFactories));
-    preferencesAdapterList.add(new ResourceSettingsFactory(getProperties()));
+    preferencesAdapterList.add(new ResourceSettingsFactory(plugIns, getProperties()));
     
-    log.info("Checking for preferences-providers...(MagellanPlugIns)");
-    for (MagellanPlugIn plugIn : plugIns) {
-      PreferencesFactory plugInPreferenceFactory = plugIn.getPreferencesProvider();
-      if (plugInPreferenceFactory != null) {
-        preferencesAdapterList.add(plugInPreferenceFactory);
-      }
-    }
+    preferencesAdapterList.add(new PluginSettingsFactory(plugIns, getProperties()));
     
     optionAction = new OptionAction(this, preferencesAdapterList);
     addMenuItem(extras, optionAction);
@@ -2199,7 +2194,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void initPlugIns() {
     MagellanPlugInLoader loader = new MagellanPlugInLoader();
     Properties properties = getProperties();
-    // helper: stote Magellan-Dir in properties toBe changed
+    // helper: store Magellan-Dir in properties toBe changed
     properties.setProperty("plugin.helper.magellandir", filesDirectory.toString());
     Collection<Class<MagellanPlugIn>> plugInClasses = loader.getExternalModuleClasses(properties);
     

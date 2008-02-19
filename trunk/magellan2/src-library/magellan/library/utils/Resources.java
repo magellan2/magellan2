@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -463,11 +462,9 @@ public class Resources {
    * @param settings
    */
   public static void initStaticPaths(Properties settings){
-    Collection<String> properties = PropertiesHelper.getList(settings, "Resources.preferredPathList");
-    List<URL> resourcePaths = new ArrayList<URL>(properties.size());
+    List<URL> resourcePaths = new ArrayList<URL>();
 
-    for(Iterator<String> iter = properties.iterator(); iter.hasNext();) {
-      String location = iter.next();
+    for(String location : PropertiesHelper.getList(settings, "Resources.preferredPathList")) {
       try {
         resourcePaths.add(new URL(location));
       } catch(MalformedURLException e) {
@@ -519,6 +516,10 @@ public class Resources {
   
   public static void main(String[] args) {
     System.out.println(Resources.getAvailableLocales());
+  }
+
+  public static URL file2URL(File file) throws MalformedURLException {
+    return new URL("jar:" + file.toURL().toString() +"!/");
   }
 }
 

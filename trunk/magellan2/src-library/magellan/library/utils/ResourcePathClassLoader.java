@@ -61,11 +61,9 @@ public class ResourcePathClassLoader extends ClassLoader {
    * Loads the resource paths from the specified settings.
    */
   private static List<URL> loadResourcePaths(Properties settings) {
-    Collection<String> properties = PropertiesHelper.getList(settings, "Resources.preferredPathList");
-    List<URL> resourcePaths = new ArrayList<URL>(properties.size());
+    List<URL> resourcePaths = new ArrayList<URL>();
 
-    for(Iterator<String> iter = properties.iterator(); iter.hasNext();) {
-      String location = iter.next();
+    for(String location : PropertiesHelper.getList(settings, "Resources.preferredPathList")){
 
       try {
         resourcePaths.add(new URL(location));
@@ -92,10 +90,9 @@ public class ResourcePathClassLoader extends ClassLoader {
         for (int i = 0; i < files.length; i++) {
           String entry = files[i].getAbsolutePath();
           if (entry.endsWith(".jar")) {
-            entry = "jar:file:/" + entry + "!/";
             try {
               // log.info("PluginDir - found:" + entry);
-              paths.add(new URL(entry));
+              paths.add(Resources.file2URL(files[i]));
             } catch(MalformedURLException e) {
               log.error(e);
             } 

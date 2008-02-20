@@ -670,6 +670,12 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         setCenter(newCoordinate);
       }
     }
+    
+    // check, if we have a difference between Level just set and displayed Level in navi
+    Integer displayedLevel = (Integer) cmbLevel.getSelectedItem();
+    if (level!=displayedLevel.intValue()){
+      cmbLevel.setSelectedItem(new Integer(level));
+    }
   }
 
   /**

@@ -1,3 +1,8 @@
+2008-02-19 / Build 154 - Fiete (sf@fietefietz.de)
+	* Fixed addPeasantInfo for regions with 0 peasants
+	* remmoved buildingcellrenderer - preference adapter
+	* fixed update of level-cmbBox of mapcontextmenu is used
+	
 2008-02-19 / Build 153 - stm (stm_@users.sourceforge.net) 
     * Fixed auto-detection of plugins
     * modified for external resources preferences adapter and added plugin preferences adapter 

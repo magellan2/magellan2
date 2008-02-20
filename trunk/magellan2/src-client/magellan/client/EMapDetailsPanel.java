@@ -834,7 +834,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendRegionPeasantInfo(Region r, DefaultMutableTreeNode parent,
 										 Collection<NodeWrapper> expandableNodes) {
 		if(r.getPeasants() <= 0) {
-			return;
+			// return;
+      // removed...information like unterhaltung und lohn
+      // are still needed, also if peasants=0
+      // Fiete 20080220
 		}
 
 		// peasants

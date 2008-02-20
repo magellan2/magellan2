@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import magellan.client.MagellanContext;
-import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
@@ -118,11 +117,6 @@ public class BuildingCellRenderer extends ImageCellRenderer{
     return Resources.get("map.buildingcellrenderer.name");
   }
   
-  /**
-   * Creates a preferences panel allowing to configure this component.
-   */
-  public PreferencesAdapter getPreferencesAdapter() {
-    return new BuildingCellRendererPreferences(this);
-  }
+  
 
 }

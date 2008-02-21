@@ -391,21 +391,21 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // initialize variables used in while loop
 
     // TODO: this needs explanations
-    boolean createIslandNodes = PropertiesHelper.getboolean(settings, "EMapOverviewPanel.displayIslands", true) && PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortRegions", true) && settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equalsIgnoreCase("islands");
+    boolean createIslandNodes = PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.displayIslands", true) && PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true) && settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equalsIgnoreCase("islands");
 
-    boolean sortShipUnderUnitParent = PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true);
+    boolean sortShipUnderUnitParent = PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true);
 
     TreeBuilder treeBuilder = getTreeBuilder();
     treeBuilder.setSortShipUnderUnitParent(sortShipUnderUnitParent);
 
     int displayMode = TreeBuilder.UNITS;
-    if (PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true)) {
+    if (PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true)) {
       displayMode = displayMode | TreeBuilder.BUILDINGS;
     }
-    if (PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true)) {
+    if (PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true)) {
       displayMode = displayMode | TreeBuilder.SHIPS;
     }
-    if (PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true)) {
+    if (PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true)) {
       displayMode = displayMode | TreeBuilder.COMMENTS;
     }
     treeBuilder.setDisplayMode(displayMode | (createIslandNodes ? TreeBuilder.CREATE_ISLANDS : 0));
@@ -417,7 +417,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     treeBuilder.buildTree(rootNode, data);
 
-    tree.setShowsRootHandles(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
     this.selectionChanged(new SelectionEvent(treeModel, oldSelectedObjects, oldActiveObject));

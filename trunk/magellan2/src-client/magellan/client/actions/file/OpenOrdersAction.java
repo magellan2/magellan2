@@ -85,7 +85,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 
 			try {
 				// apexo (Fiete) 20061205: if in properties, force ISO encoding
-				if (!PropertiesHelper.getboolean(settings, "TextEncoding.ISOopenOrders", false)) {
+				if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
 					// old = default = system dependent
 					r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
 				} else {

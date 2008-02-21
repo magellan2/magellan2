@@ -179,7 +179,7 @@ public class DockingLayout {
     open(window,root);
     
     RootWindowProperties prop = window.getRootWindowProperties();
-    if (PropertiesHelper.getboolean(settings, "ClientPreferences.dontShowTabs", false)){
+    if (PropertiesHelper.getBoolean(settings, "ClientPreferences.dontShowTabs", false)){
       prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.MORE_THAN_ONE_TAB);
     } else {
       prop.getTabWindowProperties().getTabbedPanelProperties().getTabAreaProperties().setTabAreaVisiblePolicy(TabAreaVisiblePolicy.ALWAYS);

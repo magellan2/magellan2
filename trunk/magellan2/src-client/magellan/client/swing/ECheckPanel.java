@@ -387,10 +387,10 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
 			//	apexo (Fiete) 20061205: if in properties, force ISO encoding
 			Writer stream = null;
-			if (PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunEcheck", false)) {
+			if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOrunEcheck", false)) {
         // new: force our default = ISO
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.ISO.toString());
-      } else if (PropertiesHelper.getboolean(settings, "TextEncoding.UTF8runEcheck", false)) {
+      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8runEcheck", false)) {
         // new: force our default = UTF8
         stream = new OutputStreamWriter(new FileOutputStream(orderFile), Encoding.UTF8.toString());
 			} else {

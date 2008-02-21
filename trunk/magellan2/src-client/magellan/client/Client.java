@@ -316,7 +316,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       initLocales(settings, false);
     }
 
-    showStatus = PropertiesHelper.getboolean(settings, "Client.ShowOrderStatus", false);
+    showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
     Properties completionSettings = loadSettings(settingsDirectory, "magellan_completions.ini");
     if (completionSettings == null) completionSettings = new SelfCleaningProperties();
@@ -493,7 +493,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     /* setup font size */
     try {
-      float fScale = PropertiesHelper.getfloat(getProperties(), "Client.FontScale", 1.0f);
+      float fScale = PropertiesHelper.getFloat(getProperties(), "Client.FontScale", 1.0f);
 
       if (fScale != 1.0f) {
         // TODO(pavkovic): the following code bloats the fonts in an
@@ -550,7 +550,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // init mapper
     mapPanel = new MapperPanel(getMagellanContext(), cR, geo);
     mapPanel.setMinimumSize(new Dimension(100, 10));
-    mapPanel.setScaleFactor(PropertiesHelper.getfloat(getProperties(), "Map.scaleFactor", 1.0f));
+    mapPanel.setScaleFactor(PropertiesHelper.getFloat(getProperties(), "Map.scaleFactor", 1.0f));
     panels.add(mapPanel);
     components.put("MAP", mapPanel);
     components.put("MINIMAP", mapPanel.getMinimapComponent());
@@ -1078,7 +1078,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (tReport == null) {
             // if no report is given on startup, we check if we can load the last
             // loaded report.
-            boolean loadLastReport = PropertiesHelper.getboolean(c.getProperties(), "ClientPreferences.LoadLastReport", true);
+            boolean loadLastReport = PropertiesHelper.getBoolean(c.getProperties(), "ClientPreferences.LoadLastReport", true);
             if (loadLastReport) {
               crFile = c.fileHistory.getLastExistingReport();
               if (crFile == null) {
@@ -1849,7 +1849,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     context.setGameData(newData);
     postProcessLoadedCR(newData);
 
-    if (newData != null && PropertiesHelper.getboolean(getProperties(), "map.creating.void", false)) {
+    if (newData != null && PropertiesHelper.getBoolean(getProperties(), "map.creating.void", false)) {
       newData.postProcessTheVoid();
     }
 

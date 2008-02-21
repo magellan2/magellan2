@@ -108,30 +108,30 @@ public class ClientTextEncodingPreferences extends JPanel implements Preferences
 		textEncodingPrefrencesPanel.add(textEncodingInfoLabel,c);
 		
     c.gridy++;
-    openISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOopenOrders", false));
+    openISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOopenOrders.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false));
     textEncodingPrefrencesPanel.add(openISOOrders, c);
     
 		c.gridy++;
-		saveISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false));
+		saveISOOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOsaveOrders.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false));
 		textEncodingPrefrencesPanel.add(saveISOOrders, c);
     
 		c.gridy++;
-		runISOEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunEcheck", false));
+		runISOEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOECheck.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.ISOrunEcheck", false));
 		textEncodingPrefrencesPanel.add(runISOEcheck, c);
 		
     c.gridy++;
-    runJVorlage = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),PropertiesHelper.getboolean(settings, "TextEncoding.ISOrunJVorlage", false));
+    runJVorlage = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingISOJVorlage.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.ISOrunJVorlage", false));
     runJVorlage.setEnabled(false);
     textEncodingPrefrencesPanel.add(runJVorlage, c);
 
     // TextEncoding.UTF8saveOrders
     c.gridy++;
-    saveUTFOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFsaveOrders.label"),PropertiesHelper.getboolean(settings, "TextEncoding.UTF8saveOrders", false));
+    saveUTFOrders = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFsaveOrders.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false));
     textEncodingPrefrencesPanel.add(saveUTFOrders, c);
 
     // TextEncoding.UTF8runEcheck
     c.gridy++;
-    runUTFEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFECheck.label"),PropertiesHelper.getboolean(settings, "TextEncoding.UTF8runEcheck", false));
+    runUTFEcheck = new JCheckBox(Resources.get("util.textencodingpreferences.checkbox.textEncodingUTFECheck.label"),PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8runEcheck", false));
     textEncodingPrefrencesPanel.add(runUTFEcheck, c);
     
     if (saveISOOrders.isSelected()) {

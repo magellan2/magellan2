@@ -1059,10 +1059,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     MultiPartEmail mailMessage;
     String contentType = "text/plain; charset=" + Encoding.DEFAULT;
-    if (PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false)) {
+    if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
       // new: force our default = ISO
       contentType = "text/plain; charset=" + Encoding.ISO;
-    } else if (PropertiesHelper.getboolean(settings, "TextEncoding.UTF8saveOrders", false)) {
+    } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
       // new: force our default = UTF-8
       contentType = "text/plain; charset=" + Encoding.UTF8;
     } else {
@@ -1192,10 +1192,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       // apexo (Fiete) 20061205: if in properties, force ISO encoding
       Writer stream = null;
-      if (PropertiesHelper.getboolean(settings, "TextEncoding.ISOsaveOrders", false)) {
+      if (PropertiesHelper.getBoolean(settings, "TextEncoding.ISOsaveOrders", false)) {
         // new: force our default = ISO
         stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.ISO.toString());
-      } else if (PropertiesHelper.getboolean(settings, "TextEncoding.UTF8saveOrders", false)) {
+      } else if (PropertiesHelper.getBoolean(settings, "TextEncoding.UTF8saveOrders", false)) {
         // new: force our default = UTF-8
         stream = new OutputStreamWriter(new FileOutputStream(outputFile), Encoding.UTF8.toString());
       } else {

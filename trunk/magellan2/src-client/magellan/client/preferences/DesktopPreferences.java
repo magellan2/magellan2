@@ -97,7 +97,7 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    dontShowTabs = new JCheckBox( Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper.getboolean(settings, "ClientPreferences.dontShowTabs", false));
+    dontShowTabs = new JCheckBox( Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper.getBoolean(settings, "ClientPreferences.dontShowTabs", false));
     dontShowTabs.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(dontShowTabs,c);
     c.gridx = 1;

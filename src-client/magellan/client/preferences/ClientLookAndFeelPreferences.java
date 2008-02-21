@@ -213,7 +213,7 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
                             new Insets(3, 3, 3, 3), 0, 0);
 
     chkRootHandles = new JCheckBox(Resources.get("clientpreferences.lbl.roothandles"));
-    chkRootHandles.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
     panel.add(chkRootHandles, con);
 
 //    lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), source.getMessagePanel().isLineWrap());

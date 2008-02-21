@@ -252,7 +252,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    * that persons can be given to '0'.)
    */
   private void updateTree() {
-    tree.setShowsRootHandles(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 

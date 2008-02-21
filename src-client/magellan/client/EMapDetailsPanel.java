@@ -2975,7 +2975,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		ItemType carts = data.rules.getItemType(StringID.create("Wagen"));
 		ItemType silver = data.rules.getItemType(StringID.create("Silber"));
 		// Fiete: feature request...showing not only capacity for "good" items in region...
-		if (PropertiesHelper.getboolean(settings, "unitCapacityContextMenuShowFriendly", true)){
+		if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)){
 			for(Iterator iter = u.getRegion().items().iterator(); iter.hasNext();) {
 				Item item = (Item) iter.next();
 				ItemType type = item.getItemType();
@@ -2989,7 +2989,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		} 
 		
-		if (PropertiesHelper.getboolean(settings, "unitCapacityContextMenuShowSome", false)){
+		if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowSome", false)){
 			for(Iterator iter = u.getRegion().allItems().iterator(); iter.hasNext();) {
 				Item item = (Item) iter.next();
 				ItemType type = item.getItemType();
@@ -3003,7 +3003,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		} 
 		
-		if (PropertiesHelper.getboolean(settings, "unitCapacityContextMenuShowAll", false)) {
+		if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowAll", false)) {
 			// show all itemtypes...need to built and sort a list
 			// we take natural order - it works - added Comparable to ItemType (Fiete)
 			TreeSet<ItemType> l = new TreeSet<ItemType>();

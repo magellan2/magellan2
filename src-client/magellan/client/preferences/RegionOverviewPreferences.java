@@ -448,16 +448,18 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
    * @see com.eressea.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    chkSortRegions.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortRegions", true));
-    chkSortShipUnderUnitParent.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true));
+    chkSortRegions.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortRegions", true));
+    chkSortShipUnderUnitParent.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.sortShipUnderUnitParent", true));
 
-    chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true));
-    chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
-    chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
+    chkRegionTreeBuilder_withBuildings.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithBuildings", true));
+    chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
+    chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
+
+    //chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     rdbSortRegionsCoordinates.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
     rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands"));
-    chkDisplayIslands.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.displayIslands", true));
+    chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.displayIslands", true));
 
     String criteria = settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " " + TreeHelper.GROUP);
 
@@ -480,7 +482,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     rdbSortUnitsUnsorted.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("unsorted"));
     rdbSortUnitsSkills.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("skills"));
-    useBestSkill.setSelected(PropertiesHelper.getboolean(settings, "EMapOverviewPanel.useBestSkill", true));
+    useBestSkill.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.useBestSkill", true));
     useTopmostSkill.setSelected(!useBestSkill.isSelected());
 
     rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("names"));

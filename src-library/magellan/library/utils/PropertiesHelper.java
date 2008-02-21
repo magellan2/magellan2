@@ -67,9 +67,11 @@ public class PropertiesHelper {
 		return ret;
 	}
 
-	// a) remove old properties
-	// b) set prefix.count value
-	// c) set prefix.0 .. prefix.n values
+  /**
+	 * a) remove old properties
+	 * b) set prefix.count value
+	 * c) set prefix.0 .. prefix.n values
+   */
 	public static void setList(Properties p, String prefix, Collection list) {
 		// a) remove old properties
 		for(Iterator iter = getPrefixedList(p, prefix).iterator(); iter.hasNext();) {
@@ -90,11 +92,6 @@ public class PropertiesHelper {
 
 	/**
 	 * Delivers a list of all keys having the prefix <tt>prefix</tt>
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public static List<String> getPrefixedList(Properties p, String prefix) {
 		List<String> ret = new LinkedList<String>();
@@ -110,16 +107,12 @@ public class PropertiesHelper {
 		return ret;
 	}
 
-	/*
-	public static Boolean getBoolean(Properties p, String key) {
-	    String val = p.getProperty(key);
-	    if(val==null|| val.equalsIgnoreCase()) {
-	        return null;
-	    }
-	    return new Boolean()
-	}
-	*/
-	public static boolean getboolean(Properties p, String key, boolean def) {
+  /**
+   * Searches the property with the given key and if it exists, it tries
+   * to convert it into a boolean and returns that value. If something goes
+   * wrong or the key couldn't be found the default value def is returned.
+   */
+	public static boolean getBoolean(Properties p, String key, boolean def) {
 		String val = p.getProperty(key);
 
 		if(val != null) {
@@ -130,15 +123,11 @@ public class PropertiesHelper {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * Searches the property with the given key and if it exists, it tries
+   * to convert it into a float and returns that value. If something goes
+   * wrong or the key couldn't be found the default value def is returned.
 	 */
-	public static float getfloat(Properties p, String key, float def) {
+	public static float getFloat(Properties p, String key, float def) {
 		String val = p.getProperty(key);
 
 		if(val != null) {
@@ -155,10 +144,6 @@ public class PropertiesHelper {
 	 * Loads a rectangle from the settings using the given key. If <code>r</code> is null, a new
 	 * object is created. Else the result is stored in <code>r</code>. In either case, the
 	 * resulting rectangle is returned.
-	 * 
-	 * @param settings
-	 * @param r
-	 * @param key
 	 * 
 	 * @return The loaded rectangle or null if an error occurs.
 	 */
@@ -183,10 +168,6 @@ public class PropertiesHelper {
 	/**
 	 * Saves the rectangle r with property-key key to the settings. The rectangle is stored as
 	 * key.x, key.y, key.width, key.height.
-	 * 
-	 * @param settings
-	 * @param r
-	 * @param key
 	 */
 	public static void saveRectangle(Properties settings, Rectangle r, String key) {
 		settings.setProperty(key + ".x", String.valueOf(r.x));

@@ -168,7 +168,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
     // check for updates
-    checkForUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkforupdates.caption"), PropertiesHelper.getboolean(settings, "UpdateCheck.Check", true));
+    checkForUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkforupdates.caption"), PropertiesHelper.getBoolean(settings, "UpdateCheck.Check", true));
     checkForUpdates.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(checkForUpdates,c);
     c.gridx = 1;
@@ -184,7 +184,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    loadlastreport = new JCheckBox( Resources.get("clientpreferences.misc.loadlastreport.caption"), PropertiesHelper.getboolean(settings, "ClientPreferences.LoadLastReport", true));
+    loadlastreport = new JCheckBox( Resources.get("clientpreferences.misc.loadlastreport.caption"), PropertiesHelper.getBoolean(settings, "ClientPreferences.LoadLastReport", true));
     loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(loadlastreport,c);
     c.gridx = 1;
@@ -200,7 +200,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    createVoidRegions = new JCheckBox( Resources.get("clientpreferences.create.void.regions.caption"), PropertiesHelper.getboolean(settings, "map.creating.void", false));
+    createVoidRegions = new JCheckBox( Resources.get("clientpreferences.create.void.regions.caption"), PropertiesHelper.getBoolean(settings, "map.creating.void", false));
     createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(createVoidRegions,c);
     c.gridx = 1;

@@ -153,7 +153,7 @@ public class JECheck extends Reader {
 		try {
 			//	apexo (Fiete) 20061205: if in properties, force ISO encoding
 			
-			if (!PropertiesHelper.getboolean(settings, "TextEncoding.ISOopenOrders", false)) {
+			if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
 				// old = default = system dependend
 				outputReader = new FileReader(tempFile);
 			} else {

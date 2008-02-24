@@ -56,7 +56,8 @@ public class OpenCRAction extends MenuAction {
     }
     
     File file = getFileFromFileChooser(client);
-    new Thread(new LoadCR(client,file)).start();
+    if (file!=null)
+      new Thread(new LoadCR(client,file)).start();
   }
   
   /**

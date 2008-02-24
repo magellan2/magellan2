@@ -37,7 +37,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import magellan.client.Client;
 import magellan.library.GameData;
@@ -53,7 +52,7 @@ import magellan.library.utils.Resources;
  * @version 1.0, 11.09.2007
  */
 public class ExtendedCommandsDialog extends JDialog implements ActionListener {
-  private JTextArea scriptingArea = null;
+  private BeanShellEditor scriptingArea = null;
   private GameData world = null;
   private Unit unit = null;
   private UnitContainer container = null;
@@ -88,7 +87,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener {
     JPanel center = new JPanel(new BorderLayout());
     center.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     
-    scriptingArea = new JTextArea(script);
+    scriptingArea = new BeanShellEditor();
+    scriptingArea.setText(script);
     center.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
     add(center,BorderLayout.CENTER);
     

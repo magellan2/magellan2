@@ -1,3 +1,6 @@
+2008-02-24 / Build 155 - Thoralf (thoralf@m84.de)
+    * added syntax highlighting in extended commands plugin
+
 2008-02-19 / Build 154 - Fiete (sf@fietefietz.de)
 	* Fixed addPeasantInfo for regions with 0 peasants
 	* remmoved buildingcellrenderer - preference adapter

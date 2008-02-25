@@ -46,11 +46,14 @@ import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Encapsulates the preferences tab for the desktop.
  */
 public class DesktopPreferences extends JPanel implements ActionListener, ExtendedPreferencesAdapter {
+  private static final Logger log = Logger.getInstance(DesktopPreferences.class);
+  
   private MagellanDesktop desktop;
   private Client client;
   private Properties settings;
@@ -97,7 +100,8 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    dontShowTabs = new JCheckBox( Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper.getBoolean(settings, "ClientPreferences.dontShowTabs", false));
+    log.info("Dont Show tabs? "+PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+    dontShowTabs = new JCheckBox( Resources.get("desktop.magellandesktop.prefs.dontShowTabs"), PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     dontShowTabs.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(dontShowTabs,c);
     c.gridx = 1;

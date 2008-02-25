@@ -68,6 +68,7 @@ import magellan.client.swing.MagellanFocusTraversalPolicy;
 import magellan.client.swing.completion.CompletionGUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 /**
@@ -412,7 +413,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     /** Apply preferences for self defined completions */
 
     // delete old entries out of settings file
-    String s = (String) source.getSettings().get("AutoCompletion.SelfDefinedCompletions.count");
+    String s = (String) source.getSettings().get(PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT);
     int completionCount = 0;
 
     if (s != null) {
@@ -435,7 +436,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
       completionCount++;
     }
 
-    source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.count", String.valueOf(completionCount));
+    source.getSettings().setProperty(PropertiesHelper.AUTOCOMPLETION_SELF_DEFINED_COMPLETIONS_COUNT, String.valueOf(completionCount));
 
     // update selfDefinedCompletion table of AutoCompletion
     source.getSelfDefinedCompletionsMap().clear();

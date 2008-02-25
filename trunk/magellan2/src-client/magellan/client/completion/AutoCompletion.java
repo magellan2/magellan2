@@ -119,7 +119,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   protected void loadSettings() {
-    String autoCmp = settings.getProperty("AutoCompletion.Enabled");
+    String autoCmp = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED);
 
     if (autoCmp != null) {
       enableAutoCompletion = autoCmp.equalsIgnoreCase("true");
@@ -129,21 +129,21 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       if (autoCmp != null) {
         enableAutoCompletion = Boolean.valueOf(autoCmp).booleanValue();
         settings.remove("OrderEditingPanel.useOrderCompletion");
-        settings.setProperty("AutoCompletion.Enabled", enableAutoCompletion ? "true" : "false");
+        settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true" : "false");
       } else {
         enableAutoCompletion = true;
       }
     }
 
-    limitMakeCompletion = settings.getProperty("AutoCompletion.limitMakeCompletion", "true").equalsIgnoreCase("true");
+    limitMakeCompletion = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true").equalsIgnoreCase("true");
 
-    String stubMode = settings.getProperty("AutoCompletion.EmptyStubMode", "true");
+    String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
 
-    activeGUI = settings.getProperty("AutoCompletion.CompletionGUI", "List");
+    activeGUI = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_COMPLETION_GUI, "List");
 
     try {
-      time = Integer.parseInt(settings.getProperty("AutoCompletion.ActivationTime", "150"));
+      time = Integer.parseInt(settings.getProperty(PropertiesHelper.AUTOCOMPLETION_TIME, "150"));
     } catch (Exception exc) {
       time = 150;
     }
@@ -151,7 +151,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     completerKeys = new int[4][2]; // cycle forward, cycle backward, complete,
                                     // break
 
-    String cycleForward = settings.getProperty("AutoCompletion.Keys.Cycle.Forward");
+    String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
 
     try {
       StringTokenizer st = new StringTokenizer(cycleForward, ",");
@@ -162,7 +162,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[0][1] = KeyEvent.VK_DOWN;
     }
 
-    String cycleBackward = settings.getProperty("AutoCompletion.Keys.Cycle.Backward");
+    String cycleBackward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
 
     try {
       StringTokenizer st = new StringTokenizer(cycleBackward, ",");
@@ -173,7 +173,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[1][1] = KeyEvent.VK_UP;
     }
 
-    String complete = settings.getProperty("AutoCompletion.Keys.Complete");
+    String complete = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE);
 
     try {
       StringTokenizer st = new StringTokenizer(complete, ",");
@@ -184,7 +184,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[2][1] = KeyEvent.VK_TAB;
     }
 
-    String breakKey = settings.getProperty("AutoCompletion.Keys.Break");
+    String breakKey = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK);
 
     try {
       StringTokenizer st = new StringTokenizer(breakKey, ",");
@@ -312,7 +312,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     currentGUI = cGUI;
-    settings.setProperty("AutoCompletion.CompletionGUI", cGUI.getTitle());
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_COMPLETION_GUI, cGUI.getTitle());
     timer.restart();
   }
 
@@ -791,7 +791,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setEnableAutoCompletion(boolean b) {
     enableAutoCompletion = b;
-    settings.setProperty("AutoCompletion.Enabled", enableAutoCompletion ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true" : "false");
 
     if (!b && (currentGUI != null)) {
       currentGUI.stopOffer();
@@ -815,7 +815,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setLimitMakeCompletion(boolean value) {
     limitMakeCompletion = value;
-    settings.setProperty("AutoCompletion.limitMakeCompletion", value ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, value ? "true" : "false");
   }
 
   /**
@@ -835,7 +835,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setEmptyStubMode(boolean b) {
     emptyStubMode = b;
-    settings.setProperty("AutoCompletion.EmptyStubMode", emptyStubMode ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, emptyStubMode ? "true" : "false");
   }
 
   /**
@@ -869,7 +869,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       time = 1;
     }
 
-    settings.setProperty("AutoCompletion.ActivationTime", String.valueOf(time));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_TIME, String.valueOf(time));
     timer.setDelay(time);
   }
 
@@ -890,10 +890,10 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setCompleterKeys(int ck[][]) {
     completerKeys = ck;
-    settings.setProperty("AutoCompletion.Keys.Cycle.Forward", String.valueOf(ck[0][0]) + ',' + String.valueOf(ck[0][1]));
-    settings.setProperty("AutoCompletion.Keys.Cycle.Backward", String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
-    settings.setProperty("AutoCompletion.Keys.Complete", String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
-    settings.setProperty("AutoCompletion.Keys.Break", String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD, String.valueOf(ck[0][0]) + ',' + String.valueOf(ck[0][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
   }
 
   /**

@@ -37,7 +37,7 @@ public class VersionInfo {
   public static final String PROPERTY_KEY_UPDATECHECK_URL    = "UpdateCheck.URL";
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
   
-  private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/magellan2/release/VERSION";
+  private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/release/VERSION";
 
   private static String Version = null;
   private static boolean versionIsSet=false;
@@ -92,6 +92,9 @@ public class VersionInfo {
     boolean doCheck = check;
     
     if (urlstring.length()<1) urlstring = DEFAULT_CHECK_URL;
+    
+    // reset url string to new location
+    properties.setProperty(PROPERTY_KEY_UPDATECHECK_URL, DEFAULT_CHECK_URL);
     
     // if the last failed time was now-7 days, then we try to check again.
     if (failedTimestamp > 0l && doCheck) {

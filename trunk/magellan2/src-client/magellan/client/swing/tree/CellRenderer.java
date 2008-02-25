@@ -48,6 +48,7 @@ import javax.swing.tree.TreeCellRenderer;
 import magellan.client.MagellanContext;
 import magellan.library.utils.Colors;
 import magellan.library.utils.JVMUtilities;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.logging.Logger;
 
@@ -185,7 +186,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		boolean tTip = true;
 
 		// Text -> color mapping
-		String cMapS = settings.getProperty("CellRenderer.SkillIconTextColorMap");
+		String cMapS = settings.getProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP);
 
 		try {
 			StringTokenizer st = new StringTokenizer(cMapS, ";");
@@ -207,7 +208,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		}
 
 		// Show Tooltips
-		String tTipS = settings.getProperty("CellRenderer.ShowToolTips");
+		String tTipS = settings.getProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS);
 		tTip = ((tTipS != null) && tTipS.equals("true"));
 
 		// now give the renderer our values
@@ -219,7 +220,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		emphasizeStyleChange = 0;
 
 		try {
-			emphasizeStyleChange = Integer.parseInt(settings.getProperty("CellRenderer.Emphasize.Style"));
+			emphasizeStyleChange = Integer.parseInt(settings.getProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE));
 		} catch(Exception exc) {
 			emphasizeStyleChange = Font.BOLD;
 		}
@@ -246,9 +247,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		emphasizeStyleChange = sChange;
 
 		if(sChange == 0) {
-			settings.remove("CellRenderer.Emphasize.Style");
+			settings.remove(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE);
 		} else {
-			settings.setProperty("CellRenderer.Emphasize.Style", String.valueOf(sChange));
+			settings.setProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE, String.valueOf(sChange));
 		}
 
 		emphasizeColor = sColor;
@@ -268,7 +269,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 */
 	public static void setAdditionalValueProperties(Map<String,Color> colorM, boolean sTip) {
 		showTooltips = sTip;
-		settings.setProperty("CellRenderer.ShowToolTips", sTip ? "true" : "false");
+		settings.setProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS, sTip ? "true" : "false");
 
 		setColorMap(colorM);
 	}
@@ -285,7 +286,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			colorMap = colorM;
 
 			if(colorMap == null) {
-				settings.setProperty("CellRenderer.SkillIconTextColorMap", "none");
+				settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
 			} else {
 				StringBuffer str = new StringBuffer();
 				Iterator it = colorMap.keySet().iterator();
@@ -304,9 +305,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				}
 
 				if(str.length() > 0) {
-					settings.setProperty("CellRenderer.SkillIconTextColorMap", str.toString());
+					settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, str.toString());
 				} else {
-					settings.setProperty("CellRenderer.SkillIconTextColorMap", "none");
+					settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
 				}
 			}
 		}
@@ -906,7 +907,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	}
 
 	/**
-	 * Loads a styleset out of the property "CellRenderer.Stylesets."+name
+	 * Loads a styleset out of the property PropertiesHelper.CELLRENDERER_STYLESETS+name
 	 *
 	 * 
 	 */
@@ -917,7 +918,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
 		if(!stylesets.containsKey(name)) {
 			GraphicsStyleset set = new GraphicsStyleset(name);
-			String propName = "CellRenderer.Stylesets." + name;
+			String propName = PropertiesHelper.CELLRENDERER_STYLESETS + name;
 
 			if(settings.containsKey(propName)) {
 				String def = settings.getProperty(propName);
@@ -1045,11 +1046,11 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	}
 
 	/**
-	 * Loads all custom stylesets. Checks the property "CellRenderer.CustomStylesets" for names of
+	 * Loads all custom stylesets. Checks the property PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS for names of
 	 * stylesets and searches the given sets.
 	 */
 	public static void loadStylesets() {
-		String custom = settings.getProperty("CellRenderer.CustomStylesets");
+		String custom = settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS);
 
 		if(custom != null) {
 			StringTokenizer st = new StringTokenizer(custom, ";");
@@ -1068,7 +1069,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	protected static void saveStyleset(String name) {
 		if((stylesets != null) && stylesets.containsKey(name)) {
 			GraphicsStyleset set = (GraphicsStyleset) stylesets.get(name);
-			String custom = settings.getProperty("CellRenderer.CustomStylesets", "");
+			String custom = settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, "");
 
 			if(custom.indexOf(name) == -1) {
 				if(custom.length() == 0) {
@@ -1077,11 +1078,11 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 					custom += (";" + name);
 				}
 
-				settings.setProperty("CellRenderer.CustomStylesets", custom);
+				settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom);
 			}
 
 			String def = createDefinitionString(set);
-			settings.setProperty("CellRenderer.Stylesets." + name, def);
+			settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
 		}
 	}
 
@@ -1098,7 +1099,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				String name = (String) it.next();
 				GraphicsStyleset set = (GraphicsStyleset) stylesets.get(name);
 				String def = createDefinitionString(set);
-				settings.setProperty("CellRenderer.Stylesets." + name, def);
+				settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
 
 				if(custom.length() > 0) {
 					custom.append(';');
@@ -1107,7 +1108,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				custom.append(name);
 			}
 
-			settings.setProperty("CellRenderer.CustomStylesets", custom.toString());
+			settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom.toString());
 		}
 	}
 
@@ -1119,7 +1120,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	public static void removeStyleset(String styleset) {
 		if(stylesets != null) {
 			stylesets.remove(styleset);
-			settings.remove("CellRenderer.Stylesets." + styleset);
+			settings.remove(PropertiesHelper.CELLRENDERER_STYLESETS + styleset);
 		}
 	}
 

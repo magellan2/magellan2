@@ -230,12 +230,42 @@ public class Utils {
     
     return new Color(red,green,blue);
   }
+  
+  /**
+   * This method returns a String object coresponding
+   * to the format: #RRGGBB oder RRGGBB
+   * 
+   * @return A color oder null.
+   */
+  public static String getColor(Color color) {
+    if (color == null) return null;
+    int red = color.getRed();
+    int green = color.getGreen();
+    int blue = color.getBlue();
+
+    if (red < 0) red = 0;
+    if (red > 255) red = 255;
+    
+    if (green < 0) green = 0;
+    if (green > 255) green = 255;
+
+    if (blue < 0) blue = 0;
+    if (blue > 255) blue = 255;
+    
+    String r = decimalToHexadecimal(red);
+    String g = decimalToHexadecimal(green);
+    String b = decimalToHexadecimal(blue);
+    
+    if (r.length()<2) r = "0"+r;
+    if (g.length()<2) g = "0"+g;
+    if (b.length()<2) b = "0"+b;
+
+    return "#"+r+g+b;
+  }
 
   public static int hexadecimalToDecimal(String hexadecimal) {
     int power=1, decimal=0, number=0;
     String digit;
-    
-    
     
     for(int i=hexadecimal.length()-1; i>=0; i--) {
       digit = hexadecimal.toUpperCase().substring(i,i+1);
@@ -264,6 +294,22 @@ public class Utils {
     return decimal;
   }
   
+  private static final String hex[] = {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+  public static String decimalToHexadecimal(long decimal) {
+    long rest;
+    
+    StringBuffer hexadecimal = new StringBuffer(10);
+    
+    long result=decimal;
+    do {    
+      rest=result%16;
+      result = result / 16;
+      
+      hexadecimal.append(hex[(int)rest]);                   
+    } while(result != 0);
+    
+    return hexadecimal.reverse().toString();
+  }
 
   /**
    * Returns the date in the form "DD.MM.YYYY HH:MM:ss"

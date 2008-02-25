@@ -33,6 +33,7 @@ import magellan.library.Border;
 import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -65,7 +66,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	 */
 	public BorderCellRenderer(CellGeometry geo, MagellanContext context ) {
 		super(geo, context);
-    setUseSeasonImages((Boolean.valueOf(settings.getProperty("BoderCellRenderer.useSeasonImages",
+    setUseSeasonImages((Boolean.valueOf(settings.getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
      "true"))).booleanValue());
     
 	}
@@ -365,7 +366,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
 
   public void setUseSeasonImages(boolean useSeasonImages) {
     this.useSeasonImages = useSeasonImages;
-    settings.setProperty("BoderCellRenderer.useSeasonImages",
+    settings.setProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
          String.valueOf(useSeasonImages));
   }
   

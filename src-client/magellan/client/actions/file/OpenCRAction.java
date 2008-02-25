@@ -28,7 +28,9 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * This action is called, if the user chooses the menu File > Open.
+ * 
+ * This class loads a new CR into Magellan.
  *
  * @author Andreas
  * @version 1.0

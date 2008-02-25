@@ -184,7 +184,7 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
     String renderer[] = source.getLookAndFeels();
     jComboBoxLaF = new JList(renderer);
     jComboBoxLaF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    jComboBoxLaF.setSelectedValue(settings.getProperty("Client.lookAndFeel", "Metal"), true);
+    jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Metal"), true);
     con.gridx = 1;
     con.weightx = 0;
     panel.add(new JScrollPane(jComboBoxLaF), con);

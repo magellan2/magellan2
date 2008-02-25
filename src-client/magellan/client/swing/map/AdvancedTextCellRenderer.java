@@ -78,6 +78,7 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerHelp;
 import magellan.library.utils.replacers.ReplacerSystem;
@@ -120,7 +121,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			buffer = new LinkedList<String>();
 		}
 
-		loadSet(settings.getProperty("ATR.CurrentSet", "Standard"));
+		loadSet(settings.getProperty(PropertiesHelper.ATR_CURRENT_SET, "Standard"));
 
 		// load style settings
 		try {
@@ -130,7 +131,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		try {
-			setHAlign(Integer.parseInt(settings.getProperty("ATR.horizontalAlign", "0")));
+			setHAlign(Integer.parseInt(settings.getProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, "0")));
 		} catch(Exception exc) {
 			setHAlign(CENTER);
 		}
@@ -167,7 +168,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		ATRSet s = new ATRSet(name);
 		s.load(settings);
 		this.set = s;
-		settings.setProperty("ATR.CurrentSet", name);
+		settings.setProperty(PropertiesHelper.ATR_CURRENT_SET, name);
 	}
 
 	/**
@@ -186,8 +187,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		set.save(settings);
 
 		if(!exists(set.getName(), settings)) {
-			settings.setProperty("ATR.Sets",
-								 settings.getProperty("ATR.Sets", "") + ";" + set.getName());
+			settings.setProperty(PropertiesHelper.ATR_SETS,
+								 settings.getProperty(PropertiesHelper.ATR_SETS, "") + ";" + set.getName());
 		}
 	}
 
@@ -211,7 +212,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 * 
 	 */
 	public boolean exists(String name, Properties settings) {
-		String allSets = settings.getProperty("ATR.Sets", "");
+		String allSets = settings.getProperty(PropertiesHelper.ATR_SETS, "");
 		int sindex = 0;
 		int i = -1;
 
@@ -251,7 +252,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	// a collection of set names
 	public Collection<String> getAllSets() {
 		Collection<String> c = new LinkedList<String>();
-		StringTokenizer st = new StringTokenizer(settings.getProperty("ATR.Sets", "Standard"), ";");
+		StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
 
 		while(st.hasMoreTokens()) {
 			c.add(st.nextToken());
@@ -270,7 +271,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		settings.remove(key + "Def");
 		settings.remove(key + "Unknown");
 
-		StringTokenizer st = new StringTokenizer(settings.getProperty("ATR.Sets", "Standard"), ";");
+		StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
 		StringBuffer b = new StringBuffer();
 
 		while(st.hasMoreTokens()) {
@@ -285,7 +286,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			}
 		}
 
-		settings.setProperty("ATR.Sets", b.toString());
+		settings.setProperty(PropertiesHelper.ATR_SETS, b.toString());
 	}
 
 	/**
@@ -295,7 +296,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 */
 	public void setHAlign(int h) {
 		super.setHAlign(h);
-		settings.setProperty("ATR.horizontalAlign", String.valueOf(h));
+		settings.setProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, String.valueOf(h));
 	}
 
 	/**
@@ -1171,7 +1172,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 					Properties prop = new Properties();
 					prop.load(new java.io.FileInputStream(f));
 
-					String sets = prop.getProperty("ATR.Sets", "");
+					String sets = prop.getProperty(PropertiesHelper.ATR_SETS, "");
 					StringTokenizer st = new StringTokenizer(sets, ";");
 
 					while(st.hasMoreTokens()) {

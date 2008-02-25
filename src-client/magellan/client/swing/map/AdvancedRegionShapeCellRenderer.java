@@ -85,6 +85,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Colors;
 import magellan.library.utils.Locales;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.replacers.ReplacerHelp;
@@ -130,7 +131,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       cTable = new ColorTable();
       vMapping = new ValueMapping();
 
-      StringTokenizer st = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer." + set + ".Colors", "0.0;0,0,0;1.0;255,255,255"), ";");
+      StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, "0.0;0,0,0;1.0;255,255,255"), ";");
       cTable.removeAll();
 
       while (st.hasMoreTokens()) {
@@ -143,7 +144,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
       }
 
-      st = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer." + set + ".Values", "0.0;0.0;1.0;1.0"), ";");
+      st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0"), ";");
       vMapping.removeAll();
 
       while (st.hasMoreTokens()) {
@@ -157,13 +158,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
       }
 
-      minDef = settings.getProperty("AdvancedShapeRenderer." + set + ".Min", "0");
-      curDef = settings.getProperty("AdvancedShapeRenderer." + set + ".Cur", "0.5");
-      maxDef = settings.getProperty("AdvancedShapeRenderer." + set + ".Max", "1");
+      minDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, "0");
+      curDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, "0.5");
+      maxDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "1");
 
-      unknownString = settings.getProperty("AdvancedShapeRenderer." + set + ".Unknown", "?");
+      unknownString = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN, "?");
 
-      mapperTooltip = settings.getProperty("AdvancedShapeRenderer." + set + ".Tooltip");
+      mapperTooltip = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP);
 
     }
 
@@ -185,9 +186,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
         }
 
-        settings.setProperty("AdvancedShapeRenderer." + name + ".Colors", buf.toString());
+        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, buf.toString());
       } else {
-        settings.remove("AdvancedShapeRenderer." + name + ".Colors");
+        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
       }
 
       entries = vMapping.getEntries();
@@ -207,23 +208,23 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           }
         }
 
-        settings.setProperty("AdvancedShapeRenderer." + name + ".Values", buf.toString());
+        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, buf.toString());
       } else {
-        settings.remove("AdvancedShapeRenderer." + name + ".Values");
+        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES);
       }
 
-      settings.setProperty("AdvancedShapeRenderer." + name + ".Min", minDef);
-      settings.setProperty("AdvancedShapeRenderer." + name + ".Max", maxDef);
-      settings.setProperty("AdvancedShapeRenderer." + name + ".Cur", curDef);
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, minDef);
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, maxDef);
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, curDef);
 
       if (mapperTooltip == null) {
-        settings.remove("AdvancedShapeRenderer." + name + ".Tooltip");
+        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP);
       } else {
-        settings.setProperty("AdvancedShapeRenderer." + name + ".Tooltip", mapperTooltip);
+        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_TOOLTIP, mapperTooltip);
       }
 
       // look if this set is registered
-      StringTokenizer tokens = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer.Sets", ""), ",");
+      StringTokenizer tokens = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
       boolean found = false;
 
       while (!found && tokens.hasMoreTokens()) {
@@ -231,7 +232,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       if (!found) {
-        settings.setProperty("AdvancedShapeRenderer.Sets", settings.getProperty("AdvancedShapeRenderer.Sets", "") + "," + name);
+        settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, "") + "," + name);
       }
 
     }
@@ -326,7 +327,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   protected void loadCurrentSet() {
-    loadSet(settings.getProperty("AdvancedShapeRenderer.CurrentSet", "Standard"));
+    loadSet(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET, "Standard"));
   }
   
   protected void loadSet(String set){
@@ -334,7 +335,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     applySet(currentSett);
 
     // TODO (stm)
-//  if (!settings.containsKey("AdvancedShapeRenderer." + currentSet + ".Colors")) {
+//  if (!settings.containsKey(PropertiesHelper.ADVANCEDSHAPERENDERER + currentSet + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS)) {
 //    saveSettings();
 //  }
 }
@@ -795,7 +796,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
     contextMenu.removeAll();
 
-    StringTokenizer s = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer.Sets", ""), ",");
+    StringTokenizer s = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
 
     while (s.hasMoreTokens()) {
       String str = s.nextToken();
@@ -1046,7 +1047,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      */
     protected void reprocessSets(Object oldSet) {
       List<String> sets = new LinkedList<String>();
-      StringTokenizer s = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer.Sets", ""), ",");
+      StringTokenizer s = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
 
       while (s.hasMoreTokens()) {
         sets.add(s.nextToken());
@@ -1240,7 +1241,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected boolean checkName(String name) {
-      StringTokenizer s = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer.Sets", ""), ",");
+      StringTokenizer s = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
 
       while (s.hasMoreTokens()) {
         if (name.equals(s.nextToken())) {
@@ -1252,14 +1253,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected void removeSet(String removedSet) {
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Colors");
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Values");
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Min");
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Max");
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Cur");
-      settings.remove("AdvancedShapeRenderer." + removedSet + ".Unknown");
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES);
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM);
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM);
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT);
+      settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + removedSet + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN);
 
-      String set = settings.getProperty("AdvancedShapeRenderer.Sets");
+      String set = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS);
 
       if (set != null) {
         StringBuffer buf = new StringBuffer();
@@ -1278,19 +1279,19 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
 
         if (buf.length() > 0) {
-          settings.setProperty("AdvancedShapeRenderer.Sets", buf.toString());
+          settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, buf.toString());
         } else {
-          settings.remove("AdvancedShapeRenderer.Sets");
+          settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS);
         }
       }
 
-      StringTokenizer s = new StringTokenizer(settings.getProperty("AdvancedShapeRenderer.Sets", ""), ",");
+      StringTokenizer s = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS, ""), ",");
 
       if (s.hasMoreTokens()) {
         currentSelection = s.nextToken();
         prefSet = new ARRSet(settings, currentSelection);
       } else {
-        settings.remove("AdvancedShapeRenderer.CurrentSet");
+        settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET);
         // TODO !!!
 //        loadDefaultSet();
       }

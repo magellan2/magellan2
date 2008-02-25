@@ -229,7 +229,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     initWorkSpace();
 
     // init the desktop
-    if(!initSplitSet(settings.getProperty("Desktop.SplitSet", "Standard"))) {
+    if(!initSplitSet(settings.getProperty(PropertiesHelper.DESKTOP_SPLITSET, "Standard"))) {
       //try to load default
       if(!initSplitSet("Standard")) {
         Iterator<String> it = splitSets.keySet().iterator();
@@ -270,7 +270,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       this.removeAll();
       this.add(workSpace, BorderLayout.CENTER);
     }
-    workSpace.setEnabledChooser(settings.getProperty("Desktop.EnableWorkSpaceChooser","true").equals("true"));
+    workSpace.setEnabledChooser(settings.getProperty(PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER,Boolean.TRUE.toString()).equals(Boolean.TRUE.toString()));
   }
   
   /**
@@ -284,7 +284,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    */
   public void setWorkSpaceChooser(boolean enabled) {
-    settings.setProperty("Desktop.EnableWorkSpaceChooser", String.valueOf(enabled));
+    settings.setProperty(PropertiesHelper.DESKTOP_ENABLE_WORKSPACE_CHOOSER, String.valueOf(enabled));
     initWorkSpace();
   }
   
@@ -1259,9 +1259,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   /**
    * Enables or disables all docking tabs.
    */
-  public void setTabVisibility(boolean showTabs) {
+  public synchronized void setTabVisibility(boolean showTabs) {
     log.info("setTabVisibilty("+showTabs+")");
-    settings.setProperty("ClientPreferences.dontShowTabs", Boolean.toString(!showTabs));
+    Client.INSTANCE.getProperties().setProperty(PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, Boolean.toString(!showTabs));
+    log.info("Dont Show tabs? "+PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     
     RootWindow root = (RootWindow) splitRoot;
     RootWindowProperties prop = root.getRootWindowProperties();
@@ -1687,7 +1688,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       if(!initSplitSet((String) param)) {
         initSplitSet("Standard");
       }
-    } else if(!initSplitSet(settings.getProperty("Desktop.SplitSet", "Standard"))) {
+    } else if(!initSplitSet(settings.getProperty(PropertiesHelper.DESKTOP_SPLITSET, "Standard"))) {
       initSplitSet("Standard");
     }
 
@@ -1771,11 +1772,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * </ul>
    */
   protected void saveSplitModeProperties() {
-    settings.setProperty("Desktop.Type", "SPLIT");
+    settings.setProperty(PropertiesHelper.DESKTOP_TYPE, "SPLIT");
     splitRect = client.getBounds();
 
     PropertiesHelper.saveRectangle(settings, splitRect, "Client");
-    settings.setProperty("Desktop.SplitSet", splitName);
+    settings.setProperty(PropertiesHelper.DESKTOP_SPLITSET, splitName);
   }
 
   /**

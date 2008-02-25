@@ -280,6 +280,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param settingsDir
    */
   public Client(GameData gd, File fileDir, File settingsDir) {
+    INSTANCE = this;
     filesDirectory = fileDir;
     settingsDirectory = settingsDir;
     
@@ -291,22 +292,23 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (settings == null) {
       log.info("Client.loadSettings: settings file " + "magellan.ini" + " does not exist, using default values.");
       settings = new SelfCleaningProperties();
-      settings.setProperty("Client.lookAndFeel","Windows");
-      settings.setProperty("AdvancedShapeRenderer.Sets",",Einkaufsgut");
-      settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Cur","\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
-      settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Max","10");
-      settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Colors","0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
-      settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Values","0.0;0.0;1.0;1.0");
-      settings.setProperty("AdvancedShapeRenderer.Einkaufsgut.Min","0");
+      settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,"Windows");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS,",Einkaufsgut");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT_SET,"Einkaufsgut");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT,"\u00A7if\u00A7<\u00A7price\u00A7\u00D6l\u00A7-1\u00A71\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Weihrauch\u00A7-1\u00A72\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Seide\u00A7-1\u00A73\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Myrrhe\u00A7-1\u00A74\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Juwel\u00A7-1\u00A75\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Gew\u00FCrz\u00A7-1\u00A76\u00A7else\u00A7if\u00A7<\u00A7price\u00A7Balsam\u00A7-1\u00A77\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7end\u00A7");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM,"10");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS,"0.0;223,131,39;0.12162162;220,142,24;0.14864865;153,153,153;0.23648648;153,153,153;0.26013514;204,255,255;0.3445946;204,255,255;0.3716216;0,204,0;0.42905405;0,204,0;0.46283785;255,51,0;0.5371622;255,51,0;0.5608108;255,255,0;0.6317568;255,255,0;0.6621622;51,51,255;1.0;0,51,255");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES,"0.0;0.0;1.0;1.0");
+      settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM,"0");
       // Message Panel Default colors.
-      settings.setProperty("messagetype.section.events.color","-"); // Format: #RRGGBB
-      settings.setProperty("messagetype.section.movement.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.economy.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.magic.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.study.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.production.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.errors.color","-");// Format: #RRGGBB
-      settings.setProperty("messagetype.section.battle.color","-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"-"); // Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,"-");// Format: #RRGGBB
       
       // try to set path to ECheck
       this.initECheckPath(settings);
@@ -617,7 +619,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    *          DOCUMENT-ME
    * 
    */
-  private JMenuBar createMenuBar(Collection components) {
+  private JMenuBar createMenuBar(Collection<Container> components) {
     JMenuBar menuBar = new JMenuBar();
 
     // create static menus
@@ -630,11 +632,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // create dynamix menus
     Map<String,JMenu> topLevel = new HashMap<String, JMenu>();
     List<JMenu> direction = new LinkedList<JMenu>();
-    Iterator it = components.iterator();
+    Iterator<Container> it = components.iterator();
     log.info("Checking for menu-providers...");
 
     while (it.hasNext()) {
-      Object o = it.next();
+      Container o = it.next();
 
       if (o instanceof MenuProvider) {
         MenuProvider mp = (MenuProvider) o;
@@ -1094,7 +1096,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (crFile != null) {
             startWindow.progress(4, Resources.get("clientstart.4"));
     
-            c.dataFile = crFile;
+            c.setDataFile(crFile);
     
             // load new data
             //c.setData(c.loadCR(crFile));
@@ -1294,6 +1296,24 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     System.exit(0);
   }
+  
+  /**
+   * Sets the name of the current loaded data file.
+   */
+  public void setDataFile(File file) {
+    this.dataFile = file;
+  }
+  
+  /**
+   * Returns the name of the current loaded data file.
+   * If the result is null - then this does not mean,
+   * that there is no report loaded - but not correctly
+   * set...
+   */
+  public File getDataFile() {
+    return dataFile;
+  }
+  
 
   // //////////////////
   // GAME DATA Code //
@@ -1303,6 +1323,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     GameData data = null;
     Client client = this;
     if (ui == null) ui = new ProgressBarUI(client);
+
+    client.setDataFile(fileName);
     
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
@@ -1693,7 +1715,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public void setLookAndFeel(String laf) {
     boolean lafSet = true;
 
-    if (MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty("Client.lookAndFeel", ""))) {
+    if (MagellanLookAndFeel.equals(laf) && laf.equals(getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, ""))) {
       lafSet = false;
     } else {
       lafSet = MagellanLookAndFeel.setLookAndFeel(laf);
@@ -1714,7 +1736,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     updateLaF();
 
-    getProperties().setProperty("Client.lookAndFeel", laf);
+    getProperties().setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, laf);
   }
 
   /**
@@ -1733,7 +1755,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   private void initLookAndFeels() {
-    setLookAndFeel(getProperties().getProperty("Client.lookAndFeel", "Metal"));
+    setLookAndFeel(getProperties().getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Metal"));
   }
 
   /**

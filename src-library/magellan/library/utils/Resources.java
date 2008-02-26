@@ -519,7 +519,7 @@ public class Resources {
   }
 
   public static URL file2URL(File file) throws MalformedURLException {
-    return new URL("jar:" + file.toURL().toString() +"!/");
+    return new URL("jar:" + file.toURI().toURL().toString() +"!/");
   }
 }
 

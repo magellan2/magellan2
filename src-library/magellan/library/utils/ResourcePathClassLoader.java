@@ -84,25 +84,35 @@ public class ResourcePathClassLoader extends ClassLoader {
     List<URL> paths = new ArrayList<URL>();
     String magellanDirString = settings.getProperty("plugin.helper.magellandir");
     File magPluginDir = new File(magellanDirString + File.separator + "plugins");
-    if (magPluginDir.exists() && magPluginDir.isDirectory()){
-      File[] files = magPluginDir.listFiles();
-      if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
-        for (int i = 0; i < files.length; i++) {
-          String entry = files[i].getAbsolutePath();
-          if (entry.endsWith(".jar")) {
-            try {
-              // log.info("PluginDir - found:" + entry);
-              paths.add(Resources.file2URL(files[i]));
-            } catch(MalformedURLException e) {
-              log.error(e);
-            } 
-          }
-        }
-      }
+    if (magPluginDir.exists() && magPluginDir.isDirectory()) {
+      getPathsFromPlugInDir(paths, magPluginDir);
     }
     return paths;
   }
   
+  private static void getPathsFromPlugInDir(List<URL> paths, File directory) {
+    if (directory.exists() && directory.isDirectory()) {
+      File[] files = directory.listFiles();
+      if (files != null) { // Erforderliche Berechtigungen etc. sind vorhanden
+        for (File file : files) {
+          if (file.isDirectory()) {
+            // recursive into the plugin directory
+            getPathsFromPlugInDir(paths, file);
+          } else {
+            String entry = file.getAbsolutePath();
+            if (entry.endsWith(".jar")) {
+              try {
+                // log.info("PluginDir - found:" + entry);
+                paths.add(Resources.file2URL(file));
+              } catch(MalformedURLException e) {
+                log.error(e);
+              } 
+            }
+          }
+        }
+      }
+    }
+  }
   
   /**
    * Returns the resource paths this loader operates on.

@@ -4,23 +4,16 @@
     <appname>Magellan</appname>
     <appversion>2.0.beta (build 149)</appversion>
     <authors>
-      <author name="Roger Butenuth" email=""/>
       <author name="Enno Rehling" email="enno@eressea.de"/>
       <author name="Stefan Götz" email=""/>
-      <author name="Klaas Prause" email=""/>
-      <author name="Sebastian Tusk" email=""/>
       <author name="Andreas Gampe" email=""/>
-      <author name="Roland Behme" email=""/>
-      <author name="Michael Schmidt" email=""/>
-      <author name="Henning Zahn" email=""/>
-      <author name="Oliver Hertel" email=""/>
-      <author name="Günter Grossberger" email=""/>
-      <author name="Sören Bendig" email=""/>
-      <author name="Marc Geerligs" email=""/>
-      <author name="Matthias Müller" email=""/>
-      <author name="Ulrich Küster" email=""/>
       <author name="Jake Hofer" email=""/>
-      <author name="Ilja Pavkovic" email=""/>
+      <author name="Ulrich Küster" email="ulrich.kuester@informatik.uni-jena.de"/>
+      <author name="Klaas Prause, Roger Butenuth, Sebastian Tusk" email=""/>
+      <author name="Roland Behme, Michael Schmidt, Henning Zahn" email=""/>
+      <author name="Oliver Hertel, Günter Grossberger" email=""/>
+      <author name="Sören Bendig, Marc Geerligs, Matthias Müller" email=""/>
+      <author name="Ilja Pavkovic" email="illsen@dont-contact.us"/>
       <author name="Thoralf Rickert" email="thoralf@m84.de"/>
       <author name="Fiete" email="sf@fietefietz.de"/>
       <author name="Steffen Mecke" email="stm_@users.sourceforge.net"/>

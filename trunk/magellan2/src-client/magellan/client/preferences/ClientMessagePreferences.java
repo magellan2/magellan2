@@ -95,8 +95,12 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     
     JPanel colors = new JPanel(new GridBagLayout());
     colors.setBorder(BorderFactory.createTitledBorder(Resources.get("clientpreferences.border.messagecolors")));
-    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 2.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, c.insets, 0, 0);
+    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.RELATIVE, 2, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
     this.add(colors, c);
+    
+    JPanel dummy = new JPanel(new GridBagLayout());
+    GridBagHelper.setConstraints(c, 0, 2, GridBagConstraints.REMAINDER, 3, 1.0, 2.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, c.insets, 0, 0);
+    this.add(dummy, c);
     
     Properties settings = Client.INSTANCE.getProperties();
     c = new GridBagConstraints();

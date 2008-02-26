@@ -157,6 +157,8 @@ public class PropertiesHelper {
   /** Property type Color (#RRGGBB): background color for battle messages */
   public static final String MESSAGETYPE_SECTION_BATTLE_COLOR = "messagetype.section.battle.color";
 
+  public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT = "ClientPreferences.LoadLastReport";
+
 
   /**
    * Searches the property with the given key and if it exists, it tries to
@@ -259,6 +261,17 @@ public class PropertiesHelper {
     }
 
     return ret;
+  }
+  
+  /**
+   * Searches the property with the given key and if it exists, it tries to
+   * convert it into a String and returns that value. If something goes wrong or
+   * the key couldn't be found the default value defaultValue is returned.
+   */
+  public static String getString(Properties p, String key, String defaultValue) {
+    if (p == null) return defaultValue;
+    if (key == null) return defaultValue;
+    return p.getProperty(key, defaultValue);
   }
 
   /**

@@ -25,6 +25,7 @@ package magellan.library.utils;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,6 +187,11 @@ public class Utils {
     }
     return result;
   }
+  public static Element getChildNode(Element root, String name) {
+    List<Element> children = getChildNodes(root, name);
+    if (Utils.isEmpty(children)) return null;
+    return children.get(0);
+  }
   public static Element getChildNode(Element root) {
     NodeList subnodes = root.getChildNodes();
     for (int i=0; i<subnodes.getLength(); i++) {
@@ -194,6 +200,9 @@ public class Utils {
       return (Element)node;
     }
     return null;
+  }
+  public static String getCData(Element root) {
+    return root.getFirstChild().getNodeValue();
   }
   
   /**
@@ -318,5 +327,19 @@ public class Utils {
     if (date == null) return "-";
     SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
     return format.format(date);
+  }
+
+  /**
+   * Returns the date in the form "yyyy-MM-dd HH:mm:ss"
+   */
+  public static Date toDate(String date) {
+    if(!isEmpty(date)) {
+      try {
+        SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formater.parse(date);
+      } catch (ParseException exception) {
+      }
+    }
+    return null;
   }
 }

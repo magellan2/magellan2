@@ -1,0 +1,53 @@
+Autor: Thoralf Rickert
+Version: 0.0.0
+
+--------------------------------------------------------------------
+
+This document is at the moment only available in german - sorry....
+
+--------------------------------------------------------------------
+
+Ich gehe davon aus, dass das Plugin ein eigenes Projekt in Eclipse ist. 
+Das Magellan2 Projekt MUSS ausgecheckt sein. Die Verzeichnisstruktur des 
+Plugin Projekts:
+
+- src
+   - ...Source files...
+- doc
+   - LICENSE.txt
+   - CHANGELOG.txt
+   - ....
+- etc
+   - ...message properties...what ever
+- lib
+   - ...optionale Bibliotheken...
+- build.installer.xml
+- izpack-install.xml
+- README.txt
+
+In build.installer.xml sollten ein paar Variablen ge‰ndert werden:
+  - $plugin.name  - Name des Plugins
+  - $magellan2    - Verzeichnis von Magellan2-src (normalerweise
+                    ${basedir}/../Magellan2
+
+Auﬂerdem sollte man folgendes machen
+  - Zeile 3 - den Kommentar ‰ndern und
+  - Zeile 68 - die Ausgabe ‰ndern und
+  - Zeile 76 - Autor entsprechend gesetzt werden.
+
+In izpack-install.xm muss folgendes gemacht werden
+  - Zeile 4 - Name des Plugins setzen
+  - Zeile 8 - Author(en) setzen
+  - Zeile 37 - Name des Plugins setzen
+  - Zeile 38 - Beschreibung des Plugins setzen
+
+--------------------------------------------------------------------
+
+Ja, das war's auch schon. Wenn man die beiden Dateien aus einem anderen 
+Projekt kopiert, die Verzeichnisstruktur beibeh‰lt und die obigen Daten 
+‰ndert, ist das eine Sache von 'ner knappen Minute. Gestartet wird das 
+Target create-installer. Wenn man das macht, wird ein Verzeichnis 
+release angelegt und darin ist das Plugin mit Installer.
+ACHTUNG: Direkt im Hauptverzeichnis ist auch ein JAR, das ist aber nur 
+der kompilierte Source (kein Installer). Die anderen Buildscripts sind 
+damit hinf‰llig.

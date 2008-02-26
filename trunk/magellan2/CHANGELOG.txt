@@ -1,3 +1,8 @@
+2008-02-26 / Build 158 - Thoralf (thoralf@m84.de)
+    * Made some minor changes (moving properties, removing unused classes, etc.)
+    * Made some minor changes to the installer.
+    * Plugin loader works now recursive and loads also all 3rd party libraries
+    
 2008-02-25 / Build 156 - Thoralf (thoralf@m84.de)
     * Bugfix for load dialog asking for saving the old report
     * Bugfix for wrong URL in new version check dialog

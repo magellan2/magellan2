@@ -76,7 +76,7 @@ public class ExtendedCommands {
     this.client = client;
     Properties properties = client.getProperties();
     String commandsFilename = properties.getProperty("extendedcommands.unitCommands");
-    if (Utils.isEmpty(commandsFilename)) commandsFilename = "extendedcommands.xml";
+    if (Utils.isEmpty(commandsFilename)) commandsFilename = Client.getSettingsDirectory()+"/extendedcommands.xml";
     
     unitCommandsFile = new File(commandsFilename);
     if (!unitCommandsFile.exists()) {

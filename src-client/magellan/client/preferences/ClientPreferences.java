@@ -184,7 +184,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    loadlastreport = new JCheckBox( Resources.get("clientpreferences.misc.loadlastreport.caption"), PropertiesHelper.getBoolean(settings, "ClientPreferences.LoadLastReport", true));
+    loadlastreport = new JCheckBox( Resources.get("clientpreferences.misc.loadlastreport.caption"), PropertiesHelper.getBoolean(settings, PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true));
     loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(loadlastreport,c);
     c.gridx = 1;
@@ -421,7 +421,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		settings.setProperty("map.creating.void",String.valueOf(createVoidRegions.isSelected()));
     
     settings.setProperty("UpdateCheck.Check",String.valueOf(checkForUpdates.isSelected()));
-    settings.setProperty("ClientPreferences.LoadLastReport",String.valueOf(loadlastreport.isSelected()));
+    settings.setProperty(PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT,String.valueOf(loadlastreport.isSelected()));
 		
 		source.setShowStatus(showProgress.isSelected());
 	}

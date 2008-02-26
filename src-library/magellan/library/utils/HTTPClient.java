@@ -23,22 +23,17 @@
 // 
 package magellan.library.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketTimeoutException;
 import java.net.URI;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.utils.logging.Logger;
 
 import org.apache.commons.httpclient.Cookie;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
@@ -128,11 +123,18 @@ public class HTTPClient {
     }
     return null;
   }
-  
+
   /**
    * Macht einen GET Request.
    */
   public HTTPResult get(URI uri) {
+    return get(uri,false);
+  }
+  
+  /**
+   * Macht einen GET Request.
+   */
+  public HTTPResult get(URI uri, boolean async) {
     GetMethod method = new GetMethod(uri.toString());
     try {
       // verify proxy settings
@@ -143,7 +145,7 @@ public class HTTPClient {
       }
       
       client.executeMethod(method);
-      return new HTTPResult(method);
+      return new HTTPResult(method,async);
     } catch (SocketTimeoutException exception) {
       log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
@@ -299,117 +301,3 @@ public class HTTPClient {
     return client.getState().getCookies();
   }
 }
-
-
-
-/**
- * This is a container for HTTP responses.  
- *
- * @author <a href="mailto:thoralf@m84.de">Thoralf Rickert</a>
- * @version 1.0, erstellt am 02.09.2007
- */
-class HTTPResult {
-  /** Log-class */
-  private static final Logger log = Logger.getInstance(HTTPResult.class);
-  
-  protected int status = 0;
-  protected byte[] result = null;
-  
-  protected Hashtable<String, String> header = new Hashtable<String, String>();
-  
-  public HTTPResult(GetMethod method) {
-    try {
-      result = setResult(method.getResponseBodyAsStream());
-      status = method.getStatusCode();
-      Header[] headers = method.getResponseHeaders();
-      
-      for (Header header : headers) {
-        this.header.put(header.getName(),header.getValue());
-      }
-    } catch (Exception exception) {
-      log.error("Konnte GET-Result nicht auslesen. "+exception.getMessage());
-    }
-  }
-
-  public HTTPResult(PostMethod method) {
-    try {
-      
-      result = setResult(method.getResponseBodyAsStream());
-      status = method.getStatusCode();
-      Header[] headers = method.getResponseHeaders();
-      for (Header header : headers) {
-        this.header.put(header.getName(),header.getValue());
-      }
-      
-      
-    } catch (Exception exception) {
-      log.error("Konnte POST-Result nicht auslesen. "+exception.getMessage());
-    }
-  }
-
-  /**
-   * Liefert das Resultat des Webservers.
-   */
-  public byte[] getResult() {
-    return result;
-  }
-  
-  /**
-   * Returns the result from the webserver as a String.
-   * This method verifies the given encoding.
-   */
-  public String getResultAsString() {
-    String encoding = getEncoding();
-    if (encoding != null) {
-      try {
-        return new String(result,encoding);
-      } catch (Exception exception) {}
-    }
-    return new String(result);
-  }
-  
-  /**
-   * Returns the encoding of the result content.
-   */
-  public String getEncoding() {
-    String contentType = Utils.notNullString(getHeader("Content-Type")).trim();
-    String encoding = null;
-    if (contentType.contains("charset=")) {
-      encoding = contentType.substring(contentType.toLowerCase().indexOf("charset=")+8).trim();
-    }
-    return encoding;
-  }
-  
-  private byte[] setResult(InputStream stream) throws Exception {
-    ByteArrayOutputStream outstream = new ByteArrayOutputStream(4096);
-    byte[] buffer = new byte[4096];
-    int len;
-    while ((len = stream.read(buffer)) > 0) outstream.write(buffer, 0, len);
-    outstream.close();
-    return outstream.toByteArray();
-  }
-
-  /**
-   * Liefert den vom Server übermittelten Statuscode.
-   */
-  public int getStatus() {
-    return status;
-  }
-  
-  /**
-   * Liefert den Header der Response vom Server.
-   */
-  public Map<String, String> getHeader() {
-    return header;
-  }
-  
-  public String getHeader(String key) {
-    if (header.containsKey(key)) return header.get(key);
-    return null;
-  }
-  
-  public String toString() {
-    return getResultAsString();
-  }
-}
-

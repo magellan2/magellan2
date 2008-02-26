@@ -1080,7 +1080,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (tReport == null) {
             // if no report is given on startup, we check if we can load the last
             // loaded report.
-            boolean loadLastReport = PropertiesHelper.getBoolean(c.getProperties(), "ClientPreferences.LoadLastReport", true);
+            boolean loadLastReport = PropertiesHelper.getBoolean(c.getProperties(), PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT, true);
             if (loadLastReport) {
               crFile = c.fileHistory.getLastExistingReport();
               if (crFile == null) {

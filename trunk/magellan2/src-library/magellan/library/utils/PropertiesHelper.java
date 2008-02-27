@@ -15,6 +15,7 @@ package magellan.library.utils;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.io.File;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -158,6 +159,10 @@ public class PropertiesHelper {
   public static final String MESSAGETYPE_SECTION_BATTLE_COLOR = "messagetype.section.battle.color";
 
   public static final String CLIENTPREFERENCES_LOAD_LAST_REPORT = "ClientPreferences.LoadLastReport";
+
+  public static final String CLIENT_LAST_CR_ADDED = "Client.lastCRAdded";
+
+  public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER = "Client.lastSelectedAddCRFileFilter";
 
 
   /**
@@ -345,4 +350,14 @@ public class PropertiesHelper {
     }
   }
 
+  private static File settingsDir = null;
+  
+  public static void setSettingsDirectory(File newSettingsDir) {
+    log.info("PropertiesHelper: directory used for ini files: " + newSettingsDir.toString());
+    settingsDir = newSettingsDir;
+  }
+  
+  public static File getSettingsDirectory() {
+    return settingsDir;
+  }
 }

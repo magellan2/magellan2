@@ -514,7 +514,7 @@ public class ReportMerger extends Object {
    * 
    */
   public GameData merge() {
-    return merge(new NullUserInterface(), false, false, false);
+    return merge(new NullUserInterface(), true, false, false);
   }
 
   /**
@@ -525,7 +525,7 @@ public class ReportMerger extends Object {
    * @param async
    *          If <code>true</code> the merging will be started in a new
    *          thread.
-   * @param async 
+   * @param sort 
    * @param b 
    * 
    */

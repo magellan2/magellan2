@@ -202,7 +202,6 @@ public class HTTPClient {
     
     PostMethod method = new PostMethod(uri.toString());
     
-    
     if(parts != null) method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
     
     try {

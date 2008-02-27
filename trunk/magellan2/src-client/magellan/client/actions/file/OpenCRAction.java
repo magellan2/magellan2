@@ -81,7 +81,7 @@ public class OpenCRAction extends MenuAction {
     File file = new File(settings.getProperty("Client.lastCROpened", ""));
     fc.setSelectedFile(file);
 
-    if(file.exists()) {
+    if(file.exists() || (file.getParentFile() != null && file.getParentFile().exists())) {
       fc.setCurrentDirectory(file.getParentFile());
     }
 

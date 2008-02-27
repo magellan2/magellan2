@@ -29,6 +29,7 @@ import magellan.client.swing.ProgressBarUI;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.ReportMerger;
 import magellan.library.utils.Resources;
 
@@ -74,8 +75,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 		fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
 		fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
 
-		int lastFileFilter = Integer.parseInt(settings.getProperty("Client.lastSelectedAddCRFileFilter",
-																   "3"));
+		int lastFileFilter = Integer.parseInt(settings.getProperty(PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(3)));
 		// bugzilla #861
 		if(lastFileFilter < 0) {
 		  lastFileFilter = 0;
@@ -85,7 +85,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 
 		fc.setFileFilter(fc.getChoosableFileFilters()[lastFileFilter]);
 
-		File file = new File(settings.getProperty("Client.lastCRAdded", ""));
+		File file = new File(settings.getProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, ""));
 		fc.setSelectedFile(file);
 
 		if(file.exists()) {
@@ -107,7 +107,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 				i++;
 			}
 
-			settings.setProperty("Client.lastSelectedAddCRFileFilter", String.valueOf(i));
+			settings.setProperty(PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, String.valueOf(i));
 
 			// force user to choose a file on save
 			//client.setDataFile(null);
@@ -127,7 +127,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 							theclient.setData(_data);
 						}
 					});
-				settings.setProperty("Client.lastCRAdded", fc.getSelectedFile().getAbsolutePath());
+				settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, fc.getSelectedFile().getAbsolutePath());
 			} else {
 				merger = new ReportMerger(client.getData(), files,
 										  new ReportMerger.Loader() {
@@ -141,7 +141,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 							theclient.setData(_data);
 						}
 					});
-				settings.setProperty("Client.lastCRAdded", files[files.length - 1].getAbsolutePath());
+				settings.setProperty(PropertiesHelper.CLIENT_LAST_CR_ADDED, files[files.length - 1].getAbsolutePath());
 			}
 
 			merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);

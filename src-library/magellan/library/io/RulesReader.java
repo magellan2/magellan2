@@ -21,6 +21,7 @@ import magellan.library.io.cr.CRParser;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.rules.GenericRules;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
 
 
@@ -70,7 +71,7 @@ public class RulesReader {
 			log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
 		}
 
-		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File("etc/rules/" + name + ending));
+		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending));
 
 		return new CRParser(null).readRules(filetype);
 	}

@@ -43,8 +43,11 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	/** Selects .bz2-files */
 	public static final int BZ2_FILTER = 4;
 
-	/** Selects .cr, .zip, .gz, and .bz2-files */
-	public static final int ALLCR_FILTER = 5;
+  /** Selects .cr, .zip, .gz, and .bz2-files */
+  public static final int ALLCR_FILTER = 5;
+
+  /** Selects .zip, .gz, and .bz2-files (but not .cr) */
+  public static final int ALLCR_COMPRESSED_FILTER = 6;
 
 	
 	private List<String> extensions;
@@ -57,13 +60,27 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	 */
 	public EresseaFileFilter(int flag) {
 		extensions = new LinkedList<String>();
-		if (flag>=CR_FILTER && flag<=BZ2_FILTER){
-			extensions.add(getExtension(flag));
-		}else if (flag==ALLCR_FILTER){
-			extensions.add(getExtension(CR_FILTER));
-			extensions.add(getExtension(ZIP_FILTER));
-			extensions.add(getExtension(GZ_FILTER));
-			extensions.add(getExtension(BZ2_FILTER));
+    switch (flag) {
+      case CR_FILTER:
+      case TXT_FILTER:
+      case ZIP_FILTER:
+      case GZ_FILTER:
+      case BZ2_FILTER:
+        extensions.add(getExtension(flag));
+        break;
+      case ALLCR_FILTER:
+        extensions.add(getExtension(CR_FILTER));
+        extensions.add(getExtension(ZIP_FILTER));
+        extensions.add(getExtension(GZ_FILTER));
+        extensions.add(getExtension(BZ2_FILTER));
+        break;
+      case ALLCR_COMPRESSED_FILTER:
+        extensions.add(getExtension(ZIP_FILTER));
+        extensions.add(getExtension(GZ_FILTER));
+        extensions.add(getExtension(BZ2_FILTER));
+        break;
+      default:
+        throw new IllegalArgumentException("Unsupported filter type");
 		}
 		description=getDescription(flag);
 	}

@@ -1030,7 +1030,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       
       // tell the user where we expect ini files and errors.txt
-      log.info("Client.main(): directory used for ini files: " + settFileDir.toString());
+      PropertiesHelper.setSettingsDirectory(settFileDir);
 
       // now redirect stderr through our log
 

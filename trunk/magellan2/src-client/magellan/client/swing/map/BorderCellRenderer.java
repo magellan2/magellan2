@@ -20,9 +20,7 @@ import java.awt.GridBagLayout;
 import java.awt.Image;
 import java.awt.Point;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -67,7 +65,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	public BorderCellRenderer(CellGeometry geo, MagellanContext context ) {
 		super(geo, context);
     setUseSeasonImages((Boolean.valueOf(settings.getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES,
-     "true"))).booleanValue());
+     Boolean.TRUE.toString()))).booleanValue());
     
 	}
 
@@ -264,29 +262,6 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	public int getPlaneIndex() {
 		return Mapper.PLANE_BORDER;
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Road renderer");
-		}
-
-		return defaultTranslations;
-	}
-
-
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()

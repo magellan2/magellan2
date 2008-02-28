@@ -228,7 +228,7 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getBuildingTypeIterator() {
+	public Iterator<BuildingType> getBuildingTypeIterator() {
 		return getIterator(BuildingType.class, mapUnitContainerType);
 	}
 

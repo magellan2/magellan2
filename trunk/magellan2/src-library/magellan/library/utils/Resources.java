@@ -205,7 +205,7 @@ public class Resources {
    * not available in this locale, this method tries to find
    * the resource in the default resources.
    */
-  public static String get(String key, Object[] args) {
+  public static String get(String key, Object... args) {
     String value = get(key);
     if (value != null) {
       value = new MessageFormat(value).format(args);

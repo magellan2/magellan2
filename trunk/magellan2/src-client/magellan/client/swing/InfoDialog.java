@@ -14,20 +14,22 @@
 package magellan.client.swing;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
-import java.util.Map;
+import java.net.URI;
 
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
@@ -36,11 +38,11 @@ import magellan.library.utils.VersionInfo;
 /**
  *
  */
-public class InfoDlg extends InternationalizedDialog {
+public class InfoDialog extends InternationalizedDialog implements HyperlinkListener {
   private JPanel jPanel;
   private JButton btn_OK;
   private JLabel magellanImage;
-  private JTextArea jTextArea1;
+  private JEditorPane jTextArea1;
 
   /**
    * Creates a new InfoDlg object.
@@ -48,7 +50,7 @@ public class InfoDlg extends InternationalizedDialog {
    * @param parent
    *          modally stucked frame.
    */
-  public InfoDlg(JFrame parent) {
+  public InfoDialog(JFrame parent) {
     super(parent, true);
     initComponents();
 
@@ -61,25 +63,32 @@ public class InfoDlg extends InternationalizedDialog {
     jPanel = new JPanel();
     jPanel.setLayout(new BoxLayout(jPanel, BoxLayout.Y_AXIS));
 
-    magellanImage = new JLabel();
-    jTextArea1 = new JTextArea();
-
     setModal(true);
     setTitle(Resources.get("infodlg.window.title"));
     Icon icon = MagellanImages.ABOUT_MAGELLAN;
 
+    magellanImage = new JLabel();
     magellanImage.setIcon(icon);
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
     jPanel.add(magellanImage);
     String text = Resources.get("infodlg.infotext") + getVersionString();
 
-    jTextArea1.setWrapStyleWord(true);
-    jTextArea1.setLineWrap(true);
+    jTextArea1 = new JEditorPane();
+    jTextArea1.setContentType("text/html");
     jTextArea1.setEditable(false);
+//    jTextArea1 = new JTextArea();
+//    jTextArea1.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
+//    jTextArea1.setWrapStyleWord(true);
+//    jTextArea1.setLineWrap(true);
+//    jTextArea1.setEditable(false);
     jTextArea1.setText(text);
+    jTextArea1.setCaretPosition(0);
+    jTextArea1.setPreferredSize(new Dimension(400, 400));
+    jTextArea1.addHyperlinkListener(this);
     JScrollPane scrollPane = new JScrollPane(jTextArea1);
-    scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+//    scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
     scrollPane.setPreferredSize(new Dimension(400, 400));
     jPanel.add(scrollPane);
 
@@ -107,31 +116,17 @@ public class InfoDlg extends InternationalizedDialog {
     return "Magellan " + Resources.get("infodlg.infotext.version") + ": " + versionInfo + "\n";
   }
 
-  // pavkovic 2003.01.28: this is a Map of the default Translations mapped to
-  // this class
-  // it is called by reflection (we could force the implementation of an
-  // interface,
-  // this way it is more flexible.)
-  // Pls use this mechanism, so the translation files can be created
-  // automagically
-  // by inspecting all classes.
-  private static Map<String, String> defaultTranslations;
-
-  /**
-   * DOCUMENT-ME
-   */
-  public static synchronized Map<String, String> getDefaultTranslations() {
-    if (defaultTranslations == null) {
-      defaultTranslations = new Hashtable<String, String>();
-      defaultTranslations.put("window.title", "About Magellan");
-
-      defaultTranslations.put("btn.close.caption", "Close");
-      defaultTranslations.put("infotext.version", "Version");
-
-      defaultTranslations.put("infotext", "You can find the official Magellan homepage " + "at http://magellan-client.sourceforge.net ." + "Check out that site if you need a new version, " + "support, or if you want to contribute to Magellan.\n\n" + "Credits:\nRoger Butenuth, Enno Rehling, Stefan Götz," + "Klaas Prause, Sebastian Tusk, Andreas Gampe, Roland Behme, " + "Michael Schmidt, Henning Zahn, Oliver Hertel, Guenter " + "Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, " + "Ulrich Küster, Jake Hofer, Ilja Pavkovic...\n" + "(drop us a note if somebody is missing here).\n\n" + "Last but not least we want to mention Ferdinand Magellan, " + "daring explorer and first circumnavigator of the globe of " + "a time long ago \n(http://www.mariner.org/educationalad/ageofex/magellan.php)\n\n" + "This product includes software developed by the Apache Software " + "Foundation (http://www.apache.org/).\n\n");
+  public void hyperlinkUpdate(HyperlinkEvent e) {
+    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      try {
+        // Loads the new page represented by link clicked
+        URI uri = e.getURL().toURI();
+        Desktop.getDesktop().browse(uri);
+      }
+      catch (Exception exc) {
+      }
     }
-
-    return defaultTranslations;
+    
   }
 
 }

@@ -164,6 +164,8 @@ public class PropertiesHelper {
 
   public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER = "Client.lastSelectedAddCRFileFilter";
 
+  public static final String BUILDINGRENDERER_RENDER = "BuildingTypeRenderer.Render.";
+
 
   /**
    * Searches the property with the given key and if it exists, it tries to

@@ -145,7 +145,11 @@ public class StartWindow extends JWindow {
 		String descr = "\n"+Resources.get("startwindow.infotext");
 
 		if((names == null) || (names.length() == 0)) {
-			names = "Roger Butenuth, Enno Rehling, Stefan Götz, Klaas Prause, Sebastian Tusk, Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, Ulrich Küster, Jake Hofer, Ilja Pavkovic\n";
+			names = "Roger Butenuth, Enno Rehling, Stefan Götz, Klaas Prause, Sebastian Tusk, ";
+      names+= "Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, ";
+      names+= "Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, ";
+      names+= "Ulrich Küster, Jake Hofer, Ilja Pavkovic, Fiete Fietz, Steffen Mecke, ";
+      names+= "Steve Wagner, Thoralf Rickert, Ralf Duckstein, Mar'ek Khadar\n";
 		}
 
 		StyledDocument styled = new DefaultStyledDocument();

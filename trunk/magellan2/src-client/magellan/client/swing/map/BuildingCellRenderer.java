@@ -13,60 +13,70 @@
 
 package magellan.client.swing.map;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
-import java.util.Hashtable;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
+
+import magellan.client.Client;
 import magellan.client.MagellanContext;
+import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 
 /**
  * A renderer for Building objects.
  */
 public class BuildingCellRenderer extends ImageCellRenderer{
+  private static final Logger log = Logger.getInstance(BuildingCellRenderer.class);
+  
 	/**
 	 * Creates a new BuildingCellRenderer object.
-	 *
-	 * 
-	 * 
 	 */
 	public BuildingCellRenderer(CellGeometry geo, MagellanContext context) {
 		super(geo, context);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
+   */
+  @Override
 	public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
-			Region r = (Region) obj;
+			Region region = (Region) obj;
 
-			Iterator iter = r.buildings().iterator();
+			Iterator<Building> iter = region.buildings().iterator();
 
 			if(iter.hasNext()) {
-				CoordinateID c = r.getCoordinate();
-				Point pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+				CoordinateID coordinate = region.getCoordinate();
+				Point pos = new Point(cellGeo.getImagePosition(coordinate.x, coordinate.y));
 				pos.translate(-offset.x, -offset.y);
 
 				Dimension size = cellGeo.getImageSize();
-
+        
 				while(iter.hasNext()) {
-					Building b = (Building) iter.next();
+					Building b = iter.next();
 					UnitContainerType type = b.getType();
 
-					if(type != null) {
+					if(type != null && isEnabled(region,type)) {
 						Image img = getImage(type.getID().toString());
 
 						if(img != null) {
@@ -77,37 +87,30 @@ public class BuildingCellRenderer extends ImageCellRenderer{
 			}
 		}
 	}
+  
+  /**
+   * This method checks, if the given containtertype is in the rules
+   * and if it has a properties settings to not render it (default:true)
+   */
+  protected boolean isEnabled(Region region, UnitContainerType containerType) {
+    // that should be enough...
+    return PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),PropertiesHelper.BUILDINGRENDERER_RENDER+containerType.getID(),true);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * @see magellan.client.swing.map.HexCellRenderer#getPreferencesAdapter()
+   */
+  public PreferencesAdapter getPreferencesAdapter() {
+    return new BuildingCellRendererPreferences(this);
+  }
+  
+  /**
+   * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
+   */
+  @Override
 	public int getPlaneIndex() {
 		return Mapper.PLANE_BUILDING;
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Building renderer");
-		}
-
-		return defaultTranslations;
-	}
-
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()
@@ -117,6 +120,97 @@ public class BuildingCellRenderer extends ImageCellRenderer{
     return Resources.get("map.buildingcellrenderer.name");
   }
   
+  /**
+   * 
+   * This is the inner class used for the preferences
+   *
+   * @author Thoralf Rickert
+   * @version 1.0, 28.02.2008
+   */
   
+  protected class BuildingCellRendererPreferences extends JPanel implements PreferencesAdapter {
+    protected BuildingCellRenderer source = null;
+    protected GameData data = null;
+    protected List<JCheckBox> buildings = new ArrayList<JCheckBox>();
+    
+    /**
+     * Creates a new BuildingCellRendererPreferences object.
+     */
+    protected BuildingCellRendererPreferences(MapCellRenderer source) {
+      super(new BorderLayout());
+      this.source = (BuildingCellRenderer)source;
+      this.data = Client.INSTANCE.getData();
+      
+      JPanel panel = new JPanel(new GridBagLayout());
+      
+      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
+      c.gridwidth = 1;
+      c.gridheight = 1;
+      c.weighty = 0.0;
+      
+      if (data != null) {
+        Iterator<BuildingType> iterator = data.rules.getBuildingTypeIterator();
+        int xpos = 0;
+        int ypos = 0;
+        
+        while (iterator.hasNext()) {
+          BuildingType type = iterator.next();
+          
+          boolean selected = PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),PropertiesHelper.BUILDINGRENDERER_RENDER+type.getID(),true);
+          
+          JCheckBox box = new JCheckBox(Resources.get("building.renderer.show",type.getName()),selected);
+          box.setActionCommand(type.getID().toString());
+          buildings.add(box);
+          
+          c.anchor = GridBagConstraints.WEST;
+          c.gridx = xpos;
+          c.gridy = ypos;
+          c.insets.left = 10;
+          c.fill = GridBagConstraints.NONE;
+          c.weightx = 0.0;
+          panel.add(box, c);
+          
+          if (xpos == 2) {
+            xpos = 0;
+            ypos++;
+          } else {
+            xpos++;
+          }
+        }
+      }
 
+      this.add(panel,BorderLayout.CENTER);
+    }
+
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
+     */
+    public void applyPreferences() {
+      for (JCheckBox box : buildings) {
+        boolean selected = box.isSelected();
+        String id = box.getActionCommand();
+        Client.INSTANCE.getProperties().setProperty(PropertiesHelper.BUILDINGRENDERER_RENDER+id,Boolean.toString(selected));
+      }
+    }
+
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
+     */
+    public Component getComponent() {
+      return this;
+    }
+
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
+     */
+    public String getTitle() {
+      return getName();
+    }
+
+    /**
+     * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+     */
+    public void initPreferences() {
+    }
+  }
 }

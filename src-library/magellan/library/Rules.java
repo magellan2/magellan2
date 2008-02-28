@@ -206,7 +206,7 @@ public interface Rules {
 	 *
 	 * 
 	 */
-	public Iterator getBuildingTypeIterator();
+	public Iterator<BuildingType> getBuildingTypeIterator();
 
 	/**
 	 * get BuildingType by (possibly localized) name

@@ -1,3 +1,7 @@
+2008-02-28 / Build 161 - Thoralf (thoralf@m84.de)
+    * Preferences for Building Renderer to disable specific building types
+    * Added new authors to credits dialog (StartWindow and InfoDialog)
+
 2008-02-28 / Build 160 - Thoralf (thoralf@m84.de)
     * Some fixes for missing resources
     * Extended Commands now with help

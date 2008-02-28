@@ -29,14 +29,19 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 import magellan.client.Client;
 import magellan.library.GameData;
@@ -47,12 +52,15 @@ import magellan.library.utils.Resources;
 
 /**
  * This is a dialog to edit the script/commands for a given unit.
+ * 
+ * TODO Save dialog positions (size, location, slider position)
  *
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
-public class ExtendedCommandsDialog extends JDialog implements ActionListener {
+public class ExtendedCommandsDialog extends JDialog implements ActionListener, HyperlinkListener {
   private BeanShellEditor scriptingArea = null;
+  private JEditorPane help = null;
   private GameData world = null;
   private Unit unit = null;
   private UnitContainer container = null;
@@ -82,15 +90,39 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener {
   protected void init(String script) {
     this.script = script;
     setLayout(new BorderLayout());
-    setWindowSize(640, 480);
+    setWindowSize(800, 480);
     
-    JPanel center = new JPanel(new BorderLayout());
-    center.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
+    JPanel editor = new JPanel(new BorderLayout());
+    editor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     
     scriptingArea = new BeanShellEditor();
     scriptingArea.setText(script);
-    center.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
-    add(center,BorderLayout.CENTER);
+    scriptingArea.setCaretPosition(0);
+    editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
+    
+    JPanel helpPanel = new JPanel(new BorderLayout());
+    help = new JEditorPane();
+    help.setContentType("text/html");
+    help.setEditable(false);
+    help.addHyperlinkListener(this);
+    if (unit != null) {
+      // show help for unit commands
+      help.setText(Resources.get("extended_commands.help.dialog.unit"));
+    } else {
+      // show help for container commands
+      help.setText(Resources.get("extended_commands.help.dialog.container"));
+    }
+    help.setCaretPosition(0);
+    JScrollPane scrollPane = new JScrollPane(help);
+    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    
+    helpPanel.add(scrollPane,BorderLayout.CENTER);
+    
+    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editor, helpPanel);
+    splitPane.setOneTouchExpandable(true);
+    splitPane.setDividerLocation(480);
+    
+    add(splitPane,BorderLayout.CENTER);
     
     JPanel buttonPanel = new JPanel();
     buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
@@ -174,6 +206,21 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener {
       int y = (int) getToolkit().getScreenSize().height;
       setSize(xSize, ySize);
       setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+    }
+  }
+
+  /**
+   * @see javax.swing.event.HyperlinkListener#hyperlinkUpdate(javax.swing.event.HyperlinkEvent)
+   */
+  public void hyperlinkUpdate(HyperlinkEvent e) {
+    if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+      try {
+        // Loads the new page represented by link clicked
+        URL url = e.getURL() ;
+        help.setPage(url) ;
+      }
+      catch (Exception exc) {
+      }
     }
   }
 }

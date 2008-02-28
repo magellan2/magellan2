@@ -38,6 +38,24 @@ import javax.swing.text.StyleConstants;
  * Syntax-Highlighting for the BeanShell-Editor 
  */ 
 public class BeanShellSyntaxDocument extends DefaultStyledDocument {
+  
+  private static final Color   NORMAL_COLOR   = Color.BLACK;
+  private static final int     NORMAL_SIZE    = 12;
+  private static final boolean NORMAL_ITALIC  = false;
+  private static final boolean NORMAL_BOLD    = false;
+  private static final Color   COMMENT_COLOR  = Color.GREEN.darker().darker();
+  private static final int     COMMENT_SIZE   = 12;
+  private static final boolean COMMENT_ITALIC = true;
+  private static final boolean COMMENT_BOLD   = false;
+  private static final Color   KEYWORD_COLOR  = Color.RED.darker().darker().darker();
+  private static final int     KEYWORD_SIZE   = 12;
+  private static final boolean KEYWORD_ITALIC = false;
+  private static final boolean KEYWORD_BOLD   = true;
+  private static final Color   QUOTE_COLOR    = Color.BLUE.darker();
+  private static final int     QUOTE_SIZE     = 12;
+  private static final boolean QUOTE_ITALIC   = false;
+  private static final boolean QUOTE_BOLD     = false;
+  
  
   private DefaultStyledDocument doc; 
   private Element rootElement; 
@@ -54,18 +72,30 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     putProperty( DefaultEditorKit.EndOfLineStringProperty, "\n" ); 
     
     normal = new SimpleAttributeSet(); 
-    StyleConstants.setForeground(normal, Color.black); 
+    StyleConstants.setFontSize(normal,   NORMAL_SIZE);
+    StyleConstants.setForeground(normal, NORMAL_COLOR); 
+    StyleConstants.setItalic(normal,     NORMAL_ITALIC);
+    StyleConstants.setBold(normal,       NORMAL_BOLD);
 
     comment = new SimpleAttributeSet(); 
-    StyleConstants.setForeground(comment, Color.gray); 
-    StyleConstants.setItalic(comment, true); 
+    StyleConstants.setFontSize(comment,  COMMENT_SIZE);
+    StyleConstants.setForeground(comment,COMMENT_COLOR); 
+    StyleConstants.setItalic(comment,    COMMENT_ITALIC); 
+    StyleConstants.setBold(comment,      COMMENT_BOLD); 
 
     keyword = new SimpleAttributeSet(); 
-    StyleConstants.setForeground(keyword, Color.blue); 
+    StyleConstants.setFontSize(keyword,   KEYWORD_SIZE);
+    StyleConstants.setForeground(keyword, KEYWORD_COLOR); 
+    StyleConstants.setItalic(keyword,     KEYWORD_ITALIC); 
+    StyleConstants.setBold(keyword,       KEYWORD_BOLD); 
 
     quote = new SimpleAttributeSet(); 
-    StyleConstants.setForeground(quote, Color.red); 
+    StyleConstants.setFontSize(quote,   QUOTE_SIZE);
+    StyleConstants.setForeground(quote, QUOTE_COLOR); 
+    StyleConstants.setItalic(quote,     QUOTE_ITALIC); 
+    StyleConstants.setBold(quote,       QUOTE_BOLD); 
     
+    // ---
     keywords = new HashSet<String>(); 
     keywords.add( "abstract" ); 
     keywords.add( "boolean" ); 

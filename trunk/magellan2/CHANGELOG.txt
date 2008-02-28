@@ -1,3 +1,7 @@
+2008-02-28 / Build 160 - Thoralf (thoralf@m84.de)
+    * Some fixes for missing resources
+    * Extended Commands now with help
+    
 2008-02-26 / Build 158 - Thoralf (thoralf@m84.de)
     * Made some minor changes (moving properties, removing unused classes, etc.)
     * Made some minor changes to the installer.

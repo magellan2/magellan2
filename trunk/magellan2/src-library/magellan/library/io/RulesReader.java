@@ -66,12 +66,13 @@ public class RulesReader {
 	 */
 	private Rules loadRules(String name) throws IOException {
 		String ending = new File("XML").exists() ? ".xml" : ".cr";
+    log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
+    
+    File rules = new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending);
+    // workaround for working with eclipse...
+    if (!rules.exists()) rules = new File("etc/rules/" + name + ending);
 
-		if(log.isDebugEnabled()) {
-			log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
-		}
-
-		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending));
+		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);
 
 		return new CRParser(null).readRules(filetype);
 	}

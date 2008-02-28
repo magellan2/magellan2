@@ -14,7 +14,6 @@
 package magellan.client.swing;
 
 import java.awt.Component;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -121,9 +120,17 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
       try {
         // Loads the new page represented by link clicked
         URI uri = e.getURL().toURI();
-        Desktop.getDesktop().browse(uri);
+        
+        // only in Java6 available, so we try to load it.
+        // otherwise, we do nothing...
+        Class c = Class.forName("java.awt.Desktop");
+        if (c != null) {
+          Object desktop = c.getMethod("getDesktop").invoke(null);
+          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
+        }
       }
       catch (Exception exc) {
+        // we do nothing here...
       }
     }
     

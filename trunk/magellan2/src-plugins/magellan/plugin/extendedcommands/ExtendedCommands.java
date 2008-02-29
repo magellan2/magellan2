@@ -50,7 +50,6 @@ import magellan.library.utils.logging.Logger;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import bsh.EvalError;
 import bsh.Interpreter;
@@ -70,7 +69,7 @@ public class ExtendedCommands {
   
   private Hashtable<String, String> unitContainerCommands = new Hashtable<String, String>();
   private Hashtable<String, ContainerType> unitContainerTypes = new Hashtable<String, ContainerType>();
-  
+  private String library = "";
   
   public ExtendedCommands(Client client) {
     this.client = client;
@@ -168,6 +167,24 @@ public class ExtendedCommands {
   }
   
   /**
+   * Returns the value of library.
+   * 
+   * @return Returns library.
+   */
+  public String getLibrary() {
+    return library;
+  }
+
+  /**
+   * Sets the value of library.
+   *
+   * @param library The value for library.
+   */
+  public void setLibrary(String library) {
+    this.library = library;
+  }
+
+  /**
    * Returns a list of all units with commands.
    */
   public List<Unit> getUnitsWithCommands() {
@@ -229,7 +246,12 @@ public class ExtendedCommands {
       interpreter.set("world",world);
       interpreter.set("unit",unit);
       interpreter.set("helper", new ExtendedCommandsHelper(world,unit));
-      interpreter.eval(getCommands(unit));
+      
+      String script = getLibrary();
+      script += "\n";
+      script += getCommands(unit);
+      
+      interpreter.eval(script);
       unit.setOrdersChanged(true);
     } catch (EvalError error) {
       String message = error.getMessage();
@@ -257,7 +279,35 @@ public class ExtendedCommands {
       interpreter.set("world",world);
       interpreter.set("container",container);
       interpreter.set("helper", new ExtendedCommandsHelper(world,container));
-      interpreter.eval(getCommands(container));
+      
+      String script = getLibrary();
+      script += "\n";
+      script += getCommands(container);
+      
+      interpreter.eval(script);
+    } catch (EvalError error) {
+      String message = error.getMessage();
+      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      message+="\r\n"+error.getErrorText();
+      ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
+      errorWindow.setShutdownOnCancel(false);
+      errorWindow.setVisible(true);
+    } catch (Throwable throwable) {
+      log.info("",throwable);
+      ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
+      errorWindow.setShutdownOnCancel(false);
+      errorWindow.setVisible(true);
+    }
+  }
+  /**
+   * Executes the library commands/script.
+   */
+  public void execute(GameData world) {
+    try {
+      Interpreter interpreter = new Interpreter();
+      interpreter.set("world",world);
+      interpreter.set("helper", new ExtendedCommandsHelper(world));
+      interpreter.eval(getLibrary());
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) message=error.getCause().getClass().getName();
@@ -289,23 +339,27 @@ public class ExtendedCommands {
         log.error("This is NOT an extended command configuration file");
         return;
       }
-      NodeList nodes = rootNode.getElementsByTagName("container");
-      log.info("Found "+nodes.getLength()+" unitcontainer commands");
-      for( int i=0; i<nodes.getLength(); i++ ) {
-        Element node = (Element)nodes.item(i);
+      
+      Element libraryNode = Utils.getChildNode(rootNode, "library");
+      if (libraryNode != null) {
+        library = Utils.getCData(libraryNode);
+      }
+      
+      List<Element> nodes = Utils.getChildNodes(rootNode,"container");
+      log.info("Found "+nodes.size()+" unitcontainer commands");
+      for( Element node : nodes ) {
         String id = node.getAttribute("id");
         String type = node.getAttribute("type");
-        String command = node.getFirstChild().getNodeValue();
+        String command = Utils.getCData(node);
         unitContainerCommands.put(id,command);
         unitContainerTypes.put(id, ContainerType.getType(type));
       }
       
-      nodes = rootNode.getElementsByTagName("unit");
-      log.info("Found "+nodes.getLength()+" unit commands");
-      for( int i=0; i<nodes.getLength(); i++ ) {
-        Element node = (Element)nodes.item(i);
+      nodes = Utils.getChildNodes(rootNode,"unit");
+      log.info("Found "+nodes.size()+" unit commands");
+      for( Element node : nodes ) {
         String id = node.getAttribute("id");
-        String command = node.getFirstChild().getNodeValue();
+        String command = Utils.getCData(node);
         unitCommands.put(id,command);
       }
       
@@ -335,6 +389,7 @@ public class ExtendedCommands {
       
       writer.println("<?xml version=\"1.0\" encoding=\""+Encoding.UTF8.toString()+"\"?>");
       writer.println("<extended_commands>");
+      writer.println("<library><![CDATA["+library+"]]></library>");
       for (String unitContainerId : unitContainerCommands.keySet()) {
         writer.println(" <container id=\""+unitContainerId+"\" type=\""+unitContainerTypes.get(unitContainerId)+"\"><![CDATA["+unitContainerCommands.get(unitContainerId)+"]]></container>");
       }

@@ -28,6 +28,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 
 
 /**
@@ -81,27 +82,32 @@ public class NameGenerator {
 		gen = this;
 	}
 
-	public void load(String file) {
+	public void load(String fileName) {
 		if(names == null) {
 			names = new LinkedList<String>();
 		} else {
 			names.clear();
 		}
-
-		if((file != null) && !file.trim().equals("")) {
-			try {
-				BufferedReader in = new BufferedReader(new FileReader(file));
-				String s = null;
-
-				while((s = in.readLine()) != null) {
-					names.add(s.trim());
-				}
-
-				in.close();
-			} catch(IOException ioe) {
-				System.out.println(ioe);
-			}
-		}
+    
+    if (!Utils.isEmpty(fileName)) {
+      File file = new File(fileName);
+  
+      // we read the file only if it exists.
+  		if(file.exists() && file.canRead()) {
+  			try {
+  				BufferedReader in = new BufferedReader(new FileReader(file));
+  				String s = null;
+  
+  				while((s = in.readLine()) != null) {
+  					names.add(s.trim());
+  				}
+  
+  				in.close();
+  			} catch(IOException ioe) {
+  				System.out.println(ioe);
+  			}
+  		}
+    }
 
 		if(names.size() == 0) {
 			names = null;
@@ -111,7 +117,7 @@ public class NameGenerator {
 	protected void close() {
 		String file = settings.getProperty("NameGenerator.Source");
 
-		if(file != null) {
+		if (!Utils.isEmpty(file)) {
 			try {
 				File f = new File(file);
 
@@ -121,7 +127,7 @@ public class NameGenerator {
 
 				if(names != null) {
 					PrintWriter out = new PrintWriter(new FileWriter(file));
-					Iterator it = names.iterator();
+					Iterator<String> it = names.iterator();
 
 					while(it.hasNext()) {
 						out.println(it.next());

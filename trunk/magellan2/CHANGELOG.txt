@@ -1,3 +1,8 @@
+2008-02-29 / Build 163 - Thoralf (thoralf@m84.de)
+    * Added library functions to Extended Commands
+    * Bugfixes (see Mantis)
+    * Changed release name to 2.0.rc1  
+
 2008-02-28 / Build 161 - Thoralf (thoralf@m84.de)
     * Preferences for Building Renderer to disable specific building types
     * Added new authors to credits dialog (StartWindow and InfoDialog)
@@ -22,10 +27,10 @@
     * added syntax highlighting in extended commands plugin
 
 2008-02-19 / Build 154 - Fiete (sf@fietefietz.de)
-	* Fixed addPeasantInfo for regions with 0 peasants
-	* remmoved buildingcellrenderer - preference adapter
-	* fixed update of level-cmbBox of mapcontextmenu is used
-	
+    * Fixed addPeasantInfo for regions with 0 peasants
+    * remmoved buildingcellrenderer - preference adapter
+    * fixed update of level-cmbBox of mapcontextmenu is used
+    
 2008-02-19 / Build 153 - stm (stm_@users.sourceforge.net) 
     * Fixed auto-detection of plugins
     * modified for external resources preferences adapter and added plugin preferences adapter 
@@ -41,47 +46,47 @@
     * Made multiple changes to the settings
     
 2008-02-15 / Build 149 - Fiete (sf@fietefietz.de)
-	* switched "GiveOrder" to multiline-orders
+    * switched "GiveOrder" to multiline-orders
 
 2008-02-14 / Build 148 - Darcduck (sf.net@duckstein.net)
-	* fixed #152: Unit weight calculation - now delta if weight is well known
+    * fixed #152: Unit weight calculation - now delta if weight is well known
 
 2008-02-04 / Build 148 - Darcduck (sf.net@duckstein.net)
-	* fixed #150: SELL Order Completion
-	* some more fixes/enhancements in Order Completion
+    * fixed #150: SELL Order Completion
+    * some more fixes/enhancements in Order Completion
 
 2008-02-06 / Build 148 - Fiete (sf@fietefietz.de)
-	* fixed CR Parser Error when ejcTaggables are used
-	* Menu Caption PlugIns -> Plugins
-	* mapper.shortkcus.desc for new shortcuts
-	* center on 0,0 after load, if 0,0 is known AND no aktiveRegion is known
-	* feature request 141: more info in faction stats about expensures
-	* put option for map-navi-bar into mapperpanelpreferences, for stm
+    * fixed CR Parser Error when ejcTaggables are used
+    * Menu Caption PlugIns -> Plugins
+    * mapper.shortkcus.desc for new shortcuts
+    * center on 0,0 after load, if 0,0 is known AND no aktiveRegion is known
+    * feature request 141: more info in faction stats about expensures
+    * put option for map-navi-bar into mapperpanelpreferences, for stm
 
 2008-02-05 / Build 147 - Fiete (sf@fietefietz.de)
-	* added warnOnce and errorOnce to Logger
-	* added notype - image for unnown regiontypes om RegionImageCellrenderer
-	* added wand and gang images
-	* supressed CR-Parser "unknowns" for "EINHEIT" when parsing taggabble comparators
-	* feature request #140: chkserverConformance->no islands, no hotspots
-	* changed shortcuts for 3 level zoom to ALT + "+" and "-"
+    * added warnOnce and errorOnce to Logger
+    * added notype - image for unnown regiontypes om RegionImageCellrenderer
+    * added wand and gang images
+    * supressed CR-Parser "unknowns" for "EINHEIT" when parsing taggabble comparators
+    * feature request #140: chkserverConformance->no islands, no hotspots
+    * changed shortcuts for 3 level zoom to ALT + "+" and "-"
 
 2008-02-04 / Build 146 - Darcduck (sf.net@duckstein.net)
-	* fixed an issue with the layout-based astral2real algorithm
-	* added another test cr, which is not supported by any other mapping algorithm
-	* added a unit-ID based mapping algorithm, but not integrated in ReportMerger (Should be integrated with RC2)
+    * fixed an issue with the layout-based astral2real algorithm
+    * added another test cr, which is not supported by any other mapping algorithm
+    * added a unit-ID based mapping algorithm, but not integrated in ReportMerger (Should be integrated with RC2)
 
 2008-02-01 / Build 146 - Fiete (sf@fietefietz.de)
-	* added MapContextMenu: Levelchange, Goto Hotspot
-	* fixed ARR: Float.parse with formatted float ("." - problem)
-	* added Option "Layout" to Map -> switch on/off of Navibar
-	* added short cuts for 3 level zoom CTRL+PGUP, CTRL+PGDN
-	
+    * added MapContextMenu: Levelchange, Goto Hotspot
+    * fixed ARR: Float.parse with formatted float ("." - problem)
+    * added Option "Layout" to Map -> switch on/off of Navibar
+    * added short cuts for 3 level zoom CTRL+PGUP, CTRL+PGDN
+    
 2008-01-29 / Build 145 - Fiete (sf@fietefietz.de)
-	* added "Export Hot Spots" to export options in CRWriterDialog
-	* added Tooltips to Options in CRWriterDialog, en-translation is still poor
-	* changed ordering of ships from nameComparator to new ShipTypeComparator (do we need this optional?)
-	* added new short cut CTRL +/- for zooming the map
+    * added "Export Hot Spots" to export options in CRWriterDialog
+    * added Tooltips to Options in CRWriterDialog, en-translation is still poor
+    * changed ordering of ships from nameComparator to new ShipTypeComparator (do we need this optional?)
+    * added new short cut CTRL +/- for zooming the map
 
 2008-01-28 / Build 144 - stm (stm_@users.sourceforge.net) 
     * fixed nasty little bug with alliances
@@ -89,33 +94,33 @@
     * fixed bug #144
     
 2008-01-23 / Build 143 - Fiete (sf@fietefietz.de)
-	* added mallornregion replacer
-	* removed FFplugin (Testplugin)
-	* some comments on ReportMerger
-	* removed some unused imports
+    * added mallornregion replacer
+    * removed FFplugin (Testplugin)
+    * some comments on ReportMerger
+    * removed some unused imports
 
 2008-01-23 / Build 143 - stm (stm_@users.sourceforge.net) 
-	* fixed "NPE on save on quit" bug
-	* added icons for feuerwand (border) and irrlichter (border)
-	* tweaked border sizes of root window
-	* fixed icon for "schwer verwundet"
-	
+    * fixed "NPE on save on quit" bug
+    * added icons for feuerwand (border) and irrlichter (border)
+    * tweaked border sizes of root window
+    * fixed icon for "schwer verwundet"
+    
 2008-01-22 / Build 142 - Darcduck (sf.net@duckstein.net)
-	* added some test-crs for merging and coordinate translation
-	* added scheme cleaning in EresseaPostProcessor
-	* enhanced coordinate translation of astral to real in variant 2 (layout) - includes the OneRegion aproach now, by a few calculations only instead of set-operations
-	* some fixes in EresseaMessageRenderer
-	* started to move all coordinate translation algorithms to MapMergeEvaluator and EresseaMapMergeEvaluator with flexible extensibility
+    * added some test-crs for merging and coordinate translation
+    * added scheme cleaning in EresseaPostProcessor
+    * enhanced coordinate translation of astral to real in variant 2 (layout) - includes the OneRegion aproach now, by a few calculations only instead of set-operations
+    * some fixes in EresseaMessageRenderer
+    * started to move all coordinate translation algorithms to MapMergeEvaluator and EresseaMapMergeEvaluator with flexible extensibility
 
 2008-01-21 / Build 140 - Fiete (sf@fietefietz.de)
-	* fixed Message.Attributes (regions) in CRParser when changing origin
-	* changed Message.toString to .getText.
-	
+    * fixed Message.Attributes (regions) in CRParser when changing origin
+    * changed Message.toString to .getText.
+    
 2008-01-21 / Build 139 - stm (stm_@users.sourceforge.net) 
-	* fixed empty backup file bug
-	
+    * fixed empty backup file bug
+    
 2008-01-20 Fiete (sf@fietefietz.de)
-	* CRWriter: Verkleidung->AnderePartei
+    * CRWriter: Verkleidung->AnderePartei
 
 2008-01-18 Thoralf (thoralf@m84.de)
   * added plugins directory to install jar 
@@ -134,11 +139,11 @@
     * fixed Scanner, where "ready()" was confused with "readLine()==null"
 
 2008-01-16 Fiete (sf@fietefietz.de)
-	* added replacers:ironlevel,laenloevel,stoneslevel
-	* fixed call to tooltipinfo
-	* replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")	
-	* changed One_region-AR-RR translation finder to work with CoordinateIDs, not with Regions
-	* improved ReportMerger:OneRegion (works now with test report ar003.cr)
+    * added replacers:ironlevel,laenloevel,stoneslevel
+    * fixed call to tooltipinfo
+    * replacers: fixed unit faction filter, fixed Float.fromString (replaced ".", with "")    
+    * changed One_region-AR-RR translation finder to work with CoordinateIDs, not with Regions
+    * improved ReportMerger:OneRegion (works now with test report ar003.cr)
 
 2008-01-15 Thoralf (thoralf@m84.de)
     * added setOrder(String) shortcut in Extended Command PlugIn.
@@ -167,16 +172,16 @@
     * improved origin translation in Reportmerger, including CR-I/O
 
 2007-12-24 Darcduck (sf.net@duckstein.net)
-	* some enhancements to EresseaOrderCompleter:
-	* added #118: "GIVE <unit> <amount>" lists items/persons available in this amount first
-	* "GIVE <unit> <amount> ALL" multiline completion to easily split units
+    * some enhancements to EresseaOrderCompleter:
+    * added #118: "GIVE <unit> <amount>" lists items/persons available in this amount first
+    * "GIVE <unit> <amount> ALL" multiline completion to easily split units
 
 2007-12-23 Darcduck (sf.net@duckstein.net)
-	* Some fixes in OrderCompleter (NPE)
-	* changed scroll behavior for MultiEditorLayout==false
-	
+    * Some fixes in OrderCompleter (NPE)
+    * changed scroll behavior for MultiEditorLayout==false
+    
 2007-12-20 Darcduck (sf.net@duckstein.net)
-	* Added BackgroundImageRenderer including properties dialog
+    * Added BackgroundImageRenderer including properties dialog
 
 2007-12-19  stm (stm_@users.sourceforge.net)
     * restructured ReportMerger but only little changes in behaviour
@@ -186,13 +191,13 @@
     * small editorial changes
 
 2007-12-18 Fiete (sf@fietefietz.de)
-	* CRWriterDialog: shipMsgs from not exported regions are not exported as well (forgot yesterday)
+    * CRWriterDialog: shipMsgs from not exported regions are not exported as well (forgot yesterday)
 
 2007-12-17 Fiete (sf@fietefietz.de)
-	* reworked CRWriterDialog: if selected Regions to export
-	  also *all* Messages outside the regions are removed
-	* Delete empty factions fixed, took care of alliances to this
-	  faction too (also from groups)
+    * reworked CRWriterDialog: if selected Regions to export
+      also *all* Messages outside the regions are removed
+    * Delete empty factions fixed, took care of alliances to this
+      faction too (also from groups)
 
 2007-12-18 Thoralf (thoralf@m84.de)
     * Small fix to avoid a NPE at startup. The IDF initialization needs an AWT thread, so
@@ -204,7 +209,7 @@
     
 2007-12-16 Darcduck (sf.net@duckstein.net)
     * Added Astralrenderer (EresseaSchemesCellRenderer) with correct mapping
-	* fixed bug #64: Property of Minimapper doesn't overwrite Mapper.Region anymore
+    * fixed bug #64: Property of Minimapper doesn't overwrite Mapper.Region anymore
 
 2007-12-15 Darcduck (sf.net@duckstein.net)
     * fixed bug #124: added function $terrain() for EresseaMessageRenderer

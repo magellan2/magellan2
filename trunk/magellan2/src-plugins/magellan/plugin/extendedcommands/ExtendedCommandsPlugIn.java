@@ -43,6 +43,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -101,6 +102,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     executeMenu.setEnabled(commands.hasCommands());
     menu.add(executeMenu);    
 
+    JMenuItem libraryMenu = new JMenuItem(Resources.get("mainmenu.library.title"));
+    libraryMenu.setActionCommand(PlugInAction.LIBRARY_EDIT.getID());
+    libraryMenu.addActionListener(this);
+    menu.add(libraryMenu);    
+
     JMenuItem configureMenu = new JMenuItem(Resources.get("mainmenu.configure.title"));
     configureMenu.setActionCommand(PlugInAction.CONFIGURE_ALL.getID());
     configureMenu.addActionListener(this);
@@ -118,7 +124,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * @see magellan.client.extern.MagellanPlugIn#getName()
    */
   public String getName() {
-    return "ExtendedComands";
+    return "ExtendedCommands";
   }
 
   /**
@@ -190,6 +196,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
         executeCommands(client.getData());
         break;
       }
+      case LIBRARY_EDIT: {
+        log.info("Edit library...");
+        editLibrary(client.getData());
+        break;
+      }
       case CONFIGURE_ALL: {
         log.info("Configure...");
         // TODO must be implemented.... 
@@ -213,7 +224,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     
     // find the commands for this unit or set them to "".
     String script = commands.getCommands(container);
-    if (script == null) {
+    if (Utils.isEmpty(script)) {
       // show some examples for beginners...
       script = "// example for beginners...\n";
       script+= "//\n";
@@ -233,7 +244,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     
     // find the commands for this unit or set them to "".
     String script = commands.getCommands(unit);
-    if (script == null) {
+    if (Utils.isEmpty(script)) {
       // show some examples for beginners...
       script = "// example for beginners...\n";
       script+= "//\n";
@@ -247,13 +258,43 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
     dialog.setVisible(true);
   }
+
+  /**
+   * Opens a Dialog for editing the library.
+   */
+  protected void editLibrary(GameData data) {
+    log.info("Edit library for all units and containers...");
+
+    // find the commands for this unit or set them to "".
+    String script = commands.getLibrary();
+    if (Utils.isEmpty(script)) {
+      // show some examples for beginners...
+      script = "// example for beginners...\n";
+      script+= "// \n";
+      script+= "// import magellan.library.*;\n";
+      script+= "// \n";
+      script+= "// int getHorses(Region region) {\n";
+      script+= "// return region.getHorses();\n";
+      script+= "// }\n";
+      script+= "//\n";
+      
+    }
+    
+    // open a dialog for the commands...
+    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
+    dialog.setVisible(true);
+  }
+
   
   protected void executeCommands(GameData data) {
     log.info("Executing commands for all configured units...");
+    
+    // Reihenfolge sinnvoll?
     List<Unit> units = commands.getUnitsWithCommands();
     for (Unit unit : units) {
       commands.execute(data, unit);
     }
+    
     List<UnitContainer> containers = commands.getUnitContainersWithCommands();
     for (UnitContainer container : containers) {
       commands.execute(data, container);

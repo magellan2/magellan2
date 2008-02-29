@@ -56,6 +56,10 @@ public class ExtendedCommandsHelper {
   private Unit unit = null;
   private UnitContainer container = null;
   
+  public ExtendedCommandsHelper(GameData world) {
+    this.world = world;
+  }
+  
   public ExtendedCommandsHelper(GameData world, Unit unit) {
     this.world = world;
     this.unit = unit;

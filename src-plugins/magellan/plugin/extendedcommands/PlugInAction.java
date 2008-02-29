@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 public enum PlugInAction {
   EXECUTE_ALL("mainmenu.execute"),
   CONFIGURE_ALL("mainmenu.configure"),
+  LIBRARY_EDIT("mainmenu.library"),
   UNKNOWN("");
   
   private String id;

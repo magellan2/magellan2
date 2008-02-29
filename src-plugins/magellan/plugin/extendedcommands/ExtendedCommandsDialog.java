@@ -67,6 +67,15 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
   private ExtendedCommands commands = null;
   private String script = null;
   
+  public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, String script) {
+    super(client,true);
+    
+    this.world = data;
+    this.commands = commands;
+    
+    init(script);
+  }
+  
   public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Unit unit, String script) {
     super(client,true);
     
@@ -108,9 +117,12 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     if (unit != null) {
       // show help for unit commands
       help.setText(Resources.get("extended_commands.help.dialog.unit"));
-    } else {
+    } else if (container != null) {
       // show help for container commands
       help.setText(Resources.get("extended_commands.help.dialog.container"));
+    } else {
+      // show help for library
+      help.setText(Resources.get("extended_commands.help.dialog.library"));
     }
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
@@ -172,6 +184,8 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         commands.setCommands(unit,script);
       } else if (container != null) {
         commands.setCommands(container,script);
+      } else {
+        commands.setLibrary(script);
       }
     } else if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // execute the command, this means, to temporary store the script
@@ -186,6 +200,10 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         commands.setCommands(container,newScript);
         commands.execute(world, container);
         commands.setCommands(container, script); // reset to old script
+      } else {
+        commands.setLibrary(newScript);
+        commands.execute(world);
+        commands.setLibrary(script); // reset to old script
       }
       
     } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {

@@ -251,12 +251,16 @@ public class ExtendedCommands {
       script += "\n";
       script += getCommands(unit);
       
+      log.info(script);
+      
       interpreter.eval(script);
       unit.setOrdersChanged(true);
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) message=error.getCause().getClass().getName();
-      message+="\r\n"+error.getErrorText();
+      try {
+        message+="\r\n"+error.getErrorText();
+      } catch (NullPointerException npe) {}
       ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -288,7 +292,9 @@ public class ExtendedCommands {
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) message=error.getCause().getClass().getName();
-      message+="\r\n"+error.getErrorText();
+      try {
+        message+="\r\n"+error.getErrorText();
+      } catch (NullPointerException npe) {}
       ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -311,7 +317,9 @@ public class ExtendedCommands {
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) message=error.getCause().getClass().getName();
-      message+="\r\n"+error.getErrorText();
+      try {
+        message+="\r\n"+error.getErrorText();
+      } catch (NullPointerException npe) {}
       ErrorWindow errorWindow = new ErrorWindow(client,message,"",error);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);

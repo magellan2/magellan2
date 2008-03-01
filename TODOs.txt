@@ -12,42 +12,12 @@ Mit + ist in Arbeit
 + Magellan Hilfe überarbeiten und an neue Gegebenheiten
   anpassen, folgende Dateien müssen angepasst/erstellt/geprüft werden
     - feedback.html (Mailingliste?, Newsserver, ...)
-    - menu/edit/search (verschoben von extras)
-    - menu/bookmarks (neu)
-    - menu/bookmarks/enable (neu)
-    - menu/bookmarks/forward (neu)
-    - menu/bookmarks/backward (neu)
-    - menu/bookmarks/show (neu oder als Dock)
-    - menu/bookmarks/delete (neu)
     - menu/map/extend (neu)
-    - menu/map/open (neu)
-    - menu/map/add (neu)
-    - menu/map/save (neu)
-    - menu/desktop (vollständig überarbeiten)
-    - menu/desktop/layout.html (neu)
-    - menu/desktop/layout_standard.html (neu)
-    - menu/desktop/layout_export.html (neu)
-    - menu/desktop/layout_import.html (neu)
-    - menu/desktop/layout_new.html (neu)
-    - menu/desktop/layout_save.html (neu)
-    - menu/desktop/layout_delete.html (neu)
-    - menu/desktop/hidetabs (neu)
-    - menu/plugins (neu)
-    - menu/extras/echeck (raus, als window)
-    - menu/extras/eresseaoptions (wo sind die hin?)
-    - menu/extras/tips (neu)
-    - menu/extras/armystatistics (neu)
-    - menu/extras/tradestatistics (neu)
-    - windows/echeck (verschoben von Menü)
-    - windows/problems (neu)
-    - windows/bookmarks (neu, aber erst noch implementieren)
+    - menu/extras/factionsstatistics (eressea options tab???)
+    - menu/desktop/index
     - reference/desktop (vollständig überarbeiten)
     - faq (überarbeiten)
     - topic.gif ersetzen (ist defekt)
-    - eressea Ordner muss noch komplett überarbeitet werden
-    
-    - alle anderen Dateien müssen einmal durchgelesen werden...
-   
   
 + ReportMerger gradebügeln, Neue einbauen
 

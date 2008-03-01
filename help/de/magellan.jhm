@@ -70,6 +70,8 @@
 
 			<mapID target="menu_extras" url="magellan/menus/extras/index.html" />
 			<mapID target="menu_extras_factionstatistics" url="magellan/menus/extras/factionstatistics.html" />
+			<mapID target="menu_extras_armystatistics" url="magellan/menus/extras/armystatistics.html" />
+			<mapID target="menu_extras_tradestatistics" url="magellan/menus/extras/tradestatistics.html" />
 			<mapID target="menu_extras_vorlage" url="magellan/menus/extras/vorlage.html" />
 			<mapID target="menu_extras_redraw" url="magellan/menus/extras/redraw.html" />
 			<mapID target="menu_extras_reload" url="magellan/menus/extras/reload.html" />
@@ -78,11 +80,10 @@
 				<mapID target="menu_extras_options_desktop" url="magellan/menus/extras/options_desktop.html" />
 				<mapID target="menu_extras_options_region" url="magellan/menus/extras/options_region.html" />
 				<mapID target="menu_extras_options_detail" url="magellan/menus/extras/options_detail.html" />
-				<mapID target="menu_extras_options_ressources" url="magellan/menus/extras/options_ressources.html" />
 				<mapID target="menu_extras_options_map" url="magellan/menus/extras/options_map.html" />
 				<mapID target="menu_extras_options_icons" url="magellan/menus/extras/options_icons.html" />
-				<mapID target="menu_extras_options_paths" url="magellan/menus/extras/options_paths.html" />
-			<mapID target="menu_extras_eresseaoptions" url="magellan/menus/extras/factionstatistics.html#eresseaoptions" />
+				<mapID target="menu_extras_options_resources" url="magellan/menus/extras/options_resources.html" />
+				<mapID target="menu_extras_options_plugins" url="magellan/menus/extras/options_plugins.html" />
 			<mapID target="menu_extras_help" url="magellan/menus/extras/help.html" />
 			<mapID target="menu_extras_tips" url="magellan/menus/extras/tips.html" />
 			<mapID target="menu_extras_info" url="magellan/menus/extras/info.html" />
@@ -108,7 +109,7 @@
 			<mapID target="reference_graphicsets_install" url="magellan/reference/graphicsets_install.html" />
 			<mapID target="reference_graphicsets_making" url="magellan/reference/graphicsets_making.html" />
 
-		<mapID target="reference_ressources" url="magellan/reference/ressources.html" />
+		<mapID target="reference_ressources" url="magellan/reference/resources.html" />
 		<mapID target="reference_cr" url="magellan/reference/cr.html" />
 		<mapID target="reference_shortcuts" url="magellan/reference/shortcuts.html" />
 		<mapID target="reference_commandline" url="magellan/reference/commandline.html" />
@@ -126,6 +127,7 @@
 	<mapID target="orders" url="eressea/orders.html" />
 		<mapID target="orders_order" url="eressea/orders_order.html" />
 		<mapID target="orders_desc" url="eressea/orders_desc.html" />
+		<mapID target="orders_list" url="eressea/orders_list.html" />
 
 	<mapID target="production" url="eressea/production.html" />
 		<mapID target="production_alchemy" url="eressea/production_alchemy.html" />

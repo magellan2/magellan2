@@ -24,6 +24,7 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.library.utils.ResourcePathClassLoader;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -36,12 +37,14 @@ import magellan.library.utils.logging.Logger;
 public class HelpAction extends MenuAction {
   private static final Logger log = Logger.getInstance(HelpAction.class);
   private Object helpBroker = null;
+  private Client client = null;
 
   /**
    * Creates a new HelpAction object.
    */
   public HelpAction(Client client) {
     super(client);
+    this.client = client;
   }
 
   /**
@@ -51,13 +54,19 @@ public class HelpAction extends MenuAction {
     // SG: had a lot of fun when I implemented this :-)
     try {
       ClassLoader loader = new ResourcePathClassLoader(client.getProperties());
-      URL hsURL = loader.getResource("help/magellan.hs");
-
+      String language = client.getProperties().getProperty("locales.gui", "");
+      if (!Utils.isEmpty(language)) language = "_"+language;
+      
+      URL hsURL = loader.getResource("help/magellan"+language+".hs");
+      if (hsURL == null) hsURL = loader.getResource("magellan"+language+".hs");
+      if (hsURL == null) hsURL = loader.getResource("help/magellan.hs");
       if (hsURL == null) hsURL = loader.getResource("magellan.hs");
       if (hsURL == null) {
         JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.helpsetnotfound.text"));
         return;
       }
+      
+      log.info("URL: "+hsURL);
 
       Class helpSetClass = null;
       Class helpBrokerClass = null;

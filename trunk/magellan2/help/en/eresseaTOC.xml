@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE toc
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+ 
+<toc version="1.0">
+<tocitem text="Eressea Reference" image="openbook" target="eressea_intro">
+	<tocitem text="Orders" image="chapter" target="orders">
+		<tocitem text="Order of Execution" image="topic" target="orders_order"/>
+		<tocitem text="Short description" image="topic" target="orders_desc"/>
+		<tocitem text="List of Orders" image="topic" target="orders_list"/>
+	</tocitem>
+
+	<tocitem text="Production" image="chapter" target="production">
+		<tocitem text="Alchemy" image="topic" target="production_alchemy"/>
+		<tocitem text="Buildings" image="topic" target="production_buildings"/>
+		<tocitem text="Items" image="topic" target="production_items"/>
+		<tocitem text="Regions" image="topic" target="production_regions"/>
+		<tocitem text="Ships" image="topic" target="production_ships"/>
+	</tocitem>
+
+	<tocitem text="Skills" image="chapter" target="skill">
+		<tocitem text="List of Skills" image="topic" target="skill_list"/>
+		<tocitem text="Learn Days" image="topic" target="skill_days"/>
+		<tocitem text="Boni and Mali" image="topic" target="skill_races"/>
+	</tocitem>
+
+	<tocitem text="Battle" image="chapter" target="battle">
+		<tocitem text="Weapons" image="topic" target="battle_weapons"/>
+		<tocitem text="Armors" image="topic" target="battle_armors"/>
+		<tocitem text="Hitpoints/Resist Magic" image="topic" target="battle_hitpoints"/>
+	</tocitem>
+</tocitem>
+</toc>

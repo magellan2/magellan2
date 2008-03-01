@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='ISO-8859-1' ?>
+<!DOCTYPE map
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/map_1_0.dtd">
+
+<map version="1.0">
+	<mapID target="chapter" url="images/chapTopic.gif" />
+	<mapID target="topic" url="images/topic.gif" />
+	<mapID target="openbook" url="images/openbook.gif" />
+
+	<!-- Magellan Online-Hilfe -->
+
+	<mapID target="intro" url="magellan/index.html" />
+		<mapID target="menu" url="magellan/menus/index.html" />
+			<mapID target="menu_file" url="magellan/menus/file/index.html" />
+			<mapID target="menu_file_open" url="magellan/menus/file/open.html" />
+			<mapID target="menu_file_add" url="magellan/menus/file/add.html" />
+			<mapID target="menu_file_openorders" url="magellan/menus/file/openorders.html" />
+			<mapID target="menu_file_save" url="magellan/menus/file/save.html" />
+			<mapID target="menu_file_saveas" url="magellan/menus/file/saveas.html" />
+			<mapID target="menu_file_saveorders" url="magellan/menus/file/saveorders.html" />
+			<mapID target="menu_file_crexport" url="magellan/menus/file/crexport.html" />
+			<mapID target="menu_file_abort" url="magellan/menus/file/abort.html" />
+			<mapID target="menu_file_exit" url="magellan/menus/file/exit.html" />
+		
+			<mapID target="menu_edit" url="magellan/menus/edit/index.html" />
+			<mapID target="menu_edit_undo" url="magellan/menus/edit/undo.html" />
+			<mapID target="menu_edit_redo" url="magellan/menus/edit/redo.html" />
+			<mapID target="menu_edit_search" url="magellan/menus/edit/search.html" />
+		
+			<mapID target="menu_orders" url="magellan/menus/orders/index.html" />
+			<mapID target="menu_orders_unconfirmed" url="magellan/menus/orders/unconfirmed.html" />
+			<mapID target="menu_orders_confirm" url="magellan/menus/orders/confirm.html" />
+			<mapID target="menu_orders_confirmall" url="magellan/menus/orders/confirmall.html" />
+			<mapID target="menu_orders_unconfirmall" url="magellan/menus/orders/unconfirmall.html" />
+			<mapID target="menu_orders_invertconfirmation" url="magellan/menus/orders/invertconfirmation.html" />
+			
+			<mapID target="menu_bookmarks" url="magellan/menus/bookmarks/index.html" />
+			<mapID target="menu_bookmarks_enable" url="magellan/menus/bookmarks/enable.html" />
+			<mapID target="menu_bookmarks_forward" url="magellan/menus/bookmarks/forward.html" />
+			<mapID target="menu_bookmarks_backward" url="magellan/menus/bookmarks/backward.html" />
+			<mapID target="menu_bookmarks_show" url="magellan/menus/bookmarks/show.html" />
+			<mapID target="menu_bookmarks_delete" url="magellan/menus/bookmarks/delete.html" />
+
+			<mapID target="menu_map" url="magellan/menus/map/index.html" />
+			<mapID target="menu_map_origin" url="magellan/menus/map/origin.html" />
+			<mapID target="menu_map_island" url="magellan/menus/map/island.html" />
+			<mapID target="menu_map_image" url="magellan/menus/map/image.html" />
+			<mapID target="menu_map_selectall" url="magellan/menus/map/selectall.html" />
+			<mapID target="menu_map_selectnothing" url="magellan/menus/map/selectnothing.html" />
+			<mapID target="menu_map_invertselection" url="magellan/menus/map/invertselection.html" />
+			<mapID target="menu_map_selectisland" url="magellan/menus/map/selectisland.html" />
+			<mapID target="menu_map_fillselection" url="magellan/menus/map/fillselection.html" />
+			<mapID target="menu_map_extend" url="magellan/menus/map/extend.html" />
+			<mapID target="menu_map_open" url="magellan/menus/map/open.html" />
+			<mapID target="menu_map_add" url="magellan/menus/map/add.html" />
+			<mapID target="menu_map_save" url="magellan/menus/map/save.html" />
+		
+			<mapID target="menu_desktop" url="magellan/menus/desktop/index.html" />
+			<mapID target="menu_desktop_layout" url="magellan/menus/desktop/layout.html" />
+				<mapID target="menu_desktop_layout_standard" url="magellan/menus/desktop/layout_standard.html" />
+				<mapID target="menu_desktop_layout_export" url="magellan/menus/desktop/layout_export.html" />
+				<mapID target="menu_desktop_layout_import" url="magellan/menus/desktop/layout_import.html" />
+				<mapID target="menu_desktop_layout_new" url="magellan/menus/desktop/layout_new.html" />
+				<mapID target="menu_desktop_layout_save" url="magellan/menus/desktop/layout_save.html" />
+				<mapID target="menu_desktop_layout_delete" url="magellan/menus/desktop/layout_delete.html" />
+			<mapID target="menu_desktop_hidetabs" url="magellan/menus/desktop/hidetabs.html" />
+
+			<mapID target="menu_plugins" url="magellan/menus/plugins/index.html" />
+
+			<mapID target="menu_extras" url="magellan/menus/extras/index.html" />
+			<mapID target="menu_extras_factionstatistics" url="magellan/menus/extras/factionstatistics.html" />
+			<mapID target="menu_extras_armystatistics" url="magellan/menus/extras/armystatistics.html" />
+			<mapID target="menu_extras_tradestatistics" url="magellan/menus/extras/tradestatistics.html" />
+			<mapID target="menu_extras_vorlage" url="magellan/menus/extras/vorlage.html" />
+			<mapID target="menu_extras_redraw" url="magellan/menus/extras/redraw.html" />
+			<mapID target="menu_extras_reload" url="magellan/menus/extras/reload.html" />
+			<mapID target="menu_extras_options" url="magellan/menus/extras/options.html" />
+				<mapID target="menu_extras_options_system" url="magellan/menus/extras/options_system.html" />
+				<mapID target="menu_extras_options_desktop" url="magellan/menus/extras/options_desktop.html" />
+				<mapID target="menu_extras_options_region" url="magellan/menus/extras/options_region.html" />
+				<mapID target="menu_extras_options_detail" url="magellan/menus/extras/options_detail.html" />
+				<mapID target="menu_extras_options_map" url="magellan/menus/extras/options_map.html" />
+				<mapID target="menu_extras_options_icons" url="magellan/menus/extras/options_icons.html" />
+				<mapID target="menu_extras_options_resources" url="magellan/menus/extras/options_resources.html" />
+				<mapID target="menu_extras_options_plugins" url="magellan/menus/extras/options_plugins.html" />
+			<mapID target="menu_extras_help" url="magellan/menus/extras/help.html" />
+			<mapID target="menu_extras_tips" url="magellan/menus/extras/tips.html" />
+			<mapID target="menu_extras_info" url="magellan/menus/extras/info.html" />
+
+
+	<mapID target="windows" url="magellan/docks/index.html" />
+		<mapID target="windows_regions" url="magellan/docks/regions.html" />
+		<mapID target="windows_details" url="magellan/docks/details.html" />
+		<mapID target="windows_map" url="magellan/docks/map.html" />
+		<mapID target="windows_minimap" url="magellan/docks/minimap.html" />
+		<mapID target="windows_history" url="magellan/docks/history.html" />
+		<mapID target="windows_messages" url="magellan/docks/messages.html" />
+		<mapID target="windows_orders" url="magellan/docks/orders.html" />
+		<mapID target="windows_name" url="magellan/docks/name.html" />
+		<mapID target="windows_echeck" url="magellan/docks/echeck.html" />
+		<mapID target="windows_problems" url="magellan/docks/problems.html" />
+		<mapID target="windows_bookmarks" url="magellan/docks/bookmarks.html" />
+
+	<mapID target="reference" url="magellan/reference/index.html" />
+		<mapID target="reference_desktop" url="magellan/reference/desktop.html" />
+
+		<mapID target="reference_graphicsets" url="magellan/reference/graphicsets.html" />
+			<mapID target="reference_graphicsets_install" url="magellan/reference/graphicsets_install.html" />
+			<mapID target="reference_graphicsets_making" url="magellan/reference/graphicsets_making.html" />
+
+		<mapID target="reference_ressources" url="magellan/reference/resources.html" />
+		<mapID target="reference_cr" url="magellan/reference/cr.html" />
+		<mapID target="reference_shortcuts" url="magellan/reference/shortcuts.html" />
+		<mapID target="reference_commandline" url="magellan/reference/commandline.html" />
+
+		<mapID target="feedback" url="magellan/feedback.html" />
+
+		<mapID target="faq" url="magellan/faq.html" />
+
+
+
+
+	<!-- Eressea Online-Hilfe -->
+
+	<mapID target="eressea_intro" url="eressea/index.html" />
+	<mapID target="orders" url="eressea/orders.html" />
+		<mapID target="orders_order" url="eressea/orders_order.html" />
+		<mapID target="orders_desc" url="eressea/orders_desc.html" />
+		<mapID target="orders_list" url="eressea/orders_list.html" />
+
+	<mapID target="production" url="eressea/production.html" />
+		<mapID target="production_alchemy" url="eressea/production_alchemy.html" />
+		<mapID target="production_regions" url="eressea/production_regions.html" />
+		<mapID target="production_items" url="eressea/production_items.html" />
+		<mapID target="production_buildings" url="eressea/production_buildings.html" />
+		<mapID target="production_ships" url="eressea/production_ships.html" />
+
+	<mapID target="skill" url="eressea/skill.html" />
+		<mapID target="skill_list" url="eressea/skill_list.html" />
+		<mapID target="skill_days" url="eressea/skill_days.html" />
+		<mapID target="skill_races" url="eressea/skill_races.html" />
+	<mapID target="battle" url="eressea/battle.html" />
+		<mapID target="battle_weapons" url="eressea/battle_weapons.html" />
+		<mapID target="battle_hitpoints" url="eressea/battle_hitpoints.html" />
+		<mapID target="battle_armors" url="eressea/battle_armors.html" />
+</map>
+
+<!-- $Id: magellan.jhm 8 2003-10-12 21:05:43Z eressea $ -->

@@ -74,7 +74,7 @@ public class ReportMerger extends Object {
   /**
    * Manages a report and provides information relevant to ReportMerger.
    * 
-   * @author ...
+   * @author stm
    * @version 1.0, Dec 17, 2007
    */
   private class ReportCache implements Comparable<ReportCache> {

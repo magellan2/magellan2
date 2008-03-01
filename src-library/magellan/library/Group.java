@@ -16,10 +16,12 @@ package magellan.library;
 import java.util.Collection;
 import java.util.Map;
 
+import magellan.library.utils.Taggable;
+
 /**
  * A class representing a group of units within a faction.
  */
-public interface Group extends Named {
+public interface Group extends Named, Taggable {
   /**
    * Set the faction this group belongs to.
    */
@@ -87,51 +89,5 @@ public interface Group extends Named {
    */
   public String toString();
 
-  /**
-   * Transfers all available information from the current group to the new one.
-   * 
-   * @param curGD
-   *          fully loaded game data
-   * @param curGroup
-   *          a fully initialized and valid group
-   * @param newGD
-   *          the game data to be updated
-   * @param newGroup
-   *          a group to be updated with the data from curGroup
-   */
-//  public static void merge(GameData curGD, Group curGroup, GameData newGD, Group newGroup);
-  
-  // EXTERNAL TAG METHODS
-  /**
-   * TODO DOCUMENT ME!
-   * 
-   * @param tag
-   * @param value
-   */
-  public String putTag(String tag, String value);
 
-  /**
-   * DOCUMENT-ME
-   */
-  public String getTag(String tag);
-
-  /**
-   * DOCUMENT-ME
-   */
-  public String removeTag(String tag);
-
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean containsTag(String tag);
-
-  /**
-   * DOCUMENT-ME
-   */
-  public Map<String,String> getTagMap();
-
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean hasTags();
 }

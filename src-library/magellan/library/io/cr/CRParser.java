@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import magellan.client.swing.tree.TreeHelper;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Border;
@@ -2317,11 +2318,11 @@ public class CRParser implements RulesIO, GameDataIO {
         // check for wellknown tags...ejcTaggable etc...
         boolean isUnknown = true;
         if(sc.argc == 2) {
-          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator")){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator2")){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator3")){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator4")){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase("ejcTaggableComparator5")){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING2)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING3)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING4)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING5)){isUnknown=false;}
         }
         if (isUnknown){
           unknown("EINHEIT", true);

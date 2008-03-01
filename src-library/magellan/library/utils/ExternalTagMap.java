@@ -26,11 +26,13 @@ import magellan.library.utils.logging.Logger;
  *
  * @author $Author: $
  * @version $Revision: 171 $
+ * 
+ * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
  */
 public class ExternalTagMap extends HashMap<ID,TagMap> {
 	private static final Logger log = Logger.getInstance(ExternalTagMap.class);
 	private static final String METHOD_NAME = "getID";
-
+	
 	protected ID getID(Object o) {
 		if(o instanceof ID) {
 			return (ID) o;

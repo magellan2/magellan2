@@ -23,10 +23,28 @@ import java.util.Set;
 
 
 /**
- * DOCUMENT-ME
- *
+ * I'm not really sure why this class is here. It implements Map<String,
+ * String>. It's probably just a pre-java-1.5 typesafe variant plus the
+ * <code>getTag</code> and <code>putTag</code> methods.
+ * <code>entrySet()</code> returns <code>null</code> and
+ * <code>equals()</code> always returns <code>false</code>.
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
+ * @deprecated (stm) Nobody seems to really need this class. A simple Map<String,
+ *             String> would do. The implementation is very inefficient.
+ */
+/**
+ * TODO This class must be commented
+ *
+ * @author ...
+ * @version 1.0, Feb 26, 2008
+ */
+/**
+ * TODO This class must be commented
+ *
+ * @author ...
+ * @version 1.0, Feb 26, 2008
  */
 public class TagMap implements Map<String,String> {
 	protected class Tag {
@@ -54,21 +72,21 @@ public class TagMap implements Map<String,String> {
 		}
 	}
 
+	public TagMap(){
+	  
+	}
+	
 	protected Tag tags[] = null;
 
 	/**
-	 * DOCUMENT-ME
+	 * @see java.util.Map#clear()
 	 */
 	public void clear() {
 		tags = null;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.Map#containsKey(java.lang.Object)
 	 */
 	public boolean containsKey(Object obj) {
 		if(!(obj instanceof String) || (tags == null)) {
@@ -87,11 +105,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.Map#containsValue(java.lang.Object)
 	 */
 	public boolean containsValue(Object obj) {
 		if(!(obj instanceof String) || (tags == null)) {
@@ -110,31 +124,25 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Always return <code>null</code>!
 	 * 
+	 * @see java.util.Map#entrySet()
 	 */
 	public Set<Map.Entry<String,String>> entrySet() {
 		return null;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Always returns <code>false</code>!
 	 * 
-	 *
-	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	public boolean equals(Object obj) {
 		return false;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.Map#get(java.lang.Object)
 	 */
 	public String get(Object obj) {
 		if((obj == null) || !(obj instanceof String) || (tags == null)) {
@@ -153,9 +161,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.lang.Object#hashCode()
 	 */
 	public int hashCode() {
 		if(tags == null) {
@@ -172,18 +178,14 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.util.Map#isEmpty()
 	 */
 	public boolean isEmpty() {
 		return tags == null;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.util.Map#keySet()
 	 */
 	public Set<String> keySet() {
 		Set<String> s = new HashSet<String>();
@@ -198,12 +200,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
 	 */
 	public String put(String key, String value) {
 		if((key == null) || !((key instanceof String) && (value instanceof String))) {
@@ -239,12 +236,9 @@ public class TagMap implements Map<String,String> {
 		return null;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-   * @see Map#putAll(Map)
-	 */
+  /**
+   * @see java.util.Map#putAll(java.util.Map)
+   */
   public void putAll(Map<? extends String, ? extends String> map) {
 		if(map.size() > 0) {
 			Set<? extends String> s = map.keySet();
@@ -258,11 +252,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.Map#remove(java.lang.Object)
 	 */
 	public String remove(Object obj) {
 		if((obj == null) || !containsKey(obj)) {
@@ -295,9 +285,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.util.Map#size()
 	 */
 	public int size() {
 		if(tags == null) {
@@ -308,9 +296,7 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.util.Map#values()
 	 */
 	public Collection<String> values() {
 		int s = 0;
@@ -331,23 +317,21 @@ public class TagMap implements Map<String,String> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Equivalent to <code>get(tag)</code>.
 	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @return
 	 */
 	public String getTag(String tag) {
 		return (String) get(tag);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Equivalent to <code>put(tag, value)</code>.
 	 * 
-	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @param value
+	 * @return
 	 */
 	public String putTag(String tag, String value) {
 		return (String) put(tag, value);

@@ -1,3 +1,6 @@
+2008-03-01 / Build 163 - Thoralf (thoralf@m84.de)
+    * German Help is more or less ready...
+
 2008-02-29 / Build 163 - Thoralf (thoralf@m84.de)
     * Added library functions to Extended Commands
     * Bugfixes (see Mantis)

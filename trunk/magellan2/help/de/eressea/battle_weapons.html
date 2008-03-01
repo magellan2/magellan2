@@ -17,85 +17,214 @@
 <!-- Inhalt -->
 
 <h1>Waffenschäden</h1>
+<center>
+    <table cellpadding="3" border="0" cellspacing="1">
+      <caption align="bottom">
+        Waffenschäden
+      </caption>
 
-<table border="1" cellspacing="0" cellpadding="3">
- <TR BGCOLOR="#DDDDDD">
-   <TH>Waffe</TH><TH>Schaden/Fuß</TH><TH>Schaden/Pferd</TH><TH>OB</TH>
-  <TH>DB</TH><TH>H/S</TH>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Katapult</TD><TD ALIGN="center">3d10+5, 10 mal</TD>
- 	<TD ALIGN="center">3d10+5, 10 mal</TD><TD ALIGN="center">0</TD>
-	<TD ALIGN="center">0</TD>
-	<TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Armbrust</TD><TD ALIGN="center">3d3+5</TD><TD ALIGN="center">3d3+5</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Mallornarmbrust</TD><TD ALIGN="center">3d3+6</TD><TD ALIGN="center">3d3+6</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Bogen</TD><TD ALIGN="center">1d11+1</TD><TD ALIGN="center">1d11+1</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Mallornbogen</TD><TD ALIGN="center">1d11+2</TD><TD ALIGN="center">1d11+2</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Elfenbogen</TD><TD ALIGN="center">2d6+4</TD><TD ALIGN="center">2d6+4</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Speer</TD><TD ALIGN="center">1d10</TD><TD ALIGN="center">1d12+2</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD ALIGN="center">S</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Mallornspeer</TD><TD ALIGN="center">1d10+1</TD><TD ALIGN="center">1d12+3</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD ALIGN="center">S</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Hellebarde</TD><TD ALIGN="center">2d6+3</TD><TD ALIGN="center">2d6+3</TD>
- 	<TD ALIGN="center">-1</TD><TD>+2</TD><TD ALIGN="center">S</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Lanze</TD><TD ALIGN="center">1d5</TD><TD ALIGN="center">2d6+5</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">-2</TD><TD ALIGN="center">S</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Mallornlanze</TD><TD ALIGN="center">1d5+1</TD><TD ALIGN="center">2d6+6</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">-2</TD><TD ALIGN="center">S</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Schwert</TD><TD ALIGN="center">1d9+2</TD><TD ALIGN="center">1d9+2</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Bihänder</TD><TD ALIGN="center">2d8+3</TD><TD ALIGN="center">2d8+3</TD>
- 	<TD ALIGN="center">-1</TD><TD ALIGN="center">-2</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Runenschwert</TD><TD ALIGN="center">3d10+10</TD><TD ALIGN="center">3d10+10</TD>
- 	<TD ALIGN="center">+2</TD><TD ALIGN="center">+2</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Flammenschwert</TD><TD ALIGN="center">3d6+10</TD><TD ALIGN="center">3d6+10</TD>
- 	<TD ALIGN="center">+2</TD><TD ALIGN="center">+2</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Kriegsaxt</TD><TD ALIGN="center">2d6+4</TD><TD ALIGN="center">2d6+4</TD>
- 	<TD>+1</TD><TD ALIGN="center">-2</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#EEEEEE">
- <TD>Laenschwert</TD><TD ALIGN="center">3d6+10</TD><TD ALIGN="center">3d6+10</TD>
- 	<TD>+1</TD><TD>+1</TD><TD ALIGN="center">H</TD>
-</TR><TR BGCOLOR="#DDDDDD">
- <TD>Unbewaffnete</TD><TD ALIGN="center">1d5</TD><TD ALIGN="center">1d6</TD>
- 	<TD ALIGN="center">0</TD><TD ALIGN="center">0</TD><TD>&nbsp;</TD>
- </TR>
-</TABLE>
+      <tr bgcolor="#DDDDDD">
+        <th>Waffe</th>
+        <th>Schaden/Fuß</th>
 
-<p>x&nbsp;d&nbsp;y&nbsp;+&nbsp;z steht für x&nbsp;*&nbsp;(1..y)&nbsp;+&nbsp;z;
-2&nbsp;d&nbsp;10&nbsp;+&nbsp;5 erreicht also Werte zwischen 7 (2mal eine 1
-"gewürfelt") bis 25 (2mal 10).<BR><BR>
-Schaden/Fuß und Schaden/Pferd steht für den Schaden, den man zu Fuß oder
-beritten macht.<BR><BR>
-OB und DB sind der Offensiv- und Defensiv-Bonus; so ist eine Kriegsaxt eher
-als Angriffswaffe ausgelegt, derweil eine Hellebarde eher der Verteidigung
-dienlich ist.<BR><BR>
-Alle Mallornwaffen erhöhen die Magieresistenz um 15%, alle Laenwaffen und
--rüstungen um 30%.<BR><BR>
-Unter H/S ist angegeben, ob die Waffe eine Hieb- oder Stangenwaffe ist.</p>
+        <th>Schaden/Pferd</th>
+        <th>OB</th>
+        <th>DB</th>
+        <th>H/S</th>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+
+        <td>Katapult</td>
+        <td align="center">3d10+5, 6 mal</td>
+        <td align="center">3d10+5, 6 mal</td>
+        <td align="center">-4</td>
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Armbrust</td>
+        <td align="center">3d3+5</td>
+        <td align="center">3d3+5</td>
+        <td align="center">0</td>
+
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+        <td>Mallornarmbrust</td>
+        <td align="center">3d3+6</td>
+        <td align="center">3d3+6</td>
+
+        <td align="center">0</td>
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Bogen</td>
+        <td align="center">1d11+1</td>
+
+        <td align="center">1d11+1</td>
+        <td align="center">-2</td>
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+        <td>Mallornbogen</td>
+
+        <td align="center">1d11+2</td>
+        <td align="center">1d11+2</td>
+        <td align="center">-2</td>
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Elfenbogen</td>
+        <td align="center">2d6+4</td>
+        <td align="center">2d6+4</td>
+        <td align="center">-2</td>
+        <td align="center">0</td>
+
+        <td>&nbsp;</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+        <td>Speer</td>
+        <td align="center">1d10</td>
+        <td align="center">1d12+2</td>
+        <td align="center">0</td>
+
+        <td align="center">0</td>
+        <td align="center">S</td>
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Mallornspeer</td>
+        <td align="center">1d10+1</td>
+
+        <td align="center">1d12+3</td>
+        <td align="center">0</td>
+        <td align="center">0</td>
+        <td align="center">S</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+
+        <td>Hellebarde</td>
+        <td align="center">2d6+3</td>
+        <td align="center">2d6+3</td>
+        <td align="center">-1</td>
+        <td>+2</td>
+        <td align="center">S</td>
+
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Lanze</td>
+        <td align="center">1d5</td>
+        <td align="center">2d6+5</td>
+        <td align="center">0</td>
+
+        <td align="center">-2</td>
+        <td align="center">S</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+        <td>Mallornlanze</td>
+        <td align="center">1d5+1</td>
+
+        <td align="center">2d6+6</td>
+        <td align="center">0</td>
+        <td align="center">-2</td>
+        <td align="center">S</td>
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+
+        <td>Schwert</td>
+        <td align="center">1d9+2</td>
+        <td align="center">1d9+2</td>
+        <td align="center">0</td>
+        <td align="center">0</td>
+        <td align="center">H</td>
+
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+        <td>Bihänder</td>
+        <td align="center">2d8+3</td>
+        <td align="center">2d8+3</td>
+        <td align="center">-1</td>
+
+        <td align="center">-2</td>
+        <td align="center">H</td>
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Kriegsaxt</td>
+        <td align="center">2d6+4</td>
+
+        <td align="center">2d6+4</td>
+        <td>+1</td>
+        <td align="center">-2</td>
+        <td align="center">H</td>
+      </tr>
+
+      <tr bgcolor="#EEEEEE">
+
+        <td>Laenschwert</td>
+        <td align="center">3d6+10</td>
+        <td align="center">3d6+10</td>
+        <td>+1</td>
+        <td>+1</td>
+        <td align="center">H</td>
+
+      </tr>
+
+      <tr bgcolor="#DDDDDD">
+        <td>Unbewaffnete</td>
+        <td align="center">1d5</td>
+        <td align="center">1d6</td>
+        <td align="center">0</td>
+
+        <td align="center">0</td>
+        <td>&nbsp;</td>
+      </tr>
+
+    </table>
+  </center>
+
+  <blockquote>
+    d steht für dice, Würfel. ein d5 ist also ein 5-seitiger Würfel.<br />
+
+    Die Zahl vor dem d gibt an, wieviele dieser Würfel geworfen werden.<br />
+    Und schließlich wird noch ein Festwert addiert.<br />
+    Ein Bogen (1d11+1) erreicht also 2 bis 12 Schadenspunkte. Eine Hellebarde
+    (2d6+3) 5 bis 15.<br />
+    <br />
+    Der Schaden zu Pferd gilt nur in Verbindung mit dem
+    <a href="#Boni">Pferdebonus</a>.<br />
+    <br />
+
+    OB und DB sind der Offensiv- und Defensiv-Bonus; so ist eine Kriegsaxt
+    eher als Angriffswaffe ausgelegt, derweil eine Hellebarde eher der
+    Verteidigung dienlich ist.<br />
+    <br />
+    Alle Mallornwaffen erhöhen die Magieresistenz um 15%, alle Laenwaffen und
+    -rüstungen um 30%.<br />
+    <br />
+    Bei einem Armbrusttreffer wird der Rüstungsschutz des Gegners halbiert
+    und abgerundet.<br />
+    <br />
+    Unter H/S ist angegeben, ob die Waffe eine Hieb- oder Stangenwaffe ist.
+  </blockquote>
 <!-- Inhalt - Ende -->
 
-<p>&nbsp;</p>
-<p align="right" class="tiny">$Id: battle_weapons.html 8 2003-10-12 21:05:43Z eressea $</p>
-<p>&nbsp;</p>
 </body>
 </html>

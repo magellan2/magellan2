@@ -70,7 +70,7 @@
     
 		<tocitem text="Extras" image="chapter" target="menu_extras">
 			<tocitem text="Parteistatistik" image="topic" target="menu_extras_factionstatistics"/>
-			<tocitem text="Herresstatistik" image="topic" target="menu_extras_armystatistics"/>
+			<tocitem text="Heeresstatistik" image="topic" target="menu_extras_armystatistics"/>
 			<tocitem text="Handelsstatistik" image="topic" target="menu_extras_tradestatistics"/>
 			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
 			<tocitem text="Neuzeichnen" image="topic" target="menu_extras_redraw"/>
@@ -78,12 +78,12 @@
 			<tocitem text="Optionen" image="chapter" target="menu_extras_options">
 				<tocitem text="System" image="topic" target="menu_extras_options_system"/>
 				<tocitem text="Desktop" image="topic" target="menu_extras_options_desktop"/>
-				<tocitem text="Regionsanzeige" image="topic" target="menu_extras_options_region"/>
+				<tocitem text="Regionsübersicht" image="topic" target="menu_extras_options_region"/>
 				<tocitem text="Detailanzeige" image="topic" target="menu_extras_options_detail"/>
-				<tocitem text="Ressourcen" image="topic" target="menu_extras_options_ressources"/>
 				<tocitem text="Karte" image="topic" target="menu_extras_options_map"/>
 				<tocitem text="Icons" image="topic" target="menu_extras_options_icons"/>
-				<tocitem text="Pfade" image="topic" target="menu_extras_options_paths"/>
+				<tocitem text="Ressourcen" image="topic" target="menu_extras_options_resources"/>
+				<tocitem text="Plugins" image="topic" target="menu_extras_options_plugins"/>
 			</tocitem>
 			<!--<tocitem text="Eressea Optionen" image="topic" target="menu_extras_eresseaoptions"/> -->
 			<tocitem text="Hilfe" image="topic" target="menu_extras_help"/>
@@ -107,7 +107,7 @@
 	</tocitem>
 
 	<tocitem text="Referenz" image="chapter" target="reference">
-		<tocitem text="Desktop Layouts" image="chapter" target="reference_desktop"/>
+		<tocitem text="Desktop Layouts" image="topic" target="reference_desktop"/>
 		<tocitem text="Grafiksets" image="chapter" target="reference_graphicsets">
 			<tocitem text="Einbinden von Grafiksets" image="topic" target="reference_graphicsets_install"/>
 			<tocitem text="Erstellen von Grafiksets" image="topic" target="reference_graphicsets_making"/>

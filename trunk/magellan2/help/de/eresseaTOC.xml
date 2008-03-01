@@ -8,6 +8,7 @@
 	<tocitem text="Befehle" image="chapter" target="orders">
 		<tocitem text="Befehlsreihenfolge" image="topic" target="orders_order"/>
 		<tocitem text="Befehlsbeschreibungen" image="topic" target="orders_desc"/>
+		<tocitem text="Liste der Befehle" image="topic" target="orders_list"/>
 	</tocitem>
 
 	<tocitem text="Produktion" image="chapter" target="production">

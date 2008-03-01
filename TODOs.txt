@@ -44,7 +44,6 @@ Mit + ist in Arbeit
     - reference/desktop (vollständig überarbeiten)
     - faq (überarbeiten)
     - topic.gif ersetzen (ist defekt)
-    - sämtliche Screenshots auf den aktuellen Stand bringen
     - eressea Ordner muss noch komplett überarbeitet werden
     
     - alle anderen Dateien müssen einmal durchgelesen werden...

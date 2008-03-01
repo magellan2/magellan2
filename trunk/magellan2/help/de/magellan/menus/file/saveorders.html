@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+
+<html>
+<head>
+	<title>Befehle speichern</title>
+	<meta http-equiv="Content-Language" content="de-DE">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel=stylesheet href="../../../default.css" type="text/css">
+</head>
+
+<body>
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Befehle speichern</h1>
+
+<p><img src="../../images/menu_file_saveorders.gif" width=500 height=450 alt="" border="0"></p>
+<p>Zum Speichern/Verschicken der Befehle stehen folgende Optionen zur Verfügung:</p>
+
+<ul>
+	<li><b>Speichern</b>:<br>
+	speichert die Befehlsdatei am angegebenen Ort.<br>
+	<li><b>Zwischenablage</b>:<br>
+	kopiert die Befehlsdatei in die Zwischenablage. Von dort kann sie z.B. sehr einfach in ein Mailprogramm übernommen werden.<br>
+	<li><b>Mail</b>:<br>
+	verschickt die Befehle direkt per Mail. Dabei werden die Einstellungen im unteren Teil des Dialoges verwendet:
+	<ul>
+		<li><b>SMTP-Server:</b> Hier trägt man den Mailserver seines Internetproviders ein. Im Zweifel dort nachfragen.
+		<li><b>Empfängeradresse:</b> Hier wird die Mail-Adresse des Eressea-Servers angegeben. (default: "eressea@eressea.amber.kn-bremen.de").
+		<li><b>Absenderadresse:</b> Hier trägt man die eigene Mailadresse ein.
+		<li><b>Subject:</b> Der Betreff der Mail (default: "Eressea Befehle").
+	</ul>
+	<li><b>Schließen</b>:<br>
+	schließt den Dialog.
+</ul>
+<br>
+<h2>Ausgabeoptionen</h2>
+
+<ul>
+	<li><b>Automatischer Zeilenumbruch</b><br>
+	bricht die Befehlsdatei nach <i>n</i> Zeichen um. Längere Zeilen (Beschreibungen, Botschaften, etc.) werden dabei automatisch mit " \" getrennt.<br>
+	<li><b>ECHECK-Kommentare</b><br>
+	fügt ECHECK-Kommentare (wie Angaben über Silber und Personen) in die Befehlsdatei ein.<br>
+	<li><b>mit ';' beginnende Kommentare entfernen</b>:<br>
+	entfernt nichtpersistente Kommentare aus der Befehlsdatei. Nach Möglichkeit sollte diese Option zum verschicken der Mail angewählt sein um die Befehlsdatei so klein wie möglich zu machen. Allerdings gehen hierbei auch die Informationen über die Bestätigung der Befehle der Einheiten verloren, da diese in ';'-Kommentaren abgelegt werden.<br>
+	<li><b>mit '//' beginnende Kommentare entfernen</b>:<br>
+	entfernt persistente Kommentare aus der Befehlsdatei. Vorlage-Benutzer sollten diese Option tunlichst nicht benutzen, da so auch alle Metabefehle gelöscht werden.<br>
+	<li><b>nur Einheiten mit bestätigten Befehlen</b>:<br>
+	Nur Befehle bestätigter Einheiten werden geschrieben. Unbestätigte Einheiten werden ignoriert. Diese Option ist sehr praktisch für Spieler, die sich eine Partei teilen.
+</ul>
+
+<!-- Inhalt - Ende -->
+
+</body>
+</html>

@@ -28,7 +28,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import magellan.client.swing.tree.TreeHelper;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Border;
@@ -96,6 +95,15 @@ import magellan.library.utils.logging.Logger;
  */
 public class CRParser implements RulesIO, GameDataIO {
   private static final Logger log = Logger.getInstance(CRParser.class);
+  
+  
+  /** These special tags are used by TreeHelper and are therefore reserved. */
+  public static final String TAGGABLE_STRING = "ejcTaggableComparator";
+  public static final String TAGGABLE_STRING2 = "ejcTaggableComparator2";
+  public static final String TAGGABLE_STRING3 = "ejcTaggableComparator3";
+  public static final String TAGGABLE_STRING4 = "ejcTaggableComparator4";
+  public static final String TAGGABLE_STRING5 = "ejcTaggableComparator5";
+
   Scanner sc;
   GameData world;
   String configuration;
@@ -2318,11 +2326,11 @@ public class CRParser implements RulesIO, GameDataIO {
         // check for wellknown tags...ejcTaggable etc...
         boolean isUnknown = true;
         if(sc.argc == 2) {
-          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING)){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING2)){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING3)){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING4)){isUnknown=false;}
-          if (sc.argv[1].equalsIgnoreCase(TreeHelper.TAGGABLE_STRING5)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TAGGABLE_STRING)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TAGGABLE_STRING2)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TAGGABLE_STRING3)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TAGGABLE_STRING4)){isUnknown=false;}
+          if (sc.argv[1].equalsIgnoreCase(TAGGABLE_STRING5)){isUnknown=false;}
         }
         if (isUnknown){
           unknown("EINHEIT", true);

@@ -63,6 +63,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tree.TreeHelper;
 import magellan.client.utils.TreeBuilder;
 import magellan.library.GameData;
+import magellan.library.io.cr.CRParser;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
@@ -192,11 +193,11 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     elementsListModel.add(TreeHelper.HEALTH, Resources.get("emapoverviewpanel.prefs.treeStructure.element.health"));
     elementsListModel.add(TreeHelper.FACTION_DISGUISE_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.factiondisguise"));
     elementsListModel.add(TreeHelper.TRUSTLEVEL, Resources.get("emapoverviewpanel.prefs.treeStructure.element.trustlevel"));
-    elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING }));
-    elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING2 }));
-    elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING3 }));
-    elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING4 }));
-    elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { TreeHelper.TAGGABLE_STRING5 }));
+    elementsListModel.add(TreeHelper.TAGGABLE, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING }));
+    elementsListModel.add(TreeHelper.TAGGABLE2, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING2 }));
+    elementsListModel.add(TreeHelper.TAGGABLE3, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING3 }));
+    elementsListModel.add(TreeHelper.TAGGABLE4, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING4 }));
+    elementsListModel.add(TreeHelper.TAGGABLE5, Resources.get("emapoverviewpanel.prefs.treeStructure.element.taggable", new Object[] { CRParser.TAGGABLE_STRING5 }));
 
     elementsList = new JList(elementsListModel);
 

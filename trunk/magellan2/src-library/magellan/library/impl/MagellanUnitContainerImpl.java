@@ -16,6 +16,7 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -85,7 +86,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * A map storing all unknown tags for all UnitContainer objects. Keys are IDs of these objects,
 	 * values are Maps(should be TagMaps).
 	 */
-	private TagMap externalMap = null;
+	private Map<String, String> tagMap = null;
 
 	/**
 	 * Creates a new UnitContainer object.
@@ -489,94 +490,74 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 		return r;
 	}
 
-	/** EXTERNAL TAG METHODS
-	 * 
-	 * DOCUMENT-ME
-	 * 
-	 * @see magellan.library.utils.Taggable#deleteAllTags()
-	 */
-	public void deleteAllTags() {
-		externalMap = null;
-	}
+  /**
+   * @see magellan.library.utils.Taggable#deleteAllTags()
+   */
+  public void deleteAllTags() {
+    tagMap = null;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public String putTag(String tag, String value) {
-		if(externalMap == null) {
-			externalMap = new TagMap();
-		}
+  /**
+   * @see magellan.library.utils.Taggable#putTag(java.lang.String, java.lang.String)
+   */
+  public String putTag(String tag, String value) {
+    if(tagMap == null) {
+      tagMap = new HashMap<String, String>();
+    }
 
-		return (String) externalMap.put(tag, value);
-	}
+    return (String) tagMap.put(tag, value);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String getTag(String tag) {
-		if(externalMap == null) {
-			return null;
-		}
+  /**
+   * @see magellan.library.utils.Taggable#getTag(java.lang.String)
+   */
+  public String getTag(String tag) {
+    if(tagMap == null) {
+      return null;
+    }
 
-		return (String) externalMap.get(tag);
-	}
+    return (String) tagMap.get(tag);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String removeTag(String tag) {
-		if(externalMap == null) {
-			return null;
-		}
+  /**
+   * @see magellan.library.utils.Taggable#removeTag(java.lang.String)
+   */
+  public String removeTag(String tag) {
+    if(tagMap == null) {
+      return null;
+    }
 
-		return (String) externalMap.remove(tag);
-	}
+    return (String) tagMap.remove(tag);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public boolean containsTag(String tag) {
-		return (externalMap != null) && externalMap.containsKey(tag);
-	}
+  /**
+   * @see magellan.library.utils.Taggable#containsTag(java.lang.String)
+   */
+  public boolean containsTag(String tag) {
+    if(tagMap == null) {
+      return false;
+    }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public Map<String,String> getTagMap() {
-		if(externalMap == null) {
-			externalMap = new TagMap();
-		}
+    return tagMap.containsKey(tag);
+  }
 
-		return externalMap;
-	}
+  /**
+   * @see magellan.library.utils.Taggable#getTagMap()
+   */
+  public Map<String,String> getTagMap() {
+    if(tagMap == null) {
+      tagMap = new TagMap();
+    }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean hasTags() {
-		return (externalMap != null) && !externalMap.isEmpty();
-	}
+    return Collections.unmodifiableMap(tagMap);
+  }
+
+  /**
+   * @see magellan.library.utils.Taggable#hasTags()
+   */
+  public boolean hasTags() {
+    return (tagMap != null) && !tagMap.isEmpty();
+  }
 
 
   /**

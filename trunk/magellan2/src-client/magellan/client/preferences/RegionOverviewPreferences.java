@@ -455,8 +455,6 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     chkRegionTreeBuilder_withShips.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithShips", true));
     chkRegionTreeBuilder_withComments.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeBuilderWithComments", true));
 
-    //chkRootHandles.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
-
     rdbSortRegionsCoordinates.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates"));
     rdbSortRegionsIslands.setSelected(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands"));
     chkDisplayIslands.setSelected(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.displayIslands", true));

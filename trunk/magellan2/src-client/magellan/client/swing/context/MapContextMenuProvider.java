@@ -17,13 +17,13 @@ import magellan.library.Region;
  */
 public interface MapContextMenuProvider {
     
-    /*
+    /**
      * creates a JMenuItem. Will be called on right-clicking on map.
      */
     public JMenuItem createContextMenu(
             EventDispatcher dispatcher, 
             GameData data);
-    /*
+    /**
      * MapContextMenu "inits" the compenents when object selected
      * here we update the plugin
      */

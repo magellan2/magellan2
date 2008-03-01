@@ -21,65 +21,63 @@ package magellan.library.utils;
 import java.util.Map;
 
 /**
- * DOCUMENT ME!
+ * A Taggable object works much like a Map<String, String>. Use it for for assigning additional 
+ * tags to report objects which are not official tags. 
  *
  * @author Andreas
  * @version 1.0
  */
 public interface Taggable {
-	/**
-	 * DOCUMENT-ME
-	 *
+
+  /**
+	 * Returns <code>true</code> if there are any tags associated with this object.
 	 * 
+	 * @return 
 	 */
 	public boolean hasTags();
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns <code>true</code> if there is a tag with key <code>tag</code> associated with this object.
 	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @return
 	 */
 	public boolean containsTag(String tag);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Add a tag with key <code>tag</code> and value <code>value</code> to this object.
 	 * 
-	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @param value
+	 * @return 
 	 */
 	public String putTag(String tag, String value);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Return the value of the tag with key <code>tag</code> from this object.
 	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @return The value of the tag <code>tag</code> or <code>null</code> if no such tag exists.
 	 */
 	public String getTag(String tag);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Removes the value for the key <code>tag</code> from this object.
 	 * 
-	 *
-	 * 
+	 * @param tag
+	 * @return
 	 */
 	public String removeTag(String tag);
 
 	/**
-	 * DOCUMENT-ME
+	 * Remove all tags from this object.
 	 */
 	public void deleteAllTags();
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns a Map containing all tags and their values associated with this object.
 	 * 
+	 * @return
 	 */
 	public Map getTagMap();
 }

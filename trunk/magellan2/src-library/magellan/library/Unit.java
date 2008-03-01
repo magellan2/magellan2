@@ -787,43 +787,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public int extractTempUnits(int tempSortIndex, Locale locale);
 
   /**
-   * EXTERNAL TAG METHODS DOCUMENT-ME
-   * 
-   * @see magellan.library.utils.Taggable#deleteAllTags()
-   */
-  public void deleteAllTags();
-
-  /**
-   * DOCUMENT-ME
-   */
-  public String putTag(String tag, String value);
-  
-  /**
-   * DOCUMENT-ME
-   */
-  public String getTag(String tag);
-
-  /**
-   * DOCUMENT-ME
-   */
-  public String removeTag(String tag);
-  
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean containsTag(String tag);
-
-  /**
-   * DOCUMENT-ME
-   */
-  public Map<String,String> getTagMap();
-
-  /**
-   * DOCUMENT-ME
-   */
-  public boolean hasTags();
-
-  /**
    * Returns the value of aura.
    * 
    * @return Returns aura.

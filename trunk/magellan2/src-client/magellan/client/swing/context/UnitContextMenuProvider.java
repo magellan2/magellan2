@@ -19,7 +19,13 @@ import magellan.library.Unit;
 public interface UnitContextMenuProvider {
     
   /**
-   * creates a JMenuItem. Will be called on right-clicking units.
+   * Creates a JMenuItem. Will be called on right-clicking units.
+   * 
+   * @param dispatcher      EventDispatcher
+   * @param data            the actual GameData or World
+   * @param unit            last selected unit - is not required to be in selected objects
+   * @param selectedObjects null or Collection of selected objects which may be of different types
+   * @return
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, Unit unit, Collection selectedObjects);
 }

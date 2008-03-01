@@ -1,7 +1,5 @@
-<?xml version='1.0' encoding='ISO-8859-1' ?>
-<!DOCTYPE toc
-  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN"
-         "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
 
 <toc version="1.0">
 <tocitem text="Magellan Hilfe" image="openbook" target="intro">
@@ -21,14 +19,24 @@
 		<tocitem text="Bearbeiten" image="chapter" target="menu_edit">
 			<tocitem text="Rückgängig" image="topic" target="menu_edit_undo"/>
 			<tocitem text="Wiederherstellen" image="topic" target="menu_edit_redo"/>
+			<tocitem text="Suchen" image="topic" target="menu_edit_search"/>
 		</tocitem>
 
 		<tocitem text="Befehle" image="chapter" target="menu_orders">
-			<tocitem text="N&auml;chste Unbestätigte Einheit" image="topic" target="menu_orders_unconfirmed"/>
+			<tocitem text="Nächste unbestätigte Einheit" image="topic" target="menu_orders_unconfirmed"/>
+			<tocitem text="Vorherige unbestätigte Einheit" image="topic" target="menu_orders_unconfirmed"/>
 			<tocitem text="Bestätigungsstatus &auml;ndern" image="topic" target="menu_orders_confirm"/>
 			<tocitem text="Alle bestätigen" image="topic" target="menu_orders_confirmall"/>
 			<tocitem text="Alle aufheben" image="topic" target="menu_orders_unconfirmall"/>
 			<tocitem text="Bestätigung invertieren" image="topic" target="menu_orders_invertconfirmation"/>
+		</tocitem>
+
+ 		<tocitem text="Lesezeichen" image="chapter" target="menu_bookmarks">
+			<tocitem text="Lesezeichen ein/aus" image="topic" target="menu_bookmarks_enable"/>
+			<tocitem text="Vorwärts springen" image="topic" target="menu_bookmarks_forward"/>
+			<tocitem text="Zurück springen" image="topic" target="menu_bookmarks_backward"/>
+			<tocitem text="Lesezeichenliste anzeigen" image="topic" target="menu_bookmarks_show"/>
+			<tocitem text="Alle löschen" image="topic" target="menu_bookmarks_delete"/>
 		</tocitem>
 
 		<tocitem text="Karte" image="chapter" target="menu_map">
@@ -40,18 +48,30 @@
 			<tocitem text="Auswahl invertieren" image="topic" target="menu_map_invertselection"/>
 			<tocitem text="Inseln ausw&auml;hlen" image="topic" target="menu_map_selectisland"/>
 			<tocitem text="Auswahl f&uuml;llen" image="topic" target="menu_map_fillselection"/>
+			<tocitem text="Auswahl erweitern" image="topic" target="menu_map_extend"/>
+			<tocitem text="Auswahl öffnen" image="topic" target="menu_map_open"/>
+			<tocitem text="Auswahl hinzufügen" image="topic" target="menu_map_add"/>
+			<tocitem text="Auswahl speichern" image="topic" target="menu_map_save"/>
 		</tocitem>
 
 		<tocitem text="Desktop" image="chapter" target="menu_desktop">
-			<tocitem text="Fenster" image="topic" target="menu_desktop_window"/>
-			<tocitem text="Split-Sets" image="topic" target="menu_desktop_splitsets"/>
-			<tocitem text="Layouts" image="topic" target="menu_desktop_layouts"/>
+			<tocitem text="Layout" image="topic" target="menu_desktop_layout">
+  			<tocitem text="Standard" image="topic" target="menu_desktop_layout_standard"/>
+  			<tocitem text="Exportiere Layout" image="topic" target="menu_desktop_layout_export"/>
+  			<tocitem text="Importiere Layout" image="topic" target="menu_desktop_layout_import"/>
+  			<tocitem text="Neues Layout" image="topic" target="menu_desktop_layout_new"/>
+  			<tocitem text="Speichere Layouts" image="topic" target="menu_desktop_layout_save"/>
+  			<tocitem text="Lösche Layout" image="topic" target="menu_desktop_layout_delete"/>
+      </tocitem>
+			<tocitem text="Tabs verbergen" image="topic" target="menu_desktop_hidetabs"/>
 		</tocitem>
 
+		<tocitem text="Plugins" image="chapter" target="menu_plugins"/>
+    
 		<tocitem text="Extras" image="chapter" target="menu_extras">
 			<tocitem text="Parteistatistik" image="topic" target="menu_extras_factionstatistics"/>
-			<tocitem text="Suchen" image="topic" target="menu_extras_search"/>
-			<tocitem text="E-Check" image="topic" target="menu_extras_echeck"/>
+			<tocitem text="Herresstatistik" image="topic" target="menu_extras_armystatistics"/>
+			<tocitem text="Handelsstatistik" image="topic" target="menu_extras_tradestatistics"/>
 			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
 			<tocitem text="Neuzeichnen" image="topic" target="menu_extras_redraw"/>
 			<tocitem text="Grafikset neuladen" image="topic" target="menu_extras_reload"/>
@@ -65,29 +85,29 @@
 				<tocitem text="Icons" image="topic" target="menu_extras_options_icons"/>
 				<tocitem text="Pfade" image="topic" target="menu_extras_options_paths"/>
 			</tocitem>
-			<tocitem text="Eressea Optionen" image="topic" target="menu_extras_eresseaoptions"/>
+			<!--<tocitem text="Eressea Optionen" image="topic" target="menu_extras_eresseaoptions"/> -->
 			<tocitem text="Hilfe" image="topic" target="menu_extras_help"/>
+			<tocitem text="Tip des Tages" image="topic" target="menu_extras_tips"/>
 			<tocitem text="Info" image="topic" target="menu_extras_info"/>
 		</tocitem>
 	</tocitem>
 
 	<tocitem text="Fensterelemente" image="chapter" target="windows">
 		<tocitem text="Regionsübersicht" image="topic" target="windows_regions"/>
-		<tocitem text="History" image="topic" target="windows_history"/>
+		<tocitem text="Historie" image="topic" target="windows_history"/>
 		<tocitem text="MiniMap" image="topic" target="windows_minimap"/>
 		<tocitem text="Karte" image="topic" target="windows_map"/>
-		<tocitem text="Meldungen" image="topic" target="windows_messages"/>
+		<tocitem text="Nachrichten" image="topic" target="windows_messages"/>
 		<tocitem text="Objektname/-beschreibung" image="topic" target="windows_name"/>
 		<tocitem text="Details" image="topic" target="windows_details"/>
 		<tocitem text="Befehle" image="topic" target="windows_orders"/>
+		<tocitem text="E Check" image="topic" target="windows_echeck"/>
+		<tocitem text="Offene Probleme" image="topic" target="windows_problems"/>
+		<!-- <tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/> -->
 	</tocitem>
 
 	<tocitem text="Referenz" image="chapter" target="reference">
-		<tocitem text="Desktopeinstellungen" image="chapter" target="reference_desktop">
-			<tocitem text="Splitpane-Modus" image="topic" target="reference_desktop_splitpanes"/>
-			<tocitem text="Fenster-Modus" image="topic" target="reference_desktop_windows"/>
-			<tocitem text="Layout-Modus" image="topic" target="reference_desktop_layout"/>
-		</tocitem>
+		<tocitem text="Desktop Layouts" image="chapter" target="reference_desktop"/>
 		<tocitem text="Grafiksets" image="chapter" target="reference_graphicsets">
 			<tocitem text="Einbinden von Grafiksets" image="topic" target="reference_graphicsets_install"/>
 			<tocitem text="Erstellen von Grafiksets" image="topic" target="reference_graphicsets_making"/>

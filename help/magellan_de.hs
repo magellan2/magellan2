@@ -28,7 +28,7 @@
 
   <view>
     <name>Search</name>
-    <label>Search</label>
+    <label>Suche</label>
     <type>javax.help.SearchView</type>
     <data engine="com.sun.java.help.search.DefaultSearchEngine">
       JavaHelpSearch
@@ -36,5 +36,3 @@
   </view>
 
 </helpset>
-
-<!-- $Id: magellan_de.hs 8 2003-10-12 21:05:43Z eressea $ -->

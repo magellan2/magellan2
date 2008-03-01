@@ -23,13 +23,16 @@
 // 
 package magellan.client;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.ResourcePathClassLoader;
+import magellan.library.utils.Utils;
 
 /**
  * This class is a help tool from outside Magellan. It will be startet via
@@ -42,15 +45,20 @@ public class Help {
   public static void open(String[] args) {
     
     try {
-      ClassLoader loader = new ResourcePathClassLoader(System.getProperties());
-      URL hsURL = loader.getResource("help/magellan.hs");
+      Properties settings = Client.loadSettings(new File("."), "magellan.ini");
+      ClassLoader loader = new ResourcePathClassLoader(settings);
+      String language = settings.getProperty("locales.gui", "");
+      if (!Utils.isEmpty(language)) language = "_"+language;
       
+      URL hsURL = loader.getResource("help/magellan"+language+".hs");
+      if (hsURL == null) hsURL = loader.getResource("magellan"+language+".hs");
+      if (hsURL == null) hsURL = loader.getResource("help/magellan.hs");
       if (hsURL == null) hsURL = loader.getResource("magellan.hs");
       if (hsURL == null) {
         JOptionPane.showMessageDialog(null, "Could not find the magellan-help.jar");
         return;
       }
-      
+            
       Class helpSetClass = null;
       Class helpBrokerClass = null;
       

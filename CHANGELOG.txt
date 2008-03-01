@@ -1,5 +1,7 @@
 2008-03-01 / Build 163 - Thoralf (thoralf@m84.de)
     * German Help is more or less ready...
+    * English Help copied from German Help - translation in progress...
+    * Help Menu entries tries to find the correct help locale based on gui locale.
 
 2008-02-29 / Build 163 - Thoralf (thoralf@m84.de)
     * Added library functions to Extended Commands

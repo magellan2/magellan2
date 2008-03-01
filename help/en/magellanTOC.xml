@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+
+<toc version="1.0">
+<tocitem text="Magellan Help" image="openbook" target="intro">
+	<tocitem text="Menus" image="chapter" target="menu">
+		<tocitem text="File" image="chapter" target="menu_file">
+			<tocitem text="Open" image="topic" target="menu_file_open"/>
+			<tocitem text="Add" image="topic" target="menu_file_add"/>
+			<tocitem text="Open orders" image="topic" target="menu_file_openorders"/>
+			<tocitem text="Save" image="topic" target="menu_file_save"/>
+			<tocitem text="Save as" image="topic" target="menu_file_saveas"/>
+			<tocitem text="Save orders" image="topic" target="menu_file_saveorders"/>
+			<tocitem text="Export CR" image="topic" target="menu_file_crexport"/>
+			<tocitem text="Abort" image="topic" target="menu_file_abort"/>
+			<tocitem text="Exit" image="topic" target="menu_file_exit"/>
+		</tocitem>
+
+		<tocitem text="Edit" image="chapter" target="menu_edit">
+			<tocitem text="Undo" image="topic" target="menu_edit_undo"/>
+			<tocitem text="Redo" image="topic" target="menu_edit_redo"/>
+			<tocitem text="Find" image="topic" target="menu_edit_search"/>
+		</tocitem>
+
+		<tocitem text="Orders" image="chapter" target="menu_orders">
+			<tocitem text="Next unconfirmed Unit" image="topic" target="menu_orders_unconfirmed"/>
+			<tocitem text="Previous unconfimred Unit" image="topic" target="menu_orders_unconfirmed"/>
+			<tocitem text="Confirm &auml;ndern" image="topic" target="menu_orders_confirm"/>
+			<tocitem text="All" image="topic" target="menu_orders_confirmall"/>
+			<tocitem text="All Not" image="topic" target="menu_orders_unconfirmall"/>
+			<tocitem text="Invert" image="topic" target="menu_orders_invertconfirmation"/>
+		</tocitem>
+
+ 		<tocitem text="Bookmarks" image="chapter" target="menu_bookmarks">
+			<tocitem text="Toggle bookmark" image="topic" target="menu_bookmarks_enable"/>
+			<tocitem text="Jump forward" image="topic" target="menu_bookmarks_forward"/>
+			<tocitem text="Jump backward" image="topic" target="menu_bookmarks_backward"/>
+			<tocitem text="Show list" image="topic" target="menu_bookmarks_show"/>
+			<tocitem text="Clear all" image="topic" target="menu_bookmarks_delete"/>
+		</tocitem>
+
+		<tocitem text="Map" image="chapter" target="menu_map">
+			<tocitem text="Set origin" image="topic" target="menu_map_origin"/>
+			<tocitem text="Retrieve islands" image="topic" target="menu_map_island"/>
+			<tocitem text="Save as image" image="topic" target="menu_map_image"/>
+			<tocitem text="Select all" image="topic" target="menu_map_selectall"/>
+			<tocitem text="Select none" image="topic" target="menu_map_selectnothing"/>
+			<tocitem text="Invert selection" image="topic" target="menu_map_invertselection"/>
+			<tocitem text="Select islands" image="topic" target="menu_map_selectisland"/>
+			<tocitem text="Fill selection" image="topic" target="menu_map_fillselection"/>
+			<tocitem text="Expand selection" image="topic" target="menu_map_extend"/>
+			<tocitem text="Open selection" image="topic" target="menu_map_open"/>
+			<tocitem text="Add selection" image="topic" target="menu_map_add"/>
+			<tocitem text="Save selection as" image="topic" target="menu_map_save"/>
+		</tocitem>
+
+		<tocitem text="Desktop" image="chapter" target="menu_desktop">
+			<tocitem text="Layout" image="topic" target="menu_desktop_layout">
+  			<tocitem text="Standard" image="topic" target="menu_desktop_layout_standard"/>
+  			<tocitem text="Export Layouts" image="topic" target="menu_desktop_layout_export"/>
+  			<tocitem text="Import Layouts" image="topic" target="menu_desktop_layout_import"/>
+  			<tocitem text="New Layout" image="topic" target="menu_desktop_layout_new"/>
+  			<tocitem text="Save Layouts" image="topic" target="menu_desktop_layout_save"/>
+  			<tocitem text="Delete Layout" image="topic" target="menu_desktop_layout_delete"/>
+      </tocitem>
+			<tocitem text="Hide tabs" image="topic" target="menu_desktop_hidetabs"/>
+		</tocitem>
+
+		<tocitem text="Plugins" image="chapter" target="menu_plugins"/>
+    
+		<tocitem text="Extras" image="chapter" target="menu_extras">
+			<tocitem text="Faction statistics" image="topic" target="menu_extras_factionstatistics"/>
+			<tocitem text="Army statistics" image="topic" target="menu_extras_armystatistics"/>
+			<tocitem text="Trade organizer" image="topic" target="menu_extras_tradestatistics"/>
+			<tocitem text="Vorlage" image="topic" target="menu_extras_vorlage"/>
+			<tocitem text="Repaint" image="topic" target="menu_extras_redraw"/>
+			<tocitem text="Reload graphic-set" image="topic" target="menu_extras_reload"/>
+			<tocitem text="Options" image="chapter" target="menu_extras_options">
+				<tocitem text="System" image="topic" target="menu_extras_options_system"/>
+				<tocitem text="Desktop" image="topic" target="menu_extras_options_desktop"/>
+				<tocitem text="Region Overview" image="topic" target="menu_extras_options_region"/>
+				<tocitem text="Details" image="topic" target="menu_extras_options_detail"/>
+				<tocitem text="Map" image="topic" target="menu_extras_options_map"/>
+				<tocitem text="Icons" image="topic" target="menu_extras_options_icons"/>
+				<tocitem text="Resources" image="topic" target="menu_extras_options_resources"/>
+				<tocitem text="Plugins" image="topic" target="menu_extras_options_plugins"/>
+			</tocitem>
+			<tocitem text="Help" image="topic" target="menu_extras_help"/>
+			<tocitem text="Tip of the Day" image="topic" target="menu_extras_tips"/>
+			<tocitem text="Info" image="topic" target="menu_extras_info"/>
+		</tocitem>
+	</tocitem>
+
+	<tocitem text="Windows" image="chapter" target="windows">
+		<tocitem text="Region Overview" image="topic" target="windows_regions"/>
+		<tocitem text="History" image="topic" target="windows_history"/>
+		<tocitem text="MiniMap" image="topic" target="windows_minimap"/>
+		<tocitem text="Map" image="topic" target="windows_map"/>
+		<tocitem text="Messages" image="topic" target="windows_messages"/>
+		<tocitem text="Name and Description" image="topic" target="windows_name"/>
+		<tocitem text="Details" image="topic" target="windows_details"/>
+		<tocitem text="Orders" image="topic" target="windows_orders"/>
+		<tocitem text="ECheck" image="topic" target="windows_echeck"/>
+		<tocitem text="Open Tasks" image="topic" target="windows_problems"/>
+		<!-- <tocitem text="Lesezeichen" image="topic" target="windows_bookmarks"/> -->
+	</tocitem>
+
+	<tocitem text="Reference" image="chapter" target="reference">
+		<tocitem text="Desktop Layouts" image="topic" target="reference_desktop"/>
+		<tocitem text="Graphic sets" image="chapter" target="reference_graphicsets">
+			<tocitem text="Add a graphic-set" image="topic" target="reference_graphicsets_install"/>
+			<tocitem text="Create a graphic-set" image="topic" target="reference_graphicsets_making"/>
+		</tocitem>
+		<tocitem text="Resources" image="topic" target="reference_ressources"></tocitem>
+		<tocitem text="Computerreports" image="topic" target="reference_cr"></tocitem>
+		<tocitem text="Shortcuts" image="topic" target="reference_shortcuts"></tocitem>
+		<tocitem text="Commandline-Parameters" image="topic" target="reference_commandline"></tocitem>
+	</tocitem>
+	<tocitem text="FAQ" image="topic" target="faq"></tocitem>
+	<tocitem text="Feedback and Support" image="topic" target="feedback"></tocitem>
+</tocitem>
+</toc>

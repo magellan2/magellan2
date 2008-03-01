@@ -388,7 +388,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param fileName
    *          DOCUMENT-ME
    */
-  protected Properties loadSettings(File directory, String fileName) {
+  public static Properties loadSettings(File directory, String fileName) {
     Properties settings = new SelfCleaningProperties();
     // settings = new OrderedOutputProperties();
     // settings = new AgingProperties();

@@ -26,10 +26,14 @@ package magellan.plugin.extendedcommands;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -59,17 +63,23 @@ import magellan.library.utils.Resources;
  * @version 1.0, 11.09.2007
  */
 public class ExtendedCommandsDialog extends JDialog implements ActionListener, HyperlinkListener {
+  private Client client = null;
   private BeanShellEditor scriptingArea = null;
   private JEditorPane help = null;
+  private JButton backwardButton = null;
+  private JButton forwardButton = null;
   private GameData world = null;
   private Unit unit = null;
   private UnitContainer container = null;
   private ExtendedCommands commands = null;
   private String script = null;
+  private List<URL> history = new ArrayList<URL>();
+  private int pos = 0;
   
   public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, String script) {
     super(client,true);
     
+    this.client = client;
     this.world = data;
     this.commands = commands;
     
@@ -79,6 +89,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
   public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, Unit unit, String script) {
     super(client,true);
     
+    this.client = client;
     this.world = data;
     this.commands = commands;
     this.unit = unit;
@@ -89,6 +100,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
   public ExtendedCommandsDialog(Client client, GameData data, ExtendedCommands commands, UnitContainer container, String script) {
     super(client,true);
     
+    this.client = client;
     this.world = data;
     this.commands = commands;
     this.container = container;
@@ -114,21 +126,52 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     help.setContentType("text/html");
     help.setEditable(false);
     help.addHyperlinkListener(this);
+    File path = null;
     if (unit != null) {
       // show help for unit commands
-      help.setText(Resources.get("extended_commands.help.dialog.unit"));
+      path = new File(Client.getSettingsDirectory(),Resources.get("extended_commands.help.dialog.unit"));
+      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.unit"));
+      if (!path.exists()) path = null;
     } else if (container != null) {
       // show help for container commands
-      help.setText(Resources.get("extended_commands.help.dialog.container"));
+      path = new File(Resources.get("extended_commands.help.dialog.container"));
+      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.container"));
+      if (!path.exists()) path = null;
     } else {
       // show help for library
-      help.setText(Resources.get("extended_commands.help.dialog.library"));
+      path = new File(Resources.get("extended_commands.help.dialog.library"));
+      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.library"));
+      if (!path.exists()) path = null;
+    }
+    try {
+      if (path != null) {
+        URL url = path.toURI().toURL();
+        help.setPage(url);
+        history.add(url);
+      } else {
+        help.setText("Unable to locate help files...");
+      }
+    } catch (Exception e) {
+      help.setText("Unable to locate help files...\n"+e.getMessage());
     }
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
     
     helpPanel.add(scrollPane,BorderLayout.CENTER);
+    
+    JPanel helpButtonPanel = new JPanel(new FlowLayout());
+    backwardButton = new JButton("<<");
+    backwardButton.setEnabled(false);
+    backwardButton.setActionCommand("button.backward");
+    backwardButton.addActionListener(this);
+    helpButtonPanel.add(backwardButton);
+    forwardButton = new JButton(">>");
+    forwardButton.setEnabled(false);
+    forwardButton.setActionCommand("button.forward");
+    forwardButton.addActionListener(this);
+    helpButtonPanel.add(forwardButton);
+    helpPanel.add(helpButtonPanel,BorderLayout.NORTH);
     
     JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editor, helpPanel);
     splitPane.setOneTouchExpandable(true);
@@ -209,6 +252,26 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
       // just do nothing
       setVisible(false);
+    } else if (e.getActionCommand().equalsIgnoreCase("button.backward")) {
+      // move one position back in history
+      if (pos > 0) {
+        pos--;
+        try {
+          help.setPage(history.get(pos));
+        } catch (Exception exception) {}
+        forwardButton.setEnabled(true);
+        if (pos == 0) backwardButton.setEnabled(false);
+      }
+    } else if (e.getActionCommand().equalsIgnoreCase("button.forward")) {
+      // move one position forward in history
+      if (pos < history.size()) {
+        pos++;
+        try {
+          help.setPage(history.get(pos));
+        } catch (Exception exception) {}
+        backwardButton.setEnabled(true);
+        if (pos == history.size()-1) forwardButton.setEnabled(false);
+      }
     }
   }
 
@@ -236,6 +299,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         // Loads the new page represented by link clicked
         URL url = e.getURL() ;
         help.setPage(url) ;
+        pos++;
+        history.add(pos,url);
+        backwardButton.setEnabled(true);
       }
       catch (Exception exc) {
       }

@@ -132,7 +132,10 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     for (Faction f : data.factions().values()) {
       items.add(new FactionItem(f));
     }
+    FactionItem first = items.get(1);
     Collections.sort(items, new FactionItemComparator());
+    if (first!=null)
+      items.add(1, first);
     factionBox = new JComboBox(items);
     c.gridx = 1;
     c.gridy = 1;

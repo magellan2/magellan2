@@ -19,11 +19,9 @@
 package magellan.client.utils;
 
 import java.awt.Component;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JDialog;
@@ -215,30 +213,5 @@ public class LanguageDialog {
       }
       return false;
     }
-  }
-
-  // pavkovic 2003.01.28: this is a Map of the default Translations mapped to
-  // this class
-  // it is called by reflection (we could force the implementation of an
-  // interface,
-  // this way it is more flexible.)
-  // Pls use this mechanism, so the translation files can be created
-  // automagically
-  // by inspecting all classes.
-  private static Map<String, String> defaultTranslations;
-
-  /**
-   * DOCUMENT-ME
-   * 
-   * 
-   */
-  public static synchronized Map<String, String> getDefaultTranslations() {
-    if (defaultTranslations == null) {
-      defaultTranslations = new Hashtable<String, String>();
-      defaultTranslations.put("choose", "The following languages were found. Please choose one.");
-      defaultTranslations.put("title", "Choose a language");
-    }
-
-    return defaultTranslations;
   }
 }

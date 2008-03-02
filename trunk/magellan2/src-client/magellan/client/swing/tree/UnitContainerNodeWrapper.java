@@ -171,25 +171,5 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
 									  NodeWrapperDrawPolicy adapter) {
 		return null;
-	}
-	
-//	 pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static final Map<String,String> defaultTranslations = new Hashtable<String, String>();
-
-	static {
-		defaultTranslations.put("owner", "owner");
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static Map<String,String> getDefaultTranslations() {
-		return defaultTranslations;
-	}
+  }
 }

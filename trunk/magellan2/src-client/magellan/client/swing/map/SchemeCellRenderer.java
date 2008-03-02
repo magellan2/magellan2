@@ -16,8 +16,6 @@ package magellan.client.swing.map;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
-import java.util.Hashtable;
-import java.util.Map;
 
 import magellan.client.MagellanContext;
 import magellan.library.CoordinateID;
@@ -71,28 +69,6 @@ public class SchemeCellRenderer extends ImageCellRenderer {
 	public int getPlaneIndex() {
 		return Mapper.PLANE_SCHEMES;
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Scheme renderer");
-		}
-
-		return defaultTranslations;
-	}
-
 
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()

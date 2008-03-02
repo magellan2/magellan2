@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -164,34 +163,6 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 			}
 		}
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Save selection as...");
-			defaultTranslations.put("mnemonic", "e");
-			defaultTranslations.put("accelerator", "");
-			defaultTranslations.put("tooltip", "");
-			defaultTranslations.put("msg.filesave.error.title", "Error on save");
-			defaultTranslations.put("title", "save selection file as");
-		}
-
-		return defaultTranslations;
-	}
-  
-
 
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()

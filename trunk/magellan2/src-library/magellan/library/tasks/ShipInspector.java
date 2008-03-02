@@ -55,7 +55,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	 * 
 	 * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, int)
 	 */
-	public List<AbstractProblem> reviewRegion(Region r, int type) {
+	public List<Problem> reviewRegion(Region r, int type) {
 		// we notify errors only
 		if (type != Problem.ERROR) {
 			return Collections.emptyList();
@@ -71,7 +71,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 			return Collections.emptyList();
 		}
 
-		List<AbstractProblem> problems = reviewShips(r);
+		List<Problem> problems = reviewShips(r);
 
 		if (problems.isEmpty()) {
 			return Collections.emptyList();
@@ -80,19 +80,19 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		}
 	}
 
-	private List<AbstractProblem> reviewShips(Region r) {
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>(2);
+	private List<Problem> reviewShips(Region r) {
+		List<Problem> problems = new ArrayList<Problem>(2);
 
-		for (Iterator iter = r.ships().iterator(); iter.hasNext();) {
-			Ship s = (Ship) iter.next();
+		for (Iterator<Ship> iter = r.ships().iterator(); iter.hasNext();) {
+			Ship s = iter.next();
 			problems.addAll(reviewShip(s));
 		}
 
 		return problems;
 	}
 
-	private List<AbstractProblem> reviewShip(Ship s) {
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>();
+	private List<Problem> reviewShip(Ship s) {
+		List<Problem> problems = new ArrayList<Problem>();
 		int nominalShipSize = s.getShipType().getMaxSize();
 
     // also if not ready yet, there should be someone to take care..
@@ -116,8 +116,8 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		return problems;
 	}
 
-	private List<AbstractProblem> reviewMovingShip(Ship s) {
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>();
+	private List<Problem> reviewMovingShip(Ship s) {
+		List<Problem> problems = new ArrayList<Problem>();
 		if (s.getOwnerUnit() == null) {
 			return problems;
 		}

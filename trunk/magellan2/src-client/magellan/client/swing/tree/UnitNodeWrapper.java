@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.Icon;
@@ -932,72 +930,5 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		} else {
 			return toString();
 		}
-	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static final Map<String,String> defaultTranslations = new Hashtable<String, String>();
-
-	static {
-		defaultTranslations.put("prefs.skill.text", "Show skill icons");
-		defaultTranslations.put("prefs.skilllessthanone.text",
-								"Show skill icons also if level is less than one");
-		defaultTranslations.put("prefs.categorized.6", "Miscellaneous");
-		defaultTranslations.put("prefs.categorized.5", "Potions");
-		defaultTranslations.put("prefs.categorized.4", "Herbs");
-		defaultTranslations.put("prefs.categorized.3", "Luxuries");
-		defaultTranslations.put("prefs.categorized.2", "Resources");
-		defaultTranslations.put("prefs.categorized.1", "Armour");
-		defaultTranslations.put("prefs.categorized.0", "Weapons");
-		defaultTranslations.put("prefs.categorized.text", "Categorize items");
-		defaultTranslations.put("prefs.nfirst.text", "Show name first");
-		defaultTranslations.put("prefs.container.text", "Show building and ship icons");
-		defaultTranslations.put("prefs.other.text", "Show inventory icons");
-		defaultTranslations.put("prefs.icontext.text", "Display text");
-		defaultTranslations.put("prefs.changes.mode1.text", "Via Text");
-		defaultTranslations.put("prefs.changes.mode0.text", "Via Styleset");
-		defaultTranslations.put("prefs.additional.text.tooltip",
-								"Shows additional values like skills and items.");
-		defaultTranslations.put("prefs.changes.mode1.text.tooltip",
-								"Shows the difference in brackets behind the current value.");
-		defaultTranslations.put("prefs.changes.mode0.text.tooltip",
-								"Uses a customizable styleset for display. You may change the text font, fore- and background color.");
-		defaultTranslations.put("prefs.changes.text.tooltip", "Makes skill changes visible");
-		defaultTranslations.put("prefs.categorized.text.tooltip",
-								"Put items of same category together.");
-		defaultTranslations.put("prefs.dialogs.2.help",
-								"Choose the item categories that should be shown only once. The amount will be accumulated and the icon of the last item will be used.");
-		defaultTranslations.put("prefs.dialogs.1.help",
-								"Choose the type of talent change visualisation you wish to be used.");
-		defaultTranslations.put("prefs.dialogs.0.help",
-								"You may choose the type of content that will be displayed left (or right) of the unit's name.");
-		defaultTranslations.put("prefs.dialogs.2.title", "Categorize items...");
-		defaultTranslations.put("prefs.dialogs.1.title", "Skill changes...");
-		defaultTranslations.put("prefs.dialogs.0.title", "Additional icons and texts...");
-		defaultTranslations.put("prefs.details", "Details...");
-		defaultTranslations.put("prefs.additional.text", "Show additional icon and texts");
-		defaultTranslations.put("prefs.changes.text", "Show skill changes");
-		defaultTranslations.put("prefs.title", "Units");
-
-		defaultTranslations.put("prefs.showWarnings", "Show warning");
-
-		defaultTranslations.put("prefs.showExpectedOnly", "Show expected items only");
-
-		defaultTranslations.put("prefs.dialogs.3.title", "Error warning");
-
-		defaultTranslations.put("prefs.dialogs.3.help",
-								"Select the tests you would like to have performed for warnings.");
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static Map<String,String> getDefaultTranslations() {
-		return defaultTranslations;
 	}
 }

@@ -19,8 +19,6 @@ import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JButton;
@@ -169,30 +167,4 @@ public class AddSignDialog extends InternationalizedDialog {
 		dispose();
 	}
 
-	
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("window.title", "Add a Sign");
-			defaultTranslations.put("btn.ok.caption", "OK");
-			defaultTranslations.put("btn.close.caption", "Close");
-			defaultTranslations.put("label.line1", "Line 1");
-			defaultTranslations.put("label.line2", "Line 2");
-		}
-
-		return defaultTranslations;
-	}
 }

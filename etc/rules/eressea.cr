@@ -399,6 +399,9 @@ SKILL "Unterhaltung"
 SKILL "Waffenbau"
 "Waffenbau";name
 "build";category
+SKILL "Waffenloser Kampf"
+"Waffenloser Kampf";name
+"war";category
 SKILL "Wagenbau"
 "Wagenbau";name
 "build";category

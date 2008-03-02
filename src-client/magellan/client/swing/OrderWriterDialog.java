@@ -87,6 +87,10 @@ import org.apache.commons.mail.MultiPartEmail;
  */
 public class OrderWriterDialog extends InternationalizedDataDialog {
   private static final Logger log = Logger.getInstance(OrderWriterDialog.class);
+  
+  final String defaultEmail = "eressea-server@eressea.kn-bremen.de";
+  final String defaultSubject = "Eressea Befehle";
+
   private boolean standAlone = false;
   private Collection regions = null;
   private JComboBox cmbOutputFile = null;
@@ -508,20 +512,21 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     lblMailRecipient = new JLabel(Resources.get("orderwriterdialog.lbl.recipient"));
 
-    // pavkovic 2002.01.23: enno wanted this change...
-    String email = settings.getProperty("OrderWriter.mailRecipient","eressea-server@eressea.upb.de");
+    String email = settings.getProperty("OrderWriter.mailRecipient", defaultEmail);
 
-    if(email.toLowerCase().equals("eressea@kn-bremen.de")) {
-      email = "eressea-server@eressea.upb.de";
-    }
-
-    if(email.toLowerCase().equals("eressea@eressea.kn-bremen.de")) {
-      email = "eressea-server@eressea.upb.de";
-    }
-
-    if(email.toLowerCase().equals("eressea@eressea.amber.kn-bremen.de")) {
-      email = "eressea-server@eressea.upb.de";
-    }
+    // stm 2008.03.02: enno wanted this change undone ;)
+//  // pavkovic 2002.01.23: enno wanted this change...
+//    if(email.toLowerCase().equals("eressea@kn-bremen.de")) {
+//      email = defaultEmail;
+//    }
+//
+//    if(email.toLowerCase().equals("eressea@eressea.kn-bremen.de")) {
+//      email = defaultEmail;
+//    }
+//
+//    if(email.toLowerCase().equals("eressea@eressea.amber.kn-bremen.de")) {
+//      email = defaultEmail;
+//    }
 
     txtMailRecipient = new JTextField(email, 20);
 
@@ -532,7 +537,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailSender.setLabelFor(txtMailSender);
 
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
-    txtMailSubject = new JTextField(settings.getProperty("OrderWriter.mailSubject","Eressea Befehle"), 20);
+    txtMailSubject = new JTextField(settings.getProperty("OrderWriter.mailSubject",defaultSubject), 20);
     lblMailSubject.setLabelFor(txtMailSubject);
 
     JPanel pnlMail = new JPanel(new GridBagLayout());
@@ -543,15 +548,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     chkUseSettingsFromCR.setEnabled((data != null) && (data.mailTo != null) && (data.mailSubject != null));
     chkUseSettingsFromCR.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
-          txtMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
-          txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
-          lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
-          lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+          updateRecipient();
         }
       }
     );
-    txtMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
-    txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+
+    updateRecipient();
 
     chkCCToSender = new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.CCToSender","true"))).booleanValue());
 
@@ -700,6 +702,24 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnlMail.add(txtMailSubject, c);
 
     return pnlMail;
+  }
+
+  protected void updateRecipient() {
+    if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()){
+      txtMailRecipient.setText(settings.getProperty("OrderWriter.mailRecipient", defaultEmail));
+      txtMailRecipient.setEnabled(true);
+      txtMailSubject.setText(settings.getProperty("OrderWriter.mailSubject", defaultSubject));
+      txtMailSubject.setEnabled(true);
+      lblMailRecipient.setEnabled(true);
+      lblMailSubject.setEnabled(true);
+    }else{
+      txtMailRecipient.setText(data.mailTo);
+      txtMailRecipient.setEnabled(false);
+      txtMailSubject.setText(data.mailSubject);
+      txtMailSubject.setEnabled(false);
+      lblMailRecipient.setEnabled(false);
+      lblMailSubject.setEnabled(false);
+    }
   }
 
   private void storeSettings() {

@@ -14,6 +14,7 @@
 package magellan.library.gamebinding;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -771,6 +772,12 @@ public class EresseaOrderCompleter implements Completer {
 
 	void cmpltDefault() {
 		cmplt();
+		// add quotes around completions...
+		List<Completion> newCompletions = new ArrayList<Completion>(completions.size());
+		for (Completion c: completions){
+		  newCompletions.add(new Completion(c.getName(), "\""+c.getValue(), c.getPostfix()+"\"", c.getPriority(), c.getCursorOffset()));
+		}
+		completions = newCompletions;
 	}
 
 	void cmpltFahre() {
@@ -1105,11 +1112,13 @@ public class EresseaOrderCompleter implements Completer {
 			for(Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
 				SkillType t = (SkillType) iter.next();
 				int cost = getSkillCost(t, unit);
-
+				// add quotes if needed
+				String name = t.getName().contains(" ")?("\""+t.getName()+"\""):t.getName();
+				
 				if(cost > 0) {
-					completions.add(new Completion(t.getName(), " " + cost));
+					completions.add(new Completion(t.getName(), name, " " + cost));
 				} else {
-					completions.add(new Completion(t.getName()));
+					completions.add(new Completion(t.getName(), name, ""));
 				}
 			}
 		}
@@ -2136,7 +2145,9 @@ public class EresseaOrderCompleter implements Completer {
 				break;
 			}
 		}
-
+		// detect "\"" as ""
+		if (retVal.toString().equals("\""))
+				return "";
 		return retVal.reverse().toString();
 	}
 

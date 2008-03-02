@@ -249,6 +249,13 @@
       </fileset>
     </copy>
   	
+    <mkdir dir="${release}/etc/plugins" />
+    <copy todir="${release}/etc/plugins" overwrite="true">
+      <fileset dir="${etc}/plugins">
+        <include name="**" />
+      </fileset>
+    </copy>
+  	
   	<mkdir dir="${release}/plugins" />
     <echo file="${release}/plugins/README.txt" append="false">
     	This folder contains external plugins. Do not delete...Thanks.

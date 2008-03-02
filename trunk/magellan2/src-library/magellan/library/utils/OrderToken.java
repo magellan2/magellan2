@@ -121,6 +121,23 @@ public class OrderToken {
 		return text;
 	}
 
+  /**
+   * Sames as getText() but removes enclosing quotes.
+   *
+   * 
+   */
+  public String getStrippedText() {
+    if (ttype!=TT_STRING)
+      return getText();
+    
+    int begin = 0, end = text.length();
+    if (text.charAt(0)=='"')
+      begin = 1;
+    if (text.length()>1 && text.charAt(text.length()-1)=='"')
+      end = text.length()-1;
+    return text.substring(begin, end);
+  }
+
 	/**
 	 * DOCUMENT-ME
 	 *

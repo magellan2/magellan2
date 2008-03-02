@@ -1,3 +1,9 @@
+2008-02-19 / Build 166 - stm (stm_@users.sourceforge.net)
+    * AskForPasswordDialog: owner faction first
+    * Added Waffenloser Kampf to rules/eressea.cr
+    * changed default mailto to eressea-server@eressea.kn-bremen.de
+    * EresseaOrderCompletions/EresseaOrderParser improvements for DEFAULT, LERNE and KAMPFZAUBER
+     
 2008-03-02 / Build 165 - Thoralf (thoralf@m84.de)
     * ExtCmds help now in files under etc/plugins/extcmds for a better management
     * Removed really all getDefaultTranslations() from source (no longer needed)

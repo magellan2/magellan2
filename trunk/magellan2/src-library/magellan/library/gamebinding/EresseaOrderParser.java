@@ -14,6 +14,7 @@
 package magellan.library.gamebinding;
 
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -879,8 +880,13 @@ public class EresseaOrderParser implements OrderParser {
 
 			return false;
 		} else {
-			return readOrder(t);
-		}
+		  // parse string inside quotes as extra order
+      if (t.getText().length() < 3 || t.getText().charAt(0) != '"'
+          || t.getText().charAt(t.getText().length() - 1) != '"')
+        return false;
+      return (new EresseaOrderParser(data, completer)).read(new StringReader(t.getStrippedText()));
+      //			return readOrder(t);
+    }
 	}
 
 	//************* EMAIL
@@ -1373,14 +1379,14 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
-		if(t.equalsToken(EresseaConstants.O_NOT)) {
+		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
 		} else {
 			if(completer != null) {
 				completer.cmpltKampfzauberSpell();
 			}
 
-			unexpected(t);
+			retVal = checkFinal(t);
 		}
 
 		return retVal;
@@ -1502,7 +1508,8 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
-		if((data.rules != null) && (data.rules.getSkillType(t.getText()) != null)) {
+		// detect quoted strings
+		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText()) != null)) {
 			t.ttype = OrderToken.TT_STRING;
 			t = (OrderToken) tokens.next();
 

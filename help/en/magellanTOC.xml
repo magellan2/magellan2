@@ -25,7 +25,7 @@
 		<tocitem text="Orders" image="chapter" target="menu_orders">
 			<tocitem text="Next unconfirmed Unit" image="topic" target="menu_orders_unconfirmed"/>
 			<tocitem text="Previous unconfimred Unit" image="topic" target="menu_orders_unconfirmed"/>
-			<tocitem text="Confirm &auml;ndern" image="topic" target="menu_orders_confirm"/>
+			<tocitem text="Confirm" image="topic" target="menu_orders_confirm"/>
 			<tocitem text="All" image="topic" target="menu_orders_confirmall"/>
 			<tocitem text="All Not" image="topic" target="menu_orders_unconfirmall"/>
 			<tocitem text="Invert" image="topic" target="menu_orders_invertconfirmation"/>

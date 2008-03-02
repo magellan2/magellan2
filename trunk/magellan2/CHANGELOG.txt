@@ -1,4 +1,4 @@
-2008-02-19 / Build 166 - stm (stm_@users.sourceforge.net)
+2008-03-03 / Build 166 - stm (stm_@users.sourceforge.net)
     * AskForPasswordDialog: owner faction first
     * Added Waffenloser Kampf to rules/eressea.cr
     * changed default mailto to eressea-server@eressea.kn-bremen.de

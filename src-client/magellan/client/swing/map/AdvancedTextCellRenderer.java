@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -577,49 +576,6 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			part = new String(chr, 0, len);
 			buffer.set(index, part);
 		}
-	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("context.title", "ATR");
-			defaultTranslations.put("shortcuts.description", "Choose set(0-9)");
-			defaultTranslations.put("shortcuts.title", "ATR");
-			defaultTranslations.put("prefs.breakline", "Automatic line break");
-			defaultTranslations.put("prefs.replace", "Unknown replace");
-			defaultTranslations.put("prefs.align0", "Left");
-			defaultTranslations.put("prefs.align1", "Centered");
-			defaultTranslations.put("prefs.align2", "Right");
-			defaultTranslations.put("prefs.aligntext", "Text alignment");
-			defaultTranslations.put("boolReplace.false", "False");
-			defaultTranslations.put("boolReplace.true", "True");
-			defaultTranslations.put("prefs.export", "Export...");
-			defaultTranslations.put("prefs.import", "Import...");
-			defaultTranslations.put("prefs.remove", "Remove");
-			defaultTranslations.put("prefs.nameexits2", "This name already exists: ");
-			defaultTranslations.put("prefs.nameexists", "This name already exists.");
-			defaultTranslations.put("prefs.rename.text", "Please enter a new name");
-			defaultTranslations.put("prefs.add.text", "Please enter a name");
-			defaultTranslations.put("prefs.def", "Def.");
-			defaultTranslations.put("prefs.rename", "Rename...");
-			defaultTranslations.put("prefs.add", "Add...");
-			defaultTranslations.put("prefs.fonthelp",
-									"Please change font properties at the text renderer");
-		}
-
-		return defaultTranslations;
 	}
 
 	/**

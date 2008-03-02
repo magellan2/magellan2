@@ -16,8 +16,6 @@ package magellan.client.actions.edit;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Hashtable;
-import java.util.Map;
 
 import javax.swing.Action;
 
@@ -89,31 +87,6 @@ public class RedoAction extends MenuAction implements PropertyChangeListener {
 		}
 		setEnabled(enabled);
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Redo");
-			defaultTranslations.put("mnemonic", "r");
-			defaultTranslations.put("accelerator", "ctrl Y");
-			defaultTranslations.put("tooltip", "");
-		}
-
-		return defaultTranslations;
-	}
-  
   
 
   /**

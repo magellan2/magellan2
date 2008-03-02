@@ -13,9 +13,6 @@
 
 package magellan.client.actions.extras;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.MapperPanel;
@@ -50,29 +47,6 @@ public class TileSetAction extends MenuAction {
 		map.reloadGraphicSet();
 	}
 
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Reload graphic-set");
-			defaultTranslations.put("mnemonic", "g");
-			defaultTranslations.put("accelerator", "shift F5");
-			defaultTranslations.put("tooltip", "");
-		}
-
-		return defaultTranslations;
-	}
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */

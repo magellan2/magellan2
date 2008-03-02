@@ -18,11 +18,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -403,30 +401,5 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 			settings.put("BookmarkManager.DialogYPos", String.valueOf(this.getY()));
 			dispose();
 		}
-	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("shortcuts.title", "Bookmarks");
-			defaultTranslations.put("shortcuts.description.2", "Set/reset bookmark on active object");
-			defaultTranslations.put("shortcuts.description.1", "Last bookmark");
-			defaultTranslations.put("shortcuts.description.0", "Next bookmark");
-			defaultTranslations.put("bookmarkdialog.caption", "Bookmarks");
-		}
-
-		return defaultTranslations;
 	}
 }

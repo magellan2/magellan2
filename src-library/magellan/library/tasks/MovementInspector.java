@@ -46,7 +46,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 	 * 
 	 * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
 	 */
-	public List<AbstractProblem> reviewUnit(Unit u, int type) {
+	public List<Problem> reviewUnit(Unit u, int type) {
 		if ((u == null) || u.ordersAreNull()) {
 			return Collections.emptyList();
 		}
@@ -56,7 +56,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			return Collections.emptyList();
 		}
 
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>();
+		List<Problem> problems = new ArrayList<Problem>();
 
 		if (!u.getModifiedMovement().isEmpty()) {
 			// only test for foot/horse movement if unit is not owner of a modified ship
@@ -87,27 +87,27 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 		}
 	}
 
-	private List<AbstractProblem> reviewUnitOnFoot(Unit u) {
+	private List<Problem> reviewUnitOnFoot(Unit u) {
 		int maxOnFoot = u.getPayloadOnFoot();
 
 		if (maxOnFoot == Unit.CAP_UNSKILLED) {
-			return Collections.singletonList((AbstractProblem)(new CriticizedWarning(u, u, this, Resources.get("tasks.movementinspector.error.toomanyhorsesfoot.description"))));
+			return Collections.singletonList((Problem)(new CriticizedWarning(u, u, this, Resources.get("tasks.movementinspector.error.toomanyhorsesfoot.description"))));
 		}
 
 		int modLoad = u.getModifiedLoad();
 
 		if ((maxOnFoot - modLoad) < 0) {
-			return Collections.singletonList((AbstractProblem)(new CriticizedWarning(u, u, this, Resources.get("tasks.movementinspector.error.footoverloaded.description"))));
+			return Collections.singletonList((Problem)(new CriticizedWarning(u, u, this, Resources.get("tasks.movementinspector.error.footoverloaded.description"))));
 		}
 
 		return Collections.emptyList();
 	}
 
-	private List<AbstractProblem> reviewUnitOnHorse(Unit u) {
+	private List<Problem> reviewUnitOnHorse(Unit u) {
 		int maxOnHorse = u.getPayloadOnHorse();
 
 		if (maxOnHorse == Unit.CAP_UNSKILLED) {
-			return Collections.singletonList((AbstractProblem)(new CriticizedWarning(u, u, this,
+			return Collections.singletonList((Problem)(new CriticizedWarning(u, u, this,
           Resources.get("tasks.movementinspector.error.toomanyhorsesride.description"))));
 		}
 
@@ -115,7 +115,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			int modLoad = u.getModifiedLoad();
 
 			if ((maxOnHorse - modLoad) < 0) {
-				return Collections.singletonList((AbstractProblem)(new CriticizedWarning(u, u, this,
+				return Collections.singletonList((Problem)(new CriticizedWarning(u, u, this,
             Resources.get("tasks.movementinspector.error.horseoverloaded.description"))));
 			}
 		}

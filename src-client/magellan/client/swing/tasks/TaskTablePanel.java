@@ -52,6 +52,7 @@ import magellan.library.event.GameDataListener;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
+import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
 import magellan.library.tasks.ShipInspector;
 import magellan.library.tasks.ToDoInspector;
@@ -288,6 +289,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		inspectors.add(MovementInspector.getInstance());
 		inspectors.add(ShipInspector.getInstance());
     inspectors.add(AttackInspector.getInstance());
+    inspectors.add(OrderSyntaxInspector.getInstance());
 	}
 
 	/**

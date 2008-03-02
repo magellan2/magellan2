@@ -25,11 +25,9 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -346,37 +344,6 @@ public class SignTextCellRenderer extends HexCellRenderer {
 		return new Preferences(this);
 	}
 	
-	
-//	 pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Sign renderer");
-
-			defaultTranslations.put("textcolor", "text color");
-			defaultTranslations.put("fontcolor", "font color: ");
-			defaultTranslations.put("backcolor", "back color: ");
-			defaultTranslations.put("fonttype", "font type: ");
-			defaultTranslations.put("usebold", "use bold font");
-			defaultTranslations.put("fontsize", "font size: ");
-			defaultTranslations.put("minimumfontsize", "minimal font size: ");
-			defaultTranslations.put("scalefontwithmapzoom", "scale font with map zoom");
-		}
-
-		return defaultTranslations;
-	}
-
 	protected class Preferences extends JPanel implements PreferencesAdapter {
 		// The source component to configure
 		protected SignTextCellRenderer source = null;

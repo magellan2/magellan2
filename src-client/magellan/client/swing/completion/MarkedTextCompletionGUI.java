@@ -17,9 +17,7 @@ import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
@@ -315,29 +313,6 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
 	public Completion getSelectedCompletion() {
 		return lastCompletion;
 	}
-
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("gui.title", "Marked Text");
-		}
-
-		return defaultTranslations;
-	}
-
-  
 
   /**
    */

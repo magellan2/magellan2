@@ -140,35 +140,6 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 		}
 	}
 
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String,String>();
-			defaultTranslations.put("name", "Open selection...");
-			defaultTranslations.put("mnemonic", "p");
-			defaultTranslations.put("accelerator", "");
-			defaultTranslations.put("tooltip", "");
-			defaultTranslations.put("msg.fileordersopen.error.text",
-									"While loading the selection the following error occurred:\n");
-			defaultTranslations.put("msg.fileordersopen.error.title", "Error on load");
-			defaultTranslations.put("title", "open selection file");
-		}
-
-		return defaultTranslations;
-	}
-  
-
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */

@@ -22,7 +22,8 @@ import magellan.library.Unit;
 
 
 /**
- * DOCUMENT-ME
+ * This is an abstract implementation of an inspector. You can use this
+ * as a base for your own implementation.
  *
  * @author $Author: $
  * @version $Revision: 171 $
@@ -31,60 +32,46 @@ public abstract class AbstractInspector implements Inspector {
 	protected AbstractInspector() {
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<AbstractProblem> reviewUnit(Unit u) {
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>(10);
+  /**
+   * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit)
+   */
+	public List<Problem> reviewUnit(Unit u) {
+		List<Problem> problems = new ArrayList<Problem>(10);
 
 		problems.addAll(reviewUnit(u, Problem.INFORMATION));
 		problems.addAll(reviewUnit(u, Problem.WARNING));
 		problems.addAll(reviewUnit(u, Problem.ERROR));
 
-		return problems.isEmpty() ? new ArrayList<AbstractProblem>() : problems;
+		return problems.isEmpty() ? new ArrayList<Problem>() : problems;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public List<AbstractProblem> reviewUnit(Unit u, int type) {
+  /**
+   * Returns an empty list.
+   * 
+   * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit, int)
+   */
+	public List<Problem> reviewUnit(Unit u, int type) {
 		return Collections.emptyList();
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<AbstractProblem> reviewRegion(Region r) {
-		List<AbstractProblem> problems = new ArrayList<AbstractProblem>(2);
+  /**
+   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region)
+   */
+	public List<Problem> reviewRegion(Region r) {
+		List<Problem> problems = new ArrayList<Problem>(2);
 		problems.addAll(reviewRegion(r, Problem.INFORMATION));
 		problems.addAll(reviewRegion(r, Problem.WARNING));
 		problems.addAll(reviewRegion(r, Problem.ERROR));
 
-		return problems.isEmpty() ? new ArrayList<AbstractProblem>() : problems;
+		return problems.isEmpty() ? new ArrayList<Problem>() : problems;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public List<AbstractProblem> reviewRegion(Region r, int type) {
+  /**
+   * Returns an empty list.
+   * 
+   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region, int)
+   */
+	public List<Problem> reviewRegion(Region r, int type) {
 		return Collections.emptyList();
 	}
 }

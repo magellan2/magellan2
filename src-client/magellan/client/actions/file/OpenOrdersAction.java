@@ -19,9 +19,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
@@ -136,36 +134,6 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 		}
 	}
 	
-	// pavkovic 2003.01.28: this is a Map of the default Translations mapped to this class
-	// it is called by reflection (we could force the implementation of an interface,
-	// this way it is more flexible.)
-	// Pls use this mechanism, so the translation files can be created automagically
-	// by inspecting all classes.
-	private static Map<String,String> defaultTranslations;
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public static synchronized Map<String,String> getDefaultTranslations() {
-		if(defaultTranslations == null) {
-			defaultTranslations = new Hashtable<String, String>();
-			defaultTranslations.put("name", "Open orders...");
-			defaultTranslations.put("mnemonic", "p");
-			defaultTranslations.put("accelerator", "");
-			defaultTranslations.put("tooltip", "");
-			defaultTranslations.put("msg.fileordersopen.status.text",
-									"Read orders for {0} faction(s) and {1} unit(s).");
-			defaultTranslations.put("msg.fileordersopen.status.title", "Orders read");
-			defaultTranslations.put("msg.fileordersopen.error.text",
-									"While loading the orders the following error occurred:\n");
-		}
-
-		return defaultTranslations;
-	}
-  
-
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */

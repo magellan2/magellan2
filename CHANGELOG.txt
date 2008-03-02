@@ -1,3 +1,9 @@
+2008-03-02 / Build 165 - Thoralf (thoralf@m84.de)
+    * ExtCmds help now in files under etc/plugins/extcmds for a better management
+    * Removed really all getDefaultTranslations() from source (no longer needed)
+    * new OrderSyntaxInspector to review the given commands.
+    * new package descriptions and some more comments...puuh.
+
 2008-03-01 / Build 163 - Thoralf (thoralf@m84.de)
     * German Help is more or less ready...
     * English Help copied from German Help - translation in progress...

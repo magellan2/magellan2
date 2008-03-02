@@ -57,7 +57,7 @@ public class AttackInspector extends AbstractInspector {
   /**
    * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
    */
-  public List<AbstractProblem> reviewUnit(Unit u, int type) {
+  public List<Problem> reviewUnit(Unit u, int type) {
     if((u == null) || u.ordersAreNull()) {
       return Collections.emptyList();
     }
@@ -66,7 +66,7 @@ public class AttackInspector extends AbstractInspector {
       return Collections.emptyList();
     }
 
-    List<AbstractProblem> problems = new ArrayList<AbstractProblem>(2);
+    List<Problem> problems = new ArrayList<Problem>(2);
 
     int line = 0;
     int wrongStatus = Integer.MAX_VALUE;

@@ -1,3 +1,6 @@
+2008-03-03 / Build 167 - Thoralf (thoralf@m84.de)
+    * Bugfix for NPE in extcmds (getCData())
+
 2008-03-03 / Build 166 - stm (stm_@users.sourceforge.net)
     * AskForPasswordDialog: owner faction first
     * Added Waffenloser Kampf to rules/eressea.cr

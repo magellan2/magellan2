@@ -29,6 +29,7 @@
     "../../images/menu_extras_options_system.gif" alt=
     "Optionsmenue - System" border="0"></p>
     <br>
+     
 
     <ul>
       <li><b>Spracheinstellungen</b><br>
@@ -72,11 +73,11 @@
         ist dabei die aktuelle Entwickler-Website.
       </li>
 
-      <li><b>Lade beim Stard den letzten Report</b><br>
+      <li><b>Lade beim Start den letzten Report</b><br>
        Hiermit regelt man, ob beim Start von Magellan der zuletzt
       geladene Report in Magellan geladen wird.</li>
 
-      <li><b>Lade Regionen Leere an, wo Regionen fehlen</b><br>
+      <li><b>Legt Regionen "Leere" an, wo Regionen fehlen</b><br>
        Ist diese Option gesetzt, so werden unbekannte Regionen mit
       einem Fragezeichen versehen.</li>
 
@@ -86,17 +87,23 @@
       die Anzahl der schon best&auml;tigten Einheiten.</li>
     </ul>
 
+    <h2>Look &amp; Feel</h2>
+
     <p align="center"><img src=
     "../../images/menu_extras_options_system_lookfeel.gif" alt=
-    "Optionsmenue - System - Look&amp;Feel" border="0"></p>
+    "Optionsmenue - System - Look&amp;Feel" border="0">&nbsp;</p>
+
+    <p style="text-align: left;"><br>
+    </p>
 
     <ul>
-      <li>
-        <b>Look&amp;Feel</b><br>
-         Hier kann man das Look&amp;Feel der
+      <li><b>Look &amp; Feel</b></li>
+
+      <li style="list-style: none">
+        Hier kann man das Look&amp;Feel der
         Magellan-Oberfl&auml;che ausw&auml;hlen.
         Standardm&auml;&szlig;ig stehen hier bereits eine Reihe von
-        Look&amp;Feels zur Verf&uuml;gung. 
+        Look&amp;Feels zur Verf&uuml;gung.CDE/Motif 
 
         <ul>
           <li>CDE/Motif</li>
@@ -146,59 +153,66 @@
       Magellan wirksam.</li>
 
       <li><b>Griffe an oberster Baumebene anzeigen</b><br>
-       Damit ist gemeint, dass man den obersten Baumknoten
+       Damit ist gemeint, dass man den obersten Baumknoten (etwa in
+      der&nbsp;<a href=
+      "../../docks/regions.html">Regions&uuml;bersicht</a>)
       ebenfalls noch sieht und so den Baum komplett noch
-      zusammenklappen kann.</li>
+      zusammenklappen kann. Wird dieser Knoten nicht angezeigt,
+      muss man die Knoten der obersten Ebene per Doppelklick
+      aufklappen.</li>
     </ul>
+
+    <h2>Datei-History</h2>
 
     <p align="center"><img src=
     "../../images/menu_extras_options_system_history.gif" alt=
     "Optionsmenue - System - History" border="0"></p>
 
-    <ul>
-      <li><b>Datei-History</b><br>
-       Der hier eingetragene Wert bestimmt, wieviele zuletzt
-      geladene Reports im Datei-Men&uuml; erscheinen.</li>
-    </ul>
+    <p>Der hier eingetragene Wert bestimmt, wieviele zuletzt
+    geladene Reports im Datei-Men&uuml; erscheinen.</p>
+
+    <h2>Dateinamen-Generierung</h2>
+
+    <p>Wenn man hier etwas eintr&auml;gt, wird beim&nbsp;<a href=
+    "../file/saveorders.html">Dialog zum Speichern der
+    Befehle</a>&nbsp; ein Dateiname vorgeschlagen. Ein Beispiel
+    w&auml;re <tt>{round}-{factionnr}-neu.txt</tt>.</p>
+
+    <h2>Namensgenerator</h2>
 
     <p align="center"><img src=
     "../../images/menu_extras_options_system_generator.gif" alt=
     "Optionsmenue - System - Namensgenerator" border="0"></p>
 
-    <ul>
-      <li><b>Namensgenerator</b><br>
-       Wenn man diese Option aktiviert und dazu eine Textdatei
-      einbindet, in der zeilenweise Namen aufgef&uuml;hrt sind, so
-      kann man diese bei der Erstellung neuer Einheiten
-      ausw&auml;hlen.</li>
-    </ul>
+    <p>Wenn man diese Option aktiviert und dazu eine Textdatei
+    einbindet, in der zeilenweise Namen aufgef&uuml;hrt sind, so
+    kann man diese bei der Erstellung neuer Einheiten
+    ausw&auml;hlen.</p>
+
+    <h2>Textkodierung</h2>
 
     <p align="center"><img src=
     "../../images/menu_extras_options_system_textencoding.gif" alt=
     "Optionsmenue - System - Textkodierung" border="0"></p>
 
+    <p>Hier kann man festlegen, wie Magellan die Reports und
+    Befehle kodiert. Es gibt prinzipiell drei Kodierungsformen.</p>
+
     <ul>
-      <li>
-        <b>Textkodierung</b><br>
-         Hier kann man festlegen, wie Magellan die Reports und
-        Befehle kodiert. Es gibt prinzipiell drei Kodierungsformen.
-        
+      <li>System - ist die Kodierung des Systems und entspricht
+      meist einer Abwandlung von ISO 8859-1.</li>
 
-        <ul>
-          <li>System - ist die Kodierung des Systems und entspricht
-          meist einer Abwandlung von ISO 8859-1.</li>
+      <li>ISO-8859-1 - ist das Standardformat f&uuml;r die meisten
+      Dateien im mitteleuropischen Raum</li>
 
-          <li>ISO-8859-1 - ist das Standardformat f&uuml;r die
-          meisten Dateien im mitteleuropischen Raum</li>
-
-          <li>UTF-8 - ist die Zukunft.</li>
-        </ul>
-        Wir empfehlen sehr, alle Reports und Befehle in UTF-8 zu
-        kodieren. Der Eressea Server unterst&uuml;tzt dies
-        mittlerweile durchgehend. Einzig einige wenige Tools haben
-        damit ein Problem.
-      </li>
+      <li>UTF-8 - ist die Zukunft.</li>
     </ul>
+    Wir empfehlen sehr, alle Reports und Befehle in UTF-8 zu
+    kodieren. Der Eressea Server unterst&uuml;tzt dies mittlerweile
+    durchgehend. Einzig einige wenige Tools haben damit ein
+    Problem. 
+
+    <h2>Nachrichten</h2>
 
     <p align="center"><img src=
     "../../images/menu_extras_options_messages.gif" alt=

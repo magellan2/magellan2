@@ -202,6 +202,8 @@ public class Utils {
     return null;
   }
   public static String getCData(Element root) {
+    if (root == null) return "";
+    if (root.getFirstChild() == null) return "";
     return root.getFirstChild().getNodeValue();
   }
   

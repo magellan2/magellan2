@@ -13,6 +13,7 @@
 
 package magellan.client.actions.file;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.Collection;
@@ -64,8 +65,22 @@ public class OpenCRAction extends MenuAction {
   
   /**
    * Shows the FileOpen Dialog of Magellan.
+   * 
+   * @param client The client for storing settings etc., which is also used as parent component.
+   * @return
    */
   public static File getFileFromFileChooser(Client client) {
+    return getFileFromFileChooser(client, client);
+  }
+
+  /**
+   * Shows the FileOpen Dialog of Magellan.
+   * 
+   * @param settings The client for storing settings etc.
+   * @param parent The parent component for the chooser.
+   * @return
+   */
+  public static File getFileFromFileChooser(Client client, Component parent) {
     JFileChooser fc = new JFileChooser();
     Properties settings = client.getProperties();
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.CR_FILTER));
@@ -89,7 +104,7 @@ public class OpenCRAction extends MenuAction {
     fc.setAccessory(new HistoryAccessory(settings, fc));
     fc.setDialogTitle(Resources.get("actions.opencraction.title"));
 
-    if(fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
+    if(fc.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
       // find selected FileFilter
       int i = 0;
 

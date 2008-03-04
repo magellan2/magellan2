@@ -1078,7 +1078,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             log.info("Newest Version on server: "+newestVersion);
             log.info("Current Version: "+currentVersion);
             if (VersionInfo.isNewer(currentVersion, newestVersion)) {
-              JOptionPane.showMessageDialog(c, Resources.get("client.new_version",new Object[]{newestVersion}));
+              JOptionPane.showMessageDialog(startWindow, Resources.get("client.new_version",new Object[]{newestVersion}));
             }
           }
     
@@ -1092,7 +1092,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               crFile = c.fileHistory.getLastExistingReport();
               if (crFile == null) {
                 // okay, ask for a file...
-                crFile = OpenCRAction.getFileFromFileChooser(c);
+                crFile = OpenCRAction.getFileFromFileChooser(c, startWindow);
               }
             }
           } else {

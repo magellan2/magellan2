@@ -34,7 +34,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
-import javax.swing.JWindow;
 import javax.swing.border.LineBorder;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.MutableAttributeSet;
@@ -53,7 +52,7 @@ import magellan.library.utils.VersionInfo;
  * @author Andreas
  * @version 1.0
  */
-public class StartWindow extends JWindow {
+public class StartWindow extends JFrame {
 	protected Collection images;
 	protected int steps;
 	protected int currentStep = 0;
@@ -61,7 +60,6 @@ public class StartWindow extends JWindow {
 	protected JProgressBar progress;
 	protected JTextPane text;
 	protected JTextPane versionText;
-	protected static final JFrame parent = new JFrame();
 	
 	private File magellanDir = null;
 
@@ -72,7 +70,7 @@ public class StartWindow extends JWindow {
 	 * 
 	 */
 	public StartWindow(Icon icon, int steps, File magellanDirectory) {
-		super(parent);
+		super("Magellan");
 		this.magellanDir = magellanDirectory;
 		init(icon, steps);
 	}
@@ -84,7 +82,7 @@ public class StartWindow extends JWindow {
 	 * 
 	 */
 	public StartWindow(Collection<Icon> icons, int steps,File magellanDirectory) {
-		super(parent);
+		super("Magellan");
 		this.magellanDir = magellanDirectory;
 		init(icons, steps);
 	}
@@ -100,6 +98,9 @@ public class StartWindow extends JWindow {
 	}
 
 	protected void init(Collection<Icon> icons, int steps) {
+    setUndecorated(true);
+    setResizable(false);
+    
 		this.images = icons;
 		this.steps = steps;
 
@@ -107,7 +108,7 @@ public class StartWindow extends JWindow {
 
 		// set the application icon
 		if(iconImage != null) {
-			parent.setIconImage(iconImage);
+			setIconImage(iconImage);
 		}
 
 		Container cont = getContentPane();

@@ -1,3 +1,6 @@
+2008-03-04 / Build 171 - stm (stm_@users.sourceforge.net)
+	* StartWindow is now a JFrame (#136)
+
 2008-03-03 / Build 167 - Thoralf (thoralf@m84.de)
     * Bugfix for NPE in extcmds (getCData())
 

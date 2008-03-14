@@ -93,7 +93,7 @@ public class MagellanImages {
     GUI_DELETETEMPUNIT = getImageIcon("etc/images/gui/deletetempunit.gif");
     
     ABOUNT_APPLICATION_ICON = getImageIcon("etc/images/about/appicon.gif");
-    ABOUT_MAGELLAN = getImageIcon("etc/images/about/magellan.gif");
+    ABOUT_MAGELLAN = getImageIcon("etc/images/about/magellan.jpg");
     BULLETS_LEAF = getImageIcon("etc/images/bullets/leaf.gif");
     BULLETS_OPEN = getImageIcon("etc/images/bullets/open.gif");
     BULLETS_CLOSED = getImageIcon("etc/images/bullets/closed.gif");    

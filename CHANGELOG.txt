@@ -1,5 +1,8 @@
+2008-03-14 / Build 172 - Thoralf (thoralf@m84.de)
+    * About Image has now a texture background
+
 2008-03-04 / Build 171 - stm (stm_@users.sourceforge.net)
-	* StartWindow is now a JFrame (#136)
+    * StartWindow is now a JFrame (#136)
 
 2008-03-03 / Build 167 - Thoralf (thoralf@m84.de)
     * Bugfix for NPE in extcmds (getCData())

@@ -1,371 +1,313 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      FAQ
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
-    <meta name="AUTHOR" content="rb@behme.space.net" />
-    <link rel="stylesheet" href="../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      FAQ
-    </h1>
-    <p>
-      Frequently asked questions:
-    </p>
-    <h2>
-      1. Fragen zur Installation
-    </h2>
-    <ol>
-      <li>
-        <a href="#Dateiname">magellan.jar? Müßte die Datei nicht magellan.exe
-        heißen?</a>
-      </li>
-      <li>
-        <a href="#Verknuepfung">Warum startet ein anderes Programm (z.B. WinZip
-        oder PowerArchiver), wenn ich Magellan per Doppelklick starte?</a>
-      </li>
-      <li>
-        <a href="#keinStart">Warum startet Magellan nicht, wenn ich auf die
-        Datei magellan.jar klicke?</a>
-      </li>
-      <li>
-        <a href="#CRVerknuepfung">Wie verknüpfe ich unter Windows2000
-        CR-Dateien mit Magellan?</a>
-      </li>
-      <li>
-        <a href="#Kommandozeilenstart">Wie starte ich Magellan von der
-        Kommandozeile?</a>
-      </li>
-      <li>
-        <a href="#MacMagellan">Wie bekomme ich Magellan auf einem Mac zum
-        laufen?</a>
-      </li>
-      <li>
-        <a href="#Resourcenpfade">Wie gehe ich mit Resourcenpfaden um?</a>
-      </li>
-      <li>
-        <a href="#Speichermangel">Obwohl ich genug RAM habe, meldet Magellan
-        Speichermangel. Wieso?</a>
-      </li>
-    </ol>
-    <br />
-    <h2>
-      2. Fragen zu Magellan
-    </h2>
-    <ol>
-      <li>
-        <a href="#base36nummern">Warum verwendet Magellan plötzlich keine
-        Base-36 Nummern mehr für die Einheiten?</a>
-      </li>
-      <li>
-        <a href="#VorlageBefehlsbestaetigung">Wie kann ich mit Vorlage die
-        Befehle von Einheiten automatisch bestätigen?</a>
-      </li>
-      <li>
-        <a href="#ARR">Ich komme mit dem ARR, dem ATR oder den Tooltips nicht
-        zurecht!</a>
-      </li>
-    </ol>
-    <a id="Dateiname" name="Dateiname"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: magellan.jar? Müßte die Datei nicht magellan.exe heißen?
-    </p>
-    <p>
-      <b>A:</b> Nein, um ehrlich zu sein, ist das (fast) nur eine umbenannte
-      ZIP-Datei, aber eine, mit der Java etwas anfangen kann und die du deshalb
-      auch nicht mit WinZip oder ähnlichen Programmen dekomprimieren musst.
-      Magellan besteht eigentlich aus sehr vielen Programmdateien, die einfach
-      nur in magellan.jar zusammengefasst sind, trotzdem sollte Magellan nach
-      einem Doppelklick auf die JAR-Datei starten.
-    </p>
-    <a id="Verknuepfung" name="Verknuepfung"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Warum startet ein anderes Programm (z.B. WinZip oder PowerArchiver),
-      wenn ich Magellan per Doppelklick starte?
-    </p>
-    <p>
-      <b>A:</b> Weil es sich statt Java mit der Dateiendung .jar verknüpft hat.
-      Bei PowerArchiver und WinZip kann man das in den Optionen wieder
-      rückgängig machen, ansonsten ist Handarbeit angesagt:
-    </p>
-    <ol>
-      <li>
-        Wähle im Startmenü den Punkt 'Ausführen'
-      </li>
-      <li>
-        Gib 'regedit' ein und klicke auf OK
-      </li>
-      <li>
-        Öffne links im Baum den Eintrag 'HKEY_CLASSES_ROOT' und dann klicke auf
-        den Eintrag '.jar'
-      </li>
-      <li>
-        Mache nun im Fenster rechts einen Doppelklick auf '(Default)'
-      </li>
-      <li>
-        Gib 'jarfile' (natürlich ohne die ' Ticks) ein und klicke OK
-      </li>
-      <li>
-        Schließe das regedit Programm - fertig
-      </li>
-    </ol>
-    <a id="keinStart" name="keinStart"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Warum startet Magellan nicht, wenn ich auf die Datei magellan.jar
-      klicke?
-    </p>
-    <p>
-      <b>A:</b> Eine mögliche Ursache dafür ist, dass sich die Datei
-      <tt>magellan.jar</tt> in einem Ordner befindet, dessen Name Leerzeichen
-      enthält. Dieses Problem wird nicht durch einen Fehler in Magellan
-      verursacht sondern durch eine ungeschickte Verknüpfung von
-      <tt>.jar</tt>-Dateien mit java.
-    </p>
-    <p>
-      Die einfache Lösung ist natürlich, Magellan in einen anderen Ordner zu
-      verschieben. Die komplizierte Lösung sieht folgendermaßen aus:
-    </p>
-    <ol>
-      <li>
-        Wähle im Startmenü den Punkt 'Ausführen'
-      </li>
-      <li>
-        Gib 'regedit' ein und klicke auf OK
-      </li>
-      <li>
-        Öffne links im Baum den Eintrag 'HKEY_CLASSES_ROOT' und dann klicke auf
-        den Eintrag 'jarfile'
-      </li>
-      <li>
-        Öffne die Untereinträge 'shell', 'open' und schließlich 'command'
-      </li>
-      <li>
-        Mache nun im Fenster rechts einen Doppelklick auf '(Default)', dort
-        sollte nun etwas in der Form <tt>(Pfad zu Java)\javaw.exe -jar %1</tt>
-        stehen.
-      </li>
-      <li>
-        Ersetze nun <tt>%1</tt> durch <tt>"%1"</tt>
-      </li>
-      <li>
-        Schließe das regedit Programm - fertig
-      </li>
-    </ol>
-    <p>
-      Hintergrund: Liegt Magellan im Ordner <tt>C:\Eigene
-      Dateien\magellan.jar</tt> bewirkt der regedit-Eintrag einen Aufruf von
-      java in der Form <tt>(Pfad zu Java)\javaw.exe -jar C:\Eigene
-      Dateien\magellan.jar</tt>, das heißt, java würde versuchen, die Datei
-      <tt>C:\Eigene</tt> mit dem Parameter <tt>Dateien\magellan.jar</tt> zu
-      starten, was nicht so richtig gut klappen kann. Mit den Anführungszeichen
-      sieht es dann so aus: <tt>(Pfad zu java)\javaw.exe -jar "C:\Eigene
-      Dateien\magellan.jar"</tt>, es wird hier also wirklich die Datei
-      <tt>magellan.jar</tt> gestartet.
-    </p>
-    <p>
-      Sollte das nicht geholfen haben, kann man versuchen, <a
-      href="#4">Magellan von der Kommandozeile aus zu starten</a>, um
-      eventuelle Fehlermeldungen sehen zu können.
-    </p>
-    <a id="CRVerknuepfung" name="CRVerknuepfung"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Wie verknüpfe ich unter Windows2000 CR-Dateien mit Magellan?
-    </p>
-    <p>
-      Dafür muss man für den Dateityp "CR" einen entsprechenden Vorgang
-      definieren. Das geht im Dateimanager (Explorer) unter Extras,
-      Ordneroptionen, Dateitypen:
-    </p>
-    <ol>
-      <li>
-        Wähle den Dateityp "CR"
-      </li>
-      <li>
-        Wähle den Button "Erweitert"
-      </li>
-      <li>
-        Wähle im Fenster "Dateityp bearbeiten" den Button "Neu"
-      </li>
-      <li>
-        Trage im Feld "Vorgang" den Wert ' Magellan 'ein
-      </li>
-      <li>
-        Trage im Feld "Anwendung für diesen Vorgang" den Wert ' "java.exe" -jar
-        "magellan.jar" "%1" ' ein. Java.exe und magellan.jar müssen dabei mit
-        vollständigem Pfad eingegeben werden (z.B.
-        "c:\spiele\eressea\magellan.jar"). Enthält dieser Pfad Leerzeichen sind
-        die umschließenden Anführungszeichen unbedingt notwendig.
-      </li>
-      <li>
-        Wähle den Button "OK"
-      </li>
-      <li>
-        Wähle im Fenster "Dateityp bearbeiten" den Eintrag "Magellan" aus der
-        Liste "Vorgänge" aus.
-      </li>
-      <li>
-        Wähle den Button "Als Standard". Der Eintrag Magellan ist nun fett
-        dargestellt.
-      </li>
-      <li>
-        Fertig :-)
-      </li>
-    </ol>
-    <a id="Kommandozeilenstart" name="Kommandozeilenstart"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Wie starte ich Magellan von der Kommandozeile?
-    </p>
-    <p>
-      <b>A:</b> Magellan (bzw. Java) gibt Fehlermeldungen oft nur in der
-      Eingabeaufforderung aus, deshalb kann es nützlich sein, Magellan von der
-      Kommandozeile aus zu starten, um solche Fehlermeldungen zu sehen.
-    </p>
-    <p>
-      Dazu startet man zunächst die MS-DOS-Eingabeaufforderung (unter Windows
-      ME im Startmenü den Punkt 'Ausführen' öffnen, <tt>command</tt> eingeben
-      und auf OK klicken). Danach gibt man folgenden Befehl ein: <tt>javaw -jar
-      "(Pfad zu Magellan)\magellan.jar"</tt> also z.B. <tt>javaw -jar
-      "C:\Eigene Dateien\magellan.jar"</tt>.
-    </p>
-    <p>
-      Die Kommandozeilen-Parameter von Magellan sind in der <a
-      href="reference/commandline.html">Referenz</a> beschrieben.
-    </p>
-    <a id="MacMagellan" name="MacMagellan"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Wie bekomme ich Magellan auf einem Mac zum laufen?
-    </p>
-    <p>
-      <b>A:</b> Leider hat Apple erst mit dem Mac OS X eine aktuelle
-      Java-Version veröffentlicht, unter der auch Magellan funktioniert. Zum
-      Laden von Magellan geht man an der Konsole so vor, wie unter Windows an
-      der <a href="#4">Kommandozeile</a>.
-    </p>
-    <p>
-      Zusätzlich empfiehlt es sich jedoch, eine speziell für den Mac
-      konvertierte Regel-Datei, die alle grundlegenden Eressea-Informationen
-      enthät, zu verwenden. Nachdem man sie heruntergeladen unter <a
-      href="http://eressea.upb.de/magellan/rules.cr">http://eressea.upb.de/magellan/rules.cr</a>
-      hat, muss man sie in einem Ordner speichern, der <tt>rules</tt> heisst.
-      Angenommen, die Datei <tt>rules.cr</tt> liegt nun unter
-      <tt>magellan/rules/rules.cr</tt> ruft man in Magellan in den Optionen
-      (Menü Extras) den Tab '<a
-      href="reference/ressources.html">Ressourcen</a>' auf und legt einen neuen
-      Pfad an, der auf den Ordner <tt>magellan</tt> zeigt. Nach dem Neustart
-      von Magellan, sollte es die neue Regeldatei verwenden, was man daran
-      erkennen kann, dass z.B. das mögliche Einkommen in einer Region korrekt
-      berechnet wird.
-    </p>
-    <a id="Resourcenpfade" name="Resourcenpfade"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Wie gehe ich mit Resourcenpfaden um?
-    </p>
-    <p>
-      <b>A:</b> Die Resourcenpfade sind auf einer <a
-      href="reference/ressources.html">eigenen Seite</a> beschrieben.
-    </p>
-    <a id="Speichermangel" name="Speichermangel"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Obwohl ich genug RAM habe, meldet Magellan Speichermangel. Wieso?
-    </p>
-    <p>
-      <b>A:</b> Du mußt der Java-VM einfach etwas mehr Speicher zubilligen.
-      Magellan fordert den Speicher von der VM an, wenn die ihm den Speicher
-      nicht geben will, guckt Magellan in die Röhre.
-    </p>
-    <p>
-      Die Speicherzuteilung kannst Du folgendermaßen machen:
-    </p>
-    <p>
-      Unter Windows:<br />
-      Erstelle eine Verknüpfung von Magellan, klicke mit der rechten Maustaste
-      drauf und geh auf "Eigenschaften". Dort trägst Du unter "Ziel" folgende
-      Zeile ein (die Pfade müssen natürlich an Deine Installation angepasst
-      werden):<br />
-      <tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
-      c:\Programme\Eressea\Magellan\magellan.jar</tt>
-    </p>
-    <p>
-      Unter Linux einfach in der Shell:<br />
-      <tt>java -Xms128MB -Xmx256MB -jar magellan.jar</tt>
-    </p>
-    <p>
-      Dies weist die Java-VM an, sich min. 128MB und max. 256MB RAM zu sichern.
-      Je nach Speicherausbau kannst Du die Werte auch verändern.
-    </p>
-    <a id="base36nummern" name="base36nummern"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Warum verwendet Magellan plötzlich keine Base-36 Nummern mehr für die
-      Einheiten?
-    </p>
-    <p>
-      <b>A:</b>Im CR fehlt vermutlich das Tag <tt>36;Basis</tt>. Das Basis-Tag
-      definiert die Zahlenbasis mit der Magellan arbeitet. Bei Eressea-CRs ist
-      das normalerweise 36, andere PBeMs die ältere CR-Versionen benutzen (z.B.
-      Verdanon) arbeiten mit Dezimalzahlen (Basis 10) und kennen dieses Tag
-      nicht. Daher nimmt Magellan Basis 10 an, wenn im CR nichts anderes
-      definiert ist.
-    </p>
-    <a id="VorlageBefehlsbestaetigung" name="VorlageBefehlsbestaetigung"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Wie kann ich mit Vorlage die Befehle von Einheiten automatisch
-      bestätigen?
-    </p>
-    <p>
-      <b>A:</b> Mit <tt>// #tag EINHEIT ejcOrdersConfirmed 1</tt>
-    </p>
-    <a id="ARR" name="ARR"></a> 
-    <p>
-      &nbsp;
-    </p>
-    <p style="font-weight: bold">
-      F: Ich komme mit dem ATR, dem ARR oder den Tooltips nicht zurecht!
-    </p>
-    <p>
-      <b>A:</b> Eine gute Hilfe zum ATR, ARR und den Tooltips findet sich <a
-      href="http://webrum.uni-mannheim.de/ppe/larska/eressea/atranleitung.htm">hier.</a>
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<title>FAQ</title>
+<meta http-equiv="Content-Language" content="en">
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-1">
+<meta name="keywords" content=
+"Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+<meta name="description" content="Magellan Dokumentation">
+<meta name="AUTHOR" content="rb@behme.space.net">
+<link rel="stylesheet" href="../default.css" type="text/css">
+</head>
+<body>
+<a name="top"></a> <!-- Inhalt -->
+ 
+
+<h1>FAQ</h1>
+
+<p>Frequently Asked Questions:</p>
+
+<h2>1. Questions about installation</h2>
+
+<ol>
+<li><a href="#Dateiname">magellan.jar? Shouldn't the file be called
+magellan.exe?</a></li>
+
+<li><a href="#Verknuepfung">Why does another program (e.g. WinZip
+or PowerArchiver) start, when I try to start Magellan by
+double-clicking?</a></li>
+
+<li><a href="#keinStart">Why doesn't Magellan start when I click
+the file magellan.jar?</a></li>
+
+<li><a href="#CRVerknuepfung">How do I make Magellan the default
+program for CR-files under Windows2000?</a></li>
+
+<li><a href="#Kommandozeilenstart">How do I start Magellan from the
+commandprompt?</a></li>
+
+<li><a href="#MacMagellan">How do I get Magellan to run on a
+Mac?</a></li>
+
+<li><a href="#Resourcenpfade">How do I handle resource
+paths?</a></li>
+
+<li><a href="#Speichermangel">Even though I have enough RAM,
+Magellan reports a lack of memory. Why?</a></li>
+</ol>
+
+<br>
+<h2>2. Questions about Magellan</h2>
+
+<ol>
+<li><a href="#base36nummern">Why does Magellan all of a sudden not
+use Base-36 numbers for the units anymore?</a></li>
+
+<li><a href="#VorlageBefehlsbestaetigung">How can I use Vorlage to
+automatically confirm the orders of units?</a></li>
+
+<li><a href="#ARR">I just don't get the ARR, ATR or the
+Tooltips!</a></li>
+</ol>
+
+<a name="Dateiname"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: magellan.jar? Shouldn't the file be called
+magellan.exe?</b></p>
+
+<p><b>A:</b> No. To be honest, it is (almost) nothing more than a
+renamed ZIP-file, but one that Java can handle and that you
+therefore don't need to unpack with WinZip or a similar program.
+Magellan really consists of a lot of files that are simply gathered
+within magellan.jar, but Magellan should start when the JAR-file is
+double-clicked.</p>
+
+<a name="Verknuepfung"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: Why does another program (e.g. WinZip or PowerArchiver)
+start, when I try to start Magellan by double-clicking?</b></p>
+
+<p><b>A:</b> Because it is set to be the default program for the
+.jar extension instead of Java. In PowerArchiver and WinZip you can
+undo that in these programs' options, otherwise some manual action
+is needed:</p>
+
+<ol>
+<li>In the Start menu click 'Run'</li>
+
+<li>Type 'regedit' and click OK</li>
+
+<li>In the tree on the left click the 'HKEY_CLASSES_ROOT' entry and
+click on the entry '.jar'</li>
+
+<li>In the window on the right, doubleclick on '(Default)'</li>
+
+<li>Type 'jarfile' (of course without the ' quotes) and click
+OK</li>
+
+<li>Close the regedit program - done.</li>
+</ol>
+
+<a name="keinStart"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: Why doesn't Magellan start when I click the file
+magellan.jar?</b></p>
+
+<p><b>A:</b> A possible cause for this is that the file
+<tt>magellan.jar</tt> is in a folder with a name that has spaces in
+it. This isn't a problem that is caused by an error in Magellan,
+but by an inconvenience in the default link between
+<tt>.jar</tt>-files with java.</p>
+
+<p>The simple solution is of course to move Magellan to a different
+folder. The complex solution is as follows:</p>
+
+<ol>
+<li>In the Start menu click 'Run'</li>
+
+<li>Type 'regedit' and click OK</li>
+
+<li>In the tree on the left click the 'HKEY_CLASSES_ROOT' entry and
+click on the entry 'jarfile'</li>
+
+<li>Open the subentries 'shell', 'open' and finally 'command'</li>
+
+<li>In the window on the right, doubleclick '(Default)', and
+something like <tt>(path to Java)\javaw.exe -jar %1</tt> should
+appear.</li>
+
+<li>Replace <tt>%1</tt> with <tt>"%1"</tt></li>
+
+<li>Close the regedit program - done.</li>
+</ol>
+
+<p>Background: If Magellan is in <tt>C:\My
+Documents\magellan.jar</tt>, then the regedit entry would try to
+initiate java to call <tt>(Path to Java)\javaw.exe -jar C:\My
+Documents\magellan.jar</tt>, which means that java would try to run
+the file <tt>C:\My</tt> with parameters
+<tt>Documents\magellan.jar</tt>, which doesn't quite work out
+right. With the quotes this looks like this: <tt>(Path to
+java)\javaw.exe -jar "C:\My Documents\magellan.jar"</tt>, and here
+the actual <tt>magellan.jar</tt> file is started.</p>
+
+<p>If this didn't help you can try to <a href="#4">start Magellan
+from the commandprompt</a></p>
+
+to be able to read possible error messages.<br>
+<br>
+ <a name="CRVerknuepfung"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: How do I make Magellan the default program for CR-files
+under Windows2000?</b></p>
+
+<p>Daf&uuml;r muss man f&uuml;r den Dateityp "CR" einen
+entsprechenden Vorgang definieren. Das geht im Dateimanager
+(Explorer) unter Extras, Ordneroptionen, Dateitypen:</p>
+
+<p>To do this you need to set up a link between Magellan and the
+"CR" filetype. You can do this in Explorer under Extras,
+Folderoptions, Filetypes:</p>
+
+<ol>
+<li>Choose filetype "CR"</li>
+
+<li>Click the "Advanced" button</li>
+
+<li>In the "Edit filetype" window click the "New" button</li>
+
+<li>In the "Action" field, enter 'Magellan'</li>
+
+<li>In the "Program for this action" field enter '"java.exe" -jar
+"magellan.jar" "%1"'. Java.exe and magellan.jar have to be entered
+with the complete path (e.g. "c:\games\eressea\magellan.jar"). If
+the path contains spaces, the surrounding quotes are
+mandatory.</li>
+
+<li>Click "OK"</li>
+
+<li>In the "Edit filetype" window choose the "Magellan" entry from
+the list "Actions".</li>
+
+<li>Click the "As standard" button. The Magellan entry is now shown
+in bold font.</li>
+
+<li>Done :-)</li>
+</ol>
+
+<a name="Kommandozeilenstart"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: How do I start Magellan from the commandprompt?</b></p>
+
+<p><b>A:</b> Magellan (or Java) often only gives error messages at
+the command prompt, therefore it can be useful to start Magellan
+from here.</p>
+
+<p>To do this you first start the command prompt (in Windows ME
+under Start menu open 'Run', type <tt>command</tt> and click OK.
+Then enter the following command: <tt>javaw -jar "(Path to
+Magellan)\magellan.jar"</tt>, so e.g. <tt>javaw -jar "C:\My
+Documents\magellan.jar"</tt>.</p>
+
+<p>The commandprompt parameters for Magellan are listed in the <a
+href="reference/commandline.html">Reference</a>.</p>
+
+<a name="MacMagellan"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: How do I get Magellan to run on a Mac?</b></p>
+
+<p><b>A:</b> Unfortunately Apple has only with the Mac OS X just
+released a current Java-version that will support Magellan. To run
+Magellan use the console the same as under Windows at the <a href=
+"#4">command prompt</a>.</p>
+
+<p>Additionally it is recommended to use a special Mac version of
+the rules file that contains all basic information on Eressea.
+After downloading this from <a href=
+"http://eressea.upb.de/magellan/rules.cr">http://eressea.upb.de/magellan/rules.cr</a>,
+it should be saved in the <tt>\etc\rules</tt> folder, which can be
+found in the main Magellan folder.</p>
+
+<a name="Resourcenpfade"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: How do I handle resource paths?</b></p>
+
+<p><b>A:</b> Resource paths are described on <a href=
+"reference/ressources.html">their own site</a>.</p>
+
+<a name="Speichermangel"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: Even though I have enough RAM, Magellan reports a lack of
+memory. Why?</b></p>
+
+<p><b>A:</b> Du mu&szlig;t der Java-VM einfach etwas mehr Speicher
+zubilligen. Magellan fordert den Speicher von der VM an, wenn die
+ihm den Speicher nicht geben will, guckt Magellan in die
+R&ouml;hre.</p>
+
+<p><b>A:</b> Simply allocate Java-VM a bit more memory. Magellan
+requests memory from the VM, and when VM does not have any to give,
+Magellan simply does not get any.</p>
+
+<p>You can allocate memory as follows:</p>
+
+<p>Under Windows:<br>
+Create an icon for Magellan on your desktop, right-click on it and
+go to "Properties". Under "Target" enter the following (the path
+should of course match your particular setup):<br>
+<tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
+c:\Programs\Eressea\Magellan\magellan.jar</tt></p>
+
+<p>Under Linux simply in the shell:<br>
+<tt>java -Xms128MB -Xmx256MB -jar magellan.jar</tt></p>
+
+<p>This tells the Java-VM to allocate min. 128MB and max. 256MB.
+You can change these values according to your own setup.</p>
+
+<a name="base36nummern"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: Why does Magellan all of a sudden not use Base-36 numbers
+for the units anymore?</b></p>
+
+<p><b>A:</b>Most like the <tt>36;Basis</tt> tag is missing in the
+CR. This basic tag defines the number base that Magellan uses. For
+Eressea-CRs this usually is 36, other PBeMs using older CR-versions
+(e.g. Verdanon) use decimal (base 10) and don't know this tag.
+That's why Magellan assumes base 10 when there is no mention of
+another number base in the CR.</p>
+
+<a name="VorlageBefehlsbestaetigung"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: How can I use Vorlage to automatically confirm the orders
+of units?</b></p>
+
+<p><b>A:</b> With <tt>// #tag EINHEIT ejcOrdersConfirmed 1</tt></p>
+
+<a name="ARR"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: I just don't get the ARR, ATR or the Tooltips!</b></p>
+
+<p><b>A:</b> A good help to ARR, ATR and the Tooltips can be found
+<a href=
+"http://webrum.uni-mannheim.de/ppe/larska/eressea/atranleitung.htm">
+here.</a></p>
+
+<!-- Inhalt - Ende -->
+</body>
 </html>
 

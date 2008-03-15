@@ -36,6 +36,7 @@ public enum PlugInAction {
   EXECUTE_ALL("mainmenu.execute"),
   CONFIGURE_ALL("mainmenu.configure"),
   LIBRARY_EDIT("mainmenu.library"),
+  CLEAR("mainmenu.clear"),
   UNKNOWN("");
   
   private String id;

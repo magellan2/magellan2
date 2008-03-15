@@ -23,7 +23,9 @@
 // 
 package magellan.client.extern;
 
+import java.awt.Component;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JMenuItem;
@@ -89,4 +91,10 @@ public interface MagellanPlugIn {
    * null.
    */
   public PreferencesFactory getPreferencesProvider();
+
+  /**
+   * Returns a list of dock elements or null, if the
+   * plugin has no docks.
+   */
+  public Map<String, Component> getDocks();
 }

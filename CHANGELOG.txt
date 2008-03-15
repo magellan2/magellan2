@@ -1,3 +1,9 @@
+2008-03-15 / Build 173 - Thoralf (thoralf@m84.de)
+    * Bug #156 fixed
+    * ExtCmds now with progress bar
+    * ExtCmds has now a clean up feature for unused scripts.
+    * changed MagellanPlugIn API to support future use of docks components.
+
 2008-03-14 / Build 172 - Thoralf (thoralf@m84.de)
     * About Image has now a texture background
 

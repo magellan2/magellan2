@@ -23,19 +23,23 @@
 // 
 package magellan.plugin.extendedcommands;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.extern.MagellanPlugIn;
+import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.context.UnitContainerContextMenuProvider;
 import magellan.client.swing.context.UnitContextMenuProvider;
 import magellan.client.swing.preferences.PreferencesFactory;
@@ -106,6 +110,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     libraryMenu.setActionCommand(PlugInAction.LIBRARY_EDIT.getID());
     libraryMenu.addActionListener(this);
     menu.add(libraryMenu);    
+
+    JMenuItem clearMenu = new JMenuItem(Resources.get("mainmenu.clear.title"));
+    clearMenu.setActionCommand(PlugInAction.CLEAR.getID());
+    clearMenu.addActionListener(this);
+    menu.add(clearMenu);    
 
     JMenuItem configureMenu = new JMenuItem(Resources.get("mainmenu.configure.title"));
     configureMenu.setActionCommand(PlugInAction.CONFIGURE_ALL.getID());
@@ -193,12 +202,19 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     switch (PlugInAction.getAction(e)) {
       case EXECUTE_ALL: {
         log.info("Execute all...");
-        executeCommands(client.getData());
+        ProgressBarUI progress = new ProgressBarUI(Client.INSTANCE);
+        ExecutionThread thread = new ExecutionThread(client, progress, commands);
+        thread.start();
         break;
       }
       case LIBRARY_EDIT: {
         log.info("Edit library...");
         editLibrary(client.getData());
+        break;
+      }
+      case CLEAR: {
+        log.info("Clear unused scripts...");
+        clearCommands();
         break;
       }
       case CONFIGURE_ALL: {
@@ -285,20 +301,12 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     dialog.setVisible(true);
   }
 
-  
-  protected void executeCommands(GameData data) {
-    log.info("Executing commands for all configured units...");
+  protected void clearCommands() {
+    if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"), Resources.get("extended_commands.cleanup.title"),JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) return;
+    int units = commands.clearUnusedUnits();
+    int containers = commands.clearUnusedContainers();
     
-    // Reihenfolge sinnvoll?
-    List<Unit> units = commands.getUnitsWithCommands();
-    for (Unit unit : units) {
-      commands.execute(data, unit);
-    }
-    
-    List<UnitContainer> containers = commands.getUnitContainersWithCommands();
-    for (UnitContainer container : containers) {
-      commands.execute(data, container);
-    }
+    JOptionPane.showMessageDialog(client, Resources.get("extended_commands.cleanup.result",units,containers), Resources.get("extended_commands.cleanup.title"), JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
@@ -332,6 +340,13 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public PreferencesFactory getPreferencesProvider() {
     // later we need a dialog for the library files.
+    return null;
+  }
+
+  /**
+   * @see magellan.client.extern.MagellanPlugIn#getDocks()
+   */
+  public Map<String, Component> getDocks() {
     return null;
   }
 

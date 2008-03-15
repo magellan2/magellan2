@@ -23,6 +23,7 @@
 // 
 package magellan.plugin;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -413,6 +415,13 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * 
    */
   public PreferencesFactory getPreferencesProvider() {
+    return null;
+  }
+
+  /**
+   * @see magellan.client.extern.MagellanPlugIn#getDocks()
+   */
+  public Map<String, Component> getDocks() {
     return null;
   }
 }

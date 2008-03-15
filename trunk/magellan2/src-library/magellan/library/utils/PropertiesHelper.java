@@ -165,6 +165,46 @@ public class PropertiesHelper {
   public static final String CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER = "Client.lastSelectedAddCRFileFilter";
 
   public static final String BUILDINGRENDERER_RENDER = "BuildingTypeRenderer.Render.";
+  
+  public static final String ORDERWRITER_MAILSERVER_HOST = "OrderWriter.mailServer";
+
+  public static final String ORDERWRITER_MAILSERVER_PORT = "OrderWriter.mailServerPort";
+
+  public static final String ORDERWRITER_MAILSERVER_USERNAME = "OrderWriter.serverUsername";
+
+  public static final String ORDERWRITER_MAILSERVER_PASSWORD = "OrderWriter.serverPassword";
+
+  public static final String ORDERWRITER_MAILSERVER_ASKPWD = "OrderWriter.askPassword";
+
+  public static final String ORDERWRITER_MAILSERVER_USEAUTH = "OrderWriter.useAuth";
+
+  public static final String ORDERWRITER_MAILSERVER_RECIPIENT = "OrderWriter.mailRecipient";
+
+  public static final String ORDERWRITER_MAILSERVER_SENDER = "OrderWriter.mailSender";
+
+  public static final String ORDERWRITER_MAILSERVER_SUBJECT = "OrderWriter.mailSubject";
+
+  public static final String ORDERWRITER_MAILSERVER_USE_CR_SETTINGS = "OrderWriter.useSettingsFromCr";
+
+  public static final String ORDERWRITER_MAILSERVER_CC2SENDER = "OrderWriter.CCToSender";
+
+  public static final String ORDERWRITER_OUTPUT_FILE = "OrderWriter.outputFile";
+
+  public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";
+
+  public static final String ORDERWRITER_SELECTED_REGIONS = "OrderWriter.includeSelRegionsOnly";
+  
+  public static final String ORDERWRITER_ADD_ECHECK_COMMENTS = "OrderWriter.addECheckComments";
+
+  public static final String ORDERWRITER_REMOVE_SC_COMMENTS = "OrderWriter.removeSCComments";
+
+  public static final String ORDERWRITER_REMOVE_SS_COMMENTS = "OrderWriter.removeSSComments";
+
+  public static final String ORDERWRITER_CONFIRMED_ONLY = "OrderWriter.confirmedOnly";
+
+  public static final String ORDERWRITER_FACTION = "OrderWriter.faction";
+
+  public static final String ORDERWRITER_FIXED_WIDTH = "OrderWriter.fixedWidth";
 
 
   /**

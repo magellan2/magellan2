@@ -310,7 +310,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Container getControlsPanel() {
-    int fixedWidth = Integer.parseInt(settings.getProperty("OrderWriter.fixedWidth", "76"));
+    int fixedWidth = Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "76"));
     chkFixedWidth = new JCheckBox(Resources.get("orderwriterdialog.chk.wordwrap.caption"), fixedWidth > 0);
     chkFixedWidth.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -331,13 +331,13 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     pnlFixedWidth.add(txtFixedWidth);
     pnlFixedWidth.add(lblFixedWidth2);
 
-    chkECheckComments = new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.addECheckComments","true"))).booleanValue());
-    chkRemoveSCComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.removeSCComments","false"))).booleanValue());
-    chkRemoveSSComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.removeSSComments","false"))).booleanValue());
-    chkConfirmedOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.confirmedOnly","false"))).booleanValue());
-    chkSelRegionsOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.includeSelRegionsOnly","false"))).booleanValue());
+    chkECheckComments = new JCheckBox(Resources.get("orderwriterdialog.chk.addecheckcomments.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,"true"))).booleanValue());
+    chkRemoveSCComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removesemicoloncomments.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,"false"))).booleanValue());
+    chkRemoveSSComments = new JCheckBox(Resources.get("orderwriterdialog.chk.removedoubleslashcomments.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS,"false"))).booleanValue());
+    chkConfirmedOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.skipunconfirmedorders.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,"false"))).booleanValue());
+    chkSelRegionsOnly = new JCheckBox(Resources.get("orderwriterdialog.chk.selectedregions.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS,"false"))).booleanValue());
     chkSelRegionsOnly.setEnabled((regions != null) && (regions.size() > 0));
-    chkWriteUnitTagsAsVorlageComment = new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.writeUnitTagsAsVorlageComment","false"))).booleanValue());
+    chkWriteUnitTagsAsVorlageComment = new JCheckBox(Resources.get("orderwriterdialog.chk.writeUnitTagsAsVorlageComment.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT,"false"))).booleanValue());
 
     JPanel pnlCmdSave = new JPanel();
     pnlCmdSave.setLayout(new BoxLayout(pnlCmdSave, BoxLayout.Y_AXIS));
@@ -357,16 +357,27 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private Container getFactionPanel() {
     cmbFaction = new JComboBox();
-    cmbFaction.addItemListener(new ItemListener() {
-        public void itemStateChanged(ItemEvent e) {
-          if(
-            // in this situation we need to reinitialize the groups list
-            log.isDebugEnabled()) {
-            // in this situation we need to reinitialize the groups list
-            log.debug("Item even on faction combobox:" + e);
-          }
 
-          switch(e.getStateChange()) {
+    for(Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+      Faction f = iter.next();
+
+      if(f.isPrivileged()) {
+        cmbFaction.addItem(f);
+      }
+    }
+
+    Faction f = data.getFaction(EntityID.createEntityID(settings.getProperty(PropertiesHelper.ORDERWRITER_FACTION,"-1"), 10));
+
+    if(f != null) {
+      cmbFaction.setSelectedItem(f);
+    }
+
+    cmbFaction.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        // in this situation we need to reinitialize the groups list
+        log.debug("Item even on faction combobox:" + e);
+
+        switch(e.getStateChange()) {
           case ItemEvent.SELECTED:
 
             Faction f = (Faction) e.getItem();
@@ -378,23 +389,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
             setGroups(null);
 
             break;
-          }
         }
-      });
-
-    for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-      Faction f = (Faction) iter.next();
-
-      if(f.isPrivileged()) {
-        cmbFaction.addItem(f);
+        
+        factionChanged();
       }
-    }
-
-    Faction f = data.getFaction(EntityID.createEntityID(settings.getProperty("OrderWriter.faction","-1"), 10));
-
-    if(f != null) {
-      cmbFaction.setSelectedItem(f);
-    }
+    });
 
     JPanel pnlCmdSave = new JPanel(new GridLayout(1, 1));
     pnlCmdSave.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),Resources.get("orderwriterdialog.border.faction")));
@@ -434,7 +433,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private Container getFilePanel() {
-    cmbOutputFile = new JComboBox(PropertiesHelper.getList(settings, "OrderWriter.outputFile").toArray());
+    cmbOutputFile = new JComboBox(PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE).toArray());
     cmbOutputFile.setEditable(true);
 
     JButton btnOutputFile = new JButton("...");
@@ -443,6 +442,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           String outputFile = getFileName((String) cmbOutputFile.getSelectedItem());
 
           if(outputFile != null) {
+            // delete old entry to prevent to many items...
+            for (int i=0; i<cmbOutputFile.getItemCount(); i++) {
+              String file = (String)cmbOutputFile.getItemAt(i);
+              if (file.equals(outputFile)) {
+                cmbOutputFile.removeItemAt(i);
+                break;
+              }
+            }
             cmbOutputFile.insertItemAt(outputFile, 0);
             cmbOutputFile.setSelectedItem(outputFile);
           }
@@ -459,23 +466,23 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private Container getMailPanel() {
     JLabel lblMailServer = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.name"));
-    txtMailServer = new JTextField(settings.getProperty("OrderWriter.mailServer", "smtp.bar.net"),20);
+    txtMailServer = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST, "smtp.bar.net"),20);
     lblMailServer.setLabelFor(txtMailServer);
 
     JLabel lblMailServerPort = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.port"));
-    txtMailServerPort = new JTextField(settings.getProperty("OrderWriter.mailServerPort", "25"),4);
+    txtMailServerPort = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, "25"),4);
     lblMailServerPort.setLabelFor(txtMailServerPort);
 
     lblServerUsername = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.user"));
-    txtServerUsername = new JTextField(settings.getProperty("OrderWriter.serverUsername", ""),20);
+    txtServerUsername = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, ""),20);
     lblServerUsername.setLabelFor(txtServerUsername);
 
     lblServerPassword = new JLabel(Resources.get("orderwriterdialog.lbl.smtpserver.password"));
-    txtServerPassword = new JPasswordField(settings.getProperty("OrderWriter.serverPassword", ""),20);
+    txtServerPassword = new JPasswordField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD, ""),20);
     lblServerPassword.setLabelFor(txtServerPassword);
     
 
-    chkAskPassword = new JCheckBox(Resources.get("orderwriterdialog.chk.askpassword.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.askPassword","true"))).booleanValue());
+    chkAskPassword = new JCheckBox(Resources.get("orderwriterdialog.chk.askpassword.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD,"true"))).booleanValue());
     chkAskPassword.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int answer=0;
@@ -493,7 +500,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
-    chkUseAuth = new JCheckBox(Resources.get("orderwriterdialog.chk.useauth.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.useAuth","false"))).booleanValue());
+    chkUseAuth = new JCheckBox(Resources.get("orderwriterdialog.chk.useauth.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH,"false"))).booleanValue());
     chkUseAuth.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
@@ -512,7 +519,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     lblMailRecipient = new JLabel(Resources.get("orderwriterdialog.lbl.recipient"));
 
-    String email = settings.getProperty("OrderWriter.mailRecipient", defaultEmail);
+    String email = settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail);
 
     // stm 2008.03.02: enno wanted this change undone ;)
 //  // pavkovic 2002.01.23: enno wanted this change...
@@ -533,18 +540,18 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailRecipient.setLabelFor(txtMailRecipient);
 
     JLabel lblMailSender = new JLabel(Resources.get("orderwriterdialog.lbl.sender"));
-    txtMailSender = new JTextField(settings.getProperty("OrderWriter.mailSender", "foo@bar.net"),20);
+    txtMailSender = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER, "foo@bar.net"),20);
     lblMailSender.setLabelFor(txtMailSender);
 
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
-    txtMailSubject = new JTextField(settings.getProperty("OrderWriter.mailSubject",defaultSubject), 20);
+    txtMailSubject = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,defaultSubject), 20);
     lblMailSubject.setLabelFor(txtMailSubject);
 
     JPanel pnlMail = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
     pnlMail.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),Resources.get("orderwriterdialog.border.mailoptions")));
 
-    chkUseSettingsFromCR = new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.useSettingsFromCr","true"))).booleanValue());
+    chkUseSettingsFromCR = new JCheckBox(Resources.get("orderwriterdialog.chk.usesettingsfromcr.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS,"true"))).booleanValue());
     chkUseSettingsFromCR.setEnabled((data != null) && (data.mailTo != null) && (data.mailSubject != null));
     chkUseSettingsFromCR.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -555,7 +562,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     updateRecipient();
 
-    chkCCToSender = new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"),(Boolean.valueOf(settings.getProperty("OrderWriter.CCToSender","true"))).booleanValue());
+    chkCCToSender = new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER,"true"))).booleanValue());
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
@@ -703,12 +710,125 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     return pnlMail;
   }
+  
+  /**
+   * If the faction changed, the configuration for the mailserver
+   * and the selected output file may changed...this method checks
+   * this.
+   */
+  protected void factionChanged() {
+    Faction faction = (Faction)cmbFaction.getSelectedItem();
+    String suffix = "."+faction.getID();
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS+suffix, null) != null) {
+      chkUseSettingsFromCR.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS+suffix, true));
+      if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()){
+        txtMailRecipient.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT+suffix, defaultEmail));
+        txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT+suffix, defaultSubject));
+      }else{
+        txtMailRecipient.setText(data.mailTo);
+        txtMailSubject.setText(data.mailSubject);
+      }
+      txtMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+      txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+      lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+      lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected());
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix, null) != null) {
+      chkCCToSender.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix, true));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix, null) != null) {
+      chkSelRegionsOnly.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix, false));
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix, null) != null) {
+      int fixedWidth = Integer.parseInt(settings.getProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix, "76"));
+      chkFixedWidth.setSelected(fixedWidth > 0);
+      txtFixedWidth.setText("" + Math.abs(fixedWidth));
+      txtFixedWidth.setEnabled(chkFixedWidth.isSelected());
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT+suffix, null) != null) {
+      chkWriteUnitTagsAsVorlageComment.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT+suffix, false));
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST+suffix, null) != null) {
+      txtMailServer.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST+suffix));
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT+suffix, null) != null) {
+      txtMailServerPort.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT+suffix));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH+suffix, null) != null) {
+      chkUseAuth.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH+suffix, false));
+      lblServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
+      lblServerPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled() && !chkAskPassword.isSelected());
+      txtServerUsername.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
+      txtServerPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled() && !chkAskPassword.isSelected());
+      chkAskPassword.setEnabled(chkUseAuth.isSelected() && chkUseAuth.isEnabled());
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME+suffix, null) != null) {
+      txtServerUsername.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME+suffix));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD+suffix, null) != null) {
+      chkAskPassword.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD+suffix, false));
+      lblServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());
+      txtServerPassword.setEnabled(!chkAskPassword.isSelected() || !chkAskPassword.isEnabled());
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD+suffix, null) != null) {
+      txtServerPassword.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD+suffix));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT+suffix, null) != null) {
+      txtMailRecipient.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT+suffix));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER+suffix, null) != null) {
+      txtMailSender.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER+suffix));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT+suffix, null) != null) {
+      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT+suffix));
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS+suffix, null) != null) {
+      chkECheckComments.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS+suffix, false));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS+suffix, null) != null) {
+      chkRemoveSCComments.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS+suffix, false));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS+suffix, null) != null) {
+      chkRemoveSSComments.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS+suffix, false));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY+suffix, null) != null) {
+      chkConfirmedOnly.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY+suffix, false));
+    }
+
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix, null) != null) {
+      while (cmbOutputFile.getItemCount() > 0) {
+        cmbOutputFile.remove(0);
+      }
+      List<String> files = PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix);
+      for (String file : files) {
+        cmbOutputFile.addItem(file);
+      }
+    }
+  }
 
   protected void updateRecipient() {
     if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()){
-      txtMailRecipient.setText(settings.getProperty("OrderWriter.mailRecipient", defaultEmail));
+      txtMailRecipient.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail));
       txtMailRecipient.setEnabled(true);
-      txtMailSubject.setText(settings.getProperty("OrderWriter.mailSubject", defaultSubject));
+      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT, defaultSubject));
       txtMailSubject.setEnabled(true);
       lblMailRecipient.setEnabled(true);
       lblMailSubject.setEnabled(true);
@@ -723,59 +843,86 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   private void storeSettings() {
+    Faction faction = (Faction)cmbFaction.getSelectedItem();
+    String suffix = "."+faction.getID();
+    
     settings.setProperty("OrderWriterDialog.x", getX() + "");
     settings.setProperty("OrderWriterDialog.y", getY() + "");
-    PropertiesHelper.setList(settings, "OrderWriter.outputFile",getNewOutputFiles(cmbOutputFile));
+    PropertiesHelper.setList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE,getNewOutputFiles(cmbOutputFile));
+    PropertiesHelper.setList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix,getNewOutputFiles(cmbOutputFile));
 
     if(chkFixedWidth.isSelected() == true) {
       try {
-        settings.setProperty("OrderWriter.fixedWidth",Integer.parseInt(txtFixedWidth.getText()) + "");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH,Integer.parseInt(txtFixedWidth.getText()) + "");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix,Integer.parseInt(txtFixedWidth.getText()) + "");
       } catch(NumberFormatException e) {
-        settings.setProperty("OrderWriter.fixedWidth", "0");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "0");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix, "0");
       }
     } else {
       try {
-        settings.setProperty("OrderWriter.fixedWidth",(-1 * Integer.parseInt(txtFixedWidth.getText())) + "");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH,(-1 * Integer.parseInt(txtFixedWidth.getText())) + "");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix,(-1 * Integer.parseInt(txtFixedWidth.getText())) + "");
       } catch(NumberFormatException e) {
-        settings.setProperty("OrderWriter.fixedWidth", "0");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH, "0");
+        settings.setProperty(PropertiesHelper.ORDERWRITER_FIXED_WIDTH+suffix, "0");
       }
     }
 
-    settings.setProperty("OrderWriter.addECheckComments",String.valueOf(chkECheckComments.isSelected()));
-    settings.setProperty("OrderWriter.removeSCComments",String.valueOf(chkRemoveSCComments.isSelected()));
-    settings.setProperty("OrderWriter.removeSSComments",String.valueOf(chkRemoveSSComments.isSelected()));
-    settings.setProperty("OrderWriter.confirmedOnly",String.valueOf(chkConfirmedOnly.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS,String.valueOf(chkECheckComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_ADD_ECHECK_COMMENTS+suffix,String.valueOf(chkECheckComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS,String.valueOf(chkRemoveSCComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SC_COMMENTS+suffix,String.valueOf(chkRemoveSCComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS,String.valueOf(chkRemoveSSComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_REMOVE_SS_COMMENTS+suffix,String.valueOf(chkRemoveSSComments.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY,String.valueOf(chkConfirmedOnly.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY+suffix,String.valueOf(chkConfirmedOnly.isSelected()));
 
     if(chkUseSettingsFromCR.isEnabled()) {
-      settings.setProperty("OrderWriter.useSettingsFromCr",String.valueOf(chkUseSettingsFromCR.isSelected()));
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS,String.valueOf(chkUseSettingsFromCR.isSelected()));
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS+suffix,String.valueOf(chkUseSettingsFromCR.isSelected()));
     }
 
-    settings.setProperty("OrderWriter.CCToSender",String.valueOf(chkCCToSender.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER,String.valueOf(chkCCToSender.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix,String.valueOf(chkCCToSender.isSelected()));
 
     if(chkSelRegionsOnly.isEnabled()) {
-      settings.setProperty("OrderWriter.includeSelRegionsOnly",String.valueOf(chkSelRegionsOnly.isSelected()));
+      settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS,String.valueOf(chkSelRegionsOnly.isSelected()));
+      settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix,String.valueOf(chkSelRegionsOnly.isSelected()));
     }
 
-    settings.setProperty("OrderWriter.writeUnitTagsAsVorlageComment",String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT,String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT+suffix,String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
 
-    settings.setProperty("OrderWriter.faction",((EntityID) ((Faction) cmbFaction.getSelectedItem()).getID()).intValue() + "");
+    settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION,((EntityID) ((Faction) cmbFaction.getSelectedItem()).getID()).intValue() + "");
 
-    settings.setProperty("OrderWriter.mailServer", txtMailServer.getText());
-    settings.setProperty("OrderWriter.mailServerPort", txtMailServerPort.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST, txtMailServer.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_HOST+suffix, txtMailServer.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT, txtMailServerPort.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PORT+suffix, txtMailServerPort.getText());
 
-    settings.setProperty("OrderWriter.useAuth", String.valueOf(chkUseAuth.isSelected()));
-    settings.setProperty("OrderWriter.serverUsername", txtServerUsername.getText());
-    settings.setProperty("OrderWriter.askPassword", String.valueOf(chkAskPassword.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH, String.valueOf(chkUseAuth.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USEAUTH+suffix, String.valueOf(chkUseAuth.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME, txtServerUsername.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USERNAME+suffix, txtServerUsername.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD, String.valueOf(chkAskPassword.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_ASKPWD+suffix, String.valueOf(chkAskPassword.isSelected()));
     // for security reasons only store password if the user explicitly wants it
-    if (!chkAskPassword.isSelected() && chkUseAuth.isSelected())
-      settings.setProperty("OrderWriter.serverPassword", new String(txtServerPassword.getPassword()));
-    else
-      settings.setProperty("OrderWriter.serverPassword", "");
+    if (!chkAskPassword.isSelected() && chkUseAuth.isSelected()) {
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD, new String(txtServerPassword.getPassword()));
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD+suffix, new String(txtServerPassword.getPassword()));
+    } else {
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD, "");
+      settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_PASSWORD+suffix, "");
+    }
       
     
-    settings.setProperty("OrderWriter.mailRecipient", txtMailRecipient.getText());
-    settings.setProperty("OrderWriter.mailSender", txtMailSender.getText());
-    settings.setProperty("OrderWriter.mailSubject", txtMailSubject.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, txtMailRecipient.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT+suffix, txtMailRecipient.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER, txtMailSender.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER+suffix, txtMailSender.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT, txtMailSubject.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT+suffix, txtMailSubject.getText());
 
     if(standAlone) {
       try {
@@ -792,9 +939,17 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     if(combo.getSelectedIndex() == -1) {
       ret.add((String)combo.getEditor().getItem());
     }
+    
+    String selected = (String)combo.getSelectedItem();
+    if (selected != null) {
+      ret.add(selected);
+    }
 
     for(int i = 0; i < Math.min(combo.getItemCount(), 6); i++) {
-      ret.add((String)combo.getItemAt(i));
+      String item = (String)combo.getItemAt(i);
+      if (selected != null && item.equals(selected)) continue; // ignore
+      if (ret.contains(item)) continue; // no duplicates
+      ret.add(item);
     }
 
     return ret;

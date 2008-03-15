@@ -107,7 +107,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 		}
 
 		name = doCleanCompareValue(name);
-		name = doExpandValue(name, "OrderWriter.outputFile", "|");
+		name = doExpandValue(name, PropertiesHelper.ORDERWRITER_OUTPUT_FILE, "|");
 		name = doExpandValue(name, "CRWriterDialog.outputFile", "|");
 		name = doExpandValue(name, "Client.fileHistory", "|");
 		name = renameProperty(name, "DirectoryHistory", "HistoryAccessory.directoryHistory");

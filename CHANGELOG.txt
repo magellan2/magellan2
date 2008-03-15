@@ -1,3 +1,7 @@
+2008-03-15 / Build 174 - Thoralf (thoralf@m84.de)
+    * OrderWriter Dialog saves now faction specific settings
+    * Selected order output file is now saved in settings
+
 2008-03-15 / Build 173 - Thoralf (thoralf@m84.de)
     * Bug #156 fixed
     * ExtCmds now with progress bar

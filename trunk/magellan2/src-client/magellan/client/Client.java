@@ -604,6 +604,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
 //    tradeOrganizer = new TradeOrganizer(this, getDispatcher(), getData(), getProperties());
 //    components.put(TradeOrganizer.IDENTIFIER, tradeOrganizer);
+    
+    log.info("Checking for dock-providers...(MagellanPlugIns)");
+    for (MagellanPlugIn plugIn : plugIns) {
+      Map<String,Component> plugInDocks = plugIn.getDocks();
+      if (plugInDocks != null && plugInDocks.size() > 0) components.putAll(plugInDocks);
+    }
 
     return components;
   }

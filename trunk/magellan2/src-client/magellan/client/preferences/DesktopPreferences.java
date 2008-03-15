@@ -144,7 +144,9 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    // TODO: implement it
+    if (dontShowTabs != null) {
+      dontShowTabs.setSelected(PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+    }
   }
       
   /**

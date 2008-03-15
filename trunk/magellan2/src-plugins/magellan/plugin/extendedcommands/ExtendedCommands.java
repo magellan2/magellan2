@@ -198,7 +198,7 @@ public class ExtendedCommands {
     
     return units;
   }
-  
+    
   /**
    * Returns a list of all unitcontainerss with commands.
    */
@@ -232,6 +232,82 @@ public class ExtendedCommands {
     }
     
     return containers;
+  }
+  
+
+  /**
+   * Clears the commands if there are now units associated with
+   * this script
+   */
+  public int clearUnusedUnits() {
+    GameData world = client.getData();
+    List<String> keys = new ArrayList<String>();
+    int counter = 0;
+    
+    for (String unitId : unitCommands.keySet()) {
+      Unit unit = world.getUnit(UnitID.createUnitID(unitId,world.base));
+      if (unit == null) {
+        keys.add(unitId);
+        counter++;
+      }
+    }
+    
+    for (String key : keys) unitCommands.remove(key);
+    
+    return counter;
+  }
+  
+  /**
+   * Clears the commands if there are now unitcontainers associated with
+   * this script
+   */
+  public int clearUnusedContainers() {
+    List<UnitContainer> containers = new ArrayList<UnitContainer>();
+    GameData world = client.getData();
+    List<String> keys = new ArrayList<String>();
+    int counter = 0;
+    
+    for (String unitContainerId : unitContainerCommands.keySet()) {
+      switch (unitContainerTypes.get(unitContainerId)) {
+        case REGIONTYPE: {
+          UnitContainer container = world.getRegion(CoordinateID.parse(unitContainerId, ", "));
+          if (container == null) {
+            keys.add(unitContainerId);
+            counter++;
+          }
+          break;
+        }
+        case RACE: {
+          UnitContainer container = world.getFaction(EntityID.createEntityID(unitContainerId,world.base));
+          if (container == null) {
+            keys.add(unitContainerId);
+            counter++;
+          }
+          break;
+        }
+        case BUILDINGTYPE: {
+          UnitContainer container = world.getBuilding(EntityID.createEntityID(unitContainerId,world.base));
+          if (container == null) {
+            keys.add(unitContainerId);
+            counter++;
+          }
+          break;
+        }
+        case SHIPTYPE: {
+          UnitContainer container = world.getShip(EntityID.createEntityID(unitContainerId,world.base));
+          if (container == null) {
+            keys.add(unitContainerId);
+            counter++;
+          }
+          break;
+        }
+      }
+    }
+    
+    for (String key : keys) unitContainerCommands.remove(key);
+
+    
+    return counter;
   }
   
   

@@ -1,102 +1,88 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      Fenster: Details
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
-    <meta name="AUTHOR" content="rb@behme.space.net" />
-    <link rel="stylesheet" href="../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Details
-    </h1>
-    <p>
-      Der Detaildialog ist die wohl wichtigste Informationsquelle in Magellan.
-      Hier werden Details zu den gerade aktiven Objekten angezeigt.
-    </p>
-    <p style="text-align: center">
-      <img src="../images/windows_detail.gif" alt="" border="0" />
-    </p>
-    <p>
-      Im oberen Bereich werden permanent die wichtigsten Daten einer Region
-      dargestellt, in der sich das gerade aktive Objekt befindet. Hierzu
-      gehören: Bauernanzahl, maximal mögliche Rekruten, Verdienst der Bauern
-      (Steuern), Unterhaltungslimit, Poolsilber (Silber aller Parteien mit
-      gesetzem Passwort), Handelsvolumen, Bäume, Pferde, und Eisen/Laen so
-      vorhanden. Die Informationen im unteren Bereich ändern sich, je nach
-      aktiviertem Objekt und sind ebenfalls in einer Baumstruktur angelegt, so
-      dass sich die Informationen einfach ausblenden lassen.
-    </p>
-    <p>
-      Je nach dem was für ein Objekt gerade gewählt ist, zeigt die
-      Detailanzeige unterschiedliche Daten an.
-    </p>
-    <p>
-      <b>Insel:</b> keine Informationen.
-    </p>
-    <p>
-      <b>Region:</b> Alle Regionsinformationen sowie die bewachenden Parteien,
-      liegen Informationen aus einem vorherigen Report vor, so werden die
-      Änderungen gegenüber diesem ebenfalls angezeigt. Mit einem Rechtklick auf
-      das Detailpanel, erscheint ein Kontextmenü mit dem man Kommentare zu der
-      Region schreiben kann (Hoheitsrechte, etc.). Diese Kommentare können
-      später einfach per Rechtsklick geändert, gelöscht oder erweitert werden.
-    </p>
-    <p>
-      <b>Partei:</b> Regionszusammenfassungen aller bekannten Daten dieser
-      Partei, unterteilt in die Kategorien, Waffen, Rüstungen, Resourcen
-      (Rohstoffen), Luxusgüter, Kräuter, Tränke, Sonstiges und Talentwerte.
-      Auch bei Parteien besteht die Möglichkeit per Rechtsklick Kommentare
-      anzulegen.
-    </p>
-    <p>
-      <b>Schiffe:</b> Beladung (soweit bekannt), Zugehörigkeit und Kapitän
-      sowie der Einheiten, die sich auf ihm befinden. Auch zu Schiffen kann man
-      per Rechtsklick Kommentare anlegen.
-    </p>
-    <p>
-      <b>Gebäude:</b> Besitzer, Größe, Insassen sowie nötige
-      Unterhaltungskosten. Auch hier gibt es die Kommentarfunktion.
-    </p>
-    <p>
-      <b>Straße:</b> Richtung und Status der Fertigstellung
-    </p>
-    <p>
-      <b>Einheit:</b> Hier werden alle Daten zu der gerade aktiven Einheit
-      angezeigt. Hierzu gehören auch Beladung, freie Kapazität bei Bewegung,
-      Gegenstände, Lerntage und Talentstufe. Ebenso werden Lehrer- und
-      Schülereinheiten angezeigt. Werte in runden Klammern zeigen bei Übergaben
-      die Anzahl der Gegenstände/Personen/Lerntage in der nächsten Runde an.
-      Ist es nicht möglich diesen Wert mit Sicherheit vorherzusagen so wird ein
-      Fragezeichen gesetzt. Lehrt die aktuelle Einheit andere Einheiten, können
-      mit Rechtsklick auf den "Lehrer"-Knoten die Befehle aller
-      Schülereinheiten bestätigt werden.
-    </p>
-    <p>
-      Ist die aktive Einheit ein Magier, werden auch die bekannten
-      Zaubersprüche gelistet. Mit Klick auf einen Zauber kann man sich die
-      Spruchbeschreibung anzeigen lassen. Dazu muß die Spruchbeschreibung
-      allerdings im CR gespeichert sein. Wenn das noch nicht der Fall ist,
-      können die Spruchbeschreibungen mit dem Befehl <tt>ZEIGE ALLE ZAUBER</tt>
-      beim Server angefordert werden. In der folgenden Runde liegen sie dann
-      vor. Mit <b><i>Zurück</i></b> kommt man wieder zurück zur Einheit.
-    </p>
-    <p>
-      Alle in der Detailanzeige gelisteten Einheiten (Lehrer, Schüler,
-      Insassen) lassen sich mit einem Mausklick zu der aktiven Einheit machen,
-      so ist es z.B. relativ einfach möglich von einer Schüler- zu der
-      entsprechenden Lehrereinheit zu springen.
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
+<html>
+<head>
+<meta name="generator" content="HTML Tidy, see www.w3.org">
+<title>Fenster: Details</title>
+<meta http-equiv="Content-Language" content="en">
+<meta http-equiv="Content-Type" content=
+"text/html; charset=iso-8859-1">
+<meta name="keywords" content=
+"Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+<meta name="description" content="Magellan Dokumentation">
+
+<link rel="stylesheet" href="../../default.css" type="text/css">
+</head>
+<body>
+<a name="top"></a> <!-- Inhalt -->
+ 
+
+<h1>Details</h1>
+
+<p>The details window is probably the most important source of
+information in Magellan. The details of the currently selected
+objects are shown here.</p>
+
+<p align="center"><img src="../images/windows_detail.gif" alt=""
+border="0"></p>
+
+<p>The most important information about the region the object is in
+is shown at the top. This includes: Number of peasants, maximum
+number of recruits, income of the peasants (possible tax),
+entertainment limit, poolsilver (the silver of all factions with a
+password entered), trade volume, available trees, horses and
+iron/laen. The information in the lower part differs depending on
+the selected object and is shown in a tree, so that information can
+easily be called upon or hidden at will.</p>
+
+<p>Depending on the kind of object currently selected, the details
+window shows different information.</p>
+
+<p><b>Island:</b> No information.</p>
+
+<p><b>Region:</b> All information about a region, like the guarding
+factions, are compared to previous reports', which makes it
+possible to show the changes since the last report as well.
+Right-clicking in the details shows a context menu which allows you
+to write comments on the region (ownership, etc.) These comments
+can later be changed, removed or expanded on with another
+right-click.</p>
+
+<p><b>Faction:</b> A summary of all known information on this
+faction in the region, divided in categories weapons, armor,
+resources, luxury goods, herbs, potions, miscellaneous and skills.
+The options of adding comments by right-clicking also exists for
+factions.</p>
+
+<p><b>Ships:</b> Load (as known), ownership and captain, as well as
+the units that are on board. Ships can also be commented on by
+right-clicking.</p>
+
+<p><b>Buildings:</b> Owner, size, inmates as well as required
+upkeep. The comment function is also available here.</p>
+
+<p><b>Streets:</b> Direction and status of construction.</p>
+
+<p><b>Unit:</b> Here all information on the currently selected unit
+is shown. This includes load, free capacity when moving, items and
+skill level. Teacher and student units are also shown. Values in
+parenthesese show the number of items/persons in the next round. If
+it is impossible to calculate this value a question mark is shown.
+If the unit is teaching other units, the students' orders can be
+confirmed with a right-click on the teacher node.</p>
+
+<p>If the unit as a mage the known spells are listed. With a click
+on a spell you can see its description, if this is saved within the
+CR. If this is not the case, these can be requested from the server
+with the <tt>SHOW ALL SPELLS</tt> command. In the next turn they
+will be available. Using <b><i>Back</i></b> you return to the
+unit.</p>
+
+<p>All of the units shown in the details window (teachers,
+students, inmates) can be selected with a mouseclick, which makes
+it relatively simple to jump e.g. from a student to the
+corresponding teacher unit.</p>
+
+<!-- Inhalt - Ende -->
+</body>
 </html>
 

@@ -150,7 +150,7 @@ public class StartWindow extends JFrame {
       names+= "Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, ";
       names+= "Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, ";
       names+= "Ulrich Küster, Jake Hofer, Ilja Pavkovic, Fiete Fietz, Steffen Mecke, ";
-      names+= "Steve Wagner, Thoralf Rickert, Ralf Duckstein, Mar'ek Khadar\n";
+      names+= "Steve Wagner, Thoralf Rickert, Ralf Duckstein, Mark Gerritsen\n";
 		}
 
 		StyledDocument styled = new DefaultStyledDocument();

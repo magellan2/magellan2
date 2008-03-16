@@ -246,4 +246,18 @@ public class ExtendedCommandsHelper {
     log.info("Unit is not a soldier.");
     return false;
   }
+  
+  /**
+   * This method returns a list of all regions in the given world.
+   * It's a workaround for the complex iteration thru the map. 
+   */
+  public List<Region> getRegions(GameData world) {
+    List<Region> regions = new ArrayList<Region>();
+    
+    for (Region region : world.regions().values()) {
+      regions.add(region);
+    }
+    
+    return regions;
+  }
 }

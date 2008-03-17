@@ -332,7 +332,7 @@
     <zip destfile="${basedir}/magellan_v${VERSION.POINTED}.zip">
       <fileset dir="${release}" includes="**"/>
     </zip>
-    
+    <!--
     <echo message="Creating Tar.BZ2 Distribution"/>
     <delete file="${basedir}/magellan_v${VERSION.POINTED}.tar.bz2" failonerror="false"/>
     <tar destfile="${basedir}/magellan_v${VERSION.POINTED}.tar.bz2" compression="bzip2">
@@ -340,7 +340,8 @@
         <include name="**"/>
       </tarfileset>
     </tar>
-    
+    -->
+    <!--
     <echo message="Creating Tar.GZ Distribution"/>
     <delete file="${basedir}/magellan_v${VERSION.POINTED}.tar.gz" failonerror="false"/>
     <tar destfile="${basedir}/magellan_v${VERSION.POINTED}.tar.gz" compression="gzip">
@@ -348,7 +349,7 @@
         <include name="**"/>
       </tarfileset>
     </tar>
-    
+    -->
     <antcall target="clear-release"/>
   </target>
   

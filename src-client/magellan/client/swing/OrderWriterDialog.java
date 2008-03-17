@@ -813,9 +813,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       chkConfirmedOnly.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY+suffix, false));
     }
 
+    System.out.println("Removing Items from Files List");
     if (PropertiesHelper.getList(settings,PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix).size()>0) {
       while (cmbOutputFile.getItemCount() > 0) {
-        cmbOutputFile.removeItem(0);
+        Object o = cmbOutputFile.getItemAt(0);
+        System.out.println("Removing Item "+o+" from Files List");
+        cmbOutputFile.removeItemAt(0);
       }
       List<String> files = PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix);
       for (String file : files) {

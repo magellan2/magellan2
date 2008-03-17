@@ -813,7 +813,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       chkConfirmedOnly.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_CONFIRMED_ONLY+suffix, false));
     }
 
-    if (settings.getProperty(PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix, null) != null) {
+    if (PropertiesHelper.getList(settings,PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix).size()>0) {
       while (cmbOutputFile.getItemCount() > 0) {
         cmbOutputFile.remove(0);
       }

@@ -1,3 +1,6 @@
+2008-03-17 / Build 175 - Thoralf (thoralf@m84.de)
+    * Fixed a bug in the OrderWriter Dialog (array index out of range)
+    
 2008-03-15 / Build 174 - Thoralf (thoralf@m84.de)
     * OrderWriter Dialog saves now faction specific settings
     * Selected order output file is now saved in settings

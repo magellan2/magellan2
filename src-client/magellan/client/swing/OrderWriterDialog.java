@@ -815,7 +815,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if (PropertiesHelper.getList(settings,PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix).size()>0) {
       while (cmbOutputFile.getItemCount() > 0) {
-        cmbOutputFile.remove(0);
+        cmbOutputFile.removeItem(0);
       }
       List<String> files = PropertiesHelper.getList(settings, PropertiesHelper.ORDERWRITER_OUTPUT_FILE+suffix);
       for (String file : files) {

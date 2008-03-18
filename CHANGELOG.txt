@@ -1,3 +1,7 @@
+2008-03-17 / Build 176 - Fiete (sf@fietefietz.de)
+	* EMapDeatailsPanel: addPeasantInfo only in non-ocean regions
+	* Help: save orders, added info for Auto-FileName
+
 2008-03-17 / Build 175 - Thoralf (thoralf@m84.de)
     * Fixed a bug in the OrderWriter Dialog (array index out of range)
     

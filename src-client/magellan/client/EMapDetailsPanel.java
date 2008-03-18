@@ -838,8 +838,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       // removed...information like unterhaltung und lohn
       // are still needed, also if peasants=0
       // Fiete 20080220
+      // this was stupid, now all oceans have peasant info...
+      // now focusing on non-ocean-regions
 		}
 
+    if (r.getRegionType().isOcean()){
+      // do not show RegionPeasantInfo on Oceans
+      return;
+    }
+    
 		// peasants
 		int maxWorkers = r.getRegionType().getInhabitants() - (Math.max(r.getTrees(), 0) * 8) -
 						 (Math.max(r.getSprouts(), 0) * 4);

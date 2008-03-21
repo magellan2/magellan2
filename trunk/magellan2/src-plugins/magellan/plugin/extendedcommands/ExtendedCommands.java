@@ -327,8 +327,6 @@ public class ExtendedCommands {
       script += "\n";
       script += getCommands(unit);
       
-      log.info(script);
-      
       interpreter.eval(script);
       unit.setOrdersChanged(true);
     } catch (EvalError error) {

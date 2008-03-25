@@ -1801,11 +1801,6 @@ public abstract class MagellanFactory {
       oldSkills.addAll(newUnit.getSkills());
     }
 
-    if(log.isDebugEnabled()) {
-      log.debug("Unit.merge: curUnit.skills: " + curUnit.getSkills());
-      log.debug("Unit.merge: newUnit.skills: " + newUnit.getSkills());
-    }
-
     if((curUnit.getSkills() != null) && (curUnit.getSkills().size() > 0)) {
       for(Iterator<Skill> iter = curUnit.getSkills().iterator(); iter.hasNext();) {
         Skill curSkill = iter.next();
@@ -1835,6 +1830,33 @@ public abstract class MagellanFactory {
             newSkill.setLevelChanged(true);
             newSkill.setChangeLevel(newSkill.getLevel());
           }
+        } else {
+          // TR 2008-03-25
+          // okay, this is a try to make it possible to show level changes
+          // of multiple factions in one week. Problem: If you load a second
+          // report from the same round, the level changes are not updates
+          //
+          // my solution now is to set the level if we found an old skill. The old
+          // skill is actually the negative current level of the first pass
+          //
+          // there is a known problem if there are more known factions with
+          // unknown skills (not imported factions). At the moment I don't
+          // have an idea, how to handle this, because this happens in the
+          // second pass...
+          if (oldSkill != null) {
+            if (oldSkill.getLevel() != newSkill.getLevel() && !newSkill.isLevelChanged()) {
+              if (!firstPass) {
+                newSkill.setChangeLevel(newSkill.getLevel()-oldSkill.getLevel());
+                newSkill.setLevelChanged(true);
+              } else {
+                newSkill.setLevelChanged(false);
+              }
+            }
+          } else {
+            if (curSkill.getLevel() == 0 && newSkill.getLevel() == 0 && curSkill.isLevelChanged()) {
+              newSkill.setLevel(curSkill.getLevel()+curSkill.getChangeLevel()*(-1));
+            }
+          }
         }
 
         if(oldSkill != null) {
@@ -1850,8 +1872,8 @@ public abstract class MagellanFactory {
     // pavkovic 2004.01.27: now we remove oldSkills only if the round changed.
     if(!sameRound) {
       // Now remove all skills that are lost
-      for(Iterator iter = oldSkills.iterator(); iter.hasNext();) {
-        Skill oldSkill = (Skill) iter.next();
+      for(Iterator<Skill> iter = oldSkills.iterator(); iter.hasNext();) {
+        Skill oldSkill = iter.next();
 
         if(oldSkill.isLostSkill()) { // remove if it was lost
           newUnit.getSkillMap().remove(oldSkill.getSkillType().getID());

@@ -720,6 +720,9 @@ public abstract class GameData implements Cloneable {
     // FIXME(pavkovic) rules should be loaded instead of just used in this
     // situation
     GameData resultGD = new CompleteData(newerGD.rules, newerGD.getGameName());
+    if (olderGD.getFileType() != null) {
+      resultGD.setFileType(olderGD.getFileType());
+    }
 
     // DATE
     EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
@@ -855,8 +858,8 @@ public abstract class GameData implements Cloneable {
     // simple objects, created and merged in one step
     // locale has to be considered. 
     if (olderGD.msgTypes() != null) {
-      for (Iterator iter = olderGD.msgTypes().values().iterator(); iter.hasNext();) {
-        MessageType mt = (MessageType) iter.next();
+      for (Iterator<MessageType> iter = olderGD.msgTypes().values().iterator(); iter.hasNext();) {
+        MessageType mt = iter.next();
         MessageType newMT = null;
 
         try {
@@ -871,8 +874,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.msgTypes() != null) {
-      for (Iterator iter = newerGD.msgTypes().values().iterator(); iter.hasNext();) {
-        MessageType mt = (MessageType) iter.next();
+      for (Iterator<MessageType> iter = newerGD.msgTypes().values().iterator(); iter.hasNext();) {
+        MessageType mt = iter.next();
         MessageType newMT = resultGD.getMsgType(mt.getID());
 
         if (newMT == null) {
@@ -891,8 +894,8 @@ public abstract class GameData implements Cloneable {
     // SPELLS
     // simple objects, created and merged in one step
     if (olderGD.spells() != null) {
-      for (Iterator iter = olderGD.spells().values().iterator(); iter.hasNext();) {
-        Spell spell = (Spell) iter.next();
+      for (Iterator<Spell> iter = olderGD.spells().values().iterator(); iter.hasNext();) {
+        Spell spell = iter.next();
         Spell newSpell = null;
 
         try {
@@ -907,8 +910,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.spells() != null) {
-      for (Iterator iter = newerGD.spells().values().iterator(); iter.hasNext();) {
-        Spell spell = (Spell) iter.next();
+      for (Iterator<Spell> iter = newerGD.spells().values().iterator(); iter.hasNext();) {
+        Spell spell = iter.next();
         Spell newSpell = resultGD.getSpell(spell.getID());
 
         if (newSpell == null) {
@@ -927,8 +930,8 @@ public abstract class GameData implements Cloneable {
     // POTIONS
     // simple objects, created and merged in one step
     if (olderGD.potions() != null) {
-      for (Iterator iter = olderGD.potions().values().iterator(); iter.hasNext();) {
-        Potion potion = (Potion) iter.next();
+      for (Iterator<Potion> iter = olderGD.potions().values().iterator(); iter.hasNext();) {
+        Potion potion = iter.next();
         Potion newPotion = null;
 
         try {
@@ -943,8 +946,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.potions() != null) {
-      for (Iterator iter = newerGD.potions().values().iterator(); iter.hasNext();) {
-        Potion potion = (Potion) iter.next();
+      for (Iterator<Potion> iter = newerGD.potions().values().iterator(); iter.hasNext();) {
+        Potion potion = iter.next();
         Potion newPotion = resultGD.getPotion(potion.getID());
 
         if (newPotion == null) {
@@ -994,8 +997,8 @@ public abstract class GameData implements Cloneable {
    
     // FACTIONS
     if (olderGD.factions() != null) {
-      for (Iterator iter = olderGD.factions().values().iterator(); iter.hasNext();) {
-        Faction f = (Faction) iter.next();
+      for (Iterator<Faction> iter = olderGD.factions().values().iterator(); iter.hasNext();) {
+        Faction f = iter.next();
 
         try {
           resultGD.addFaction(MagellanFactory.createFaction((ID) f.getID().clone(), resultGD));
@@ -1006,8 +1009,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.factions() != null) {
-      for (Iterator iter = newerGD.factions().values().iterator(); iter.hasNext();) {
-        Faction f = (Faction) iter.next();
+      for (Iterator<Faction> iter = newerGD.factions().values().iterator(); iter.hasNext();) {
+        Faction f = iter.next();
 
         if (resultGD.getFaction(f.getID()) == null) {
           try {
@@ -1022,8 +1025,8 @@ public abstract class GameData implements Cloneable {
     // REGIONS
     // this just adds all the regions to newGD. No content yet.
     if (olderGD.regions() != null) {
-      for (Iterator iter = olderGD.regions().values().iterator(); iter.hasNext();) {
-        Region r = (Region) iter.next();
+      for (Iterator<Region> iter = olderGD.regions().values().iterator(); iter.hasNext();) {
+        Region r = iter.next();
 
         try {
           resultGD.addRegion(MagellanFactory.createRegion((CoordinateID) r.getID().clone(), resultGD));
@@ -1034,8 +1037,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.regions() != null) {
-      for (Iterator iter = newerGD.regions().values().iterator(); iter.hasNext();) {
-        Region r = (Region) iter.next();
+      for (Iterator<Region> iter = newerGD.regions().values().iterator(); iter.hasNext();) {
+        Region r = iter.next();
 
         if (resultGD.getRegion((CoordinateID) r.getID()) == null) {
           try {
@@ -1049,8 +1052,8 @@ public abstract class GameData implements Cloneable {
 
     // ISLANDS
     if (olderGD.islands() != null) {
-      for (Iterator iter = olderGD.islands().values().iterator(); iter.hasNext();) {
-        Island i = (Island) iter.next();
+      for (Iterator<Island> iter = olderGD.islands().values().iterator(); iter.hasNext();) {
+        Island i = iter.next();
 
         try {
           resultGD.addIsland(MagellanFactory.createIsland((ID) i.getID().clone(), resultGD));
@@ -1061,8 +1064,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.islands() != null) {
-      for (Iterator iter = newerGD.islands().values().iterator(); iter.hasNext();) {
-        Island i = (Island) iter.next();
+      for (Iterator<Island> iter = newerGD.islands().values().iterator(); iter.hasNext();) {
+        Island i = iter.next();
 
         if (olderGD.getIsland(i.getID()) == null) {
           try {
@@ -1076,8 +1079,8 @@ public abstract class GameData implements Cloneable {
 
     // HOTSPOTS
     if (olderGD.hotSpots() != null) {
-      for (Iterator iter = olderGD.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot h = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = olderGD.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot h = iter.next();
 
         try {
           resultGD.setHotSpot(MagellanFactory.createHotSpot((ID) h.getID().clone()));
@@ -1088,8 +1091,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.hotSpots() != null) {
-      for (Iterator iter = newerGD.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot h = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = newerGD.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot h = iter.next();
 
         if (resultGD.getHotSpot(h.getID()) == null) {
           try {
@@ -1103,8 +1106,8 @@ public abstract class GameData implements Cloneable {
 
     // BUILDINGS
     if (newerGD.buildings() != null) {
-      for (Iterator iter = newerGD.buildings().values().iterator(); iter.hasNext();) {
-        Building b = (Building) iter.next();
+      for (Iterator<Building> iter = newerGD.buildings().values().iterator(); iter.hasNext();) {
+        Building b = iter.next();
 
         try {
           resultGD.addBuilding(MagellanFactory.createBuilding((ID) b.getID().clone(), resultGD));
@@ -1118,8 +1121,8 @@ public abstract class GameData implements Cloneable {
       // buildings are persistent.
       // Accept old buildings not occuring in the new report
       // only if there are no units in that region
-      for (Iterator iter = olderGD.buildings().values().iterator(); iter.hasNext();) {
-        Building b = (Building) iter.next();
+      for (Iterator<Building> iter = olderGD.buildings().values().iterator(); iter.hasNext();) {
+        Building b = iter.next();
         Building curBuilding = newerGD.getBuilding(b.getID());
 
         if (curBuilding == null) {
@@ -1149,8 +1152,8 @@ public abstract class GameData implements Cloneable {
 
     // SHIPS
     if (sameRound && (olderGD.ships() != null)) {
-      for (Iterator iter = olderGD.ships().values().iterator(); iter.hasNext();) {
-        Ship s = (Ship) iter.next();
+      for (Iterator<Ship> iter = olderGD.ships().values().iterator(); iter.hasNext();) {
+        Ship s = iter.next();
 
         try {
           resultGD.addShip(MagellanFactory.createShip((ID) s.getID().clone(), resultGD));
@@ -1161,8 +1164,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.ships() != null) {
-      for (Iterator iter = newerGD.ships().values().iterator(); iter.hasNext();) {
-        Ship s = (Ship) iter.next();
+      for (Iterator<Ship> iter = newerGD.ships().values().iterator(); iter.hasNext();) {
+        Ship s = iter.next();
 
         if (resultGD.getShip(s.getID()) == null) {
           try {
@@ -1183,8 +1186,8 @@ public abstract class GameData implements Cloneable {
      * IDs are used for comparism.
      */
     if (olderGD.units() != null) {
-      for (Iterator iter = olderGD.units().values().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = olderGD.units().values().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
 
         if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
           // TODO (stm): Isn't that nonsense? Doesn't it suffice to add the
@@ -1200,8 +1203,8 @@ public abstract class GameData implements Cloneable {
     }
 
     if (newerGD.units() != null) {
-      for (Iterator iter = newerGD.units().values().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = newerGD.units().values().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
 
         if (resultGD.getUnit(u.getID()) == null) {
           try {
@@ -1215,8 +1218,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE FACTIONS
     if (olderGD.factions() != null) {
-      for (Iterator iter = olderGD.factions().values().iterator(); iter.hasNext();) {
-        Faction curFaction = (Faction) iter.next();
+      for (Iterator<Faction> iter = olderGD.factions().values().iterator(); iter.hasNext();) {
+        Faction curFaction = iter.next();
         Faction newFaction = resultGD.getFaction(curFaction.getID());
 
         // first pass
@@ -1226,8 +1229,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE REGIONS
     if (olderGD.regions() != null) {
-      for (Iterator iter = olderGD.regions().values().iterator(); iter.hasNext();) {
-        Region curRegion = (Region) iter.next();
+      for (Iterator<Region> iter = olderGD.regions().values().iterator(); iter.hasNext();) {
+        Region curRegion = iter.next();
         Region newRegion = resultGD.getRegion((CoordinateID) curRegion.getID());
 
         // first pass
@@ -1237,8 +1240,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE ISLANDS
     if (olderGD.islands() != null) {
-      for (Iterator iter = olderGD.islands().values().iterator(); iter.hasNext();) {
-        Island curIsland = (Island) iter.next();
+      for (Iterator<Island> iter = olderGD.islands().values().iterator(); iter.hasNext();) {
+        Island curIsland = iter.next();
         Island newIsland = resultGD.getIsland(curIsland.getID());
 
         // first pass
@@ -1248,8 +1251,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE HOTSPOTS
     if (olderGD.hotSpots() != null) {
-      for (Iterator iter = olderGD.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot curHotSpot = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = olderGD.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot curHotSpot = iter.next();
         HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
         // first pass
         MagellanFactory.mergeHotSpot(olderGD, curHotSpot, resultGD, newHotSpot);
@@ -1258,8 +1261,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE BUILDINGS
     if (olderGD.buildings() != null) {
-      for (Iterator iter = olderGD.buildings().values().iterator(); iter.hasNext();) {
-        Building curBuilding = (Building) iter.next();
+      for (Iterator<Building> iter = olderGD.buildings().values().iterator(); iter.hasNext();) {
+        Building curBuilding = iter.next();
         Building newBuilding = resultGD.getBuilding(curBuilding.getID());
 
         if (newBuilding != null) {
@@ -1271,8 +1274,8 @@ public abstract class GameData implements Cloneable {
 
     // MERGE SHIPS
     if ((olderGD.ships() != null)) {
-      for (Iterator iter = olderGD.ships().values().iterator(); iter.hasNext();) {
-        Ship curShip = (Ship) iter.next();
+      for (Iterator<Ship> iter = olderGD.ships().values().iterator(); iter.hasNext();) {
+        Ship curShip = iter.next();
         Ship newShip = resultGD.getShip(curShip.getID());
 
         // only merge ships from the "older" game data if they are from the same
@@ -1290,8 +1293,8 @@ public abstract class GameData implements Cloneable {
     // MERGE FACTIONS, SECOND PASS
     // must be done before merging units to keep group information
     if (newerGD.factions() != null) {
-      for (Iterator iter = newerGD.factions().values().iterator(); iter.hasNext();) {
-        Faction curFaction = (Faction) iter.next();
+      for (Iterator<Faction> iter = newerGD.factions().values().iterator(); iter.hasNext();) {
+        Faction curFaction = iter.next();
         Faction newFaction = resultGD.getFaction(curFaction.getID());
 
         // second pass
@@ -1306,8 +1309,8 @@ public abstract class GameData implements Cloneable {
      * dates are equal, a fully merge is done, if not, only the skills are
      * retrieved.
      */
-    for (Iterator it = resultGD.units().values().iterator(); it.hasNext();) {
-      Unit resultUnit = (Unit) it.next();
+    for (Iterator<Unit> it = resultGD.units().values().iterator(); it.hasNext();) {
+      Unit resultUnit = it.next();
 
       // find the second first since we may need the temp id
       Unit newerUnit = newerGD.findUnit(resultUnit.getID(), null, null);
@@ -1334,7 +1337,6 @@ public abstract class GameData implements Cloneable {
         if (sameRound) { // full merge
           MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound);
         } else { // only copy the skills to get change-level base
-
           if ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged())) {
             MagellanFactory.copySkills(olderUnit, resultUnit);
           }

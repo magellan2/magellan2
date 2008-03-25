@@ -1,3 +1,7 @@
+2008-03-25 / Build 177 - Thoralf (thoralf@m84.de)
+    * Bug #153 fixed
+    * Try to handle merge problems (skill level changed) of multiple reports in one round
+
 2008-03-19 / Build 176 - Thoralf (thoralf@m84.de)
     * BEWACHE resource has now value BEWACHEN
 

@@ -216,7 +216,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * @deprecated, use info from GameData
    */
-  private File dataFile = null;
+  //private File dataFile = null;
 
   /** 
    * indicates that the user loaded a report at least once
@@ -1109,7 +1109,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (crFile != null) {
             startWindow.progress(4, Resources.get("clientstart.4"));
     
-            c.setDataFile(crFile);
+            //c.setDataFile(crFile);
     
             // load new data
             //c.setData(c.loadCR(crFile));
@@ -1158,11 +1158,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public boolean askToSave(boolean wait) {
     if (reportState.isStateChanged()) {
       String msg = null;
-
-      if (dataFile != null) {
-        Object msgArgs[] = { dataFile.getAbsolutePath() };
-        msg = (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text"))).format(msgArgs);
-      } else {
+      
+      try {
+        if (getData() != null && getData().getFileType() != null && getData().getFileType().getFile() != null) {
+          Object msgArgs[] = { getData().getFileType().getFile().getAbsolutePath() };
+          msg = (new MessageFormat(Resources.get("client.msg.quit.confirmsavefile.text"))).format(msgArgs);
+        } else {
+          msg = Resources.get("client.msg.quit.confirmsavenofile.text");
+        }
+      } catch (IOException io) {
+        log.error("",io);
         msg = Resources.get("client.msg.quit.confirmsavenofile.text");
       }
 
@@ -1302,9 +1307,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Sets the name of the current loaded data file.
    */
-  public void setDataFile(File file) {
-    this.dataFile = file;
-  }
+//  public void setDataFile(File file) {
+//    this.dataFile = file;
+//  }
   
   /**
    * Returns the name of the current loaded data file.
@@ -1312,9 +1317,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * that there is no report loaded - but not correctly
    * set...
    */
-  public File getDataFile() {
-    return dataFile;
-  }
+//  public File getDataFile() {
+//    return dataFile;
+//  }
   
 
   // //////////////////
@@ -1326,7 +1331,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Client client = this;
     if (ui == null) ui = new ProgressBarUI(client);
 
-    client.setDataFile(fileName);
+    //client.setDataFile(fileName);
     
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));

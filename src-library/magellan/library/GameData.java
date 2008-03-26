@@ -61,7 +61,7 @@ public abstract class GameData implements Cloneable {
   public final Rules rules;
 
   /** The name of the game. */
-  public String naame;
+  public String gameName;
 
   /** encoding */
   protected String encoding = FileType.DEFAULT_ENCODING.toString();
@@ -263,7 +263,7 @@ public abstract class GameData implements Cloneable {
     }
 
     rules = _rules;
-    naame = _name;
+    gameName = _name;
   }
 
   /**
@@ -1867,11 +1867,11 @@ public abstract class GameData implements Cloneable {
   }
   
   public String getGameName(){
-    return naame;
+    return gameName;
   }
 
   public void setGameName(String newName){
-    naame = newName;
+    gameName = newName;
   }
 
   public void setFileType(FileType filetype) {

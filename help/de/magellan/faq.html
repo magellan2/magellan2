@@ -27,6 +27,9 @@
     </h2>
     <ol>
       <li>
+        <a href="#Installer">Was bedeutet Installer JAR</a>
+      </li>
+      <li>
         <a href="#Dateiname">magellan.jar? Müßte die Datei nicht magellan.exe
         heißen?</a>
       </li>
@@ -39,7 +42,7 @@
         Datei magellan.jar klicke?</a>
       </li>
       <li>
-        <a href="#CRVerknuepfung">Wie verknüpfe ich unter Windows2000
+        <a href="#CRVerknuepfung">Wie verknüpfe ich unter Windows2000/XP
         CR-Dateien mit Magellan?</a>
       </li>
       <li>
@@ -77,6 +80,26 @@
         zurecht!</a>
       </li>
     </ol>
+    <a id="Installer" name="Installer"></a> 
+    <p>
+      &nbsp;
+    </p>
+    <p style="font-weight: bold">
+      F: Was bedeutet Installer JAR?
+    </p>
+    <p>
+      <b>A:</b> Ab Version 2 von Magellan ist das Programm nicht mehr nur eine Datei.
+      Wir haben Magellan in viele Dateien aufgeteilt. So sieht man jetzt im
+      Dateisystem alle Bilder und Icons, die Magellan verwendet oder auch
+      alle Sprachdateien für die Internationalisierung (sogenannte Resources). Damit
+      die Installation von Magellan nicht so aufwendig wird, liefern wir
+      das Programm jetzt in einem Paket aus, dass man als Installer JAR bezeichnet.
+      Es ist ein Java Programm, genauso wie Magellan. Es entpackt sich selbst
+      an einen beliebigen Ort, den du während der Installation festlegen kannst.<br/>
+      Ab Version 2.0 ist es übrigens einfach möglich, eine neue Version über 
+      eine alte Version zu installieren ohne vorher die alte Version zu deinstallieren.
+      Die Konfiguration bleibt erhalten und wird während des ersten Starts angepasst.
+    </p>
     <a id="Dateiname" name="Dateiname"></a> 
     <p>
       &nbsp;
@@ -173,13 +196,13 @@
     </ol>
     <p>
       Hintergrund: Liegt Magellan im Ordner <tt>C:\Eigene
-      Dateien\magellan.jar</tt> bewirkt der regedit-Eintrag einen Aufruf von
+      Dateien\magellan-client.jar</tt> bewirkt der regedit-Eintrag einen Aufruf von
       java in der Form <tt>(Pfad zu Java)\javaw.exe -jar C:\Eigene
-      Dateien\magellan.jar</tt>, das heißt, java würde versuchen, die Datei
-      <tt>C:\Eigene</tt> mit dem Parameter <tt>Dateien\magellan.jar</tt> zu
+      Dateien\magellan-client.jar</tt>, das heißt, java würde versuchen, die Datei
+      <tt>C:\Eigene</tt> mit dem Parameter <tt>Dateien\magellan-client.jar</tt> zu
       starten, was nicht so richtig gut klappen kann. Mit den Anführungszeichen
       sieht es dann so aus: <tt>(Pfad zu java)\javaw.exe -jar "C:\Eigene
-      Dateien\magellan.jar"</tt>, es wird hier also wirklich die Datei
+      Dateien\magellan-client.jar"</tt>, es wird hier also wirklich die Datei
       <tt>magellan.jar</tt> gestartet.
     </p>
     <p>
@@ -192,7 +215,7 @@
       &nbsp;
     </p>
     <p style="font-weight: bold">
-      F: Wie verknüpfe ich unter Windows2000 CR-Dateien mit Magellan?
+      F: Wie verknüpfe ich unter Windows2000/XP CR-Dateien mit Magellan?
     </p>
     <p>
       Dafür muss man für den Dateityp "CR" einen entsprechenden Vorgang
@@ -214,9 +237,9 @@
       </li>
       <li>
         Trage im Feld "Anwendung für diesen Vorgang" den Wert ' "java.exe" -jar
-        "magellan.jar" "%1" ' ein. Java.exe und magellan.jar müssen dabei mit
+        "magellan-client.jar" "%1" ' ein. Java.exe und magellan.jar müssen dabei mit
         vollständigem Pfad eingegeben werden (z.B.
-        "c:\spiele\eressea\magellan.jar"). Enthält dieser Pfad Leerzeichen sind
+        "c:\spiele\eressea\magellan-client.jar"). Enthält dieser Pfad Leerzeichen sind
         die umschließenden Anführungszeichen unbedingt notwendig.
       </li>
       <li>
@@ -249,9 +272,9 @@
     <p>
       Dazu startet man zunächst die MS-DOS-Eingabeaufforderung (unter Windows
       ME im Startmenü den Punkt 'Ausführen' öffnen, <tt>command</tt> eingeben
-      und auf OK klicken). Danach gibt man folgenden Befehl ein: <tt>javaw -jar
-      "(Pfad zu Magellan)\magellan.jar"</tt> also z.B. <tt>javaw -jar
-      "C:\Eigene Dateien\magellan.jar"</tt>.
+      und auf OK klicken, bei Windows 2000/XP lautet das Kommando <tt>cmd</tt>). Danach gibt man folgenden Befehl ein: <tt>javaw -jar
+      "(Pfad zu Magellan)\magellan-client.jar"</tt> also z.B. <tt>javaw -jar
+      "C:\Eigene Dateien\magellan-client.jar"</tt>.
     </p>
     <p>
       Die Kommandozeilen-Parameter von Magellan sind in der <a
@@ -269,21 +292,6 @@
       Java-Version veröffentlicht, unter der auch Magellan funktioniert. Zum
       Laden von Magellan geht man an der Konsole so vor, wie unter Windows an
       der <a href="#4">Kommandozeile</a>.
-    </p>
-    <p>
-      Zusätzlich empfiehlt es sich jedoch, eine speziell für den Mac
-      konvertierte Regel-Datei, die alle grundlegenden Eressea-Informationen
-      enthät, zu verwenden. Nachdem man sie heruntergeladen unter <a
-      href="http://eressea.upb.de/magellan/rules.cr">http://eressea.upb.de/magellan/rules.cr</a>
-      hat, muss man sie in einem Ordner speichern, der <tt>rules</tt> heisst.
-      Angenommen, die Datei <tt>rules.cr</tt> liegt nun unter
-      <tt>magellan/rules/rules.cr</tt> ruft man in Magellan in den Optionen
-      (Menü Extras) den Tab '<a
-      href="reference/ressources.html">Ressourcen</a>' auf und legt einen neuen
-      Pfad an, der auf den Ordner <tt>magellan</tt> zeigt. Nach dem Neustart
-      von Magellan, sollte es die neue Regeldatei verwenden, was man daran
-      erkennen kann, dass z.B. das mögliche Einkommen in einer Region korrekt
-      berechnet wird.
     </p>
     <a id="Resourcenpfade" name="Resourcenpfade"></a> 
     <p>
@@ -318,11 +326,11 @@
       Zeile ein (die Pfade müssen natürlich an Deine Installation angepasst
       werden):<br />
        <tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
-      c:\Programme\Eressea\Magellan\magellan.jar</tt>
+      c:\Programme\Eressea\Magellan\magellan-client.jar</tt>
     </p>
     <p>
       Unter Linux einfach in der Shell:<br />
-       <tt>java -Xms128MB -Xmx256MB -jar magellan.jar</tt>
+       <tt>java -Xms128MB -Xmx256MB -jar magellan-client.jar</tt>
     </p>
     <p>
       Dies weist die Java-VM an, sich min. 128MB und max. 256MB RAM zu sichern.

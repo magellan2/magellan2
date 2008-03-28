@@ -23,6 +23,8 @@
 <h2>1. Questions about installation</h2>
 
 <ol>
+<li><a href="#Installer">What means Installer JAR?</a></li>
+
 <li><a href="#Dateiname">magellan.jar? Shouldn't the file be called
 magellan.exe?</a></li>
 
@@ -34,7 +36,7 @@ double-clicking?</a></li>
 the file magellan.jar?</a></li>
 
 <li><a href="#CRVerknuepfung">How do I make Magellan the default
-program for CR-files under Windows2000?</a></li>
+program for CR-files under Windows2000/XP?</a></li>
 
 <li><a href="#Kommandozeilenstart">How do I start Magellan from the
 commandprompt?</a></li>
@@ -62,6 +64,26 @@ automatically confirm the orders of units?</a></li>
 <li><a href="#ARR">I just don't get the ARR, ATR or the
 Tooltips!</a></li>
 </ol>
+
+<a name="Installer"></a> 
+
+<p>&nbsp;</p>
+
+<p><b>Q: What means Installer JAR?</b></p>
+
+<p> 
+      <b>A:</b> Ab Version 2 von Magellan ist das Programm nicht mehr nur eine Datei.
+      Wir haben Magellan in viele Dateien aufgeteilt. So sieht man jetzt im
+      Dateisystem alle Bilder und Icons, die Magellan verwendet oder auch
+      alle Sprachdateien für die Internationalisierung (sogenannte Resources). Damit
+      die Installation von Magellan nicht so aufwendig wird, liefern wir
+      das Programm jetzt in einem Paket aus, dass man als Installer JAR bezeichnet.
+      Es ist ein Java Programm, genauso wie Magellan. Es entpackt sich selbst
+      an einen beliebigen Ort, den du während der Installation festlegen kannst.<br/>
+      Ab Version 2.0 ist es übrigens einfach möglich, eine neue Version über 
+      eine alte Version zu installieren ohne vorher die alte Version zu deinstallieren.
+      Die Konfiguration bleibt erhalten und wird während des ersten Starts angepasst.
+</p>
 
 <a name="Dateiname"></a> 
 
@@ -113,7 +135,7 @@ OK</li>
 magellan.jar?</b></p>
 
 <p><b>A:</b> A possible cause for this is that the file
-<tt>magellan.jar</tt> is in a folder with a name that has spaces in
+<tt>magellan-client.jar</tt> is in a folder with a name that has spaces in
 it. This isn't a problem that is caused by an error in Magellan,
 but by an inconvenience in the default link between
 <tt>.jar</tt>-files with java.</p>
@@ -141,14 +163,14 @@ appear.</li>
 </ol>
 
 <p>Background: If Magellan is in <tt>C:\My
-Documents\magellan.jar</tt>, then the regedit entry would try to
+Documents\magellan-client.jar</tt>, then the regedit entry would try to
 initiate java to call <tt>(Path to Java)\javaw.exe -jar C:\My
-Documents\magellan.jar</tt>, which means that java would try to run
+Documents\magellan-client.jar</tt>, which means that java would try to run
 the file <tt>C:\My</tt> with parameters
-<tt>Documents\magellan.jar</tt>, which doesn't quite work out
+<tt>Documents\magellan-client.jar</tt>, which doesn't quite work out
 right. With the quotes this looks like this: <tt>(Path to
-java)\javaw.exe -jar "C:\My Documents\magellan.jar"</tt>, and here
-the actual <tt>magellan.jar</tt> file is started.</p>
+java)\javaw.exe -jar "C:\My Documents\magellan-client.jar"</tt>, and here
+the actual <tt>magellan-client.jar</tt> file is started.</p>
 
 <p>If this didn't help you can try to <a href="#4">start Magellan
 from the commandprompt</a></p>
@@ -160,11 +182,7 @@ to be able to read possible error messages.<br>
 <p>&nbsp;</p>
 
 <p><b>Q: How do I make Magellan the default program for CR-files
-under Windows2000?</b></p>
-
-<p>Daf&uuml;r muss man f&uuml;r den Dateityp "CR" einen
-entsprechenden Vorgang definieren. Das geht im Dateimanager
-(Explorer) unter Extras, Ordneroptionen, Dateitypen:</p>
+under Windows2000/XP?</b></p>
 
 <p>To do this you need to set up a link between Magellan and the
 "CR" filetype. You can do this in Explorer under Extras,
@@ -180,8 +198,8 @@ Folderoptions, Filetypes:</p>
 <li>In the "Action" field, enter 'Magellan'</li>
 
 <li>In the "Program for this action" field enter '"java.exe" -jar
-"magellan.jar" "%1"'. Java.exe and magellan.jar have to be entered
-with the complete path (e.g. "c:\games\eressea\magellan.jar"). If
+"magellan-client.jar" "%1"'. Java.exe and magellan.jar have to be entered
+with the complete path (e.g. "c:\games\eressea\magellan-client.jar"). If
 the path contains spaces, the surrounding quotes are
 mandatory.</li>
 
@@ -207,10 +225,10 @@ the command prompt, therefore it can be useful to start Magellan
 from here.</p>
 
 <p>To do this you first start the command prompt (in Windows ME
-under Start menu open 'Run', type <tt>command</tt> and click OK.
+under Start menu open 'Run', type <tt>command</tt> and click OK, under Windows 2000/XP the command is <tt>cmd</tt>).
 Then enter the following command: <tt>javaw -jar "(Path to
-Magellan)\magellan.jar"</tt>, so e.g. <tt>javaw -jar "C:\My
-Documents\magellan.jar"</tt>.</p>
+Magellan)\magellan-client.jar"</tt>, so e.g. <tt>javaw -jar "C:\My
+Documents\magellan-client.jar"</tt>.</p>
 
 <p>The commandprompt parameters for Magellan are listed in the <a
 href="reference/commandline.html">Reference</a>.</p>
@@ -225,13 +243,6 @@ href="reference/commandline.html">Reference</a>.</p>
 released a current Java-version that will support Magellan. To run
 Magellan use the console the same as under Windows at the <a href=
 "#4">command prompt</a>.</p>
-
-<p>Additionally it is recommended to use a special Mac version of
-the rules file that contains all basic information on Eressea.
-After downloading this from <a href=
-"http://eressea.upb.de/magellan/rules.cr">http://eressea.upb.de/magellan/rules.cr</a>,
-it should be saved in the <tt>\etc\rules</tt> folder, which can be
-found in the main Magellan folder.</p>
 
 <a name="Resourcenpfade"></a> 
 
@@ -265,10 +276,10 @@ Create an icon for Magellan on your desktop, right-click on it and
 go to "Properties". Under "Target" enter the following (the path
 should of course match your particular setup):<br>
 <tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
-c:\Programs\Eressea\Magellan\magellan.jar</tt></p>
+c:\Programs\Eressea\Magellan\magellan-client.jar</tt></p>
 
 <p>Under Linux simply in the shell:<br>
-<tt>java -Xms128MB -Xmx256MB -jar magellan.jar</tt></p>
+<tt>java -Xms128MB -Xmx256MB -jar magellan-client.jar</tt></p>
 
 <p>This tells the Java-VM to allocate min. 128MB and max. 256MB.
 You can change these values according to your own setup.</p>

@@ -47,6 +47,8 @@ OPTIONEN
 ALLIANZ 696873
 "The Others";Parteiname
 59;Status
+GRUPPE 123
+"Spalter";name
 PARTEI 696873
 "The Others";Parteiname
 "others@example.com";email

@@ -370,6 +370,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     if(f != null) {
       cmbFaction.setSelectedItem(f);
+      setGroups(f);
+    } else {
+      f = (Faction)cmbFaction.getSelectedItem();
+      setGroups(f);
     }
 
     cmbFaction.addItemListener(new ItemListener() {
@@ -822,6 +826,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         cmbOutputFile.addItem(file);
       }
     }
+    
+    setGroups(faction);
   }
 
   protected void updateRecipient() {

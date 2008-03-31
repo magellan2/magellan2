@@ -13,7 +13,10 @@
 
 package magellan.library.tasks;
 
+import magellan.library.Faction;
 import magellan.library.HasRegion;
+import magellan.library.Unit;
+import magellan.library.UnitContainer;
 
 /**
  * DOCUMENT-ME
@@ -115,5 +118,24 @@ public abstract class AbstractProblem implements Problem {
 	 */
 	public String toString() {
 		return message;
+	}
+	
+	/**
+	 * Returns the faction owning this problem by evaluating the object.
+	 * 
+	 * @see magellan.library.tasks.Problem#getFaction()
+	 */
+	public Faction getFaction(){
+	  HasRegion hasR = getObject();
+	  Faction faction = null;
+	  if (hasR instanceof Unit)
+	    faction = ((Unit) hasR).getFaction();
+	  else if(hasR instanceof UnitContainer){
+	    Unit owner = ((UnitContainer) hasR).getOwner();
+	    faction=owner!=null?owner.getFaction():null;
+	  }else
+	    faction=null;
+	  
+	  return faction;
 	}
 }

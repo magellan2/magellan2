@@ -206,6 +206,24 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_FIXED_WIDTH = "OrderWriter.fixedWidth";
 
+  /** Property type boolean: */
+  public static final String TASKTABLE_RESTRICT_TO_OWNER = "TaskTable.restrictToOwner";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_ATTACK = "TaskTable.inspectors.attack";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_MOVEMENT = "TaskTable.inspectors.movement";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_ORDER_SYNTAX = "TaskTable.inspectors.ordersyntax";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_SHIP = "TaskTable.inspectors.ship";
+
+  /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_TODO = "TaskTable.inspectors.todo";
+
 
   /**
    * Searches the property with the given key and if it exists, it tries to

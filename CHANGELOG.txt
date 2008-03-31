@@ -1,3 +1,6 @@
+2008-03-31 / Build 178 - stm (stm_@users.sourceforge.net)
+    * added PreferencesAdapter for TaskTable
+
 2008-03-25 / Build 177 - Thoralf (thoralf@m84.de)
     * Bug #153 fixed
     * Try to handle merge problems (skill level changed) of multiple reports in one round

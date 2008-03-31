@@ -13,6 +13,7 @@
 
 package magellan.library.tasks;
 
+import magellan.library.Faction;
 import magellan.library.HasRegion;
 
 /**
@@ -72,4 +73,11 @@ public interface Problem {
 	 * 
 	 */
 	public String toString();
+
+  /**
+   * returns the faction this problem belongs to
+   * 
+   * @return The faction this problem belongs to or <code>null</code> if not applicable
+   */
+  public Faction getFaction();
 }

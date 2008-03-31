@@ -29,7 +29,7 @@ public interface Inspector {
 	 *
 	 * 
 	 */
-	public List reviewUnit(Unit u);
+	public List<Problem> reviewUnit(Unit u);
 
 	/**
 	 * This Function is called to review a unit and returns a list of <tt>Problem</tt> objects.
@@ -39,7 +39,7 @@ public interface Inspector {
 	 *
 	 * 
 	 */
-	public List reviewUnit(Unit u, int type);
+	public List<Problem> reviewUnit(Unit u, int type);
 
 	/**
 	 * DOCUMENT-ME
@@ -48,7 +48,7 @@ public interface Inspector {
 	 *
 	 * 
 	 */
-	public List reviewRegion(Region r);
+	public List<Problem> reviewRegion(Region r);
 
 	/**
 	 * DOCUMENT-ME
@@ -58,7 +58,7 @@ public interface Inspector {
 	 *
 	 * 
 	 */
-	public List reviewRegion(Region r, int type);
+	public List<Problem> reviewRegion(Region r, int type);
 
 	// public List reviewGameData(GameData gd); 
 }

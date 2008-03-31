@@ -39,14 +39,17 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
+import magellan.client.preferences.TaskTablePreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.ProgressBarUI;
+import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.table.TableSorter;
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.tasks.AttackInspector;
@@ -56,6 +59,7 @@ import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
 import magellan.library.tasks.ShipInspector;
 import magellan.library.tasks.ToDoInspector;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -64,7 +68,8 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-																		  SelectionListener, ShortcutListener, GameDataListener
+																		  SelectionListener, ShortcutListener, GameDataListener, 
+																		  PreferencesFactory
 {
 	private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
@@ -98,7 +103,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 //		d.addSelectionListener(this);
 
 		initGUI();
-		initInspectors();
 		refreshProblems();
 	}
 
@@ -177,7 +181,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   protected static int threadRunning=0;
 
-	private void refreshProblems() {
+	public void refreshProblems() {
+    initInspectors();
 	  
 	  Window w = SwingUtilities.getWindowAncestor(this);
 	  final ProgressBarUI ui = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
@@ -285,11 +290,17 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	private void initInspectors() {
 		inspectors = new ArrayList<Inspector>();
-		inspectors.add(ToDoInspector.getInstance());
-		inspectors.add(MovementInspector.getInstance());
-		inspectors.add(ShipInspector.getInstance());
-    inspectors.add(AttackInspector.getInstance());
-    inspectors.add(OrderSyntaxInspector.getInstance());
+		
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, true))
+		  inspectors.add(AttackInspector.getInstance());
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true))
+		  inspectors.add(ToDoInspector.getInstance());
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true))
+		  inspectors.add(MovementInspector.getInstance());
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true))
+		  inspectors.add(ShipInspector.getInstance());
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, true))
+		  inspectors.add(OrderSyntaxInspector.getInstance());
 	}
 
 	/**
@@ -393,8 +404,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           model.removeProblems(c, r);
 
           // add new problems if found
-          List problems = c.reviewRegion(r);
-          model.addProblems(problems);
+          List<Problem> problems = c.reviewRegion(r);
+          
+          model.addProblems(filterProblems(problems));
         }
 
         if (u != null) {
@@ -402,14 +414,34 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           model.removeProblems(c, u);
 
           // add new problems if found
-          List problems = c.reviewUnit(u);
-          model.addProblems(problems);
+          if (!restrictToOwner() || data.getOwnerFaction().equals(u.getFaction().getID())){
+            List<Problem> problems = c.reviewUnit(u);
+            model.addProblems(problems);
+          }
         }
       }
     }
 	}
 
-	private Vector<String> getHeaderTitles() {
+	private List<Problem> filterProblems(List<Problem> problems) {
+	  if (!restrictToOwner())
+	    return problems;
+	  
+     List<Problem> filteredList = new ArrayList<Problem>(problems.size());
+     for (Problem p: problems){
+       Faction f = p.getFaction();
+       if (!restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
+         filteredList.add(p);
+       }
+     }
+     return filteredList;
+  }
+
+  private boolean restrictToOwner() {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, false);
+  }
+
+  private Vector<String> getHeaderTitles() {
 		Vector<String> v = new Vector<String>(7);
 		v.add(Resources.get("tasks.tasktablepanel.header.type"));
 		v.add(Resources.get("tasks.tasktablepanel.header.description"));
@@ -456,9 +488,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		 *
 		 * @param p 
 		 */
-		public void addProblems(List p) {
-			for(Iterator iter = p.iterator(); iter.hasNext();) {
-				addProblem((Problem) iter.next());
+		public void addProblems(List<Problem> problems) {
+			for(Problem p: problems) {
+				addProblem(p);
 			}
 		}
 
@@ -476,26 +508,23 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		 * @param p 
 		 */
 		public void addProblem(Problem p) {
+      HasRegion hasR = p.getObject();
+      Faction faction = p.getFaction();
+
       Object[] o = new Object[NUMBEROF_POS+1];
       int i=0;
-			o[i++] = Integer.toString(p.getType());
-			o[i++] = p;
-      HasRegion hasR = p.getObject();
+      o[i++] = Integer.toString(p.getType());
+      o[i++] = p;
       o[i++] = hasR;
       o[i++] = hasR.getRegion();
-      if (hasR instanceof Unit)
-      o[i++] = ((Unit) hasR).getFaction();
-      else if(hasR instanceof UnitContainer){
-        Unit owner = ((UnitContainer) hasR).getOwner();
-        o[i++]=owner!=null?owner.getFaction():"";
-      }else
-        o[i++]="";
+      o[i++] = faction==null?"":faction;
       o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
       o[i++] = null;
-			this.addRow(o);
+      this.addRow(o);
+      
 		}
 
-		// TODO : find better solution!
+    // TODO : find better solution!
 		public void removeProblems(Inspector inspector, Object source) {
 			Vector dataVector = getDataVector();
 
@@ -554,12 +583,17 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public String getListenerDescription() {
     return Resources.get("tasks.shortcut.title");
+  }
+
+  /**
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
+   */
+  public PreferencesAdapter createPreferencesAdapter() {
+    return new TaskTablePreferences(this, settings, data);
   }
 
 }

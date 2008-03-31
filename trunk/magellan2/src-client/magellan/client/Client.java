@@ -870,6 +870,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     preferencesAdapterList.add(overviewPanel);
     preferencesAdapterList.add(detailsPanel);
     preferencesAdapterList.add(mapPanel);
+    preferencesAdapterList.add(taskPanel);
     preferencesAdapterList.add(new IconAdapterFactory(nodeWrapperFactories));
     preferencesAdapterList.add(new ResourceSettingsFactory(plugIns, getProperties()));
     

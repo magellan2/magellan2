@@ -79,7 +79,6 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
   private EMapOverviewPanel overviewPanel = null;
   private Properties settings;
-  private GameData data;
 
   /** DOCUMENT-ME */
   public JCheckBox chkSortRegions = null;
@@ -150,7 +149,6 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
   public RegionOverviewPreferences(EMapOverviewPanel parent, Properties settings, GameData data) {
     this.settings = settings;
     overviewPanel = parent;
-    this.data = data;
     chkSortRegions = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortregions"));
 
     chkSortShipUnderUnitParent = new JCheckBox(Resources.get("emapoverviewpanel.prefs.sortShipUnderUnitParent"));
@@ -437,7 +435,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
     this.add(help, c);
 
     subAdapters = new ArrayList<PreferencesAdapter>(1);
-    subAdapters.add(skillSort = new RegionOverviewSkillPreferences(parent.getEventDispatcher(),parent.getEventDispatcher().getMagellanContext().getImageFactory(), settings, data));
+    subAdapters.add(skillSort =
+        new RegionOverviewSkillPreferences(parent.getEventDispatcher(), parent.getEventDispatcher()
+            .getMagellanContext().getImageFactory(), settings, data));
   }
 
   
@@ -486,6 +486,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     rdbSortUnitsNames.setSelected(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills").equals("names"));
 
+    // FIXME (stm) this is strictly not necessary
     skillSort.initPreferences();
   }
 
@@ -661,7 +662,9 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       this.add(help, con);
 
       con.gridy++;
-      checkBox = new JCheckBox(Resources.get("emapoverviewpanel.prefs.expand.ifinside"), (overviewPanel.getExpandMode() & EMapOverviewPanel.EXPAND_IFINSIDE_FLAG) != 0);
+      checkBox =
+          new JCheckBox(Resources.get("emapoverviewpanel.prefs.expand.ifinside"), (overviewPanel
+              .getExpandMode() & EMapOverviewPanel.EXPAND_IFINSIDE_FLAG) != 0);
       checkBox.setEnabled(expanded);
       this.add(checkBox, con);
 

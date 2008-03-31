@@ -255,6 +255,8 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
     buttons.add(refreshListButton, c);
 
     this.add(buttons, BorderLayout.EAST);
+    
+    // FIXME(stm) this call is strictly not necessary 
     this.initPreferences();
   }
 

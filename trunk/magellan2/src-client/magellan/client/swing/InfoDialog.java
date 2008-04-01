@@ -71,7 +71,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     magellanImage.setText("");
     magellanImage.setAlignmentX(Component.CENTER_ALIGNMENT);
     jPanel.add(magellanImage);
-    String text = Resources.get("infodlg.infotext") + getVersionString();
+    String text = Resources.get("infodlg.infotext",getVersionString());
 
     jTextArea1 = new JEditorPane();
     jTextArea1.setContentType("text/html");

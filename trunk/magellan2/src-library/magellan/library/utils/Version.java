@@ -15,6 +15,8 @@ package magellan.library.utils;
 
 import java.util.StringTokenizer;
 
+import magellan.library.utils.logging.Logger;
+
 /**
  * Represents a Versionnumber.
  * This is primary used for eCheck and maybe not compatible with
@@ -27,6 +29,7 @@ import java.util.StringTokenizer;
  * @version $Revision: 171 $
  */
 public class Version implements Comparable {
+  private static final Logger log = Logger.getInstance(Version.class);
 	private String major = "0";
 	private String minor = "0";
 	private String build = "0";
@@ -108,6 +111,8 @@ public class Version implements Comparable {
 	 * Compares this object with the specified object for order.  Returns a negative integer, zero,
 	 * or a positive integer as this object is less than, equal to, or greater than the specified
 	 * object.
+	 * 
+	 * @see Comparable#compareTo(Object)
 	 */
 	public int compareTo(Object o) {
 		Version v = (Version) o;
@@ -125,7 +130,16 @@ public class Version implements Comparable {
           }
           return a.compareTo(b);
         } else {
-          return this.getBuild().compareTo(v.getBuild()); 
+          // okay, this is a workaround for 2.0.rc1 > 2.0.0
+          boolean a = isNumber(this.getBuild());
+          boolean b = isNumber(v.getBuild());
+          if ((a && b) || (!a && !b)) {
+            return this.getBuild().compareTo(v.getBuild());
+          } else if (a) {
+            return 1;
+          } else {
+            return -1;
+          }
         }
 			} else {
 				return this.getMinor().compareTo(v.getMinor());
@@ -137,5 +151,14 @@ public class Version implements Comparable {
   
   public boolean isNewer(Version aVersion) {
     return compareTo(aVersion)>0;
+  }
+  
+  private boolean isNumber(String s) {
+    try {
+      Integer.parseInt(s);
+      return true;
+    } catch (NumberFormatException e) {
+      return false;
+    }
   }
 }

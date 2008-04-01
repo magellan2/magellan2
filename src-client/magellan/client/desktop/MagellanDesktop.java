@@ -1260,9 +1260,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Enables or disables all docking tabs.
    */
   public synchronized void setTabVisibility(boolean showTabs) {
-    log.info("setTabVisibilty("+showTabs+")");
     Client.INSTANCE.getProperties().setProperty(PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, Boolean.toString(!showTabs));
-    log.info("Dont Show tabs? "+PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(), PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
     
     RootWindow root = (RootWindow) splitRoot;
     RootWindowProperties prop = root.getRootWindowProperties();

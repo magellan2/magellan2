@@ -1,3 +1,8 @@
+2008-04-01 / Build 179 - Thoralf (thoralf@m84.de)
+    * Bug #172 fixed
+    * VersionInfos checks now that 2.0.0 is newer then 2.0.rc1 (Strings in build number are now "RC" aware).
+    * build.xml ready for 2.0 launch.
+
 2008-03-31 / Build 178 - stm (stm_@users.sourceforge.net)
     * added PreferencesAdapter for TaskTable
 

@@ -301,14 +301,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES,"0.0;0.0;1.0;1.0");
       settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM,"0");
       // Message Panel Default colors.
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"-"); // Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,"-");// Format: #RRGGBB
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,"-");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#00CCCC"); // Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"#000000");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"#000066");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"#666600");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,"#006666");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,"#009900");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,"#990000");// Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,"#999900");// Format: #RRGGBB
       
       // try to set path to ECheck
       this.initECheckPath(settings);
@@ -316,6 +316,32 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       initLocales(settings, true);
     } else {
       initLocales(settings, false);
+      
+      // backward compatibility for white message tags (it's now the text color)
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#00CCCC"); // Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"#000000");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"#000066");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"#666600");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,"#006666");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,"#009900");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,"#990000");// Format: #RRGGBB
+      }
+      if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,"-").equals("#FFFFFF")) {
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,"#999900");// Format: #RRGGBB
+      }
     }
 
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);

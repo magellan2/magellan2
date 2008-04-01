@@ -16,6 +16,7 @@ package magellan.client.swing.tree;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -43,6 +44,7 @@ import javax.swing.tree.TreePath;
 
 import magellan.client.Client;
 import magellan.library.Message;
+import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
@@ -61,6 +63,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	protected Color textColor;
 	protected Color textBackground;
 	protected Color textFocus;
+	protected boolean bold = false;
 	protected LinkedList<TextLayout> buf = new LinkedList<TextLayout>();
 
 	/** Holds value of property lineWrap. */
@@ -132,7 +135,11 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		lastLength = maxLength;
 
 		AttributedString string = new AttributedString(text);
-		string.addAttribute(TextAttribute.FONT, getFont());
+		if (bold) {
+		  string.addAttribute(TextAttribute.FONT, getFont().deriveFont(Font.BOLD));
+	  } else {
+      string.addAttribute(TextAttribute.FONT, getFont());
+		}
 
 		AttributedCharacterIterator it = string.getIterator();
 		FontRenderContext context = ((Graphics2D) tree.getGraphics()).getFontRenderContext();
@@ -200,7 +207,11 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 			Graphics2D g2 = (Graphics2D) g;
 
 			AttributedString string = new AttributedString(text);
-			string.addAttribute(TextAttribute.FONT, getFont());
+      if (bold) {
+        string.addAttribute(TextAttribute.FONT, getFont().deriveFont(Font.BOLD));
+      } else {
+        string.addAttribute(TextAttribute.FONT, getFont());
+      }
 			string.addAttribute(TextAttribute.FOREGROUND, textColor);
 
 			AttributedCharacterIterator it = string.getIterator();
@@ -293,7 +304,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
     
     String string = "";
     // FF: Default: white
-    Color backgroundColor = Color.WHITE;
+    Color foregroundColor = Color.BLACK;
+    bold = false;
 
     if (userObject instanceof Message) {
       Message message = (Message)userObject;
@@ -306,10 +318,111 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
-        backgroundColor = Utils.getColor(color);
+        foregroundColor = Utils.getColor(color);
       }
     } else {
       string = userObject.toString();
+      
+      if (string.equalsIgnoreCase(Resources.get("messagepanel.section.economy"))) {
+        bold = true;
+        String colorName = "messagetype.section.economy.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.errors"))) {
+        bold = true;
+        String colorName = "messagetype.section.errors.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.events"))) {
+        bold = true;
+        String colorName = "messagetype.section.events.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.magic"))) {
+        bold = true;
+        String colorName = "messagetype.section.magic.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+//      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.mail"))) {
+//        bold = true;
+//        String colorName = "messagetype.section.mail.color";
+//        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+//        if (color == null) {
+//          log.warnOnce("Property "+colorName+" not found.");
+//          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+//        }
+//        // color for message type found.
+//        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.movement"))) {
+        bold = true;
+        String colorName = "messagetype.section.movement.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.production"))) {
+        bold = true;
+        String colorName = "messagetype.section.production.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.section.study"))) {
+        bold = true;
+        String colorName = "messagetype.section.study.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+
+      } else if (string.equalsIgnoreCase(Resources.get("messagepanel.node.battles"))) {
+        bold = true;
+        String colorName = "messagetype.section.battle.color";
+        String color = Client.INSTANCE.getProperties().getProperty(colorName);
+        if (color == null) {
+          log.warnOnce("Property "+colorName+" not found.");
+          color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
+        }
+        // color for message type found.
+        foregroundColor = Utils.getColor(color);
+        
+      }
     }
     
 		text = jTree.convertValueToText(string, selected, expanded, leaf, row, hasFocus);
@@ -320,12 +433,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 				textColor = defaultRenderer.getTextSelectionColor();
 				textFocus = defaultRenderer.getBorderSelectionColor();
 			} else {
-        if (backgroundColor != null) {
-          textBackground = backgroundColor; 
+        if (foregroundColor != null) {
+          textColor = foregroundColor; 
         } else {
-          textBackground = defaultRenderer.getBackgroundNonSelectionColor();
+          textColor = defaultRenderer.getTextNonSelectionColor();
         }
-				textColor = defaultRenderer.getTextNonSelectionColor();
+        textBackground = defaultRenderer.getBackgroundNonSelectionColor();
 			}
 
 			if(leaf) {

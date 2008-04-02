@@ -48,7 +48,15 @@ public class ReportMerger extends Object {
   private static final int ASTRALTOREAL_SCORE = Integer.MAX_VALUE - 4;
   private static final int ONEREGION_SCORE = Integer.MAX_VALUE - 6;
 
-  enum Type {NONE, DEFAULT, SAVED, MATCHED, ASTRAL2, ASTRAL1, USER};
+  enum Type {
+    NONE, DEFAULT, SAVED, MATCHED, ASTRAL2, ASTRAL1, USER;
+    
+    public String toString(){
+      return Resources.get("util.reportmerger.translations.type."+super.toString());
+    }
+    
+
+  };
   
 
   /**
@@ -460,7 +468,7 @@ public class ReportMerger extends Object {
     }
     
     public String toString(){
-      return getTranslation().toString()+" ("+getType()+", "+getScore()+")";
+      return Resources.getFormatted("util.reportmerger.translation.description", getTranslation().toString(), getType().toString(), getScore());
     }
   }
 
@@ -912,7 +920,7 @@ public class ReportMerger extends Object {
     if (translationList!=null && translationList.size() > 0) {
       bestTranslation = Collections.max(translationList);
 
-      log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + "(best(maxScore):" + bestTranslation.toString()+")");
+      log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + " (best(maxScore):" + bestTranslation.toString()+")");
     } else {
       log.info("No translation in layer "+ layer+" found for " + newReport.getFile().getName());
     }
@@ -976,22 +984,28 @@ public class ReportMerger extends Object {
       String message = Resources.getFormatted("util.reportmerger.msg.method", (Object) newReport.getFile().getName(), layer) 
       + (changed?Resources.get("util.reportmerger.msg.changed"):"");
       
-      String [] choices = new String [] { 
-          Resources.getFormatted("util.reportmerger.msg.method.best", bestTranslation), 
-          Resources.get("util.reportmerger.msg.method.choose"), 
-          Resources.get("util.reportmerger.msg.method.input"), 
-          Resources.get("util.reportmerger.msg.method.skip") };
+      String bestMethod = Resources.getFormatted("util.reportmerger.msg.method.best", bestTranslation);
+      String chooseMethod = Resources.get("util.reportmerger.msg.method.choose");
+      String inputMethod = Resources.get("util.reportmerger.msg.method.input");
+      String skipMethod = Resources.get("util.reportmerger.msg.method.skip");
+      ArrayList<Object> choices = new ArrayList<Object>(4+translationList.size());
+      choices.add(bestMethod);
+//      choices.add(chooseMethod);
+      choices.add(inputMethod);
+      choices.add(skipMethod);
       
-      String choice = (String) ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices, choices[1]);
-      if (choice==null || choice.equals(choices[3]))
+      choices.addAll(translationList);
+      
+      Object choice = ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices.toArray(), bestMethod);
+      if (choice==null || choice.equals(skipMethod))
         return null;
       RatedTranslation chosenTranslation=null;
       
-      if (choice.equals(choices[0])){
+      if (choice.equals(bestMethod)){
         // try anyway
         return bestTranslation;
-      }else if (choice.equals(choices[1])){
-        // choose among found translations
+      }else if (choice.equals(chooseMethod)){
+        // choose among found translations, deprecated
         Collection<RatedTranslation> tChoices = new ArrayList<RatedTranslation>(translationList);
         if (savedTranslation!=null)
           tChoices.add(savedTranslation);
@@ -1003,39 +1017,49 @@ public class ReportMerger extends Object {
           bestTranslation=chosenTranslation;
         }else{
           log.info("user abort");
+          bestTranslation = inputTranslation(newReport, layer);
         }
+      }else if (choice.equals(inputMethod)){
+        bestTranslation = inputTranslation(newReport, layer);
+      }else if (choice instanceof RatedTranslation){
+        bestTranslation = (RatedTranslation) choice;
+      }else{ 
+        log.error("Unexpected choice");
+        return null;
       }
       
-      // input manually
-      if (choice.equals(choices[2]) || chosenTranslation==null){
-        boolean badInput = false;
-        boolean cancelled = true;
-        do {
-          badInput = false;
-          message = Resources.getFormatted("util.reportmerger.msg.usertranslation.x", (Object) newReport.getFile().getName(), layer);
-          Object xS = ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
-          if (xS != null) {
-            message = Resources.getFormatted("util.reportmerger.msg.usertranslation.y", (Object) newReport.getFile().getName(), layer);
-            Object yS = ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
-            if (yS != null) {
-              cancelled = false;
-              try {
-                CoordinateID trans = new CoordinateID(Integer.parseInt((String) xS), Integer.parseInt((String) yS), layer);
-                bestTranslation = new RatedTranslation(trans, 1, Type.USER);
-                log.debug("using user translation: " + bestTranslation.getTranslation()+" in layer "+layer);
-              } catch (NumberFormatException e) {
-                badInput = true;
-              }
-            }
-          }
-        } while (badInput && !cancelled);
-        if (cancelled){
-          log.info("user input cancelled");
-          return null;
-        }
-      }
     }
     return bestTranslation;
+  }
+
+  private RatedTranslation inputTranslation(ReportCache newReport, int layer) {
+    RatedTranslation resultTranslation = null;
+    boolean badInput = false;
+    boolean cancelled = true;
+    do {
+      badInput = false;
+      String message = Resources.getFormatted("util.reportmerger.msg.usertranslation.x", (Object) newReport.getFile().getName(), layer);
+      Object xS = ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
+      if (xS != null) {
+        message = Resources.getFormatted("util.reportmerger.msg.usertranslation.y", (Object) newReport.getFile().getName(), layer);
+        Object yS = ui.input(message, Resources.get("util.reportmerger.msg.usertranslation.title"), null, "0");
+        if (yS != null) {
+          cancelled = false;
+          try {
+            CoordinateID trans = new CoordinateID(Integer.parseInt((String) xS), Integer.parseInt((String) yS), layer);
+            resultTranslation = new RatedTranslation(trans, 1, Type.USER);
+            log.debug("using user translation: " + resultTranslation.getTranslation()+" in layer "+layer);
+          } catch (NumberFormatException e) {
+            badInput = true;
+          }
+        }
+      }
+    } while (badInput && !cancelled);
+    if (cancelled){
+      log.info("user input cancelled");
+      return null;
+    }
+    return resultTranslation;
   }
 
   /**
@@ -1229,7 +1253,10 @@ public class ReportMerger extends Object {
       log.info("ReportMerger (Astral2Real): Real Data-Report: " + realTranslation.x + ", " + realTranslation.y);
 
       CoordinateID astralTrans = new CoordinateID((new Integer((dataAstralToReal.x - reportAstralToReal.x + realTranslation.x) / 4)).intValue(), (new Integer((dataAstralToReal.y - reportAstralToReal.y + realTranslation.y) / 4)).intValue(), 1);
-      astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL1));
+      if (dataReport.isMergeError() || newReport.isMergeError())
+        astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL1));
+      else
+        astralTranslationList.add(new RatedTranslation(astralTrans, 1, Type.ASTRAL1));
       log.info("ReportMerger (Astral2Real): Resulting Trans: " + astralTrans);
     } else {
       if (dataHasAstralRegions && reportHasAstralRegions)
@@ -1258,7 +1285,10 @@ public class ReportMerger extends Object {
       log.info("ReportMerger (OneRegion): Report AR-Real: " + reportAstralToReal_OneRegion);
       CoordinateID astralTrans = new CoordinateID((new Integer((dataAstralToReal_OneRegion.x - reportAstralToReal_OneRegion.x + realTranslation.x) / 4)).intValue(), (new Integer((dataAstralToReal_OneRegion.y - reportAstralToReal_OneRegion.y + realTranslation.y) / 4)).intValue(), 1);
       log.info("ReportMerger (OneRegion): Resulting Trans: " + astralTrans);
-      astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL2));
+      if (dataReport.isMergeError() || newReport.isMergeError())
+        astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL2));
+      else
+        astralTranslationList.add(new RatedTranslation(astralTrans, 1, Type.ASTRAL2));
     } else {
       if (dataHasAstralRegions && reportHasAstralRegions)
         log.info("ReportMerger (OneRegion): no valid astral translation found.");
@@ -1451,7 +1481,7 @@ public class ReportMerger extends Object {
 
         if (translation != null) {
           if (result != null && !result.equals(translation)){
-            log.warn("two mappings: " + result + "; " + translation);
+            log.warn("two mappings for "+actAR_Region+": " + result + "; " + translation);
             data.setMergeError(true);
           }
           result = translation;
@@ -1585,7 +1615,7 @@ public class ReportMerger extends Object {
 
     for (CoordinateID actRegionID : regionIDList) {
       Region actRegion = data.getRegion(actRegionID);
-      if (actRegion!=null && !actRegion.getRegionType().isOcean())
+      if (actRegion!=null && actRegion.getRegionType().isAstralVisible())
         result.add(actRegionID);
     }
     return result;

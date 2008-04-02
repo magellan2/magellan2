@@ -1810,53 +1810,64 @@ REGIONTYPE "Berge"
 "Berge";name
 1000;maxworkers
 250;roadstones
+"true";isAstralVisible
 
 REGIONTYPE "Ebene"
 "Ebene";name
 10000;maxworkers
 50;roadstones
+"true";isAstralVisible
 
 REGIONTYPE "Gletscher"
 "Gletscher";name
 100;maxworkers
 250;roadstones
 "Tunnel";roadsupportbuilding
+"true";isAstralVisible
 
 REGIONTYPE "Hochland"
 "Hochland";name
 4000;maxworkers
 100;roadstones
+"true";isAstralVisible
 
 REGIONTYPE "Sumpf"
 "Sumpf";name
 2000;maxworkers
 75;roadstones
 "Damm";roadsupportbuilding
+"true";isAstralVisible
 
 REGIONTYPE "Wüste"
 "Wüste";name
 500;maxworkers
 100;roadstones
 "Karawanserei";roadsupportbuilding
+"true";isAstralVisible
 
 REGIONTYPE "Wald"
 "Wald";name
 10000;maxworkers
 50;roadstones
+"true";isAstralVisible
 
 REGIONTYPE "Ozean"	
 "Ozean";name
 0;maxworkers
 "true";isOcean
+"false";isAstralVisible
 
 REGIONTYPE "Feuerwand"
 "Feuerwand";name
 0;maxworkers
+"false";isAstralVisible
 
 REGIONTYPE "Vulkan"
 "Vulkan";name
 0;maxworkers
+"true";isAstralVisible
 
 REGIONTYPE "Aktiver Vulkan"
 "Aktiver Vulkan";name
 0;maxworkers
+"true";isAstralVisible

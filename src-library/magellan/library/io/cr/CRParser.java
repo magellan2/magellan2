@@ -1473,6 +1473,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isOcean")) {
         regionType.setIsOcean(sc.argv[0].equals("true"));
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isAstralVisible")) {
+        regionType.setAstralVisible(sc.argv[0].equals("true"));
+        sc.getNextToken();
       } else if(sc.argc == 2) {
         unknown("REGIONTYPE", true);
       } else {

@@ -33,7 +33,11 @@ public class RegionType extends UnitContainerType {
 	public static RegionType unknown = new RegionType(StringID.create("unbekannt"));
 	private int inhabitants = -1;
 
-	/**
+  private boolean isOcean = false;
+
+  private boolean isAstralVisible = false;
+  
+  /**
 	 * Creates a new RegionType object.
 	 *
 	 * 
@@ -119,8 +123,6 @@ public class RegionType extends UnitContainerType {
 		return Collections.unmodifiableList(resources);
 	}
 
-	private boolean isOcean = false;
-
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -138,6 +140,24 @@ public class RegionType extends UnitContainerType {
 	public void setIsOcean(boolean isOcean) {
 		this.isOcean = isOcean;
 	}
+
+  /** 
+   * Returns <code>true</code> if this RegionType is visible from the astral space.
+   * 
+   * @return <code>true</code> if this RegionType is visible from the astral space
+   */
+  public boolean isAstralVisible() {
+    return isAstralVisible;
+  }
+
+  /**
+   * If argument is true, this RegionType is marked as being visible from the astral space.
+   * 
+   * @param isAstralVisible
+   */
+  public void setAstralVisible(boolean isAstralVisible) {
+    this.isAstralVisible = isAstralVisible;
+  }
 
 	/**
 	 * DOCUMENT-ME

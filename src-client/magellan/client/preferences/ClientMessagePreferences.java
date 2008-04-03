@@ -117,7 +117,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorEvents = new JPanel();
     panelColorEvents.setBorder(new LineBorder(Color.black));
     panelColorEvents.setPreferredSize(prefDim);
-    panelColorEvents.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,Color.white));
+    panelColorEvents.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,Color.BLACK));
     panelColorEvents.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorEvents, c);
@@ -130,7 +130,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorMovements = new JPanel();
     panelColorMovements.setBorder(new LineBorder(Color.black));
     panelColorMovements.setPreferredSize(prefDim);
-    panelColorMovements.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,Color.white));
+    panelColorMovements.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,Color.BLACK));
     panelColorMovements.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 1, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorMovements, c);
@@ -143,7 +143,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorEconomy = new JPanel();
     panelColorEconomy.setBorder(new LineBorder(Color.black));
     panelColorEconomy.setPreferredSize(prefDim);
-    panelColorEconomy.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,Color.white));
+    panelColorEconomy.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,Color.BLACK));
     panelColorEconomy.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 2, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorEconomy, c);
@@ -156,7 +156,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorMagic = new JPanel();
     panelColorMagic.setBorder(new LineBorder(Color.black));
     panelColorMagic.setPreferredSize(prefDim);
-    panelColorMagic.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,Color.white));
+    panelColorMagic.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,Color.BLACK));
     panelColorMagic.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 3, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorMagic, c);
@@ -169,7 +169,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorStudy = new JPanel();
     panelColorStudy.setBorder(new LineBorder(Color.black));
     panelColorStudy.setPreferredSize(prefDim);
-    panelColorStudy.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,Color.white));
+    panelColorStudy.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_STUDY_COLOR,Color.BLACK));
     panelColorStudy.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 4, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorStudy, c);
@@ -182,7 +182,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorProduction = new JPanel();
     panelColorProduction.setBorder(new LineBorder(Color.black));
     panelColorProduction.setPreferredSize(prefDim);
-    panelColorProduction.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,Color.white));
+    panelColorProduction.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_PRODUCTION_COLOR,Color.BLACK));
     panelColorProduction.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 5, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorProduction, c);
@@ -195,7 +195,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorErrors = new JPanel();
     panelColorErrors.setBorder(new LineBorder(Color.black));
     panelColorErrors.setPreferredSize(prefDim);
-    panelColorErrors.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,Color.white));
+    panelColorErrors.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_ERRORS_COLOR,Color.BLACK));
     panelColorErrors.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 6, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorErrors, c);
@@ -208,7 +208,7 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
     panelColorBattle = new JPanel();
     panelColorBattle.setBorder(new LineBorder(Color.black));
     panelColorBattle.setPreferredSize(prefDim);
-    panelColorBattle.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,Color.white));
+    panelColorBattle.setBackground(PropertiesHelper.getColor(settings,PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR,Color.BLACK));
     panelColorBattle.addMouseListener(new ColorPanelMouseAdapter());
     GridBagHelper.setConstraints(c, 1, 7, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, c.insets, 0, 0);
     colors.add(panelColorBattle, c);

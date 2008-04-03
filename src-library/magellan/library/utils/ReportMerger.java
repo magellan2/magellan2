@@ -54,8 +54,6 @@ public class ReportMerger extends Object {
     public String toString(){
       return Resources.get("util.reportmerger.translations.type."+super.toString());
     }
-    
-
   };
   
 

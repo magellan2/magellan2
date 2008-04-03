@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <title>
-      Fenster: Karte
+      Window: Map
     </title>
     <meta http-equiv="Content-Language" content="en" />
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
@@ -20,71 +20,61 @@
       Karte
     </h1>
     <p>
-      Hier wird eine Karte der bekannten Welt dargestellt.
+      Here the map of the known world is displayed.
     </p>
     <p style="text-align: center">
       <img src="../images/windows_map.gif" alt="" border="0" />
     </p>
     <p>
-      Bei eingeschaltetem "Fog of War" (FOW) werden Regionen, in denen sich
-      keine eigenen Einheiten befinden oder durchgereist sind, bzw.
-      Ozeanregionen, die man nicht von einem Leuchtturm erblickt, dunkler
-      gezeichnet. Mit der Tastenkombination <b>STRG-W</b> läßt sich der Modus
-      an- und ausschalten.
+      When "Fog of War" (FOW) is enabled, regions that do not contain units
+      or have not been traveled through, as well as ocean regions that can
+      not be glimpsed from atop a lighthouse, are displayed darker.
+      This mode can be toggled with shortcut key <b>CTRL-W</b>.
     </p>
     <p>
-      Klickt man mit der linken Maustaste auf die Karte, wird die betreffende
-      Region in der Regionsanzeige geöffnet. Hält man die Maustaste fest, kann
-      man den Kartenausschnitt verschieben.
+      If you click on the map the selected region is opened in the region view.
+      By holding down the mouse button you can pan the map.
     </p>
     <p>
-      Oberhalb der Karte befindet sich ein Schieberegler, mit dem man die
-      Vergrößerung bestimmen kann. Desweiteren können sich dort zwei
-      Drop-Down-Menüs befinden. Eines für Ebenen, falls man Einheiten in
-      mehreren Ebenen hat und eines mit dem man sogenannte HotSpots auswählen
-      kann. Einen HotSpot legt man an, indem man <b>STRG-H</b> drückt und ihm
-      dann einen Namen gibt. Hiermit speichert man die momentane Kartenposition
-      und kann sie über das Drop-Down-Menü jederzeit wieder aufrufen. Befindet
-      man sich über einem HotSpot, so lässt sich dieser mit
-      <b>STRG-Umschalt-H</b> wieder löschen.
+      Above the map there is a zoombar that controls the magnification of
+      the map. Additionally you might find two drop-down menus here.
+      One for planes, if you happen to have units in several planes, and
+      one that allows you to choose so-called HotSpots.
+      You can add a HotSpot by pressing <b>CTRL-H</b> and entering a name.
+      By doing this you save the current map position and can go back to it
+      at any time through the drop-down menu. If you are at an existing
+      HotSpot, you can delete it by pressing <b>CTRL-ALT-H</b>.
     </p>
     <p>
-      Mit einem Linksklick bei gedrückter STRG-Taste lässt sich eine Region
-      markieren, bei gedrückter gehaltener Maustaste auch mehrere. So kann man
-      z.B. einige Regionen markieren, deren Daten man als CR exportieren will.
-      Das Demarkieren erfolgt ebenfalls mit der linken Maustaste bei gedrückter
-      STRG-Taste.
+      By clicking on a region while holding down the CTRL-key you can select
+      a region, or several with the mouse button held down. This way you can
+      for example select regions to export as a CR. To deselect, click again
+      with the CTRL-key held down.
     </p>
     <p>
-      Mit einem Rechtsklick auf eine Region erhält man ein Kontextmenü, dass
-      folgende Auswahlmöglichkeiten bietet:
+      Rightclicking a region results in a context menu that has the following
+      options:
     </p>
     <ul>
       <li>
-        <b>Markieren/Demarkieren</b><br />
-         Analog STRG-linker Mausklick lässt sich hiermit die ausgewählte Region
-        markieren bzw. die Markierung wieder löschen.
+        <b>Change selection state</b><br />
+         Allows you to select and deselect the current region like you were
+         clicking it with the CTRL-key presded.
       </li>
       <li>
-        <b>Kopiere Name + Koordinaten</b><br />
-         Kopiert den Namen und die Koordinaten der Region in die
-        Zwischenablage.
+        <b>Copy name and coordinates</b><br />
+         Copies the name and coordinates to the clipboard.
       </li>
       <li>
-        <b>Ursprung hier setzen</b><br />
-         Setzt den Ursprung des Koordinatensystems in die ausgewählte Region.
-        Dies betrifft nur die Anzeige, ein entsprechender Ursprungsbefehl wird
-        damit keiner Einheit gegeben.
+        <b>Set origin to this region</b><br />
+        Sets the origin of the coordinate system to the current region.
+        This only applies to the display, a matching ORIGIN order is not
+        issued to any unit.
       </li>
       <li>
-        <b>Hier Hotspot setzen/entfernen</b><br />
-         Setzt bzw. entfernt einen Hotspot in der ausgewählten Region. Der Name
-        des Hotspots entspricht dabei dem Regionsnamen.
-      </li>
-      <li>
-        <b>NR für Region anzeigen</b><br />
-         Zeigt in einem neuen Fenster die Region im Format des NRs an. Bietet
-        sich an, um mal in aller Ruhe in Beschreibungen zu schmökern.
+        <b>Set or delete hotspot</b><br />
+         Sets or deletes a hotspot corresponding to the current region. The
+         name of the hotspot is set to the region's name.
       </li>
     </ul>
     <!-- Inhalt - Ende -->

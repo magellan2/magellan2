@@ -301,7 +301,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES,"0.0;0.0;1.0;1.0");
       settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER+"Einkaufsgut"+PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM,"0");
       // Message Panel Default colors.
-      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#00CCCC"); // Format: #RRGGBB
+      settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#009999"); // Format: #RRGGBB
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"#000000");// Format: #RRGGBB
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_ECONOMY_COLOR,"#000066");// Format: #RRGGBB
       settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MAGIC_COLOR,"#666600");// Format: #RRGGBB
@@ -319,7 +319,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       
       // backward compatibility for white message tags (it's now the text color)
       if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"-").equals("#FFFFFF")) {
-        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#00CCCC"); // Format: #RRGGBB
+        settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_EVENTS_COLOR,"#009999"); // Format: #RRGGBB
       }
       if (settings.getProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"-").equals("#FFFFFF")) {
         settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_MOVEMENTS_COLOR,"#000000");// Format: #RRGGBB

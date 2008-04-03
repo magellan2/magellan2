@@ -1,3 +1,6 @@
+2008-04-02 / Build 181 - stm (stm_@users.sourceforge.net)
+    * Tweaked FactionstatsDialog interface, amended help 
+    
 2008-04-02 / Build 181 - Thoralf (thoralf@m84.de)
     * Final Release 2.0.0
     * light colors changed because of white background

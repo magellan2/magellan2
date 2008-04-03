@@ -1,3 +1,9 @@
+2008-04-02 / Build 181 - Thoralf (thoralf@m84.de)
+    * Final Release 2.0.0
+    * light colors changed because of white background
+    * fixed some minor bugs
+    * new english translations for Magellan help
+
 2008-04-02 / Build 180 - stm (stm_@users.sourceforge.net)
     * Astral merge bug fixed (Feuerwand equivalent to Ozean in OneRegion-Thingy)
     * Translation dialog nicer

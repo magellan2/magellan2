@@ -333,6 +333,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 		JButton btnPassword = new JButton(Resources.get("factionstatsdialog.btn.setpwd.caption"));
 		btnPassword.setMnemonic(Resources.get("factionstatsdialog.btn.setpwd.menmonic").charAt(0));
+		btnPassword.setToolTipText(Resources.get("factionstatsdialog.btn.setpwd.tooltip"));
 		btnPassword.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if((lstFaction.getModel().getSize() <= 0) || lstFaction.isSelectionEmpty()) {
@@ -393,6 +394,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 		JButton btnTrustlevel = new JButton(Resources.get("factionstatsdialog.btn.trustlevel.caption"));
 		btnTrustlevel.setMnemonic(Resources.get("factionstatsdialog.btn.trustlevel.mnemonic").charAt(0));
+    btnTrustlevel.setToolTipText(Resources.get("factionstatsdialog.btn.trustlevel.tooltip"));
 		btnTrustlevel.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if((lstFaction.getModel().getSize() <= 0) || lstFaction.isSelectionEmpty()) {

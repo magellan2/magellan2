@@ -131,10 +131,12 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     txtPassword.setEditable(true);
     txtPassword.setCursor(new Cursor(Cursor.TEXT_CURSOR));
     txtPassword.setPreferredSize(new Dimension(100, 25));
+    txtPassword.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
 
     JLabel l = new JLabel(Resources.get("factionpropertiesdialog.password.label") + ": ");
     // l.setDisplayedMnemonic(Resources.get("finddialog.lbl.pattern.mnemonic").charAt(0));
     l.setLabelFor(txtPassword);
+    l.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
 
     JPanel pnlPassword = new JPanel(new BorderLayout());
     pnlPassword.setBorder(new EmptyBorder(4, 4, 4, 4));
@@ -143,12 +145,14 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
 
     chkOwner = new JCheckBox(Resources.get("factionpropertiesdialog.owner.label"));
     chkOwner.setSelected(faction.getID().equals(faction.getData().getOwnerFaction()));
+    chkOwner.setToolTipText(Resources.get("factionpropertiesdialog.owner.tooltip"));
 
     JPanel translationPanel = new JPanel();
 
     translationPanel.setLayout(new GridBagLayout());
     translationPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("factionpropertiesdialog.translations.title")));
+    translationPanel.setToolTipText(Resources.get("factionpropertiesdialog.translations.tooltip"));
 
     tx = new JTextField();
     tx.setPreferredSize(new java.awt.Dimension(55, 20));
@@ -193,6 +197,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     });
 
     translationList = new JList();
+    translationList.setToolTipText(Resources.get("factionpropertiesdialog.translationlist.tooltip"));
     translationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JScrollPane pane = new JScrollPane(translationList);
 

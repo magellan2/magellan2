@@ -13,12 +13,18 @@
 
 package magellan.library.utils;
 
+import java.util.Arrays;
+
+import magellan.library.utils.logging.Logger;
+
 
 /**
  * A class representing a token of an Eressea order.
  */
 public class OrderToken {
-	/** Undefined token type */
+  private static final Logger log = Logger.getInstance(OrderToken.class);
+
+  /** Undefined token type */
 	public static final int TT_UNDEF = 0;
 
 	/** End-of-order token type */
@@ -121,24 +127,27 @@ public class OrderToken {
 		return text;
 	}
 
+  static long count = 0;
   /**
    * Sames as getText() but removes enclosing quotes.
    *
    * 
    */
-  public String getStrippedText() {
+  public String getStrippedText(char [] delimiters) {
     if (ttype!=TT_STRING)
       return getText();
     
     int begin = 0, end = text.length();
-    if (text.charAt(0)=='"')
+    if (text.length()==0)
+      return text;
+    if (Arrays.binarySearch(delimiters, text.charAt(0))>0)
       begin = 1;
-    if (text.length()>1 && text.charAt(text.length()-1)=='"')
+    if (text.length()>1 && Arrays.binarySearch(delimiters, text.charAt(0))>0)
       end = text.length()-1;
     return text.substring(begin, end);
   }
 
-	/**
+  /**
 	 * DOCUMENT-ME
 	 *
 	 * 

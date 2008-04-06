@@ -25,8 +25,18 @@ import magellan.library.Unit;
  * @version 1.0
  */
 public interface Completer {
+  
 	/**
-	 * DOCUMENT-ME
+   * Get order completions for the order <code>line</code> and Unit
+   * <code>u</code>. If <code>old</code> is <code>null</code> or empty,
+   * all possible completions matching (i.e. startin with) <code>line</code>
+   * should be computed. Else, the method may just return all completions in
+   * <code>old</code> matching line.
+   * 
+	 * @param u 
+	 * @param line
+	 * @param old A list of completions or <code>null</code>.
+	 * @return The list of all Completions matching line.
 	 */
 	public List<Completion> getCompletions(Unit u, String line, List<Completion> old);
 }

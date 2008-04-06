@@ -222,7 +222,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    chkOwnerParty = new JCheckBox(Resources.get("tasks.prefs.restricttoowner"), false);
+    chkOwnerParty = new JCheckBox(Resources.get("tasks.prefs.restricttoowner"), true);
     panel.add(chkOwnerParty, c);
 
     c.gridy++;

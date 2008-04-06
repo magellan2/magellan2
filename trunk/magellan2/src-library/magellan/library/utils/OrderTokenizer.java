@@ -59,8 +59,8 @@ public class OrderTokenizer {
 				if(isFirstToken && (c == '@')) {
 					retVal = new OrderToken("@", in.getPos() - 1, in.getPos(),
 											OrderToken.TT_PERSIST, false);
-				} else if(c == '"') {
-					retVal = readQuote();
+				} else if(c == '"' || c == '\'') {
+					retVal = readQuote(c);
 				} else if(c == ';') {
 					retVal = readSCComment();
 				} else if(c == '/') {
@@ -87,13 +87,13 @@ public class OrderTokenizer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	private OrderToken readQuote() throws IOException {
-		StringBuffer sb = new StringBuffer("\"");
+	private OrderToken readQuote(int quote) throws IOException {
+		StringBuffer sb = new StringBuffer(""+(char)quote);
 		int c = 0;
 		int start = in.getPos() - 1;
 
 		while((c = in.read()) != -1) {
-			if(c == '"') {
+			if(c == quote) {
 				sb.append((char) c);
 
 				break;
@@ -107,7 +107,7 @@ public class OrderTokenizer {
 		int end = in.getPos();
 		OrderToken retVal;
 
-		if(c != '"') {
+		if(c != quote) {
 			end--;
 			retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, true);
 		} else {
@@ -199,6 +199,7 @@ public class OrderTokenizer {
 		int start = in.getPos();
 
 		while((c = in.read()) != -1) {
+		  // TODO (stm) check for  '\'' here, too?
 			if((c == '\r') || (c == '\n') || (c == ' ') || (c == '\t') || (c == '"') || (c == ';') ||
 				   (c == '/')) {
 				in.unread(c);

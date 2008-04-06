@@ -307,7 +307,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
             }
           });
         } else {
-          levelSign.setEnabled(false);
+//          levelSign.setEnsabled(false);
         }
         levelSelect.add(levelSign);
       }

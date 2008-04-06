@@ -438,7 +438,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   private boolean restrictToOwner() {
-    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, false);
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, true);
   }
 
   private Vector<String> getHeaderTitles() {

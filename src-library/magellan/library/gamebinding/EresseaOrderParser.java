@@ -45,6 +45,8 @@ public class EresseaOrderParser implements OrderParser {
 
 	// this is not entirely true with dynamic bases but it probably doesn't really hurt
 	private static final int MAX_UID = 1679615;
+
+  private static final char[] QUOTES = new char[] { '\'', '"'};
 	private String errMsg = null;
 	private TokenBucket tokenBucket = null;
 	private Iterator tokens = null;
@@ -867,26 +869,80 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
+  private static enum Type { EMPTY, OPENING, CLOSING };
+
 	//************* DEFAULT
 	private boolean readDefault(OrderToken token) {
 		token.ttype = OrderToken.TT_KEYWORD;
 
 		OrderToken t = (OrderToken) tokens.next();
+		
+		// the following can be string literal, a string literal within quotes or with an opening quote
+		// find out which type we have
+		Type tokenType=Type.EMPTY;
+		String innerText="";
 
-		if(t.ttype == OrderToken.TT_EOC) {
-			if(completer != null) {
-				completer.cmpltDefault();
-			}
+		char quote = 0;
+		
+    if(t.ttype == OrderToken.TT_EOC || t.getText().length()<1) {
+      innerText = "";
+      tokenType = Type.EMPTY;
+    } else {
+      if (t.getText().charAt(0)=='\''){
+        quote='\'';
+      } else if (t.getText().charAt(0)=='"'){
+        quote='"';
+      } else {
+        innerText = t.getText();
+        tokenType = Type.EMPTY;
+      }
+		} 
+    if (quote!=0){
+      // text starts with quote
+      if (t.getText().length()>=2 && t.getText().charAt(t.getText().length() - 1)==quote)  {
+        innerText = t.getText().substring(1, t.getText().length()-1);
+        tokenType = Type.CLOSING;
+      }else{
+        innerText = t.getText().substring(1, t.getText().length());
+        tokenType = Type.OPENING;
+      }
+		}
 
-			return false;
-		} else {
-		  // parse string inside quotes as extra order
-      if (t.getText().length() < 3 || t.getText().charAt(0) != '"'
-          || t.getText().charAt(t.getText().length() - 1) != '"')
-        return false;
-      return (new EresseaOrderParser(data, completer)).read(new StringReader(t.getStrippedText()));
-      //			return readOrder(t);
-    }
+    // parse the string inside the quote(s)
+		boolean retVal = read(new StringReader(innerText));
+		
+		
+		if (tokenType==Type.CLOSING){
+		  // return true iff the innerText is an nonempty order
+		  if (completer!=null)
+		    completer.clear();
+		  return retVal && innerText.length()!=0;
+		}
+		
+		if (completer!=null){
+		  if (tokenType==Type.EMPTY){
+		    // nothing
+        completer.cmplOpeningQuote(null, quote==0?'\'':quote);
+		  } else if (tokenType==Type.OPENING){
+		    // quote with following text:
+		    OrderTokenizer tokenizer = new OrderTokenizer(new StringReader(innerText));
+        OrderToken firstToken =tokenizer.getNextToken(), lastToken=firstToken;
+        int tokenCount = 0;
+        for (OrderToken currentToken = firstToken; currentToken.ttype!=OrderToken.TT_EOC;tokenCount++){
+          lastToken=currentToken;
+          currentToken=tokenizer.getNextToken();
+        }
+        // add opening and closing quotes to value as fit, but not to name
+        // this way, the completion list is filtered correctly, later
+        if (retVal)
+          completer.cmplFinalQuote(lastToken,quote);
+        if (tokenCount==1 && ! lastToken.followedBySpace()){
+          completer.cmplOpeningQuote(null, quote);
+        }
+
+		  }
+		}
+		return false;
 	}
 
 	//************* EMAIL
@@ -1069,6 +1125,8 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
+		// TODO (stm)     if(isID(t.getText()) && t.followedBySpace()) {
+		// would work better but breaks retVal
 		if(isID(t.getText()) == true) {
 			retVal = readGibUID(t);
 		} else {
@@ -1099,8 +1157,9 @@ public class EresseaOrderParser implements OrderParser {
 					  t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CONTROL)) ||
 					  t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
 			retVal = readFinalKeyword(t);
-		} else if(isString(t.getText()) == true) {
-			retVal = readFinalString(t);
+//		} else if(isString(t.getText()) == true) {
+// this is not allowed
+//			retVal = readFinalString(t);
 		} else {
 			if(completer != null) {
 				completer.cmpltGibUID();
@@ -1201,7 +1260,9 @@ public class EresseaOrderParser implements OrderParser {
 				completer.cmpltGruppe();
 			}
 
-			unexpected(t);
+			// just "GRUPPE" without explicit group is valid 
+			retVal=checkFinal(t);
+//			unexpected(t);
 		}
 
 		return retVal;
@@ -1509,7 +1570,7 @@ public class EresseaOrderParser implements OrderParser {
 		OrderToken t = (OrderToken) tokens.next();
 
 		// detect quoted strings
-		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText()) != null)) {
+		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText(QUOTES)) != null)) {
 			t.ttype = OrderToken.TT_STRING;
 			t = (OrderToken) tokens.next();
 
@@ -2905,7 +2966,7 @@ public class EresseaOrderParser implements OrderParser {
 
 				if(!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'Ä') ||
 					   (c == 'Ö') || (c == 'Ü') || (c == 'ä') || (c == 'ö') || (c == 'ü') ||
-					   (c == '~') || (c == '"') || (c == 'ß'))) {
+					   (c == '~') || (c == 'ß'))) {
 					retVal = false;
 
 					break;

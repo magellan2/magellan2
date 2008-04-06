@@ -394,7 +394,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (editors.getCurrentUnit() != null) {
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
 
-      // determine, wheter the curser is in a word
+      addCommonCompletion(getStub(line));
+      
+      // determine, whether the cursor is in a word
       boolean inWord = true;
 
       if ((j.getText().length() == j.getCaretPosition()) || (j.getCaretPosition() == 0)) {
@@ -422,6 +424,34 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
           currentGUI.offerCompletion(j, completions, stub);
           completionIndex = 0;
         }
+      }
+    }
+  }
+
+  private void addCommonCompletion(String stub) {
+    if (completions.size() > 1) {
+      Completion reference = completions.iterator().next();
+      int common = 0;
+      boolean isCommon = true;
+      for (common = 0; common < reference.getName().length() && isCommon; ++common) {
+        isCommon = true;
+        char commonChar = reference.getName().charAt(common);
+        if (commonChar == ' ' || commonChar == '\t') {
+          isCommon = false;
+          break;
+        }
+        for (Completion c : completions) {
+          if (c.getName().length() <= common || c.getName().charAt(common) != commonChar) {
+            isCommon = false;
+            common--;
+            break;
+          }
+        }
+      }
+      if (common > 0) {
+        String commonPart = reference.getName().substring(0, common);
+        if (stub.length()<common)
+          completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
       }
     }
   }
@@ -526,7 +556,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     try {
       j.getDocument().remove(stubBeg, stubLen);
-      j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
+      // add additional blank if we are inside the line
+      char c = text.length()>stubBeg+stubLen?text.charAt(stubBeg+stubLen):0;
+      if (c=='\n' || c==0)
+        j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
+      else
+        j.getDocument().insertString(stubBeg, completion.getValue()+" ", new SimpleAttributeSet());
       j.getCaret().setDot((stubBeg + completion.getValue().length()) - completion.getCursorOffset());
 
       // pavkovic 2003.03.04: enforce focus request
@@ -606,7 +641,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     for (int i = txt.length() - 1; i >= 0; i--) {
       char c = txt.charAt(i);
 
-      if ((c == '"') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
+      if ((c == '"') || (c == '\'') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
         retVal.append(c);
       } else {
         break;

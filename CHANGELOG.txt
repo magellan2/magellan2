@@ -1,3 +1,6 @@
+2008-04-06 / Build 182 - stm (stm_@users.sourceforge.net)
+   * started fixing #154, #160, #161, #162 
+
 2008-04-02 / Build 181 - stm (stm_@users.sourceforge.net)
     * Tweaked FactionstatsDialog interface, amended help 
     

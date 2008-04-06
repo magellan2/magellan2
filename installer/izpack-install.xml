@@ -58,6 +58,7 @@
       <file src="release/lib"                               targetdir="$INSTALL_PATH"/>
       <file src="release/plugins"                           targetdir="$INSTALL_PATH"/>
       <file src="release/magellan.bat"                      targetdir="$INSTALL_PATH"/>
+      <file src="release/magellan.sh"                       targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-client.jar"               targetdir="$INSTALL_PATH"/>
       <file src="release/magellan-library.jar"              targetdir="$INSTALL_PATH"/>
       <file src="release/CHANGELOG.txt"                     targetdir="$INSTALL_PATH"/>

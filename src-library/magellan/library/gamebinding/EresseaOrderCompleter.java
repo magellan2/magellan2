@@ -14,7 +14,6 @@
 package magellan.library.gamebinding;
 
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -122,7 +121,7 @@ public class EresseaOrderCompleter implements Completer {
 
 		if((tokens.size() > 1) &&
 			   (((OrderToken) tokens.get(tokens.size() - 2)).ttype == OrderToken.TT_COMMENT)) {
-			return new LinkedList<Completion>();
+			return Collections.emptyList();
 		} else {
 			return crop(completions, cmd);
 		}
@@ -770,19 +769,34 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(" \"\"", " \"\"", "", 9, 1));
 	}
 
-	void cmpltDefault() {
-		cmplt();
-		// add quotes around completions...
-		List<Completion> newCompletions = new ArrayList<Completion>(completions.size());
-		for (Completion c: completions){
-		  newCompletions.add(new Completion(c.getName(), "\""+c.getValue(), c.getPostfix()+"\"", c.getPriority(), c.getCursorOffset()));
-		}
-		completions = newCompletions;
-	}
 
 	void cmpltFahre() {
 		addRegionUnits("");
 	}
+
+  public void cmplFinalQuote(OrderToken t, char quote) {
+    List<Completion> oldList = new LinkedList<Completion>(completions);
+    completions.clear();
+    for (Completion c: oldList){
+      completions.add(new Completion(c.getName(), c.getValue()+quote, c.getPostfix(), c.getPriority(), c.getCursorOffset()));
+    }
+    if (t!=null)
+      completions.add(new Completion(t.getText(), t.getText()+quote, ""));
+  }
+
+  public void cmplOpeningQuote(OrderToken t, char quote) {
+    List<Completion> oldList = new LinkedList<Completion>(completions);
+    completions.clear();
+    for (Completion c: oldList){
+      completions.add(new Completion(c.getName(), quote+c.getValue(), c.getPostfix(), c.getPriority(), c.getCursorOffset()));
+    }
+    if (t!=null)
+      completions.add(new Completion(t.getText(), quote+t.getText(), ""));
+  }
+
+  public void clear() {
+    completions.clear();
+  }
 
 	void cmpltFolge() {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT),
@@ -2129,9 +2143,6 @@ public class EresseaOrderCompleter implements Completer {
 	/**
 	 * Returns the last word immediately at the end of the String txt.
 	 *
-	 * 
-	 *
-	 * 
 	 */
 	private String getStub(String txt) {
 		StringBuffer retVal = new StringBuffer();
@@ -2139,15 +2150,12 @@ public class EresseaOrderCompleter implements Completer {
 		for(int i = txt.length() - 1; i >= 0; i--) {
 			char c = txt.charAt(i);
 
-			if((c == '"') || (c == '-') || (c == '_') || (Character.isLetterOrDigit(c) == true)) {
+			if((c == '-') || (c == '_') || (Character.isLetterOrDigit(c) == true)) {
 				retVal.append(c);
 			} else {
 				break;
 			}
 		}
-		// detect "\"" as ""
-		if (retVal.toString().equals("\""))
-				return "";
 		return retVal.reverse().toString();
 	}
 
@@ -2307,14 +2315,9 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
+   * @see magellan.library.completion.Completer#getCompletions(magellan.library.Unit,
+   *      java.lang.String, java.util.List)
+   */
 	public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
 		if((old == null) || (old.size() == 0)) {
 			return this.getCompletions(u, line);

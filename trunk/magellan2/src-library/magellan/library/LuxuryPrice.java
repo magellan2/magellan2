@@ -50,4 +50,12 @@ public class LuxuryPrice {
 	public ItemType getItemType() {
 		return itemType;
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+	  return itemType.toString()+":"+price;
+	}
 }

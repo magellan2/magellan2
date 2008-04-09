@@ -1,109 +1,68 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title>
-      Fenster: Befehle
-    </title>
-    <meta http-equiv="Content-Language" content="en" />
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <meta name="keywords"
-    content="Magellan, Dokumentation, Eressea, PbeM, JavaClient" />
-    <meta name="description" content="Magellan Dokumentation" />
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//DE">
 
-    <link rel="stylesheet" href="../../default.css" type="text/css" />
-  </head>
-  <body>
-    <a id="top" name="top"></a> <!-- Inhalt -->
-     
-    <h1>
-      Befehle
-    </h1>
-    <p>
-      Dieses Fenster dient dazu seinen Einheiten, neue Anweisungen zu geben.
-    </p>
-    <p style="text-align: center">
-      <img src="../images/windows_orders.gif" alt="" border="0" />
-    </p>
-    <p>
-      Ist eine Einheit angewählt, werden die Befehle der Einheit hier
-      dargestellt und können verändert werden. Magellan zeigt nur Befehle von
-      Einheiten an, wenn für die entsprechende Partei ein Password gesetzt
-      wurde. Wenn hier also keine Befehle auftauchen, muß man in der <a
-      href="../menus/extras/factionstatistics.html">Parteistatistik</a> für
-      seine Partei zuerst ein Password angeben.
-    </p>
-    <p>
-      Die Befehlseingabe wird durch eine komfortable
-      Auto-Vervollständigen-Funktion unterstützt, die flexibel an die eigenen
-      Bedürfnisse <a href="../menus/extras/options_detail.html">angepasst</a>
-      werden kann. Um einen Befehl einzugeben muß man nur dessen
-      Anfangsbuchstaben eingeben. Aus der nun erscheinenden Vorschlagsliste
-      kann man nun mittels der Cursortasten oder STRG-up bzw. STRG-down den
-      passenden Befehl auswählen und mit der TAB-Taste einfügen. Die
-      Auto-Vervollständigen-Funktion kann im Menü <a
-      href="../menus/extras/options_detail.html">Extras/Optionen/Detailanzeige</a>
-      konfiguriert werden.
-    </p>
-    <p>
-      Mit <b><i>Befehle bestätigt</i></b> kann man die Befehle der aktiven
-      Einheit bestätigen. Die Einheit wird darauf im Regionsfenster nicht mehr
-      fett dargestellt. Man kann mit dieser Funktion also Einheiten markieren,
-      die man bereits bearbeitet hat.
-    </p>
-    <br />
-    <h2>
-      TEMP-Einheiten
-    </h2>
-    <p>
-      Magellan bietet eine komfortable Möglichkeit mit TEMP-Einheiten zu
-      arbeiten. Dabei werden TEMP-Einheiten wie normale Einheiten unter ihrer
-      Erzeugereinheit dargestellt. Übergaben von Personen und Gegenständen und
-      auch Talente und Gewichte werden dabei in der Detailanzeige wie bei
-      normalen Einheiten dargestellt. Die Befehle zur Erzeugung der
-      TEMP-Einheit (MACHE TEMP [...] ENDE) werden von Magellan erst beim
-      Exportieren der Befehle erzeugt. Innerhalb Magellan werden TEMP-Einheiten
-      behandelt wie alle anderen Einheiten auch.
-    </p>
-    <br />
-    <h3>
-      TEMP-Einheiten erschaffen
-    </h3>
-    <p>
-      <img src="../images/windows_orders_button_maketemp.gif" alt=""
-      border="0" />
-    </p>
-    <p>
-      Mit einem Klick auf diesen Button wird eine TEMP-Einheit erzeugt. Dabei
-      können in folgendem Dialog Einheitenname und TEMP-ID eingegeben werden.
-      Die ensprechenden Befehle werden dabei automatisch erzeugt.
-    </p>
-    <p>
-      <img src="../images/windows_orders_maketemp.gif" alt="" border="0" />
-    </p>
-    <p>
-      Nach einem Klick auf<br />
-      <i>Mehr</i> erscheint folgender Dialog:
-    </p>
-    <p>
-      <img src="../images/windows_orders_maketempmore.gif" alt="" border="0" />
-    </p>
-    <p>
-      Hier kann zusätzlich die Anzahl der zu rekrutierenden Personen, ein
-      Befehl und die Einheitenbeschreibung angegeben werden.
-    </p>
-    <br />
-    <h3>
-      TEMP-Einheiten löschen
-    </h3>
-    <p>
-      <img src="../images/windows_orders_button_deltemp.gif" alt=""
-      border="0" />
-    </p>
-    <p>
-      Bei Klick auf diesen Button wird die aktuelle TEMP-Einheit gelöscht.
-    </p>
-    <!-- Inhalt - Ende -->
-  </body>
+<html>
+<head>
+	<title>Window: orders</title>
+	<meta http-equiv="Content-Language" content="en">
+	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta name="keywords" content="Magellan, Dokumentation, Eressea, PbeM, JavaClient">
+	<meta name="description" content="Magellan Dokumentation">
+	<meta name="AUTHOR" content="rb@behme.space.net">
+ 	<link rel=stylesheet href="../../default.css" type="text/css">
+</head>
+
+<body>
+<a name="top"></a>
+
+<!-- Inhalt -->
+
+<h1>Orders</h1>
+
+<p>This window is used to give units new orders.</p>
+<p align="center"><img src="../images/windows_orders.gif" alt="" border="0"></p>
+
+<p>If a unit is selected, this unit's orders are shown here and can be edited. Magellan only shows orders for units that belong
+to a faction that has a password set. Therefore, if no orders are shown, you should enter a password for your faction under
+<a href="../menus/extras/factionstatistics.html">Faction statistics</a>.</p>
+
+<p>Order-editing is supported by a handy order-completion, which can be adjusted to your
+<a href="../menus/extras/options_detail.html">preference</a>. To enter an order you only need to type its first letter.
+Using the cursor keys or CTRL-up / CTRL-down you can select the desired order from the displayed list of suggestions and
+enter it with the TAB-key. You can configure the order-completion under
+<a href="../menus/extras/options_detail.html">Extras/Options/Details</a>.</p>
+
+<p>With <b><i>Orders confirmed</i></b> you can confirm the orders of the active unit. The unit will then no longer be
+shown bold in the region window. Through this functions you can mark the units that you have already edited.</p>
+
+<br>
+<h2>TEMP-units</h2>
+
+<p>Magellan offers an easy way to work with TEMP-units. These are shown as regular units under the units that created
+them. Transactions of men and items, as well as skills and weights are shown in the details window, the same as for
+normal units. The necessary orders to create a TEMP-unit (MAKE TEMP [...] END) are created by Magellan when the orders
+are exported. Within Magellan TEMP-units are treated the same as any other unit.</p>
+
+<br>
+<h3>Creating TEMP-units</h3>
+
+<p><img src="../images/windows_orders_button_maketemp.gif" alt="" border="0"></p>
+<p>With a click on this button you can create a TEMP-unit. In the resulting dialog you can enter the unit's
+name and TEMP-ID. The corresponding orders are created automatically.</p>
+
+<p><img src="../images/windows_orders_maketemp.gif" alt="" border="0"></p>
+
+<p>Clicking on <br><i>More...</i> results in the following dialog:</p>
+<p><img src="../images/windows_orders_maketempmore.gif" alt="" border="0"></p>
+<p>Here you can enter the number of men to be recruited, an order and the unit's description.</p>
+
+<br>
+<h3>Deleting TEMP-units</h3>
+
+<p><img src="../images/windows_orders_button_deltemp.gif" alt="" border="0"></p>
+<p>By clicking this button you can delete the current TEMP-unit.</p>
+
+
+<!-- Inhalt - Ende -->
+
+</body>
 </html>
-

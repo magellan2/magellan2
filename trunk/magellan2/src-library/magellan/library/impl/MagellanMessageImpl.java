@@ -170,18 +170,24 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
   
 	/**
 	 * Gets the rendered message text.
+   * 
+   * 1. If a rendered version of the msg is available use it.
+   * 2. If not rendered but msgtype available render the msg.
 	 *
 	 * @return The message text
 	 */
 	public String getText() {
+
+    if (text!=null) {
+      return text;
+    }
+    
 	  if (!isRendered){
       if (type != null) {
         render(type.getGameData());
-      }else{
-        return text==null?"unknown message":text;
       }
 	  }
-		return text;
+    return text==null?"unknown message":text;
 	}
 
 	/**

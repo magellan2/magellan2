@@ -1,3 +1,10 @@
+2008-04-09 / Build 182 - Darcduck (sf.net@duckstein.net)
+    * #182 #216 done - Autocomplete: ZAUBERE through familar
+    * Bug #175 fixed - MapperPanel: center after switch between levels
+    * Bug #134 fixed - MsgRender: $resources() done
+    * Bug #165 fixed - Autocomplete: ZAUBERE REGION with faction coordinate translation
+    * Bug #164 fixed - Message rendering only done if required
+
 2008-04-06 / Build 182 - stm (stm_@users.sourceforge.net)
    * started fixing #154, #160, #161, #162 
 

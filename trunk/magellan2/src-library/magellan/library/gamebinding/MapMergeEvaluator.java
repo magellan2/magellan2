@@ -304,5 +304,17 @@ public class MapMergeEvaluator {
     }
     return null;
   }
+  
+  /**
+   * This method should wrap the mapping information currently contained in magellan.client.swing.MapperPanel.setLevel(int)
+
+   * @param data
+   * @param level
+   * @param rellevel
+   * @return Mapped Coordinate
+   */
+  public CoordinateID getRelatedCoordinate(GameData data, CoordinateID c, int level) {
+    return c;
+  }
 
 }

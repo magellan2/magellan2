@@ -721,57 +721,57 @@ ITEM "Juwel"
 "Juwel";name
 1;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 7;Silber
-1;storeinbonw
 
 ITEM "Weihrauch"
 "Weihrauch";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 4;Silber
-1;storeinbonw
 
 ITEM "Balsam"
 "Balsam";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 4;Silber
-1;storeinbonw
 
 ITEM "Gewürz"
 "Gewürz";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 5;Silber
-1;storeinbonw
 
 ITEM "Myrrhe"
 "Myrrhe";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 5;Silber
-1;storeinbonw
 
 ITEM "Öl"
 "Öl";name
 3;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 3;Silber
-1;storeinbonw
 
 ITEM "Seide"
 "Seide";name
 3;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 6;Silber
-1;storeinbonw
 
 ITEM "Eisen"
 "Eisen";name

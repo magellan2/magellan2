@@ -29,6 +29,7 @@ import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -1665,32 +1666,57 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltZaubere() {
+    // this is the check for magicans & familars with own spells:
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
-										   " ", 8));
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
-										   " ", 8));
-			addFilteredSpells(unit.getSpells().values(), false,
-							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
-							  false);
-		}
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
+           " ", 8));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
+           " ", 8));
+      addFilteredSpells(unit.getSpells().values(), false,
+          region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
+          false);
+    }
+    
+    // here we go for spells spoken through the familar
+    if ( unit.getFamiliarmageID() != null) {
+      Unit mage = data.getUnit(unit.getFamiliarmageID());
+      if((mage != null) && (mage.getSpells() != null) && (mage.getSpells().size() > 0)) {
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
+             " ", 8));
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
+             " ", 8));
+        addFamilarSpells(mage, unit);
+      }
+    }
 	}
 
 	void cmpltZaubereStufe() {
+    // this is the check for magicans & familars with own spells:
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
 			addFilteredSpells(unit.getSpells().values(), false,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  false);
 		}
+    // here we go for spells spoken through the familar
+    if ( unit.getFamiliarmageID() != null) {
+      Unit mage = data.getUnit(unit.getFamiliarmageID());
+      if((mage != null) && (mage.getSpells() != null) && (mage.getSpells().size() > 0)) {
+        addFamilarSpells(mage, unit);
+      }
+    }
 	}
 
 	void cmpltZaubereRegion() {
-		Map regions1 = Regions.getAllNeighbours(data.regions(), region.getID(), 1, null);
-		Map regions2 = Regions.getAllNeighbours(data.regions(), region.getID(), 2, null);
+		Map<CoordinateID, Region> regions1 = Regions.getAllNeighbours(data.regions(), region.getID(), 1, null);
+		Map<CoordinateID, Region> regions2 = Regions.getAllNeighbours(data.regions(), region.getID(), 2, null);
+
+    CoordinateID trans = data.getCoordinateTranslation((EntityID)unit.getFaction().getID(), region.getCoordinate().z);
+    if (trans != null) {
+      trans = (new CoordinateID(0, 0, trans.z)).subtract(trans);
+    }
 
 		// first add all regions within a radius of 1 and remove them from Map regions2
-		for(Iterator iter = regions1.keySet().iterator(); iter.hasNext();) {
-			CoordinateID c = (CoordinateID) iter.next();
+		for(CoordinateID c : regions1.keySet() ) {
 
 			if(!c.equals(region.getCoordinate())) {
 				Region r = (Region) regions1.get(c);
@@ -1701,19 +1727,18 @@ public class EresseaOrderCompleter implements Completer {
 					name = c.toString();
 					prio = 8;
 				}
-
-				// FIXME(pavkovic, 2004.06.09): this seems to be wrong 
-				// Coordinate distance = region.getCoordinate().createDistanceCoordinate(c);
-				// completions.add(new Completion(name, distance.toString(" "), " ", prio));
-				// We should store the translation while merging different cr files
-				completions.add(new Completion(name, c.toString(" "), " ", prio));
+        
+        if (trans != null) {
+          completions.add(new Completion(name, trans.createDistanceCoordinate(c).toString(" "), " ", prio));
+        } else {
+          completions.add(new Completion(name, c.toString(" "), " ", prio));
+        }
 			}
 
 			regions2.remove(c);
 		}
 
-		for(Iterator iter = regions2.keySet().iterator(); iter.hasNext();) {
-			ID c = (ID) iter.next();
+    for(CoordinateID c : regions2.keySet() ) {
 			Region r = (Region) regions2.get(c);
 			String name = r.getName();
 			int prio = 9;
@@ -1723,11 +1748,16 @@ public class EresseaOrderCompleter implements Completer {
 				prio = 10;
 			}
 
-			completions.add(new Completion(name, c.toString(" "), " ", prio));
+      if (trans != null) {
+        completions.add(new Completion(name, trans.createDistanceCoordinate(c).toString(" "), " ", prio));
+      } else {
+        completions.add(new Completion(name, c.toString(" "), " ", prio));
+      }
 		}
 	}
 
 	void cmpltZaubereRegionCoor() {
+    // this is the check for magicans & familars with own spells:
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
 										   " ", 8));
@@ -1735,23 +1765,31 @@ public class EresseaOrderCompleter implements Completer {
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  false);
 		}
+    // here we go for spells spoken through the familar
+    if ( unit.getFamiliarmageID() != null) {
+      Unit mage = data.getUnit(unit.getFamiliarmageID());
+      if((mage != null) && (mage.getSpells() != null) && (mage.getSpells().size() > 0)) {
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
+             " ", 8));
+        addFamilarSpells(mage, unit);
+      }
+    }
 	}
 
 	void cmpltZaubereRegionStufe() {
+    this.cmpltZaubereStufe();
+    /*
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
 			addFilteredSpells(unit.getSpells().values(), true,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  false);
 		}
+    */
 	}
 
 	/**
 	 * adds the given spells if combat, only adds combat-spells and so on
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
 	 */
 	private void addFilteredSpells(Collection spells, boolean far, boolean ocean, boolean combat) {
 		for(Iterator iter = spells.iterator(); iter.hasNext();) {
@@ -1772,6 +1810,37 @@ public class EresseaOrderCompleter implements Completer {
 		}
 	}
 
+  private void addFamilarSpells(Unit mage, Unit familar) {
+
+    Skill magic = mage.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
+    if ((magic != null) && (Regions.getRegionDist(mage.getRegion().getCoordinate(), familar.getRegion().getCoordinate()) <= magic.getLevel())) {
+      // familar is in range
+      int maxlevel = magic.getLevel() / 2; 
+      magic = familar.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
+      if (magic != null) {
+        // maximum possible spelllevel:
+        maxlevel = Math.min(maxlevel, magic.getLevel());
+
+        for(Spell spell : mage.getSpells().values()) {
+          if((spell.getDescription() == null) // indicates that no information is available about this spell
+              ||(spell.getIsFamiliar() && (spell.getLevel()<=maxlevel)) ) {
+              // seems to be a spell usable by a familar
+            String spellName = this.data.getTranslation(spell);
+            String quotedSpellName = spellName;
+
+            if(spellName.indexOf(" ") > -1) {
+              quotedSpellName = "\"" + spellName + "\"";
+            }
+
+            completions.add(new Completion(spellName, quotedSpellName, " "));
+          }
+        }
+      }
+    } else {
+      completions.add(new Completion("=== Magier nicht in Reichweite ===", "", ""));
+    }
+  }
+  
 	void cmpltZeige() {
 		addUnitItems("");
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));

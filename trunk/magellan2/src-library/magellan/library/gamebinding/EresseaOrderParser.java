@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Vector;
 
 import magellan.library.GameData;
+import magellan.library.Spell;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.BuildingType;
@@ -31,6 +32,8 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Resources;
+import magellan.library.utils.SpellSyntax;
+import magellan.library.utils.SpellSyntaxToken;
 import magellan.library.utils.logging.Logger;
 
 
@@ -2583,7 +2586,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
 			retVal = readZaubereStufe(t);
 		} else if(isString(t.getText())) {
-			retVal = readFinalString(t);
+//      Spell s = data.getSpell(t.getText());
+//      if(s != null) {
+//        retVal = readZaubereSpruch(t, s);
+//      } else {
+        retVal = readFinalString(t);
+//      }
 		} else {
 			if(completer != null) {
 				completer.cmpltZaubere();
@@ -2691,7 +2699,45 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	//************* ZEIGE
+  private boolean readZaubereSpruch(OrderToken token, Spell s) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_STRING;
+
+    OrderToken t = (OrderToken) tokens.next();
+    
+    SpellSyntax ss = s.getSpellSyntax();
+    ss.reset();
+    SpellSyntaxToken sst = ss.getNextToken();
+   
+    retVal = readZaubereSyntax(t, sst);
+
+    return retVal;
+  }
+
+  private boolean readZaubereSyntax(OrderToken token, SpellSyntaxToken sst) {
+    switch (sst.getTokenType()) {
+      case SpellSyntaxToken.SST_KeyWord: {
+        if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
+          token.ttype = OrderToken.TT_KEYWORD;
+          token = (OrderToken) tokens.next();
+          token.ttype = OrderToken.TT_ID;
+          
+        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
+          
+        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
+          
+        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
+          
+        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
+          
+        }
+      }
+    }
+    return false;
+  }
+  
+  
+  //************* ZEIGE
 	private boolean readZeige(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;

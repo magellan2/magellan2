@@ -24,7 +24,6 @@ public class SpellSyntaxToken {
 	public final static int SST_Coordinate = 6;
 	public final static int SST_UnitID = 7;
 	
-	
 	public int getTokenType(){
 		int retVal = SST_undef;	
 		if (this.tokenChar==null){

@@ -1207,21 +1207,30 @@ public abstract class MagellanFactory {
           // Keep in mind, that the units are not yet merged (Use those of curRegion)
           boolean found = false;
 
-          for(Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
-            Unit unit = i.next();
+          /*              
+          for(Iterator<Skill> skillIterator = unit.getSkills().iterator();
+              skillIterator.hasNext() && !found;) {
+            Skill skill = (Skill) skillIterator.next();
+            Skill makeSkill = newRes.getType().getMakeSkill();
+            if((makeSkill != null) &&
+                 skill.getSkillType().equals(makeSkill.getSkillType())) {
+              // found a unit with right skill, level high enough?
+              if(skill.getLevel() >= newRes.getSkillLevel()) {
+                found = true;
+              }
+            }
+          }
+*/
 
-            if(unit.getSkills() != null) {
-              for(Iterator<Skill> skillIterator = unit.getSkills().iterator();
-                  skillIterator.hasNext() && !found;) {
-                Skill skill = (Skill) skillIterator.next();
-                Skill makeSkill = newRes.getType().getMakeSkill();
-
-                if((makeSkill != null) &&
-                     skill.getSkillType().equals(makeSkill.getSkillType())) {
-                  // found a unit with right skill, level high enough?
-                  if(skill.getLevel() >= newRes.getSkillLevel()) {
-                    found = true;
-                  }
+          // new coding with same effect but better performance
+          Skill makeSkill = newRes.getType().getMakeSkill();
+          if(makeSkill != null) {
+            for(Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
+              Unit unit = i.next();
+              Skill skill = unit.getSkill(makeSkill.getSkillType());
+              if (skill != null) {
+                if(skill.getLevel() >= newRes.getSkillLevel()) {
+                  found = true;
                 }
               }
             }
@@ -1231,6 +1240,8 @@ public abstract class MagellanFactory {
             // enforce this information to be taken!
             if(newRes.getSkillLevel() == -1 && newRes.getAmount() == -1) {
               // but only if we don't have other informations.
+
+              // TODO: (darcduck) i don't understand the following line
               newRes.setSkillLevel(newRes.getSkillLevel() + 1);
               newRes.setAmount(-1);
             }
@@ -1238,7 +1249,7 @@ public abstract class MagellanFactory {
           // Fiete: check here if we have skillIrrelevantResources
           // if curRes == null AND we have units in curReg -> these
           // resources are realy not there anymore: Baeume, Mallorn
-          if (sameTurn){
+//          if (sameTurn){
             if (skillIrrelavntTypes.contains(newRes.getType())){
               // we have "our" Type
               // do we have units in newRegion
@@ -1253,7 +1264,7 @@ public abstract class MagellanFactory {
               }
               
             }
-          }
+//          }
           
         }
       }

@@ -288,5 +288,33 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
     return astralRegions;
   }
   
+  /**
+   * This method should wrap the mapping information currently contained in magellan.client.swing.MapperPanel.setLevel(int)
+
+   * @param data
+   * @param level
+   * @param rellevel
+   * @return Mapped Coordinate
+   */
+  public CoordinateID getRelatedCoordinate(GameData data, CoordinateID c, int level) {
+    if (c.z == level) {
+      return c;
+    } else if ((c.z == ASTRAL_LAYER) && (level == REAL_LAYER)) {
+      CoordinateID trans = data.getAstralMapping();
+      if (trans == null) {
+        return new CoordinateID(c.x * 4, c.y * 4, 0);
+      } else {
+        return new CoordinateID(c.x * 4 + trans.x, c.y * 4 + trans.y, 0);
+      }
+    } else if ((c.z == REAL_LAYER) && (level == ASTRAL_LAYER)) {
+      CoordinateID trans = data.getAstralMapping();
+      if (trans == null) {
+        return new CoordinateID(c.x / 4, c.y / 4, 0);
+      } else {
+        return new CoordinateID((c.x - trans.x) / 4, (c.y - trans.y) / 4, 0);
+      }
+    }
+    return null;
+  }
   
 }

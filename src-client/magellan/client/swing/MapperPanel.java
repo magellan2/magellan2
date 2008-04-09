@@ -656,19 +656,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   public void setLevel(int level) {
     minimap.setLevel(level);
     mapper.setLevel(level);
-
     // when there was a change from level 1 to level 0
     // i.e. from Astralraum back to normal map we
     // try to intelligently center the map
     if (mapper.getActiveRegion() != null) {
       CoordinateID c = mapper.getActiveRegion().getCoordinate();
 
-      if (c.z == level) {
-        setCenter(c);
-      } else if ((c.z == 1) && (level == 0)) {
-        CoordinateID newCoordinate = new CoordinateID(c.x * 4, c.y * 4, 0);
-        setCenter(newCoordinate);
-      }
+      setCenter(context.getGameData().getGameSpecificStuff().getMapMergeEvaluator().getRelatedCoordinate(context.getGameData(), c, level));
     }
     
     // check, if we have a difference between Level just set and displayed Level in navi

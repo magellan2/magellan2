@@ -23,6 +23,8 @@
 // 
 package magellan.plugin.extendedcommands;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import magellan.client.Client;
@@ -32,6 +34,12 @@ import magellan.library.UnitContainer;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
+/**
+ * Executes all scripts for all units and containers.
+ *
+ * @author Thoralf Rickert
+ * @version 1.0, 12.04.2008
+ */
 public class ExecutionThread extends Thread {
   private static final Logger log = Logger.getInstance(ExecutionThread.class);
 
@@ -61,6 +69,7 @@ public class ExecutionThread extends Thread {
     int counter = 0;
     
     log.info("Executing commands for all configured containers...");
+    Collections.sort(containers,new ContainerPriorityComparator());
     
     for (UnitContainer container : containers) {
       commands.execute(data, container);
@@ -68,6 +77,7 @@ public class ExecutionThread extends Thread {
     }
     
     log.info("Executing commands for all configured units...");
+    Collections.sort(units,new UnitPriorityComparator());
     
     for (Unit unit : units) {
       commands.execute(data, unit);
@@ -76,4 +86,37 @@ public class ExecutionThread extends Thread {
     
     ui.ready();
   }
+
+  /**
+   * Compares two containers with their script priorities
+   *
+   * @author Thoralf Rickert
+   * @version 1.0, 12.04.2008
+   */
+  class ContainerPriorityComparator implements Comparator<UnitContainer> {
+
+    public int compare(UnitContainer o1, UnitContainer o2) {
+      Script s1 = commands.getCommands(o1);
+      Script s2 = commands.getCommands(o2);
+      return s1.getPriority().compareTo(s2.getPriority());
+    }
+    
+  }
+
+  /**
+   * Compares two units with their script priorities
+   *
+   * @author Thoralf Rickert
+   * @version 1.0, 12.04.2008
+   */
+  class UnitPriorityComparator implements Comparator<Unit> {
+
+    public int compare(Unit o1, Unit o2) {
+      Script s1 = commands.getCommands(o1);
+      Script s2 = commands.getCommands(o2);
+      return s1.getPriority().compareTo(s2.getPriority());
+    }
+    
+  }
 }
+

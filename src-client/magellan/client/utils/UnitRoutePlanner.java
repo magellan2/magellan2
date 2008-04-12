@@ -66,7 +66,7 @@ public class UnitRoutePlanner {
 		return false;
 	}
 
-	protected static int getModifiedRadius(Unit unit) {
+	public static int getModifiedRadius(Unit unit) {
 		int load = unit.getModifiedLoad();
 
 		int payload = unit.getPayloadOnHorse();

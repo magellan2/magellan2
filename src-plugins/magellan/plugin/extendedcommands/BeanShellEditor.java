@@ -24,6 +24,7 @@
 package magellan.plugin.extendedcommands;
 
 import java.awt.Dimension; 
+
 import javax.swing.JEditorPane; 
 import javax.swing.JViewport; 
 import javax.swing.plaf.TextUI; 
@@ -34,19 +35,32 @@ import javax.swing.text.StyledEditorKit;
 /**
  * A TextArea for BeanShell-Skripts. Including Syntax-Highlighting 
  *
- * @author bodum 
+ * @author Thoralf Rickert 
  */
 public class BeanShellEditor extends JEditorPane { 
+  protected BeanShellSyntaxDocument document = null;
+  protected int charWidth = 0;
+  
+  public static final int TAB_WIDTH = 2;
+  
   /**
    * Create the TextArea 
    */ 
   public BeanShellEditor() { 
-    setDocument(new BeanShellSyntaxDocument()); 
+    charWidth = getFontMetrics(getFont()).charWidth( 'w' );
+    
+    document = new BeanShellSyntaxDocument();
+    document.setTabs(charWidth, TAB_WIDTH);
+    setDocument(document);
+    
     EditorKit editorKit = new StyledEditorKit() { 
       public Document createDefaultDocument() { 
-        return new BeanShellSyntaxDocument(); 
+        BeanShellSyntaxDocument document = new BeanShellSyntaxDocument();
+        document.setTabs(charWidth, TAB_WIDTH);
+        return document;
       } 
     }; 
+
     setEditorKitForContentType("text/beanshell", editorKit);
     setContentType("text/beanshell"); 
   } 

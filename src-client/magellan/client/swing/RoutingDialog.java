@@ -187,8 +187,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       c.gridy = 3;
       regionList = new LinkedList<Region>();
 
-      for(Iterator iter = destRegions.iterator(); iter.hasNext();) {
-        Region r = (Region) iter.next();
+      for(Iterator<Region> iter = destRegions.iterator(); iter.hasNext();) {
+        Region r = iter.next();
 
         if(!excludeUnnamed || ((r.getName() != null) && (!"".equals(r.getName())))) {
           regionList.add(r);

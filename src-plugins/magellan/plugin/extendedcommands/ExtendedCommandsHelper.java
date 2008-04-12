@@ -25,21 +25,32 @@ package magellan.plugin.extendedcommands;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import magellan.client.utils.UnitRoutePlanner;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.RegionType;
+import magellan.library.utils.Regions;
+import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -259,5 +270,153 @@ public class ExtendedCommandsHelper {
     }
     
     return regions;
+  }
+  
+  /**
+   * Searches the best path from the current position of an unit
+   * to the given region.
+   * <br/>
+   * This method is only useful for persons on land!
+   * 
+   * @param unit        The unit that should go to another region
+   * @param destination The destination region which should be reached
+   * @param speed       The desired speed per week. If this value is
+   *                    negative, this method uses the current calculated
+   *                    unit range
+   * @param makeRoute   If true, then this unit returns to the current
+   *                    region.
+   */
+  public String getPathToRegion(Unit unit, Region destination, int speed, boolean makeRoute) {
+    Region source = unit.getRegion();
+    String order = "";
+    
+    Map<ID,RegionType> excludeMap = Regions.getOceanRegionTypes(world.rules);
+    List<Region> path = Regions.getPath(world.regions(), source.getCoordinate(), destination.getCoordinate(), excludeMap);
+    
+    if((path != null) && (path.size() > 1)) {
+      int range = UnitRoutePlanner.getModifiedRadius(unit);
+      if (speed > 0) range = speed;
+      
+      if(makeRoute) {
+        order = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
+        order += (" " + Regions.getDirections(path));
+        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+        Collections.reverse(path);
+        order += (" " + Regions.getDirections(path));
+        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+      } else {
+        String nach = Resources.getOrderTranslation(EresseaConstants.O_MOVE) + " ";
+        int count = 0;
+        List<Region> curPath = new LinkedList<Region>();
+        int index = 1;
+  
+        do {
+          curPath.clear();
+          curPath.add(path.get(index - 1));
+  
+          count = 0;
+  
+          while((index < path.size()) && (count < range)) {
+            curPath.add(path.get(index));
+  
+            count++;
+            index++;
+          }
+          
+          if (!Utils.isEmpty(order)) {
+            order +=" // ";
+          }
+  
+          order+= nach + Regions.getDirections(curPath);
+        } while(index < path.size());
+      }
+    }
+    
+    return order;
+  }
+
+  
+  /**
+   * Searches the best path from the current position of a ship
+   * to the given region.
+   * <br/>
+   * This method is only useful for ships!
+   * 
+   * @param ship        The ship that should go to another region
+   * @param destination The destination region which should be reached
+   * @param speed       The desired speed per week. If this value is
+   *                    negative, this method uses the current calculated
+   *                    ship range
+   * @param makeRoute   If true, then this unit returns to the current
+   *                    region.
+   */
+  public String getPathToRegion(Ship ship, Region destination, int speed, boolean makeRoute) {
+    Unit shipOwner = ship.getOwnerUnit();
+    Region source = unit.getRegion();
+    String order = "";
+    int aquarianBonus = 0;
+
+    try {
+      aquarianBonus = shipOwner.getFaction().getRace().getAdditiveShipBonus();
+    } catch(Exception exc) {}
+    
+    BuildingType harbour = world.rules.getBuildingType(StringID.create("Hafen"));
+
+    List<Region> path = Regions.planShipRoute(ship, destination.getCoordinate(), world.regions(), harbour, aquarianBonus);
+    
+    if(path != null) {
+      // Now try to calculate the orders:
+      int shipRange = 0;
+
+      try {
+        shipRange = ship.getShipType().getRange() + aquarianBonus;
+      } catch(Exception exc) {
+      }
+
+      if(speed > 0) {
+        shipRange = speed;
+      }
+
+      if(makeRoute) {
+        order = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
+        order += (" " + Regions.getDirections(path));
+        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+        Collections.reverse(path);
+        order += (" " + Regions.getDirections(path));
+        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+      } else {
+        String nach = Resources.getOrderTranslation(EresseaConstants.O_MOVE) + " ";
+        List<Region> curPath = new LinkedList<Region>();
+
+        int count = shipRange;
+
+        for(Iterator<Region> iter = path.iterator(); iter.hasNext();) {
+          curPath.add(iter.next());
+
+          if(curPath.size() > 1) {
+            String dir = Regions.getDirections(curPath);
+
+            if(dir != null) {
+              if((count == 0) || ((count != shipRange) && Regions.containsHarbour((Region) curPath.get(0), harbour))) {
+                count = shipRange;
+
+                if (!Utils.isEmpty(order)) {
+                  order +=" // ";
+                }
+                
+                order += nach;
+                nach = "";
+              }
+
+              nach += (dir + " ");
+              count--;
+            }
+
+            curPath.remove(0);
+          }
+        }
+      }
+    }
+    return order;
   }
 }

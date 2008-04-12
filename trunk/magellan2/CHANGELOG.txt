@@ -1,3 +1,7 @@
+2008-0412 / Build 183 - Fiete (sf@fietefietz.de)
+	* NPE in TaskTabelPanel fixed if data.getOwner == null
+	* EresseaOrderCompleter.addFilteredSpells: "ocean" for MM allways true
+
 2008-04-09 / Build 182 - Darcduck (sf.net@duckstein.net)
     * #182 #216 done - Autocomplete: ZAUBERE through familar
     * Bug #175 fixed - MapperPanel: center after switch between levels

@@ -97,30 +97,43 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   public List<JMenuItem> getMenuItems() {
     List<JMenuItem> items = new ArrayList<JMenuItem>();
     
-    JMenu menu = new JMenu(Resources.get("mainmenu.title"));
+    JMenu menu = new JMenu(Resources.get("extended_commands.mainmenu.title"));
     items.add(menu);
     
-    executeMenu = new JMenuItem(Resources.get("mainmenu.execute.title"));
+    executeMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.execute.title"));
     executeMenu.setActionCommand(PlugInAction.EXECUTE_ALL.getID());
     executeMenu.addActionListener(this);
     executeMenu.setEnabled(commands.hasCommands());
     menu.add(executeMenu);    
 
-    JMenuItem libraryMenu = new JMenuItem(Resources.get("mainmenu.library.title"));
+    JMenuItem libraryMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.library.title"));
     libraryMenu.setActionCommand(PlugInAction.LIBRARY_EDIT.getID());
     libraryMenu.addActionListener(this);
     menu.add(libraryMenu);    
 
-    JMenuItem clearMenu = new JMenuItem(Resources.get("mainmenu.clear.title"));
+    JMenuItem clearMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.clear.title"));
     clearMenu.setActionCommand(PlugInAction.CLEAR.getID());
     clearMenu.addActionListener(this);
-    menu.add(clearMenu);    
+    menu.add(clearMenu);   
+    
+    menu.addSeparator();
 
-    JMenuItem configureMenu = new JMenuItem(Resources.get("mainmenu.configure.title"));
-    configureMenu.setActionCommand(PlugInAction.CONFIGURE_ALL.getID());
-    configureMenu.addActionListener(this);
-    configureMenu.setEnabled(false);
-    menu.add(configureMenu);    
+    JMenuItem saveMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.save.title"));
+    saveMenu.setActionCommand(PlugInAction.SAVE_ALL.getID());
+    saveMenu.addActionListener(this);
+    menu.add(saveMenu);    
+
+    JMenuItem exportMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.export.title"));
+    exportMenu.setActionCommand(PlugInAction.EXPORT.getID());
+    exportMenu.addActionListener(this);
+    exportMenu.setEnabled(false);
+    menu.add(exportMenu);    
+
+    JMenuItem importMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.import.title"));
+    importMenu.setActionCommand(PlugInAction.IMPORT.getID());
+    importMenu.addActionListener(this);
+    importMenu.setEnabled(false);
+    menu.add(importMenu);    
 
     return items;
   }
@@ -140,9 +153,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * @see magellan.client.swing.context.UnitContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection)
    */
   public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data, final Unit unit, Collection selectedObjects) {
-    JMenu menu = new JMenu(Resources.get("popupmenu.title"));
+    JMenu menu = new JMenu(Resources.get("extended_commands.popupmenu.title"));
     
-    JMenuItem editMenu = new JMenuItem(Resources.get("popupmenu.edit.title", new Object[]{unit.getName(),unit.getID().toString()}));
+    JMenuItem editMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[]{unit.getName(),unit.getID().toString()}));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         editCommands(data,unit);
@@ -150,7 +163,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     });
     menu.add(editMenu);
     
-    JMenuItem executeMenu = new JMenuItem(Resources.get("popupmenu.execute.title", new Object[]{unit.getName(),unit.getID().toString()})); 
+    JMenuItem executeMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[]{unit.getName(),unit.getID().toString()})); 
     executeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         executeCommands(data,unit);
@@ -172,9 +185,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       return null;
     }
     
-    JMenu menu = new JMenu(Resources.get("popupmenu.title"));
+    JMenu menu = new JMenu(Resources.get("extended_commands.popupmenu.title"));
     
-    JMenuItem editMenu = new JMenuItem(Resources.get("popupmenu.edit.title", new Object[]{container.getName(),container.getID().toString()}));
+    JMenuItem editMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[]{container.getName(),container.getID().toString()}));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         editCommands(data,container);
@@ -182,7 +195,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     });
     menu.add(editMenu);
     
-    JMenuItem executeMenu = new JMenuItem(Resources.get("popupmenu.execute.title", new Object[]{container.getName(),container.getID().toString()})); 
+    JMenuItem executeMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[]{container.getName(),container.getID().toString()})); 
     executeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         executeCommands(data,container);
@@ -217,9 +230,17 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
         clearCommands();
         break;
       }
-      case CONFIGURE_ALL: {
-        log.info("Configure...");
-        // TODO must be implemented.... 
+      case SAVE_ALL: {
+        log.info("Saving...");
+        commands.save();
+        break;
+      }
+      case EXPORT: {
+        log.info("Exporting commands...");
+        break;
+      }
+      case IMPORT: {
+        log.info("import commands...");
         break;
       }
     }
@@ -239,12 +260,16 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     log.info("Edit Command for UnitContainer "+container);
     
     // find the commands for this unit or set them to "".
-    String script = commands.getCommands(container);
+    Script script = commands.getCommands(container);
     if (Utils.isEmpty(script)) {
+      script = new Script(container.getID().toString(),Script.SCRIPTTYPE_CONTAINER,ContainerType.getType(container.getType()),"");
+    }
+    if (Utils.isEmpty(script.getScript())) {
       // show some examples for beginners...
-      script = "// example for beginners...\n";
-      script+= "//\n";
-      script+= "//...";
+      String exampleScript = "// example for beginners...\n";
+      exampleScript+= "//\n";
+      exampleScript+= "//...";
+      script.setScript(exampleScript);
     }
     
     // open a dialog for the commands...
@@ -259,15 +284,18 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     log.info("Edit Command for Unit "+unit);
     
     // find the commands for this unit or set them to "".
-    String script = commands.getCommands(unit);
+    Script script = commands.getCommands(unit);
+    if (Utils.isEmpty(script)) {
+      script = new Script(unit.getID().toString(),Script.SCRIPTTYPE_UNIT,ContainerType.UNKNOWN,"");
+    }
     if (Utils.isEmpty(script)) {
       // show some examples for beginners...
-      script = "// example for beginners...\n";
-      script+= "//\n";
-      script+= "//if (!unit.isOrdersConfirmed()) {\n";
-      script+= "//  unit.setOrdersConfirmed(true);\n";
-      script+= "//}\n";
-      
+      String exampleScript = "// example for beginners...\n";
+      exampleScript+= "//\n";
+      exampleScript+= "//if (!unit.isOrdersConfirmed()) {\n";
+      exampleScript+= "//  unit.setOrdersConfirmed(true);\n";
+      exampleScript+= "//}\n";
+      script.setScript(exampleScript);
     }
     
     // open a dialog for the commands...
@@ -282,18 +310,21 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     log.info("Edit library for all units and containers...");
 
     // find the commands for this unit or set them to "".
-    String script = commands.getLibrary();
+    Script script = commands.getLibrary();
+    if (Utils.isEmpty(script)) {
+      script = new Script(null,Script.SCRIPTTYPE_LIBRARY,ContainerType.UNKNOWN,"");
+    }
     if (Utils.isEmpty(script)) {
       // show some examples for beginners...
-      script = "// example for beginners...\n";
-      script+= "// \n";
-      script+= "// import magellan.library.*;\n";
-      script+= "// \n";
-      script+= "// int getHorses(Region region) {\n";
-      script+= "// return region.getHorses();\n";
-      script+= "// }\n";
-      script+= "//\n";
-      
+      String exampleScript = "// example for beginners...\n";
+      exampleScript+= "// \n";
+      exampleScript+= "// import magellan.library.*;\n";
+      exampleScript+= "// \n";
+      exampleScript+= "// int getHorses(Region region) {\n";
+      exampleScript+= "// return region.getHorses();\n";
+      exampleScript+= "// }\n";
+      exampleScript+= "//\n";
+      script.setScript(exampleScript);
     }
     
     // open a dialog for the commands...

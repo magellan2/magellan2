@@ -1,5 +1,5 @@
-// class magellan.plugin.extendedcommands.PlugInAction
-// created on 02.02.2008
+// class magellan.plugin.extendedcommands.Priority
+// created on 12.04.2008
 //
 // Copyright 2003-2008 by magellan project team
 //
@@ -23,40 +23,32 @@
 // 
 package magellan.plugin.extendedcommands;
 
-import java.awt.event.ActionEvent;
+import magellan.library.utils.Resources;
+import magellan.library.utils.Utils;
 
+public enum Priority {
+  HIGHEST,
+  HIGHER,
+  NORMAL,
+  LOWER,
+  LOWEST;
 
-/**
- * An enum for all action types in this plugin.
- *
- * @author Thoralf Rickert
- * @version 1.0, 11.09.2007
- */
-public enum PlugInAction {
-  EXECUTE_ALL("mainmenu.execute"),
-  SAVE_ALL("mainmenu.save"),
-  LIBRARY_EDIT("mainmenu.library"),
-  CLEAR("mainmenu.clear"),
-  EXPORT("mainmenu.export"),
-  IMPORT("mainmenu.import"),
-  UNKNOWN("");
-  
-  private String id;
-  
-  private PlugInAction(String id) {
-    this.id = id;
-  }
-  
-  public String getID() {
-    return id;
-  }
-  
-  public static PlugInAction getAction(ActionEvent e) {
-    if (e == null) return UNKNOWN;
-    for (PlugInAction action : values()) {
-      if (action.id.equalsIgnoreCase(e.getActionCommand())) return action;
+  /**
+   * Returns the wanted priority.
+   */
+  public static Priority getPriority(String name) {
+    if (Utils.isEmpty(name)) return NORMAL;
+    for (Priority priority : values()) {
+      if (priority.toString().equalsIgnoreCase(name)) return priority;
     }
-    return UNKNOWN;
+    return NORMAL;
   }
-
+  
+  /**
+   * @see java.lang.Enum#toString()
+   */
+  public String toString() {
+    return Resources.get("extended_commands.priority."+name().toLowerCase());
+  }
+  
 }

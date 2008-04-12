@@ -206,7 +206,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @param refreshRelations if true also refresh the relations of the unit.
 	 */
 	public void addOrderAt(int i, String newOrders, boolean refreshRelations) {
-		ordersObject.addOrderAt(i, newOrders);
+	  if (i<0) {
+	    ordersObject.addOrder(newOrders);
+	  } else {
+		  ordersObject.addOrderAt(i, newOrders);
+	  }
 
 		if(refreshRelations) {
 			refreshRelations(i);
@@ -2342,8 +2346,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			boolean tempBlock = false;
 
 			// cycle through this unit's orders
-			for(ListIterator cmds = ordersObject.getOrders().listIterator(); cmds.hasNext();) {
-				String cmd = (String) cmds.next();
+			for(ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds.hasNext();) {
+				String cmd = cmds.next();
 				ct = new OrderTokenizer(new StringReader(cmd));
 				t = ct.getNextToken();
 
@@ -2397,7 +2401,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			}
 		}
 
-		addOrderAt(0, order);
+		addOrderAt(-1, order);
 
 		return true;
 	}
@@ -2707,19 +2711,33 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			return orders == null;
 		}
 
-		/**
-		 * Inserts the specified order at the specified position.
-		 *
-		 * @param i An index between 0 and getOrders().getSize() (inclusively)
-		 * @param newOrders 
-		 */
-		public void addOrderAt(int i, String newOrders) {
-			if(orders == null) {
-				orders = new ArrayList<String>(1);
-			}
+    /**
+     * Inserts the specified order at the specified position.
+     *
+     * @param i An index between 0 and getOrders().getSize() (inclusively)
+     * @param newOrders 
+     */
+    public void addOrder(String newOrders) {
+      if(orders == null) {
+        orders = new ArrayList<String>(1);
+      }
 
-			orders.add(i, newOrders);
-		}
+      orders.add(newOrders);
+    }
+
+    /**
+     * Inserts the specified order at the specified position.
+     *
+     * @param i An index between 0 and getOrders().getSize() (inclusively)
+     * @param newOrders 
+     */
+    public void addOrderAt(int i, String newOrders) {
+      if(orders == null) {
+        orders = new ArrayList<String>(1);
+      }
+
+      orders.add(i, newOrders);
+    }
 
 		/**
 		 * DOCUMENT-ME

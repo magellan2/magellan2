@@ -33,6 +33,8 @@ import javax.swing.text.Element;
 import javax.swing.text.MutableAttributeSet; 
 import javax.swing.text.SimpleAttributeSet; 
 import javax.swing.text.StyleConstants; 
+import javax.swing.text.TabSet;
+import javax.swing.text.TabStop;
 
 /**
  * Syntax-Highlighting for the BeanShell-Editor 
@@ -68,7 +70,8 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
    
   public BeanShellSyntaxDocument() { 
     doc = this; 
-    rootElement = doc.getDefaultRootElement(); 
+    rootElement = doc.getDefaultRootElement();
+    
     putProperty( DefaultEditorKit.EndOfLineStringProperty, "\n" ); 
     
     normal = new SimpleAttributeSet(); 
@@ -157,6 +160,20 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     keywords.add( "volatile" ); 
     keywords.add( "while" ); 
   } 
+  
+  public void setTabs(int charWidth, int charactersPerTab) {
+    
+    TabStop[] tabStops = new TabStop[10];
+    for (int index = 0; index < tabStops.length; index++) {
+      tabStops[index] = new TabStop( (index+1) * (charWidth*charactersPerTab) );
+    }
+    TabSet tabs = new TabSet(tabStops);
+
+    StyleConstants.setTabSet(normal, tabs);
+    StyleConstants.setTabSet(comment, tabs);
+    StyleConstants.setTabSet(keyword, tabs);
+    StyleConstants.setTabSet(quote, tabs);
+  }
   
   /**
    * Override to apply syntax highlighting after the document has been updated 

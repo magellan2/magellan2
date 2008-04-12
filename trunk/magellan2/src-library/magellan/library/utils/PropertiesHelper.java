@@ -276,6 +276,24 @@ public class PropertiesHelper {
   }
 
   /**
+   * Searches the property with the given key and if it exists, it tries to
+   * convert it into an integer and returns that value. If something goes wrong or
+   * the key couldn't be found the default value def is returned.
+   */
+  public static int getInteger(Properties p, String key, int def) {
+    String val = p.getProperty(key);
+
+    if (val != null) {
+      try {
+        return Integer.valueOf(val).intValue();
+      } catch (NumberFormatException nfe) {
+      }
+    }
+
+    return def;
+  }
+
+  /**
    * Extracts properties by given prefix. If there exists a key called
    * prefix.count this is used as order
    */

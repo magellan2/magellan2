@@ -1,3 +1,7 @@
+2008-04-12 / Build 185 - Thoralf (thoralf@m84.de)
+    * Fixed behaviour of Unit.addOrder() to add a new order to the end of the orders of an unit
+    * feature requests #190, #191, #193, #197, #198, #214, #221, #223
+
 2008-0412 / Build 183 - Fiete (sf@fietefietz.de)
 	* NPE in TaskTabelPanel fixed if data.getOwner == null
 	* EresseaOrderCompleter.addFilteredSpells: "ocean" for MM allways true

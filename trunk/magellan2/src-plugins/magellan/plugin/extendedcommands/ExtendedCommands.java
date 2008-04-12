@@ -65,11 +65,10 @@ public class ExtendedCommands {
   private static final Logger log = Logger.getInstance(ExtendedCommands.class);
   private File unitCommandsFile;
   private Client client;
-  private Hashtable<String, String> unitCommands = new Hashtable<String, String>();
+  private Hashtable<String,Script> unitCommands = new Hashtable<String,Script>();
+  private Hashtable<String,Script> unitContainerCommands = new Hashtable<String,Script>();
   
-  private Hashtable<String, String> unitContainerCommands = new Hashtable<String, String>();
-  private Hashtable<String, ContainerType> unitContainerTypes = new Hashtable<String, ContainerType>();
-  private String library = "";
+  private Script library;
   
   public ExtendedCommands(Client client) {
     this.client = client;
@@ -100,8 +99,7 @@ public class ExtendedCommands {
     if (!hasCommands()) return false;
     if (container == null) return false;
     if (container.getID() == null) return false;
-    if (!unitContainerCommands.containsKey(container.getID().toString())) return false;
-    return true;
+    return unitContainerCommands.containsKey(container.getID().toString());
   }
   
   /**
@@ -112,14 +110,13 @@ public class ExtendedCommands {
     if (unit == null) return false;
     if (unit instanceof TempUnit) return false;
     if (unit.getID() == null) return false;
-    if (!unitCommands.containsKey(unit.getID().toString())) return false;
-    return true;
+    return unitCommands.containsKey(unit.getID().toString());
   }
   
   /**
    * Returns the command script for the given unitcontainer.
    */
-  public String getCommands(UnitContainer container) {
+  public Script getCommands(UnitContainer container) {
     if (!hasCommands(container)) return null;
     return unitContainerCommands.get(container.getID().toString());
   }
@@ -127,7 +124,7 @@ public class ExtendedCommands {
   /**
    * Returns the command script for the given unit.
    */
-  public String getCommands(Unit unit) {
+  public Script getCommands(Unit unit) {
     if (!hasCommands(unit)) return null;
     return unitCommands.get(unit.getID().toString());
   }
@@ -135,14 +132,16 @@ public class ExtendedCommands {
   /**
    * Sets the commands for a given unit.
    */
-  public void setCommands(Unit unit, String script) {
+  public void setCommands(Unit unit, Script script) {
     if (unit == null) return;
     if (unit instanceof TempUnit) return;
     if (unit.getID() == null) return;
     
-    if (Utils.isEmpty(script) && hasCommands(unit)) {
+    if ((Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) && hasCommands(unit)) {
+      // script is empty, let's remove the script from the mapping
       unitCommands.remove(unit.getID().toString());
     } else {
+      // replace the script in the mapping
       unitCommands.put(unit.getID().toString(), script);
     }
     
@@ -152,15 +151,16 @@ public class ExtendedCommands {
   /**
    * Sets the commands for a given unit.
    */
-  public void setCommands(UnitContainer container, String script) {
+  public void setCommands(UnitContainer container, Script script) {
     if (container == null) return;
     if (container.getID() == null) return;
     
-    if (Utils.isEmpty(script) && hasCommands(container)) {
+    if ((Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) && hasCommands(container)) {
+      // script is empty, let's remove the script from the mapping
       unitContainerCommands.remove(container.getID().toString());
     } else {
+      // replace the script in the mapping
       unitContainerCommands.put(container.getID().toString(), script);
-      unitContainerTypes.put(container.getID().toString(), ContainerType.getType(container.getType()));
     }
     
     ExtendedCommandsPlugIn.getExecuteMenu().setEnabled(hasCommands());
@@ -171,7 +171,7 @@ public class ExtendedCommands {
    * 
    * @return Returns library.
    */
-  public String getLibrary() {
+  public Script getLibrary() {
     return library;
   }
 
@@ -180,7 +180,7 @@ public class ExtendedCommands {
    *
    * @param library The value for library.
    */
-  public void setLibrary(String library) {
+  public void setLibrary(Script library) {
     this.library = library;
   }
 
@@ -207,7 +207,7 @@ public class ExtendedCommands {
     GameData world = client.getData();
     
     for (String unitContainerId : unitContainerCommands.keySet()) {
-      switch (unitContainerTypes.get(unitContainerId)) {
+      switch (unitContainerCommands.get(unitContainerId).getType()) {
         case REGIONTYPE: {
           UnitContainer container = world.getRegion(CoordinateID.parse(unitContainerId, ", "));
           if (container != null) containers.add(container);
@@ -268,7 +268,7 @@ public class ExtendedCommands {
     int counter = 0;
     
     for (String unitContainerId : unitContainerCommands.keySet()) {
-      switch (unitContainerTypes.get(unitContainerId)) {
+      switch (unitContainerCommands.get(unitContainerId).getType()) {
         case REGIONTYPE: {
           UnitContainer container = world.getRegion(CoordinateID.parse(unitContainerId, ", "));
           if (container == null) {
@@ -323,9 +323,12 @@ public class ExtendedCommands {
       interpreter.set("unit",unit);
       interpreter.set("helper", new ExtendedCommandsHelper(world,unit));
       
-      String script = getLibrary();
+      String script = "";
+      if (getLibrary() != null) {
+        script += getLibrary().getScript();
+      }
       script += "\n";
-      script += getCommands(unit);
+      script += getCommands(unit).getScript();
       
       interpreter.eval(script);
       unit.setOrdersChanged(true);
@@ -358,9 +361,12 @@ public class ExtendedCommands {
       interpreter.set("container",container);
       interpreter.set("helper", new ExtendedCommandsHelper(world,container));
       
-      String script = getLibrary();
+      String script = "";
+      if (getLibrary() != null) {
+        script += getLibrary().getScript();
+      }
       script += "\n";
-      script += getCommands(container);
+      script += getCommands(container).getScript();
       
       interpreter.eval(script);
     } catch (EvalError error) {
@@ -387,7 +393,7 @@ public class ExtendedCommands {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
       interpreter.set("helper", new ExtendedCommandsHelper(world));
-      interpreter.eval(getLibrary());
+      interpreter.eval(getLibrary().getScript());
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) message=error.getCause().getClass().getName();
@@ -424,25 +430,21 @@ public class ExtendedCommands {
       
       Element libraryNode = Utils.getChildNode(rootNode, "library");
       if (libraryNode != null) {
-        library = Utils.getCData(libraryNode);
+        library = new Script(libraryNode);
       }
       
       List<Element> nodes = Utils.getChildNodes(rootNode,"container");
       log.info("Found "+nodes.size()+" unitcontainer commands");
       for( Element node : nodes ) {
-        String id = node.getAttribute("id");
-        String type = node.getAttribute("type");
-        String command = Utils.getCData(node);
-        unitContainerCommands.put(id,command);
-        unitContainerTypes.put(id, ContainerType.getType(type));
+        Script script = new Script(node);
+        unitContainerCommands.put(script.getContainerId(),script);
       }
       
       nodes = Utils.getChildNodes(rootNode,"unit");
       log.info("Found "+nodes.size()+" unit commands");
       for( Element node : nodes ) {
-        String id = node.getAttribute("id");
-        String command = Utils.getCData(node);
-        unitCommands.put(id,command);
+        Script script = new Script(node);
+        unitCommands.put(script.getContainerId(),script);
       }
       
     } catch (Throwable throwable) {
@@ -471,12 +473,12 @@ public class ExtendedCommands {
       
       writer.println("<?xml version=\"1.0\" encoding=\""+Encoding.UTF8.toString()+"\"?>");
       writer.println("<extended_commands>");
-      writer.println("<library><![CDATA["+library+"]]></library>");
-      for (String unitContainerId : unitContainerCommands.keySet()) {
-        writer.println(" <container id=\""+unitContainerId+"\" type=\""+unitContainerTypes.get(unitContainerId)+"\"><![CDATA["+unitContainerCommands.get(unitContainerId)+"]]></container>");
+      if (library != null) library.toXML(writer);
+      for (Script script : unitContainerCommands.values()) {
+        script.toXML(writer);
       }
-      for (String unitId : unitCommands.keySet()) {
-        writer.println(" <unit id=\""+unitId+"\"><![CDATA["+unitCommands.get(unitId)+"]]></unit>");
+      for (Script script : unitCommands.values()) {
+        script.toXML(writer);
       }
       writer.println("</extended_commands>");
       

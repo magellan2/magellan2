@@ -63,15 +63,12 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
    */
   @Override
   public List<Problem> reviewUnit(Unit unit, int type) {
-    // we notify errors only
-    if (type != Problem.ERROR) {
-      return Collections.emptyList();
-    }
+    
     
     Collection<String> orders = unit.getOrders();
     List<Problem> errors = new ArrayList<Problem>();
     
-    if (Utils.isEmpty(orders)) {
+    if (Utils.isEmpty(orders) && type==Problem.ERROR) {
       // no orders...that could be a problem.
       if (Utils.isEmpty(unit.getFaction().getPassword())) {
         // okay, that isnt our unit... forget it
@@ -82,19 +79,24 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
       
     }
     
-    GameData data = unit.getRegion().getData();
-    OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
+    // be carefull with the order parser. Some orders may be correct but will not get
+    // an OK from the parser: ZAUBERE und Benutze Trank ...
+    // so I change that from error to warning
     
-    Integer line = 1;
-    for (String order : orders) {
-      StringReader reader = new StringReader(order);
-      boolean ok = parser.read(reader);
-      if (!ok) {
-        errors.add(new SyntaxError(this,unit,"tasks.ordersyntaxinspector.parse_error",order,line));
+    if (type==Problem.WARNING) {
+      GameData data = unit.getRegion().getData();
+      OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
+      
+      Integer line = 1;
+      for (String order : orders) {
+        StringReader reader = new StringReader(order);
+        boolean ok = parser.read(reader);
+        if (!ok) {
+          errors.add(new SyntaxWarning(this,unit,"tasks.ordersyntaxinspector.parse_warning",order,line));
+        }
+        line++;
       }
-      line++;
-    }
-
+    } 
     return errors;
   }
   
@@ -110,6 +112,21 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
      */
     public int getType() {
       return ERROR;
+    }
+  }
+  
+  class SyntaxWarning extends AbstractProblem implements Problem {
+    public SyntaxWarning(Inspector inspector, Unit unit, String resourceKey, Object...args) {
+      super(unit, unit, inspector, Resources.get(resourceKey,args));
+    }
+    
+    /**
+     * returns the type of the problem
+     * 
+     * @see magellan.library.tasks.AbstractProblem#getType()
+     */
+    public int getType() {
+      return WARNING;
     }
   }
 }

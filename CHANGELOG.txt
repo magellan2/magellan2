@@ -2,9 +2,10 @@
     * Fixed behaviour of Unit.addOrder() to add a new order to the end of the orders of an unit
     * feature requests #190, #191, #193, #197, #198, #214, #221, #223
 
-2008-0412 / Build 183 - Fiete (sf@fietefietz.de)
+2008-04-12 / Build 183 - Fiete (sf@fietefietz.de)
 	* NPE in TaskTabelPanel fixed if data.getOwner == null
-	* EresseaOrderCompleter.addFilteredSpells: "ocean" for MM allways true
+	* EresseaOrderCompleter.addFilteredSpells: "ocean" for MM always true
+	* OrderSyntaxInspector: Errors->Warnings if Parser.parse=false
 
 2008-04-09 / Build 182 - Darcduck (sf.net@duckstein.net)
     * #182 #216 done - Autocomplete: ZAUBERE through familar

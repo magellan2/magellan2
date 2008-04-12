@@ -414,7 +414,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           model.removeProblems(c, u);
 
           // add new problems if found
-          if (!restrictToOwner() || data.getOwnerFaction().equals(u.getFaction().getID())){
+          if (data.getOwnerFaction()==null || !restrictToOwner() || data.getOwnerFaction().equals(u.getFaction().getID())){
             List<Problem> problems = c.reviewUnit(u);
             model.addProblems(problems);
           }
@@ -430,7 +430,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      List<Problem> filteredList = new ArrayList<Problem>(problems.size());
      for (Problem p: problems){
        Faction f = p.getFaction();
-       if (!restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
+       if (data.getOwnerFaction()==null || !restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
          filteredList.add(p);
        }
      }

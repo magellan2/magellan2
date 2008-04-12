@@ -1091,7 +1091,7 @@ public class EresseaOrderCompleter implements Completer {
 											   "", 8));
 			}
 
-			addFilteredSpells(unit.getSpells().values(), false,
+			addFilteredSpells(unit, false,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  true);
 		}
@@ -1099,7 +1099,7 @@ public class EresseaOrderCompleter implements Completer {
 
 	void cmpltKampfzauberStufe() {
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
-			addFilteredSpells(unit.getSpells().values(), false,
+			addFilteredSpells(unit, false,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  true);
 		}
@@ -1672,7 +1672,7 @@ public class EresseaOrderCompleter implements Completer {
            " ", 8));
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
            " ", 8));
-      addFilteredSpells(unit.getSpells().values(), false,
+      addFilteredSpells(unit, false,
           region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
           false);
     }
@@ -1693,7 +1693,7 @@ public class EresseaOrderCompleter implements Completer {
 	void cmpltZaubereStufe() {
     // this is the check for magicans & familars with own spells:
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
-			addFilteredSpells(unit.getSpells().values(), false,
+			addFilteredSpells(unit, false,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  false);
 		}
@@ -1761,7 +1761,7 @@ public class EresseaOrderCompleter implements Completer {
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
 										   " ", 8));
-			addFilteredSpells(unit.getSpells().values(), true,
+			addFilteredSpells(unit, true,
 							  region.getType().equals(data.rules.getRegionType(EresseaConstants.RT_OCEAN)),
 							  false);
 		}
@@ -1791,12 +1791,15 @@ public class EresseaOrderCompleter implements Completer {
 	 * adds the given spells if combat, only adds combat-spells and so on
 	 *
 	 */
-	private void addFilteredSpells(Collection spells, boolean far, boolean ocean, boolean combat) {
+	private void addFilteredSpells(Unit u, boolean far, boolean ocean, boolean combat) {
+	  Collection spells = u.getSpells().values();
 		for(Iterator iter = spells.iterator(); iter.hasNext();) {
 			Spell spell = (Spell) iter.next();
 
+			// FF 20080412: ocean = true if unit is MM !
+			
 			if((spell.getDescription() == null) // indicates that no information is available about this spell
-				    ||((spell.getIsFar() || !far) && (spell.getOnOcean() || !ocean) &&
+				    ||((spell.getIsFar() || !far) && (spell.getOnOcean() || !ocean || u.getRace().equals(data.rules.getRace(EresseaConstants.R_MEERMENSCHEN))) &&
 				   (!combat || (spell.getType().toLowerCase().indexOf("combat") > -1)))) {
 				String spellName = this.data.getTranslation(spell);
 				String quotedSpellName = spellName;

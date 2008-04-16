@@ -1,3 +1,6 @@
+2008-04-12 / Build 186 - Fiete (sf@fietefietz.de)
+	* fixed #84: 1000er lighthouse
+
 2008-04-12 / Build 185 - Thoralf (thoralf@m84.de)
     * Fixed behaviour of Unit.addOrder() to add a new order to the end of the orders of an unit
     * feature requests #190, #191, #193, #197, #198, #214, #221, #223

@@ -363,7 +363,7 @@ public class EresseaPostProcessor {
 							}
 						}
 
-						int maxRadius = (int) Math.min((Math.log(b.getSize()) / Math.log(10)) + 1,
+						int maxRadius = (int) Math.min(Math.log10(b.getSize()) + 1,
 													   perceptionSkillLevel / 3);
 
 						if(maxRadius > 0) {

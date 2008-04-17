@@ -57,7 +57,7 @@ import magellan.library.utils.logging.Logger;
 public class EresseaPostProcessor {
   private static final Logger log = Logger.getInstance(EresseaPostProcessor.class);
   
-  private EresseaPostProcessor() {
+  protected EresseaPostProcessor() {
 	}
   
 	private static final EresseaPostProcessor singleton = new EresseaPostProcessor();

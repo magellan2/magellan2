@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
+import magellan.library.gamebinding.AllanonSpecificStuff;
 import magellan.library.gamebinding.EresseaMapMergeEvaluator;
 import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.rules.MessageType;
@@ -232,10 +233,16 @@ public class CompleteData extends GameData {
    * of the astral space region with CoordinateID <0,0,1>.
    */
   public CoordinateID getAstralMapping() {
-    if (!(this.getGameSpecificStuff() instanceof EresseaSpecificStuff)) 
+    if (this.getGameSpecificStuff() instanceof AllanonSpecificStuff) {
+      // Allanon doesn't provide an astral space
       return null;
-    if (this.astralMappingImpossible) 
+    }
+    if (!(this.getGameSpecificStuff() instanceof EresseaSpecificStuff)) { 
       return null;
+    }
+    if (this.astralMappingImpossible) { 
+      return null;
+    }
     if (this.astralMapping == null) {
       EresseaMapMergeEvaluator mme = (EresseaMapMergeEvaluator) this.getGameSpecificStuff().getMapMergeEvaluator();
       this.astralMapping = mme.getAstral2RealMapping(this);

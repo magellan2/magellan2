@@ -1,15 +1,18 @@
+2008-04-17 / Build 187 - Thoralf (thoralf@m84.de)
+    * added first steps for Allanon Integration into Magellan (rules and some icons)
+
 2008-04-12 / Build 186 - Fiete (sf@fietefietz.de)
-	* fixed #84: 1000er lighthouse
-	* fixed #226: racenames in icons
+    * fixed #84: 1000er lighthouse
+    * fixed #226: racenames in icons
 
 2008-04-12 / Build 185 - Thoralf (thoralf@m84.de)
     * Fixed behaviour of Unit.addOrder() to add a new order to the end of the orders of an unit
     * feature requests #190, #191, #193, #197, #198, #214, #221, #223
 
 2008-04-12 / Build 183 - Fiete (sf@fietefietz.de)
-	* NPE in TaskTabelPanel fixed if data.getOwner == null
-	* EresseaOrderCompleter.addFilteredSpells: "ocean" for MM always true
-	* OrderSyntaxInspector: Errors->Warnings if Parser.parse=false
+    * NPE in TaskTabelPanel fixed if data.getOwner == null
+    * EresseaOrderCompleter.addFilteredSpells: "ocean" for MM always true
+    * OrderSyntaxInspector: Errors->Warnings if Parser.parse=false
 
 2008-04-09 / Build 182 - Darcduck (sf.net@duckstein.net)
     * #182 #216 done - Autocomplete: ZAUBERE through familar
@@ -19,7 +22,7 @@
     * Bug #164 fixed - Message rendering only done if required
 
 2008-04-06 / Build 182 - stm (stm_@users.sourceforge.net)
-   * started fixing #154, #160, #161, #162 
+    * started fixing #154, #160, #161, #162 
 
 2008-04-02 / Build 181 - stm (stm_@users.sourceforge.net)
     * Tweaked FactionstatsDialog interface, amended help 

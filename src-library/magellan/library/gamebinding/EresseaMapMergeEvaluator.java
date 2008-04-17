@@ -50,7 +50,7 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
   /**
    * 
    */
-  private EresseaMapMergeEvaluator() {
+  protected EresseaMapMergeEvaluator() {
     // TODO Auto-generated constructor stub
   }
   

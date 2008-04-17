@@ -93,4 +93,11 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   public MapMergeEvaluator getMapMergeEvaluator() {
     return AllanonMapMergeEvaluator.getSingleton();
   }
+  
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getOrderWriter()
+   */
+  public GameSpecificOrderWriter getOrderWriter() {
+    return AllanonOrderWriter.getSingleton();
+  }
 }

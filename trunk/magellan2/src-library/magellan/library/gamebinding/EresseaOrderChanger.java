@@ -36,10 +36,10 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class EresseaOrderChanger implements OrderChanger {
-	private EresseaOrderChanger() {
+  private static final EresseaOrderChanger singleton = new EresseaOrderChanger();
+  
+	protected EresseaOrderChanger() {
 	}
-
-	private static final EresseaOrderChanger singleton = new EresseaOrderChanger();
 
 	/**
 	 * DOCUMENT-ME

@@ -63,11 +63,11 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaRelationFactory implements RelationFactory {
   private static final Logger log = Logger.getInstance(EresseaRelationFactory.class);
+  private static final EresseaRelationFactory singleton = new EresseaRelationFactory();
 
-  private EresseaRelationFactory() {
+  protected EresseaRelationFactory() {
   }
 
-  private static final EresseaRelationFactory singleton = new EresseaRelationFactory();
 
   /**
    * DOCUMENT-ME

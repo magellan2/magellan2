@@ -31,10 +31,11 @@ import magellan.library.rules.SkillType;
  * @version $Revision: 396 $
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
-	private EresseaMovementEvaluator() {
+  private static final EresseaMovementEvaluator singleton = new EresseaMovementEvaluator();
+
+  protected EresseaMovementEvaluator() {
 	}
 
-	private static final EresseaMovementEvaluator singleton = new EresseaMovementEvaluator();
 
 	/**
 	 * DOCUMENT-ME

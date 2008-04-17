@@ -90,7 +90,7 @@ public class OrderWriter {
 		}
 
 		if(f.getType() != null) {
-			echeckOptions += " -r" + faction.getRace().getRecruitmentCosts();
+			echeckOptions = " -r" + faction.getRace().getRecruitmentCosts() + echeckOptions;
 		}
 	}
 

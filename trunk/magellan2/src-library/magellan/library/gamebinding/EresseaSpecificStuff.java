@@ -109,4 +109,11 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   public MapMergeEvaluator getMapMergeEvaluator() {
     return EresseaMapMergeEvaluator.getSingleton();
   }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getOrderWriter()
+   */
+  public GameSpecificOrderWriter getOrderWriter() {
+    return EresseaOrderWriter.getSingleton();
+  }
 }

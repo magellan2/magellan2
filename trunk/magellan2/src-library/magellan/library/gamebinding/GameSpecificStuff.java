@@ -116,4 +116,10 @@ public interface GameSpecificStuff {
    * @return
    */
   public MapMergeEvaluator getMapMergeEvaluator();
+  
+  /**
+   * Returns a game specific order writer. This writer provides
+   * some additional informations for a game specific order.
+   */
+  public GameSpecificOrderWriter getOrderWriter();
 }

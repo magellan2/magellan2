@@ -1,5 +1,6 @@
 2008-04-17 / Build 187 - Thoralf (thoralf@m84.de)
     * added first steps for Allanon Integration into Magellan (rules and some icons)
+    * added game specific order writer for changing the ECHECK output to ACHECK output
 
 2008-04-12 / Build 186 - Fiete (sf@fietefietz.de)
     * fixed #84: 1000er lighthouse

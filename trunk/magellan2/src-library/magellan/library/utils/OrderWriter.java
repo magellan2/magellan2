@@ -29,6 +29,7 @@ import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificOrderWriter;
 import magellan.library.rules.BuildingType;
 
 
@@ -164,11 +165,15 @@ public class OrderWriter {
 		if (this.writeTimeStamp) {
 			writeln(stream, "; TIMESTAMP " + getTimeStamp());
 		}
-
-		writeln(stream, "; ECHECK VERSION Magellan "+VersionInfo.getVersion(null));
-
-		if(addECheckComments) {
-			writeln(stream, "; ECHECK " + echeckOptions);
+		
+		GameSpecificOrderWriter writer = world.getGameSpecificStuff().getOrderWriter();
+		
+		if (writer.useChecker()) {
+  		writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" VERSION Magellan "+VersionInfo.getVersion(null));
+  
+  		if(addECheckComments) {
+  			writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" " + echeckOptions);
+  		}
 		}
     
 		// pavkovic 2003.09.11: use system locale and NOT faction locale!
@@ -205,7 +210,7 @@ public class OrderWriter {
 
 			stream.write(Resources.getOrderTranslation(EresseaConstants.O_REGION));
 			writeln(stream, " " + r.getID().toString(",") + " ; " + r.getName());
-			writeln(stream, "; ECheck Lohn " + r.getWage());
+			writeln(stream, "; "+world.getGameSpecificStuff().getOrderWriter().getCheckerName()+" Lohn " + r.getWage());
 		}
 
 		int writtenUnits = 0;

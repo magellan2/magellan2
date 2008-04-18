@@ -45,4 +45,11 @@ public interface GameSpecificOrderWriter {
    */
   public String getCheckerName();
   
+  /**
+   * Returns a list of default parameters for the
+   * Syntax Checker. The parameters are used, if no
+   * parameters are set.
+   */
+  public String getCheckerDefaultParameter();
+  
 }

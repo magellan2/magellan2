@@ -52,4 +52,11 @@ public class AllanonOrderWriter extends EresseaOrderWriter {
   public String getCheckerName() {
     return "ACheck";
   }
+  
+  /**
+   * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
+   */
+  public String getCheckerDefaultParameter() {
+    return "";
+  }
 }

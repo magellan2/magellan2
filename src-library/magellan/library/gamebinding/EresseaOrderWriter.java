@@ -31,6 +31,8 @@ package magellan.library.gamebinding;
  */
 public class EresseaOrderWriter implements GameSpecificOrderWriter {
   private static final EresseaOrderWriter instance = new EresseaOrderWriter();
+  /** Current ECheck version */
+  public static final String ECHECKVERSION = "4.3.2";
   
   /**
    * 
@@ -58,6 +60,13 @@ public class EresseaOrderWriter implements GameSpecificOrderWriter {
    */
   public boolean useChecker() {
     return true;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
+   */
+  public String getCheckerDefaultParameter() {
+    return " -s -l -w4 -v" + ECHECKVERSION;
   }
 
 }

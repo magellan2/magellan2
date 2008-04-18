@@ -43,9 +43,7 @@ public class OrderWriter {
 	/** DOCUMENT-ME */
 	public static final String CONFIRMEDTEMP = CONFIRMED + "_temp";
 	
-	public static final String ECHECKVERSION = "4.3.2";
-	
-	private String echeckOptions = " -s -l -w4 -v" + ECHECKVERSION;
+	private String syntaxCheckOptions = "";
 	private GameData world = null;
 	private Faction faction = null;
 	private Group group = null;
@@ -86,11 +84,13 @@ public class OrderWriter {
 		faction = f;
 
 		if(echeckOpts != null) {
-			echeckOptions = echeckOpts;
+			syntaxCheckOptions = echeckOpts;
+		} else {
+		  syntaxCheckOptions = g.getGameSpecificStuff().getOrderWriter().getCheckerDefaultParameter();
 		}
 
 		if(f.getType() != null) {
-			echeckOptions = "-r" + faction.getRace().getRecruitmentCosts() + echeckOptions;
+			syntaxCheckOptions = "-r" + faction.getRace().getRecruitmentCosts() + syntaxCheckOptions;
 		}
 	}
 
@@ -172,7 +172,7 @@ public class OrderWriter {
   		writeln(stream, "; Magellan Version "+VersionInfo.getVersion(null));
   
   		if(addECheckComments) {
-  			writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" " + echeckOptions);
+  			writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" " + syntaxCheckOptions);
   		}
 		}
     

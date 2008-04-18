@@ -90,7 +90,7 @@ public class OrderWriter {
 		}
 
 		if(f.getType() != null) {
-			echeckOptions = " -r" + faction.getRace().getRecruitmentCosts() + echeckOptions;
+			echeckOptions = "-r" + faction.getRace().getRecruitmentCosts() + echeckOptions;
 		}
 	}
 
@@ -169,7 +169,7 @@ public class OrderWriter {
 		GameSpecificOrderWriter writer = world.getGameSpecificStuff().getOrderWriter();
 		
 		if (writer.useChecker()) {
-  		writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" VERSION Magellan "+VersionInfo.getVersion(null));
+  		writeln(stream, "; Magellan Version "+VersionInfo.getVersion(null));
   
   		if(addECheckComments) {
   			writeln(stream, "; "+writer.getCheckerName().toUpperCase()+" " + echeckOptions);

@@ -2129,7 +2129,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   // PREFERENCES ADAPTER //
   /////////////////////////
   /**
-   * @see com.eressea.swing.preferences.PreferencesFactory#createPreferencesAdapter()
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
     return new DesktopPreferences(this, client, settings);

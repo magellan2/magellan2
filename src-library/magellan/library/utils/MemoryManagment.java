@@ -86,8 +86,8 @@ public class MemoryManagment {
      * checks, if there is enough free memory for the JVM
      * if not, invokes the garbage collector
      * if not successful returns false, otherwise true
+     * 
      * @return true, if enough memory available
-     * @author Fiete
      */
     public static boolean isFreeMemory(long min){
     	// Runtime r = java.lang.Runtime.getRuntime();

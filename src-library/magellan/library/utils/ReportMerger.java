@@ -532,7 +532,7 @@ public class ReportMerger extends Object {
    *          If <code>true</code> the merging will be started in a new
    *          thread.
    * @param sort 
-   * @param b 
+   * @param interactive 
    * 
    */
   public GameData merge(UserInterface aUI, boolean sort, boolean interactive, boolean async) {

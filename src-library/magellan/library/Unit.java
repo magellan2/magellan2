@@ -31,7 +31,8 @@ import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
 
 /**
- * DOCUMENT-ME
+ * This is a Unit. A unit is an object that contains one or more persons.
+ * All persons in this unit have the same level of skills.
  * 
  * @author $Author: $
  * @version $Revision: 389 $
@@ -43,25 +44,21 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   /** The unit is not sufficiently skilled in horse riding */
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
+  /** hmmm.... */
+  public static final int GUARDFLAG_WOOD = 4;
+  
   /**
-   * Comments modifiable by the user. The comments are represented as String
-   * objects.
-   */
-  /** analog to comments in unitcontainer* */
-//  public List<String> comments = null;
-
-  /**
-   * DOCUMENT-ME
+   * Returns true if no orders are set
    */
   public boolean ordersAreNull();
 
   /**
-   * DOCUMENT-ME
+   * Returns true if the orders has changed
    */
   public boolean ordersHaveChanged();
 
   /**
-   * DOCUMENT-ME
+   * @see #ordersHaveChanged()
    */
   public void setOrdersChanged(boolean changed);
 
@@ -165,10 +162,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * Delivers a readonly collection of alle orders of this unit.
    */
   public Collection<String> getOrders();
-
-  /** DOCUMENT-ME */
-  public static final int GUARDFLAG_WOOD = 4;
-
 
   /**
    * Sets the group this unit belongs to.
@@ -334,7 +327,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   /**
    * @return The String of the RealRace. If no RealRace is known( = null) the
    *         normal raceName is returned.
-   * @author Fiete
    */
   public String getRealRaceName();
 
@@ -343,7 +335,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * for displaying the according race icon
    * 
    * @return Name of the race
-   * @author Fiete
    */
   public String getSimpleRaceName();
 
@@ -370,7 +361,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public List<String> getCompleteOrders();
 
   /**
-   * DOCUMENT-ME
+   * Returns a list of all orders.
    * 
    * @param writeUnitTagsAsVorlageComment
    */
@@ -384,7 +375,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * itself to the corresponding unit collections.
    * 
    * @throws IllegalArgumentException
-   *           DOCUMENT-ME
    */
   public TempUnit createTemp(ID key);
   
@@ -400,12 +390,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public String getModifiedName();
 
   /**
-   * DOCUMENT-ME
+   * Adds a relation to this unit.
    */
   public void addRelation(UnitRelation rel);
 
   /**
-   * DOCUMENT-ME
+   * Removes a relation to this unit.
    */
   public UnitRelation removeRelation(UnitRelation rel);
   
@@ -435,17 +425,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public List<CoordinateID> getModifiedMovement();
   
   /**
-   * DOCUMENT-ME
+   * Returns the modified ship if this unit modifies the ship
    */
   public Ship getModifiedShip();
 
   /**
-   * DOCUMENT-ME
+   * Returns the modified building if this unit modifies it
    */
   public Building getModifiedBuilding();
 
   /**
-   * DOCUMENT-ME
+   * Returns the modified skills if this will change.
    */
   public Skill getModifiedSkill(SkillType type);
   
@@ -496,16 +486,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * Removes all skills from this unit.
    */
   public void clearSkills();
-
-  /**
-   * Copies the skills of the given unit. Does not empty this unit's skills.
-   */
- // public static void copySkills(Unit u, Unit v);
-
-  /**
-   * DOCUMENT-ME
-   */
- // public static void copySkills(Unit u, Unit v, boolean sortOut);
 
   /**
    * Returns all the items this unit possesses.
@@ -570,12 +550,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * transfer orders.
    */
   public int getModifiedPersons();
-
-  /**
-   * Returns the weight of a unit with the specified number of persons, their
-   * weight and the specified items in silver.
-   */
-//  public static int getWeight(int persons, float personWeight, Iterator items);
 
   /**
    * @return true if weight is well known and NOT evaluated by Magellan
@@ -668,17 +642,14 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public Collection<Unit> getTeachers();
 
   /**
-   * DOCUMENT-ME
+   * Returns a list of attacked victims.
    */
   public Collection<Unit> getAttackVictims();
   /**
-   * DOCUMENT-ME
+   * Returns a list of attackers.
    */
   public Collection<Unit> getAttackAggressors();
   
-  // FIXME "No relation of a unit can affect an object outside the region". This
-  // might not be true
-  // any more for familiars or ZAUBERE.
   /**
    * Parses the orders of this unit and detects relations between units
    * established by those orders. When does this method have to be called? No
@@ -718,22 +689,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public String toString(boolean withName);
 
   /**
-   * see Unit.GUARDFLAG_ Converts guard flags into a readable string.
-   */
- // public static String guardFlagsToString(int iFlags);
-
-  /**
-   * Returns a locale specific string representation of the specified unit
-   * combat status.
-   */
- // public static String combatStatusToString(Unit u);
-
-  /**
-   * DOCUMENT-ME
-   */
- // public static String combatStatusToString(int combatStatus);
-
-  /**
    * Add a order to the unit's orders. This function ensures that TEMP units are
    * not affected by the operation.
    * 
@@ -751,13 +706,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * @return <tt>true</tt> if the order was successfully added.
    */
   public boolean addOrder(String order, boolean replace, int length);
-  /**
-   * DOCUMENT-ME
-   * 
-   * @param sameRound
-   *          notifies if both game data objects have been from the same round
-   */
-//  public static void merge(GameData curGD, Unit curUnit, GameData newGD, Unit newUnit, boolean sameRound);
 
   /**
    * Scans this unit's orders for temp units to create. It constructs them as

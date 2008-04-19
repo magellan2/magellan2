@@ -293,7 +293,6 @@ public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
 
    * @param data
    * @param level
-   * @param rellevel
    * @return Mapped Coordinate
    */
   public CoordinateID getRelatedCoordinate(GameData data, CoordinateID c, int level) {

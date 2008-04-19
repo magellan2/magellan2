@@ -31,8 +31,6 @@ public interface Taggable {
 
   /**
 	 * Returns <code>true</code> if there are any tags associated with this object.
-	 * 
-	 * @return 
 	 */
 	public boolean hasTags();
 
@@ -40,7 +38,6 @@ public interface Taggable {
 	 * Returns <code>true</code> if there is a tag with key <code>tag</code> associated with this object.
 	 * 
 	 * @param tag
-	 * @return
 	 */
 	public boolean containsTag(String tag);
 
@@ -49,7 +46,6 @@ public interface Taggable {
 	 * 
 	 * @param tag
 	 * @param value
-	 * @return 
 	 */
 	public String putTag(String tag, String value);
 
@@ -65,7 +61,6 @@ public interface Taggable {
 	 * Removes the value for the key <code>tag</code> from this object.
 	 * 
 	 * @param tag
-	 * @return
 	 */
 	public String removeTag(String tag);
 
@@ -76,8 +71,6 @@ public interface Taggable {
 
 	/**
 	 * Returns a Map containing all tags and their values associated with this object.
-	 * 
-	 * @return
 	 */
 	public Map getTagMap();
 }

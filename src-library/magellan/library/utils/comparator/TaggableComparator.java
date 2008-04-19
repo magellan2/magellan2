@@ -53,7 +53,7 @@ public class TaggableComparator implements Comparator<Taggable> {
 	 * Creates a new TagBasedComparatorComparator object with the default tag "ejcTagBasedComparatorTag"
 	 *
 	 * @param subComparator the comparator used to compare the Tagged tags if this one thinks they are equal
-	 * @param the tag to compare the two Tagged objects
+	 * @param tag to compare the two Tagged objects
 	 */
 	public TaggableComparator(String tag,Comparator subComparator) {
 		subCmp = subComparator;

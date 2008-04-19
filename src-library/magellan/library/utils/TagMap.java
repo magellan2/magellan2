@@ -320,7 +320,6 @@ public class TagMap implements Map<String,String> {
 	 * Equivalent to <code>get(tag)</code>.
 	 * 
 	 * @param tag
-	 * @return
 	 */
 	public String getTag(String tag) {
 		return (String) get(tag);
@@ -331,7 +330,6 @@ public class TagMap implements Map<String,String> {
 	 * 
 	 * @param tag
 	 * @param value
-	 * @return
 	 */
 	public String putTag(String tag, String value) {
 		return (String) put(tag, value);

@@ -35,7 +35,6 @@ public interface GameSpecificStuff {
 	 *
 	 * @param rules
 	 * @param name
-	 * @return TODO DOCUMENT ME!
 	 */
 	public GameData createGameData(Rules rules, String name);
 
@@ -113,7 +112,6 @@ public interface GameSpecificStuff {
   
   /**
    * 
-   * @return
    */
   public MapMergeEvaluator getMapMergeEvaluator();
   

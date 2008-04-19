@@ -67,7 +67,6 @@ public class OpenCRAction extends MenuAction {
    * Shows the FileOpen Dialog of Magellan.
    * 
    * @param client The client for storing settings etc., which is also used as parent component.
-   * @return
    */
   public static File getFileFromFileChooser(Client client) {
     return getFileFromFileChooser(client, client);
@@ -76,9 +75,8 @@ public class OpenCRAction extends MenuAction {
   /**
    * Shows the FileOpen Dialog of Magellan.
    * 
-   * @param settings The client for storing settings etc.
+   * @param client The client for storing settings etc.
    * @param parent The parent component for the chooser.
-   * @return
    */
   public static File getFileFromFileChooser(Client client, Component parent) {
     JFileChooser fc = new JFileChooser();

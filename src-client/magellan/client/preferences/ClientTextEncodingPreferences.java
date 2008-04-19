@@ -59,7 +59,7 @@ public class ClientTextEncodingPreferences extends JPanel implements Preferences
 	
 	
 	/**
-	 * @see com.eressea.swing.preferences.PreferencesAdapter#initPreferences()
+	 * @see PreferencesAdapter#initPreferences()
 	 */
 	public void initPreferences() {
 		// nothing to do...

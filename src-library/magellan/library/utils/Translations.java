@@ -81,8 +81,8 @@ public class Translations {
   /**
    * returns the translated string
    * source is not importand
+   * 
    * @param original
-   * @return
    */
   public String getTranslation(String original){
     return getTranslation(original,TranslationType.sourceUnknown);
@@ -92,9 +92,9 @@ public class Translations {
   /**
    * returns the translated string, if it is from the specified
    * source. No filtering is done, when sourceUnknown is choosen
+   * 
    * @param original
    * @param source
-   * @return
    */
   public String getTranslation(String original, int source){
     if (original==null){
@@ -121,8 +121,8 @@ public class Translations {
   
   /**
    * returns the translated string
+   * 
    * @param original
-   * @return
    */
   public TranslationType getTranslationType(String original){
     if (original==null){
@@ -149,6 +149,7 @@ public class Translations {
   /**
    * adds the complete translations to this translations
    * the actual contents is not cleared!
+   * 
    * @param translations
    */
   public void addAll(Translations translations, Rules rules){
@@ -169,7 +170,6 @@ public class Translations {
   
   /**
    * provides an Iterator over the keys = original strings
-   * @return
    */
   public Iterator<String> iteratorKeys(){
     if (this.translationMap==null){
@@ -180,7 +180,6 @@ public class Translations {
   
   /**
    * returns the size of the translations object (number of translations)
-   * @return
    */
   public int size(){
     if (this.translationMap==null){
@@ -193,7 +192,6 @@ public class Translations {
   
    /**
     * provides a sorted set of the keys
-    * @return
     */
    public TreeSet<String> getKeyTreeSet(){
      if (this.translationMap==null){
@@ -204,6 +202,7 @@ public class Translations {
    
    /**
     * removes an Translation
+    * 
     * @param o
     */
    public void remove(String o){
@@ -216,8 +215,8 @@ public class Translations {
    
    /**
     * returns true, if given String is already in this translations
+    * 
     * @param s
-    * @return
     */
    public boolean contains(String s){
      if (this.translationMap==null){

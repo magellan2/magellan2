@@ -71,11 +71,6 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
 
   /**
    * DOCUMENT ME!
-   * 
-   * @param regions
-   *          A collection of region objects that were selected on the map. Up
-   *          to the next SelectionEvent with type ST_REGIONS any search will be
-   *          limited to these regions.
    */
   public FactionPropertiesDialog(Frame owner, boolean modal, EventDispatcher dispatcher,
       GameData d, Properties p, Faction f) {

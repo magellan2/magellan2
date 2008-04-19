@@ -18,8 +18,6 @@ import java.util.List;
 /**
  * Container class for a region border based on its representation in a cr
  * version > 45.
- * 
- * @see magellan.library.Region#getBorders()
  */
 public interface Border extends Identifiable {
   /**

@@ -45,7 +45,7 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 	 *
 	 * @param parent the <code>Frame</code> from which the dialog is displayed
 	 * @param ed The event dispatcher that this dialog should use
-	 * @param _data The corresponding GameData
+	 * @param data The corresponding GameData
 	 * 
  	 */
 	public SetOriginDialog(java.awt.Frame parent, EventDispatcher ed, GameData data) {

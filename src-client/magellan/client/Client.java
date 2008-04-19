@@ -1388,7 +1388,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    * @param fileName
    *          The file name to be loaded.
-   * @return a new <tt>GameData</tt> object filled with the data from the CR.
    */
   public void loadCRThread(final File fileName) {
     

@@ -29,10 +29,10 @@ public abstract class Date extends Object implements ID {
 	/** Long format */
 	public static final int TYPE_LONG = 1;
 
-	/** DOCUMENT-ME */
+	/** Phrase format */
 	public static final int TYPE_PHRASE = 2;
 
-	/** DOCUMENT-ME */
+	/** Phrase and season format */
 	public static final int TYPE_PHRASE_AND_SEASON = 3;
 	
   /** a constant representing the season "unknown" */
@@ -56,26 +56,20 @@ public abstract class Date extends Object implements ID {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the round.
 	 */
 	public int getDate() {
 		return iDate;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the round.
 	 */
 	public void setDate(int newDate) {
 		iDate = newDate;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * @param o the date to compare this date to
 	 *
 	 * @return <tt>true</tt> if this date equals o, <tt> false </tt> otherwise
@@ -89,8 +83,6 @@ public abstract class Date extends Object implements ID {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public int hashCode() {
@@ -98,19 +90,13 @@ public abstract class Date extends Object implements ID {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see Object#toString() 
 	 */
 	public String toString() {
 		return toString(TYPE_SHORT);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public String toString(String delim) {
@@ -136,9 +122,7 @@ public abstract class Date extends Object implements ID {
 	/**
 	 * Creates a copy of this Date object.
 	 *
-	 * 
-	 *
-	 * @throws CloneNotSupportedException DOCUMENT-ME
+	 * @throws CloneNotSupportedException 
 	 */
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
@@ -147,15 +131,11 @@ public abstract class Date extends Object implements ID {
 	/**
 	 * Returns the season of this date.
 	 * 
-	 * @return {@link Date.SPRING}, {@link Date.SUMMER}, {@link Date.AUTUMN}, {@link Date.WINTER} or  {@link Date.UNKNOWN}
+	 * @return {@link #SPRING}, {@link #SUMMER}, {@link #AUTUMN}, {@link #WINTER} or  {@link #UNKNOWN}
 	 */
 	public abstract int getSeason();
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public abstract String toString(int iDateType);

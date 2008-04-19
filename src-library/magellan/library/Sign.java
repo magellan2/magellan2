@@ -27,11 +27,8 @@ public class Sign  {
 
 	/**
 	 * Create a new <tt>Sign</tt> object
-	 *
-	 * @param id the id of the border
 	 */
 	public Sign() {
-		
 	}
 
 	/**

@@ -80,10 +80,10 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   
   /**
    * Creates the Context-MenuItem (after Right-Click on Map)
+   * 
    * @param dispatcher EventDispatcher
    * @param data GameData
-   * @param argument some object - should be a (clicked) region or regionwrapper
-   * @param selectedObjects Collection of objects
+   * 
    * @return The JMenuItem to show in the MapContextMenu
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data) {

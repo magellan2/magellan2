@@ -134,7 +134,6 @@ public class GenericRules implements Rules {
 
   /**
    * All RegionTypes in one Collection
-   * @return
    */
   public Collection<RegionType> getRegionTypes(){
     if (this.mapUnitContainerType!=null && this.mapUnitContainerType.size()>0){

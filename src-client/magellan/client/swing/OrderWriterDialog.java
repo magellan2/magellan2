@@ -1110,10 +1110,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * @author Fiete
-   * 
    * Generates a new Filename according to the predefined (and stored) pattern
-   *
    */
   protected void autoFileName(){
     FileNameGeneratorFeed feed = new FileNameGeneratorFeed(super.getData().getDate().getDate());

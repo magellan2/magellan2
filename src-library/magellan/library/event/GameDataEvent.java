@@ -20,7 +20,7 @@ import magellan.library.GameData;
  * loaded a report.
  *
  * @see GameDataListener
- * @see EventDispatcher
+ * @see magellan.client.event.EventDispatcher
  */
 public class GameDataEvent extends TimeStampedEvent {
 	private GameData data;

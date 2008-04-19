@@ -25,7 +25,6 @@ public interface UnitContextMenuProvider {
    * @param data            the actual GameData or World
    * @param unit            last selected unit - is not required to be in selected objects
    * @param selectedObjects null or Collection of selected objects which may be of different types
-   * @return
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, Unit unit, Collection selectedObjects);
 }

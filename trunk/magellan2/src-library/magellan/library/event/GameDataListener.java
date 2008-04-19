@@ -20,7 +20,7 @@ package magellan.library.event;
  * invalid e.g. after the user loads a report.
  *
  * @see GameDataEvent
- * @see EventDispatcher
+ * @see magellan.client.event.EventDispatcher
  */
 public interface GameDataListener {
 	/**

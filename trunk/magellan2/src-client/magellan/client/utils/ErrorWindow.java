@@ -653,7 +653,7 @@ interface WindowCloseable {
   // **********************************************************************
   /**
    * This method will be called from the
-   * {@link hvp.gui.utils.WindowClosingDispatcher} if the user wants to close
+   * {@link WindowClosingDispatcher} if the user wants to close
    * the window (f.e. by using the system independent close function (the X in
    * the window title) or ALT+F4 on MS Windows and some X-Windows
    * WindowManagers).

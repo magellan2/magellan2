@@ -178,7 +178,6 @@ public class CellGeometry {
 
   /**
    * Only use for retrieving all Cell Geo data to consturct a related CellGeometry 
-   * @return
    */
   public Point getImageOffset() {
     return imgOffset;

@@ -258,7 +258,6 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
 	/**
 	 * A string with information about the syntax of the spell (FF)
-	 * @return
 	 */
 	public String getSyntaxString(){
 		String retVal = "";

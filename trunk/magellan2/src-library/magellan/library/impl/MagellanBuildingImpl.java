@@ -37,15 +37,13 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 
 	/**
 	 * Creates the Object for a building.
-	 *
-	 * @see magellan.library.UnitContainer#UnitContainer(ID, GameData)
 	 */
 	public MagellanBuildingImpl(ID id, GameData data) {
 		super(id, data);
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Returns the size of the building
 	 *
 	 * @return the size of the building.
 	 */
@@ -54,7 +52,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Sets the size of the building
 	 *
 	 * @param iSize set the size of the building.
 	 */
@@ -63,7 +61,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Returns the costs for this building.
 	 *
 	 * @return the cost of the building.
 	 */
@@ -72,7 +70,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	}
 
 	/**
-	 * DOCUMENT ME!
+	 * Sets the costs for this building.
 	 *
 	 * @param iCost set the cost for the building.
 	 */

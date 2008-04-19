@@ -46,12 +46,12 @@ public interface Spell extends Described, Localized {
   public void setLevel(int level);
 
   /**
-   * DOCUMENT-ME
+   * Returns the rank of this spell.
    */
   public int getRank();
 
   /**
-   * DOCUMENT-ME
+   * Sets the rank of this spell.
    */
   public void setRank(int rank);
 
@@ -66,17 +66,17 @@ public interface Spell extends Described, Localized {
   public void setType(String type);
 
   /**
-   * DOCUMENT-ME
+   * Returns true if this spell has effect on ocean
    */
   public boolean getOnOcean();
 
   /**
-   * DOCUMENT-ME
+   * Sets if this spell has effect on oceans
    */
   public void setOnOcean(boolean onOcean);
 
   /**
-   * DOCUMENT-ME
+   * Returns true if this spell has effect on ships
    */
   public boolean getOnShip();
 
@@ -96,7 +96,7 @@ public interface Spell extends Described, Localized {
   public void setIsFamiliar(boolean isFamiliar);
 
   /**
-   * DOCUMENT-ME
+   * Returns true if this spell has far effects
    */
   public boolean getIsFar();
 
@@ -116,7 +116,7 @@ public interface Spell extends Described, Localized {
   public void setComponents(Map<String, String> components);
 
   /**
-   * DOCUMENT-ME
+   * @see Object#toString()
    */
   public String toString();
 
@@ -127,8 +127,6 @@ public interface Spell extends Described, Localized {
 
   /**
    * A string with information about the syntax of the spell (FF)
-   * 
-   * @return
    */
   public String getSyntaxString();
 

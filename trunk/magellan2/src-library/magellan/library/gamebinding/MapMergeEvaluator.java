@@ -80,7 +80,6 @@ public class MapMergeEvaluator {
    * This is the main function that should be called from outside. 
    * @param main
    * @param add
-   * @return
    */
   public Map<Integer, CoordinateID> getMappings(GameData main, GameData add) {
     Map<Integer, CoordinateID> mappings = new HashMap<Integer, CoordinateID>(2);
@@ -310,7 +309,6 @@ public class MapMergeEvaluator {
 
    * @param data
    * @param level
-   * @param rellevel
    * @return Mapped Coordinate
    */
   public CoordinateID getRelatedCoordinate(GameData data, CoordinateID c, int level) {

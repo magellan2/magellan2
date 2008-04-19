@@ -160,7 +160,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * 
 	 *
 	 * @param geo The CellGeometry to be used
-	 * @param settings The Properties to be used
+	 * @param context The Properties to be used
 	 */
 	public RegionShapeCellRenderer(CellGeometry geo, MagellanContext context) {
 		this(geo, context, DEFAULT_FACTION_KEY, DEFAULT_REGION_KEY, DEFAULT_PAINTMODE_KEY);
@@ -172,7 +172,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * keys.
 	 *
 	 * @param geo The CellGeometry to be used
-	 * @param settings The Properties to be used
+	 * @param context The Properties to be used
 	 * @param fKey The factionKey value for settings operations
 	 * @param rKey The regionKey value for settings operations
 	 * @param pKey The paintKey value for settings operations

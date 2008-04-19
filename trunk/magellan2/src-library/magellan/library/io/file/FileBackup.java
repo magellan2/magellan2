@@ -52,7 +52,7 @@ public class FileBackup {
 	 * Returns the new backup file for the given file and backup level
 	 *
 	 * @param file the file to back up. The directory is the parent directory of the given file.
-	 * @param backuplevel number of revisions to hold, ignored for the{@link #SIMPLE} backup type.
+	 * @param backuplevel number of revisions to hold, ignored for the SIMPLE backup type.
 	 *
 	 * @return the created backup file.
 	 *
@@ -83,8 +83,7 @@ public class FileBackup {
 	 * @param file the file to back up.
 	 * @param directory the directory to copy the backup to. If the directory doesn't exist, it
 	 * 		  will be created.
-	 * @param backupLevel number of revisions to hold, ignored for the  {@link #SIMPLE} backup
-	 * 		  type.
+	 * @param backupLevel number of revisions to hold, ignored for the SIMPLE backup type.
 	 *
 	 * @return the created backup file or null if target file does not exist
 	 *

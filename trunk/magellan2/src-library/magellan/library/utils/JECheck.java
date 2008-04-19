@@ -600,7 +600,6 @@ public class JECheck extends Reader {
 	 * 
 	 * @param eCheckExe
 	 * @param settings
-	 * @return
 	 * @throws IOException
 	 */
 	public static ECheckMessage getHelp(File eCheckExe,Properties settings) throws IOException {

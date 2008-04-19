@@ -808,7 +808,6 @@ public class Regions {
 	
 	/**
 	 * Returns the RegionType that is named as <tt>Feuerwand</tt>.
-	 * @author Fiete
 	 * 
 	 * @param rules Rules of the game
 	 * @param data GameDate - needed to find Translation
@@ -827,9 +826,9 @@ public class Regions {
 	/**
 	 * returns true, if a working road connection is established between r1 and r2
 	 * we assume, both regions are neighbours
+	 * 
 	 * @param r1 a region
 	 * @param r2 another region
-	 * @return
 	 */
 	public static boolean isCompleteRoadConnection(Region r1,Region r2){
 		boolean erg = false;
@@ -879,9 +878,10 @@ public class Regions {
 		return erg;
 	}
 	
-	/** Contributed by Hubert Mackenberg. Thanks.
+	/**
+	 * Contributed by Hubert Mackenberg. Thanks.
    * x und y Abstand zwischen x1 und x2 berechnen
-  **/
+   **/
   public static int getRegionDist(CoordinateID r1, CoordinateID r2){
     int dx = r1.x - r2.x;
     int dy = r1.y - r2.y;
@@ -902,9 +902,9 @@ public class Regions {
 	
   /**
    * Returns an ID for an new Border to be add
+   * 
    * @param r
    * @param border
-   * @return
    */
   public static ID getNewBorderID(Region r,Border border){
     ID erg = border.getID();
@@ -928,6 +928,7 @@ public class Regions {
   /**
    * Checks all regions and recalculates the BitMap
    * for the borders, where is ocean and where not
+   * 
    * @param data GameData
    */
   public static void calculateCoastBorders(GameData data){

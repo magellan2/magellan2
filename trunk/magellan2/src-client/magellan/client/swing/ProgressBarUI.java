@@ -107,9 +107,8 @@ public class ProgressBarUI implements UserInterface {
     return conf.bResult;
   }
 
-
   /**
-   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String, java.lang.Object[], java.lang.Object)
    */
   public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
     Input input = new Input(strMessage, strTitle, values, initialSelection);

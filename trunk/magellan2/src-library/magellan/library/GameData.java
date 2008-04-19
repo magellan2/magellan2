@@ -358,7 +358,7 @@ public abstract class GameData implements Cloneable {
   /**
    * Retrieve a spell from spells() by Name. used for orderReader / completer
    * 
-   * @param id
+   * @param spellName
    *          the name of the spell to be retrieved.
    * @return an instance of class <tt>Spell</tt> or <tt>null</tt> if there
    *         is no spell with the specified id or if spells() is <tt>null</tt>.
@@ -1806,7 +1806,6 @@ public abstract class GameData implements Cloneable {
    * <code>layer</code> to get coordinates of this report. The coordinate
    * translation of the owner faction is <i>not</i> always (0, 0, layer).
    * 
-   * @param layer
    * @return The map of coordinate translations of faction
    *         <code>otherFaction</code> or <code>null</code> if unknown
    * @see #getCoordinateTranslation(EntityID, int)
@@ -1829,7 +1828,6 @@ public abstract class GameData implements Cloneable {
    * translation of the owner faction is <i>not</i> always (0, 0, layer).
    * 
    * @param otherFaction
-   * @param layer
    * @param usedTranslation
    * 
    */

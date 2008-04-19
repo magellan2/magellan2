@@ -118,8 +118,6 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
 
   /**
    * Miscellaneous external modules settings
-   * 
-   * @return
    */
   protected Component getExternalPanel() {
     JPanel extPanel = new JPanel(new GridBagLayout());
@@ -167,8 +165,6 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
 
   /**
    * ECheck and Vorlage paths (and the like...)
-   * 
-   * @return
    */
   protected Component getSpecialPathsPanel() {
     spPanel = new JPanel(new GridBagLayout());
@@ -237,8 +233,6 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
 
   /**
    * All other resource paths...
-   * 
-   * @return
    */
   protected Component getResourcePathsPanel(){
     JPanel rpPanel = new JPanel(new java.awt.GridBagLayout());

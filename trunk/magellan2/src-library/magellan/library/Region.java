@@ -29,7 +29,7 @@ import magellan.library.rules.RegionType;
 public interface Region extends UnitContainer {
 
   /**
-   * DOCUMENT-ME
+   * Returns true if this region has fog of war.
    */
   public boolean fogOfWar();
 
@@ -39,19 +39,19 @@ public interface Region extends UnitContainer {
   public void setFogOfWar(int fog);
 
   /**
-   * DOCUMENT-ME
+   * Returns the zero unit of this world
    */
   public Unit getZeroUnit();
 
   /**
-   * DOCUMENT ME!
+   * Returns the number of modified peasons after a GIVE 0 or recruiting.
    * 
    * @return the number of modified persons after "give 0", recruit
    */
   public int getModifiedPeasants();
 
   /**
-   * DOCUMENT-ME
+   * Returns the number of possible recruits.
    */
   public int modifiedRecruit();
 
@@ -87,7 +87,6 @@ public interface Region extends UnitContainer {
    * 2..lighthouse
    * 3..travel
    * 4..qualified unit in region (->visibility=null)
-   * @return
    */
   public int getVisibilityInteger();
   
@@ -380,11 +379,12 @@ public interface Region extends UnitContainer {
 
   /**
    * Used for replacers..showing coordinates of region
-   * 
-   * @author Fiete
    */
   public int getCoordX();
 
+  /**
+   * Used for replacers..showing coordinates of region
+   */
   public int getCoordY();
 
   /**
@@ -887,7 +887,7 @@ public interface Region extends UnitContainer {
    * BitMask 4: dir = 2  ....
    * Bit = 1 -> there is land!
    * Bit = 0 -> there is ozean!
-   * @param an Integer as BitMap
+   * @param bitMap an Integer as BitMap
    */
   public void setCoastBitMap(Integer bitMap);
   

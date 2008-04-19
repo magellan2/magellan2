@@ -290,10 +290,9 @@ public class ImageFactory implements GameDataListener {
 	
 	/**
 	 * Checks, if icon exists
+	 * 
 	 * @param imageName the name of the icon to check
 	 * @return true, if a loadImage order would be succesfull...
-	 * @author Fiete
-	 * 
 	 */
 	public boolean existImageIcon(String imageName) {
 		ImageIcon img = loadImage("etc/images/icons/" + imageName,false);
@@ -304,10 +303,9 @@ public class ImageFactory implements GameDataListener {
 	
   /**
    * Checks, if icon exeeds given max sizes
+   * 
    * @param imageName the name of the icon to check
    * @return true, if a loadImage order would be succesfull...
-   * @author Fiete
-   * 
    */
   public boolean imageIconSizeCheck(String imageName,int maxHeight, int maxWidth) {
     ImageIcon icon = loadImage("etc/images/icons/" + imageName);

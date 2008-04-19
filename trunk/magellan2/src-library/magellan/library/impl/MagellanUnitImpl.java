@@ -744,8 +744,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	/**
 	 * @return The String of the RealRace. If no RealRace is known( = null)
 	 * the normal raceName is returned.
-	 * @author Fiete
-	 * 
 	 */
 	public String getRealRaceName(){
 		if (this.realRace==null) {
@@ -760,8 +758,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * Delivers the info "typ" from CR
 	 * without any prefixes and translations
 	 * used for displaying the according race icon
+	 * 
 	 * @return Name of the race
-	 * @author Fiete
 	 */
 	public String getSimpleRaceName(){
 		return this.race.toString();

@@ -307,7 +307,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * 2..lighthouse
 	 * 3..travel
 	 * 4..qualified unit in region (->visibility=null)
-	 * @return
 	 */
 	public int getVisibilityInteger(){
 	  // the result, some call it res
@@ -1256,12 +1255,15 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	
 	/**
 	 * Used for replacers..showing coordinates of region
-	 * @author Fiete
 	 */
 	public int getCoordX(){
 		CoordinateID myCID = this.getCoordinate();
 		return myCID.x;
 	}
+	
+  /**
+   * Used for replacers..showing coordinates of region
+   */
 	public int getCoordY(){
 		CoordinateID myCID = this.getCoordinate();
 		return myCID.y;
@@ -1904,6 +1906,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * BitMask 4: dir = 2  ....
    * Bit = 1 -> there is land!
    * Bit = 0 -> there is ozean!
+   * 
    * @return an Integer as BitMap
    */
   public Integer getCoastBitMap(){
@@ -1918,7 +1921,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * BitMask 4: dir = 2  ....
    * Bit = 1 -> there is land!
    * Bit = 0 -> there is ozean!
-   * @return an Integer as BitMap
    */
   public void setCoastBitMap(Integer bitMap){
     this.coastBitMask = bitMap;

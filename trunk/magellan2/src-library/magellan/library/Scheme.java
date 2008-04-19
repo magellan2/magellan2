@@ -19,16 +19,14 @@ package magellan.library;
  * relative to the standard Eressea map.
  */
 public interface Scheme extends Named {
-	/**
-	 * DOCUMENT-ME
-	 */
+  /**
+   * @see Object#toString()
+   */
 	public String toString();
 	
 	/**
    * Returns the coordinate of this region. This method is only a type-safe short cut for
    * retrieving and converting the ID object of this region.
-   *
-   * @return 
    */
   public CoordinateID getCoordinate();
 	

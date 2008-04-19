@@ -437,8 +437,8 @@ public class Resources {
   
   /**
    * Returns the resource paths the static methods of this class operate on.
-   *
-   * @see com.eressea.util.ResourcePathClassLoader#init(java.util.Properties)
+   * 
+   * @see ResourcePathClassLoader
    */
   public static Collection<URL> getStaticPaths() {
     return Collections.unmodifiableCollection(staticResourcePaths);

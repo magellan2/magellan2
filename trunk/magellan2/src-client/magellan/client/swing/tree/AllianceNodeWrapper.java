@@ -40,7 +40,6 @@ public class AllianceNodeWrapper extends FactionNodeWrapper implements CellObjec
 
   /**
    * @param f
-   * @param r
    * @param activeAlliances
    */
   public AllianceNodeWrapper(Faction f, Map<ID, Alliance> activeAlliances) {

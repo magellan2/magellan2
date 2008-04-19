@@ -576,8 +576,6 @@ public abstract class MagellanFactory {
    * @param curBuilding the current Building
    * @param newGD new GameData
    * @param newBuilding the new Building
-   *
-   * @see UnitContainer#merge
    */
   public static void mergeBuilding(GameData curGD, Building curBuilding, GameData newGD, Building newBuilding) {
     mergeUnitContainer(curGD, curBuilding, newGD, newBuilding);

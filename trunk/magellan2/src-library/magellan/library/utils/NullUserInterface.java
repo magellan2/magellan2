@@ -66,7 +66,7 @@ public class NullUserInterface implements UserInterface {
   }
   
   /**
-   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String)
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String, java.lang.Object[], java.lang.Object)
    */
   public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
     return null;

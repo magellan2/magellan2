@@ -288,7 +288,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     if (Utils.isEmpty(script)) {
       script = new Script(unit.getID().toString(),Script.SCRIPTTYPE_UNIT,ContainerType.UNKNOWN,"");
     }
-    if (Utils.isEmpty(script)) {
+    if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
       // show some examples for beginners...
       String exampleScript = "// example for beginners...\n";
       exampleScript+= "//\n";

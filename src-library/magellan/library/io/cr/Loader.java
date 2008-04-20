@@ -190,4 +190,12 @@ public class Loader {
 	  }
 	}
 	
+	/**
+	 * This method loads a report file from the given file.
+	 */
+	public static GameData load(File file) throws IOException {
+	  FileType fileType = FileTypeFactory.singleton().createFileType(file, true);
+	  GameData data = new GameDataReader(null).readGameData(fileType);
+	  return data;
+	}
 }

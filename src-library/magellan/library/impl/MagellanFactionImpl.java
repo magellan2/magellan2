@@ -147,6 +147,9 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 
 	/** The country code indicating the locale for this faction. */
 	private Locale locale = null;
+	
+	/** The treasury of this faction. If the value is zero this feature is not set. */
+	protected int factionTreasury = 0;
 
 	/**
 	 * Creates a new Faction object with the specified id on top of the specified game data object.
@@ -583,5 +586,19 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   public void setTrustLevelSetByUser(boolean trustLevelSetByUser) {
     this.trustLevelSetByUser = trustLevelSetByUser;
+  }
+  
+  /**
+   * @see magellan.library.Faction#getTreasury()
+   */
+  public int getTreasury() {
+    return factionTreasury;
+  }
+
+  /**
+   * @see magellan.library.Faction#setTreasury(int)
+   */
+  public void setTreasury(int silver) {
+    this.factionTreasury = silver;
   }
 }

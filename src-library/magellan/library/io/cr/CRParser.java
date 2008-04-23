@@ -1835,6 +1835,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Rekrutierungskosten")) {
         raceRecruit = Integer.parseInt(sc.argv[0]);
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Schatz")) {
+        faction.setTreasury(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Anzahl Personen")) {
         faction.setPersons(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();

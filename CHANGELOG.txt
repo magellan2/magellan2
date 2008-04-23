@@ -1,5 +1,6 @@
 2008-04-23 / Build 188 - Thoralf (thoralf@m84.de)
     * Added some more resources and icons for Allanon specific stuff
+    * Added Reichsschatz, if Reichsschatz is available.
 
 2008-04-19 / Build 187 - Thoralf (thoralf@m84.de)
     * removed some warnings in the javadocs

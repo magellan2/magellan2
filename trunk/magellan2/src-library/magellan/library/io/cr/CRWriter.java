@@ -955,9 +955,13 @@ public class CRWriter extends BufferedWriter {
 			writeQuotedTag(faction.getDescription(), "banner");
 		}
 
-		if(faction.getRaceNamePrefix() != null) {
-			writeQuotedTag(faction.getRaceNamePrefix(), "typprefix");
-		}
+    if(faction.getRaceNamePrefix() != null) {
+      writeQuotedTag(faction.getRaceNamePrefix(), "typprefix");
+    }
+
+    if(faction.getTreasury() != 0) {
+      write(faction.getTreasury()+";Schatz");
+    }
 
 		if(!serverConformance && faction.isTrustLevelSetByUser()) {
 			write(faction.getTrustLevel() + ";trustlevel");

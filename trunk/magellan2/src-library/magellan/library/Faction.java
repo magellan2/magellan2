@@ -356,4 +356,16 @@ public interface Faction extends UnitContainer {
    * used for showing unit capacity only for items of such factions
    */
   public boolean hasGiveAlliance();
+  
+  /**
+   * Sets the faction treasury for this faction. If the value is
+   * negative or zero, this attribute is disabled (default).
+   */
+  public void setTreasury(int silver);
+  
+  /**
+   * Returns the faction treasury for this faction. This value
+   * can be negative - that means this attribute is disabled (default).
+   */
+  public int getTreasury();
 }

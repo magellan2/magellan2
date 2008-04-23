@@ -1509,6 +1509,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendUnitsInfo(Collection<Unit> units, DefaultMutableTreeNode parent,
 								 Collection<NodeWrapper> expandableNodes) {
+
+    String text = "";
+	  
 		Map<String,SkillStatItem> skills = new Hashtable<String, SkillStatItem>();
 
 		// key: racename (string), Value: Integer-Object containing number of persons of that race
@@ -1521,9 +1524,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		float modUWeight = 0;
 		
 		
-		
-		for(Iterator iter = units.iterator(); iter.hasNext();) {
-			Unit u = (Unit) iter.next();
+		// iterate thru all units...
+		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
+			Unit u = iter.next();
 			
 			// weight (Fiete)
 			Float actUWeight = new Float(u.getWeight() / 100.0F);
@@ -1560,10 +1563,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 			}
 		}
-
-		for(Iterator iter = races.keySet().iterator(); iter.hasNext();) {
-			String race = (String) iter.next();
-			RaceInfo rI = (RaceInfo) races.get(race);
+		
+		for(Iterator<String> iter = races.keySet().iterator(); iter.hasNext();) {
+			String race = iter.next();
+			RaceInfo rI = races.get(race);
 			int i = rI.amount;
 			int i_modified = rI.amount_modified;
 			String personIconName = "person";
@@ -1586,7 +1589,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// weight (Fiete)
-		String text = Resources.get("emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
+		text = Resources.get("emapdetailspanel.node.totalweight") + ": " + weightNumberFormat.format(uWeight);
 
 		if(uWeight != modUWeight) {
 			text += (" (" + weightNumberFormat.format(modUWeight) + ")");
@@ -2113,6 +2116,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   
     parent.add(fNode);
+    
+    if (f != null) {
+      if (f.getTreasury() > 0) {
+        String text = Resources.get("emapdetailspanel.node.treasury",f.getTreasury());
+        parent.add(createSimpleNode(text, "reichsschatz"));
+      }
+    }
   }
   
   

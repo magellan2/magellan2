@@ -14,6 +14,7 @@
 package magellan.client.swing.tasks;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -24,7 +25,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -33,6 +36,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import magellan.client.desktop.DesktopEnvironment;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
@@ -79,6 +83,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	TableSorter sorter;
 	TaskTableModel model;
 	protected List<Inspector> inspectors;
+  
+  /**
+   * Not easy to detect if this panel is shown / visible
+   * switched OFF: if refreshProblems is detecting, that the JMenu
+   *    entry in MagellanDeskTop.desktopMenu is not selected
+   * switched ON: if paint(Graphics g) is detected and isShown=false
+   *    in that case refreshProblems is called too.   
+   */
+  private boolean isShown = true; 
 
   // shortcuts
   private List<KeyStroke> shortcuts;
@@ -179,22 +192,60 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 //	private Timer timer;
 //	private Iterator regionsIterator;
 
+  /**
+   * counts Threads - to identify different Threads
+   * (not needed anymore)
+   */
   protected static int threadRunning=0;
-
+  
+  /**
+   * The Thread which refreshes the List of Problems
+   * only one is allowed
+   */
+  protected static Thread refreshThread = null;
+  
 	public void refreshProblems() {
+    if (refreshThread!=null && refreshThread.isAlive()){
+      // do not refresh if another refreshThread is still running
+      log.debug("new call to refreshProblems rejected, thread still running");
+      return;
+    }
+    
+    // Fiete: check, if open Problems is open anyway
+    MagellanDesktop MD = MagellanDesktop.getInstance();
+    JMenu desktopMenu = MD.getDesktopMenu();
+    boolean menuSelected = true;
+    this.isShown=true;
+    if (desktopMenu!=null){
+      for (int index=0; index<desktopMenu.getItemCount(); index++) {
+        if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+          JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+          if (menu.getActionCommand().equals("menu."+ TaskTablePanel.IDENTIFIER)) {
+            menuSelected = menu.isSelected();
+          }
+        }
+      }
+    }
+    if (!menuSelected){
+      // Our Panel is not selected -> need ne refresh
+      log.debug("call to refreshProblems rejected  (not visisble Panel)");
+      this.isShown=false;
+      return;
+    }
+    
     initInspectors();
 	  
 	  Window w = SwingUtilities.getWindowAncestor(this);
 	  final ProgressBarUI ui = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
 	  ui.setMaximum(data.regions().size());
-
-	  new Thread(new Runnable() {
+	  // creating new Thread
+    refreshThread = new Thread(new Runnable() {
 	    final int myThread = ++threadRunning;
 	      
       public void run() {
         try {
           int iProgress=0;
-//        log.info("started "+myThread);
+          log.debug("started refresh Problems "+myThread);
           ui.show();
           synchronized (model) {
             model.clearProblems();
@@ -209,8 +260,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           if (threadRunning>myThread){
             ui.setMaximum(1);
             ui.setProgress("aborted", 1);
-//          log.info("aborted "+myThread);
+            log.debug("aborted "+myThread);
           }
+          log.debug("finished refreshed Problems "+myThread);
         }finally{
           try {
             ui.ready();
@@ -218,75 +270,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
             e.printStackTrace();
           }
         }
-      }
-    
-    }).start();
-
-	  
-//    if(timer != null) {
-//      timer.cancel();
-//      timer = null;
-//    }
-//		if(model != null) {
-//	    synchronized (model) {
-//	      model.clearProblems();
-//	    }
-//		}
-//
-//		if((data != null) && (data.regions() != null)) {
-//			regionsIterator = data.regions().values().iterator();
-//
-//			if(timer == null) {
-//				timer = new Timer(true);
-//				timer.scheduleAtFixedRate(new TimerTask() {
-//						public void run() {
-//						  inspectNextRegion();
-//						}
-//					}, RECALL_IN_MS, RECALL_IN_MS);
-//			}
-//		} else {
-//			regionsIterator = null;
-//		}
+      }  
+    });
+    // starting the thread
+    refreshThread.start();
 	}
 
-	private boolean inspectNextRegion() {
-		Region r = getNextRegion();
-
-		if(r != null) {
-			r.refreshUnitRelations();
-			reviewRegionAndUnits(r);
-		}
-
-		return r != null;
-	}
-
-	private Region getNextRegion() {
-//		if(regionsIterator == null) {
-//			return null;
-//		}
-//
-//		// find next interesting region
-//		while(regionsIterator.hasNext()) {
-//			Region r = (Region) regionsIterator.next();
-//
-//			if((r.units() != null) && !r.units().isEmpty()) {
-//				if(REGIONS_WITH_UNCONFIRMED_UNITS_ONLY) {
-//					// only show regions with unconfirmed units
-//					for(Iterator iter = r.units().iterator(); iter.hasNext();) {
-//						Unit u = (Unit) iter.next();
-//
-//						if(!u.isOrdersConfirmed()) {
-//							return r;
-//						}
-//					}
-//				} else {
-//					return r;
-//				}
-//			}
-//		}
-
-		return null;
-	}
+	
 
 	private void initInspectors() {
 		inspectors = new ArrayList<Inspector>();
@@ -320,7 +310,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
-
 		// rebuild warning list
 		refreshProblems();
 	}
@@ -595,5 +584,18 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   public PreferencesAdapter createPreferencesAdapter() {
     return new TaskTablePreferences(this, settings, data);
   }
-
+  
+  public void paint(Graphics g){
+     if (!this.isShown){
+       // Panel was deactivated eralier (or never opened)
+       // and new we have a paint command...
+       // need to rebuild the prolems
+       this.isShown=true;
+       log.debug("TaskTablePanel shown after hide! -> refreshing.");
+       this.refreshProblems();
+     }
+     super.paint(g);
+  }
+  
+  
 }

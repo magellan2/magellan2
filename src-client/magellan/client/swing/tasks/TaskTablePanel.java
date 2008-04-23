@@ -66,6 +66,10 @@ import magellan.library.tasks.ToDoInspector;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.DockingWindowListener;
+import net.infonode.docking.OperationAbortedException;
+import net.infonode.docking.View;
 
 
 /**
@@ -73,7 +77,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
 																		  SelectionListener, ShortcutListener, GameDataListener, 
-																		  PreferencesFactory
+																		  PreferencesFactory, DockingWindowListener
 {
 	private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
@@ -89,9 +93,16 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * switched OFF: if refreshProblems is detecting, that the JMenu
    *    entry in MagellanDeskTop.desktopMenu is not selected
    * switched ON: if paint(Graphics g) is detected and isShown=false
-   *    in that case refreshProblems is called too.   
+   *    in that case refreshProblems is called too.
+   * adjusted by Events from DockingWindowFramework   
    */
   private boolean isShown = true; 
+  
+  /**
+   * Indicator of a refresh is needed if Panel becomes 
+   * visible again
+   */
+  private boolean needRefresh = true;
 
   // shortcuts
   private List<KeyStroke> shortcuts;
@@ -113,7 +124,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		d.addGameDataListener(this);
 
 		// TODO (stm): this is broken, so for now we don't care about selection
-//		d.addSelectionListener(this);
+    //		d.addSelectionListener(this);
 
 		initGUI();
 		refreshProblems();
@@ -207,7 +218,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	public void refreshProblems() {
     if (refreshThread!=null && refreshThread.isAlive()){
       // do not refresh if another refreshThread is still running
-      log.debug("new call to refreshProblems rejected, thread still running");
+      // log.info("new call to refreshProblems rejected, thread still running");
       return;
     }
     
@@ -215,7 +226,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     MagellanDesktop MD = MagellanDesktop.getInstance();
     JMenu desktopMenu = MD.getDesktopMenu();
     boolean menuSelected = true;
-    this.isShown=true;
     if (desktopMenu!=null){
       for (int index=0; index<desktopMenu.getItemCount(); index++) {
         if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
@@ -227,9 +237,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       }
     }
     if (!menuSelected){
-      // Our Panel is not selected -> need ne refresh
-      log.debug("call to refreshProblems rejected  (not visisble Panel)");
+      // Our Panel is not selected -> need no refresh
       this.isShown=false;
+    }
+    
+    if (!this.isShown || !this.needRefresh) {
+      // log.info("call to refreshProblems rejected  (not visisble Panel)");
       return;
     }
     
@@ -238,6 +251,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	  Window w = SwingUtilities.getWindowAncestor(this);
 	  final ProgressBarUI ui = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
 	  ui.setMaximum(data.regions().size());
+	  ui.setTitle(Resources.get("dock.TASKS.progressBar.title"));
 	  // creating new Thread
     refreshThread = new Thread(new Runnable() {
 	    final int myThread = ++threadRunning;
@@ -245,7 +259,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       public void run() {
         try {
           int iProgress=0;
-          log.debug("started refresh Problems "+myThread);
+          // log.info("started refresh Problems "+myThread);
           ui.show();
           synchronized (model) {
             model.clearProblems();
@@ -260,9 +274,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           if (threadRunning>myThread){
             ui.setMaximum(1);
             ui.setProgress("aborted", 1);
-            log.debug("aborted "+myThread);
+            // log.info("aborted "+myThread);
           }
-          log.debug("finished refreshed Problems "+myThread);
+          // log.info("finished refreshed Problems "+myThread);
         }finally{
           try {
             ui.ready();
@@ -274,6 +288,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     });
     // starting the thread
     refreshThread.start();
+    this.needRefresh=false;
 	}
 
 	
@@ -311,6 +326,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
 		// rebuild warning list
+		this.needRefresh=true;
 		refreshProblems();
 	}
 
@@ -323,7 +339,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			// ignore multiple region selections
 			return;
 		}
-
+		
+		// Fiete: do nothing if Panel is hidden 
+		this.needRefresh=true;
+		if (!this.isShown){
+		  return;
+		}
+		
 		Unit u = null;
 
 		try {
@@ -356,6 +378,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	 * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
 	 */
 	public void unitOrdersChanged(UnitOrdersEvent e) {
+	  // Fiete: do nothing if Panel is hidden
+	  this.needRefresh=true;
+	  if (!this.isShown){
+	    
+	    return;
+	  }
 		// rebuild warning list for given unit
     // this is not enough, also other units can be affected
 		// reviewObjects(e.getUnit(), e.getUnit().getRegion());
@@ -591,10 +619,149 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
        // and new we have a paint command...
        // need to rebuild the prolems
        this.isShown=true;
-       log.debug("TaskTablePanel shown after hide! -> refreshing.");
+       // log.info("TaskTablePanel shown after hide! -> refreshing.");
        this.refreshProblems();
      }
      super.paint(g);
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View, net.infonode.docking.View)
+   */
+  public void viewFocusChanged(View arg0, View arg1) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   */
+  public void windowAdded(DockingWindow arg0, DockingWindow arg1) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowAdded: " + arg1.getName());
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowClosed(net.infonode.docking.DockingWindow)
+   */
+  public void windowClosed(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowClosed: " + arg0.getName());
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowClosing(net.infonode.docking.DockingWindow)
+   */
+  public void windowClosing(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowDocked(net.infonode.docking.DockingWindow)
+   */
+  public void windowDocked(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowDocked: " + arg0.getName());
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowDocking(net.infonode.docking.DockingWindow)
+   */
+  public void windowDocking(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
+   */
+  public void windowHidden(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowHidden: " + arg0.getName());
+    this.isShown=false;
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMaximized(net.infonode.docking.DockingWindow)
+   */
+  public void windowMaximized(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMaximizing(net.infonode.docking.DockingWindow)
+   */
+  public void windowMaximizing(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMinimized(net.infonode.docking.DockingWindow)
+   */
+  public void windowMinimized(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMinimizing(net.infonode.docking.DockingWindow)
+   */
+  public void windowMinimizing(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   */
+  public void windowRemoved(DockingWindow arg0, DockingWindow arg1) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowRemoved: " + arg1.getName());
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRestored(net.infonode.docking.DockingWindow)
+   */
+  public void windowRestored(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRestoring(net.infonode.docking.DockingWindow)
+   */
+  public void windowRestoring(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
+   */
+  public void windowShown(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowShown: " + arg0.getName());
+    this.isShown=true;
+    this.refreshProblems();
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowUndocked(net.infonode.docking.DockingWindow)
+   */
+  public void windowUndocked(DockingWindow arg0) {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    // log.info("windowUndocked: " + arg0.getName());
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
+   */
+  public void windowUndocking(DockingWindow arg0) throws OperationAbortedException {
+    // HIGHTODO Automatisch generierte Methode implementieren
+    
   }
   
   

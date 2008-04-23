@@ -59,6 +59,7 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import magellan.client.Client;
 import magellan.client.MagellanContext;
@@ -252,7 +253,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
     // register keystrokes
     registerKeyStrokes();
-
+    
     //for adapter
     loadFrameModeSettings();
 
@@ -2464,4 +2465,18 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   public void windowUndocking(DockingWindow window) throws OperationAbortedException {
     // do nothing
   }
+  
+  /**
+   * adds the listener to the DockingFrameWork
+   * @param listener
+   */
+  private void addDockingWindowListener(DockingWindowListener listener){
+     if (splitRoot!=null && splitRoot instanceof RootWindow){
+       RootWindow rootWindow = (RootWindow)splitRoot;
+       rootWindow.addListener(listener);
+     } else {
+       log.error("unable to add DockingWindowListener! (no RootWindow)");
+     }
+  }
+  
 }

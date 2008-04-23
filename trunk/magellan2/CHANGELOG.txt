@@ -1,3 +1,6 @@
+2008-04-23 / Build 188 - Fiete (sf@fietefietz.de)
+	* changed behaviour of TaskPanel-refreshProblems, only updating, if visible
+
 2008-04-23 / Build 188 - Thoralf (thoralf@m84.de)
     * Added some more resources and icons for Allanon specific stuff
     * Added Reichsschatz, if Reichsschatz is available.

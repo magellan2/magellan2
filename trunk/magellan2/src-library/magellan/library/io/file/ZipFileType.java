@@ -111,7 +111,7 @@ public class ZipFileType extends FileType {
   				zos.putNextEntry(new ZipEntry(oldEntry.getName()));
   
   				InputStream currIn=zfile.getInputStream(oldEntry);
-  				CopyFile.copyStreams(currIn, zos);
+  				CopyFile.copyStreams(currIn, zos, false);
   				currIn.close();
   			}
   		}

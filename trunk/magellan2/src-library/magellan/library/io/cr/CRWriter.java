@@ -961,6 +961,7 @@ public class CRWriter extends BufferedWriter {
 
     if(faction.getTreasury() != 0) {
       write(faction.getTreasury()+";Schatz");
+      newLine();
     }
 
 		if(!serverConformance && faction.isTrustLevelSetByUser()) {

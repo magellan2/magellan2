@@ -1,0 +1,713 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Produktion</title>
+	<link rel="stylesheet" type="text/css" href="doku.css" />
+</head>
+<body>
+	<h1>Produktion von Gegenst&auml;nden</h1>
+	<p>
+		Auf Allanon gibt es zahlreiche Rohstoffe und Gegenst&auml;nde. Sowohl
+		Rohstoffe, als auch Gegenst&auml;nde werden mit dem Befehl
+		<a href="befehle.html#MACHE">MACHE</a>	 hergestellt. Die einzigen
+		Ausnahmen sind <a href="geld.html#handel">Luxusg&uuml;ter</a> und
+		<a href="magie.html#gegenstaende">magische Gegenst&auml;nde</a>.
+	</p>
+	
+	<a id="effskill"></a>
+	<h3>Effektive Talentstufen</h3>
+	<p>
+		F&uuml;r die Produktion von Rohstoffen und deren Weiterverarbeitung
+		werden verschiedene Talente ben&ouml;tigt. Einige Gegenst&auml;nden
+		(siehe diese <a href="#tabelle">Tabelle</a>), aber auch <a href="#burgen">
+		Geb&auml;ude</a> oder <a href="#schiffe">Schiffe</a> ben&ouml;tigen
+		dabei Talente auf h&ouml;heren Stufen.
+	</p>
+	<p>
+		Dazu wird die effektive Talentstufe aller Personen der Einheit
+		zusammengez&auml;hlt. Die effektive
+		Talentstufe errechnet sich dabei aus der Differenz zwischen dem
+		Talentwert plus 1 der Einheit und dem Mindestwert. Pro so errechnetem
+		Punkt kann ein Geb&auml;ude oder Schiff um einen Gr&ouml;&szlig;enpunkt
+		gebaut bzw. erweitert werden bzw. ein Gegenstand hergestellt werden.
+		Beispiel: Eine Einheit mit Talentwert 4, die einen Gegenstand mit
+		Mindesttalent 3 machen will, hat also ein eff. Talent von 2 (=4+1-3).
+		Baut die selbe Einheit einen Gegenstand mit Mindesttalent 1, so hat
+		sie ein effektives Talent von 4 (=4+1-1).
+	</p>
+	<blockquote><i>
+	<p>
+		Eine Einheit mit 10 Personen und R&uuml;stungsbau 3 hat 30 Talentstufen.
+		Sie kann alle Gegenst&auml;nde anfertigen, f&uuml;r die das Talent
+		R&uuml;stungsbau auf Stufe 3 notwendig ist. Sie k&ouml;nnte also z.B.
+		mit MACHE Kettenhemd einige Kettenhemden (ben&ouml;tigt R&uuml;stungsbau
+		1) anfertigen, jedoch keine Turmschilde, da hierf&uuml;r ein Mindesttalent
+		von 6 notwendig ist.
+	</p>
+	<p>
+		Wenn die Einheit gen&uuml;gend Eisen besitzt, kann sie 30 Kettenhemden
+		bauen: Kettenhemden ben&ouml;tigen R&uuml;stungsbau 1, also hat die
+		Einheit ein effektives Talent von 3. Mal die Anzahl der Personen
+		ergibt: 3 * 10 = 30 Kettenhemden. (Pro Kettenhemd braucht die Einheit
+		3 Eisen, also ingesammt 90.)
+	</p>
+	<p>
+		Alternativ k&ouml;nnte die Einheit auch Plattenpanzer anfertigen. Hier
+		ist ihr Talent gerade so hoch, wie das Mindesttalent, also liegt ihr
+		effektives Talent bei 1. Multipliziert mit der Personenzahl ergibt dies
+		10 Plattenpanzer (falls 50 Eisen vorhanden sind).
+	</p>
+	</i></blockquote>
+	<p>
+		Talentstufen z&auml;hlen nur dann zusammen, wenn alle Personen in einer
+		Einheit sind.
+	</p>
+		
+	<a name="rohstoffe" id="rohstoffe"></a>
+	<h2>Rohstoffe</h2>
+	<p>
+		Der Abbau von Rohstoffen kann durch einige Rassen verhindert werden.
+		Einheiten, die in einer belagerten Burg festsitzen k&ouml;nnen auch
+		keine Rohstoffe abbauen.
+	</p>
+	
+	<a id="berg" name="berg"></a>
+	<h3>Im Gebirge...</h3>
+	<p>
+		Eisen und Stein kann man nur in Gebirgen (Hochl&auml;ndern und Vulkane: siehe 
+		unten) abbauen. Pro Monat kann man maximal <strong>50</strong> Einheiten
+		Eisen und Stein f&ouml;rdern, da sich	zu viele Steinmetze und Bergleute 
+		gegenseitig behindern! Dabei gilt die	Grenze f&uuml;r Eisen und Stein 
+		gleichzeitig. Man kann also entweder 25	Eisen und 25 Stein abbauen, oder
+		50 Eisen und kein Stein. Oder aber 40 Stein und 10 Eisen, oder, oder, 
+		oder... Weiterhin mu&szlig; beachtet werden, da&szlig; das Limit f&uuml;r
+		<u>alle</u> Parteien der Region gemeinsam gilt.<br />
+		Auch in Hochl&auml;ndern und Vulkanen kann man Eisen und Stein abbauen! 
+		Allerdings ist die maximale F&ouml;rdermenge in Hochl&auml;ndern auf
+		10 Stein bzw. Eisen begrenzt, und Vulkane bringen andere Probleme mit
+		sich...
+	</p>
+	<blockquote><i>
+		Falls Bergmann A von Partei B schon 25 Eisen abgebaut hat, so bleiben
+		f&uuml;r Bergmann C von Partei D nur noch 25 Einheiten. Wenn Einheit
+		A versucht 50 Stein abzubauen, und Einheit C versucht 25 Eisen zu
+		f&ouml;rdern, dann werden sich beide Einheiten behindern, so da&szlig;
+		A ca. 35 und C ca. 15 Einheiten herausschlagen k&ouml;nnen.
+	</i></blockquote>
+	<p>
+		Eine nicht-allierte Zwergenpartei, die die Region bewacht, verhindert
+		den Abbau von Eisen; Riesen k&ouml;nnen den Abbau von Stein verhindern.
+		Wenn ein Zwerg Eisen f&ouml;rdert, so wird dies nur zu 75% vom
+		Regionsvorrat abgezogen. Von Riesen abgebauter Stein wird ebenfalls
+		nur zu 75% gewertet (d.h. wenn Zwerge 40 Eisen f&ouml;rdern, so
+		z&auml;hlt dies nur f&uuml; 30 (= 0.75 * 40) Eisen). Mehr zum Thema
+		Bewachung findet sich <a href="befehle.html#BEWACHE">hier</a>.
+	</p>
+		
+	<h3>...unter der Erde...</h3>
+	<p>
+		Ein besonderer Rohstoff ist Mithril. Mithril ist ein Metall, das magisch
+		durchdrungen ist, und so stabiler und leichter als Eisen wird. Allerdings
+		ist die F&ouml;rderung und Verarbeitung von Mithril auch wesentlich
+		schwieriger als die von Eisen. Mithril findet man nur in den
+		h&ouml;chsten und unwegsamsten Gletschern Allanons und in zahlreichen 
+		Vulkanen. Um Mithril abbauen zu
+		k&ouml;nnen, mu&szlig; sich eine Einheit in einem
+		<a href="#bergwerk">Bergwerk</a> befinden. Au&szlig;erdem ben&ouml;tigt
+		die Einheit ein Bergbautalent von mindestens 6. Pro Monat k&ouml;nnen 
+		in einem Gletscher bis zu 10 Barren Mithril gef&ouml;rdert werden.
+	</p>
+	<p>
+		Eine nicht-allierte Zwergenpartei, die die Region bewacht, verhindert den
+		Abbau von Mithril. Zwerge k&ouml;nnen Mithril auch in Gebirgen
+		aufsp&uuml;ren. Sie ben&ouml;tigen aber noch immer ein Bergwerk.
+		F&uuml;r je 1 abgebautes Mithirl k&ouml;nnen 3 Eisen bzw.Stein weniger
+		gef&ouml;rdert werden. Mehr zum Thema	Bewachung findet sich 
+		<a href="befehle.html#BEWACHE">hier</a>.
+	</p>
+	
+	<a id="wald" name="wald"></a>
+	<h3>...im Walde...</h3>
+	<p>
+		Um Holz zu produzieren ben&ouml;tigt eine Einheit nichts weiter als das
+		Talent Holzf&auml;llen. Und nat&uuml;rlich B&auml;ume. Wenn man jedoch
+		einfach loszieht, und einen Baum nach dem anderen f&auml;llt, wird man
+		bald feststellen, da&szlig; es keine B&auml;ume mehr gibt, die man
+		f&auml;llen k&ouml;nnte. Die maximale Anzahl von B&auml;umen pro Region
+		richtet sich &uuml;brigens nach dem Terraintyp.
+	</p>
+
+	<table align="center" class="bordered">
+		<tr>
+			<th>Terrain</th>
+			<th>Ozean</th>
+			<th>Ebene/Wald</th>
+			<th>Sumpf</th>
+			<th>W&uuml;ste</th>
+			<th>Hochland</th>
+			<th>Berge</th>
+			<th>Gletscher</th>
+		</tr>
+		<tr>
+			<th>max. B&auml;ume</th>
+			<td>0</td>
+			<td>1000</td>
+			<td>200</td>
+			<td>50</td>
+			<td>400</td>
+			<td>100</td>
+			<td>10</td>
+		</tr>
+	</table>
+	
+	<p class="gametext">
+		Atzoma (0,0), Wald, 2023 Bauern, $11600, 712 B&auml;ume, 59
+		Sch&ouml;&szlig;linge. Im Nordosten liegt Ozean (0,1), im Nordwesten
+		Ozean (-1,1), im Suedosten der Gletscher von Puhi (1,-1), im Suedwesten
+		die Berge von Nisyros (0,-1), im Osten der Wald von Tlatlaya (1,0)
+		und im Westen Ozean (-1,0).
+	</p>
+	<p>
+		In Atzoma zum Beispiel gibt es 712 B&auml;ume. Werden diese gef&auml;llt,
+		so mu&szlig; man sich nach einer anderen Holzquelle umsehen. W&auml;lder
+		wachsen jedoch stets langsam nach. Sch&ouml;pft man also nur wenige
+		B&auml;ume ab, so ist die Nachhaltigkeit gesichert.
+	</p>
+	<a name="baeume" id="baeume"></a>
+	<p>
+		In jedem Monat hat jeder Baum eine Chance von 2% (im Fr&uuml;hling 6%)
+		einen Samen abzuwerfen.	Diese Samen ben&ouml;tigen ca. ein Jahr (d.h. 
+		12 Monate bzw. Runden) um zu Sch&ouml;&szlig;lingen heranzuwachsen. 
+		Sch&ouml;&szlig;linge brauchen wiederum ein Jahr, um zu voll 
+		ausgewachsenen B&auml;umen zu werden (mit einer 
+		<a href="#baumschule">Baumschule</a> geht es deutlich schneller).
+		Au&szlig;erdem weht der Wind mit einer Wahrscheinlichkeit von 1% einen
+		weiteren Samen in eine zuf&auml;llige Nachbarregion.
+	</p>
+	<p>
+		Jeder Baum belegt 10 Arbeitspl&auml;tze, jeder Sch&ouml;&szlig;ling 
+		verbraucht 4 Arbeitspl&auml;tze. Falls es zu viele Bauern gibt, so 
+		verringert sich das Baumwachstum auf die H&auml;lfte - bis zu einem
+		Maximum von 2/3 der m&ouml;glichen Anzahl von B&auml;men.
+	</p>
+	<p>
+		F&uuml;r Atzoma hei&szlig;t das, da&szlig; es jeden Monat in etwa 7 neue
+		Samen geben wird, die nach ca. 2 Jahren zu B&auml;umen herangewachsen
+		sind.
+	</p>
+	<p>
+		Falls es in einer Region keine B&auml;ume mehr gibt, wird versucht
+		Sch&ouml;&szlig;linge zu f&auml;llen. Sch&ouml;&szlig;linge sind
+		jedoch nicht so profitabel wie ausgewachsene B&auml;ume. F&uuml;r
+		jeden gef&auml;llten Sch&ouml;&szlig;ling erh&auml;lt man nur ca. einen 
+		halben Holzstamm.
+	</p>
+	<p>
+		Eine nicht-allierte Elfenpartei, die die Region bewacht, verhindert den
+		Abbau von B&auml;umen. Elfen, die B&auml;ume f&auml;llen, s&auml;en
+		au&szlig;erdem pro gef&auml;lltem Baum mit einer Chance von 1/3 einen
+		neuen Samen. Termiten sammeln das Holz vom Boden auf: sie k&ouml;nnen
+		pro Talentpunkt und Person 1 Holz produzieren, f&auml;llen dabei jedoch
+		nur halb so viele B&auml;ume. Mehr zum Thema Bewachung findet sich 
+		<a href="befehle.html#BEWACHE">hier</a>.
+	</p>
+	
+	<a name="weide" id="weide"></a>
+	<h3>...und auf der Weide.</h3>
+	<p>
+		Pferde besiedeln wie Bauern oder B&auml;ume die Welt. Sie vermehren sich
+		pro Monat mit einer Chance von 2%. Au&szlig;erdem werden jeden Monat ca.
+		10% der Pferde in eine Nachbarregion abwandern. Pferde, die mit dem
+		Befehl <a href="befehle.html#MACHE">MACHE Pferd</a> eingefangen wurden, 
+		k&ouml;nnen sich nicht weiter	vermehren.
+	</p>
+	<p>
+		Eine nicht-allierte Zentaurenpartei verhindert das Einfangen von
+		Wildpferden in Regionen, die von ihr bewacht werden. Mehr zum Thema
+		Bewachung findet sich <a href="befehle.html#BEWACHE">hier</a>.
+	</p>
+	<p>
+		Pferde in Gefangenschaft von Zentauren k&ouml;nnen sich auch
+		weiterhin vermehren, allerdings geschieht dies seltener als in Freiheit.
+	</p>
+
+	<h3>Kr&auml;uter</h3>
+	<p>
+		Ein weiterer Rohstoff, der ben&ouml;tigt wird, um alchimistische
+		Tr&auml;nke herzustellen, sind Kr&auml;uter. Dieser Begriff steht
+		f&uuml;r eine Vielzahl verschiedener Pflanzen, Ranken oder Moose. Mehr
+		Details &uuml;ber Kr&auml;uter finden sich im Kapitel &uuml;ber
+		<a href="alchimie.html">Alchimie</a>.
+	</p>
+			
+	<a name="waren" id="waren"></a>
+	<h2>Gegenst&auml;nde</h2>
+	<p>
+		Waren werden aus <a href="#rohstoffe">Rohstoffen</a> weiterverarbeitet.
+		Die Herstellung funktioniert wie bei Rohstoffen, man ben&ouml;tigt
+		allerdings f&uuml;r die Produktion neben Talenten auch Rohstoffe. Es
+		k&ouml;nnen jede Runde beliebig viele Waren hergestellt werden (solange
+		das Talent hoch genug ist und man &uuml;ber gen&uuml;gend Rohstoffe
+		verf&uuml;gt).<br />
+		Einige der h&auml;ufigeren Gegenst&auml;nde sind in der folgenden
+		Tabelle zusammengefasst. Eine vollst&auml;ndige Liste aller 
+		produzierbaren Gegenst&auml;nde findet sich <a href=
+		"produktion_table.html">hier</a>.
+	</p>
+	
+	<a name="tabelle" id="tabelle"></a>
+	<p align="center">
+		<strong>Eigenschaften der g&auml;ngigen Waren</strong>
+	</p>
+	<table align="center" class="bordered">
+		<tr><th>Gegenstand</th><th>Gewicht</th><th>Talent</th><th>mind.</th><th>Rohstoffe</th></tr>
+		<tr><td>Silber</td><td>0.01*</td><td>-</td><td>-</td><td>-</td></tr>
+		<tr><td>Holz</td><td>5</td><td>Holzf&auml;llen</td><td>1</td><td>-</td></tr>
+		<tr><td>Stein</td><td>60</td><td>Steinbau</td><td>1</td><td>-</td></tr>
+		<tr><td>Eisen</td><td>5</td><td>Bergbau</td><td>1</td><td>-</td></tr>
+		<tr><td><a href="alchimie.html">Kr&auml;uter</a></td><td>0</td><td>Kr&auml;uterkunde</td><td>3</td><td>-</td></tr>
+		<tr><td><a href="alchimie.html">Tr&auml;nke</a></td><td>0</td><td>Alchimie</td><td>?</td><td>Kr&auml;uter</td></tr>
+		<tr><td><a href="geld.html#handel">Luxuswaren</a></td><td>1-2</td><td>Handeln</td><td>1</td><td>-</td></tr>
+		<tr><td>Pferd</td><td>50</td><td>Pferdedressur</td><td>1</td><td>-</td></tr>
+		<tr><td>Wagen</td><td>40</td><td>Wagenbau</td><td>1</td><td>5 Holz</td></tr>
+
+		<tr><td>Schwert</td><td>1</td><td>Waffenbau</td><td>1</td><td>1 Eisen</td></tr>
+		<tr><td>Speer</td><td>1</td><td>Waffenbau</td><td>1</td><td>1 Holz</td></tr>
+		<tr><td>Armbrust</td><td>1</td><td>Bogenbau</td><td>3</td><td>1 Holz</td></tr>
+		<tr><td>Bogen</td><td>1</td><td>Bogenbau</td><td>1</td><td>1 Holz</td></tr>
+		<tr><td>Katapult</td><td>60</td><td>Wagenbau</td><td>3</td><td>10 Holz, 2 Eisen</td></tr>
+		<tr><td>Kettenhemd</td><td>2</td><td>R&uuml;stungsbau</td><td>1</td><td>3 Eisen</td></tr>
+		<tr><td>Plattenpanzer</td><td>3</td><td>R&uuml;stungsbau</td><td>3</td><td>5 Eisen</td></tr>
+		<tr><td>Rundschild</td><td>1</td><td>R&uuml;stungsbau</td><td>1</td><td>2 Holz</td></tr>
+		<tr><td>Turmschild</td><td>3</td><td>R&uuml;stungsbau</td><td>6</td><td>5 Eisen</td></tr>
+	</table>
+	<p>
+		*Das Gewicht wird immer aufgerundet!
+	</p>
+	<p>
+		Bei Gegenst&auml;nden mit Mindesttalentwerten kann man auch nur wenige
+		Gegenst&auml;nde herstellen und zwar einen pro Person und
+		<a href="#effskill">effektiver Talentstufe</a>. Pro Einheit und Runde
+		kann man nur einen bestimmten Gegenstand herstellen.
+	</p>
+	<p>
+		Hier gibt es noch eine <a href="produktion_table.html">vollst&auml;ndige
+		Liste aller produzierbaren Gegenst&auml;nde</a>.
+	</p>
+	
+	<a name="strassen" id="strassen"></a>
+	<h2>Stra&szlig;en</h2>
+	<p>
+		Wer die Reisegeschwindigkeit auf dem Landweg erh&ouml;hen will, kommt
+		nicht um Stra&szlig;en herum. Wenn von der Start- bis zur Zielregion
+		(inklusive) Stra&szlig;en existieren, so k&ouml;nnen sich Einheiten
+		doppelt so schnell voranbewegen. Doch nicht in allen Regionstypen
+		k&ouml;nnen Strassen gebaut werden!
+	</p>
+	<p>
+		Strassen k&ouml;nnen mit dem Befehl &quot;MACHE [anzahl] STRASSE [richtung]&quot;
+		hergestellt werden. Falls keine Richtung angegeben wird, so wird in alle Richtungen
+		ein wenig weitergebaut. Wieviele Steine pro Strassenst�n�t werden, kann
+		man der Tabelle entnehmen.
+	</p>
+	<table align="center" class="bordered">
+		<tr><th>Terrain</th><th>Ozean</th><th>Ebene/Wald</th><th>Sumpf</th><th>W&uuml;ste</th><th>Hochland</th><th>Berge</th><th>Gletscher</th><th>Vulkan</th></tr>
+		<tr><th>Steine</th><td>-</td><td>25</td><td>100</td><td>50</td><td>50</td><td>100</td><td>100</td><td>100</td></tr>
+	</table>
+	<p>
+		Um Stra&szlig;en zu bauen werden Steine und das Talent Strassenbau
+		ben&ouml;tigt. Stra&szlig;en haben ein Mindesttalentwert von 1, d.h.
+		man kann pro Talentstufe also einen Stein verbauen.
+	</p>
+	
+	<a name="schiffe" id="schiffe"></a>
+	<h2>Schiffe</h2>
+	<p>
+		Die meisten Schiffe werden aus Holz gebaut. Je gr&ouml;&szlig;er das Schiff, desto
+		schwerer ist es zu bauen (d.h. umso h&ouml;her ist das Mindesttalent).
+	</p>
+	<p>
+		Wieviel Holz f&uuml;r ein Schiff ben&ouml;tigt wird kann man der Tabelle
+		entnehmen. Um an einem Schiff zu bauen ben&ouml;tigt eine Einheit
+		mindestens das angegebene Mindesttalent. Pro Person, Monat und
+		effektivem Talentpunkt (d.h. Talentwert + 1 - Mindesttalent) kann
+		ein Holzst&uuml;ck verbaut werden.
+	</p>
+	<table align="center" class="bordered">
+		<tr>
+			<th>Schifftyp</th><th>Material</th><th>Talent</th><th>Bemerkung</th>
+		</tr>
+		<tr>
+			<td>Boot</td><td>5 Holz</td><td>1</td><td>-</td>
+		</tr>
+		<tr>
+			<td>Langboot</td><td>50 Holz</td><td>1</td><td>-</td>
+		</tr>
+		<tr>
+			<td>Drachenschiff</td><td>100 Holz</td><td>2</td><td>-</td>
+		</tr>
+		<tr>
+			<td>Karavelle</td><td>250 Holz</td><td>3</td><td>-</td>
+		</tr>
+		<tr>
+			<td>Trireme</td><td>200 Holz</td><td>4</td><td>-</td>
+		</tr>
+		<tr>
+			<td>Galeone</td><td>300 Holz</td><td>5</td><td>Nur Aquaner; ben&ouml;tigt Werft</td>
+		</tr>
+	</table>
+	<p>
+		F&uuml;r <strong>Galeonen</strong> gelten besondere Regeln: Nur Aquaner
+		k&ouml;nnen Galeonen erbauen. Sie ben&ouml;tigen hierf&uuml;r jedoch eine
+		voll ausgebaute Werft. Alle V&ouml;lker (au&szlig;er den Zwergen)
+		k&ouml;nnen Galeonen steuern, nur halt nicht bauen.
+	</p>
+	<p>
+		Schiffe betritt man mit dem <a href="befehle.html#BETRETE">BETRETE 
+		SCHIFF</a> Befehl, und man verl&auml;sst sie mit mittels
+		 <a href="befehle.html#VERLASSE">VERLASSE</a>. Wenn man mit dem Bau eines
+		neuen Schiffes beginnt, betritt die Einheit automatisch das Schiff. Die
+		erste Einheit, der Kapit&auml;n, hat das Kommando &uuml;ber das Schiff.
+		Der Kapit&auml;n darf sein Schiff benennen und beschreiben. Nur Einheiten
+		der eigenen oder alliierter Parteien, sowie Einheiten, die der
+		Kapit&auml;n selber mit dem <a href="befehle.html#KONTAKTIERE">KONTAKTIERE
+		</a> Befehl kontaktiert hat, d&uuml;rfen das Schiff betreten. Befindet sich
+		keine Einheit in einem Schiff, kann jede beliebige Einheit das Schiff 
+		betreten.
+	</p>
+	<p>
+		Um mehr &uuml;ber Schiffe zu erfahren, siehe
+		<a href="reisen.html#see">Reisen</a>.
+	</p>
+		
+	<a name="burgen" id="burgen"></a>
+	<h2>Burgen</h2>
+	<p>
+		Burgen haben vielerlei Vorteile. Sie bieten Schutz vor Angriffen,
+		erh&ouml;hen das Einkommen der Bauern (und somit auch das Silber, das man
+		ihnen abnehmen kann) und erm&ouml;glichen den Handel mit Luxuswaren.
+	</p>
+	<p>
+		Burgen werden mit <a href="befehle.html#MACHE">MACHE BURG</a> aus Stein 
+		errichtet. Je	gr&ouml;&szlig;er die Burg ist, desto schwieriger ist es, 
+		an ihr zu	bauen. Welches Talent man zum Burgenbau ben&ouml;tigt und welche 
+		Vorteile man aus einer Burg zieht, kann man der Tabelle entnehmen. Pro 
+		Monat kann eine Einheit 
+		((Talent Burgenbau - Mindesttalent + 1) * Anzahl Personen) Steine verbauen.
+	</p>
+	<p>
+		Der Weiterbau einer Burg geschieht mit
+		&quot;<a href="befehle.html#MACHE">MACHE BURG</a> burgnummer&quot;.
+	</p>
+	<table class="bordered" align="center">
+		<tr><th>Typ</th><th>Gr&ouml;&szlig;e</th><th>Talent</th><th>Bauernlohn</th></tr>
+		<tr><td>Grundmauern</td><td>1</td><td>1</td><td>11</td></tr>
+		<tr><td>Handelsposten</td><td>10</td><td>1</td><td>12</td></tr>
+		<tr><td>Befestigung</td><td>60</td><td>2</td><td>13</td></tr>
+		<tr><td>Turm</td><td>350</td><td>3</td><td>14</td></tr>
+		<tr><td>Schloss</td><td>1000</td><td>4</td><td>15</td></tr>
+		<tr><td>Festung</td><td>3000</td><td>5</td><td>16</td></tr>
+		<tr><td>Zitadelle</td><td>12000</td><td>6</td><td>17</td></tr>
+	</table>
+	<p>
+		Burgen, in denen sich keine Personen aufhalten, werden jede Runde ein
+		wenig weiter verfallen, bis sie schlie&szlig;lich komplett zerst&ouml;rt
+		sind.
+	</p>
+	<p>Ein Beispiel f&uuml;r eine Burg ist:</p>
+	<p class="gametext">
+		Burg Kr&auml;henfeld (e4a), Gr&ouml;&szlig;e 461, Turm, Hoch auf dem
+		Kr&auml;henfels steht ein finsterer Turm, der &uuml;ber das Dorf
+		Rabenthal wacht. &Uuml;berall kann man dunkle V&ouml;gel sehen, die der
+		Burg ihren Namen gaben.
+	</p>
+	<p>
+		Wie man erkennt, steht zuallererst der Name der Burg. In Klammern folgt
+		die Nummer. Diese ist f&uuml;r das Betreten und Ausbauen der Burg
+		wichtig. Hinter der Gr&ouml;&szlig;e steht letztlich, von welchem Typ
+		die Burg ist.
+	</p>
+	<p>
+		Einheiten in einer Burg werden bei Angriffen gesch&uuml;tzt. Sie erhalten
+		einen Bonus auf ihre Verteidigung und ihre Magieresistenz. Die H&ouml;he
+		des Bonus h&auml;ngt dabei von der Burggr&ouml;&szlig;e ab. Es werden
+		jedoch stets maximal so viele Personen gesch&uuml;tzt, wie die Burg
+		gerade gro&szlig; ist. Mehr dazu steht im Kapitel <strong>Kampf</strong>.
+	</p>
+	<p>
+		Feen k&ouml;nnen Burgen nur bis zur Gr&ouml;&szlig;e einer Befestigung
+		ausbauen.
+	</p>
+	
+	<a name="andere" id="andere"></a>
+	<h2>andere Geb&auml;ude</h2>
+	<p>
+		F&uuml;r andere Geb&auml;ude gelten Regeln, die denen f&uuml;r Burgen
+		recht &auml;hnlich sind. Geb&auml;ude werden mit dem Befehl
+		<a href="befehle.html#MACHE">MACHE geb&auml;udetyp</a> gebaut, und mit
+		<a href="befehle.html#MACHE">MACHE GEB&Auml;UDE geb&auml;ude-nr</a>
+		erweitert. Um Geb&auml;ude zu errichten, wird das Talent Burgenbau
+		ben&ouml;tigt.
+	</p>
+	<p>
+		Im Gegensatz zu Burgen ist das Errichten anderer Bauten jedoch etwas
+		umst&auml;ndlicher. <strong>Geb&auml;ude ben&ouml;tigen pro
+		Gr&ouml;&szlig;enpunkt 1 Stein, 1 Holz und 100 Silber.</strong>.
+		Au&szlig;erdem haben die verschiedenen Geb&auml;ude unterschiedliche
+		Anspr&uuml;che an das Burgenbau-Talent des Erbauers und einige
+		Geb&auml;udetypen k&ouml;nnen nur bis zu einer bestimmten
+		Gr&ouml;&szlig;e ausgebaut werden.
+	</p>
+	<table class="bordered" align="center">
+		<tr>
+			<th>Geb&auml;udetyp</th><th>Talent</th><th>max. Gr&ouml;&szlig;e</th><th>Kapazit&auml;t</th>
+		</tr>
+		<tr>
+			<td>Baumschule</td><td>6</td><td>100</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Bergwerk</td><td>6</td><td>-</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Leuchtturm</td><td>3</td><td>-</td><td>max. 5</td>
+		</tr>
+		<tr>
+			<td>Magierturm</td><td>9</td><td>100</td><td>1</td>
+		</tr>
+		<tr>
+			<td>Marktplatz</td><td>6</td><td>100</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Monument</td><td>3</td><td>-</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Schmiede</td><td>6</td><td>-</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Universit&auml;t</td><td>9</td><td>100</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Tempel</td><td>3</td><td>-</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+		<tr>
+			<td>Werft</td><td>6</td><td>-</td><td>Gr&ouml;&szlig;e</td>
+		</tr>
+
+	</table>
+	<a id="unterhalt" name="unterhalt"></a>
+	<p>
+		<strong>Alle Geb&auml;ude au&szlig;er Burgen und Monumenten ben&ouml;tigen 
+		pro	Runde $500 Unterhalt.</strong> Der Unterhalt ist unabh&auml;ngig von 
+		der	Gr&auml;&szlig;e des Geb&auml;des und ist zu Beginn eines Monats vom
+		Besitzer zu bezahlen. Sollte der Besitzer nicht gen&uuml;gend Geld bei
+		sich tragen, so verliert das Geb&auml;ude f&uuml;r den Rest der Runde
+		seine Funktionalit&auml;t. Sollte am Ende des Monats noch immer kein Geld
+		vorhanden sein, so wird das Bauwerk teilweise einst&uuml;rzen.
+	</p>
+	<p>
+		Geb&auml;ude, bei denen eine maximale Gr&ouml;&szlig;e angegeben ist,
+		funktionieren nicht, solange das Geb&auml;ude nicht voll ausgebaut ist.
+	</p>
+	
+	<a id="baumschule"></a>
+	<h3>Baumschule</h3>
+	<p>Mindestbautalent: 6</p>
+	<p>maximale Gr&ouml;&szlig;e: 100</p>
+	<p>
+		Ein F&ouml;rster in einer Baumschule kann in den Fr&uuml;hlingsmonaten
+		(M&auml;rz, April, Mai) in der Region Samen pflanzen. Die Anzahl der
+		pflanzbaren Samen liegt zwischen 1 und (Gr&ouml;&szlig;e der
+		Baumschule + Anzahl der F&ouml;rster). Der F&ouml;rster muss keinerlei
+		Talent besitzen und kann nebenher noch andere Befehle ausf&uuml;hren
+		(solange er sich in der Baumschule befindet).
+	</p>
+	<p>
+		Eine Baumschule kann
+		au&szlig;erdem bessere Holzsorten z&uuml;chten und die Samen vor
+		gefr&auml;&szlig;igen Tieren besser sch&uuml;tzen.
+		Dadurch wird das Wachstum der Samen zu Sch&ouml;&szlig;lingen stark
+		beschleunigt.
+	</p>
+	<p>
+		<strong>Bitte beachten:</strong>
+		Eine Baumschule funktioniert nur, wenn sie voll ausgebaut ist.<br />
+		Es gilt nur die Besitzereinheit der Baumschule als
+		F&ouml;rster. Das bedeutet: Bei einer Baumschule der Gr&ouml;&szlig;e
+		100 mit einer Einheit derselben Gr&ouml;&szlig;e k&ouml;nnen bis zu
+		200 Samen gepflanzt werden. Sind jedoch 2 Einheiten mit jeweils 50
+		Personen in der Baumschule, so ist die Anzahl der pflanzbaren Samen
+		maximal 150 (100 f&uuml;r die Baumschule und 50 f&uuml;r erste Einheit).
+	</p>
+
+	<a id="bergwerk"></a>
+	<h3>Bergwerk</h3>
+	<p>Mindestbautalent: 6</p>
+	<p>
+		Nur Einheiten in Bergwerken k&ouml;nnen Mithril abbauen. Die maximale
+		Menge an Mithril, die von einer Einheit gef&ouml;rdert werden kann,
+		berechnet sich aus (Anzahl von Personen in einem Bergwerk) * (Talentwert
+		Bergbau - 5). <i>(Mindesttalent f&uuml;r das F&ouml;rdern von Mithril
+		ist 6).</i><br />
+		Bergwerke haben keinerlei Einflu&szlig; auf die zu f&ouml;rdernde
+		Eisen-/Mithrilmenge oder auf das Bergbautalent.
+	</p>
+	
+	<a id="leuchtturm"></a>
+	<h3>Leuchtturm</h3>
+	<p>
+		Mindestbautalent: 3<br />
+		Kapazit&auml;t: momentane Gr&ouml;&szlig;e, jedoch maximal 5 Personen
+	</p>
+	<p>
+		Leuchtt&uuml;rme verringert in einem Umkreis von log<sub>10</sub>
+		(Gr&ouml;&szlig;e)+1 Regionen die Wahrscheinlichkeit eines Abtreibens
+		von Schiffen auf hoher See.
+		<br /> Die Insassen eines Leuchtturms erhalten Reports aller Ozeanfelder,
+		die nicht mehr als log<sub>10</sub>(Gr&ouml;&szlig;e)+1 Regionen entfernt
+		sind, falls das Wahrnehmungstalent der beobachtenden Einheiten mindestens
+		doppelt so hoch ist wie der Abstand.
+	</p>
+	
+	<a id="magierturm"></a>
+	<h3>Magierturm</h3>
+   <p>
+		Mindestbautalent: 9<br />
+		Kapazit&auml;t: 1 Magier
+	</p>
+	<p>
+		Ein Magier, der sich im Magierturm aufh&auml;lt, kann auf viele magische
+		Werkzeuge zur&uuml;ckgreifen. Dadurch erh&ouml;ht sich seine
+		Effektivit&auml;t beim Zaubern. Au&szlig;erdem wirken sich Zauberfehler
+		meist nicht ganz so schlimm aus, da sich der Magier durch mysteri&ouml;se
+		Apparaturen sch&uuml;tzen kann.
+	</p>
+	<p>
+		Ein Magierturm entfaltet seine Wirkung erst, wenn er voll ausgebaut ist.
+	</p>
+							
+	<a id="markt"></a>
+	<h3>Marktplatz</h3>
+	<p>Mindestbautalent: 6</p>
+	<p>maximale Gr&ouml;&szlig;e: 100</p>
+	<p>
+		Marktpl&auml;tze erh&ouml;hen den
+		<a href="geld.html#handel">Anstieg der Nachfrage</a>
+		auf das Doppelte. Einheiten, die sich in einem Marktplatz aufhalten,
+		k&ouml;nnen beim Kauf und Verkauf von Luxuswaren bessere Preise
+		heraushandeln: der Basispreis beim Kauf sinkt um 1, bzw. steigt um 1 beim
+		Verkauf.<br />
+		Damit ein Marktplatz funktioniert, mu&szlig; er voll ausgebaut sein.
+	</p>
+	
+	<h3>Monumente</h3>
+	<p>Mindestbautalent: 3</p>
+	<p>
+		Monumente haben keinerlei Funktion. Ein Monument, welches einmal benannt
+		und beschrieben wurde, kann nicht mehr unbenannt werden und auch keine
+		neue Beschreibung erhalten. Monumente kosten zwar keinen Unterhalt,
+		werden aber dennoch verfallen, falls sich keine Einheiten in ihnen
+		aufhalten. 
+	</p>
+	<p>
+		Monumente sind auf den ersten Blick wirklich nutzlos ;-) Allerdings kann 
+		man mit Monumenten durchaus Rollenspiel betreiben - und wer g&ouml;nnt sich
+		nicht gerne eine Siegess&auml;le oder gar einen Triumphbogen zum Sieg 
+		&uuml;ber die barbarischen Horden? Davon abgesehen spielen Monumente eine 
+		nicht unwichtige Rolle zur Erreichung des Spielzieles in der zweiten Welt.
+	</p>
+	
+	<a id="schmiede"></a>
+	<h3>Schmiede</h3>
+	<p>Mindestbautalent: 6</p>
+	<p>
+		Einheiten, die in Schmieden produzieren, ben&ouml;tigen nur halb so viele
+		Rohstoffe wie Einheiten, die au&szlig;erhalb produzieren. Dieser Bonus
+		gilt nur f&uuml;r mittels <a href="befehle.html#MACHE">MACHE</a>
+		hergestellte Gegenst&auml;nde. Es gilt <u>nicht</u> f&uuml;r Rohstoffe,
+		Schattenpanzer, Tr&auml;nke oder Luxuswaren.
+	</p>
+	
+	<a id="tempel"></a>
+	<h3>Tempel</h3>
+   <p>
+		Mindestbautalent: 3<br />
+		Kann nur von <a href="kultur.html#kirche">Kirchenstaaten</a> errichtet
+		werden.
+	</p>
+	<p>
+		Tempel, deren Besitzer keinem 
+		<a href="kultur.html#kirche">Kirchenstaaten</a> angeh&ouml;ren, 
+		funktionieren nicht, und werden am Ende einer jeden Runde zerfallen.
+	</p>
+	<p>
+		Tempel sind teuer im Unterhalt. Neben den $500, die jede Runde n&ouml;tig
+		sind, um den Tempel zu erhalten, werden noch Spenden an die G&ouml;tter
+		in H&ouml;he von ($5 * Tempelgr&ouml;&szlig;e) f&auml;llig. Werden diese 
+		nicht gezahlt, so wird der Tempel zwar nicht zerfallen, jedoch wird der 
+		Segen der G&ouml;tter diesen Mond nicht auf	diese Region scheinen, und der
+		Tempel ist nur ein weiteres Geb&auml;ude aus kaltem Stein.
+	</p>
+	<p>
+		Die exakte Wirkung eines Tempels, h&auml;ngt davon ab, welcher
+		<a href="kultur.html#gottheit">Gottheit</a> er geweiht wurde, und wie
+		gro&szlig; er ist. Jeder Tempel kann nur einmal geweiht werden. Sobald 
+		die Weihe abgeschlossen ist, gibt es keine M&ouml;glichkeit, den Gott,
+		dem dieser Tempel gewidmet ist, zu &auml;ndern.
+	</p>
+	
+	<a id="werft"></a>
+	<h3>Werft</h3>
+	<p>Mindestbautalent: 6</p>
+	<p>
+		Die Produktion von Schiffen wird durch Werften erleichtert. Um einen
+		Bonus zu erhalten, mu&szlig; sich die produzierende Einheit in der Werft
+		befinden (Achtung! F&auml;ngt eine Einheit ein neues Schiff an, so
+		betritt diese automatisch das Schiff). Au&szlig;erdem mu&szlig; die Werft
+		gro&szlig; genug sein, um das Schiff in ihr zu errichten. Dies ist der
+		Fall, wenn die Gr&ouml;&szlig;e der Werft gr&ouml;&szlig;er oder gleich
+		des f&uuml;r den Schiffsbau ben&ouml;tigten Holzes ist.<br />
+		In Werften produzierte Schiffe ben&ouml;tigen 20% weniger Holz als
+		Schiffe, die au&szlig;erhalb einer Werft konstruiert werden. Der Bau von
+		Galeonen ist nur in Werften m&ouml;glich.<br />
+		<i>Der 20% Bonus wird bei der Fertigstellung des Schiffes berechnet. D.h.
+		bis zu den letzten Arbeiten am Schiff ist es egal, ob der Schiffbauer in
+		einer Werft ist oder nicht.</i>
+	</p>
+	<p class="bsp">
+		Johan Holzbein ist ein aquanischer Schiffsbaumeister. Er und seine
+		Gesellen haben den Auftrag, ein Langboot (ben&ouml;tigt 50 Holz) zu
+		produzieren. Also beginnt Johan den Bau des Schiffes in seiner Werft. Da
+		seine Werft die Gr&ouml;&szlig;e 100 hat, kann Johan beim Bau einiges an
+		Material sparen: das Langboot ben&ouml;tigt nur 40 Holzst&auml;mme.
+	</p>
+	
+	<a id="universitaet"></a>
+	<h3>Universit&auml;t</h3>
+	<p>
+		Mindestbautalent: 9
+	</p>
+	<p>
+		An einer Universit&auml;t erh&ouml;ht man die Effektivit&auml;t des
+		Lernens. Ein Lehrer, der in einer Universit&auml;t unterrichtet, 
+		erh&auml;lt pro Sch&uuml;ler einen Lerntag (die Sch&uuml;ler m&uuml;ssen
+		ebenfalls in der Universit&auml;t sein, gilt leider nicht f&uuml;r 
+		teure Talente).<br />
+		Au&szlig;erdem lernen alle Einheiten, die in einer Universit&auml;t lernen,
+		15 zus&auml;tzliche Lerntage pro Monat. Allerdings ist
+		das Lernen in einer Universit&auml;t nicht ganz billig: die <a 
+		href="talente.html#lernkosten">Lernkosten</a> f&uuml;r kostenpflichtige 
+		Talente werden verdoppelt, das Lernen anderer Talente kostet pro Person und
+		Monat $100.<br />
+		Um in einer Universit&auml;t lernen zu k&ouml;nnen, mu&szlig; sie 
+		komplett ausgebaut sein.<br />
+		Beispiel: Eine Einheit, die in einer Universit&auml;t lernt und
+		au&szlig;erdem gelehrt wird, erh&auml;lt insgesamt 75 Lerntage pro Monat.
+	</p>
+	
+	
+	<p class="right">
+		Version: $Id: produktion.html 1060 2008-02-13 11:05:28Z sophie $
+	</p>
+</body>
+</html>

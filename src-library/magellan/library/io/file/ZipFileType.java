@@ -25,6 +25,10 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import javax.swing.JOptionPane;
+
+import magellan.library.utils.Resources;
+
 /**
  * DOCUMENT-ME
  *
@@ -95,26 +99,31 @@ public class ZipFileType extends FileType {
 	protected OutputStream createOutputStream() throws IOException {
 		// here we need to do something special: all entries are copied expect the named zipentry, which will be overwritten
 		File tmpfile = CopyFile.copy(filename);
-		ZipFile zfile = new ZipFile(tmpfile);
-		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
-
-		for(Enumeration e = zfile.entries(); e.hasMoreElements();) {
-			ZipEntry oldEntry = (ZipEntry) e.nextElement();
-
-			if(!oldEntry.getName().equals(zipentry.getName())) {
-				// do not reuse oldEntry but create a new ZipEntry
-				zos.putNextEntry(new ZipEntry(oldEntry.getName()));
-
-				InputStream currIn=zfile.getInputStream(oldEntry);
-				CopyFile.copyStreams(currIn, zos);
-				currIn.close();
-			}
+		try {
+  		ZipFile zfile = new ZipFile(tmpfile);
+  		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
+  
+  		for(Enumeration e = zfile.entries(); e.hasMoreElements();) {
+  			ZipEntry oldEntry = (ZipEntry) e.nextElement();
+  
+  			if(!oldEntry.getName().equals(zipentry.getName())) {
+  				// do not reuse oldEntry but create a new ZipEntry
+  				zos.putNextEntry(new ZipEntry(oldEntry.getName()));
+  
+  				InputStream currIn=zfile.getInputStream(oldEntry);
+  				CopyFile.copyStreams(currIn, zos);
+  				currIn.close();
+  			}
+  		}
+  
+  		// do not reuse oldEntry but create a new ZipEntry
+  		zos.putNextEntry(new ZipEntry(zipentry.getName()));
+  
+  		return zos;
+		} catch(IOException exc) {
+		  CopyFile.copy(tmpfile, filename);
+      throw exc;
 		}
-
-		// do not reuse oldEntry but create a new ZipEntry
-		zos.putNextEntry(new ZipEntry(zipentry.getName()));
-
-		return zos;
 	}
 }
 

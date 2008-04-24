@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Allianzen</title>
+	<link rel="stylesheet" type="text/css" href="doku.css" />
+</head>
+<body>
+	<h1>Allianzen</h1>
+	<p><i>In der Auswahl seiner Feinde kann man nicht sorgf&auml;ltig genug
+	sein.	<br />&nbsp;&nbsp;&nbsp;Oscar Wilde (1854-1900)</i></p>
+
+	<h2>HELFE</h2>
+	<p>
+		Allianzen sind Zusammenschl&uuml;sse von mehreren Parteien, um ein 
+		gemeinsames Ziel zu erreichen. Dieses Ziel kann durchaus handfest sein,
+		wie z.B. die Eroberung einer gegnerischen Insel. In der Regel werden sich
+		Allianzen jedoch bilden, um in Krieg und Frieden nicht alleine
+		dazustehen.
+	</p>
+	<p>
+		Obwohl das Zusammenspiel und Absprachen zwischen verschiedenen 
+		Allianzmitgliedern das wichtigste sind, was eine Allianz ausmacht, gibt
+		es auch einige regeltechnisch relevante Befehle, die eine Allianz
+		ausmachen. Mittels <a href="befehle.html#HELFE">HELFE</a> kann man einer
+		anderen Partei helfen. Dies bedeutet jedoch nicht, da&szlig; auch die
+		andere Partei auch einem selbst hilft. 
+	</p>
+	<p>
+		Die einfachste M&ouml;glichkeit einer fremden Partei zu helfen, ist indem
+		man den Befehl <strong>HELFE partei-nr</strong> verwendet. Hiermit gibt
+		man Order, der angegebenen Partei in allen Belangen zu helfen, d.h.
+		in bewachten Regionen kann der B&uuml;ndnisparter Steuern eintreiben und
+		rekrutieren, er kann eure Burgen und Schiffe betreten, und vieles mehr. 
+	</p>
+
+	<p>
+		Es gibt jedoch auch die M&ouml;glichkeit, die Hilfe, die einer Partei
+		gew&auml;hrt wird, einzuschr&auml;nken. Dies geschieht, indem man nicht
+		pauschal <strong>HELFE partei-nr</strong> nutzt, sondern individuell
+		angibt, in welchen Belangen man der Partei helfen will:
+	</p>
+	
+	<p>
+		<strong>HELFE partei-nr BEWACHE</strong><br />
+		Eigene Einheiten, die eine Region bewachen, halten fremde Einheiten davon
+		ab Steuern einzutreiben oder Personen zu rekrutieren. Einige Rassen
+		verhindern durch Bewachung sogar den Abbau von Rohstoffen. Hat man einer
+		Partei HELFE BEWACHE gesetzt, so erlaubt man dieser Partei in einer 
+		bewachten Region all dies dennoch zu tun. Eine Partei mu&szlig; mit jeder
+		bewachenden Einheit verb&uuml;ndet sein, um rekrutieren (usw.) zu 
+		k&ouml;nnen.<br />
+		Eine Einheit, der HELFE BEWACHE gesetzt wurde, kann weiterhin alle
+		eigenen Geb&auml;ude und Schiffe betreten.
+	</p>
+	
+	<p>
+		<strong>HELFE partei-nr BEWEGE</strong><br />
+		Einheiten, die eine Region bewachen, werden verhindern da&szlig; andere
+		Parteien die Region durchqueren. Sie werden sogar jene Einheiten stoppen, 
+		denen HELFE BEWACHE gesetzt ist. Allein die Parteien, denen HELFE
+		BEWEGE gestattet wird, k&ouml;nnen unbehindert weiterziehen.
+	</p>
+
+	<p>
+		<strong>HELFE partei-nr GIB</strong><br />
+		Normalerweise kann man an fremde Einheiten keine Gegenst&auml;nde
+		abgeben. Dies soll verhindern, da&szlig; man z.B. einer gegnerischen
+		Eliteeinheit Personen gibt, und somit deren Talente verw&auml;ssert,
+		oder ihr Steine gibt und so verhindert, da&szlig; sie abwandern kann.
+		Hat man einer Partei HELFE GIB gesetzt, so wird man alle
+		Gegenst&auml;nde, die diese zu &uuml;bergeben versucht, annehmen.
+	</p>
+
+	<p>
+		<strong>HELFE partei-nr K&Auml;MPFE</strong><br />
+		In einem milit&auml;rischen B&uuml;ndnis k&ouml;nnen mehrere Parteien
+		auf der selben Seite k&auml;mpfen. Hat man einer Partei HELFE K&Auml;MPFE
+		gesetzt, so werden ihr bei der <strong>Verteidigung</strong> gegen 
+		Angriffe alle eigenen Einheiten, die weder
+		<a href="befehle.html#KAEMPFE">K&Auml;MPFE</a> NICHT noch K&Auml;MPFE
+		FLIEHE gesetzt haben, beistehen.
+		Achtung! Dies gilt nur, falls eine Einheit des B&uuml;ndnisparners 
+		angegriffen wird. Falls dieser attackiert, wird ihm nicht geholfen (siehe
+		auch das Kapitel &uuml;ber den <a href="konflikt.html">Kampf</a>).
+	</p>
+
+	<p>
+		<strong>HELFE partei-nr SILBER</strong><br />
+		Jede Einheit (mit der Ausnahme von Vampiren) mu&szlig; am Ende einer
+		Runde Unterhalt zahlen. Bei den meisten Rassen betragen die
+		Unterhaltkosten $10 pro Person. Hat eine eigene Einheit nicht
+		gen&uuml;gend Silber, so wird sie sich das Silber von anderen Einheiten
+		der selben Partei in dieser Region nehmen. Falls auch diese nicht
+		&uuml;ber gen&uuml;gend Silber verf&uuml;gen, so werden sie sich das
+		Silber von Verb&uuml;ndeten nehmen, die HELFE SILBER gesetzt haben. Erst
+		wenn auch diese Pleite sind, nimmt die Einheit das Geld aus dem eigenen
+		Reichsschatz.<br />
+		Es werden zun&auml;chst alle eigenen Einheiten mit Silber versorgt. Erst
+		wenn nun noch Silber &uuml;brig ist, wird dies auch mit den Alliierten 
+		geteilt.
+	</p>
+
+	<p>
+		<strong>HELFE partei-nr TARNE</strong><br />
+		Eine Einheit, die sich mittels <a href="befehle.html#TARNEN">TARNE</a>
+		vor fremden Blicken verbirgt, kann sich Verb&uuml;ndeten dennoch
+		zeigen. Hierzu mu&szlig; sie HELFE TARNE setzen. Wer HELFE TARNE gesetzt
+		hat, offenbart sowohl Einheiten, als auch deren
+		Parteizugeh&ouml;hrigkeit.
+	</p>
+
+	<p>
+		<strong>HELFE partei-nr SONSTIGES</strong><br />
+		Hilft der Partei in allen anderen Belangen. Dies sind in der Regel 
+		Zauberspr&uuml;che, die eine allierte Einheit voraussetzen.
+	</p>
+
+	<h2>KONTAKTIERE</h2>
+	<p>
+		Um z.B. einer fremden Partei einen Gegenstand zu geben mu&szlig; man noch
+		keine Allianz eingehen. Vielmehr ist es m&ouml;glich eine 
+		&quot;Einmal-Allianz&quot; zu bilden. Dies geschieht mit dem Befehl
+		<a href="befehle.html#KONTAKTIERE">KONTAKTIERE</a>. Eine Einheit, die
+		eine andere Einheit kontaktiert, wird sich diese Runde so verhalten, als 
+		ob sie (in allen Belangen) alliert w&auml;ren. Dies eignet sich vor allem, wenn man einmalig
+		mit einer anderen Partei zusammenarbeiten will.
+	</p>
+	<p class="right">
+		Version: $Id: allianzen.html 639 2006-05-04 18:53:12Z monschter $
+	</p>
+</body>
+</html>
+

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Reihenfolge der Befehle</title>
+	<link rel="stylesheet" type="text/css" href="doku.css" />
+</head>
+	
+<body>
+	<h1>Reihenfolge der Befehle</h1>
+	<p>
+		H&auml;ufig ist es wichtig zu wissen, in welcher Reihenfolge die Befehle
+		abgearbeitet werden. Stiehlt der Dieb das Silber bevor der Zauberer seine
+		Magie wirkt, oder danach? Kann ich die Rohstoffe &uuml;bergeben, oder 
+		mu&szlig; ich noch zur n&auml;chsten Runde warten? Diese Liste gibt die 
+		exakte Reihenfolge wieder, in der der Server jede Runde die eingegangenen
+		Befehle abarbeitet.
+	</p>
+	<ol>
+		<li>
+			Neue Einheiten werden mit <a href="befehle.html#MACHE">MACHE TEMP</a>
+			erschaffen. Die nachfolgenden Befehle werden zu der neuen Einheit 
+			kopiert.
+		</li>
+		<li>
+			Die Monster planen ihre Z&uuml;ge.
+		</li>
+		<li>
+			<a href="befehle.html#ADRESSE">ADRESSE</a>, <a 
+			href="befehle.html#PASSWORT">PASSWORT</a> und <a 
+			href="befehle.html#OPTION">OPTION</a> wird ge&auml;ndert.
+		</li>
+		<li>
+			Die neuen Defaultbefehle werden &uuml;bernommen.
+		</li>
+		<li>
+			Die Zugeh&ouml;rigkeit der Einheiten zu einer <a href="befehle.html#GRUPPE">
+			GRUPPE</a> wird ge&auml;ndert.
+		</li>
+		<li>
+			<a href="befehle.html#BEWACHE">BEWACHE NICHT</a>: Einheiten h&ouml;ren
+			auf, Regionen zu bewachen. Neue BEWACHE Befehle werden allerdings erst am
+			Ende der Runde abgearbeitet, damit es nicht zu unliebsamen 
+			&Uuml;berraschungen kommen kann.
+		</li>
+		<li>
+			<a href="befehle.html#HELFE">HELFE</a>, <a href="befehle.html#PRAEFIX">
+			PR&Auml;FIX</a>, <a href="befehle.html#KAEMPFE">K&Auml;MPFE</a>, <a href=
+			"befehle.html#TARNEN">TARNE</a>, <a href="befehle.html#KAMPFZAUBER">
+			KAMPFZAUBER</a>, <a href="befehle.html#URSPRUNG">URSPRUNG</a>, <a href=
+			"befehle.html#KONTAKTIERE">KONTAKTIERE</a> werden gesetzt.</a>
+		</li>
+		<li>
+			Der <a href="befehle.html#BENENNE">BENNENE</a> und der
+			<a href="befehle.html#BESCHREIBE">BESCHREIBE</a>-Befehl werden 
+			ausgef&uuml;hrt.<br />
+			Zu beachten ist, da&szlig;, um eine Region oder ein Geb&auml;ude 
+			umzubenennen, der alte Besitzer den <a href=
+			"befehle.html#BENENNE">BENENNE</a> Befehl geben mu&szlig;.
+		</li>
+		<li>
+			<a href="befehle.html#VERGESSE">VERGESSE</a>, <a href=
+			"befehle.html#BOTSCHAFT">BOTSCHAFT</a> und <a href="befehle.html#FINDE">
+			FINDE</a> werden ausgef&uuml;hrt.
+		</li>
+		<li>
+			<a href="befehle.html#SABOTIERE">SABOTIERE</a> wird durchgef&uuml;hrt. 
+			Das bedeutet, da&szlig; sabotierte Burgen in dieser Runde keinen Burgenbonus in 
+			Gefechten	bieten.
+		</li>
+		<li>
+			<a href="befehle.html#BENUTZE">BENUTZE</a>: Der Bonus des Trankes ist schon
+			im Kampf aktiv, bzw. eine letzte Chance wertvolle Tr&auml;nke zu 
+			vernichten, bevor	sie dem Gegner in die H&auml;nde fallen.
+		</li>
+		<li>
+			Zuerst wird <a href="befehle.html#MEUCHEL">MEUCHEL</a>, direkt <b>
+			danach</b> <a href="befehle.html#ATTACKIERE">ATTACKIERE</a> 
+			ausgef&uuml;hrt. Insbesondere wird vor einem Kampf weder <a 
+			href="befehle.html#GIB">GIB</a> noch <a href=
+			"befehle.html#REKRUTIERE">REKRUTIERE</a> durchgef&uuml;hrt werden.
+			Im Anschlu&szlig; an den letzten Kampf benutzen verwundete Einheiten 
+			Heiltr&auml;nke und &auml;hnliches.
+		</li>
+		<li>
+			<a href="befehle.html#BELAGERE">BELAGERE</a>. Um ein Geb&auml;ude zu 
+			belagern, mu&szlig; man in der vorhergehenden Runde die Region bewacht 
+			haben.
+		</li>
+		<li>
+			<a href="produktion.html#unterhalt">Unterhaltskosten</a> f&uuml;r Geb&auml;ude
+			werden f&auml;llig. Wenn die Kosten nicht gezahlt werden k&ouml;nnen, 
+			verliert das Geb&auml;ude bis zum Ende der Runde seine 
+			Funktionalit&auml;t. (Achtung: Der Eigent&uuml;mer des Geb&auml;udes 
+			mu&szlig; das Geld besitzen. Und da <a href="befehle.html#GIB">GIB</a>
+			noch nicht abgearbeitet wurde, mu&szlig; er das Geld in der 
+			vorhergehenden Runde schon erhalten haben.)
+		</li>
+		<li>
+			Einheiten benutzen <a href="befehle.html#BEANSPRUCHE">BEANSPRUCHE</a>
+			um Geld aus dem Reichsschatz zu entnehmen, 
+			<a href="befehle.html#SAMMEL">SAMMEL</a>n anschlie&szlig;end Silber
+			und andere Gegenst&auml;nde ein und f&uuml;hren zuletzt
+			<a href="befehle.html#GIB">GIB</a> bzw. 
+			<a href="befehle.html#LIEFERE">LIEFERE</a> aus.
+			Explizit durch aus dem Reichsschatz beanspruchtes Silber wird dabei 
+			allerdings nicht eingesammelt. <br />
+			Das Kommando &uuml;ber Geb&auml;ude, Schiffe
+			oder Karawanen wird hier noch nicht &uuml;bergeben.
+		</li>
+		<li>
+			Da nun das Silber richtig verteilt ist, k&ouml;nnen die <a href=
+			"befehle.html#ANWERBEN">ANWERBEN</a> und anschlie&szlig;end die <a href=
+			"befehle.html#REKRUTIERE">REKRUTIERE</a> Befehle abgearbeitet werden.
+			Insbesondere ist zu beachten, da&szlig; zuerst Personen &uuml;bergeben
+			werden, und erst anschlie&szlig;end neue Rekruten die Talente 
+			verw&auml;ssern, d.h. die transferierten Personen behalten ihre hohen 
+			Talentwerte.
+		</li>
+		<li>
+			<a href="befehle.html#STIRB">STIRB</a>. Sterbende Parteien k&ouml;nnen
+			also durchaus noch Gegenst&auml;nde zu anderen Parteien transferieren.
+			Anschlie&szlig;end werden alle leeren Einheiten, Gruppen und Karawanen
+			beseitigt.
+		</li>
+		<li>
+			<a href="befehle.html#ZERSTOERE">ZERST&Ouml;RE</a>. Wird 
+			durchgef&uuml;hrt, bevor neue Einheiten das Geb&auml;ude (Schiff, etc.) betreten
+			k&ouml;nnen. Allerdings ist es so auch m&ouml;glich ein Geb&auml;ude
+			einzurei&szlig;en und alle Einheiten in ein Schiff zu bewegen, ohne eine
+			Person zur&uuml;zulassen, um den ZERST&Ouml;RE Befehl zu geben.
+		</li>
+		<li>
+			<a href="befehle.html#BETRETE">BETRETE</a>. Ist nat&uuml;rlich nur 
+			m&ouml;glich, wenn das Geb&auml;ude nicht schon zerst&ouml;rt wurde.
+		</li>
+		<li>
+			<a href="befehle.html#GIB">GIB KOMMANDO</a>. Da BETRETE zuvor 
+			ausgef&uuml;hrt wird, ist es m&ouml;glich das Kommando einer Einheit zu
+			&uuml;bergeben, die erst diese Runde das Geb&auml;ude (bzw. Schiff,
+			Karawane) betreten hat.
+		</li>
+		<li>
+			<a href="befehle.html#VERLASSE">VERLASSE</a>. Burgenbesitzer und 
+			Kapit&auml;ne k&ouml;nnen nun problemlos ihre Geb&auml;ude (etc.) 
+			verlassen.
+		</li>
+		<li>
+			<a href="befehle.html#MACHE">MACHE</a> wird ausgef&uuml;hrt.
+		</li>
+		<li>
+			Die Bauern verdienen Geld und <a href="befehle.html#ARBEITE">ARBEITE</a>
+			Befehle werden durchgef&uuml;hrt. D.h. die Bauern haben nun viel Geld
+			zur Verf&uuml;gung, welches sie nun ausgeben k&ouml;nnen.
+		</li>
+		<li>
+			<a href="befehle.html#UNTERHALTE">UNTERHALTE</a>. Ein Zwanzigstel des
+			Verm&ouml;gens der Bauern geben diese f&uuml;r Unterhaltung aus.
+		</li>
+		<li>
+			<a href="befehle.html#VERKAUFE">VERKAUFE</a> und <a href=
+			"befehle.html#KAUFE">KAUFE</a>: Luxusg&uuml;ter werden zuerst an die
+			Bauern verkauft, anschlie&szlig;end werden G&uuml;ter von den Bauern
+			gekauft.
+		</li>
+		<li>
+			<a href="befehle.html#TREIBE">TREIBE</a>.
+		</li>
+		<li>
+			Magier benutzen <a href="befehle.html#FORSCHE">FORSCHE</a> um neue Zauber
+			zu entdecken.
+		</li>
+		<li>
+			<a href="befehle.html#LEHRE">LEHRE</a> wird gespeichert. 
+			Anschlie&szlig;end werden die <a href="befehle.html#LERNE">LERNE</a>
+			Befehle abgearbeitet.
+		</li>
+		<li>
+			Diebe stehlen mittels <a href="befehle.html#BEKLAUE">BEKLAUE</a> Silber.
+			Gleichzeitig wird BEKLAUE BAUERN von Goblins durchgef&uuml;hrt. 
+		</li>
+		<li>
+			Magier zaubern und wirken ihre Rituale. Achtung! Wenn der Magier Opfer
+			eines Diebes geworden ist, so kann er evtl. <a href=
+			"befehle.html#ZAUBERE">ZAUBERE</a> nicht mehr durchf&uuml;hren! Vor dem 
+			Wirken der Zauber wird noch einmal &uuml;berpr&uuml;ft, ob der Zauberer
+			den Spruch noch beherrscht.<br />
+			Zun&auml;chst w&auml;hlen Magier dabei gegebenenfalls neue Magiegebiete
+			aus, dann vergessen sie alle Zauber, die sie (aus welchen Gr&uuml;nden
+			auch immer) nicht mehr beherrschen k&ouml;nnen. Danach werden die 
+			<a href="befehle.html#UNTERSTUETZE">UNTERST&Uuml;TZE</a> Kommandos 
+			abgearbeitet und zu guter letzt werden tats&auml;chlich die Zauber
+			gewirkt (wobei Zauber, die eine Bewegungskomponente beinhalten zuletzt
+			ausgef&uml;hrt werden).
+		</li>
+		<li>
+			Magier suchen mittels <a href="befehle.html#ERKUNDE">ERKUNDE</a> nach 
+			besonderen Vorkommen in der Region.
+		</li>
+		<li>
+			Die Natur entwickelt sich weiter: Vulkane brechen aus, Ozean friert zu
+			und Eisschollen schmelzen ab. Insbesondere geschieht dies <strong>vor
+			</strong> Bewegungen, so da&szlig; man nie wei&szlig;, ob der Ozean, 
+			durch den man reisen will, tats&auml;chlich noch befahrbar ist.
+		</li>
+		<li>
+			<a href="befehle.html#NACH">NACH</a> und <a href="befehle.html#FOLGE">
+			FOLGE</a> werden ausgef&uuml;hrt. Anschlie&szlig;end treiben 
+			unterbesetzte Schiffe ab und Einheiten (insbes. Feen), die sich auf einem
+			Ozeanfeld befinden, ertrinken.
+		</li>
+		<li>
+			<a href="befehle.html#BEWACHE">BEWACHE</a> wird gesetzt und hat somit
+			keinerlei Auswirkungen auf einen der anderen Befehle.
+		</li>
+		<li>
+			Einheiten, Burgen, etc. erhalten eine neue <a href="befehle.html#NUMMER">
+			NUMMER</a>.
+		</li>
+		<li>
+			Verwundete Einheiten regenerieren Trefferpunkte, Orks vermehren sich und
+			die Unterhaltkosten f&uuml;r Personen fallen an (d.h. Orks m&uuml;ssen
+			die Unterhaltkosten f&uuml;r die neue Anzahl von Personen zahlen).
+		</li>
+		<li>
+			Die Nachfrage nach Luxusg&uuml;tern nimmt wieder zu, Pferde und Bauern 
+			vermehren	sich und wandern anschlie&szlig;end ab. B&auml;ume werfen Samen
+			ab, bzw. Samen und Sch&ouml;&szlig;linge wachsen.
+		</li>
+		<li>
+			Unterern&auml;hrte Bauern verhungern zum Teil.
+		</li>
+	</ol>
+
+	<p class="right">
+		Version: $Id: reihenfolge.html 1043 2007-12-27 12:34:21Z sirprize $
+	</p>
+</body>
+</html>

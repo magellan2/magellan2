@@ -1,0 +1,1891 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Befehlsliste</title>
+	<link rel="stylesheet" type="text/css" href="doku.css" />
+</head>
+
+<p>
+	<a href="#A">A</a>
+	<a href="#B">B</a>
+	<a href="#C">C</a>
+	<a href="#D">D</a>
+	<a href="#E">E</a>
+	<a href="#F">F</a>
+	<a href="#G">G</a>
+	<a href="#H">H</a>
+	<a href="#I">I</a>
+	<a href="#J">J</a>
+	<a href="#K">K</a>
+	<a href="#L">L</a>
+	<a href="#M">M</a>
+	<a href="#N">N</a>
+	<a href="#O">O</a>
+	<a href="#P">P</a>
+	<a href="#Q">Q</a>
+	<a href="#R">R</a>
+	<a href="#S">S</a>
+	<a href="#T">T</a>
+	<a href="#U">U</a>
+	<a href="#V">V</a>
+	<a href="#W">W</a>
+	<a href="#X">X</a>
+	<a href="#Y">Y</a>
+	<a href="#Z">Z</a>
+</p>
+	
+<body>
+	<h1>Befehle</h1>
+	<p>
+		Am Ende jeder Auswertung ist eine Befehlsvorlage vorhanden. Falls man
+		keinen grafischen Client benutzt, so empfiehlt es sich, diese Vorlage
+		zu verwenden.
+	</p>
+	<p>
+		Es gibt kurze und lange Befehle. Es gilt: jede Einheit kann pro Runde
+		genau einen langen und beliebig viele kurze Befehle ausf&uuml;hren. Gibt
+		man einer Einheit keinen langen Befehl, wird sie ihren "Standardbefehl"
+		ausf&uuml;hren (in der Regel ist dies der letzte gegebene lange Befehl).
+	</p>
+	<h2>Konventionen</h2>
+	<p>
+		In dieser Auflistung sind noch einige Sachen zu beachten:
+	</p>
+	<ul>
+		<li>
+			Die Gross-/Kleinschreibung ist in den meisten F&auml;llen egal. Einzig
+			das Passwort mu&szlig; man auf die Schreibweise achten. Texte, die
+			Leerzeichen enthalten, m&uuml;ssen in Anf&uuml;hrungszeichen
+			eingeschlossen werden:
+		</li>
+		<pre class="bsp">
+EINHEIT he89
+	BENENNE EINHEIT Wolkenj&auml;ger  // Das ist okay
+	BESCHREIBE EINHEIT &quot;Der Wolkenj&auml;ger jagt alle Wolken am Himmel&quot;
+	// Hier braucht man die Anf&uuml;hrungszeichen
+		</pre>
+		<p>
+			<strong>Achtung!</strong> Texte in Anf&uuml;hrungszeichen d&uuml;rfen 
+			keine Zeilenspr&uuml;nge enthalten! Diese k&ouml;nnen dazu f&uuml;hren,
+			da&szlig; nachfolgende Befehle nicht korrekt erkannt werden!
+		</p>
+		<li>
+			<strong>GROSS</strong> geschriebene Worte sind feste Eingaben, d.h.
+			sie m&uuml;ssen genau so abgeschrieben werden (wobei man sie selbst
+			gerne klein schreiben darf).
+		</li>
+		<li>
+			<strong>klein</strong> geschriebene Worte m&uuml;ssen durch passende
+			Werte ersetzt werden.
+		</li>
+		<p class="bsp">
+			<a href="#GIB">GIB</a> einheit-nr anzahl gegenstand<br />
+			mu&szlig; dahin ver&auml;ndert werden, da&szlig; die
+			Einheitennummer der Zieleinheit und die Anzahl und Art des zu
+			&uuml;bergebenden Gegenstandes eingesetzt werden m&uuml;ssen.
+			Im Spiel k&ouml;nnte dies beispielsweise so aussehen:<br />
+			GIB jen 5 Stein
+		</p>
+		<li>
+			<strong>[geklammerte]</strong> Worte sind optional. D.h. sie
+			m&uuml;ssen nicht unbedingt angegeben werden. In der Regel hat der
+			Befehl eine andere Bedeutung, wenn der zus&auml;tzliche Parameter
+			&uuml;bergeben wird.
+		</li>
+		<li>
+			ein <strong>&lt;L&gt;</strong> kennzeichnet hier in der Dokumentation
+			einen langen Befehl und darf nat&uuml;rlich nicht mit abgeschrieben
+			werden.
+		</li>
+		<p class="bsp">
+			<a href="#MACHE">MACHE</a> [anzahl] gegenstand &lt;L&gt;
+		</p>
+	</ul>
+	<p>
+		Bei allen Befehlen ist zu beachten, da&szlig; sie von einer Einheit
+		gegeben werden m&uuml;ssen. Insbesondere auch der Befehl PASSWORT
+		muss durch eine Einheit gegeben werden!
+	</p>
+	<pre class="bsp">
+PARTEI 4711 &quot;dGEd456fg&quot;
+	BEFEHLE etwas  ; das funktioniert so nicht
+	EINHEIT 1
+		BEFEHLE noch etwas  ; so geht es wunderbar
+N&Auml;CHSTER
+	</pre>
+	<h2>Automatisieren der Befehle</h2>
+	<p>
+		Es gibt au&szlig;erdem einige M&ouml;glichkeiten, das Einschicken der 
+		Befehle zu automatisieren. Dies sollte jedoch nicht bei dem Befehl
+		<a href="#NACH">NACH</a> verwendet werden. Stattdessen wird die 
+		Nuztung von <a href="#ROUTE">ROUTE</a> empfohlen. Die derzeitigen 
+		Automatisierungsbefehle sind:
+	</p>
+	<ul>
+		<li>
+			<strong>@ befehl</strong><br />
+			&uuml;bernimmt diesen Befehle jede Runde erneut in die Zugvorlage. Da 
+			lange Befehle ohnehin in die Zuggvorlage &uuml;bernommen werden, 
+			empfiehlt sich die Anwendung prim&auml;r f&uuml;r kurze Befehle, wie z.B.
+			<a href="#GIB">GIB</a>.
+		</li>
+		<li>
+			<strong>+n befehl</strong><br />
+			wobei n eine positive Zahl ist. Der Befehl wird in der n&auml;chsten 
+			Zugvorlage auftauchen. Dabei wird die Zahl n um eins reduziert. Solange n
+			gr&ouml;&szlig;er oder gleich eins ist, wird der Befehl nicht 
+			ausgef&uuml;hrt. Sollte n auf den Wert Null fallen, so wird der Befehl 
+			normal ausgef&uuml;hrt.
+		</li>
+		<li>
+			<strong>=n befehl</strong><br />
+			Der Befehl wird in dieser Runde ausgef&uuml;hrt. Au&szlig;erdem taucht er
+			in der n&auml;chsten Vorlage als &quot;=n=n&quot; auf. 
+		</li>
+	</ul>
+	
+	
+	<a id="BETREFF" name="BETREFF"></a>
+	<h2>Betreff der Befehls-Mails</h2>
+	<p>
+		Befehle m&uuml;ssen an die Adresse <a href="mailto:befehle@allanon-pbem.de">
+	befehle@allanon-pbem.de</a> geschickt werden. Der Betreff muss so lauten:</p>
+	<p><strong>allanon [weltenname] [check oder nomail]</strong></p>
+	<p>
+		Der Weltenname kann der Parteiliste im Spielerbereich entnommen
+		werden. Hier einige Beispiele dazu:
+	</p>
+	<ul>
+		<li>
+			<strong>allanon check</strong>: Pr&uuml;ft die Befehle nur auf
+			Plausibilit&auml;t - es wird kein Passwort gepr&uuml;ft und auch keine
+			Befehle gespeichert. Es wird eine E-Mail mit dem Ergebnis der
+			Pr&uuml;fung verschickt.
+		</li>
+		<li>
+			<strong>allanon endlos</strong>: Versucht, die Befehle zur Endlospartie
+			zu speichern. Dazu wird das Passwort &uuml;berpr&uuml;ft und die Befehle
+			bei richtigem Passwort gespeichert. Es wird eine Best&auml;tigungsmail
+			verschickt.
+		</li>
+		<li>
+			<strong>allanon ziel check</strong>: Versucht, die Befehle zum Spiel mit
+			Zielen zu pr&uuml;fen und zu speichern. Es wird das Passwort
+			&uuml;berpr&uuml;ft und die Befehle bei richtigem Passwort gespeichert.
+			Es wird eine Best&auml;tigungsmail mit dem Ergebnis der Pr&uuml;fung und
+			des Speicherns verschickt. Dies wird normalerweise der Standardfall, mit
+			dem die Befehle verschickt werden.
+		</li>
+		<li>
+			<strong>allanon testpartie nomail</strong>: Versucht, die Befehle f&uuml;r
+			die Testpartie zu speichern. Es wird das Passwort &uuml;berpr&uuml;ft und
+			die Befehle bei richtigem Passwort gespeichert. Allerdings wird keinerlei
+			Best&auml;tigungsmail versandt. Man kann also nicht wissen, ob die Befehle
+			angekommen sind und ob sie gespeichert wurde. Die Option nomail sollte
+			nicht unbedacht verwendet werden.
+		</li>
+	</ul>
+
+	<a id="NEUREPORT" name="NEUREPORT"></a>
+	<h2>Report neu anfordern</h2>
+	<p>
+		Es gibt auch die M&ouml;glichkeit, einen Report neu anzufordern (z.B. weil
+		man gerade ausw&auml;rts ist und nicht an die eigenen Mails kommt). Dazu
+		muss man lediglich eine Mail an befehle@allanon-pbem.de schicken, und
+		folgendes in den Betreff schreiben:
+	</p>
+	<p>
+		<strong>allanon</strong> weltenname <strong>neureport</strong>
+		parteinummer passwort mailadresse</p>
+	<p>
+		Um also den aktuellen Report der Partei aLf (Passwort: melmac) in der
+		Endlospartie an alf@mailinator.com anzufordern, muss man als Betreff
+		&quot;allanon endlos neureport aLf melmac alf@mailinator.com&quot;
+		w&auml;hlen.
+		Die Mailadresse des Absenders ist im &Uuml;brigen vollkommen egal. Es
+		wird nur etwas an die im Betreff angegebene Mailadresse verschickt.
+	</p>
+	
+	<a id="VORAUS" name="VORAUS"></a>
+	<h2>Befehle im Voraus einschicken</h2>
+	<p>
+		F&uuml;r den Fall, dass man in den Urlaub f&auml;hrt, kann man Befehle auch
+		f&uuml;r zuk&uuml;nftige Runden einschicken. Dazu muss man statt
+		befehle@allanon-pbem.de lediglich
+    <strong>vorausbefehleX@allanon-pbem.de</strong> verwenden. Das X steht
+    hierbei f&uuml;r eine Zahl von 1 bis 5.
+	</p>
+	<p>
+    Wenn man also durch Urlaub 2 Runden verpassen w&uuml;rde, kann man die
+    normalen Befehle an befehle@allanon-pbem.de schicken, die n&auml;chsten
+    an vorausbefehle1@allanon-pbem.de und die letzten an
+    vorausbefehle2@allanon-pbem.de. F&uuml;r alle Befehle bekommt man sofort
+    eine Best&auml;tigung mit der jeweiligen Runde, in der sie wirksam werden.
+	</p>
+	<p></p>
+	
+	<a id="LISTE" name="LISTE"></a>
+	<h2>Befehlsliste</h2>
+	
+	<a id="A" name="A"></a>
+	<a id="ADRESSE" name="ADRESSE"></a>
+	<h3>ADRESSE emailadresse</h3>
+	<p>
+		Hiermit wird die Email-Adresse festgelegt, an die die 
+		Auswertungen verschickt werden sollen.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		ADRESSE &quot;allanon@allanon-pbem.de&quot;
+	</p>
+
+	<a id="ANWERBEN" name="ANWERBEN"></a>
+	<h3>ANWERBEN &lt;L&gt;</h3>
+	<p>
+		Anwerben erm&ouml;glicht es, in einer Region mehr Leute zu rekrutieren,
+		und das zu einem niedrigeren Preis. Mehr Details gibt es bei der 
+		<a href="talente.html#anwerben">Talentbeschreibung</a>.
+	</p>
+	<p>ANWERBEN ist ein langer Befehl.</p>
+	<pre class="bsp">
+Beispiel:
+EINHEIT a
+	ANWERBEN ; ausser ANWERBEN kann und muss die Einheit nichts tun
+EINHEIT g
+	GIB TEMP x 2000 Silber
+EINHEIT b
+	LEHRE TEMP x
+	MACHE TEMP x
+		REKRUTIERE 10 ; diese 10 Leute werden durch das Talent von a g&uuml;nstiger rekrutiert
+		BENENNE EINHEIT "Neue Rekruten"
+		LERNE Hiebwaffen
+	ENDE
+	</pre>
+
+	<a id="ARBEITE" name="ARBEITE"></a>
+	<h3>ARBEITE &lt;L&gt;</h3>
+	<p>
+		Der Standardbefehl f&uuml;r eine Einheit, die nichts gelernt hat. Die
+		Einheit arbeitet in der Landwirtschaft und wird so 11 Silber pro Person
+		verdienen. Es ist jedoch zu beachten, da&szlig; nicht beliebig viele
+		Personen in einer Region arbeiten k&ouml;nnen
+		(siehe <a href="geld.html#einnahmen">hier</a>).
+		Um arbeiten zu k&ouml;nnen, ben&ouml;tigt man kein Talent.
+	</p>
+	<p>ARBEITE ist ein langer Befehl.</p>
+	
+	<a id="ATTACKIERE" name="ATTACKIERE"></a>
+	<h3>ATTACKIERE einheit-nr</h3>
+	<p>
+		Befiehlt der Einheit die angegebene Einheit anzugreifen. F&uuml;r
+		jede Einheit, die angegriffen werden soll, mu&szlig; ein separater
+		Befehl gegeben werden. Die angegriffene Einheit mu&szlig; in der
+		selben Region stehen.
+	</p>
+	<p>
+		Einheiten, die fliehen oder nicht k&auml;mpfen, k&ouml;nnen nicht
+		angreifen (siehe auch <a href="#KAEMPFE">K&Auml;MPFE</a>). Mehr
+		hier&uuml;ber kann im Abschnitt <a href="konflikt.html">Kampf</a>
+		nachgelesen werden.
+	</p>
+	<p>
+		ATTACKIERE ist ein kurzer Befehl. Allerdings kann eine Einheit, die in
+		einem Monat durch K&auml;mpfe Tote hat hinnehmen m&uuml;ssen, die Region
+		nicht verlassen.
+	</p>
+	<pre class="bsp">
+Beispiel:
+EINHEIT 1
+	ATTACKIERE 5
+	ATTACKIERE 6
+	ATTACKIERE 7
+	</pre>
+	
+	<a id="B" name="B"></a>
+	<a id="BEANSPRUCHE" name="BEANSPRUCHE"></a>
+	<h3>BEANSPRUCHE menge</h3>
+	<p>
+		Beansprucht Silber aus dem
+		<a href="geld.html#reichsschatz">Reichsschatz</a> der Partei. Silber im
+		Reichsschatz kann von jeder Einheit der Partei beansprucht werden, egal
+		wo sich diese befindet. Beanspruchtes Silber kann noch im selben Monat
+		weitergegeben werden.
+	</p>
+	<p class="bsp">
+Beispiel:<br />
+EINHEIT 1<br />
+	BEANSPRUCHE 2000<br />
+	GIB TEMP 5 2000 Silber<br />
+	</p>
+	
+	<a id="BEKLAUE" name="BEKLAUE"></a>
+	<h3>BEKLAUE einheit-nr &lt;L&gt;</h3>
+	<p>
+		Mit diesem Befehl wird versucht, die angegebene Einheit zu bestehlen.
+		Dazu wird das Tarnungstalent der stehlenden Einheit mit dem
+		Wahrnehmungstalent der Opfer (es z&auml;hlt das h&ouml;chste
+		Wahrnehmungstalent aller Einheiten der Partei in dieser Region), so
+		k&ouml;nnen die T&auml;ter $50 pro Person und Talentstufe Unterschied
+		stehlen.
+	</p>
+	<p>
+		Falls das Tarnungstalent h&ouml;her ist als die beste Wahrnehmung, so
+		erkennt die bestohlene Partei nicht, von wem sie beklaut wurde. In
+		allen anderen F&auml;llen kann der T&auml;ter ermittelt werden.
+	</p>
+	<p>
+		Es wird nicht nur die angegebene Einheit bestohlen, sondern alle
+		Einheiten der Partei.
+	</p>
+	<p
+		>Goblins, die Tarnung 5 oder h&ouml;her haben, stehlen stets mind. $50,
+		selbst wenn sie erwischt werden. Au&szlig;erdem k&ouml;nnen Goblins mit
+		BEKLAUE BAUERN den Bauern Geld stehlen. Sie stehlen pro Person und
+		pro Talentpunkt Tarnung &uuml;ber Stufe 1 $10. Sie k&ouml;nnen maximal 
+		soviel stehlen, wie das
+		<a href="geld.html#unterhaltung">Unterhaltungslimit</a> angibt.
+	</p>
+	<p>
+		BEKLAUE ist ein langer Befehl.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		Einheiten a (20 Silber) und b (500 Silber) geh&ouml;ren beide der Partei
+		abc an. Die Einheit 1 hingegen der Partei 123. Falls nun 1 den Befehl
+		"BEKLAUE a" erh&auml;lt, so werden zun&auml;chst die $20 von Einheit
+		a gestohlen. Danach wird der Rest Einheit b genommen.<br />
+		Eine Goblin Einheit mit Tarnung auf Stufe 5 kann pro Runde 80 Silber 
+		( 80 = 2 * ((5 - 1) * 10) )	stehlen.		
+	</p>
+		
+	
+	<a id="BELAGERE" name="BELAGERE"></a>
+	<h3>BELAGERE burg-nr &lt;L&gt;</h3>
+	<p>
+		Belagert die angegebene Burg. Um eine Burg belagern zu k&ouml;nnen,
+		ben&ouml;tigt die Einheit Waffen und muss mit diesen auch umgehen
+		k&ouml;nnen. Au&szlig;erdem mu&szlig; die Einheit die Region seit
+		mindestens dem vorigen Monat bewachen. Belagernde Einheiten mit
+		Katapulten werden diese automatisch abschie&szlig;en und die Burg so
+		besch&auml;digen. Einheiten k&ouml;nnen belagerte Burgen nur betreten
+		oder verlassen, wenn sie allen belagernden Parteien
+		<a href="#HELFE">HELFE BEWACHE</a> gesetzt haben, oder die Tarnung der
+		Einheit um 3 besser ist, als das beste Wahrnehmungstalent aller
+		belagernden Einheiten.
+	</p>
+	<p>
+		Belagere ist ein langer Befehl. Er mu&szlig; jede Runde erneut erteilt
+		werden, solange die Belagerung aufrecht erhalten werden soll. Wird ein
+		anderer langer Befehl erteilt, so bricht die Einheit die Belagerung
+		automatisch ab.
+	</p>
+	<p>
+		Die Wirkung einer Belagerung kann im Kapitel &uuml;ber den
+		<a href="konflikt.html#belagerung">Krieg</a> nachgelesen werden.
+	</p>
+	<pre class="bsp">
+Beispiel:
+EINHEIT 1
+	BELAGERE b3
+	</pre	>
+
+	<a id="BENENNE" name="BENENNE"></a>
+	<h3>
+		BENENNE EINHEIT &quot;name&quot;<br />
+		BENENNE GEB&Auml;UDE &quot;name"<br />
+		BENENNE GRUPPE &quot;name"<br />
+		BENENNE KARAWANE &quot;name"<br />
+		BENENNE SCHIFF &quot;name"<br />
+		BENENNE REGION &quot;name"<br />
+		BENENNE PARTEI &quot;name"<br />
+		BENENNE FREMDEINHEIT nummer &quot;name"
+	</h3>
+	<p>
+		Gibt dem aufgef&uuml;hrten Objekt einen neuen Namen. Schiffe, Karawanen
+		und Geb&auml;ude k&ouml;nnen nur neu benannt werden, wenn die Einheit das
+		Kommando &uuml;ber das Schiff (bzw. Karawane, Geb&auml;ude) hat (sie
+		mu&szlig; also die erste Einheit unter dem Schiff (Karawane,
+		Geb&auml;ude) in der Auswertung  sein). Regionen k&ouml;nnen nur von dem
+		Burgherrn der gr&ouml;&szlig;ten Burg in der Region umbenannt werden.
+	</p>
+	<p>
+		Namen d&uuml;rfen bis zu 80 Zeichen lang sein und keine Klammern
+		enthalten.
+	</p>
+	<p>
+		Falls eine Gruppe umbenannt wird, so m&uuml;ssen Einheiten, welche die
+		Gruppe betreten wollen, den neuen Namen angeben.
+	</p>
+	<p>
+		Das Benennen der Partei mu&szlig; von einer Einheit erfolgen!
+	</p>
+	<p>
+		BENENNE FREMDEINHEIT ist eine Besonderheit. Damit ist es m&ouml;glich, die
+		Einheiten anderer Parteien zu benennen. Dies geht jedoch nur, falls der
+		Besitzer die Einheit nicht selbst schon benannt hat (also wenn die Einheit
+		mit der Nummer 123 auch "Nummer 123" hei&szlig;t). Um also die Einheit
+		mit der Nummer xyz1 (und dem Namen "Nummer xyz1") umzubenennen, muss man
+		folgendes angeben:<br />
+		BENENNE FREMDEINHEIT xyz1 "Dorftrottel"<br />
+		Das Benennen von eigenen Einheiten mittels BENENNE FREMDEINHEIT ist
+		Bl&ouml;dsinn und gilt als Fehler. Falls mehrere Personen die gleiche
+		Frendeinheit umzubenennen versuchen, wird ein Name zuf&auml;llig
+		ausgew&auml;hlt. BENENNE EINHEIT hat vor BENENNE FREMDEINHEIT immer Vorrang.
+	</p>
+	<pre class="bsp">
+Beispiel:
+PARTEI 4711 &quot;xsfsdf&quot;
+BENENNE PARTEI &quot;Falsch&quot;
+EINHEIT 1
+	BENENNE PARTEI &quot;Richtig&quot;
+	BENENNE EINHEIT "Chef"
+	BENENNE FREMDEINHEIT abc "Der namenlose Wanderer"
+	</pre>
+	
+	<a id="BENUTZE" name="BENUTZE"></a>
+	<h3>BENUTZE trank</h3>
+	<p>
+		Wendet einen alchimistischen Trank an. Pro Runde und Einheit kann nur ein
+		Tranktyp verwendet werden, allerdings ist es m&ouml;glich in einer Runde
+		mehrere Tr&auml;nke des selben Typs zu verwenden. Mehrfache Benutzung
+		eines Tranks dehnt die Wirkung auf mehrere Personen aus. In keinem Fall
+		wird die Wirkung verdoppelt!
+	</p>
+	<p>
+		Heilsalbe, Hirtenblut, Berserkerswut, Heiltrank, Drachenhaut und Ewiges
+		Leben m&uuml;ssen nicht manuell benutzt werden; Sie werden immer dann
+		verwendet, wenn es angemessen scheint (z.B. um vor einem Kampf
+		erh&ouml;hte R&uuml;stung zu erhalten oder nach einem Kampf Wunden zu
+		heilen).
+	</p>
+	<p>
+		Eine weitere Ausnahme sind Rachenlodern und Astraler Bann. Diese
+		k&ouml;nnen an nicht-verb&uuml;ndete Einheiten abgegeben werden. Hierbei
+		wird die Tarnung der Geber-Einheit mit der Wahrnehmung der
+		Empf&auml;ngereinheit verglichen. Ist das Tarnungstalent h&ouml;her, so
+		erh&auml;lt die Empf&auml;ngereinheit das Gebr&auml;u und f&auml;llt
+		unter dessen Wirkung. Ist die Wahrnehmung h&ouml;her, so erh&auml;lt die
+		Empf&auml;ngereinheit das Getr&auml;nk normal. Sind beide Talente gleich
+		hoch erh&auml;lt die Empf&auml;ngereinheit eine unbestimmte Warnung.		
+	</p>
+	<p class="bsp">Beispiel:<br />
+		BENUTZE Wanderlust<br />
+		Die Einheit wird eine Dosis Wanderlust zu sich nehmen und sich in diesem
+		Monat 2 Regionen weit bewegen k&ouml;nnen. Besteht die Einheit aus mehr
+		als 10 Personen, so mu&szlig; ein weiterer Trank eingenommen werden.
+	</p>
+	
+	<a id="BESCHREIBE" name="BESCHREIBE"></a>
+	<h3>BESCHREIBE EINHEIT &quot;beschreibung&quot;<br />
+	    BESCHREIBE GEB&Auml;UDE &quot;beschreibung&quot;<br />
+	    BESCHREIBE KARAWANE &quot;beschreibung&quot;<br />
+	    BESCHREIBE SCHIFF &quot;beschreibung&quot;<br />
+	    BESCHREIBE REGION &quot;beschreibung&quot;<br />
+	    BESCHREIBE PARTEI &quot;beschreibung&quot;<br />
+	    BESCHREIBE FREMDEINHEIT nummer &quot;beschreibung&quot;
+	</h3>
+	<p>
+		Gibt dem aufgef&uuml;hrten Objekt eine neue Beschreibung. Schiffe und
+		Geb&auml;ude k&ouml;nnen nur dann eine neue Beschreibung erhalten, wenn
+		die Einheit das Kommando &uuml;ber das Schiff bzw. das Geb&auml;ude hat
+		(wenn sie also die erste Einheit in der Auswertung unter dem Schiff /
+		Geb&auml;ude ist). Regionen k&ouml;nnen nur von dem Burgherr der
+		gr&ouml;&szlig;ten Burg in der Region umbenannt werden.
+	</p>
+	<p>
+		Beschreibungen d&uuml;rfen bis zu 400 Zeichen lang sein.
+	</p>
+	<p>
+		Das Beschreiben der Partei mu&szlig; von einer Einheit erfolgen!
+		BESCHREIBE FREMDEINHEIT funktioniert nur, wenn die Einheit noch keine
+		Beschreibung besitzt! Weitere Erl&auml;uterungen dazu finden sich
+		unter <a href="#BENENNE">BENENNE</a>.
+	</p>
+	<pre class="bsp">
+Beispiel:
+PARTEI 4711 &quot;Regenbogen&quot;
+	BESCHREIBE PARTEI &quot;Dies ist falsch&quot;
+	EINHEIT 1
+		BESCHREIBE PARTEI &quot;Dies ist richtig&quot;
+	</pre>
+	
+	<a id="BETRETE" name="BETRETE"></a>
+	<h3>
+		BETRETE GEB&Auml;UDE geb&auml;ude-nr<br />
+		BETRETE KARAWANE karawane-nr<br />
+		BETRETE SCHIFF schiff-nr</h3>
+	<p>
+		Die Einheit betritt das angegebene Geb&auml;ude, eine Karawane oder ein
+		Schiff. Eine Einheit kann ein Geb&auml;ude (Karawane, Schiff) nur
+		betreten, wenn das Geb&auml;ude der eigenen Partei geh&ouml;rt, der
+		Burgherr <a href="#HELFE">HELFE BEWACHE</a> gesetzt hat, oder die Tarnung
+		der Einheit besser ist als die beste Wahrnehmung aller Einheiten des
+		Burgenbesitzers in dieser Region. Durch das Betreten von Schiffen oder
+		Karawanen gibt die Einheit das Bewachen auf. Aus Schiffen oder Karawanen
+		kann nicht bewacht werden.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		BETRETE SCHIFF sh33
+	</p>
+	
+	<a id="BEWACHE" name="BEWACHE"></a>
+	<h3>BEWACHE [NICHT]</h3>
+	<p>
+		Befiehlt einer Einheit die Region zu bewachen. Mit BEWACHE NICHT
+		h&ouml;rt die Einheit auf, die Region zu bewachen. Die Einheit
+		ben&ouml;tigt Waffen (Katapulte z&auml;hlen nicht) und das
+		dazugeh&ouml;rige Waffentalent, um eine Region bewachen zu k&ouml;nnen.
+	</p>
+	<p>
+		Eine bewachende Partei l&auml;&szlig;t Verb&uuml;ndete, denen sie
+		<a href="befehle.html#HELFE">HELFE BEWACHE</a> gesetzt hat, alle der 
+		unten aufgez&auml;hlten T&auml;tigkeiten durchf&uuml;hren. Eine 
+		bewache Einheit ist also nur dann ein Problem, wenn sie <strong>
+		nicht</strong> HELFE gesetzt hat. Au&szlig;erdem k&ouml;nnen 
+		Einheiten, die von der bewachenden Partei nicht entdeckt wurden, alle 
+		Befehle normal ausf&uuml;hren.
+	</p>
+	<p>
+		In einer bewachten Region kann niemand <a href="geld.html#steuern>Steuern 
+		eintreiben</a>, <a href="geld.html#rekruten>Bauern rekrutieren</a> oder 
+		<a href="magie.html#erkunden">erkunden</a>. Einheiten, die eine
+		Region bewachen, sind f&uuml;r alle sichtbar. Man mu&szlig; eine Region
+		bewachen, um Burgen <a href="#BELAGERE">belagern</a> zu k&ouml;nnen.
+	</p>
+	<p>
+		Eine bewachende Elfeneinheit verhindert das <a href="produktion.html#wald">
+		Holzf&auml;llen</a>, eine bewachende Zwergeneinheit verhindert 
+		<a href="produktion.html#berg">Bergbau</a>, eine bewachende
+		Rieseneinheit verhindert <a href="produktion.html#berg">Steinbau</a> und 
+		eine bewachende Zentaureneinheit verhindert das 
+		<a href="produktion.html#weide">Einfangen von Wildpferden</a>.
+	</p>
+	<p>
+		Au&szlig;erdem kann in einer bewachten Region niemand aus einem Boot
+		oder eine Karawane heraus angreifen. Um anzugreifen, mu&szlig; man also
+		erst den entsprechenden Transporter verlassen.
+	</p>
+	<p>
+		Eine bewachende Einheit stoppt alle Einheiten, die die Region durchqueren
+		wollen. Die reisenden Einheiten bleiben einfach in dieser Region stehen
+		und k&ouml;nnen in der kommenden Runde weiterreisen. Einheiten, deren 
+		Partei <a href="#HELFE">HELFE BEWEGE</a> gesetzt ist, werden nicht 
+		behindert (in diesem Fall hilft HELFE BEWACHE nichts).
+	</p>
+	
+	<a id="BOTSCHAFT" name="BOTSCHAFT"></a>
+	<h3>
+		BOTSCHAFT [EINHEIT] einheit-nr [einheit-nr2] [...]
+		&quot;botschaft&quot;<br />
+	  BOTSCHAFT REGION &quot;botschaft&quot;<br />
+		BOTSCHAFT PARTEI partei-nr [partei-nr2] [...] &quot;botschaft&quot;<br />
+		BOTSCHAFT GEB&Auml;UDE gebaeude-nr [gebaeude-nr2] [...] &quot;botschaft&quot;<br />
+		BOTSCHAFT KARAWANE karawane-nr [karawane-nr2] [...] &quot;botschaft&quot;<br />
+		BOTSCHAFT SCHIFF schiff-nr [schiff-nr2] [...] &quot;botschaft&quot;
+	</h3>
+	<p>
+		Sendet eine Botschaft an die Partei der Einheiten, alle in der Region
+		vertretenen Parteien, die ausgew&auml;hlte Parteien oder an alle Parteien, 
+		deren Einheiten im Schiff/Burg/Karawane vertreten sind. Die Botschaft wird
+		mit der n&auml;chsten Auswertung verschickt.
+	</p>
+	<p>
+		Eine Botschaft darf bis zu 400 Zeichen lang sein.
+	</p>
+
+	<a id="C" name="C"></a>
+	<a id="D" name="D"></a>
+	<a id="DEFAULT" name="DEFAULT"></a>
+	<h3>
+		DEFAULT befehl<br />
+		DEFAULT NICHT
+	</h3>
+	<p>
+		Setzt den angegebenen Befehl als neuen langen Defaultbefehl. D.h. ab der
+		folgenden Runde wird dieser Befehl in der Zugvorlage (bzw. im 
+		Computerreport) als langer Befehl dieser Einheit aufgef&uuml;hrt werden.
+	</p>
+	<p>
+		DEFAULT NICHT l&ouml;scht den Defaultbefehl.
+	</p>
+	<pre class="bsp">
+EINHEIT unit
+	LERNE Unterhaltung // Lernt diese Runde Unterhaltung
+	DEFAULT Unterhalte // Unterh&auml;lt n&auml;chste Runde
+	</pre>
+	
+	<a id="E" name="E"></a>
+	<a id="EINHEIT" name="EINHEIT"></a>
+	<h3>EINHEIT einheit-nr</h3>
+	<p>
+		Im Anschlu&szlig; an den EINHEIT-Befehl folgen die Befehle f&uuml;r die
+		angegebene Einheit.
+	</p>
+	<pre class="bsp">
+EINHEIT unit
+	// Befehl:
+	BENENNE EINHEIT &quot;Ein neuer Name f&uuml;r die Einheit&quot;
+	// Noch ein Befehl:
+	BESCHREIBE EINHEIT &quot;Ein lustiger Wandersmann&quot;
+	</pre>
+	
+	<a id="ENDE" name="ENDE"></a>
+	<h3>ENDE</h3>
+	<p>
+		Beendet die Befehle f&uuml;r TEMP-Einheiten. Alle
+		Befehle die zwischen <a href="#MACHE">MACHE TEMP</a> und ENDE stehen
+		werden nicht von der aktuellen, sondern von der neuen Temp-Einheit
+		ausgef&uuml;hrt.
+	</p>
+	<pre class="bsp">
+Beispiel:
+EINHEIT d
+	GIB TEMP 3 100 Silber
+	MACHE TEMP 3
+		REKRUTIERE 1
+	ENDE
+	</pre>
+	
+	<a id="ERKUNDE" name="ERKUNDE"></a>
+	<h3>ERKUNDE &lt;L&gt;</h3>
+	<p>
+		Mittels ERKUNDE kann ein Magier eine Region nach besonderen Ereignissen 
+		durchsuchen. Die Ereignisse werden zuf&auml;llig generiert und k&ouml;nnen 
+		verschiedenster Art sein.	Jedoch sind nicht alle diese Ereignisse angenehm,
+		daher sollte man sich gut &uuml;berlegen, ob man das Risiko eingehen will. 
+		Erkunden ist die einzige M&ouml;glichkeit einige seltene magische
+		Gegenst&auml;nde zu erwerben, die man f&uuml;r m&auml;chtige Zauber
+		ben&ouml;tigt.
+	</p>
+	<p>
+		Um eine Region zu erkunden, ben&ouml;tigt man ein Magietalent von
+		mindestens 4 (ansonsten hat das Magietalent keinerlei Einflu&szlig; auf die
+		ausgel&ouml;sten Ereignisse). In einer von einem Feind bewachten Region
+		kann nicht erkundet werden.
+	</p>
+	
+	<a id="F" name="F"></a>
+	<a id="FINDE" name="FINDE"></a>
+	<h3>FINDE ALLES<br />
+			FINDE partei-nr</h3>
+	<p>
+		Sucht nach der angegebenen Partei und gibt in der n&auml;chsten
+		Auswertung die Emailadresse der Partei aus. Mittels FINDE ALLES
+		bekommt man eine Liste der Emailadressen aller Parteien im Spiel.
+	</p>
+	
+	<a id="FOLGE" name="FOLGE"></a>
+	<h3>FOLGE einheit-nr &lt;L&gt;</h3>
+	<p>Hiermit kann man Einheiten folgen.</p>
+	<p>
+		Die eigene Einheit wird die zu verfolgende Einheit beobachen, und ihr
+		folgen, falls sich diese bewegt. Falls die verfolgte Einheit eine
+		h&ouml;here Reichweite hat, so kann sie dem Verfolger entkommen. Die
+		Verfolger werden der Einheit so weit wie m&ouml;glich folgen.
+	</p>
+	<p>
+		FOLGE funktioniert auch, wenn die verfolgte Einheit in einem Schiff
+		sitzt.
+	</p>
+	<p>
+		FOLGE ist ein langer Befehl. Dies ist unabh&auml;ngig davon, ob sich die
+		beobachtete Einheit bewegt oder nicht.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		EINHEIT x3s<br />
+		FOLGE 53g<br />
+		Die Einheit x3s wird der Einheit 53g so weit wie m&ouml;glich folgen.
+	</p>
+	
+	<a id="FORSCHE" name="FORSCHE"></a>
+	<h3>
+		FORSCHE &lt;L&gt;<br />
+		FORSCHE magiegebiet &lt;L&gt;</h3>
+	<p>
+		Sucht nach bisher noch nicht bekannten Zaubern. Um nach neuen Zaubern
+		forschen zu k&ouml;nnen, mu&szlig; die Einheit gen&uuml;gend Silber mit
+		sich tragen und das Magie-Talent erlernt haben. Mehr &uuml;ber das Erforschen
+		neuer Zauber und die Forschungskosten findet sich im Kapitel &uuml;ber
+		<a href="magie.html#forschen">Magie</a>.
+	</p>
+	<p>FORSCHE ist ein langer Befehl.</p>
+	
+	<a id="G" name="G"></a>
+	<a id="GIB" name="GIB"></a>
+	<h3>
+		GIB einheit-nr ALLES<br />
+		GIB einheit-nr anzahl gegenstand<br />
+		GIB einheit-nr anzahl PERSONEN<br />
+		GIB einheit-nr EINHEIT<br />
+		GIB einheit-nr KOMMANDO<br />
+		GIB einheit-nr zauber<br />
+		GIB einheit-nr ZAUBERBUCH<br />
+		GIB BAUERN anzahl gegenstand<br />
+		GIB BAUERN anzahl PERSONEN<br />
+		GIB 0 anzahl gegenstand<br />
+		GIB 0 anzahl PERSONEN<br />
+	</h3>
+	<p>
+		Mittels GIB k&ouml;nnen Waren, Personen und anderes an andere Einheiten
+		&uuml;bergeben werden. Die Zieleinheit mu&szlig; die Sachen jedoch
+		annehmen. Dies ist nur der Fall, falls die Einheit zur eigenen Partei
+		geh&ouml;hrt oder <a href="allianzen.html">alliert</a> ist, oder in
+		dieser Runde den Befehl <a href="#KONTAKTIERE">KONTAKTIERE</a>
+		f&uuml;r die Gebereinheit erhalten hat.<br />
+		Die Tr&auml;nke Rachenlodern und Astraler Bann k&ouml;nnen auch an 
+		nicht-verb&uuml;ndete Einheiten abgegeben werden. Hierbei wird die 
+		Tarnung der Geber-Einheit mit der Wahrnehmung der Empf&auml;ngereinheit
+		verglichen. Ist das Tarnungstalent h&ouml;her, so erh&auml;lt die 
+		Empf&auml;ngereinheit das Gebr&auml;u und f&auml;llt unter dessen
+		Wirkung. Ist die Wahrnehmung h&ouml;her, so erh&auml;lt die
+		Empf&auml;ngereinheit das Getr&auml;nk normal. Sind beide Talente gleich
+		hoch erh&auml;lt die Empf&auml;ngereinheit eine unbestimmte Warnung.
+	</p>
+	<p>
+		GIB BAUERN &uuml;berreicht den Gegenstand den Bauern. Dies ist vor allem
+		bei Personen und Silber sinnvoll. Mittels "GIB 0" k&ouml;nnen die meisten
+		Gegenst&auml;nde vernichtet werden, bzw. Personen hingerichtet werden.
+	</p>
+	<p>
+		Die Anzahl an zu &uuml;bergebenen Gegenst&auml;nden kann durch ALLE(S)
+		substituiert werden.
+	</p>
+	<p>
+		<strong>GIB einheit-nr ALLES</strong> gibt der Zieleinheit alle
+		Gegenst&auml;nde und Personen, die die Einheit besitzt. <strong>Dies wird
+		nat&uuml;rlich die befehlende Einheit aufl&ouml;sen!</strong>
+		Falls die empfangende Partei die Personen nicht annehmen kann (z.B. weil
+		es sich um Magier einer anderen Rasse handelt), werden nur alle
+		Gegenst&auml;nde und das Geld &uuml;bergeben.
+	</p>
+	<p>
+		<strong>GIB einheit-nr anzahl gegenstand</strong> gibt der Zieleinheit
+		anzahl Gegenst&auml;nde vom Typ gegenstand. Die Einheit mu&szlig;
+		die Gegenst&auml;nde bei sich tragen.
+	</p>
+	<p>
+		<strong>GIB einheit-nr anzahl PERSONEN</strong> &uuml;bergibt der
+		Zieleinheit anzahl Personen. Dies ist nur m&ouml;glich, falls beide
+		Einheiten der selben Rasse angeh&ouml;hren. Einheiten mit teuren
+		Talenten k&ouml;nnen auf diese Art und Weise nicht an andere
+		Parteien &uuml;bergeben werden.
+	</p>
+	<p>
+		<strong>GIB einheit-nr EINHEIT</strong> &uuml;bergibt die gesamte Einheit
+		an die Partei der Zieleinheit. Es k&ouml;nnen keine Einheiten mit teuren
+		Talenten &uuml;bergeben werden. Falls die Einheit eine andere Rasse hat,
+		als die Partei, der sie &uuml;bergeben wird, so z&auml;hlt sie als
+		Migrant. Jede Partei kann nur eine gewisse Anzahl von Migranten aufnehmen
+		(siehe <a href="rassen.html#emigranten">hier</a>).
+	</p>
+	<p>
+		<strong>GIB einheit-nr KOMMANDO</strong> &uuml;berschreibt das Kommando
+		&uuml;ber ein Geb&auml;ude, ein Schiff oder eine Karawane an die
+		Zieleinheit. Die Einheit mu&szlig; hierf&uml;r das Kommando innehaben
+		und die neue Einheit mu&szlig; sich in der Burg (Karawane, Schiff)
+		befinden.
+	</p>
+	<p>
+		<strong>GIB einheit-nr zauber</strong> lehrt der Zieleinheit den Zauber.
+		Die Zieleinheit kann den Zauber nur erlernen, wenn ihr Magietalent hoch
+		genug ist, und wenn der Zauber zu einem ihrer Magiegebiete geh&ouml;rt.
+		MIttels GIB einheit-nr ZAUBERBUCH k&ouml;nnen alle bekannten Zauber
+		beigebracht werden.</strong>
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 4711
+	GIB TEMP 1 500 Silber // Gibt der neuen Einheit 1 500 Silber.
+	MACHE TEMP 1          // Erschafft die neue Einheit
+	  REKRUTIERE 5        // Rekrutiert neue Personen
+	  LERNE Unterhaltung  
+	ENDE
+	GIB xx 30 Eisen				// Gibt xx 30 Eisen
+	GIB yy ALLE PERSONEN  // L&ouml;st die Einheit auf und uebergibt alle Personen an yy
+	</pre>
+	
+	<a id="GRUPPE" name="GRUPPE"></a>
+	<h3>GRUPPE [name]</h3>
+		<p>
+			Durch Gruppen kann man die eigene Partei strukturieren. Jeder Gruppe
+			kann man gesonderte <a href="#HELFE">HELFE</a>- und
+			<a href="#PRAEFIX">PR&Auml;FIX</a>-Befehle geben.
+		</p>
+		<p>
+			Mittels GRUPPE name weist man eine Einheit einer Gruppe zu.
+			Falls noch keine Gruppe mit diesem Namen existiert, so wird eine neue
+			Gruppe angelegt, die zu Beginn die gleichen Helfestati und Pr&auml;fix
+			wie die Partei erh&auml;t. Falls man hinter GRUPPE keinen Namen angibt, so
+			verl&auml;sst man die aktuelle Gruppe.
+		</p>
+		<p>
+			Gruppen k&ouml;nnen f&uuml;r Sondereins&auml;tze, Turniere, Angriffe
+			auf Verb&uuml;ndete oder aus rollenspielerischen Aspekten n&uuml;tzlich
+			sein.
+		</p>
+	<p class="bsp">Beispiel:<br />
+		GRUPPE &quot;Flinke Finger&quot;         // Betritt bzw. gruendet die Gruppe<br />
+		PRAEFIX &quot;kleptomanische &quot;  // Setzt ein Praefix fuer diese Gruppe<br />
+		HELFE fac1 NICHT               // Bricht das Buendnis auf Gruppenebene<br />
+		BEKLAUE x<br />
+	</p>
+	
+	<a id="H" name="H"></a>
+	<a id="HELFE" name="HELFE"></a>
+	<h3>
+		HELFE partei-nr [NICHT]<br />
+		HELFE partei-nr ALLES [NICHT]<br />
+		HELFE partei-nr BEWACHE [NICHT]<br />
+		HELFE partei-nr BEWEGE [NICHT]<br />
+		HELFE partei-nr GIB [NICHT]<br />
+		HELFE partei-nr K&Auml;MPFE [NICHT]<br />
+		HELFE partei-nr SILBER [NICHT]<br />
+		HELFE partei-nr TARNE [NICHT]
+	</h3>
+	<p>&Auml;ndert die Allianz zu der angegebenen Partei. HELFE partei-nr
+		[NICHT] entspricht hierbei HELFE partei-nr ALLES [NICHT].
+	</p>
+	<p>
+		Eine genaue Erkl&auml;rung der Hilfestati findet sich im Kapitel
+		&uuml;ber <a href="allianzen.html">Allianzen</a>.
+	</p>
+	
+	<a id="I" name="I"></a>
+	<a id="J" name="J"></a>
+	<a id="K" name="K"></a>
+	<a id="KAEMPFE" name="KAEMPFE"></a>
+	<h3>K&Auml;MPFE [VORNE]<br />
+			K&Auml;MPFE AGGRESSIV<br />
+			K&Auml;MPFE HINTEN<br />
+			K&Auml;MPFE DEFENSIV<br />
+			K&Auml;MPFE NICHT<br />
+			K&Auml;MPFE FLIEHE<br />
+			K&Auml;MPFE HELFE [NICHT]
+	</h3>
+	<p>
+		&Auml;ndert das Verhalten der Einheit, falls es zu einem Kampf kommt.
+		Eine detaillierte Erkl&auml;rung findet sich im Kapitel &uuml;ber den
+		Kampf im Abschnitt den
+		<a href="konflikt.html#kampfstatus">Kampfstatus</a>. Die 
+		Standardeinstellung neuer Einheiten ist aggressives Kampfverhalten.
+	</p>
+	<p>
+		Mittels K&Auml;MPFE HELFE NICHT kann man bestimmen, da&szlig; der Einheit,
+		die den Befehl gibt, von alliierten Einheiten nicht geholfen wird, so diese
+		Einheit angegriffen werden sollten. Eine Einheit, die K&Auml;MPFE HELFE 
+		NICHT gesetzt hat, beh&auml;lt ihren normalen Kampfstatus (vorne, 
+		hinten, ...) bei. Mittels K&Auml;MPFE HELFE wird der Einheit wieder 
+		geholfen.
+	</p>
+	
+	<a id="KAMPFZAUBER" name="KAMPFZAUBER"></a>
+	<h3>KAMPFZAUBER zauberspruch</h3>
+	<p>
+		Der angegebene Zauber wird von dem Magier als Kampfzauber gew&auml;hlt.
+		Der Zauber mu&szlig; dem Magier bekannt sein und es mu&szlig; sich um
+		einen (Pr&auml;-)Kampfzauber handeln. Falls es zu einem
+		<a href="konflikt.html">Kampf</a> kommt, wird der Magiebegabte diesen
+		Zauber wirken, statt zu einer Waffe zu greifen. Falls es sich um einen
+		Pr&auml;kampfzauber handelt, so wird der Magiebegabte ihr einmal
+		zu beginn des Kampfes wirken.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		KAMPFZAUBER &quot;doppelz&uuml;ngiger Blitz&quot;
+		// Setzt einen normalen Kampfzauber<br /> 
+		KAMPFZAUBER &quot;Rundumschild&quot; // Setzt einen Pr&auml;kampfzauber
+	</p>
+	
+	<a id="KAUFE" name="KAUFE"></a>
+	<h3>KAUFE anzahl luxusgut &lt;L&gt;</h3>
+	<p>Eine Einheit, die &uuml;ber das Talent Handeln verf&uuml;gt, kann mit
+		diesem Befehl den Bauern das in dieser Region produzierte Luxusgut
+		abkaufen. Um Handeln zu k&ouml;nnen mu&szlig; es eine Burg der
+		Gr&ouml;&szlig;e eines Handelspostens (oder gr&ouml;&szlig;er)
+		in der Region geben.
+	</p>
+	<p>Pro Monat k&ouml;nnen 10*(Anzahl Personen)*(Talentwert Handeln) Waren
+		gekauft oder verkauft werden. Mehr &uuml;ber den Handeln mit Waren findet
+		sich im Kapitel &uuml,ber das Geld im Abschnitt
+		<a href="geld.html#handel">Handel</a>. Mehrere KAUFE und VERKAUFE-Befehle
+		k&ouml;nnen mittels UND aneinander geschaltet werden.
+	</p>
+	<p>
+		Mittels KAUFE kann man auch einem 
+		<a href="monster.html#trader">NPC-H&auml;ndler</a> Waren abkaufen. Mehr
+		dazu findet sich im Kapitel &uuml;ber 
+		<a href="monster.html#trader">Monster</a>.
+	</p>
+	<p>KAUFE ist ein langer Befehl.</p>
+	<pre class="bsp">Beispiel:
+// H&auml;ndler mit 1 Person und Talentwert 2 kann 20 Waren handeln
+EINHEIT trad
+	KAUFE 10 Wein UND VERKAUFE 5 Weihrauch
+	VERKAUFE 5 Gew&uuml;rze
+	</pre>
+	
+	<a id="KONTAKTIERE" name="KONTAKTIERE"></a>
+	<h3>KONTAKTIERE einheit-nr</h3>
+	<p>
+		Die Einheit nimmt mit der angegebenen Einheit Kontakt auf. Spieltechnisch
+		bedeutet dies, da&szlig; sie der anderen Einheit bis zum Ende dieses
+		Monats ein <a href="#HELFE">HELFE ALLES</a> gesetzt hat.<br />
+		Die Einheit wird der angegebenen Einheit mit Unterhalt aushelfen,
+		alle Gegenst&auml;nde, die ihr gegeben werden, entgegennehmen, und
+		ihr auch in allen anderen Belangen helfen.
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 1
+	KONTAKTIERE 2  // kontaktiert Einheit 2
+EINHEIT 2
+	GIB 1 5 Stein  // gibt Einheit 1 fuenf Steine
+	</pre>
+	
+	<a id="L" name="L"></a>
+	<a id="LEHRE" name="LEHRE"></a>
+	<h3>LEHRE einheit-nr1 [einheit-nr2] [...] &lt;L&gt;</h3>
+	<p>
+		Lehrt die angegebenen Einheit. Eine Einheit kann pro Person 10
+		Sch&uuml;ler haben. Um zu lehren mu&szlig; die Einheit in dem 
+		zu lernenden Talent mindestens zwei Talentstufen besser sein als
+		die zu unterrichtenden Einheiten.<br />
+		Mehr zum Thema Lernen und Lehren findet sich im Kapitel &uuml;ber
+		<a href="talente.html#lernen">Talente</a>.
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 1
+	LEHRE 2 3
+EINHEIT 2
+	LERNE Stangenwaffen
+EINHEIT 3
+	LERNE Stangenwaffen
+	</pre>
+	
+	<a id="LERNE" name="LERNE"></a>
+	<h3>LERNE talent [silber] &lt;L&gt;</h3>
+	<p>
+		Lernt das angegebene Talent. Pro Monat, den eine Einheit ein Talent
+		lernt, erh&auml;lt sie pro Person 30 Lerntage. Je mehr Lerntage eine
+		Einheit hat, desto besser sind ihre Talentwerte.<br />
+		Es gibt einige Talente, die teuer sind. Um teuere Talente zu erlernen
+		ben&ouml;tigt die Einheit Silber (siehe
+		<a href="talente.html#lernkosten">hier</a>) Auch das Lernen in einer
+		Universit&auml;t kostet Silber. Wenn dies gew&uuml;nscht ist, kann man
+		die maximale Menge an Silber, die die Einheit zum Lernen ausgeben soll
+		als Parameter angeben.
+	</p>
+	<p class="bsp">Beispiel:<br />
+		EINHEIT 1<br/>
+		LERNE Stangenwaffen
+	</p>
+	
+	<a id="LIEFERE" name="LIEFERE"></a>
+	<h3>LIEFERE [einheit-nr menge gegenstand]</h3>
+	<p>
+		Liefert jeden Monat menge Gegenst&auml;nde vom Typ gegenstand an die
+		angegebende Einheit. Im Unterschied zu <a href="#GIB">GIB</a> wird
+		der Befehl jedoch jeden Monat ausgef&uuml;hrt. Eine Einheit kann
+		maximal einen LIEFERE Befehl haben.<br />
+		Falls man hinter LIEFERE nichts weiter angibt, wird der Lieferbefehl
+		der Einheit gel&ouml;scht.
+	</p>
+	
+	<a id="M" name="M"></a>
+	<a id="MACHE" name="MACHE"></a>
+	<h3>
+		MACHE TEMP nummer<br />
+		MACHE geb&auml;ude-typ [geb&auml;ude-nummer] &lt;L&gt;<br />
+		MACHE KARAWANE <br />
+		MACHE [stufen] schiffs-typ &lt;L&gt;<br />
+		MACHE [stufen] SCHIFF schiff-nummer &lt;L&gt;<br />
+		MACHE [stufen] STRASSE [richtung] &lt;L&gt;<br />
+		MACHE [anzahl] gegenstand &lt;L&gt;<br />
+		MACHE [anzahl] KR&Auml;UTER &lt;L&gt;<br />
+	</h3>
+	<p>
+		Die meisten Gegenst&auml;nde, Burgen, Schiffe, etc. werden mit dem Befehl 
+		MACHE	produziert (die einzigen Ausnahmen sind <a href="magie.html#gegenstaende">
+		magische Gegenst&auml;nde</a> und <a href="geld.html#handel">Luxusg&uuml;ter</a>).
+	</p>
+	<p>
+		Mittels MACHE TEMP kann man neue <strong>Einheiten</strong> erschaffen. Hinter MACHE 
+		TEMP kommt die Alias-Nummer der neuen Einheit, da man bei Erschaffung ja 
+		noch nicht wei&szlig;, welche Nummer die Einheit bekommen wird. Wann immer 
+		man in einem Befehl eine Einheitennummer angeben soll, kann man stattdessen
+		auch eine Alias-Nummer angeben, mu&szlig; dann allerdings das Wort "TEMP"
+		davor setzen, um deutlich zu machen, da&szlig; es sich um eine neue Einheit
+		handelt. <strong>&quot;temp&quot; ist als Nummer nicht zul&auml;ssig!
+		</strong> Wird versucht eine Tempeinheit mit der Nummer &quot;temp&quot; zu
+		erschaffen, so wird dies fehlschlagen und es wird keine neue Einheit 
+		angelegt.
+	</p>
+	<p>
+		Alle Befehle, die im Anschlu&szlig; an MACHE TEMP folgen, werden als Befehle
+		der neuen Einheit betrachtet. Die Befehle f&uuml;r eine Temp-Einheit werden
+		mit <a href="#ENDE">ENDE</a> beendet.
+	</p>
+	<p>
+		Mittels MACHE TEMP wird zwar eine neue Einheit angelegt, doch diese neue
+		Einheit ist (noch) v&ouml;llig leer. Sie enth&auml;lt keinerlei Personen,
+		beherrscht keine Talente und hat auch keine Gegenst&auml;nde (insbes. hat
+		sie kein Silber). Damit die Einheit Personen erh&auml;lt, mu&szlig; sie
+		entweder <a href="#REKRUTIERE">rekrutieren</a> (wof&uuml;r sie Geld 
+		ben&ouml;tigt, das ihr erst gegeben werden mu&szlig;!) oder sie kann von
+		anderen Einheiten mittels <a href="#GIB">GIB</a> Personen erhalten.
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 4711
+  MACHE TEMP 1 // Hier beginnt eine neue Einheit, die den Alias "TEMP 1" erh&auml;lt
+    REKRUTIERE 1 // Rekrutiert werden kann nur, falls die Temp-Einheit noch Silber bekommt
+    BENENNE EINHEIT "Eine neue Einheit"
+  ENDE // Hier enden die Befehle f&uuml;r die neue Einheit
+  GIB 1 100 Siber // Gibt der Einheit 1 Silber
+  GIB TEMP 1 100 Silber // Gibt der Temp Einheit 100 Silberst&uuml;cke
+	</pre>
+	
+	<p>
+		<strong>Geb&auml;ude</strong> k&ouml;nnen mit dem Befehl MACHE
+		geb&auml;ude-typ produziert werden (siehe dazu auch das Kapitel
+		&uuml;ber <a href="produktion.html#burgen">Burgen</a>). Der Weiterbau eines
+		Geb&auml;udes kann mit MACHE geb&auml;ude-typ geb&auml;ude-nummer
+		veranlasst werden (also z.B. &quot;MACHE Baumschule 123&quot;).
+	</p>
+	
+	<a id="MAGIEGEBIET" name="MAGIEGEBIET"></a>
+	<h3>MAGIEGEBIET magiegebiet</h3>
+	<p>
+		Setzt das Magiegebiet der <strong>Einheit</strong>. Nur Einheiten, die
+		Magie erlernt haben, k&ouml;nnen ein Magiegebiet w&auml;hlen. Magier
+		k&ouml;nnen beliebig viele Magiegebiete haben, allerdings startet jeder
+		Magier mit einem speziellen Magiegebiet, das von seiner Rasse
+		abh&auml;ngt (siehe <a href="rassen.html#tabelle">hier</a>). Der 
+		Magiebegabte wird also die Zauber seines ersten Magiegebietes stets
+		am besten beherrschen.<br />
+		Es gibt derzeit f&uuml;nf <a href="magie.html#magiegebiete">
+		Magiegebiete</a>: Cenwen, Gnorr,	Nashun, Ruhal und Shaktul.
+	</p>
+	<p class="bsp">Beispiel:<br />
+		EINHEIT mage<br />
+		MAGIEGEBIET Cenwen<br />
+		FORSCHE
+	</p>
+	
+	<a id="MEUCHEL" name="MEUCHEL"></a>
+	<h3>MEUCHEL einheit-nr [einheit-nr2] [...]</h3>
+	<p>
+		Versucht die angegebenen Einheiten zu ermeucheln. Hierzu wird der
+		Talentwert Meucheln des Meuchlers mit dem besten Wahrnehmungs-Talentwert
+		aller Parteiangeh&ouml;rigen der Opfer in der Region verglichen. Sollte
+		das Meucheln-Talent h&ouml;her oder gleich der Wahrnehmung sein, so wird
+		die Einheit gemeuchelt. Wenn das Wahrnehmungstalent &uuml;ber dem
+		Meucheln-Talent liegt, so erkennt die Partei, da&szlig; versucht wurde,
+		eine ihrer Einheiten zu meucheln und kann auch den Meuchler
+		identifizieren.<br />
+		Ein Meuchler-Einheit kann pro Runde maximal so viele Personen meucheln,
+		wie sie selbst Personen hat. Dies kann entweder &uuml;ber mehrere
+		MEUCHEL-Befehle geschehen, oder indem mehrere Ziele hinter einem Befehl
+		angegeben werden.<br />
+	</p>
+	<p>
+		Eine Einheit, die &uuml;ber ausreichend viele Krummdolche verf&uuml;ugt,
+		erh&auml;lt einen +1 Bonus auf das Meucheln-Talent, falls sie versucht
+		jemanden zu meucheln.
+	</p>
+	<p>
+		MEUCHEL ist ein kurzer Befehl, und wird direkt <strong>vor</strong>
+		K&auml;mpfen durchgef&uuml;hrt.
+	</p>
+	<pre class="bsp">Beispiel:<br />
+EINHEIT bill
+	MEUCHEL dead   // Einheit dead wird gemeuchelt
+	LERNE Meucheln // MEUCHEL ist kurzer Befehl, lerne also noch
+	</pre>
+	
+	<a id="N" name="N"></a>
+	<a id="NACH" name="NACH"></a>
+	<h3>NACH richtung [richtung] [...] &lt;L&gt;</h3>
+	<p>
+		Mit dem Befehl NACH kann man die aktuelle Region verlassen. Hinter NACH
+		wird die (Himmels-)Richtung angegeben, in die man reist. Da Allanon aus
+		Hexagonen besteht, kann man nur nach Nordosten, Osten, S&uuml;dosten,
+		S&uuml;dwesten, Westen und Nordwesten reisen (bzw. NO, O, SO, SW, W, NW).
+	</p>
+	<p>
+		Zu Fu&szlig; kommt man in einem Monat gerade einmal eine Region weit.
+		Einheiten, die jedoch &uuml;ber ein Pferd oder ein Schiff verf&uuml;gen
+		oder &uuml;ber Strassen reisen, k&ouml;nnen in einem Monat l&auml;ngere
+		Strecken zur&uuml;cklegen (siehe auch das Kapitel &uuml;ber
+		<a href="reisen.html">Reisen</a>) und m&uuml;ssen hierf&uuml;r einfach
+		mehrere Richtungen angeben.
+	</p>
+	<p>
+		Falls der Kapit&auml;n eines Schiffes (bzw. Karawane) einen NACH-Befehl
+		erh&auml;lt, so wird sich das gesamte Schiff (Karawane) in Bewegung
+		setzen. Alle Personen, die sich noch in dem Schiff (Karawane) befinden,
+		werden mitgenommen. Umgekehrt k&ouml;nnen andere Personen au&szlig;er
+		dem Kapit&auml;n (Karawanenf&uuml;hrer) keinen NACH-Befehl erhalten.
+	</p>
+	<p>
+		Wenn man hinter NACH mehr Richtungsparameter angibt, als die Einheit in 
+		einer Runde zur&uuml;cklegen kann, so wird der verbleibende Befehl in
+		die Zugvorlage der n&auml;chsten Runde kopiert.<br />
+		F&uuml;r eine berittene Einheit (max. 2 Regionen), die den Befehl 
+		<i>NACH NO NO	O SW O NO</i> erh&auml;lt, schreibt der Server 
+		<i>NACH O SW O NO</i> in die Zugvorlage. In der Runde danach wird es ein
+		<i>NACH O NO</i>.<br />
+		Falls die Einheit die Bewegung aus wichtigen Gr&uuml;nden abbricht (z.B.
+		weil sie in den Ozean l&auml;ft), so wird der NACH-Befehl nicht in die 
+		folgende Zugvorlage &uuml;bernommen.
+	</p>
+	<p>
+		Eine Einheit, die in dieser Runde durch K&auml;mpfe Verluste erlitten
+		hat, kann keinen NACH-Befehl ausf&uuml;hren.
+	</p>
+	<p>
+		Siehe auch den <a href="#ROUTE">ROUTE</a> Befehl.
+	</p>
+	<p>
+		NACH ist ein langer Befehl.
+	</p>
+	<p class="bsp">Beispiel:<br />
+		NACH Norden // Das Funktioniert so nicht, da man nicht nach Norden
+		reisen kann<br />
+		NACH Nordosten Nordwesten // Zu Pferd kommt man 2 Regionen weit<br />
+		NACH O NO O NO // Die Richtungen k&ouml;nnen auch abgek&uuml;rzt werden
+	</p>
+	
+	<a id="NAECHSTER" name="NAECHSTER"></a>
+	<h3>N&Auml;CHSTER</h3>
+	<p>
+		Beendet die Befehle einer Partei. Alles was hiernach folgt wird
+		ignoriert. Man sollte seine Befehle stets mit N&Auml;CHSTER beenden.
+	</p>
+
+<!--	<a id="NEUSTART" name="NEUSTART"></a>
+	<h3>NEUSTART &quot;passwort&quot; [rasse]</h3>
+	<p>
+		L&ouml;scht die Partei des Spielers und legt in der Region, in der der
+		Befehl ausgef&uuml;hrt wurde, eine neue Partei mit der gew&uuml;nschten
+		Rasse an.<br />
+		Wenn kein Rassenparameter angegeben wird, so wird die Rasse der neuen
+		Partei <strong>zuf&auml;llig</strong> bestimmt.
+	</p>
+	<p>
+		NEUSTART kann nur w&auml;hrend der ersten f&uuml;nf Runden ausgef&uuml;hrt 
+		werden. NEUSTART kann nur in einer Region ausgef&uuml;hrt werden, die von 
+		keiner fremden Partei bewacht wird.
+	</p>
+	<pre class="bsp">
+PARTEI xyz &quot;geheim&quot;
+	EINHEIT 1
+		NEUSTART &quot;geheim&quot; Goblin
+	</pre> -->
+	
+	<a id="NUMMER" name="NUMMER"></a>
+	<h3>
+		NUMMER EINHEIT [nummer] [...]<br />
+		NUMMER GEB&Auml;UDE [nummer] [...]<br />
+		NUMMER SCHIFF [nummer] [...]<br />
+		NUMMER KARAWANE [nummer] [...]<br />
+		NUMMER PARTEI [nummer] [...]
+	</h3>
+	<p>
+		Weist dem Objekt eine neue Nummer zu. Es wird die erste zul&auml;ssige
+		Nummer aus der &uuml;bergebenen Liste ausgew&auml;hlt, die noch nicht
+		vergeben ist. Wird keine Nummer angegeben, so wird eine zuf&auml;llige
+		freie Nummer vergeben.
+	</p>
+	<p>
+		Die Nummer des Objekts wird als letzter ge&auml;ndert, d.h. f&uuml;r
+		alle Befehle mu&szlig; man die "alte" Nummer verwenden (denn
+		schlie&szlig;lich wei&szlig; man nicht, welche Nummer tats&auml;chlich
+		zugewiesen wird).
+	</p>
+	<p class="bsp">Beispiel:<br />
+		NUMMER EINHEIT // Eine zuf&auml;llige neue Nummer<br />
+		NUMMER PARTEI eins zwei drei four five six 7 8 9 // W&auml;hlt die
+		erste freie angegebene Nummer<br />
+		NUMMER SCHIFF schiff // Kein Effekt, da keine zul&auml;ssige Nummer
+	</p>
+	
+	<a id="O" name="O"></a>
+	<a id="OPTION" name="OPTION"></a>
+	<h3>
+		OPTION AUSWERTUNG [NICHT]<br />
+		OPTION COMPUTER [NICHT]<br />
+		OPTION ZEITUNG [NICHT]<br />
+		OPTION STATISTIK [NICHT]<br />
+		OPTION ZIP [NICHT]<br />
+		OPTION BZIP2 [NICHT]<br />
+		OPTION SILBERPOOL [NICHT]<br />
+		OPTION MATERIALPOOL [NICHT]<br />
+	</h3>
+	<p>
+		Setzt bzw. l&ouml;scht eine Option. Die ersten 4 Optionen sind
+		standardm&auml;&szlig;ig aktiviert. ZIP und BZIP2 muss man selbst setzen.
+		Die Bedeutung dieser Optionen ist:
+		<ul>
+			<li>
+				<strong>AUSWERTUNG:</strong>
+				Wenn diese Option gesetzt ist, wird bei der n&auml;chsten
+				Auswertung ein Report in menschenlesbarer Form (der sogenannte NR,
+				&quot;Normalreport&quot;) dabei sein.
+			</li>
+			<li>
+				<strong>COMPUTER:</strong>
+				Hierdurch wird ein Report in maschinenlesbarer Form mitgesendet
+				(CR, &quot;Computerreport&quot;), der von Magellan oder einem
+				&auml;hnlichen Programm gelesen werden kann.
+			</li>
+			<li>
+				<strong>ZEITUNG:</strong>
+				Mit dieser Option werden mit der Auswertung Meldungen von der
+				Spielleitung und Statistiken zum laufenden Spiel mitgesendet.
+			</li>
+			<li>
+				<strong>STATISTIK:</strong>
+				Diese Option bewirkt, dass im NR zus&auml;tzliche Statistiken und
+				Informationen zu den einzelnen Regionen angezeigt werden.
+			</li>
+			<li>
+				<strong>ZIP:</strong>
+				Durch diese Option werden alle gew&uuml;nschten Reportarten zu
+				einer ZIP-gepackten Datei zusammengefasst und gesendet.
+			</li>
+			<li>
+				<strong>BZIP2:</strong>
+				Genau wie ZIP, nur dass ein tar-bzip2 Archiv (f&uuml;r unixartige
+				Betriebssysteme geeignet) mit der Endung .tbz2 erstellt wird.
+			</li>
+			<li>
+				<strong>SILBERPOOL:</strong>
+				Aktiviert den Silberpool f&uuml;r die Partei. Mehr Informationen
+				finden sich <a href="geld.html#silberpool">hier</a>.
+			</li>
+			<li>
+				<strong>MATERIALPOOL:</strong>
+				Aktiviert den Materialpool f&uuml;r die Partei. Mehr Informationen
+				finden sich <a href="geld.html#materialpool">hier</a>.
+			</li>
+		</ul>
+	</p>
+	
+	<a id="P" name="P"></a>
+	<a id="PARTEI" name="PARTEI"></a>
+	<h3>PARTEI partei.-nr "passwort"</h3>
+	<p>
+		Beginnt die Befehlspartei. Dies ist der einzige Befehl, der nicht von
+		einer Einheit gegeben wird. Das Passwort <strong>mu&szlig;</strong> in
+		Anf&uuml;rungszeichen stehen!
+	</p>
+	<pre class="bsp">Beispiel:
+PARTEI 1 "mypassword"
+	EINHEIT 1
+		LERNE Tarnung
+N&Auml;CHSTER
+	</pre>
+	
+	<a id="PASSWORT" name="PASSWORT"></a>
+	<h3>PASSWORT ["neues-passwort"]</h3>
+	<p>
+		&Auml;ndert das Pa&szlig;wort auf einen neuen Wert. Falls man kein
+		Pa&szlig;wort angegeben hat, so wird das Pa&szlig;wort gel&auml;scht.
+		Gro&szlig;- und Kleinschreibung sind beim Pa&szlig;wort relevant!<br />
+		Auch der PASSWORT-Befehl mu&szlig; von einer Einheit gesetzt werden!
+		<br />
+		F&uuml;r die aktuellen Befehle gilt nat&uuml;rlich noch das "alte"
+		Pa&szlig;wort!<br />
+		Falls das Pa&szlig;wort ge&auml;ndert wurde, findet sich im Report ein
+		entsprechender Vermerk<br />
+	</p>
+	
+	<a id="PAUSE" name="PAUSE"></a>
+	<h3>PAUSE</h3>
+	<p>
+		PAUSE ist ein Parameter f&uuml;r den <a href="#ROUTE">ROUTE</a> Befehl.
+	</p>
+	
+	<a id="PRAEFIX" name="PRAEFIX"></a>
+	<h3>PR&Auml;FIX ["pr&auml;fix"]</h3>
+	<p>
+		Versieht eigene Einheiten mit einem Pr&auml;fix: In allen Auswertungen
+		erscheint vor der Rasse der Einheit das Pr&auml;fix, z.B. werden
+		<i>Zwerge</i> mit dem Pr&auml;fix "Dunkel" zu <i>Dunkelzwergen</i>.<br />
+		Einheiten, die einer <a href="#GRUPPE">Gruppe</a> angeh&ouml;ren, haben
+		ein eigenes Pr&auml;fix, welches in der Gruppe gespeichert ist: Wird eine
+		neue Gruppe erstellt, so &uuml;bernimmt diese das parteiweite
+		Pr&auml;fix. Falls eine Einheit der Gruppe den PR&Auml;FIX-Befehl gibt,
+		so &auml;ndert dies nur das Pr&auml;fix f&uuml;r Gruppenmitglieder.
+	</p>
+	<p class="bsp">Beispiel:<br />
+		EINHEIT d7ds<br />
+		PR&Auml;FIX Dunkel // Wird zu Dunkelzwergen
+	</p>
+	
+	<a id="Q" name="Q"></a>
+	<a id="R" name="R"></a>
+	<a id="REKRUTIERE" name="REKRUTIERE"></a>
+	<h3>REKRUTIERE anzahl</h3>
+	<p>
+		Mit dem REKRUTIERE-Befehl wirbt man Bauern an. Hierzu ben&ouml;tigt man
+		je nach Rasse nur 40 bis 200 Silber pro Person, die man rekrutieren will.
+		Die genaue Menge Silber h&auml;ngt dabei von der Rasse der Partei ab und
+		ist in dieser <a href="rassen.html#tabelle">Tabelle</a> nachzulesen.<br />
+		Verf&uuml;gt man &uuml;ber ausreichend Silber, so kann man pro Monat ca.
+		3% der Bauern rekrutieren, die in der Region leben: Die Anzahl der Bauern
+		wird sich um die entsprechende Anzahl verringern, und die Anzahl der
+		Personen in der Einheit erh&ouml;hen.<br />
+		Die rekrutierende Person muss das Geld bei sich haben. Sie wird kein Geld
+		von anderen Personen dazu verwenden. Das bedeutet auch, dass man
+		TEMP-Einheiten Geld geben oder diesen Einheiten einen
+		<a href="#BEANSPRUCHE">BEANSPRUCHE</a>-Befehl geben muss.<br />
+		Da sich die alten Personen der Einheit mit den neuen (ungelehrten)
+		Personen vermischen, k&ouml;nnen einige Talente der Einheit
+		&quot;verw&auml;ssern&quot;: Wie bei der &Uuml;bergabe von Personen an
+		andere Einheiten wird das (mit der Anzahl der Personen gewichtete)
+		Mittel der Talenttage gebildet.
+	</p>
+	<p>
+		Will man in einem Monat mehr als 3% der Bev&ouml;lkerung rekrutieren, so
+		mu&szlig; man Personen <a href="#ANWERBEN">anwerben</a>.
+	<pre class="bsp">Beispiel:
+EINHEIT eins 
+	GIB TEMP 5 1000 Silber
+	MACHE TEMP 5
+		REKRUTIERE 3
+		LERNE Tarnung
+		BENENNE EINHEIT "Diebesgilde"
+	ENDE
+	</pre>
+	
+
+	<a id="ROUTE" name="ROUTE"></a>
+	<h3>ROUTE richtung [richtung] [...] &lt;L&gt;</h3>
+	<p>
+		Wie auch mit <a href="#NACH">NACH</a> kann man dem Befehl ROUTE die 
+		aktuelle Region verlassen. Hinter ROUTE	wird die (Himmels-)Richtung 
+		angegeben, in die man reist. Da Allanon aus	Hexagonen besteht, kann man 
+		nur nach Nordosten, Osten, S&uuml;dosten, 	S&uuml;dwesten, Westen und 
+		Nordwesten reisen (bzw. NO, O, SO, SW, W, NW). Zus&auml;tzlich kennt
+		ROUTE noch einen weiteren Parameter: PAUSE. Sobald in der Liste der 
+		Richtungen PAUSE vorkommt, wird die Einheit die Bewegung f&uuml;r diese
+		Runde beenden.
+	</p>
+	<p>
+		Zu Fu&szlig; kommt man in einem Monat gerade einmal eine Region weit.
+		Einheiten, die jedoch &uuml;ber ein Pferd oder ein Schiff verf&uuml;gen
+		oder &uuml;ber Strassen reisen, k&ouml;nnen in einem Monat l&auml;ngere
+		Strecken zur&uuml;cklegen (siehe auch das Kapitel &uuml;ber
+		<a href="reisen.html">Reisen</a>) und m&uuml;ssen hierf&uuml;r einfach
+		mehrere Richtungen angeben.
+	</p>
+	<p>
+		Falls der Kapit&auml;n eines Schiffes (bzw. Karawane) einen ROUTE-Befehl
+		erh&auml;lt, so wird sich das gesamte Schiff (Karawane) in Bewegung
+		setzen. Alle Personen, die sich noch in dem Schiff (Karawane) befinden,
+		werden mitgenommen. Umgekehrt k&ouml;nnen andere Personen au&szlig;er
+		dem Kapit&auml;n (Karawanenf&uuml;hrer) keinen Bewegungsbefehl erhalten.
+	</p>
+	<p>
+		Richtungsparameter, die die Einheit in dieser Runde abgearbeitet hat, 
+		werden bei ROUTE - im Gegensatz zu <a href="#NACH">NACH</a> - ans Ende des
+		ROUTE-Befehls angeh&auml;ngt. (siehe <a href="#ROUTE_BSP">Beispiel</a>).
+		Falls die Einheit die Bewegung aus wichtigen Gr&uuml;nden abbricht (z.B.
+		weil sie in den Ozean l&auml;ft), so wird der ROUTE-Befehl nicht in die 
+		folgende Zugvorlage &uuml;bernommen.
+	</p>
+	<p>
+		Eine Einheit, die in dieser Runde durch K&auml;mpfe Verluste erlitten
+		hat, kann keinen ROUTE-Befehl ausf&uuml;hren.
+	</p>
+	<p>
+		Siehe auch den <a href="#NACH">NACH</a> Befehl.
+	</p>
+	<p>
+		ROUTE ist ein langer Befehl.
+	</p>
+	<a id="ROUTE_BSP"></a>
+	<pre class="bsp">Beispiel:
+Eine berittene Einheit (max. 2 Regionen), erh&auml;lt den folgenden ROUTE-Befehl:
+  ROUTE NO NO O PAUSE W SW SW PAUSE
+Die Einheit wird zwei Regionen weit reisen (NO NO). Danach sieht der Befehl so aus:
+  ROUTE O PAUSE W SW SW PAUSE NO NO
+Nun reist die Einheit nur 1 Region (O). Der neue Befehl:
+  ROUTE W SW SW PAUSE NO NO O PAUSE
+usw.
+	</pre>
+
+	<a id="S" name="S"></a>
+	<a id="SAMMEL" name="SAMMEL"></a>
+	<h3>
+		SAMMEL menge [SILBER]<br />
+		SAMMEL menge gegenstand<br />
+		SAMMEL BEUTE
+	</h3>
+	<p>
+		Mit SAMMEL menge SILBER kann man einer Einheit befehlen, das
+		Silber in der Region einzusammeln. Dies lohnt sich z.B. um alles Silber
+		einer einzelnen gut getarnten Einheit zu geben, oder um das Silber einem
+		Verwalter zu &uuml;berreichen, um den Verwaltungsaufwand zu minimieren.
+		Anstatt einer bestimmten Menge anzugeben, kann man auch den Parameter
+		ALLES benutzen, wodurch dann alles Silber in der Region eingesammelt wird.
+		<br />
+		Silber, das mittels <a href="#GIB">GIB</a> oder 
+		<a href="#LIEFERE">LIEFERE</a> explizit an eine Einheit &uuml;bergeben 
+		wurde bzw. Silber das mittels <a href="#BEANSPRUCHE">BEANSPRUCHE</a> dem
+		Reichsschatz entnommen wurde, wird dabei nicht eingesammelt.
+	</p>
+	<p>
+		SAMMEL menge gegenstand funktioniert genau wie das Einsammeln von Silber, 
+		nur da&szlig; ein Gegenstand angegeben werden mu&szlig;, der dann gesammelt
+		wird. Wird der Parameter gegenstand nicht angegeben, dann wird Silber
+		gesammelt!
+	</p>
+	<p>
+		SAMMEL BEUTE ist dazu da, um eine Einheit nach einem Kampf die gesamte
+		Beute aufzusammeln: Nach einem Konflikt wird nur die Einheit, die SAMMEL
+		BEUTE gesetzt hat, die Beute aufsammeln. Auf diese Art kann man
+		verhindern, da&szlig; die falsche Einheit die Beute erh&auml;lt und evtl.
+		&uuml;berladen wird.
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 1
+	ATTACKIERE df
+EINHEIT 2
+	SAMMEL BEUTE
+EINHEIT 3
+	SAMMEL 10 Eisen
+	MACHE Schwert
+	</pre>
+	
+	<a id="SABOTIERE" name="SABOTIERE"></a>
+	<h3>SABOTIERE &lt;L&gt;</h3>
+	<p>
+		Die Einheit wird versuchen, das Geb&auml;ude oder das Schiff, in dem sie
+		sich aufh&auml;lt zu sabotieren. Eine erfolgreiche Sabotage in einem
+		Schiff hat das sofortige Sinken des Schiffes zur Folge. Falls das Schiff
+		gerade auf hoher See sein sollte, werden die Insassen ertrinken. Ein
+		sabotiertes Geb&auml;ude gilt bis zum Ende des Monats als nicht
+		einsatzf&auml;hig. S&auml;mtliche Boni, die das Geb&auml;ude
+		normalerweise geben w&uuml;rden fallen weg.<br />
+		Um festzustellen, ob ein Sabotageversuch erfolgreich ist, wird das
+		Wahrnehmungstalent des Saboteurs mit dem Wahrnehmungstalent des
+		Burgeigent&uuml;mers / Kapit&auml;ns verglichen. Die Basischance f&uuml;r
+		Sabotage liegt bei 25%. Pro Talentwert Sabotage steigt die Chance um 6%.
+		Pro Talentwert Wahrnehmung f&auml;llt sie um 5%.<br />
+		Unabh&auml;ngig vom Erfolg der Sabotage hat der Eigent&uuml;mer eine
+		Chance von 25% den Saboteur zu erwischen, wobei die Wahrscheinlichkeit
+		pro Talentpunkt Wahrnehmung um 6% steigt und pro Talentstufe Wahrnehmung um
+		5% sinkt. Wird der Saboteur ertappt, so erh&auml;lt der Eigent&uuml;mer
+		eine Nachricht.
+	</p>
+
+	<a id="SORTIERE" name="SORTIERE"></a>
+	<h3>SORTIERE [VOR][HINTER] einheit</h3>
+	<p>
+		&Auml;ndert die Reihenfolge der Einheiten in der Zugvorlage. Die Einheit,
+		die den Befehl gibt, wird ab der n&auml;chsten Auswertung vor, bzw. hinter
+		der angegebenen Einheit einsortiert. Es mu&szlig; mindestens einer der 
+		Parameter VOR oder HINTER angegeben werden. Die Einheit einheit mu&szlig; der
+		selben Partei angeh&ouml;ren, wie die Einheit, die den Befehl gibt.
+	</p>
+	<pre class="bsp">
+EINHEIT 1
+	LERNE Tarnung
+EINHEIT 2
+	LERNE Wahrnehmung
+	SORTIERE VOR 1
+	</pre>
+	
+	<a id="SPIONIERE" name="SPIONIERE"></a>
+	<h3>SPIONIERE einheit-nr &lt;L&gt;</h3>
+	<p>
+		Spioniert die angegebene Einheit aus. Hierzu wird das Wahrnehmungstalent des
+		Beobachters mit dem Tarnungstalent der beobachteten Einheit verglichen.
+		Pro Talentpunkt Wahrnehmung steigt die Erfolgschance von 25% um 6%. Pro
+		Talentstufe Tarnung f&auml;llt sie um 5%.<br />
+		Ist der Versuch gelungen, so erh&auml;lt die Einheit eine zuf&auml;llige
+		Information &uuml;ber die Zieleinheit. Die kann z.B. ein Talent oder der
+		Kampfstatus der Einheit sein.<br />
+		Unabh&auml;ngig vom Erfolg der Spionage hat die ausspionierte Einheit
+		eine Chance von 25% den Spion zu ertappen. Dabei steigt die
+		Wahrscheinlichkeit pro Talentpunkt Wahrnehmung (der beobachteten
+		Einheit) um 6% und f&auml;llt pro Talentstufe Wahrnehmung (des Spions) um
+		5%.
+	</p>
+	
+	<a id="STIRB" name="STIRB"></a>
+	<h3>STIRB &quot;passwort&quot;</h3>
+	<p>
+		L&auml;scht die Partei aus dem Spiel. Hinter STIRB mu&szlig;
+		sicherheitshalber das Passwort angegeben werden. Der Befehl wird erst
+		nach GIB ausgef&uuml;hrt, so da&szlig; man Verb&uuml;ndeten noch
+		Gegenst&auml;nde &uuml;berreichen kann. STIRB mu&szlig; von einer Einheit
+		gesetzt werden!
+	</p>
+	<pre class="bsp">Beispiel:
+PARTEI d &quot;Allanon&quot;
+	EINHEIT iiii 
+		STIRB &quot;Allanon&quot;
+	</pre>
+	
+	<a id="T" name="T"></a>
+	<a id="TARNEN" name="TARNEN"></a>
+	<h3>
+		TARNE PARTEI [NICHT]<br />
+		TARNE EINHEIT [NICHT]<br />
+		TARNE [NICHT]
+	</h3>
+	<p>
+		TARNE PARTEI verbirgt die Parteizugeh&ouml;rigkeit einer Einheit vor
+		Fremden. Alle Parteien, denen kein <a href="#HELFE">HELFE TARNE</a>
+		gesetzt wurde, k&ouml;nnen die Parteizugeh&ouml;rigkeit der Einheit
+		nicht mehr erkennen. Das hei&szlig;t nat&uuml;rlich nicht, da&szlig; sie
+		nicht aus Rasse oder Pr&auml;fix auf die Partei schlie&szlig;en 
+		k&ouml;nnten...
+	</p>
+	<p>
+		TARNE EINHEIT verbirgt die Einheit vor allen, deren Wahrnehmung zu
+		gering ist. Einheiten, deren Wahrnehmung kleiner als das Tarnungstalent
+		der verborgenen Einheit ist, k&ouml;nnen die Einheit nicht mehr sehen.
+	</p>
+	<p>
+		Wird kein Parameter angegeben, so entspricht dies:<br />
+		TARNE EINHEIT<br />
+		TARNE PARTEI NICHT<br />
+		Ein TARNE NICHT hebt s&auml;mtliche Tarnungsversuche auf (d.h. sowohl
+		die Partei als auch die Einheit werden angezeigt.<br />
+		Neue Einheiten starten standardm&auml;&szlig;ig mit offenbarter Partei,
+		versuchen jedoch sich selbst zu verbergen.
+	</p>
+	
+	<a id="TREIBE" name="TREIBE"></a>
+	<h3>TREIBE [maximum] &lt;L&gt;</h3>
+	<p>
+		Befiehlt der Einheit Steuern einzutreiben. Eine Einheit kann nur dann
+		Steuern eintreiben, wenn sie bewaffnet ist und &uuml;ber das
+		entsprechende Waffentalent verf&uuml;gt. Pro Monat, Person und
+		Talentpunkt Steuereintreiben k&ouml;nnen bis zu $20 eingetrieben werden.
+		In einer Region, die von einer nichtallierten Einheit bewacht wird,
+		k&ouml;nnen keine Steuern eingetrieben werden.
+	</p>
+	<p>
+		Beim Eintreiben von Steuern sollte man darauf achten, da&szlig; man nicht
+		zu viel Geld eintreibt, damit die Bauern stets gen&uuml;gend Silber
+		besitzen und nicht verhungern. Eine ausf&uuml;hrliche Erkl&auml;rung des
+		Steuereintreibens findet sich im Kapitel &uuml;ber das
+		<a href="geld.html#steuern">Geld</a>.
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT 1
+	TREIBE 5000
+	</pre>
+		
+	<a id="U" name="U"></a>
+	<a id="UNTERHALTE" name="UNTERHALTE"></a>
+	<h3>UNTERHALTE &lt;L&gt;</h3>
+	<p>
+		Die Einheit wird versuchen, Geld durch Unterhaltung zu verdienen. Jeden
+		Monat kann die Einheit so pro Person und Talentstufe Unterhaltung bis zu
+		20 Silber verdienen. Die Bauern geben ca. 5% ihres Geldes f&uuml;r
+		Unterhaltung aus. Will man mehr einnehmen, so mu&szlig; man Steuern
+		eintreiben. Wollen zu viele Einheiten unterhalten, so wird das
+		vorhandene Geld unter ihnen aufgeteilt.
+	</p>
+	<p>
+		Mehr zum Thema Unterhaltung findet sich im Kapitel &uuml;ber das
+		<a href="geld.html#unterhaltung">Geld</a>.
+	</p>
+	
+	<a id="UNTERSTUETZE" name="UNTERSTUETZE"></a>
+	<h3>UNTERST&Uuml;TZE einheit-nr &lt;L&gt;</h3>
+	<p>
+		Mehrere Magier k&ouml;nnen sich zu einem Zirkel zusammenschlie&szlig;en,
+		um noch m&auml;chtigerere Rituale wirken zu k&ouml;nnen. Um einen Zirkel
+		zu formen mu&szlig; ein Magier zaubern und die restlichen Magier des
+		Zirkels den UNTERST&Uuml;tze-Befehl erhalten. Die Wirkung des Zaubers
+		verst&auml;rkt sich, als ob alle Mitglieder des Zirkels den Zauber
+		gemeinsam spr&auml;chen. (Spieltechnisch bedeutet dies einfach,
+		da&szlig; f&uuml;r alle Zauber, in die die Anzahl der Personen der
+		Magiereinheit eingeht, diese Anzahl der Personen im Zirkel entspricht.)
+	</p>
+	<pre class="bsp">Beispiel:
+EINHEIT mag1 // Magier mit 1 Person
+	ZAUBERE "Gro&szlig;es Ritual"
+EINHEIT mag1 // Magier mit 2 Personen
+	UNTERST&Uuml;TZE mag1
+Magier mag1 wird jetzt ein gro&szlig;es Ritual durchf&uuml;hren. F&uuml;r die Bestimmung 
+der Wirkung des Zaubers wird davon ausgegangen, da&szlig; mag1 3 Personen hat.
+	</pre>
+	
+	<a id="URSPRUNG" name="URSPRUNG"></a>
+	<h3>URSPRUNG x y</h3>
+	<p>
+		Mit diesem Befehl verschiebt man das Koordinatensystem der eigenen
+		Partei. Der Kartenursprung wird auf die angegebenen Koordinaten gesetzt, d.h.
+		die Region, die bisher die Koordinaten (x,y) hat, erh&auml;t die neuen Koordinaten
+		(0,0).
+	</p>
+	
+	<a id="V" name="V"></a>
+	<a id="VERGESSE" name="VERGESSE"></a>
+	<h3>VERGESSE talent</h3>
+	<p>
+		Die Einheit verliert alle Lerntage, die sie in dem angegebenen Talent
+		hatte. Dies kann in vielerlei F&auml;llen n&uuml;tzlich sein, z.B. um
+		Orks eines ihrer Waffentalente vergessen zu lassen.
+	</p>
+	
+	<a id="VERKAUFE" name="VERKAUFE"></a>
+	<h3>
+		VERKAUFE [anzahl] luxusgut &lt;L&gt;
+	</h3>
+	<p>
+		Eine Einheit, die das Talent Handeln erlernt hat, kann mit dem VERKAUFE
+		Befehl versuchen den &ouml;rtlichen Bauern Luxuswaren zu verkaufen
+		(siehe auch das Kapitel &uuml;ber das
+		<a href="geld.html#handel">Geld</a>. Um Waren zu handeln, ist ein Burg
+		der Gr&ouml;&szlig;e eines Handelspostens (oder gr&ouml;&szlig;er)
+		notwenig. Pro Monat kann eine Einheit pro Person und Talentstufe Handeln
+		10 Luxuswaren kaufen und verkaufen. Sie kann keine anderen langen
+		Befehle ausf&uuml;hren, allerdings beliebig viele
+		<a href="#KAUFE">KAUFE</a> und VERKAUFE Befehle abhandeln.
+	</p>
+	
+	<a id="VERLASSE" name="VERLASSE"></a>
+	<h3>VERLASSE</h3>
+	<p>
+		Weist die Einheit an, das Geb&auml;ude, das Schiff oder die Karawane, in
+		der sie sich gerade aufh&auml;lt zu verlassen. Dies kann z.B. notwenig
+		sein, um per <a href="#NACH">NACH</a> in eine Nachbarregion abzuwandern
+		wenn man in einem Schiff sitzt.
+	</p>
+	<p>
+		Um sicherzustellen, da&szlig; ein Schiff (Burg/Karawane), nicht die
+		Partei wechselt wenn der Kapit&auml;n das Schiff verl&auml;&szlig;t,
+		sollte man stets mit <a href="#GIB">GIB KOMMANDO</a> explizit eine
+		Einheit angeben, die das Kommando &uuml;bernehmen soll. Vergisst man
+		dies, wird eine zuf&auml;llige Einheit Besitzer.
+	</p>
+	<p>
+		Beim Geben von Befehlen sollte man die <a href="reihenfolge.html">
+		Befehlsreihenfolge</a> beachten. Beispielsweise muss ein BENENNE-Befehl vom
+		alten Besitzer der Einrichtung gegeben werden.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		EINHEIT a<br />
+		&nbsp;&nbsp;&nbsp;BENENNE SCHIFF "H.M.S. Enterprise"
+		&nbsp;&nbsp;&nbsp;// Einheit a ist der alte Kapit&auml;n und darf das noch.
+		<br />
+		&nbsp;&nbsp;&nbsp;GIB b KOMMANDO<br />
+		&nbsp;&nbsp;&nbsp;VERLASSE<br />
+		EINHEIT b<br />
+		&nbsp;&nbsp;&nbsp;BENENNE SCHIFF "H.M.S. Voyager"
+		&nbsp;&nbsp;&nbsp;// Einheit b ist zwar der neue Kapit&auml;n, kann das
+		Schiff aber diese Runde nicht mehr umbenennen.<br />
+	</p>
+	
+	<a id="W" name="W"></a>
+	<a id="WEIHE" name="WEIHE"></a>
+	<h3>
+		WEIHE gottheit
+	</h3>
+	<p>
+		<a href="produktion.html#tempel">Tempel</a> k&ouml;nnen mit diesem Befehl 
+		einer bestimmten <a href="kultur.html#gottheit">Gottheit</a> gewidmet 
+		werden. Jeder einer Gottheit gewidmete Tempel bringt spezielle Vorteile mit
+		sich, die von dem Charakter des Gottes abh&auml;ngen.
+	</p>
+	<p>
+		Ist ein Tempel erst einmal geweiht, so kann man den Gott, welchem er 
+		gewidmet ist, nicht mehr &auml;ndern. Nur der Besitzer eines Tempels, kann 
+		diesen weihen.
+	</p>
+	
+	<a id="X" name="X"></a>
+	<a id="Y" name="Y"></a>
+	<a id="Z" name="Z"></a>
+	<a id="ZAUBERE" name="ZAUBERE"></a>
+	<h3>
+		ZAUBERE &quot;zauber&quot; [parameter1] [parameter2] [...] &lt;L&gt;
+	</h3>
+	<pZ>
+		Ein Magier wird den angegebenen Zauber wirken. Dabei ist jedoch zu
+		beachten, da&szlig; es zwei verschiedene
+		<a href="magie.html#art">Arten von Zaubern</a> gibt: Kampfzauber und
+		normale Zauber. Kampfzauber werden mit dem Befehl
+		<a href="#KAMPFZAUBER">KAMPFZAUBER</a> ausgew&auml;hlt, aber erst
+		gezaubert, wenn die Einheit mittels <a href="#ATTACKIERE">ATTACKIERE</a>
+		angreift oder angegriffen wird. Normale Zauber hingegen k&ouml;nnen
+		mittels ZAUBERE gewirkt werden.
+	</p>
+	<p>
+		Um einen Zauber zu sprechen, mu&szlig; die Einheit &uuml;ber das
+		Magietalent verf&uuml;gen und den Zauber erlernt haben. Einen Zauber kann
+		man erlernen indem man ihn mittels <a href="#FORSCHE">FORSCHE</a>
+		erforscht, oder indem ein anderer Magier ihn mittels
+		<a href="#GIB">GIB zauber</a> beibringt. Unabh&auml;ngig davon wie man
+		den Zauber lernen will, mu&szlig; das eigene Magietalent hoch genug sein.
+		Au&szlig;erdem mu&szlig; man &uuml;ber das entsprechende
+		<a href="magie.html#magiegebiete">Magiegebiet</a> verf&uuml;gen.
+	</p>
+	<p>
+		Alle Zauber ben&ouml;tigen zus&auml;tzlich noch mindestens eine weitere
+		Komponente: Silber. Wieviel Silber ben&ouml;tigt wird, und ob noch
+		andere Gegenst&auml;nde notwendig sind, wird in der
+		<a href="magie.html#spruchbeschreibung">Spruchbeschreibung</a> angezeigt.
+		<strong>Spruchkosten sind immer f&auml;llig, auch wenn der
+		Zauber (egal aus welchem Grund) fehlschl&auml;gt.</strong>
+	</p>
+	<p>
+		Ebenfalls in der Spruchbeschreibung steht die genaue Syntax des Zaubers.
+		<strong>Wichtig:</strong> Regionskoordinaten, falls erforderlich,
+		m&uuml;ssen immer <strong>relativ zur Region des Magiers</strong>
+		angegeben werden. Um einen Spruch 2 Regionen im Westen zu zaubern, nimmt
+		man beispielsweise die Koordinaten &quot;-2 0&quot;. Die Region
+		nord&ouml;stlich liegt bei &quot;0 1&quot;.
+	</p>
+	<!--<p class="bsp">Beispiel:<br /></p>-->
+	
+	<a id="ZEIGE" name="ZEIGE"></a>
+	<h3>
+		ZEIGE "zauberspruch"<br />
+		ZEIGE "trank"<br />
+		ZEIGE "gegenstand"<br />
+		ZEIGE ALLE [ZAUBERBUCH][TR&Auml;NKE][GEGENST&Auml;NDE]
+	</h3>
+	<p>
+		Gibt in der n&auml;chsten Auswertung das Rezept eines Trankes, bzw. die 
+		Beschreibung eines Zaubers oder eines Gegenstandes aus.<br />
+		Mit ZEIGE ALLE erh&auml;lt man die Beschreibung aller Zauber und aller 
+		alchimistischen Rezepte. F&uuml;gt man ein ZAUBERBUCH, TR&Auml;NKE
+		oder GEGENST&Auml;NDE an, so werden nur die Beschreibungen dieser
+		Kategorie ausgegeben.<br />
+		Um sich eine Beschreibung eines Gegenstandes anzeigen zu lassen, muss die
+		Einheit den Gegenstand besitzen. Um die Beschreibung eines Zaubers oder
+		eines alchimistischen Produkts anzeigen zu k&ouml;nnen, mu&szlig; der
+		Zauber bzw. der Trank der Einheit bekannt sein.
+	</p>
+	
+	<a id="ZERSTOERE" name="ZERSTOERE"></a>
+	<h3>
+		ZERST&Ouml;RE
+	</h3>
+	<p>
+		Eine Einheit mit diesem Befehl wird das Geb&auml;ude, das Schiff oder die
+		Karawane, in der sie sich befindet, zerst&ouml;ren bzw. aufl&ouml;sen.
+		Allerdings muss die zerst&ouml;rende Einheit das Kommando besitzen.
+		Im Falle einer Burg werden die abgebauten Steine zur H&auml;lfte
+		wiederverwertet. Das hei&szlig;t, da&szlig; die Einheit die Steine
+		weitergeben oder wegwerfen muss, falls sie sich bewegen will. Ansonsten
+		ist sie h&ouml;chstwahrscheinlich &uuml;berladen.
+	</p>
+	<p class="bsp">
+		Beispiel:<br />
+		// Einheit a ist Besitzer der Burg<br />
+		EINHEIT a<br />
+		&nbsp;&nbsp;&nbsp;ZERST&Ouml;RE
+	</p>
+	<h2>Automatisierungen</h2>
+	<p>
+		Derzeit gibt es in Allanon drei M&ouml;glichkeiten, die Befehle in 
+		geringen Schranken zu automatisieren.
+	</p>
+	<p>
+		Ein Befehl, dem ein &quot;@&quot;	vorsteht, wird jede Runde wieder in die
+		Befehlsvorlage aufgenommen, selbst dann, wenn es sich um einen kurzen 
+		Befehl handelt.
+	</p>
+	<p>
+		Geht dem Befehl ein &quot;+N&quot; voraus, wobei N eine Zahl ist, so wird
+		der Befehl diese Runde nicht ausgef&uuml;hrt, jedoch in die n&auml;chste
+		Zugvorlage wieder aufgenommen, wobei die Zahl N um 1 verringert wird. Bei 
+		0 angekommen, wird die Zeile als normaler	Befehl &uuml;bernommen.<br />
+		Mit &quot;+5&quot; erreicht man also, da&szlig; der Befehl in 5 Runden 
+		ausgef&uuml;hrt wird.
+	</p>
+	<p>
+		Mit dem &quot;=N&quot; vor einem Befehl, wird der folgende Befehl immer 
+		sofort ausgef&uuml;hrt. In der n&auml;chsten Befehlsvorlage taucht der
+		Befehl au&szlig;erdem wieder auf, allerdings steht ihm nun ein 
+		&quot;+N&quot; voran.<br />
+		Dies bedeutet, da&szlig; ein mit +N gekennzeichneter Befehl alle N Runden
+		(beginnend mit dieser Runde) durchgef&uuml;hrt wird.
+	</p>
+	<p>
+		Eine Kombination dieser Befehlsvorzeichen ist durchaus m&ouml;glich, 
+		allerdings nur in einigen F&auml;llen sinnvoll. Weder der Allanon Server,
+		noch der Befehlschecker, werden die Funktionalit&auml;t der Befehlsvorzeichen
+		pr&uuml;fen!
+	</p>
+	<p>
+		<bold>Achtung!</bold><br />
+		Die Befehl werden nur in die Zugvorlage &uuml;bernommen. Der Spieler ist 
+		mu&szlig; die Befehl noch einschicken, damit sie abgearbeitet werden (zur 
+		Erinnerung: der zuletzt gesetzte lange Befehl wird auch dann abgearbeitet,
+		wenn keine Befehle eingeschickt werden).<br />
+		Lange Befehle werden zwar in die Zugvorlage mit &uuml;bernommen, doch kann
+		aufgrund der internen Speicherstruktur leider nicht verhindert werden, 
+		da&szlig; der bisherige lange Befehl weiterhin stehen bleibt. In diesem Fall 
+		wird der unterste	lange Befehl abgearbeitet (dies ist der mittels "+5" 
+		eingetragene).
+	</p>
+	<pre class="bsp">
+EINHEIT 123
+	LERNE Waffenbau
+	GIB trns 5 Streitkolben
+	@GIB trns 5 Speer
+	+2 GIB trns 5 Lanze
+	+1 @GIB trns 5 Kriegsaxt
+	=1 GIB trns 5 Schwert
+
+wird zu 
+EINHEIT 123
+	LERNE Waffenbau
+	@GIB trns 5 Speer
+	+1 GIB trns 5 Lanze
+	@GIB trns 5 Kriegsaxt
+	+1=1 GIB trns 5 Schwert
+	
+wird zu
+EINHEIT 123
+	LERNE Waffenbau
+	@GIB trns 5 Speer
+	GIB trns 5 Lanze
+	@GIB trns 5 Kriegsaxt
+	=1 GIB trns 5 Schwert
+	</pre>
+	
+<a id="LANGE" name="LANGE"></a>
+<h2>&Uuml;bersicht &uuml;ber lange Befehle</h2>
+Bei den hier aufgef&uuml;hrten Befehlen handelt es sich um lange Befehle. Pro 
+Runde kann von jeder Einheit nur ein langer Befehl ausgef&uuml;hrt werden.
+Alle hier nicht genannten Befehle sind kurze Befehle. Eine Einheit kann beliebig
+viele kurze Befehle erhalten.
+ANWERBEN<br />
+ARBEITE<br />
+BEKLAUE<br />
+BELAGERE<br />
+ERKUNDE<br />
+FOLGE<br />
+FORSCHE<br />
+LEHRE<br />
+LERNE<br />
+MACHE (außer MACHE TEMP, MACHE KARAWANE, MACHE ALIAS)<br />
+NACH<br />
+ROUTE<br />
+SABOTIERE<br />
+SPIONIERE<br />
+TREIBE<br />
+UNTERHALTE<br />
+UNTERST&Uuml;TZE<br />
+ZAUBERE
+	
+	<p class="right">
+		Version: $Id: befehle.html 1054 2008-01-17 21:02:41Z sophie $
+	</p>
+</body>
+</html>

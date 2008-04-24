@@ -1,8 +1,13 @@
+2008-04-23 / Build 190 - Thoralf (thoralf@m84.de)
+    * typing failure in SMTP error dialog
+    * CR Writer failure in Schatz
+    * added Allanon help to integrated help
+    
 2008-04-23 / Build 189 - Fiete (sf@fietefietz.de)
-	* changed behaviour of TaskPanel-refreshProblems, only updating, if visible
-	* every component added to DockingFrameWork instancing the Listener is registered as listener
-	* using windowHidden and windowShown to determine if TaskTablePanel is shown
-	* specified title for progressbar at refreshProblems in TaskTablePanel
+    * changed behaviour of TaskPanel-refreshProblems, only updating, if visible
+    * every component added to DockingFrameWork instancing the Listener is registered as listener
+    * using windowHidden and windowShown to determine if TaskTablePanel is shown
+    * specified title for progressbar at refreshProblems in TaskTablePanel
 	
 2008-04-23 / Build 188 - Thoralf (thoralf@m84.de)
     * Added some more resources and icons for Allanon specific stuff

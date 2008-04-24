@@ -289,6 +289,10 @@ public abstract class MagellanFactory {
     if(curFaction.getPassword() != null) {
       newFaction.setPassword(curFaction.getPassword());
     }
+    
+    if (curFaction.getTreasury() != 0) {
+      newFaction.setTreasury(curFaction.getTreasury());
+    }
 
     if(curFaction.getSpellSchool() != null) {
       newFaction.setSpellSchool(curFaction.getSpellSchool());

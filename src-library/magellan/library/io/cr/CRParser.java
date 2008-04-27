@@ -2719,6 +2719,9 @@ public class CRParser implements RulesIO, GameDataIO {
         ui.setProgress(Resources.get("progressdialog.loadcr.step03",new Object[]{region.getName()}), 2);
 
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("id")) {
+        // TODO save new Region ID in game data
+        sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
         region.setDescription(sc.argv[0]);
         sc.getNextToken();

@@ -37,6 +37,7 @@ import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.logging.Logger;
 
 /**
  * TODO This class must be commented
@@ -45,6 +46,7 @@ import magellan.library.rules.RegionType;
  * @version 1.0, 14.12.2007
  */
 public class MapMergeEvaluator {
+  private static final Logger log = Logger.getInstance(MapMergeEvaluator.class);
   
   /**
    * An inner class holding a coordinate translation and its score.
@@ -95,6 +97,13 @@ public class MapMergeEvaluator {
   }
 
   public CoordinateID getMapping(GameData main, GameData add, int layer) {
+    CoordinateID result = getMappingByRegionUID(main, add, layer);
+    if (result!=null){
+      // if MappingByRegionUID was succesfull, return the result
+      // remove info-line if tested
+      log.info("MapMerge for Layer " + layer + " found by regionUID: " + result.toString());
+      return result;
+    }
     return getMappingByNameAndTerrain(main, add, layer);
   }
   
@@ -133,6 +142,34 @@ public class MapMergeEvaluator {
   }
 
   /**
+   * The method calculates different translation posibilities by matching
+   * the region UIDs of the two reports. For each UID match found the 
+   * score is inceased by 10. (score is not needed)
+   * 
+   * (Fiete) to think of:
+   * regionUID is that strong, if we have more than one translation
+   * something must be realy wrong. We took now the translation with the most
+   * hits(max score)...but optional we could return NULL if translations.size>1
+   * 
+   * @param main - The current GameData
+   * @param add  - The added GameData
+   * @param layer - the layer in which the mapping should be performed
+   * @return The best possible mapping in this layer or null, of none found!
+   */
+  protected CoordinateID getMappingByRegionUID(GameData main, GameData add, int layer) {
+    // create possible translations by name
+    //   equal name = 5 points per name
+    Map<CoordinateID, CoordinateTranslation> translations = createTranslationsByRegionUID(main, add, layer);
+    // decide best translation
+    if (translations.size() > 0) {
+      return Collections.max(translations.values()).getTranslation();
+    } else {
+      return null;
+    }
+  }
+  
+  
+  /**
    * Add translation to map and increase score.
    * 
    * @param translationMap
@@ -153,6 +190,11 @@ public class MapMergeEvaluator {
    * Score for name match.
    */
   protected static final int SCORE_EQUAL_NAME = 5;
+  
+  /**
+   * Score for region UID match.
+   */
+  protected static final int SCORE_EQUAL_UID = 10;
   
   /**
    * Tries to find matching regions and adds translations to the map accordingly.
@@ -314,5 +356,40 @@ public class MapMergeEvaluator {
   public CoordinateID getRelatedCoordinate(GameData data, CoordinateID c, int level) {
     return c;
   }
+  
+  
+  /**
+   * Tries to find matching regions and adds translations to the map accordingly.
+   * 
+   * @param newReport
+   * @return
+   */
+  private Map<CoordinateID, CoordinateTranslation> createTranslationsByRegionUID(GameData main, GameData add, int layer) {
+    Map<CoordinateID, CoordinateTranslation> translationMap = new Hashtable<CoordinateID, CoordinateTranslation>();
+    
+    // Create HashMap of regions in added report
+    Map<Long, Region> regionMap = new HashMap<Long, Region>();
+    for (Region region : add.regions().values()) {
+      if ((region.getUID() != 0) && (region.getCoordinate().z == layer)) {
+        regionMap.put(region.getUID(),region);
+      }
+    }
+    
+    // loop regions in main report
+    for (Region region : main.regions().values()) {
+      CoordinateID coord = region.getCoordinate();
+      if ((coord.z == layer) && (region.getUID() != 0)) {
 
+        Region result = regionMap.get(region.getUID());
+        if (result != null) {
+          CoordinateID foundCoord = result.getCoordinate();
+          CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
+          addTranslation(translationMap, translation, SCORE_EQUAL_UID);
+        }
+      }
+    }
+    return translationMap;
+  }
+  
+  
 }

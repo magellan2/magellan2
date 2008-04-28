@@ -1,4 +1,10 @@
-2008-04-23 / Build 192 - Thoralf (thoralf@m84.de)
+2008-04-29 / Build 191 - Fiete (sf@fietefietz.de)
+	* parse ID tag in REGION block
+	* write ID tag in REGION block (if avail)
+	* use region UID as dominat tool for merging
+	* (updated MapMergeEvaluator, but not activated)
+
+2008-04-23 / Build 191 - Thoralf (thoralf@m84.de)
     * ignore ID tag in REGION block (til we know how to handle region ids)
 
 2008-04-24 / Build 191 - Enno (enno@eressea.de)

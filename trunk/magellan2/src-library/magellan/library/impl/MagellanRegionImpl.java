@@ -176,6 +176,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   private Integer coastBitMask = null;
   
+  /**
+   * the unique regionID generated and sent by the eressea server
+   * starting with turn 570 
+   */
+  private long UID =0;
+  
 	
 	/**
 	 * Constructs a new Region object uniquely identifiable by the specified id.
@@ -1924,6 +1930,26 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setCoastBitMap(Integer bitMap){
     this.coastBitMask = bitMap;
+  }
+
+  /**
+   * Returns the value of uID, the unique regionID generated and sent by the
+   * eressea server (starting in turn 570)
+   * 
+   * @return Returns uID.
+   */
+  public long getUID() {
+    return UID;
+  }
+
+  /**
+   * Sets the value of uID, the unique regionID generated and sent by the
+   * eressea server (starting in turn 570)
+   *
+   * @param uid The value for uID.
+   */
+  public void setUID(long uid) {
+    UID = uid;
   }
   
   

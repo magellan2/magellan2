@@ -1735,7 +1735,15 @@ public class CRWriter extends BufferedWriter {
 		
 		write("REGION " + region.getID().toString(" "));
 		newLine();
-
+		
+		// Fiete: starting in round 570 we can have region.UID within
+		// eressea, coming from the server.
+		// if UID is known, write it now
+		// UID=0 reserved for no UID.
+		if (region.getUID()!=0){
+		   writeQuotedTag(region.getUID() + "", "id");
+		}
+		
 		UnitContainerType type = region.getType();
 
 		if((region.getName() != null) && !region.getName().equals("")) {

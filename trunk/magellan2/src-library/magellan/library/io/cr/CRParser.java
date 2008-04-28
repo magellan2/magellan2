@@ -2687,7 +2687,7 @@ public class CRParser implements RulesIO, GameDataIO {
     if(c == null) {
       unknown("REGION", true);
       // FIXME (stm) really break on unknown token?
-
+      // (fiete): yes, without CoordinateID Region is not accessible
       return;
     }
     
@@ -2720,7 +2720,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("id")) {
-        // TODO save new Region ID in game data
+        region.setUID(Long.parseLong(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
         region.setDescription(sc.argv[0]);

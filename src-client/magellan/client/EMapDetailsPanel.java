@@ -996,7 +996,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			icon = null;
 
 			try {
-				icon = r.getHerb().getMakeSkill().getSkillType().getID().toString();
+			  // bug 254..use the herb specified icon..at least try to find it
+				// icon = r.getHerb().getMakeSkill().getSkillType().getID().toString();
+			  icon = "items/" + r.getHerb().getIconName();
 			} catch(Exception exc) {
 				icon = "kraeuterkunde";
 			}

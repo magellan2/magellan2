@@ -582,7 +582,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			if(chkDelStats.isSelected()) {
 				// delete points, person counts, spell school, alliances, messages
 				// of privileged factions
-			  //
+			  // Fiete: why only from privileged factions?
 				if(newData.factions() != null) {
 					Iterator<Faction> it1 = newData.factions().values().iterator();
 					boolean excludeBRegions = (crw.getIncludeMessages() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0));
@@ -605,8 +605,21 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 								}
 							}
 						}
-
+						
+						// here we del the stats !
+						f.setAverageScore(-1);
+            f.setScore(-1);
+            f.setPersons(-1);
+            f.setMigrants(-1);
+            f.setMaxMigrants(-1);
+            f.setSpellSchool(null);
+            f.setAllies(null);
+            f.setHeroes(-1);
+            f.setMaxHeroes(-1);
+						
 						if(found && f.isPrivileged()) {
+						  /**
+						   * Fiete: removed here and called for every faction
 							f.setAverageScore(-1);
 							f.setScore(-1);
 							f.setPersons(-1);
@@ -617,7 +630,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							// FIXED: heroes?  (Fiete)
 							f.setHeroes(-1);
 							f.setMaxHeroes(-1);
-							
+							**/
 							if(excludeBRegions && (f.getMessages() != null)) {
 								Iterator<Message> it2 = f.getMessages().iterator();
 								

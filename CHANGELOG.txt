@@ -1,3 +1,7 @@
+2008-04-30 / Build 192 - Fiete (sf@fietefietz.de)
+	* delStats in CRWriterDialogue now for all factions
+	* using herb icon in RegionDetails
+	
 2008-04-29 / Build 191 - Fiete (sf@fietefietz.de)
 	* parse ID tag in REGION block
 	* write ID tag in REGION block (if avail)

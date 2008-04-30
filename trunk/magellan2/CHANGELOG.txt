@@ -1,3 +1,9 @@
+2008-04-31 / Build 193 - Fiete (sf@fietefietz.de)
+	* write regionUID not quoted
+	* added regionUID to mergeRegion
+	* feature #237: clever askForPassword-Dialogue.
+	* feature #253: use categoryIcon for categorizedItems
+
 2008-04-30 / Build 192 - Fiete (sf@fietefietz.de)
 	* delStats in CRWriterDialogue now for all factions
 	* using herb icon in RegionDetails

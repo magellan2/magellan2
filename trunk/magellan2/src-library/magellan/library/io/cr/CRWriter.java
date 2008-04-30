@@ -1741,7 +1741,11 @@ public class CRWriter extends BufferedWriter {
 		// if UID is known, write it now
 		// UID=0 reserved for no UID.
 		if (region.getUID()!=0){
-		   writeQuotedTag(region.getUID() + "", "id");
+		   // first example was quoted
+		   // writeQuotedTag(region.getUID() + "", "id");
+		   // finally we use not quoted IDs
+		  write(region.getUID()+ ";id");
+		  newLine();
 		}
 		
 		UnitContainerType type = region.getType();

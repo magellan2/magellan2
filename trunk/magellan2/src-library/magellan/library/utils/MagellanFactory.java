@@ -1081,6 +1081,12 @@ public abstract class MagellanFactory {
       newRegion.setHerb(newGD.rules.getItemType(curRegion.getHerb().getID(), true));
     }
 
+    // Fiete 20080430: merging regionUIDs
+    if (curRegion.getUID()!=0){
+      newRegion.setUID(curRegion.getUID());
+    }
+    
+    
     if(curRegion.getHerbAmount() != null) {
       /* FIXME There was a bug around 2002.02.16 where numbers would be
        stored in this field - filter them out. This should only

@@ -49,6 +49,7 @@ import magellan.client.Client;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -127,15 +128,26 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     c.weightx = 0.0;
     mainPanel.add(label,c);
     
-    Vector<FactionItem> items = new Vector<FactionItem>();
-    items.add(new FactionItem(null));
-    for (Faction f : data.factions().values()) {
-      items.add(new FactionItem(f));
+    // Vector<FactionItem> items = new Vector<FactionItem>();
+    Vector<FactionItem> items = this.getProbablyPriviligedFactionItems(data);
+    if (items==null){
+      items = this.getAllFactionItems(data);
     }
-    FactionItem first = items.get(1);
+    if (items.size()>1){
+      // add only a "plz select" if we have more than one candidate
+      items.add(new FactionItem(null));
+    }
+    
+    // FactionItem first = items.get(1);
     Collections.sort(items, new FactionItemComparator());
+    /*
+     * (what for?)
     if (first!=null)
       items.add(1, first);
+    */
+    
+    
+    
     factionBox = new JComboBox(items);
     c.gridx = 1;
     c.gridy = 1;
@@ -226,4 +238,61 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     }
     
   }
+  
+  /**
+   * 
+   * tries to find some hints if a faction is "owned" by the user...and possible
+   * a password may make sense...
+   * uses battle-status to identify such factions (-1 by default)
+   * 
+   * @param f
+   * @param data
+   * @return
+   */
+  private boolean isProbablyPriviligedFaction(Faction f, GameData data){
+    for (Unit u : data.units().values()){
+      if (u.getFaction().equals(f) && u.getCombatStatus()!=-1){
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  /**
+   * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
+   * 
+   * @param data
+   * @return
+   */
+  private Vector<FactionItem> getProbablyPriviligedFactionItems(GameData data){
+    Vector<FactionItem> erg = null;
+    for (Faction f : data.factions().values()) {
+      if (this.isProbablyPriviligedFaction(f, data)){
+         if (erg==null){
+           erg = new Vector<FactionItem>();
+         }
+         erg.add(new FactionItem(f));
+      }
+    }
+    return erg;
+  }
+  
+  /**
+   * Builds a list with factions with </code>isProbablyPriviligedFaction=true</code>
+   * 
+   * @param data
+   * @return
+   */
+  private Vector<FactionItem> getAllFactionItems(GameData data){
+    Vector<FactionItem> erg = null;
+    for (Faction f : data.factions().values()) {
+       if (erg==null){
+         erg = new Vector<FactionItem>();
+       }
+       erg.add(new FactionItem(f));
+    }
+    return erg;
+  }
+  
+  
 }

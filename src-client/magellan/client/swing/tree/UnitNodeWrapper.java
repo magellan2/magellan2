@@ -36,6 +36,8 @@ import magellan.library.Faction;
 import magellan.library.Item;
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.library.rules.ItemCategory;
+import magellan.library.rules.Category;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.SkillComparator;
 import magellan.library.utils.comparator.SkillTypeComparator;
@@ -484,6 +486,13 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 							}
 
 							if(count > 0) {
+							  Category catP = item.getItemType().getCategory();
+							  while (catP.getParent()!=null){
+							    catP = catP.getParent();
+							  }
+							  String iconName = magellan.library.utils.Umlaut
+                   .convertUmlauts(catP.getName());
+							  /**
 								if(isShowingIconText()) {
 									ge = new GraphicsElement(new Integer(count), null, null,
 															 "items/" +
@@ -493,7 +502,14 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 															 "items/" +
 															 item.getItemType().getIconName());
 								}
-
+								*/
+								if(isShowingIconText()) {
+                  ge = new GraphicsElement(new Integer(count), null, null,
+                      iconName);
+                } else {
+                  ge = new GraphicsElement(null, null,
+                      iconName);
+                }
 								ge.setTooltip(buffer.toString());
 								ge.setType(GraphicsElement.ADDITIONAL);
 								Tag2Element.apply(ge);

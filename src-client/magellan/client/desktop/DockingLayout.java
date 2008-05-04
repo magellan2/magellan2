@@ -435,7 +435,9 @@ public class DockingLayout {
     buffer.append(offset+"<tabwindow>\r\n");
     for (int i=0; i<window.getChildWindowCount(); i++) {
       DockingWindow tab = window.getChildWindow(i);
-      buffer.append(offset+" <tab isActive='"+window.getSelectedWindow().equals(tab)+"'>\r\n");
+      boolean active = false;
+      if (window.getSelectedWindow() != null && tab != null) active = window.getSelectedWindow().equals(tab); 
+      buffer.append(offset+" <tab isActive='"+active+"'>\r\n");
       save(buffer,tab,offset+"  ");
       buffer.append(offset+" </tab>\r\n");
     }

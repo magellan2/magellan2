@@ -1,3 +1,6 @@
+2008-05-5 / Build 194 - Fiete (sf@fietefietz.de)
+	* fixed bug in merger, added layer to new found translation
+
 2008-04-31 / Build 193 - Fiete (sf@fietefietz.de)
 	* write regionUID not quoted
 	* added regionUID to mergeRegion

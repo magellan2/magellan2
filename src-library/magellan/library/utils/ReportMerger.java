@@ -1139,7 +1139,7 @@ public class ReportMerger extends Object {
         Region result = newReport.getRegionByUID(region.getUID());
         if (result != null) {
           CoordinateID foundCoord = result.getCoordinate();
-          CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
+          CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y,layer);
           addTranslation(translationMap, translation, Type.REGIONUID,Translationlist_Score_RegionUID);
         }
       }

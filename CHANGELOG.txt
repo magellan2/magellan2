@@ -1,3 +1,7 @@
+2008-05-6 / Build 195 - Fiete (sf@fietefietz.de)
+	* fixed bug #247: fogOfwar not refreshed after AskForPassword
+	* added some log.info's to narrow down a startup-delay
+
 2008-05-5 / Build 194 - Fiete (sf@fietefietz.de)
 	* fixed bug in merger, added layer to new found translation
 

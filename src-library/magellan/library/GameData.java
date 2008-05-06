@@ -1543,7 +1543,9 @@ public abstract class GameData implements Cloneable {
     if (postProcessed) {
       return;
     }
-
+    log.info("start GameData postProcess");
+    
+    
     // enforce locale to be non-null
     postProcessLocale();
 
@@ -1560,6 +1562,8 @@ public abstract class GameData implements Cloneable {
     postProcessDefaultTranslations();
     
     postProcessed = true;
+    
+    log.info("finished GameData postProcess");
   }
 
   /**

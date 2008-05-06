@@ -52,6 +52,7 @@ import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
+import magellan.library.utils.TrustLevels;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -201,6 +202,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
         }
         client.getDispatcher().fire(new GameDataEvent(this, data, true));
       }
+      TrustLevels.recalculateTrustLevels(data);
       setVisible(false);
     }
     

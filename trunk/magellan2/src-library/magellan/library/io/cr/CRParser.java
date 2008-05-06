@@ -3157,7 +3157,7 @@ public class CRParser implements RulesIO, GameDataIO {
       Faction firstFaction = getFirstFaction();
       if (getConfiguration().equals("Standard") && firstFaction!=null){
         newData.setOwnerFaction((EntityID) firstFaction.getID());
-        
+        log.info("setOwner of Report to: " + firstFaction.toString());
         // set translation to (0,0,...) in all existing layers
         Set<Integer> layers = new HashSet<Integer>();
         for (CoordinateID coord : newData.regions().keySet()){
@@ -3166,6 +3166,7 @@ public class CRParser implements RulesIO, GameDataIO {
             layers.add(coord.z);
           }
         }
+        log.info("Layers updated with translation 0,0 for " + firstFaction.toString()); 
       }    
     }
   }

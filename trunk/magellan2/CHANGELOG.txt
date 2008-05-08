@@ -1,3 +1,6 @@
+2008-05-08 / Build 196 - Thoralf (thoralf@m84.de)
+    * replaced ant-1.5.3 with ant-1.7.0 because of a bug in BZIP inputstream
+    
 2008-05-6 / Build 195 - Fiete (sf@fietefietz.de)
 	* fixed bug #247: fogOfwar not refreshed after AskForPassword
 	* added some log.info's to narrow down a startup-delay

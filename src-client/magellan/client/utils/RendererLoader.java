@@ -119,7 +119,7 @@ public class RendererLoader extends Object {
 								name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');
 
 								try {
-									Class rclass = loader.loadClass(name);
+									Class<?> rclass = loader.loadClass(name);
 
 									if(isRenderer(rclass)) {
 										try {
@@ -246,7 +246,7 @@ public class RendererLoader extends Object {
 			this.jar = jar;
 		}
 
-		protected Class findClass(String name) throws ClassNotFoundException {
+		protected Class<?> findClass(String name) throws ClassNotFoundException {
 			try {
 				//find the according entry
 				ZipEntry entry = jar.getEntry(name.replace('.', '\\') + ".class");

@@ -193,7 +193,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	private void selectObjectOnRow(int row) {
 		Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
-		dispatcher.fire(new SelectionEvent(this, null, obj));
+		dispatcher.fire(new SelectionEvent<Object>(this, null, obj));
 	}
 
 	private static final int RECALL_IN_MS = 10;

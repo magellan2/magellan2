@@ -135,7 +135,7 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 
 			// fire change event
 			client.getData().setSelectedRegionCoordinates(selectedRegions);
-			client.getDispatcher().fire(new SelectionEvent(this, selectedRegions.values(), null,
+			client.getDispatcher().fire(new SelectionEvent<Region>(this, selectedRegions.values(), null,
 														   SelectionEvent.ST_REGIONS));
 		}
 	}

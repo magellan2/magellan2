@@ -199,9 +199,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					JList list = (JList) e.getSource();
 
 					if((list.getModel().getSize() > 0) && !list.isSelectionEmpty()) {
-						se = new SelectionEvent(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
+						se = new SelectionEvent<Object>(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
 					} else {
-						se = new SelectionEvent(d, new LinkedList(), null);
+						se = new SelectionEvent<Object>(d, new LinkedList<Object>(), null);
 					}
 
 					// notify all components in the tabbed pane

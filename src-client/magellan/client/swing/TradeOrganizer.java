@@ -507,7 +507,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						Region r = model.getRegion(i);
 
 						if(r != null) {
-							dispatcher.fire(new SelectionEvent(this, null, r,
+							dispatcher.fire(new SelectionEvent<Region>(this, null, r,
 															   SelectionEvent.ST_DEFAULT));
 						}
 					}
@@ -726,7 +726,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						Region r = model.getRegion(i);
 
 						if(r != null) {
-							dispatcher.fire(new SelectionEvent(this, null, r,
+							dispatcher.fire(new SelectionEvent<Region>(this, null, r,
 															   SelectionEvent.ST_DEFAULT));
 						}
 					}
@@ -913,7 +913,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						Region r = model.getRegion(i);
 
 						if(r != null) {
-							dispatcher.fire(new SelectionEvent(this, null, r,
+							dispatcher.fire(new SelectionEvent<Region>(this, null, r,
 															   SelectionEvent.ST_DEFAULT));
 						}
 					}

@@ -582,7 +582,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 							currentUnit.refreshRelations();
 						}
 						
-						dispatcher.fire(new SelectionEvent(this, null, u));
+						dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
 					}
 
 					break;
@@ -601,7 +601,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 						
 
-						dispatcher.fire(new SelectionEvent(this, null, u));
+						dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
 					}
 
 					break;
@@ -658,7 +658,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     }
     if (e.getSource() instanceof OrderEditor){
       if (multiEditorLayout)
-        dispatcher.fire(new SelectionEvent(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
+        dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
     }
   }
 
@@ -1887,7 +1887,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				// don't show any dialogs, simply create the tempunit and finish.
 				TempUnit tempUnit = parentUnit.createTemp(id);
 				dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
-				dispatcher.fire(new SelectionEvent(this, null, tempUnit));
+				dispatcher.fire(new SelectionEvent<Unit>(this, null, tempUnit));
 			} else {
 				// do all the tempunit-dialog-stuff
 				UnitID newID = UnitID.createUnitID(-id.intValue(),data.base); // unit id is non-negative on views
@@ -2021,7 +2021,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
                 selectEditor(tempUnit);
                 if (getEditor(tempUnit)!=null)
                   getEditor(tempUnit).requestFocus();
-                dispatcher.fire(new SelectionEvent(this, null, tempUnit));
+                dispatcher.fire(new SelectionEvent<Unit>(this, null, tempUnit));
 								return;
 							} else {
 								JOptionPane.showMessageDialog(this,
@@ -2050,7 +2050,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				selectEditor(parentUnit);
         if (getEditor(currentUnit)!=null)
           getEditor(currentUnit).requestFocus();
-        dispatcher.fire(new SelectionEvent(this, null, parentUnit), true);
+        dispatcher.fire(new SelectionEvent<Unit>(this, null, parentUnit), true);
         dispatcher.fire(new TempUnitEvent(this, tempUnit,
             TempUnitEvent.DELETING), true);
 				parentUnit.deleteTemp(tempUnit.getID(), data);

@@ -128,7 +128,7 @@ public class TreeHelper {
    */
   public TreeNode createRegionNode(Region r, NodeWrapperFactory factory,
       Map<ID, Alliance> activeAlliances, Map<ID, TreeNode> unitNodes,
-      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes, Comparator unitSorting,
+      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes, Comparator<Unit> unitSorting,
       int treeStructure[], GameData data, boolean sortUnderUnitParent) {
     RegionNodeWrapper regionNodeWrapper = factory.createRegionNodeWrapper(r, 0);
     DefaultMutableTreeNode regionNode = new DefaultMutableTreeNode(regionNodeWrapper);

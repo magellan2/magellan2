@@ -22,9 +22,9 @@ package magellan.client.event;
  * @see SelectionEvent
  * @see EventDispatcher
  */
-public interface SelectionListener {
+public interface SelectionListener<T> {
 	/**
 	 * Invoked when different objects are activated or selected.
 	 */
-	public void selectionChanged(SelectionEvent e);
+	public void selectionChanged(SelectionEvent<T> e);
 }

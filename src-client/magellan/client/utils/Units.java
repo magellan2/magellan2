@@ -57,8 +57,7 @@ public class Units {
    * A Map&lt;ItemCategory, StatItemContainer&gt; mapping the item categories to
    * containers with items of the corresponding category.
    */
-  private Map<ItemCategory, StatItemContainer> itemCategoriesMap =
-      new Hashtable<ItemCategory, StatItemContainer>();
+  private Map<ItemCategory, StatItemContainer> itemCategoriesMap = new Hashtable<ItemCategory, StatItemContainer>();
 
   private static ItemType silberbeutel = new ItemType(StringID.create("Silberbeutel"));
   private static ItemType silberkassette = new ItemType(StringID.create("Silberkassette"));
@@ -133,8 +132,7 @@ public class Units {
       }
     }
 
-    List<StatItemContainer> sortedCategories =
-        new LinkedList<StatItemContainer>(itemCategoriesMap.values());
+    List<StatItemContainer> sortedCategories = new LinkedList<StatItemContainer>(itemCategoriesMap.values());
     Collections.sort(sortedCategories);
 
     return sortedCategories;
@@ -273,7 +271,7 @@ public class Units {
   }
 
   public int addItemNode(ItemType item, DefaultMutableTreeNode categoryNode, Unit u,
-      Collection<Unit> units, Comparator unitComparator, boolean showUnits,
+      Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
       NodeWrapperFactory factory) {
     categorizeUnitItems(units);
     for (StatItemContainer itemContainer : itemCategoriesMap.values()) {
@@ -289,7 +287,7 @@ public class Units {
    * @param currentItem
    */
   private int addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u,
-      Collection<Unit> units, Comparator unitComparator, boolean showUnits,
+      Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
       NodeWrapperFactory factory) {
 
     ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u, currentItem);
@@ -359,7 +357,7 @@ public class Units {
     }
 
     if (showUnits && (currentItem.units != null)) {
-      Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
+      Collections.sort(currentItem.units, new UnitWrapperComparator<Unit>(unitComparator));
 
       for (Iterator it = currentItem.units.iterator(); it.hasNext();) {
         UnitWrapper uw = (UnitWrapper) it.next();

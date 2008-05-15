@@ -242,15 +242,15 @@ public class MagellanLookAndFeel {
 		return JVMUtilities.JRE_1_3_PLUS;
 	}
 
-	private static Class getSkinLFClass() throws ClassNotFoundException {
+	private static Class<?> getSkinLFClass() throws ClassNotFoundException {
 		return Class.forName("com.l2fprod.gui.plaf.skin.SkinLookAndFeel");
 	}
 
-	private static Class getClearLookManagerClass() throws ClassNotFoundException {
+	private static Class<?> getClearLookManagerClass() throws ClassNotFoundException {
 		return Class.forName("com.jgoodies.clearlook.ClearLookManager");
 	}
 
-	private static Class getClearLookModeClass() throws ClassNotFoundException {
+	private static Class<?> getClearLookModeClass() throws ClassNotFoundException {
 		return Class.forName("com.jgoodies.clearlook.ClearLookMode");
 	}
 

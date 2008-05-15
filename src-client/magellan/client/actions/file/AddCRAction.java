@@ -64,7 +64,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 	 */
 	public void menuActionPerformed(ActionEvent e) {
 		final Client theclient = client;
-		Collection selectedObjects = client.getSelectedObjects();
+		Collection<Object> selectedObjects = client.getSelectedObjects();
 		Properties settings = client.getProperties();
 		JFileChooser fc = new JFileChooser();
 		fc.setMultiSelectionEnabled(true);
@@ -146,7 +146,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 
 			merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);
 			if (selectedObjects!=null){
-				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
+				client.getDispatcher().fire(new SelectionEvent<Object>(this,selectedObjects,null));
 			}
 		}
 	}

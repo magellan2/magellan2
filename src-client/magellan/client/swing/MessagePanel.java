@@ -592,7 +592,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     }
 
     if(o instanceof Unit || o instanceof Region) {
-      dispatcher.fire(new SelectionEvent(this, null, o));
+      dispatcher.fire(new SelectionEvent<Object>(this, null, o));
     }
   }
 

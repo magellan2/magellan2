@@ -52,9 +52,11 @@ import javax.swing.ListSelectionModel;
 
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.comparator.SkillTypeComparator;
 
 
 /**
@@ -93,7 +95,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 	 * 
 	 */
 	public ArmyStatsDialog(Frame owner, EventDispatcher ed, GameData data, Properties settings,
-						   Collection selRegions) {
+						   Collection<Region> selRegions) {
 		super(owner, false, ed, data, settings);
 
 		LayoutManager lm = new FlowLayout(FlowLayout.CENTER);
@@ -389,7 +391,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			JPanel sPanel = new JPanel(new GridLayout(0, 1));
 
 			if(l.size() > 0) {
-				Collections.sort(l);
+				Collections.sort(l, new SkillTypeComparator<String>(null,null));
 				skills = new JCheckBox[l.size()];
 				it1 = l.iterator();
 

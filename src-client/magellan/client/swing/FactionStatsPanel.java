@@ -228,13 +228,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     if (o instanceof UnitNodeWrapper) {
       Unit u = ((UnitNodeWrapper) o).getUnit();
-      dispatcher.fire(new SelectionEvent(this, null, u));
+      dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
     } else if (o instanceof UnitContainerNodeWrapper) {
       UnitContainer uc = ((UnitContainerNodeWrapper) o).getUnitContainer();
-      dispatcher.fire(new SelectionEvent(this, null, uc));
+      dispatcher.fire(new SelectionEvent<UnitContainer>(this, null, uc));
     } else if (o instanceof RegionNodeWrapper){
       Region r = ((RegionNodeWrapper) o).getRegion();
-      dispatcher.fire(new SelectionEvent(this, null, r));
+      dispatcher.fire(new SelectionEvent<Region>(this, null, r));
     }
   }
 

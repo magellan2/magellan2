@@ -161,7 +161,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   protected static ReplacerFactory tooltipReplacers;
 
   // region sublist for rendering
-  protected List regionList = null;
+  protected List<Region> regionList = null;
   protected int lastRegionRenderingType = -1;
   protected int inPaint = 0;
 
@@ -237,13 +237,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               }
 
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(new SelectionEvent<Region>(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
               repaint();
               prevDragRegion = r;
             } else {
               activeRegion = r;
               activeObject = r;
-              dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_DEFAULT));
+              dispatcher.fire(new SelectionEvent<Region>(mapper, null, activeRegion, SelectionEvent.ST_DEFAULT));
               repaint();
             }
           } else if ((me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
@@ -295,7 +295,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
             if (doFire) {
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(new SelectionEvent<Region>(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
             }
 
             repaint();
@@ -367,7 +367,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           CoordinateID c = new CoordinateID(activeRegion.getCoordinate());
           activeRegion = data.getRegion(c.translate(translationCoord));
           data.setSelectedRegionCoordinates(null);
-          dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
+          dispatcher.fire(new SelectionEvent<Region>(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
           repaint();
         }
       }
@@ -683,16 +683,16 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a sublist of regions to render according to the state of the given
    * int. Values are interpreted as those of RenderingPlane.
    */
-  protected List createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
+  protected List<Region> createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
     // okay, the result could contain Regions or Units or whatever...
-    List main = null;
+    List<Region> main = null;
 
     if ((inPaint < 2) || (paintNumber == 0) || (duration > 0)) {
       main = regionList;
     }
 
     if (main == null) {
-      main = new LinkedList<Object>();
+      main = new LinkedList<Region>();
     } else {
       main.clear();
     }
@@ -700,7 +700,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if ((condition & RenderingPlane.ACTIVE_OBJECT) != 0) {
       // simply add the first region found
       if (activeObject != null) {
-        main.add(activeObject);
+        main.add((Region)activeObject);
       }
 
       return main;
@@ -822,7 +822,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     inPaint++;
 
     int duration = 0;
-    List regList = regionList;
+    List<Region> regList = regionList;
 
     // super.paint(g);
     Rectangle offset = new Rectangle(mapToScreenBounds.x + clipBounds.x, mapToScreenBounds.y + clipBounds.y, clipBounds.width, clipBounds.height);
@@ -1104,14 +1104,14 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Mapper knows of. The list contains Integer objects stating the level
    * number.
    */
-  public List getLevels() {
-    List levels = new LinkedList();
+  public List<Integer> getLevels() {
+    List<Integer> levels = new LinkedList<Integer>();
 
     if (data != null) {
-      Iterator iter = data.regions().values().iterator();
+      Iterator<Region> iter = data.regions().values().iterator();
 
       while (iter.hasNext()) {
-        CoordinateID c = ((Region) iter.next()).getCoordinate();
+        CoordinateID c = iter.next().getCoordinate();
         Integer i = new Integer(c.z);
 
         if (levels.contains(i) == false) {

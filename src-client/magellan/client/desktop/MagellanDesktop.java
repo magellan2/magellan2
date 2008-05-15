@@ -59,7 +59,6 @@ import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import magellan.client.Client;
 import magellan.client.MagellanContext;

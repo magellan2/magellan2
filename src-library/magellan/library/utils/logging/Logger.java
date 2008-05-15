@@ -275,7 +275,7 @@ public class Logger {
   public void warnOnce(Object aObj) {
     if (onceWarnings == null){
       // create new list
-      onceWarnings = new HashSet();
+      onceWarnings = new HashSet<Object>();
     }
     if (onceWarnings.contains(aObj)){
       // already processed warning

@@ -335,7 +335,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		 */
 		// factions.clear();
 		// enforce refreshing of regions-table and redrawing of chart
-		selectionChanged(new SelectionEvent(this, new Vector(), null));
+		selectionChanged(new SelectionEvent<Object>(this, new Vector<Object>(), null));
 	}
 
 	/**

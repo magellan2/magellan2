@@ -36,7 +36,6 @@ import magellan.library.Faction;
 import magellan.library.Item;
 import magellan.library.Skill;
 import magellan.library.Unit;
-import magellan.library.rules.ItemCategory;
 import magellan.library.rules.Category;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.SkillComparator;
@@ -52,7 +51,7 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
  */
 public class UnitNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	private static final Comparator<Skill> skillComparator = new SkillComparator();
-	private static Comparator rankComparator = null;
+	private static Comparator<Skill> rankComparator = null;
 
 	// just so that we can return an empty List without creating
 	// all the time a new one (for implementation of SupportsEmphasizing)
@@ -666,7 +665,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		this.adapter = (UnitNodeWrapperDrawPolicy) adapter;
 
 		if(rankComparator == null) {
-			rankComparator = new SkillTypeComparator(new SkillTypeRankComparator(null, settings),
+			rankComparator = new SkillTypeComparator(new SkillTypeRankComparator<Object>(null, settings),
 													 null);
 		}
 

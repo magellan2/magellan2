@@ -1805,7 +1805,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					n.add(m);
 
 					Comparator<Unique> idCmp = IDComparator.DEFAULT;
-					Comparator<Unit> unitCmp = new UnitSkillComparator(new BestSkillComparator(new SkillComparator(),
+					Comparator<Unit> unitCmp = new UnitSkillComparator(new BestSkillComparator<SkillType>(new SkillComparator(),
 																						 new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(idCmp),settings), new SkillComparator()),
 																						 null),
 																 idCmp);
@@ -4087,7 +4087,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * (selectedObjects). The display for collection is at the moment limited to collections
 		 * of regions. Other implementations should be added.
 		 */
-		Collection c = se.getSelectedObjects();
+		Collection<? extends Unique> c = se.getSelectedObjects();
 
 		if((c != null) && (c.size() > 1)) {
 			if(showMultiple(c)) {
@@ -4109,13 +4109,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * Tries to show the given collection. If no implementation applies, false is returned,
 	 * otherwise true.
 	 */
-	protected boolean showMultiple(Collection c) {
+	protected boolean showMultiple(Collection<? extends Unique> c) {
 		boolean regions = true;
 		boolean factions = true;
 		boolean units = true;
 
-		for(Iterator iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {
-			Object o = iter.next();
+		for(Iterator<? extends Unique> iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {
+		  Unique o = iter.next();
 
 			if(regions && !(o instanceof Region)) {
 				regions = false;
@@ -4137,13 +4137,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		if(regions) {
 			setNameAndDescription(c.size() + " Regionen", "", false);
-			appendMultipleRegionInfo(c, rootNode, myExpandableNodes);
+			appendMultipleRegionInfo((Collection<Region>)c, rootNode, myExpandableNodes);
 		} else if(factions) {
 			setNameAndDescription("", "", false);
-			appendFactionsInfo(c, rootNode, myExpandableNodes);
+			appendFactionsInfo((Collection<Faction>)c, rootNode, myExpandableNodes);
 		} else if(units) {
 			setNameAndDescription(c.size() + " Einheiten", "", false);
-			appendUnitsInfo(c, rootNode, myExpandableNodes);
+			appendUnitsInfo((Collection<Unit>)c, rootNode, myExpandableNodes);
 		} else {
 			return false;
 		}
@@ -4324,7 +4324,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		if(fireObj != null) {
-			dispatcher.fire(new SelectionEvent(this, null, fireObj));
+			dispatcher.fire(new SelectionEvent<Object>(this, null, fireObj));
 		}
 	}
 
@@ -4749,7 +4749,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * 
 		 */
 		public void actionPerformed(ActionEvent e) {
-			dispatcher.fire(new SelectionEvent(EMapDetailsPanel.this, null, target));
+			dispatcher.fire(new SelectionEvent<Object>(EMapDetailsPanel.this, null, target));
 		}
 	}
 

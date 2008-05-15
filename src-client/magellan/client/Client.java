@@ -1405,18 +1405,18 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           client.setReportChanged(false);
           
           if (client.getSelectedObjects()!=null){
-            client.getDispatcher().fire(new SelectionEvent(this,client.getSelectedObjects(),null));
+            client.getDispatcher().fire(new SelectionEvent<Object>(this,client.getSelectedObjects(),null));
           }
           // if we have active Region, center on it
           Region activeRegion = data.getActiveRegion();
           if (activeRegion != null) {
-            client.getDispatcher().fire(new SelectionEvent(client, new ArrayList(), activeRegion, SelectionEvent.ST_REGIONS));
+            client.getDispatcher().fire(new SelectionEvent<Region>(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
           } else {
             // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
             CoordinateID cID = new CoordinateID(0,0);
             activeRegion = data.getRegion(cID);
             if (activeRegion != null) {
-              client.getDispatcher().fire(new SelectionEvent(client, new ArrayList(), activeRegion, SelectionEvent.ST_REGIONS));
+              client.getDispatcher().fire(new SelectionEvent<Region>(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
             }
           }
         }
@@ -1735,7 +1735,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
-    getDispatcher().fire(new SelectionEvent(this, getData().getSelectedRegionCoordinates().values(), null, SelectionEvent.ST_REGIONS));
+    getDispatcher().fire(new SelectionEvent<Region>(this, getData().getSelectedRegionCoordinates().values(), null, SelectionEvent.ST_REGIONS));
 
   }
 

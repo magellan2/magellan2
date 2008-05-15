@@ -221,7 +221,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * 
 	 */
-	public Object[] toArray(Object a[]) {
+	public <T> T[] toArray(T a[]) {
 		return data.toArray(a);
 	}
 

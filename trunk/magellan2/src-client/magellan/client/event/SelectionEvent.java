@@ -50,7 +50,7 @@ public class SelectionEvent<T> extends EventObject {
 
 	private Collection<T> selectedObjects;
 	private T activeObject;
-  private Collection path;
+  private Collection<Object> path;
 	private int selectionType;
 
 	/**
@@ -71,7 +71,7 @@ public class SelectionEvent<T> extends EventObject {
   /**
    * Constructs a new selection event with empty path with <code>selectionType ST_DEFAULT</code>.
    */
-  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection selectionPath) {
+  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> selectionPath) {
     this(source, selectedObjects, activeObject, selectionPath, ST_DEFAULT);
   }
 
@@ -98,7 +98,7 @@ public class SelectionEvent<T> extends EventObject {
    *          {@link SelectionEvent#ST_DEFAULT},
    *          {@link SelectionEvent#ST_REGIONS}, 
    */          
-  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection path,
+  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> path,
       int selectionType) {
     super(source);
 		this.selectedObjects = selectedObjects;
@@ -116,7 +116,7 @@ public class SelectionEvent<T> extends EventObject {
 	 *
 	 * 
 	 */
-	public Collection<?> getSelectedObjects() {
+	public Collection<T> getSelectedObjects() {
 		return selectedObjects;
 	}
 
@@ -125,7 +125,7 @@ public class SelectionEvent<T> extends EventObject {
 	 *
 	 * 
 	 */
-	public Object getActiveObject() {
+	public T getActiveObject() {
 		return activeObject;
 	}
 
@@ -143,7 +143,7 @@ public class SelectionEvent<T> extends EventObject {
    * Returns the path for the active object. This information can be used to
    * help identify the active object by specifying its "parents".
    */
-  public Collection getPath(){
+  public Collection<Object> getPath(){
     return path;
   }
   

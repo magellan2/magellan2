@@ -68,8 +68,8 @@ public class HelpAction extends MenuAction {
       
       log.info("URL: "+hsURL);
 
-      Class helpSetClass = null;
-      Class helpBrokerClass = null;
+      Class<?> helpSetClass = null;
+      Class<?> helpBrokerClass = null;
 
       if (this.helpBroker == null) {
         try {

@@ -35,9 +35,9 @@ import magellan.library.rules.SkillType;
  *
  * @author Ulrich Küster
  */
-public class SkillTypeComparator implements Comparator {
+public class SkillTypeComparator<E> implements Comparator<SkillType> {
 	private final Comparator typeCmp;
-	private final Comparator subCmp;
+	private final Comparator<E> subCmp;
 
 	/**
 	 * Creates a new SkillTypeComparator object.
@@ -46,7 +46,7 @@ public class SkillTypeComparator implements Comparator {
 	 * @param subComparator if the typeComparator's comparison of the skill types yields 0, this
 	 * 		  sub-comparator is applied to the skill objects if it is not <tt>null</tt>.
 	 */
-	public SkillTypeComparator(Comparator typeComparator, Comparator subComparator) {
+	public SkillTypeComparator(Comparator typeComparator, Comparator<E> subComparator) {
 		this.typeCmp = typeComparator;
 		this.subCmp = subComparator;
 	}
@@ -61,16 +61,13 @@ public class SkillTypeComparator implements Comparator {
 	 * 		   result is 0 and a subcomparator is specified that subcomparator is applied on the
 	 * 		   skill objects.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(SkillType s1, SkillType s2) {
 		int retVal = 0;
-
-		SkillType s1 = ((Skill) o1).getSkillType();
-		SkillType s2 = ((Skill) o2).getSkillType();
 
 		retVal = typeCmp.compare(s1, s2);
 
 		if((retVal == 0) && (subCmp != null)) {
-			retVal = subCmp.compare(o1, o2);
+			retVal = subCmp.compare((E)s1, (E)s2);
 		}
 
 		return retVal;

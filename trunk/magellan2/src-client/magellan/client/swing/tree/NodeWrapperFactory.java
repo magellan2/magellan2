@@ -13,6 +13,7 @@
 
 package magellan.client.swing.tree;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -477,21 +478,14 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 		return snw;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public SimpleNodeWrapper createSimpleNodeWrapper(Object text, Object icons, String clipValue) {
-		SimpleNodeWrapper snw = new SimpleNodeWrapper(text, icons, clipValue);
-		init(snw, SIMPLE);
-
-		return snw;
-	}
+  /**
+   * Creates new SimpleNodeWrapper
+   */
+  public SimpleNodeWrapper createSimpleNodeWrapper(Object text, Object icons, String clipValue) {
+    SimpleNodeWrapper snw = new SimpleNodeWrapper(text, icons, clipValue);
+    init(snw, SIMPLE);
+    return snw;
+  }
 
 	/**
 	 * DOCUMENT-ME

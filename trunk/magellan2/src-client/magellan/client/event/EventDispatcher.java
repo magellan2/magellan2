@@ -32,7 +32,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class EventDispatcher implements EventDispatcherInterface {
   private static final Logger log = Logger.getInstance(EventDispatcher.class);
-  private List listeners[];
+  private List<Object> listeners[];
   private boolean notifierIsAliveOnList[];
   private boolean notifierIsAlive = false;
   private boolean stopNotification = false;

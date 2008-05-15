@@ -72,5 +72,5 @@ public interface Taggable {
 	/**
 	 * Returns a Map containing all tags and their values associated with this object.
 	 */
-	public Map getTagMap();
+	public Map<String,String> getTagMap();
 }

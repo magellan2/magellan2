@@ -123,7 +123,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
         
         // only in Java6 available, so we try to load it.
         // otherwise, we do nothing...
-        Class c = Class.forName("java.awt.Desktop");
+        Class<?> c = Class.forName("java.awt.Desktop");
         if (c != null) {
           Object desktop = c.getMethod("getDesktop").invoke(null);
           c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);

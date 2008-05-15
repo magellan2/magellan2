@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Map;
 
+import magellan.library.ID;
 import magellan.library.Skill;
 
 
@@ -33,10 +34,10 @@ import magellan.library.Skill;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class BestSkillComparator implements Comparator {
-	private final Comparator bestCmp;
-	private final Comparator skillCmp;
-	private final Comparator subCmp;
+public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
+	private final Comparator<Skill> bestCmp;
+	private final Comparator<Skill> skillCmp;
+	private final Comparator<E> subCmp;
 
 	/**
 	 * Creates a new BestSkillComparator object.
@@ -46,8 +47,8 @@ public class BestSkillComparator implements Comparator {
 	 * @param skillComparator used to compare the two best skills.
 	 * @param subComparator applied when the best skills are equal or cannot be determined.
 	 */
-	public BestSkillComparator(Comparator bestComparator, Comparator skillComparator,
-							   Comparator subComparator) {
+	public BestSkillComparator(Comparator<Skill> bestComparator, Comparator<Skill> skillComparator,
+							   Comparator<E> subComparator) {
 		this.bestCmp = bestComparator;
 		this.skillCmp = skillComparator;
 		this.subCmp = subComparator;
@@ -62,10 +63,13 @@ public class BestSkillComparator implements Comparator {
 	 * @return the result of the skill comparator applied to the - according to the best comparator
 	 * 		   - smallest skills in o1 and o2.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(Map<ID,Skill> o1, Map<ID,Skill> o2) {
 		int retVal = 0;
-		Skill s1 = getBestSkill((Map) o1);
-		Skill s2 = getBestSkill((Map) o2);
+		Skill s1 = getBestSkill(o1);
+		Skill s2 = getBestSkill(o2);
+		
+    E e1 = (E)o1;
+    E e2 = (E)o2;
 
 		if((s1 == null) && (s2 != null)) {
 			retVal = Integer.MIN_VALUE;
@@ -73,7 +77,7 @@ public class BestSkillComparator implements Comparator {
 			retVal = Integer.MAX_VALUE;
 		} else if((s1 == null) && (s2 == null)) {
 			if(subCmp != null) {
-				retVal = subCmp.compare(o1, o2);
+				retVal = subCmp.compare(e1, e2);
 			} else {
 				retVal = 0;
 			}
@@ -81,24 +85,24 @@ public class BestSkillComparator implements Comparator {
 			retVal = skillCmp.compare(s1, s2);
 
 			if((retVal == 0) && (subCmp != null)) {
-				retVal = subCmp.compare(o1, o2);
+				retVal = subCmp.compare(e1, e2);
 			}
 		}
 
 		return retVal;
 	}
 
-	private Skill getBestSkill(Map skills) {
+	private Skill getBestSkill(Map<ID,Skill> skills) {
 		if((skills == null) || (skills.size() == 0)) {
 			return null;
 		}
 
-		Iterator iter = skills.values().iterator();
-		Skill bestSkill = (Skill) iter.next();
+		Iterator<Skill> iter = skills.values().iterator();
+		Skill bestSkill = iter.next();
 
 		if(skills.size() > 1) {
 			while(iter.hasNext()) {
-				Skill curSkill = (Skill) iter.next();
+				Skill curSkill = iter.next();
 
 				if(bestCmp.compare(curSkill, bestSkill) < 0) {
 					bestSkill = curSkill;

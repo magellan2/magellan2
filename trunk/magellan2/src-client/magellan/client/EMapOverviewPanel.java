@@ -110,6 +110,7 @@ import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.relation.TransferRelation;
 import magellan.library.relation.UnitRelation;
+import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -153,7 +154,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private boolean ignoreTreeSelections = false;
 
   // region with previously selected item
-  private Object activeObject = null;
+  private Unique activeObject = null;
   private List<Unique> selectedObjects = new LinkedList<Unique>();
 
   // needed by FactionNodeWrapper to determine the active alliances
@@ -264,7 +265,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
           if (lstHistory.getSelectedValue()!=null){
-            dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getSelectedValue()));
+            dispatcher.fire(new SelectionEvent<Object>(lstHistory, null, lstHistory.getSelectedValue()));
           }
         }
       }
@@ -358,7 +359,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   public void rebuildTree() {
-    Object oldActiveObject = activeObject;
+    Unique oldActiveObject = activeObject;
     Collection<Unique> oldSelectedObjects = new LinkedList<Unique>(selectedObjects);
 
     // clear the history
@@ -420,7 +421,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
-    this.selectionChanged(new SelectionEvent(treeModel, oldSelectedObjects, oldActiveObject));
+    this.selectionChanged(new SelectionEvent<Unique>(treeModel, oldSelectedObjects, oldActiveObject));
 
   }
 
@@ -440,7 +441,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    *          DOCUMENT-ME
    * 
    */
-  public static Comparator getUnitSorting(Properties settings) {
+  public static Comparator<? super Unit> getUnitSorting(Properties settings) {
     // create Comparator used for unit sorting
     String criteria = settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills");
 
@@ -449,7 +450,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     if (criteria.equals("skills")) {
       if (settings.getProperty("EMapOverviewPanel.useBestSkill", "true").equalsIgnoreCase("true")) {
-        cmp = new UnitSkillComparator(new BestSkillComparator(SkillComparator.skillCmp, new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(null), settings), SkillComparator.skillCmp), null), idCmp);
+        cmp = new UnitSkillComparator(new BestSkillComparator<SkillType>(SkillComparator.skillCmp, new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(null), settings), SkillComparator.skillCmp), null), idCmp);
       } else {
         cmp = new UnitSkillComparator(new TopmostRankedSkillComparator<Object>(null, settings), idCmp);
       }
@@ -641,7 +642,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     for (Object o : tree.getSelectionPath().getPath()){
       selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
     }
-    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
+    dispatcher.fire(new SelectionEvent<Unique>(this, selectedObjects, activeObject, selectionPath));
   }
 
   /**
@@ -1101,7 +1102,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     /** HANDLE activeObject : change alliance settings and expand info*/
     if (se.getActiveObject() != null) {
-      activeObject = se.getActiveObject();
+      activeObject = (Unique)se.getActiveObject();
 
       // The path of the selected object (if contained in the tree)
       TreePath path = null;
@@ -1567,7 +1568,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // stupid value here, null is prohibited, else
       // the selectionChanged() method would reject
       // the event since it originates from this.
-      selectionChanged(new SelectionEvent(u, null, u));
+      selectionChanged(new SelectionEvent<Object>(u, null, u));
       // pavkovic 2004.04.28: we dont need to fire an event here as
       // treeValueChanged already does this for us
       // dispatcher.fire(new SelectionEvent(this, null, u));

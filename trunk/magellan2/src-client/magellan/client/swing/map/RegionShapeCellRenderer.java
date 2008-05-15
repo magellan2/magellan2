@@ -113,7 +113,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	private List<String> factions = new LinkedList<String>();
 
 	/** Stores the faction - color paires. The key is the faction name (Faction.getName()) */
-	protected Map<String,Color> factionColors;
+	protected Map<Object,Color> factionColors;
 
 	/** The ocean is rendered with this color in Politics Mode. */
 	protected Color oceanColor;
@@ -122,7 +122,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	protected Color unknownColor;
 
 	/** Stores the region - color paires. The key is the region type name (RegionType.getName()). */
-	protected Map<ID,Color> regionColors;
+	protected Map<Object,Color> regionColors;
 
 	/** The PreferencesAdapter used for changing colors. */
 	protected GeomRendererAdapter adapter;
@@ -181,8 +181,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 								   String pKey) {
 		super(geo, context);
 
-		factionColors = new HashMap<String,Color>();
-		regionColors = new HashMap<ID, Color>();
+		factionColors = new HashMap<Object,Color>();
+		regionColors = new HashMap<Object, Color>();
 
 		// use this keys for default load/save operations
 		factionKey = fKey;
@@ -476,7 +476,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	////////////////////////////////
 	// Global settings operations //
 	////////////////////////////////
-	protected void load(Map dest, String key, boolean reset) {
+	protected void load(Map<Object, Color> dest, String key, boolean reset) {
 		load(dest, key, reset, false);
 	}
 
@@ -489,7 +489,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param reset true if the hashtable should be cleared
 	 * 
 	 */
-	protected void load(Map dest, String key, boolean reset, boolean makeID) {
+	protected void load(Map<Object, Color> dest, String key, boolean reset, boolean makeID) {
 		if(reset) {
 			dest.clear();
 		}
@@ -1150,7 +1150,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			///////////////////
 			// Some comparators for list elements
 			///////////////////
-			private class NameComparator implements Comparator {
+			private class NameComparator implements Comparator<ListElement> {
 				/**
 				 * DOCUMENT-ME
 				 *
@@ -1159,8 +1159,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public int compare(Object o1, Object o2) {
-					return ((ListElement) o1).name.compareTo(((ListElement) o2).name);
+				public int compare(ListElement o1, ListElement o2) {
+					return o1.name.compareTo(o2.name);
 				}
 
 				/**
@@ -1356,8 +1356,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			 * A small ListModel implementation that allows ordering through a Comparator.
 			 */
 			private class SortableListModel extends AbstractListModel {
-				protected List data;
-				protected Comparator comp = null;
+				protected List<Object> data;
+				protected Comparator<Object> comp = null;
 				protected int offset = -1;
 
 				/**
@@ -1365,8 +1365,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public SortableListModel(Collection initData) {
-					data = new LinkedList();
+				public SortableListModel(Collection<Object> initData) {
+					data = new LinkedList<Object>();
 
 					if(initData != null) {
 						data.addAll(initData);
@@ -1431,15 +1431,15 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 * 
 				 * 
 				 */
-				public void sort(Comparator comp, int offset) {
+				public void sort(Comparator<Object> comp, int offset) {
 					this.comp = comp;
 					this.offset = offset;
 
 					try {
-						Collection front = null;
+						Collection<Object> front = null;
 
 						if(offset > 0) {
-							front = new LinkedList();
+							front = new LinkedList<Object>();
 
 							Iterator it = data.iterator();
 

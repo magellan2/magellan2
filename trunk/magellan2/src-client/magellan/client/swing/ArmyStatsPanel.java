@@ -509,10 +509,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected DefaultMutableTreeNode createNodeWrapper(PartUnit partUnit) {
-		DefaultMutableTreeNode node = new DefaultMutableTreeNode(new SimpleNodeWrapper(partUnit,
-																					   getIconObject(partUnit)));
-		node.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(partUnit.parent,
-																		  partUnit.parent.getPersons())));
+		DefaultMutableTreeNode node = new DefaultMutableTreeNode(new SimpleNodeWrapper(partUnit, getIconObject(partUnit)));
+		node.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(partUnit.parent, partUnit.parent.getPersons())));
 
 		return node;
 	}
@@ -1264,12 +1262,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			Object o2 = ((DefaultMutableTreeNode) o).getUserObject();
 
 			if(o2 instanceof UnitNodeWrapper) {
-				dispatcher.fire(new SelectionEvent(this, null, ((UnitNodeWrapper) o2).getUnit()));
+				dispatcher.fire(new SelectionEvent<Unit>(this, null, ((UnitNodeWrapper) o2).getUnit()));
 			} else if(o2 instanceof SimpleNodeWrapper) {
 				Object o3 = ((SimpleNodeWrapper) o2).getObject();
 
 				if(o3 instanceof PartUnit) {
-					dispatcher.fire(new SelectionEvent(this, null, ((PartUnit) o3).parent));
+					dispatcher.fire(new SelectionEvent<Unit>(this, null, ((PartUnit) o3).parent));
 				} else if(o3 instanceof WeaponGroup) {
 					fireWeaponGroupSelection((WeaponGroup) o3);
 				} else if(o3 instanceof WarLine) {
@@ -1277,11 +1275,11 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				} else if(o3 instanceof Army) {
 					fireArmySelection((Army) o3);
 				} else if(o3 instanceof RegionArmies) {
-					dispatcher.fire(new SelectionEvent(this, null, ((RegionArmies) o3).region));
+					dispatcher.fire(new SelectionEvent<Region>(this, null, ((RegionArmies) o3).region));
 				} else if(o3 instanceof IslandArmy) {
-					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmy) o3).island));
+					dispatcher.fire(new SelectionEvent<Island>(this, null, ((IslandArmy) o3).island));
 				} else if(o3 instanceof IslandArmies) {
-					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmies) o3).island));
+					dispatcher.fire(new SelectionEvent<Island>(this, null, ((IslandArmies) o3).island));
 				}
 			} else if(o2 instanceof WarLine) {
 				fireWareLineSelection((WarLine) o2);
@@ -1304,14 +1302,14 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected void fireWeaponGroupSelection(WeaponGroup w) {
-		Set s = getWeaponGroupUnits(w, null);
-		Object o = null;
+		Set<Unit> s = getWeaponGroupUnits(w, null);
+		Unit o = null;
 
 		if(s.size() > 0) {
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent(this, s, o));
+		dispatcher.fire(new SelectionEvent<Unit>(this, s, o));
 	}
 
 	protected Set<Unit> getWarLineUnits(WarLine w, Set<Unit> set) {
@@ -1333,14 +1331,14 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected void fireWareLineSelection(WarLine w) {
-		Set s = getWarLineUnits(w, null);
-		Object o = null;
+		Set<Unit> s = getWarLineUnits(w, null);
+		Unit o = null;
 
 		if(s.size() > 0) {
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent(this, s, o));
+		dispatcher.fire(new SelectionEvent<Unit>(this, s, o));
 	}
 
 	protected void fireArmySelection(Army a) {
@@ -1555,7 +1553,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 * 
-		 * 
+		 * @deprecated
 		 */
 		public void addUnit(Unit u, int persons, int unarmed) {
 			groups.add(u);

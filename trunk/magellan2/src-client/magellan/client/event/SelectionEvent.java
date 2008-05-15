@@ -27,7 +27,7 @@ import magellan.library.utils.logging.Logger;
  * @see SelectionListener
  * @see EventDispatcher
  */
-public class SelectionEvent extends EventObject {
+public class SelectionEvent<T> extends EventObject {
   private static final Logger log = Logger.getInstance(SelectionEvent.class);
   
 	/**
@@ -48,23 +48,22 @@ public class SelectionEvent extends EventObject {
 	public static final int ST_REGIONS = 1;
 
 
-	private Collection selectedObjects;
-	private Object activeObject;
+	private Collection<T> selectedObjects;
+	private T activeObject;
   private Collection path;
 	private int selectionType;
 
 	/**
 	 * Constructs a new selection event with selectionType = ST_DEFAULT and empty path.
 	 */
-	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject) {
+	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject) {
 		this(source, selectedObjects, activeObject, null, SelectionEvent.ST_DEFAULT);
 	}
 
   /**
    * Constructs a new selection event with empty path.
    */
-	public SelectionEvent(Object source, Collection selectedObjects, Object activeObject,
-						  int selectionType) {
+	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, int selectionType) {
     this(source, selectedObjects, activeObject, null, selectionType);
   }
 
@@ -72,7 +71,7 @@ public class SelectionEvent extends EventObject {
   /**
    * Constructs a new selection event with empty path with <code>selectionType ST_DEFAULT</code>.
    */
-  public SelectionEvent(Object source, Collection selectedObjects, Object activeObject, Collection selectionPath) {
+  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection selectionPath) {
     this(source, selectedObjects, activeObject, selectionPath, ST_DEFAULT);
   }
 
@@ -99,7 +98,7 @@ public class SelectionEvent extends EventObject {
    *          {@link SelectionEvent#ST_DEFAULT},
    *          {@link SelectionEvent#ST_REGIONS}, 
    */          
-  public SelectionEvent(Object source, Collection selectedObjects, Object activeObject, Collection path,
+  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection path,
       int selectionType) {
     super(source);
 		this.selectedObjects = selectedObjects;
@@ -117,7 +116,7 @@ public class SelectionEvent extends EventObject {
 	 *
 	 * 
 	 */
-	public Collection getSelectedObjects() {
+	public Collection<?> getSelectedObjects() {
 		return selectedObjects;
 	}
 

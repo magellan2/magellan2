@@ -105,7 +105,7 @@ public class UnitContextMenu extends JPopupMenu {
    * Initialize this component.
    */
   private void init(Collection<Unit> selectedObjects) {
-    selectedUnits = ContextAction.filterObjects((Collection)selectedObjects, Unit.class);
+    selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
     if (selectedUnits.size() <= 1) {
       initSingle();
@@ -347,10 +347,10 @@ public class UnitContextMenu extends JPopupMenu {
    */
   private void event_selectUnits() {
     if (this.selectedUnits.size() > 1) {
-      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, null));
+      dispatcher.fire(new SelectionEvent<Unit>(this, this.selectedUnits, null));
     }
     if (this.selectedUnits.size() == 1) {
-      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, (Unit) this.selectedUnits
+      dispatcher.fire(new SelectionEvent<Unit>(this, this.selectedUnits, (Unit) this.selectedUnits
           .toArray()[0]));
     }
   }

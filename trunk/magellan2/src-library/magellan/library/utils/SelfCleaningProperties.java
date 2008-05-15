@@ -68,7 +68,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 			doClean(name);
 		}
 	}
-
+	
 	private static final String propertiesToRemove[] = {
 														   "AgingProperties.numberofsessions",
 														   "AgingProperties.sessionsofkeys",

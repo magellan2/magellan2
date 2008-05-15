@@ -14,6 +14,7 @@
 package magellan.library.utils;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -48,15 +49,15 @@ public class OrderedOutputProperties extends Properties {
 	 *
 	 * 
 	 */
-	public Enumeration keys() {
-		List l = new LinkedList();
+	public Enumeration<Object> keys() {
+		List<Object> l = new LinkedList<Object>();
 		l.addAll(keySet());
-		Collections.sort(l);
+		Collections.sort(l, new ObjectComparator());
 
 		return new IteratorEnumeration(l.iterator());
 	}
 
-	private class IteratorEnumeration implements Enumeration {
+	private class IteratorEnumeration implements Enumeration<Object> {
 		protected Iterator iterator;
 
 		/**
@@ -85,5 +86,21 @@ public class OrderedOutputProperties extends Properties {
 		public Object nextElement() {
 			return iterator.next();
 		}
+	}
+	
+	private class ObjectComparator implements Comparator<Object> {
+
+    public int compare(Object o1, Object o2) {
+      if (o1 == null) return Integer.MAX_VALUE;
+      if (o2 == null) return Integer.MIN_VALUE;
+      if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        Comparable c1 = (Comparable)o1;
+        Comparable c2 = (Comparable)o2;
+        return c1.compareTo(c2);
+      } else {
+        return o1.toString().compareTo(o2.toString());
+      }
+    }
+	  
 	}
 }

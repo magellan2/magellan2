@@ -122,24 +122,29 @@ public class ItemCategoryNodeWrapper implements CellObject{
 													{ "simple.showIcon", "true" }}, new String[] { "icons.text" }, 0, "tree.itemcategorynodewrapper.");
 	}
 	
-	public void setIcons(Object icons) {
-		this.icons = null;
-        if(icons != null) {
-            if(icons instanceof Collection) {
-                this.icons = new ArrayList<String>((Collection<String>) icons);
-            } else if(icons instanceof Map) {
-                Map m = (Map) icons;
-
-                this.icons = new ArrayList<String>(m.size());
-
-                for(Iterator iter = m.values().iterator(); iter.hasNext();) {
-                    this.icons.add(iter.next().toString());
-                }
-            } else {
-                this.icons = Collections.singletonList(icons.toString());
-            }
-        }
+	public void setIcons(Collection<String> icons) {
+    this.icons = null;
+    if(icons != null) {
+      this.icons = new ArrayList<String>(icons);
+    }
 	}
+	
+	public void setIcons(Map icons) {
+    this.icons = null;
+    if(icons != null) {
+      this.icons = new ArrayList<String>(icons.size());
+  
+      for(Iterator iter = icons.values().iterator(); iter.hasNext();) {
+        this.icons.add(iter.next().toString());
+      }
+    }
+	}
+	
+	public void setIcons(Object icons) {
+    this.icons = null;
+    this.icons = Collections.singletonList(icons.toString());
+	}
+	
 	public boolean emphasized() {
 		return false;
 	}

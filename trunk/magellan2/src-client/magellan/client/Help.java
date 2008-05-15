@@ -59,8 +59,8 @@ public class Help {
         return;
       }
             
-      Class helpSetClass = null;
-      Class helpBrokerClass = null;
+      Class<?> helpSetClass = null;
+      Class<?> helpBrokerClass = null;
       
       try {
         helpSetClass = Class.forName("javax.help.HelpSet", true, ClassLoader.getSystemClassLoader());

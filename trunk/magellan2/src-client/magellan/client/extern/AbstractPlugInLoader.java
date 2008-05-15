@@ -151,7 +151,7 @@ public abstract class AbstractPlugInLoader<T> {
                   break;
                 }
               }
-
+              
               if (found) {
                 // found a class that implements ExternalModule
                 classes.add(foundClass);

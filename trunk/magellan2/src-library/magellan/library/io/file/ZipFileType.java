@@ -25,10 +25,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import javax.swing.JOptionPane;
-
-import magellan.library.utils.Resources;
-
 /**
  * DOCUMENT-ME
  *

@@ -31,6 +31,7 @@ import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.rules.Date;
 import magellan.library.rules.UnitContainerType;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -103,7 +104,8 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 			  String imageName = type.getID().toString();
         
         // first try a season specific icon
-			  if (r.getData().getDate() != null) {
+			  // Fiete 20080518: check, if seasonal images wanted...
+			  if ((r.getData().getDate() != null) && (Boolean.valueOf(settings.getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "false")))) {
 			    switch (r.getData().getDate().getSeason()) {
             case Date.SPRING: imageName+="_spring"; break;
             case Date.SUMMER: imageName+="_summer"; break;

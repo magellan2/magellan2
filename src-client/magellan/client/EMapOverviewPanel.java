@@ -450,7 +450,15 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     if (criteria.equals("skills")) {
       if (settings.getProperty("EMapOverviewPanel.useBestSkill", "true").equalsIgnoreCase("true")) {
-        cmp = new UnitSkillComparator(new BestSkillComparator<SkillType>(SkillComparator.skillCmp, new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(null), settings), SkillComparator.skillCmp), null), idCmp);
+        cmp = new UnitSkillComparator(
+            new BestSkillComparator<SkillType>(
+                SkillComparator.skillCmp, 
+                new SkillTypeComparator(
+                    new SkillTypeRankComparator<Named>(
+                        new NameComparator<Unique>(null), settings)
+                        , null),
+                        null), 
+                        idCmp);
       } else {
         cmp = new UnitSkillComparator(new TopmostRankedSkillComparator<Object>(null, settings), idCmp);
       }

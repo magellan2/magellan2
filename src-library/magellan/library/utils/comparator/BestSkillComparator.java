@@ -19,6 +19,7 @@ import java.util.Map;
 
 import magellan.library.ID;
 import magellan.library.Skill;
+import magellan.library.rules.SkillType;
 
 
 /**
@@ -36,7 +37,7 @@ import magellan.library.Skill;
  */
 public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 	private final Comparator<Skill> bestCmp;
-	private final Comparator<Skill> skillCmp;
+	private final Comparator<SkillType> skillTypeCmp;
 	private final Comparator<E> subCmp;
 
 	/**
@@ -47,10 +48,10 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 	 * @param skillComparator used to compare the two best skills.
 	 * @param subComparator applied when the best skills are equal or cannot be determined.
 	 */
-	public BestSkillComparator(Comparator<Skill> bestComparator, Comparator<Skill> skillComparator,
+	public BestSkillComparator(Comparator<Skill> bestComparator, Comparator<SkillType> skillTypeComparator,
 							   Comparator<E> subComparator) {
 		this.bestCmp = bestComparator;
-		this.skillCmp = skillComparator;
+		this.skillTypeCmp = skillTypeComparator;
 		this.subCmp = subComparator;
 	}
 
@@ -82,7 +83,7 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 				retVal = 0;
 			}
 		} else {
-			retVal = skillCmp.compare(s1, s2);
+			retVal = skillTypeCmp.compare(s1.getSkillType(), s2.getSkillType());
 
 			if((retVal == 0) && (subCmp != null)) {
 				retVal = subCmp.compare(e1, e2);

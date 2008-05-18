@@ -15,7 +15,6 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
-import magellan.library.Skill;
 import magellan.library.rules.SkillType;
 
 

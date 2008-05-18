@@ -330,8 +330,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		refreshProblems();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.eressea.event.SelectionListener#selectionChanged(com.eressea.event.SelectionEvent)
+	/**
+	 * @see SelectionListener#selectionChanged(com.eressea.event.SelectionEvent)
 	 */
 	public void selectionChanged(SelectionEvent e) {
 		// (stm) this is pretty broken
@@ -391,6 +391,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     reviewRegionAndUnits(e.getUnit().getRegion());
 	}
 
+	/**
+	 * 
+	 */
 	private void reviewRegionAndUnits(Region r) {
 		if(r == null) {
 			return;
@@ -412,6 +415,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void reviewObjects(Unit u, Region r) {
 	  synchronized (model) {
       for (Iterator iter = inspectors.iterator(); iter.hasNext();) {
@@ -440,6 +446,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 	}
 
+	/**
+	 * 
+	 */
 	private List<Problem> filterProblems(List<Problem> problems) {
 	  if (!restrictToOwner())
 	    return problems;
@@ -486,7 +495,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		private void init() {
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see javax.swing.table.DefaultTableModel#isCellEditable(int, int)
 		 */
 		public boolean isCellEditable(int row, int column) {
@@ -629,56 +638,42 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View, net.infonode.docking.View)
    */
   public void viewFocusChanged(View arg0, View arg1) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
    */
   public void windowAdded(DockingWindow arg0, DockingWindow arg1) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowAdded: " + arg1.getName());
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowClosed(net.infonode.docking.DockingWindow)
    */
   public void windowClosed(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowClosed: " + arg0.getName());
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowClosing(net.infonode.docking.DockingWindow)
    */
   public void windowClosing(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowDocked(net.infonode.docking.DockingWindow)
    */
   public void windowDocked(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowDocked: " + arg0.getName());
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowDocking(net.infonode.docking.DockingWindow)
    */
   public void windowDocking(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
    */
   public void windowHidden(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowHidden: " + arg0.getName());
     this.isShown=false;
   }
 
@@ -686,64 +681,48 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see net.infonode.docking.DockingWindowListener#windowMaximized(net.infonode.docking.DockingWindow)
    */
   public void windowMaximized(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMaximizing(net.infonode.docking.DockingWindow)
    */
   public void windowMaximizing(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMinimized(net.infonode.docking.DockingWindow)
    */
   public void windowMinimized(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowMinimizing(net.infonode.docking.DockingWindow)
    */
   public void windowMinimizing(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
    */
   public void windowRemoved(DockingWindow arg0, DockingWindow arg1) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowRemoved: " + arg1.getName());
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowRestored(net.infonode.docking.DockingWindow)
    */
   public void windowRestored(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowRestoring(net.infonode.docking.DockingWindow)
    */
   public void windowRestoring(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
    */
   public void windowShown(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowShown: " + arg0.getName());
     this.isShown=true;
     this.refreshProblems();
   }
@@ -752,16 +731,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @see net.infonode.docking.DockingWindowListener#windowUndocked(net.infonode.docking.DockingWindow)
    */
   public void windowUndocked(DockingWindow arg0) {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    // log.info("windowUndocked: " + arg0.getName());
   }
 
   /**
    * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
    */
   public void windowUndocking(DockingWindow arg0) throws OperationAbortedException {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    
   }
   
   

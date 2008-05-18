@@ -1,3 +1,7 @@
+2008-05-18 / Build 197 - Fiete (sf@fietefietz.de)
+	* fixed SkillTypeComp - Exception
+	* added seasonal check in regionimagerenderer - seasonal images only if wanted
+
 2008-05-18 / Build 197 - Thoralf (thoralf@m84.de)
     * made a lot of changes to the java5 generics - release is maybe broken
 

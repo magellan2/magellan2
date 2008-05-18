@@ -199,18 +199,25 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private MapperPanel mapPanel = null;
 
+  /** The overview panel */
   private EMapOverviewPanel overviewPanel = null;
 
+  /** The details panel */
   private EMapDetailsPanel detailsPanel = null;
 
+  /** The message panel */
   private MessagePanel messagePanel = null;
 
+  /** The ECheck panel */
   private ECheckPanel echeckPanel = null;
   
+  /** The open tasks panel */
   private TaskTablePanel taskPanel = null;
   
+  /** The army statistics panel */
   private ArmyStatsPanel armyStatsPanel = null;
   
+  /** The trade organizer panel */
   private TradeOrganizer tradeOrganizer = null;
   
   /**

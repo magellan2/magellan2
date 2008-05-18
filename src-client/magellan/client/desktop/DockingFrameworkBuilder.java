@@ -124,7 +124,6 @@ public class DockingFrameworkBuilder  {
       view.setToolTipText(Resources.get("dock."+key+".tooltip"));
       if (component instanceof DockingWindowListener){
         view.addListener((DockingWindowListener)component);
-        // log.info("added " + component + " as DockingWindowListener");
       }
       viewMap.addView(key,view);
       views.put(key,view);

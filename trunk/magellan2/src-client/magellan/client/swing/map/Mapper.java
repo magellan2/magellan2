@@ -67,6 +67,8 @@ import magellan.library.utils.replacers.ReplacerFactory;
 import magellan.library.utils.replacers.ReplacerHelp;
 import magellan.library.utils.replacers.ReplacerSystem;
 
+import magellan.library.utils.Sorted;
+
 /**
  * A component displaying a map based on a <tt>GameData</tt> object. The
  * appearance of the map is made configurable by using combinations of classes
@@ -161,7 +163,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   protected static ReplacerFactory tooltipReplacers;
 
   // region sublist for rendering
-  protected List<Region> regionList = null;
+  protected List<Sorted> objectList = null;
   protected int lastRegionRenderingType = -1;
   protected int inPaint = 0;
 
@@ -683,16 +685,16 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * Creates a sublist of regions to render according to the state of the given
    * int. Values are interpreted as those of RenderingPlane.
    */
-  protected List<Region> createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Region> regionList, int duration, int paintNumber) {
+  protected List<Sorted> createSubList(int condition, CoordinateID upperLeft, CoordinateID lowerRight, List<Sorted> regionList, int duration, int paintNumber) {
     // okay, the result could contain Regions or Units or whatever...
-    List<Region> main = null;
+    List<Sorted> main = null;
 
     if ((inPaint < 2) || (paintNumber == 0) || (duration > 0)) {
       main = regionList;
     }
 
     if (main == null) {
-      main = new LinkedList<Region>();
+      main = new LinkedList<Sorted>();
     } else {
       main.clear();
     }
@@ -700,9 +702,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if ((condition & RenderingPlane.ACTIVE_OBJECT) != 0) {
       // simply add the first region found
       if (activeObject != null) {
-        main.add((Region)activeObject);
+          if (activeObject instanceof Sorted) {
+            main.add((Sorted)activeObject);
+          }
       }
-
       return main;
     }
 
@@ -749,7 +752,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // sort out according to other states, use AND
     if ((condition & (RenderingPlane.SELECTED_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED | RenderingPlane.ACTIVE_REGION | RenderingPlane.TAGGED_REGIONS)) != 0) {
-      Iterator<Region> it = main.iterator();
+      Iterator<Sorted> it = main.iterator();
 
       /*
        * Note: On some computers this occasionally throws Concurrent Mod
@@ -757,16 +760,19 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
        */
       try {
         while (it.hasNext()) {
-          Region r = it.next();
-
-          if (((condition & RenderingPlane.SELECTED_REGIONS) != 0) && !selectedRegions.containsKey(r.getID())) {
-            it.remove();
-          } else if (((condition & RenderingPlane.ACTIVE_REGION) != 0) && !(r.equals(activeRegion))) {
-            it.remove();
-          } else if (((condition & RenderingPlane.ACTIVE_OR_SELECTED) != 0) && !(r.equals(activeRegion) || selectedRegions.containsKey(r.getID()))) {
-            it.remove();
-          } else if (((condition & RenderingPlane.TAGGED_REGIONS) != 0) && !(r.hasTags())) {
-            it.remove();
+          Sorted sorted = it.next();
+          if (sorted instanceof Region){
+            Region r = (Region)sorted;
+  
+            if (((condition & RenderingPlane.SELECTED_REGIONS) != 0) && !selectedRegions.containsKey(r.getID())) {
+              it.remove();
+            } else if (((condition & RenderingPlane.ACTIVE_REGION) != 0) && !(r.equals(activeRegion))) {
+              it.remove();
+            } else if (((condition & RenderingPlane.ACTIVE_OR_SELECTED) != 0) && !(r.equals(activeRegion) || selectedRegions.containsKey(r.getID()))) {
+              it.remove();
+            } else if (((condition & RenderingPlane.TAGGED_REGIONS) != 0) && !(r.hasTags())) {
+              it.remove();
+            }
           }
         }
       } catch (Exception exc) {
@@ -822,7 +828,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     inPaint++;
 
     int duration = 0;
-    List<Region> regList = regionList;
+    List<Sorted> regList = objectList;
 
     // super.paint(g);
     Rectangle offset = new Rectangle(mapToScreenBounds.x + clipBounds.x, mapToScreenBounds.y + clipBounds.y, clipBounds.width, clipBounds.height);
@@ -1050,7 +1056,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     inPaint--;
-    regionList = regList;
+    objectList = regList;
 
     setCursor(DEFAULT_CURSOR);
 

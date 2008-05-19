@@ -33,7 +33,7 @@ import magellan.library.Unit;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class UnitSkillComparator implements Comparator<Unit> {
+public class UnitSkillComparator<E> implements Comparator<Unit> {
 	private final Comparator skillsCmp;
 	private final Comparator subCmp;
 

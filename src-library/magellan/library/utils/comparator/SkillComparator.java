@@ -47,6 +47,11 @@ public class SkillComparator implements Comparator<Skill> {
 	 * 		   0 is returned if both values are equal.
 	 */
 	public int compare(Skill s1, Skill s2) {
+	  int i = 1;
+	  if (s1==null || s2==null){
+	    return 0;
+	  }
+	  
 		if((s1.getLevel() != s2.getLevel()) || (s1.noSkillPoints() && s2.noSkillPoints())) {
 			return s2.getLevel() - s1.getLevel();
 		} else {

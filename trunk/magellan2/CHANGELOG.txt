@@ -1,3 +1,7 @@
+2008-05-19 / Build 198 - Fiete (sf@fietefietz.de)
+	* fixed sorting bug in EMapOverview and GroupInfo (BestSkillComp.)
+	* added spellSchool to AuraInfo (personal feature wish)
+
 2008-05-18 / Build 197 - Fiete (sf@fietefietz.de)
 	* fixed SkillTypeComp - Exception
 	* added seasonal check in regionimagerenderer - seasonal images only if wanted

@@ -1805,10 +1805,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					n.add(m);
 
 					Comparator<Unique> idCmp = IDComparator.DEFAULT;
+          NameComparator<Unique> nameComparator = new NameComparator<Unique>(null);
+          SkillTypeRankComparator<Named> skillTypeRankComparator = new SkillTypeRankComparator<Named>(nameComparator, settings);
+          SkillTypeComparator<SkillType> skillTypeComparator = new SkillTypeComparator<SkillType>(skillTypeRankComparator, null);
+          BestSkillComparator<SkillType> bestSkillComparator = new BestSkillComparator<SkillType>(SkillComparator.skillCmp,skillTypeComparator,SkillComparator.skillCmp);
+          Comparator<Unit> unitCmp = new UnitSkillComparator<Unit>(bestSkillComparator,idCmp);
+          /*
 					Comparator<Unit> unitCmp = new UnitSkillComparator(new BestSkillComparator<SkillType>(new SkillComparator(),
 																						 new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(idCmp),settings), new SkillComparator()),
 																						 null),
 																 idCmp);
+          */
 					Collections.sort(item.units, unitCmp);
 
 					for(Iterator uIter = item.units.iterator(); uIter.hasNext();) {
@@ -1932,8 +1939,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// magic aura
 		if(u.getAura() != -1) {
-			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.aura") + ": " + u.getAura() + " / " + u.getAuraMax(),
-										"aura"));
+      String spellSchool = "";
+      if (u.getFaction()!=null && u.getFaction().getSpellSchool()!=null){
+        spellSchool = " (" + u.getFaction().getSpellSchool() + ")";
+      }
+      String auraInfo = Resources.get("emapdetailspanel.node.aura") + ": " + u.getAura() + " / " + u.getAuraMax();
+      if (spellSchool.length()>1){
+        auraInfo+=spellSchool;
+      }
+			parent.add(createSimpleNode(auraInfo,"aura"));
 		}
 
 		// familiar

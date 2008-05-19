@@ -48,6 +48,8 @@ public class EventDispatcher implements EventDispatcherInterface {
   private static final int PRIORITIES[] = { 0, 4, 1, 1, 1 };
   private EQueue queue;
 
+  private static final int infoMilliSeks = 5000;
+  
   /**
    * TODO DOCUMENT ME!
    */
@@ -541,15 +543,16 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (log.isDebugEnabled()) {
         log.debug("EventDispatcher.Notifier.run called ", new Exception());
       }
-
+      long timeWatchStart = 0;
+      long timeWatchEnd = 0;
       notifierIsAlive = true;
-
+      
       // the for loops are duplicated for each event type to
       // avoid a lot of expensive class casts and instanceof
       // operations
       if (event instanceof SelectionEvent) {
         SelectionEvent e = (SelectionEvent) event;
-
+        
         notifierIsAliveOnList[SELECTION] = true;
 
         for (Iterator iter = listeners[SELECTION].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
@@ -559,7 +562,12 @@ public class EventDispatcher implements EventDispatcherInterface {
           if (o != null) {
             eventsDispatched++;
             try {
+              timeWatchStart = System.currentTimeMillis();
               ((SelectionListener) o).selectionChanged(e);
+              timeWatchEnd = System.currentTimeMillis();
+              if ((timeWatchEnd-timeWatchStart) > infoMilliSeks){
+                log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for SELECTION-notify from " + event.getSource().getClass().getName() + " in " + ((SelectionListener) o).getClass().getName());
+              }
             } catch (Exception ex) {
               log.error("An Exception occured in the EventDispatcher", ex);
             }
@@ -569,7 +577,6 @@ public class EventDispatcher implements EventDispatcherInterface {
             EventDispatcher.this.stopNotification = false;
           }
         }
-
         notifierIsAliveOnList[SELECTION] = false;
       } else if (event instanceof OrderConfirmEvent) {
         OrderConfirmEvent e = (OrderConfirmEvent) event;
@@ -656,7 +663,7 @@ public class EventDispatcher implements EventDispatcherInterface {
         GameDataEvent e = (GameDataEvent) event;
 
         notifierIsAliveOnList[GAMEDATA] = true;
-
+        
         for (Iterator iter = listeners[GAMEDATA].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
@@ -664,7 +671,12 @@ public class EventDispatcher implements EventDispatcherInterface {
           if (o != null) {
             eventsDispatched++;
             try {
+              timeWatchStart = System.currentTimeMillis();
               ((GameDataListener) o).gameDataChanged(e);
+              timeWatchEnd = System.currentTimeMillis();
+              if ((timeWatchEnd-timeWatchStart) > infoMilliSeks){
+                log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName() + " in " + ((GameDataListener) o).getClass().getName());
+              }
             } catch (Exception ex) {
               log.error("An Exception occured in the EventDispatcher", ex);
             }
@@ -674,7 +686,6 @@ public class EventDispatcher implements EventDispatcherInterface {
             EventDispatcher.this.stopNotification = false;
           }
         }
-
         notifierIsAliveOnList[GAMEDATA] = false;
       }
 

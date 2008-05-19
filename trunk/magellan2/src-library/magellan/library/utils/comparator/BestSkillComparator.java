@@ -38,18 +38,18 @@ import magellan.library.rules.SkillType;
 public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 	private final Comparator<Skill> bestCmp;
 	private final Comparator<SkillType> skillTypeCmp;
-	private final Comparator<E> subCmp;
+	private final Comparator<Skill> subCmp;
 
 	/**
 	 * Creates a new BestSkillComparator object.
 	 *
 	 * @param bestComparator used to determine the best skill in each of the two collections of
 	 * 		  skills to be compared.
-	 * @param skillComparator used to compare the two best skills.
+	 * @param skillTypeComparator used to compare the two best skillTypes.
 	 * @param subComparator applied when the best skills are equal or cannot be determined.
 	 */
 	public BestSkillComparator(Comparator<Skill> bestComparator, Comparator<SkillType> skillTypeComparator,
-							   Comparator<E> subComparator) {
+							   Comparator<Skill> subComparator) {
 		this.bestCmp = bestComparator;
 		this.skillTypeCmp = skillTypeComparator;
 		this.subCmp = subComparator;
@@ -78,7 +78,7 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 			retVal = Integer.MAX_VALUE;
 		} else if((s1 == null) && (s2 == null)) {
 			if(subCmp != null) {
-				retVal = subCmp.compare(e1, e2);
+				retVal = subCmp.compare(s1, s2);
 			} else {
 				retVal = 0;
 			}
@@ -86,7 +86,7 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 			retVal = skillTypeCmp.compare(s1.getSkillType(), s2.getSkillType());
 
 			if((retVal == 0) && (subCmp != null)) {
-				retVal = subCmp.compare(e1, e2);
+				retVal = subCmp.compare(s1, s2);
 			}
 		}
 

@@ -1,3 +1,6 @@
+2008-05-20 / Build 199 - Fiete (sf@fietefietz.de)
+	* start showing regionUID in EMapDetail and Copy&Paste / Contextmenus
+
 2008-05-19 / Build 198 - Fiete (sf@fietefietz.de)
 	* fixed sorting bug in EMapOverview and GroupInfo (BestSkillComp.)
 	* added spellSchool to AuraInfo (personal feature wish)

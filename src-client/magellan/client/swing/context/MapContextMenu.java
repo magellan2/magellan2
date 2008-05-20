@@ -549,7 +549,12 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 * Copies name and coordinates to the sytem clipboard.
 	 */
 	private void copyNameID() {
-		StringSelection strSel = new StringSelection(region.toString());
+    String toCopy = region.toString();
+    if (region.getUID()>0){
+      toCopy += " (" + Integer.toString((int)region.getUID(),36).replace("l", "L") + ")";
+    }
+		StringSelection strSel = new StringSelection(toCopy);
+    
 		Clipboard cb = getToolkit().getSystemClipboard();
 		cb.setContents(strSel, null);
 	}

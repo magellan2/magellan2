@@ -683,16 +683,28 @@ public class FindDialog extends InternationalizedDataDialog
 		}
 
 		boolean retVal = false;
-		String id = getID(item).toLowerCase();
+		String id = getID(item);
 
 		for(Iterator iter = patterns.iterator(); iter.hasNext();) {
-			if(id.equals((String) iter.next())) {
+			if(id.equalsIgnoreCase((String) iter.next())) {
 				retVal = true;
-
 				break;
 			}
 		}
 
+    if (item instanceof Region && !retVal){
+      Region r = (Region)item;
+      String id1 = Integer.toString((int)r.getUID());
+      String id2 = Integer.toString((int)r.getUID(),36);
+      for(Iterator iter = patterns.iterator(); iter.hasNext();) {
+        String check = (String)iter.next();
+        if(id1.equalsIgnoreCase(check) || id2.equalsIgnoreCase(check)) {
+          retVal = true;
+          break;
+        }
+      }
+    }
+    
 		return retVal;
 	}
 

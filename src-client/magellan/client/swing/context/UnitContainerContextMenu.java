@@ -38,6 +38,7 @@ import magellan.client.swing.RoutingDialog;
 import magellan.client.utils.Units;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -86,6 +87,15 @@ public class UnitContainerContextMenu extends JPopupMenu {
 				}
 			});
 		add(copyID);
+    
+    JMenuItem copyName = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyname.caption"));
+    copyName.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          copyName();
+        }
+      });
+    add(copyName);
+    
 
 		JMenuItem copyNameID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandname.caption"));
 		copyNameID.addActionListener(new ActionListener() {
@@ -95,6 +105,29 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			});
 		add(copyNameID);
 
+    // context.unitcontainercontextmenu.menu.copyidandnameanduid.caption
+		if (uc instanceof Region){
+      Region r = (Region)uc;
+      if (r.getUID()>0){
+        JMenuItem copyNameRegionID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copynameanduid.caption"));
+        copyNameRegionID.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              copyNameRegionID();
+            }
+          });
+        add(copyNameRegionID);
+        
+        JMenuItem copyNameIDRegionID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyidandnameanduid.caption"));
+        copyNameIDRegionID.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              copyNameIDRegionID();
+            }
+          });
+        add(copyNameIDRegionID);
+      }
+    }
+    
+    
 		if(uc instanceof Ship) {
 			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
 			planShipRoute.addActionListener(new ActionListener() {
@@ -199,7 +232,36 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		Clipboard cb = getToolkit().getSystemClipboard();
 		cb.setContents(strSel, null);
 	}
+  
+  /**
+   * Copies name to the sytem clipboard.
+   */
+  private void copyName() {
+    StringSelection strSel = new StringSelection(uc.getName());
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+  }
 
+  /**
+   * Copies name and id and regionID to the sytem clipboard.
+   */
+  private void copyNameIDRegionID() {
+    Region r = (Region)uc;
+    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(),36).replace("l","L") + ")");
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+  }
+  
+  /**
+   * Copies name and id and regionID to the sytem clipboard.
+   */
+  private void copyNameRegionID() {
+    Region r = (Region)uc;
+    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(),36).replace("l","L") + ")");
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
+  }
+  
 	/**
 	 * Copies the mailadress of a faction to the clipboard.
 	 */

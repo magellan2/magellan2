@@ -106,6 +106,7 @@ public class IDBaseConverter {
 	 */
 	public static int getMaxId(int base) {
 		// base36 is limited to 4 digits
+    // Fiete 20080520: why? No limits!
 		return (base == 10) ? Integer.MAX_VALUE : ((base * base * base * base) - 1);
 	}
 

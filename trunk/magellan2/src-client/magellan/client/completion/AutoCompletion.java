@@ -419,8 +419,22 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       if (line.length() > 0) {
         String stub = getStub(line);
         lastStub = stub;
+        
+        // Fiete: try to detect, if we fully typed a offered completion
+        // ennos feature wish: in that case do not offer the completion anymore
+        // we check, if we have only one completion left AND if the last word typed is just
+        // this last completion - in that case we do not offer the completion
+        boolean completionCompleted = false;
+        if ((completions != null) && (completions.size() == 1) && !inWord){
+          // we have just 1 completion avail and we are not in a word
+          Completion c = completions.iterator().next();
+          if (c.getName().equalsIgnoreCase(stub)){
+            // last completion equals last fully typed word
+            completionCompleted=true;
+          }
+        }
 
-        if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord) {
+        if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord && !completionCompleted) {
           currentGUI.offerCompletion(j, completions, stub);
           completionIndex = 0;
         }

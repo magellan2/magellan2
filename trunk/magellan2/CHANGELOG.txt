@@ -1,5 +1,8 @@
 2008-05-20 / Build 199 - Fiete (sf@fietefietz.de)
 	* start showing regionUID in EMapDetail and Copy&Paste / Contextmenus
+	* do not show completion, when offered completion is already typed
+	* moved option seasonal images from BorderPreferences to MapperPreferences
+	* updated help files for options->map and refreshed the picture, en-translation still ToDo
 
 2008-05-19 / Build 198 - Fiete (sf@fietefietz.de)
 	* fixed sorting bug in EMapOverview and GroupInfo (BestSkillComp.)

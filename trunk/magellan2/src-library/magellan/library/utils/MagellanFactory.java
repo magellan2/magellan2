@@ -2030,11 +2030,24 @@ public abstract class MagellanFactory {
    */
   public static String combatStatusToString(Unit u) {
     String retVal = combatStatusToString(u.getCombatStatus());
-
+    if (u.getModifiedCombatStatus()!=u.getCombatStatus()){
+      retVal += " (" + combatStatusToString(u.getModifiedCombatStatus()) + ")";
+    }
+    
+    
     if(u.isUnaided()) {
       retVal += (", " + Resources.get("unit.combatstatus.unaided"));
     }
-
+    
+    if (u.getModifiedUnaided()!=u.isUnaided()){
+      if (u.getModifiedUnaided()){
+        retVal += " (" + Resources.get("unit.combatstatus.unaided") + ")";
+      } else {
+        retVal += " (" + Resources.get("unit.combatstatus.aided") + ")";
+      }
+    }
+    
+    
     return retVal;
   }
   

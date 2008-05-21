@@ -30,6 +30,7 @@ import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
+import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -80,6 +81,10 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 			OrderReader r = new OrderReader(client.getData());
 			r.setAutoConfirm(acc.getAutoConfirm());
 			r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
+      
+      // we clone later the hole gamedata, we do not need to
+      // refresh the UnitRelations now
+      r.setRefreshUnitRelations(false);
 
 			try {
 				// apexo (Fiete) 20061205: if in properties, force ISO encoding
@@ -91,7 +96,11 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 					Reader stream = new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()), FileType.DEFAULT_ENCODING.toString());
 					r.read(stream);
 				}
-
+				
+        /**
+         * we do not need the refresh anymore...
+         * we clone the hole gamedata later...
+         * 
 				// OrderReaderPatch010207 stm (manually by Fiete):
 				if (client.getData().regions()!=null){ // added by fiete to be failsafe
 					for (Iterator it = client.getData().regions().values().iterator();it.hasNext();){
@@ -100,6 +109,8 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 					}
 				}
 				// OrderReaderPatch end
+         * 
+				 */
 				
 				OrderReader.Status status = r.getStatus();
 				Object msgArgs[] = { new Integer(status.factions), new Integer(status.units) };
@@ -115,7 +126,10 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 											  JOptionPane.ERROR_MESSAGE);
 			}
 
-			client.getDispatcher().fire(new GameDataEvent(client, client.getData()));
+			// client.getDispatcher().fire(new GameDataEvent(client, client.getData()));
+      // force a complete new init of the game data, using data.clone
+      // using for that client.setOrigin...(Fiete)
+      this.client.setOrigin(new CoordinateID(0,0));
 		}
 
 		// repaint since command confirmation status may have changed

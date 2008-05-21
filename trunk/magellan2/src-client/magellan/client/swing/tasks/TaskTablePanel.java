@@ -440,6 +440,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           if (data.getOwnerFaction()==null || !restrictToOwner() || data.getOwnerFaction().equals(u.getFaction().getID())){
             List<Problem> problems = c.reviewUnit(u);
             model.addProblems(problems);
+          } else {
+            if (restrictToPassword() && u.getFaction().getPassword()!=null && u.getFaction().getPassword().length()>0){
+              List<Problem> problems = c.reviewUnit(u);
+              model.addProblems(problems);
+            }
           }
         }
       }
@@ -458,13 +463,22 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
        Faction f = p.getFaction();
        if (data.getOwnerFaction()==null || !restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
          filteredList.add(p);
+       } else {
+         if (restrictToPassword() && f!=null && f.getPassword()!=null && f.getPassword().length()>0){
+           filteredList.add(p);
+         }
        }
+       
      }
      return filteredList;
   }
 
   private boolean restrictToOwner() {
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, true);
+  }
+  
+  private boolean restrictToPassword() {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, true);
   }
 
   private Vector<String> getHeaderTitles() {

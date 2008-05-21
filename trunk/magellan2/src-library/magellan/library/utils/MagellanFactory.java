@@ -2107,8 +2107,33 @@ public abstract class MagellanFactory {
       strFlags += Resources.get("unit.guard.region");
     }
 
+    /**
+     * es all standard guarding units seems to have 1 -> tax 
+     * is alleways triggered. Deactivating it.
+    if((iFlags & Unit.GUARDFLAG_TAX) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.tax"));
+    }
+    */
+    if((iFlags & Unit.GUARDFLAG_MINING) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.mining"));
+    }
     if((iFlags & Unit.GUARDFLAG_WOOD) != 0) {
       strFlags += (", " + Resources.get("unit.guard.wood"));
+    }
+    if((iFlags & Unit.GUARDFLAG_TRAVELTHRU) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.travelthru"));
+    }
+    if((iFlags & Unit.GUARDFLAG_LANDING) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.landing"));
+    }
+    if((iFlags & Unit.GUARDFLAG_CREWS) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.crews"));
+    }
+    if((iFlags & Unit.GUARDFLAG_RECRUIT) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.recruit"));
+    }
+    if((iFlags & Unit.GUARDFLAG_PRODUCE) != 0) {
+      strFlags += (", " + Resources.get("unit.guard.produce"));
     }
 
     return strFlags;

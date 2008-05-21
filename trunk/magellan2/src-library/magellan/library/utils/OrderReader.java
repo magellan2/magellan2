@@ -46,6 +46,7 @@ public class OrderReader {
 	private boolean autoConfirm = false;
 	private boolean ignoreSemicolonComments = false;
 	private Status status = null;
+  private boolean refreshUnitRelations = true;
 
 	/**
 	 * Creates a new OrderReader object adding the read orders to the units it can find in the
@@ -179,7 +180,7 @@ public class OrderReader {
 					} else if((ignoreSemicolonComments == false) &&
 								  (rest.startsWith("ECHECK") == false)) {
 						// add all other comments except "; ECHECK ..." to the orders
-						currentUnit.addOrders(line);
+						currentUnit.addOrders(line,refreshUnitRelations);
 					}
 				}
 
@@ -189,7 +190,7 @@ public class OrderReader {
 			if(!tokenizer.hasMoreTokens() || line.trim().equals("")) {
 				// empty line
 				if(currentUnit != null) {
-					currentUnit.addOrders(line);
+					currentUnit.addOrders(line,refreshUnitRelations);
 				}
 
 				continue;
@@ -264,7 +265,7 @@ public class OrderReader {
 					currentUnit = null;
 				}
 			} else if(currentUnit != null) {
-				currentUnit.addOrders(line);
+				currentUnit.addOrders(line,refreshUnitRelations);
 			}
 		}
 	}
@@ -330,4 +331,12 @@ public class OrderReader {
 		/** DOCUMENT-ME */
 		public int factions = 0;
 	}
+
+  public boolean isRefreshUnitRelations() {
+    return refreshUnitRelations;
+  }
+
+  public void setRefreshUnitRelations(boolean refreshUnitRelations) {
+    this.refreshUnitRelations = refreshUnitRelations;
+  }
 }

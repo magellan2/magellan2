@@ -39,6 +39,7 @@ import magellan.client.swing.MapperPanel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.event.GameDataEvent;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
 public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter {
@@ -51,6 +52,7 @@ public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter
   private List<PreferencesAdapter> subAdapter;
   
   private JCheckBox showNavigation;
+  private JCheckBox useSeasonImages;
 
   /**
    * Creates a new MapperPanelPreferences object.
@@ -91,7 +93,9 @@ public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter
         new Insets(3, 3, 3, 3), 0, 0);
     
     showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), source.getContext().getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
+    useSeasonImages = new JCheckBox(Resources.get("map.bordercellrenderer.useseasonimages"), source.getContext().getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true"));
     helperPanel.add(showNavigation,BorderLayout.WEST);
+    helperPanel.add(useSeasonImages,BorderLayout.SOUTH);
     
     erg.add(helperPanel,gbc);
     gbc.gridy++;
@@ -111,9 +115,20 @@ public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter
   public void applyPreferences() {
     prefMapper.applyPreferences();
 
+    boolean needUpdate = false;
+    
     if (showNavigation.isSelected()!= source.getContext().getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true")){
       // we have a change here
       source.getContext().getProperties().setProperty("MapperPannel.Details.showNavigation", showNavigation.isSelected() ? "true" : "false");
+      needUpdate=true;
+    }
+    if (useSeasonImages.isSelected()!= source.getContext().getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true")){
+      // we have a change here
+      source.getContext().getProperties().setProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, useSeasonImages.isSelected() ? "true" : "false");
+      needUpdate=true;
+    }
+    
+    if (needUpdate){
       source.getContext().getEventDispatcher().fire(new GameDataEvent(this,source.getGameData()));
     } else {
       source.getMapper().repaint(100);

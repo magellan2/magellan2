@@ -462,8 +462,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       if (renderer != null) {
         className = renderer.getClass().getName();
       }
-      log.info("Mapper.setRenderer("+className+")");
-      log.info("Mapper.getPropertyName("+plane+")="+getPropertyName(plane));      
+      // log.info("Mapper.setRenderer("+className+")");
+      // log.info("Mapper.getPropertyName("+plane+")="+getPropertyName(plane));      
       settings.setProperty(getPropertyName(plane), className);
       conMenu.updateRenderers(this);
     } else {

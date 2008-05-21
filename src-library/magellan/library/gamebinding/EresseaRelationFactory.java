@@ -34,8 +34,10 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.relation.AttackRelation;
+import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
+import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.MovementRelation;
@@ -286,6 +288,19 @@ public class EresseaRelationFactory implements RelationFactory {
         continue;
       }
 
+      
+      // guard realtion
+      if (((OrderToken) tokens.get(0)).equalsToken(getOrder(EresseaConstants.O_GUARD))) {
+        GuardRegionRelation guardRegionRelation = new GuardRegionRelation(u,1,line);
+        if (tokens.size()>1){
+          if (((OrderToken) tokens.get(1)).equalsToken(getOrder(EresseaConstants.O_NOT))) {
+            guardRegionRelation.guard=0;
+          }
+        }
+        relations.add(guardRegionRelation);
+      }
+      
+      
       // transport relation
       if (((OrderToken) tokens.get(0)).equalsToken(getOrder(EresseaConstants.O_CARRY))) {
         OrderToken t = (OrderToken) tokens.get(1);
@@ -533,6 +548,58 @@ public class EresseaRelationFactory implements RelationFactory {
         }
       }
 
+      
+      // battle status relation
+      if (((OrderToken) tokens.get(0)).equalsToken(getOrder(EresseaConstants.O_COMBAT))) {
+         CombatStatusRelation combatStatusRelation = null;
+        if (tokens.size() > 1) {
+          // additional info for battle status
+          // lets detect new status
+          OrderToken newStatusToken = (OrderToken)tokens.get(1);
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_AGGRESSIVE))) {
+            combatStatusRelation = new CombatStatusRelation(u,0,line);
+          }
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_FRONT))) {
+            combatStatusRelation = new CombatStatusRelation(u,1,line);
+          }
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_REAR))) {
+            combatStatusRelation = new CombatStatusRelation(u,2,line);
+          }
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_DEFENSIVE))) {
+            combatStatusRelation = new CombatStatusRelation(u,3,line);
+          }
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_NOT))) {
+            combatStatusRelation = new CombatStatusRelation(u,4,line);
+          }
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_FLEE))) {
+            combatStatusRelation = new CombatStatusRelation(u,5,line);
+          }
+          if (newStatusToken.getText().length()==0) {
+            // just nothing means "normal" = front
+            combatStatusRelation = new CombatStatusRelation(u,1,line);
+          }
+          // check additional the unaided order
+          if (newStatusToken.equalsToken(getOrder(EresseaConstants.O_HELP_COMBAT))) {
+            // "Kämpfe helfe" would change unaided from true to false
+            combatStatusRelation = new CombatStatusRelation(u,false,line);
+            if (tokens.size() > 2){
+              // check if we have the NICHT
+              OrderToken lastToken = (OrderToken)tokens.get(2);
+              if (lastToken.equalsToken(getOrder(EresseaConstants.O_NOT))) {
+                // "Kämpfe helfe nicht" would change unaided from false to true
+                combatStatusRelation = new CombatStatusRelation(u,true,line);
+              }
+            }
+          }
+        } else {
+          // no more info means status "normal" = 1
+          combatStatusRelation = new CombatStatusRelation(u,1,line);
+        }
+        if (combatStatusRelation!=null){
+          relations.add(combatStatusRelation);
+        }
+      }
+      
       // name relation
       // TODO: Do it right
       if (((OrderToken) tokens.get(0)).equalsToken(getOrder(EresseaConstants.O_NAME))) {

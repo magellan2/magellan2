@@ -81,7 +81,7 @@ public class AttackInspector extends AbstractInspector {
           if (relation.source.getFaction().getAllies().containsKey(relation.target.getFaction().getID()))
             problems.add(new CriticizedWarning(u, u, this, Resources.get("tasks.attackinspector.warning.friendlyfire"), relation.line));
         }
-        // TODO define as constants, use modified combat status
+        // TODO define as constants
         // pre 57:
         // 0: VORNE
         // 1: HINTEN
@@ -95,7 +95,9 @@ public class AttackInspector extends AbstractInspector {
         // 3 DEFENSIV: 2. Reihe, kämpfen bis 90% HP
         // 4 NICHT: 3. Reihe, kämpfen bis 90% HP
         // 5 FLIEHE: 4. Reihe, flieht immer.
-        if (u.getCombatStatus()>3){
+        
+        // Fiete 20080521: changing here to modified Combat status
+        if (u.getModifiedCombatStatus()>3){
           wrongStatus=Math.min(wrongStatus, relation.line);
         }
 
@@ -104,6 +106,12 @@ public class AttackInspector extends AbstractInspector {
     if (type == Problem.ERROR){
       if (wrongStatus!=Integer.MAX_VALUE)
         problems.add(new CriticizedError(u, u, this, Resources.get("tasks.attackinspector.warning.notfighting"), wrongStatus));
+      
+      // guard and not fighting (fleeing)?
+      if (u.getModifiedGuard()!=0 && u.getModifiedCombatStatus()==5){
+        problems.add(new CriticizedError(u, u, this, Resources.get("tasks.attackinspector.warning.notfighting4guard")));
+      }
+      
     }
     if(problems.isEmpty()) {
       return Collections.emptyList();

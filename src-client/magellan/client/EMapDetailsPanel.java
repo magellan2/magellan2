@@ -1921,9 +1921,25 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// guard state
-		if(u.getGuard() != 0) {
-			parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.guards") + ": " +
-          MagellanFactory.guardFlagsToString(u.getGuard()), "bewacht"));
+		if (u.getGuard() != 0 || (u.getGuard() != u.getModifiedGuard())) {
+      String text ="";
+      if (u.getGuard() != 0){
+        text = Resources.get("emapdetailspanel.node.guards") + ": " +
+                              MagellanFactory.guardFlagsToString(u.getGuard());
+      } else {
+        text = Resources.get("emapdetailspanel.node.guardsnot");  
+      }
+      if (u.getGuard() != u.getModifiedGuard()){
+        text += " (";
+        if (u.getModifiedGuard() != 0){
+          text += Resources.get("emapdetailspanel.node.guards") + ": " +
+                                MagellanFactory.guardFlagsToString(u.getModifiedGuard());
+        } else {
+          text += Resources.get("emapdetailspanel.node.guardsnot");  
+        }
+        text +=")";
+      }
+			parent.add(createSimpleNode(text, "bewacht"));
 		}
 
 		// stealth info

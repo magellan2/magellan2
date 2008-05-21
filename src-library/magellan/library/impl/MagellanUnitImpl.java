@@ -50,7 +50,9 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.AttackRelation;
+import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.EnterRelation;
+import magellan.library.relation.GuardRegionRelation;
 import magellan.library.relation.InterUnitRelation;
 import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.LeaveRelation;
@@ -1035,6 +1037,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			cache.unitWeight = -1;
 			cache.modifiedUnitWeight = -1;
 			cache.modifiedPersons = -1;
+      cache.modifiedCombatStatus = -2;
+      cache.modifiedUnaidedValidated = false;
+      cache.modifiedGuard = -1;
 		}
 	}
 
@@ -1861,6 +1866,76 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		return cache.modifiedPersons;
 	}
 
+  /**
+   * Returns the new Combat Status of this unit as it would be after the orders of this unit
+   * 
+   */
+  public int getModifiedCombatStatus() {
+    if(cache == null) {
+      cache = new Cache();
+    }
+    if(cache.modifiedCombatStatus == -2) {
+      cache.modifiedCombatStatus = this.getCombatStatus();
+      // we only need to check relations for units, we know the 
+      // tha actual combat status - do we?
+      if (cache.modifiedCombatStatus>-1){
+        for(Iterator iter = getRelations(CombatStatusRelation.class).iterator(); iter.hasNext();) {
+          CombatStatusRelation rel = (CombatStatusRelation) iter.next();
+          cache.modifiedCombatStatus = rel.newCombatStatus;
+        }
+      }
+    }
+
+    return cache.modifiedCombatStatus;
+  }
+  
+  /**
+   * Returns the new (expected) guard value of this unit as it would be after the orders of this unit
+   * (and the unit is still allive next turn)
+   * (@TODO: do we need a region.getModifiedGuards - List? guess and hope not)
+   */
+  public int getModifiedGuard() {
+    if(cache == null) {
+      cache = new Cache();
+    }
+    if(cache.modifiedGuard == -1) {
+      cache.modifiedGuard = this.getGuard();
+
+      for(Iterator iter = getRelations(GuardRegionRelation.class).iterator(); iter.hasNext();) {
+        GuardRegionRelation rel = (GuardRegionRelation) iter.next();
+        cache.modifiedGuard = rel.guard;
+      }
+    }
+    return cache.modifiedGuard;
+  }
+  
+  /**
+   * Returns the new Unaided status of this unit as it would be after the orders of this unit
+   * 
+   */
+  public boolean getModifiedUnaided() {
+    if(cache == null) {
+      cache = new Cache();
+    }
+    if(!cache.modifiedUnaidedValidated) {
+      cache.modifiedUnaidedValidated = true;
+      cache.modifiedUnaided = this.isUnaided();
+      // we only need to check relations for units, we know the 
+      // tha actual combat status - do we?
+      if (this.getCombatStatus()>-1){
+        for(Iterator iter = getRelations(CombatStatusRelation.class).iterator(); iter.hasNext();) {
+          CombatStatusRelation rel = (CombatStatusRelation) iter.next();
+          if (rel.newUnaidedSet){
+            cache.modifiedUnaided = rel.newUnaided;
+          }
+        }
+      }
+    }
+
+    return cache.modifiedUnaided;
+  }
+  
+  
 	/**
 	 * Returns the weight of a unit with the specified number of persons, their weight and the
 	 * specified items in silver.

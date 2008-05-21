@@ -69,6 +69,27 @@ public class Cache {
 
   /** DOCUMENT-ME */
   public int modifiedPersons = -1;
+  
+  /** The expected combat status at beginning next turn acording to
+   * actual orders
+   * If cache is not calculated, status is -2
+   */
+  public int modifiedCombatStatus = -2;
+  
+  public int modifiedGuard = -1;
+  
+  /**  The expected unaided - status at beginning next turn acording to
+   * actual orders
+   * cache status is detected with modifiedUnaidedValidated
+   * 
+   */
+  public boolean modifiedUnaided = false;
+  
+  /**
+   * just a checker, if modifiedUnaided was already validated
+   */
+  public boolean modifiedUnaidedValidated = false;
+  
 
   /**
    * used in UnitContainer
@@ -156,6 +177,9 @@ public class Cache {
     modifiedUnitWeight = -1;
     modifiedPersons = -1;
     modifiedContainerUnits = null;
+    modifiedCombatStatus = -2;
+    modifiedUnaidedValidated = false;
+    modifiedGuard = -1;
 
     if (regionItems != null) {
       regionItems.clear();

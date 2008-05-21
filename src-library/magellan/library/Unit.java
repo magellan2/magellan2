@@ -44,7 +44,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   /** The unit is not sufficiently skilled in horse riding */
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
-  /** hmmm.... */
+  /** hmmm.... */  // Do not know either (Fiete)
   public static final int GUARDFLAG_WOOD = 4;
   
   /**
@@ -550,6 +550,25 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * transfer orders.
    */
   public int getModifiedPersons();
+  
+  /**
+   * Returns the new combat status of this unit as it would be after the orders
+   * of this unit have been processed.
+   */
+  public int getModifiedCombatStatus();
+  
+  /**
+   * Returns the new (expected) guard value of this unit as it would be after the orders of this unit
+   * (and the unit is still allive next turn)
+   * (@TODO: do we need a region.getModifiedGuards - List? guess and hope not)
+   */
+  public int getModifiedGuard();
+  
+  /**
+   * Returns the new Unaided status of this unit as it would be after the orders of this unit
+   * 
+   */
+  public boolean getModifiedUnaided();
 
   /**
    * @return true if weight is well known and NOT evaluated by Magellan

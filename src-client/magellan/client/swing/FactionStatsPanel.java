@@ -1167,7 +1167,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (faction.getMessages() != null) {
         for (Iterator<Message> i = faction.getMessages().iterator(); i.hasNext();) {
           Message msg = i.next();
-
+          int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
+          
           // check whether the message belongs to one of the selected regions
           if (msg.getAttributes() != null) {
             String regionCoordinate = msg.getAttributes().get("region");
@@ -1201,7 +1202,16 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   // possible a message containing ;herb instead of ;resource
                   resource = msg.getAttributes().get("herb");
                 }
-
+                
+                if (resource==null){
+                  // In Pferdezucht gezüchtete Pferde haben keine ressource
+                  // Fiete: 20080521
+                  if (msgID==687207561){
+                    resource = "Pferd";
+                  }
+                }
+                
+                
                 if (resource != null) {
                   // find the category
                   ItemType itemType = data.rules.getItemType(StringID.create(resource));

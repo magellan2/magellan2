@@ -45,7 +45,37 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public static final int CAP_UNSKILLED = MovementEvaluator.CAP_UNSKILLED;
 
   /** hmmm.... */  // Do not know either (Fiete)
+  // OK, mail from enno: different bit coded guard effects
+  public static final int GUARDFLAG_TAX = 1;
+  public static final int GUARDFLAG_MINING = 2;
   public static final int GUARDFLAG_WOOD = 4;
+  public static final int GUARDFLAG_TRAVELTHRU = 8;
+  public static final int GUARDFLAG_LANDING = 16;
+  public static final int GUARDFLAG_CREWS = 32;
+  public static final int GUARDFLAG_RECRUIT = 64;
+  public static final int GUARDFLAG_PRODUCE = 128;
+  /**
+  Original Mail:
+    Das ist was anderes: Je nach Rasse kann Bewachung einen untershciedlichen Effekt haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings nicht im CR.
+
+    Folgende defines hat der Server dafuer:
+    #define GUARD_TAX 1
+      /* Verhindert Steuereintreiben *
+    #define GUARD_MINING 2
+      /* Verhindert Bergbau *
+    #define GUARD_TREES 4
+      /* Verhindert Waldarbeiten *
+    #define GUARD_TRAVELTHRU 8
+      /* Blockiert Durchreisende *
+    #define GUARD_LANDING 16
+      /* Verhindert Ausstieg + Weiterreise * 
+    *#define GUARD_CREWS 32
+      /* Verhindert Unterhaltung auf Schiffen
+       * * #define GUARD_RECRUIT 64
+       /* Verhindert Rekrutieren *
+    #define GUARD_PRODUCE 128
+      /* Verhindert Abbau von Resourcen mit RTF_LIMITED *
+    */
   
   /**
    * Returns true if no orders are set

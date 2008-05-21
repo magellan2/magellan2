@@ -66,7 +66,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
   private JPanel restrictPanel;
 
+  /** Nur Probleme der Besitzerpartei anzeigen lassen */
   private JCheckBox chkOwnerParty;
+  /** Nur Probleme von Parteien anzeigen lassen, bei denen wir etwas ändern können (Passwort haben) */
+  private JCheckBox chkPasswordParties;
 
   private JCheckBox chkToDo;
   private JCheckBox chkMovement;
@@ -84,128 +87,6 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     taskPanel = parent;
 
     this.data = data;
-
-    // JPanel pnlTreeStructure = new JPanel();
-    // pnlTreeStructure.setLayout(new GridBagLayout());
-    //
-    // GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1,
-    // GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2,
-    // 2, 2, 2), 0, 0);
-    // pnlTreeStructure.setBorder(new
-    // TitledBorder(BorderFactory.createEtchedBorder(),
-    // Resources.get("emapoverviewpanel.prefs.treeStructure")));
-    //
-    // JPanel elementsPanel = new JPanel();
-    // elementsPanel.setLayout(new BorderLayout(0, 0));
-    // elementsPanel.setBorder(new
-    // TitledBorder(BorderFactory.createEtchedBorder(),
-    // Resources.get("emapoverviewpanel.prefs.treeStructure.available")));
-    //
-    // DefaultListModel elementsListModel = new DefaultListModel();
-    // for (Faction f : data.factions().values()){
-    // elementsListModel.add(elementsListModel.getSize()-1, f);
-    // }
-    //    
-    // elementsList = new JList(elementsListModel);
-    //
-    // JScrollPane pane = new JScrollPane(elementsList);
-    // elementsPanel.add(pane, BorderLayout.CENTER);
-    //
-    // JPanel usePanel = new JPanel();
-    // usePanel.setLayout(new GridBagLayout());
-    // usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-    // Resources.get("emapoverviewpanel.prefs.treeStructure.use")));
-    //
-    // useList = new JList();
-    // useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    // pane = new JScrollPane(useList);
-    // c.gridheight = 4;
-    // usePanel.add(pane, c);
-    //
-    // c.gridheight = 1;
-    // c.gridx = 1;
-    // c.weightx = 0;
-    // usePanel.add(new JPanel(), c);
-    //
-    // c.gridy++;
-    // c.weighty = 0;
-    //
-    //
-    // c.gridy++;
-    // c.weighty = 1.0;
-    // usePanel.add(new JPanel(), c);
-    //
-    // c.gridx = 0;
-    // c.gridy = 0;
-    // c.gridheight = 4;
-    // c.weightx = 0.5;
-    // c.weighty = 0.5;
-    // pnlTreeStructure.add(elementsPanel, c);
-    //
-    // c.gridx = 2;
-    // pnlTreeStructure.add(usePanel, c);
-    //
-    // c.gridx = 1;
-    // c.gridheight = 1;
-    // c.weightx = 0;
-    // c.weighty = 1.0;
-    // pnlTreeStructure.add(new JPanel(), c);
-    //
-    // c.gridy++;
-    // c.weighty = 0;
-    //
-    // JButton right = new JButton(" --> ");
-    // right.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent e) {
-    // Object selection[] = elementsList.getSelectedValues();
-    // DefaultListModel model = (DefaultListModel) useList.getModel();
-    //
-    // for (int i = 0; i < selection.length; i++) {
-    // if (!model.contains(selection[i])) {
-    // model.add(model.getSize(), selection[i]);
-    // }
-    // }
-    // }
-    // });
-    // pnlTreeStructure.add(right, c);
-    //
-    // c.gridy++;
-    //
-    // JButton left = new JButton(" <-- ");
-    // left.addActionListener(new ActionListener() {
-    // public void actionPerformed(ActionEvent e) {
-    // DefaultListModel model = (DefaultListModel) useList.getModel();
-    // Object selection[] = useList.getSelectedValues();
-    //
-    // for (int i = 0; i < selection.length; i++) {
-    // model.removeElement(selection[i]);
-    // }
-    // }
-    // });
-    // pnlTreeStructure.add(left, c);
-
-    // c.gridy++;
-    // c.weighty = 1;
-    // pnlTreeStructure.add(new JPanel(), c);
-    //
-    //
-    //
-    // this.setLayout(new GridBagLayout());
-    // c.anchor = GridBagConstraints.CENTER;
-    // c.gridx = 0;
-    // c.gridy = 0;
-    // c.gridwidth = 1;
-    // c.gridheight = 1;
-    // c.fill = GridBagConstraints.HORIZONTAL;
-    // c.weightx = 1.0;
-    // c.weighty = 0.0;
-    //
-    // c.insets.left = 0;
-    // c.anchor = GridBagConstraints.CENTER;
-    // c.fill = GridBagConstraints.HORIZONTAL;
-    // c.weightx = 1.0;
-    // this.add(pnlTreeStructure, c);
-
     this.setLayout(new BorderLayout());
 
     restrictPanel = new JPanel();
@@ -225,6 +106,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     chkOwnerParty = new JCheckBox(Resources.get("tasks.prefs.restricttoowner"), true);
     panel.add(chkOwnerParty, c);
 
+    c.gridy++;
+    chkPasswordParties = new JCheckBox(Resources.get("tasks.prefs.restricttopassword"), true);
+    panel.add(chkPasswordParties, c);
+    
     c.gridy++;
     chkToDo = new JCheckBox(Resources.get("tasks.prefs.inspectors.todo"), true);
     panel.add(chkToDo, c);
@@ -273,6 +158,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     /* restrict problems to owner faction */
     chkOwnerParty.setSelected(PropertiesHelper.getBoolean(settings,
         PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, false));
+    
+    /* restrict problems to factions with passwords */
+    chkPasswordParties.setSelected(PropertiesHelper.getBoolean(settings,
+        PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, false));
 
     /* use attack inspector */
     chkAttack.setSelected(PropertiesHelper.getBoolean(settings,
@@ -297,6 +186,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
    */
   public void applyPreferences() {
     settings.setProperty(PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, "" + chkOwnerParty.isSelected());
+    settings.setProperty(PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, "" + chkPasswordParties.isSelected());
     
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, "" + chkAttack.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, "" + chkMovement.isSelected());

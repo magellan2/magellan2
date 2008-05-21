@@ -1,6 +1,10 @@
 2008-05-21 / Build 200 - Fiete (sf@fietefietz.de)
 	* introduced modifiedCombatState, modifiedGuard
 	* improved AttackInspector -> modifiedCombatState and guard-order
+	* fixed Bug #264: HorseProduction in FactionStatistics
+	* added guard status flags to Unit and to MagellanFactory.guardFlagsToString
+	* fixed Bug #262, import of orders. (Added complete reload of gamedata via setOrigin)
+	* added test feature: restrikt tasks to factions with known passwords
 
 2008-05-20 / Build 199 - Fiete (sf@fietefietz.de)
 	* start showing regionUID in EMapDetail and Copy&Paste / Contextmenus

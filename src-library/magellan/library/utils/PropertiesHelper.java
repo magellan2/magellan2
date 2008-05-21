@@ -208,6 +208,9 @@ public class PropertiesHelper {
 
   /** Property type boolean: */
   public static final String TASKTABLE_RESTRICT_TO_OWNER = "TaskTable.restrictToOwner";
+  
+  /** Property type boolean: */
+  public static final String TASKTABLE_RESTRICT_TO_PASSWORD = "TaskTable.restrictToPassword";
 
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_ATTACK = "TaskTable.inspectors.attack";

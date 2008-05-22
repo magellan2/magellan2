@@ -60,7 +60,7 @@ public interface UserInterface {
   /**
    * Opens an input dialog.
    */
-  public Object input(String strMessage, String strTitle, Object [] values, Object initial);
+  public Object input(String strMessage, String strTitle, Object[] values, Object initial);
   
   /**
    * Sets the title of the progress dialog.

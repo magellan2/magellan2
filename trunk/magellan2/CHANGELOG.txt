@@ -1,3 +1,7 @@
+2008-05-23 / Build 201 - Darcduck (sf.net@duckstein.net)
+	* restructured all mapping (coordinate translation) code
+	* started implementing SSL and TLS for send orders
+	
 2008-05-22 / Build 201 - Fiete (sf@fietefietz.de)
 	* added editAllFactions to MultiEditorOrderEditorList
 

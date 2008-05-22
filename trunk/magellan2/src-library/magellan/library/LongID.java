@@ -102,6 +102,10 @@ public class LongID implements ID {
 		return create(new Long(i));
 	}
 
+  public static LongID create(long l) {
+    return create(new Long(l));
+  }
+
 	/**
 	 * Returns a string representation of the underlying integer.
 	 *
@@ -128,7 +132,7 @@ public class LongID implements ID {
 	 * 
 	 */
 	public long longValue() {
-		return longValue();
+		return id;
 	}
 
 	/**

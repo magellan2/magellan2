@@ -661,8 +661,11 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // try to intelligently center the map
     if (mapper.getActiveRegion() != null) {
       CoordinateID c = mapper.getActiveRegion().getCoordinate();
-
-      setCenter(context.getGameData().getGameSpecificStuff().getMapMergeEvaluator().getRelatedCoordinate(context.getGameData(), c, level));
+      CoordinateID cNew = context.getGameData().getRelatedCoordinateUI(c, level);
+      if (cNew == null) {
+        cNew = new CoordinateID(0, 0, level);
+      }
+      setCenter(cNew);
     }
     
     // check, if we have a difference between Level just set and displayed Level in navi

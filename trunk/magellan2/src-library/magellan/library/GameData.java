@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import java.awt.Point;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +24,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import magellan.library.gamebinding.EresseaMapMergeEvaluator;
+import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
 import magellan.library.io.file.FileType;
 import magellan.library.rules.Date;
@@ -36,11 +41,13 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.Pair;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.mapping.LevelRelation;
 
 /**
  * This is the central class for collecting all the data representing one
@@ -69,6 +76,8 @@ public abstract class GameData implements Cloneable {
   private EntityID ownerFaction;
 
   private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations = new HashMap<EntityID, Map<Integer,CoordinateID>>();
+
+  private Map<Integer, Map<Integer, LevelRelation>> levelRelations = new HashMap<Integer, Map<Integer,LevelRelation>>();
 
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's
@@ -1759,16 +1768,52 @@ public abstract class GameData implements Cloneable {
    * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the 
    * astral space region with CoordinateID <0,0,1>.
    */
-  public abstract void setAstralMapping(CoordinateID c);
+//  public abstract void setAstralMapping(CoordinateID c);
   
   /**
-   * Returns the mapping for astral to real space.
+   * Returns the relation of two map layers.
    * 
-   * @return the <code>CoordinateID</code> of the real space region which is the center
-   * of the astral space region with CoordinateID <0,0,1>.
+   * @return the <code>CoordinateID</code> of the toLevel region which is accessable
+   * by the fromLevel region with CoordinateID <0, 0, fromLevel>.
    */
-  public abstract CoordinateID getAstralMapping();
+  public LevelRelation getLevelRelation(int fromLevel, int toLevel) {
+    Map<Integer, LevelRelation> relations = levelRelations.get(toLevel);
+    if (relations == null) {
+      relations = new HashMap<Integer, LevelRelation>();
+      levelRelations.put(toLevel, relations);
+    }      
+    LevelRelation lr = relations.get(fromLevel);
+    if (lr == null) {
+      MapMergeEvaluator mh = this.getGameSpecificStuff().getMapMergeEvaluator();
+      lr = mh.getLevelRelation(this, fromLevel, toLevel); 
+      relations.put(fromLevel, lr);
+    }
+    return lr;
+  }
 
+  /**
+   * This method should wrap the mapping information former contained in 
+   * magellan.client.swing.MapperPanel.setLevel(int)
+   * @param data
+   * @param level
+   * @return Mapped Coordinate
+   */
+  public CoordinateID getRelatedCoordinate(CoordinateID c, int level) {
+    LevelRelation lr = getLevelRelation(c.z, level);
+    if (lr == null) return null;
+    return lr.getRelatedCoordinate(c);
+  }
+  
+  public CoordinateID getRelatedCoordinateUI(CoordinateID c, int level) {
+    CoordinateID result = getRelatedCoordinate(c, level);
+    if (result == null) {
+      LevelRelation lr = getLevelRelation(level, c.z);
+      if (lr == null) return null;
+      return lr.getInverseRelatedCoordinate(c);
+    }
+    return result;
+  }
+  
   /**
    * Removes all translations for Faction f.
    * 

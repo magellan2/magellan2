@@ -46,9 +46,10 @@ public class CompleteData extends GameData {
 	protected Translations translations = new Translations();
 	protected Locale locale = null;
 	protected Map<CoordinateID,Region> selectedRegions = new TreeMap<CoordinateID, Region>();
+/*
   protected CoordinateID astralMapping = null;
   private boolean astralMappingImpossible = false;
-
+*/
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -222,16 +223,18 @@ public class CompleteData extends GameData {
    * @param c the real space <code>CoordianteID</code> <x,y,0> which is the center of the 
    * astral space region with CoordinateID <0,0,1>.
    */
+/*  
   public void setAstralMapping(CoordinateID c) {
     this.astralMapping = c;
   }
-  
+*/  
   /**
    * Returns the mapping for astral to real space.
    * 
    * @return the <code>CoordinateID</code> of the real space region which is the center
    * of the astral space region with CoordinateID <0,0,1>.
    */
+/*
   public CoordinateID getAstralMapping() {
     if (this.getGameSpecificStuff() instanceof AllanonSpecificStuff) {
       // Allanon doesn't provide an astral space
@@ -250,7 +253,7 @@ public class CompleteData extends GameData {
     }
     return this.astralMapping;
   }
-
+*/  
   /**
    * @see magellan.library.GameData#estimateSize()
    */
@@ -258,4 +261,5 @@ public class CompleteData extends GameData {
   public long estimateSize() {
     return  regions().size()*1000+units.size()*1000;
   }
+
 }

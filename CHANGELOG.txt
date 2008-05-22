@@ -1,3 +1,6 @@
+2008-05-22 / Build 201 - Fiete (sf@fietefietz.de)
+	* added editAllFactions to MultiEditorOrderEditorList
+
 2008-05-21 / Build 200 - Fiete (sf@fietefietz.de)
 	* introduced modifiedCombatState, modifiedGuard
 	* improved AttackInspector -> modifiedCombatState and guard-order

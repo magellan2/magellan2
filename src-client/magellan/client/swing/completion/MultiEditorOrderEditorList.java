@@ -117,6 +117,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
   private boolean multiEditorLayout = false;
 	private boolean hideButtons = false;
+  private boolean editAllFactions = false;
 	private SortedSet<Unit> units;
 
   // currently selected entities
@@ -270,6 +271,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 								   .booleanValue();
 		hideButtons = Boolean.valueOf(settings.getProperty("OrderEditor.hideButtons",
 														   Boolean.FALSE.toString())).booleanValue();
+    editAllFactions = Boolean.valueOf(settings.getProperty("OrderEditor.editAllFactions",
+         Boolean.FALSE.toString())).booleanValue();
 		activeBgColor = Colors.decode(settings.getProperty("OrderEditor.activeBackgroundColor",
 														   "255,255,255"));
 		standardBgColor = Colors.decode(settings.getProperty("OrderEditor.standardBackgroundColor",
@@ -330,10 +333,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       
 		} else {
 			// single editor mode
-			Object activeObject = se.getActiveObject();
-
-			if(activeObject instanceof Unit &&
-				   EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject)) {
+			Object activeObject = se.getActiveObject();   
+        if(activeObject instanceof Unit && (EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject) || editAllFactions)) {
 				// update editor
         currentUnit = (Unit) activeObject;
         attachOrderEditor(currentUnit, editor);
@@ -389,8 +390,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     Faction newFaction = transitionalFaction;
     Unit newUnit = null;
     if(activeObject != null) {
-      if(activeObject instanceof Unit &&
-           EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject)) {
+      if(activeObject instanceof Unit && 
+          (EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject) 
+              || editAllFactions)) {
         newUnit = (Unit) activeObject;
         newRegion = newUnit.getRegion();
         newIsland = newRegion.getIsland();
@@ -2238,5 +2240,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			return false;
 		}
 	}
+
+  public boolean isEditAllFactions() {
+    return editAllFactions;
+  }
+
+  public void setEditAllFactions(boolean SetEditAllFactions) {
+    settings.setProperty("OrderEditor.editAllFactions", String.valueOf(SetEditAllFactions));
+    editAllFactions = SetEditAllFactions;
+    redrawPane();
+  }
 
 }

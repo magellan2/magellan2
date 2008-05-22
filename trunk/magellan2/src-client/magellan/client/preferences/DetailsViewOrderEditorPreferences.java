@@ -61,6 +61,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
   private JPanel pnlStylesColor = null;
   private JCheckBox chkMultiEditorLayout;
   private JCheckBox chkHideButtons;
+  private JCheckBox chkEditAllFactions;
   private JCheckBox chkSyntaxHighlighting;
   private JComboBox comboSHColors = null;
   private Dimension prefDim = new Dimension(20, 20);
@@ -97,7 +98,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
   }
 
   protected Container getLayoutPanel() {
-    JPanel content = new JPanel(new FlowLayout(FlowLayout.LEADING, 2, 0));
+    JPanel content = new JPanel(new FlowLayout(FlowLayout.LEADING, 3, 0));
     content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.layout")));
 
     chkMultiEditorLayout = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.multieditorlayout"),
@@ -106,6 +107,9 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
 
     chkHideButtons = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.hidebuttons"), source.isHideButtons());
     content.add(chkHideButtons);
+    
+    chkEditAllFactions = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.editallfactions"), source.isEditAllFactions());
+    content.add(chkEditAllFactions);
 
     return content;
   }
@@ -374,6 +378,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     source.setStandardBackgroundColorConfirmed(pnlStandardColorConfirmed.getBackground());
     source.setMultiEditorLayout(chkMultiEditorLayout.isSelected());
     source.setHideButtons(chkHideButtons.isSelected());
+    source.setEditAllFactions(chkEditAllFactions.isSelected());
     source.setUseSyntaxHighlighting(chkSyntaxHighlighting.isSelected());
 
     for(int i = 0; i < comboSHColors.getItemCount(); i++) {

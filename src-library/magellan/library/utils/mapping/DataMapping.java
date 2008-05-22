@@ -1,5 +1,5 @@
-// class magellan.library.gamebinding.AllanonMapMergeEvaluator
-// created on 17.04.2008
+// class magellan.library.utils.mapping.DataMapping
+// created on 19.05.2008
 //
 // Copyright 2003-2008 by magellan project team
 //
@@ -21,29 +21,18 @@
 // Free Software Foundation, Inc., 
 // 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // 
-package magellan.library.gamebinding;
+package magellan.library.utils.mapping;
+
+import magellan.library.CoordinateID;
+import magellan.library.GameData;
 
 /**
- * This class should implement Mappings special to Allanon. Currently no special mapping
- * are known therefore the generic MapMergeEvaluator would also fit for Allanon. 
  * 
- * @author Thoralf Rickert, Ralf Duckstein
- * @version 1.0.1, 19.05.2008
+ * @author Ralf Duckstein
+ * @version 1.0, 21.05.2008
  */
-public class AllanonMapMergeEvaluator extends MapMergeEvaluator {
-  private static AllanonMapMergeEvaluator singleton = new AllanonMapMergeEvaluator();
 
-  /**
-   * 
-   */
-  protected AllanonMapMergeEvaluator() {
-    super();
-  }
-  
-  /**
-   * 
-   */
-  public static AllanonMapMergeEvaluator getSingleton() {
-    return singleton;
-  }
+public interface DataMapping {
+
+  public CoordinateID getMapping(GameData fromData, GameData toData, int level);
 }

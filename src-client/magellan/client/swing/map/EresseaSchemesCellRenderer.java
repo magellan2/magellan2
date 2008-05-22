@@ -34,16 +34,21 @@ import magellan.library.Scheme;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.mapping.LevelRelation;
 
 /**
  * Renders the real space regions of level 0 behind the astral space regions of level 1.
  *
- * @author darcduck
+ * @author Ralf Duckstein
  * @version 1.0, 13.12.2007
  */
 public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   private static final Logger log = Logger.getInstance(EresseaSchemesCellRenderer.class);
-  private CoordinateID mapping = null;
+  
+  private static final int REAL_LAYER = 0;
+  private static final int ASTRAL_LAYER = 1;
+  
+  private LevelRelation relation = null;
   /**
    * @param geo
    * @param context
@@ -79,7 +84,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   }
 
   public void init(GameData data, Graphics g, Rectangle offset) {
-    this.mapping = data.getAstralMapping();
+    this.relation = data.getLevelRelation(ASTRAL_LAYER, REAL_LAYER);
     super.init(data, g, offset);
   }
   
@@ -87,7 +92,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
   public void render(Object obj, boolean active, boolean selected) {
-    if (mapping == null) return;
+    if (relation == null) return;
     if(obj instanceof Region) {
       Region ar = (Region) obj;
       CoordinateID c = ar.getCoordinate();
@@ -100,7 +105,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
             if(type != null) {
               String imageName = type.getID().toString();
             
-              Rectangle rect = cellGeo.getImageRect(cr.x-mapping.x, cr.y-mapping.y);
+              Rectangle rect = cellGeo.getImageRect(cr.x-relation.x, cr.y-relation.y);
               rect.translate(-offset.x, -offset.y);
               graphics.drawImage(getImage(imageName), rect.x, rect.y, rect.width, rect.height, null);
             }

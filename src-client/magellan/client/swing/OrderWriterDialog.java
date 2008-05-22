@@ -104,6 +104,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private JCheckBox chkSelRegionsOnly = null;
   private JCheckBox chkWriteUnitTagsAsVorlageComment = null;
   private JCheckBox chkCCToSender = null;
+  private JCheckBox chkUseSSL = null;
+  private JCheckBox chkUseTLS = null;
   private JComboBox cmbFaction = null;
   private JComboBox cmbGroup = null;
   private JTextField txtMailServer = null;
@@ -567,6 +569,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     updateRecipient();
 
     chkCCToSender = new JCheckBox(Resources.get("orderwriterdialog.chk.cctosender.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER,"true"))).booleanValue());
+    chkUseSSL = new JCheckBox(Resources.get("orderwriterdialog.chk.usessl.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL,"false"))).booleanValue());
+    chkUseTLS = new JCheckBox(Resources.get("orderwriterdialog.chk.usetls.caption"),(Boolean.valueOf(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS,"false"))).booleanValue());
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
@@ -608,6 +612,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     c.weighty = 0.0;
     pnlMail.add(txtMailServer, c);
 
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 2;
+//    c.gridy = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    pnlMail.add(chkUseSSL, c);
+
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
     c.gridy++;
@@ -623,6 +635,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     c.weightx = 0.2;
     c.weighty = 0.0;
     pnlMail.add(txtMailServerPort, c);
+
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 2;
+//    c.gridy = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    pnlMail.add(chkUseTLS, c);
 
     c.anchor = GridBagConstraints.WEST;
     c.gridx = 0;
@@ -1275,6 +1295,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
       return;
     }
+    
+    mailMessage.setSSL(chkUseSSL.isSelected());
+    mailMessage.setTLS(chkUseTLS.isSelected());
 
     StringWriter mailWriter = new StringWriter();
     write(mailWriter, false, false);

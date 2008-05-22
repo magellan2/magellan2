@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -32,10 +31,11 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
-import magellan.library.StringID;
+import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.rules.Date;
-import magellan.library.rules.RegionType;
 import magellan.library.utils.logging.Logger;
+import magellan.library.utils.mapping.SavedTranslationsMapping;
+
 
 /**
  * Helper class.
@@ -48,25 +48,26 @@ public class ReportMerger extends Object {
    * every match increases the score in the translationList
    * by the default value
    */
-  private static final int Translationlist_Score_Default = 1;
+//  private static final int Translationlist_Score_Default = 1;
   /**
    * RegionUID is stronger than other procedures, so we adjust
    * the scrore quite a bit more
    */
-  private static final int Translationlist_Score_RegionUID = 10;
+//  private static final int Translationlist_Score_RegionUID = 10;
   
   /**
    * Astral1 will deliver onyl one translation and not increasing the
    * scrore with matches...makes sense only, if other procedures fail
    */
-  private static final int Translationlist_Score_Astral1 = 1;
+//  private static final int Translationlist_Score_Astral1 = 1;
   
   /**
    * Astral2 will deliver onyl one translation and not increasing the
    * scrore with matches...makes sense only, if other procedures fail
    */
-  private static final int Translationlist_Score_Astral2 = 1;
-  
+//  private static final int Translationlist_Score_Astral2 = 1;
+
+/*  
   enum Type {
     NONE, DEFAULT, SAVED, MATCHED, ASTRAL2, ASTRAL1, USER, REGIONUID;
     
@@ -74,7 +75,7 @@ public class ReportMerger extends Object {
       return Resources.get("util.reportmerger.translations.type."+super.toString());
     }
   };
-  
+*/  
 
   /**
    * 
@@ -121,7 +122,7 @@ public class ReportMerger extends Object {
     Map<String, Collection<Region>> schemeMap = null;
     
     // maps regionUIDs to the Region
-    Map<Long, Region> regionUIDMap = null;
+//    Map<Long, Region> regionUIDMap = null;
 
     boolean hasAstralRegions = false;
 
@@ -202,11 +203,12 @@ public class ReportMerger extends Object {
 
       regionMap = new HashMap<String, Collection<Region>>();
       schemeMap = new HashMap<String, Collection<Region>>();
+      /*
       regionUIDMap = new HashMap<Long, Region>();
-      
+      */
 
       for (Region region : data.regions().values()) {
-        if ((region.getName() != null) && (region.getName().length() > 0)) {
+/*        if ((region.getName() != null) && (region.getName().length() > 0)) {
           Collection<Region> regions = regionMap.get(region.getName());
           if (regions == null) {
             regions = new HashSet<Region>();
@@ -218,9 +220,10 @@ public class ReportMerger extends Object {
         if (region.getUID()!=0){
           regionUIDMap.put(region.getUID(), region);
         }
-        
+*/        
         if (region.getCoordinate().z == 1) {
           hasAstralRegions = true;
+/*
           for (Scheme scheme : region.schemes()) {
             Collection<Region> astralRegions = schemeMap.get(scheme.getName());
             if (astralRegions == null) {
@@ -229,6 +232,7 @@ public class ReportMerger extends Object {
             }
             astralRegions.add(region);
           }
+*/          
         }
       }
     }
@@ -236,124 +240,6 @@ public class ReportMerger extends Object {
     public boolean hasAstralRegions() {
       init();
       return hasAstralRegions;
-    }
-
-    /**
-     * <code>
-     * Astral: A...B 
-     *         |   | 
-     * Real:   A---B
-     * </code>
-     * 
-     * To merge two non-overlapping Astral Spaces we need: - an astral to real
-     * mapping of report A - an overlapping real world between both reports - an
-     * astral to real mapping of report B
-     * 
-     * Astral to real mapping can be done by two ways: 1. from two neighbour
-     * astral spaces with schemes (there can be seen exactly one same scheme
-     * from both astral regions) 2. from several astral regions with schemes,
-     * calculating the "extend" of the schemes
-     * 
-     * ==> Having only one astral region with schemes will often not be enough
-     * to calculate the mapping between astral and real space
-     * 
-     * Variant 2 not jet implemented!
-     * 
-     */
-    private CoordinateID getReportAstralToReal() {
-      GameData data = getData();
-
-      CoordinateID reportAstralToReal = null;
-
-      CoordinateID minExtend = null;
-      CoordinateID maxExtend = null;
-
-      init();
-
-      for (Region region : data.regions().values()) {
-        if (region.getCoordinate().z == 1) {
-          for (Scheme scheme : region.schemes()) {
-            Collection<Region> regionsForScheme = schemeMap.get(scheme.getName());
-            if (regionsForScheme.size() > 1) {
-              if (regionsForScheme.size() > 2) {
-                log.error("Report corrupted: scheme visible from more than two regions: " + scheme);
-                setMergeError(true);
-              }
-              /**
-               * This is the second astral region showing the same scheme. From
-               * this we can calculate an astral to real mapping for the new
-               * report by variant 1
-               */
-              CoordinateID firstCoord = region.getCoordinate();
-              CoordinateID secondCoord = null;
-              for (Region secondScheme : regionsForScheme) {
-                if (!secondScheme.equals(region)) {
-                  secondCoord = secondScheme.getCoordinate();
-                  break;
-                }
-              }
-              CoordinateID schemeCoord = scheme.getCoordinate();
-              if (Math.abs(firstCoord.x-secondCoord.x)>1 || Math.abs(firstCoord.y-secondCoord.y)>1){
-                log.debug("false positive: "+scheme.getName());
-              }else{
-                CoordinateID newTranslation = new CoordinateID(schemeCoord.x - 2 * (firstCoord.x + secondCoord.x), schemeCoord.y - 2 * (firstCoord.y + secondCoord.y));
-                if (reportAstralToReal != null && !reportAstralToReal.equals(newTranslation)){
-                  log.warn("two astral to real translations found: " + reportAstralToReal + "; " + newTranslation);
-                  setMergeError(true);
-                }
-                reportAstralToReal = newTranslation;
-              }
-            }
-
-            // we may not find any astral to real mapping by variant 1 above
-            // therefore also do calculations for variant 2 here
-            // we "normalize" all schemes to be in the area
-            // only if not already found a mapping
-            if (true) {
-              int nx = scheme.getCoordinate().x - 4 * region.getCoordinate().x;
-              int ny = scheme.getCoordinate().y - 4 * region.getCoordinate().y;
-              // this is a virtual 3 axis diagonal to x and y in the same level,
-              // but we store it in the z coordinate
-              int nd = nx + ny;
-              if (minExtend == null) {
-                minExtend = new CoordinateID(nx, ny, nd);
-                maxExtend = new CoordinateID(nx, ny, nd);
-              } else {
-                minExtend.x = Math.min(minExtend.x, nx);
-                minExtend.y = Math.min(minExtend.y, ny);
-                minExtend.z = Math.min(minExtend.z, nd);
-                maxExtend.x = Math.max(maxExtend.x, nx);
-                maxExtend.y = Math.max(maxExtend.y, ny);
-                maxExtend.z = Math.max(maxExtend.z, nd);
-              }
-              // now check if we found an "extend of 4" in at least two
-              // directions of the three directions
-              boolean dx = maxExtend.x - minExtend.x == 4;
-              boolean dy = maxExtend.y - minExtend.y == 4;
-              boolean dd = maxExtend.z - minExtend.z == 4;
-              CoordinateID newTranslation = null;
-              if (dx && dy) {
-                newTranslation = new CoordinateID(maxExtend.x - 2, maxExtend.y - 2);
-              } else if (dx && dd) {
-                newTranslation = new CoordinateID(maxExtend.x - 2, maxExtend.z - maxExtend.x);
-              } else if (dy && dd) {
-                newTranslation = new CoordinateID(maxExtend.z - maxExtend.y, maxExtend.y - 2);
-              }
-              if (newTranslation != null) {
-                if (reportAstralToReal != null) {
-                  if (!reportAstralToReal.equals(newTranslation)){
-                    log.warn("more than one astral to real translations found: " + reportAstralToReal + "; " + newTranslation);
-                    setMergeError(true);
-                  }
-                } else
-                  reportAstralToReal = newTranslation;
-              }
-            }
-          }
-        }
-      }
-
-      return reportAstralToReal;
     }
 
     /**
@@ -417,10 +303,9 @@ public class ReportMerger extends Object {
       return file;
     }
 
-    /**
+/*
      * @param name
      * @return The regions with the specified name
-     */
     public Collection<Region> getRegionsByName(String name) {
       init();
       Collection<Region> result = regionMap.get(name);
@@ -434,13 +319,13 @@ public class ReportMerger extends Object {
       init();
       return regionUIDMap.get(regionUID);
     }
+*/
     
     
     
-    /**
+/*
      * @param name
      * @return The set of astral regions having a scheme named <code>name</code>
-     */
     public Collection<Region> getAstralRegionBySchemeName(String name) {
       init();
       Collection<Region> result = schemeMap.get(name);
@@ -449,60 +334,7 @@ public class ReportMerger extends Object {
       else
         return result;
     }
-
-  }
-
-  /**
-   * A class holding a coordinate translation and its score.
-   * 
-   */
-  protected class RatedTranslation implements Comparable<RatedTranslation>{
-    int score = -1;
-    
-    Type type = Type.NONE;
-    
-    CoordinateID translation = null;
-
-    public RatedTranslation(CoordinateID t, int score, Type type) {
-      translation = t;
-      this.score = score;
-      this.type = type;
-    }
-
-    public int getScore() {
-      return score;
-    }
-
-    public void setScore(int score) {
-      this.score = score;
-    }
-
-    public Type getType() {
-      return type;
-    }
-
-    public void setType(Type type) {
-      this.type = type;
-    }
-
-    public CoordinateID getTranslation() {
-      return translation;
-    }
-
-    
-    /**
-     * First attribute: type; secondary attribute: score
-     * 
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(RatedTranslation o) {
-      int typeComp = getType().compareTo(o.getType());
-      return typeComp != 0 ? typeComp : (score > o.getScore() ? 1 : (score < o.getScore() ? -1 : 0));
-    }
-    
-    public String toString(){
-      return Resources.getFormatted("util.reportmerger.translation.description", getTranslation().toString(), getType().toString(), getScore());
-    }
+*/
   }
 
   // merged data set
@@ -753,18 +585,17 @@ public class ReportMerger extends Object {
     /***************************************************************************
      * find best translation
      */
-    Collection<RatedTranslation> astralTranslationList = null;
-    Collection<RatedTranslation> translationList = addTranslationCandidatesRegionUID(newReport, 0);
-    translationList.addAll(addTranslationCandidates(newReport));
-    adjustTranslationScore(newReport, translationList);
-    
 
+    MapMergeEvaluator mhelp = dataReport.getData().getGameSpecificStuff().getMapMergeEvaluator();
+    Collection<Score<CoordinateID>> translationList = mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 0);
+    
     // try to find a translation for the new report's owner faction in the
     // global data's owner faction
-    RatedTranslation savedTranslation = findSavedTranslation(dataReport, newReport, 0);
+    Score<CoordinateID> savedTranslation = findSavedMapping(dataReport, newReport, 0);
 
     // decide, which translation to choose
-    RatedTranslation bestTranslation=null;
+    Score<CoordinateID> bestTranslation = null;
+
     if (interactive)
       bestTranslation = askTranslation(newReport, translationList, savedTranslation, 0);
     else
@@ -774,26 +605,22 @@ public class ReportMerger extends Object {
       /*************************************************************************
        * find best astral translation
        */
-      RatedTranslation bestAstralTranslation = null;
+      Score<CoordinateID> bestAstralTranslation = null;
       if (!newReport.hasAstralRegions()) {
-        bestAstralTranslation = new RatedTranslation(new CoordinateID(0, 0, 1), -1, Type.DEFAULT);
+        bestAstralTranslation = new Score<CoordinateID>(new CoordinateID(0, 0, 1), -1);
       } else if (!dataReport.hasAstralRegions()) {
-        Collection<RatedTranslation> empty = Collections.emptyList();
+        Collection<Score<CoordinateID>> empty = Collections.emptyList();
         if (interactive)
           bestAstralTranslation = askTranslation(newReport, empty, null, 1);
         else
           bestAstralTranslation = decideTranslation(newReport, empty, null, 1);
       } else {
-        astralTranslationList = addTranslationCandidatesRegionUID(newReport, 1);
-        astralTranslationList.addAll(addAstralTranslationCandidates(newReport));
-        adjustAstralTranslationScore(newReport, astralTranslationList);
 
-        addAstralTranslationCandidates(dataReport, newReport, astralTranslationList, bestTranslation.getTranslation());
-        addAstralTranslationCandidates2(dataReport, newReport, astralTranslationList, bestTranslation.getTranslation());
-
-        // try to find a translation for the new report's owner faction in the
-        // global data's owner faction
-        RatedTranslation savedAstralTranslation = findSavedTranslation(dataReport, newReport, 1);
+        Collection<CoordinateID> otherLevels = new ArrayList<CoordinateID>(1);
+        otherLevels.add(bestTranslation.getKey());
+        Collection<Score<CoordinateID>> astralTranslationList = mhelp.getDataMappings(dataReport.getData(), newReport.getData(), 1, otherLevels);
+        
+        Score<CoordinateID> savedAstralTranslation = findSavedMapping(dataReport, newReport, 1);
 
         if (interactive)
           bestAstralTranslation = askTranslation(newReport, astralTranslationList, savedAstralTranslation, 1);
@@ -810,45 +637,45 @@ public class ReportMerger extends Object {
                          + Resources.get("util.reportmerger.status.translating"), iProgress);
         }
 
-        log.info("Using this translation: " + bestTranslation.getTranslation());
+        log.info("Using this translation: " + bestTranslation.getKey());
         // store found translations
         EntityID newReportOwner = newReport.getData().getOwnerFaction();
         if (newReportOwner != null) {
           if (globalData.getCoordinateTranslation(newReportOwner, 0) != null
               && !globalData.getCoordinateTranslation(newReportOwner, 0)
-                            .equals(bestTranslation.getTranslation()))
+                            .equals(bestTranslation.getKey()))
             log.warn("old translation " + globalData.getCoordinateTranslation(newReportOwner, 0)
-                     + " inconsistent with new translation " + bestTranslation.getTranslation());
+                     + " inconsistent with new translation " + bestTranslation.getKey());
           if (bestTranslation.getScore() >= 0) {
             CoordinateID correct = newReport.getData().getCoordinateTranslation(newReportOwner, 0);
             if (correct != null) {
               correct =
-                        new CoordinateID(bestTranslation.getTranslation().x + correct.x,
-                                         bestTranslation.getTranslation().y + correct.y, 0);
+                        new CoordinateID(bestTranslation.getKey().x + correct.x,
+                                         bestTranslation.getKey().y + correct.y, 0);
               globalData.setCoordinateTranslation(newReportOwner, correct);
             }
           }
         }
 
         if (newReport.hasAstralRegions() && dataReport.hasAstralRegions()) {
-          log.info("Using this astral translation: " + bestAstralTranslation.getTranslation());
+          log.info("Using this astral translation: " + bestAstralTranslation.getKey());
 
           if (newReportOwner != null) {
             if (globalData.getCoordinateTranslation(newReportOwner, 1) != null
                 && !globalData.getCoordinateTranslation(newReportOwner, 1)
-                              .equals(bestAstralTranslation.getTranslation()))
+                              .equals(bestAstralTranslation.getKey()))
               log.warn("old astral translation "
                        + globalData.getCoordinateTranslation(newReportOwner, 1)
                        + " inconsistent with new translation "
-                       + bestAstralTranslation.getTranslation());
+                       + bestAstralTranslation.getKey());
             if (bestAstralTranslation.getScore() >= 0) {
               CoordinateID correct =
                                      newReport.getData()
                                               .getCoordinateTranslation(newReportOwner, 1);
               if (correct != null) {
                 correct =
-                          new CoordinateID(bestAstralTranslation.getTranslation().x + correct.x,
-                                           bestAstralTranslation.getTranslation().y + correct.y, 1);
+                          new CoordinateID(bestAstralTranslation.getKey().x + correct.x,
+                                           bestAstralTranslation.getKey().y + correct.y, 1);
                 globalData.setCoordinateTranslation(newReportOwner, correct);
               }
             }
@@ -859,9 +686,9 @@ public class ReportMerger extends Object {
          * translate new report
          */
         GameData clonedData = newReport.getData();
-        if (bestTranslation.getTranslation().x != 0 || bestTranslation.getTranslation().y != 0) {
+        if (bestTranslation.getKey().x != 0 || bestTranslation.getKey().y != 0) {
           try {
-            clonedData = (GameData) clonedData.clone(bestTranslation.getTranslation());
+            clonedData = (GameData) clonedData.clone(bestTranslation.getKey());
             if (clonedData!=null && clonedData.outOfMemory) {
               ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
               log.error(Resources.get("client.msg.outofmemory.text"));
@@ -873,11 +700,12 @@ public class ReportMerger extends Object {
             log.error(e);
           }
         }
-        if (bestAstralTranslation.getTranslation().x != 0 || bestAstralTranslation.getTranslation().y != 0) {
+        if (bestAstralTranslation.getKey().x != 0 || bestAstralTranslation.getKey().y != 0) {
           try {
-            clonedData = (GameData) clonedData.clone(bestAstralTranslation.getTranslation());
+            clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
           } catch (CloneNotSupportedException e) {
             log.error(e);
+            // TODO if cloning the gamedata fails but translation is necessary we must stop merging!
           }
         }
         
@@ -909,7 +737,7 @@ public class ReportMerger extends Object {
     return newReport.isMerged();
   }
 
-  private RatedTranslation findSavedTranslation(ReportCache dataReport2, ReportCache newReport, int layer) {
+  private Score<CoordinateID> findSavedMapping(ReportCache dataReport2, ReportCache newReport, int layer) {
     EntityID newReportOwner = newReport.getData().getOwnerFaction();
     // ask user if necessary
     if (newReportOwner==null && interactive){
@@ -921,21 +749,10 @@ public class ReportMerger extends Object {
       }
     }
 
-    // TODO calculate translation with any faction existing in both reports, not just owner faction
-    RatedTranslation savedTranslation = null;
-    if (newReportOwner != null) {
-      // translation from newReportOwner to data report owner
-      CoordinateID oldTrans = globalData.getCoordinateTranslation(newReportOwner, layer);
-      // translation from newReportOwner to newReport
-      CoordinateID newTrans = newReport.getData().getCoordinateTranslation(newReportOwner, layer);
-      if (oldTrans != null && newTrans !=null) {
-        oldTrans = new CoordinateID(oldTrans);
-        newTrans = new CoordinateID(newTrans);
-        newTrans.z=0;
-        savedTranslation = new RatedTranslation(oldTrans.subtract(newTrans), 0, Type.SAVED);
-      }
-    }
-    return savedTranslation;
+    CoordinateID translation = SavedTranslationsMapping.getSingleton().getMapping(dataReport2.getData(), newReport.getData(), layer);
+    if (translation != null) {
+      return new Score<CoordinateID>(translation, 0);
+    } return null;
   }
 
   /**
@@ -949,8 +766,8 @@ public class ReportMerger extends Object {
    * @param layer
    * @return The best translation, never <code>null</code>
    */
-  private RatedTranslation decideTranslation(ReportCache newReport, Collection<RatedTranslation> translationList, RatedTranslation savedTranslation, int layer) {
-    RatedTranslation bestTranslation = new RatedTranslation(new CoordinateID(0, 0, layer), -1, Type.DEFAULT);
+  private Score<CoordinateID> decideTranslation(ReportCache newReport, Collection<Score<CoordinateID>> translationList, Score<CoordinateID> savedTranslation, int layer) {
+    Score<CoordinateID> bestTranslation = new Score<CoordinateID>(new CoordinateID(0, 0, layer), -1);
 
     if (translationList!=null && translationList.size() > 0) {
       bestTranslation = Collections.max(translationList);
@@ -962,8 +779,8 @@ public class ReportMerger extends Object {
 
     // choose the saved translation only if no good translation has been found 
     if (savedTranslation != null) {
-      if (!bestTranslation.getTranslation().equals(savedTranslation.getTranslation())) {
-        log.info("Saved translation in layer "+ layer+" " + savedTranslation.getTranslation() + " != " + bestTranslation.getTranslation() + " best translation found.");
+      if (!bestTranslation.getKey().equals(savedTranslation.getKey())) {
+        log.info("Saved translation in layer "+ layer+" " + savedTranslation.getKey() + " != " + bestTranslation.getKey() + " best translation found.");
         if (bestTranslation.getScore() > 0) 
           log.info("Preferring computed translation");
       }
@@ -980,7 +797,6 @@ public class ReportMerger extends Object {
     
     return bestTranslation;
   }
-    
 
   /**
    * Chooses a translation among the translations in translationList and
@@ -993,23 +809,23 @@ public class ReportMerger extends Object {
    * @param layer
    * @return The best translation, <code>null</code> if user aborts
    */
-  private RatedTranslation askTranslation(ReportCache newReport, Collection<RatedTranslation> translationList, RatedTranslation savedTranslation, int layer) {
-    RatedTranslation bestTranslation = decideTranslation(newReport, translationList, savedTranslation, layer);
+  private Score<CoordinateID> askTranslation(ReportCache newReport, Collection<Score<CoordinateID>> translationList, Score<CoordinateID> savedTranslation, int layer) {
+    Score<CoordinateID> bestTranslation = decideTranslation(newReport, translationList, savedTranslation, layer);
     
     // sanity check: translation changed since last time?
     boolean changed = false;
-    if (savedTranslation != null && !bestTranslation.getTranslation().equals(savedTranslation.getTranslation())) {
+    if (savedTranslation != null && !bestTranslation.getKey().equals(savedTranslation.getKey())) {
       changed = true;
     }
     // sanity check: more than one good translation?
     Set<CoordinateID> distinct = new HashSet<CoordinateID>();
     if (translationList!=null)
-      for (RatedTranslation t : translationList){
+      for (Score<CoordinateID> t : translationList){
         if (t.getScore()>=0)
-          distinct.add(t.getTranslation());
+          distinct.add(t.getKey());
       }
     if (savedTranslation!=null)
-      distinct.add(savedTranslation.getTranslation());
+      distinct.add(savedTranslation.getKey());
     
     if (!newReport.isMergeError() && !dataReport.isMergeError() && bestTranslation.getScore() >= 0 && !changed && distinct.size()==1) {
       // all seems well, return
@@ -1034,30 +850,44 @@ public class ReportMerger extends Object {
       Object choice = ui.input(message, Resources.get("util.reportmerger.msg.method.title"), choices.toArray(), bestMethod);
       if (choice==null || choice.equals(skipMethod))
         return null;
-      RatedTranslation chosenTranslation=null;
       
       if (choice.equals(bestMethod)){
         // try anyway
         return bestTranslation;
       }else if (choice.equals(chooseMethod)){
         // choose among found translations, deprecated
-        Collection<RatedTranslation> tChoices = new ArrayList<RatedTranslation>(translationList);
+        Collection<Score<CoordinateID>> tChoices = new ArrayList<Score<CoordinateID>>(translationList);
         if (savedTranslation!=null)
           tChoices.add(savedTranslation);
-        tChoices.add(new RatedTranslation(new CoordinateID(0,0,layer), -1, Type.DEFAULT));
-        chosenTranslation = (RatedTranslation) ui.input(Resources.getFormatted("util.reportmerger.msg.usertranslation.choose", (Object) newReport.getFile().getName(), layer), 
+        tChoices.add(new Score<CoordinateID>(new CoordinateID(0,0,layer), -1));
+        
+        Score help = (Score) ui.input(Resources.getFormatted("util.reportmerger.msg.usertranslation.choose", (Object) newReport.getFile().getName(), layer), 
             Resources.get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(), bestTranslation);
+        Score<CoordinateID> chosenTranslation = null;
+        // workaround since we cannot cast Object to Score<CoordinateID>
+        for (Score<CoordinateID> s : tChoices) {
+          if (s.equals(help)) {
+            chosenTranslation = s;
+            break;
+          }
+        }
         if (chosenTranslation!=null){
           log.info("user choice: "+chosenTranslation);
           bestTranslation=chosenTranslation;
         }else{
           log.info("user abort");
-          bestTranslation = inputTranslation(newReport, layer);
+          bestTranslation = inputMapping(newReport, layer);
         }
       }else if (choice.equals(inputMethod)){
-        bestTranslation = inputTranslation(newReport, layer);
-      }else if (choice instanceof RatedTranslation){
-        bestTranslation = (RatedTranslation) choice;
+        bestTranslation = inputMapping(newReport, layer);
+      }else if (choice instanceof Score){
+        // workaround since we cannot cast Object to Score<CoordinateID>
+        for (Score<CoordinateID> s : translationList) {
+          if (s.equals(choice)) {
+            bestTranslation = s; 
+            break;
+          }
+        }
       }else{ 
         log.error("Unexpected choice");
         return null;
@@ -1067,8 +897,9 @@ public class ReportMerger extends Object {
     return bestTranslation;
   }
 
-  private RatedTranslation inputTranslation(ReportCache newReport, int layer) {
-    RatedTranslation resultTranslation = null;
+ 
+  private Score<CoordinateID> inputMapping(ReportCache newReport, int layer) {
+    Score<CoordinateID> resultTranslation = null;
     boolean badInput = false;
     boolean cancelled = true;
     do {
@@ -1082,8 +913,8 @@ public class ReportMerger extends Object {
           cancelled = false;
           try {
             CoordinateID trans = new CoordinateID(Integer.parseInt((String) xS), Integer.parseInt((String) yS), layer);
-            resultTranslation = new RatedTranslation(trans, 1, Type.USER);
-            log.debug("using user translation: " + resultTranslation.getTranslation()+" in layer "+layer);
+            resultTranslation = new Score<CoordinateID>(trans, 1, "user");
+            log.debug("using user translation: " + resultTranslation.getKey()+" in layer "+layer);
           } catch (NumberFormatException e) {
             badInput = true;
           }
@@ -1098,330 +929,6 @@ public class ReportMerger extends Object {
   }
 
   /**
-   * Tries to find matching regions and adds translations to the map accordingly.
-   * 
-   * @param newReport
-   * @return
-   */
-  private Collection<RatedTranslation> addTranslationCandidates(ReportCache newReport) {
-    Map<CoordinateID, RatedTranslation> translationMap = new Hashtable<CoordinateID, RatedTranslation>();
-    for (Region region : globalData.regions().values()) {
-      CoordinateID coord = region.getCoordinate();
-  
-      if (coord.z == 0 && (region.getName() != null) && (region.getName().length() > 0)) {
-        for (Region foundRegion : newReport.getRegionsByName(region.getName())) {
-          if (foundRegion != null) {
-            CoordinateID foundCoord = foundRegion.getCoordinate();
-            CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y);
-            addTranslation(translationMap, translation);
-          }
-        }
-      }
-    }
-    return new ArrayList<RatedTranslation>(translationMap.values());
-  }
-
-  /**
-   * Tries to find matching regions and adds translations to the map accordingly.
-   * takes care of given layer
-   * 
-   * @param newReport
-   * @return
-   */
-  private Collection<RatedTranslation> addTranslationCandidatesRegionUID(ReportCache newReport, int layer) {
-    Map<CoordinateID, RatedTranslation> translationMap = new Hashtable<CoordinateID, RatedTranslation>();
-   
-    // loop regions in main report
-    for (Region region : globalData.regions().values()) {
-      CoordinateID coord = region.getCoordinate();
-      if ((coord.z == layer) && (region.getUID() != 0)) {
-
-        Region result = newReport.getRegionByUID(region.getUID());
-        if (result != null) {
-          CoordinateID foundCoord = result.getCoordinate();
-          CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y,layer);
-          addTranslation(translationMap, translation, Type.REGIONUID,Translationlist_Score_RegionUID);
-        }
-      }
-    }
-    return new ArrayList<RatedTranslation>(translationMap.values());
-  }
-  
-  /**
-   * Add translation to map and increase score by 1.
-   * 
-   * @param translationMap
-   * @param translation
-   * @param Type
-   */
-  private void addTranslation(Map<CoordinateID, RatedTranslation> translationMap, CoordinateID translation, Type type, int addScore) {
-    RatedTranslation translationCandidate = translationMap.get(translation);
-  
-    if (translationCandidate == null) {
-      translationCandidate = new RatedTranslation(translation, 1, type);
-    } else {
-      translationCandidate.setScore(translationCandidate.getScore() + addScore);
-    }
-    translationMap.put(translation, translationCandidate);
-  }
-
-  /**
-   * Add translation to map and increase score by 1.
-   * Standard Type "MATCHED" is choosen
-   * 
-   * @param translationMap
-   * @param translation
-   */
-  private void addTranslation(Map<CoordinateID, RatedTranslation> translationMap, CoordinateID translation) {
-      addTranslation(translationMap,translation,Type.MATCHED,Translationlist_Score_Default);
-  }
-  
-  
-  /**
-   * check whether any of the normal space translations is impossible by
-   * comparing the terrains. Adjust score according to number of mismatches.
-   */
-  private void adjustTranslationScore(ReportCache newReport, Collection<RatedTranslation> translationList) {
-    int maxTerrainMismatches = (int) (Math.max(globalData.regions().size(), newReport.getData().regions().size()) * 0.02);
-    RegionType forestTerrain = globalData.rules.getRegionType(StringID.create("Wald"));
-    RegionType plainTerrain = globalData.rules.getRegionType(StringID.create("Ebene"));
-    RegionType oceanTerrain = globalData.rules.getRegionType(StringID.create("Ozean"));
-    RegionType glacierTerrain = globalData.rules.getRegionType(StringID.create("Gletscher"));
-    RegionType activeVolcanoTerrain = globalData.rules.getRegionType(StringID.create("Aktiver Vulkan"));
-    RegionType volcanoTerrain = globalData.rules.getRegionType(StringID.create("Vulkan"));
-    for (RatedTranslation translationCandidate : translationList) {
-      /*
-       * the number of regions not having the same region type at the current
-       * translations
-       */
-      int mismatches = 0; 
-  
-      /* for each translation we have to compare the regions' terrains */
-      for (Iterator<Region> regionIter = globalData.regions().values().iterator(); regionIter.hasNext();) {
-        Region r = regionIter.next();
-  
-        if ((r.getType() == null) || r.getType().equals(RegionType.unknown)) {
-          continue;
-        }
-  
-        CoordinateID c = r.getCoordinate();
-  
-        /*
-         * do the translation and find the corresponding region in the report
-         * data
-         */
-        if (c.z == 0) {
-          CoordinateID translatedCoord = new CoordinateID(0, 0, 0);
-          translatedCoord.x = c.x;
-          translatedCoord.y = c.y;
-          translatedCoord.translate(translationCandidate.getTranslation());
-  
-          Region reportDataRegion = newReport.getData().regions().get(translatedCoord);
-  
-          /*
-           * the hit count for the current translation must only be modified, if
-           * there actually are regions to be compared and their terrains are
-           * valid
-           */
-          if ((reportDataRegion != null) && (reportDataRegion.getType() != null) && !(reportDataRegion.getType().equals(RegionType.unknown))) {
-            if (!r.getType().equals(reportDataRegion.getType())) {
-              /*
-               * now we have a mismatch. If the reports are from the same turn,
-               * terrains may not differ at all. If the reports are from
-               * different turns, some terrains can be transformed.
-               */
-              if ((globalData.getDate() != null) && (newReport.getData().getDate() != null) && globalData.getDate().equals(newReport.getData().getDate())) {
-                mismatches++;
-              } else {
-                if (!(((forestTerrain != null) && (plainTerrain != null) && 
-                    ((forestTerrain.equals(r.getType()) && plainTerrain.equals(reportDataRegion.getType())) || 
-                        (plainTerrain.equals(r.getType()) && forestTerrain.equals(reportDataRegion.getType())))) || 
-                        ((oceanTerrain != null) && (glacierTerrain != null) && 
-                            ((oceanTerrain.equals(r.getType()) && glacierTerrain.equals(reportDataRegion.getType())) || 
-                                (glacierTerrain.equals(r.getType()) && oceanTerrain.equals(reportDataRegion.getType())))) || 
-                                ((activeVolcanoTerrain != null) && (volcanoTerrain != null) && 
-                                    ((activeVolcanoTerrain.equals(r.getType()) && volcanoTerrain.equals(reportDataRegion.getType())) || 
-                                        (volcanoTerrain.equals(r.getType()) && activeVolcanoTerrain.equals(reportDataRegion.getType())))))) {
-                  mismatches++;
-                }
-              }
-  
-              if (mismatches > maxTerrainMismatches) {
-                mismatches = translationCandidate.getScore() + 1;
-                break;
-              }
-            }
-          }
-        }
-      }
-      translationCandidate.setScore(translationCandidate.getScore() - mismatches);
-    }
-  
-  }
-
-  /**
-   * Try to find astral translations by simply comparing regions by schemes.
-   * 
-   * @param newReport
-   * @return
-   */
-  private Collection<RatedTranslation> addAstralTranslationCandidates(ReportCache newReport) {
-    Map<CoordinateID, RatedTranslation> astralTranslationMap = new Hashtable<CoordinateID, RatedTranslation>();
-    for (Region region : globalData.regions().values()) {
-      CoordinateID coord = region.getCoordinate();
-      if (coord.z == 1) {
-        // Now try to find an astral space region that matches this region
-        // We can't use region name for this, since all astral space
-        // regions are named "Nebel". We use the schemes instead.
-        // Since all schemes have to match it's sufficient to look at the
-        // first one to find a possible match. To check whether that
-        // match really is one, we have to look at all schemes.
-        if (region.schemes().size()>=2) {
-          Scheme scheme = region.schemes().iterator().next();
-          Collection<Region> o = newReport.getAstralRegionBySchemeName(scheme.getName());
-  
-          if (o != null) {
-            // we found some astral region that shares at least
-            // one scheme with the actual region. However, this
-            // doesn't mean a lot, since schemes belong to several
-            // astral regions.
-            // check whether any of those regions shares all schemes
-            for (Region foundRegion : o) {
-              if ((foundRegion.schemes().size()>=2) && equals(foundRegion.schemes(), region.schemes())) {
-                // all right, seems we found a valid translation
-                CoordinateID foundCoord = foundRegion.getCoordinate();
-                CoordinateID translation = new CoordinateID(foundCoord.x - coord.x, foundCoord.y - coord.y, 1);
-                addTranslation(astralTranslationMap, translation);
-              }
-            }
-          }
-        }
-      }
-    }
-    return new ArrayList<RatedTranslation>(astralTranslationMap.values());
-  }
-
-  /**
-   * Try to find astral translation by astral-to-real mapping. Add found translations to astralTranslationList.
-   * 
-   * @param dataReport
-   * @param newReport
-   * @param astralTranslationList
-   * @param realTranslation
-   */
-  private void addAstralTranslationCandidates(ReportCache dataReport, ReportCache newReport, Collection<RatedTranslation> astralTranslationList, CoordinateID realTranslation) {
-    boolean reportHasAstralRegions = newReport.hasAstralRegions();
-    boolean dataHasAstralRegions = dataReport.hasAstralRegions();
-
-    CoordinateID reportAstralToReal = newReport.getData().getAstralMapping();
-    CoordinateID dataAstralToReal = dataReport.getData().getAstralMapping();
-
-    if (!dataHasAstralRegions)
-      log.info("no astral regions in data");
-    if (!reportHasAstralRegions)
-      log.info("no astral regions in report");
-    // Put AstralTranslation via Real Space Translation
-    if ((dataAstralToReal != null) && (reportAstralToReal != null)) {
-      log.info("ReportMerger (Astral2Real): Data   AR-Real: " + dataAstralToReal);
-      log.info("ReportMerger (Astral2Real): Report AR-Real: " + reportAstralToReal);
-      log.info("ReportMerger (Astral2Real): Real Data-Report: " + realTranslation.x + ", " + realTranslation.y);
-
-      CoordinateID astralTrans = new CoordinateID((new Integer((dataAstralToReal.x - reportAstralToReal.x + realTranslation.x) / 4)).intValue(), (new Integer((dataAstralToReal.y - reportAstralToReal.y + realTranslation.y) / 4)).intValue(), 1);
-      if (dataReport.isMergeError() || newReport.isMergeError())
-        astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL1));
-      else
-        astralTranslationList.add(new RatedTranslation(astralTrans, Translationlist_Score_Astral1, Type.ASTRAL1));
-      log.info("ReportMerger (Astral2Real): Resulting Trans: " + astralTrans);
-    } else {
-      if (dataHasAstralRegions && reportHasAstralRegions)
-        log.info("ReportMerger (Astral2Real): no valid astral translation found.");
-    }
-
-  }
-
-  /**
-   * Try to find astral translation by one-region astral-to-real mapping. Add found translations to astralTranslationList.
-   * 
-   * @param dataReport
-   * @param newReport
-   * @param astralTranslationList
-   * @param realTranslation
-   */
-  private void addAstralTranslationCandidates2(ReportCache dataReport, ReportCache newReport, Collection<RatedTranslation> astralTranslationList, CoordinateID realTranslation) {
-    boolean reportHasAstralRegions = newReport.hasAstralRegions();
-    boolean dataHasAstralRegions = dataReport.hasAstralRegions();
-  
-    // Fiete - added OneRegion Astral-Real-Mapping
-    CoordinateID dataAstralToReal_OneRegion = this.getOneRegion_AR_RR_Translation(dataReport);
-    CoordinateID reportAstralToReal_OneRegion = this.getOneRegion_AR_RR_Translation(newReport);
-    if ((dataAstralToReal_OneRegion != null) && (reportAstralToReal_OneRegion != null)) {
-      log.info("ReportMerger (OneRegion): Data   AR-Real: " + dataAstralToReal_OneRegion);
-      log.info("ReportMerger (OneRegion): Report AR-Real: " + reportAstralToReal_OneRegion);
-      CoordinateID astralTrans = new CoordinateID((new Integer((dataAstralToReal_OneRegion.x - reportAstralToReal_OneRegion.x + realTranslation.x) / 4)).intValue(), (new Integer((dataAstralToReal_OneRegion.y - reportAstralToReal_OneRegion.y + realTranslation.y) / 4)).intValue(), 1);
-      log.info("ReportMerger (OneRegion): Resulting Trans: " + astralTrans);
-      if (dataReport.isMergeError() || newReport.isMergeError())
-        astralTranslationList.add(new RatedTranslation(astralTrans, 0, Type.ASTRAL2));
-      else
-        astralTranslationList.add(new RatedTranslation(astralTrans, Translationlist_Score_Astral2, Type.ASTRAL2));
-    } else {
-      if (dataHasAstralRegions && reportHasAstralRegions)
-        log.info("ReportMerger (OneRegion): no valid astral translation found.");
-        if (dataAstralToReal_OneRegion!=null){
-          log.info("ReportMerger (OneRegion): Translation found in existent (old) Data: " + dataAstralToReal_OneRegion.toString());
-        } else {
-          log.info("ReportMerger (OneRegion): No Translation found in existent (old) Data.");
-        }
-        if (reportAstralToReal_OneRegion!=null){
-          log.info("ReportMerger (OneRegion): Translation found in new Data: " + reportAstralToReal_OneRegion.toString());
-        } else {
-          log.info("ReportMerger (OneRegion): No Translation found in new Data.");
-        }
-    }
-  
-  }
-
-  /**
-   * Check the astral space translation map by comparing the schemes.
-   * Heuristic: If both space regions have schemes, they shouldn't differ. If
-   * they do, something is probably wrong!
-   */
-  private void adjustAstralTranslationScore(ReportCache newReport, Collection<RatedTranslation> astralTranslationList) {
-    for (RatedTranslation translation : astralTranslationList) {
-
-      // the number of astral space region where a scheme mismatch was found.
-      int mismatches = 0;
-
-      /* for each translation we have to compare the regions' schemes */
-      for (Region r : globalData.regions().values()) {
-        if (r.getCoordinate().z != 1)
-          continue;
-
-        CoordinateID c = r.getCoordinate();
-
-        /*
-         * do the translation and find the corresponding region in the report
-         * data
-         */
-        CoordinateID translatedCoord = new CoordinateID(0, 0, 0);
-        translatedCoord.x = c.x + translation.getTranslation().x;
-        translatedCoord.y = c.y + translation.getTranslation().y;
-
-        Region reportDataRegion = newReport.getData().regions().get(translatedCoord);
-
-        if ((reportDataRegion != null) && !reportDataRegion.schemes().isEmpty() && !r.schemes().isEmpty()) {
-          if (!equals(reportDataRegion.schemes(), r.schemes())) {
-            mismatches++;
-          }
-        }
-      }
-
-      // decrease hit count of this translation for each mismatch
-      translation.setScore(translation.getScore() - mismatches);
-    }
-
-  }
-
-  /**
    * Compare two sets of schemes. Two sets are considered equal if the sets of
    * names of the schemes are equal.
    * 
@@ -1429,6 +936,7 @@ public class ReportMerger extends Object {
    * @param schemes2
    * @return
    */
+  
   private boolean equals(Collection<Scheme> schemes1, Collection<Scheme> schemes2) {
     if (schemes1 == null)
       if (schemes2 == null)
@@ -1528,6 +1036,7 @@ public class ReportMerger extends Object {
    * @param data
    * @return
    */
+/*  
   private CoordinateID getOneRegion_AR_RR_Translation(ReportCache data) {
     /**
      * Ansatz: Sind die Schemen günstig verteilt, reicht eine AR Region und ihre
@@ -1545,7 +1054,7 @@ public class ReportMerger extends Object {
      * 
      */
     // Das Ergebnis des Vorganges...
-    CoordinateID result = null;
+/*    CoordinateID result = null;
 
     // regionen durchlaufen und AR Regionen bearbeiten
     for (Region actAR_Region : data.getData().regions().values()) {
@@ -1565,7 +1074,7 @@ public class ReportMerger extends Object {
 
     return result;
   }
-
+*/
   /**
    * Bearbeitet eine AR-Region
    * 
@@ -1573,6 +1082,7 @@ public class ReportMerger extends Object {
    * @param astralRegion
    * @return
    */
+/*
   private CoordinateID getOneRegion_processARRegion(GameData data, Region astralRegion) {
     CoordinateID translation = null;
 
@@ -1636,7 +1146,7 @@ public class ReportMerger extends Object {
     }
     return translation;
   }
-
+*/
   /**
    * Falls <code>innerhalb == true</code>: Löscht die Regionen aus
    * regionList, welche von mindestens einer Region in <code>schemen</code>
@@ -1651,6 +1161,7 @@ public class ReportMerger extends Object {
    * @param radius
    * @return
    */
+/*  
   private Collection<CoordinateID> getOneRegion_deleteIfDist(GameData data, Collection<CoordinateID> schemenIDs, Collection<CoordinateID> regionIDList, int radius, boolean innerhalb) {
     Collection<CoordinateID> regionsIDsToDel = new ArrayList<CoordinateID>(0);
     for (CoordinateID actRegionID : regionIDList) {
@@ -1677,13 +1188,14 @@ public class ReportMerger extends Object {
     erg.removeAll(regionsIDsToDel);
     return erg;
   }
-
+*/
   /**
    * Löscht die Regionen aus regionList, welche als Ozean deklariert sind.
    * 
    * @param regionen
    * @return
    */
+/*  
   private Collection<CoordinateID> getOneRegion_deleteOceans(GameData data,Collection<CoordinateID> regionIDList) {
     Collection<CoordinateID> result = new HashSet<CoordinateID>();
 
@@ -1694,7 +1206,7 @@ public class ReportMerger extends Object {
     }
     return result;
   }
-
+*/
   /**
    * Erweitert die Liste der Regionen um die Nachbarn der aktuellen Regionen
    * 
@@ -1702,11 +1214,12 @@ public class ReportMerger extends Object {
    * @param regionList
    * @return
    */
+/*  
   private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList,boolean GameDataRegionsOnly) {
     // Liste verlängern nach durchlauf
     return this.getOneRegion_explodeRegionList(data, regionIDList, GameDataRegionsOnly, 1);
   }
-
+*/
   /**
    * Erweitert die Liste der Regionen um die Nachbarn der aktuellen Regionen
    * 
@@ -1714,6 +1227,7 @@ public class ReportMerger extends Object {
    * @param regionList
    * @return
    */
+/*  
   private Collection<CoordinateID> getOneRegion_explodeRegionList(GameData data, Collection<CoordinateID> regionIDList,boolean GameDataRegionsOnly,int radius) {
     // Liste verlängern nach durchlauf
     Set<CoordinateID> neighborhood = new HashSet<CoordinateID>();
@@ -1729,7 +1243,7 @@ public class ReportMerger extends Object {
     }
     return neighborhood;
   }
-  
+*/  
   
   /**
    * Retrieve the regions within radius around region center.
@@ -1743,6 +1257,7 @@ public class ReportMerger extends Object {
    * @return a map with all neighbours that were found, including     region center. The keys are
    *       instances of class Coordinate,     values are objects of class Region.
    */
+/*  
   private ArrayList<CoordinateID> getOneRegion_getAllNeighbourIDs(CoordinateID center, int radius) {
     ArrayList<CoordinateID> neighbours = new ArrayList<CoordinateID>();
     
@@ -1758,6 +1273,6 @@ public class ReportMerger extends Object {
     }
     return neighbours;
   }
-  
+*/  
   
 }

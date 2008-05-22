@@ -188,6 +188,10 @@ public class PropertiesHelper {
 
   public static final String ORDERWRITER_MAILSERVER_CC2SENDER = "OrderWriter.CCToSender";
 
+  public static final String ORDERWRITER_MAILSERVER_SSL = "OrderWriter.encryptionSSL";
+
+  public static final String ORDERWRITER_MAILSERVER_TLS = "OrderWriter.encryptionTLS";
+  
   public static final String ORDERWRITER_OUTPUT_FILE = "OrderWriter.outputFile";
 
   public static final String ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT = "OrderWriter.writeUnitTagsAsVorlageComment";

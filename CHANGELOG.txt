@@ -1,3 +1,8 @@
+2008-05-24 / Build 203 - Darcduck (sf.net@duckstein.net)
+	* fixed #265: auto completions sorted
+	* fixed #167: resources now deleted if depleted
+	* added autocompletion COMBAT for GUARD and ATTACK if required
+	
 2008-05-23 / Build 201 - Darcduck (sf.net@duckstein.net)
 	* restructured all mapping (coordinate translation) code
 	* started implementing SSL and TLS for send orders

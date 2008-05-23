@@ -1159,9 +1159,16 @@ public abstract class MagellanFactory {
            * Remember: Merging of regions works like follows: A new set of regions is
            * created in the new GameData object. Then first the regions of the older
            * report are merged into that new object. Then the regions of the newer
-           * report are merged into that new object. At this time sameTurn is guaranteed
-           * to be true! The crucial point is when a resource is suddenly not seen any
+           * report are merged into that new object. 
+           * 
+           * At this time sameTurn is guaranteed to be true!
+           *  
+           * The crucial point is when a resource is suddenly not seen any
            * longer, because its level has increased.
+           * 
+           * Please note: 
+           * - newRegion is ever part of the resulting GameData
+           * - curRegion is ever the data to be "merged" into newRegion (if applicable) 
            * 
            * Fiete Special case Mallorn: it could be disappeard -> fully cutted. In above way
            * it is added from old region and not removed, if not in new region.
@@ -1192,6 +1199,7 @@ public abstract class MagellanFactory {
     // maybe newer report! This maybe because their level has changed.
     
     // Types for which no skill is needed to see
+    ItemType horsesType = newGD.rules.getItemType("Pferde");
     ItemType treesType = newGD.rules.getItemType("Baeume");
     ItemType mallornType = newGD.rules.getItemType("Mallorn");
     ItemType schoesslingeType = newGD.rules.getItemType("Schoesslinge");
@@ -1199,6 +1207,7 @@ public abstract class MagellanFactory {
     
     // ArrayList of above Types
     List<ItemType> skillIrrelavntTypes = new ArrayList<ItemType>();
+    skillIrrelavntTypes.add(horsesType);
     skillIrrelavntTypes.add(treesType);
     skillIrrelavntTypes.add(mallornType);
     skillIrrelavntTypes.add(schoesslingeType);
@@ -1206,8 +1215,8 @@ public abstract class MagellanFactory {
     
     if((newRegion.resources() != null) && !newRegion.resources().isEmpty()) {
       List<ItemType> deleteRegionRessources = null;
-      for(Iterator<RegionResource> iter = newRegion.resources().iterator(); iter.hasNext();) {
-        RegionResource newRes = iter.next();
+      for(Iterator<RegionResource> it = newRegion.resources().iterator(); it.hasNext();) {
+        RegionResource newRes = it.next();
         RegionResource curRes = curRegion.getResource(newRes.getType());
 
         if(curRes == null) {
@@ -1257,12 +1266,19 @@ public abstract class MagellanFactory {
           // Fiete: check here if we have skillIrrelevantResources
           // if curRes == null AND we have units in curReg -> these
           // resources are realy not there anymore: Baeume, Mallorn
-//          if (sameTurn){
+          
+          // sameTurn must be true here, otherwise we would not reach that code
+          // to be here newRes!=null and curRes==null
+          // this cannot be true in the first merge pass
+          // in the second merge pass sameTurn is always true          
+//        if (sameTurn){
             if (skillIrrelavntTypes.contains(newRes.getType())){
               // we have "our" Type
               // do we have units in newRegion
               // if (newRegion.units()!=null && newRegion.units().size()>0){
-              if (curRegion.units()!=null && curRegion.units().size()>0){
+              // better using the visibility 3 or 4 should show resources
+              // if (curRegion.units()!=null && curRegion.units().size()>0){
+              if (curRegion.getVisibilityInteger()>=3) {
                 // we have...so we know now for sure, that these 
                 // ressource disappeared..so lets delete it
                 if (deleteRegionRessources==null){
@@ -1278,9 +1294,11 @@ public abstract class MagellanFactory {
       }
       if (deleteRegionRessources!=null){
         // so we have Ressources, which are not present any more
-        for (Iterator iter = deleteRegionRessources.iterator();iter.hasNext();){
-          ItemType regResID = (ItemType)iter.next();
-          newRegion.resources().remove(regResID);
+        for (ItemType regResID : deleteRegionRessources){
+          // this doesn't work, as the returned collection
+          // newRegion.resources().remove(regResID);
+          // furthermore removeResource had an error, as it doesn't modifies the collection (only the hashset)
+          newRegion.removeResource(regResID);
         }
       }
     }

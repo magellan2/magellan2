@@ -451,9 +451,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
 			// 2002.02.18 ip: this.resources can be null
       if (this.resources == null) {
-        this.resourceCollection = new ArrayList<RegionResource>();
+        this.resourceCollection = Collections.unmodifiableCollection(new ArrayList<RegionResource>());
       } else {
-        this.resourceCollection = new HashSet<RegionResource>(this.resources.values());
+        this.resourceCollection = Collections.unmodifiableCollection(new HashSet<RegionResource>(this.resources.values()));
       }
 		}
 
@@ -472,14 +472,15 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		if(this.resources == null) {
 			this.resources = new OrderedHashtable<Identifiable, RegionResource>();
 
-			// enforce the creation of a new collection view
-			this.resourceCollection = null;
 		}
+
+    // enforce the creation of a new collection view
+    this.resourceCollection = null;
 
 		// pavkovic 2002.05.21: If some resources have an amount zero, we ignore it
 		if(resource.getAmount() != 0) {
 			this.resources.put(resource.getType(), resource);
-      if (this.resourceCollection != null) this.resourceCollection.add(resource);
+//      if (this.resourceCollection != null) this.resourceCollection.add(resource);
 		}
 
 		// 		if(log.isDebugEnabled()) {
@@ -513,10 +514,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
 		if(this.resources.isEmpty()) {
 			this.resources = null;
-			this.resourceCollection = null;
-		}
+    }
 
-		// 		if(log.isDebugEnabled()) {
+    this.resourceCollection = null;
+    // 		if(log.isDebugEnabled()) {
 		// 			log.debug("Region.removeResource:" + this);
 		// 			log.debug("Region.removeResource:" + ret);
 		// 			if(ret != null) {

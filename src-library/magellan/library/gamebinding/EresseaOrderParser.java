@@ -296,7 +296,6 @@ public class EresseaOrderParser implements OrderParser {
 
 	private boolean readAttackUID(OrderToken token) {
 		token.ttype = OrderToken.TT_ID;
-
 		return checkNextFinal();
 	}
 

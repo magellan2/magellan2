@@ -158,6 +158,9 @@ public class SchemeExtendMapping implements LevelMapping {
         }
       }
     }
-    return new LevelRelation(astralToReal, 4, 4, fromLevel);
+    if (astralToReal != null) {
+      return new LevelRelation(astralToReal, 4, 4, fromLevel);
+    } 
+    return null;
   }
 }

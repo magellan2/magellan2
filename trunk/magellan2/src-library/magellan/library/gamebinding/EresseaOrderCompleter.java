@@ -169,11 +169,11 @@ public class EresseaOrderCompleter implements Completer {
 				}
 			}
 
-			Collections.sort(ret, prioComp);
 		} else {
 			// stub.length <= 0
 			ret = list;
 		}
+    Collections.sort(ret, prioComp);
 
 		return ret;
 	}
@@ -229,7 +229,17 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		if(unit.getGuard() == 0) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)));
+
+      // special request for myself (Darcduck)
+      // if an unit should guard the region it must have a combat state better than FLIEHE (5) 
+      // of a combat order (KÄMPFE) after all attack orders
+      if ((unit.getCombatStatus()>4) && (unit.getModifiedCombatStatus()>4)) {
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "...", 
+                                       Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "\n" + 
+                                       Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
+      } else {
+        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)));
+      }
 		} else {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD) +
 										   " " +
@@ -394,6 +404,14 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltAttack() {
+    // special request for myself (Darcduck)
+    // if an attacking unit has the wrong combat state issue the start 
+    // of a combat order (KÄMPFE) after all attack orders
+    String battleStateOrder = "";
+    if ((unit.getCombatStatus()>3) && (unit.getModifiedCombatStatus()>3)) {
+      battleStateOrder = "\n" + Resources.getOrderTranslation(EresseaConstants.O_COMBAT) + " ";
+    }
+    
 		// collects spy-units to create a set of attack-orders against all spies later
 		List<Unit> spies = new LinkedList<Unit>();
 
@@ -407,7 +425,7 @@ public class EresseaOrderCompleter implements Completer {
 
 			if(curUnit.isSpy()) {
 				spies.add(curUnit);
-				addUnit(curUnit, "");
+				addUnit(curUnit, battleStateOrder);
 			} else {
 				Faction f = (Faction) curUnit.getFaction();
 
@@ -420,7 +438,7 @@ public class EresseaOrderCompleter implements Completer {
 					}
 
 					v.add(curUnit);
-					addUnit(curUnit, "");
+					addUnit(curUnit, battleStateOrder);
 				}
 			}
 		}
@@ -435,7 +453,7 @@ public class EresseaOrderCompleter implements Completer {
 				enemyUnits += ("\n" + Resources.getOrderTranslation(EresseaConstants.O_ATTACK) +
 				" " + curUnit.getID().toString() + " ;" + curUnit.getName());
 			}
-
+			enemyUnits += battleStateOrder;
 			completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.spies"), enemyUnits, "", 5, 0));
 		}
 
@@ -450,7 +468,7 @@ public class EresseaOrderCompleter implements Completer {
 				enemyUnits += ("\n" + Resources.getOrderTranslation(EresseaConstants.O_ATTACK) +
 				" " + curUnit.getID().toString() + " ;" + curUnit.getName());
 			}
-
+      enemyUnits += battleStateOrder;
 			completions.add(new Completion(data.getFaction(fID).getName() + " (" + fID.toString() +
 										   ")", enemyUnits, "", 6, 0));
 			completions.add(new Completion(fID.toString() + " (" + data.getFaction(fID).getName() +
@@ -1014,29 +1032,40 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltKaempfe() {
+    int guardMalus = 0;
+    int attackMalus = 0;
+    if (unit != null) {
+      if (unit.getModifiedGuard()>0) {
+        guardMalus = 10;
+      }
+      if ((unit.getAttackVictims() != null) && (unit.getAttackVictims().size()>0)) {
+        attackMalus = 20;
+      }
+    }
 		if((unit == null) || ((unit.getCombatStatus() != 0) && (unit.getCombatStatus() != -1))) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AGGRESSIVE)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AGGRESSIVE), "", unit.getCombatStatus()));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 2)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REAR)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REAR), "", Math.abs(unit.getCombatStatus() - 2)));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 3)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFENSIVE)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFENSIVE), "", Math.abs(unit.getCombatStatus() - 3)));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 4)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "", Math.abs(unit.getCombatStatus() - 4) + attackMalus));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 5)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FLEE)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FLEE), "", Math.abs(unit.getCombatStatus() - 5) + guardMalus + attackMalus));
 		}
 
 		// ACHTUNG!!!!
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT),
 									   " "));
+    log.info("cmplt_HELP 9");
 	}
 
 	void cmpltKaempfeHelfe() {

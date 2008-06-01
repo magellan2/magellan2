@@ -1019,7 +1019,7 @@ public class CRParser implements RulesIO, GameDataIO {
         world.setLocale(new Locale(sc.argv[0], ""));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("date")) {
-        // ignore date tag
+        world.setTimestamp(Long.parseLong(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("noskillpoints")) {
         world.noSkillPoints = (Integer.parseInt(sc.argv[0]) != 0);

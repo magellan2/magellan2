@@ -13,8 +13,6 @@
 
 package magellan.library;
 
-import java.awt.Point;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,8 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import magellan.library.gamebinding.EresseaMapMergeEvaluator;
-import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
@@ -41,7 +37,6 @@ import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.OrderedHashtable;
-import magellan.library.utils.Pair;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
@@ -128,6 +123,11 @@ public abstract class GameData implements Cloneable {
    * way.
    */
   protected Date date = null;
+  
+  /**
+   * Contains the date of the report (it's not the date of the report).
+   */
+  protected long timestamp = 0;
 
   /** The 'mail' connection this game data belongs to. This may be null */
   public String mailTo = null;
@@ -737,6 +737,9 @@ public abstract class GameData implements Cloneable {
     EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
     date.setEpoch(((EresseaDate) newerGD.getDate()).getEpoch());
     resultGD.setDate(date);
+    
+    // new report - new timestamp
+    resultGD.setTimestamp(System.currentTimeMillis() / 1000);
     
     // verify the encodings of the two reports
     String oldEncoding = olderGD.getEncoding();
@@ -1927,5 +1930,19 @@ public abstract class GameData implements Cloneable {
 
   public FileType getFileType() {
     return filetype;
+  }
+  
+  /**
+   * Sets the date of the report (it's not the date of the report).
+   */
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
+  }
+  
+  /**
+   * Returns the date of the report (it's not the date of the report).
+   */
+  public long getTimestamp() {
+    return timestamp;
   }
 }

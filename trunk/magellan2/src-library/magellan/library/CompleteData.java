@@ -18,9 +18,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import magellan.library.gamebinding.AllanonSpecificStuff;
-import magellan.library.gamebinding.EresseaMapMergeEvaluator;
-import magellan.library.gamebinding.EresseaSpecificStuff;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Translations;

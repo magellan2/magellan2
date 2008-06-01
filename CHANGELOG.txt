@@ -1,37 +1,40 @@
+2008-06-01 / Build 204 - Thoralf (thoralf@m84.de)
+    * added timestamp property to GameData (loaded from report) for better report comparison)
+
 2008-05-24 / Build 203 - Darcduck (sf.net@duckstein.net)
-	* fixed #265: auto completions sorted
-	* fixed #167: resources now deleted if depleted
-	* added autocompletion COMBAT for GUARD and ATTACK if required
+    * fixed #265: auto completions sorted
+    * fixed #167: resources now deleted if depleted
+    * added autocompletion COMBAT for GUARD and ATTACK if required
 	
 2008-05-23 / Build 201 - Darcduck (sf.net@duckstein.net)
-	* restructured all mapping (coordinate translation) code
-	* started implementing SSL and TLS for send orders
+    * restructured all mapping (coordinate translation) code
+    * started implementing SSL and TLS for send orders
 	
 2008-05-22 / Build 201 - Fiete (sf@fietefietz.de)
-	* added editAllFactions to MultiEditorOrderEditorList
+    * added editAllFactions to MultiEditorOrderEditorList
 
 2008-05-21 / Build 200 - Fiete (sf@fietefietz.de)
-	* introduced modifiedCombatState, modifiedGuard
-	* improved AttackInspector -> modifiedCombatState and guard-order
-	* fixed Bug #264: HorseProduction in FactionStatistics
-	* added guard status flags to Unit and to MagellanFactory.guardFlagsToString
-	* fixed Bug #262, import of orders. (Added complete reload of gamedata via setOrigin)
-	* added test feature: restrikt tasks to factions with known passwords
+    * introduced modifiedCombatState, modifiedGuard
+    * improved AttackInspector -> modifiedCombatState and guard-order
+    * fixed Bug #264: HorseProduction in FactionStatistics
+    * added guard status flags to Unit and to MagellanFactory.guardFlagsToString
+    * fixed Bug #262, import of orders. (Added complete reload of gamedata via setOrigin)
+    * added test feature: restrikt tasks to factions with known passwords
 
 2008-05-20 / Build 199 - Fiete (sf@fietefietz.de)
-	* start showing regionUID in EMapDetail and Copy&Paste / Contextmenus
-	* do not show completion, when offered completion is already typed
-	* moved option seasonal images from BorderPreferences to MapperPreferences
-	* updated help files for options->map and refreshed the picture, en-translation still ToDo
+    * start showing regionUID in EMapDetail and Copy&Paste / Contextmenus
+    * do not show completion, when offered completion is already typed
+    * moved option seasonal images from BorderPreferences to MapperPreferences
+    * updated help files for options->map and refreshed the picture, en-translation still ToDo
 
 2008-05-19 / Build 198 - Fiete (sf@fietefietz.de)
-	* fixed sorting bug in EMapOverview and GroupInfo (BestSkillComp.)
-	* added spellSchool to AuraInfo (personal feature wish)
+    * fixed sorting bug in EMapOverview and GroupInfo (BestSkillComp.)
+    * added spellSchool to AuraInfo (personal feature wish)
 
 2008-05-18 / Build 197 - Fiete (sf@fietefietz.de)
-	* fixed SkillTypeComp - Exception
-	* added seasonal check in regionimagerenderer - seasonal images only if wanted
-	* Mapper: changed regionList to objectList<Sorted>
+    * fixed SkillTypeComp - Exception
+    * added seasonal check in regionimagerenderer - seasonal images only if wanted
+    * Mapper: changed regionList to objectList<Sorted>
 
 2008-05-18 / Build 197 - Thoralf (thoralf@m84.de)
     * made a lot of changes to the java5 generics - release is maybe broken

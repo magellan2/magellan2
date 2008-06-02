@@ -133,6 +133,21 @@ public class CRWriter extends BufferedWriter {
     if (this.ui == null) ui = new NullUserInterface();
   }
 
+  /**
+   * Creates a CR writer with a ouput buffer of the specified size.
+   *
+   * @param fileType the filetype to write to
+   *
+   * @throws IOException DOCUMENT-ME
+   */
+  public CRWriter(UserInterface ui, FileType fileType, String encoding,int numberOfBackups) throws IOException {
+    super(fileType.createWriter(encoding),numberOfBackups);
+    this.ui = ui;
+    this.encoding = encoding;
+    if (this.ui == null) ui = new NullUserInterface();
+  }
+  
+  
 	/**
 	 * Escape quotation marks in <tt>text</tt> with a backslash.
 	 *
@@ -2087,7 +2102,7 @@ public class CRWriter extends BufferedWriter {
 		}
     
     if (res.getDate()!=null && res.getDate().getDate()>-1 && !serverConformance){
-      write(res.getDate().getDate() + ";runde");
+      write(res.getDate().getDate() + ";Runde");
       newLine();
     }
     

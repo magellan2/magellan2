@@ -183,12 +183,24 @@ public class FileType {
    * @throws IOException If another IOException occured
    */
   public Writer createWriter(String encoding) throws IOException {
+    return createWriter(encoding, FileBackup.DEFAULT_BACKUP_LEVEL);
+  }
+
+  /**
+   * Creates a backup of the underlying file and returns  a Writer for this.
+   *
+   * @return a Writer of the underlying File.
+   *
+   * @throws ReadOnlyException If file is marked as readonly or cannot be opened
+   * @throws IOException If another IOException occured
+   */
+  public Writer createWriter(String encoding,int numberOfBackups) throws IOException {
     if(readonly) {
       throw new ReadOnlyException();
     }
     
     if(createBackup && filename.exists() && filename.canWrite()) {
-      File backup = FileBackup.create(filename);
+      File backup = FileBackup.create(filename,numberOfBackups);
       log.info("Created backupfile " + backup +" (FileType.java)");
     }
     
@@ -197,7 +209,8 @@ public class FileType {
 
     return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(),encoding));
   }
-
+  
+  
   /**
    * Creates an InputStream for the underlying file.
    *

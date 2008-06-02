@@ -223,7 +223,9 @@ public class RegionResource implements Unique {
 				newRes.setAmount(curRes.getAmount());
         // set the round as actual game data date, because with curRes.amount!=-1 we
         // are sure to have some info
-        newRes.setDate(curGD.getDate().getDate());
+        if (curRes.getDate()!=null){
+          newRes.setDate(curRes.getDate().getDate());
+        }
 			}
 		} else {
 			if(curRes.getAmount() != -1 && newRes.getSkillLevel() == -1) {

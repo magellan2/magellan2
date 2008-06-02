@@ -27,7 +27,7 @@ public class FileBackup {
 	private static final Logger log = Logger.getInstance(FileBackup.class);
 	
 	/** this is normally a bad idea, but we allow this global */
-	private static int DEFAULT_BACKUP_LEVEL = 2;
+	public static int DEFAULT_BACKUP_LEVEL = 2;
 
 	/**
 	 * Disable instantiation of class

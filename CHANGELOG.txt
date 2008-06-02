@@ -1,3 +1,6 @@
+2008-06-02 / Build 205 - Thoralf (thoralf@m84.de)
+	* added support for runde-tag in region ressources
+
 2008-06-01 / Build 204 - Thoralf (thoralf@m84.de)
     * added timestamp property to GameData (loaded from report) for better report comparison)
 

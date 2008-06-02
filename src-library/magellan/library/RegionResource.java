@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import magellan.library.rules.Date;
+import magellan.library.rules.EresseaDate;
 import magellan.library.rules.ItemType;
 
 /**
@@ -27,6 +29,7 @@ public class RegionResource implements Unique {
 	private int skillLevel = -1; // the minimum skill level required to access the resource
 	private ItemType type = null; // the type of resource
 	private int amount = -1; // the amount of the resource available
+  private Date date = null; // the (game)round the information was originated
 
 	/**
 	 * Constructs a new region resource with the specified id and type. There is no default
@@ -83,15 +86,37 @@ public class RegionResource implements Unique {
 		this.type = type;
 	}
 
-	/**
-	 * Returns the type of this resource.
-	 *
-	 * 
-	 */
-	public ItemType getType() {
-		return type;
-	}
-
+  /**
+   * Returns the type of this resource.
+   *
+   * 
+   */
+  public ItemType getType() {
+    return type;
+  }
+  
+  /**
+   * Specifies the round, in which the information was "new" 
+   *
+   * @throws IllegalArgumentException DOCUMENT-ME
+   */
+  public void setDate(int Round) {
+    if (this.date==null){
+      this.date = new EresseaDate(Round);
+    } else {
+      this.date.setDate(Round);
+    }
+  }
+  
+  /**
+   * Returns the Date, the ressource info was last updated
+   *
+   */
+  public Date getDate(){
+    return this.date;
+  }
+  
+  
 	/**
 	 * Sets the amount of the resource visible or available.
 	 *
@@ -196,12 +221,16 @@ public class RegionResource implements Unique {
 			if(curRes.getSkillLevel() >= newRes.getSkillLevel() && curRes.getAmount() != -1) {
 				newRes.setSkillLevel(curRes.getSkillLevel());
 				newRes.setAmount(curRes.getAmount());
+        // set the round as actual game data date, because with curRes.amount!=-1 we
+        // are sure to have some info
+        newRes.setDate(curGD.getDate().getDate());
 			}
 		} else {
 			if(curRes.getAmount() != -1 && newRes.getSkillLevel() == -1) {
 //			if(curRes.getSkillLevel() != -1 && curRes.getAmount() != -1) {
 				newRes.setSkillLevel(curRes.getSkillLevel());
 				newRes.setAmount(curRes.getAmount());
+        newRes.setDate(curGD.getDate().getDate());
 			}
 		}
 	}

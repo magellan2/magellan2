@@ -3028,9 +3028,22 @@ public class CRParser implements RulesIO, GameDataIO {
         }
 
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("runde")) {
+          if (r!=null){
+            r.setDate(Integer.parseInt(sc.argv[0]));
+          }
+          sc.getNextToken();  
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("number")) {
         if(r != null) {
           r.setAmount(Integer.parseInt(sc.argv[0]));
+          // if we have a number, (and it is a server cr), the actual round
+          // should be set as Date for that ressource
+          // if later a ;runde tag is found, date is overwritten
+          // added for testing. we onyl do this, if the report has NO
+          // "Konfiguartion" tag...we assume than, its coming from the server...
+          if (this.configuration.length()==0){
+            r.setDate(world.getDate().getDate());
+          }
         }
 
         sc.getNextToken();

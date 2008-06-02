@@ -70,6 +70,7 @@ import magellan.library.Spell;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.io.cr.CRWriter;
+import magellan.library.io.file.FileBackup;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.PropertiesHelper;
@@ -207,7 +208,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 					File outputFile = new File((String) comboOutputFile.getSelectedItem());
 
 					try {
-						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(data.getEncoding()));
+						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(data.getEncoding(),
+                Integer.parseInt(settings.getProperty("Client.fileHistory.count",
+                    FileBackup.DEFAULT_BACKUP_LEVEL + ""))    
+            ));
+            
+            
 						quit();
 					} catch(IOException ioe) {
 						log.error(ioe);

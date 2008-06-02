@@ -3018,6 +3018,13 @@ public class CRParser implements RulesIO, GameDataIO {
 
           if(type != null) {
             r = new RegionResource(id, type);
+            // if coming from server, just set the date to world-date
+            // if later a ;runde tag is found, date is overwritten
+            // added for testing. we onyl do this, if the report has NO
+            // "Konfiguartion" tag...we assume than, its coming from the server...
+            if (this.configuration.equalsIgnoreCase("standard")){
+              r.setDate(world.getDate().getDate());
+            }
           }
         }
 
@@ -3028,7 +3035,7 @@ public class CRParser implements RulesIO, GameDataIO {
         }
 
         sc.getNextToken();
-      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("runde")) {
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Runde")) {
           if (r!=null){
             r.setDate(Integer.parseInt(sc.argv[0]));
           }
@@ -3036,14 +3043,6 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("number")) {
         if(r != null) {
           r.setAmount(Integer.parseInt(sc.argv[0]));
-          // if we have a number, (and it is a server cr), the actual round
-          // should be set as Date for that ressource
-          // if later a ;runde tag is found, date is overwritten
-          // added for testing. we onyl do this, if the report has NO
-          // "Konfiguartion" tag...we assume than, its coming from the server...
-          if (this.configuration.length()==0){
-            r.setDate(world.getDate().getDate());
-          }
         }
 
         sc.getNextToken();

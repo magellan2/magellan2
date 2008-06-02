@@ -1247,9 +1247,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
-      log.info("Using encoding: "+getData().getEncoding());
+      log.info("Client.saveReport Using encoding: "+getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
-      crw = new CRWriter(ui,filetype,getData().getEncoding());
+      crw = new CRWriter(ui,filetype,getData().getEncoding(),
+          Integer.parseInt(getProperties().getProperty("Client.fileHistory.count",
+              FileBackup.DEFAULT_BACKUP_LEVEL + "")) 
+      );
       crw.write(getData());
       crw.close();
 

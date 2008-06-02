@@ -1250,7 +1250,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       log.info("Client.saveReport Using encoding: "+getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
       crw = new CRWriter(ui,filetype,getData().getEncoding(),
-          Integer.parseInt(getProperties().getProperty("Client.fileHistory.count",
+          Integer.parseInt(getProperties().getProperty("Client.CRBackups.count",
               FileBackup.DEFAULT_BACKUP_LEVEL + "")) 
       );
       crw.write(getData());

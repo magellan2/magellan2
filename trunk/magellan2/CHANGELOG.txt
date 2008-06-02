@@ -1,6 +1,10 @@
 2008-06-02 / Build 205 - Fiete (sf@fietefietz.de)
 	* added support for spotted-tag in region ressources
-	* #267: respect Client.fileHistory.count in Properties when saving CRs (GUI toDo)
+	* #267: respect Client.CRBackups.count  in Properties when saving CRs
+	* added option for the amount of CR backups (Client.CRBackups.count)
+	* added current and outdated icon to ressource info in DetailPanel
+	* fixed bug showing herbs as spell ressources, using ItemType.getIconName now
+	* setting Version to 2.0.2
 
 2008-06-01 / Build 204 - Thoralf (thoralf@m84.de)
     * added timestamp property to GameData (loaded from report) for better report comparison)

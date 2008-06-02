@@ -1204,21 +1204,20 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	/**
 	 * Returns a simple node
-	 *
-	 * 
-	 * 
-	 *
 	 * 
 	 */
 	private DefaultMutableTreeNode createSimpleNode(Object obj, String icons) {
 		return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
 	}
 
-    private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
-      DefaultMutableTreeNode test = new DefaultMutableTreeNode();
-      
-        return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj,this.data.getTranslation(obj),(Object) icons));
-    }
+  private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
+      return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj,this.data.getTranslation(obj),(Object) icons));
+  }
+  
+  private DefaultMutableTreeNode createSimpleNode(Object obj, ArrayList<String> icons) {
+    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
+  }
+  
 	/**
 	 * Return a string showing the signed difference of the two int values in the form
 	 * "<tt>current</tt> [&lt;sign&gt;&lt;number&gt;]". If the two values are equal or if one of
@@ -1370,29 +1369,42 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		}
 		
+		// Icon bauen
+		String icon = res.getType().getIconName();
+
+    if(icon.equalsIgnoreCase("Steine")) {
+      icon = "stein";
+    }
+    
+    if (getMagellanContext().getImageFactory().existImageIcon("items/" + icon + "_region")){
+      icon = icon + "_region";
+    }
+		
+    icon = "items/" +  icon;
+    
+    // new: make List of icons
+    ArrayList<String> icons = new ArrayList<String>();
+    icons.add(icon);
+		
     // Aktualitätsinfo
+		
     if (res.getDate()!=null && res.getDate().getDate()>-1){
       if (res.getDate().equals(this.data.getDate())){
-        // gleiche Runde
+        // same turn
         sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_current") + ") ");
+        icons.add("current");
       } else {
         sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_old") + ": " + res.getDate().getDate() + ") ");
+        icons.add("outdated");
       }
     } else {
       sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_old") + ") ");
+      icons.add("outdated");
     }
     
-		String icon = res.getType().getIconName();
-
-		if(icon.equalsIgnoreCase("Steine")) {
-			icon = "stein";
-		}
 		
-		if (getMagellanContext().getImageFactory().existImageIcon("items/" + icon + "_region")){
-			icon = icon + "_region";
-		}
 		
-		parent.add(createSimpleNode(sb.toString(), "items/" + icon));
+		parent.add(createSimpleNode(sb.toString(), icons));
 	}
 
 	/**
@@ -3967,25 +3979,36 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					} else {
 					  
 						int blankPos = val.indexOf(" ");
-	
+						  
+						// in case of herbs the key has changed to herb.getIcon...
+						// Lets see, if we have an herb here
+						// or another ItemType...just in case
+						String keyIcon = key;
+						ItemType someItemType = data.rules.getItemType(key, false);
+						if (someItemType!=null && someItemType.getIconName()!=null && someItemType.getIconName().length()>0){
+						   keyIcon = someItemType.getIconName();
+						}
+						
+						
+						
 						if((blankPos > 0) && (blankPos < val.length())) {
 							String usage = val.substring(0, blankPos);
 							String getLevelAtDays = val.substring(blankPos + 1, val.length());
 							if(getLevelAtDays.equals("0")) {
                 // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
 							  // okay (FF), now using the correct translation
-								compNode = createSimpleNode(usage + " " + data.getTranslation(key), "items/" + key);
+								compNode = createSimpleNode(usage + " " + data.getTranslation(key), "items/" + keyIcon);
 							} else if(getLevelAtDays.equals("1")) {
                 // okay, this was Resources.getOrderTranslation(key) but it doesn't make sense for magic thinks (TR)
 							  // okay (FF), now using the correct translation
-								compNode = createSimpleNode(usage + " " + data.getTranslation(key) + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + key);
+								compNode = createSimpleNode(usage + " " + data.getTranslation(key) + " * " + Resources.get("emapdetailspanel.node.level"), "items/" + keyIcon);
 							} else {
   							compNode = createSimpleNode(usage + " " + Resources.get("emapdetailspanel.node.permanenteaura") +
 															" * " + getLevelAtDays + " * " +
-															Resources.get("emapdetailspanel.node.level"), "items/" + key);
+															Resources.get("emapdetailspanel.node.level"), "items/" + keyIcon);
 							}
 						} else {
-							compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "items/" + key);
+							compNode = createSimpleNode(data.getTranslation(key) + ": " + val, "items/" + keyIcon);
 						}
 					}
 					componentsNode.add(compNode);

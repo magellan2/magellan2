@@ -141,7 +141,7 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException DOCUMENT-ME
    */
   public CRWriter(UserInterface ui, FileType fileType, String encoding,int numberOfBackups) throws IOException {
-    super(fileType.createWriter(encoding),numberOfBackups);
+    super(fileType.createWriter(encoding,numberOfBackups));
     this.ui = ui;
     this.encoding = encoding;
     if (this.ui == null) ui = new NullUserInterface();

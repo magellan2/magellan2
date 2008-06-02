@@ -24,6 +24,7 @@
 package magellan.client.preferences;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -42,12 +43,14 @@ import magellan.client.Client;
 import magellan.client.swing.CenterLayout;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.library.io.file.FileBackup;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 public class ClientFileHistoryPreferences extends JPanel implements PreferencesAdapter {
   private final Logger log = Logger.getInstance(ClientFileHistoryPreferences.class);
   protected JTextField txtFileHistorySize;
+  protected JTextField txtCRBackupsCount;
   protected Client source;
   protected Properties settings;
 
@@ -108,13 +111,58 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
 
     c.insets.top = 10;
     c.insets.bottom = 10;
-    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
+    GridBagHelper.setConstraints(c, 0, 0, 1, 1, 1.0, 0.0,
                    GridBagConstraints.NORTHWEST,
                    GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
 
     // help panel
     this.add(help, c);
-    c.insets.top = 0;
+    // c.insets.top = 0;
+    
+    JPanel jpanel_CRBackups = new JPanel(new GridBagLayout());
+    jpanel_CRBackups.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
+                               new EmptyBorder(0, 3, 3, 3)),
+                     Resources.get("clientpreferences.border.crbackups")));
+    
+    GridBagConstraints c_CR = new GridBagConstraints();
+    JLabel l2 = new JLabel( Resources.get("clientpreferences.lbl.numberofbackups.caption"));
+    
+    c_CR.fill = GridBagConstraints.HORIZONTAL;
+    c_CR.gridy=0;
+    c_CR.gridx=0;
+
+    c_CR.weightx=0.0;
+    
+    jpanel_CRBackups.add(l2,c_CR);
+    
+    txtCRBackupsCount = new JTextField(settings.getProperty("Client.CRBackups.count",
+        FileBackup.DEFAULT_BACKUP_LEVEL + ""));
+    c_CR.gridx++;
+    c_CR.gridy=0;
+    c_CR.weightx=1.0;
+    jpanel_CRBackups.add(txtCRBackupsCount,c_CR);
+    
+    JTextArea txtFoo2 = new JTextArea( Resources.get("clientpreferences.txt.crbackupsdescription.text"));
+    txtFoo2.setLineWrap(true);
+    txtFoo2.setWrapStyleWord(true);
+    txtFoo2.setEditable(false);
+    txtFoo2.setOpaque(false);
+    txtFoo2.setSelectionColor(getBackground());
+    txtFoo2.setSelectedTextColor(getForeground());
+    txtFoo2.setFont(l.getFont());
+    txtFoo2.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
+    
+    c_CR.gridx=0;
+    c_CR.gridy=1;
+    c_CR.weightx=0.0;
+    c_CR.gridwidth=2;
+    jpanel_CRBackups.add(txtFoo2,c_CR);
+    
+    c.gridx=0;
+    c.gridy=1;
+    c.weighty=1.0;
+    this.add(jpanel_CRBackups,c);
+    
   }
 
   /**
@@ -151,9 +199,18 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
   public void applyPreferences() {
     try {
       int i = Integer.parseInt(txtFileHistorySize.getText());
-      source.setMaxFileHistorySize(i);
+      source.setMaxFileHistorySize(i); 
     } catch(NumberFormatException e) {
       log.error("ClientPreferences(): Unable to set maximum file history size", e);
     }
+    
+    try {
+      int i = Integer.parseInt(txtCRBackupsCount.getText());
+      settings.setProperty("Client.CRBackups.count", i+""); 
+    } catch(NumberFormatException e) {
+      log.error("ClientPreferences(): Unable to set CR-Backup count", e);
+    }
+    
+    
   }
 }

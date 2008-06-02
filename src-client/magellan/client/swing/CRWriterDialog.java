@@ -209,7 +209,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 					try {
 						write(FileTypeFactory.singleton().createFileType(outputFile, false).createWriter(data.getEncoding(),
-                Integer.parseInt(settings.getProperty("Client.fileHistory.count",
+                Integer.parseInt(settings.getProperty("Client.CRBackups.count",
                     FileBackup.DEFAULT_BACKUP_LEVEL + ""))    
             ));
             

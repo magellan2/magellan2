@@ -1,3 +1,6 @@
+2008-06-03 / Build 206 - Fiete (sf@fietefietz.de)
+	* changed GIFs outdated and current. changed infotext for ressource info
+
 2008-06-02 / Build 205 - Fiete (sf@fietefietz.de)
 	* added support for spotted-tag in region ressources
 	* #267: respect Client.CRBackups.count  in Properties when saving CRs

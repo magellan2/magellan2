@@ -1394,11 +1394,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_current") + ") ");
         icons.add("current");
       } else {
-        sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_old") + ": " + res.getDate().getDate() + ") ");
+        int anzahlRunden = data.getDate().getDate() - res.getDate().getDate();
+        String helperS;
+        if (anzahlRunden<=1){
+          helperS = Resources.get("emapdetailspanel.node.resinfo_old_one",anzahlRunden);
+        } else {
+          helperS = Resources.get("emapdetailspanel.node.resinfo_old_more",anzahlRunden);
+        }
+        sb.append(" (" + helperS + ") ");
         icons.add("outdated");
       }
     } else {
-      sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_old") + ") ");
+      sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_old_unknown") + ") ");
       icons.add("outdated");
     }
     

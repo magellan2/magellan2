@@ -1,3 +1,6 @@
+2008-06-03 / Build 207 - Fiete (sf@fietefietz.de)
+	* added new (secret) icons und portal.gif
+
 2008-06-03 / Build 206 - Thoralf (thoralf@m84.de)
     * added Allanon icons vom Khadar
     

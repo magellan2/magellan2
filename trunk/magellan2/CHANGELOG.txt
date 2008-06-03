@@ -1,13 +1,16 @@
+2008-06-03 / Build 206 - Thoralf (thoralf@m84.de)
+    * added Allanon icons vom Khadar
+    
 2008-06-03 / Build 206 - Fiete (sf@fietefietz.de)
-	* changed GIFs outdated and current. changed infotext for ressource info
+    * changed GIFs outdated and current. changed infotext for ressource info
 
 2008-06-02 / Build 205 - Fiete (sf@fietefietz.de)
-	* added support for spotted-tag in region ressources
-	* #267: respect Client.CRBackups.count  in Properties when saving CRs
-	* added option for the amount of CR backups (Client.CRBackups.count)
-	* added current and outdated icon to ressource info in DetailPanel
-	* fixed bug showing herbs as spell ressources, using ItemType.getIconName now
-	* setting Version to 2.0.2
+    * added support for spotted-tag in region ressources
+    * #267: respect Client.CRBackups.count  in Properties when saving CRs
+    * added option for the amount of CR backups (Client.CRBackups.count)
+    * added current and outdated icon to ressource info in DetailPanel
+    * fixed bug showing herbs as spell ressources, using ItemType.getIconName now
+    * setting Version to 2.0.2
 
 2008-06-01 / Build 204 - Thoralf (thoralf@m84.de)
     * added timestamp property to GameData (loaded from report) for better report comparison)
@@ -16,11 +19,11 @@
     * fixed #265: auto completions sorted
     * fixed #167: resources now deleted if depleted
     * added autocompletion COMBAT for GUARD and ATTACK if required
-	
+    
 2008-05-23 / Build 201 - Darcduck (sf.net@duckstein.net)
     * restructured all mapping (coordinate translation) code
     * started implementing SSL and TLS for send orders
-	
+    
 2008-05-22 / Build 201 - Fiete (sf@fietefietz.de)
     * added editAllFactions to MultiEditorOrderEditorList
 
@@ -54,27 +57,27 @@
     * replaced ant-1.5.3 with ant-1.7.0 because of a bug in BZIP inputstream
     
 2008-05-6 / Build 195 - Fiete (sf@fietefietz.de)
-	* fixed bug #247: fogOfwar not refreshed after AskForPassword
-	* added some log.info's to narrow down a startup-delay
+    * fixed bug #247: fogOfwar not refreshed after AskForPassword
+    * added some log.info's to narrow down a startup-delay
 
 2008-05-5 / Build 194 - Fiete (sf@fietefietz.de)
-	* fixed bug in merger, added layer to new found translation
+    * fixed bug in merger, added layer to new found translation
 
 2008-04-31 / Build 193 - Fiete (sf@fietefietz.de)
-	* write regionUID not quoted
-	* added regionUID to mergeRegion
-	* feature #237: clever askForPassword-Dialogue.
-	* feature #253: use categoryIcon for categorizedItems
+    * write regionUID not quoted
+    * added regionUID to mergeRegion
+    * feature #237: clever askForPassword-Dialogue.
+    * feature #253: use categoryIcon for categorizedItems
 
 2008-04-30 / Build 192 - Fiete (sf@fietefietz.de)
-	* delStats in CRWriterDialogue now for all factions
-	* using herb icon in RegionDetails
-	
+    * delStats in CRWriterDialogue now for all factions
+    * using herb icon in RegionDetails
+    
 2008-04-29 / Build 191 - Fiete (sf@fietefietz.de)
-	* parse ID tag in REGION block
-	* write ID tag in REGION block (if avail)
-	* use region UID as dominat tool for merging
-	* (updated MapMergeEvaluator, but not activated)
+    * parse ID tag in REGION block
+    * write ID tag in REGION block (if avail)
+    * use region UID as dominat tool for merging
+    * (updated MapMergeEvaluator, but not activated)
 
 2008-04-23 / Build 191 - Thoralf (thoralf@m84.de)
     * ignore ID tag in REGION block (til we know how to handle region ids)

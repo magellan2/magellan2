@@ -2197,17 +2197,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * @param parent
 	 * @param expandableNodes 
 	 */
-	private void appendUnitRaceInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
-		if(u.getRace() != null) {
-			StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.race")).append(": ").append(u.getRaceName(this.data));
+  private void appendUnitRaceInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
+    if(u.getRace() != null) {
+      StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.race")).append(": ").append(u.getRaceName(this.data));
 	
-			if(u.getRealRace() != null) {
-				nodeText.append(" (").append(u.getRealRace().getName()).append(")");
-			}
+      if(u.getRealRace() != null) {
+        nodeText.append(" (").append(u.getRealRace().getName()).append(")");
+      }
 	
-			parent.add(createSimpleNode(nodeText.toString(), "rasse"));
-		}
-	}
+      parent.add(createSimpleNode(nodeText.toString(), "rasse"));
+    }
+  }
 
 	/**
 	 * Appends information on the unit's group.

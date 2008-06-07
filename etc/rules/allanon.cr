@@ -1417,102 +1417,102 @@ HERB "Hexenfinger"
 "Hexenfinger";name
 "Sumpf";region
 "herb";category
-"kraeuter";iconname
+"hexenfinger";iconname
 HERB "Jaborose"
 "Jaborose";name
 "Sumpf";region
 "herb";category
-"kraeuter";iconname
+"snowcrystal petal";iconname
 HERB "Schwarzer Lotus"
 "Schwarzer Lotus";name
 "Sumpf";region
 "herb";category
-"kraeuter";iconname
+"schwarzer lotus";iconname
 HERB "Krötenpilz"
 "Krötenpilz";name
 "Sumpf";region
 "herb";category
-"kraeuter";iconname
+"fjord fungus";iconname
 HERB "Alkanna"
 "Alkanna";name
 "Ebene";region
 "herb";category
-"kraeuter";iconname
+"gapgrowth";iconname
 HERB "Vernonia"
 "Vernonia";name
 "Ebene";region
 "herb";category
-"kraeuter";iconname
+"bugleweed";iconname
 HERB "Wurmfarn"
 "Wurmfarn";name
 "Wald";region
 "herb";category
-"kraeuter";iconname
+"tangy temerity";iconname
 HERB "Schleierkraut"
 "Schleierkraut";name
 "Wald";region
 "herb";category
-"kraeuter";iconname
+"white hemlock";iconname
 HERB "Yamswurzel"
 "Yamswurzel";name
 "Wüste";region
 "herb";category
-"kraeuter";iconname
+"mandrake";iconname
 HERB "Dornenpalme"
 "Dornenpalme";name
 "Wüste";region
 "herb";category
-"kraeuter";iconname
+"dornenpalme";iconname
 HERB "Trockener Wanderich"
 "Trockener Wanderich";name
 "Wüste";region
 "herb";category
-"kraeuter";iconname
+"sandreeker";iconname
 HERB "Fenchelkaktus"
 "Fenchelkaktus";name
 "Wüste";region
 "herb";category
-"kraeuter";iconname
+"peyote";iconname
 HERB "Perilla"
 "Perilla";name
 "Hochland";region
 "herb";category
-"kraeuter";iconname
+"elvendear";iconname
 HERB "Gamander"
 "Gamander";name
 "Hochland";region
 "herb";category
-"kraeuter";iconname
+"gamander";iconname
 HERB "Kaskarilla"
 "Kaskarilla";name
 "Hochland";region
 "herb";category
-"kraeuter";iconname
+"windbag";iconname
 HERB "Ololiuqui"
 "Ololiuqui";name
 "Hochland";region
 "herb";category
-"kraeuter";iconname
+"ice begonia";iconname
 HERB "Felberich"
 "Felberich";name
 "Berge";region
 "herb";category
-"kraeuter";iconname
+"felberich";iconname
 HERB "Wandermoos"
 "Wandermoos";name
 "Berge";region
 "herb";category
-"kraeuter";iconname
+"cave lichen";iconname
 HERB "Schlingflechte"
 "Schlingflechte";name
 "Gletscher";region
 "herb";category
-"kraeuter";iconname
+"bubblemorel";iconname
 HERB "Schneeglüh"
 "Schneeglüh";name
 "Gletscher";region
 "herb";category
-"kraeuter";iconname
+"schneeglueh";iconname
 
 
 

@@ -785,7 +785,8 @@ ITEM "Laen"
 "Bergbau";makeskill
 "resources";category
 
-ITEM "Admant"
+ITEM "Adamantium"
+"Adamantium";name
 "resources";category
 
 ITEM "Holz"
@@ -1010,8 +1011,8 @@ RESOURCES
 1;Eisen
 1;Holz
 
-ITEM "Admantaxt"
-"Admantaxt";name
+ITEM "Adamantiumaxt"
+"Adamantiumaxt";name
 "weapons";category
 
 ITEM "Rostige Kriegsaxt"
@@ -1134,8 +1135,8 @@ ITEM "Plattenpanzer"
 RESOURCES
 5;Eisen
 
-ITEM "Admantrüstung"
-"Admantrüstung";name
+ITEM "Adamantiumrüstung"
+"Adamantiumrüstung";name
 "armour";category
 
 ITEM "Rostiger Plattenpanzer"

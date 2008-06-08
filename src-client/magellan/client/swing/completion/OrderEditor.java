@@ -171,7 +171,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
 	 */
 	public void insertUpdate(DocumentEvent e) {
 		removeUpdate(e);
@@ -180,7 +180,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
 	 */
 	public void removeUpdate(DocumentEvent e) {
 		if(ignoreModifications) {

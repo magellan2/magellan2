@@ -376,6 +376,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
+    if (false)
+      completions = null;
     if ((line.length() == 0) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n')) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
       // new line, delete old completions
       completions = null;
@@ -396,7 +398,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
       addCommonCompletion(getStub(line));
       
-      // determine, whether the cursor is in a word
+      // determine, whether the cursor is inside a word
       boolean inWord = true;
 
       if ((j.getText().length() == j.getCaretPosition()) || (j.getCaretPosition() == 0)) {
@@ -428,7 +430,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         if ((completions != null) && (completions.size() == 1) && !inWord){
           // we have just 1 completion avail and we are not in a word
           Completion c = completions.iterator().next();
-          if (c.getName().equalsIgnoreCase(stub)){
+          if (c.getValue().equalsIgnoreCase(stub)){
             // last completion equals last fully typed word
             completionCompleted=true;
           }
@@ -442,6 +444,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
   }
 
+  /**
+   * If all completions share a common prefix, add the completion "prefix..."
+   * 
+   * @param stub
+   */
   private void addCommonCompletion(String stub) {
     if (completions.size() > 1) {
       Completion reference = completions.iterator().next();
@@ -462,6 +469,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
           }
         }
       }
+      if (common > 0 && reference.getName().length()!=common && reference.getName().charAt(common)==' ')
+          common--;
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
         if (stub.length()<common)
@@ -531,48 +540,53 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     int stubLen = stub.length();
     int stubBeg = caretPos - stubLen;
     String text = j.getText();
-    int temp1 = text.indexOf('\n', caretPos);
+    
+    if (stubLen>0){
+      int temp1 = text.indexOf('\n', caretPos);
 
-    if (temp1 == -1) {
-      temp1 = Integer.MAX_VALUE;
+      if (temp1 == -1) {
+        temp1 = Integer.MAX_VALUE;
+      }
+
+      int temp2 = text.indexOf('\r', caretPos);
+
+      if (temp2 == -1) {
+        temp2 = Integer.MAX_VALUE;
+      }
+
+      int temp3 = text.indexOf('\t', caretPos);
+
+      if (temp3 == -1) {
+        temp3 = Integer.MAX_VALUE;
+      }
+
+      int temp4 = text.indexOf(' ', caretPos);
+
+      if (temp4 == -1) {
+        temp4 = Integer.MAX_VALUE;
+      }
+
+      temp1 = Math.min(temp1, temp2);
+      temp3 = Math.min(temp3, temp4);
+
+      int stubEnd = Math.min(temp1, temp3);
+
+      if (stubEnd == Integer.MAX_VALUE) {
+        stubEnd = text.length();
+      } else if (text.charAt(stubEnd) == ' ') {
+        stubEnd++;
+      }
+
+      stubLen = stubEnd - stubBeg;
     }
-
-    int temp2 = text.indexOf('\r', caretPos);
-
-    if (temp2 == -1) {
-      temp2 = Integer.MAX_VALUE;
-    }
-
-    int temp3 = text.indexOf('\t', caretPos);
-
-    if (temp3 == -1) {
-      temp3 = Integer.MAX_VALUE;
-    }
-
-    int temp4 = text.indexOf(' ', caretPos);
-
-    if (temp4 == -1) {
-      temp4 = Integer.MAX_VALUE;
-    }
-
-    temp1 = Math.min(temp1, temp2);
-    temp3 = Math.min(temp3, temp4);
-
-    int stubEnd = Math.min(temp1, temp3);
-
-    if (stubEnd == Integer.MAX_VALUE) {
-      stubEnd = text.length();
-    } else if (text.charAt(stubEnd) == ' ') {
-      stubEnd++;
-    }
-
-    stubLen = stubEnd - stubBeg;
-
+    
     try {
       j.getDocument().remove(stubBeg, stubLen);
       // add additional blank if we are inside the line
       char c = text.length()>stubBeg+stubLen?text.charAt(stubBeg+stubLen):0;
       if (c=='\n' || c==0)
+        j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
+      else if (c==' ')
         j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
       else
         j.getDocument().insertString(stubBeg, completion.getValue()+" ", new SimpleAttributeSet());
@@ -655,7 +669,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     for (int i = txt.length() - 1; i >= 0; i--) {
       char c = txt.charAt(i);
 
-      if ((c == '"') || (c == '\'') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
+//      if ((c == '"') || (c == '\'') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
+      if ((!Character.isWhitespace(c) && c!='\'' && c!='"')){ // || retVal.length()==0) {
         retVal.append(c);
       } else {
         break;

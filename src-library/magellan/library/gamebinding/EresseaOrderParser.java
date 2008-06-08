@@ -887,14 +887,18 @@ public class EresseaOrderParser implements OrderParser {
 		char quote = 0;
 		
     if(t.ttype == OrderToken.TT_EOC || t.getText().length()<1) {
+      // empty
       innerText = "";
       tokenType = Type.EMPTY;
     } else {
       if (t.getText().charAt(0)=='\''){
+        // opening single quote
         quote='\'';
       } else if (t.getText().charAt(0)=='"'){
+        // opening double quote
         quote='"';
       } else {
+        // no quote
         innerText = t.getText();
         tokenType = Type.EMPTY;
       }
@@ -911,7 +915,7 @@ public class EresseaOrderParser implements OrderParser {
 		}
 
     // parse the string inside the quote(s)
-		boolean retVal = read(new StringReader(innerText));
+		boolean retVal = read(new StringReader(innerText)) && innerText.length()!=0;
 		
 		
 		if (tokenType==Type.CLOSING){

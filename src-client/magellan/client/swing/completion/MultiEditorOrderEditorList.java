@@ -135,7 +135,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	private Color activeBgColor = null;
 	private Color standardBgColorConfirmed = null;
 	private Color activeBgColorConfirmed = null;
-	private OrderEditor editor = null;
+	private OrderEditor editorSingelton = null;
 	private static final Border standardBorder = new LineBorder(Color.lightGray, 2);
 	private static final Border activeBorder = new LineBorder(Color.darkGray, 2);
 	private UpdateThread updateThread = new UpdateThread();
@@ -205,10 +205,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		redrawPane();
 
 		if(!multiEditorLayout) {
-			editor = new OrderEditor(data, settings, undoMgr, dispatcher);
-			editor.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-			addListeners(editor);
-			content.add(editor);
+		  initSingleEditor();
 		}
 
 		// update the color of the editor when the order confirmation status changes
@@ -246,6 +243,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
     initContent();
+    if (!multiEditorLayout)
+      initSingleEditor();
 	}
 
 	/**
@@ -337,20 +336,20 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
         if(activeObject instanceof Unit && (EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject) || editAllFactions)) {
 				// update editor
         currentUnit = (Unit) activeObject;
-        attachOrderEditor(currentUnit, editor);
-        selectEditor(currentUnit, editor);
+        attachOrderEditor(currentUnit, editorSingelton);
+        selectEditor(currentUnit, editorSingelton);
 			} else {
         // no unit selected --> no editor active
 				if(currentUnit != null) {
           setEditor(currentUnit, null);
-          deselectEditor(editor);
-          editor.setBorder(new TitledBorder(standardBorder,""));
+          deselectEditor(editorSingelton);
+          editorSingelton.setBorder(new TitledBorder(standardBorder,""));
 					currentUnit = null;
 					currentRegion = null;
           currentFaction=null;
           currentIsland=null;
-					editor.setUnit(null);
-					editor.setEditable(false);
+					editorSingelton.setUnit(null);
+					editorSingelton.setEditable(false);
 				}
 			}
 		}
@@ -482,6 +481,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       // so we call SwingGlitchThread.run() indirectly AFTER painting
       // tricky and dirty, but it works...
       SwingUtilities.invokeLater(swingGlitchThread);
+      editor.formatTokens();
     }
   }
 
@@ -714,7 +714,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		if(multiEditorLayout) {
 			return (new OrderEditor(data, settings, undoMgr, dispatcher)).getUseSyntaxHighlighting();
 		} else {
-			return editor.getUseSyntaxHighlighting();
+			return editorSingelton.getUseSyntaxHighlighting();
 		}
 	}
 
@@ -742,7 +742,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				(new OrderEditor(data, settings, undoMgr, dispatcher)).setUseSyntaxHighlighting(bool);
 			}
 		} else {
-			editor.setUseSyntaxHighlighting(bool);
+			editorSingelton.setUseSyntaxHighlighting(bool);
 		}
 	}
 
@@ -783,7 +783,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 																					 color);
 			}
 		} else {
-			editor.setTokenColor(styleName, color);
+			editorSingelton.setTokenColor(styleName, color);
 		}
 	}
 
@@ -914,19 +914,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			settings.setProperty("OrderEditor.multiEditorLayout", String.valueOf(multi));
 			clearUnits();
 			synchronized (content) {
-			  if(multi && (editor != null)) {
+			  if(multi && (editorSingelton != null)) {
 			    // if before there was only one editor and now we
 			    // switch to multi editor layout
 			    content.removeAll();
-			    removeListeners(editor);
-			    editor = null;
+			    removeListeners(editorSingelton);
+			    editorSingelton = null;
 			  } else {
-			    editor = new OrderEditor(data, settings, undoMgr, dispatcher);
-			    editor.setCursor(new Cursor(Cursor.TEXT_CURSOR));
-
-			    // add listeners
-			    addListeners(editor);
-			    content.add(editor);
+			    initSingleEditor();
 			  }
 			}
 
@@ -936,7 +931,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		}
 	}
 
-	/**
+	private void initSingleEditor() {
+    editorSingelton = new OrderEditor(data, settings, undoMgr, dispatcher);
+    editorSingelton.setCursor(new Cursor(Cursor.TEXT_CURSOR));
+
+    // add listeners
+    addListeners(editorSingelton);
+    content.removeAll();
+    content.add(editorSingelton);
+  }
+
+  /**
 	 * DOCUMENT-ME
 	 *
 	 * 
@@ -1367,9 +1372,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					setEditor(currentUnit, null);
 				}
 
-				editor.setUnit(null);
-				editor.setEditable(false);
-				removeListeners(editor);
+				editorSingelton.setUnit(null);
+				editorSingelton.setEditable(false);
+				removeListeners(editorSingelton);
 			}
 		}
 
@@ -1400,7 +1405,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	    }else
 	      super.requestFocus();
 	  }else{
-	    editor.requestFocus();
+	    editorSingelton.requestFocus();
 	  }
 	}
 
@@ -1445,7 +1450,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				return null;
 			}
 		} else {
-			return editor;
+			return editorSingelton;
 		}
 	}
 

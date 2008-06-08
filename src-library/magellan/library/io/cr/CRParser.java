@@ -2354,11 +2354,9 @@ public class CRParser implements RulesIO, GameDataIO {
 
     if(faction.getName() == null) {
       if(factionID.intValue() == -1) {
-        faction.setName("Parteigetarnte");
-      } else if(factionID.intValue() == 0) {
-        faction.setName("Monster");
+        faction.setName(Resources.get("crparser.nofaction"));
       } else {
-        faction.setName("Partei " + factionID);
+        faction.setName(Resources.get("crparser.unknownfaction", factionID));
       }
     }
 

@@ -379,9 +379,13 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 			}
 
 			if(unit.getShip() != null) {
-				ge = new GraphicsElement(null, null, unit.getShip().getType().getID().toString());
-				ge.setTooltip(unit.getShip().getName());
-				ge.setType(GraphicsElement.ADDITIONAL);
+			  if (unit.getShip().getType()==null)
+			    ge = new GraphicsElement(null, null, "ERROR");
+			  else{
+			    ge = new GraphicsElement(null, null, unit.getShip().getType().getID().toString());
+			    ge.setTooltip(unit.getShip().getName());
+			    ge.setType(GraphicsElement.ADDITIONAL);
+			  }
 				names.add(ge);
 			}
 		}

@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import magellan.client.completion.AutoCompletion;
 import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
@@ -2253,20 +2252,21 @@ public class EresseaOrderCompleter implements Completer {
 	 *
 	 */
 	private String getStub(String txt) {
-	  return AutoCompletion.getStub(txt);
-//		StringBuffer retVal = new StringBuffer();
-//
-//		for(int i = txt.length() - 1; i >= 0; i--) {
-//			char c = txt.charAt(i);
-//
-////			if((c == '-') || (c == '_') || (c == '~') || (c == '.') || (Character.isLetterOrDigit(c) == true)) {
-//      if ((!Character.isWhitespace(c) && c!='\'' && c!='"') || retVal.length()==0) {
-//      				retVal.append(c);
-//			} else {
-//				break;
-//			}
-//		}
-//		return retVal.reverse().toString();
+	  // FIXME (stm) this is identical to AutoCompletion.getStub(txt) but we don't wont to
+	  // reference src-client here...
+		StringBuffer retVal = new StringBuffer();
+
+		for(int i = txt.length() - 1; i >= 0; i--) {
+			char c = txt.charAt(i);
+
+//			if((c == '-') || (c == '_') || (c == '~') || (c == '.') || (Character.isLetterOrDigit(c) == true)) {
+      if ((!Character.isWhitespace(c) && c!='\'' && c!='"') || retVal.length()==0) {
+      				retVal.append(c);
+			} else {
+				break;
+			}
+		}
+		return retVal.reverse().toString();
 	}
 
   /**

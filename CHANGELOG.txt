@@ -1,7 +1,8 @@
-2008-06-08 / Build 209 - stm (stm_@users.sourceforge.net)
+2008-06-08 / Build 211 - stm (stm_@users.sourceforge.net)
     * fixed #160, #162, #178 (order completion)
     * changed shiptypecomparator to sort ships by faction
     * added "guised as" level for unit grouping
+    * removed reference to Monsters as faction 0
 
 2008-06-03 / Build 208 - Thoralf (thoralf@m84.de)
 	* added new icons from Khadar especially for Allanon

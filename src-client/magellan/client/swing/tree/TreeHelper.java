@@ -43,12 +43,14 @@ import magellan.library.utils.comparator.BuildingTypeComparator;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
+import magellan.library.utils.comparator.ShipFactionComparator;
 import magellan.library.utils.comparator.ShipTypeComparator;
 import magellan.library.utils.comparator.TaggableComparator;
 import magellan.library.utils.comparator.UnitCombatStatusComparator;
 import magellan.library.utils.comparator.UnitFactionComparator;
 import magellan.library.utils.comparator.UnitFactionDisguisedComparator;
 import magellan.library.utils.comparator.UnitGroupComparator;
+import magellan.library.utils.comparator.UnitGuiseFactionComparator;
 import magellan.library.utils.comparator.UnitHealthComparator;
 import magellan.library.utils.comparator.UnitTempUnitComparator;
 import magellan.library.utils.comparator.UnitTrustComparator;
@@ -66,34 +68,36 @@ public class TreeHelper {
    */
   public static final int FACTION = 0;
 
-  /** DOCUMENT-ME */
-  public static final int GROUP = 1;
+  public static final int GUISE_FACTION = 1;
 
   /** DOCUMENT-ME */
-  public static final int COMBAT_STATUS = 2;
+  public static final int GROUP = 2;
 
   /** DOCUMENT-ME */
-  public static final int HEALTH = 3;
+  public static final int COMBAT_STATUS = 3;
 
   /** DOCUMENT-ME */
-  public static final int FACTION_DISGUISE_STATUS = 4;
+  public static final int HEALTH = 4;
 
   /** DOCUMENT-ME */
-  public static final int TRUSTLEVEL = 5;
+  public static final int FACTION_DISGUISE_STATUS = 5;
 
   /** DOCUMENT-ME */
-  public static final int TAGGABLE = 6;
-  public static final int TAGGABLE2 = 7;
-  public static final int TAGGABLE3 = 8;
-  public static final int TAGGABLE4 = 9;
-  public static final int TAGGABLE5 = 10;
+  public static final int TRUSTLEVEL = 6;
+
+  /** DOCUMENT-ME */
+  public static final int TAGGABLE = 7;
+  public static final int TAGGABLE2 = 8;
+  public static final int TAGGABLE3 = 9;
+  public static final int TAGGABLE4 = 10;
+  public static final int TAGGABLE5 = 11;
 
   private static final Comparator<Named> nameComparator =
       new NameComparator<Unique>(IDComparator.DEFAULT);
   private static final Comparator<Building> buildingCmp =
       new BuildingTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT));
   private static final Comparator<Ship> shipComparator =
-      new ShipTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT));
+    new ShipFactionComparator(new ShipTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT)));
   private static final Comparator<Unit> healthCmp = new UnitHealthComparator(null);
 
   // pavkovic 2004.01.04: we dont want to sort groups by group id but name;
@@ -110,6 +114,10 @@ public class TreeHelper {
   private static final Comparator<Unit> factionCmp =
       new UnitFactionComparator<Faction>(new FactionTrustComparator<Named>(NameComparator.DEFAULT),
           null);
+  private static final Comparator<Unit> guiseFactionCmp =
+      new UnitFactionDisguisedComparator(new UnitGuiseFactionComparator<Faction>(
+          new FactionTrustComparator<Named>(NameComparator.DEFAULT), null));
+
   private static final Comparator<Unit> trustlevelCmp = UnitTrustComparator.DEFAULT_COMPARATOR;
   private static final Comparator<Taggable> taggableCmp =
       new TaggableComparator(CRParser.TAGGABLE_STRING, null);
@@ -286,6 +294,70 @@ public class TreeHelper {
 
             break;
 
+          case GUISE_FACTION:
+            if (prevUnit.isHideFaction()) {
+              SimpleNodeWrapper fdsNodeWrapper =
+                  factory.createSimpleNodeWrapper(
+                      Resources.get("tree.treehelper.factiondisguised"), "tarnung");
+              DefaultMutableTreeNode fdsNode = new DefaultMutableTreeNode(fdsNodeWrapper);
+              mother.add(fdsNode);
+
+              if (se != null) {
+                se.getSubordinatedElements().add(fdsNodeWrapper);
+              }
+
+              retVal +=
+                  addUnits(fdsNode, treeStructure, sortCriteria + 1, helpList, factory,
+                      activeAlliances, unitNodes, data);
+            } else if (prevUnit.getGuiseFaction()!=null){ 
+              FactionNodeWrapper guiseFactionNodeWrapper =
+                factory.createFactionNodeWrapper(prevUnit.getGuiseFaction(), prevUnit.getRegion(),
+                    activeAlliances);
+              DefaultMutableTreeNode guiseFactionNode = new DefaultMutableTreeNode(guiseFactionNodeWrapper);
+              mother.add(guiseFactionNode);
+
+              if (se != null) {
+                se.getSubordinatedElements().add(guiseFactionNodeWrapper);
+              }
+
+              retVal +=
+                addUnits(guiseFactionNode, treeStructure, sortCriteria + 1, helpList, factory,
+                    activeAlliances, unitNodes, data);
+            } else {
+              retVal +=
+                  addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
+                      activeAlliances, unitNodes, data);
+            }
+
+            helpList.clear();
+
+            break;
+
+          case FACTION_DISGUISE_STATUS:
+            if (prevUnit.isHideFaction()) {
+              SimpleNodeWrapper fdsNodeWrapper =
+                  factory.createSimpleNodeWrapper(
+                      Resources.get("tree.treehelper.factiondisguised"), "tarnung");
+              DefaultMutableTreeNode fdsNode = new DefaultMutableTreeNode(fdsNodeWrapper);
+              mother.add(fdsNode);
+
+              if (se != null) {
+                se.getSubordinatedElements().add(fdsNodeWrapper);
+              }
+
+              retVal +=
+                  addUnits(fdsNode, treeStructure, sortCriteria + 1, helpList, factory,
+                      activeAlliances, unitNodes, data);
+            } else {
+              retVal +=
+                  addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
+                      activeAlliances, unitNodes, data);
+            }
+
+            helpList.clear();
+
+            break;
+
           case GROUP:
             // Do the units belong to a group?
             if (prevUnit.getGroup() != null) {
@@ -366,31 +438,6 @@ public class TreeHelper {
 
             break;
 
-          case FACTION_DISGUISE_STATUS:
-            if (prevUnit.isHideFaction()) {
-              SimpleNodeWrapper fdsNodeWrapper =
-                  factory.createSimpleNodeWrapper(
-                      Resources.get("tree.treehelper.factiondisguised"), "tarnung");
-              DefaultMutableTreeNode fdsNode = new DefaultMutableTreeNode(fdsNodeWrapper);
-              mother.add(fdsNode);
-
-              if (se != null) {
-                se.getSubordinatedElements().add(fdsNodeWrapper);
-              }
-
-              retVal +=
-                  addUnits(fdsNode, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
-            } else {
-              retVal +=
-                  addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
-            }
-
-            helpList.clear();
-
-            break;
-
           case TRUSTLEVEL:
             SimpleNodeWrapper trustlevelNodeWrapper =
                 factory.createSimpleNodeWrapper(FactionTrustComparator.getTrustLevelLabel(prevUnit
@@ -457,6 +504,33 @@ public class TreeHelper {
 
           break;
 
+        case GUISE_FACTION:
+          if (curUnit.isHideFaction()) {
+            node =
+                new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources
+                    .get("tree.treehelper.factiondisguised"), "tarnung"));
+          } else if (curUnit.getGuiseFaction()!=null){
+            node =
+              new DefaultMutableTreeNode(factory.createFactionNodeWrapper(curUnit.getGuiseFaction(),
+                  curUnit.getRegion(), activeAlliances));
+          } else {
+            node = null;
+          }
+          
+          break;
+
+        case FACTION_DISGUISE_STATUS:
+
+          if (curUnit.isHideFaction()) {
+            node =
+                new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources
+                    .get("tree.treehelper.factiondisguised"), "tarnung"));
+          } else {
+            node = null;
+          }
+
+          break;
+
         case GROUP:
 
           if (curUnit.getGroup() != null) {
@@ -496,18 +570,6 @@ public class TreeHelper {
           node =
               new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(MagellanFactory
                   .combatStatusToString(curUnit), "kampfstatus"));
-
-          break;
-
-        case FACTION_DISGUISE_STATUS:
-
-          if (curUnit.isHideFaction()) {
-            node =
-                new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources
-                    .get("tree.treehelper.factiondisguised"), "tarnung"));
-          } else {
-            node = null;
-          }
 
           break;
 
@@ -610,6 +672,9 @@ public class TreeHelper {
     case FACTION:
       return factionCmp.compare(prevUnit, curUnit) != 0;
 
+    case GUISE_FACTION:
+       return guiseFactionCmp.compare(prevUnit, curUnit) !=0;
+
     case GROUP:
       return groupCmp.compare(prevUnit, curUnit) != 0;
 
@@ -648,6 +713,10 @@ public class TreeHelper {
       switch (treeStructure[i]) {
       case TreeHelper.FACTION:
         comp = new GroupingComparator(factionCmp, comp);
+        break;
+
+      case TreeHelper.GUISE_FACTION:
+        comp = new GroupingComparator(guiseFactionCmp, comp);
         break;
 
       case TreeHelper.GROUP:

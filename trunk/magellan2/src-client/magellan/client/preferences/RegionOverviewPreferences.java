@@ -186,6 +186,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     DefaultListModel elementsListModel = new DefaultListModel();
     elementsListModel.add(TreeHelper.FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.faction"));
+    elementsListModel.add(TreeHelper.GUISE_FACTION, Resources.get("emapoverviewpanel.prefs.treeStructure.element.guisefaction"));
     elementsListModel.add(TreeHelper.GROUP, Resources.get("emapoverviewpanel.prefs.treeStructure.element.group"));
     elementsListModel.add(TreeHelper.COMBAT_STATUS, Resources.get("emapoverviewpanel.prefs.treeStructure.element.combat"));
     elementsListModel.add(TreeHelper.HEALTH, Resources.get("emapoverviewpanel.prefs.treeStructure.element.health"));

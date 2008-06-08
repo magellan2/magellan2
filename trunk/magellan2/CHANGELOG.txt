@@ -1,3 +1,6 @@
+2008-06-08 / Build 212 - stm (stm_@users.sourceforge.net)
+    * fixed #275 (visibility), #273 (runde of RESOURCE)
+
 2008-06-08 / Build 211 - stm (stm_@users.sourceforge.net)
     * fixed #160, #162, #178 (order completion)
     * changed shiptypecomparator to sort ships by faction

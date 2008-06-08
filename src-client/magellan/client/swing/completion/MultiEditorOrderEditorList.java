@@ -1661,7 +1661,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			}
 
 			if(getEditor(currentUnit) != null) {
-				Rectangle bounds = getEditor(currentUnit).getBounds();
+			  OrderEditor editor = getEditor(currentUnit);
+				Rectangle bounds = editor.getBounds();
 				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
 				while(!viewRect.contains(viewRect.x, bounds.y, viewRect.width,
@@ -1685,8 +1686,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					newRect.setLocation(newPos);
 
 					//currentUnit.cache.orderEditor.scrollRectToVisible(newRect);
+		      int pos = editor.getCaretPosition();
 					content.scrollRectToVisible(newRect);
-
+          editor.setCaretPosition(0);
+          editor.setCaretPosition(pos);
+					
+					
 					// scpContent.getViewport().setViewPosition(newPos);
 					viewRect = scpContent.getViewport().getViewRect();
 					bounds = getEditor(currentUnit).getBounds();

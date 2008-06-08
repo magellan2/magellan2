@@ -1362,13 +1362,16 @@ public abstract class GameData implements Cloneable {
     }
 
     // MERGE REGIONS, SECOND PASS
-    if (newerGD.regions() != null) {
-      for (Iterator<Region> iter = newerGD.regions().values().iterator(); iter.hasNext();) {
-        Region curRegion = iter.next();
-        Region newRegion = resultGD.getRegion((CoordinateID) curRegion.getID());
-
-        // second pass
-        MagellanFactory.mergeRegion(newerGD, curRegion, resultGD, newRegion, true);
+    if (resultGD.regions() != null) {
+      for (Iterator<Region> iter = resultGD.regions().values().iterator(); iter.hasNext();) {
+          Region newRegion = iter.next();
+          Region curRegion = newerGD.getRegion((CoordinateID) newRegion.getID());
+          if (curRegion!=null){
+            // second pass
+            MagellanFactory.mergeRegion(newerGD, curRegion, resultGD, newRegion, true);
+          } else {
+            newRegion.setVisibility(0);
+          }
       }
     }
 

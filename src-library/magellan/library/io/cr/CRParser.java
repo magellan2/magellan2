@@ -3020,9 +3020,9 @@ public class CRParser implements RulesIO, GameDataIO {
             // if later a ;runde tag is found, date is overwritten
             // added for testing. we onyl do this, if the report has NO
             // "Konfiguartion" tag...we assume than, its coming from the server...
-            if (this.configuration.equalsIgnoreCase("standard")){
+//            if (this.configuration.equalsIgnoreCase("standard")){
               r.setDate(world.getDate().getDate());
-            }
+//            }
           }
         }
 
@@ -3048,7 +3048,8 @@ public class CRParser implements RulesIO, GameDataIO {
         unknown("RESOURCE", true);
       }
     }
-
+    
+    
     return r;
   }
 

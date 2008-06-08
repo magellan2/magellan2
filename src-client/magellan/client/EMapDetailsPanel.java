@@ -745,7 +745,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private void appendRegionInfo(Region r, DefaultMutableTreeNode parent,
 								  Collection<NodeWrapper> expandableNodes) {
 		// terrain type
-		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": " + r.getType().getName() + " (" + r.getVisibilityInteger() + ")",
+		parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.terrain") + ": " + r.getType().getName() + " (" + Resources.get("emapdetailspanel.node.terrain.visibility."+r.getVisibilityInteger()) + ")",
         r.getType().getID() + "-detail"));
 
 		// terrain coordinates
@@ -1392,7 +1392,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       if (res.getDate().equals(this.data.getDate())){
         // same turn
         sb.append(" (" + Resources.get("emapdetailspanel.node.resinfo_current") + ") ");
-        icons.add("current");
+//        icons.add("current");
       } else {
         int anzahlRunden = data.getDate().getDate() - res.getDate().getDate();
         String helperS;

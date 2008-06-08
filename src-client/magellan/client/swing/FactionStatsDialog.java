@@ -52,8 +52,6 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
-import magellan.library.Named;
-import magellan.library.Unique;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TrustLevels;
@@ -74,8 +72,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	private JSplitPane splFaction = null;
 	private JTabbedPane tabPane = null;
 
-	private static FactionTrustComparator<Named> factionTrustComparator = FactionTrustComparator.DEFAULT_COMPARATOR;
-	private static NameComparator<Unique> nameComparator = new NameComparator<Unique>(IDComparator.DEFAULT);
+	private static FactionTrustComparator factionTrustComparator = FactionTrustComparator.DEFAULT_COMPARATOR;
+	private static NameComparator nameComparator = new NameComparator(IDComparator.DEFAULT);
 
 	/**
 	 * Create a new FactionStatsDialog object as a dialog with a parent window.

@@ -16,8 +16,6 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.Faction;
-import magellan.library.Named;
-import magellan.library.Unique;
 import magellan.library.utils.Resources;
 
 
@@ -35,8 +33,8 @@ import magellan.library.utils.Resources;
  * the result of the sub-comparator's comparison is returned.
  * </p>
  */
-public class FactionTrustComparator<E> implements Comparator<Faction> {
-	protected Comparator<E> sameTrustSubCmp = null;
+public class FactionTrustComparator implements Comparator<Faction> {
+	protected Comparator<? super Faction> sameTrustSubCmp = null;
 
 	/**
 	 * Creates a new <tt>FactionTrustComparator</tt> object.
@@ -44,17 +42,17 @@ public class FactionTrustComparator<E> implements Comparator<Faction> {
 	 * @param sameFactionSubComparator if two factions with the same trust level are compared, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public FactionTrustComparator(Comparator<E> sameFactionSubComparator) {
+	public FactionTrustComparator(Comparator<? super Faction> sameFactionSubComparator) {
 		sameTrustSubCmp = sameFactionSubComparator;
 	}
 
 
 	/** A convenient constant providing a comparator that just compares the trust level (privilegd,allied,default,enemy) */
 	// public static final FactionTrustComparator DEFAULT_COMPARATOR = new FactionTrustComparator(null);
-	public final static FactionTrustComparator<Named> DEFAULT_COMPARATOR = new FactionTrustComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT));
+	public final static FactionTrustComparator DEFAULT_COMPARATOR = new FactionTrustComparator(new NameComparator(IDComparator.DEFAULT));
 
 	/** A convenient constant providing a comparator that just compares the exact trust value */
-	public static final FactionTrustComparator<Faction> DETAILED_COMPARATOR = new FactionTrustComparator<Faction>(new FactionDetailComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
+	public static final FactionTrustComparator DETAILED_COMPARATOR = new FactionTrustComparator(new FactionDetailComparator(new NameComparator(IDComparator.DEFAULT)));
 
 	/** The "privileged" trust level */
 	public static final int PRIVILEGED = Faction.TL_PRIVILEGED;
@@ -91,7 +89,7 @@ public class FactionTrustComparator<E> implements Comparator<Faction> {
 		int t1 = getTrustLevel(o1.getTrustLevel());
 		int t2 = getTrustLevel(o2.getTrustLevel());
 
-		return ((t1 == t2) && (sameTrustSubCmp != null)) ? sameTrustSubCmp.compare((E)o1, (E)o2) : (t2 -
+		return ((t1 == t2) && (sameTrustSubCmp != null)) ? sameTrustSubCmp.compare(o1, o2) : (t2 -
 														 t1);
 	}
 

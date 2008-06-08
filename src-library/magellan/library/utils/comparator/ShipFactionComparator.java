@@ -34,7 +34,7 @@ import magellan.library.Unit;
  * </p>
  */
 public class ShipFactionComparator implements Comparator<Ship> {
-  protected Comparator subCmp = null;
+  protected Comparator<? super Ship> subCmp = null;
 
   /**
    * Creates a new ShipFactionComparator object.
@@ -43,7 +43,7 @@ public class ShipFactionComparator implements Comparator<Ship> {
    *          if two ships having the same owner faction are compared, this
    *          sub-comparator is applied if it is not<tt>null</tt>.
    */
-  public ShipFactionComparator(Comparator aSubCmp) {
+  public ShipFactionComparator(Comparator<? super Ship> aSubCmp) {
     subCmp = aSubCmp;
   }
 

@@ -324,7 +324,7 @@ public class FindDialog extends InternationalizedDataDialog
 		pnlAttributeCheckBoxes.add(chkItems, c);
 
 		List<Faction> factions = new LinkedList<Faction>(data.factions().values());
-		Collections.sort(factions, new NameComparator<Unique>(IDComparator.DEFAULT));
+		Collections.sort(factions, new NameComparator(IDComparator.DEFAULT));
 		factionCombo = new JComboBox(factions.toArray());
 		factionCombo.addItem("");
 		factionCombo.setSelectedIndex(factionCombo.getItemCount() - 1);

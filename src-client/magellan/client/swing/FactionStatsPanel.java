@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.JPanel;
@@ -1343,7 +1344,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       return;
     }
 
-    HashMap<String, List<Alliance>> alliances = new HashMap<String, List<Alliance>>();
+    Map<String, List<Alliance>> alliances = new TreeMap<String, List<Alliance>>();
     for (Alliance alliance : allies.values()) {
       String key = alliance.stateToString();
       if (alliances.containsKey(key)) {
@@ -1354,10 +1355,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         alliances.put(key,list);
       }
     }
-    
     for(String key : alliances.keySet()) {
       List<Alliance> alliance = alliances.get(key);
-      Collections.sort(alliance, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
+      Collections.sort(alliance, new AllianceFactionComparator(new NameComparator(IDComparator.DEFAULT)));
       
       DefaultMutableTreeNode m = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",new Object[]{key}));
       for (Alliance a : alliance) {

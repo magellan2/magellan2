@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import magellan.library.ID;
 import magellan.library.Skill;
 
 
@@ -40,9 +41,9 @@ import magellan.library.Skill;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class TopmostRankedSkillComparator<E> implements Comparator<Map> {
-	private Comparator<Object> rankCmp;
-	private Comparator<E> subCmp;
+public class TopmostRankedSkillComparator implements Comparator<Map<ID, Skill> > {
+	private Comparator<Skill> rankCmp;
+	private Comparator<? super Map<ID, Skill>> subCmp;
 
 	/**
 	 * Creates a new TopmostRankedSkillComparator object.
@@ -50,8 +51,8 @@ public class TopmostRankedSkillComparator<E> implements Comparator<Map> {
 	 * 
 	 * 
 	 */
-	public TopmostRankedSkillComparator(Comparator<E> subComparator, Properties settings) {
-		rankCmp = new SkillTypeRankComparator<E>(null, settings);
+	public TopmostRankedSkillComparator(Comparator<? super Map<ID, Skill> > subComparator, Properties settings) {
+		rankCmp = new SkillRankComparator(null, settings);
 		this.subCmp = subComparator;
 	}
 
@@ -63,15 +64,15 @@ public class TopmostRankedSkillComparator<E> implements Comparator<Map> {
 	 *
 	 * 
 	 */
-	public int compare(Map o1, Map o2) {
+	public int compare(Map<ID, Skill> o1, Map<ID, Skill> o2) {
 		int retVal = 0;
 		int rank = 0;
-		Map map1 = o1;
-		Map map2 = o2;
+		Map<ID, Skill> map1 = o1;
+		Map<ID, Skill> map2 = o2;
 
 		// sort maps according to skill type ranking
-		List list1 = new LinkedList(map1.values());
-		List list2 = new LinkedList(map2.values());
+		List<Skill> list1 = new LinkedList<Skill>(map1.values());
+		List<Skill> list2 = new LinkedList<Skill>(map2.values());
 		Collections.sort(list1, rankCmp);
 		Collections.sort(list2, rankCmp);
 
@@ -98,13 +99,13 @@ public class TopmostRankedSkillComparator<E> implements Comparator<Map> {
 
 			if((s1 == null) && (s2 == null)) {
 				if(subCmp != null) {
-					return subCmp.compare((E)o1, (E)o2);
+					return subCmp.compare(o1, o2);
 				} else {
 					return 0;
 				}
 			}
 
-			retVal = rankCmp.compare(s1.getSkillType(), s2.getSkillType());
+			retVal = rankCmp.compare(s1, s2);
 
 			if(retVal != 0) {
 				return retVal;
@@ -119,7 +120,7 @@ public class TopmostRankedSkillComparator<E> implements Comparator<Map> {
 						rank++;
 					} else {
 						if(subCmp != null) {
-							return subCmp.compare((E)s1, (E)s2);
+							return subCmp.compare(o1, o2);
 						} else {
 							return 0;
 						}

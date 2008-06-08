@@ -22,8 +22,8 @@ import magellan.library.Faction;
  *
  * TODO DOCUMENT ME!
  */
-public class FactionDetailComparator<E> implements Comparator<Faction> {
-	protected Comparator<E> sameTrustSubCmp = null;
+public class FactionDetailComparator implements Comparator<Faction> {
+	protected Comparator<? super Faction> sameTrustSubCmp = null;
 
 	/**
 	 * Creates a new <tt>FactionTrustComparator</tt> object.
@@ -31,7 +31,7 @@ public class FactionDetailComparator<E> implements Comparator<Faction> {
 	 * @param sameFactionSubComparator if two factions with the same trust level are compared, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public FactionDetailComparator(Comparator<E> sameFactionSubComparator) {
+	public FactionDetailComparator(Comparator<? super Faction> sameFactionSubComparator) {
 		sameTrustSubCmp = sameFactionSubComparator;
 	}
 
@@ -43,7 +43,7 @@ public class FactionDetailComparator<E> implements Comparator<Faction> {
 		Faction f2 = o2;
 		int t1 = f1.getTrustLevel();
 		int t2 = f2.getTrustLevel();
-		return (t2==t1 && sameTrustSubCmp != null) ? sameTrustSubCmp.compare((E)o1, (E)o2) : (t2-t1);
+		return (t2==t1 && sameTrustSubCmp != null) ? sameTrustSubCmp.compare(o1, o2) : (t2-t1);
 	}
 
 }

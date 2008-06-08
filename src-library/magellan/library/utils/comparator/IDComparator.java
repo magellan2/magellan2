@@ -37,7 +37,7 @@ public class IDComparator implements Comparator<Unique> {
 	 * @return the natural ordering of <tt>o1</tt>'s id and <tt>o2</tt>'s id.
 	 */
 	public int compare(Unique o1, Unique o2) {
-		return ((Unique) o1).getID().compareTo(((Unique) o2).getID());
+		return o1.getID().compareTo(o2.getID());
 	}
 
 }

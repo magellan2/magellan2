@@ -39,8 +39,7 @@ import magellan.library.Unit;
 import magellan.library.rules.Category;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.SkillComparator;
-import magellan.library.utils.comparator.SkillTypeComparator;
-import magellan.library.utils.comparator.SkillTypeRankComparator;
+import magellan.library.utils.comparator.SkillRankComparator;
 
 
 /**
@@ -669,8 +668,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		this.adapter = (UnitNodeWrapperDrawPolicy) adapter;
 
 		if(rankComparator == null) {
-			rankComparator = new SkillTypeComparator(new SkillTypeRankComparator<Object>(null, settings),
-													 null);
+			rankComparator = new SkillRankComparator(null, settings);
 		}
 
 		return adapter;

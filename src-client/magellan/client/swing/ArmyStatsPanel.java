@@ -536,7 +536,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected void createArmies(GameData data, Collection<Region> regions, boolean cat) {
-		Comparator<Named> nameComp = new magellan.library.utils.comparator.NameComparator<Named>(null);
+		Comparator<Named> nameComp = new magellan.library.utils.comparator.NameComparator(null);
 		Comparator<Faction> compare = magellan.library.utils.comparator.FactionTrustComparator.DEFAULT_COMPARATOR;
 
 		List<Region> allRegions = null;
@@ -1178,8 +1178,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 		while(it1.hasNext()) {
 			Skill sk = it1.next();
-
-			if(sk.getSkillType().equals(skill.getSkillType()) && (skill.getLevel() >= sk.getLevel())) {
+			// sk==null means weapon is not in rules
+			if(sk==null || (sk.getSkillType().equals(skill.getSkillType()) && (skill.getLevel() >= sk.getLevel()))) {
 				if(col2 == null) {
 					col2 = weapons.get(sk);
 				} else if(weapons.containsValue(col2)) {

@@ -418,7 +418,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     cmbGroup.addItem("");
 
     List<Group> sorted = new ArrayList<Group>(f.getGroups().values());
-    Collections.sort(sorted, new NameComparator<Group>(null));
+    Collections.sort(sorted, new NameComparator(null));
 
     for(Iterator<Group> iter = sorted.iterator(); iter.hasNext();) {
       Group g = iter.next();

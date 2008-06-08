@@ -33,7 +33,7 @@ import magellan.library.Unit;
  * @author Ulrich Küster
  */
 public class UnitHealthComparator implements Comparator<Unit> {
-	protected Comparator subCmp = null;
+	protected Comparator<? super Unit> subCmp = null;
 
 	/**
 	 * Creates a new UnitHealthComparator object.
@@ -41,7 +41,7 @@ public class UnitHealthComparator implements Comparator<Unit> {
 	 * @param subComparator if two units have the same health-status, this sub-comparator is
 	 * 		  applied if it is not <tt>null</tt>.
 	 */
-	public UnitHealthComparator(Comparator subComparator) {
+	public UnitHealthComparator(Comparator<? super Unit> subComparator) {
 		subCmp = subComparator;
 	}
 

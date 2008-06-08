@@ -53,8 +53,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.ImageFactory;
 import magellan.library.GameData;
-import magellan.library.Named;
-import magellan.library.Unique;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.rules.SkillType;
@@ -289,7 +287,7 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
         v.add(type);
       }
 
-      Collections.sort(v, new SkillTypeRankComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT), settings));
+      Collections.sort(v, new SkillTypeRankComparator(new NameComparator(IDComparator.DEFAULT), settings));
       skillList.setListData(v.toArray());
       
       if (v.size()>0){

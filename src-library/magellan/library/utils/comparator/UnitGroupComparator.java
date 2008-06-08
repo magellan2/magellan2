@@ -34,9 +34,9 @@ import magellan.library.Unit;
  * </p>
  */
 public class UnitGroupComparator implements Comparator<Unit> {
-	protected Comparator groupCmp = null;
-	protected Comparator sameGroupSubCmp = null;
-	protected Comparator noGroupSubCmp = null;
+	protected Comparator<? super Group> groupCmp = null;
+	protected Comparator<? super Unit> sameGroupSubCmp = null;
+	protected Comparator<? super Unit> noGroupSubCmp = null;
 
 	/**
 	 * Creates a new UnitGroupComparator object.
@@ -47,8 +47,8 @@ public class UnitGroupComparator implements Comparator<Unit> {
 	 * @param noGroupSubComparator if two units belonging to no group are compared, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public UnitGroupComparator(Comparator groupComparator, Comparator sameGroupSubComparator,
-							   Comparator noGroupSubComparator) {
+	public UnitGroupComparator(Comparator<? super Group> groupComparator, Comparator<? super Unit> sameGroupSubComparator,
+							   Comparator<? super Unit> noGroupSubComparator) {
 		groupCmp = groupComparator;
 		sameGroupSubCmp = sameGroupSubComparator;
 		noGroupSubCmp = noGroupSubComparator;

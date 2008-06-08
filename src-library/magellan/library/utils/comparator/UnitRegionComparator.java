@@ -26,9 +26,9 @@ import magellan.library.Unit;
  * Note: this comparator can impose orderings that are inconsistent with equals.
  * </p>
  */
-public class UnitRegionComparator implements Comparator {
-	protected Comparator regionSubCmp = null;
-	protected Comparator sameRegionSubCmp = null;
+public class UnitRegionComparator implements Comparator<Unit> {
+	protected Comparator<? super Region> regionSubCmp = null;
+	protected Comparator<? super Unit> sameRegionSubCmp = null;
 
 	/**
 	 * Creates a new UnitRegionComparator object.
@@ -39,7 +39,7 @@ public class UnitRegionComparator implements Comparator {
 	 * @param sameRegionSubComparator is applied if the regionSubComparator regards two units equal
 	 * 		  according to the regions they are in.
 	 */
-	public UnitRegionComparator(Comparator regionSubComparator, Comparator sameRegionSubComparator) {
+	public UnitRegionComparator(Comparator<? super Region> regionSubComparator, Comparator<? super Unit> sameRegionSubComparator) {
 		regionSubCmp = regionSubComparator;
 		sameRegionSubCmp = sameRegionSubComparator;
 	}
@@ -54,11 +54,11 @@ public class UnitRegionComparator implements Comparator {
 	 * 		   o1 and o2 or the result of the sameRegion sub-comparator if the afore-said
 	 * 		   comparator regards the units' regions as equal.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(Unit o1, Unit o2) {
 		int retVal = 0;
 
-		Region r1 = ((Unit) o1).getRegion();
-		Region r2 = ((Unit) o2).getRegion();
+		Region r1 = o1.getRegion();
+		Region r2 = o2.getRegion();
 
 		if(r1 == null) {
 			if(r2 == null) {

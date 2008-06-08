@@ -34,7 +34,7 @@ import magellan.library.rules.ShipType;
  * </p>
  */
 public class ShipTypeComparator implements Comparator<Ship> {
-	protected Comparator subCmp = null;
+	protected Comparator<? super Ship> subCmp = null;
 
 	/**
 	 * Creates a new ShipTypeComparator object.
@@ -42,7 +42,7 @@ public class ShipTypeComparator implements Comparator<Ship> {
 	 * @param aSubCmp if two ships having the same type are compared, this sub-comparator is
 	 * 		  applied if it is not<tt>null</tt>.
 	 */
-	public ShipTypeComparator(Comparator aSubCmp) {
+	public ShipTypeComparator(Comparator<? super Ship> aSubCmp) {
 		subCmp = aSubCmp;
 	}
 

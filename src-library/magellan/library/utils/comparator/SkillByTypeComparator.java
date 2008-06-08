@@ -15,11 +15,12 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
+import magellan.library.Skill;
 import magellan.library.rules.SkillType;
 
 
 /**
- * A comparator imposing an ordering on SkillTypes.
+ * A comparator imposing an ordering on Skill objects by comparing their types.
  * 
  * <p>
  * Note: this comparator can impose orderings that are inconsistent with equals.
@@ -33,11 +34,10 @@ import magellan.library.rules.SkillType;
  * </p>
  *
  * @author Ulrich Küster
- * @deprecated completely pointless
  */
-public class SkillTypeComparator implements Comparator<SkillType> {
+public class SkillByTypeComparator implements Comparator<Skill> {
 	private final Comparator<? super SkillType> typeCmp;
-	private final Comparator<? super SkillType> subCmp;
+	private final Comparator<? super Skill> subCmp;
 
 	/**
 	 * Creates a new SkillTypeComparator object.
@@ -46,7 +46,7 @@ public class SkillTypeComparator implements Comparator<SkillType> {
 	 * @param subComparator if the typeComparator's comparison of the skill types yields 0, this
 	 * 		  sub-comparator is applied to the skill objects if it is not <tt>null</tt>.
 	 */
-	public SkillTypeComparator(Comparator<? super SkillType> typeComparator, Comparator<? super SkillType> subComparator) {
+	public SkillByTypeComparator(Comparator<? super SkillType> typeComparator, Comparator<? super Skill> subComparator) {
 		this.typeCmp = typeComparator;
 		this.subCmp = subComparator;
 	}
@@ -61,10 +61,10 @@ public class SkillTypeComparator implements Comparator<SkillType> {
 	 * 		   result is 0 and a subcomparator is specified that subcomparator is applied on the
 	 * 		   skill objects.
 	 */
-	public int compare(SkillType s1, SkillType s2) {
+	public int compare(Skill s1, Skill s2) {
 		int retVal = 0;
 
-		retVal = typeCmp.compare(s1, s2);
+		retVal = typeCmp.compare(s1.getSkillType(), s2.getSkillType());
 
 		if((retVal == 0) && (subCmp != null)) {
 			retVal = subCmp.compare(s1, s2);

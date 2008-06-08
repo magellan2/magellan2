@@ -19,7 +19,6 @@ import java.util.Map;
 
 import magellan.library.ID;
 import magellan.library.Skill;
-import magellan.library.rules.SkillType;
 
 
 /**
@@ -35,10 +34,10 @@ import magellan.library.rules.SkillType;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
-	private final Comparator<Skill> bestCmp;
-	private final Comparator<SkillType> skillTypeCmp;
-	private final Comparator<Skill> subCmp;
+public class BestSkillComparator implements Comparator<Map<ID,Skill> > {
+	private final Comparator<? super Skill> bestCmp;
+	private final Comparator<? super Skill> skillTypeCmp;
+	private final Comparator<? super Skill> subCmp;
 
 	/**
 	 * Creates a new BestSkillComparator object.
@@ -48,8 +47,8 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 	 * @param skillTypeComparator used to compare the two best skillTypes.
 	 * @param subComparator applied when the best skills are equal or cannot be determined.
 	 */
-	public BestSkillComparator(Comparator<Skill> bestComparator, Comparator<SkillType> skillTypeComparator,
-							   Comparator<Skill> subComparator) {
+	public BestSkillComparator(Comparator<? super Skill> bestComparator, Comparator<? super Skill> skillTypeComparator,
+							   Comparator<? super Skill> subComparator) {
 		this.bestCmp = bestComparator;
 		this.skillTypeCmp = skillTypeComparator;
 		this.subCmp = subComparator;
@@ -69,8 +68,8 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 		Skill s1 = getBestSkill(o1);
 		Skill s2 = getBestSkill(o2);
 		
-    E e1 = (E)o1;
-    E e2 = (E)o2;
+//    E e1 = (E)o1;
+//    E e2 = (E)o2;
 
 		if((s1 == null) && (s2 != null)) {
 			retVal = Integer.MIN_VALUE;
@@ -83,7 +82,7 @@ public class BestSkillComparator<E> implements Comparator<Map<ID,Skill>> {
 				retVal = 0;
 			}
 		} else {
-			retVal = skillTypeCmp.compare(s1.getSkillType(), s2.getSkillType());
+			retVal = skillTypeCmp.compare(s1, s2);
 
 			if((retVal == 0) && (subCmp != null)) {
 				retVal = subCmp.compare(s1, s2);

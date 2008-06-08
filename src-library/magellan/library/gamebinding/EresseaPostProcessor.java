@@ -36,7 +36,6 @@ import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
-import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
@@ -158,7 +157,7 @@ public class EresseaPostProcessor {
 		 create them as TempUnit objects */
 		int sortIndex = 0;
 		List<Unit> sortedUnits = new LinkedList<Unit>(data.units().values());
-		Collections.sort(sortedUnits, new SortIndexComparator<Unique>(IDComparator.DEFAULT));
+		Collections.sort(sortedUnits, new SortIndexComparator(IDComparator.DEFAULT));
 
 		for(Iterator unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
 			Unit unit = (Unit) unitIter.next();
@@ -340,7 +339,7 @@ public class EresseaPostProcessor {
 		if(data.buildings() != null) {
 			BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTTOWER);
 			RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
-			Comparator<Sorted> sortIndexComparator = new SortIndexComparator<Unique>(IDComparator.DEFAULT);
+			Comparator<Sorted> sortIndexComparator = new SortIndexComparator(IDComparator.DEFAULT);
 
 			if(type != null) {
 				for(Iterator iter = data.buildings().values().iterator(); iter.hasNext();) {

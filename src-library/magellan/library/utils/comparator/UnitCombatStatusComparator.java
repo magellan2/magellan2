@@ -33,7 +33,7 @@ import magellan.library.Unit;
  * @author Ulrich Küster
  */
 public class UnitCombatStatusComparator implements Comparator<Unit> {
-	protected Comparator subCmp = null;
+	protected Comparator<? super Unit> subCmp = null;
 
 	/**
 	 * Creates a new UnitCombatStautsComparator object.
@@ -41,7 +41,7 @@ public class UnitCombatStatusComparator implements Comparator<Unit> {
 	 * @param subComparator if two units have the same combat-status, this sub-comparator is
 	 * 		  applied if it is not <tt>null</tt>.
 	 */
-	public UnitCombatStatusComparator(Comparator subComparator) {
+	public UnitCombatStatusComparator(Comparator<? super Unit> subComparator) {
 		subCmp = subComparator;
 	}
 

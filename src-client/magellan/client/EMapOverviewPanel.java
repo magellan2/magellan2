@@ -110,7 +110,6 @@ import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.relation.TransferRelation;
 import magellan.library.relation.UnitRelation;
-import magellan.library.rules.SkillType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -118,8 +117,7 @@ import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.comparator.SkillComparator;
-import magellan.library.utils.comparator.SkillTypeComparator;
-import magellan.library.utils.comparator.SkillTypeRankComparator;
+import magellan.library.utils.comparator.SkillRankComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.comparator.TopmostRankedSkillComparator;
 import magellan.library.utils.comparator.UnitSkillComparator;
@@ -196,7 +194,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   private Set<TreeNode> expandInfo = new HashSet<TreeNode>();
   private Set<TreePath> selectionTransfer = new HashSet<TreePath>();
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
-  private static final Comparator<Named> nameCmp = new NameComparator<Unique>(idCmp);
+  private static final Comparator<Named> nameCmp = new NameComparator(idCmp);
 
   public static final String IDENTIFIER = "OVERVIEW";
 
@@ -446,22 +444,22 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     String criteria = settings.getProperty("EMapOverviewPanel.sortUnitsCriteria", "skills");
 
     // used as the comparator on the lowest structure level
-    Comparator cmp = null;
+    Comparator<? super Unit> cmp = null;
 
     if (criteria.equals("skills")) {
       if (settings.getProperty("EMapOverviewPanel.useBestSkill", "true").equalsIgnoreCase("true")) {
-        NameComparator<Unique> nameComparator = new NameComparator<Unique>(null);
-        SkillTypeRankComparator<Named> skillTypeRankComparator = new SkillTypeRankComparator<Named>(nameComparator, settings);
-        SkillTypeComparator<SkillType> skillTypeComparator = new SkillTypeComparator<SkillType>(skillTypeRankComparator, null);
-        BestSkillComparator<SkillType> bestSkillComparator = new BestSkillComparator<SkillType>(SkillComparator.skillCmp,skillTypeComparator,SkillComparator.skillCmp);
-        cmp = new UnitSkillComparator<Unit>(bestSkillComparator,idCmp);
+//        ToStringComparator<Skill> nameComparator = new ToStringComparator<Skill>(null);
+        SkillRankComparator skillTypeRankComparator = new SkillRankComparator(null, settings);
+//        SkillTypeComparator<Skill> skillTypeComparator = new SkillTypeComparator<Skill>(skillTypeRankComparator, null);
+        BestSkillComparator bestSkillComparator = new BestSkillComparator(SkillComparator.skillCmp,skillTypeRankComparator,SkillComparator.skillCmp);
+        cmp = new UnitSkillComparator(bestSkillComparator,idCmp);
       } else {
-        cmp = new UnitSkillComparator<Unit>(new TopmostRankedSkillComparator<Object>(null, settings), idCmp);
+        cmp = new UnitSkillComparator(new TopmostRankedSkillComparator(null, settings), idCmp);
       }
     } else if (criteria.equals("names")) {
       cmp = nameCmp;
     } else {
-      cmp = new SortIndexComparator<Unique>(idCmp);
+      cmp = new SortIndexComparator(idCmp);
     }
 
     // get an array of ints out of the definition string:

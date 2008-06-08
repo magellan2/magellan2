@@ -15,8 +15,6 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
-import magellan.library.Named;
-
 /**
  * A comparator imposing an ordering on named objects by comparing their names
  * alphabetically.
@@ -31,11 +29,11 @@ import magellan.library.Named;
  * comparison is returned.
  * </p>
  */
-public class NameComparator implements Comparator<Named> {
-  protected Comparator<? super Named> sameNameSubCmp = null;
+public class ToStringComparator<T extends Object> implements Comparator<T> {
+  protected Comparator<? super Object> sameNameSubCmp = null;
 
   /** The default NameComparator without a subComparator */
-  public static final Comparator<Named> DEFAULT = new NameComparator(null);
+  public static final Comparator<Object> DEFAULT = new ToStringComparator<Object>(null);
 
   /**
    * Creates a new NameComparator object.
@@ -44,8 +42,8 @@ public class NameComparator implements Comparator<Named> {
    *          if two objects with the same name are compared, this
    *          sub-comparator is applied if it is not <tt>null</tt>.
    */
-  public NameComparator(Comparator<? super Named> sameNameSubComparator) {
-    sameNameSubCmp = sameNameSubComparator;
+  public ToStringComparator(Comparator<? super Object> sameStringSubComparator) {
+    sameNameSubCmp = sameStringSubComparator;
   }
 
   /**
@@ -60,9 +58,9 @@ public class NameComparator implements Comparator<Named> {
    *         a sub-comparator was specified, the result of that sub-comparator's
    *         comparison is returned.
    */
-  public int compare(Named o1, Named o2) {
-    String n1 = o1.getName();
-    String n2 = o2.getName();
+  public int compare(T o1, T o2) {
+    String n1 = o1.toString();
+    String n2 = o2.toString();
 
     int retVal = 0;
     if (n1 != null) {

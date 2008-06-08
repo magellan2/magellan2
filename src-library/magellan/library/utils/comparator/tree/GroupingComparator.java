@@ -27,10 +27,10 @@ import java.util.List;
  * sub-comparator's comparison is returned.
  * </p>
  */
-public class GroupingComparator implements Comparator {
+public class GroupingComparator<T> implements Comparator<T> {
 
-  protected Comparator main = null;
-  protected GroupingComparator sub = null;
+  protected Comparator<? super T> main = null;
+  protected GroupingComparator<? super T> sub = null;
 
   /**
    * Creates a new <tt>GroupingComparator</tt> object.
@@ -41,36 +41,36 @@ public class GroupingComparator implements Comparator {
    *          the comparator used to compare the given objects if mainComparator
    *          delivers 0.
    */
-  public GroupingComparator(Comparator mainComparator, GroupingComparator subComparator) {
+  public GroupingComparator(Comparator<? super T> mainComparator, GroupingComparator<? super T> subComparator) {
     if (mainComparator == null)
       throw new NullPointerException();
     main = mainComparator;
     sub = subComparator;
   }
 
-  public GroupingComparator(Comparator mainComparator, Comparator subComparator) {
-    this(mainComparator, new GroupingComparator(subComparator, null));
+  public GroupingComparator(Comparator<? super T>  mainComparator, Comparator<? super T>  subComparator) {
+    this(mainComparator, new GroupingComparator<T>(subComparator, null));
   }
 
   /**
    * Compares its two arguments. Also it returns powers of 2 to return the depth
    * of the underlying comparators
    */
-  public int compare(Object o1, Object o2) {
+  public int compare(T o1, T o2) {
     int ret = main.compare(o1, o2);
     return ret == 0 && sub != null ? sub.compare(o1, o2) : ret;
 
   }
 
-  public static GroupingComparator buildFromList(Comparator[] comparators) {
+  public static<S> GroupingComparator<S> buildFromList(Comparator<S>[] comparators) {
     return buildFromList(Arrays.asList(comparators));
   }
 
-  private static GroupingComparator buildFromList(List comparators) {
+  private static<S> GroupingComparator<S> buildFromList(List<Comparator<S> > comparators) {
     if (comparators == null || comparators.isEmpty()) {
       return null;
     }
 
-    return new GroupingComparator((Comparator) comparators.remove(0), buildFromList(comparators));
+    return new GroupingComparator<S>(comparators.remove(0), buildFromList(comparators));
   }
 }

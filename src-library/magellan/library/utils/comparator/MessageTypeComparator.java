@@ -27,8 +27,8 @@ import magellan.library.rules.MessageType;
  * neither of the messages has a valid type set.
  * </p>
  */
-public class MessageTypeComparator<E> implements Comparator<Message> {
-	protected Comparator<E> typeCmp = null;
+public class MessageTypeComparator implements Comparator<Message> {
+	protected Comparator<? super MessageType> typeCmp = null;
 
 	/**
 	 * Creates a new MessageTypeComparator object.
@@ -37,7 +37,7 @@ public class MessageTypeComparator<E> implements Comparator<Message> {
 	 *
 	 * @throws NullPointerException DOCUMENT-ME
 	 */
-	public MessageTypeComparator(Comparator<E> typeComparator) {
+	public MessageTypeComparator(Comparator<? super MessageType> typeComparator) {
 		if(typeComparator == null) {
 			throw new NullPointerException();
 		}
@@ -60,7 +60,7 @@ public class MessageTypeComparator<E> implements Comparator<Message> {
 		if(t1 == null) {
 			return (t2 == null) ? 0 : 1;
 		} else {
-			return (t2 == null) ? (-1) : typeCmp.compare((E)t1, (E)t2);
+			return (t2 == null) ? (-1) : typeCmp.compare(t1, t2);
 		}
 	}
 }

@@ -178,7 +178,7 @@ public class TreeBuilder {
       } else if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("islands")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
         Comparator<Unique> idCmp = IDComparator.DEFAULT;
-        Collections.sort(sortedRegions, new RegionIslandComparator(new NameComparator<Unique>(idCmp), idCmp, idCmp));
+        Collections.sort(sortedRegions, new RegionIslandComparator(new NameComparator(idCmp), idCmp, idCmp));
 
         return sortedRegions;
       } else {

@@ -18,12 +18,13 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import magellan.library.ID;
+import magellan.library.Skill;
 import magellan.library.rules.SkillType;
 
 
 /**
- * A comparator imposing an ordering on SkillType objects by comparing their user
- * modifiable ranking.
+ * A comparator imposing an ordering on SkillType or Skill objects by comparing their user
+ * modifiable ranking. (In case of skill objects the skill's type is compared).
  * 
  * <p>
  * Note: this comparator can impose orderings that are inconsistent with equals.
@@ -38,8 +39,8 @@ import magellan.library.rules.SkillType;
  *
  * @author Ulrich Küster
  */
-public class SkillTypeRankComparator implements Comparator<SkillType> {
-	private final Comparator<? super SkillType> subCmp;
+public class SkillRankComparator implements Comparator<Skill> {
+	private final Comparator<? super Skill> subCmp;
 	private final Properties settings;
 
 	// avoid unnecessary object creation
@@ -60,7 +61,7 @@ public class SkillTypeRankComparator implements Comparator<SkillType> {
 	 * 
 	 * 
 	 */
-	public SkillTypeRankComparator(Comparator<? super SkillType> subComparator, Properties settings) {
+	public SkillRankComparator(Comparator<? super Skill> subComparator, Properties settings) {
 		this.subCmp = subComparator;
 
 		if(settings == null) {
@@ -78,12 +79,14 @@ public class SkillTypeRankComparator implements Comparator<SkillType> {
 	 *
 	 * 
 	 */
-	public int compare(SkillType s1, SkillType s2) {
-
+	public int compare(Skill o1, Skill o2) {
+	  s1 = o1.getSkillType();
+	  s2 = o2.getSkillType();
+	  
 		int retVal = getValue(s1) - getValue(s2);
 
 		if((retVal == 0) && (subCmp != null)) {
-			retVal = subCmp.compare(s1, s2);
+			retVal = subCmp.compare(o1, o2);
 		}
 
 		return retVal;

@@ -51,7 +51,6 @@ import magellan.library.Sign;
 import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.TempUnit;
-import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.io.file.FileType;
@@ -63,7 +62,6 @@ import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.NullUserInterface;
 import magellan.library.utils.Resources;
-import magellan.library.utils.Sorted;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.Umlaut;
@@ -93,7 +91,6 @@ import magellan.library.utils.logging.Logger;
 public class CRWriter extends BufferedWriter {
 	private static final Logger log = Logger.getInstance(CRWriter.class);
 	private boolean useTildesForQuotes = false;
-	private Comparator<Sorted> sortIndexComparator = new SortIndexComparator<Unique>(IDComparator.DEFAULT);
 
 	// incremented whenever a unit is written, can then be compared
 	// to the total number of units in the game data
@@ -865,6 +862,7 @@ public class CRWriter extends BufferedWriter {
     if (ownerFaction != null)
       writeFaction(ownerFaction);
     List<Faction> sorted = new ArrayList<Faction>(map.values());
+    Comparator<Faction> sortIndexComparator = new SortIndexComparator<Faction>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
 
     // write other factions
@@ -1017,6 +1015,7 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		List<Ship> sorted = new ArrayList<Ship>(ships);
+		Comparator<Ship> sortIndexComparator = new SortIndexComparator<Ship>(IDComparator.DEFAULT);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Ship> iter = sorted.iterator(); iter.hasNext();) {
@@ -1116,6 +1115,7 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		List<Building> sorted = new ArrayList<Building>(buildings);
+		Comparator<Building> sortIndexComparator = new SortIndexComparator<Building>(IDComparator.DEFAULT);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Building> iter = sorted.iterator(); iter.hasNext();) {
@@ -1366,6 +1366,7 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		List<Unit> sorted = new ArrayList<Unit>(units);
+		Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
 		Collections.sort(sorted, sortIndexComparator);
 
 		for(Iterator<Unit> iter = sorted.iterator(); iter.hasNext();) {

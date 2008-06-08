@@ -41,9 +41,9 @@ import magellan.library.Unit;
  * introduced, that may or, again, may not impose a strict order on the compared elements.
  * </p>
  */
-public class UnitPreferredFactionComparator implements Comparator {
-	protected Comparator preferredFactionSubCmp = null;
-	protected Comparator otherFactionSubCmp = null;
+public class UnitPreferredFactionComparator implements Comparator<Unit> {
+	protected Comparator<? super Unit> preferredFactionSubCmp = null;
+	protected Comparator<? super Unit> otherFactionSubCmp = null;
 	protected int factionID = 0;
 
 	/**
@@ -56,8 +56,8 @@ public class UnitPreferredFactionComparator implements Comparator {
 	 * 		  are not in the preferred faction.
 	 * 
 	 */
-	public UnitPreferredFactionComparator(Comparator preferredFactionSubComparator,
-										  Comparator otherFactionSubComparator, int fID) {
+	public UnitPreferredFactionComparator(Comparator<? super Unit> preferredFactionSubComparator,
+										  Comparator<? super Unit> otherFactionSubComparator, int fID) {
 		preferredFactionSubCmp = preferredFactionSubComparator;
 		otherFactionSubCmp = otherFactionSubComparator;
 		factionID = fID;
@@ -75,10 +75,10 @@ public class UnitPreferredFactionComparator implements Comparator {
 	 * 		   preferred faction and o1 does not. The return value in the other cases (both or
 	 * 		   neither of them belong to the preferred faction) depends on the sub-comparators.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(Unit o1, Unit o2) {
 		int retVal = 0;
-		int id1 = ((EntityID) ((Unit) o1).getFaction().getID()).intValue();
-		int id2 = ((EntityID) ((Unit) o2).getFaction().getID()).intValue();
+		int id1 = ((EntityID) o1.getFaction().getID()).intValue();
+		int id2 = ((EntityID) o2.getFaction().getID()).intValue();
 
 		if(id1 == factionID) {
 			if(id2 == factionID) {

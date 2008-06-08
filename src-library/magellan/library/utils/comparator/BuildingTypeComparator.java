@@ -34,7 +34,7 @@ import magellan.library.rules.BuildingType;
  * </p>
  */
 public class BuildingTypeComparator implements Comparator<Building> {
-	protected Comparator subCmp = null;
+	protected Comparator<? super Building> subCmp = null;
 
 	/**
 	 * Creates a new BuildingTypeComparator object.
@@ -42,7 +42,7 @@ public class BuildingTypeComparator implements Comparator<Building> {
 	 * @param aSubCmp if two buildings having the same type are compared, this sub-comparator is
 	 * 		  applied if it is not<tt>null</tt>.
 	 */
-	public BuildingTypeComparator(Comparator aSubCmp) {
+	public BuildingTypeComparator(Comparator<? super Building> aSubCmp) {
 		subCmp = aSubCmp;
 	}
 

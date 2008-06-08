@@ -37,7 +37,7 @@ public class TaggableComparator implements Comparator<Taggable> {
 
 	public final static TaggableComparator DEFAULT_COMPARATOR = new TaggableComparator(null);
 
-	protected Comparator subCmp = null;
+	protected Comparator<? super Taggable> subCmp = null;
 	protected String tagToCompare = null;
 
 	/**
@@ -45,7 +45,7 @@ public class TaggableComparator implements Comparator<Taggable> {
 	 *
 	 * @param subComparator the comparator used to compare the Tagged tags if this one thinks they are equal
 	 */
-	public TaggableComparator(Comparator subComparator) {
+	public TaggableComparator(Comparator<? super Taggable> subComparator) {
 		this("ejcTaggableComparator",subComparator);
 	}
 
@@ -55,7 +55,7 @@ public class TaggableComparator implements Comparator<Taggable> {
 	 * @param subComparator the comparator used to compare the Tagged tags if this one thinks they are equal
 	 * @param tag to compare the two Tagged objects
 	 */
-	public TaggableComparator(String tag,Comparator subComparator) {
+	public TaggableComparator(String tag, Comparator<? super Taggable> subComparator) {
 		subCmp = subComparator;
 		tagToCompare = tag;
 	}

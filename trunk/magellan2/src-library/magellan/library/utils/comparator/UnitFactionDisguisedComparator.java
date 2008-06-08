@@ -34,7 +34,7 @@ import magellan.library.Unit;
  * @author Ulrich Küster
  */
 public class UnitFactionDisguisedComparator implements Comparator<Unit> {
-	protected Comparator subCmp = null;
+	protected Comparator<? super Unit> subCmp = null;
 
 	/**
 	 * Creates a new UnitFactionDisguisedComparator object.
@@ -42,7 +42,7 @@ public class UnitFactionDisguisedComparator implements Comparator<Unit> {
 	 * @param subComparator if two units have the same faction-disguised-status, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public UnitFactionDisguisedComparator(Comparator subComparator) {
+	public UnitFactionDisguisedComparator(Comparator<? super Unit> subComparator) {
 		subCmp = subComparator;
 	}
 

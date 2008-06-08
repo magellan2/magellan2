@@ -22,12 +22,12 @@ import magellan.library.UnitContainer;
 /**
  * A comparator imposing a total ordering on unit containers based on their owner
  */
-public class UnitContainerOwnerComparator implements Comparator {
-    Comparator unitComparator;
+public class UnitContainerOwnerComparator implements Comparator<UnitContainer> {
+    Comparator<? super Unit> unitComparator;
     /**
 	 * Creates a new UnitContainerOwnerComparator object.
 	 */
-	public UnitContainerOwnerComparator(Comparator unitComparator) {
+	public UnitContainerOwnerComparator(Comparator<? super Unit> unitComparator) {
         this.unitComparator = unitComparator;
 	}
     
@@ -37,7 +37,7 @@ public class UnitContainerOwnerComparator implements Comparator {
 	 *
 	 * @return a container with an owner is less then a container without an owner.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(UnitContainer o1, UnitContainer o2) {
         UnitContainer c1 = (UnitContainer) o1;
         UnitContainer c2 = (UnitContainer) o2;
         

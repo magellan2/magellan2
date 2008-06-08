@@ -33,8 +33,8 @@ import magellan.library.rules.MessageType;
  * result of the sub-comparator's comparison is returned.
  * </p>
  */
-public class MessageTypeSectionComparator implements Comparator {
-	protected Comparator sameSectionSubCmp = null;
+public class MessageTypeSectionComparator implements Comparator<MessageType> {
+	protected Comparator<MessageType> sameSectionSubCmp = null;
 
 	/**
 	 * Creates a new MessageTypeSectionComparator object.
@@ -42,7 +42,7 @@ public class MessageTypeSectionComparator implements Comparator {
 	 * @param sameSectionSubComparator if two messages belonging to the same section are compared,
 	 * 		  this sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public MessageTypeSectionComparator(Comparator sameSectionSubComparator) {
+	public MessageTypeSectionComparator(Comparator<MessageType> sameSectionSubComparator) {
 		sameSectionSubCmp = sameSectionSubComparator;
 	}
 
@@ -56,9 +56,9 @@ public class MessageTypeSectionComparator implements Comparator {
 	 * 		   <tt>o2</tt>. If both belong to the same section and a sub-comparator was specified,
 	 * 		   the result that sub-comparator's comparison is returned.
 	 */
-	public int compare(Object o1, Object o2) {
-		String s1 = ((MessageType) o1).getSection();
-		String s2 = ((MessageType) o2).getSection();
+	public int compare(MessageType o1, MessageType o2) {
+		String s1 = o1.getSection();
+		String s2 = o2.getSection();
 
 		if(s1 == null) {
 			return (s2 == null) ? 0 : 1;

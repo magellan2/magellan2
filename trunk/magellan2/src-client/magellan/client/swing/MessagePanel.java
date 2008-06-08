@@ -56,7 +56,6 @@ import magellan.library.Island;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Ship;
-import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
@@ -693,7 +692,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
     // sort messages in the single categories
     // and add them as nodes
-    Comparator<Message> comp = new MessageTypeComparator<Unique>(IDComparator.DEFAULT);
+    Comparator<Message> comp = new MessageTypeComparator(IDComparator.DEFAULT);
 
     for(Iterator<String> iter = categories.keySet().iterator(); iter.hasNext();) {
       String category = iter.next();

@@ -15,14 +15,15 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
+import magellan.library.Island;
 import magellan.library.Unit;
 
 
 /**
  * A comparator imposing an ordering on Island objects
  */
-public class UnitIslandComparator implements Comparator {
-	protected Comparator subCmp = null;
+public class UnitIslandComparator implements Comparator<Island> {
+	protected Comparator<? super Island> subCmp = null;
 
 	/**
 	 * Creates a new UnitIslandComparator object.
@@ -30,7 +31,7 @@ public class UnitIslandComparator implements Comparator {
 	 * @param subComparator if two units belonging to the same faction are compared, this
 	 * 		  sub-comparator is applied if it is not<tt>null</tt>.
 	 */
-	public UnitIslandComparator(Comparator subComparator) {
+	public UnitIslandComparator(Comparator<? super Island> subComparator) {
 		subCmp = subComparator;
 	}
 
@@ -44,7 +45,7 @@ public class UnitIslandComparator implements Comparator {
 	 * 		   If both belong to the same faction and a sub-comparator was specified, the result
 	 * 		   that sub-comparator's comparison is returned.
 	 */
-	public int compare(Object o1, Object o2) {
+	public int compare(Island o1, Island o2) {
 		int ret = ((Unit) o1).compareTo(o2);
 
 		// if equality found, ask sub comparator

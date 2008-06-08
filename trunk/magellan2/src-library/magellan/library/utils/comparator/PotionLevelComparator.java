@@ -32,8 +32,8 @@ import magellan.library.Potion;
  * the sub-comparator's comparison is returned.
  * </p>
  */
-public class PotionLevelComparator<E> implements Comparator<Potion> {
-	private Comparator<E> sameLevelSubCmp = null;
+public class PotionLevelComparator implements Comparator<Potion> {
+	private Comparator<? super Potion> sameLevelSubCmp = null;
 
 	/**
 	 * Creates a new SpellLevelComparator object.
@@ -41,7 +41,7 @@ public class PotionLevelComparator<E> implements Comparator<Potion> {
 	 * @param sameLevelSubComparator if two spells with the same level are compared, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public PotionLevelComparator(Comparator<E> sameLevelSubComparator) {
+	public PotionLevelComparator(Comparator<? super Potion> sameLevelSubComparator) {
 		sameLevelSubCmp = sameLevelSubComparator;
 	}
 
@@ -60,7 +60,7 @@ public class PotionLevelComparator<E> implements Comparator<Potion> {
 		int l2 = o2.getLevel();
 
 		if((l1 == l2) && (sameLevelSubCmp != null)) {
-			return sameLevelSubCmp.compare((E)o1, (E)o2);
+			return sameLevelSubCmp.compare(o1, o2);
 		}
 
 		return l1 - l2;

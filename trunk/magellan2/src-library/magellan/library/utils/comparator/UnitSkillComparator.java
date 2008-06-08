@@ -33,9 +33,9 @@ import magellan.library.Unit;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class UnitSkillComparator<E> implements Comparator<Unit> {
-	private final Comparator skillsCmp;
-	private final Comparator subCmp;
+public class UnitSkillComparator implements Comparator<Unit> {
+	private final Comparator<? super Map<ID, Skill> > skillsCmp;
+	private final Comparator<? super Unit> subCmp;
 
 	/**
 	 * Creates a new UnitSkillComparator object.
@@ -44,7 +44,7 @@ public class UnitSkillComparator<E> implements Comparator<Unit> {
 	 * @param subComparator if two units do not possess skills or if the skills comparator regards
 	 * 		  them as equal, this sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public UnitSkillComparator(Comparator skillsComparator, Comparator subComparator) {
+	public UnitSkillComparator(Comparator<? super Map<ID, Skill> > skillsComparator, Comparator<? super Unit> subComparator) {
 		this.skillsCmp = skillsComparator;
 		this.subCmp = subComparator;
 	}

@@ -26,14 +26,12 @@ import javax.swing.tree.TreeNode;
 import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
-import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
-import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.io.cr.CRParser;
 import magellan.library.utils.MagellanFactory;
@@ -93,11 +91,11 @@ public class TreeHelper {
   public static final int TAGGABLE5 = 11;
 
   private static final Comparator<Named> nameComparator =
-      new NameComparator<Unique>(IDComparator.DEFAULT);
+      new NameComparator(IDComparator.DEFAULT);
   private static final Comparator<Building> buildingCmp =
-      new BuildingTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT));
+      new BuildingTypeComparator(new NameComparator(IDComparator.DEFAULT));
   private static final Comparator<Ship> shipComparator =
-    new ShipFactionComparator(new ShipTypeComparator(new NameComparator<Unique>(IDComparator.DEFAULT)));
+    new ShipFactionComparator(new ShipTypeComparator(new NameComparator(IDComparator.DEFAULT)));
   private static final Comparator<Unit> healthCmp = new UnitHealthComparator(null);
 
   // pavkovic 2004.01.04: we dont want to sort groups by group id but name;
@@ -105,18 +103,18 @@ public class TreeHelper {
   // (trustlevel, group) somehow uninteresting
   // Side effect: Groups are sorted by name
   private static final Comparator<Unit> groupCmp =
-      new UnitGroupComparator(new NameComparator<Unique>(null), null, null);
+      new UnitGroupComparator(new NameComparator(null), null, null);
 
   private static final Comparator<Unit> factionDisguisedCmp =
       new UnitFactionDisguisedComparator(null);
 
   private static final Comparator<Unit> combatCmp = new UnitCombatStatusComparator(null);
   private static final Comparator<Unit> factionCmp =
-      new UnitFactionComparator<Faction>(new FactionTrustComparator<Named>(NameComparator.DEFAULT),
+      new UnitFactionComparator(new FactionTrustComparator(NameComparator.DEFAULT),
           null);
   private static final Comparator<Unit> guiseFactionCmp =
-      new UnitFactionDisguisedComparator(new UnitGuiseFactionComparator<Faction>(
-          new FactionTrustComparator<Named>(NameComparator.DEFAULT), null));
+      new UnitFactionDisguisedComparator(new UnitGuiseFactionComparator(
+          new FactionTrustComparator(NameComparator.DEFAULT), null));
 
   private static final Comparator<Unit> trustlevelCmp = UnitTrustComparator.DEFAULT_COMPARATOR;
   private static final Comparator<Taggable> taggableCmp =
@@ -705,18 +703,18 @@ public class TreeHelper {
     return false; // default
   }
 
-  public static Comparator buildComparator(Comparator cmp, int[] treeStructure) {
+  public static Comparator buildComparator(Comparator<? super Unit> cmp, int[] treeStructure) {
     // now build the Comparator used for unit sorting
-    GroupingComparator comp = new GroupingComparator(cmp, null);
+    GroupingComparator<Unit> comp = new GroupingComparator<Unit>(cmp, null);
 
     for (int i = treeStructure.length - 1; i >= 0; i--) {
       switch (treeStructure[i]) {
       case TreeHelper.FACTION:
-        comp = new GroupingComparator(factionCmp, comp);
+        comp = new GroupingComparator<Unit>(factionCmp, comp);
         break;
 
       case TreeHelper.GUISE_FACTION:
-        comp = new GroupingComparator(guiseFactionCmp, comp);
+        comp = new GroupingComparator<Unit>(guiseFactionCmp, comp);
         break;
 
       case TreeHelper.GROUP:
@@ -726,39 +724,39 @@ public class TreeHelper {
         // if they are sorted by id this would make tree hierarchy
         // (trustlevel, group) somehow uninteresting
         // Side effect: Groups are sorted by name
-        comp = new GroupingComparator(groupCmp, comp);
+        comp = new GroupingComparator<Unit>(groupCmp, comp);
         break;
 
       case TreeHelper.COMBAT_STATUS:
-        comp = new GroupingComparator(combatCmp, comp);
+        comp = new GroupingComparator<Unit>(combatCmp, comp);
         break;
 
       case TreeHelper.HEALTH:
-        comp = new GroupingComparator(healthCmp, comp);
+        comp = new GroupingComparator<Unit>(healthCmp, comp);
         break;
 
       case TreeHelper.FACTION_DISGUISE_STATUS:
-        comp = new GroupingComparator(factionDisguisedCmp, comp);
+        comp = new GroupingComparator<Unit>(factionDisguisedCmp, comp);
         break;
 
       case TreeHelper.TRUSTLEVEL:
-        comp = new GroupingComparator(trustlevelCmp, comp);
+        comp = new GroupingComparator<Unit>(trustlevelCmp, comp);
         break;
 
       case TreeHelper.TAGGABLE:
-        comp = new GroupingComparator(taggableCmp, comp);
+        comp = new GroupingComparator<Unit>(taggableCmp, comp);
         break;
       case TreeHelper.TAGGABLE2:
-        comp = new GroupingComparator(taggableCmp2, comp);
+        comp = new GroupingComparator<Unit>(taggableCmp2, comp);
         break;
       case TreeHelper.TAGGABLE3:
-        comp = new GroupingComparator(taggableCmp3, comp);
+        comp = new GroupingComparator<Unit>(taggableCmp3, comp);
         break;
       case TreeHelper.TAGGABLE4:
-        comp = new GroupingComparator(taggableCmp4, comp);
+        comp = new GroupingComparator<Unit>(taggableCmp4, comp);
         break;
       case TreeHelper.TAGGABLE5:
-        comp = new GroupingComparator(taggableCmp5, comp);
+        comp = new GroupingComparator<Unit>(taggableCmp5, comp);
         break;
       }
     }

@@ -34,9 +34,9 @@ import magellan.library.Unit;
  * sub-comparator's comparison is returned.
  * </p>
  */
-public class UnitGuiseFactionComparator<E> implements Comparator<Unit> {
-	protected Comparator<Faction> factionCmp = null;
-	protected Comparator<E> sameFactionSubCmp = null;
+public class UnitGuiseFactionComparator implements Comparator<Unit> {
+	protected Comparator<? super Faction> factionCmp = null;
+	protected Comparator<? super Unit> sameFactionSubCmp = null;
 
 	/**
 	 * Creates a new UnitFactionComparator object.
@@ -45,7 +45,7 @@ public class UnitGuiseFactionComparator<E> implements Comparator<Unit> {
 	 * @param sameFactionSubComparator if two units belonging to the same faction are compared,
 	 * 		  this sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public UnitGuiseFactionComparator(Comparator<Faction> factionComparator, Comparator<E> sameFactionSubComparator) {
+	public UnitGuiseFactionComparator(Comparator<? super Faction> factionComparator, Comparator<? super Unit> sameFactionSubComparator) {
 		factionCmp = factionComparator;
 		sameFactionSubCmp = sameFactionSubComparator;
 	}
@@ -83,7 +83,7 @@ public class UnitGuiseFactionComparator<E> implements Comparator<Unit> {
 				retVal = factionCmp.compare(f1, f2);
 
 				if((retVal == 0) && (sameFactionSubCmp != null)) {
-					retVal = sameFactionSubCmp.compare((E)o1, (E)o2);
+					retVal = sameFactionSubCmp.compare(o1, o2);
 				}
 			}
 		}

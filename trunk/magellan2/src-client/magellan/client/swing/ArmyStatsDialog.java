@@ -56,7 +56,9 @@ import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
-import magellan.library.utils.comparator.SkillTypeComparator;
+import magellan.library.utils.comparator.IDComparator;
+import magellan.library.utils.comparator.NameComparator;
+import magellan.library.utils.comparator.SkillTypeRankComparator;
 
 
 /**
@@ -391,7 +393,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			JPanel sPanel = new JPanel(new GridLayout(0, 1));
 
 			if(l.size() > 0) {
-				Collections.sort(l, new SkillTypeComparator<String>(null,null));
+				Collections.sort(l, new SkillTypeRankComparator(new NameComparator(IDComparator.DEFAULT), settings));
 				skills = new JCheckBox[l.size()];
 				it1 = l.iterator();
 

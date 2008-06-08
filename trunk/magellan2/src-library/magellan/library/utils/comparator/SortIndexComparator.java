@@ -33,8 +33,8 @@ import magellan.library.utils.Sorted;
  * result of the sub-comparator's comparison is returned.
  * </p>
  */
-public class SortIndexComparator<E> implements Comparator<Sorted> {
-	protected Comparator<E> sameIndexSubCmp = null;
+public class SortIndexComparator<T extends Sorted> implements Comparator<T> {
+	protected Comparator<? super T> sameIndexSubCmp = null;
 
 	/**
 	 * Creates a new SortIndexComparator object.
@@ -42,7 +42,7 @@ public class SortIndexComparator<E> implements Comparator<Sorted> {
 	 * @param sameIndexSubComparator if two objects with the same sort index are compared, the
 	 * 		  given sub-comparator is applied (if not <tt>null</tt>).
 	 */
-	public SortIndexComparator(Comparator<E> sameIndexSubComparator) {
+	public SortIndexComparator(Comparator<? super T> sameIndexSubComparator) {
 		sameIndexSubCmp = sameIndexSubComparator;
 	}
 
@@ -53,12 +53,12 @@ public class SortIndexComparator<E> implements Comparator<Sorted> {
 	 * 		   sort indices are equal and a sub-comparator was specified, the result of that
 	 * 		   sub-comparator's comparison is returned.
 	 */
-	public int compare(Sorted o1, Sorted o2) {
+	public int compare(T o1, T o2) {
 		int s1 = o1.getSortIndex();
 		int s2 = o2.getSortIndex();
 
 		if((s1 == s2) && (sameIndexSubCmp != null)) {
-			return sameIndexSubCmp.compare((E)o1, (E)o2);
+			return sameIndexSubCmp.compare(o1, o2);
 		} else {
 			return s1 < s2 ? -1 : 1;
 		}

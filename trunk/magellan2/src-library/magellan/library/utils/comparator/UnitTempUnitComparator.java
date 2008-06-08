@@ -16,7 +16,6 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.TempUnit;
-import magellan.library.Unique;
 import magellan.library.Unit;
 
 
@@ -36,8 +35,8 @@ import magellan.library.Unit;
  * </p>
  */
 public class UnitTempUnitComparator implements Comparator<Unit> {
-	protected Comparator<Unique> sameParentSubCmp = null;
-	protected Comparator<Unique> unitSubCmp = null;
+	protected Comparator<? super Unit> sameParentSubCmp = null;
+	protected Comparator<? super Unit> unitSubCmp = null;
 
 	/**
 	 * Creates a new UnitTempUnitComparator object.
@@ -47,7 +46,7 @@ public class UnitTempUnitComparator implements Comparator<Unit> {
 	 * @param unitSubComparator if two units do not have the same parent unit and do not have a
 	 * 		  parent-child relation, this sub- comparator is applied if it is not <tt>null</tt>.
 	 */
-	public UnitTempUnitComparator(Comparator<Unique> sameParentSubComparator, Comparator<Unique> unitSubComparator) {
+	public UnitTempUnitComparator(Comparator<? super Unit> sameParentSubComparator, Comparator<? super Unit> unitSubComparator) {
 		this.sameParentSubCmp = sameParentSubComparator;
 		this.unitSubCmp = unitSubComparator;
 	}

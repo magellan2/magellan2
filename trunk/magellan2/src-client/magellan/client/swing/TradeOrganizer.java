@@ -62,7 +62,6 @@ import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Region;
 import magellan.library.StringID;
-import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.rules.ItemType;
@@ -685,7 +684,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			switch(i) {
 			case 0:
-				Collections.sort(tableRegions, new NameComparator<Unique>(null));
+				Collections.sort(tableRegions, new NameComparator(null));
 
 				break;
 
@@ -883,7 +882,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			switch(i) {
 			case 0:
-				Collections.sort(tableRegions, new NameComparator<Unique>(null));
+				Collections.sort(tableRegions, new NameComparator(null));
 
 				break;
 
@@ -1119,7 +1118,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			switch(i) {
 			case 0:
-				Collections.sort(tableRegions, new NameComparator<Unique>(null));
+				Collections.sort(tableRegions, new NameComparator(null));
 
 				break;
 

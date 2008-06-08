@@ -34,8 +34,8 @@ import magellan.library.Unit;
  * comparison is returned.
  * </p>
  */
-public class LinearUnitTempUnitComparator<E> implements Comparator<Unit> {
-	protected Comparator<E> subCmp = null;
+public class LinearUnitTempUnitComparator implements Comparator<Unit> {
+	protected Comparator<? super Unit> subCmp = null;
 
 	/**
 	 * Creates a new LinearUnitTempUnitComparator object.
@@ -43,7 +43,7 @@ public class LinearUnitTempUnitComparator<E> implements Comparator<Unit> {
 	 * @param unitSubComparator if two units are of the same type (standard or temp unit), this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public LinearUnitTempUnitComparator(Comparator<E> unitSubComparator) {
+	public LinearUnitTempUnitComparator(Comparator<? super Unit> unitSubComparator) {
 		this.subCmp = unitSubComparator;
 	}
 
@@ -62,14 +62,14 @@ public class LinearUnitTempUnitComparator<E> implements Comparator<Unit> {
 	 */
 	public int compare(Unit u1, Unit u2) {
 		if(u1 instanceof TempUnit && u2 instanceof TempUnit) {
-			return (this.subCmp != null) ? this.subCmp.compare((E)u1, (E)u2) : 0;
+			return (this.subCmp != null) ? this.subCmp.compare(u1, u2) : 0;
 		} else {
 			if(u1 instanceof TempUnit) {
 				return 1;
 			} else if(u2 instanceof TempUnit) {
 				return -1;
 			} else {
-				return (this.subCmp != null) ? this.subCmp.compare((E)u1, (E)u2) : 0;
+				return (this.subCmp != null) ? this.subCmp.compare(u1, u2) : 0;
 			}
 		}
 	}

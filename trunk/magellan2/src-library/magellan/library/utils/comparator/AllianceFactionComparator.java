@@ -16,21 +16,22 @@ package magellan.library.utils.comparator;
 import java.util.Comparator;
 
 import magellan.library.Alliance;
+import magellan.library.Faction;
 
 
 /**
  * A comparator imposing an ordering on <tt>Alliance</tt> objects by comparing the factions they
  * contain.
  */
-public class AllianceFactionComparator<E> implements Comparator<Alliance> {
-	protected Comparator<E> factionSubCmp = null;
+public class AllianceFactionComparator implements Comparator<Alliance> {
+	protected Comparator<? super Faction> factionSubCmp = null;
 
 	/**
 	 * Creates a new <tt>AllianceFactionComparator</tt> object.
 	 *
 	 * @param factionSubComparator is used to compare the factions of two alliance objects.
 	 */
-	public AllianceFactionComparator(Comparator<E> factionSubComparator) {
+	public AllianceFactionComparator(Comparator<? super Faction> factionSubComparator) {
 		factionSubCmp = factionSubComparator;
 	}
 
@@ -47,7 +48,7 @@ public class AllianceFactionComparator<E> implements Comparator<Alliance> {
 		if(a1 == null) {
 			return (a2 == null) ? 0 : 1;
 		} else {
-			return (a2 == null) ? (-1) : factionSubCmp.compare((E)a1.getFaction(), (E)a2.getFaction());
+			return (a2 == null) ? (-1) : factionSubCmp.compare(a1.getFaction(), a2.getFaction());
 		}
 	}
 }

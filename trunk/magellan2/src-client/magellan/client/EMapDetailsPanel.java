@@ -35,7 +35,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -46,6 +45,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.AbstractButton;
@@ -152,7 +152,6 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
-import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.comparator.AllianceFactionComparator;
@@ -161,11 +160,11 @@ import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
 import magellan.library.utils.comparator.PotionLevelComparator;
 import magellan.library.utils.comparator.SkillComparator;
-import magellan.library.utils.comparator.SkillTypeComparator;
-import magellan.library.utils.comparator.SkillTypeRankComparator;
+import magellan.library.utils.comparator.SkillRankComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
 import magellan.library.utils.comparator.SpecifiedSkillTypeSkillComparator;
 import magellan.library.utils.comparator.SpellLevelComparator;
+import magellan.library.utils.comparator.ToStringComparator;
 import magellan.library.utils.comparator.UnitSkillComparator;
 import magellan.library.utils.logging.Logger;
 
@@ -241,7 +240,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	// pre-initialize this comparator so it is not created over and
 	// over again when needed
-	private Comparator<Sorted> sortIndexComparator = new SortIndexComparator<Unique>(IDComparator.DEFAULT);
+	private Comparator<Unit> sortIndexComparator = new SortIndexComparator(IDComparator.DEFAULT);
 	private final ID ironID = StringID.create("Eisen");
 	private final ID laenID = StringID.create("Laen");
 	private final ID treesID = StringID.create("Baeume");
@@ -1128,12 +1127,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		expandableNodes.add(new NodeWrapper(terrainsNode, "EMapDetailsPanel.RegionTerrainsExpanded"));
 
 		List<UnitContainerType> sortedList1 = new LinkedList<UnitContainerType>(regions.keySet());
-		Collections.sort(sortedList1, new NameComparator<Unique>(IDComparator.DEFAULT));
+		Collections.sort(sortedList1, new NameComparator(IDComparator.DEFAULT));
 
 		for(ListIterator<UnitContainerType> iter = sortedList1.listIterator(); iter.hasNext();) {
 			UnitContainerType rType = iter.next();
 			List<Region> list = regions.get(rType);
-			Collections.sort(list, new NameComparator<Unique>(IDComparator.DEFAULT));
+			Collections.sort(list, new NameComparator(IDComparator.DEFAULT));
 
 			DefaultMutableTreeNode regionsNode = createSimpleNode(rType.getName() + ": " +
 																  list.size(),
@@ -1156,7 +1155,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// resources of the regions sorted by name,id of resource
 		DefaultMutableTreeNode resourcesNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources"));
 		List<ItemType> sortedList2 = new LinkedList<ItemType>(resources.keySet());
-		Collections.sort(sortedList2, new NameComparator<Unique>(IDComparator.DEFAULT));
+		Collections.sort(sortedList2, new NameComparator(IDComparator.DEFAULT));
 
 		for(ListIterator<ItemType> iter = sortedList2.listIterator(); iter.hasNext();) {
 			ItemType resType = iter.next();
@@ -1177,7 +1176,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// herbs of the regions sorted by name, id of herb
 		DefaultMutableTreeNode herbsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.herbs"));
 		List<ItemType> sortedList3 = new LinkedList<ItemType>(herbs.keySet());
-		Collections.sort(sortedList3, new NameComparator<Unique>(IDComparator.DEFAULT));
+		Collections.sort(sortedList3, new NameComparator(IDComparator.DEFAULT));
 
 		for(ListIterator<ItemType> iter = sortedList3.listIterator(); iter.hasNext();) {
 			ItemType herbType =  iter.next();
@@ -1188,7 +1187,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 			// m = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(herbType.getName() + ": " + i, herbType.getIconName()));
 			herbsNode.add(regionsNode);
-			Collections.sort(regionList, new NameComparator<Unique>(IDComparator.DEFAULT));
+			Collections.sort(regionList, new NameComparator(IDComparator.DEFAULT));
 
 			for(ListIterator<Region> iter2 = regionList.listIterator(); iter2.hasNext();) {
 				Region myRegion = iter2.next();
@@ -1661,8 +1660,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			List<SkillStatItem> sortedSkills = new LinkedList<SkillStatItem>(skills.values());
 			Collections.sort(sortedSkills, new SkillStatItemComparator());
 
-			for(Iterator iter = sortedSkills.iterator(); iter.hasNext();) {
-				SkillStatItem item = (SkillStatItem) iter.next();
+			for(Iterator<SkillStatItem> iter = sortedSkills.iterator(); iter.hasNext();) {
+				SkillStatItem item = iter.next();
 				DefaultMutableTreeNode skillNode = createSimpleNode(item.skill.getName() + " " +
 																	item.skill.getLevel() + ": " +
 																	item.unitCounter,
@@ -1745,7 +1744,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				parent.add(n);
 				expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
         
-        HashMap<String, List<Alliance>> alliances = new HashMap<String, List<Alliance>>();
+        Map<String, List<Alliance>> alliances = new TreeMap<String, List<Alliance>>();
         for (Alliance alliance : g.allies().values()) {
           String key = alliance.stateToString();
           if (alliances.containsKey(key)) {
@@ -1760,7 +1759,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 				for(String key : alliances.keySet()) {
           List<Alliance> alliance = alliances.get(key);
-          Collections.sort(alliance, new AllianceFactionComparator<Named>(new NameComparator<Unique>(IDComparator.DEFAULT)));
+          Collections.sort(alliance, new AllianceFactionComparator(new NameComparator(IDComparator.DEFAULT)));
           
 					DefaultMutableTreeNode m = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",new Object[]{key}));
           expandableNodes.add(new NodeWrapper(m, "EMapDetailsPanel.AlliancesExpandedFaction"));
@@ -1836,11 +1835,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					n.add(m);
 
 					Comparator<Unique> idCmp = IDComparator.DEFAULT;
-          NameComparator<Unique> nameComparator = new NameComparator<Unique>(null);
-          SkillTypeRankComparator<Named> skillTypeRankComparator = new SkillTypeRankComparator<Named>(nameComparator, settings);
-          SkillTypeComparator<SkillType> skillTypeComparator = new SkillTypeComparator<SkillType>(skillTypeRankComparator, null);
-          BestSkillComparator<SkillType> bestSkillComparator = new BestSkillComparator<SkillType>(SkillComparator.skillCmp,skillTypeComparator,SkillComparator.skillCmp);
-          Comparator<Unit> unitCmp = new UnitSkillComparator<Unit>(bestSkillComparator,idCmp);
+          ToStringComparator<Skill> nameComparator = new ToStringComparator<Skill>(null);
+          SkillRankComparator skillRankComparator = new SkillRankComparator(nameComparator, settings);
+//          SkillTypeComparator<Skill> skillTypeComparator = new SkillTypeComparator<Skill>(skillRankComparator, null);
+          BestSkillComparator bestSkillComparator = new BestSkillComparator(SkillComparator.skillCmp,skillRankComparator,SkillComparator.skillCmp);
+          Comparator<Unit> unitCmp = new UnitSkillComparator(bestSkillComparator,idCmp);
           /*
 					Comparator<Unit> unitCmp = new UnitSkillComparator(new BestSkillComparator<SkillType>(new SkillComparator(),
 																						 new SkillTypeComparator(new SkillTypeRankComparator<Named>(new NameComparator<Unique>(idCmp),settings), new SkillComparator()),
@@ -2865,7 +2864,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			expandableNodes.add(new NodeWrapper(spellsNode, "EMapDetailsPanel.UnitSpellsExpanded"));
 	
 			List<Spell> sortedSpells = new LinkedList<Spell>(u.getSpells().values());
-			Collections.sort(sortedSpells, new SpellLevelComparator<Named>(new NameComparator<Unique>(null)));
+			Collections.sort(sortedSpells, new SpellLevelComparator(new NameComparator(null)));
 	
 			for(Iterator iter = sortedSpells.iterator(); iter.hasNext();) {
 				Spell spell = (Spell) iter.next();
@@ -2905,7 +2904,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         DefaultMutableTreeNode potionsNode = createSimpleNode(Resources.get("emapdetailspanel.node.potions"), "Alchemie");
 				Skill alchSkill = u.getSkillMap().get(EresseaConstants.S_ALCHEMIE);
 				List<Potion> potions = new LinkedList<Potion>(data.potions().values());
-				Collections.sort(potions, new PotionLevelComparator<Named>(new NameComparator<Unique>(null)));
+				Collections.sort(potions, new PotionLevelComparator(new NameComparator(null)));
 				
 				// we have after merging multiple potion-definitions within the CR
 				// lets build a list of potions to show

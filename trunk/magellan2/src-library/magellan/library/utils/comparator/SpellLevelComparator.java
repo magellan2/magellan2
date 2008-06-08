@@ -32,8 +32,8 @@ import magellan.library.Spell;
  * the sub-comparator's comparison is returned.
  * </p>
  */
-public class SpellLevelComparator<E> implements Comparator<Spell> {
-	private Comparator<E> sameLevelSubCmp = null;
+public class SpellLevelComparator implements Comparator<Spell> {
+	private Comparator<? super Spell> sameLevelSubCmp = null;
 
 	/**
 	 * Creates a new SpellLevelComparator object.
@@ -41,7 +41,7 @@ public class SpellLevelComparator<E> implements Comparator<Spell> {
 	 * @param sameLevelSubComparator if two spells with the same level are compared, this
 	 * 		  sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public SpellLevelComparator(Comparator<E> sameLevelSubComparator) {
+	public SpellLevelComparator(Comparator<? super Spell> sameLevelSubComparator) {
 		sameLevelSubCmp = sameLevelSubComparator;
 	}
 
@@ -60,7 +60,7 @@ public class SpellLevelComparator<E> implements Comparator<Spell> {
 		int l2 = o2.getLevel();
 
 		if((l1 == l2) && (sameLevelSubCmp != null)) {
-			return sameLevelSubCmp.compare((E)o1, (E)o2);
+			return sameLevelSubCmp.compare(o1, o2);
 		}
 
 		return l1 - l2;

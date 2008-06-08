@@ -15,6 +15,7 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
+import magellan.library.Island;
 import magellan.library.Region;
 
 
@@ -34,9 +35,9 @@ import magellan.library.Region;
  * </p>
  */
 public class RegionIslandComparator implements Comparator<Region> {
-	protected Comparator islandCmp = null;
-	protected Comparator sameIslandSubCmp = null;
-	protected Comparator noIslandSubCmp = null;
+	protected Comparator<? super Island> islandCmp = null;
+	protected Comparator<? super Region> sameIslandSubCmp = null;
+	protected Comparator<? super Region> noIslandSubCmp = null;
 
 	/**
 	 * Creates a new RegionIslandComparator object.
@@ -48,8 +49,8 @@ public class RegionIslandComparator implements Comparator<Region> {
 	 * @param noIslandSubComparator if the compared regions both have island members that are null,
 	 * 		  this sub-comparator is applied if it is not <tt>null</tt>.
 	 */
-	public RegionIslandComparator(Comparator islandComparator, Comparator sameIslandSubComparator,
-								  Comparator noIslandSubComparator) {
+	public RegionIslandComparator(Comparator<? super Island> islandComparator, Comparator<? super Region> sameIslandSubComparator,
+								  Comparator<? super Region> noIslandSubComparator) {
 		islandCmp = islandComparator;
 		sameIslandSubCmp = sameIslandSubComparator;
 		noIslandSubCmp = noIslandSubComparator;

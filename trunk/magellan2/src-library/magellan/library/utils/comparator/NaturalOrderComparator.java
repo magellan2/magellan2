@@ -2,10 +2,17 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
-public class NaturalOrderComparator implements Comparator {
+/**
+ * Default Comparator for  Comparable objects
+ *
+ * @deprecated unnecessary?
+ */
+public class NaturalOrderComparator<T extends Comparable<T>> implements Comparator<T> {
 
-    public int compare(Object o1, Object o2) {
-        return ((Comparable) o1).compareTo((Comparable) o2);
+    private NaturalOrderComparator(){}
+  
+    public int compare(T o1, T o2) {
+        return o1.compareTo(o2);
     }
 
 }

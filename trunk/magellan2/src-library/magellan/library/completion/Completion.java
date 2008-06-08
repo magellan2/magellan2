@@ -17,10 +17,14 @@ package magellan.library.completion;
  * A class representing a possible completion of an incomplete order.
  */
 public class Completion {
+  
+  /** Field <code>DEFAULT_PRIORITY</code> The default priority value*/
+  public static final int DEFAULT_PRIORITY=9;
+  
 	private String name = null;
 	private String value = null;
 	private String postfix = null;
-	private int priority = 9;
+	private int priority = DEFAULT_PRIORITY;
 	private int cursorOffset = 0;
 
 	/**
@@ -29,7 +33,7 @@ public class Completion {
 	 * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
 	 */
 	public Completion(String text) {
-		this(text, text, "", 9, 0);
+		this(text, text, "", DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -51,7 +55,7 @@ public class Completion {
 	 *                for example, sorting
 	 */
 	public Completion(String name, String value, String postfix) {
-		this(name, value, postfix, 9, 0);
+		this(name, value, postfix, DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -62,7 +66,7 @@ public class Completion {
 	 *                for example, sorting
 	 */
 	public Completion(String text, String postfix) {
-		this(text, text, postfix, 9, 0);
+		this(text, text, postfix, DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -121,8 +125,7 @@ public class Completion {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the text that should be displayed to the user.
 	 * 
 	 */
 	public String getName() {
@@ -130,8 +133,7 @@ public class Completion {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the value that is inserted if this completion is chosen including postfix.
 	 * 
 	 */
 	public String getValue() {
@@ -139,8 +141,7 @@ public class Completion {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the sorting priority.
 	 * 
 	 */
 	public int getPriority() {
@@ -153,6 +154,7 @@ public class Completion {
 	}
 	*/
 	/**
+	 * Returns the text that should be inserted after the value.
 	 * 
 	 */
 	public String getPostfix() {
@@ -160,17 +162,14 @@ public class Completion {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Set the postfix text. 
 	 */
 	public void setPostfix(String postfix) {
 		this.postfix = postfix;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the value the cursor should be set back after insertion.
 	 * 
 	 */
 	public int getCursorOffset() {

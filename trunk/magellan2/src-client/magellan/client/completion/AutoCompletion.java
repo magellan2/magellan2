@@ -670,7 +670,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       char c = txt.charAt(i);
 
 //      if ((c == '"') || (c == '\'') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
-      if ((!Character.isWhitespace(c) && c!='\'' && c!='"')){ // || retVal.length()==0) {
+      if ((!Character.isWhitespace(c) && c!='\'' && c!='"') ) {
+//      if ((!Character.isWhitespace(c))) {
         retVal.append(c);
       } else {
         break;

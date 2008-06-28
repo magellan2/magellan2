@@ -397,11 +397,12 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           nonFound = true;
         } else {
           String ret = obj.toString();
-          // in case we have formatted strings
-          // ignore points
-          ret = ret.replace(".","");
-          // comma to points
-          ret = ret.replace(",",".");
+          // does not work for english locale...
+//          // in case we have formatted strings
+//          // ignore points
+//          ret = ret.replace(".","");
+//          // comma to points
+//          ret = ret.replace(",",".");
           
           try {
             curF = Float.parseFloat(ret);

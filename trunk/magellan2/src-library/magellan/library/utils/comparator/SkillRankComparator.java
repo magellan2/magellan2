@@ -23,7 +23,7 @@ import magellan.library.rules.SkillType;
 
 
 /**
- * A comparator imposing an ordering on SkillType or Skill objects by comparing their user
+ * A comparator imposing an ordering on Skill objects by comparing their user
  * modifiable ranking. (In case of skill objects the skill's type is compared).
  * 
  * <p>

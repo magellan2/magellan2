@@ -19,7 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
@@ -31,7 +30,6 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
 import magellan.library.CoordinateID;
-import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.io.file.FileType;

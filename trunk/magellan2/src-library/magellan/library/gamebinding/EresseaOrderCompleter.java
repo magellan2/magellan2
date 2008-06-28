@@ -2260,7 +2260,7 @@ public class EresseaOrderCompleter implements Completer {
 			char c = txt.charAt(i);
 
 //			if((c == '-') || (c == '_') || (c == '~') || (c == '.') || (Character.isLetterOrDigit(c) == true)) {
-      if ((!Character.isWhitespace(c) && c!='\'' && c!='"') ) {
+      if ((!Character.isWhitespace(c) && c!='\'' && c!='"' && c!='@') ) {
 //        if ((!Character.isWhitespace(c))) {
       				retVal.append(c);
 			} else {

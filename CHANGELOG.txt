@@ -1,3 +1,7 @@
+2008-06-28 / Build 213 - stm (stm_@users.sourceforge.net)
+	* fixed issue in ARR, see bug #283 and notes to build 146 below
+	* fixed issue with order completion of "@"
+	
 2008-06-08 / Build 212 - stm (stm_@users.sourceforge.net)
     * fixed #275 (visibility), #273 (runde of RESOURCE)
     * fixed #251

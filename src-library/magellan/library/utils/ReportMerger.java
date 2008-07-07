@@ -773,6 +773,15 @@ public class ReportMerger extends Object {
       bestTranslation = Collections.max(translationList);
 
       log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + " (best(maxScore):" + bestTranslation.toString()+")");
+      
+      // Fiete: just see the other translations...
+      log.info("DEBUG: all found translations:");
+      
+      for (Score<CoordinateID>myScore : translationList){
+        log.info(myScore.toString());
+      }
+      
+      
     } else {
       log.info("No translation in layer "+ layer+" found for " + newReport.getFile().getName());
     }

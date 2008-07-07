@@ -1143,7 +1143,17 @@ public abstract class GameData implements Cloneable {
           // destroyed
           // FIXME(pavkovic): shouldn't it be Region curRegion = b.getRegion();
           // ?
-          Region curRegion = newerGD.getRegion((CoordinateID) b.getRegion().getID());
+          // try to identify Bug #285,#287, here NPE
+          Region curRegion = null;
+          if (b.getRegion()!=null) {
+            if (b.getRegion().getID()!=null){
+              curRegion = newerGD.getRegion((CoordinateID) b.getRegion().getID());
+            } else {
+              log.errorOnce("Region without ID!");
+            }
+          } else {
+            log.errorOnce("Ship without Region!");
+          }
 
           if ((curRegion == null) || curRegion.units().isEmpty()) {
             try {

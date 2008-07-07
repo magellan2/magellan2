@@ -232,7 +232,11 @@ public class RegionResource implements Unique {
 //			if(curRes.getSkillLevel() != -1 && curRes.getAmount() != -1) {
 				newRes.setSkillLevel(curRes.getSkillLevel());
 				newRes.setAmount(curRes.getAmount());
-        newRes.setDate(curGD.getDate().getDate());
+        if (curRes.getDate()!=null){
+          newRes.setDate(curRes.getDate().getDate());
+        } else {
+          newRes.setDate(curGD.getDate().getDate());
+        }
 			}
 		}
 	}

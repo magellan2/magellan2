@@ -1,3 +1,7 @@
+2008-06-28 / Build 214 - Fiete (sf@fietefietz.de)
+	* fixed AstralMergeEvaluator (region.schems() )
+	* try to fix Bug #285,#287 mergeNPE when merging regions of buildings
+
 2008-06-28 / Build 213 - stm (stm_@users.sourceforge.net)
 	* fixed issue in ARR, see bug #283 and notes to build 146 below
 	* fixed issue with order completion of "@"

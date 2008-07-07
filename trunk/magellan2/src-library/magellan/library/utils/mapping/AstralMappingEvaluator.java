@@ -78,7 +78,7 @@ public class AstralMappingEvaluator extends MappingEvaluator {
         if ((sameRegion != null) && (sameRegion.getType() != null) && !(sameRegion.getType().equals(RegionType.unknown))) {
           if (region.getType().equals(sameRegion.getType())) {
             score += SCORE_TERRAIN;
-            if ((region.getType().equals(dustTerrain)) && (region.schemes() != null) && (sameRegion.schemes() != null)) {
+            if ((region.getType().equals(dustTerrain)) && (region.schemes() != null) && (region.schemes().size() > 0) && (sameRegion.schemes() != null) && (sameRegion.schemes().size()>0)) {
               // both regions have schemes - lets compare them
               if (equalSchemes(region.schemes(), sameRegion.schemes())) {
                 score += SCORE_SCHEME*region.schemes().size();

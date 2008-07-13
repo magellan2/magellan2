@@ -33,6 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
   private JButton homeButton = null;
   private JButton backwardButton = null;
   private JButton forwardButton = null;
+  private JButton browserButton = null;
   private JComboBox priorityBox = null;
   private JSplitPane splitPane = null;
   private GameData world = null;
@@ -163,6 +165,13 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     forwardButton.setActionCommand("button.forward");
     forwardButton.addActionListener(this);
     helpButtonPanel.add(forwardButton);
+    if (isBrowserAvailable()) {
+      browserButton = new JButton("Browser");
+      browserButton.setEnabled(true);
+      browserButton.setActionCommand("button.browse");
+      browserButton.addActionListener(this);
+      helpButtonPanel.add(browserButton);
+    }
     helpPanel.add(helpButtonPanel,BorderLayout.NORTH);
     
     splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, editor, helpPanel);
@@ -200,6 +209,15 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     executeButton.addActionListener(this);
     executeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
     buttonPanel.add(executeButton);
+
+    buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+    
+    JButton saveButton = new JButton(Resources.get("button.save"));
+    saveButton.setRequestFocusEnabled(false);
+    saveButton.setActionCommand("button.save");
+    saveButton.addActionListener(this);
+    saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+    buttonPanel.add(saveButton);
 
     buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
     
@@ -264,6 +282,20 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         commands.setLibrary(script); // reset to old script
       }
       
+    } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
+      Script newScript = (Script)script.clone();
+      newScript.setScript(scriptingArea.getText());
+
+      if (unit != null) {
+        commands.setCommands(unit,newScript);
+      } else if (container != null) {
+        commands.setCommands(container,newScript);
+      } else {
+        commands.setLibrary(newScript);
+      }
+      
+      commands.save();
+      
     } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
       // just do nothing
       updateWindowSettings();
@@ -291,6 +323,22 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         } catch (Exception exception) {}
         backwardButton.setEnabled(true);
         if (pos == history.size()-1) forwardButton.setEnabled(false);
+      }
+    } else if (e.getActionCommand().equalsIgnoreCase("button.browse")) {
+      try {
+        // Loads the new page represented by link clicked
+        URI uri = help.getPage().toURI();
+        
+        // only in Java6 available, so we try to load it.
+        // otherwise, we do nothing...
+        Class<?> c = Class.forName("java.awt.Desktop");
+        if (c != null) {
+          Object desktop = c.getMethod("getDesktop").invoke(null);
+          c.getMethod("browse", java.net.URI.class).invoke(desktop, uri);
+        }
+      }
+      catch (Exception exc) {
+        // we do nothing here...
       }
     }
   }
@@ -340,6 +388,20 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       }
       catch (Exception exc) {
       }
+    }
+  }
+  
+  public boolean isBrowserAvailable() {
+    try {
+      // only in Java6 available, so we try to load it.
+      // otherwise, we do nothing...
+      Class<?> c = Class.forName("java.awt.Desktop");
+      if (c != null) {
+        Object desktop = c.getMethod("getDesktop").invoke(null);
+      }
+      return true;
+    } catch (Exception exception) {
+      return false;
     }
   }
   

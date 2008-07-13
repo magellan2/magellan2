@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -70,6 +71,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   private Client client = null;
   private static JMenuItem executeMenu = null;
   private ExtendedCommands commands = null;
+  private ExtendedCommandsDock dock = null;
   
   /**
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
@@ -80,6 +82,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     Resources.getInstance().initialize(Client.getSettingsDirectory(),"extendedcommands_");
     this.client = client;
     this.commands = new ExtendedCommands(client);
+    this.dock = new ExtendedCommandsDock(client,commands);
     log.info(getName()+" initialized...(Client)");
   }
 
@@ -89,6 +92,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   public void init(GameData data) {
     // init the report
     log.info(getName()+" initialized...(GameData)");
+    dock.setWorld(data);
   }
 
   /**
@@ -273,8 +277,12 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
     
     // open a dialog for the commands...
-    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,container,script);
-    dialog.setVisible(true);
+//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,container,script);
+//    dialog.setVisible(true);
+    dock.setUnit(null);
+    dock.setContainer(container);
+    dock.setScript(script);
+    
   }
 
   /**
@@ -299,8 +307,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
     
     // open a dialog for the commands...
-    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
-    dialog.setVisible(true);
+//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
+//    dialog.setVisible(true);
+    dock.setUnit(unit);
+    dock.setContainer(null);
+    dock.setScript(script);
   }
 
   /**
@@ -328,8 +339,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     }
     
     // open a dialog for the commands...
-    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
-    dialog.setVisible(true);
+//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
+//    dialog.setVisible(true);
+    dock.setUnit(null);
+    dock.setContainer(null);
+    dock.setScript(script);
   }
 
   protected void clearCommands() {
@@ -378,7 +392,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * @see magellan.client.extern.MagellanPlugIn#getDocks()
    */
   public Map<String, Component> getDocks() {
-    return null;
+    Map<String, Component> docks = new HashMap<String, Component>();
+    docks.put("Extended Commands", dock);
+    return docks;
   }
 
 }

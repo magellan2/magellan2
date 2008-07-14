@@ -1,3 +1,6 @@
+2008-07-14 / Build 216 - Thoralf (thoralf@m84.de)
+    * debug dock implemented - useful for development
+
 2008-07-13 / Build 215 - Thoralf (thoralf@m84.de)
     * small text bugfixes
     * Extended Commands as Dock (first steps, evaluation of usage concept is necessary)

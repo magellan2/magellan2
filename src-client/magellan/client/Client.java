@@ -121,6 +121,7 @@ import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.preferences.ClientPreferences;
 import magellan.client.swing.ArmyStatsPanel;
 import magellan.client.swing.AskForPasswordDialog;
+import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MagellanLookAndFeel;
@@ -631,6 +632,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     
     taskPanel = new TaskTablePanel(getDispatcher(), getData(), getProperties());
     components.put(TaskTablePanel.IDENTIFIER, taskPanel);
+    
+    components.put(DebugDock.IDENTIFIER, DebugDock.getInstance());
 
 //    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
 //    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);

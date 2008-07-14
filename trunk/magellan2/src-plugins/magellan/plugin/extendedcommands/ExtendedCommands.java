@@ -36,6 +36,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import magellan.client.Client;
+import magellan.client.swing.DebugDock;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
@@ -322,6 +323,7 @@ public class ExtendedCommands {
       interpreter.set("world",world);
       interpreter.set("unit",unit);
       interpreter.set("helper", new ExtendedCommandsHelper(world,unit));
+      interpreter.set("log", DebugDock.getInstance());
       
       String script = "";
       if (getLibrary() != null) {
@@ -360,6 +362,7 @@ public class ExtendedCommands {
       interpreter.set("world",world);
       interpreter.set("container",container);
       interpreter.set("helper", new ExtendedCommandsHelper(world,container));
+      interpreter.set("log", DebugDock.getInstance());
       
       String script = "";
       if (getLibrary() != null) {
@@ -393,6 +396,7 @@ public class ExtendedCommands {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
       interpreter.set("helper", new ExtendedCommandsHelper(world));
+      interpreter.set("log", DebugDock.getInstance());
       interpreter.eval(getLibrary().getScript());
     } catch (EvalError error) {
       String message = error.getMessage();

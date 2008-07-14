@@ -88,35 +88,35 @@ public class DebugDock extends JPanel implements LogListener {
    * 
    */
   public void debug(String str) {
-    log(Logger.DEBUG,str,null);
+    log.debug(str);
   }
 
   /**
    * 
    */
   public void info(String str) {
-    log(Logger.INFO,str,null);
+    log.info(str);
   }
 
   /**
    * 
    */
   public void warn(String str) {
-    log(Logger.WARN,str,null);
+    log.warn(str);
   }
 
   /**
    * 
    */
   public void error(String str) {
-    log(Logger.ERROR,str,null);
+    log.error(str);
   }
   
   /**
    * 
    */
   public void fatal(String str) {
-    log(Logger.FATAL,str,null);
+    log.fatal(str);
   }
 
   /**

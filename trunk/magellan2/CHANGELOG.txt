@@ -1,3 +1,6 @@
+2008-07-16 / Build 216 - Thoralf (thoralf@m84.de)
+    * added some more icons and texts for Allanon specific stuff
+
 2008-07-14 / Build 216 - Thoralf (thoralf@m84.de)
     * debug dock implemented - useful for development
 

@@ -72,6 +72,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   private static JMenuItem executeMenu = null;
   private ExtendedCommands commands = null;
   private ExtendedCommandsDock dock = null;
+  private HelpDock help = null;
   
   /**
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.client.Client, java.util.Properties)
@@ -83,6 +84,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     this.client = client;
     this.commands = new ExtendedCommands(client);
     this.dock = new ExtendedCommandsDock(client,commands);
+    this.help = new HelpDock(client);
     log.info(getName()+" initialized...(Client)");
   }
 
@@ -393,7 +395,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public Map<String, Component> getDocks() {
     Map<String, Component> docks = new HashMap<String, Component>();
-    docks.put("Extended Commands", dock);
+    docks.put("ExtendedCommands", dock);
+    docks.put("ExtendedCommandsHelp", help);
     return docks;
   }
 

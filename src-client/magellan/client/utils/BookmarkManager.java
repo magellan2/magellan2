@@ -13,25 +13,14 @@
 
 package magellan.client.utils;
 
-import java.awt.Frame;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JDialog;
-import javax.swing.JList;
-import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.desktop.ShortcutListener;
@@ -44,11 +33,12 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * Manages setting an getting of Bookmarks. 
+ * - CTRL + F2 : place a bookmark on the current activeObject or removes it if already bookmarked 
+ * - F2 : go to next bookmark
+ * - Shift + F2 : go to prior bookmark
  *
- * @author Ulrich Küster Manages setting an getting of Bookmarks. - CTRL + F2 : place a bookmark on
- * 		   the current activeObject or removes it if already bookmarked - F2 : go to next bookmark
- * 		   - Shift + F2 : go to prior bookmark
+ * @author Ulrich Küster 
  */
 public class BookmarkManager implements ShortcutListener, SelectionListener, GameDataListener {
 	private EventDispatcher dispatcher;
@@ -56,18 +46,15 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	private Object activeObject = null;
 
 	// the list containing the bookmarked objects
-	private Vector<Object> bookmarks = new Vector<Object>();
+	private List<Object> bookmarks = new Vector<Object>();
 
 	// the number of the current bookmark
 	private int activeBookmark = 0;
 	private Properties settings;
-	private BookmarkDialog dialog;
+	private BookmarkDock dialog;
 
 	/**
 	 * Creates a new BookmarkManager object.
-	 *
-	 * 
-	 * 
 	 */
 	public BookmarkManager(EventDispatcher dispatcher, Properties settings) {
 		this.dispatcher = dispatcher;
@@ -78,11 +65,12 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.SHIFT_MASK));
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.CTRL_MASK));
 		DesktopEnvironment.registerShortcutListener(this);
+		
+		this.dialog = BookmarkDock.getInstance();
+		this.dialog.init(this,dispatcher,settings);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public Iterator<KeyStroke> getShortCuts() {
@@ -90,8 +78,6 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void shortCut(KeyStroke shortCut) {
@@ -107,8 +93,6 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	/**
 	 * Bookmarks the given Object o, if it has not already been bookmarked. In this case o is
 	 * deleted from the bookmark list.
-	 *
-	 * 
 	 */
 	public void toggleBookmark(Object o) {
 		if(o != null) {
@@ -138,8 +122,6 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	/**
 	 * Differs from toggleBookmark in that way that it guarantees, that o is in the bookmark list
 	 * after the call
-	 *
-	 * 
 	 */
 	public void addBookmark(Object o) {
 		if(bookmarks.contains(o)) {
@@ -217,17 +199,13 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
-	public List getBookmarks() {
+	public List<Object> getBookmarks() {
 		return bookmarks;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent se) {
@@ -237,8 +215,6 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void gameDataChanged(GameDataEvent ge) {
@@ -252,10 +228,6 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public java.lang.String getShortcutDescription(java.lang.Object obj) {
@@ -265,141 +237,72 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public java.lang.String getListenerDescription() {
 		return Resources.get("util.bookmarkmanager.shortcuts.title");
 	}
-
+	
 	/**
-	 * displays a dialog with the bookmarks
-	 *
 	 * 
 	 */
-	public void showDialog(Frame owner) {
-		if(dialog != null) {
-			dialog.quit();
-		}
-
-		dialog = new BookmarkDialog(owner);
-		dialog.setVisible(true);
+	public Object getActiveObject() {
+	  return activeObject;
 	}
 
-	/**
-	 * A little dialog showing the bookmarks
-	 */
-	private class BookmarkDialog extends JDialog implements SelectionListener {
-		private JList list;
+  /**
+   * Returns the value of activeBookmark.
+   * 
+   * @return Returns activeBookmark.
+   */
+  public int getActiveBookmark() {
+    return activeBookmark;
+  }
 
-		/**
-		 * Creates a new BookmarkDialog object.
-		 *
-		 * 
-		 */
-		public BookmarkDialog(Frame owner) {
-			super(owner, Resources.get("util.bookmarkmanager.bookmarkdialog.caption"), false);
-			dispatcher.addSelectionListener(this);
+  /**
+   * Sets the value of activeBookmark.
+   *
+   * @param activeBookmark The value for activeBookmark.
+   */
+  public void setActiveBookmark(int activeBookmark) {
+    this.activeBookmark = activeBookmark;
+  }
 
-			this.addWindowListener(new WindowAdapter() {
-					public void windowClosing(WindowEvent e) {
-						quit();
-					}
-				});
+  /**
+   * Returns the value of dialog.
+   * 
+   * @return Returns dialog.
+   */
+  public BookmarkDock getDialog() {
+    return dialog;
+  }
 
-			int width = Integer.parseInt(settings.getProperty("BookmarkManager.DialogWidth", "300"));
-			int height = Integer.parseInt(settings.getProperty("BookmarkManager.DialogHeight", "500"));
-			setSize(width, height);
+  /**
+   * Sets the value of dialog.
+   *
+   * @param dialog The value for dialog.
+   */
+  public void setDialog(BookmarkDock dialog) {
+    this.dialog = dialog;
+  }
 
-			int xPos = Integer.parseInt(settings.getProperty("BookmarkManager.DialogXPos", "400"));
-			int yPos = Integer.parseInt(settings.getProperty("BookmarkManager.DialogYPos", "200"));
-			setLocation(xPos, yPos);
-			list = new JList();
-			updateData();
-			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			list.addListSelectionListener(new ListSelectionListener() {
-					public void valueChanged(ListSelectionEvent e) {
-						if(!e.getValueIsAdjusting()) {
-							Object selectedValue = list.getSelectedValue();
+  /**
+   * Sets the value of activeObject.
+   *
+   * @param activeObject The value for activeObject.
+   */
+  public void setActiveObject(Object activeObject) {
+    this.activeObject = activeObject;
+  }
 
-							if((selectedValue != null) && (selectedValue != activeObject)) {
-								dispatcher.fire(new SelectionEvent<Object>(this, null, selectedValue));
-							}
-						}
-					}
-				});
-			list.addKeyListener(new KeyAdapter() {
-					public void keyReleased(KeyEvent e) {
-						if(e.getKeyCode() == KeyEvent.VK_F2) {
-							if(e.getModifiers() == KeyEvent.CTRL_MASK) {
-								BookmarkManager.this.toggleBookmark();
-							} else if(e.getModifiers() == 0) {
-								BookmarkManager.this.jumpForward();
-							} else if(e.getModifiers() == KeyEvent.SHIFT_MASK) {
-								BookmarkManager.this.jumpBackward();
-							}
-						} else if(e.getKeyCode() == KeyEvent.VK_DELETE) {
-							BookmarkManager.this.toggleBookmark();
-						}
-					}
-				});
-			getContentPane().add(new JScrollPane(list));
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 */
-		public void updateData() {
-			DefaultListModel model = new DefaultListModel();
-
-			for(Iterator iter = bookmarks.listIterator(); iter.hasNext();) {
-				model.addElement(iter.next());
-			}
-
-			list.setModel(model);
-			list.setSelectedValue(activeObject, true);
-			list.revalidate();
-			list.repaint();
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void setSelectedObject(Object o) {
-			list.setSelectedValue(o, true);
-			list.repaint();
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void selectionChanged(SelectionEvent se) {
-			Object o = se.getActiveObject();
-
-			if(o != null) {
-				if(bookmarks.contains(o)) {
-					list.setSelectedValue(o, true);
-					activeBookmark = ((DefaultListModel) list.getModel()).indexOf(o);
-				} else {
-					list.clearSelection();
-				}
-			}
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 */
-		public void quit() {
-			settings.put("BookmarkManager.DialogWidth", String.valueOf(this.getWidth()));
-			settings.put("BookmarkManager.DialogHeight", String.valueOf(this.getHeight()));
-			settings.put("BookmarkManager.DialogXPos", String.valueOf(this.getX()));
-			settings.put("BookmarkManager.DialogYPos", String.valueOf(this.getY()));
-			dispose();
-		}
-	}
+  /**
+   * Sets the value of bookmarks.
+   *
+   * @param bookmarks The value for bookmarks.
+   */
+  public void setBookmarks(List<Object> bookmarks) {
+    this.bookmarks = bookmarks;
+  }
+	
+	
 }

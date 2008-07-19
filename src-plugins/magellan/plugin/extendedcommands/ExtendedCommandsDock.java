@@ -26,6 +26,8 @@ package magellan.plugin.extendedcommands;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URL;
@@ -40,8 +42,17 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
+import javax.swing.text.JTextComponent;
+
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.DockingWindowListener;
+import net.infonode.docking.OperationAbortedException;
+import net.infonode.docking.View;
 
 import magellan.client.Client;
+import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -56,7 +67,8 @@ import magellan.library.utils.Resources;
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
-public class ExtendedCommandsDock extends JPanel implements ActionListener {
+public class ExtendedCommandsDock extends JPanel implements ActionListener, CaretListener, DockingWindowListener {
+  public static final String IDENTIFIER = "ExtendedCommands";
   private Client client = null;
   private BeanShellEditor scriptingArea = null;
   private JComboBox priorityBox = null;
@@ -64,10 +76,12 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener {
   private Unit unit = null;
   private UnitContainer container = null;
   private JLabel elementBox = null;
+  private JLabel positionBox = null;
   private ExtendedCommands commands = null;
   private Script script = null;
   private List<URL> history = new ArrayList<URL>();
   private int pos = 0;
+  private boolean visible = false;
   
   public ExtendedCommandsDock(Client client, ExtendedCommands commands) {
     this.client = client;
@@ -83,6 +97,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener {
     editor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     
     scriptingArea = new BeanShellEditor();
+    scriptingArea.addCaretListener(this);
     editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
     
     add(editor,BorderLayout.CENTER);
@@ -90,16 +105,23 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener {
     JPanel north = new JPanel();
     north.setLayout(new BoxLayout(north, BoxLayout.X_AXIS));
     north.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    north.add(Box.createHorizontalGlue());
     
     JLabel label = new JLabel(Resources.get("extended_commands.element.caption"));
     north.add(label);
     
     north.add(Box.createRigidArea(new Dimension(5, 0)));
     elementBox = new JLabel();
+    elementBox.setFont(elementBox.getFont().deriveFont(Font.BOLD));
     north.add(elementBox);
     
     north.add(Box.createHorizontalGlue());
+
+    label = new JLabel(Resources.get("extended_commands.position.caption"));
+    north.add(label);
+    north.add(Box.createRigidArea(new Dimension(5, 0)));
+    
+    positionBox = new JLabel("0,0");
+    north.add(positionBox);
     
     add(north,BorderLayout.NORTH);
     
@@ -308,6 +330,137 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener {
       elementBox.setText(Resources.get("extended_commands.element.container",container.getName(),container.getID()));
     } else {
       elementBox.setText(Resources.get("extended_commands.element.library"));
+    }
+    
+    // Visibility
+    if (!visible) MagellanDesktop.getInstance().setVisible(IDENTIFIER, true);
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View, net.infonode.docking.View)
+   */
+  public void viewFocusChanged(View previouslyFocusedView, View focusedView) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   */
+  public void windowAdded(DockingWindow addedToWindow, DockingWindow addedWindow) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowClosed(net.infonode.docking.DockingWindow)
+   */
+  public void windowClosed(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowClosing(net.infonode.docking.DockingWindow)
+   */
+  public void windowClosing(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowDocked(net.infonode.docking.DockingWindow)
+   */
+  public void windowDocked(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowDocking(net.infonode.docking.DockingWindow)
+   */
+  public void windowDocking(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
+   */
+  public void windowHidden(DockingWindow window) {
+    this.visible = false;
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMaximized(net.infonode.docking.DockingWindow)
+   */
+  public void windowMaximized(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMaximizing(net.infonode.docking.DockingWindow)
+   */
+  public void windowMaximizing(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMinimized(net.infonode.docking.DockingWindow)
+   */
+  public void windowMinimized(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowMinimizing(net.infonode.docking.DockingWindow)
+   */
+  public void windowMinimizing(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow, net.infonode.docking.DockingWindow)
+   */
+  public void windowRemoved(DockingWindow removedFromWindow, DockingWindow removedWindow) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRestored(net.infonode.docking.DockingWindow)
+   */
+  public void windowRestored(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowRestoring(net.infonode.docking.DockingWindow)
+   */
+  public void windowRestoring(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
+   */
+  public void windowShown(DockingWindow window) {
+    this.visible = true;
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowUndocked(net.infonode.docking.DockingWindow)
+   */
+  public void windowUndocked(DockingWindow window) {
+  }
+
+  /**
+   * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
+   */
+  public void windowUndocking(DockingWindow window) throws OperationAbortedException {
+  }
+
+  /**
+   * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
+   */
+  public void caretUpdate(CaretEvent e) {
+    if (positionBox != null && scriptingArea != null) {
+      int pos = e.getDot();
+      String text = scriptingArea.getText();
+      int row = 1;
+      int col = 1;
+      for (int i=0; i<text.length(); i++) {
+        if (i==pos) break;
+        char c = text.charAt(i);
+        if (c == '\n') {
+          row++;
+          col = 1;
+        } else {
+          col++;
+        }
+      }
+      
+      positionBox.setText(row+","+col);
     }
   }
   

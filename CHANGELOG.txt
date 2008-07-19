@@ -1,3 +1,13 @@
+2008-07-19 / Build 217 - Thoralf (thoralf@m84.de)
+    * ExtCmds opens automatically the editor dock, if it isn'nt visible.
+    * added messages for extcmds help dock title
+    * added helper.getUnit() function (#250)
+    * added menu for executing all commands in a unit container (#189)
+    * added position indicator for the caret in the extcmds Editor (#224)
+    * the debug dock blocked the default log listener (which prints to the error.txt)
+    * Bookmark list is now a docking window (#81)
+    * added check for JAVA_HOME in magellan.bat (bug #236)
+
 2008-07-17 / Build 216 - Thoralf (thoralf@m84.de)
     * added help dock for Extended Commands 
     

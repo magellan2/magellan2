@@ -53,6 +53,8 @@ import magellan.library.utils.Resources;
  * @version 1.0, 11.09.2007
  */
 public class HelpDock extends JPanel implements ActionListener, HyperlinkListener {
+  public static final String IDENTIFIER = "ExtendedCommandsHelp";
+
   private Client client = null;
   private JEditorPane help = null;
   private JButton homeButton = null;

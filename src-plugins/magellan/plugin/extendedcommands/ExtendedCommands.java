@@ -28,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
@@ -101,6 +102,26 @@ public class ExtendedCommands {
     if (container == null) return false;
     if (container.getID() == null) return false;
     return unitContainerCommands.containsKey(container.getID().toString());
+  }
+  
+  /**
+   * Returns true if there is a command for the given unitcontainer.
+   */
+  public boolean hasAllCommands(GameData world, UnitContainer container) {
+    if (!hasCommands()) return false;
+    if (container == null) return false;
+    if (container.getID() == null) return false;
+    boolean ok = unitContainerCommands.containsKey(container.getID().toString());
+    
+    Collection<Unit> units = container.units();
+    if (units != null && units.size()>0) {
+      for (Unit unit : units) {
+        ok = ok || hasCommands(unit);
+        if (ok) break;
+      }
+    }
+    
+    return ok;
   }
   
   /**

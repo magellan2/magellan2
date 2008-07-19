@@ -139,7 +139,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * Stores the root component of the splitted desktop. So the desktop can be saved even if a
    * mode-changed occured.
    */
-  private JComponent splitRoot;
+  private RootWindow splitRoot;
 
   /** Holds the client frame. This is for (de)iconification compares. */
   private Client client;
@@ -862,9 +862,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     
     try {
       splitRoot = dockingFrameworkBuilder.buildDesktop(splitSets.get(setName), components, new File(magellanDir,DOCKING_LAYOUT_FILE));
-      if (splitRoot != null && splitRoot instanceof RootWindow) {
-        ((RootWindow)splitRoot).addListener(this);
-      }
+      if (splitRoot != null) splitRoot.addListener(this);
     } catch(Exception exc) {
       log.error(exc);
       return false;
@@ -1276,7 +1274,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    * @param name
    */
-  private void restoreView(String name) {
+  public void restoreView(String name) {
     View view = dockingFrameworkBuilder.getViewMap().getView(name);
     if (view != null) {
       view.restore();
@@ -2280,6 +2278,25 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     }
   }
 
+  /**
+   * Opens or closes a specific dock.
+   */
+  public void setVisible(String componentName, boolean setVisible) {
+    if (splitRoot != null) {
+      dockingFrameworkBuilder.setVisible(splitRoot, componentName, setVisible);
+      
+      if (desktopMenu != null) {
+        for (int index=0; index<desktopMenu.getItemCount(); index++) {
+          if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
+            JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
+            if (menu.getActionCommand().equals("menu."+componentName)) {
+              menu.setSelected(setVisible);
+            }
+          }
+        }
+      }
+    }
+  }
 
 
   /**

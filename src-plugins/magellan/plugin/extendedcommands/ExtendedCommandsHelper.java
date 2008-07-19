@@ -419,4 +419,11 @@ public class ExtendedCommandsHelper {
     }
     return order;
   }
+  
+  /**
+   * Returns the unit object of the given unit with the given id.
+   */
+  public Unit getUnit(String unitId) {
+    return world.getUnit(UnitID.createUnitID(unitId, world.base));
+  }
 }

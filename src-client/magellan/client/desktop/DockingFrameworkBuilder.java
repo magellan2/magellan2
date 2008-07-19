@@ -28,7 +28,6 @@ import java.util.Properties;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComponent;
 import javax.swing.JMenu;
 
 import magellan.client.Client;
@@ -94,7 +93,7 @@ public class DockingFrameworkBuilder  {
 	 * This method builds the desktop. This is the main component inside Magellan
    * It contains a IDF RootWindow with multiple Docks.
 	 */
-	public JComponent buildDesktop(FrameTreeNode root, Map<String,Component> components, File serializedView) {
+	public RootWindow buildDesktop(FrameTreeNode root, Map<String,Component> components, File serializedView) {
 		componentsUsed.clear();
     for (Component component : components.values()) {
       componentsUsed.add(component);
@@ -107,7 +106,7 @@ public class DockingFrameworkBuilder  {
   /**
    * This method tries to setup the infonode docking framework.
    */
-  protected JComponent createRootWindow(Map<String,Component> components, File serializedViewData) {
+  protected RootWindow createRootWindow(Map<String,Component> components, File serializedViewData) {
     views = new HashMap<String,View>();
     viewMap = new StringViewMap();
 
@@ -466,5 +465,22 @@ public class DockingFrameworkBuilder  {
    */
   public void setProperties(Properties settings) {
     this.settings = settings;
+  }
+  
+  /**
+   * Opens or closes a specific dock.
+   */
+  public void setVisible(RootWindow window, String componentName, boolean setVisible) {
+    if (views != null && views.containsKey(componentName)) {
+      View view = views.get(componentName);
+      if (view != null) {
+        if (setVisible) {
+          view.restore();
+          view.makeVisible();
+        } else {
+          view.close();
+        }
+      }
+    }
   }
 }

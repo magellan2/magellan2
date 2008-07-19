@@ -209,6 +209,15 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     });
     executeMenu.setEnabled(commands.hasCommands(container));
     menu.add(executeMenu);
+
+    JMenuItem executeAllMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.executeall.title", new Object[]{container.getName(),container.getID().toString()})); 
+    executeAllMenu.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        executeAllCommands(data,container);
+      }
+    });
+    executeAllMenu.setEnabled(commands.hasAllCommands(data,container));
+    menu.add(executeAllMenu);
     
     return menu;
   }
@@ -362,8 +371,33 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   protected void executeCommands(GameData data, UnitContainer container) {
     log.info("Execute Command for UnitContainer "+container);
     
-    // find the commands for this unit.
+    // execute the commands for this container.
     commands.execute(data, container);
+    
+    container.getCache().orderEditor.reloadOrders();
+    
+  }
+  
+  /**
+   * Executes the commands for a given unitcontainer.
+   */
+  protected void executeAllCommands(GameData data, UnitContainer container) {
+    log.info("Execute Command for UnitContainer "+container);
+    
+    // execute the commands for this unit.
+    if (commands.hasCommands(container)) commands.execute(data, container);
+    
+    Collection<Unit> units = container.units();
+    if (units != null && units.size()>0) {
+      for (Unit unit : units) {
+        if (commands.hasCommands(unit)) {
+          // execute the commands for this unit.
+          log.info("Execute Command for Unit "+unit);
+          commands.execute(data, unit);
+        }
+      }
+    }
+
     
     container.getCache().orderEditor.reloadOrders();
     
@@ -375,7 +409,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   protected void executeCommands(GameData data, Unit unit) {
     log.info("Execute Command for Unit "+unit);
     
-    // find the commands for this unit.
+    // execute the commands for this unit.
     commands.execute(data, unit);
     
     unit.getCache().orderEditor.reloadOrders();
@@ -395,8 +429,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public Map<String, Component> getDocks() {
     Map<String, Component> docks = new HashMap<String, Component>();
-    docks.put("ExtendedCommands", dock);
-    docks.put("ExtendedCommandsHelp", help);
+    docks.put(ExtendedCommandsDock.IDENTIFIER, dock);
+    docks.put(HelpDock.IDENTIFIER, help);
     return docks;
   }
 

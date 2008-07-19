@@ -138,6 +138,7 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tasks.TaskTablePanel;
 import magellan.client.swing.tree.NodeWrapperFactory;
+import magellan.client.utils.BookmarkDock;
 import magellan.client.utils.BookmarkManager;
 import magellan.client.utils.ErrorWindow;
 import magellan.client.utils.FileHistory;
@@ -634,6 +635,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     components.put(TaskTablePanel.IDENTIFIER, taskPanel);
     
     components.put(DebugDock.IDENTIFIER, DebugDock.getInstance());
+    components.put(BookmarkDock.IDENTIFIER, BookmarkDock.getInstance());
 
 //    armyStatsPanel = new ArmyStatsPanel(getDispatcher(), getData(), getProperties(), true);
 //    components.put(ArmyStatsPanel.IDENTIFIER, armyStatsPanel);
@@ -865,15 +867,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     });
     bookmarks.add(backward);
-
-    JMenuItem show = new JMenuItem(Resources.get("client.menu.bookmarks.show.caption"));
-    show.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.ALT_MASK));
-    show.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        bookmarkManager.showDialog(Client.this);
-      }
-    });
-    bookmarks.add(show);
 
     JMenuItem clear = new JMenuItem(Resources.get("client.menu.bookmarks.clear.caption"));
     clear.addActionListener(new ActionListener() {

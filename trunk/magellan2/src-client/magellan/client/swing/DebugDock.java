@@ -57,6 +57,7 @@ public class DebugDock extends JPanel implements LogListener {
   
   protected DebugDock() {
     Logger.addLogListener(this);
+    Logger.activateDefaultLogListener(true);
     init();
   }
   

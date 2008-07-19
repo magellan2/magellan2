@@ -218,4 +218,5 @@ public interface UnitContainer extends Related, Sorted, Taggable {
    * @param cache The value for cache.
    */
   public void setCache(Cache cache);
+  
 }

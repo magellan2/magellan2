@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import magellan.library.utils.Utils;
@@ -65,6 +64,8 @@ public class Logger {
   private static Set<Object> onceWarnings = null;
   private static Set<Object> onceErrors = null;
   
+  private static boolean activateDefaultLogListener = false;
+
   
 	private Logger(String aBase) {
 		// be fail-fast
@@ -192,12 +193,18 @@ public class Logger {
 			if(logListeners.isEmpty()) {
 				DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
 			} else {
-				for(Iterator<LogListener> iter = logListeners.iterator(); iter.hasNext(); ) {
-					LogListener l = iter.next();
+				for(LogListener l : logListeners ) {
 					l.log(aLevel, aObj, aThrowable);
+				}
+				if (Logger.activateDefaultLogListener) {
+				  DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
 				}
 			}
 		}
+	}
+	
+	public static void activateDefaultLogListener(boolean activate) {
+	  activateDefaultLogListener = activate;
 	}
 
 	/**

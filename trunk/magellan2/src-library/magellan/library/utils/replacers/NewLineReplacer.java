@@ -33,7 +33,7 @@ public class NewLineReplacer implements Replacer {
 	 * 
 	 */
 	public Object getReplacement(Object o) {
-		return NEWLINE;
+		return NewLineReplacer.NEWLINE;
 	}
 
 	/**

@@ -44,7 +44,7 @@ public class PipeFileType extends FileType {
   
   private PipedOutputStream outputStream;
   private PipedInputStream inputStream;
-  private final int serial = SERIAL++;
+  private final int serial = PipeFileType.SERIAL++;
 
   public PipeFileType() throws IOException {
     super(new File(""), false);

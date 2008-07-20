@@ -158,7 +158,8 @@ public class RegionResource implements Unique {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return type.toString();
 	}
 
@@ -178,7 +179,8 @@ public class RegionResource implements Unique {
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			// pavkovic 2003.01.16: even if the id seems to be unique 
 			// use the item type for uniqueness
@@ -195,7 +197,8 @@ public class RegionResource implements Unique {
 	 *
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		// pavkovic 2003.01.16: even if the id seems to be unique 
 		// use the item type for uniqueness
 		return this.getType().getID().hashCode();

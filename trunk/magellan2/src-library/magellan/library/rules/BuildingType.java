@@ -64,8 +64,9 @@ public class BuildingType extends UnitContainerType {
 	 * 
 	 */
 	public Collection<Item> getRawMaterials() {
-    if (rawMaterials != null && rawMaterials.values() != null) 
+    if (rawMaterials != null && rawMaterials.values() != null) {
       return Collections.unmodifiableCollection(rawMaterials.values());
+    }
 		return Collections.emptyList();
 	}
 
@@ -78,7 +79,7 @@ public class BuildingType extends UnitContainerType {
 	 */
 	public Item getRawMaterial(ID id) {
 		if(rawMaterials != null) {
-			return (Item) rawMaterials.get(id);
+			return rawMaterials.get(id);
 		} else {
 			return null;
 		}
@@ -103,8 +104,9 @@ public class BuildingType extends UnitContainerType {
 	 * 
 	 */
 	public Collection<Item> getMaintenanceItems() {
-    if (maintenance != null && maintenance.values() != null) 
+    if (maintenance != null && maintenance.values() != null) {
       return Collections.unmodifiableCollection(maintenance.values());
+    }
     return Collections.emptyList();
 	}
 
@@ -117,7 +119,7 @@ public class BuildingType extends UnitContainerType {
 	 */
 	public Item getMaintenance(ID id) {
 		if(maintenance != null) {
-			return (Item) maintenance.get(id);
+			return maintenance.get(id);
 		} else {
 			return null;
 		}
@@ -170,7 +172,7 @@ public class BuildingType extends UnitContainerType {
 		int bonus = 0;
 
 		if(skillBonuses != null) {
-			Integer i = (Integer) skillBonuses.get(skillType.getID());
+			Integer i = skillBonuses.get(skillType.getID());
 
 			if(i != null) {
 				bonus = i.intValue();
@@ -224,8 +226,9 @@ public class BuildingType extends UnitContainerType {
 	 * 
 	 */
 	public Collection<RegionType> regionTypes() {
-    if (regionTypes != null && regionTypes.values() != null) 
+    if (regionTypes != null && regionTypes.values() != null) {
       return Collections.unmodifiableCollection(regionTypes.values());
+    }
     return Collections.emptyList();
 	}
 }

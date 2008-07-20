@@ -152,6 +152,7 @@ public class FileType {
    *
    * @return a String representation of the FileType.
    */
+  @Override
   public String toString() {
     if(getInnerName() == null) {
       return getName();
@@ -201,11 +202,12 @@ public class FileType {
     
     if(createBackup && filename.exists() && filename.canWrite()) {
       File backup = FileBackup.create(filename,numberOfBackups);
-      log.info("Created backupfile " + backup +" (FileType.java)");
+      FileType.log.info("Created backupfile " + backup +" (FileType.java)");
     }
     
-    if (filename.exists() && !filename.canWrite())
+    if (filename.exists() && !filename.canWrite()) {
       throw new IOException("cannot write "+filename);
+    }
 
     return new BufferedWriter(FileType.createEncodingWriter(createOutputStream(),encoding));
   }
@@ -339,12 +341,14 @@ public class FileType {
    * the CR file.
    */
   public String getEncoding() {
-    if (reader!=null) return reader.getEncoding();
+    if (reader!=null) {
+      return reader.getEncoding();
+    }
     try {
       
       // use UnicodeReader to determine encoding
       InputStream stream = createInputStream();
-      BOMReader localReader = new BOMReader(stream, DEFAULT_ENCODING.toString());
+      BOMReader localReader = new BOMReader(stream, FileType.DEFAULT_ENCODING.toString());
       
       String encoding = findCharset(localReader);
 
@@ -352,14 +356,14 @@ public class FileType {
         // maybe UnicodeReader was wrong, try reading in default encoding
         stream.close();
         stream = createInputStream();
-        InputStreamReader fallbackReader = new InputStreamReader(stream, DEFAULT_ENCODING.toString());
+        InputStreamReader fallbackReader = new InputStreamReader(stream, FileType.DEFAULT_ENCODING.toString());
         encoding = findCharset(fallbackReader);
       }
       
       stream.close();
 
       if (encoding == null ){
-        log.info("no charset tag found in "+getName());
+        FileType.log.info("no charset tag found in "+getName());
         encoding=localReader.getEncoding();
       } else if (localReader.hasBOM()!=null && localReader.hasBOM()) {
         String bomEncoding = localReader.getEncoding();
@@ -371,7 +375,7 @@ public class FileType {
         
         if (!bomEncoding2.equalsIgnoreCase(fileEncoding2)) {
           // UnicodeReader found an encoding different from the encoding of the charset tag
-          log.warn("given encoding of "+getName()+" does not match encoding given by BOM. ;charset says "+encoding+" but using "+localReader.getEncoding());
+          FileType.log.warn("given encoding of "+getName()+" does not match encoding given by BOM. ;charset says "+encoding+" but using "+localReader.getEncoding());
           encoding=localReader.getEncoding();
         }
       }
@@ -379,7 +383,7 @@ public class FileType {
       return encoding;
       
     } catch (Exception exception) {
-      log.error(exception);
+      FileType.log.error(exception);
     }
     return null;
   }
@@ -396,7 +400,7 @@ public class FileType {
 
     // read at least 5 lines
     String line;
-    String encoding = DEFAULT_ENCODING.toString();
+    String encoding = FileType.DEFAULT_ENCODING.toString();
     int counter = 0;
     while ((line = reader.readLine()) != null) {
       if (line.lastIndexOf(";charset") > 0) {
@@ -404,7 +408,9 @@ public class FileType {
         return encoding = line.substring(1, line.indexOf(";charset") - 1);
       }
       counter++;
-      if (counter >= 5) break;
+      if (counter >= 5) {
+        break;
+      }
     }
     return encoding;
   }

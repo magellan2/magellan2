@@ -43,12 +43,12 @@ public class NotReplacer extends AbstractParameterReplacer {
 		Object obj = getParameter(0, o);
 
 		if(obj != null) {
-			if(TRUE.equals(obj.toString())) {
-				return FALSE;
+			if(Replacer.TRUE.equals(obj.toString())) {
+				return Replacer.FALSE;
 			}
 
-			if(FALSE.equals(obj.toString())) {
-				return TRUE;
+			if(Replacer.FALSE.equals(obj.toString())) {
+				return Replacer.TRUE;
 			}
 		}
 

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -55,7 +54,6 @@ import magellan.library.utils.Resources;
 public class TaskTablePreferences extends JPanel implements ExtendedPreferencesAdapter {
 
   private Properties settings;
-  private GameData data;
   TaskTablePanel taskPanel;
 
   // protected ExpandPanel ePanel;
@@ -86,7 +84,6 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     this.settings = settings;
     taskPanel = parent;
 
-    this.data = data;
     this.setLayout(new BorderLayout());
 
     restrictPanel = new JPanel();
@@ -148,7 +145,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
    */
   public void initPreferences() {
 
-    DefaultListModel model2 = new DefaultListModel();
+    //DefaultListModel model2 = new DefaultListModel();
     // for (Faction f : data.factions().values()){
     // model2.add(elementsListModel.getSize()-1, f);
     // }

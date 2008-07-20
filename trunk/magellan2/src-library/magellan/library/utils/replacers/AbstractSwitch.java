@@ -32,10 +32,10 @@ public abstract class AbstractSwitch implements Replacer {
 	public Object getReplacement(Object o) {
 		try {
 			if(isSwitchingObject(o)) {
-				return TRUE;
+				return Replacer.TRUE;
 			}
 
-			return FALSE;
+			return Replacer.FALSE;
 		} catch(RuntimeException exc) {
 			return null;
 		}

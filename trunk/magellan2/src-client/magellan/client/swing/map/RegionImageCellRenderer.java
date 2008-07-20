@@ -79,8 +79,9 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	/**
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
-    log.debug("render()");
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
+    RegionImageCellRenderer.log.debug("render()");
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 			CoordinateID c = r.getCoordinate();
@@ -88,8 +89,8 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 			Rectangle rect = cellGeo.getImageRect(c.x, c.y);
 			rect.translate(-offset.x, -offset.y);
 
-			if(r.containsTag(MAP_TAG)) {
-				Image img = getImage(r.getTag(MAP_TAG));
+			if(r.containsTag(RegionImageCellRenderer.MAP_TAG)) {
+				Image img = getImage(r.getTag(RegionImageCellRenderer.MAP_TAG));
         
 				if(img != null) {
 					drawImage(r, img, rect);
@@ -128,13 +129,13 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
           img = getImage("notype",true);
           if (img!=null){
             drawImage(r, img, rect);
-            log.warnOnce("RegionImageCellRenderer.render(): using predifined notype-image for unknown type: " + imageName);
+            RegionImageCellRenderer.log.warnOnce("RegionImageCellRenderer.render(): using predifined notype-image for unknown type: " + imageName);
           } else {
-            log.warnOnce("RegionImageCellRenderer.render(): predefined image not found: notype");
+            RegionImageCellRenderer.log.warnOnce("RegionImageCellRenderer.render(): predefined image not found: notype");
           }
 				}
 			} else {
-				log.warnOnce("RegionImageCellRenderer.render(): Couldn't determine region type for region: " + r.toString());
+				RegionImageCellRenderer.log.warnOnce("RegionImageCellRenderer.render(): Couldn't determine region type for region: " + r.toString());
 			}
 		}
 	}
@@ -146,7 +147,7 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 		if(img != null) {
 			graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
 		} else {
-			log.warn("RegionImageCellRenderer.render(): image is null");
+			RegionImageCellRenderer.log.warn("RegionImageCellRenderer.render(): image is null");
 		}
 
 		if(fogOfWar) {
@@ -161,7 +162,8 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	/**
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_REGION;
 	}
 
@@ -184,7 +186,8 @@ public class RegionImageCellRenderer extends ImageCellRenderer implements Contex
 	/**
 	 * 
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new Preferences(this);
 	}
 

@@ -64,7 +64,7 @@ public class Regions {
 	 */
 	public static Map<CoordinateID,Region> getAllNeighbours(Map<CoordinateID,Region> regions, ID center, int radius, Map<ID,RegionType> excludedRegionTypes) {
 		if(center instanceof CoordinateID) {
-			return getAllNeighbours(regions, (CoordinateID) center, radius, excludedRegionTypes);
+			return Regions.getAllNeighbours(regions, (CoordinateID) center, radius, excludedRegionTypes);
 		} else {
 			throw new IllegalArgumentException("center is not an eressea coordinate. Support for e2 incomplete!");
 		}
@@ -116,7 +116,7 @@ public class Regions {
 	 * 		   instances of class Coordinate,     values are objects of class Region.
 	 */
 	public static Map<CoordinateID,Region> getAllNeighbours(Map<CoordinateID,Region> regions, ID center, Map<ID,RegionType> excludedRegionTypes) {
-		return getAllNeighbours(regions, center, 1, excludedRegionTypes);
+		return Regions.getAllNeighbours(regions, center, 1, excludedRegionTypes);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public class Regions {
 	 * 		   regions contained in regions.
 	 */
 	public static String getDirections(Map<CoordinateID,Region> regions, ID start, ID dest, Map<ID,RegionType> excludedRegionTypes) {
-		return getDirections(getPath(regions, start, dest, excludedRegionTypes));
+		return Regions.getDirections(Regions.getPath(regions, start, dest, excludedRegionTypes));
 	}
 
 	/**
@@ -149,7 +149,7 @@ public class Regions {
 			return null;
 		}
 
-		List directions = getDirectionObjectsOfRegions(regions);
+		List directions = Regions.getDirectionObjectsOfRegions(regions);
 
 		if(directions == null) {
 			return null;
@@ -189,7 +189,7 @@ public class Regions {
 			coordinates.add(r.getCoordinate());
 		}
 
-		return getDirectionObjectsOfCoordinates(coordinates);
+		return Regions.getDirectionObjectsOfCoordinates(coordinates);
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class Regions {
 			if(intDir != -1) {
 				directions.add(new Direction(intDir));
 			} else {
-				log.warn("Regions.getDirectionsOfCoordinates(): invalid direction encountered");
+				Regions.log.warn("Regions.getDirectionsOfCoordinates(): invalid direction encountered");
 
 				return null;
 			}
@@ -250,7 +250,7 @@ public class Regions {
 	 */
 	public static List<Region> getPath(Map<CoordinateID,Region> regions, ID start, ID dest, Map<ID,RegionType> excludedRegionTypes) {
 		if(start instanceof CoordinateID && dest instanceof CoordinateID) {
-			return getPath(regions, (CoordinateID) start, (CoordinateID) dest, excludedRegionTypes);
+			return Regions.getPath(regions, (CoordinateID) start, (CoordinateID) dest, excludedRegionTypes);
 		} else {
 			throw new IllegalArgumentException("start of dest is not an eressea coordinate. Support for e2 incomplete!");
 		}
@@ -269,7 +269,7 @@ public class Regions {
 	 */
 	private static List<Region> getPath(Map<CoordinateID,Region> regions, CoordinateID start, CoordinateID dest, Map<ID,RegionType> excludedRegionTypes) {
 		if((regions == null) || (start == null) || (dest == null)) {
-			log.warn("Regions.getPath(): invalid argument");
+			Regions.log.warn("Regions.getPath(): invalid argument");
 
 			return Collections.emptyList();
 		}
@@ -291,7 +291,7 @@ public class Regions {
 
 		/* initialize the backlog list and map with the neighbours of
 		   the start region */
-		Map<CoordinateID,Region> initNeighbours = getAllNeighbours(regions, start, excludedRegionTypes);
+		Map<CoordinateID,Region> initNeighbours = Regions.getAllNeighbours(regions, start, excludedRegionTypes);
 		initNeighbours.remove(start);
 		backlogList.addAll(initNeighbours.values());
 		backlogMap.putAll(initNeighbours);
@@ -303,12 +303,12 @@ public class Regions {
 			   unkown distance to start */
 
 			/* take the first region from the backlog list */
-			curRegion = (Region) backlogList.getFirst();
+			curRegion = backlogList.getFirst();
 			curCoord = curRegion.getCoordinate();
 
 			/* safety checks */
 			if(excludedRegionTypes.containsKey(curRegion.getType().getID())) {
-				log.warn("Regions.getPath(): Found an region of type " +
+				Regions.log.warn("Regions.getPath(): Found an region of type " +
 						 curRegion.getType().getName() +
 						 " in region list! Removing and ignoring it.");
 				backlogList.removeFirst();
@@ -318,7 +318,7 @@ public class Regions {
 			}
 
 			if(distances.containsKey(curCoord)) {
-				log.warn("Regions.getPath(): Found a region with known distance in region list! Removing and ignoring it.");
+				Regions.log.warn("Regions.getPath(): Found a region with known distance in region list! Removing and ignoring it.");
 				backlogList.removeFirst();
 				backlogMap.remove(curCoord);
 
@@ -329,7 +329,7 @@ public class Regions {
 			   from the backlog list */
 			// float minDistance = Float.MAX_VALUE;
 			double minDistance = Double.MAX_VALUE;
-			Map<CoordinateID,Region> neighbours = getAllNeighbours(regions, curCoord, excludedRegionTypes);
+			Map<CoordinateID,Region> neighbours = Regions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
 			neighbours.remove(curCoord);
 
 			/* now determine the distance from the start region to the
@@ -339,14 +339,14 @@ public class Regions {
 				Region curNb = iter.next();
 				CoordinateID curNbCoord = curNb.getCoordinate();
 				// Float dist = (Float) distances.get(curNbCoord);
-				Double dist = (Double) distances.get(curNbCoord);
+				Double dist = distances.get(curNbCoord);
 				if(dist != null) {
 					/* we know the distance from the start region to
 					   this neighbour, so we can determine the
 					   distance from the start region to the current
 					   region taken from the backlog list */
 					// float curDistance = getDistance(curNb, curRegion) + dist.floatValue();
-					double curDistance = getDistance(curNb, curRegion,true) + dist.floatValue();
+					double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.floatValue();
 
 					if(curDistance < minDistance) {
 						minDistance = curDistance;
@@ -379,12 +379,12 @@ public class Regions {
 					consecutiveReenlistings++;
 
 					if(consecutiveReenlistings > backlogList.size()) {
-						log.warn("Regions.getPath(): looks like an endless loop. Exiting.");
+						Regions.log.warn("Regions.getPath(): looks like an endless loop. Exiting.");
 
 						break;
 					}
 				} else {
-					log.warn("Regions.getPath(): Found a region with known distance in backlog list: " +
+					Regions.log.warn("Regions.getPath(): Found a region with known distance in backlog list: " +
 							 curRegion);
 				}
 			}
@@ -402,7 +402,7 @@ public class Regions {
 		path.add(curRegion);
 
 		while((curRegion != null) && (curCoord != null) && !curCoord.equals(start)) {
-			Double dist = (Double) distances.get(curCoord);
+			Double dist = distances.get(curCoord);
 
 			if(dist != null) {
         // double minDistance = dist.doubleValue();
@@ -410,42 +410,42 @@ public class Regions {
         double minDistance = dist.doubleValue() + 1;
         
 				CoordinateID closestNbCoord = null;
-				Map neighbours = getAllNeighbours(regions, curCoord, excludedRegionTypes);
+				Map neighbours = Regions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
 				neighbours.remove(curCoord);
 
 				for(Iterator iter = neighbours.values().iterator(); iter.hasNext();) {
 					Region curNb = (Region) iter.next();
 					CoordinateID curNbCoord = curNb.getCoordinate();
-					Double nbDist = (Double) distances.get(curNbCoord);
+					Double nbDist = distances.get(curNbCoord);
 
 					if(nbDist != null) {
 						double curDistance = nbDist.doubleValue();
             
             // add the last mile, Fiete 20070531
-            curDistance += getDistance(curRegion, curNb, true);
+            curDistance += Regions.getDistance(curRegion, curNb, true);
 
 						if(curDistance < minDistance) {
 							minDistance = curDistance;
 							closestNbCoord = curNbCoord;
 						}
 					} else {
-						log.warn("Regions.getPath(): Found neighbouring region without distance: " +
+						Regions.log.warn("Regions.getPath(): Found neighbouring region without distance: " +
 								 curNb + " neighbouring " + curRegion);
 					}
 				}
 
 				if(closestNbCoord != null) {
 					curCoord = closestNbCoord;
-					curRegion = (Region) regions.get(curCoord);
+					curRegion = regions.get(curCoord);
 					path.addFirst(curRegion);
 				} else {
-					log.warn("Regions.getPath(): Discovered region without any distanced neighbours while backtracking");
+					Regions.log.warn("Regions.getPath(): Discovered region without any distanced neighbours while backtracking");
 					path.clear();
 
 					break;
 				}
 			} else {
-				log.warn("Regions.getPath(): Discovered region without distance while backtracking");
+				Regions.log.warn("Regions.getPath(): Discovered region without distance while backtracking");
 				path.clear();
 
 				break;
@@ -505,7 +505,7 @@ public class Regions {
 
 				if((r.getRegionType() != null) && r.getRegionType().isOcean()) {
 					regions.put(r.getCoordinate(), r);
-				} else if(containsHarbour(r, harbour)) {
+				} else if(Regions.containsHarbour(r, harbour)) {
 					harbourRegions.put(r.getCoordinate(), r);
 				}
 			}
@@ -530,7 +530,7 @@ public class Regions {
 
 			Region curRegion = ship.getRegion();
 
-			if((ship.getShoreId() == Direction.DIR_INVALID) || containsHarbour(curRegion, harbour)) {
+			if((ship.getShoreId() == Direction.DIR_INVALID) || Regions.containsHarbour(curRegion, harbour)) {
 				// Ship can leave in all directions
 				startregions.add(curRegion);
 				regions.put(curRegion.getCoordinate(), curRegion);
@@ -550,9 +550,9 @@ public class Regions {
 				c = Direction.toCoordinate(shoreID);
 				c.x += curRegion.getCoordinate().x;
 				c.y += curRegion.getCoordinate().y;
-				r = (Region) allregions.get(c);
+				r = allregions.get(c);
 
-				if((r != null) && (r.getRegionType().isOcean() || containsHarbour(r, harbour))) {
+				if((r != null) && (r.getRegionType().isOcean() || Regions.containsHarbour(r, harbour))) {
 					startregions.add(r);
 					regions.put(r.getCoordinate(), r);
 				}
@@ -567,9 +567,9 @@ public class Regions {
 				c = Direction.toCoordinate(shoreID);
 				c.x += curRegion.getCoordinate().x;
 				c.y += curRegion.getCoordinate().y;
-				r = (Region) allregions.get(c);
+				r = allregions.get(c);
 
-				if((r != null) && (r.getRegionType().isOcean() || containsHarbour(r, harbour))) {
+				if((r != null) && (r.getRegionType().isOcean() || Regions.containsHarbour(r, harbour))) {
 					startregions.add(r);
 					regions.put(r.getCoordinate(), r);
 				}
@@ -579,9 +579,9 @@ public class Regions {
 				c = Direction.toCoordinate(shoreID);
 				c.x += curRegion.getCoordinate().x;
 				c.y += curRegion.getCoordinate().y;
-				r = (Region) allregions.get(c);
+				r = allregions.get(c);
 
-				if((r != null) && (r.getRegionType().isOcean() || containsHarbour(r, harbour))) {
+				if((r != null) && (r.getRegionType().isOcean() || Regions.containsHarbour(r, harbour))) {
 					startregions.add(r);
 					regions.put(r.getCoordinate(), r);
 				}
@@ -638,7 +638,7 @@ public class Regions {
 							if(counter == 0) {
 								counter = shipRange;
 								weeks++;
-							} else if(containsHarbour((Region) i.next(), harbour)) {
+							} else if(Regions.containsHarbour((Region) i.next(), harbour)) {
 								counter = shipRange;
 								weeks++;
 							}
@@ -687,7 +687,7 @@ public class Regions {
 	private static double getDistance(Region r1, Region r2,boolean useExtendedVersion){
 		double erg = 1;
 		if (!useExtendedVersion) {
-			return getDistance(r1, r2);
+			return Regions.getDistance(r1, r2);
 		}
 		// Fiete 20061123
 		// for Ships...prefer Regions near coasts
@@ -706,7 +706,7 @@ public class Regions {
 		
 		// if we have 2 non ozean regions....
 		if (!r1.getRegionType().isOcean() && !r2.getRegionType().isOcean()) {
-			if (isCompleteRoadConnection(r1, r2)){
+			if (Regions.isCompleteRoadConnection(r1, r2)){
 				return 2;
 			} else {
 				return 3;
@@ -735,11 +735,11 @@ public class Regions {
 		String ID = (u.getShip() == null) ? u.toString() : u.getShip().toString(false);
 
 		// run over neighbours recursively
-		CoordinateID c = getMovement(data, ID, u.getRegion().getCoordinate(), coordinates);
+		CoordinateID c = Regions.getMovement(data, ID, u.getRegion().getCoordinate(), coordinates);
 
 		while((c != null) && !coordinates.contains(c)) {
 			coordinates.add(c);
-			c = getMovement(data, ID, c, coordinates);
+			c = Regions.getMovement(data, ID, c, coordinates);
 		}
 
 		Collections.reverse(coordinates);
@@ -749,7 +749,7 @@ public class Regions {
 
 	private static CoordinateID getMovement(GameData data, String ID, CoordinateID c,
 										  List travelledRegions) {
-		Map<CoordinateID,Region> neighbours = getAllNeighbours(data.regions(), c, new Hashtable<ID,RegionType>());
+		Map<CoordinateID,Region> neighbours = Regions.getAllNeighbours(data.regions(), c, new Hashtable<ID,RegionType>());
 
 		for(Iterator<Region> iter = neighbours.values().iterator(); iter.hasNext();) {
 			Region r = iter.next();
@@ -760,8 +760,8 @@ public class Regions {
 				continue;
 			}
 
-			if(messagesContainsString(r.getTravelThru(), ID) ||
-				   messagesContainsString(r.getTravelThruShips(), ID)) {
+			if(Regions.messagesContainsString(r.getTravelThru(), ID) ||
+				   Regions.messagesContainsString(r.getTravelThruShips(), ID)) {
 				return neighbour;
 			}
 		}
@@ -838,7 +838,7 @@ public class Regions {
 		regions.add(r1);
 		regions.add(r2);
 		// generate List of directions
-		List<Direction> directions = getDirectionObjectsOfRegions(regions);
+		List<Direction> directions = Regions.getDirectionObjectsOfRegions(regions);
 		Direction dir1 = directions.get(0);
 		// border of r1 -> 
 		boolean border1OK = false;
@@ -858,8 +858,8 @@ public class Regions {
 		regions.clear();
 		regions.add(r2);
 		regions.add(r1);
-		directions = getDirectionObjectsOfRegions(regions);
-		dir1 = (Direction)directions.get(0);
+		directions = Regions.getDirectionObjectsOfRegions(regions);
+		dir1 = directions.get(0);
 		// border of r1 -> 
 		boolean border2OK = false;
 		for(Iterator iter = r2.borders().iterator(); iter.hasNext();) {
@@ -895,9 +895,13 @@ public class Regions {
     /*
        * dy ist jetzt >=0, fuer dx sind 3 Faelle zu untescheiden
        */
-      if      ( dx >= 0 ) return dx + dy;
-      else if (-dx >= dy) return -dx;
-      else                return dy;
+      if      ( dx >= 0 ) {
+        return dx + dy;
+      } else if (-dx >= dy) {
+        return -dx;
+      } else {
+        return dy;
+      }
   }
 	
   /**
@@ -942,15 +946,15 @@ public class Regions {
     Random r = new Random(System.currentTimeMillis());
     
     long cnt = 0;
-    log.info("starting calculation of coasts");
+    Regions.log.info("starting calculation of coasts");
     for (Iterator<Region> iter = data.regions().values().iterator();iter.hasNext();){
-      Region actRegion = (Region)iter.next();
+      Region actRegion = iter.next();
       if (actRegion.getRegionType().isOcean()){
         // we have an ocean in front
         // the result
         int erg = 0;
         CoordinateID cID = (CoordinateID)actRegion.getID();
-        Map<CoordinateID,Region> n = getAllNeighbours(data.regions(), cID, null);
+        Map<CoordinateID,Region> n = Regions.getAllNeighbours(data.regions(), cID, null);
         n.remove(cID);
         // checking all neighbours
         for (Iterator iter2 = n.keySet().iterator();iter2.hasNext();){
@@ -993,7 +997,7 @@ public class Regions {
         actRegion.setCoastBitMap(null);
       }
     }
-    log.info("finished calculation of coasts, found " + cnt + " coasts.");
+    Regions.log.info("finished calculation of coasts, found " + cnt + " coasts.");
   }
   
   

@@ -67,7 +67,7 @@ public class GameDataBuilder {
 		region_0_0.setIsland(island);
 
 		if(addUnit) {
-			Unit unit = addUnit(data, "1", "Unit_1", faction, region_0_0);
+			addUnit(data, "1", "Unit_1", faction, region_0_0);
 		}
 
 		if(postProcess) {
@@ -88,12 +88,12 @@ public class GameDataBuilder {
 		GameData data = createSimplestGameData(round, addUnit, false);
 
 		if(data.units().size() > 0) {
-			Unit unit = (Unit) data.units().values().iterator().next();
+			Unit unit = data.units().values().iterator().next();
 
-			Skill skill1 = addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
-			Skill skill2 = addSkill(unit, "Segeln", 4, 3,false); // Segeln 4
-			Skill skill3 = addSkill(unit, "Magie", -1, -3,true); // Magie - (-3)
-			Skill skill4 = addSkill(unit, "Steinbau", -1, -3,false); // Steinbau - 
+			addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
+			addSkill(unit, "Segeln", 4, 3,false); // Segeln 4
+			addSkill(unit, "Magie", -1, -3,true); // Magie - (-3)
+			addSkill(unit, "Steinbau", -1, -3,false); // Steinbau - 
 		}
 		
 		data.postProcess();
@@ -144,7 +144,7 @@ public class GameDataBuilder {
 	
 	public Unit addUnit(GameData data, String name, Region region) {
 		String number = "g"+(data.units().size()+1);
-		Faction faction = (Faction) data.factions().values().iterator().next();
+		Faction faction = data.factions().values().iterator().next();
 		return addUnit(data, number, name, faction, region);
 	}
 	

@@ -65,7 +65,6 @@ import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
-import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Skill;
@@ -133,6 +132,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   /**
    * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
 
@@ -427,7 +427,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           rootNode.add(currentNode);
         }
       } else {
-        log.warn("faction ID is not EntityID");
+        FactionStatsPanel.log.warn("faction ID is not EntityID");
       }
       
       /* score node */
@@ -500,11 +500,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
         for (Iterator iter = specialPersons.keySet().iterator(); iter.hasNext();) {
           Object obj = iter.next();
-          List v = (List) specialPersons.get(obj);
+          List<Unit> v = specialPersons.get(obj);
           int count = 0;
           String actRealRaceName = "";
-          for (Iterator iterator = v.iterator(); iterator.hasNext();) {
-            Unit actU = (Unit) iterator.next();
+          for (Iterator<Unit> iterator = v.iterator(); iterator.hasNext();) {
+            Unit actU = iterator.next();
             count += actU.getPersons();
             actRealRaceName = actU.getRealRaceName();
 
@@ -868,10 +868,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // search reagionsmessages for Almosen
       if (regions!=null && regions.size()>0){
         for (Iterator<Region> iterR = regions.values().iterator();iterR.hasNext();){
-          Region actR = (Region)iterR.next();
+          Region actR = iterR.next();
           if (actR.getMessages()!=null && actR.getMessages().size()>0){
             for (Iterator<Message> iterM = actR.getMessages().iterator();iterM.hasNext();){
-              Message actM = (Message)iterM.next();
+              Message actM = iterM.next();
               if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
                 int msgID = ((IntegerID) actM.getMessageType().getID()).intValue();
                 if (msgID == 1682429624){
@@ -946,7 +946,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               // buildings after Type
               if (buildingUpkeep.size()>0){
                 for (Iterator<ID> iterBT = buildingUpkeep.keySet().iterator();iterBT.hasNext();){
-                  ID btID = (ID)iterBT.next();
+                  ID btID = iterBT.next();
                   Integer actV = buildingUpkeep.get(btID);
                   BuildingType bT = data.rules.getBuildingType(btID);
                   if (bT!=null && actV!=null && actV.intValue()>0){
@@ -960,7 +960,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               // Almosen nach Factions UND Regions
               if (factionAlms.size()>0){
                 for (Iterator<ID> iterF = factionAlms.keySet().iterator();iterF.hasNext();){
-                  ID actFID = (ID)iterF.next();
+                  ID actFID = iterF.next();
                   Integer actV = factionAlms.get(actFID);
                   Faction actThisF = data.getFaction(actFID);
                   if (actV!=null && actThisF!=null){
@@ -972,7 +972,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     Map<Region,Integer> actRM = almRegions.get(actThisF.getID());
                     if (actRM!=null && actRM.size()>0){
                       for (Iterator<Region> iterR = actRM.keySet().iterator();iterR.hasNext();){
-                        Region actRR = (Region)iterR.next();
+                        Region actRR = iterR.next();
                         actV = actRM.get(actRR);
                         if (actV!=null && actV.intValue()>0){
                           DefaultMutableTreeNode subSubSubNode = new DefaultMutableTreeNode(
@@ -988,7 +988,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               // Übergaben
               if (factionGivings.size()>0){
                 for (Iterator<ID> iterFID = factionGivings.keySet().iterator();iterFID.hasNext();){
-                  ID fID = (ID)iterFID.next();
+                  ID fID = iterFID.next();
                   Integer actV = factionGivings.get(fID);
                   Faction actTF = data.getFaction(fID);
                   if (actTF!=null && actV!=null && actV.intValue()>0){
@@ -1223,7 +1223,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   }
 
                   if (itemCategory == null) {
-                    log.info("Item without category: "+resource);
+                    FactionStatsPanel.log.info("Item without category: "+resource);
                   } else {
                     // add the data
                     Map<String, ProductionStats> h = production.get(itemCategory);
@@ -1278,12 +1278,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       String catIconName = magellan.library.utils.Umlaut.convertUmlauts(iCategory.getName());
       String nodeName = Resources.get("factionstatspanel." + catIconName);
 
-      Map h = (Map) production.get(iCategory);
+      Map<String,ProductionStats> h = production.get(iCategory);
       int totalAmount = 0;
 
-      for (Iterator iterator = h.keySet().iterator(); iterator.hasNext();) {
-        String resource = (String) iterator.next();
-        ProductionStats stats = (ProductionStats) h.get(resource);
+      for (Iterator<String> iterator = h.keySet().iterator(); iterator.hasNext();) {
+        String resource = iterator.next();
+        ProductionStats stats = h.get(resource);
         totalAmount += stats.totalAmount;
         DefaultMutableTreeNode o = null;
         // o = new DefaultMutableTreeNode(resource + ": " + stats.totalAmount);
@@ -1298,7 +1298,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         int resAmount = 0;
         for (Iterator i = stats.units.keySet().iterator(); i.hasNext();) {
           Unit u = (Unit) i.next();
-          int amount = ((Integer) stats.units.get(u)).intValue();
+          int amount = stats.units.get(u).intValue();
           resAmount += amount;
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
@@ -1306,7 +1306,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (subNodeChildList!=null && subNodeChildList.size()>0) {
         subNode = createSimpleNode(nodeName + ":" + totalAmount, catIconName);
         for (Iterator<DefaultMutableTreeNode> iterDMTN = subNodeChildList.iterator();iterDMTN.hasNext();){
-          subNode.add((DefaultMutableTreeNode)iterDMTN.next());
+          subNode.add(iterDMTN.next());
         }
         prodNode.add(subNode);
       }
@@ -1398,9 +1398,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
   }
 
-  private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
-    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, this.data.getTranslation(obj), (Object) icons));
-  }
+//  private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
+//    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, this.data.getTranslation(obj), (Object) icons));
+//  }
 
   /**
    * A little class used to store information about production statistics for a

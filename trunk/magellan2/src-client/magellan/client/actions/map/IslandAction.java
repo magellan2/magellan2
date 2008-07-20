@@ -45,7 +45,8 @@ public class IslandAction extends MenuAction {
   /**
    * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
    */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
     
     new Thread(new Runnable() {
       public void run() {

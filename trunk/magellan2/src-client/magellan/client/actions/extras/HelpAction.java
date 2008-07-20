@@ -50,23 +50,32 @@ public class HelpAction extends MenuAction {
   /**
    * DOCUMENT-ME
    */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
     // SG: had a lot of fun when I implemented this :-)
     try {
       ClassLoader loader = new ResourcePathClassLoader(client.getProperties());
       String language = client.getProperties().getProperty("locales.gui", "");
-      if (!Utils.isEmpty(language)) language = "_"+language;
+      if (!Utils.isEmpty(language)) {
+        language = "_"+language;
+      }
       
       URL hsURL = loader.getResource("help/magellan"+language+".hs");
-      if (hsURL == null) hsURL = loader.getResource("magellan"+language+".hs");
-      if (hsURL == null) hsURL = loader.getResource("help/magellan.hs");
-      if (hsURL == null) hsURL = loader.getResource("magellan.hs");
+      if (hsURL == null) {
+        hsURL = loader.getResource("magellan"+language+".hs");
+      }
+      if (hsURL == null) {
+        hsURL = loader.getResource("help/magellan.hs");
+      }
+      if (hsURL == null) {
+        hsURL = loader.getResource("magellan.hs");
+      }
       if (hsURL == null) {
         JOptionPane.showMessageDialog(client, Resources.get("actions.helpaction.msg.helpsetnotfound.text"));
         return;
       }
       
-      log.info("URL: "+hsURL);
+      HelpAction.log.info("URL: "+hsURL);
 
       Class<?> helpSetClass = null;
       Class<?> helpBrokerClass = null;
@@ -107,7 +116,7 @@ public class HelpAction extends MenuAction {
       // this calls new javax.help.HelpBroker.setDisplayed(true)
       setDisplayedMethod.invoke(this.helpBroker, setDisplayedMethodArgs);
     } catch (Exception ex) {
-      log.error(ex);
+      HelpAction.log.error(ex);
     }
   }
 

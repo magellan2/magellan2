@@ -48,12 +48,20 @@ public class Help {
       Properties settings = Client.loadSettings(new File("."), "magellan.ini");
       ClassLoader loader = new ResourcePathClassLoader(settings);
       String language = settings.getProperty("locales.gui", "");
-      if (!Utils.isEmpty(language)) language = "_"+language;
+      if (!Utils.isEmpty(language)) {
+        language = "_"+language;
+      }
       
       URL hsURL = loader.getResource("help/magellan"+language+".hs");
-      if (hsURL == null) hsURL = loader.getResource("magellan"+language+".hs");
-      if (hsURL == null) hsURL = loader.getResource("help/magellan.hs");
-      if (hsURL == null) hsURL = loader.getResource("magellan.hs");
+      if (hsURL == null) {
+        hsURL = loader.getResource("magellan"+language+".hs");
+      }
+      if (hsURL == null) {
+        hsURL = loader.getResource("help/magellan.hs");
+      }
+      if (hsURL == null) {
+        hsURL = loader.getResource("magellan.hs");
+      }
       if (hsURL == null) {
         JOptionPane.showMessageDialog(null, "Could not find the magellan-help.jar");
         return;

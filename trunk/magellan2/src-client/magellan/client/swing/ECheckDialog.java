@@ -97,7 +97,8 @@ public class ECheckDialog extends InternationalizedDataDialog {
 							 String.valueOf(pnlECheck.getConfirmedOnly()));
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		storeSettings();
 		pnlECheck.quit();
 		super.quit();

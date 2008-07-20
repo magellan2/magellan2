@@ -30,7 +30,6 @@ import javax.swing.JCheckBoxMenuItem;
 
 import magellan.client.desktop.DockingFrameworkBuilder;
 import magellan.client.desktop.DockingLayout;
-import magellan.library.utils.logging.Logger;
 
 /**
  * This class represents a menu item for one Docking layout.
@@ -40,7 +39,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0, 18.11.2007
  */
 public class LayoutCheckboxMenuItem extends JCheckBoxMenuItem implements ActionListener {
-  private static final Logger log = Logger.getInstance(LayoutCheckboxMenuItem.class);
   private DockingLayout layout = null;
 
   public LayoutCheckboxMenuItem(DockingLayout layout) {
@@ -55,8 +53,12 @@ public class LayoutCheckboxMenuItem extends JCheckBoxMenuItem implements ActionL
    */
   public void actionPerformed(ActionEvent evt) {
     LayoutCheckboxMenuItem source = (LayoutCheckboxMenuItem)evt.getSource();
-    if (source == null) return;
-    if (layout.isActive()) return;
+    if (source == null) {
+      return;
+    }
+    if (layout.isActive()) {
+      return;
+    }
     if (isSelected()) {
       DockingFrameworkBuilder.getInstance().setActiveLayout(layout);
     }

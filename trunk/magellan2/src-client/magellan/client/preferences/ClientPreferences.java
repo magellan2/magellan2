@@ -113,7 +113,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 
 		// add the file name generator only as sub adapter
 		FileNameGenerator.init(settings);
-		subAdapters.add(new ClientFileNameGeneratorPreferences(source,settings));
+		subAdapters.add(new ClientFileNameGeneratorPreferences(settings));
 		
 		// add the name generator only as sub adapter
 		subAdapters.add(new ClientNameGeneratorPreferences(source,settings));
@@ -248,7 +248,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		tempIDsInitialValue.setPreferredSize(new Dimension(100, 40));
 		tempIDsInitialValue.setBorder(new TitledBorder( Resources.get("clientpreferences.tempidsinitialvalue.caption")));
 		tempIDsInitialValue.setMargin(new Insets(2, 2, 2, 2));
-		tempIDsInitialValue.setHorizontalAlignment(JTextField.CENTER);
+		tempIDsInitialValue.setHorizontalAlignment(SwingConstants.CENTER);
 		tempIDs.add(tempIDsInitialValue, c2);
 
 		Boolean b = Boolean.valueOf(settings.getProperty("ClientPreferences.countDecimal", "true"));
@@ -362,6 +362,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
      * 
      * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
      */
+    @Deprecated
     public void initPreferences() {
         // TODO: implement it
     }
@@ -396,12 +397,12 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 			try {
 				tempID = IDBaseConverter.parse(tempIDsInitialValue.getText(),base);
 			} catch(java.lang.NumberFormatException nfe) {
-				log.warn("ClientPreferences.applyPreferences: Error when parsing the initial value of the temp ids: " +
+				ClientPreferences.log.warn("ClientPreferences.applyPreferences: Error when parsing the initial value of the temp ids: " +
 						 tempIDsInitialValue.getText());
 			}
 
 			if(tempID > IDBaseConverter.getMaxId(base)) {
-				log.warn("ClientPreferences.applyPreferences: Found tempID out of valid values: " +
+				ClientPreferences.log.warn("ClientPreferences.applyPreferences: Found tempID out of valid values: " +
 						 tempID);
 				tempIDsInitialValue.setText("");
 				settings.setProperty("ClientPreferences.TempIDsInitialValue", "");
@@ -474,7 +475,8 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			return this.locale.getDisplayName();
 		}
 
@@ -485,7 +487,8 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 		 *
 		 * 
 		 */
-		public boolean equals(Object o) {
+		@Override
+    public boolean equals(Object o) {
 			try {
 				return this.locale.equals(((LocaleWrapper) o).getLocale());
 			} catch(ClassCastException e) {

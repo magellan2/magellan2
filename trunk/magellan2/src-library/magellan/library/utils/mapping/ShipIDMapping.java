@@ -31,16 +31,19 @@ import magellan.library.Ship;
 public class ShipIDMapping implements DataMapping {
   private static ShipIDMapping singleton = new ShipIDMapping();
   public static ShipIDMapping getSingleton() {
-    return singleton;
+    return ShipIDMapping.singleton;
   }
 
+  @Override
   public String toString() {
     return "ShipID";
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // create possible translations by same unit in both reports from same turn!
-    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) return null;
+    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) {
+      return null;
+    }
     
     for (Region region : fromData.regions().values()) {
       if (region.getCoordinate().z == level) {

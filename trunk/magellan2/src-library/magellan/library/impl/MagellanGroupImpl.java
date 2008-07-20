@@ -162,7 +162,9 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 		}
 
 		if(unitCollection == null) {
-      if (units != null && units.values() != null) unitCollection = Collections.unmodifiableCollection(units.values());
+      if (units != null && units.values() != null) {
+        unitCollection = Collections.unmodifiableCollection(units.values());
+      }
 		}
 
 		return unitCollection;
@@ -177,7 +179,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 */
 	public Unit getUnit(ID key) {
 		if(units != null) {
-			return (Unit) units.get(key);
+			return units.get(key);
 		} else {
 			return null;
 		}
@@ -209,7 +211,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 */
 	public Unit removeUnit(ID key) {
 		if(units != null) {
-			Unit u = (Unit) units.remove(key);
+			Unit u = units.remove(key);
 
 			if(units.isEmpty()) {
 				units = null;
@@ -226,7 +228,8 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		// pavkovic 2004.01.04: for a Group id is more a technical connection so we dont
 		// want to see it.
 		//return name + " (" + id + ")";
@@ -243,69 +246,69 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    * @see magellan.library.utils.Taggable#deleteAllTags()
    */
   public void deleteAllTags() {
-    tagMap = null;
+    MagellanGroupImpl.tagMap = null;
   }
 
   /**
    * @see magellan.library.utils.Taggable#putTag(java.lang.String, java.lang.String)
    */
   public String putTag(String tag, String value) {
-    if(tagMap == null) {
-      tagMap = new HashMap<String, String>();
+    if(MagellanGroupImpl.tagMap == null) {
+      MagellanGroupImpl.tagMap = new HashMap<String, String>();
     }
 
-    return (String) tagMap.put(tag, value);
+    return MagellanGroupImpl.tagMap.put(tag, value);
   }
 
   /**
    * @see magellan.library.utils.Taggable#getTag(java.lang.String)
    */
   public String getTag(String tag) {
-    if(tagMap == null) {
+    if(MagellanGroupImpl.tagMap == null) {
       return null;
     }
 
-    return (String) tagMap.get(tag);
+    return MagellanGroupImpl.tagMap.get(tag);
   }
 
   /**
    * @see magellan.library.utils.Taggable#removeTag(java.lang.String)
    */
   public String removeTag(String tag) {
-    if(tagMap == null) {
+    if(MagellanGroupImpl.tagMap == null) {
       return null;
     }
 
-    return (String) tagMap.remove(tag);
+    return MagellanGroupImpl.tagMap.remove(tag);
   }
 
   /**
    * @see magellan.library.utils.Taggable#containsTag(java.lang.String)
    */
   public boolean containsTag(String tag) {
-    if(tagMap == null) {
+    if(MagellanGroupImpl.tagMap == null) {
       return false;
     }
 
-    return tagMap.containsKey(tag);
+    return MagellanGroupImpl.tagMap.containsKey(tag);
   }
 
   /**
    * @see magellan.library.utils.Taggable#getTagMap()
    */
   public Map<String,String> getTagMap() {
-    if(tagMap == null) {
-      tagMap = new TagMap();
+    if(MagellanGroupImpl.tagMap == null) {
+      MagellanGroupImpl.tagMap = new TagMap();
     }
 
-    return Collections.unmodifiableMap(tagMap);
+    return Collections.unmodifiableMap(MagellanGroupImpl.tagMap);
   }
 
   /**
    * @see magellan.library.utils.Taggable#hasTags()
    */
   public boolean hasTags() {
-    return (tagMap != null) && !tagMap.isEmpty();
+    return (MagellanGroupImpl.tagMap != null) && !MagellanGroupImpl.tagMap.isEmpty();
   }
 
   /**

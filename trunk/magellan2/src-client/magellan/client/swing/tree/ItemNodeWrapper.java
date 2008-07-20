@@ -125,12 +125,12 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 	 */
 	public List<String> getIconNames() {
 		String key = modItem.getItemType().getIconName();
-		List<String> iconNames = iconNamesLists.get(key);
+		List<String> iconNames = ItemNodeWrapper.iconNamesLists.get(key);
 
 		if(iconNames == null) {
 			iconNames = Collections.singletonList(StringFactory.getFactory().intern("items/" +
 																						  key));
-			iconNamesLists.put(key, iconNames);
+			ItemNodeWrapper.iconNamesLists.put(key, iconNames);
 		}
 
 		return iconNames;
@@ -156,7 +156,8 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * @return the string representation of this item node.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(text == null) {
 			boolean showRegion = isShowingRegionItemAmount();
 
@@ -180,8 +181,9 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 			if(item == null) {
 				nodeText.append(modItem.getAmount()).append(' ');
-				if (warning)
-					  nodeText.append(" (!!!) ");
+				if (warning) {
+          nodeText.append(" (!!!) ");
+        }
 
 				if(showRegion) {
 					Item ri = unit.getRegion().getItem(modItem.getItemType());
@@ -196,7 +198,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 				if(modItem.getItemType().getWeight() > 0) {
 					float weight = (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
-					nodeText.append(": ").append(weightNumberFormat.format(new Float(weight)));
+					nodeText.append(": ").append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
 					nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
 				}
 			} else {
@@ -204,14 +206,16 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 				if(modItem.getAmount() != item.getAmount()) {
 					nodeText.append("(").append(modItem.getAmount());
-					if (warning)
-						nodeText.append("!!!) ");
-					else
-						nodeText.append(") ");
+					if (warning) {
+            nodeText.append("!!!) ");
+          } else {
+            nodeText.append(") ");
+          }
 					
 				}else{
-					if (warning)
-						nodeText.append("(!!!) ");
+					if (warning) {
+            nodeText.append("(!!!) ");
+          }
 				}
 
 				if(showRegion) {
@@ -228,12 +232,12 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 				if(modItem.getItemType().getWeight() > 0) {
 					if(item.getItemType().getWeight() > 0) {
 						float weight = (((int) (item.getItemType().getWeight() * 100)) * item.getAmount()) / 100.0f;
-						nodeText.append(": ").append(weightNumberFormat.format(new Float(weight)));
+						nodeText.append(": ").append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
 
 						if(modItem.getAmount() != item.getAmount()) {
 							float modWeight = (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
 							nodeText.append(" (")
-									.append(weightNumberFormat.format(new Float(modWeight))).append(")");
+									.append(ItemNodeWrapper.weightNumberFormat.format(new Float(modWeight))).append(")");
 						}
 						nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
 					}

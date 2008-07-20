@@ -45,7 +45,7 @@ public class EresseaOrderWriter implements GameSpecificOrderWriter {
    * Returns the instance of this class.
    */
   public static GameSpecificOrderWriter getSingleton() {
-    return instance;
+    return EresseaOrderWriter.instance;
   }
 
   /**
@@ -66,7 +66,7 @@ public class EresseaOrderWriter implements GameSpecificOrderWriter {
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
    */
   public String getCheckerDefaultParameter() {
-    return " -s -l -w4 -v" + ECHECKVERSION;
+    return " -s -l -w4 -v" + EresseaOrderWriter.ECHECKVERSION;
   }
 
 }

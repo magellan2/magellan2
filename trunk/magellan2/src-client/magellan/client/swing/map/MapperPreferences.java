@@ -58,6 +58,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
@@ -74,8 +75,6 @@ import magellan.library.utils.replacers.ReplacerFactory;
 public class MapperPreferences extends InternationalizedPanel implements PreferencesAdapter,
 																		 ActionListener
 {
-	private static final Logger log = Logger.getInstance(MapperPreferences.class);
-
 	// The source component to configure
 	private Mapper source = null;
 	
@@ -135,7 +134,9 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		rendererPanel.add(planes, BorderLayout.CENTER);
 
 		for(RenderingPlane plane : source.getPlanes()) {
-      if (plane == null) continue;
+      if (plane == null) {
+        continue;
+      }
 			JPanel aRendererPanel = new JPanel(new GridBagLayout());
 			gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER,
 										 GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
@@ -338,7 +339,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				c.setLayout(new BorderLayout());
 
 				JScrollPane p = new JScrollPane(list);
-				p.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+				p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 				c.add(p, BorderLayout.WEST);
 				text.setBackground(c.getBackground());
 				c.add(new JScrollPane(text), BorderLayout.CENTER);
@@ -388,7 +389,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			 */
 			public void valueChanged(javax.swing.event.ListSelectionEvent lse) {
 				if(list.getSelectedIndex() >= 0) {
-					magellan.library.utils.replacers.Replacer rep = (replacerMap.createReplacer((String) rList.get(list.getSelectedIndex())));
+					magellan.library.utils.replacers.Replacer rep = (replacerMap.createReplacer(rList.get(list.getSelectedIndex())));
 
 					if(rep == null) {
 						text.setText("Internal error - please report.");
@@ -504,8 +505,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 										if((indices != null) && (indices.length > 0)) {
 											for(int i = 0; i < indices.length; i++) {
-												source.addTooltipDefinition((String) data.get(indices[i] * 2),
-																			(String) data.get((indices[i] * 2) +
+												source.addTooltipDefinition(data.get(indices[i] * 2),
+																			data.get((indices[i] * 2) +
 																							  1));
 											}
 										}
@@ -661,7 +662,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			 *
 			 * 
 			 */
-			public Dimension getMinimumSize() {
+			@Override
+      public Dimension getMinimumSize() {
 				return new Dimension(300, 100);
 			}
 
@@ -730,7 +732,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			/**
 			 * DOCUMENT-ME
 			 */
-			public void show() {
+			@Override
+      public void show() {
 				// clear parts to flag that this is a new mask
 				leftPart = null;
 				midPart = null;
@@ -1056,7 +1059,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			 *
 			 * 
 			 */
-			public Dimension getMinimumSize() {
+			@Override
+      public Dimension getMinimumSize() {
 				return new Dimension(300, 100);
 			}
 
@@ -1347,7 +1351,8 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		 *
 		 * 
 		 */
-		public Dimension getMinimumSize() {
+		@Override
+    public Dimension getMinimumSize() {
 			return new Dimension(100, 100);
 		}
 
@@ -1389,7 +1394,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				tooltipList.setSelectedIndex(oldIndex);
 
 				if(oldIndex != -1) {
-					text.setText((String) tooltips.get(oldIndex));
+					text.setText(tooltips.get(oldIndex));
 				}
 			}
 
@@ -1433,7 +1438,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 
 					log.info("Starting editing dialog...");
 					maskDialog.show(tooltipList.getSelectedValue().toString(),
-									(String) tooltips.get(index), index * 2);
+									tooltips.get(index), index * 2);
 					recreate();
 				}
 			} else if(e.getSource() == edit) {
@@ -1479,7 +1484,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		 */
 		public void valueChanged(javax.swing.event.ListSelectionEvent e) {
 			if(tooltipList.getSelectedIndex() >= 0) {
-				text.setText((String) tooltips.get(tooltipList.getSelectedIndex()));
+				text.setText(tooltips.get(tooltipList.getSelectedIndex()));
 				edit.setEnabled(true);
 				editmask.setEnabled(true);
 				delete.setEnabled(true);
@@ -1500,7 +1505,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 				int i = tooltipList.getSelectedIndex();
 				i = Math.max(i, 0);
 
-				return (String) tooltips.get(i);
+				return tooltips.get(i);
 			}
 
 			return null;

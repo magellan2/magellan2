@@ -85,15 +85,17 @@ public class DockingFrameworkBuilder  {
 	}
   
   public static DockingFrameworkBuilder getInstance() {
-    if (_instance == null) _instance = new DockingFrameworkBuilder();
-    return _instance;
+    if (DockingFrameworkBuilder._instance == null) {
+      DockingFrameworkBuilder._instance = new DockingFrameworkBuilder();
+    }
+    return DockingFrameworkBuilder._instance;
   }
 
 	/**
 	 * This method builds the desktop. This is the main component inside Magellan
    * It contains a IDF RootWindow with multiple Docks.
 	 */
-	public RootWindow buildDesktop(FrameTreeNode root, Map<String,Component> components, File serializedView) {
+	public RootWindow buildDesktop(Map<String,Component> components, File serializedView) {
 		componentsUsed.clear();
     for (Component component : components.values()) {
       componentsUsed.add(component);
@@ -111,10 +113,18 @@ public class DockingFrameworkBuilder  {
     viewMap = new StringViewMap();
 
     for (String key : components.keySet()) {
-      if (key.equals("COMMANDS")) continue; // deprecated
-      if (key.equals("NAME")) continue; // deprecated
-      if (key.equals("DESCRIPTION")) continue; // deprecated
-      if (key.equals("OVERVIEW&HISTORY")) continue; // deprecated
+      if (key.equals("COMMANDS")) {
+        continue; // deprecated
+      }
+      if (key.equals("NAME")) {
+        continue; // deprecated
+      }
+      if (key.equals("DESCRIPTION")) {
+        continue; // deprecated
+      }
+      if (key.equals("OVERVIEW&HISTORY")) {
+        continue; // deprecated
+      }
       
       Component component = components.get(key);
       
@@ -141,9 +151,9 @@ public class DockingFrameworkBuilder  {
       }
     } catch (NullPointerException npe) {
       // okay, sometimes this happens without a reason (setToolTipText())...
-      log.error("NPE",npe);
+      DockingFrameworkBuilder.log.error("NPE",npe);
     } catch (Throwable t) {
-      log.fatal(t.getMessage(),t);
+      DockingFrameworkBuilder.log.fatal(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
       errorWindow.setVisible(true);
     }
@@ -178,11 +188,11 @@ public class DockingFrameworkBuilder  {
    * This method writes a docking configuration to the given file.
    */
   public void write(File serializedViewData) throws IOException {
-    log.info("Storing docking layout in "+serializedViewData);
+    DockingFrameworkBuilder.log.info("Storing docking layout in "+serializedViewData);
     StringBuffer buffer = new StringBuffer();
     buffer.append("<?xml version='1.0' encoding='"+Encoding.DEFAULT.toString()+"'?>\r\n");
     buffer.append("<dock version='1.0'>\r\n");
-    for (DockingLayout layout : layouts) {
+    for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
       layout.save(buffer);
     }
     buffer.append("</dock>\r\n");
@@ -199,7 +209,7 @@ public class DockingFrameworkBuilder  {
    * This method reads a docking configuration from the given file.
    */
   public synchronized RootWindow read(StringViewMap viewMap, Map<String,View> views, File serializedViewData) throws IOException {
-    log.info("Loading Docking Layouts");
+    DockingFrameworkBuilder.log.info("Loading Docking Layouts");
     
     this.viewMap = viewMap;
     this.views = views;
@@ -207,22 +217,24 @@ public class DockingFrameworkBuilder  {
     RootWindow window = DockingUtil.createRootWindow(viewMap, true);
     
     try {
-      layouts = DockingLayout.load(serializedViewData, viewMap, views);
+      DockingFrameworkBuilder.layouts = DockingLayout.load(serializedViewData, viewMap, views);
       
-      log.info("Loaded "+layouts.size()+" Docking layouts.");
-      for (DockingLayout layout : layouts) {
+      DockingFrameworkBuilder.log.info("Loaded "+DockingFrameworkBuilder.layouts.size()+" Docking layouts.");
+      for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
         if (layout.isActive()) {
-          activeLayout = layout;
+          DockingFrameworkBuilder.activeLayout = layout;
           break;
         }
       }
       
-      if (activeLayout == null && layouts.size()>0) activeLayout = layouts.get(0);
-      activeLayout.setActive(true);
-      activeLayout.open(window,settings);
+      if (DockingFrameworkBuilder.activeLayout == null && DockingFrameworkBuilder.layouts.size()>0) {
+        DockingFrameworkBuilder.activeLayout = DockingFrameworkBuilder.layouts.get(0);
+      }
+      DockingFrameworkBuilder.activeLayout.setActive(true);
+      DockingFrameworkBuilder.activeLayout.open(window,settings);
       
     } catch (Exception exception) {
-      log.error(exception);
+      DockingFrameworkBuilder.log.error(exception);
       ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.",exception);
       errorWindow.open();
     }
@@ -240,8 +252,8 @@ public class DockingFrameworkBuilder  {
     if (newLayouts != null) {
       for (DockingLayout layout : newLayouts) {
         layout.setActive(false);
-        layout.setName(findNewName(layouts,layout.getName(),layout.getName(),0));
-        layouts.add(layout);
+        layout.setName(findNewName(DockingFrameworkBuilder.layouts,layout.getName(),layout.getName(),0));
+        DockingFrameworkBuilder.layouts.add(layout);
       }
       updateLayoutMenu();
     }
@@ -274,10 +286,10 @@ public class DockingFrameworkBuilder  {
     }
     DockingLayout defaultLayout = new DockingLayout("Standard", root, viewMap, views);
     defaultLayout.setActive(true);
-    layouts.add(defaultLayout);
+    DockingFrameworkBuilder.layouts.add(defaultLayout);
     
-    activeLayout = defaultLayout;
-    activeLayout.open(window,settings);
+    DockingFrameworkBuilder.activeLayout = defaultLayout;
+    DockingFrameworkBuilder.activeLayout.open(window,settings);
     
     return window;
   }
@@ -290,43 +302,50 @@ public class DockingFrameworkBuilder  {
     JMenu desktopMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.caption"));
     desktopMenu.setMnemonic(Resources.get("desktop.magellandesktop.menu.desktop.mnemonic").charAt(0));
     
-    layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
+    DockingFrameworkBuilder.layoutMenu = new JMenu(Resources.get("desktop.magellandesktop.menu.desktop.layout.caption"));
     
     ButtonGroup group = new ButtonGroup();
-    for (DockingLayout layout : layouts) {
+    for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
       LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
       group.add(item);
-      layoutMenu.add(item);
+      DockingFrameworkBuilder.layoutMenu.add(item);
     }
     
-    deleteMenu = new LayoutDeleteAction();
-    deleteMenu.setEnabled(layouts.size()>1);
+    DockingFrameworkBuilder.deleteMenu = new LayoutDeleteAction();
+    DockingFrameworkBuilder.deleteMenu.setEnabled(DockingFrameworkBuilder.layouts.size()>1);
     
-    layoutMenu.addSeparator();
-    layoutMenu.add(new LayoutExportAction());
-    layoutMenu.add(new LayoutImportAction());
-    layoutMenu.addSeparator();
-    layoutMenu.add(new LayoutNewAction());
-    layoutMenu.add(new LayoutSaveAction());
-    layoutMenu.add(deleteMenu);
+    DockingFrameworkBuilder.layoutMenu.addSeparator();
+    DockingFrameworkBuilder.layoutMenu.add(new LayoutExportAction());
+    DockingFrameworkBuilder.layoutMenu.add(new LayoutImportAction());
+    DockingFrameworkBuilder.layoutMenu.addSeparator();
+    DockingFrameworkBuilder.layoutMenu.add(new LayoutNewAction());
+    DockingFrameworkBuilder.layoutMenu.add(new LayoutSaveAction());
+    DockingFrameworkBuilder.layoutMenu.add(DockingFrameworkBuilder.deleteMenu);
     
-    desktopMenu.add(layoutMenu);
+    desktopMenu.add(DockingFrameworkBuilder.layoutMenu);
     
-    hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), PropertiesHelper.getBoolean(settings, PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
-    hideTabs.setActionCommand("hideTabs");
-    desktopMenu.add(hideTabs);
-    hideTabs.addActionListener(listener);
+    DockingFrameworkBuilder.hideTabs = new JCheckBoxMenuItem(Resources.get("desktop.magellandesktop.menu.desktop.hidetabs.caption"), PropertiesHelper.getBoolean(settings, PropertiesHelper.CLIENTPREFERENCES_DONT_SHOW_TABS, false));
+    DockingFrameworkBuilder.hideTabs.setActionCommand("hideTabs");
+    desktopMenu.add(DockingFrameworkBuilder.hideTabs);
+    DockingFrameworkBuilder.hideTabs.addActionListener(listener);
     
     desktopMenu.addSeparator();
     
     if(components.size() > 0) {
       for (String key : components.keySet()) {
-        if (key.equals("COMMANDS")) continue; // deprecated
-        if (key.equals("NAME")) continue; // deprecated
-        if (key.equals("DESCRIPTION")) continue; // deprecated
-        if (key.equals("OVERVIEW&HISTORY")) continue; // deprecated
+        if (key.equals("COMMANDS")) {
+          continue; // deprecated
+        }
+        if (key.equals("NAME")) {
+          continue; // deprecated
+        }
+        if (key.equals("DESCRIPTION")) {
+          continue; // deprecated
+        }
+        if (key.equals("OVERVIEW&HISTORY")) {
+          continue; // deprecated
+        }
         
-        Component component = components.get(key);
         JCheckBoxMenuItem item = new JCheckBoxMenuItem(Resources.get("dock."+key+".title"), false);
         item.setActionCommand("menu."+key);
         desktopMenu.add(item);
@@ -342,37 +361,41 @@ public class DockingFrameworkBuilder  {
    * them and recreate the list of available docking layouts.
    */
   public void updateLayoutMenu() {
-    if (layoutMenu == null) return;
+    if (DockingFrameworkBuilder.layoutMenu == null) {
+      return;
+    }
     
     // remove all layout items from the menu
-    for (int i=0; i<layoutMenu.getItemCount(); i++) {
-      if (layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) {
-        log.info("Removing Layout Menu Entry "+layoutMenu.getItem(i).getText());
-        layoutMenu.remove(i);
+    for (int i=0; i<DockingFrameworkBuilder.layoutMenu.getItemCount(); i++) {
+      if (DockingFrameworkBuilder.layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) {
+        DockingFrameworkBuilder.log.info("Removing Layout Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText());
+        DockingFrameworkBuilder.layoutMenu.remove(i);
         i--;
-      } else if (layoutMenu.getItem(i) != null) {
-        log.info("Don't remove Menu Entry "+layoutMenu.getItem(i).getText()+" ("+layoutMenu.getItem(i).getClass().getName()+")");
+      } else if (DockingFrameworkBuilder.layoutMenu.getItem(i) != null) {
+        DockingFrameworkBuilder.log.info("Don't remove Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText()+" ("+DockingFrameworkBuilder.layoutMenu.getItem(i).getClass().getName()+")");
       }
     }
     
     // add all available items.
     int i=0;
     ButtonGroup group = new ButtonGroup();
-    for (DockingLayout layout : layouts) {
+    for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
       LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
       group.add(item);
-      log.info("Add Layout Menu Entry ("+i+"): "+layout.getName());
-      layoutMenu.insert(item,i++);
+      DockingFrameworkBuilder.log.info("Add Layout Menu Entry ("+i+"): "+layout.getName());
+      DockingFrameworkBuilder.layoutMenu.insert(item,i++);
     }
     
-    deleteMenu.setEnabled(layouts.size()>1);
+    DockingFrameworkBuilder.deleteMenu.setEnabled(DockingFrameworkBuilder.layouts.size()>1);
   }
   
   /**
    * 
    */
   public void setTabVisibility(boolean showTabs) {
-    if (hideTabs != null) hideTabs.setSelected(!showTabs);
+    if (DockingFrameworkBuilder.hideTabs != null) {
+      DockingFrameworkBuilder.hideTabs.setSelected(!showTabs);
+    }
   }
   
   /**
@@ -380,8 +403,10 @@ public class DockingFrameworkBuilder  {
    * or null, if there is no layout with this name.
    */
   public DockingLayout getLayout(String name) {
-    for (DockingLayout layout : layouts) {
-      if (layout.getName().equalsIgnoreCase(name)) return layout;
+    for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
+      if (layout.getName().equalsIgnoreCase(name)) {
+        return layout;
+      }
     }
     return null;
   }
@@ -394,7 +419,7 @@ public class DockingFrameworkBuilder  {
     Element root = DockingLayout.createDefaultLayout(name, false);
     
     DockingLayout layout = new DockingLayout(name,root,viewMap,views);
-    layouts.add(layout);
+    DockingFrameworkBuilder.layouts.add(layout);
     
     setActiveLayout(layout);
     
@@ -405,17 +430,25 @@ public class DockingFrameworkBuilder  {
    * Deletes the current layout and selects the first layout.
    */
   public void deleteCurrentLayout() {
-    if (layouts.size()<=1) return; // nene...
-    if (activeLayout == null) return; // ham we nich.
+    if (DockingFrameworkBuilder.layouts.size()<=1) {
+      return; // nene...
+    }
+    if (DockingFrameworkBuilder.activeLayout == null) {
+      return; // ham we nich.
+    }
     
-    DockingLayout deletableLayout = activeLayout;
-    log.info("Remove docking layout '"+deletableLayout.getName()+"'");
-    int index = layouts.indexOf(activeLayout);
-    if (index == 0) index=1; else index=0; // if the first layout is active, use the second layout.
-    log.info("index:"+index);
-    setActiveLayout(layouts.get(index));
+    DockingLayout deletableLayout = DockingFrameworkBuilder.activeLayout;
+    DockingFrameworkBuilder.log.info("Remove docking layout '"+deletableLayout.getName()+"'");
+    int index = DockingFrameworkBuilder.layouts.indexOf(DockingFrameworkBuilder.activeLayout);
+    if (index == 0) {
+      index=1;
+    } else {
+      index=0; // if the first layout is active, use the second layout.
+    }
+    DockingFrameworkBuilder.log.info("index:"+index);
+    setActiveLayout(DockingFrameworkBuilder.layouts.get(index));
     
-    layouts.remove(deletableLayout);
+    DockingFrameworkBuilder.layouts.remove(deletableLayout);
     
     updateLayoutMenu();
   }
@@ -424,23 +457,25 @@ public class DockingFrameworkBuilder  {
    * Enabled the specified docking layout.
    */
   public void setActiveLayout(DockingLayout layout) {
-    log.info("Set docking layout '"+layout.getName()+"'");
+    DockingFrameworkBuilder.log.info("Set docking layout '"+layout.getName()+"'");
     RootWindow window = null;
-    if (activeLayout != null) {
-      activeLayout.setActive(false);
-      activeLayout.dispose();
-      window = activeLayout.getRootWindow();
+    if (DockingFrameworkBuilder.activeLayout != null) {
+      DockingFrameworkBuilder.activeLayout.setActive(false);
+      DockingFrameworkBuilder.activeLayout.dispose();
+      window = DockingFrameworkBuilder.activeLayout.getRootWindow();
     }
-    activeLayout = layout;
-    activeLayout.setActive(true);
-    activeLayout.open(window,settings);
+    DockingFrameworkBuilder.activeLayout = layout;
+    DockingFrameworkBuilder.activeLayout.setActive(true);
+    DockingFrameworkBuilder.activeLayout.open(window,settings);
   }
   
   /**
    * Enables a desktop menu entry for the given View
    */
   public void setActive(View view) {
-    if (view == null) return;
+    if (view == null) {
+      return;
+    }
     MagellanDesktop.getInstance().setActive(view.getName());
   }
   
@@ -448,7 +483,9 @@ public class DockingFrameworkBuilder  {
    * Disables a desktop menu entry for the given View
    */
   public void setInActive(View view) {
-    if (view == null) return;
+    if (view == null) {
+      return;
+    }
     MagellanDesktop.getInstance().setInActive(view.getName());
   }
   

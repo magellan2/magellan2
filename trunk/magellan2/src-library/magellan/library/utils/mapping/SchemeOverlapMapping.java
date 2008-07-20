@@ -41,7 +41,7 @@ import magellan.library.Scheme;
 public class SchemeOverlapMapping implements LevelMapping {
   private static SchemeOverlapMapping singleton = new SchemeOverlapMapping();
   public static SchemeOverlapMapping getSingleton() {
-    return singleton;
+    return SchemeOverlapMapping.singleton;
   }
 
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {

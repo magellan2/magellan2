@@ -110,10 +110,10 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			emptyBorder = new EmptyBorder(0, 0, 0, 1);
 
 			loadTypesets(); // creates the array
-			loadStylesets(); // create custom stylesets
+			CellRenderer.loadStylesets(); // create custom stylesets
 
 			loadAdditionalValueProperties(); // loads type set "ADDITIONAL"
-			loadEmphasizeData();
+			CellRenderer.loadEmphasizeData();
 			initialized = true;
 		}
 
@@ -142,40 +142,40 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	}
 
 	protected void loadTypesets() {
-		typeSets = new GraphicsStyleset[12];
+		CellRenderer.typeSets = new GraphicsStyleset[12];
 
 		// load the stylesets
-		loadStyleset("SIMPLE");
-		loadStyleset("MAIN");
-		loadStyleset("ADDITIONAL");
-		loadStyleset("DEFAULT");
+		CellRenderer.loadStyleset("SIMPLE");
+		CellRenderer.loadStyleset("MAIN");
+		CellRenderer.loadStyleset("ADDITIONAL");
+		CellRenderer.loadStyleset("DEFAULT");
     
     // load predifined "custom" sets
-    loadStyleset("Talent>");
-    loadStyleset("Talent>.Talent1");
-    loadStyleset("Talent>.Talent2");
-    loadStyleset("Talent>.Talent3");
-    loadStyleset("Talent<");
-    loadStyleset("Talent<.Talent-1");
-    loadStyleset("Talent<.Talent-2");
-    loadStyleset("Talent<.Talent-3");
+    CellRenderer.loadStyleset("Talent>");
+    CellRenderer.loadStyleset("Talent>.Talent1");
+    CellRenderer.loadStyleset("Talent>.Talent2");
+    CellRenderer.loadStyleset("Talent>.Talent3");
+    CellRenderer.loadStyleset("Talent<");
+    CellRenderer.loadStyleset("Talent<.Talent-1");
+    CellRenderer.loadStyleset("Talent<.Talent-2");
+    CellRenderer.loadStyleset("Talent<.Talent-3");
 
-		typeSets[0] = (GraphicsStyleset) stylesets.get("SIMPLE");
-		typeSets[1] = (GraphicsStyleset) stylesets.get("MAIN");
-		typeSets[2] = (GraphicsStyleset) stylesets.get("ADDITIONAL");
-		typeSets[3] = (GraphicsStyleset) stylesets.get("Talent>");
-    typeSets[4] = (GraphicsStyleset) stylesets.get("Talent>.Talent1");
-    typeSets[5] = (GraphicsStyleset) stylesets.get("Talent>.Talent2");
-    typeSets[6] = (GraphicsStyleset) stylesets.get("Talent>.Talent3");
-    typeSets[7] = (GraphicsStyleset) stylesets.get("Talent<");
-    typeSets[8] = (GraphicsStyleset) stylesets.get("Talent<.Talent-1");
-    typeSets[9] = (GraphicsStyleset) stylesets.get("Talent<.Talent-2");
-    typeSets[10] = (GraphicsStyleset) stylesets.get("Talent<.Talent-3");
-    typeSets[11] = (GraphicsStyleset) stylesets.get("DEFAULT");
+		CellRenderer.typeSets[0] = CellRenderer.stylesets.get("SIMPLE");
+		CellRenderer.typeSets[1] = CellRenderer.stylesets.get("MAIN");
+		CellRenderer.typeSets[2] = CellRenderer.stylesets.get("ADDITIONAL");
+		CellRenderer.typeSets[3] = CellRenderer.stylesets.get("Talent>");
+    CellRenderer.typeSets[4] = CellRenderer.stylesets.get("Talent>.Talent1");
+    CellRenderer.typeSets[5] = CellRenderer.stylesets.get("Talent>.Talent2");
+    CellRenderer.typeSets[6] = CellRenderer.stylesets.get("Talent>.Talent3");
+    CellRenderer.typeSets[7] = CellRenderer.stylesets.get("Talent<");
+    CellRenderer.typeSets[8] = CellRenderer.stylesets.get("Talent<.Talent-1");
+    CellRenderer.typeSets[9] = CellRenderer.stylesets.get("Talent<.Talent-2");
+    CellRenderer.typeSets[10] = CellRenderer.stylesets.get("Talent<.Talent-3");
+    CellRenderer.typeSets[11] = CellRenderer.stylesets.get("DEFAULT");
 
-		typeSets[0].setParent("DEFAULT");
-		typeSets[1].setParent("DEFAULT");
-		typeSets[2].setParent("DEFAULT");
+		CellRenderer.typeSets[0].setParent("DEFAULT");
+		CellRenderer.typeSets[1].setParent("DEFAULT");
+		CellRenderer.typeSets[2].setParent("DEFAULT");
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		boolean tTip = true;
 
 		// Text -> color mapping
-		String cMapS = settings.getProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP);
+		String cMapS = CellRenderer.settings.getProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP);
 
 		try {
 			StringTokenizer st = new StringTokenizer(cMapS, ";");
@@ -208,27 +208,27 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		}
 
 		// Show Tooltips
-		String tTipS = settings.getProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS);
+		String tTipS = CellRenderer.settings.getProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS);
 		tTip = ((tTipS != null) && tTipS.equals("true"));
 
 		// now give the renderer our values
-		colorMap = cMap;
-		showTooltips = tTip;
+		CellRenderer.colorMap = cMap;
+		CellRenderer.showTooltips = tTip;
 	}
 
 	protected static void loadEmphasizeData() {
-		emphasizeStyleChange = 0;
+		CellRenderer.emphasizeStyleChange = 0;
 
 		try {
-			emphasizeStyleChange = Integer.parseInt(settings.getProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE));
+			CellRenderer.emphasizeStyleChange = Integer.parseInt(CellRenderer.settings.getProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE));
 		} catch(Exception exc) {
-			emphasizeStyleChange = Font.BOLD;
+			CellRenderer.emphasizeStyleChange = Font.BOLD;
 		}
 
-		emphasizeColor = null;
+		CellRenderer.emphasizeColor = null;
 
 		try {
-			emphasizeColor = Color.decode(settings.getProperty("CellRenderer.Emphasize.Color"));
+			CellRenderer.emphasizeColor = Color.decode(CellRenderer.settings.getProperty("CellRenderer.Emphasize.Color"));
 		} catch(Exception exc) {
 		}
 	}
@@ -240,24 +240,24 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void setEmphasizeData(int sChange, Color sColor) {
-		if((emphasizeStyleChange != sChange) && (boldFonts != null)) {
-			boldFonts.clear();
+		if((CellRenderer.emphasizeStyleChange != sChange) && (CellRenderer.boldFonts != null)) {
+			CellRenderer.boldFonts.clear();
 		}
 
-		emphasizeStyleChange = sChange;
+		CellRenderer.emphasizeStyleChange = sChange;
 
 		if(sChange == 0) {
-			settings.remove(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE);
+			CellRenderer.settings.remove(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE);
 		} else {
-			settings.setProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE, String.valueOf(sChange));
+			CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_EMPHASIZE_STYLE, String.valueOf(sChange));
 		}
 
-		emphasizeColor = sColor;
+		CellRenderer.emphasizeColor = sColor;
 
 		if(sColor == null) {
-			settings.remove("CellRenderer.Emphasize.Color");
+			CellRenderer.settings.remove("CellRenderer.Emphasize.Color");
 		} else {
-			settings.setProperty("CellRenderer.Emphasize.Color", encodeColor(sColor));
+			CellRenderer.settings.setProperty("CellRenderer.Emphasize.Color", CellRenderer.encodeColor(sColor));
 		}
 	}
 
@@ -268,10 +268,10 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void setAdditionalValueProperties(Map<String,Color> colorM, boolean sTip) {
-		showTooltips = sTip;
-		settings.setProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS, sTip ? "true" : "false");
+		CellRenderer.showTooltips = sTip;
+		CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS, sTip ? "true" : "false");
 
-		setColorMap(colorM);
+		CellRenderer.setColorMap(colorM);
 	}
 
 	/**
@@ -280,16 +280,16 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void setColorMap(Map<String,Color> colorM) {
-		if(((colorMap != null) && (colorM == null)) ||
-			   ((colorMap != null) && !colorMap.equals(colorM)) ||
-			   ((colorMap == null) && (colorM != null))) {
-			colorMap = colorM;
+		if(((CellRenderer.colorMap != null) && (colorM == null)) ||
+			   ((CellRenderer.colorMap != null) && !CellRenderer.colorMap.equals(colorM)) ||
+			   ((CellRenderer.colorMap == null) && (colorM != null))) {
+			CellRenderer.colorMap = colorM;
 
-			if(colorMap == null) {
-				settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
+			if(CellRenderer.colorMap == null) {
+				CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
 			} else {
 				StringBuffer str = new StringBuffer();
-				Iterator it = colorMap.keySet().iterator();
+				Iterator it = CellRenderer.colorMap.keySet().iterator();
 
 				while(it.hasNext()) {
 					if(str.length() > 0) {
@@ -300,14 +300,14 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 					str.append(value);
 					str.append(';');
 
-					Color col = (Color) colorMap.get(value);
+					Color col = CellRenderer.colorMap.get(value);
 					str.append(Colors.encode(col).replace(',', ';'));
 				}
 
 				if(str.length() > 0) {
-					settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, str.toString());
+					CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, str.toString());
 				} else {
-					settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
+					CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
 				}
 			}
 		}
@@ -319,20 +319,20 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	protected void applyUIDefaults() {
 		defaultRenderer = new DefaultTreeCellRenderer();
 
-		typeSets[11].setForeground((Color) UIManager.getDefaults().get("Tree.textForeground"));
-		typeSets[11].setBackground((Color) UIManager.getDefaults().get("Tree.textBackground"));
-		typeSets[11].setSelectedForeground((Color) UIManager.getDefaults().get("Tree.selectionForeground"));
-		typeSets[11].setSelectedBackground((Color) UIManager.getDefaults().get("Tree.selectionBackground"));
+		CellRenderer.typeSets[11].setForeground((Color) UIManager.getDefaults().get("Tree.textForeground"));
+		CellRenderer.typeSets[11].setBackground((Color) UIManager.getDefaults().get("Tree.textBackground"));
+		CellRenderer.typeSets[11].setSelectedForeground((Color) UIManager.getDefaults().get("Tree.selectionForeground"));
+		CellRenderer.typeSets[11].setSelectedBackground((Color) UIManager.getDefaults().get("Tree.selectionBackground"));
 
 		// pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
 		focusedBorder = new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
-		selectedBorder = new MatteBorder(1, 1, 1, 1, typeSets[3].getSelectedBackground());
+		selectedBorder = new MatteBorder(1, 1, 1, 1, CellRenderer.typeSets[3].getSelectedBackground());
 		plainBorder = new EmptyBorder(1, 1, 1, 1);
 
 		this.setOpaque(false);
 		this.setLayout(new SameHeightBoxLayout());
-		this.setBackground(typeSets[11].getBackground());
-		this.setForeground(typeSets[11].getBackground());
+		this.setBackground(CellRenderer.typeSets[11].getBackground());
+		this.setForeground(CellRenderer.typeSets[11].getBackground());
 
 		label = new JLabel();
 		label.setOpaque(false);
@@ -341,7 +341,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		this.add(label);
 
 		Font plainFont = label.getFont().deriveFont(Font.PLAIN);
-		typeSets[11].setFont(plainFont);
+		CellRenderer.typeSets[11].setFont(plainFont);
 
 		GraphicsStyleset set = getStyleset(1);
 		defaultRenderer.setFont(set.getFont());
@@ -447,7 +447,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		if(iconNamesSize < iconLabelCount) {
 			for(int i = iconLabelCount - 1; i >= iconNamesSize; i--) {
 				if(this.getComponent(i) == label) {
-					log.info("iconLabelCount: " + iconLabelCount + ", iconNamesSize: " +
+					CellRenderer.log.info("iconLabelCount: " + iconLabelCount + ", iconNamesSize: " +
 							 iconNamesSize);
 				}
 
@@ -507,8 +507,8 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		if(cellObj.emphasized()) {
 			label.setFont(getBoldFont(set.getFont()));
 
-			if(emphasizeColor != null) {
-				label.setForeground(emphasizeColor);
+			if(CellRenderer.emphasizeColor != null) {
+				label.setForeground(CellRenderer.emphasizeColor);
 			}
 		}
 
@@ -542,7 +542,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		if(iconNamesSize < iconLabelCount) {
 			for(int i = iconLabelCount - 1; i >= iconNamesSize; i--) {
 				if(this.getComponent(i) == label) {
-					log.info("iconLabelCount: " + iconLabelCount + ", iconNamesSize: " +
+					CellRenderer.log.info("iconLabelCount: " + iconLabelCount + ", iconNamesSize: " +
 							 iconNamesSize);
 				}
 
@@ -576,7 +576,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				formatLabel(iconLabels[i], set, false, false);
 				iconLabels[i].setIcon(icon);
 
-				if(showTooltips) {
+				if(CellRenderer.showTooltips) {
 					iconLabels[i].setToolTipText(iconName);
 				} else {
 					iconLabels[i].setToolTipText(null);
@@ -599,8 +599,8 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
 		String text = l.getText();
 
-		if((text != null) && (colorMap != null) && colorMap.containsKey(text)) {
-			l.setForeground((Color) colorMap.get(text));
+		if((text != null) && (CellRenderer.colorMap != null) && CellRenderer.colorMap.containsKey(text)) {
+			l.setForeground(CellRenderer.colorMap.get(text));
 		}
 
 		// icon
@@ -623,8 +623,8 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		if(ge.isEmphasized()) {
 			l.setFont(getBoldFont(l.getFont()));
 
-			if(emphasizeColor != null) {
-				label.setForeground(emphasizeColor);
+			if(CellRenderer.emphasizeColor != null) {
+				label.setForeground(CellRenderer.emphasizeColor);
 			}
 		}
 	}
@@ -660,13 +660,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			return (Icon) icon;
 		}
 
-		if(mapIcons.containsKey(icon)) {
-			return (Icon) mapIcons.get(icon);
+		if(CellRenderer.mapIcons.containsKey(icon)) {
+			return CellRenderer.mapIcons.get(icon);
 		}
 
 		if(icon instanceof Image) {
 			ImageIcon ii = new ImageIcon((Image) icon);
-			mapIcons.put(icon, ii);
+			CellRenderer.mapIcons.put(icon, ii);
 
 			return ii;
 		}
@@ -681,7 +681,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				ic = missingIcon;
 			}
 
-			mapIcons.put(icon, ic);
+			CellRenderer.mapIcons.put(icon, ic);
 
 			return ic;
 		}
@@ -703,15 +703,15 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	protected Font getBoldFont(Font f) {
-		if((emphasizeStyleChange == 0) || ((f.getStyle() & emphasizeStyleChange) != 0)) {
+		if((CellRenderer.emphasizeStyleChange == 0) || ((f.getStyle() & CellRenderer.emphasizeStyleChange) != 0)) {
 			return f;
 		}
 
-		if(!boldFonts.containsKey(f)) {
-			boldFonts.put(f, f.deriveFont(f.getStyle() | emphasizeStyleChange));
+		if(!CellRenderer.boldFonts.containsKey(f)) {
+			CellRenderer.boldFonts.put(f, f.deriveFont(f.getStyle() | CellRenderer.emphasizeStyleChange));
 		}
 
-		return (Font) boldFonts.get(f);
+		return CellRenderer.boldFonts.get(f);
 	}
 
 	/**
@@ -774,13 +774,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		GraphicsStyleset fallback = null;
 
 		if(ge.hasStyleset()) {
-			if((stylesets == null) || !stylesets.containsKey(ge.getStyleset())) {
-				loadStyleset(ge.getStyleset());
+			if((CellRenderer.stylesets == null) || !CellRenderer.stylesets.containsKey(ge.getStyleset())) {
+				CellRenderer.loadStyleset(ge.getStyleset());
 			}
 
-			fallback = (GraphicsStyleset) stylesets.get(ge.getStyleset());
+			fallback = CellRenderer.stylesets.get(ge.getStyleset());
 		} else {
-			fallback = typeSets[ge.getType()];
+			fallback = CellRenderer.typeSets[ge.getType()];
 		}
 
 		fallbackCode(fallback, ge.getType());
@@ -811,7 +811,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	protected GraphicsStyleset getStyleset(int type) {
-		fallbackCode(typeSets[type], type);
+		fallbackCode(CellRenderer.typeSets[type], type);
 
 		return styleset;
 	}
@@ -881,13 +881,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			}
 
 			if(fallback.getParent() != null) {
-				if(!stylesets.containsKey(fallback.getParent())) {
-					loadStyleset(fallback.getParent());
+				if(!CellRenderer.stylesets.containsKey(fallback.getParent())) {
+					CellRenderer.loadStyleset(fallback.getParent());
 				}
 
-				fallback = (GraphicsStyleset) stylesets.get(fallback.getParent());
+				fallback = CellRenderer.stylesets.get(fallback.getParent());
 			} else {
-				fallback = typeSets[type];
+				fallback = CellRenderer.typeSets[type];
 			}
 		} while(!allFound);
 	}
@@ -898,12 +898,12 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void addStyleset(GraphicsStyleset set) {
-		if(stylesets == null) {
-			stylesets = new HashMap<String, GraphicsStyleset>();
+		if(CellRenderer.stylesets == null) {
+			CellRenderer.stylesets = new HashMap<String, GraphicsStyleset>();
 		}
 
-		stylesets.put(set.getName(), set);
-		saveStyleset(set.getName());
+		CellRenderer.stylesets.put(set.getName(), set);
+		CellRenderer.saveStyleset(set.getName());
 	}
 
 	/**
@@ -912,16 +912,16 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	protected static void loadStyleset(String name) {
-		if(stylesets == null) {
-			stylesets = new HashMap<String, GraphicsStyleset>();
+		if(CellRenderer.stylesets == null) {
+			CellRenderer.stylesets = new HashMap<String, GraphicsStyleset>();
 		}
 
-		if(!stylesets.containsKey(name)) {
+		if(!CellRenderer.stylesets.containsKey(name)) {
 			GraphicsStyleset set = new GraphicsStyleset(name);
 			String propName = PropertiesHelper.CELLRENDERER_STYLESETS + name;
 
-			if(settings.containsKey(propName)) {
-				String def = settings.getProperty(propName);
+			if(CellRenderer.settings.containsKey(propName)) {
+				String def = CellRenderer.settings.getProperty(propName);
 				StringTokenizer st = new StringTokenizer(def, ",;");
 
 				while(st.hasMoreTokens()) {
@@ -1016,12 +1016,12 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 						}
 					}
 
-					stylesets.put(set.getName(), set);
-					saveStyleset(set.getName());
+					CellRenderer.stylesets.put(set.getName(), set);
+					CellRenderer.saveStyleset(set.getName());
 				}
 			}
 
-			stylesets.put(name, set);
+			CellRenderer.stylesets.put(name, set);
 		}
 	}
 
@@ -1031,7 +1031,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static Map<String,GraphicsStyleset> getStylesets() {
-		return stylesets;
+		return CellRenderer.stylesets;
 	}
 
 	/**
@@ -1042,7 +1042,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static GraphicsStyleset getTypeset(int i) {
-		return typeSets[i];
+		return CellRenderer.typeSets[i];
 	}
 
 	/**
@@ -1050,13 +1050,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * stylesets and searches the given sets.
 	 */
 	public static void loadStylesets() {
-		String custom = settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS);
+		String custom = CellRenderer.settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS);
 
 		if(custom != null) {
 			StringTokenizer st = new StringTokenizer(custom, ";");
 
 			while(st.hasMoreElements()) {
-				loadStyleset(st.nextToken());
+				CellRenderer.loadStyleset(st.nextToken());
 			}
 		}
 	}
@@ -1067,9 +1067,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	protected static void saveStyleset(String name) {
-		if((stylesets != null) && stylesets.containsKey(name)) {
-			GraphicsStyleset set = (GraphicsStyleset) stylesets.get(name);
-			String custom = settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, "");
+		if((CellRenderer.stylesets != null) && CellRenderer.stylesets.containsKey(name)) {
+			GraphicsStyleset set = CellRenderer.stylesets.get(name);
+			String custom = CellRenderer.settings.getProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, "");
 
 			if(custom.indexOf(name) == -1) {
 				if(custom.length() == 0) {
@@ -1078,11 +1078,11 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 					custom += (";" + name);
 				}
 
-				settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom);
+				CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom);
 			}
 
-			String def = createDefinitionString(set);
-			settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
+			String def = CellRenderer.createDefinitionString(set);
+			CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
 		}
 	}
 
@@ -1091,15 +1091,15 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 */
 	public static void saveStylesets() {
 		// custom sets
-		if(stylesets != null) {
+		if(CellRenderer.stylesets != null) {
 			StringBuffer custom = new StringBuffer();
-			Iterator it = stylesets.keySet().iterator();
+			Iterator it = CellRenderer.stylesets.keySet().iterator();
 
 			while(it.hasNext()) {
 				String name = (String) it.next();
-				GraphicsStyleset set = (GraphicsStyleset) stylesets.get(name);
-				String def = createDefinitionString(set);
-				settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
+				GraphicsStyleset set = CellRenderer.stylesets.get(name);
+				String def = CellRenderer.createDefinitionString(set);
+				CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);
 
 				if(custom.length() > 0) {
 					custom.append(';');
@@ -1108,7 +1108,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				custom.append(name);
 			}
 
-			settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom.toString());
+			CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_CUSTOM_STYLESETS, custom.toString());
 		}
 	}
 
@@ -1118,9 +1118,9 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void removeStyleset(String styleset) {
-		if(stylesets != null) {
-			stylesets.remove(styleset);
-			settings.remove(PropertiesHelper.CELLRENDERER_STYLESETS + styleset);
+		if(CellRenderer.stylesets != null) {
+			CellRenderer.stylesets.remove(styleset);
+			CellRenderer.settings.remove(PropertiesHelper.CELLRENDERER_STYLESETS + styleset);
 		}
 	}
 
@@ -1157,7 +1157,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
 		if(set.getForeground() != null) {
 			buf.append("foreground=");
-			buf.append(encodeColor(set.getForeground()));
+			buf.append(CellRenderer.encodeColor(set.getForeground()));
 		}
 
 		if(set.getBackground() != null) {
@@ -1166,7 +1166,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			}
 
 			buf.append("background=");
-			buf.append(encodeColor(set.getBackground()));
+			buf.append(CellRenderer.encodeColor(set.getBackground()));
 		}
 
 		if(set.getSelectedForeground() != null) {
@@ -1175,7 +1175,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			}
 
 			buf.append("selectedforeground=");
-			buf.append(encodeColor(set.getSelectedForeground()));
+			buf.append(CellRenderer.encodeColor(set.getSelectedForeground()));
 		}
 
 		if(set.getSelectedBackground() != null) {
@@ -1184,7 +1184,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			}
 
 			buf.append("selectedbackground=");
-			buf.append(encodeColor(set.getSelectedBackground()));
+			buf.append(CellRenderer.encodeColor(set.getSelectedBackground()));
 		}
 
 		if(set.getFont() != null) {
@@ -1193,7 +1193,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 			}
 
 			buf.append("font=");
-			buf.append(encodeFont(set.getFont()));
+			buf.append(CellRenderer.encodeFont(set.getFont()));
 		}
 
 		if(buf.length() > 0) {
@@ -1240,11 +1240,8 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	/**
 	 * Overrides JComponent.getToolTipText to return the tooltip of the underlying label or null,
 	 * if no label found.
-	 *
-	 * 
-	 *
-	 * 
 	 */
+  @Override
 	public String getToolTipText(MouseEvent e) {
 		if(e != null) {
 			// reprocess layout to have the sizes that were displayed

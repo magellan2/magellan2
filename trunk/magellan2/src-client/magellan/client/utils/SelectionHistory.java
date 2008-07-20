@@ -46,11 +46,11 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static SelectionListener getSelectionEventHook() {
-		return eventHook;
+		return SelectionHistory.eventHook;
 	}
 
   public static TempUnitListener getTempUnitEventHook() {
-    return eventHook;
+    return SelectionHistory.eventHook;
   }
 
 	/**
@@ -59,9 +59,9 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void selectionChanged(SelectionEvent e) {
-		if((e.getActiveObject() != null) && !ignoredSources.contains(e.getSource())){
-			history.add(e.getActiveObject());
-			informListeners();
+		if((e.getActiveObject() != null) && !SelectionHistory.ignoredSources.contains(e.getSource())){
+			SelectionHistory.history.add(e.getActiveObject());
+			SelectionHistory.informListeners();
 		}
 	}
 
@@ -71,13 +71,13 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void addListener(ChangeListener l) {
-		listeners.add(l);
+		SelectionHistory.listeners.add(l);
 	}
 
 	private static void informListeners() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					Iterator it = listeners.iterator();
+					Iterator it = SelectionHistory.listeners.iterator();
 
 					while(it.hasNext()) {
 						((ChangeListener) it.next()).stateChanged(null);
@@ -92,7 +92,7 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static Collection getHistory() {
-		return history;
+		return SelectionHistory.history;
 	}
 
 	/**
@@ -101,7 +101,7 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void ignoreSource(Object o) {
-		ignoredSources.add(o);
+		SelectionHistory.ignoredSources.add(o);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void unignoreSource(Object o) {
-		ignoredSources.remove(o);
+		SelectionHistory.ignoredSources.remove(o);
 	}
 
 	/**
@@ -119,14 +119,14 @@ public class SelectionHistory {
 	 * 
 	 */
 	public static void setMaxSize(int i) {
-		history.setMaxSize(i);
+		SelectionHistory.history.setMaxSize(i);
 	}
 
 	/**
 	 * DOCUMENT-ME
 	 */
 	public static void clear() {
-		history.clear();
+		SelectionHistory.history.clear();
 	}
 
 	private static class EventHook implements SelectionListener, TempUnitListener {
@@ -156,7 +156,7 @@ public class SelectionHistory {
    * @param e
    */
   public static void tempUnitDeleting(TempUnitEvent e) {
-    getHistory().remove(e.getTempUnit());
+    SelectionHistory.getHistory().remove(e.getTempUnit());
     
   }
 }

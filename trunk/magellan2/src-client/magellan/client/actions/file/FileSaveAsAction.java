@@ -57,7 +57,8 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	 *
 	 * 
 	 */
-	public String getIconName() {
+	@Override
+  public String getIconName() {
 		return "saveas_edit";
 	}
 
@@ -66,7 +67,8 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		FileType file = getFile();
 
 		if(file != null) {
@@ -138,13 +140,14 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
       //      }
 
       return dataFile;
-    } else
+    } else {
       return null;
+    }
 	}
 	
 	protected void doSaveAsAction() {
 		
-		File dataFile = getFile(client);
+		File dataFile = FileSaveAsAction.getFile(client);
 
 		if (dataFile!=null){
 			doSaveAction(dataFile);
@@ -156,7 +159,7 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 			// log.info("debuging: doSaveAction(File) called for file: " + file.toString());
 			doSaveAction(FileTypeFactory.singleton().createFileType(file, false));
 		} catch(IOException exc) {
-			log.error(exc);
+			FileSaveAsAction.log.error(exc);
 			JOptionPane.showMessageDialog(client, exc.toString(),
 										  Resources.get("actions.filesaveaction.msg.filesave.error.title"),
 										  JOptionPane.ERROR_MESSAGE);

@@ -98,7 +98,8 @@ public class CastleType extends BuildingType implements Comparable {
 	 *
 	 * 
 	 */
-	public int compareTo(Object obj) {
+	@Override
+  public int compareTo(Object obj) {
 		if(obj instanceof CastleType) {
 			CastleType c = (CastleType) obj;
 

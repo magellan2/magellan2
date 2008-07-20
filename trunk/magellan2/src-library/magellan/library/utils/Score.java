@@ -76,6 +76,7 @@ public class Score<K> implements Comparable<Score<K>>{
     return score > s.getScore() ? 1 : (score < s.getScore() ? -1 : 0);
   }
     
+  @Override
   public String toString() {
     return type+": "+key.toString()+" = "+score;
   }

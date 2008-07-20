@@ -86,7 +86,8 @@ public class SelectNothingAction extends MenuAction implements SelectionListener
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		for(Iterator iter = selectedRegions.keySet().iterator(); iter.hasNext();) {
 			CoordinateID c = (CoordinateID) iter.next();
 

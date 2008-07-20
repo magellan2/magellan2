@@ -33,7 +33,8 @@ public class IronReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region region) {
+	@Override
+  public Object getRegionReplacement(Region region) {
 		ItemType ironType = region.getData().rules.getItemType("Eisen");
 		if (ironType==null){
 			return new Integer(0);

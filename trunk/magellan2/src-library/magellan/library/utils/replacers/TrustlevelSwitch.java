@@ -59,10 +59,10 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 			try {
 				min = Integer.parseInt(param1.toString());
 			} catch(NumberFormatException nfe) {
-				if(param1.toString().equals(CLEAR)) {
+				if(param1.toString().equals(Replacer.CLEAR)) {
 					((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).removeFilters(UnitFactionTLFilter.class);
 
-					return BLANK;
+					return Replacer.BLANK;
 				}
 			}
 
@@ -71,7 +71,7 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 		} catch(RuntimeException npe) {
 		}
 
-		return BLANK;
+		return Replacer.BLANK;
 	}
 
 	/**
@@ -88,7 +88,8 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 	 *
 	 * 
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.trustlevelswitch.description." +(getParameterCount() - 1));
 	}
 }

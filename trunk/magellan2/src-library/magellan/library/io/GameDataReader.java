@@ -43,7 +43,9 @@ public class GameDataReader {
    * @param ui The UserInterface for the progress. Can be NULL. Then no operation is displayed.
    */
   public GameDataReader(UserInterface ui) {
-    if (ui == null) ui = new NullUserInterface();
+    if (ui == null) {
+      ui = new NullUserInterface();
+    }
     this.ui = ui;
   }
   
@@ -152,7 +154,7 @@ public class GameDataReader {
     Reader reader = aFileType.createReader();
 
     try {
-      log.info("Loading report "+aFileType.getName());
+      GameDataReader.log.info("Loading report "+aFileType.getName());
       CRParser parser = new CRParser(ui,newOrigin);
       parser.read(reader, newData);
     } finally {

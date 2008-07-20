@@ -46,6 +46,7 @@ public enum Encoding {
   /**
    * @see java.lang.Enum#toString()
    */
+  @Override
   public String toString() {
     return encoding;
   }
@@ -55,10 +56,14 @@ public enum Encoding {
    * it's name representation.
    */
   public static Encoding getEncoding(String encoding) {
-    if (encoding == null) return null;
-    Encoding[] values = values();
+    if (encoding == null) {
+      return null;
+    }
+    Encoding[] values = Encoding.values();
     for (Encoding e : values) {
-      if (e.toString().equalsIgnoreCase(encoding)) return e;
+      if (e.toString().equalsIgnoreCase(encoding)) {
+        return e;
+      }
     }
     return null;
   }

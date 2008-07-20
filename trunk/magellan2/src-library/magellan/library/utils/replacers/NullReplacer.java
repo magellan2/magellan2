@@ -49,9 +49,9 @@ public class NullReplacer extends AbstractParameterReplacer {
 		Object obj = getParameter(0, o);
 
 		if(obj == null) {
-			return TRUE;
+			return NullReplacer.TRUE;
 		}
 
-		return FALSE;
+		return NullReplacer.FALSE;
 	}
 }

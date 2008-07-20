@@ -62,6 +62,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -107,7 +108,7 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
     list.setCellRenderer(new ColorMappingListCellRenderer());
     list.addListSelectionListener(this);
     list.addKeyListener(this);
-    this.add(new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED), con);
+    this.add(new JScrollPane(list, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED), con);
 
     JPanel bBox = new JPanel(new GridLayout(0, 1));
 

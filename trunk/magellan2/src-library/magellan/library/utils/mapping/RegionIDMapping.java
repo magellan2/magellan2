@@ -37,9 +37,10 @@ import magellan.library.utils.Score;
 public class RegionIDMapping implements DataMapping {
   private static RegionIDMapping singleton = new RegionIDMapping();
   public static RegionIDMapping getSingleton() {
-    return singleton;
+    return RegionIDMapping.singleton;
   }
   
+  @Override
   public String toString() {
     return "RegionID";
   }

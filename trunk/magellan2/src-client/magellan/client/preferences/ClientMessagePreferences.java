@@ -254,11 +254,14 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
   }
   
   class ColorPanelMouseAdapter extends MouseAdapter {
+    @Override
     public void mousePressed(MouseEvent e) {
       Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                             Resources.get("clientpreferences.messagecolors.dialog.title"),((Component) e.getSource()).getBackground());
 
-      if(newColor != null) ((Component) e.getSource()).setBackground(newColor);
+      if(newColor != null) {
+        ((Component) e.getSource()).setBackground(newColor);
+      }
     }
   }
 }

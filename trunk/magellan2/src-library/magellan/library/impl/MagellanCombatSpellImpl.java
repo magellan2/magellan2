@@ -96,7 +96,8 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 	 *
 	 * @return combat spell object as string.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return (getSpell() == null) ? ""
 									: (getSpell().getTypeName() + ", " + getCastingLevel() + ": " +
 									getSpell().toString());

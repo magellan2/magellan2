@@ -72,7 +72,8 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		// TODO (stm 2007-03-16) possible design problem here:
 		// in some NodeWrappers the string is set from outside (e.g. in EMapDetailsPanel)
 		// sometimes it is built here
@@ -87,8 +88,9 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 				text.append(" (!!!)");
 			}
 		}
-		if (hasOwner)
-			text.append(" ("+Resources.get("tree.unitcontainernodewrapper.owner")+")");
+		if (hasOwner) {
+      text.append(" ("+Resources.get("tree.unitcontainernodewrapper.owner")+")");
+    }
 		return text.toString();
 	}
 
@@ -101,11 +103,11 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 	 */
 	public List<String> getIconNames() {
 		ID key = uc.getType().getID();
-		List<String> iconNames = iconNamesLists.get(key);
+		List<String> iconNames = UnitContainerNodeWrapper.iconNamesLists.get(key);
 
 		if(iconNames == null) {
 			iconNames = Collections.singletonList(StringFactory.getFactory().intern(key.toString()));
-			iconNamesLists.put(key, iconNames);
+			UnitContainerNodeWrapper.iconNamesLists.put(key, iconNames);
 		}
 
 		return iconNames;

@@ -81,9 +81,11 @@ public class CoordinateID implements ID {
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
-	  if (o==null)
-	    return false;
+	@Override
+  public boolean equals(Object o) {
+	  if (o==null) {
+      return false;
+    }
 		try {
 			CoordinateID c = (CoordinateID) o;
 			
@@ -99,7 +101,8 @@ public class CoordinateID implements ID {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return toString(", ", false);
 	}
 
@@ -139,7 +142,8 @@ public class CoordinateID implements ID {
 	 *
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return (x << 12) ^ (y << 6) ^ z;
 	}
 
@@ -259,7 +263,8 @@ public class CoordinateID implements ID {
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 }

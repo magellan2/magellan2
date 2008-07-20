@@ -30,7 +30,8 @@ public class PrivDescReplacer extends AbstractUnitReplacer {
 	 *
 	 * 
 	 */
-	public Object getUnitReplacement(Unit r) {
+	@Override
+  public Object getUnitReplacement(Unit r) {
 		return r.getPrivDesc();
 	}
   

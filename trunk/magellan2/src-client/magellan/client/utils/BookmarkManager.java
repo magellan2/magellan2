@@ -13,11 +13,11 @@
 
 package magellan.client.utils;
 
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.KeyStroke;
@@ -50,24 +50,22 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 
 	// the number of the current bookmark
 	private int activeBookmark = 0;
-	private Properties settings;
 	private BookmarkDock dialog;
 
 	/**
 	 * Creates a new BookmarkManager object.
 	 */
-	public BookmarkManager(EventDispatcher dispatcher, Properties settings) {
+	public BookmarkManager(EventDispatcher dispatcher) {
 		this.dispatcher = dispatcher;
-		this.settings = settings;
 		dispatcher.addSelectionListener(this);
 
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0));
-		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.SHIFT_MASK));
-		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.CTRL_MASK));
+		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK));
+		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK));
 		DesktopEnvironment.registerShortcutListener(this);
 		
 		this.dialog = BookmarkDock.getInstance();
-		this.dialog.init(this,dispatcher,settings);
+		this.dialog.init(this,dispatcher);
 	}
 
 	/**
@@ -83,9 +81,9 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	public void shortCut(KeyStroke shortCut) {
 		if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0))) {
 			jumpForward();
-		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.SHIFT_MASK))) {
+		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK))) {
 			jumpBackward();
-		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, KeyEvent.CTRL_MASK))) {
+		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK))) {
 			toggleBookmark(activeObject);
 		}
 	}

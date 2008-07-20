@@ -240,7 +240,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void quit() {
+	@Override
+  public void quit() {
 		settings.setProperty("ArmyStatsPanel.DividerLoc", String.valueOf(dividerPos));
 	}
 
@@ -351,7 +352,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 				if(f.isPrivileged()) {
 					if((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
-						Alliance a = (Alliance) f.getAllies().get(fac.getID());
+						Alliance a = f.getAllies().get(fac.getID());
 						minTrust &= a.getState();
 					} else {
 						minTrust = 0;
@@ -417,7 +418,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 						WeaponGroup wg = (WeaponGroup) it.next();
 
 						if(wg.units.size() == 1) {
-							PartUnit u = (PartUnit) wg.units.iterator().next();
+							PartUnit u = wg.units.iterator().next();
 							lineRoot.add(createNodeWrapper(u));
 						} else {
 							Object icon = null;
@@ -567,7 +568,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 				while(regIt.hasNext()) {
 					Region reg = regIt.next();
-          if (reg.units().size()==0) continue;
+          if (reg.units().size()==0) {
+            continue;
+          }
 					allRegions.remove(reg);  
 
 					Collection<Army> col = createRegionArmies(reg, cat);
@@ -636,7 +639,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 		while(regIt.hasNext()) {
 			Region reg = regIt.next();
-      if (reg.units().size()==0) continue;
+      if (reg.units().size()==0) {
+        continue;
+      }
 			Collection<Army> col = createRegionArmies(reg, cat);
 
 			if(col.size() > 0) {
@@ -645,7 +650,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				Map<Faction,Army> map = new HashMap<Faction, Army>();
 
 				while(colIt1.hasNext()) {
-					Army army = (Army) colIt1.next();
+					Army army = colIt1.next();
 					map.put(army.owner, army);
 				}
 
@@ -835,7 +840,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				facMap.put(unit.getFaction(), new Army(unit.getFaction(), r));
 			}
 
-			Army army = (Army) facMap.get(unit.getFaction());
+			Army army = facMap.get(unit.getFaction());
 
 			if(cat) {
 				Collection col2 = unitMap.keySet();
@@ -852,7 +857,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					if(col2.size() > 0) {
 						maxSkill = getHighestSkill(unit, col2);
 
-						Collection col3 = (Collection) unitMap.get(maxSkill);
+						Collection col3 = unitMap.get(maxSkill);
 						col2.remove(maxSkill);
 
 						Iterator itemIt = col3.iterator();
@@ -1193,7 +1198,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 
 		if(col2 == null) {
-			log.error("No weapons for skill " + skill);
+			ArmyStatsPanel.log.error("No weapons for skill " + skill);
 
 			return col;
 		}
@@ -1400,7 +1405,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer();
 			buf.append(persons);
 			buf.append(' ');
@@ -1502,7 +1508,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer();
 			buf.append(getMen());
 			buf.append(' ');
@@ -1555,7 +1562,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 * 
 		 * @deprecated
 		 */
-		public void addUnit(Unit u, int persons, int unarmed) {
+		@Deprecated
+    public void addUnit(Unit u, int persons, int unarmed) {
 			groups.add(u);
 			men += persons;
 			this.unarmed += unarmed;
@@ -1611,7 +1619,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer();
 
 			if(lineType == 0) {
@@ -1716,7 +1725,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer();
 
 			if(!shortString) {
@@ -1784,7 +1794,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer(region.toString());
 			buf.append('(');
 			buf.append(men);
@@ -1836,7 +1847,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			unarmed += a.getUnarmed();
 		}
 
-		protected IslandArmy copy() {
+		@Override
+    protected IslandArmy copy() {
 			IslandArmy o = new IslandArmy(owner, island);
 			o.armies = armies;
 			o.men = men;
@@ -1851,7 +1863,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer();
 
 			if(!shortString) {
@@ -1915,7 +1928,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer(island.getName());
 			buf.append(" (");
 			buf.append(men);
@@ -1981,7 +1995,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer buf = new StringBuffer(Resources.get("armystatspanel.armeeof"));
 			buf.append(' ');
 			buf.append(owner.toString());
@@ -2011,14 +2026,22 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			String s1 = null;
 			String s2 = null;
       
-      if (o1 != null) s1 = o1.getName();
-      if (o2 != null) s2 = o2.getName();
+      if (o1 != null) {
+        s1 = o1.getName();
+      }
+      if (o2 != null) {
+        s2 = o2.getName();
+      }
       
       if (s1 == null) {
-        if (s2 == null) return 0;
+        if (s2 == null) {
+          return 0;
+        }
         return -1;
       } else {
-        if (s2 == null) return 1;
+        if (s2 == null) {
+          return 1;
+        }
         return s1.compareTo(s2);
       }
 		}
@@ -2026,7 +2049,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		/**
 		 * DOCUMENT-ME
 		 */
-		public boolean equals(Object o) {
+		@Override
+    public boolean equals(Object o) {
 			return false;
 		}
 	}

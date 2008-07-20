@@ -20,7 +20,6 @@ import java.awt.Point;
 import java.util.Collection;
 import java.util.Iterator;
 
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import magellan.client.MagellanContext;
@@ -31,7 +30,6 @@ import magellan.library.Region;
 import magellan.library.rules.Date;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -41,8 +39,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 299 $
  */
 public class BorderCellRenderer extends ImageCellRenderer {
-  private static final Logger log = Logger.getInstance(BorderCellRenderer.class);
-  
   private static int noRandomImages = -1;
   
   // for border specific region images
@@ -69,7 +65,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 			Collection borders = r.borders();
@@ -252,7 +249,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_BORDER;
 	}
 
@@ -268,11 +266,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
   protected class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     protected BorderCellRenderer source = null;
-    private final Logger log = Logger.getInstance(Preferences.class);
 
     // GUI elements
 
-    private JCheckBox chkUseSeasonImages = null;
     /**
      * Creates a new Preferences object.
      *
@@ -323,6 +319,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
         Boolean.TRUE.toString()))).booleanValue();
   }
   
+  @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new Preferences(this);
   }

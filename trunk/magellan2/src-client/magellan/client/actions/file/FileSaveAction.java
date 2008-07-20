@@ -40,7 +40,8 @@ public class FileSaveAction extends FileSaveAsAction {
 	 *
 	 * 
 	 */
-	public String getIconName() {
+	@Override
+  public String getIconName() {
 		return "save_edit";
 	}
 
@@ -50,7 +51,8 @@ public class FileSaveAction extends FileSaveAsAction {
 	 *
 	 * 
 	 */
-	protected FileType getFile() {
+	@Override
+  protected FileType getFile() {
 		return (client.getData() == null) ? null : (client.getData().getFileType());
 	}
 

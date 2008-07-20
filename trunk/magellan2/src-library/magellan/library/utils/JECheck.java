@@ -84,7 +84,7 @@ public class JECheck extends Reader {
 		try {
 			tempFile = File.createTempFile("JECheck", null);
 		} catch(Exception e) {
-			log.error("JECheck.JECheck(): unable to create temporary file for output", e);
+			JECheck.log.error("JECheck.JECheck(): unable to create temporary file for output", e);
 			throw new IOException("Unable to create temporary file for output: " + e);
 		}
 
@@ -114,13 +114,13 @@ public class JECheck extends Reader {
 		}
 
 		// run the beast
-		log.info("ECheck is executed with this command line:\n" + commandLine);
+		JECheck.log.info("ECheck is executed with this command line:\n" + commandLine);
 		start = System.currentTimeMillis();
 
 		try {
-			p = Runtime.getRuntime().exec((String[]) commandLine.toArray(new String[] {  }));
+			p = Runtime.getRuntime().exec(commandLine.toArray(new String[] {  }));
 		} catch(Exception e) {
-			log.error("JECheck.JECheck(): exception while executing echeck", e);
+			JECheck.log.error("JECheck.JECheck(): exception while executing echeck", e);
 			throw new IOException("Cannot execute ECheck: " + e.toString());
 		}
 
@@ -133,7 +133,7 @@ public class JECheck extends Reader {
 			// bail out if ECheck runs for longer than 20 secs
 			if((System.currentTimeMillis() - start) > 20000) {
 				p.destroy();
-				log.warn("JECheck.JECheck(): echeck was terminated since it ran for too long");
+				JECheck.log.warn("JECheck.JECheck(): echeck was terminated since it ran for too long");
 
 				break;
 			}
@@ -161,7 +161,7 @@ public class JECheck extends Reader {
 				outputReader = new InputStreamReader(new FileInputStream(tempFile), FileType.DEFAULT_ENCODING.toString());	
 			}
 		} catch(Exception e) {
-			log.error("JECheck.JECheck(): cannot create a file reader on the temporary output file",
+			JECheck.log.error("JECheck.JECheck(): cannot create a file reader on the temporary output file",
 					  e);
 			throw new IOException("Cannot create a file reader on the temporary output file: " + e);
 		}
@@ -178,7 +178,8 @@ public class JECheck extends Reader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public int read(char cbuf[], int off, int len) throws IOException {
+	@Override
+  public int read(char cbuf[], int off, int len) throws IOException {
 		if(outputReader != null) {
 			return outputReader.read(cbuf, off, len);
 		} else {
@@ -191,7 +192,8 @@ public class JECheck extends Reader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void close() throws IOException {
+	@Override
+  public void close() throws IOException {
 		if(outputReader != null) {
 			outputReader.close();
 		}
@@ -211,7 +213,8 @@ public class JECheck extends Reader {
 	 * @throws IOException If the stream does not support mark(), or if some other I/O error
 	 * 		   occurs.
 	 */
-	public void mark(int readAheadLimit) throws IOException {
+	@Override
+  public void mark(int readAheadLimit) throws IOException {
 		if(outputReader != null) {
 			outputReader.mark(readAheadLimit);
 		} else {
@@ -224,7 +227,8 @@ public class JECheck extends Reader {
 	 *
 	 * 
 	 */
-	public boolean markSupported() {
+	@Override
+  public boolean markSupported() {
 		return outputReader.markSupported();
 	}
 
@@ -236,7 +240,8 @@ public class JECheck extends Reader {
 	 *
 	 * @throws IOException If an I/O error occurs
 	 */
-	public boolean ready() throws IOException {
+	@Override
+  public boolean ready() throws IOException {
 		if(outputReader != null) {
 			return outputReader.ready();
 		} else {
@@ -254,7 +259,8 @@ public class JECheck extends Reader {
 	 * @throws IOException If the stream has not been marked, or if the mark has been invalidated,
 	 * 		   or if the stream does not support reset(), or if some other I/O error occurs
 	 */
-	public void reset() throws IOException {
+	@Override
+  public void reset() throws IOException {
 		if(outputReader != null) {
 			outputReader.reset();
 		} else {
@@ -272,7 +278,8 @@ public class JECheck extends Reader {
 	 *
 	 * @throws IOException If an I/O error occurs
 	 */
-	public long skip(long n) throws IOException {
+	@Override
+  public long skip(long n) throws IOException {
 		if(outputReader != null) {
 			return outputReader.skip(n);
 		} else {
@@ -298,7 +305,7 @@ public class JECheck extends Reader {
 	public static Collection<ECheckMessage> getMessages(File eCheckExe, File orders, String options, Properties settings)
 								  throws IOException, java.text.ParseException
 	{
-		return getMessages(new JECheck(eCheckExe, orders, options, settings));
+		return JECheck.getMessages(new JECheck(eCheckExe, orders, options, settings));
 	}
 
 	/**
@@ -324,7 +331,7 @@ public class JECheck extends Reader {
 
 		boolean error = false;
 
-		line = getLine(in);
+		line = JECheck.getLine(in);
 
 		if(line == null) {
 			throw new java.text.ParseException("ECheck output is empty", 0);
@@ -349,16 +356,16 @@ public class JECheck extends Reader {
 		// yes, both languages
 		
 		while (line.startsWith("Fehler") || line.startsWith("Error")){
-			line = getLine(in);
+			line = JECheck.getLine(in);
 		}
 		
 		
 		if(line.indexOf(":faction:") == -1) {
-			line += getLine(in);
+			line += JECheck.getLine(in);
 		}
 
 		/* parse header <filename>:faction:<factionid> */
-		StringTokenizer tokenizer = new StringTokenizer(line, FIELD_SEP);
+		StringTokenizer tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
 
 		if(tokenizer.countTokens() == 4) {
 			tokenizer.nextToken();
@@ -377,10 +384,10 @@ public class JECheck extends Reader {
 		}
 
 		/* parse messages */
-		line = getLine(in);
+		line = JECheck.getLine(in);
 
 		while(line != null) {
-			tokenizer = new StringTokenizer(line, FIELD_SEP);
+			tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
 
 			if(tokenizer.countTokens() >= 4) {
 				ECheckMessage msg = new ECheckMessage(line);
@@ -389,7 +396,7 @@ public class JECheck extends Reader {
 				break;
 			}
 
-			line = getLine(in);
+			line = JECheck.getLine(in);
 		}
 
 		if(line == null) {
@@ -406,10 +413,10 @@ public class JECheck extends Reader {
 				error = true;
 			}
 
-			line = getLine(in);
+			line = JECheck.getLine(in);
 
 			if(line != null) {
-				tokenizer = new StringTokenizer(line, FIELD_SEP);
+				tokenizer = new StringTokenizer(line, JECheck.FIELD_SEP);
 
 				if(tokenizer.countTokens() == 3) {
 					tokenizer.nextToken();
@@ -552,7 +559,7 @@ public class JECheck extends Reader {
 
 			if(msg.getLineNr() > 0) {
 				for(int i = msg.getLineNr() - 1; i > -1; i--) {
-					String order = Umlaut.normalize((String) orders.get(i));
+					String order = Umlaut.normalize(orders.get(i));
 					StringTokenizer tokenizer = new StringTokenizer(order, " ;");
 
 					if(tokenizer.countTokens() < 2) {
@@ -572,7 +579,7 @@ public class JECheck extends Reader {
 								break;
 							}
 						} catch(Exception e) {
-							log.error(e);
+							JECheck.log.error(e);
 						}
 					} else if(regionOrder.startsWith(token)) {
 						try {
@@ -585,7 +592,7 @@ public class JECheck extends Reader {
 								break;
 							}
 						} catch(Exception e) {
-							log.error(e);
+							JECheck.log.error(e);
 						}
 					}
 				}
@@ -616,7 +623,7 @@ public class JECheck extends Reader {
       br.close();
 
     } catch(Exception e) {
-      log.error(e);
+      JECheck.log.error(e);
       br.close();
       throw new IOException("Cannot retrieve help: " + e.toString());
     }
@@ -666,7 +673,7 @@ public class JECheck extends Reader {
 			}
 		} catch(Exception e) {
 			v = null;
-			log.error(e);
+			JECheck.log.error(e);
 			throw new IOException("Cannot retrieve version information: " + e.toString());
 		}
 
@@ -731,7 +738,7 @@ public class JECheck extends Reader {
 		 * @throws java.text.ParseException if the rawMessage String cannot be parsed.
 		 */
 		public ECheckMessage(String rawMessage) throws java.text.ParseException {
-			String delim = FIELD_SEP;
+			String delim = JECheck.FIELD_SEP;
 			StringTokenizer tokenizer = new StringTokenizer(rawMessage, delim);
 
 			if(tokenizer.countTokens() >= 4) {
@@ -739,7 +746,7 @@ public class JECheck extends Reader {
 					tokenizer.nextToken(); // skip file name
 					lineNr = Integer.parseInt(tokenizer.nextToken());
 					warnLevel = Integer.parseInt(tokenizer.nextToken());
-					type = (warnLevel == 0) ? ERROR : (warnLevel > 0) ? WARNING : MESSAGE;
+					type = (warnLevel == 0) ? ECheckMessage.ERROR : (warnLevel > 0) ? ECheckMessage.WARNING : ECheckMessage.MESSAGE;
 					msg = tokenizer.nextToken();
 
 					while(tokenizer.hasMoreTokens()) {
@@ -823,13 +830,14 @@ public class JECheck extends Reader {
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			StringBuffer sb = new StringBuffer();
 			sb.append(fileName).append("(").append(lineNr).append("): ");
 
-			if(type == ERROR) {
+			if(type == ECheckMessage.ERROR) {
 				sb.append("Fehler: ");
-			} else if(type == WARNING) {
+			} else if(type == ECheckMessage.WARNING) {
 				sb.append("Warnung (").append(warnLevel).append("): ");
 			}
 

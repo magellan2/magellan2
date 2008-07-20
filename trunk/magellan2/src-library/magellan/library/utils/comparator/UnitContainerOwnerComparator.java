@@ -38,8 +38,8 @@ public class UnitContainerOwnerComparator implements Comparator<UnitContainer> {
 	 * @return a container with an owner is less then a container without an owner.
 	 */
 	public int compare(UnitContainer o1, UnitContainer o2) {
-        UnitContainer c1 = (UnitContainer) o1;
-        UnitContainer c2 = (UnitContainer) o2;
+        UnitContainer c1 = o1;
+        UnitContainer c2 = o2;
         
         Unit owner1 = c1.getOwnerUnit();
         Unit owner2 = c2.getOwnerUnit();

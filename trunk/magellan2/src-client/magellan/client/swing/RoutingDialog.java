@@ -95,7 +95,9 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 		super(owner, true);
 		setTitle(Resources.get("routingdialog.window.title"));
 
-    if (initializeRegions) initialize(data,destRegions,excludeUnnamed);
+    if (initializeRegions) {
+      initialize(data,destRegions,excludeUnnamed);
+    }
 	}
   
   public void initialize(GameData data, Collection<Region> destRegions, boolean excludeUnnamed) {

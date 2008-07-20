@@ -20,6 +20,7 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -62,12 +63,11 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Sorted;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.replacers.ReplacerFactory;
 import magellan.library.utils.replacers.ReplacerHelp;
 import magellan.library.utils.replacers.ReplacerSystem;
-
-import magellan.library.utils.Sorted;
 
 /**
  * A component displaying a map based on a <tt>GameData</tt> object. The
@@ -182,7 +182,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     conMenu = new MapContextMenu(context.getClient(), context.getEventDispatcher(), context.getProperties());
 
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", DEFAULT_TOOLTIP_DEFINITION));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP_DEFINITION));
 
     setShowTooltip(settings.getProperty("Mapper.showTooltips", "false").equals("true"));
 
@@ -213,6 +213,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent me) {
         requestFocus();
 
@@ -228,8 +229,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         Region r = data.getRegion(c);
 
         if (r != null) {
-          if ((me.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
-            if ((me.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+          if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
+            if ((me.getModifiers() & InputEvent.CTRL_MASK) != 0) {
               if (selectedRegions.containsKey(c) == false) {
                 doDraggingSelect = true;
                 selectedRegions.put(c, r);
@@ -248,26 +249,28 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               dispatcher.fire(new SelectionEvent<Region>(mapper, null, activeRegion, SelectionEvent.ST_DEFAULT));
               repaint();
             }
-          } else if ((me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+          } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
             conMenu.init(r, selectedRegions.values());
             conMenu.show(Mapper.this, me.getX(), me.getY());
           }
-        } else if ((me.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+        } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
           conMenu.clear(c);
           conMenu.show(Mapper.this, me.getX(), me.getY());
         }
       }
 
-      public void mouseRelease(MouseEvent me) {
-        if ((me.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) {
+      @Override
+      public void mouseReleased(MouseEvent me) {
+        if ((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
           prevDragRegion = null;
         }
       }
     });
 
     addMouseMotionListener(new MouseMotionAdapter() {
+      @Override
       public void mouseDragged(MouseEvent me) {
-        if (((me.getModifiers() & MouseEvent.BUTTON1_MASK) != 0) && ((me.getModifiers() & KeyEvent.CTRL_MASK) != 0)) {
+        if (((me.getModifiers() & InputEvent.BUTTON1_MASK) != 0) && ((me.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
           if (!pathPersistence) {
             pathRegions.clear();
           }
@@ -309,6 +312,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     });
 
     addKeyListener(new KeyAdapter() {
+      @Override
       public void keyPressed(KeyEvent e) {
         if (activeRegion == null) {
           return;
@@ -383,12 +387,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   protected void reprocessTooltipDefinition() {
-    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", DEFAULT_TOOLTIP_DEFINITION));
+    setTooltipDefinition(settings.getProperty("Mapper.ToolTip.Definition", Mapper.DEFAULT_TOOLTIP_DEFINITION));
   }
 
   /**
    * DOCUMENT-ME
    */
+  @Override
   public String getToolTipText(MouseEvent e) {
     if (tooltipDefinition != null) {
       try {
@@ -432,7 +437,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if (renderer != null) {
       setRenderer(renderer, renderer.getPlaneIndex());
     } else {
-      log.warn("Mapper.setRenderer(): null renderer set has been set for unknown rendering plane!");
+      Mapper.log.warn("Mapper.setRenderer(): null renderer set has been set for unknown rendering plane!");
     }
   }
 
@@ -467,12 +472,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       settings.setProperty(getPropertyName(plane), className);
       conMenu.updateRenderers(this);
     } else {
-      log.warn("Mapper.setRenderer(): invalid argument: plane out of bounds");
+      Mapper.log.warn("Mapper.setRenderer(): invalid argument: plane out of bounds");
     }
   }
 
   protected String getPropertyName(int plane) {
-    return "Mapper.Planes." + PLANE_STRINGS[plane];
+    return "Mapper.Planes." + Mapper.PLANE_STRINGS[plane];
   }
   
   /**
@@ -501,7 +506,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
       }
     } else {
-      log.warn("Mapper.getRenderers(): invalid argument: plane out of bounds");
+      Mapper.log.warn("Mapper.getRenderers(): invalid argument: plane out of bounds");
     }
 
     return renderers;
@@ -540,6 +545,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * DOCUMENT-ME
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
 
@@ -595,8 +601,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       }
     }
 
-    if (log.isDebugEnabled()) {
-      log.debug("Mapper.selectionChanged on region " + activeRegion);
+    if (Mapper.log.isDebugEnabled()) {
+      Mapper.log.debug("Mapper.selectionChanged on region " + activeRegion);
     }
 
     if ((se.getSelectedObjects() != null) && (se.getSelectionType() == SelectionEvent.ST_REGIONS)) {
@@ -620,6 +626,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * DOCUMENT-ME
    */
+  @Override
   public boolean isFocusTraversable() {
     return true;
   }
@@ -627,6 +634,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * DOCUMENT-ME
    */
+  @Override
   public boolean isRequestFocusEnabled() {
     return true;
   }
@@ -793,11 +801,12 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * DOCUMENT-ME
    */
+  @Override
   protected void paintComponent(Graphics g) {
     try {
       paintMapperComponent(g);
     } catch (Throwable t) {
-      log.error("", t);
+      Mapper.log.error("", t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE, ErrorWindow.UNKNOWN_ERROR_MESSAGE, "", t);
       errorWindow.setShutdownOnCancel(true);
       errorWindow.setVisible(true);
@@ -811,7 +820,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     }
 
     if (cellGeometry == null) {
-      log.warn("Mapper.paint(): Unable to determine drawing area!");
+      Mapper.log.warn("Mapper.paint(): Unable to determine drawing area!");
 
       return;
     }
@@ -822,7 +831,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       return;
     }
 
-    setCursor(WAIT_CURSOR);
+    setCursor(Mapper.WAIT_CURSOR);
 
     int paintNumber = inPaint;
     inPaint++;
@@ -837,8 +846,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // if nothing about the drawing area changed we can simply
     // paint our buffer
-    if (!clipBounds.equals(currentBounds) || isRenderContextChanged()) {
-      setRenderContextChanged(false);
+    if (!clipBounds.equals(currentBounds) || Mapper.isRenderContextChanged()) {
+      Mapper.setRenderContextChanged(false);
 
       if ((buffer == null) || !clipBounds.equals(currentBounds)) {
         setLastRegionRenderingType(-1); // full redraw
@@ -908,10 +917,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     offset.y = mapToScreenBounds.y;
 
     // there are some every time repaint things
-    if (planes.length > PLANE_PATH) {
+    if (planes.length > Mapper.PLANE_PATH) {
       boolean clipChanged = !clipBounds.equals(currentBounds);
 
-      for (int planeIndex = PLANE_PATH; planeIndex < PLANE_SCHEMES; planeIndex++) {
+      for (int planeIndex = Mapper.PLANE_PATH; planeIndex < Mapper.PLANE_SCHEMES; planeIndex++) {
         if (planes[planeIndex] == null) {
           continue;
         }
@@ -976,7 +985,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             }
 
             // now render the regions with the SchemeCellRenderer
-            MapCellRenderer renderer = planes[PLANE_SCHEMES].getRenderer();
+            MapCellRenderer renderer = planes[Mapper.PLANE_SCHEMES].getRenderer();
 
             if (renderer != null) {
               renderer.init(data, g, offset);
@@ -998,7 +1007,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
        */
 
       clipChanged = !clipBounds.equals(currentBounds);
-      int planeIndex = PLANE_SIGNS;
+      int planeIndex = Mapper.PLANE_SIGNS;
 
       MapCellRenderer renderer = planes[planeIndex].getRenderer();
 
@@ -1040,6 +1049,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     if (isDeferringPainting() && !tracker.checkAll()) {
       (new Thread() {
+        @Override
         public void run() {
           if (!tracker.checkAll()) {
             try {
@@ -1058,7 +1068,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     inPaint--;
     objectList = regList;
 
-    setCursor(DEFAULT_CURSOR);
+    setCursor(Mapper.DEFAULT_CURSOR);
 
     // log.warn((System.currentTimeMillis() - start) + "");
   }
@@ -1184,7 +1194,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       bounds = cellGeometry.getCellRect(cell.x, cell.y);
       bounds.translate(-mapToScreenBounds.x, -mapToScreenBounds.y);
     } else {
-      log.warn("Mapper.getCellRect(): Unable to determine cell bounds!");
+      Mapper.log.warn("Mapper.getCellRect(): Unable to determine cell bounds!");
     }
 
     return bounds;
@@ -1207,7 +1217,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       if (cellGeometry != null) {
         center = cellGeometry.getCoordinate(centerScreen.x, centerScreen.y, showLevel);
       } else {
-        log.warn("Mapper.getCenter(): Unable to determine drawing area!");
+        Mapper.log.warn("Mapper.getCenter(): Unable to determine drawing area!");
       }
     }
 
@@ -1243,7 +1253,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       // now get the view port
       viewPos = new Point(cellPos.x - (viewSize.width / 2), cellPos.y - (viewSize.height / 2));
     } else {
-      log.warn("Mapper.getCenteredViewPosition(): Unable to determine drawing area!");
+      Mapper.log.warn("Mapper.getCenteredViewPosition(): Unable to determine drawing area!");
     }
 
     return viewPos;
@@ -1345,42 +1355,42 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   protected RenderingPlane[] initRenderingPlanes() {
-    RenderingPlane p[] = new RenderingPlane[PLANES];
-    p[PLANE_BACKGROUND] = new RenderingPlane(PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
-    p[PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BACKGROUND], BackgroundImageRenderer.class.getName())));
+    RenderingPlane p[] = new RenderingPlane[Mapper.PLANES];
+    p[Mapper.PLANE_BACKGROUND] = new RenderingPlane(Mapper.PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
+    p[Mapper.PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_BACKGROUND], BackgroundImageRenderer.class.getName())));
 
-    p[PLANE_BEHIND] = new RenderingPlane(PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"));
-    p[PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BEHIND], EresseaSchemesCellRenderer.class.getName())));
+    p[Mapper.PLANE_BEHIND] = new RenderingPlane(Mapper.PLANE_BEHIND, Resources.get("map.mapper.plane.behind.name"));
+    p[Mapper.PLANE_BEHIND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_BEHIND], EresseaSchemesCellRenderer.class.getName())));
 
-    p[PLANE_REGION] = new RenderingPlane(PLANE_REGION, Resources.get("map.mapper.plane.region.name"));
-    p[PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_REGION], RegionImageCellRenderer.class.getName())));
+    p[Mapper.PLANE_REGION] = new RenderingPlane(Mapper.PLANE_REGION, Resources.get("map.mapper.plane.region.name"));
+    p[Mapper.PLANE_REGION].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_REGION], RegionImageCellRenderer.class.getName())));
 
-    p[PLANE_BORDER] = new RenderingPlane(PLANE_BORDER, Resources.get("map.mapper.plane.border.name"));
-    p[PLANE_BORDER].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BORDER], BorderCellRenderer.class.getName())));
+    p[Mapper.PLANE_BORDER] = new RenderingPlane(Mapper.PLANE_BORDER, Resources.get("map.mapper.plane.border.name"));
+    p[Mapper.PLANE_BORDER].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_BORDER], BorderCellRenderer.class.getName())));
 
-    p[PLANE_BUILDING] = new RenderingPlane(PLANE_BUILDING, Resources.get("map.mapper.plane.building.name"));
-    p[PLANE_BUILDING].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_BUILDING], BuildingCellRenderer.class.getName())));
+    p[Mapper.PLANE_BUILDING] = new RenderingPlane(Mapper.PLANE_BUILDING, Resources.get("map.mapper.plane.building.name"));
+    p[Mapper.PLANE_BUILDING].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_BUILDING], BuildingCellRenderer.class.getName())));
 
-    p[PLANE_SHIP] = new RenderingPlane(PLANE_SHIP, Resources.get("map.mapper.plane.ship.name"));
-    p[PLANE_SHIP].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_SHIP], ShipCellRenderer.class.getName())));
+    p[Mapper.PLANE_SHIP] = new RenderingPlane(Mapper.PLANE_SHIP, Resources.get("map.mapper.plane.ship.name"));
+    p[Mapper.PLANE_SHIP].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_SHIP], ShipCellRenderer.class.getName())));
 
-    p[PLANE_TEXT] = new RenderingPlane(PLANE_TEXT, Resources.get("map.mapper.plane.text.name"));
-    p[PLANE_TEXT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_TEXT], TextCellRenderer.class.getName())));
+    p[Mapper.PLANE_TEXT] = new RenderingPlane(Mapper.PLANE_TEXT, Resources.get("map.mapper.plane.text.name"));
+    p[Mapper.PLANE_TEXT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_TEXT], TextCellRenderer.class.getName())));
 
-    p[PLANE_PATH] = new RenderingPlane(PLANE_PATH, Resources.get("map.mapper.plane.path.name"), RenderingPlane.ACTIVE_OBJECT);
-    p[PLANE_PATH].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_PATH], PathCellRenderer.class.getName())));
+    p[Mapper.PLANE_PATH] = new RenderingPlane(Mapper.PLANE_PATH, Resources.get("map.mapper.plane.path.name"), RenderingPlane.ACTIVE_OBJECT);
+    p[Mapper.PLANE_PATH].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_PATH], PathCellRenderer.class.getName())));
 
-    p[PLANE_HIGHLIGHT] = new RenderingPlane(PLANE_HIGHLIGHT, Resources.get("map.mapper.plane.highlight.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED);
-    p[PLANE_HIGHLIGHT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_HIGHLIGHT], HighlightImageCellRenderer.class.getName())));
+    p[Mapper.PLANE_HIGHLIGHT] = new RenderingPlane(Mapper.PLANE_HIGHLIGHT, Resources.get("map.mapper.plane.highlight.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.ACTIVE_OR_SELECTED);
+    p[Mapper.PLANE_HIGHLIGHT].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_HIGHLIGHT], HighlightImageCellRenderer.class.getName())));
 
-    p[PLANE_MARKINGS] = new RenderingPlane(PLANE_MARKINGS, Resources.get("map.mapper.plane.markings.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.TAGGED_REGIONS);
-    p[PLANE_MARKINGS].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + PLANE_STRINGS[PLANE_MARKINGS], MarkingsImageCellRenderer.class.getName())));
+    p[Mapper.PLANE_MARKINGS] = new RenderingPlane(Mapper.PLANE_MARKINGS, Resources.get("map.mapper.plane.markings.name"), RenderingPlane.VISIBLE_REGIONS | RenderingPlane.TAGGED_REGIONS);
+    p[Mapper.PLANE_MARKINGS].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_MARKINGS], MarkingsImageCellRenderer.class.getName())));
 
-    p[PLANE_SCHEMES] = new RenderingPlane(PLANE_SCHEMES, Resources.get("map.mapper.plane.schemes.name"), RenderingPlane.VISIBLE_REGIONS);
-    p[PLANE_SCHEMES].setRenderer(getRenderer(SchemeCellRenderer.class.getName()));
+    p[Mapper.PLANE_SCHEMES] = new RenderingPlane(Mapper.PLANE_SCHEMES, Resources.get("map.mapper.plane.schemes.name"), RenderingPlane.VISIBLE_REGIONS);
+    p[Mapper.PLANE_SCHEMES].setRenderer(getRenderer(SchemeCellRenderer.class.getName()));
 
-    p[PLANE_SIGNS] = new RenderingPlane(PLANE_SIGNS, Resources.get("map.mapper.plane.signs.name"));
-    p[PLANE_SIGNS].setRenderer(getRenderer(SignTextCellRenderer.class.getName()));
+    p[Mapper.PLANE_SIGNS] = new RenderingPlane(Mapper.PLANE_SIGNS, Resources.get("map.mapper.plane.signs.name"));
+    p[Mapper.PLANE_SIGNS].setRenderer(getRenderer(SignTextCellRenderer.class.getName()));
 
     return p;
   }
@@ -1464,7 +1474,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * @return Value of property renderContextChanged.
    */
   public static boolean isRenderContextChanged() {
-    return renderContextChanged;
+    return Mapper.renderContextChanged;
   }
 
   /**
@@ -1474,7 +1484,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    *          New value of property renderContextChanged.
    */
   public static void setRenderContextChanged(boolean r) {
-    renderContextChanged = r;
+    Mapper.renderContextChanged = r;
   }
 
   /**
@@ -1519,7 +1529,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public List<String> getAllTooltipDefinitions() {
-    String s = settings.getProperty("Mapper.ToolTip.Definitions", DEFAULT_TOOLTIP);
+    String s = settings.getProperty("Mapper.ToolTip.Definitions", Mapper.DEFAULT_TOOLTIP);
     StringTokenizer st = new StringTokenizer(s, "~");
     int j = st.countTokens();
 
@@ -1558,7 +1568,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
       }
     } else {
-      buf.append(DEFAULT_TOOLTIP);
+      buf.append(Mapper.DEFAULT_TOOLTIP);
     }
 
     settings.setProperty("Mapper.ToolTip.Definitions", buf.toString());
@@ -1570,7 +1580,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * DOCUMENT-ME
    */
   public void addTooltipDefinition(String name, String def) {
-    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", DEFAULT_TOOLTIP) + "~" + name + "~" + def);
+    settings.setProperty("Mapper.ToolTip.Definitions", settings.getProperty("Mapper.ToolTip.Definitions", Mapper.DEFAULT_TOOLTIP) + "~" + name + "~" + def);
 
     conMenu.updateTooltips(this);
   }

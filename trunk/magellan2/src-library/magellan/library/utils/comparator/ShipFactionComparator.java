@@ -62,10 +62,12 @@ public class ShipFactionComparator implements Comparator<Ship> {
     Faction f2 = null;
 
     int retVal = 0;
-    if (u1 != null)
-      f1 = (Faction) u1.getFaction();
-    if (u2 != null)
-      f2 = (Faction) u2.getFaction();
+    if (u1 != null) {
+      f1 = u1.getFaction();
+    }
+    if (u2 != null) {
+      f2 = u2.getFaction();
+    }
     
     if (f1 == null && f2 != null) {
       return -1;

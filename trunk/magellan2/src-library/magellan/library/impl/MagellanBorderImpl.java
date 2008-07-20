@@ -71,7 +71,8 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
 	 *
 	 * @return Border object as string.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(buildRatio == 100 || buildRatio <0) {
 			return type + ": " + Direction.toString(direction);
 		} else {

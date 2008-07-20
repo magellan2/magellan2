@@ -76,11 +76,11 @@ public class EntityID extends IntegerID {
 			throw new NullPointerException();
 		}
         
-		EntityID id = idMap.get(o);
+		EntityID id = EntityID.idMap.get(o);
 
 		if(id == null) {
 			id = new EntityID(o, radix);
-			idMap.put(o, id);
+			EntityID.idMap.put(o, id);
 		}
 
 		return id;
@@ -94,7 +94,7 @@ public class EntityID extends IntegerID {
 	 * 
 	 */
 	public static EntityID createEntityID(int i, int radix) {
-		return createEntityID(new Integer(i),radix);
+		return EntityID.createEntityID(new Integer(i),radix);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class EntityID extends IntegerID {
 	 * 
 	 */
 	public static EntityID createEntityID(String s, int radix) {
-		return createEntityID(IDBaseConverter.parse(s,radix),radix);
+		return EntityID.createEntityID(IDBaseConverter.parse(s,radix),radix);
 	}
 
 	/**
@@ -115,7 +115,8 @@ public class EntityID extends IntegerID {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return IDBaseConverter.toString(this.intValue(),radix);
 	}
 
@@ -127,9 +128,11 @@ public class EntityID extends IntegerID {
 	 * @return true, if o is an instance of class EntityID and the numerical values of this object
 	 * 		   and o match.
 	 */
-	public boolean equals(Object o) {
-	  if (o==null)
-	    return false;
+	@Override
+  public boolean equals(Object o) {
+	  if (o==null) {
+      return false;
+    }
 		try {
 			return (this == o) || id == ((EntityID) o).id;
 		} catch(ClassCastException e) {
@@ -145,7 +148,8 @@ public class EntityID extends IntegerID {
 	 *
 	 * 
 	 */
-	public int compareTo(Object o) {
+	@Override
+  public int compareTo(Object o) {
         int thisInt = intValue();
         int oInt = ((EntityID) o).intValue();
         return thisInt > oInt ? 1 : thisInt == oInt ? 0 : -1;

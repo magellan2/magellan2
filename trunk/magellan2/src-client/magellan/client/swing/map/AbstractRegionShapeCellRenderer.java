@@ -43,7 +43,8 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 			CoordinateID c = r.getCoordinate();
@@ -64,7 +65,8 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
 	 *
 	 * @return the plane index for this renderer
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_REGION;
 	}
 
@@ -108,7 +110,7 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
 					j++;
 				} while(j < jmax);
 
-				g.setColor(colors[(int) (((i - bounds.x) * colors.length) / bounds.width)]);
+				g.setColor(colors[(((i - bounds.x) * colors.length) / bounds.width)]);
 				g.drawLine(i, j, i, j + (bounds.height - (2 * (j - bounds.y))));
 			}
 		}

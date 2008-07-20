@@ -14,6 +14,7 @@
 package magellan.client.actions.file;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,8 +49,8 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
     super(client);
 
     shortCuts = new ArrayList<KeyStroke>(2);
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
-    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+    shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
     DesktopEnvironment.registerShortcutListener(this);
     setEnabled(false);
     client.getDispatcher().addGameDataListener(this);
@@ -58,6 +59,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener,Gam
   /**
    * 
    */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
     OrderWriterDialog d = new OrderWriterDialog(client, true, client.getData(),client.getProperties(),client.getSelectedRegions().values());
     d.setVisible(true);

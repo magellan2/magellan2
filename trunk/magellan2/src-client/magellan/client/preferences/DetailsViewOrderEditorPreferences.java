@@ -130,6 +130,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     pnlStandardColor.setPreferredSize(prefDim);
     pnlStandardColor.setBackground(source.getStandardBackgroundColor());
     pnlStandardColor.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
           Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                                 Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
@@ -149,6 +150,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     pnlStandardColorConfirmed.setPreferredSize(prefDim);
     pnlStandardColorConfirmed.setBackground(source.getStandardBackgroundColorConfirmed());
     pnlStandardColorConfirmed.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
           Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                                 Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
@@ -167,6 +169,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     pnlActiveColor.setPreferredSize(prefDim);
     pnlActiveColor.setBackground(source.getActiveBackgroundColor());
     pnlActiveColor.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
           Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                                 Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
@@ -186,6 +189,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     pnlActiveColorConfirmed.setPreferredSize(prefDim);
     pnlActiveColorConfirmed.setBackground(source.getActiveBackgroundColorConfirmed());
     pnlActiveColorConfirmed.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent e) {
           Color newColor = JColorChooser.showDialog(((JComponent) e.getSource()).getTopLevelAncestor(),
                                 Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolor"),
@@ -326,6 +330,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
     pnlStylesColor.setPreferredSize(prefDim);
     pnlStylesColor.setBackground(((StyleContainer) comboSHColors.getItemAt(0)).color);
     pnlStylesColor.addMouseListener(new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent me) {
           StyleContainer sc = (StyleContainer) comboSHColors.getSelectedItem();
           Color newColor = JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
@@ -447,6 +452,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
      *
      * 
      */
+    @Override
     public String toString() {
       return description;
     }

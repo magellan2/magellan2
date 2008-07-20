@@ -27,12 +27,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -44,19 +40,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.text.JTextComponent;
 
-import net.infonode.docking.DockingWindow;
-import net.infonode.docking.DockingWindowListener;
-import net.infonode.docking.OperationAbortedException;
-import net.infonode.docking.View;
-
-import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.utils.Resources;
+import net.infonode.docking.DockingWindow;
+import net.infonode.docking.DockingWindowListener;
+import net.infonode.docking.OperationAbortedException;
+import net.infonode.docking.View;
 
 
 /**
@@ -69,7 +62,6 @@ import magellan.library.utils.Resources;
  */
 public class ExtendedCommandsDock extends JPanel implements ActionListener, CaretListener, DockingWindowListener {
   public static final String IDENTIFIER = "ExtendedCommands";
-  private Client client = null;
   private BeanShellEditor scriptingArea = null;
   private JComboBox priorityBox = null;
   private GameData world = null;
@@ -79,12 +71,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
   private JLabel positionBox = null;
   private ExtendedCommands commands = null;
   private Script script = null;
-  private List<URL> history = new ArrayList<URL>();
-  private int pos = 0;
   private boolean visible = false;
   
-  public ExtendedCommandsDock(Client client, ExtendedCommands commands) {
-    this.client = client;
+  public ExtendedCommandsDock(ExtendedCommands commands) {
     this.commands = commands;
     
     init();
@@ -333,7 +322,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
     }
     
     // Visibility
-    if (!visible) MagellanDesktop.getInstance().setVisible(IDENTIFIER, true);
+    if (!visible) {
+      MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
+    }
   }
 
   /**
@@ -450,7 +441,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
       int row = 1;
       int col = 1;
       for (int i=0; i<text.length(); i++) {
-        if (i==pos) break;
+        if (i==pos) {
+          break;
+        }
         char c = text.charAt(i);
         if (c == '\n') {
           row++;

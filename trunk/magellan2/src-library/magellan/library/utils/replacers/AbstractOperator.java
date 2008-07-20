@@ -35,7 +35,8 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 	}
 
 	// try to compute the operation to save time
-	public void setParameter(int param, Object obj) {
+	@Override
+  public void setParameter(int param, Object obj) {
 		evolved = null;
 		super.setParameter(param, obj);
 
@@ -88,7 +89,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 					return null;
 				}
 
-				param = ZERO;
+				param = AbstractOperator.ZERO;
 			}
 
 			if(!(param instanceof Number)) {

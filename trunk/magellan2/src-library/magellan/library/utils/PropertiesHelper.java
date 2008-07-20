@@ -257,7 +257,9 @@ public class PropertiesHelper {
 
     if (val != null) {
       Color color = Utils.getColor(val);
-      if (color != null) return color;
+      if (color != null) {
+        return color;
+      }
     }
 
     return def;
@@ -359,8 +361,12 @@ public class PropertiesHelper {
    * the key couldn't be found the default value defaultValue is returned.
    */
   public static String getString(Properties p, String key, String defaultValue) {
-    if (p == null) return defaultValue;
-    if (key == null) return defaultValue;
+    if (p == null) {
+      return defaultValue;
+    }
+    if (key == null) {
+      return defaultValue;
+    }
     return p.getProperty(key, defaultValue);
   }
 
@@ -382,8 +388,8 @@ public class PropertiesHelper {
       r.width = Integer.parseInt(settings.getProperty(key + ".width"));
       r.height = Integer.parseInt(settings.getProperty(key + ".height"));
     } catch (Exception exc) {
-      log.warn("Bad rectangle: " + key);
-      log.debug("", exc);
+      PropertiesHelper.log.warn("Bad rectangle: " + key);
+      PropertiesHelper.log.debug("", exc);
       return null;
     }
     return r;
@@ -404,8 +410,12 @@ public class PropertiesHelper {
    * Sets the given color to the key using the format #RRGGBB
    */
   public static void setColor(Properties p, String key, Color color) {
-    if (p == null) return;
-    if (key == null) return;
+    if (p == null) {
+      return;
+    }
+    if (key == null) {
+      return;
+    }
     if (color == null) {
       p.remove(key);
       return;
@@ -419,7 +429,7 @@ public class PropertiesHelper {
    */
   public static void setList(Properties p, String prefix, Collection list) {
     // a) remove old properties
-    for (Iterator<String> iter = getPrefixedList(p, prefix).iterator(); iter.hasNext();) {
+    for (Iterator<String> iter = PropertiesHelper.getPrefixedList(p, prefix).iterator(); iter.hasNext();) {
       p.remove(iter.next());
     }
 
@@ -438,11 +448,11 @@ public class PropertiesHelper {
   private static File settingsDir = null;
   
   public static void setSettingsDirectory(File newSettingsDir) {
-    log.info("PropertiesHelper: directory used for ini files: " + newSettingsDir.toString());
-    settingsDir = newSettingsDir;
+    PropertiesHelper.log.info("PropertiesHelper: directory used for ini files: " + newSettingsDir.toString());
+    PropertiesHelper.settingsDir = newSettingsDir;
   }
   
   public static File getSettingsDirectory() {
-    return settingsDir;
+    return PropertiesHelper.settingsDir;
   }
 }

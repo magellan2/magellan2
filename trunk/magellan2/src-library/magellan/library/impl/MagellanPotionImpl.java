@@ -65,7 +65,9 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
 	 * 
 	 */
 	public Collection<Item> ingredients() {
-    if (ingredients != null && ingredients.values() != null) return Collections.unmodifiableCollection(ingredients.values());
+    if (ingredients != null && ingredients.values() != null) {
+      return Collections.unmodifiableCollection(ingredients.values());
+    }
 		return Collections.emptyList();
 	}
 
@@ -78,7 +80,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
 	 */
 	public Item getIngredient(ID key) {
 		if(this.ingredients != null) {
-			return (Item) this.ingredients.get(key);
+			return this.ingredients.get(key);
 		}
 
 		return null;
@@ -110,7 +112,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
 	 */
 	public Item removeIngredient(ID key) {
 		if(this.ingredients != null) {
-			return (Item) this.ingredients.remove(key);
+			return this.ingredients.remove(key);
 		}
 
 		return null;

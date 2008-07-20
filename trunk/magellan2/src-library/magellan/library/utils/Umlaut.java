@@ -37,7 +37,7 @@ public class Umlaut {
 	 * 
 	 */
 	public static String convertUmlauts(String string) {
-		return recode(string, UMLAUTS, EXPANSIONS);
+		return Umlaut.recode(string, Umlaut.UMLAUTS, Umlaut.EXPANSIONS);
 	}
 
 	/**
@@ -54,11 +54,11 @@ public class Umlaut {
 	 */
 	public static String recode(String string, char keys[], String values[]) {
 		// recoding is kind of expensive, so store recoded strings
-		String s = (String) recodedStrings.get(string);
+		String s = Umlaut.recodedStrings.get(string);
 
 		if(s == null) {
-			s = recodeIt(string, UMLAUTS, EXPANSIONS);
-			recodedStrings.put(StringFactory.getFactory().intern(string), s);
+			s = Umlaut.recodeIt(string, Umlaut.UMLAUTS, Umlaut.EXPANSIONS);
+			Umlaut.recodedStrings.put(StringFactory.getFactory().intern(string), s);
 		}
 
 		return s;

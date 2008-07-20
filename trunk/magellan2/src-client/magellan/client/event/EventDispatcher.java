@@ -54,10 +54,10 @@ public class EventDispatcher implements EventDispatcherInterface {
    * TODO DOCUMENT ME!
    */
   public EventDispatcher() {
-    listeners = new List[PRIORITIES.length];
-    notifierIsAliveOnList = new boolean[PRIORITIES.length];
+    listeners = new List[EventDispatcher.PRIORITIES.length];
+    notifierIsAliveOnList = new boolean[EventDispatcher.PRIORITIES.length];
 
-    for (int i = 0; i < PRIORITIES.length; i++) {
+    for (int i = 0; i < EventDispatcher.PRIORITIES.length; i++) {
       listeners[i] = new ArrayList<Object>();
       notifierIsAliveOnList[i] = false;
     }
@@ -100,7 +100,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAliveOnList[pos]) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      log.error("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     listeners[pos].add(obj);
@@ -110,7 +110,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      log.error("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     listeners[pos].add(0, obj);
@@ -120,7 +120,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      log.error("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     return listeners[pos].remove(l);
@@ -134,7 +134,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see SelectionEvent
    */
   public void addSelectionListener(SelectionListener l) {
-    addListener(SELECTION, l);
+    addListener(EventDispatcher.SELECTION, l);
   }
 
   /**
@@ -142,7 +142,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * Warning: The order will change if another listener is added with priority.
    */
   public void addPrioritySelectionListener(SelectionListener l) {
-    addPriorityListener(SELECTION, l);
+    addPriorityListener(EventDispatcher.SELECTION, l);
   }
 
   /**
@@ -154,7 +154,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see SelectionEvent
    */
   public boolean removeSelectionListener(SelectionListener l) {
-    return removeListener(SELECTION, l);
+    return removeListener(EventDispatcher.SELECTION, l);
   }
 
   /**
@@ -165,7 +165,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see GameDataEvent
    */
   public void addGameDataListener(GameDataListener l) {
-    addListener(GAMEDATA, l);
+    addListener(EventDispatcher.GAMEDATA, l);
   }
 
   /**
@@ -173,7 +173,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * Warning: The order will change if another listener is added with priority.
    */
   public void addPriorityGameDataListener(GameDataListener l) {
-    addPriorityListener(GAMEDATA, l);
+    addPriorityListener(EventDispatcher.GAMEDATA, l);
   }
 
   /**
@@ -185,7 +185,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see GameDataEvent
    */
   public boolean removeGameDataListener(GameDataListener l) {
-    return removeListener(GAMEDATA, l);
+    return removeListener(EventDispatcher.GAMEDATA, l);
   }
 
   /**
@@ -196,7 +196,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see TempUnitEvent
    */
   public void addTempUnitListener(TempUnitListener l) {
-    addListener(TEMPUNIT, l);
+    addListener(EventDispatcher.TEMPUNIT, l);
   }
 
   /**
@@ -204,7 +204,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * Warning: The order will change if another listener is added with priority.
    */
   public void addPriorityTempUnitListener(TempUnitListener l) {
-    addPriorityListener(TEMPUNIT, l);
+    addPriorityListener(EventDispatcher.TEMPUNIT, l);
   }
 
   /**
@@ -216,7 +216,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see TempUnitEvent
    */
   public boolean removeTempUnitListener(TempUnitListener l) {
-    return removeListener(TEMPUNIT, l);
+    return removeListener(EventDispatcher.TEMPUNIT, l);
   }
 
   /**
@@ -227,7 +227,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see UnitOrdersEvent
    */
   public void addUnitOrdersListener(UnitOrdersListener l) {
-    addListener(UNITORDERS, l);
+    addListener(EventDispatcher.UNITORDERS, l);
   }
 
   /**
@@ -236,7 +236,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * priority.
    */
   public void addPriorityUnitOrdersListener(UnitOrdersListener l) {
-    addPriorityListener(UNITORDERS, l);
+    addPriorityListener(EventDispatcher.UNITORDERS, l);
   }
 
   /**
@@ -248,7 +248,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see UnitOrdersEvent
    */
   public boolean removeUnitOrdersListener(UnitOrdersListener l) {
-    return removeListener(UNITORDERS, l);
+    return removeListener(EventDispatcher.UNITORDERS, l);
   }
 
   /**
@@ -263,8 +263,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     if (o instanceof GameDataListener) {
       if (removeGameDataListener((GameDataListener) o)) {
-        if (log.isDebugEnabled()) {
-          log.debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for " + o.getClass());
+        if (EventDispatcher.log.isDebugEnabled()) {
+          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale GameDataListener entry for " + o.getClass());
         }
 
         result = true;
@@ -273,8 +273,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     if (o instanceof TempUnitListener) {
       if (removeTempUnitListener((TempUnitListener) o)) {
-        if (log.isDebugEnabled()) {
-          log.debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for " + o.getClass());
+        if (EventDispatcher.log.isDebugEnabled()) {
+          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale TempUnitListener entry for " + o.getClass());
         }
 
         result = true;
@@ -283,8 +283,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     if (o instanceof UnitOrdersListener) {
       if (removeUnitOrdersListener((UnitOrdersListener) o)) {
-        if (log.isDebugEnabled()) {
-          log.debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for " + o.getClass());
+        if (EventDispatcher.log.isDebugEnabled()) {
+          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale UnitOrdersListener entry for " + o.getClass());
         }
 
         result = true;
@@ -293,8 +293,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     if (o instanceof SelectionListener) {
       if (removeSelectionListener((SelectionListener) o)) {
-        if (log.isDebugEnabled()) {
-          log.debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for " + o.getClass());
+        if (EventDispatcher.log.isDebugEnabled()) {
+          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale SelectionListener entry for " + o.getClass());
         }
 
         result = true;
@@ -303,8 +303,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     if (o instanceof OrderConfirmListener) {
       if (removeOrderConfirmListener((OrderConfirmListener) o)) {
-        if (log.isDebugEnabled()) {
-          log.debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for " + o.getClass());
+        if (EventDispatcher.log.isDebugEnabled()) {
+          EventDispatcher.log.debug("EventDispatcher.removeAllListeners: stale OrderConfirmListener entry for " + o.getClass());
         }
 
         result = true;
@@ -322,7 +322,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see OrderConfirmEvent
    */
   public void addOrderConfirmListener(OrderConfirmListener l) {
-    addListener(ORDERCONFIRM, l);
+    addListener(EventDispatcher.ORDERCONFIRM, l);
   }
 
   /**
@@ -331,7 +331,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * priority.
    */
   public void addPriorityOrderConfirmListener(OrderConfirmListener l) {
-    addPriorityListener(ORDERCONFIRM, l);
+    addPriorityListener(EventDispatcher.ORDERCONFIRM, l);
   }
 
   /**
@@ -343,7 +343,7 @@ public class EventDispatcher implements EventDispatcherInterface {
    * @see OrderConfirmEvent
    */
   public boolean removeOrderConfirmListener(OrderConfirmListener l) {
-    return removeListener(ORDERCONFIRM, l);
+    return removeListener(EventDispatcher.ORDERCONFIRM, l);
   }
 
   /**
@@ -356,8 +356,8 @@ public class EventDispatcher implements EventDispatcherInterface {
    * </p>
    */
   public void fire(EventObject e, boolean synchronous) {
-    if (log.isDebugEnabled()) {
-      log.debug("EventDispatcher(" + e + "," + synchronous + "): fired event ", new Exception());
+    if (EventDispatcher.log.isDebugEnabled()) {
+      EventDispatcher.log.debug("EventDispatcher(" + e + "," + synchronous + "): fired event ", new Exception());
     }
 
     if (synchronous) {
@@ -488,7 +488,7 @@ public class EventDispatcher implements EventDispatcherInterface {
         block = true;
 
         while (index < objects.size()) {
-          EventObject obj = (EventObject) objects.get(index);
+          EventObject obj = objects.get(index);
           int prioOld = getPriority(obj);
 
           if (prioOld > prioNew) {
@@ -512,15 +512,15 @@ public class EventDispatcher implements EventDispatcherInterface {
     int prio = -1;
 
     if (e instanceof GameDataEvent) {
-      prio = PRIORITIES[GAMEDATA];
+      prio = EventDispatcher.PRIORITIES[EventDispatcher.GAMEDATA];
     } else if (e instanceof SelectionEvent) {
-      prio = PRIORITIES[SELECTION];
+      prio = EventDispatcher.PRIORITIES[EventDispatcher.SELECTION];
     } else if (e instanceof UnitOrdersEvent) {
-      prio = PRIORITIES[UNITORDERS];
+      prio = EventDispatcher.PRIORITIES[EventDispatcher.UNITORDERS];
     } else if (e instanceof TempUnitEvent) {
-      prio = PRIORITIES[TEMPUNIT];
+      prio = EventDispatcher.PRIORITIES[EventDispatcher.TEMPUNIT];
     } else if (e instanceof OrderConfirmEvent) {
-      prio = PRIORITIES[ORDERCONFIRM];
+      prio = EventDispatcher.PRIORITIES[EventDispatcher.ORDERCONFIRM];
     }
 
     return prio;
@@ -540,8 +540,8 @@ public class EventDispatcher implements EventDispatcherInterface {
      * DOCUMENT-ME
      */
     public void run() {
-      if (log.isDebugEnabled()) {
-        log.debug("EventDispatcher.Notifier.run called ", new Exception());
+      if (EventDispatcher.log.isDebugEnabled()) {
+        EventDispatcher.log.debug("EventDispatcher.Notifier.run called ", new Exception());
       }
       long timeWatchStart = 0;
       long timeWatchEnd = 0;
@@ -553,9 +553,9 @@ public class EventDispatcher implements EventDispatcherInterface {
       if (event instanceof SelectionEvent) {
         SelectionEvent e = (SelectionEvent) event;
         
-        notifierIsAliveOnList[SELECTION] = true;
+        notifierIsAliveOnList[EventDispatcher.SELECTION] = true;
 
-        for (Iterator iter = listeners[SELECTION].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator iter = listeners[EventDispatcher.SELECTION].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -565,11 +565,11 @@ public class EventDispatcher implements EventDispatcherInterface {
               timeWatchStart = System.currentTimeMillis();
               ((SelectionListener) o).selectionChanged(e);
               timeWatchEnd = System.currentTimeMillis();
-              if ((timeWatchEnd-timeWatchStart) > infoMilliSeks){
-                log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for SELECTION-notify from " + event.getSource().getClass().getName() + " in " + ((SelectionListener) o).getClass().getName());
+              if ((timeWatchEnd-timeWatchStart) > EventDispatcher.infoMilliSeks){
+                EventDispatcher.log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for SELECTION-notify from " + event.getSource().getClass().getName() + " in " + ((SelectionListener) o).getClass().getName());
               }
             } catch (Exception ex) {
-              log.error("An Exception occured in the EventDispatcher", ex);
+              EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
 
@@ -577,13 +577,13 @@ public class EventDispatcher implements EventDispatcherInterface {
             EventDispatcher.this.stopNotification = false;
           }
         }
-        notifierIsAliveOnList[SELECTION] = false;
+        notifierIsAliveOnList[EventDispatcher.SELECTION] = false;
       } else if (event instanceof OrderConfirmEvent) {
         OrderConfirmEvent e = (OrderConfirmEvent) event;
 
-        notifierIsAliveOnList[ORDERCONFIRM] = true;
+        notifierIsAliveOnList[EventDispatcher.ORDERCONFIRM] = true;
 
-        for (Iterator iter = listeners[ORDERCONFIRM].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator iter = listeners[EventDispatcher.ORDERCONFIRM].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -592,7 +592,7 @@ public class EventDispatcher implements EventDispatcherInterface {
             try {
               ((OrderConfirmListener) o).orderConfirmationChanged(e);
             } catch (Exception ex) {
-              log.error("An Exception occured in the EventDispatcher", ex);
+              EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
 
@@ -601,13 +601,13 @@ public class EventDispatcher implements EventDispatcherInterface {
           }
         }
 
-        notifierIsAliveOnList[ORDERCONFIRM] = false;
+        notifierIsAliveOnList[EventDispatcher.ORDERCONFIRM] = false;
       } else if (event instanceof UnitOrdersEvent) {
         UnitOrdersEvent e = (UnitOrdersEvent) event;
 
-        notifierIsAliveOnList[UNITORDERS] = true;
+        notifierIsAliveOnList[EventDispatcher.UNITORDERS] = true;
 
-        for (Iterator iter = listeners[UNITORDERS].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator iter = listeners[EventDispatcher.UNITORDERS].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -616,7 +616,7 @@ public class EventDispatcher implements EventDispatcherInterface {
             try {
               ((UnitOrdersListener) o).unitOrdersChanged(e);
             } catch (Exception ex) {
-              log.error("An Exception occured in the EventDispatcher", ex);
+              EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
 
           }
@@ -626,13 +626,13 @@ public class EventDispatcher implements EventDispatcherInterface {
           }
         }
 
-        notifierIsAliveOnList[UNITORDERS] = false;
+        notifierIsAliveOnList[EventDispatcher.UNITORDERS] = false;
       } else if (event instanceof TempUnitEvent) {
         TempUnitEvent e = (TempUnitEvent) event;
 
-        notifierIsAliveOnList[TEMPUNIT] = true;
+        notifierIsAliveOnList[EventDispatcher.TEMPUNIT] = true;
 
-        for (Iterator iter = listeners[TEMPUNIT].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator iter = listeners[EventDispatcher.TEMPUNIT].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -648,7 +648,7 @@ public class EventDispatcher implements EventDispatcherInterface {
                 l.tempUnitDeleting(e);
               }
             } catch (Exception ex) {
-              log.error("An Exception occured in the EventDispatcher", ex);
+              EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
 
           }
@@ -658,13 +658,13 @@ public class EventDispatcher implements EventDispatcherInterface {
           }
         }
 
-        notifierIsAliveOnList[TEMPUNIT] = false;
+        notifierIsAliveOnList[EventDispatcher.TEMPUNIT] = false;
       } else if (event instanceof GameDataEvent) {
         GameDataEvent e = (GameDataEvent) event;
 
-        notifierIsAliveOnList[GAMEDATA] = true;
+        notifierIsAliveOnList[EventDispatcher.GAMEDATA] = true;
         
-        for (Iterator iter = listeners[GAMEDATA].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator iter = listeners[EventDispatcher.GAMEDATA].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -674,11 +674,11 @@ public class EventDispatcher implements EventDispatcherInterface {
               timeWatchStart = System.currentTimeMillis();
               ((GameDataListener) o).gameDataChanged(e);
               timeWatchEnd = System.currentTimeMillis();
-              if ((timeWatchEnd-timeWatchStart) > infoMilliSeks){
-                log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName() + " in " + ((GameDataListener) o).getClass().getName());
+              if ((timeWatchEnd-timeWatchStart) > EventDispatcher.infoMilliSeks){
+                EventDispatcher.log.info("Notify took " + (timeWatchEnd-timeWatchStart) + "ms for GAMEDATA-notify from " + event.getSource().getClass().getName() + " in " + ((GameDataListener) o).getClass().getName());
               }
             } catch (Exception ex) {
-              log.error("An Exception occured in the EventDispatcher", ex);
+              EventDispatcher.log.error("An Exception occured in the EventDispatcher", ex);
             }
           }
 
@@ -686,7 +686,7 @@ public class EventDispatcher implements EventDispatcherInterface {
             EventDispatcher.this.stopNotification = false;
           }
         }
-        notifierIsAliveOnList[GAMEDATA] = false;
+        notifierIsAliveOnList[EventDispatcher.GAMEDATA] = false;
       }
 
       // 2002.03.04 pavkovic: get rid of evil Event, seems that Notifier will

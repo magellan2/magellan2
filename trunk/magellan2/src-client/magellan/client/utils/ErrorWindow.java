@@ -141,7 +141,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   public ErrorWindow(Throwable throwable) {
-    this(UNKNOWN_ERROR_MESSAGE, null, throwable);
+    this(ErrorWindow.UNKNOWN_ERROR_MESSAGE, null, throwable);
     if (throwable != null && throwable.getMessage() != null) {
       setErrorMessage(throwable.getMessage(), throwable.getMessage(), throwable);
     }
@@ -268,15 +268,16 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public void setErrorMessage(String message, String description, Throwable throwable) {
     if (message == null) {
       // replace the message by a default message
-      message = UNKNOWN_ERROR_MESSAGE;
+      message = ErrorWindow.UNKNOWN_ERROR_MESSAGE;
     }
     errorMessage.setText(message);
 
     StringBuffer sb = new StringBuffer();
     sb.append(message);
     sb.append("\r\n");
-    if (description != null)
+    if (description != null) {
       sb.append(description).append("\n\n");
+    }
 
     if (throwable != null) {
       sb.append(getExceptionAsString(throwable));
@@ -308,7 +309,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   protected void setup() {
-    log.debug("ErrorWindow setup...");
+    ErrorWindow.log.debug("ErrorWindow setup...");
 
     addWindowListener(new WindowClosingDispatcher(this));
 
@@ -335,7 +336,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
     buttonPanel.add(Box.createVerticalGlue());
 
-    detailsButton = new JButton(SHOW_DETAILS_BUTTON);
+    detailsButton = new JButton(ErrorWindow.SHOW_DETAILS_BUTTON);
     detailsButton.setRequestFocusEnabled(false);
     detailsButton.setActionCommand(ActionCommand.DETAILS.toString());
     detailsButton.addActionListener(this);
@@ -381,7 +382,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public void actionPerformed(ActionEvent event) {
     ActionCommand cmd = ActionCommand.valueOf(event.getActionCommand());
 
-    log.debug("User selected action '" + cmd + "'");
+    ErrorWindow.log.debug("User selected action '" + cmd + "'");
 
     switch (cmd) {
       case OK: {
@@ -395,10 +396,11 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
         this.close();
         // and exit???
         if (shutdownOnCancel) {
-          if (cleanShutdown)
+          if (cleanShutdown) {
             System.exit(0);
-          else
+          } else {
             System.exit(1);
+          }
         }
         actionPerformed = true;
         break;
@@ -421,7 +423,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   public void windowClosing() {
-    log.debug("Closing MainWindow...");
+    ErrorWindow.log.debug("Closing MainWindow...");
     actionPerformed = true;
   }
 
@@ -430,7 +432,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   public void open() {
-    log.debug("Open Window");
+    ErrorWindow.log.debug("Open Window");
     setVisible(true);
     this.toFront();
 
@@ -446,7 +448,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   public void close() {
-    log.debug("Close Window");
+    ErrorWindow.log.debug("Close Window");
     setVisible(false);
   }
 
@@ -456,12 +458,13 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   protected boolean isDetailed() {
     String currentDetailsButtonText = detailsButton.getText();
-    if (currentDetailsButtonText.equals(SHOW_DETAILS_BUTTON))
+    if (currentDetailsButtonText.equals(ErrorWindow.SHOW_DETAILS_BUTTON)) {
       return false;
-    else if (currentDetailsButtonText.equals(HIDE_DETAILS_BUTTON))
+    } else if (currentDetailsButtonText.equals(ErrorWindow.HIDE_DETAILS_BUTTON)) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
 
   // **********************************************************************
@@ -469,8 +472,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   protected void showDetails() {
-    log.debug("Open details panel...");
-    detailsButton.setText(HIDE_DETAILS_BUTTON);
+    ErrorWindow.log.debug("Open details panel...");
+    detailsButton.setText(ErrorWindow.HIDE_DETAILS_BUTTON);
     scrollPane.setVisible(true);
     setSize(xSize, 400);
     validate();
@@ -481,8 +484,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
    */
 
   protected void hideDetails() {
-    log.debug("Close details panel...");
-    detailsButton.setText(SHOW_DETAILS_BUTTON);
+    ErrorWindow.log.debug("Close details panel...");
+    detailsButton.setText(ErrorWindow.SHOW_DETAILS_BUTTON);
     scrollPane.setVisible(false);
     setSize(xSize, 180);
     validate();
@@ -507,10 +510,10 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     this.xSize = xSize;
     this.ySize = ySize;
     if (xSize > 0 && ySize > 0) {
-      int x = (int) getToolkit().getScreenSize().width;
-      int y = (int) getToolkit().getScreenSize().height;
+      int x = getToolkit().getScreenSize().width;
+      int y = getToolkit().getScreenSize().height;
       setSize(xSize, ySize);
-      setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+      setLocation(new Point((x / 2 - xSize / 2), (y / 2 - ySize / 2)));
     }
   }
 
@@ -521,10 +524,11 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
       start();
     }
 
+    @Override
     public void run() {
       while (!quit) {
         try {
-          sleep(500);
+          Thread.sleep(500);
         } catch (Exception e) {
         }
         quit = actionPerformed;
@@ -554,11 +558,13 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
  * @version 29.10.2003
  */
 class TextArea extends JTextArea {
+  @Override
   public void setText(String text) {
     super.setText(text);
     setCaretPosition(0);
   }
 
+  @Override
   public void setEnabled(boolean value) {
     // super.setEnabled(value);
     if (value) {
@@ -630,6 +636,7 @@ class WindowClosingDispatcher extends WindowAdapter {
   /**
    */
 
+  @Override
   public void windowClosing(WindowEvent event) {
     if (listener != null) {
       listener.windowClosing();
@@ -672,11 +679,13 @@ interface WindowCloseable {
  * @version 29.10.2003
  */
 class EditorPane extends JEditorPane {
+  @Override
   public void setText(String text) {
     super.setText(text);
     setCaretPosition(0);
   }
 
+  @Override
   public void setEnabled(boolean value) {
     // super.setEnabled(value);
     if (value) {

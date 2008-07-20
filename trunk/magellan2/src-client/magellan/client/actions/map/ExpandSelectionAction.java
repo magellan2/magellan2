@@ -89,7 +89,8 @@ public class ExpandSelectionAction extends MenuAction implements GameDataListene
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		Map<CoordinateID,Region> newSelectedRegions = new Hashtable<CoordinateID, Region>();
 
 		// append the neighboring regions to the already selected regions
@@ -100,7 +101,7 @@ public class ExpandSelectionAction extends MenuAction implements GameDataListene
 		newSelectedRegions.putAll(client.getData().getSelectedRegionCoordinates());
 		for(Iterator iter = client.getData().getSelectedRegionCoordinates().keySet().iterator(); iter.hasNext();) {
 			CoordinateID c = (CoordinateID) iter.next();
-			Region region = (Region) client.getData().regions().get(c);
+			Region region = client.getData().regions().get(c);
 			// get neighbors
 			Collection neighbours = region.getNeighbours(); 
 			if (neighbours!=null){

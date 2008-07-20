@@ -42,14 +42,14 @@ public class MagellanPlugInLoader extends AbstractPlugInLoader<MagellanPlugIn> {
    */
   @Override
   public Collection<Class<MagellanPlugIn>> getExternalModuleClasses(Properties settings) {
-    log.info("Searching for magellan plugins...");
+    MagellanPlugInLoader.log.info("Searching for magellan plugins...");
 
     long start = System.currentTimeMillis();
     
     Collection<Class<MagellanPlugIn>> classes = getExternalModuleClasses(settings, MagellanPlugIn.class);
 
     long end = System.currentTimeMillis();
-    log.info("Searching for magellan plugins done. Found " + classes.size() + " instances in " + String.valueOf((end - start)) + " msecs");
+    MagellanPlugInLoader.log.info("Searching for magellan plugins done. Found " + classes.size() + " instances in " + String.valueOf((end - start)) + " msecs");
 
     return classes;
   }

@@ -30,12 +30,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import magellan.library.GameData;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.utils.Score;
-import magellan.library.utils.logging.Logger;
-import magellan.library.utils.mapping.*;
+import magellan.library.utils.mapping.BuildingIDMapping;
+import magellan.library.utils.mapping.DataMapping;
+import magellan.library.utils.mapping.EasyLevelMapping;
+import magellan.library.utils.mapping.LevelMapping;
+import magellan.library.utils.mapping.LevelRelation;
+import magellan.library.utils.mapping.MappingEvaluator;
+import magellan.library.utils.mapping.RegionIDMapping;
+import magellan.library.utils.mapping.RegionNameMapping;
+import magellan.library.utils.mapping.SavedTranslationsMapping;
+import magellan.library.utils.mapping.ShipIDMapping;
+import magellan.library.utils.mapping.TerrainMappingEvaluator;
+import magellan.library.utils.mapping.UnitIDMapping;
 
 /**
  * TODO This class must be commented
@@ -45,8 +55,6 @@ import magellan.library.utils.mapping.*;
  */
 
 public class MapMergeEvaluator {
-  private static final Logger log = Logger.getInstance(MapMergeEvaluator.class);
-   
   public Collection<DataMapping> getDataMappingVariants(int level) {
     Collection<DataMapping> variants = new ArrayList<DataMapping>(3);
     // this is a summarization of all XXXIDMapping classes     
@@ -87,7 +95,9 @@ public class MapMergeEvaluator {
   
   public final Collection<Score<CoordinateID>> getDataMappings(GameData fromData, GameData toData, int level, Collection<CoordinateID> otherLevels) {
     Collection<DataMapping> mappingVariants = getDataMappingVariants(level);
-    if (mappingVariants == null) return null;
+    if (mappingVariants == null) {
+      return null;
+    }
     
     Map<CoordinateID,Score<CoordinateID>> mappings = new HashMap<CoordinateID,Score<CoordinateID>>(1);
     for (DataMapping dm : mappingVariants) {
@@ -134,7 +144,9 @@ public class MapMergeEvaluator {
    */
   public final LevelRelation getLevelRelation(GameData data, int fromLevel, int toLevel) {
     Collection<LevelMapping> mappingVariants = getLevelMappingVariants(fromLevel, toLevel);
-    if (mappingVariants == null) return null;
+    if (mappingVariants == null) {
+      return null;
+    }
     
     for (LevelMapping dm : mappingVariants) {
       LevelRelation relation = dm.getMapping(data, fromLevel, toLevel);
@@ -160,7 +172,9 @@ public class MapMergeEvaluator {
     if ((fromLR != null) && (toLR != null)) {
       CoordinateID c = new CoordinateID(mapping.x + fromLR.x, mapping.y + fromLR.y, mapping.z);
       CoordinateID cNew = toLR.getInverseRelatedCoordinate(c);
-      if (cNew != null) return cNew;
+      if (cNew != null) {
+        return cNew;
+      }
     }
     // second chance - maybe we have a relation in the other direction
 

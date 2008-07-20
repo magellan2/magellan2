@@ -43,6 +43,6 @@ public class AllanonOrderChanger extends EresseaOrderChanger {
    * 
    */
   public static AllanonOrderChanger getSingleton() {
-    return singleton;
+    return AllanonOrderChanger.singleton;
   }
 }

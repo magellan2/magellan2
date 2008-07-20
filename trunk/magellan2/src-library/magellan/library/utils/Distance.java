@@ -62,14 +62,14 @@ class Distance {
 	 */
 	public static void main(String args[]) {
 		if(args.length != 4) {
-			usage();
+			Distance.usage();
 		} else {
 			int x1 = Integer.parseInt(args[0]);
 			int y1 = Integer.parseInt(args[1]);
 			int x2 = Integer.parseInt(args[2]);
 			int y2 = Integer.parseInt(args[3]);
 			System.out.println(x1 + "," + y1 + " -> " + x2 + "," + y2 + ": " +
-							   distance(x1, y1, x2, y2));
+							   Distance.distance(x1, y1, x2, y2));
 		}
 	}
 }

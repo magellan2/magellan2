@@ -55,7 +55,7 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
    * @return The singleton instance of OrderSyntaxInspector
    */
   public static OrderSyntaxInspector getInstance() {
-    return INSPECTOR;
+    return OrderSyntaxInspector.INSPECTOR;
   }
 
   /**
@@ -110,8 +110,9 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
      * 
      * @see magellan.library.tasks.AbstractProblem#getType()
      */
+    @Override
     public int getType() {
-      return ERROR;
+      return Problem.ERROR;
     }
   }
   
@@ -125,8 +126,9 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
      * 
      * @see magellan.library.tasks.AbstractProblem#getType()
      */
+    @Override
     public int getType() {
-      return WARNING;
+      return Problem.WARNING;
     }
   }
 }

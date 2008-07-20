@@ -137,7 +137,8 @@ public class TagMap implements Map<String,String> {
 	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean equals(Object obj) {
+	@Override
+  public boolean equals(Object obj) {
 		return false;
 	}
 
@@ -163,7 +164,8 @@ public class TagMap implements Map<String,String> {
 	/**
 	 * @see java.lang.Object#hashCode()
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		if(tags == null) {
 			return super.hashCode();
 		}
@@ -203,7 +205,7 @@ public class TagMap implements Map<String,String> {
 	 * @see java.util.Map#put(java.lang.Object, java.lang.Object)
 	 */
 	public String put(String key, String value) {
-		if((key == null) || !((key instanceof String) && (value instanceof String))) {
+		if(key == null) {
 			return null;
 		}
 
@@ -211,7 +213,7 @@ public class TagMap implements Map<String,String> {
 			for(int i = 0; i < tags.length; i++) {
 				if(tags[i].key.equals(key)) {
 					String old = tags[i].value;
-					tags[i].value = (String) value;
+					tags[i].value = value;
 
 					return old;
 				}
@@ -229,7 +231,7 @@ public class TagMap implements Map<String,String> {
 				temp[i + 1] = tags[i];
 			}
 
-			temp[0] = new Tag((String) key, (String) value);
+			temp[0] = new Tag(key, value);
 			tags = temp;
 		}
 
@@ -322,7 +324,7 @@ public class TagMap implements Map<String,String> {
 	 * @param tag
 	 */
 	public String getTag(String tag) {
-		return (String) get(tag);
+		return get(tag);
 	}
 
 	/**
@@ -332,6 +334,6 @@ public class TagMap implements Map<String,String> {
 	 * @param value
 	 */
 	public String putTag(String tag, String value) {
-		return (String) put(tag, value);
+		return put(tag, value);
 	}
 }

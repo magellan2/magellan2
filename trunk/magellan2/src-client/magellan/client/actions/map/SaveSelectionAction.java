@@ -119,9 +119,10 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		JFileChooser fc = new JFileChooser();
-		fc.addChoosableFileFilter(new EresseaFileFilter(EXTENSION, DESCRIPTION));
+		fc.addChoosableFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION, SaveSelectionAction.DESCRIPTION));
 		fc.setSelectedFile(new File(client.getProperties().getProperty(getPropertyName(), "")));
 		fc.setDialogTitle(Resources.get("actions.saveselectionaction.title"));
 
@@ -135,9 +136,9 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
 					// create backup file
 					try {
 						File backup = FileBackup.create(fc.getSelectedFile());
-						log.info("Created backupfile " + backup);
+						SaveSelectionAction.log.info("Created backupfile " + backup);
 					} catch(IOException ie) {
-						log.warn("Could not create backupfile for file " + fc.getSelectedFile());
+						SaveSelectionAction.log.warn("Could not create backupfile for file " + fc.getSelectedFile());
 					}
 				} 
         if (fc.getSelectedFile().exists() && !fc.getSelectedFile().canWrite()){
@@ -146,13 +147,13 @@ public class SaveSelectionAction extends MenuAction implements SelectionListener
           pw = new PrintWriter(new BufferedWriter(new FileWriter(fc.getSelectedFile())));
 
           for(Iterator iter = selectedRegions.keySet().iterator(); iter.hasNext();) {
-            pw.println(((CoordinateID) iter.next()).toString(DELIMITER));
+            pw.println(((CoordinateID) iter.next()).toString(SaveSelectionAction.DELIMITER));
           }
 
           pw.close();
         }
 			} catch(IOException exc) {
-				log.error(exc);
+				SaveSelectionAction.log.error(exc);
 				JOptionPane.showMessageDialog(client, exc.toString(),
 											  Resources.get("actions.saveselectionaction.msg.filesave.error.title"),
 											  JOptionPane.ERROR_MESSAGE);

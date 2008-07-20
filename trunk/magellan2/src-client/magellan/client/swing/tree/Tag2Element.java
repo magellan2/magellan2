@@ -39,10 +39,10 @@ public class Tag2Element {
 	 * @param u 
 	 */
 	public static void start(Unit u) {
-		lastStyle = null;
+		Tag2Element.lastStyle = null;
 
-		if(u.containsTag(STYLE_TAG)) {
-			lastStyle = u.getTag(STYLE_TAG);
+		if(u.containsTag(Tag2Element.STYLE_TAG)) {
+			Tag2Element.lastStyle = u.getTag(Tag2Element.STYLE_TAG);
 		}
 	}
 
@@ -52,10 +52,10 @@ public class Tag2Element {
 	 * @param u 
 	 */
 	public static void start(UnitContainer u) {
-		lastStyle = null;
+		Tag2Element.lastStyle = null;
 
-		if(u.containsTag(STYLE_TAG)) {
-			lastStyle = u.getTag(STYLE_TAG);
+		if(u.containsTag(Tag2Element.STYLE_TAG)) {
+			Tag2Element.lastStyle = u.getTag(Tag2Element.STYLE_TAG);
 		}
 	}
 
@@ -65,10 +65,10 @@ public class Tag2Element {
 	 * @param g 
 	 */
 	public static void start(Group g) {
-		lastStyle = null;
+		Tag2Element.lastStyle = null;
 
-		if(g.containsTag(STYLE_TAG)) {
-			lastStyle = g.getTag(STYLE_TAG);
+		if(g.containsTag(Tag2Element.STYLE_TAG)) {
+			Tag2Element.lastStyle = g.getTag(Tag2Element.STYLE_TAG);
 		}
 	}
 
@@ -78,8 +78,8 @@ public class Tag2Element {
 	 * @param ge 
 	 */
 	public static void apply(GraphicsElement ge) {
-		if((ge.getStyleset() == null) || (lastStyle != null)) {
-			ge.setStyleset(lastStyle);
+		if((ge.getStyleset() == null) || (Tag2Element.lastStyle != null)) {
+			ge.setStyleset(Tag2Element.lastStyle);
 		}
 	}
 }

@@ -90,7 +90,7 @@ public class Options {
 		}
 
 		if(bitMap != getBitMap()) {
-			log.info("Options.setValues(): invalid value computed! (" + bitMap + "<>" + getBitMap() + ")");
+			Options.log.info("Options.setValues(): invalid value computed! (" + bitMap + "<>" + getBitMap() + ")");
 			// log.info("CR BitMap: " + Integer.toBinaryString(bitMap));
 			// log.info("calculated BitMap: " + Integer.toBinaryString(getBitMap()));
 		}
@@ -106,8 +106,9 @@ public class Options {
 			initOptions(rules);
 		}
 
-    if (options != null && options.values() != null) 
+    if (options != null && options.values() != null) {
       return Collections.unmodifiableCollection(options.values());
+    }
     return Collections.emptyList();
 	}
 
@@ -128,7 +129,7 @@ public class Options {
 	 * 
 	 */
 	public boolean isActive(ID id) {
-		OptionCategory o = (OptionCategory) options.get(id);
+		OptionCategory o = options.get(id);
 
 		return (o != null) && o.isActive();
 	}
@@ -140,7 +141,7 @@ public class Options {
 	 * 
 	 */
 	public void setActive(ID id, boolean active) {
-		OptionCategory o = (OptionCategory) options.get(id);
+		OptionCategory o = options.get(id);
 
 		if(o != null) {
 			o.setActive(active);
@@ -152,7 +153,8 @@ public class Options {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		StringBuffer sb = new StringBuffer();
 
 		for(Iterator iter = options.values().iterator(); iter.hasNext();) {

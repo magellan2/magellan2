@@ -108,7 +108,8 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(amount == -1) {
 			return faction.toString();
 		} else {
@@ -138,12 +139,12 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	public List getIconNames() {
 		if(activeAlliances == null) {
 			// this should never happen !!
-			log.warn("Found activeAlliances-map to be null in FactionNodeWrapper.getGraphicsElements()! Please report to an magellan developer.");
+			FactionNodeWrapper.log.warn("Found activeAlliances-map to be null in FactionNodeWrapper.getGraphicsElements()! Please report to an magellan developer.");
 
 			return null;
 		}
 
-		Alliance alliance = (Alliance) activeAlliances.get(faction.getID());
+		Alliance alliance = activeAlliances.get(faction.getID());
 		String key;
 
 		if(alliance == null) {
@@ -158,11 +159,11 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 			}
 		}
 
-		List<String> iconNames = iconNamesLists.get(key);
+		List<String> iconNames = FactionNodeWrapper.iconNamesLists.get(key);
 
 		if(iconNames == null) {
 			iconNames = Collections.singletonList(key);
-			iconNamesLists.put(key, iconNames);
+			FactionNodeWrapper.iconNamesLists.put(key, iconNames);
 		}
 
 		return iconNames;
@@ -208,9 +209,9 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 
 		if(activeAlliances == null) {
 			// this should never happen !!
-			log.warn("Warning: Found activeAlliances-map to be null in FactionNodeWrapper.getGraphicsElements()! Please report to an magellan developer.");
+			FactionNodeWrapper.log.warn("Warning: Found activeAlliances-map to be null in FactionNodeWrapper.getGraphicsElements()! Please report to an magellan developer.");
 		} else {
-			Alliance alliance = (Alliance) activeAlliances.get(faction.getID());
+			Alliance alliance = activeAlliances.get(faction.getID());
 
 			if(alliance != null) {
 				// This is a workaround and indicates, that this faction
@@ -261,7 +262,8 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 		 *
 		 * 
 		 */
-		public boolean isEmphasized() {
+		@Override
+    public boolean isEmphasized() {
 			return emphasized();
 		}
 	}

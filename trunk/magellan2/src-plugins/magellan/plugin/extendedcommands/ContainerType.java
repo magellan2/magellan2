@@ -43,24 +43,39 @@ public enum ContainerType {
   SHIPTYPE,
   UNKNOWN;
   
+  @Override
   public String toString() {
     return name().toLowerCase();
   }
   
   public static ContainerType getType(String name) {
-    if (Utils.isEmpty(name)) return UNKNOWN;
-    for (ContainerType type : values()) {
-      if (type.toString().equalsIgnoreCase(name)) return type;
+    if (Utils.isEmpty(name)) {
+      return UNKNOWN;
+    }
+    for (ContainerType type : ContainerType.values()) {
+      if (type.toString().equalsIgnoreCase(name)) {
+        return type;
+      }
     }
     return UNKNOWN;
   }
   
   public static ContainerType getType(UnitContainerType uctype) {
-    if (Utils.isEmpty(uctype)) return UNKNOWN;
-    if (uctype instanceof RegionType) return REGIONTYPE;
-    if (uctype instanceof Race) return RACE;
-    if (uctype instanceof BuildingType) return BUILDINGTYPE;
-    if (uctype instanceof ShipType) return SHIPTYPE;
+    if (Utils.isEmpty(uctype)) {
+      return UNKNOWN;
+    }
+    if (uctype instanceof RegionType) {
+      return REGIONTYPE;
+    }
+    if (uctype instanceof Race) {
+      return RACE;
+    }
+    if (uctype instanceof BuildingType) {
+      return BUILDINGTYPE;
+    }
+    if (uctype instanceof ShipType) {
+      return SHIPTYPE;
+    }
     return UNKNOWN;
   }
 

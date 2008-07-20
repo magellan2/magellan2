@@ -335,12 +335,12 @@ public class UnitContainerContextMenu extends JPopupMenu {
         cntMaxLoad += ship.getMaxCapacity();
         s+=ship.toString(true);
         s+=":";
-        s+=weightNumberFormat.format(new Float((ship.getMaxCapacity()-ship.getModifiedLoad()) / 100.0F));
+        s+=UnitContainerContextMenu.weightNumberFormat.format(new Float((ship.getMaxCapacity()-ship.getModifiedLoad()) / 100.0F));
         s+="\n";
       }
     }
     if (cntShips>0){
-      s+=cntShips + " ships with " + weightNumberFormat.format(new Float((cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
+      s+=cntShips + " ships with " + UnitContainerContextMenu.weightNumberFormat.format(new Float((cntMaxLoad - cntActModifiedLoad) / 100.0F)) + " free space.";
       s+="\n";
     } else {
       s="no ships.";

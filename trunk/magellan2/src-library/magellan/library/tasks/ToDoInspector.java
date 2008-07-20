@@ -35,7 +35,7 @@ public class ToDoInspector extends AbstractInspector implements Inspector {
    * @return An instance of this class
 	 */
 	public static ToDoInspector getInstance() {
-		return INSPECTOR;
+		return ToDoInspector.INSPECTOR;
 	}
 
 	protected ToDoInspector() {
@@ -44,7 +44,8 @@ public class ToDoInspector extends AbstractInspector implements Inspector {
 	/**
 	 * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
 	 */
-	public List<Problem> reviewUnit(Unit u, int type) {
+	@Override
+  public List<Problem> reviewUnit(Unit u, int type) {
 		if((u == null) || u.ordersAreNull()) {
 			return Collections.emptyList();
 		}

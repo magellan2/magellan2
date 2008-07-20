@@ -44,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import magellan.client.Client;
 import magellan.library.EntityID;
@@ -53,7 +54,6 @@ import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TrustLevels;
-import magellan.library.utils.logging.Logger;
 
 /**
  * This class is called by the Client if there is a report with factions
@@ -64,7 +64,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0, 15.02.2008
  */
 public class AskForPasswordDialog extends JDialog implements ActionListener {
-  private static final Logger log = Logger.getInstance(AskForPasswordDialog.class);
   
   private JComboBox factionBox = null;
   private JPasswordField passwordField = null;
@@ -121,7 +120,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     mainPanel.add(comment1,c);
 
     JLabel label = new JLabel(Resources.get("client.msg.askforpassword.faction"));
-    label.setHorizontalAlignment(JLabel.RIGHT);
+    label.setHorizontalAlignment(SwingConstants.RIGHT);
     c.gridx = 0;
     c.gridy = 1;
     c.gridwidth = 1;
@@ -158,7 +157,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
     mainPanel.add(factionBox,c);
 
     label = new JLabel(Resources.get("client.msg.askforpassword.password"));
-    label.setHorizontalAlignment(JLabel.RIGHT);
+    label.setHorizontalAlignment(SwingConstants.RIGHT);
     c.gridx = 0;
     c.gridy = 2;
     c.gridwidth = 1;
@@ -186,7 +185,9 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand() == null) return;
+    if (e.getActionCommand() == null) {
+      return;
+    }
     if (e.getActionCommand().equals("button.cancel")) {
       setVisible(false);
     } else if (e.getActionCommand().equals("button.ok")) {
@@ -195,7 +196,9 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
       String password = new String(passwordField.getPassword());
       if (faction != null && password.length()!=0) {
         faction.setPassword(password);
-        if (!faction.isTrustLevelSetByUser()) faction.setTrustLevel(Faction.TL_PRIVILEGED);
+        if (!faction.isTrustLevelSetByUser()) {
+          faction.setTrustLevel(Faction.TL_PRIVILEGED);
+        }
 
         if (client.getProperties() != null) {
           client.getProperties().setProperty("Faction.password." + ((EntityID) faction.getID()).intValue(),faction.getPassword());
@@ -222,8 +225,11 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
       return faction;
     }
     
+    @Override
     public String toString() {
-      if (faction == null) return Resources.get("client.msg.askforpassword.pleasechoose");
+      if (faction == null) {
+        return Resources.get("client.msg.askforpassword.pleasechoose");
+      }
       return faction.getName()+ "("+faction.getID()+")";
     }
   }
@@ -234,8 +240,12 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
   class FactionItemComparator implements Comparator<FactionItem> {
 
     public int compare(FactionItem o1, FactionItem o2) {
-      if (o1.getFaction() == null) return Integer.MIN_VALUE;
-      if (o2.getFaction() == null) return Integer.MAX_VALUE;
+      if (o1.getFaction() == null) {
+        return Integer.MIN_VALUE;
+      }
+      if (o2.getFaction() == null) {
+        return Integer.MAX_VALUE;
+      }
       return o1.toString().compareTo(o2.toString());
     }
     

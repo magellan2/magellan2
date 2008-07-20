@@ -80,13 +80,13 @@ public class TopmostRankedSkillComparator implements Comparator<Map<ID, Skill> >
 			Skill s1 = null;
 
 			if(list1.size() > rank) {
-				s1 = (Skill) list1.get(rank);
+				s1 = list1.get(rank);
 			}
 
 			Skill s2 = null;
 
 			if(list2.size() > rank) {
-				s2 = (Skill) list2.get(rank);
+				s2 = list2.get(rank);
 			}
 
 			if((s1 == null) && (s2 != null)) {

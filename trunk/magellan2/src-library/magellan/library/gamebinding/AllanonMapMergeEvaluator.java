@@ -44,6 +44,6 @@ public class AllanonMapMergeEvaluator extends MapMergeEvaluator {
    * 
    */
   public static AllanonMapMergeEvaluator getSingleton() {
-    return singleton;
+    return AllanonMapMergeEvaluator.singleton;
   }
 }

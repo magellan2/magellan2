@@ -291,8 +291,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public Collection<String> getOrders() {
     List<String> orders = ordersObject.getOrders();
-    if (orders != null)
+    if (orders != null) {
       return Collections.unmodifiableCollection(orders);
+    }
     return Collections.emptyList();
 	}
 
@@ -800,7 +801,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public Unit getTempUnit(ID key) {
 		if(tempUnits != null) {
-			return (TempUnit) tempUnits.get(key);
+			return tempUnits.get(key);
 		}
 
 		return null;
@@ -878,8 +879,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
      */
     public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment) {
 		List<String> cmds = new LinkedList<String>();
-		if (!ordersAreNull())
-		  cmds.addAll(ordersObject.getOrders());
+		if (!ordersAreNull()) {
+      cmds.addAll(ordersObject.getOrders());
+    }
 
 		if(writeUnitTagsAsVorlageComment && this.hasTags()) {
 		  for(Iterator tagIter = this.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
@@ -908,7 +910,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
 			if(u.isOrdersConfirmed()) {
-				cmds.add(CONFIRMEDTEMPCOMMENT);
+				cmds.add(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT);
 			}
 
             if(u.hasTags()) {
@@ -916,7 +918,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
                 for(Iterator tagIter=u.getTagMap().keySet().iterator(); tagIter.hasNext(); ) {
                     String tag = (String) tagIter.next();
                     String value = (String) tagMap.get(tag);
-                    cmds.add(TAG_PREFIX_TEMP+tag+" "+value.replace(' ','~'));
+                    cmds.add(MagellanUnitImpl.TAG_PREFIX_TEMP+tag+" "+value.replace(' ','~'));
                 }
             }
                         
@@ -980,7 +982,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		if((this.getRegion() != null) && (this.getRegion().getData() != null)) {
 			this.getRegion().getData().tempUnits().put(t.getID(), t);
 		} else {
-			log.warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
+			MagellanUnitImpl.log.warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
 		}
 
 		return t;
@@ -1046,6 +1048,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     /**
      * @see magellan.library.Named#getModifiedName()
      */
+    @Override
     public String getModifiedName() {
         if(cache == null) {
             cache = new Cache();
@@ -1064,6 +1067,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
+    @Override
     protected Collection<UnitRelation> getRelations() {
         if(cache == null) {
             cache = new Cache();
@@ -1089,7 +1093,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * 
 	 *
 	 */
-	public void addRelation(UnitRelation rel) {
+	@Override
+  public void addRelation(UnitRelation rel) {
         super.addRelation(rel);
 		invalidateCache();
 	}
@@ -1101,7 +1106,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
-	public UnitRelation removeRelation(UnitRelation rel) {
+	@Override
+  public UnitRelation removeRelation(UnitRelation rel) {
 		UnitRelation ret = super.removeRelation(rel);
         if(ret != null) {
             invalidateCache();
@@ -1216,7 +1222,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		if((cache != null) && (cache.modifiedSkills != null)) {
-			s = (Skill) cache.modifiedSkills.get(type.getID());
+			s = cache.modifiedSkills.get(type.getID());
 		}
 
 		return s;
@@ -1332,9 +1338,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				}
 
 				PersonTransferRelation rel = (PersonTransferRelation) unitRel;
-        Unit srcClone = (Unit) clones.get(srcUnit.getID());
+        Unit srcClone = clones.get(srcUnit.getID());
         Unit targetUnit = rel.target;
-        Unit targetClone = (Unit) clones.get(targetUnit.getID());
+        Unit targetClone = clones.get(targetUnit.getID());
 				int transferredPersons = Math.max(0, Math.min(srcClone.getPersons(), rel.amount));
 
 				if(transferredPersons == 0) {
@@ -1445,7 +1451,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		/* modify the skills according to recruitment */
-		MagellanUnitImpl clone = (MagellanUnitImpl) clones.get(this.getID());
+		MagellanUnitImpl clone = clones.get(this.getID());
 
 		/* update the person and level information in all clone skills */
 		if(clone.getSkills().size() > 0) {
@@ -1552,10 +1558,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return a collection of Skill objects.
 	 */
 	public Collection<Skill> getSkills() {
-    if (this.skills != null && this.skills.values() != null)
+    if (this.skills != null && this.skills.values() != null) {
       return Collections.unmodifiableCollection(this.skills.values());
-    else
+    } else {
       return Collections.emptyList();
+    }
 	}
   
   public boolean isSkillsCopied() {
@@ -1587,10 +1594,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return a collection of Item objects.
 	 */
 	public Collection<Item> getItems() {
-    if (this.items != null && this.items.values() != null)
+    if (this.items != null && this.items.values() != null) {
       return Collections.unmodifiableCollection(this.items.values());
-    else
+    } else {
       return Collections.emptyList();
+    }
 	}
   
   public void setItems(Map<ID,Item> items) {
@@ -1630,7 +1638,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 
 		if((cache != null) && (cache.modifiedItems != null)) {
-			i = (Item) cache.modifiedItems.get(type.getID());
+			i = cache.modifiedItems.get(type.getID());
 		}
 
 		return i;
@@ -1685,9 +1693,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	public List getPersonTransferRelations() {
 		List ret = getRelations(PersonTransferRelation.class);
 
-		if(log.isDebugEnabled()) {
-			log.debug("Unit.getPersonTransferRelations for " + this);
-			log.debug(ret);
+		if(MagellanUnitImpl.log.isDebugEnabled()) {
+			MagellanUnitImpl.log.debug("Unit.getPersonTransferRelations for " + this);
+			MagellanUnitImpl.log.debug(ret);
 		}
 
 		return ret;
@@ -1715,10 +1723,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			refreshModifiedItems();
 		}
 
-    if (cache.modifiedItems != null && cache.modifiedItems.values() != null)
+    if (cache.modifiedItems != null && cache.modifiedItems.values() != null) {
       return Collections.unmodifiableCollection(cache.modifiedItems.values());
-    else
+    } else {
       return Collections.emptyList();
+    }
 	}
 
 	/**
@@ -1757,7 +1766,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
 			if(rel instanceof ReserveRelation) {
 				ReserveRelation itr = (ReserveRelation) rel;
-				Item modifiedItem = (Item) cache.modifiedItems.get(itr.itemType.getID());
+				Item modifiedItem = cache.modifiedItems.get(itr.itemType.getID());
 
 				if(modifiedItem != null) { // the transferred item can be found among this unit's items
 					// nothing to do
@@ -1779,7 +1788,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
 			if(rel instanceof ItemTransferRelation) {
 				ItemTransferRelation itr = (ItemTransferRelation) rel;
-				Item modifiedItem = (Item) cache.modifiedItems.get(itr.itemType.getID());
+				Item modifiedItem = cache.modifiedItems.get(itr.itemType.getID());
 
 				if(modifiedItem != null) { // the transferred item can be found among this unit's items
 
@@ -1811,7 +1820,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				RecruitmentRelation rr = (RecruitmentRelation) rel;
 
 				// FIXME(pavkovic): here is a bad binding to "Silber", what to do?
-				Item modifiedItem = (Item) cache.modifiedItems.get(StringID.create("Silber"));
+				Item modifiedItem = cache.modifiedItems.get(StringID.create("Silber"));
 
 				if(modifiedItem != null) {
 					Race recruitmentRace = this.realRace;
@@ -2305,9 +2314,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	private void addAndSpreadRelations(Collection newRelations) {
-		if(log.isDebugEnabled()) {
-			log.debug("Relations for " + this);
-			log.debug(newRelations);
+		if(MagellanUnitImpl.log.isDebugEnabled()) {
+			MagellanUnitImpl.log.debug("Relations for " + this);
+			MagellanUnitImpl.log.debug(newRelations);
 		}
 
 		for(Iterator iter = newRelations.iterator(); iter.hasNext();) {
@@ -2347,6 +2356,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
+    @Override
     public String toString() {
         return toString(true);
     }
@@ -2564,7 +2574,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 														   token.getText(), false);
 									}
 								} else {
-									log.warn("Unit.extractTempUnits(): region " + this.getRegion() +
+									MagellanUnitImpl.log.warn("Unit.extractTempUnits(): region " + this.getRegion() +
 											 " already contains a temp unit with the id " + orderTempID +
 											 ". This temp unit remains in the orders of its parent " +
 											 "unit instead of being created as a unit in its own right.");
@@ -2590,11 +2600,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
     private void scanTempOrder(TempUnit tempUnit, String line) {
         boolean scanned = false;
-        if(CONFIRMEDTEMPCOMMENT.equals(line.trim())) {
+        if(MagellanUnitImpl.CONFIRMEDTEMPCOMMENT.equals(line.trim())) {
         	tempUnit.setOrdersConfirmed(true);
             scanned = true;
         } 
-        if(!scanned && line.trim().startsWith(TAG_PREFIX_TEMP)) {
+        if(!scanned && line.trim().startsWith(MagellanUnitImpl.TAG_PREFIX_TEMP)) {
             String tag = null;
             String value = null;
             StringTokenizer st = new StringTokenizer(line);
@@ -2637,7 +2647,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			tagMap = new HashMap<String, String>();
 		}
 
-		return (String) tagMap.put(tag, value);
+		return tagMap.put(tag, value);
 	}
 
 	/**
@@ -2648,7 +2658,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			return null;
 		}
 
-		return (String) tagMap.get(tag);
+		return tagMap.get(tag);
 	}
 
 	/**
@@ -2659,7 +2669,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			return null;
 		}
 
-		return (String) tagMap.remove(tag);
+		return tagMap.remove(tag);
 	}
 
 	/**
@@ -2753,8 +2763,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
      * immutable and may be <code>null</code>.
      */
 		public List<String> getOrders() {
-      if (orders == null)
+      if (orders == null) {
         return null;
+      }
       return orders;
 		}
 

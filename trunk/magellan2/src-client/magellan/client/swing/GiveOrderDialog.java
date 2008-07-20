@@ -81,9 +81,9 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		cp.add(helperPane, c);
 
 		JRadioButton firstButton = new JRadioButton(Resources.get("giveorderdialog.radio.first.title"));
-		firstButton.setActionCommand(FIRST_POS);
+		firstButton.setActionCommand(GiveOrderDialog.FIRST_POS);
 		JRadioButton lastButton = new JRadioButton(Resources.get("giveorderdialog.radio.last.title"));
-		lastButton.setActionCommand(LAST_POS);
+		lastButton.setActionCommand(GiveOrderDialog.LAST_POS);
 		position = new ButtonGroup();
 		position.add(firstButton);
 		position.add(lastButton);
@@ -148,7 +148,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 				retVal[1] = String.valueOf(GiveOrderDialog.this.replaceOrders.isSelected());
 				retVal[2] = String.valueOf(GiveOrderDialog.this.keepComments.isSelected());
 				retVal[3] = String.valueOf(position.getSelection().getActionCommand());
-				log.info(position.getSelection()+" "+retVal[3]);
+				GiveOrderDialog.log.info(position.getSelection()+" "+retVal[3]);
 				quit();
 			}
 		};

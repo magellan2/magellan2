@@ -55,7 +55,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0
  */
 public class SignTextCellRenderer extends HexCellRenderer {
-  private static final Logger log = Logger.getInstance(TextCellRenderer.class);
 	protected Color fontColor = Color.black;
 	protected Color backColor = Color.white;
 	protected Color brighterColor = Color.black.brighter();
@@ -65,7 +64,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	protected int minimumFontSize = 10;
 	protected int fontHeight = 0;
 	protected boolean isScalingFont = false;
-	protected int hAlign = CENTER;
+	protected int hAlign = SignTextCellRenderer.CENTER;
 	protected String singleString[] = new String[1];
 	String doubleString[] = new String[2];
 	
@@ -136,7 +135,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 
 	protected void setFont(float scaleFactor) {
 		font = unscaledFont.deriveFont(Math.max(unscaledFont.getSize() * scaleFactor,
-												(float) minimumFontSize));
+												minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
 		fontMetrics = Client.getDefaultFontMetrics(this.font);
@@ -188,7 +187,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_SIGNS;
 	}
 
@@ -214,7 +214,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void init(GameData data, Graphics g, Rectangle offset) {
+	@Override
+  public void init(GameData data, Graphics g, Rectangle offset) {
 		super.init(data, g, offset);
 
 		if(isScalingFont) {
@@ -234,7 +235,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 			CoordinateID c = r.getCoordinate();
@@ -283,7 +285,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			case CENTER:
 				// height/X is not good...but near.
 				// to have the border a bit away from text
-				int lmax = (int) (getMaxWidth(display) + (height/4));
+				int lmax = (getMaxWidth(display) + (height/4));
 				fillRectangle(middleX-(lmax/2), upperY - height, lmax, ((display.size()) * height) + (height/4));
 				
 				i = 0;
@@ -334,13 +336,14 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	private void fillRectangle(int X,int Y,int width, int height){
 		graphics.setColor(fontColor);
 		graphics.drawRect(X-1, Y-1, width+1, height+1);
-		graphics.fillRect(X+(width/2), Y+height, 2, (int) height/2);
+		graphics.fillRect(X+(width/2), Y+height, 2, height/2);
 		graphics.setColor(backColor);
 		graphics.fillRect(X, Y, width, height);
 	}
 	
 	
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new Preferences(this);
 	}
 	
@@ -373,7 +376,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			pnlFontColor.setSize(50, 50);
 			pnlFontColor.setBackground(source.getFontColor());
 			pnlFontColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
+					@Override
+          public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlFontColor.getTopLevelAncestor(),
 																  Resources.get("map.signtextcellrenderer.textcolor"),
 																  pnlFontColor.getBackground());
@@ -391,7 +395,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			pnlBackColor.setSize(50, 50);
 			pnlBackColor.setBackground(source.getBackColor());
 			pnlBackColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
+					@Override
+          public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlBackColor.getTopLevelAncestor(),
 																  Resources.get("map.signtextcellrenderer.backcolor"),
 																  pnlBackColor.getBackground());

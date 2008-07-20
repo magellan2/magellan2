@@ -50,11 +50,13 @@ public class NullUserInterface implements UserInterface {
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
   public void setProgress(String strMessage, int iProgress) {
-    log.debug("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
+    NullUserInterface.log.debug("Progress: "+strMessage+" ("+getPercent(iProgress)+"%)");
   }
   
   protected int getPercent(int progress) {
-    if (max==0) return 0;
+    if (max==0) {
+      return 0;
+    }
     return progress*100/max;
   }
   

@@ -74,7 +74,9 @@ public class HTTPClient {
     boolean proxyEnabled = new Boolean(properties.getProperty("http.proxy.enabled",String.valueOf(false)));
     String host = properties.getProperty("http.proxy.host");
     int port = new Integer(properties.getProperty("http.proxy.port",String.valueOf(0)));
-    if (proxyEnabled && host!=null && host.length()!=0) setProxy(host,port);
+    if (proxyEnabled && host!=null && host.length()!=0) {
+      setProxy(host,port);
+    }
     
     client.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
     client.getParams().setParameter(HttpMethodParams.USER_AGENT,"magellan-http/1.0");
@@ -87,7 +89,9 @@ public class HTTPClient {
    */
   public void setProxy(String host, int port) {
     HostConfiguration config = client.getHostConfiguration();
-    if (config == null) config = new HostConfiguration();
+    if (config == null) {
+      config = new HostConfiguration();
+    }
     config.setProxy(host,port);
     
     proxy = new ProxyHost(host, port); 
@@ -119,7 +123,7 @@ public class HTTPClient {
     try {
       return get(new URI(uri));
     } catch (Exception exception) {
-      log.error("Die URI ist syntaktisch falsch",exception);
+      HTTPClient.log.error("Die URI ist syntaktisch falsch",exception);
     }
     return null;
   }
@@ -147,9 +151,9 @@ public class HTTPClient {
       client.executeMethod(method);
       return new HTTPResult(method,async);
     } catch (SocketTimeoutException exception) {
-      log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'",exception);
     }
     
     return null;
@@ -167,9 +171,9 @@ public class HTTPClient {
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
     }
     
     return null;
@@ -189,7 +193,7 @@ public class HTTPClient {
     try {
       return post(new URI(uri),content, (Part[])null);
     } catch (Exception exception) {
-      log.error("Die URI ist syntaktisch falsch",exception);
+      HTTPClient.log.error("Die URI ist syntaktisch falsch",exception);
     }
     return null;
   }
@@ -202,15 +206,17 @@ public class HTTPClient {
     
     PostMethod method = new PostMethod(uri.toString());
     
-    if(parts != null) method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
+    if(parts != null) {
+      method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
+    }
     
     try {
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
     }
     
     return null;
@@ -227,15 +233,17 @@ public class HTTPClient {
     method.setRequestHeader("Content-type", "text/xml; charset="+Encoding.DEFAULT);
     
     
-    if(parts != null) method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
+    if(parts != null) {
+      method.setRequestEntity(new MultipartRequestEntity(parts, method.getParams()));
+    }
     
     try {
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
     }
     
     return null;
@@ -248,7 +256,7 @@ public class HTTPClient {
     try {
       return post(new URI(uri),key,content);
     } catch (Exception exception) {
-      log.error("Die URI ist syntaktisch falsch",exception);
+      HTTPClient.log.error("Die URI ist syntaktisch falsch",exception);
     }
     return null;
   }
@@ -266,9 +274,9 @@ public class HTTPClient {
       client.executeMethod(method);
       return new HTTPResult(method);
     } catch (SocketTimeoutException exception) {
-      log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      log.error("Fehler beim Ausführen eines HTTP-POST.",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST.",exception);
     }
     
     return null;
@@ -287,10 +295,11 @@ public class HTTPClient {
    */
   public void setCookiePolicy(boolean accept) {
     
-    if(accept)
+    if(accept) {
       client.getParams().setCookiePolicy(CookiePolicy.BROWSER_COMPATIBILITY);
-    else 
+    } else {
       client.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+    }
   }
 
   /**

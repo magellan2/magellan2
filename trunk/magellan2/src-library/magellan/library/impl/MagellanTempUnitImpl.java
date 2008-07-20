@@ -62,6 +62,7 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
    * Returns a string representation of this temporary unit.
    */
 
+  @Override
   public String toString(boolean withName) {
     if (withName) {
       return super.toString(withName);

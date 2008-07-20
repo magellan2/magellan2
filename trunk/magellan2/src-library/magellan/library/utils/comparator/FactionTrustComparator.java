@@ -80,14 +80,16 @@ public class FactionTrustComparator implements Comparator<Faction> {
 	  // owner faction should always be first
 	  if (o1.getData() != null && o2.getData() != null && o1.getData().equals(o2.getData()) 
 	      && o1.getData().getOwnerFaction() != null && o2.getData().getOwnerFaction() != null) {
-	    if (o1.getData().getOwnerFaction().equals(o1.getID()) && !o1.equals(o2))
-	      return -999;
-	    if (o2.getData().getOwnerFaction().equals(o2.getID()) && !o1.equals(o2))
-	      return +999;
+	    if (o1.getData().getOwnerFaction().equals(o1.getID()) && !o1.equals(o2)) {
+        return -999;
+      }
+	    if (o2.getData().getOwnerFaction().equals(o2.getID()) && !o1.equals(o2)) {
+        return +999;
+      }
 	  }
 
-		int t1 = getTrustLevel(o1.getTrustLevel());
-		int t2 = getTrustLevel(o2.getTrustLevel());
+		int t1 = FactionTrustComparator.getTrustLevel(o1.getTrustLevel());
+		int t2 = FactionTrustComparator.getTrustLevel(o2.getTrustLevel());
 
 		return ((t1 == t2) && (sameTrustSubCmp != null)) ? sameTrustSubCmp.compare(o1, o2) : (t2 -
 														 t1);
@@ -101,7 +103,7 @@ public class FactionTrustComparator implements Comparator<Faction> {
 	 * @return Returns the trust level of a faction
 	 */
 	public static int getTrustLevel(Faction f) {
-		return getTrustLevel(f.getTrustLevel());
+		return FactionTrustComparator.getTrustLevel(f.getTrustLevel());
 	}
 
 	/**
@@ -112,19 +114,19 @@ public class FactionTrustComparator implements Comparator<Faction> {
 	 * @return Returns the trust level for an exact trust value.
 	 */
 	public static int getTrustLevel(int trustLevel) {
-		if(trustLevel >= PRIVILEGED) {
-			return PRIVILEGED;
+		if(trustLevel >= FactionTrustComparator.PRIVILEGED) {
+			return FactionTrustComparator.PRIVILEGED;
 		}
 
-		if(trustLevel >= ALLIED) {
-			return ALLIED;
+		if(trustLevel >= FactionTrustComparator.ALLIED) {
+			return FactionTrustComparator.ALLIED;
 		}
 
-		if(trustLevel >= DEFAULT) {
-			return DEFAULT;
+		if(trustLevel >= FactionTrustComparator.DEFAULT) {
+			return FactionTrustComparator.DEFAULT;
 		}
 
-		return ENEMY;
+		return FactionTrustComparator.ENEMY;
 	}
 
 	/**
@@ -138,7 +140,7 @@ public class FactionTrustComparator implements Comparator<Faction> {
 		// TODO(pavkovic): move functions and translations to a suitable position
 		String nodeLabel = "";
 
-		switch(getTrustLevel(level)) {
+		switch(FactionTrustComparator.getTrustLevel(level)) {
 		case FactionTrustComparator.PRIVILEGED:
 			nodeLabel = Resources.get("factionstatspanel.node.trust.privileged");
 

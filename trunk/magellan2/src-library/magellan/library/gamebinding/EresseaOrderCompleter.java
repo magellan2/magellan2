@@ -173,7 +173,7 @@ public class EresseaOrderCompleter implements Completer {
 			// stub.length <= 0
 			ret = list;
 		}
-    Collections.sort(ret, prioComp);
+    Collections.sort(ret, EresseaOrderCompleter.prioComp);
 
 		return ret;
 	}
@@ -427,7 +427,7 @@ public class EresseaOrderCompleter implements Completer {
 				spies.add(curUnit);
 				addUnit(curUnit, battleStateOrder);
 			} else {
-				Faction f = (Faction) curUnit.getFaction();
+				Faction f = curUnit.getFaction();
 
 				if((f != null) && (f.getTrustLevel() <= Faction.TL_DEFAULT)) {
 					List<Unit> v = unitList.get(f.getID());
@@ -799,8 +799,9 @@ public class EresseaOrderCompleter implements Completer {
     for (Completion c: oldList){
       completions.add(new Completion(c.getName()+quote, c.getValue()+quote, c.getPostfix(), c.getPriority(), c.getCursorOffset()));
     }
-    if (t!=null)
+    if (t!=null) {
       completions.add(new Completion(t.getText()+quote, t.getText()+quote, ""));
+    }
   }
 
   public void cmplOpeningQuote(OrderToken t, char quote) {
@@ -811,8 +812,9 @@ public class EresseaOrderCompleter implements Completer {
       value = value.substring(0, value.lastIndexOf(c.getPostfix()));
       completions.add(new Completion(c.getName(), quote+value, c.getPostfix(), c.getPriority(), c.getCursorOffset()));
     }
-    if (t!=null)
+    if (t!=null) {
       completions.add(new Completion(t.getText(), quote+t.getText(), ""));
+    }
   }
 
   public void clear() {
@@ -981,8 +983,9 @@ public class EresseaOrderCompleter implements Completer {
        */  
       String order = "";
       String tounit = (uid.intValue()>=0) ? uid.toString() : Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + uid.toString();
-      if (persons&&(unit.getPersons()>=i))
+      if (persons&&(unit.getPersons()>=i)) {
         order = Resources.getOrderTranslation(EresseaConstants.O_MEN);
+      }
       for (Item item : unit.getItems()) {
         if (item.getAmount()>=i) {
 
@@ -995,12 +998,14 @@ public class EresseaOrderCompleter implements Completer {
           }
         }
       }
-      if(!"".equals(order)) 
+      if(!"".equals(order)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), order, ""));
+      }
 		}
     
-		if (persons)
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN), (unit.getPersons()>=i) ? 0 : 10));
+		if (persons) {
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN), (unit.getPersons()>=i) ? 0 : 10));
+    }
 
 	}
 
@@ -1473,20 +1478,20 @@ public class EresseaOrderCompleter implements Completer {
     int modLoad = otherUnit.getModifiedLoad();
     ItemType horses = data.rules.getItemType(StringID.create("Pferd"));
     ItemType carts = data.rules.getItemType(StringID.create("Wagen"));
-    ItemType silver = data.rules.getItemType(StringID.create("Silber"));
+//    ItemType silver = data.rules.getItemType(StringID.create("Silber"));
     int maxOnFoot = otherUnit.getPayloadOnFoot();
     int maxOnHorse = otherUnit.getPayloadOnHorse();
-    Float maxFoot = 0f;
-    Float freeFoot = 0f;
+//    Float maxFoot = 0f;
+//    Float freeFoot = 0f;
     if(maxOnFoot != Unit.CAP_UNSKILLED) {
-      maxFoot = new Float(maxOnFoot / 100.0F);
-      freeFoot = new Float(Math.abs(maxOnFoot - modLoad) / 100.0F);
+//      maxFoot = new Float(maxOnFoot / 100.0F);
+//      freeFoot = new Float(Math.abs(maxOnFoot - modLoad) / 100.0F);
     }
-    Float maxHorse = 0f;
-    Float freeHorse = 0f;
+//    Float maxHorse = 0f;
+//    Float freeHorse = 0f;
     if(maxOnHorse != Unit.CAP_UNSKILLED && maxOnHorse != Unit.CAP_NO_HORSES) {
-      maxHorse = new Float(maxOnHorse / 100.0F);
-      freeHorse = new Float(Math.abs(maxOnHorse - modLoad) / 100.0F);
+//      maxHorse = new Float(maxOnHorse / 100.0F);
+//      freeHorse = new Float(Math.abs(maxOnHorse - modLoad) / 100.0F);
     }
 
     for(Iterator iter = otherUnit.getRegion().allItems().iterator(); iter.hasNext();) {
@@ -1671,7 +1676,7 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltTarneParteiNummer() {
-		log.info("cmplt nummer");
+		EresseaOrderCompleter.log.info("cmplt nummer");
 		addFactions("");
 	}
 
@@ -1751,7 +1756,7 @@ public class EresseaOrderCompleter implements Completer {
 		for(CoordinateID c : regions1.keySet() ) {
 
 			if(!c.equals(region.getCoordinate())) {
-				Region r = (Region) regions1.get(c);
+				Region r = regions1.get(c);
 				String name = r.getName();
 				int prio = Completion.DEFAULT_PRIORITY-2;
 
@@ -1771,7 +1776,7 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
     for(CoordinateID c : regions2.keySet() ) {
-			Region r = (Region) regions2.get(c);
+			Region r = regions2.get(c);
 			String name = r.getName();
 			int prio = Completion.DEFAULT_PRIORITY;
 
@@ -1948,8 +1953,9 @@ public class EresseaOrderCompleter implements Completer {
 				addUnit(curUnit, postfix);
 			} else if(!f.equals(unit.getFaction())) {
 				Alliance testAlliance = unit.getFaction().getAllies().get(f.getID());
-				if (unit.getGroup()!=null)
-				  testAlliance = unit.getGroup().allies().get(f.getID());
+				if (unit.getGroup()!=null) {
+          testAlliance = unit.getGroup().allies().get(f.getID());
+        }
 				if(testAlliance == null) {
 					// curUnit is not allied
 					addUnit(curUnit, postfix);
@@ -2038,7 +2044,7 @@ public class EresseaOrderCompleter implements Completer {
   
 	private void addUnitItems(int amount, String postfix) {
 		for(Item i : unit.getItems()) {
-		  String name = i.getName().replaceAll(" ", "~");
+		  //String name = i.getName().replaceAll(" ", "~");
 		  // TODO use replaced name?
       completions.add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount()>=amount) ? 0 : 10));
 
@@ -2105,7 +2111,7 @@ public class EresseaOrderCompleter implements Completer {
 		RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
 
 		if(oceanType == null) {
-			log.warn("EresseaOrderCompleter.addSurroundingRegions(): unable to retrieve ocean region type from rules!");
+			EresseaOrderCompleter.log.warn("EresseaOrderCompleter.addSurroundingRegions(): unable to retrieve ocean region type from rules!");
 
 			return;
 		}
@@ -2276,7 +2282,9 @@ public class EresseaOrderCompleter implements Completer {
    */
   private boolean hasSkills(Unit u, int level) {
     for (Skill s : u.getModifiedSkills()) {
-      if (s.getLevel()>=level) return true;
+      if (s.getLevel()>=level) {
+        return true;
+      }
     }
     return false;
   }
@@ -2351,7 +2359,7 @@ public class EresseaOrderCompleter implements Completer {
 				String s1 = ((Completion) o1).getName();
 				String s2 = (String) o2;
         if (s1 == null) {
-          return (s2 == null) ? 0 : 1;
+          return 0;
         } else {
           return s1.compareToIgnoreCase(s2);
         }
@@ -2359,7 +2367,7 @@ public class EresseaOrderCompleter implements Completer {
 				String s1 = (String) o1;
 				String s2 = ((Completion) o2).getName();
         if (s2 == null) {
-          return (s1 == null) ? 0 : -1;
+          return 0;
         } else {
           return s2.compareToIgnoreCase(s1);
         }
@@ -2369,12 +2377,9 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
 		 * 
 		 */
+    @Override
 		public boolean equals(Object obj) {
 			return false;
 		}
@@ -2414,9 +2419,9 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 * 
 		 */
+    @Override
 		public boolean equals(Object obj) {
 			return false;
 		}

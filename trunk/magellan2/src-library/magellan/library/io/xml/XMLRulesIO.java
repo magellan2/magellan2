@@ -26,6 +26,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -62,8 +63,8 @@ public class XMLRulesIO implements RulesIO {
 	private Rules readRules(Document aDocument) throws SAXException, IOException {
 		// check for Rules
 		if((aDocument.getDocumentElement() == null) ||
-			   !T_RULES.equals(aDocument.getDocumentElement().getTagName())) {
-			throw new XMLIOException("Element " + T_RULES + " is missing.");
+			   !XMLRulesIO.T_RULES.equals(aDocument.getDocumentElement().getTagName())) {
+			throw new XMLIOException("Element " + XMLRulesIO.T_RULES + " is missing.");
 		}
 
 		return readRules(aDocument.getDocumentElement());
@@ -78,7 +79,7 @@ public class XMLRulesIO implements RulesIO {
 		NodeList children = aDocumentElement.getChildNodes();
 
 		for(int i = 0; i < children.getLength(); i++) {
-			if(children.item(i).getNodeType() == Element.ELEMENT_NODE) {
+			if(children.item(i).getNodeType() == Node.ELEMENT_NODE) {
 				Element child = (Element) children.item(i);
 				addElement(rules, child);
 			}
@@ -91,15 +92,15 @@ public class XMLRulesIO implements RulesIO {
 	// this enforces a name binding between com.eressea.rules.* Files and 
 	// rules.dtd, but hey, we reduce complexity by a notifiable factor
 	private void addElement(Rules rules, Element child) throws SAXException, IOException {
-		if(log.isDebugEnabled()) {
-			log.debug("XMLRulesIO.addElement(): Adding element " + child);
+		if(XMLRulesIO.log.isDebugEnabled()) {
+			XMLRulesIO.log.debug("XMLRulesIO.addElement(): Adding element " + child);
 		}
 
 		String objectType = child.getTagName();
-		String id = child.getAttribute(A_ID);
+		String id = child.getAttribute(XMLRulesIO.A_ID);
 
 		if(id == null) {
-			throw new XMLIOException("Missing attribute " + A_ID + " at element " + child);
+			throw new XMLIOException("Missing attribute " + XMLRulesIO.A_ID + " at element " + child);
 		}
 
 		try {
@@ -115,7 +116,7 @@ public class XMLRulesIO implements RulesIO {
 			for(int i = 0; i < attributes.getLength(); i++) {
 				Attr attr = (Attr) attributes.item(i);
 
-				if(!A_ID.equals(attr.getName())) {
+				if(!XMLRulesIO.A_ID.equals(attr.getName())) {
 					// convert attrname to Attrname
 					String attrName = attr.getName().substring(0, 1).toUpperCase() +
 									  attr.getName().substring(1);

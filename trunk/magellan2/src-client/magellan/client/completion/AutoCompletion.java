@@ -15,6 +15,7 @@ package magellan.client.completion;
 
 import java.awt.event.ActionListener;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Hashtable;
@@ -158,7 +159,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[0][0] = Integer.parseInt(st.nextToken());
       completerKeys[0][1] = Integer.parseInt(st.nextToken());
     } catch (Exception exc) {
-      completerKeys[0][0] = KeyEvent.CTRL_MASK;
+      completerKeys[0][0] = InputEvent.CTRL_MASK;
       completerKeys[0][1] = KeyEvent.VK_DOWN;
     }
 
@@ -169,7 +170,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[1][0] = Integer.parseInt(st.nextToken());
       completerKeys[1][1] = Integer.parseInt(st.nextToken());
     } catch (Exception exc) {
-      completerKeys[1][0] = KeyEvent.CTRL_MASK;
+      completerKeys[1][0] = InputEvent.CTRL_MASK;
       completerKeys[1][1] = KeyEvent.VK_UP;
     }
 
@@ -230,7 +231,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     if (activeGUI == null) {
-      setCurrentGUI((CompletionGUI) completionGUIs.get(0));
+      setCurrentGUI(completionGUIs.get(0));
 
       return;
     }
@@ -247,7 +248,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
     }
 
-    setCurrentGUI((CompletionGUI) completionGUIs.get(0));
+    setCurrentGUI(completionGUIs.get(0));
   }
 
   /**
@@ -299,8 +300,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
-    if (log.isDebugEnabled()) {
-      log.debug("AutoCompletion.setCurrentGUI called with " + cGUI);
+    if (AutoCompletion.log.isDebugEnabled()) {
+      AutoCompletion.log.debug("AutoCompletion.setCurrentGUI called with " + cGUI);
     }
 
     if (!completionGUIs.contains(cGUI)) {
@@ -342,8 +343,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void selectionChanged(SelectionEvent e) {
-    if (log.isDebugEnabled()) {
-      log.debug("AutoCompletion.selectionChanged called with " + e);
+    if (AutoCompletion.log.isDebugEnabled()) {
+      AutoCompletion.log.debug("AutoCompletion.selectionChanged called with " + e);
     }
 
     // stop offering a completion
@@ -370,14 +371,15 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     // find the piece of text
-    String line = getCurrentLine(j);
+    String line = AutoCompletion.getCurrentLine(j);
 
     if (line == null) {
       return;
     }
 
-    if (false)
+    if (false) {
       completions = null;
+    }
     if ((line.length() == 0) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n')) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
       // new line, delete old completions
       completions = null;
@@ -396,7 +398,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (editors.getCurrentUnit() != null) {
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
 
-      addCommonCompletion(getStub(line));
+      addCommonCompletion(AutoCompletion.getStub(line));
       
       // determine, whether the cursor is inside a word
       boolean inWord = true;
@@ -419,7 +421,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
       // show completions
       if (line.length() > 0) {
-        String stub = getStub(line);
+        String stub = AutoCompletion.getStub(line);
         lastStub = stub;
         
         // Fiete: try to detect, if we fully typed a offered completion
@@ -469,12 +471,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
           }
         }
       }
-      if (common > 0 && reference.getName().length()!=common && reference.getName().charAt(common)==' ')
-          common--;
+      if (common > 0 && reference.getName().length()!=common && reference.getName().charAt(common)==' ') {
+        common--;
+      }
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
-        if (stub.length()<common)
+        if (stub.length()<common) {
           completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
+        }
       }
     }
   }
@@ -535,8 +539,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     JTextComponent j = editors.getCurrentEditor();
     int caretPos = j.getCaretPosition();
-    String line = getCurrentLine(j);
-    String stub = getStub(line);
+    String line = AutoCompletion.getCurrentLine(j);
+    String stub = AutoCompletion.getStub(line);
     int stubLen = stub.length();
     int stubBeg = caretPos - stubLen;
     String text = j.getText();
@@ -584,18 +588,19 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       j.getDocument().remove(stubBeg, stubLen);
       // add additional blank if we are inside the line
       char c = text.length()>stubBeg+stubLen?text.charAt(stubBeg+stubLen):0;
-      if (c=='\n' || c==0)
+      if (c=='\n' || c==0) {
         j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
-      else if (c==' ')
+      } else if (c==' ') {
         j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
-      else
+      } else {
         j.getDocument().insertString(stubBeg, completion.getValue()+" ", new SimpleAttributeSet());
+      }
       j.getCaret().setDot((stubBeg + completion.getValue().length()) - completion.getCursorOffset());
 
       // pavkovic 2003.03.04: enforce focus request
       j.requestFocus();
     } catch (BadLocationException exc) {
-      log.info(exc);
+      AutoCompletion.log.info(exc);
     }
   }
 
@@ -608,7 +613,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public static String getCurrentLine(JTextComponent j) {
     int offset = j.getCaretPosition();
-    int lineBounds[] = getCurrentLineBounds(j.getText(), offset);
+    int lineBounds[] = AutoCompletion.getCurrentLineBounds(j.getText(), offset);
 
     if (lineBounds[0] < 0) {
       return null;
@@ -769,8 +774,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void actionPerformed(java.awt.event.ActionEvent e) {
-    if (log.isDebugEnabled()) {
-      log.debug("AutoCompletion.actionPerformed called with " + e);
+    if (AutoCompletion.log.isDebugEnabled()) {
+      AutoCompletion.log.debug("AutoCompletion.actionPerformed called with " + e);
     }
 
     timer.stop();
@@ -787,8 +792,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void caretUpdate(javax.swing.event.CaretEvent e) {
-    if (log.isDebugEnabled()) {
-      log.debug("AutoCompletion.caretUpdate called with " + e);
+    if (AutoCompletion.log.isDebugEnabled()) {
+      AutoCompletion.log.debug("AutoCompletion.caretUpdate called with " + e);
     }
 
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
@@ -827,8 +832,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void focusGained(java.awt.event.FocusEvent e) {
-    if (log.isDebugEnabled()) {
-      log.debug("AutoCompletion.focusGained called with " + e);
+    if (AutoCompletion.log.isDebugEnabled()) {
+      AutoCompletion.log.debug("AutoCompletion.focusGained called with " + e);
     }
 
     if (enableAutoCompletion) {

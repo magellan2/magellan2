@@ -93,7 +93,7 @@ public class SkillRankComparator implements Comparator<Skill> {
 	}
 
 	private int getValue(SkillType s) {
-		Integer retVal = (Integer) skillRanks.get(s.getID());
+		Integer retVal = skillRanks.get(s.getID());
 
 		if(retVal == null) {
 			String prop = settings.getProperty("ClientPreferences.compareValue." + s.getID(), "-1");

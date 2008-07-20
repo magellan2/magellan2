@@ -38,6 +38,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.WindowConstants;
 
 import magellan.client.Client;
 import magellan.client.EMapDetailsPanel;
@@ -379,7 +380,7 @@ public class UnitContextMenu extends JPopupMenu {
    * Changes the confirmation state of the selected units.
    */
   private void event_confirmOrders() {
-    boolean status = !((Unit) selectedUnits.iterator().next()).isOrdersConfirmed();
+    boolean status = !(selectedUnits.iterator().next()).isOrdersConfirmed();
 
     for (Unit u : selectedUnits) {
       u.setOrdersConfirmed(status);
@@ -468,7 +469,7 @@ public class UnitContextMenu extends JPopupMenu {
       frame.setLocationRelativeTo(parent);
       frame.getContentPane().setLayout(new BorderLayout());
       frame.setResizable(false);
-      frame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+      frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
       JPanel pane = new JPanel(new BorderLayout());
       pane.add(new JLabel(message), BorderLayout.NORTH);
@@ -532,6 +533,7 @@ public class UnitContextMenu extends JPopupMenu {
       this.comboBox = comboBox;
     }
 
+    @Override
     public void keyPressed(KeyEvent e) {
       switch (e.getKeyCode()) {
       case KeyEvent.VK_ESCAPE:

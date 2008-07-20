@@ -36,6 +36,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import magellan.library.utils.Resources;
 
@@ -204,7 +205,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 	protected void initProperties() {
 		for(int i = 0; i < properties.length; i++) {
 			properties[i] = settings.getProperty(prefix + "." + settKeys[i][0], settKeys[i][1])
-									.equals(TRUE);
+									.equals(DetailedPreferencesAdapter.TRUE);
 		}
 	}
 
@@ -225,10 +226,10 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 		if(properties[i] != boxes[i].isSelected()) {
 			properties[i] = boxes[i].isSelected();
 
-			if((properties[i] && def.equals(TRUE)) || (!properties[i] && def.equals(FALSE))) {
+			if((properties[i] && def.equals(DetailedPreferencesAdapter.TRUE)) || (!properties[i] && def.equals(DetailedPreferencesAdapter.FALSE))) {
 				settings.remove(prefix + "." + key);
 			} else {
-				settings.setProperty(prefix + "." + key, properties[i] ? TRUE : FALSE);
+				settings.setProperty(prefix + "." + key, properties[i] ? DetailedPreferencesAdapter.TRUE : DetailedPreferencesAdapter.FALSE);
 			}
 
 			return true;
@@ -257,7 +258,7 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 			int indices[] = new int[l.size()];
 
 			for(int i = 0, max = l.size(); i < max; i++) {
-				indices[i] = ((Integer) l.get(i)).intValue();
+				indices[i] = (l.get(i)).intValue();
 			}
 
 			applyChanges(indices);
@@ -375,8 +376,8 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 				text.setBackground(getContentPane().getBackground());
 				text.setForeground(Color.black); // don't show in disabled color
 
-				JScrollPane pane = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-												   JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				JScrollPane pane = new JScrollPane(text, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+												   ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 				pane.setBorder(BorderFactory.createTitledBorder(Resources.get("preferences.detailedpreferencesadapter.ddialog.help.title")));
 
 				south = new JPanel(new BorderLayout());

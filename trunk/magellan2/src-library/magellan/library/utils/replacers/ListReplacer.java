@@ -46,15 +46,15 @@ public class ListReplacer implements Replacer {
 		this.list = list;
 		this.unknown = unknown;
 
-		if(numberFormat == null) {
+		if(ListReplacer.numberFormat == null) {
 			try {
-				numberFormat = NumberFormat.getInstance(magellan.library.utils.Locales.getGUILocale());
+				ListReplacer.numberFormat = NumberFormat.getInstance(magellan.library.utils.Locales.getGUILocale());
 			} catch(IllegalStateException ise) {
-				numberFormat = NumberFormat.getInstance();
+				ListReplacer.numberFormat = NumberFormat.getInstance();
 			}
 
-			numberFormat.setMaximumFractionDigits(2);
-			numberFormat.setMinimumFractionDigits(0);
+			ListReplacer.numberFormat.setMaximumFractionDigits(2);
+			ListReplacer.numberFormat.setMinimumFractionDigits(0);
 		}
 
 		if(list == null) {
@@ -114,7 +114,7 @@ public class ListReplacer implements Replacer {
 				buffer.append(unknown);
 			} else {
 				if(obj instanceof Number) {
-					buffer.append(numberFormat.format(obj));
+					buffer.append(ListReplacer.numberFormat.format(obj));
 				} else {
 					buffer.append(obj.toString());
 				}
@@ -135,7 +135,8 @@ public class ListReplacer implements Replacer {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		StringBuffer buf = new StringBuffer();
 		Iterator it = list.iterator();
 

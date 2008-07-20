@@ -47,7 +47,8 @@ public class UnitCommentNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return this.comment;
 	}
 

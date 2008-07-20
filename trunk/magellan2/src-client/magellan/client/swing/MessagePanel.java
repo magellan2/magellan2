@@ -104,6 +104,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
   /**
    * Handles changes on game data.
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
     rootNode.removeAllChildren();
@@ -603,6 +604,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     treeModel = new DefaultTreeModel(rootNode);
     tree = new CopyTree(treeModel);
     tree.addMouseListener(new MouseAdapter() {
+        @Override
         public void mouseClicked(MouseEvent e) {
           if(e.getClickCount() == 2) {
             handleValueChange();

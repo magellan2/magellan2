@@ -33,14 +33,15 @@ import magellan.library.utils.Score;
 public class TerrainMappingEvaluator extends MappingEvaluator {
   private static TerrainMappingEvaluator singleton = new TerrainMappingEvaluator();
   public static TerrainMappingEvaluator getSingleton() {
-    return singleton;
+    return TerrainMappingEvaluator.singleton;
   }
 
   public static final double PERCENT_MISMATCHES = 0.02;
 
+  @Override
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping) {
 
-    int maxTerrainMismatches = (int) (Math.max(fromData.regions().size(), toData.regions().size()) * PERCENT_MISMATCHES);
+    int maxTerrainMismatches = (int) (Math.max(fromData.regions().size(), toData.regions().size()) * TerrainMappingEvaluator.PERCENT_MISMATCHES);
     
     RegionType forestTerrain = fromData.rules.getRegionType(StringID.create("Wald"));
     RegionType plainTerrain = fromData.rules.getRegionType(StringID.create("Ebene"));

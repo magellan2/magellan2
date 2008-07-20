@@ -36,8 +36,8 @@ public class Colors {
 	 * 
 	 */
 	public static Color decode(String txt) {
-		int firstSeparatorPos = txt.indexOf(SEPARATOR);
-		int secondSeparatorPos = txt.lastIndexOf(SEPARATOR);
+		int firstSeparatorPos = txt.indexOf(Colors.SEPARATOR);
+		int secondSeparatorPos = txt.lastIndexOf(Colors.SEPARATOR);
 
 		if((firstSeparatorPos > -1) && (secondSeparatorPos > -1)) {
 			try {
@@ -47,7 +47,7 @@ public class Colors {
 
 				return new Color(r, g, b);
 			} catch(NumberFormatException e) {
-				log.warn("Colors.decode(\"" + txt + "\") failed", e);
+				Colors.log.warn("Colors.decode(\"" + txt + "\") failed", e);
 			}
 		}
 
@@ -62,6 +62,6 @@ public class Colors {
 	 * 
 	 */
 	public static String encode(Color c) {
-		return c.getRed() + SEPARATOR + c.getGreen() + SEPARATOR + c.getBlue();
+		return c.getRed() + Colors.SEPARATOR + c.getGreen() + Colors.SEPARATOR + c.getBlue();
 	}
 }

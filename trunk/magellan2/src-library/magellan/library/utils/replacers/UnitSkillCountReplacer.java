@@ -58,7 +58,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer
 	 * 
 	 */
 	public UnitSkillCountReplacer(int mode) {
-		super(MODE_LENGTHS[mode]);
+		super(UnitSkillCountReplacer.MODE_LENGTHS[mode]);
 		this.mode = mode;
 	}
 
@@ -74,8 +74,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer
 			return null;
 		}
 
-		boolean minMode = ((mode == MODE_SKILL_MIN) || (mode == MODE_SKILL_SUM_MIN));
-		boolean sumMode = ((mode == MODE_SKILL_SUM) || (mode == MODE_SKILL_SUM_MIN));
+		boolean minMode = ((mode == UnitSkillCountReplacer.MODE_SKILL_MIN) || (mode == UnitSkillCountReplacer.MODE_SKILL_SUM_MIN));
+		boolean sumMode = ((mode == UnitSkillCountReplacer.MODE_SKILL_SUM) || (mode == UnitSkillCountReplacer.MODE_SKILL_SUM_MIN));
 		int min = 1;
 		String skill = getParameter(0, o).toString();
 
@@ -131,7 +131,8 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer
 	 *
 	 * 
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.unitskillcountreplacer.description." + mode);
 	}
 

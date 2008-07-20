@@ -41,7 +41,7 @@ public class OrderWriter {
 	public static final String CONFIRMED = "bestaetigt";
 
 	/** DOCUMENT-ME */
-	public static final String CONFIRMEDTEMP = CONFIRMED + "_temp";
+	public static final String CONFIRMEDTEMP = OrderWriter.CONFIRMED + "_temp";
 	
 	private String syntaxCheckOptions = "";
 	private GameData world = null;
@@ -279,7 +279,7 @@ public class OrderWriter {
 
 		// confirmed?
 		if(unit.isOrdersConfirmed() && !removeSCComments) {
-			writeln(stream, ";" + CONFIRMED);
+			writeln(stream, ";" + OrderWriter.CONFIRMED);
 		}
 
 		writeOrders(unit.getCompleteOrders(writeUnitTagsAsVorlageComment), stream);
@@ -389,9 +389,9 @@ public class OrderWriter {
 		}
 	}
 
-	private void write(BufferedWriter stream, String text) throws IOException {
-		stream.write(text);
-	}
+//	private void write(BufferedWriter stream, String text) throws IOException {
+//		stream.write(text);
+//	}
 
 	/**
 	 * DOCUMENT-ME

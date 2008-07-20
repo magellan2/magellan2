@@ -44,7 +44,7 @@ public class MemoryManagment {
 	}
 
   public static Runtime getRuntime() {
-    return r;
+    return MemoryManagment.r;
   }
   
 	 /** 
@@ -72,6 +72,7 @@ public class MemoryManagment {
         { 
             this.m_priority = priority; 
         } 
+        @Override
         public void finalize() 
         { 
             Thread.currentThread().setPriority(this.m_priority); 
@@ -79,7 +80,7 @@ public class MemoryManagment {
     }    
 
     public static boolean isFreeMemory(){
-      return isFreeMemory(minMemory);
+      return MemoryManagment.isFreeMemory(MemoryManagment.minMemory);
     }
     
     /**
@@ -91,36 +92,36 @@ public class MemoryManagment {
      */
     public static boolean isFreeMemory(long min){
     	// Runtime r = java.lang.Runtime.getRuntime();
-    	if (checkFreeMemory(min)){
+    	if (MemoryManagment.checkFreeMemory(min)){
     		return true;
     	}
-    	r.gc();
+    	MemoryManagment.r.gc();
     	try {
-    	  log.warn("waiting for garbage collection");
-    	  Thread.sleep(waitingMillis);
+    	  MemoryManagment.log.warn("waiting for garbage collection");
+    	  Thread.sleep(MemoryManagment.waitingMillis);
     	} catch (InterruptedException e){
     		// do nothing...
     	}
-    	if (checkFreeMemory(min)){
+    	if (MemoryManagment.checkFreeMemory(min)){
     		return true;
     	}
     	return false;
     }
     
     private static boolean checkFreeMemory(long min){
-    	long free = r.freeMemory();
-      long tot = r.totalMemory();
-      long max = r.maxMemory();
+    	long free = MemoryManagment.r.freeMemory();
+      long tot = MemoryManagment.r.totalMemory();
+      long max = MemoryManagment.r.maxMemory();
     	if (free>min){
     		return true;
     	}
     	
-    	log.warn("memory free: "+free+" needed: "+max+" total: "+tot);
+    	MemoryManagment.log.warn("memory free: "+free+" needed: "+max+" total: "+tot);
     	return false;
     }
 
     public static Runtime getR() {
-      return r;
+      return MemoryManagment.r;
     }
 	
 }

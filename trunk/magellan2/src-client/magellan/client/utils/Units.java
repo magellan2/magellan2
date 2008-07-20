@@ -90,7 +90,7 @@ public class Units {
    */
   public Collection<StatItemContainer> categorizeUnitItems(Collection<Unit> units) {
     if ((itemCategoriesMap == null) || (itemCategoriesMap.size() == 0)) {
-      log.warn("categorizeUnitItems(): the category map is not initialized!");
+      Units.log.warn("categorizeUnitItems(): the category map is not initialized!");
 
       return null;
     }
@@ -121,7 +121,7 @@ public class Units {
         // silver
         int amount = item.getAmount();
 
-        if (item.getItemType().equals(silberbeutel) || item.getItemType().equals(silberkassette)) {
+        if (item.getItemType().equals(Units.silberbeutel) || item.getItemType().equals(Units.silberkassette)) {
           amount *= u.getPersons();
         }
 
@@ -151,7 +151,7 @@ public class Units {
         Item item = (Item) i.next();
 
         // get the stat item by item type
-        StatItem stored = (StatItem) items.get(item.getItemType().getID());
+        StatItem stored = items.get(item.getItemType().getID());
 
         if (stored == null) {
           stored = new StatItem(item.getItemType(), 0);
@@ -163,7 +163,7 @@ public class Units {
         // silver
         int amount = item.getAmount();
 
-        if (item.getItemType().equals(silberbeutel) || item.getItemType().equals(silberkassette)) {
+        if (item.getItemType().equals(Units.silberbeutel) || item.getItemType().equals(Units.silberkassette)) {
           amount *= u.getPersons();
         }
 
@@ -212,7 +212,7 @@ public class Units {
     Collection<StatItemContainer> listOfCategorizedItems = categorizeUnitItems(units);
 
     if (listOfCategorizedItems == null) {
-      log.warn("addCategorizedUnitItems(): categorizing unit items failed!");
+      Units.log.warn("addCategorizedUnitItems(): categorizing unit items failed!");
 
       return null;
     }
@@ -252,7 +252,7 @@ public class Units {
 
         Unit u = null;
         if (units.size() == 1) {
-          u = (Unit) units.iterator().next();
+          u = units.iterator().next();
         }
         for (Iterator<StatItem> iter = sortedItems.iterator(); iter.hasNext();) {
           StatItem currentItem = iter.next();
@@ -275,9 +275,10 @@ public class Units {
       NodeWrapperFactory factory) {
     categorizeUnitItems(units);
     for (StatItemContainer itemContainer : itemCategoriesMap.values()) {
-      if (itemContainer.get(item.getID()) != null)
+      if (itemContainer.get(item.getID()) != null) {
         addItemNode(itemContainer.get(item.getID()), categoryNode, u, units, unitComparator,
             showUnits, factory);
+      }
     }
 
     return 0;
@@ -384,7 +385,7 @@ public class Units {
      * DOCUMENT-ME
      */
     public int compareTo(StatItem o) {
-      return this.getItemType().getName().compareTo(((StatItem) o).getItemType().getName());
+      return this.getItemType().getName().compareTo((o).getItemType().getName());
     }
   }
 
@@ -424,6 +425,7 @@ public class Units {
     /**
      * DOCUMENT-ME
      */
+    @Override
     public String toString() {
       if (number > -1) {
         return unit.toString() + ": " + number;
@@ -457,6 +459,7 @@ public class Units {
     /**
      * DOCUMENT-ME
      */
+    @Override
     public boolean equals(Object o) {
       return false;
     }
@@ -534,8 +537,9 @@ public class Units {
    * @param s
    */
   public static void changeOrders(Unit u, String[] s) {
-    if (s == null || s.length != 4)
+    if (s == null || s.length != 4) {
       throw new IllegalArgumentException("expecting exactly 4 arguments");
+    }
 
     if (s[0] != null) {
       boolean replace = Boolean.valueOf(s[1]).booleanValue();
@@ -558,14 +562,15 @@ public class Units {
             }
 
             System.err.println(position);
-            if (position.equals(GiveOrderDialog.FIRST_POS))
+            if (position.equals(GiveOrderDialog.FIRST_POS)) {
               for (String sHelp : newOrderArray) {
                 newOrders.add(0, sHelp);
               }
-            else
+            } else {
               for (String sHelp : newOrderArray) {
                 newOrders.add(newOrders.size(), sHelp);
               }
+            }
             u.setOrders(newOrders);
           } else {
 
@@ -576,14 +581,15 @@ public class Units {
             u.setOrders(newOrders);
           }
         } else {
-          if (position.equals(GiveOrderDialog.FIRST_POS))
+          if (position.equals(GiveOrderDialog.FIRST_POS)) {
             for (String sHelp : newOrderArray) {
               u.addOrderAt(0, sHelp, true);
             }
-          else
+          } else {
             for (String sHelp : newOrderArray) {
               u.addOrderAt(u.getOrders().size(), sHelp, true);
             }
+          }
         }
       }
     }

@@ -52,7 +52,7 @@ public class RulesReader {
 			   we haven't tried that yet. */
 			if(name.equalsIgnoreCase("eressea")) {
 				/* This is bad. We don't even have the default rules. */
-				log.warn("The default ruleset couldn't be found! Operating with an empty ruleset.",e);
+				RulesReader.log.warn("The default ruleset couldn't be found! Operating with an empty ruleset.",e);
 
 				return new GenericRules();
 			} else {
@@ -66,11 +66,13 @@ public class RulesReader {
 	 */
 	private Rules loadRules(String name) throws IOException {
 		String ending = new File("XML").exists() ? ".xml" : ".cr";
-    log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
+    RulesReader.log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
     
     File rules = new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending);
     // workaround for working with eclipse...
-    if (!rules.exists()) rules = new File("etc/rules/" + name + ending);
+    if (!rules.exists()) {
+      rules = new File("etc/rules/" + name + ending);
+    }
 
 		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);
 

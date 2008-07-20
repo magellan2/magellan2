@@ -51,7 +51,8 @@ public class UnitFactionFilter extends UnitFilter {
 	 *
 	 * 
 	 */
-	public boolean acceptUnit(Unit u) {
+	@Override
+  public boolean acceptUnit(Unit u) {
 		Faction f = u.getFaction();
 
 		return (f != null) &&

@@ -64,7 +64,8 @@ public class Item {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return type.toString();
 	}
 
@@ -84,7 +85,8 @@ public class Item {
 	 *
 	 * @deprecated Use getItemType() instead
 	 */
-	public ItemType getType() {
+	@Deprecated
+  public ItemType getType() {
 		return getItemType();
 	}
 

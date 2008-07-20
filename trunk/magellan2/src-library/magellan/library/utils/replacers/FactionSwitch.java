@@ -47,7 +47,8 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 	 *
 	 * 
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.factionswitch.description");
 	}
 
@@ -62,7 +63,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 		try {
 			String fName = getParameter(0, src).toString();
 
-			if(!fName.equals(CLEAR)) {
+			if(!fName.equals(Replacer.CLEAR)) {
 				if(fName.indexOf(',') != -1) {
 					StringTokenizer st = new StringTokenizer(fName, ",");
 
@@ -80,7 +81,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 		} catch(NullPointerException npe) {
 		}
 
-		return BLANK;
+		return Replacer.BLANK;
 	}
 
 	/**

@@ -272,7 +272,8 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 	 *
 	 * 
 	 */
-	public void setVisible(boolean b) {
+	@Override
+  public void setVisible(boolean b) {
 		super.setVisible(b);
 
 		if(b) {

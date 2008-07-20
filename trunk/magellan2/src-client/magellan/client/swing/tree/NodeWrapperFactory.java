@@ -22,6 +22,7 @@ import java.util.Properties;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
@@ -110,7 +111,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 * 
 	 */
 	public NodeWrapperFactory(Properties settings, String initString, String title) {
-		super(JTabbedPane.LEFT);
+		super(SwingConstants.LEFT);
 
 		this.initString = initString;
 
@@ -210,7 +211,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public BorderNodeWrapper createBorderNodeWrapper(Border b) {
 		BorderNodeWrapper bnw = new BorderNodeWrapper(b);
-		init(bnw, BORDER);
+		init(bnw, NodeWrapperFactory.BORDER);
 
 		return bnw;
 	}
@@ -226,7 +227,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public FactionNodeWrapper createFactionNodeWrapper(Faction f, Region r, Map<ID, Alliance> alliances) {
 		FactionNodeWrapper fnw = new FactionNodeWrapper(f, r, alliances);
-		init(fnw, FACTION);
+		init(fnw, NodeWrapperFactory.FACTION);
 
 		return fnw;
 	}
@@ -240,7 +241,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public IslandNodeWrapper createIslandNodeWrapper(Island i) {
 		IslandNodeWrapper inw = new IslandNodeWrapper(i);
-		init(inw, ISLAND);
+		init(inw, NodeWrapperFactory.ISLAND);
 
 		return inw;
 	}
@@ -254,7 +255,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public RegionNodeWrapper createRegionNodeWrapper(Region r) {
 		RegionNodeWrapper rnw = new RegionNodeWrapper(r);
-		init(rnw, REGION);
+		init(rnw, NodeWrapperFactory.REGION);
 
 		return rnw;
 	}
@@ -269,7 +270,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public RegionNodeWrapper createRegionNodeWrapper(Region r, int amount) {
 		RegionNodeWrapper rnw = new RegionNodeWrapper(r, amount);
-		init(rnw, REGION);
+		init(rnw, NodeWrapperFactory.REGION);
 
 		return rnw;
 	}
@@ -295,7 +296,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public UnitContainerNodeWrapper createUnitContainerNodeWrapper(UnitContainer uc, boolean showFreeLoad, boolean hasCommand) {
 		UnitContainerNodeWrapper ucnw = new UnitContainerNodeWrapper(uc, showFreeLoad, hasCommand);
-		init(ucnw, UNITCONTAINER);
+		init(ucnw, NodeWrapperFactory.UNITCONTAINER);
 
 		return ucnw;
 	}
@@ -348,7 +349,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String prfx, int num, int mod) {
 		UnitNodeWrapper unw = new UnitNodeWrapper(unit, prfx, num, mod);
-		init(unw, UNIT);
+		init(unw, NodeWrapperFactory.UNIT);
 
 		return unw;
 	}
@@ -363,7 +364,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String text) {
 		UnitNodeWrapper unw = new UnitNodeWrapper(unit, text);
-		init(unw, UNIT);
+		init(unw, NodeWrapperFactory.UNIT);
 
 		return unw;
 	}
@@ -377,7 +378,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public PotionNodeWrapper createPotionNodeWrapper(Potion potion) {
 		PotionNodeWrapper pnw = new PotionNodeWrapper(potion);
-		init(pnw, POTION);
+		init(pnw, NodeWrapperFactory.POTION);
 
 		return pnw;
 	}
@@ -392,7 +393,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public PotionNodeWrapper createPotionNodeWrapper(Potion potion, String name, String postfix) {
 		PotionNodeWrapper pnw = new PotionNodeWrapper(potion, name, postfix);
-		init(pnw, POTION);
+		init(pnw, NodeWrapperFactory.POTION);
 
 		return pnw;
 	}
@@ -418,7 +419,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item item) {
 		ItemNodeWrapper inw = new ItemNodeWrapper(unit, item);
-		init(inw, ITEM);
+		init(inw, NodeWrapperFactory.ITEM);
 
 		return inw;
 	}
@@ -434,7 +435,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public SkillNodeWrapper createSkillNodeWrapper(Unit unit, Skill skill, Skill modSkill) {
 		SkillNodeWrapper snw = new SkillNodeWrapper(unit, skill, modSkill);
-		init(snw, SKILL);
+		init(snw, NodeWrapperFactory.SKILL);
 
 		return snw;
 	}
@@ -448,7 +449,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public GroupNodeWrapper createGroupNodeWrapper(Group group) {
 		GroupNodeWrapper gnw = new GroupNodeWrapper(group);
-		init(gnw, GROUP);
+		init(gnw, NodeWrapperFactory.GROUP);
 
 		return gnw;
 	}
@@ -456,7 +457,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     
     public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, String text, Object icons) {
         SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, text, icons);
-        init(snw, SIMPLE);
+        init(snw, NodeWrapperFactory.SIMPLE);
 
         return snw;
         
@@ -472,7 +473,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 */
 	public SimpleNodeWrapper createSimpleNodeWrapper(Object obj, Object icons) {
 		SimpleNodeWrapper snw = new SimpleNodeWrapper(obj, icons);
-		init(snw, SIMPLE);
+		init(snw, NodeWrapperFactory.SIMPLE);
 
 		return snw;
 	}
@@ -482,7 +483,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    */
   public SimpleNodeWrapper createSimpleNodeWrapper(Object text, Object icons, String clipValue) {
     SimpleNodeWrapper snw = new SimpleNodeWrapper(text, icons, clipValue);
-    init(snw, SIMPLE);
+    init(snw, NodeWrapperFactory.SIMPLE);
     return snw;
   }
 
@@ -490,7 +491,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	 * DOCUMENT-ME
 	 */
 	public void contextDataChanged() {
-		log.info("Context data changed. " + source);
+		NodeWrapperFactory.log.info("Context data changed. " + source);
 
 		if(source != null) {
 			source.updateTree(this);

@@ -53,14 +53,16 @@ public class OpenCRAction extends MenuAction {
    *
    * 
    */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
     if(!client.askToSave(false)) {
       return;
     }
     
-    File file = getFileFromFileChooser(client);
-    if (file!=null)
+    File file = OpenCRAction.getFileFromFileChooser(client);
+    if (file!=null) {
       new Thread(new LoadCR(client,file)).start();
+    }
   }
   
   /**
@@ -69,7 +71,7 @@ public class OpenCRAction extends MenuAction {
    * @param client The client for storing settings etc., which is also used as parent component.
    */
   public static File getFileFromFileChooser(Client client) {
-    return getFileFromFileChooser(client, client);
+    return OpenCRAction.getFileFromFileChooser(client, client);
   }
 
   /**

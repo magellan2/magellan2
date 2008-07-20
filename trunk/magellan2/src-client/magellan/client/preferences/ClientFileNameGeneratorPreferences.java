@@ -37,22 +37,19 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import magellan.client.Client;
 import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.FileNameGenerator;
 import magellan.library.utils.Resources;
 
 public class ClientFileNameGeneratorPreferences extends JPanel implements PreferencesAdapter {
-  private Client client;
   private Properties settings;
   protected JTextField patternField;
 
   /**
    * Creates a new FileNameGenPrefAdapter object.
    */
-  public ClientFileNameGeneratorPreferences(Client client, Properties settings) {
-    this.client = client;
+  public ClientFileNameGeneratorPreferences(Properties settings) {
     this.settings = settings;
     initGUI();
   }

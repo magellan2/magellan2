@@ -70,11 +70,11 @@ public class IntegerID implements ID {
 			throw new NullPointerException();
 		}
 
-		IntegerID id = idMap.get(o);
+		IntegerID id = IntegerID.idMap.get(o);
 
 		if(id == null) {
 			id = new IntegerID(o);
-			idMap.put(o, id);
+			IntegerID.idMap.put(o, id);
 		}
 
 		return id;
@@ -88,7 +88,7 @@ public class IntegerID implements ID {
 	 * 
 	 */
 	public static IntegerID create(String str) {
-		return create(Integer.valueOf(str));
+		return IntegerID.create(Integer.valueOf(str));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class IntegerID implements ID {
 	 * 
 	 */
 	public static IntegerID create(int i) {
-		return create(new Integer(i));
+		return IntegerID.create(new Integer(i));
 	}
 
 	/**
@@ -107,7 +107,8 @@ public class IntegerID implements ID {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return Integer.toString(id);
 	}
 
@@ -139,7 +140,8 @@ public class IntegerID implements ID {
 	 * @return true, if o is an instance of class IntegerID and the numerical values of this and
 	 * 		   the specified object are equal.
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return this == o || id == ((IntegerID) o).id;
 		} catch(ClassCastException e) {
@@ -166,7 +168,8 @@ public class IntegerID implements ID {
 	 *
 	 * @return a hash code value based on the hash code returned by the underlying Integer object.
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return id;
 	}
 
@@ -177,7 +180,8 @@ public class IntegerID implements ID {
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		// pavkovic 2003.07.08: we dont really clone this object as IntegerID is unchangeable after creation
 		return this;
 	}

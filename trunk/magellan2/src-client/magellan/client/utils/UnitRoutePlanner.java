@@ -55,7 +55,7 @@ public class UnitRoutePlanner {
 			return false;
 		}
 
-		if(getModifiedRadius(unit) < 1) {
+		if(UnitRoutePlanner.getModifiedRadius(unit) < 1) {
 			return false;
 		}
 
@@ -126,7 +126,7 @@ public class UnitRoutePlanner {
 			List<Region> path = Regions.getPath(data.regions(), start.getCoordinate(), v.dest, excludeMap);
 
 			if((path != null) && (path.size() > 1)) {
-				int range = getModifiedRadius(unit);
+				int range = UnitRoutePlanner.getModifiedRadius(unit);
 
 				if(!v.useRange) {
 					range = Integer.MAX_VALUE;
@@ -144,15 +144,15 @@ public class UnitRoutePlanner {
 				String order = "";
 
 				if(v.makeRoute) {
-					order = getOrder(EresseaConstants.O_ROUTE);
+					order = UnitRoutePlanner.getOrder(EresseaConstants.O_ROUTE);
 					order += (" " + Regions.getDirections(path));
-					order += (" " + getOrder(EresseaConstants.O_PAUSE));
+					order += (" " + UnitRoutePlanner.getOrder(EresseaConstants.O_PAUSE));
 					Collections.reverse(path);
 					order += (" " + Regions.getDirections(path));
-					order += (" " + getOrder(EresseaConstants.O_PAUSE));
+					order += (" " + UnitRoutePlanner.getOrder(EresseaConstants.O_PAUSE));
 					orders.add(order);
 				} else {
-					String nach = getOrder(EresseaConstants.O_MOVE) + " ";
+					String nach = UnitRoutePlanner.getOrder(EresseaConstants.O_MOVE) + " ";
 					int count = 0;
 					int after = 0;
 					List<Region> curPath = new LinkedList<Region>();

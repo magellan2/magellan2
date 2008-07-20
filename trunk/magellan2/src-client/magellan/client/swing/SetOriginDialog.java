@@ -19,7 +19,6 @@ import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -29,7 +28,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 312 $
  */
 public class SetOriginDialog extends magellan.client.swing.InternationalizedDataDialog {
-	private static final Logger log = Logger.getInstance(SetOriginDialog.class);
 	/**
 	 * if true, SetOriginAction initiate client.setOrigin
 	 */
@@ -72,7 +70,8 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
 
 		java.awt.GridBagConstraints gridBagConstraints1;
 		addWindowListener(new java.awt.event.WindowAdapter() {
-				public void windowClosing(java.awt.event.WindowEvent evt) {
+				@Override
+        public void windowClosing(java.awt.event.WindowEvent evt) {
 					quit();
 				}
 			});
@@ -195,9 +194,9 @@ public class SetOriginDialog extends magellan.client.swing.InternationalizedData
     int xSize = (int)getBounds().getWidth();
     int ySize = (int)getBounds().getHeight();
     if (xSize > 0 && ySize > 0) {
-      int x = (int) getToolkit().getScreenSize().width;
-      int y = (int) getToolkit().getScreenSize().height;
-      setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+      int x = getToolkit().getScreenSize().width;
+      int y = getToolkit().getScreenSize().height;
+      setLocation(new Point((x / 2 - xSize / 2), (y / 2 - ySize / 2)));
     }
   }
 

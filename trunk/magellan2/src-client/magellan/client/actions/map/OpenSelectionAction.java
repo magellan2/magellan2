@@ -81,7 +81,8 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		JFileChooser fc = new JFileChooser();
 		fc.addChoosableFileFilter(new EresseaFileFilter(SaveSelectionAction.EXTENSION,
 														SaveSelectionAction.DESCRIPTION));
@@ -114,7 +115,7 @@ public class OpenSelectionAction extends MenuAction implements GameDataListener 
 
 				br.close();
 			} catch(Exception exc) {
-				log.error(exc);
+				OpenSelectionAction.log.error(exc);
 				JOptionPane.showMessageDialog(client,
 											  Resources.get("actions.openselectionaction.msg.fileordersopen.error.text") +
 											  e.toString(),

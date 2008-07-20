@@ -19,6 +19,7 @@ public class CopyAction extends ContextAction {
         super(selected, selectedObjects, dispatcher);
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
     }
 

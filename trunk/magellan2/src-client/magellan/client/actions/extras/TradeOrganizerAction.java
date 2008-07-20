@@ -46,7 +46,8 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		new TradeOrganizer(client, client.getDispatcher(), client.getData(), client.getProperties(),
 						   client.getSelectedRegions().values());
 	}

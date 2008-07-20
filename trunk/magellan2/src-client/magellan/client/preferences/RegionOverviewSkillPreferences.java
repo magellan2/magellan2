@@ -261,6 +261,7 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
   /**
    * DOCUMENT-ME
    */
+  @Override
   public void setEnabled(boolean enable) {
     super.setEnabled(enable);
     skillList.setEnabled(enable);

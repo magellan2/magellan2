@@ -34,6 +34,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.MutableAttributeSet;
@@ -134,7 +135,7 @@ public class StartWindow extends JFrame {
 		}
 
 		if(steps > 0) {
-			progress = new JProgressBar(JProgressBar.HORIZONTAL, 0, steps);
+			progress = new JProgressBar(SwingConstants.HORIZONTAL, 0, steps);
 			progress.setStringPainted(true);
 			progress.setBorderPainted(false);
 			progress.setForeground(foreground);

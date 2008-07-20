@@ -40,7 +40,6 @@ import javax.swing.JPanel;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * Renders a background image behind the regions.
@@ -49,7 +48,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0, 17.12.2007
  */
 public class BackgroundImageRenderer extends ImageCellRenderer {
-  private static final Logger log = Logger.getInstance(BackgroundImageRenderer.class);
   private Image img = null;
   private int imgWidth = -1;
   private int imgHeight = -1;
@@ -69,6 +67,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()
    */
+  @Override
   public String getName() {
     return Resources.get("map.backgroundrenderer.name");
   }
@@ -78,7 +77,9 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     if (icon == null) {
       icon = this.context.getImageFactory().loadImage("etc/images/map/"+filename);
     }
-    if (icon != null) return icon.getImage();
+    if (icon != null) {
+      return icon.getImage();
+    }
     return null;
   }
   
@@ -91,6 +92,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
+  @Override
   public int getPlaneIndex() {
     return Mapper.PLANE_BACKGROUND;
   }
@@ -98,6 +100,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   /**
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
+  @Override
   public void render(Object obj, boolean active, boolean selected) {
     if (img != null && imgWidth>0 && imgHeight>0) { 
       int x1 = (int) Math.ceil(offset.x/imgWidth)-1;
@@ -113,14 +116,17 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     }
   }
 
+  @Override
   public Image scale(Image img) {
     return img;
   }
 
+  @Override
   public void scale(float scaleFactor) {
     // do nothing
   }
 
+  @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new BackgroundImagePreferences(this);
   }
@@ -218,6 +224,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
         this.img = img;
       }
       
+      @Override
       public void paintComponent(Graphics g) {
         if (img != null) {
           Dimension size = getSize();
@@ -234,7 +241,9 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
        */
       @Override
       public Dimension getPreferredSize() {
-        if (img != null) return new Dimension(img.getWidth(null),img.getHeight(null));
+        if (img != null) {
+          return new Dimension(img.getWidth(null),img.getHeight(null));
+        }
         return super.getPreferredSize();
       }
 

@@ -56,7 +56,8 @@ public class TransferRelation extends InterUnitRelation {
 	/* (non-Javadoc)
 	 * @see com.eressea.relation.InterUnitRelation#toString()
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return super.toString() + "@AMOUNT=" + amount;
 	}
 }

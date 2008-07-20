@@ -50,7 +50,8 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 	 * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
 	 * 		  images to their original size).
 	 */
-	public void scale(float scaleFactor) {
+	@Override
+  public void scale(float scaleFactor) {
 		super.scale(scaleFactor);
 
 		for(Iterator<ImageContainer> iter = images.values().iterator(); iter.hasNext();) {
@@ -77,8 +78,8 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 			Dimension size = cellGeo.getImageSize();
 			Image scaled = img.getScaledInstance(size.width, size.height, Image.SCALE_SMOOTH);
 
-			if(tracker != null) {
-				tracker.addImage(scaled, (int) (Math.random() * Integer.MAX_VALUE));
+			if(ImageCellRenderer.tracker != null) {
+				ImageCellRenderer.tracker.addImage(scaled, (int) (Math.random() * Integer.MAX_VALUE));
 			} else {
 				context.getImageFactory().waitForImage(img);
 			}
@@ -101,7 +102,8 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 	 *
 	 * 
 	 */
-	public void setCellGeometry(CellGeometry geo) {
+	@Override
+  public void setCellGeometry(CellGeometry geo) {
 		super.setCellGeometry(geo);
 		reloadImages();
 	}
@@ -113,7 +115,7 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 	 * 
 	 */
 	public static void setTracker(MediaTracker t) {
-		tracker = t;
+		ImageCellRenderer.tracker = t;
 	}
 
 	

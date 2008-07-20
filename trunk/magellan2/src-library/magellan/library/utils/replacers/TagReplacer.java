@@ -61,7 +61,7 @@ public class TagReplacer extends AbstractParameterReplacer {
 				}
 
 				if(mode) {
-					return BLANK;
+					return Replacer.BLANK;
 				}
 			}
 		}
@@ -74,7 +74,8 @@ public class TagReplacer extends AbstractParameterReplacer {
 	 *
 	 * 
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.tagreplacer.description." + mode);
 	}
 }

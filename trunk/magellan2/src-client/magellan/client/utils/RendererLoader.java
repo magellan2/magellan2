@@ -43,7 +43,6 @@ import magellan.library.utils.logging.Logger;
 public class RendererLoader extends Object {
 	private static final Logger log = Logger.getInstance(RendererLoader.class);
 	private File directory;
-	private String dirString;
 	private ZipClassLoader loader;
 	private Class paramClass[];
 	private Object paramInst[];
@@ -69,9 +68,8 @@ public class RendererLoader extends Object {
 
 			directory = new File(dir, sDir);
 			loader = new ZipClassLoader();
-			dirString = sDir;
 
-			RENDERER_CLASS = Class.forName(RENDERER_CLASS_STRING);
+			RendererLoader.RENDERER_CLASS = Class.forName(RendererLoader.RENDERER_CLASS_STRING);
 		} catch(Exception exc) {
 			throw new IllegalArgumentException(exc);
 		}
@@ -83,10 +81,10 @@ public class RendererLoader extends Object {
    * find classes that ends with Renderer.class and implement. 
 	 */
 	public Collection<MapCellRenderer> loadRenderers() {
-		log.info("Searching for additional renderers...");
+		RendererLoader.log.info("Searching for additional renderers...");
 
 		if(settings.getProperty("RendererLoader.dontSearchAdditionalRenderers", "false").equals("true")) {
-			log.info("Searching for additional renderers disabled.");
+			RendererLoader.log.info("Searching for additional renderers disabled.");
 
 			return null;
 		}
@@ -144,8 +142,8 @@ public class RendererLoader extends Object {
 											}
 										} catch(Exception loadException) {
 											error = true;
-											log.info(msg);
-											log.info("Unable to load " + rclass.getName() + ':' +
+											RendererLoader.log.info(msg);
+											RendererLoader.log.info("Unable to load " + rclass.getName() + ':' +
 													 loadException + '!');
 										}
 									}
@@ -156,10 +154,10 @@ public class RendererLoader extends Object {
 
 						if(found) {
 							msg.append("Successful!");
-							log.info(msg);
+							RendererLoader.log.info(msg);
 						} else if(!error) {
 							msg.append("Nothing found!");
-							log.info(msg);
+							RendererLoader.log.info(msg);
 						}
 					}
 				} catch(Exception exc) {
@@ -184,10 +182,10 @@ public class RendererLoader extends Object {
 					}
 				}
 
-				log.info(msg);
+				RendererLoader.log.info(msg);
 
 				long end = System.currentTimeMillis();
-				log.info("Searching for additional renderers done. Found " + list.size() +
+				RendererLoader.log.info("Searching for additional renderers done. Found " + list.size() +
 						 " instances in " + String.valueOf((end - start)) + " msecs");
 
 				return list;
@@ -196,7 +194,7 @@ public class RendererLoader extends Object {
 		}
 
 		long end = System.currentTimeMillis();
-		log.info("Searching for additional renderers done. Found 0 instances in " + String.valueOf((end - start)) + " msecs");
+		RendererLoader.log.info("Searching for additional renderers done. Found 0 instances in " + String.valueOf((end - start)) + " msecs");
 
 		return list;
 	}
@@ -211,8 +209,8 @@ public class RendererLoader extends Object {
 	}
 
 	protected boolean isRenderer(Object cur) {
-		if(RENDERER_CLASS != null) {
-			return RENDERER_CLASS.isInstance(cur);
+		if(RendererLoader.RENDERER_CLASS != null) {
+			return RendererLoader.RENDERER_CLASS.isInstance(cur);
 		}
 
 		return isRenderer(cur.getClass());
@@ -223,7 +221,7 @@ public class RendererLoader extends Object {
 
 		if((inf != null) && (inf.length > 0)) {
 			for(int i = 0; i < inf.length; i++) {
-				if(inf[i].getName().equals(RENDERER_CLASS_STRING)) {
+				if(inf[i].getName().equals(RendererLoader.RENDERER_CLASS_STRING)) {
 					return true;
 				}
 			}
@@ -246,7 +244,8 @@ public class RendererLoader extends Object {
 			this.jar = jar;
 		}
 
-		protected Class<?> findClass(String name) throws ClassNotFoundException {
+		@Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
 			try {
 				//find the according entry
 				ZipEntry entry = jar.getEntry(name.replace('.', '\\') + ".class");
@@ -292,7 +291,8 @@ public class RendererLoader extends Object {
 		 *
 		 * 
 		 */
-		public InputStream getResourceAsStream(String name) {
+		@Override
+    public InputStream getResourceAsStream(String name) {
 			try {
 				ZipEntry zip = jar.getEntry(name);
 

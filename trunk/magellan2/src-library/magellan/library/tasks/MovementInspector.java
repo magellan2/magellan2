@@ -35,7 +35,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 	 * @return The singleton instance of MovementInspector
 	 */
 	public static MovementInspector getInstance() {
-		return INSPECTOR;
+		return MovementInspector.INSPECTOR;
 	}
 
 	protected MovementInspector() {
@@ -46,7 +46,8 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 	 * 
 	 * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
 	 */
-	public List<Problem> reviewUnit(Unit u, int type) {
+	@Override
+  public List<Problem> reviewUnit(Unit u, int type) {
 		if ((u == null) || u.ordersAreNull()) {
 			return Collections.emptyList();
 		}
@@ -62,8 +63,9 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			// only test for foot/horse movement if unit is not owner of a modified ship
 			if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
 				problems.addAll(reviewUnitOnFoot(u));
-				if (u.getModifiedMovement().size() > 2)
-					problems.addAll(reviewUnitOnHorse(u));
+				if (u.getModifiedMovement().size() > 2) {
+          problems.addAll(reviewUnitOnHorse(u));
+        }
 			}
 		}
 

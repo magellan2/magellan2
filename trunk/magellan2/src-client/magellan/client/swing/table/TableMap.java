@@ -108,7 +108,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener {
 	 * 
 	 * 
 	 */
-	public void setValueAt(Object aValue, int aRow, int aColumn) {
+	@Override
+  public void setValueAt(Object aValue, int aRow, int aColumn) {
 		model.setValueAt(aValue, aRow, aColumn);
 	}
 
@@ -137,7 +138,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener {
 	 *
 	 * 
 	 */
-	public String getColumnName(int aColumn) {
+	@Override
+  public String getColumnName(int aColumn) {
 		return model.getColumnName(aColumn);
 	}
 
@@ -148,7 +150,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener {
 	 *
 	 * 
 	 */
-	public Class<?> getColumnClass(int aColumn) {
+	@Override
+  public Class<?> getColumnClass(int aColumn) {
 		return model.getColumnClass(aColumn);
 	}
 
@@ -160,7 +163,8 @@ public class TableMap extends AbstractTableModel implements TableModelListener {
 	 *
 	 * 
 	 */
-	public boolean isCellEditable(int row, int column) {
+	@Override
+  public boolean isCellEditable(int row, int column) {
 		return model.isCellEditable(row, column);
 	}
 

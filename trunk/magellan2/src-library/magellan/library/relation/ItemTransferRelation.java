@@ -56,7 +56,8 @@ public class ItemTransferRelation extends TransferRelation {
 	/* (non-Javadoc)
 	 * @see com.eressea.relation.TransferRelation#toString()
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return super.toString() + "@ITEMTYPE=" + itemType;
 	}
 }

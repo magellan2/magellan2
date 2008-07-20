@@ -43,7 +43,7 @@ public class AllanonMovementEvaluator extends EresseaMovementEvaluator {
    * 
    */
   public static AllanonMovementEvaluator getSingleton() {
-    return singleton;
+    return AllanonMovementEvaluator.singleton;
   }
 
 }

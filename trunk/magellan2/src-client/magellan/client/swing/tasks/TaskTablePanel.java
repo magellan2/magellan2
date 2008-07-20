@@ -16,6 +16,7 @@ package magellan.client.swing.tasks;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Window;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -163,13 +164,14 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 																				   .getMinWidth()*2);
 		// react on double clicks on a row
 		table.addMouseListener(new MouseAdapter() {
-				public void mouseClicked(MouseEvent e) {
+				@Override
+        public void mouseClicked(MouseEvent e) {
 					if(e.getClickCount() == 2) {
 						JTable target = (JTable) e.getSource();
 						int row = target.getSelectedRow();
 
-						if(log.isDebugEnabled()) {
-							log.debug("TaskTablePanel: Double click on row " + row);
+						if(TaskTablePanel.log.isDebugEnabled()) {
+							TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
 						}
 						selectObjectOnRow(row);
 					}
@@ -184,7 +186,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     shortcuts = new ArrayList<KeyStroke>(1);
 
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
@@ -196,9 +198,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		dispatcher.fire(new SelectionEvent<Object>(this, null, obj));
 	}
 
-	private static final int RECALL_IN_MS = 10;
 	// TODO make this configurable
-	private static final boolean REGIONS_WITH_UNCONFIRMED_UNITS_ONLY = false;
 
 //	private Timer timer;
 //	private Iterator regionsIterator;
@@ -216,7 +216,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   protected static Thread refreshThread = null;
   
 	public void refreshProblems() {
-    if (refreshThread!=null && refreshThread.isAlive()){
+    if (TaskTablePanel.refreshThread!=null && TaskTablePanel.refreshThread.isAlive()){
       // do not refresh if another refreshThread is still running
       // log.info("new call to refreshProblems rejected, thread still running");
       return;
@@ -253,8 +253,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	  ui.setMaximum(data.regions().size());
 	  ui.setTitle(Resources.get("dock.TASKS.progressBar.title"));
 	  // creating new Thread
-    refreshThread = new Thread(new Runnable() {
-	    final int myThread = ++threadRunning;
+    TaskTablePanel.refreshThread = new Thread(new Runnable() {
+	    final int myThread = ++TaskTablePanel.threadRunning;
 	      
       public void run() {
         try {
@@ -265,13 +265,14 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
             model.clearProblems();
           }
           for (Region r  : data.regions().values()){
-            if (threadRunning>myThread)
+            if (TaskTablePanel.threadRunning>myThread) {
               break;
+            }
             ui.setProgress(r.getName(), ++iProgress);
             r.refreshUnitRelations();
             reviewRegionAndUnits(r);
           }
-          if (threadRunning>myThread){
+          if (TaskTablePanel.threadRunning>myThread){
             ui.setMaximum(1);
             ui.setProgress("aborted", 1);
             // log.info("aborted "+myThread);
@@ -287,7 +288,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       }  
     });
     // starting the thread
-    refreshThread.start();
+    TaskTablePanel.refreshThread.start();
     this.needRefresh=false;
 	}
 
@@ -296,22 +297,28 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	private void initInspectors() {
 		inspectors = new ArrayList<Inspector>();
 		
-		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, true))
-		  inspectors.add(AttackInspector.getInstance());
-		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true))
-		  inspectors.add(ToDoInspector.getInstance());
-		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true))
-		  inspectors.add(MovementInspector.getInstance());
-		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true))
-		  inspectors.add(ShipInspector.getInstance());
-		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, true))
-		  inspectors.add(OrderSyntaxInspector.getInstance());
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, true)) {
+      inspectors.add(AttackInspector.getInstance());
+    }
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true)) {
+      inspectors.add(ToDoInspector.getInstance());
+    }
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true)) {
+      inspectors.add(MovementInspector.getInstance());
+    }
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
+      inspectors.add(ShipInspector.getInstance());
+    }
+		if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, true)) {
+      inspectors.add(OrderSyntaxInspector.getInstance());
+    }
 	}
 
 	/**
 	 * clean up
 	 */
-	public void quit() {
+	@Override
+  public void quit() {
 		if(this.dispatcher != null) {
 			dispatcher.removeUnitOrdersListener(this);
 			dispatcher.removeSelectionListener(this);
@@ -323,7 +330,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	/**
 	 * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
-	public void gameDataChanged(GameDataEvent e) {
+	@Override
+  public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
 		// rebuild warning list
 		this.needRefresh=true;
@@ -399,8 +407,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			return;
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
+		if(TaskTablePanel.log.isDebugEnabled()) {
+			TaskTablePanel.log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
 		}
 
 		reviewObjects(null, r);
@@ -455,8 +463,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	 * 
 	 */
 	private List<Problem> filterProblems(List<Problem> problems) {
-	  if (!restrictToOwner())
-	    return problems;
+	  if (!restrictToOwner()) {
+      return problems;
+    }
 	  
      List<Problem> filteredList = new ArrayList<Problem>(problems.size());
      for (Problem p: problems){
@@ -512,7 +521,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		/**
 		 * @see javax.swing.table.DefaultTableModel#isCellEditable(int, int)
 		 */
-		public boolean isCellEditable(int row, int column) {
+		@Override
+    public boolean isCellEditable(int row, int column) {
 			return false;
 		}
 
@@ -537,8 +547,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		private static final int IMAGE_POS = 0;
 		private static final int PROBLEM_POS = 1;
 		private static final int OBJECT_POS = 2;
-		private static final int REGION_POS = 3;
-		private static final int FACTION_POS = 4;
+//		private static final int REGION_POS = 3;
+//		private static final int FACTION_POS = 4;
 		private static final int LINE_POS = 5;
 		private static final int NUMBEROF_POS = 6;
 
@@ -551,7 +561,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       HasRegion hasR = p.getObject();
       Faction faction = p.getFaction();
 
-      Object[] o = new Object[NUMBEROF_POS+1];
+      Object[] o = new Object[TaskTableModel.NUMBEROF_POS+1];
       int i=0;
       o[i++] = Integer.toString(p.getType());
       o[i++] = p;
@@ -570,11 +580,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 			for(int i = getRowCount() - 1; i >= 0; i--) {
         if (i>=dataVector.size()){
-          log.warn("TaskTablePanel: synchronization problem");
+          TaskTablePanel.log.warn("TaskTablePanel: synchronization problem");
           break;
         }
 				Vector v = (Vector) dataVector.get(i);
-				Problem p = (Problem) v.get(PROBLEM_POS);
+				Problem p = (Problem) v.get(TaskTableModel.PROBLEM_POS);
 
 				// Inspector and region: only non unit objects will be removed
 				if(p.getInspector().equals(inspector) && p.getSource().equals(source)) {
@@ -608,7 +618,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       break; // unknown shortcut
 
     case 0:
-      DesktopEnvironment.requestFocus(IDENTIFIER);
+      DesktopEnvironment.requestFocus(TaskTablePanel.IDENTIFIER);
       break; 
     }
   }
@@ -636,6 +646,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     return new TaskTablePreferences(this, settings, data);
   }
   
+  @Override
   public void paint(Graphics g){
      if (!this.isShown){
        // Panel was deactivated eralier (or never opened)

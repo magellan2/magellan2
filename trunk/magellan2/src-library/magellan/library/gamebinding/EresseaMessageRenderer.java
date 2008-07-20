@@ -23,24 +23,25 @@
 // 
 package magellan.library.gamebinding;
 
-import magellan.library.Message;
-import magellan.library.rules.MessageType;
-import magellan.library.GameData;
-import magellan.library.EntityID;
-import magellan.library.CoordinateID;
-import magellan.library.Unit;
-import magellan.library.Region;
-import magellan.library.Faction;
-import magellan.library.Ship;
-import magellan.library.Building;
-import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
-
+import java.text.ParseException;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.regex.*;
-import java.text.ParseException;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import magellan.library.Building;
+import magellan.library.CoordinateID;
+import magellan.library.EntityID;
+import magellan.library.Faction;
+import magellan.library.GameData;
+import magellan.library.Message;
+import magellan.library.Region;
+import magellan.library.Ship;
+import magellan.library.Unit;
+import magellan.library.rules.MessageType;
+import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 /**
  * A Renderer for Eressea Messages
  * 
@@ -94,7 +95,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       this.literalsPattern = Pattern.compile("[a-z.]+\\(?");
       this.unknownUnit = EntityID.createEntityID(1, gd.base);
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      EresseaMessageRenderer.log.error(e.getMessage(), e);
     }
   }
   
@@ -105,7 +106,9 @@ public class EresseaMessageRenderer implements MessageRenderer {
    */
   public String renderMessage(Message msg) {
     String pat = msg.getMessageType().getPattern();
-    if (pat == null) return null;
+    if (pat == null) {
+      return null;
+    }
     try {
       String rendered = renderString(new StringBuffer(pat), msg.getAttributes());
       if ((rendered == null) || (rendered.equals(""))) {
@@ -115,22 +118,22 @@ public class EresseaMessageRenderer implements MessageRenderer {
         return rendered;
       }
     } catch (ParseException e) {
-      if (!loggedTypes.containsKey(msg.getMessageType())) {
-        loggedTypes.put(msg.getMessageType(), msg.getMessageType());
+      if (!EresseaMessageRenderer.loggedTypes.containsKey(msg.getMessageType())) {
+        EresseaMessageRenderer.loggedTypes.put(msg.getMessageType(), msg.getMessageType());
         if (msg.getAttributes() == null) {
-          log.warn("Message Rendering Error: "+pat+" null "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);          
+          EresseaMessageRenderer.log.warn("Message Rendering Error: "+pat+" null "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);          
         } else {
-          log.warn("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);
+          EresseaMessageRenderer.log.warn("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage()+" Last parse position "+(pat.length()-e.getErrorOffset()), e);
         }
       }
       return null;
     } catch (Exception e) {
-      if (!loggedTypes.containsKey(msg.getMessageType())) {
-        loggedTypes.put(msg.getMessageType(), msg.getMessageType());
+      if (!EresseaMessageRenderer.loggedTypes.containsKey(msg.getMessageType())) {
+        EresseaMessageRenderer.loggedTypes.put(msg.getMessageType(), msg.getMessageType());
         if (msg.getAttributes() == null) {
-          log.warn("Message Rendering Error: "+pat+" null "+e.getMessage(), e);          
+          EresseaMessageRenderer.log.warn("Message Rendering Error: "+pat+" null "+e.getMessage(), e);          
         } else {
-          log.error("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage(), e);
+          EresseaMessageRenderer.log.error("Message Rendering Error: "+pat+" "+msg.getAttributes().toString()+" "+e.getMessage(), e);
         }
       }
       return null; 
@@ -477,7 +480,7 @@ public class EresseaMessageRenderer implements MessageRenderer {
       int pos = unparsed.indexOf(",");
       if (pos>=0) {
         unparsed.delete(0, pos+1);
-        int[] ar = renderInteger(unparsed, attributes);
+        renderInteger(unparsed, attributes);
         // TODO use amount(=ar[0]) if possible to spell the item names correctly
         value = gd.getTranslation(item);
       } else {

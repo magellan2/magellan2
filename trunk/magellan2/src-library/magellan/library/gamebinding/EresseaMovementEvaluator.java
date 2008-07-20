@@ -43,7 +43,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 * 
 	 */
 	public static EresseaMovementEvaluator getSingleton() {
-		return singleton;
+		return EresseaMovementEvaluator.singleton;
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		if(horses <= 0) {
-			return CAP_NO_HORSES;
+			return MovementEvaluator.CAP_NO_HORSES;
 		}
 
 		int skillLevel = 0;
@@ -79,7 +79,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		if(horses > (skillLevel * unit.getModifiedPersons() * 2)) {
-			return CAP_UNSKILLED;
+			return MovementEvaluator.CAP_UNSKILLED;
 		}
 
 		int carts = 0;
@@ -143,7 +143,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
 		if(horses > ((skillLevel * unit.getModifiedPersons() * 4) + unit.getModifiedPersons())) {
 			// too many horses
-			return CAP_UNSKILLED;
+			return MovementEvaluator.CAP_UNSKILLED;
 		}
 
 		int carts = 0;
@@ -289,7 +289,9 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
       bonwcap = i_bonw.getAmount() * I_BONW_CAP;
 
       for(Item i : items) {
-        if (bonwload>=bonwcap) break;
+        if (bonwload>=bonwcap) {
+          break;
+        }
         if ((i.getAmount() > 0)&&(i.getItemType().isStoreableInBonw())) {
           bonwload += (((int) (i.getItemType().getWeight() * 100)) * i.getAmount());
         }

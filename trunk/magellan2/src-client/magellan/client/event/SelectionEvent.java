@@ -72,7 +72,7 @@ public class SelectionEvent<T> extends EventObject {
    * Constructs a new selection event with empty path with <code>selectionType ST_DEFAULT</code>.
    */
   public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> selectionPath) {
-    this(source, selectedObjects, activeObject, selectionPath, ST_DEFAULT);
+    this(source, selectedObjects, activeObject, selectionPath, SelectionEvent.ST_DEFAULT);
   }
 
   /**
@@ -105,8 +105,9 @@ public class SelectionEvent<T> extends EventObject {
 		this.activeObject = activeObject;
 		this.selectionType = selectionType;
     this.path=path;
-		if (log.isDebugEnabled())
-		  log.debug("selected "+activeObject+","+selectedObjects+" by "+source.getClass()+", "+((source instanceof JComponent)?((JComponent) source).getName():""));
+		if (SelectionEvent.log.isDebugEnabled()) {
+      SelectionEvent.log.debug("selected "+activeObject+","+selectedObjects+" by "+source.getClass()+", "+((source instanceof JComponent)?((JComponent) source).getName():""));
+    }
 	}
 
   /**
@@ -147,6 +148,7 @@ public class SelectionEvent<T> extends EventObject {
     return path;
   }
   
+  @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
     buffer.append("SelectionEvent{\n");

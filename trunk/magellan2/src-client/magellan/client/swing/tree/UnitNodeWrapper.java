@@ -109,7 +109,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	 * 
 	 */
 	public String toString() {
-		return text != null ? text : getText(unit,prfx, amount, modified);
+		return text != null ? text : UnitNodeWrapper.getText(unit,prfx, amount, modified);
 	}
 
 	/**
@@ -329,10 +329,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 			if(adapter.getSettings().getProperty("EMapOverviewPanel.useBestSkill", "true")
 						  .equalsIgnoreCase("true")) {
 				// use best skill to sort icons
-				Collections.sort(skills, skillComparator);
+				Collections.sort(skills, UnitNodeWrapper.skillComparator);
 			} else {
 				// use skilltyperanking to sort icons
-				Collections.sort(skills, rankComparator);
+				Collections.sort(skills, UnitNodeWrapper.rankComparator);
 			}
 		}
 
@@ -378,9 +378,9 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 			}
 
 			if(unit.getShip() != null) {
-			  if (unit.getShip().getType()==null)
-			    ge = new GraphicsElement(null, null, "ERROR");
-			  else{
+			  if (unit.getShip().getType()==null) {
+          ge = new GraphicsElement(null, null, "ERROR");
+        } else{
 			    ge = new GraphicsElement(null, null, unit.getShip().getType().getID().toString());
 			    ge.setTooltip(unit.getShip().getName());
 			    ge.setType(GraphicsElement.ADDITIONAL);
@@ -409,9 +409,9 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 			if(isShowingChanges() && s.isLevelChanged()) {
 				if(isShowingChangesStyled()) {
-					ge.setStyleset(SKILL_CHANGE_STYLE_PREFIX +
+					ge.setStyleset(UnitNodeWrapper.SKILL_CHANGE_STYLE_PREFIX +
 								   ((s.getChangeLevel() >= 0) ? ">." : "<.") +
-								   SKILL_CHANGE_STYLE_PREFIX + String.valueOf(s.getChangeLevel()));
+								   UnitNodeWrapper.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(s.getChangeLevel()));
 				}
 
 				if(isShowingChangesText() && isShowingIconText()) {
@@ -667,8 +667,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		adapter.addCellObject(this);
 		this.adapter = (UnitNodeWrapperDrawPolicy) adapter;
 
-		if(rankComparator == null) {
-			rankComparator = new SkillRankComparator(null, settings);
+		if(UnitNodeWrapper.rankComparator == null) {
+			UnitNodeWrapper.rankComparator = new SkillRankComparator(null, settings);
 		}
 
 		return adapter;
@@ -809,6 +809,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/**
 		 * DOCUMENT-ME
 		 */
+		@Override
 		public void applyPreferences() {
 			// check warner
 			//uWarning.getAdapter(null, null).applyPreferences();
@@ -927,10 +928,9 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 */
+    @Override
 		public boolean isEmphasized() {
 			return emphasized();
 		}

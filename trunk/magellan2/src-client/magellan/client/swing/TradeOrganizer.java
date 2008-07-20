@@ -68,7 +68,6 @@ import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -78,7 +77,6 @@ import magellan.library.utils.logging.Logger;
  */
 public class TradeOrganizer extends InternationalizedDataDialog implements SelectionListener {
   public static final String IDENTIFIER = "TRADES";
-  private static final Logger log = Logger.getInstance(TradeOrganizer.class);
 	protected List<Region> regions = new LinkedList<Region>();
 	protected int minSellMultiplier = 1;
 	protected SellTable sell;
@@ -321,7 +319,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 	 *
 	 * 
 	 */
-	public void gameDataChanged(GameDataEvent ge) {
+	@Override
+  public void gameDataChanged(GameDataEvent ge) {
 		super.gameDataChanged(ge);
 		setRegions(Collections.EMPTY_SET);
 
@@ -471,7 +470,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		stocks.setRegions(regions);
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		// store settings
 		settings.setProperty("TradeOrganizer.width", String.valueOf(getWidth()));
 		settings.setProperty("TradeOrganizer.height", String.valueOf(getHeight()));
@@ -515,7 +515,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
+					@Override
+          public void mouseClicked(MouseEvent e) {
 						int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
 						model.sort(i);
 					}
@@ -579,7 +580,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Object getValueAt(int row, int col) {
-			Region region = (Region) tableRegions.get(row);
+			Region region = tableRegions.get(row);
 
 			switch(col) {
 			case 0:
@@ -617,7 +618,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public String getColumnName(int col) {
+		@Override
+    public String getColumnName(int col) {
 			switch(col) {
 			case 0:
 				return Resources.get("tradeorganizer.buycolumnname1");
@@ -639,7 +641,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public Class<? extends Object> getColumnClass(int col) {
+		@Override
+    public Class<? extends Object> getColumnClass(int col) {
 			return this.getValueAt(0, col).getClass();
 		}
 
@@ -671,7 +674,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Region getRegion(int row) {
-			return (Region) tableRegions.get(row);
+			return tableRegions.get(row);
 		}
 
 		/**
@@ -734,7 +737,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
+					@Override
+          public void mouseClicked(MouseEvent e) {
 						int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
 						model.sort(i);
 					}
@@ -798,7 +802,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Object getValueAt(int row, int col) {
-			Region region = (Region) tableRegions.get(row);
+			Region region = tableRegions.get(row);
 
 			switch(col) {
 			case 0:
@@ -818,7 +822,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public String getColumnName(int col) {
+		@Override
+    public String getColumnName(int col) {
 			switch(col) {
 			case 0:
 				return Resources.get("tradeorganizer.sellcolumnname1");
@@ -837,7 +842,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public Class<? extends Object> getColumnClass(int col) {
+		@Override
+    public Class<? extends Object> getColumnClass(int col) {
 			return this.getValueAt(0, col).getClass();
 		}
 
@@ -869,7 +875,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Region getRegion(int row) {
-			return (Region) tableRegions.get(row);
+			return tableRegions.get(row);
 		}
 
 		/**
@@ -921,7 +927,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
+					@Override
+          public void mouseClicked(MouseEvent e) {
 						int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
 						model.sort(i);
 					}
@@ -989,7 +996,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Object getValueAt(int row, int col) {
-			Region region = (Region) tableRegions.get(row);
+			Region region = tableRegions.get(row);
 
 			switch(col) {
 			case 0:
@@ -1009,7 +1016,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public String getColumnName(int col) {
+		@Override
+    public String getColumnName(int col) {
 			switch(col) {
 			case 0:
 				return Resources.get("tradeorganizer.sellcolumnname1");
@@ -1028,7 +1036,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 *
 		 * 
 		 */
-		public Class<? extends Object> getColumnClass(int col) {
+		@Override
+    public Class<? extends Object> getColumnClass(int col) {
 			return this.getValueAt(0, col).getClass();
 		}
 
@@ -1105,7 +1114,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		 * 
 		 */
 		public Region getRegion(int row) {
-			return (Region) tableRegions.get(row);
+			return tableRegions.get(row);
 		}
 
 		/**
@@ -1237,7 +1246,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 		}
 		for (Iterator iter = this.luxuryTranslations.keySet().iterator();iter.hasNext();){
 			String actKey = (String) iter.next();
-			String actValue = (String) this.luxuryTranslations.get(actKey);
+			String actValue = this.luxuryTranslations.get(actKey);
 			if (actValue.equalsIgnoreCase(value)){
 				return actKey;
 			}

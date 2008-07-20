@@ -153,7 +153,8 @@ class DirWrapper {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		String dirName = dir.getAbsolutePath();
 
 		if(dirName.length() > 30) {
@@ -164,7 +165,8 @@ class DirWrapper {
 	}
 
 	// Bucket needs this
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return o != null && this.getDirectory().equals(((DirWrapper) o).getDirectory());
 		} catch(ClassCastException e) {

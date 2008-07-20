@@ -46,7 +46,8 @@ public class XMLIOException extends IOException {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void printStackTrace() {
+	@Override
+  public void printStackTrace() {
 		printStackTrace(System.err);
 	}
 
@@ -55,12 +56,13 @@ public class XMLIOException extends IOException {
 	 *
 	 * 
 	 */
-	public void printStackTrace(PrintStream aTarget) {
+	@Override
+  public void printStackTrace(PrintStream aTarget) {
 		synchronized(aTarget) {
 			super.printStackTrace(aTarget);
 
 			if(exception != null) {
-				aTarget.println(EXCEPTION_SEPARATOR);
+				aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
 				exception.printStackTrace(aTarget);
 			}
 		}
@@ -71,12 +73,13 @@ public class XMLIOException extends IOException {
 	 *
 	 * 
 	 */
-	public void printStackTrace(PrintWriter aTarget) {
+	@Override
+  public void printStackTrace(PrintWriter aTarget) {
 		synchronized(aTarget) {
 			super.printStackTrace(aTarget);
 
 			if(exception != null) {
-				aTarget.println(EXCEPTION_SEPARATOR);
+				aTarget.println(XMLIOException.EXCEPTION_SEPARATOR);
 				exception.printStackTrace(aTarget);
 			}
 		}

@@ -2,6 +2,7 @@ package magellan.test.merge;
 
 import java.util.LinkedList;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.Message;
@@ -24,7 +25,7 @@ public class MergeWithUnitMessages extends TestCase {
 		u1.setUnitMessages(new LinkedList<Message>());
 		u1.getUnitMessages().add(GameDataBuilder.createMessage("TEST_m1"));
 
-		Unit u2 = (Unit) gd2.units().values().iterator().next();
+		Unit u2 = gd2.units().values().iterator().next();
 		u2.setUnitMessages(new LinkedList<Message>());
 		u2.getUnitMessages().add(GameDataBuilder.createMessage("TEST_m2"));
 
@@ -33,9 +34,9 @@ public class MergeWithUnitMessages extends TestCase {
 
 		Unit u4 = gd4.getUnit(u1.getID());
 		
-		assertTrue(u4 != null);
-		assertTrue(u4.getUnitMessages() != null);
-		assertEquals(1, u4.getUnitMessages().size());
+		Assert.assertTrue(u4 != null);
+		Assert.assertTrue(u4.getUnitMessages() != null);
+		Assert.assertEquals(1, u4.getUnitMessages().size());
 	}
 
 	public void testMergeSameRound() throws Exception {
@@ -44,11 +45,11 @@ public class MergeWithUnitMessages extends TestCase {
 		GameData gd1 = builder.createSimpleGameData(351);
 		GameData gd2 = builder.createSimpleGameData(351);
 
-		Unit u1 = (Unit) gd1.units().values().iterator().next();
+		Unit u1 = gd1.units().values().iterator().next();
 		u1.setUnitMessages(new LinkedList<Message>());
 		u1.getUnitMessages().add(GameDataBuilder.createMessage("TEST_m1"));
 
-		Unit u2 = (Unit) gd2.units().values().iterator().next();
+		Unit u2 = gd2.units().values().iterator().next();
 		u2.setUnitMessages(new LinkedList<Message>());
 		u2.getUnitMessages().add(GameDataBuilder.createMessage("TEST_m2"));
 
@@ -57,9 +58,9 @@ public class MergeWithUnitMessages extends TestCase {
 
 		Unit u4 = gd4.getUnit(u1.getID());
 		
-		assertTrue(u4 != null);
-		assertTrue(u4.getUnitMessages() != null);
-		assertEquals(2, u4.getUnitMessages().size());
+		Assert.assertTrue(u4 != null);
+		Assert.assertTrue(u4.getUnitMessages() != null);
+		Assert.assertEquals(2, u4.getUnitMessages().size());
 	}
 
 

@@ -7,6 +7,7 @@ import java.util.Comparator;
  *
  * @deprecated unnecessary?
  */
+@Deprecated
 public class NaturalOrderComparator<T extends Comparable<T>> implements Comparator<T> {
 
     private NaturalOrderComparator(){}

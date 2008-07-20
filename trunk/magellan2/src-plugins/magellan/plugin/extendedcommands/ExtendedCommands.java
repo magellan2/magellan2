@@ -76,7 +76,9 @@ public class ExtendedCommands {
     this.client = client;
     Properties properties = client.getProperties();
     String commandsFilename = properties.getProperty("extendedcommands.unitCommands");
-    if (Utils.isEmpty(commandsFilename)) commandsFilename = Client.getSettingsDirectory()+"/extendedcommands.xml";
+    if (Utils.isEmpty(commandsFilename)) {
+      commandsFilename = Client.getSettingsDirectory()+"/extendedcommands.xml";
+    }
     
     unitCommandsFile = new File(commandsFilename);
     if (!unitCommandsFile.exists()) {
@@ -98,9 +100,15 @@ public class ExtendedCommands {
    * Returns true if there is a command for the given unitcontainer.
    */
   public boolean hasCommands(UnitContainer container) {
-    if (!hasCommands()) return false;
-    if (container == null) return false;
-    if (container.getID() == null) return false;
+    if (!hasCommands()) {
+      return false;
+    }
+    if (container == null) {
+      return false;
+    }
+    if (container.getID() == null) {
+      return false;
+    }
     return unitContainerCommands.containsKey(container.getID().toString());
   }
   
@@ -108,16 +116,24 @@ public class ExtendedCommands {
    * Returns true if there is a command for the given unitcontainer.
    */
   public boolean hasAllCommands(GameData world, UnitContainer container) {
-    if (!hasCommands()) return false;
-    if (container == null) return false;
-    if (container.getID() == null) return false;
+    if (!hasCommands()) {
+      return false;
+    }
+    if (container == null) {
+      return false;
+    }
+    if (container.getID() == null) {
+      return false;
+    }
     boolean ok = unitContainerCommands.containsKey(container.getID().toString());
     
     Collection<Unit> units = container.units();
     if (units != null && units.size()>0) {
       for (Unit unit : units) {
         ok = ok || hasCommands(unit);
-        if (ok) break;
+        if (ok) {
+          break;
+        }
       }
     }
     
@@ -128,10 +144,18 @@ public class ExtendedCommands {
    * Returns true if there is a command for the given unit.
    */
   public boolean hasCommands(Unit unit) {
-    if (!hasCommands()) return false;
-    if (unit == null) return false;
-    if (unit instanceof TempUnit) return false;
-    if (unit.getID() == null) return false;
+    if (!hasCommands()) {
+      return false;
+    }
+    if (unit == null) {
+      return false;
+    }
+    if (unit instanceof TempUnit) {
+      return false;
+    }
+    if (unit.getID() == null) {
+      return false;
+    }
     return unitCommands.containsKey(unit.getID().toString());
   }
   
@@ -139,7 +163,9 @@ public class ExtendedCommands {
    * Returns the command script for the given unitcontainer.
    */
   public Script getCommands(UnitContainer container) {
-    if (!hasCommands(container)) return null;
+    if (!hasCommands(container)) {
+      return null;
+    }
     return unitContainerCommands.get(container.getID().toString());
   }
   
@@ -147,7 +173,9 @@ public class ExtendedCommands {
    * Returns the command script for the given unit.
    */
   public Script getCommands(Unit unit) {
-    if (!hasCommands(unit)) return null;
+    if (!hasCommands(unit)) {
+      return null;
+    }
     return unitCommands.get(unit.getID().toString());
   }
   
@@ -155,9 +183,15 @@ public class ExtendedCommands {
    * Sets the commands for a given unit.
    */
   public void setCommands(Unit unit, Script script) {
-    if (unit == null) return;
-    if (unit instanceof TempUnit) return;
-    if (unit.getID() == null) return;
+    if (unit == null) {
+      return;
+    }
+    if (unit instanceof TempUnit) {
+      return;
+    }
+    if (unit.getID() == null) {
+      return;
+    }
     
     if ((Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) && hasCommands(unit)) {
       // script is empty, let's remove the script from the mapping
@@ -174,8 +208,12 @@ public class ExtendedCommands {
    * Sets the commands for a given unit.
    */
   public void setCommands(UnitContainer container, Script script) {
-    if (container == null) return;
-    if (container.getID() == null) return;
+    if (container == null) {
+      return;
+    }
+    if (container.getID() == null) {
+      return;
+    }
     
     if ((Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) && hasCommands(container)) {
       // script is empty, let's remove the script from the mapping
@@ -215,7 +253,9 @@ public class ExtendedCommands {
     
     for (String unitId : unitCommands.keySet()) {
       Unit unit = world.getUnit(UnitID.createUnitID(unitId,world.base));
-      if (unit != null) units.add(unit);
+      if (unit != null) {
+        units.add(unit);
+      }
     }
     
     return units;
@@ -232,22 +272,30 @@ public class ExtendedCommands {
       switch (unitContainerCommands.get(unitContainerId).getType()) {
         case REGIONTYPE: {
           UnitContainer container = world.getRegion(CoordinateID.parse(unitContainerId, ", "));
-          if (container != null) containers.add(container);
+          if (container != null) {
+            containers.add(container);
+          }
           break;
         }
         case RACE: {
           UnitContainer container = world.getFaction(EntityID.createEntityID(unitContainerId,world.base));
-          if (container != null) containers.add(container);
+          if (container != null) {
+            containers.add(container);
+          }
           break;
         }
         case BUILDINGTYPE: {
           UnitContainer container = world.getBuilding(EntityID.createEntityID(unitContainerId,world.base));
-          if (container != null) containers.add(container);
+          if (container != null) {
+            containers.add(container);
+          }
           break;
         }
         case SHIPTYPE: {
           UnitContainer container = world.getShip(EntityID.createEntityID(unitContainerId,world.base));
-          if (container != null) containers.add(container);
+          if (container != null) {
+            containers.add(container);
+          }
           break;
         }
       }
@@ -274,7 +322,9 @@ public class ExtendedCommands {
       }
     }
     
-    for (String key : keys) unitCommands.remove(key);
+    for (String key : keys) {
+      unitCommands.remove(key);
+    }
     
     return counter;
   }
@@ -284,7 +334,6 @@ public class ExtendedCommands {
    * this script
    */
   public int clearUnusedContainers() {
-    List<UnitContainer> containers = new ArrayList<UnitContainer>();
     GameData world = client.getData();
     List<String> keys = new ArrayList<String>();
     int counter = 0;
@@ -326,7 +375,9 @@ public class ExtendedCommands {
       }
     }
     
-    for (String key : keys) unitContainerCommands.remove(key);
+    for (String key : keys) {
+      unitContainerCommands.remove(key);
+    }
 
     
     return counter;
@@ -337,7 +388,9 @@ public class ExtendedCommands {
    * Executes the commands/script for a given unit.
    */
   public void execute(GameData world, Unit unit) {
-    if (!hasCommands(unit)) return;
+    if (!hasCommands(unit)) {
+      return;
+    }
     
     try {
       Interpreter interpreter = new Interpreter();
@@ -357,7 +410,9 @@ public class ExtendedCommands {
       unit.setOrdersChanged(true);
     } catch (EvalError error) {
       String message = error.getMessage();
-      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      if (message==null || message.length()==0) {
+        message=error.getCause().getClass().getName();
+      }
       try {
         message+="\r\n"+error.getErrorText();
       } catch (NullPointerException npe) {}
@@ -365,7 +420,7 @@ public class ExtendedCommands {
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
     } catch (Throwable throwable) {
-      log.info("",throwable);
+      ExtendedCommands.log.info("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -376,13 +431,15 @@ public class ExtendedCommands {
    * Executes the commands/script for a given unitcontainer.
    */
   public void execute(GameData world, UnitContainer container) {
-    if (!hasCommands(container)) return;
+    if (!hasCommands(container)) {
+      return;
+    }
     
     try {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
       interpreter.set("container",container);
-      interpreter.set("helper", new ExtendedCommandsHelper(world,container));
+      interpreter.set("helper", new ExtendedCommandsHelper(world));
       interpreter.set("log", DebugDock.getInstance());
       
       String script = "";
@@ -395,7 +452,9 @@ public class ExtendedCommands {
       interpreter.eval(script);
     } catch (EvalError error) {
       String message = error.getMessage();
-      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      if (message==null || message.length()==0) {
+        message=error.getCause().getClass().getName();
+      }
       try {
         message+="\r\n"+error.getErrorText();
       } catch (NullPointerException npe) {}
@@ -403,7 +462,7 @@ public class ExtendedCommands {
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
     } catch (Throwable throwable) {
-      log.info("",throwable);
+      ExtendedCommands.log.info("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -421,7 +480,9 @@ public class ExtendedCommands {
       interpreter.eval(getLibrary().getScript());
     } catch (EvalError error) {
       String message = error.getMessage();
-      if (message==null || message.length()==0) message=error.getCause().getClass().getName();
+      if (message==null || message.length()==0) {
+        message=error.getCause().getClass().getName();
+      }
       try {
         message+="\r\n"+error.getErrorText();
       } catch (NullPointerException npe) {}
@@ -429,7 +490,7 @@ public class ExtendedCommands {
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
     } catch (Throwable throwable) {
-      log.info("",throwable);
+      ExtendedCommands.log.info("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -441,7 +502,7 @@ public class ExtendedCommands {
    */
   protected void read(File file) {
     try {
-      log.info("Reading XML "+file);
+      ExtendedCommands.log.info("Reading XML "+file);
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       factory.setNamespaceAware(false);
       factory.setValidating(false);
@@ -449,7 +510,7 @@ public class ExtendedCommands {
       Document document = builder.parse(file);
       Element rootNode = document.getDocumentElement();
       if (!rootNode.getNodeName().equalsIgnoreCase("extended_commands")) {
-        log.error("This is NOT an extended command configuration file");
+        ExtendedCommands.log.error("This is NOT an extended command configuration file");
         return;
       }
       
@@ -459,21 +520,21 @@ public class ExtendedCommands {
       }
       
       List<Element> nodes = Utils.getChildNodes(rootNode,"container");
-      log.info("Found "+nodes.size()+" unitcontainer commands");
+      ExtendedCommands.log.info("Found "+nodes.size()+" unitcontainer commands");
       for( Element node : nodes ) {
         Script script = new Script(node);
         unitContainerCommands.put(script.getContainerId(),script);
       }
       
       nodes = Utils.getChildNodes(rootNode,"unit");
-      log.info("Found "+nodes.size()+" unit commands");
+      ExtendedCommands.log.info("Found "+nodes.size()+" unit commands");
       for( Element node : nodes ) {
         Script script = new Script(node);
         unitCommands.put(script.getContainerId(),script);
       }
       
     } catch (Throwable throwable) {
-      log.error("",throwable);
+      ExtendedCommands.log.error("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);
@@ -498,7 +559,9 @@ public class ExtendedCommands {
       
       writer.println("<?xml version=\"1.0\" encoding=\""+Encoding.UTF8.toString()+"\"?>");
       writer.println("<extended_commands>");
-      if (library != null) library.toXML(writer);
+      if (library != null) {
+        library.toXML(writer);
+      }
       for (Script script : unitContainerCommands.values()) {
         script.toXML(writer);
       }
@@ -511,7 +574,7 @@ public class ExtendedCommands {
       osw.close();
       fos.close();
     } catch (Throwable throwable) {
-      log.error("",throwable);
+      ExtendedCommands.log.error("",throwable);
       ErrorWindow errorWindow = new ErrorWindow(client,throwable.getMessage(),"",throwable);
       errorWindow.setShutdownOnCancel(false);
       errorWindow.setVisible(true);

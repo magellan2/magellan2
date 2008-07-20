@@ -46,7 +46,8 @@ public class Sign  {
 	 *
 	 * @return Sign object as string.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if (this.text!=null){
 			return this.text;
 		}

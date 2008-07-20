@@ -11,12 +11,14 @@ public class MagellanTestSetup extends TestSetup {
 		super(test);
 	}
 
-	protected void setUp() {
+	@Override
+  protected void setUp() {
 		MagellanContext context = new MagellanContext(null);
 		context.setProperties(new Properties());
 		context.init();
 	}
 
-	protected void tearDown() {
+	@Override
+  protected void tearDown() {
 	}
 }

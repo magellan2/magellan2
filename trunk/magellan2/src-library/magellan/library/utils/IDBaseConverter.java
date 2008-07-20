@@ -129,8 +129,8 @@ public class IDBaseConverter {
 	 * DOCUMENT-ME
 	 */
 	public static void init() {
-		if(listener == null) {
-			listener = new IDBaseConverterListener();
+		if(IDBaseConverter.listener == null) {
+			IDBaseConverter.listener = new IDBaseConverterListener();
 			// TODO!!!!!!! EventDispatcher.getDispatcher().addGameDataListener(listener);
 		}
 	}

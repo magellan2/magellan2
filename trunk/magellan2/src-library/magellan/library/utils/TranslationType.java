@@ -48,7 +48,7 @@ public class TranslationType {
   private String translation = null;
   
   // the source of this translation
-  private int source = sourceUnknown;
+  private int source = TranslationType.sourceUnknown;
 
   /**
    * Returns the value of translation.

@@ -226,7 +226,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 */
 	public Unit getUnit(ID key) {
 		if(units != null) {
-			return (Unit) units.get(key);
+			return units.get(key);
 		} else {
 			return null;
 		}
@@ -258,7 +258,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 */
 	public Unit removeUnit(ID key) {
 		if(units != null) {
-			Unit u = (Unit) units.remove(key);
+			Unit u = units.remove(key);
 
 			if(units.isEmpty()) {
 				units = null;
@@ -291,6 +291,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 		}
 	}
 
+    @Override
     protected Collection<UnitRelation> getRelations() {
         if(cache == null) {
             cache = new Cache();
@@ -316,7 +317,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 			return null;
 		}
 
-		return (Unit) cache.modifiedContainerUnits.get(key);
+		return cache.modifiedContainerUnits.get(key);
 	}
 
 	private void refreshModifiedUnits() {
@@ -369,11 +370,11 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 						cache.modifiedContainerUnits.remove(ucr.source.getID());
 					}
 				} else {
-					log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
+					MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
 							 " has a relation associated that does not point to it!");
 				}
 			} else {
-				log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
+				MagellanUnitContainerImpl.log.info("UnitContainer.refreshModifiedUnits(): unit container " + this +
 						 " contains a relation that is not a UnitContainerRelation object!");
 			}
 		}
@@ -384,7 +385,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName() + " (" + id + "), " + type;
 	}
 
@@ -435,7 +437,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * 
 	 *
 	 */
-	public void addRelation(UnitRelation rel) {
+	@Override
+  public void addRelation(UnitRelation rel) {
 		if(cache == null) {
 			cache = new Cache();
 		}
@@ -460,6 +463,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     /**
      * @see magellan.library.Named#getModifiedName()
      */
+    @Override
     public String getModifiedName() {
         if(cache == null) {
             cache = new Cache();
@@ -477,7 +481,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 *
 	 * 
 	 */
-	public UnitRelation removeRelation(UnitRelation rel) {
+	@Override
+  public UnitRelation removeRelation(UnitRelation rel) {
 		UnitRelation r = null;
 
 		if((cache != null) && (cache.relations != null)) {
@@ -505,7 +510,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       tagMap = new HashMap<String, String>();
     }
 
-    return (String) tagMap.put(tag, value);
+    return tagMap.put(tag, value);
   }
 
   /**
@@ -516,7 +521,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return null;
     }
 
-    return (String) tagMap.get(tag);
+    return tagMap.get(tag);
   }
 
   /**
@@ -527,7 +532,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       return null;
     }
 
-    return (String) tagMap.remove(tag);
+    return tagMap.remove(tag);
   }
 
   /**

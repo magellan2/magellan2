@@ -71,6 +71,7 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
     /**
      * @see magellan.library.Named#getModifiedName()
      */
+    @Override
     public String getModifiedName() {
         List renameRelations = getRelations(RenameNamedRelation.class);
         if(renameRelations.isEmpty()) {

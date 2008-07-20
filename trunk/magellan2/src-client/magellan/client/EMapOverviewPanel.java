@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -179,7 +180,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /** DOCUMENT-ME */
   public static final int EXPAND_IFINSIDE_FLAG = 2;
-  private int expandMode = EXPAND_FLAG | (3 << 2);
+  private int expandMode = EMapOverviewPanel.EXPAND_FLAG | (3 << 2);
   private int expandTrustlevel = Faction.TL_PRIVILEGED;
 
   /** DOCUMENT-ME */
@@ -187,14 +188,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /** DOCUMENT-ME */
   public static final int COLLAPSE_ONLY_EXPANDED = 2;
-  private int collapseMode = COLLAPSE_FLAG | COLLAPSE_ONLY_EXPANDED | (3 << 2);
+  private int collapseMode = EMapOverviewPanel.COLLAPSE_FLAG | EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED | (3 << 2);
   private List<TreeNode> lastExpanded = new LinkedList<TreeNode>();
   private Set<TreeNode> collapsedNodes = new HashSet<TreeNode>();
   private Set<TreeNode> collapseInfo = new HashSet<TreeNode>();
   private Set<TreeNode> expandInfo = new HashSet<TreeNode>();
   private Set<TreePath> selectionTransfer = new HashSet<TreePath>();
   private static final Comparator<Unique> idCmp = IDComparator.DEFAULT;
-  private static final Comparator<Named> nameCmp = new NameComparator(idCmp);
+  private static final Comparator<Named> nameCmp = new NameComparator(EMapOverviewPanel.idCmp);
 
   public static final String IDENTIFIER = "OVERVIEW";
 
@@ -290,18 +291,18 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     shortcuts = new ArrayList<KeyStroke>(8);
 
     // 0-1: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_1, InputEvent.ALT_MASK));
 
     // 2-4: Other CTRL shortcuts
     // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_N,KeyEvent.CTRL_MASK));
     // shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_B,KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD, InputEvent.CTRL_MASK));
 
     // 5-6: Other ALT shortcuts
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
@@ -345,6 +346,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @param e
    *          DOCUMENT-ME
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     this.data = e.getGameData();
 
@@ -411,8 +413,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     // creation of Comparator outsourced to Comparator
     // getUnitSorting(java.util.Properties)
-    treeBuilder.setUnitComparator(getUnitSorting(settings));
-    treeBuilder.setTreeStructure(getTreeStructure(settings));
+    treeBuilder.setUnitComparator(EMapOverviewPanel.getUnitSorting(settings));
+    treeBuilder.setTreeStructure(EMapOverviewPanel.getTreeStructure(settings));
 
     treeBuilder.buildTree(rootNode, data);
 
@@ -452,18 +454,18 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         SkillRankComparator skillTypeRankComparator = new SkillRankComparator(null, settings);
 //        SkillTypeComparator<Skill> skillTypeComparator = new SkillTypeComparator<Skill>(skillTypeRankComparator, null);
         BestSkillComparator bestSkillComparator = new BestSkillComparator(SkillComparator.skillCmp,skillTypeRankComparator,SkillComparator.skillCmp);
-        cmp = new UnitSkillComparator(bestSkillComparator,idCmp);
+        cmp = new UnitSkillComparator(bestSkillComparator,EMapOverviewPanel.idCmp);
       } else {
-        cmp = new UnitSkillComparator(new TopmostRankedSkillComparator(null, settings), idCmp);
+        cmp = new UnitSkillComparator(new TopmostRankedSkillComparator(null, settings), EMapOverviewPanel.idCmp);
       }
     } else if (criteria.equals("names")) {
-      cmp = nameCmp;
+      cmp = EMapOverviewPanel.nameCmp;
     } else {
-      cmp = new SortIndexComparator(idCmp);
+      cmp = new SortIndexComparator(EMapOverviewPanel.idCmp);
     }
 
     // get an array of ints out of the definition string:
-    int treeStructure[] = getTreeStructure(settings);
+    int treeStructure[] = EMapOverviewPanel.getTreeStructure(settings);
 
     return TreeHelper.buildComparator(cmp, treeStructure);
   }
@@ -640,9 +642,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
     
     Collection<Object> selectionPath = new ArrayList<Object>();
-    if (tree!=null && tree.getSelectionPath()!=null)
-    for (Object o : tree.getSelectionPath().getPath()){
-      selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
+    if (tree!=null && tree.getSelectionPath()!=null) {
+      for (Object o : tree.getSelectionPath().getPath()){
+        selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
+      }
     }
     dispatcher.fire(new SelectionEvent<Unique>(this, selectedObjects, activeObject, selectionPath));
   }
@@ -655,8 +658,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   private Object getNodeSubject(DefaultMutableTreeNode node) {
     Object o = node.getUserObject();
-    if (o==null)
+    if (o==null) {
       return null;
+    }
 
     if (o instanceof RegionNodeWrapper) {
       o = ((RegionNodeWrapper) o).getRegion();
@@ -675,7 +679,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     } else if (o instanceof SimpleNodeWrapper) {
       o = ((SimpleNodeWrapper) o).getObject();
     } else {
-      log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown:" + o);
+      EMapOverviewPanel.log.warn("EMapOverviewPanel.valueChanged() : Type of the user object of a selected node is unknown:" + o);
     }
     return o;
   }
@@ -710,18 +714,18 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     tree.repaint();
   }
 
-  private Region getSelectedRegion(DefaultMutableTreeNode node) {
-    while ((node != null) && !(node.getUserObject() instanceof RegionNodeWrapper)) {
-      node = (DefaultMutableTreeNode) node.getParent();
-    }
-
-    if ((node != null) && node.getUserObject() instanceof RegionNodeWrapper) {
-      return ((RegionNodeWrapper) node.getUserObject()).getRegion();
-    } else {
-      return null;
-    }
-  }
-
+//  private Region getSelectedRegion(DefaultMutableTreeNode node) {
+//    while ((node != null) && !(node.getUserObject() instanceof RegionNodeWrapper)) {
+//      node = (DefaultMutableTreeNode) node.getParent();
+//    }
+//
+//    if ((node != null) && node.getUserObject() instanceof RegionNodeWrapper) {
+//      return ((RegionNodeWrapper) node.getUserObject()).getRegion();
+//    } else {
+//      return null;
+//    }
+//  }
+//
   /**
    * Initialize interface
    */
@@ -792,8 +796,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if (node.getChildCount() > 0) {
       TreePath path = new TreePath(((DefaultMutableTreeNode) node.getLastChild()).getPath());
 
-      if (tree.getPathBounds(path)!=null)
+      if (tree.getPathBounds(path)!=null) {
         rec.add(tree.getPathBounds(path));
+      }
     }
 
     SwingUtilities.invokeLater(new ScrollerRunnable(rec));
@@ -835,14 +840,14 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   protected void collectCollapseInfo() {
     // only clear when not expanded-only, here use also old collapse info
-    if ((collapseMode & COLLAPSE_ONLY_EXPANDED) == 0) {
+    if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) == 0) {
       collapseInfo.clear();
     }
 
-    if ((collapseMode & COLLAPSE_FLAG) != 0) {
+    if ((collapseMode & EMapOverviewPanel.COLLAPSE_FLAG) != 0) {
       int depth = collapseMode >> 2;
 
-      if ((collapseMode & COLLAPSE_ONLY_EXPANDED) != 0) {
+      if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0) {
         if (lastExpanded.size() > 0) {
           collapseInfo.addAll(lastExpanded);
           lastExpanded.clear();
@@ -890,8 +895,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   protected void collectExpandInfo(Region region, DefaultMutableTreeNode node, TreePath path) {
-    if ((expandMode & EXPAND_FLAG) != 0) {
-      if ((expandMode & EXPAND_IFINSIDE_FLAG) != 0) {
+    if ((expandMode & EMapOverviewPanel.EXPAND_FLAG) != 0) {
+      if ((expandMode & EMapOverviewPanel.EXPAND_IFINSIDE_FLAG) != 0) {
         // search for privileged faction
         // note: Node searching is not nice, but the fastest way
         boolean found = false;
@@ -979,13 +984,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           pathsToExpand.put(node2, new TreePath(node2.getPath()));
         }
 
-        TreePath path2 = (TreePath) pathsToExpand.get(node2);
+        TreePath path2 = pathsToExpand.get(node2);
 
         if (path.isDescendant(path2)) {
           it.remove();
 
           // but save it for last expand on expand-only mode
-          if ((collapseMode & COLLAPSE_ONLY_EXPANDED) != 0) {
+          if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0) {
             lastExpanded.add((TreeNode)path.getLastPathComponent());
           }
 
@@ -1002,7 +1007,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       TreePath path = null;
 
       if (pathsToExpand.containsKey(node)) {
-        path = (TreePath) pathsToExpand.get(node);
+        path = pathsToExpand.get(node);
       } else {
         path = new TreePath(node.getPath());
       }
@@ -1028,7 +1033,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     
     
     // transfer the selection
-    TreePath paths[] = (TreePath []) selectionTransfer.toArray(new TreePath[0]);
+    TreePath paths[] = selectionTransfer.toArray(new TreePath[0]);
 
     tree.setSelectionPaths(paths);
 
@@ -1038,7 +1043,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     while (it.hasNext()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
-      TreePath path = (TreePath) pathsToCollapse.get(node);
+      TreePath path = pathsToCollapse.get(node);
 
       if (tree.isExpanded(path)) {
         tree.collapsePath(path);
@@ -1080,8 +1085,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public void selectionChanged(SelectionEvent se) {
     // update the selection in the context manager
     if (se.getSelectionType() != SelectionEvent.ST_REGIONS) {
-      if (se.getSelectedObjects()!=null)
+      if (se.getSelectedObjects()!=null) {
         contextManager.setSelection(se.getSelectedObjects());
+      }
     }
 
     // try to prevent notification loops, i.e. that calling this
@@ -1238,8 +1244,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   protected void expandSelected(Region region, DefaultMutableTreeNode node, TreePath path) {
-    if ((expandMode & EXPAND_FLAG) != 0) {
-      if ((expandMode & EXPAND_IFINSIDE_FLAG) != 0) {
+    if ((expandMode & EMapOverviewPanel.EXPAND_FLAG) != 0) {
+      if ((expandMode & EMapOverviewPanel.EXPAND_IFINSIDE_FLAG) != 0) {
         // search for privileged faction
         // note: Node searching is not nice, but the fastest way
         boolean found = false;
@@ -1311,10 +1317,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   protected void collapseSelected() {
-    if ((collapseMode & COLLAPSE_FLAG) != 0) {
+    if ((collapseMode & EMapOverviewPanel.COLLAPSE_FLAG) != 0) {
       int depth = collapseMode >> 2;
 
-      if ((collapseMode & COLLAPSE_ONLY_EXPANDED) != 0) {
+      if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0) {
         if (lastExpanded.size() > 0) {
           List<Object> copy = new LinkedList<Object>(lastExpanded);
           Iterator it = copy.iterator();
@@ -1421,10 +1427,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       if (index >= 0) {
         insertUnit(parentNode, e.getTempUnit(), index);
       } else {
-        log.info("EMapOverviewPanel.tempUnitCreated(): new temp unit is not a child of its parent!");
+        EMapOverviewPanel.log.info("EMapOverviewPanel.tempUnitCreated(): new temp unit is not a child of its parent!");
       }
     } else {
-      log.info("EMapOverviewPanel.tempUnitCreated(): cannot determine parent node of temp unit!");
+      EMapOverviewPanel.log.info("EMapOverviewPanel.tempUnitCreated(): cannot determine parent node of temp unit!");
     }
   }
 
@@ -1491,7 +1497,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     case 0:
     case 1:
-      DesktopEnvironment.requestFocus(IDENTIFIER);
+      DesktopEnvironment.requestFocus(EMapOverviewPanel.IDENTIFIER);
       tree.requestFocus(); // activate the tree, not the scrollpane
 
       break;
@@ -1561,8 +1567,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     if (u != null) {
-      if (log.isDebugEnabled()) {
-        log.debug("EMapOverviewPanel.shortCut_N(): firing Selection Event with Unit " + u + " (" + u.isOrdersConfirmed() + ")");
+      if (EMapOverviewPanel.log.isDebugEnabled()) {
+        EMapOverviewPanel.log.debug("EMapOverviewPanel.shortCut_N(): firing Selection Event with Unit " + u + " (" + u.isOrdersConfirmed() + ")");
       }
 
 
@@ -1648,6 +1654,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Repaints this component. This method also explicitly repaints it's managed
    * components because the may be separated by the Magellan Desktop.
    */
+  @Override
   public void repaint() {
     super.repaint();
 
@@ -1703,6 +1710,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Do clean-up on quitting.
    */
+  @Override
   public void quit() {
     settings.setProperty("EMapOverviewPanel.treeHistorySplit", Integer.toString(sppTreeHistory.getDividerLocation()));
   }
@@ -1759,7 +1767,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // take the alliances of the first found privileged faction as
       // activeAlliances
       if (privilegedFactions.size() > 0) {
-        activeAlliances.putAll(((Faction) privilegedFactions.get(0)).getAllies());
+        activeAlliances.putAll((privilegedFactions.get(0)).getAllies());
       }
 
       // now check whether they are contained in the alliances-Maps of the other
@@ -1770,7 +1778,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         ID id = (ID) iter.next();
 
         for (int factionCount = 1; factionCount < privilegedFactions.size(); factionCount++) {
-          Faction f = (Faction) privilegedFactions.get(factionCount);
+          Faction f = privilegedFactions.get(factionCount);
 
           if (!f.getAllies().containsKey(id)) {
             // mark this alliances as to be deleted out of activeAlliances
@@ -1778,8 +1786,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
             break;
           } else {
-            Alliance a1 = (Alliance) activeAlliances.get(id);
-            Alliance a2 = (Alliance) f.getAllies().get(id);
+            Alliance a1 = activeAlliances.get(id);
+            Alliance a2 = f.getAllies().get(id);
             activeAlliances.put(id, new Alliance(a1.getFaction(), a1.getState() & a2.getState()));
           }
         }
@@ -1802,7 +1810,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     try {
       expandMode = Integer.parseInt(settings.getProperty("EMapOverviewPanel.ExpandMode"));
     } catch (Exception exc) {
-      expandMode = EXPAND_FLAG | (3 << 2);
+      expandMode = EMapOverviewPanel.EXPAND_FLAG | (3 << 2);
     }
 
     try {
@@ -1994,6 +2002,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * 
    * @deprecated I think this is needless. (stm)
    */
+  @Deprecated
   class OverviewMenu extends JMenu implements ActionListener {
     JCheckBoxMenuItem items[];
 
@@ -2059,6 +2068,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * 
    * @deprecated I think this is needless.
    */
+  @Deprecated
   public JMenu getMenu() {
     // We will create it every time the method is invoked since that should be
     // only once...

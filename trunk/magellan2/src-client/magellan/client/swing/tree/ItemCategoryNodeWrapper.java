@@ -78,7 +78,8 @@ public class ItemCategoryNodeWrapper implements CellObject{
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(amount == -1) {
 			if (this.setCatName==null) {
 				return cat.toString();

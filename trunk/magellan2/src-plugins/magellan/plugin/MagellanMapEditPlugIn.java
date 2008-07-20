@@ -230,9 +230,9 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    */
   public void init(Client client, Properties properties) {
     // init the plugin
-    log = Logger.getInstance(MagellanMapEditPlugIn.class);
+    MagellanMapEditPlugIn.log = Logger.getInstance(MagellanMapEditPlugIn.class);
     Resources.getInstance().initialize(Client.getSettingsDirectory(),"mapedit_");
-    log.info("MapEdit initialized...(client)");
+    MagellanMapEditPlugIn.log.info("MapEdit initialized...(client)");
     this.client = client;
     // System.err.println(Resources.get("mapedit.menu.setterrain"));
   }
@@ -242,7 +242,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @see magellan.client.extern.MagellanPlugIn#init(magellan.library.GameData)
    */
   public void init(GameData data) {
-    log.info("MapEdit initialized...(GameData)");
+    MagellanMapEditPlugIn.log.info("MapEdit initialized...(GameData)");
     this.data=data;
     this.addTerrains(this.setTerrain);
   }
@@ -259,7 +259,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * @param e the event
    */
   public void actionPerformed(ActionEvent e) {
-    log.info(e.getActionCommand());
+    MagellanMapEditPlugIn.log.info(e.getActionCommand());
     if (e.getActionCommand().equalsIgnoreCase("delName")){
       this.runDelName();
     } else if (e.getActionCommand().equalsIgnoreCase("setName")){
@@ -278,7 +278,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    */
   private void runSetName(){
     if (this.r==null){
-      log.error("MapEdit runSetName with no region");
+      MagellanMapEditPlugIn.log.error("MapEdit runSetName with no region");
       return;
     }
     String newName =  JOptionPane.showInputDialog(this.client, Resources.get("mapedit.input.newname"));
@@ -306,7 +306,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    */
   private void runDelName(){
     if (this.r==null){
-      log.error("MapEdit runDelName with no region");
+      MagellanMapEditPlugIn.log.error("MapEdit runDelName with no region");
       return;
     }
     r.setName(null);
@@ -319,7 +319,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    */
   private void runDelRegion(){
     if (this.r==null){
-      log.error("MapEdit runDelRegion with no region");
+      MagellanMapEditPlugIn.log.error("MapEdit runDelRegion with no region");
       return;
     }
     Region rGone = this.data.regions().remove(r.getID());
@@ -329,7 +329,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.updateClient();
     } else {
       // konnte nicht entfernt werden
-      log.error("MapEdit runDelRegion: removing region not successful");
+      MagellanMapEditPlugIn.log.error("MapEdit runDelRegion: removing region not successful");
     }
   }
   
@@ -341,7 +341,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     // zuerst RegionType organisieren und checken
     String regionTypeName = actionCommand.substring(this.regionTypeIdentifier.length());
     if (regionTypeName==null || regionTypeName.length()==0){
-      log.error("MapEdit: runSetTerrain unknown Region Type Name");
+      MagellanMapEditPlugIn.log.error("MapEdit: runSetTerrain unknown Region Type Name");
       return;
     }
     
@@ -359,7 +359,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     }
     
     if (setRegionType==null){
-      log.error("MapEdit: RegionType not found:" + regionTypeName);
+      MagellanMapEditPlugIn.log.error("MapEdit: RegionType not found:" + regionTypeName);
       return;
     }
     
@@ -369,7 +369,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       // may be we have to create a new region here?
       if (this.c==null){
         // we can not create...
-        log.error("MapEdit: can not create new Region!");
+        MagellanMapEditPlugIn.log.error("MapEdit: can not create new Region!");
         return;
       } else {
         // alles fein, wir können loslegen

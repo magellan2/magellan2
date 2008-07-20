@@ -86,7 +86,7 @@ public class LayoutNewAction extends MenuAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    log.info("LayoutNewAction.actionPerformed() called");
+    LayoutNewAction.log.info("LayoutNewAction.actionPerformed() called");
     
     Object result = JOptionPane.showInputDialog(
         Client.INSTANCE, 
@@ -97,7 +97,9 @@ public class LayoutNewAction extends MenuAction {
         null,
         Resources.get("desktop.magellandesktop.msg.layout.new.default")
         );
-    if (result == null) return;
+    if (result == null) {
+      return;
+    }
     String newLayoutName = result.toString();
     
     if (DockingFrameworkBuilder.getInstance().getLayout(newLayoutName) != null) {

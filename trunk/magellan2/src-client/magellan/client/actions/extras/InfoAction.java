@@ -43,7 +43,8 @@ public class InfoAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		new InfoDialog(client).setVisible(true);
 	}
 

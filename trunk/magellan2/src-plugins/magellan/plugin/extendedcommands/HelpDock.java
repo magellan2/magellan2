@@ -37,6 +37,7 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -55,7 +56,6 @@ import magellan.library.utils.Resources;
 public class HelpDock extends JPanel implements ActionListener, HyperlinkListener {
   public static final String IDENTIFIER = "ExtendedCommandsHelp";
 
-  private Client client = null;
   private JEditorPane help = null;
   private JButton homeButton = null;
   private JButton backwardButton = null;
@@ -64,7 +64,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
   private List<URL> history = new ArrayList<URL>();
   private int pos = 0;
   
-  public HelpDock(Client client) {
+  public HelpDock() {
     init();
   }
   
@@ -79,7 +79,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
     goHome();
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     
     helpPanel.add(scrollPane,BorderLayout.CENTER);
     
@@ -120,7 +120,9 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
     if (e.getActionCommand().equalsIgnoreCase("button.home")) {
       goHome();
     } else if (e.getActionCommand().equalsIgnoreCase("button.backward")) {
-      if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+      if (!homeButton.isEnabled()) {
+        homeButton.setEnabled(true);
+      }
       // move one position back in history
       if (pos > 0) {
         pos--;
@@ -128,10 +130,14 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
           help.setPage(history.get(pos));
         } catch (Exception exception) {}
         forwardButton.setEnabled(true);
-        if (pos == 0) backwardButton.setEnabled(false);
+        if (pos == 0) {
+          backwardButton.setEnabled(false);
+        }
       }
     } else if (e.getActionCommand().equalsIgnoreCase("button.forward")) {
-      if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+      if (!homeButton.isEnabled()) {
+        homeButton.setEnabled(true);
+      }
       // move one position forward in history
       if (pos < history.size()) {
         pos++;
@@ -139,7 +145,9 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
           help.setPage(history.get(pos));
         } catch (Exception exception) {}
         backwardButton.setEnabled(true);
-        if (pos == history.size()-1) forwardButton.setEnabled(false);
+        if (pos == history.size()-1) {
+          forwardButton.setEnabled(false);
+        }
       }
     } else if (e.getActionCommand().equalsIgnoreCase("button.browse")) {
       try {
@@ -172,7 +180,9 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
         pos++;
         history.add(pos,url);
         backwardButton.setEnabled(true);
-        if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+        if (!homeButton.isEnabled()) {
+          homeButton.setEnabled(true);
+        }
       }
       catch (Exception exc) {
       }
@@ -185,7 +195,7 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
       // otherwise, we do nothing...
       Class<?> c = Class.forName("java.awt.Desktop");
       if (c != null) {
-        Object desktop = c.getMethod("getDesktop").invoke(null);
+        c.getMethod("getDesktop").invoke(null);
       }
       return true;
     } catch (Exception exception) {
@@ -199,8 +209,12 @@ public class HelpDock extends JPanel implements ActionListener, HyperlinkListene
   protected void goHome() {
     File path = null;
     path = new File(Client.getSettingsDirectory(),Resources.get("extended_commands.help.dialog.overview"));
-    if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.overview"));
-    if (!path.exists()) path = null;
+    if (!path.exists()) {
+      path = new File(Resources.get("extended_commands.help.dialog.overview"));
+    }
+    if (!path.exists()) {
+      path = null;
+    }
 
     try {
       if (path != null) {

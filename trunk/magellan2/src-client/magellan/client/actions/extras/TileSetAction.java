@@ -43,7 +43,8 @@ public class TileSetAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(java.awt.event.ActionEvent e) {
+	@Override
+  public void menuActionPerformed(java.awt.event.ActionEvent e) {
 		map.reloadGraphicSet();
 	}
 

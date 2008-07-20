@@ -79,13 +79,13 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public void init(Client client, Properties properties) {
     // init the plugin
-    log = Logger.getInstance(ExtendedCommandsPlugIn.class);
+    ExtendedCommandsPlugIn.log = Logger.getInstance(ExtendedCommandsPlugIn.class);
     Resources.getInstance().initialize(Client.getSettingsDirectory(),"extendedcommands_");
     this.client = client;
     this.commands = new ExtendedCommands(client);
-    this.dock = new ExtendedCommandsDock(client,commands);
-    this.help = new HelpDock(client);
-    log.info(getName()+" initialized...(Client)");
+    this.dock = new ExtendedCommandsDock(commands);
+    this.help = new HelpDock();
+    ExtendedCommandsPlugIn.log.info(getName()+" initialized...(Client)");
   }
 
   /**
@@ -93,7 +93,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public void init(GameData data) {
     // init the report
-    log.info(getName()+" initialized...(GameData)");
+    ExtendedCommandsPlugIn.log.info(getName()+" initialized...(GameData)");
     dock.setWorld(data);
   }
 
@@ -106,11 +106,11 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     JMenu menu = new JMenu(Resources.get("extended_commands.mainmenu.title"));
     items.add(menu);
     
-    executeMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.execute.title"));
-    executeMenu.setActionCommand(PlugInAction.EXECUTE_ALL.getID());
-    executeMenu.addActionListener(this);
-    executeMenu.setEnabled(commands.hasCommands());
-    menu.add(executeMenu);    
+    ExtendedCommandsPlugIn.executeMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.execute.title"));
+    ExtendedCommandsPlugIn.executeMenu.setActionCommand(PlugInAction.EXECUTE_ALL.getID());
+    ExtendedCommandsPlugIn.executeMenu.addActionListener(this);
+    ExtendedCommandsPlugIn.executeMenu.setEnabled(commands.hasCommands());
+    menu.add(ExtendedCommandsPlugIn.executeMenu);    
 
     JMenuItem libraryMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.library.title"));
     libraryMenu.setActionCommand(PlugInAction.LIBRARY_EDIT.getID());
@@ -145,7 +145,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   }
   
   public static JMenuItem getExecuteMenu() {
-    return executeMenu;
+    return ExtendedCommandsPlugIn.executeMenu;
   }
 
   /**
@@ -187,7 +187,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data, final UnitContainer container) {
     ContainerType type = ContainerType.getType(container.getType());
     if (type.equals(ContainerType.UNKNOWN)) {
-      log.error("Unknown containertype "+container.getType());
+      ExtendedCommandsPlugIn.log.error("Unknown containertype "+container.getType());
       return null;
     }
     
@@ -226,36 +226,36 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    log.info(e.getActionCommand());
+    ExtendedCommandsPlugIn.log.info(e.getActionCommand());
     switch (PlugInAction.getAction(e)) {
       case EXECUTE_ALL: {
-        log.info("Execute all...");
+        ExtendedCommandsPlugIn.log.info("Execute all...");
         ProgressBarUI progress = new ProgressBarUI(Client.INSTANCE);
         ExecutionThread thread = new ExecutionThread(client, progress, commands);
         thread.start();
         break;
       }
       case LIBRARY_EDIT: {
-        log.info("Edit library...");
+        ExtendedCommandsPlugIn.log.info("Edit library...");
         editLibrary(client.getData());
         break;
       }
       case CLEAR: {
-        log.info("Clear unused scripts...");
+        ExtendedCommandsPlugIn.log.info("Clear unused scripts...");
         clearCommands();
         break;
       }
       case SAVE_ALL: {
-        log.info("Saving...");
+        ExtendedCommandsPlugIn.log.info("Saving...");
         commands.save();
         break;
       }
       case EXPORT: {
-        log.info("Exporting commands...");
+        ExtendedCommandsPlugIn.log.info("Exporting commands...");
         break;
       }
       case IMPORT: {
-        log.info("import commands...");
+        ExtendedCommandsPlugIn.log.info("import commands...");
         break;
       }
     }
@@ -272,7 +272,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the commands for the given Unitcontainer.
    */
   protected void editCommands(GameData data, UnitContainer container) {
-    log.info("Edit Command for UnitContainer "+container);
+    ExtendedCommandsPlugIn.log.info("Edit Command for UnitContainer "+container);
     
     // find the commands for this unit or set them to "".
     Script script = commands.getCommands(container);
@@ -300,7 +300,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the commands for the given Unit.
    */
   protected void editCommands(GameData data, Unit unit) {
-    log.info("Edit Command for Unit "+unit);
+    ExtendedCommandsPlugIn.log.info("Edit Command for Unit "+unit);
     
     // find the commands for this unit or set them to "".
     Script script = commands.getCommands(unit);
@@ -329,7 +329,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the library.
    */
   protected void editLibrary(GameData data) {
-    log.info("Edit library for all units and containers...");
+    ExtendedCommandsPlugIn.log.info("Edit library for all units and containers...");
 
     // find the commands for this unit or set them to "".
     Script script = commands.getLibrary();
@@ -358,7 +358,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   }
 
   protected void clearCommands() {
-    if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"), Resources.get("extended_commands.cleanup.title"),JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) return;
+    if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"), Resources.get("extended_commands.cleanup.title"),JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+      return;
+    }
     int units = commands.clearUnusedUnits();
     int containers = commands.clearUnusedContainers();
     
@@ -369,7 +371,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unitcontainer.
    */
   protected void executeCommands(GameData data, UnitContainer container) {
-    log.info("Execute Command for UnitContainer "+container);
+    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer "+container);
     
     // execute the commands for this container.
     commands.execute(data, container);
@@ -382,17 +384,19 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unitcontainer.
    */
   protected void executeAllCommands(GameData data, UnitContainer container) {
-    log.info("Execute Command for UnitContainer "+container);
+    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer "+container);
     
     // execute the commands for this unit.
-    if (commands.hasCommands(container)) commands.execute(data, container);
+    if (commands.hasCommands(container)) {
+      commands.execute(data, container);
+    }
     
     Collection<Unit> units = container.units();
     if (units != null && units.size()>0) {
       for (Unit unit : units) {
         if (commands.hasCommands(unit)) {
           // execute the commands for this unit.
-          log.info("Execute Command for Unit "+unit);
+          ExtendedCommandsPlugIn.log.info("Execute Command for Unit "+unit);
           commands.execute(data, unit);
         }
       }
@@ -407,7 +411,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Executes the commands for a given unit.
    */
   protected void executeCommands(GameData data, Unit unit) {
-    log.info("Execute Command for Unit "+unit);
+    ExtendedCommandsPlugIn.log.info("Execute Command for Unit "+unit);
     
     // execute the commands for this unit.
     commands.execute(data, unit);

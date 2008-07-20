@@ -74,7 +74,8 @@ public abstract class Date extends Object implements ID {
 	 *
 	 * @return <tt>true</tt> if this date equals o, <tt> false </tt> otherwise
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return (this == o) || iDate == ((Date) o).iDate;
 		} catch(ClassCastException e) {
@@ -85,15 +86,17 @@ public abstract class Date extends Object implements ID {
 	/**
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return iDate;
 	}
 
 	/**
 	 * @see Object#toString() 
 	 */
-	public String toString() {
-		return toString(TYPE_SHORT);
+	@Override
+  public String toString() {
+		return toString(Date.TYPE_SHORT);
 	}
 
 	/**
@@ -124,7 +127,8 @@ public abstract class Date extends Object implements ID {
 	 *
 	 * @throws CloneNotSupportedException 
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 	

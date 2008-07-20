@@ -144,7 +144,8 @@ public class Alliance {
 	 *
 	 * @return the alliance object as string.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return faction.toString() + ": " + stateToString();
 	}
 

@@ -15,7 +15,6 @@ package magellan.client.utils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -112,10 +111,14 @@ public class FileHistory {
    * Returns the last file loaded into Magellan.
    */
   public File getLastExistingReport() {
-    if (history == null || history.size()==0) return null;
+    if (history == null || history.size()==0) {
+      return null;
+    }
     for (FileHistoryAction action : history) {
       File last = action.getFile();
-      if (last != null && last.exists()) return last;
+      if (last != null && last.exists()) {
+        return last;
+      }
     }
     return null;
   }
@@ -193,7 +196,7 @@ public class FileHistory {
 			settings.setProperty("Client.lastCRSaved", file.getAbsolutePath());
 		}
 
-		Collection selectedObjects = client.getSelectedObjects();
+		//Collection selectedObjects = client.getSelectedObjects();
 		
 		client.loadCRThread(file);
 

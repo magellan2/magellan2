@@ -42,7 +42,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 	protected int minimumFontSize = 10;
 	protected int fontHeight = 0;
 	protected boolean isScalingFont = false;
-	protected int hAlign = CENTER;
+	protected int hAlign = AbstractTextCellRenderer.CENTER;
 	protected boolean shortenStrings = false;
 	protected String singleString[] = new String[1];
 
@@ -85,7 +85,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 
 	protected void setFont(float scaleFactor) {
 		font = unscaledFont.deriveFont(Math.max(unscaledFont.getSize() * scaleFactor,
-												(float) minimumFontSize));
+												minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
 		fontMetrics = Client.getDefaultFontMetrics(this.font);
@@ -137,7 +137,8 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_TEXT;
 	}
 
@@ -168,7 +169,8 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void init(GameData data, Graphics g, Rectangle offset) {
+	@Override
+  public void init(GameData data, Graphics g, Rectangle offset) {
 		super.init(data, g, offset);
 
 		if(isScalingFont) {
@@ -185,7 +187,8 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 			CoordinateID c = r.getCoordinate();

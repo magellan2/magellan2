@@ -56,7 +56,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * 
 	 */
-	public boolean add(E o) {
+	@Override
+  public boolean add(E o) {
 		// don't do anything in this pathologic case
 		if(getMaxSize() == 0) {
 			return false;
@@ -88,7 +89,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	/**
 	 * Empty bucket.
 	 */
-	public void clear() {
+	@Override
+  public void clear() {
 		data.clear();
 	}
 
@@ -99,7 +101,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if found, false if not.
 	 */
-	public boolean contains(Object o) {
+	@Override
+  public boolean contains(Object o) {
 		return data.contains(o);
 	}
 
@@ -110,7 +113,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if all were found, false if not.
 	 */
-	public boolean containsAll(Collection<?> c) {
+	@Override
+  public boolean containsAll(Collection<?> c) {
 		return data.containsAll(c);
 	}
 
@@ -121,7 +125,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if it is the same, false if not.
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		if(o == this) {
 			return true;
 		}
@@ -150,7 +155,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if empty, false if not.
 	 */
-	public boolean isEmpty() {
+	@Override
+  public boolean isEmpty() {
 		return data.isEmpty();
 	}
 
@@ -159,7 +165,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return an iterator for the objects inside the bucket.
 	 */
-	public Iterator<E> iterator() {
+	@Override
+  public Iterator<E> iterator() {
 		return data.iterator();
 	}
 
@@ -170,7 +177,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if removal was successful, false if not.
 	 */
-	public boolean remove(Object o) {
+	@Override
+  public boolean remove(Object o) {
 		return data.remove(o);
 	}
 
@@ -181,7 +189,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if removal was successful, false if not.
 	 */
-	public boolean removeAll(Collection c) {
+	@Override
+  public boolean removeAll(Collection c) {
 		return data.removeAll(c);
 	}
 
@@ -192,7 +201,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return true if retaining was successfull, false if not.
 	 */
-	public boolean retainAll(Collection c) {
+	@Override
+  public boolean retainAll(Collection c) {
 		return data.retainAll(c);
 	}
 
@@ -201,7 +211,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return the number of objects inside the bucket.
 	 */
-	public int size() {
+	@Override
+  public int size() {
 		return data.size();
 	}
 
@@ -210,7 +221,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return array of items inside the bucket.
 	 */
-	public Object[] toArray() {
+	@Override
+  public Object[] toArray() {
 		return data.toArray();
 	}
 
@@ -221,7 +233,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * 
 	 */
-	public <T> T[] toArray(T a[]) {
+	@Override
+  public <T> T[] toArray(T a[]) {
 		return data.toArray(a);
 	}
 
@@ -254,7 +267,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 *
 	 * @return string representation of the bucket.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return data.toString();
 	}
 

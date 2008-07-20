@@ -28,7 +28,6 @@ import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.ID;
-import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.TempUnit;
@@ -90,8 +89,6 @@ public class TreeHelper {
   public static final int TAGGABLE4 = 10;
   public static final int TAGGABLE5 = 11;
 
-  private static final Comparator<Named> nameComparator =
-      new NameComparator(IDComparator.DEFAULT);
   private static final Comparator<Building> buildingCmp =
       new BuildingTypeComparator(new NameComparator(IDComparator.DEFAULT));
   private static final Comparator<Ship> shipComparator =
@@ -152,7 +149,7 @@ public class TreeHelper {
 
     // add ships
     List<Ship> sortedShips = new ArrayList<Ship>(r.ships());
-    Collections.sort(sortedShips, shipComparator);
+    Collections.sort(sortedShips, TreeHelper.shipComparator);
     for (Iterator<Ship> iter = sortedShips.iterator(); iter.hasNext();) {
       Ship s = iter.next();
       if (shipNodes == null || !shipNodes.containsKey(s.getID())) {
@@ -176,7 +173,7 @@ public class TreeHelper {
 
     // add buildings
     List<Building> sortedBuildings = new ArrayList<Building>(r.buildings());
-    Collections.sort(sortedBuildings, buildingCmp);
+    Collections.sort(sortedBuildings, TreeHelper.buildingCmp);
 
     for (Iterator iter = sortedBuildings.iterator(); iter.hasNext();) {
       Building b = (Building) iter.next();
@@ -390,17 +387,18 @@ public class TreeHelper {
             break;
 
           case HEALTH:
-            String verw = data.getTranslation("verwundet");
-            String sverw = data.getTranslation("schwer verwundet");
-            String ersch = data.getTranslation("erschöpft");
+            data.getTranslation("verwundet");
+            data.getTranslation("schwer verwundet");
+            data.getTranslation("erschöpft");
             String hicon = null;
             String text = prevUnit.getHealth();
 
             if (text == null) {
               text = Resources.get("tree.treehelper.healthy");
               hicon = "gesund";
-            } else
+            } else {
               hicon = text;
+            }
 
             // parent.add(createSimpleNode(u.health,hicon));
             SimpleNodeWrapper healthNodeWrapper = factory.createSimpleNodeWrapper(text, hicon);
@@ -511,8 +509,6 @@ public class TreeHelper {
             node =
               new DefaultMutableTreeNode(factory.createFactionNodeWrapper(curUnit.getGuiseFaction(),
                   curUnit.getRegion(), activeAlliances));
-          } else {
-            node = null;
           }
           
           break;
@@ -523,8 +519,6 @@ public class TreeHelper {
             node =
                 new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(Resources
                     .get("tree.treehelper.factiondisguised"), "tarnung"));
-          } else {
-            node = null;
           }
 
           break;
@@ -539,25 +533,24 @@ public class TreeHelper {
             // node = new
             // DefaultMutableTreeNode(factory.createSimpleNodeWrapper(groupNodeWrapper,
             // "groups"));
-          } else {
-            node = null;
           }
 
           break;
 
         case HEALTH:
 
-          String verw = data.getTranslation("verwundet");
-          String sverw = data.getTranslation("schwer verwundet");
-          String ersch = data.getTranslation("erschöpft");
+          data.getTranslation("verwundet");
+          data.getTranslation("schwer verwundet");
+          data.getTranslation("erschöpft");
           String hicon = null;
           String text = curUnit.getHealth();
 
           if (text == null) {
             text = Resources.get("tree.treehelper.healthy");
             hicon = "gesund";
-          } else
+          } else {
             hicon = text;
+          }
 
           node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(text, hicon));
 
@@ -587,10 +580,7 @@ public class TreeHelper {
           String label = getTaggableLabel(curUnit, treeStructure[sortCriteria]);
           if (label != null) {
             node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(label, null));
-          } else {
-            node = null;
           }
-
           break;
 
         } // end of switch
@@ -668,36 +658,36 @@ public class TreeHelper {
 
     switch (flag) {
     case FACTION:
-      return factionCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.factionCmp.compare(prevUnit, curUnit) != 0;
 
     case GUISE_FACTION:
-       return guiseFactionCmp.compare(prevUnit, curUnit) !=0;
+       return TreeHelper.guiseFactionCmp.compare(prevUnit, curUnit) !=0;
 
     case GROUP:
-      return groupCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.groupCmp.compare(prevUnit, curUnit) != 0;
 
     case HEALTH:
-      return healthCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.healthCmp.compare(prevUnit, curUnit) != 0;
 
     case COMBAT_STATUS:
-      return combatCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.combatCmp.compare(prevUnit, curUnit) != 0;
 
     case FACTION_DISGUISE_STATUS:
-      return factionDisguisedCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.factionDisguisedCmp.compare(prevUnit, curUnit) != 0;
 
     case TRUSTLEVEL:
-      return trustlevelCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.trustlevelCmp.compare(prevUnit, curUnit) != 0;
 
     case TAGGABLE:
-      return taggableCmp.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.taggableCmp.compare(prevUnit, curUnit) != 0;
     case TAGGABLE2:
-      return taggableCmp2.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.taggableCmp2.compare(prevUnit, curUnit) != 0;
     case TAGGABLE3:
-      return taggableCmp3.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.taggableCmp3.compare(prevUnit, curUnit) != 0;
     case TAGGABLE4:
-      return taggableCmp4.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.taggableCmp4.compare(prevUnit, curUnit) != 0;
     case TAGGABLE5:
-      return taggableCmp5.compare(prevUnit, curUnit) != 0;
+      return TreeHelper.taggableCmp5.compare(prevUnit, curUnit) != 0;
     }
 
     return false; // default
@@ -710,11 +700,11 @@ public class TreeHelper {
     for (int i = treeStructure.length - 1; i >= 0; i--) {
       switch (treeStructure[i]) {
       case TreeHelper.FACTION:
-        comp = new GroupingComparator<Unit>(factionCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.factionCmp, comp);
         break;
 
       case TreeHelper.GUISE_FACTION:
-        comp = new GroupingComparator<Unit>(guiseFactionCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.guiseFactionCmp, comp);
         break;
 
       case TreeHelper.GROUP:
@@ -724,39 +714,39 @@ public class TreeHelper {
         // if they are sorted by id this would make tree hierarchy
         // (trustlevel, group) somehow uninteresting
         // Side effect: Groups are sorted by name
-        comp = new GroupingComparator<Unit>(groupCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.groupCmp, comp);
         break;
 
       case TreeHelper.COMBAT_STATUS:
-        comp = new GroupingComparator<Unit>(combatCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.combatCmp, comp);
         break;
 
       case TreeHelper.HEALTH:
-        comp = new GroupingComparator<Unit>(healthCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.healthCmp, comp);
         break;
 
       case TreeHelper.FACTION_DISGUISE_STATUS:
-        comp = new GroupingComparator<Unit>(factionDisguisedCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.factionDisguisedCmp, comp);
         break;
 
       case TreeHelper.TRUSTLEVEL:
-        comp = new GroupingComparator<Unit>(trustlevelCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.trustlevelCmp, comp);
         break;
 
       case TreeHelper.TAGGABLE:
-        comp = new GroupingComparator<Unit>(taggableCmp, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.taggableCmp, comp);
         break;
       case TreeHelper.TAGGABLE2:
-        comp = new GroupingComparator<Unit>(taggableCmp2, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.taggableCmp2, comp);
         break;
       case TreeHelper.TAGGABLE3:
-        comp = new GroupingComparator<Unit>(taggableCmp3, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.taggableCmp3, comp);
         break;
       case TreeHelper.TAGGABLE4:
-        comp = new GroupingComparator<Unit>(taggableCmp4, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.taggableCmp4, comp);
         break;
       case TreeHelper.TAGGABLE5:
-        comp = new GroupingComparator<Unit>(taggableCmp5, comp);
+        comp = new GroupingComparator<Unit>(TreeHelper.taggableCmp5, comp);
         break;
       }
     }

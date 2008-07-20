@@ -70,11 +70,11 @@ public class LongID implements ID {
 			throw new NullPointerException();
 		}
 
-		LongID id = idMap.get(o);
+		LongID id = LongID.idMap.get(o);
 
 		if(id == null) {
 			id = new LongID(o);
-			idMap.put(o, id);
+			LongID.idMap.put(o, id);
 		}
 
 		return id;
@@ -88,7 +88,7 @@ public class LongID implements ID {
 	 * 
 	 */
 	public static LongID create(String s) {
-		return create(Long.valueOf(s));
+		return LongID.create(Long.valueOf(s));
 	}
 
 	/**
@@ -99,11 +99,11 @@ public class LongID implements ID {
 	 * 
 	 */
 	public static LongID create(int i) {
-		return create(new Long(i));
+		return LongID.create(new Long(i));
 	}
 
   public static LongID create(long l) {
-    return create(new Long(l));
+    return LongID.create(new Long(l));
   }
 
 	/**
@@ -111,7 +111,8 @@ public class LongID implements ID {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return Long.toString(id);
 	}
 
@@ -143,7 +144,8 @@ public class LongID implements ID {
 	 * @return true, if o is an instance of class LongID and the numerical values of this and the
 	 * 		   specified object are equal.
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return (this == o) || (id == ((LongID) o).id);
 		} catch(ClassCastException e) {
@@ -170,7 +172,8 @@ public class LongID implements ID {
 	 *
 	 * @return a hash code value based on the hash code returned by the underlying Long object.
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return (int) (id ^ (id >>> 32));
 	}
 
@@ -181,7 +184,8 @@ public class LongID implements ID {
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		// pavkovic 2003.07.08: we dont really clone this object as LongID is unchangeable after creation
 		return this;
 	}

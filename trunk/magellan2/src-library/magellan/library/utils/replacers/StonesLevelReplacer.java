@@ -33,7 +33,8 @@ public class StonesLevelReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region region) {
+	@Override
+  public Object getRegionReplacement(Region region) {
 		ItemType ironType = region.getData().rules.getItemType("Steine");
 		if (ironType==null){
 			return null;

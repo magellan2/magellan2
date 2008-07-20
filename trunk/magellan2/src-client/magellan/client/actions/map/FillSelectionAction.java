@@ -85,7 +85,8 @@ public class FillSelectionAction extends MenuAction implements SelectionListener
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(java.awt.event.ActionEvent e) {
+	@Override
+  public void menuActionPerformed(java.awt.event.ActionEvent e) {
 		int minX = Integer.MAX_VALUE;
 		int maxX = Integer.MIN_VALUE;
 		int minY = Integer.MAX_VALUE;

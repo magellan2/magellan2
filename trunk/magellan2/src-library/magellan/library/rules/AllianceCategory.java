@@ -118,7 +118,8 @@ public class AllianceCategory extends ObjectType {
 	 *
 	 * 
 	 */
-	public int compareTo(Object o) {
+	@Override
+  public int compareTo(Object o) {
 		int anotherBitMask = ((AllianceCategory) o).bitMask;
 
 		return (bitMask < anotherBitMask) ? (-1) : ((bitMask == anotherBitMask) ? 0 : 1);
@@ -129,7 +130,8 @@ public class AllianceCategory extends ObjectType {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return "AllianceCategory[name=" + getName() + ", bitMask=" + bitMask + "]";
 	}
 }

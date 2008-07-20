@@ -83,7 +83,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 
@@ -110,7 +111,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 		p.translate(rect.x, rect.y);
 
 		if(drawFilled) {
-			Color newCol = new Color(col.getRed(), col.getGreen(), col.getBlue(), ALPHALEVEL);
+			Color newCol = new Color(col.getRed(), col.getGreen(), col.getBlue(), HighlightShapeCellRenderer.ALPHALEVEL);
 			graphics.setColor(newCol);
 			graphics.fillPolygon(p);
 		}
@@ -118,7 +119,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 		graphics.setColor(col);
 
 		if(graphics instanceof Graphics2D) {
-			((Graphics2D) graphics).setStroke(getDefaultStroke());
+			((Graphics2D) graphics).setStroke(HighlightShapeCellRenderer.getDefaultStroke());
 		}
 
 		graphics.drawPolygon(p);
@@ -137,7 +138,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 	private static BasicStroke defaultStroke = new BasicStroke(2.0f);
 
 	private static BasicStroke getDefaultStroke() {
-		return defaultStroke;
+		return HighlightShapeCellRenderer.defaultStroke;
 	}
 
 	/**
@@ -145,7 +146,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_HIGHLIGHT;
 	}
 
@@ -193,7 +195,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 	 *
 	 * 
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new Preferences(this);
 	}
 
@@ -222,7 +225,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 			pnlSelectedColor.setSize(50, 200);
 			pnlSelectedColor.setBackground(source.getSelectedColor());
 			pnlSelectedColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
+					@Override
+          public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlSelectedColor.getTopLevelAncestor(),
 																  Resources.get("map.highlightshapecellrenderer.textcolor"),
 																  pnlSelectedColor.getBackground());
@@ -240,7 +244,8 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 			pnlActiveColor.setSize(50, 200);
 			pnlActiveColor.setBackground(source.getActiveColor());
 			pnlActiveColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
+					@Override
+          public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlActiveColor.getTopLevelAncestor(),
 																  Resources.get("map.highlightshapecellrenderer.textcolor"),
 																  pnlActiveColor.getBackground());

@@ -58,7 +58,8 @@ public abstract class InternationalizedDialog extends JDialog {
 		initDialog();
 	}
 
-	protected void processKeyEvent(KeyEvent e) {
+	@Override
+  protected void processKeyEvent(KeyEvent e) {
 		super.processKeyEvent(e);
 
 		if((e.getID() == KeyEvent.KEY_PRESSED) && (e.getKeyCode() == KeyEvent.VK_ESCAPE)) {
@@ -71,9 +72,10 @@ public abstract class InternationalizedDialog extends JDialog {
 		JVMUtilities.setFocusableWindowState(this, true);
 
 		addKeyListener(new KeyAdapter() {
-				public void keyPressed(KeyEvent e) {
-					if(log.isDebugEnabled()) {
-						log.debug("InternationalizedDialog.KeyEvent :" + e);
+				@Override
+        public void keyPressed(KeyEvent e) {
+					if(InternationalizedDialog.log.isDebugEnabled()) {
+						InternationalizedDialog.log.debug("InternationalizedDialog.KeyEvent :" + e);
 					}
 
 					if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -82,9 +84,10 @@ public abstract class InternationalizedDialog extends JDialog {
 				}
 			});
 		addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
-					if(log.isDebugEnabled()) {
-						log.debug("InternationalizedDialog.WindowEvent :" + e);
+				@Override
+        public void windowClosing(WindowEvent e) {
+					if(InternationalizedDialog.log.isDebugEnabled()) {
+						InternationalizedDialog.log.debug("InternationalizedDialog.WindowEvent :" + e);
 					}
 
 					quit();
@@ -93,8 +96,8 @@ public abstract class InternationalizedDialog extends JDialog {
 	}
 
 	protected void quit() {
-		if(log.isDebugEnabled()) {
-			log.debug("InternationalizedDialog.quit called. (" + this + ")");
+		if(InternationalizedDialog.log.isDebugEnabled()) {
+			InternationalizedDialog.log.debug("InternationalizedDialog.quit called. (" + this + ")");
 		}
 
 		dispose();

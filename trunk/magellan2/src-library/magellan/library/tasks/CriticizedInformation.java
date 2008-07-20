@@ -52,7 +52,8 @@ public class CriticizedInformation extends AbstractProblem implements Problem {
 	 *
 	 * 
 	 */
-	public int getType() {
-		return INFORMATION;
+	@Override
+  public int getType() {
+		return Problem.INFORMATION;
 	}
 }

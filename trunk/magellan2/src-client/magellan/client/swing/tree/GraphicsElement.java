@@ -53,7 +53,7 @@ public class GraphicsElement {
 	private String tooltip;
 
 	/** Type of this element. See type constants. Default is SIMPLE. */
-	private int type = SIMPLE;
+	private int type = GraphicsElement.SIMPLE;
 
 	/** DOCUMENT-ME */
 	public static final int SIMPLE = 0;

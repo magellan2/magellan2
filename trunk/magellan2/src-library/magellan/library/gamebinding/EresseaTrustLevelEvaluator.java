@@ -33,7 +33,7 @@ public class EresseaTrustLevelEvaluator {
 	 * 
 	 */
 	public static EresseaTrustLevelEvaluator getSingleton() {
-		return singleton;
+		return EresseaTrustLevelEvaluator.singleton;
 	}
 
 	/**
@@ -46,7 +46,8 @@ public class EresseaTrustLevelEvaluator {
 	 *
 	 * @deprecated
 	 */
-	public int getTrustLevel(Alliance alliance) {
+	@Deprecated
+  public int getTrustLevel(Alliance alliance) {
 		return alliance.getTrustLevel();
 	}
 }

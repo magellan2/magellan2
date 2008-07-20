@@ -101,7 +101,7 @@ public class CellGeometry {
 			p.load(is);
 			is.close();
 		} catch(Exception e) {
-			log.error("CellGeometry(): unable to load file images/map/" + fileName +
+			CellGeometry.log.error("CellGeometry(): unable to load file images/map/" + fileName +
 					  " from resource path. Using default values", e);
 		}
 
@@ -134,7 +134,7 @@ public class CellGeometry {
 	 */
 	public void setGeometry(int xpoints[], int ypoints[]) {
 		if((xpoints.length != 6) || (ypoints.length != 6)) {
-			log.warn("CellGraphicsSet.setGeometry(): Invalid number of polygon points!");
+			CellGeometry.log.warn("CellGraphicsSet.setGeometry(): Invalid number of polygon points!");
 		} else {
 			cell = new Polygon(xpoints, ypoints, 6);
 
@@ -144,9 +144,9 @@ public class CellGeometry {
 			unscaledCellSize.width++;
 			unscaledCellSize.height++;
 			scaledCellSize = new Dimension(unscaledCellSize);
-			cellShiftXX = (float) (unscaledCellSize.width);
-			cellShiftXY = (float) (unscaledCellSize.width / 2.0f);
-			cellShiftYY = (float) (-1.0f * (ypoints[2] + 1.0f));
+			cellShiftXX = (unscaledCellSize.width);
+			cellShiftXY = (unscaledCellSize.width / 2.0f);
+			cellShiftYY = (-1.0f * (ypoints[2] + 1.0f));
 		}
 	}
 
@@ -330,9 +330,9 @@ public class CellGeometry {
 	 */
 	public magellan.library.CoordinateID getCoordinate(int sx, int sy, int z) {
 		int mx = 0;
-		float mfy = (float) sy / (cellShiftYY * scaleFactor);
-		int my = roundPosUp(mfy);
-		mx = roundNegDown((((float) sx / scaleFactor) - (my * cellShiftXY)) / cellShiftXX);
+		float mfy = sy / (cellShiftYY * scaleFactor);
+		int my = CellGeometry.roundPosUp(mfy);
+		mx = CellGeometry.roundNegDown(((sx / scaleFactor) - (my * cellShiftXY)) / cellShiftXX);
 
 		float capHeight = scaleFactor * cell.ypoints[1];
 		int yPixelInCell = sy - getCellPositionY(mx, my);

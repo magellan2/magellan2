@@ -44,7 +44,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	 * @return The singleton instance of ShipInspector
 	 */
 	public static ShipInspector getInstance() {
-		return INSPECTOR;
+		return ShipInspector.INSPECTOR;
 	}
 
 	protected ShipInspector() {
@@ -55,7 +55,8 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	 * 
 	 * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, int)
 	 */
-	public List<Problem> reviewRegion(Region r, int type) {
+	@Override
+  public List<Problem> reviewRegion(Region r, int type) {
 		// we notify errors only
 		if (type != Problem.ERROR) {
 			return Collections.emptyList();
@@ -171,8 +172,9 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 			if (movementIterator.hasNext()) {
 				nextRegionCoord = (CoordinateID) movementIterator.next();
 				nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
-			} else
-				nextRegion = null;
+			} else {
+        nextRegion = null;
+      }
 		}
 
 		while (nextRegion != null) {
@@ -191,8 +193,9 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 			if (movementIterator.hasNext()) {
 				nextRegionCoord = (CoordinateID) movementIterator.next();
 				nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
-			} else
-				nextRegion = null;
+			} else {
+        nextRegion = null;
+      }
 		}
 
 		return problems;

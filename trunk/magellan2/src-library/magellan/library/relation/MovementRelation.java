@@ -41,7 +41,8 @@ public class MovementRelation extends UnitRelation implements LongOrderRelation 
 	/**
 	 * @see magellan.library.relation.UnitRelation#toString()
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return super.toString() + "@MOVEMENT=" + movement;
 	}
 }

@@ -149,7 +149,8 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	 *
 	 * @return the Building object as string.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		// Fiete 20060910
 		// added support for wahrer Typ
 		if (this.trueBuildingType==null){

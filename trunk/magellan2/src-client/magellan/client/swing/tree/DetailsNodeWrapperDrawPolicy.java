@@ -115,10 +115,12 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
       init();
     }
 
+    @Override
     protected void applyChanges(int indices[]) {
       parent.applyPreferences(this);
     }
 
+    @Override
     protected String getString(String key) {
       return parent.getString(key);
     }

@@ -38,7 +38,7 @@ public class GameNameReader {
 
 			return (gameName != null) ? gameName : new XMLGameNameIO().getGameName(filetype);
 		} catch(IOException e) {
-      log.error(e);
+      GameNameReader.log.error(e);
 			return null;
 		}
 	}

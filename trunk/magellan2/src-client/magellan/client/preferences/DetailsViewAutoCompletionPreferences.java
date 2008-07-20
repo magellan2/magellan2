@@ -31,6 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Collections;
@@ -214,7 +215,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
           String display = "";
 
           if (str != null) {
-            str = (String) selfDefinedCompletions.get(str);
+            str = selfDefinedCompletions.get(str);
             display = "<html><b><p>";
 
             for (int i = 0; i < str.length(); i++) {
@@ -430,7 +431,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
     for (Iterator iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
       String name = (String) iter.next();
-      String value = (String) selfDefinedCompletions.get(name);
+      String value = selfDefinedCompletions.get(name);
       source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.name" + completionCount, name);
       source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.value" + completionCount, value);
       completionCount++;
@@ -505,22 +506,22 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
         switch (key) {
         case KeyEvent.VK_SHIFT:
-          xored = KeyEvent.SHIFT_MASK;
+          xored = InputEvent.SHIFT_MASK;
 
           break;
 
         case KeyEvent.VK_CONTROL:
-          xored = KeyEvent.CTRL_MASK;
+          xored = InputEvent.CTRL_MASK;
 
           break;
 
         case KeyEvent.VK_ALT:
-          xored = KeyEvent.ALT_MASK;
+          xored = InputEvent.ALT_MASK;
 
           break;
 
         case KeyEvent.VK_ALT_GRAPH:
-          xored = KeyEvent.ALT_GRAPH_MASK;
+          xored = InputEvent.ALT_GRAPH_MASK;
 
           break;
         }
@@ -554,6 +555,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
      * 
      * @see javax.swing.JComponent#isManagingFocus()
      */
+    @Override
     public boolean isManagingFocus() {
       return true;
     }

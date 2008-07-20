@@ -43,6 +43,6 @@ public class AllanonPostProcessor extends EresseaPostProcessor {
    * 
    */
   public static AllanonPostProcessor getSingleton() {
-    return singleton;
+    return AllanonPostProcessor.singleton;
   }
 }

@@ -37,16 +37,16 @@ public class FileNameGenerator {
 	 * 
 	 */
 	public static void init(Properties set) {
-		settings = set;
-		new FileNameGenerator(settings);
+		FileNameGenerator.settings = set;
+		new FileNameGenerator(FileNameGenerator.settings);
 	}
 
 	/**
 	 * DOCUMENT-ME
 	 */
 	public static void quit() {
-		if(gen != null) {
-			gen.close();
+		if(FileNameGenerator.gen != null) {
+			FileNameGenerator.gen.close();
 		}
 	}
 
@@ -56,15 +56,15 @@ public class FileNameGenerator {
 	 * 
 	 */
 	public static FileNameGenerator getInstance() {
-		if(gen == null) {
-			new FileNameGenerator(settings);
+		if(FileNameGenerator.gen == null) {
+			new FileNameGenerator(FileNameGenerator.settings);
 		}
-		return gen;
+		return FileNameGenerator.gen;
 	}
 
 	private FileNameGenerator(Properties settings) {	
 		this.ordersSaveFileNamePattern = settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
-		gen = this;
+		FileNameGenerator.gen = this;
 	}
 
 
@@ -102,15 +102,15 @@ public class FileNameGenerator {
 		// Lets work in extra String
 		String res = pattern.toString();
 		
-		res = replaceAll(res,"{faction}",feed.getFaction());
-		res = replaceAll(res,"{factionnr}",feed.getFactionnr());
+		res = FileNameGenerator.replaceAll(res,"{faction}",feed.getFaction());
+		res = FileNameGenerator.replaceAll(res,"{factionnr}",feed.getFactionnr());
 		int i = feed.getRound();
 		if (i > -1){
-			res = replaceAll(res,"{round}",Integer.toString(i));
+			res = FileNameGenerator.replaceAll(res,"{round}",Integer.toString(i));
 		} else {
-			res = replaceAll(res,"{round}",null);
+			res = FileNameGenerator.replaceAll(res,"{round}",null);
 		}
-		res = replaceAll(res,"{group}",feed.getGroup());
+		res = FileNameGenerator.replaceAll(res,"{group}",feed.getGroup());
 		
 		return res;
 	}

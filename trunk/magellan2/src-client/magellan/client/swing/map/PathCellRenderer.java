@@ -84,8 +84,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 		drawPastPath = (Boolean.valueOf(settings.getProperty("PathCellRenderer.drawPastPath", "true"))).booleanValue();
 
 		passiveFilter = new GrayFilter(true, 50);
-		activePastFilter = new AlphaFilter(ALPHALEVEL);
-		passivePastFilter = new AlphaFilter(ALPHALEVEL, new GrayFilter(false, 50));
+		activePastFilter = new AlphaFilter(PathCellRenderer.ALPHALEVEL);
+		passivePastFilter = new AlphaFilter(PathCellRenderer.ALPHALEVEL, new GrayFilter(false, 50));
 	}
 
   /**
@@ -100,7 +100,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				render(((Ship) obj).getOwnerUnit());
       }
 		} catch(Exception e) {
-			log.error(e);
+			PathCellRenderer.log.error(e);
 		}
 	}
 
@@ -119,17 +119,17 @@ public class PathCellRenderer extends ImageCellRenderer {
 		if(drawPastPath) {
 			List<CoordinateID> pastMovement = getPastMovement(u);
 
-			if(log.isDebugEnabled()) {
-				log.debug("render for unit u " + u + " travelled through " + pastMovement);
+			if(PathCellRenderer.log.isDebugEnabled()) {
+				PathCellRenderer.log.debug("render for unit u " + u + " travelled through " + pastMovement);
 			}
 
-			renderPath(u, pastMovement, isPastMovementPassive(u) ? PASSIVEPAST : ACTIVEPAST);
+			renderPath(u, pastMovement, isPastMovementPassive(u) ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
 		}
 
 		List<CoordinateID> activeMovement = getModifiedMovement(u);
 
 		if(activeMovement.size() > 0) {
-			renderPath(u, activeMovement, ACTIVE);
+			renderPath(u, activeMovement, PathCellRenderer.ACTIVE);
 		} else if(drawPassivePath) {
 			// unit does not move itself, check for passive movement
 			// Perhaps it is on a ship?
@@ -142,8 +142,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 				// the unit is not on a ship, search for carriers
 				Collection carriers = u.getCarriers();
 
-				if(log.isDebugEnabled()) {
-					log.debug("PathCellRenderer.render: " + u + " has " + carriers.size() +
+				if(PathCellRenderer.log.isDebugEnabled()) {
+					PathCellRenderer.log.debug("PathCellRenderer.render: " + u + " has " + carriers.size() +
 							  " carriers");
 				}
 
@@ -153,7 +153,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				}
 			}
 
-			renderPath(u, passiveMovement, PASSIVE);
+			renderPath(u, passiveMovement, PathCellRenderer.PASSIVE);
 		}
 	}
 
@@ -202,16 +202,16 @@ public class PathCellRenderer extends ImageCellRenderer {
 		if(u.getShip() != null) {
 			if(u.equals(u.getShip().getOwnerUnit())) {
 				// unit is on ship and the owner
-				if(log.isDebugEnabled()) {
-					log.debug("PathCellRenderer(" + u + "):false on ship");
+				if(PathCellRenderer.log.isDebugEnabled()) {
+					PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false on ship");
 				}
 
 				return false;
 			}
 
 			// unit is on a ship and not the owner
-			if(log.isDebugEnabled()) {
-				log.debug("PathCellRenderer(" + u + "):true on ship");
+			if(PathCellRenderer.log.isDebugEnabled()) {
+				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):true on ship");
 			}
 
 			return true;
@@ -220,8 +220,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 		// we assume a transportation to be passive, if
 		// there is no message of type 891175669
 		if(u.getFaction() == null) {
-			if(log.isDebugEnabled()) {
-				log.debug("PathCellRenderer(" + u + "):false no faction");
+			if(PathCellRenderer.log.isDebugEnabled()) {
+				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false no faction");
 			}
 
 			return false;
@@ -229,8 +229,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 		if(u.getFaction().getMessages() == null) {
 			// faction has no message at all
-			if(log.isDebugEnabled()) {
-				log.debug("PathCellRenderer(" + u + "):false no faction");
+			if(PathCellRenderer.log.isDebugEnabled()) {
+				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false no faction");
 			}
 
 			return true;
@@ -240,35 +240,35 @@ public class PathCellRenderer extends ImageCellRenderer {
 			Message m = iter.next();
 
 			if(false) {
-				if(log.isDebugEnabled()) {
-					if(transportMessageType.equals(m.getMessageType())) {
-						log.debug("PathCellRenderer(" + u + ") Message " + m);
+				if(PathCellRenderer.log.isDebugEnabled()) {
+					if(PathCellRenderer.transportMessageType.equals(m.getMessageType())) {
+						PathCellRenderer.log.debug("PathCellRenderer(" + u + ") Message " + m);
 
 						if((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
-							log.debug("PathCellRenderer(" + u + ") Unit   " +
+							PathCellRenderer.log.debug("PathCellRenderer(" + u + ") Unit   " +
 									  m.getAttributes().get("unit"));
-							log.debug("PathCellRenderer(" + u + ") UnitID " +
-									  UnitID.createUnitID((String) m.getAttributes().get("unit"), 10));
+							PathCellRenderer.log.debug("PathCellRenderer(" + u + ") UnitID " +
+									  UnitID.createUnitID(m.getAttributes().get("unit"), 10));
 						}
 					}
 				}
 			}
 
-			if(transportMessageType.equals(m.getMessageType()) && (m.getAttributes() != null) &&
+			if(PathCellRenderer.transportMessageType.equals(m.getMessageType()) && (m.getAttributes() != null) &&
 				   (m.getAttributes().get("unit") != null) &&
 				   u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) {
 				// found a transport message; this is only valid in 
 				// units with active movement
-				if(log.isDebugEnabled()) {
-					log.debug("PathCellRenderer(" + u + "):false with message " + m);
+				if(PathCellRenderer.log.isDebugEnabled()) {
+					PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false with message " + m);
 				}
 
 				return false;
 			}
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("PathCellRenderer(" + u + "):true with messages");
+		if(PathCellRenderer.log.isDebugEnabled()) {
+			PathCellRenderer.log.debug("PathCellRenderer(" + u + "):true with messages");
 		}
 
 		return true;
@@ -280,14 +280,14 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 	private void renderPath(Unit u, List<CoordinateID> coordinates, int imageType) {
 		if((coordinates != null) && (coordinates.size() > 0)) {
-			renderPath(u, (CoordinateID) coordinates.get(0),
+			renderPath(u, coordinates.get(0),
 					   Regions.getDirectionObjectsOfCoordinates(coordinates), imageType);
 		}
 	}
 
 	private void renderPath(Unit u, CoordinateID start, List directions, int imageType) {
-		if(log.isDebugEnabled()) {
-			log.debug("renderPath for unit " + u + " from " + start + " with list " + directions +
+		if(PathCellRenderer.log.isDebugEnabled()) {
+			PathCellRenderer.log.debug("renderPath for unit " + u + " from " + start + " with list " + directions +
 					  ", imageType " + imageType);
 		}
 
@@ -323,7 +323,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 			String storeName = imageType + normName;
 
 			if(ownImages.containsKey(storeName)) {
-				ImageContainer c = (ImageContainer) ownImages.get(storeName);
+				ImageContainer c = ownImages.get(storeName);
 
 				if(c != null) {
 					img = c.scaled;
@@ -413,7 +413,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 		 *
 		 * 
 		 */
-		public int filterRGB(int x, int y, int rgb) {
+		@Override
+    public int filterRGB(int x, int y, int rgb) {
 			if(parent == null) {
 				return myFilterRGB(x, y, rgb);
 			} else {
@@ -441,7 +442,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	 * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
 	 * 		  images to their original size).
 	 */
-	public void scale(float scaleFactor) {
+	@Override
+  public void scale(float scaleFactor) {
 		super.scale(scaleFactor);
 
 		for(Iterator iter = ownImages.values().iterator(); iter.hasNext();) {
@@ -456,7 +458,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	/**
 	 * Make the renderer reload all of its cached images.
 	 */
-	public void reloadImages() {
+	@Override
+  public void reloadImages() {
 		super.reloadImages();
 		ownImages.clear();
 	}
@@ -466,7 +469,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public void setCellGeometry(CellGeometry geo) {
+	@Override
+  public void setCellGeometry(CellGeometry geo) {
 		super.setCellGeometry(geo);
 		reloadImages();
 	}
@@ -476,7 +480,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_PATH;
 	}
 
@@ -504,7 +509,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new Preferences(this);
 	}
 

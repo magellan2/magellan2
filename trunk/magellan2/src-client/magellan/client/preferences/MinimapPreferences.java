@@ -36,6 +36,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.MapperPanel;
@@ -69,7 +70,7 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
 
     JLabel lblDisplayMode = new JLabel(Resources.get("mapperpanel.prefs.lbl.minimapoptions"));
     lblDisplayMode.setLabelFor(cmbDisplayMode);
-    lblDisplayMode.setHorizontalTextPosition(JLabel.CENTER);
+    lblDisplayMode.setHorizontalTextPosition(SwingConstants.CENTER);
 
     // color synching button
     JButton btnSyncColors = new JButton(Resources.get("mapperpanel.prefs.lbl.synccolors.caption"));
@@ -87,7 +88,7 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
 
     JLabel lblZoom = new JLabel(Resources.get("mapperpanel.prefs.lbl.zoom"));
     lblZoom.setLabelFor(sldZoom);
-    lblZoom.setHorizontalTextPosition(JLabel.CENTER);
+    lblZoom.setHorizontalTextPosition(SwingConstants.CENTER);
 
     // auto scale checkbox
     autoScale = new JCheckBox(Resources.get("mapperpanel.prefs.lbl.minimapautoscale"), source.isAutoScaling());
@@ -196,7 +197,9 @@ public class MinimapPreferences extends JPanel implements PreferencesAdapter, Ac
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand()==null) return;
+    if (e.getActionCommand()==null) {
+      return;
+    }
     if (e.getActionCommand().equals("mapperpanel.prefs.lbl.synccolors.caption")) {
       source.synchronizeMinimap();
     }

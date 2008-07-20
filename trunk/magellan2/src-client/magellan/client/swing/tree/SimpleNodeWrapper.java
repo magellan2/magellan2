@@ -143,7 +143,7 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   public List getIconNames() {
     if (returnIcons == null) {
       if (!isShowingIcons() || (icons == null)) {
-        returnIcons = defaultIcon;
+        returnIcons = SimpleNodeWrapper.defaultIcon;
       } else {
         returnIcons = icons;
       }
@@ -176,6 +176,7 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   /**
    * DOCUMENT-ME
    */
+  @Override
   public String toString() {
     if (amount == -1) {
       return text;

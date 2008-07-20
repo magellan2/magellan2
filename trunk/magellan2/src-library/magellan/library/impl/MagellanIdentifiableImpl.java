@@ -56,7 +56,8 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
@@ -67,7 +68,8 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return this == o || 
 				(o != null && 
@@ -84,7 +86,8 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
 	 *
 	 * @return the hashCode of the current object
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return getID() == null ? super.hashCode() : getID().hashCode();
 	}
 

@@ -33,7 +33,8 @@ public class MallornReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region region) {
+	@Override
+  public Object getRegionReplacement(Region region) {
 		if (!region.isMallorn()){
 			return new Integer(0);
 		}

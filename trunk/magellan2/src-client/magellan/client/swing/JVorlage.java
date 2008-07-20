@@ -85,7 +85,7 @@ public class JVorlage extends InternationalizedDialog {
 			settings.load(new FileInputStream(new File(System.getProperty("user.home"),
 													   "JVorlage.ini")));
 		} catch(IOException e) {
-			log.error("JVorlage.JVorlage()", e);
+			JVorlage.log.error("JVorlage.JVorlage()", e);
 		}
 
 		init();
@@ -562,7 +562,7 @@ public class JVorlage extends InternationalizedDialog {
 				settings.store(new FileOutputStream(new File(System.getProperty("user.home"),
 															 "JVorlage.ini")), "");
 			} catch(IOException e) {
-				log.error("JVorlage.storeSettings()", e);
+				JVorlage.log.error("JVorlage.storeSettings()", e);
 			}
 		}
 	}
@@ -594,7 +594,7 @@ public class JVorlage extends InternationalizedDialog {
 		try {
 			tempFile = File.createTempFile("JVorlage", null);
 		} catch(Exception e) {
-			log.error("JVorlage.execVorlage(): unable to create temporary file for Vorlage output",
+			JVorlage.log.error("JVorlage.execVorlage(): unable to create temporary file for Vorlage output",
 					  e);
 			JOptionPane.showMessageDialog(this, Resources.get("jvorlage.msg.tempfileerror.text"),
 										  Resources.get("jvorlage.msg.tempfileerror.title"),
@@ -615,7 +615,7 @@ public class JVorlage extends InternationalizedDialog {
 			setCursor(new Cursor(Cursor.WAIT_CURSOR));
 			p = Runtime.getRuntime().exec(commandLine);
 		} catch(Exception e) {
-			log.error("JVorlage.execVorlage()", e);
+			JVorlage.log.error("JVorlage.execVorlage()", e);
 		}
 
 		while(true) {
@@ -656,7 +656,7 @@ public class JVorlage extends InternationalizedDialog {
 			try {
 				reader = new FileReader(tempFile);
 			} catch(FileNotFoundException e) {
-				log.error("JVorlage.execVorlage(): cannot create a file reader on the temp output file",
+				JVorlage.log.error("JVorlage.execVorlage(): cannot create a file reader on the temp output file",
 						  e);
 			}
 		}
@@ -674,7 +674,7 @@ public class JVorlage extends InternationalizedDialog {
 
 				lnr.close();
 			} catch(IOException e) {
-				log.error("JVorlage.execVorlage(): unable to read the temporary output file: ", e);
+				JVorlage.log.error("JVorlage.execVorlage(): unable to read the temporary output file: ", e);
 				sb = null;
 			} 
 
@@ -766,7 +766,8 @@ public class JVorlage extends InternationalizedDialog {
 		return retVal;
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		storeSettings();
 
 		if(standAlone == true) {

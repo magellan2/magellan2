@@ -67,7 +67,7 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 			Class o = it.next();
 
 			if(o.isAssignableFrom(c)) {
-				return (TreeCellRenderer) renderers.get(o);
+				return renderers.get(o);
 			}
 		}
 

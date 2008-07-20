@@ -15,8 +15,6 @@ package magellan.library.utils;
 
 import java.util.StringTokenizer;
 
-import magellan.library.utils.logging.Logger;
-
 /**
  * Represents a Versionnumber.
  * This is primary used for eCheck and maybe not compatible with
@@ -29,7 +27,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 171 $
  */
 public class Version implements Comparable {
-  private static final Logger log = Logger.getInstance(Version.class);
 	private String major = "0";
 	private String minor = "0";
 	private String build = "0";
@@ -96,7 +93,8 @@ public class Version implements Comparable {
 	/**
    * Returns the Versionnumber in the Form Major.Minor.Build
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return toString(".");
 	}
 

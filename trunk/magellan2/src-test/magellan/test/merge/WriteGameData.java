@@ -26,7 +26,7 @@ public class WriteGameData extends TestCase {
 	public final static String FILE_PREFIX="build/build/test/";
 
 	public static void writeCR(GameData data, String fName) throws IOException {
-		File file = new File(FILE_PREFIX + fName);
+		File file = new File(WriteGameData.FILE_PREFIX + fName);
 		// System.out.println("Writing file "+file);
 		FileType ft = FileTypeFactory.singleton().createFileType(file, false);
 		ft.setCreateBackup(false);

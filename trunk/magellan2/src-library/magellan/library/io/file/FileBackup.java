@@ -45,7 +45,7 @@ public class FileBackup {
 	 * @throws IOException if an I/O error occured.
 	 */
 	public static synchronized File create(File file) throws IOException {
-		return create(file, file.getParentFile());
+		return FileBackup.create(file, file.getParentFile());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class FileBackup {
 	 * @throws IOException if an I/O error occured.
 	 */
 	public static synchronized File create(File file, int backuplevel) throws IOException {
-		return create(file, file.getParentFile(), backuplevel);
+		return FileBackup.create(file, file.getParentFile(), backuplevel);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class FileBackup {
 	 * @throws IOException if an I/O error occured.
 	 */
 	public static synchronized File create(File file, File directory) throws IOException {
-		return create(file, directory, DEFAULT_BACKUP_LEVEL);
+		return FileBackup.create(file, directory, FileBackup.DEFAULT_BACKUP_LEVEL);
 	}
 
 	/**
@@ -98,8 +98,8 @@ public class FileBackup {
 		}
 		
 		if (directory==null){
-			log.error("error getting dir for file " + file.toString());
-			log.error("the returned directory is null - failed to create backup!");
+			FileBackup.log.error("error getting dir for file " + file.toString());
+			FileBackup.log.error("the returned directory is null - failed to create backup!");
 			return null;
 		} 
 		
@@ -112,13 +112,14 @@ public class FileBackup {
 
 		File backup = null;
 
-		int highestBackup = getLatestRevision(file.getName(), directory);
+		int highestBackup = FileBackup.getLatestRevision(file.getName(), directory);
 		backup = new File(directory + File.separator +
-						  getVersionName(file.getName(), highestBackup + 1));
-		copy(file, backup);
+						  FileBackup.getVersionName(file.getName(), highestBackup + 1));
+		FileBackup.copy(file, backup);
 		
-    if (file.canWrite())
-      removeObsoleteRevisions(highestBackup + 1, backupLevel, file.getName(), directory);
+    if (file.canWrite()) {
+      FileBackup.removeObsoleteRevisions(highestBackup + 1, backupLevel, file.getName(), directory);
+    }
 
 		return backup;
 	}
@@ -144,7 +145,7 @@ public class FileBackup {
 			String name = files[i].getName();
 
 			if(name.startsWith(filename)) {
-				int revision = getRevision(name);
+				int revision = FileBackup.getRevision(name);
 
 				if(revision > result) {
 					result = revision;
@@ -233,7 +234,7 @@ public class FileBackup {
 				String name = files[i].getName();
 
 				if(name.startsWith(filename)) {
-				  int revision = getRevision(name);
+				  int revision = FileBackup.getRevision(name);
 					if( revision>0 && revision <= (currentRevision - backupLevel)) {
 						files[i].delete();
 					}

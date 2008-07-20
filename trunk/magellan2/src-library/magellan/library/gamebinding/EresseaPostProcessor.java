@@ -67,7 +67,7 @@ public class EresseaPostProcessor {
 	 * 
 	 */
 	public static EresseaPostProcessor getSingleton() {
-		return singleton;
+		return EresseaPostProcessor.singleton;
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class EresseaPostProcessor {
 
 								// a certain amount of herbs has been detected in a region
 								if((m.getAttributes() != null) && m.getAttributes().containsKey("region")) {
-									String str = (String) m.getAttributes().get("region");
+									String str = m.getAttributes().get("region");
 									CoordinateID coord = CoordinateID.parse(str, ",");
 
 									if(coord == null) {
@@ -109,7 +109,7 @@ public class EresseaPostProcessor {
 									Region r = data.getRegion(coord);
 
 									if(r != null) {
-										String value = (String) m.getAttributes().get("herb");
+										String value = m.getAttributes().get("herb");
 
 										if(value != null) {
 											ItemType type = data.rules.getItemType(StringID.create(value),
@@ -119,7 +119,7 @@ public class EresseaPostProcessor {
 
 										if((((IntegerID) m.getMessageType().getID()).intValue()) == 1349776898) {
 											// a certain amount of herbs has been detected in a region
-											String amount = (String) m.getAttributes().get("amount");
+											String amount = m.getAttributes().get("amount");
 
 											if(amount != null) {
 												r.setHerbAmount(amount);
@@ -467,8 +467,8 @@ public class EresseaPostProcessor {
         // Check 1. (number)
         if (region.schemes().size()>19) {
           // Inconsistency of type 1. found
-          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: to many schemes");
-          log.warn(region);
+          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: to many schemes");
+          EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
           continue;
         }
@@ -504,8 +504,8 @@ public class EresseaPostProcessor {
         }
         if (inconsistent) {
           // Inconsistency of type 2. found
-          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: terrain");
-          log.warn(region);
+          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: terrain");
+          EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
           continue;          
         }
@@ -519,8 +519,8 @@ public class EresseaPostProcessor {
         }
         if (!centerFound) {
           // Inconsistency of type 3. found
-          log.warn("EresseaPostProcessor: Astral schemes inconsistency type: layout");
-          log.warn(region);
+          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: layout");
+          EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
           continue;                   
         }
@@ -546,18 +546,18 @@ public class EresseaPostProcessor {
     for (Collection<Region> regionCol : schemeMap.values()) {
       if (regionCol.size() > 2) {
         // Inconsistency of type 4. found
-        log.warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");        
+        EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: scheme too often");        
         for (Region region : regionCol) {
-          log.warn(region);
+          EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
         }
       }
     }
   }
-  private void postProcessMessages(GameData data) {
+//  private void postProcessMessages(GameData data) {
     // herb information from FIND HERBS/FORSCHE KRÄUTER or MAKE HERBS/MACHE KRÄUTER
     // item information from SHOW/ZEIGE
     // race information from SHOW/ZEIGE
     // unit information from SPY/SPIONIERE
-  }
+//  }
 }

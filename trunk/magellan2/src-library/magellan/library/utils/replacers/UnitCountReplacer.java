@@ -60,7 +60,8 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region r) {
+	@Override
+  public Object getRegionReplacement(Region r) {
 		Collection c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits(r);
 
 		if(c != null) {
@@ -80,7 +81,7 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
 				return new Integer(count);
 			}
 
-			return ZERO;
+			return UnitCountReplacer.ZERO;
 		}
 
 		return null;

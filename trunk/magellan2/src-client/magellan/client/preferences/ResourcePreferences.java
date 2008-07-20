@@ -42,6 +42,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.extern.MagellanPlugIn;
@@ -62,15 +64,12 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
   private JButton btnEdit = null;
   private JList lstPaths = null;
   private Properties settings = null;
-  private List<PreferencesAdapter> subAdapter;
-  private Collection<MagellanPlugIn> plugins;
 
   /**
    * Creates a new ResourceSettings object.
    */
   public ResourcePreferences(Collection<MagellanPlugIn> plugins, Properties settings) {
     this.settings = settings;
-    this.plugins = plugins;
 
     initComponents();
   }
@@ -211,7 +210,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
     con.gridx = 0;
     con.weightx = 0.25;
     JLabel l = new JLabel(label);
-    l.setHorizontalAlignment(JLabel.RIGHT);
+    l.setHorizontalAlignment(SwingConstants.RIGHT);
     spPanel.add(l, con);
 
     JTextField tf = new JTextField(settings.getProperty(key));
@@ -248,8 +247,8 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
     c.insets = new Insets(5, 5, 5, 5);
     c.weightx = 0.1;
     c.weighty = 0.1;
-    rpPanel.add(new JScrollPane(lstPaths, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-        JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS), c);
+    rpPanel.add(new JScrollPane(lstPaths, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS), c);
 
     btnAdd = new JButton(Resources.get("resource.resourcesettings.btn.new.caption"));
     btnAdd.addActionListener(new ActionListener() {
@@ -420,10 +419,11 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
    *
    * 
    */
+  @Override
   public void setVisible(boolean b) {
     if(b && (textFields.size() > 0)) {
       for(int i = 0, max = textFields.size(); i < max; i++) {
-        ((JTextField) textFields.get(i)).setText(settings.getProperty((String) keys.get(i)));
+        (textFields.get(i)).setText(settings.getProperty(keys.get(i)));
       }
     }
 
@@ -453,8 +453,8 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
     // special paths
     if(textFields.size() > 0) {
       for(int i = 0; i < textFields.size(); i++) {
-        settings.setProperty((String) keys.get(i),
-            ((JTextField) textFields.get(i)).getText());
+        settings.setProperty(keys.get(i),
+            (textFields.get(i)).getText());
       }
     }
     
@@ -536,6 +536,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
      *
      * 
      */
+    @Override
     public String toString() {
       if(getUrl().getProtocol().equals("file")) {
         File f = new File(getUrl().getPath());

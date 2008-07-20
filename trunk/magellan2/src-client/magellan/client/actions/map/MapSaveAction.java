@@ -47,7 +47,8 @@ public class MapSaveAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		new MapSaverUI(client, true, map.getView()).setVisible(true);
 	}
 

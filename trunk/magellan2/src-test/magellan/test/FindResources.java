@@ -52,8 +52,8 @@ public class FindResources {
    */
   public static void main(String[] args) throws Exception {
     System.out.println("----start----");
-    findResources(new File("."));
-    Collections.sort(resourceKeys);
+    FindResources.findResources(new File("."));
+    Collections.sort(FindResources.resourceKeys);
     System.out.println("----end----");
     
     Enumeration<String> keys = Resources.getInstance().getKeys(Locale.GERMANY);
@@ -64,11 +64,9 @@ public class FindResources {
     
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
-      boolean found = false;
-      for (String v : resourceKeys) {
+      for (String v : FindResources.resourceKeys) {
         if (key.equals(v)) {
           System.out.println("[green]  "+key);
-          found = true;
           break;
         }
       }
@@ -78,7 +76,7 @@ public class FindResources {
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       boolean found = false;
-      for (String v : resourceKeys) {
+      for (String v : FindResources.resourceKeys) {
         if (key.startsWith(v)) {
           System.out.println("[yellow] "+key + " (vs. "+v+")");
           found = true;
@@ -94,7 +92,7 @@ public class FindResources {
     while (keys.hasMoreElements()) {
       String key = keys.nextElement();
       boolean found = false;
-      for (String v : resourceKeys) {
+      for (String v : FindResources.resourceKeys) {
         if (key.equals(v) || key.startsWith(v)) {
           found = true;
           break;
@@ -111,12 +109,14 @@ public class FindResources {
     if (root.isDirectory()) {
       File[] files = root.listFiles();
       for (File file : files) {
-        findResources(file);
+        FindResources.findResources(file);
       }
     } else {
-      if (root.getName().equals("FindResources.java")) return;
+      if (root.getName().equals("FindResources.java")) {
+        return;
+      }
       if (root.getName().endsWith(".java")) {
-        scanFile(root);
+        FindResources.scanFile(root);
       }
     }
   }
@@ -126,30 +126,34 @@ public class FindResources {
     LineNumberReader reader = new LineNumberReader(fr);
     String line;
     while ((line = reader.readLine()) != null) {
-      if (line.indexOf(KEY)>=0) {
+      if (line.indexOf(FindResources.KEY)>=0) {
         // Found call... now extract the information...
-        extractResourceKey(line);
+        FindResources.extractResourceKey(line);
       }
     }
   }
   
   public static String extractResourceKey(String line) {
     
-    int index = line.indexOf(KEY);
+    int index = line.indexOf(FindResources.KEY);
     
-    if (line.indexOf(KEY,index+KEY.length())>0) {
-      extractResourceKey(line.substring(line.indexOf(KEY,index+KEY.length())));
+    if (line.indexOf(FindResources.KEY,index+FindResources.KEY.length())>0) {
+      FindResources.extractResourceKey(line.substring(line.indexOf(FindResources.KEY,index+FindResources.KEY.length())));
     }
     
-    line = line.substring(index+KEY.length());
+    line = line.substring(index+FindResources.KEY.length());
     
-    if (line.indexOf(")")>=0) line = line.substring(0,line.indexOf(")"));
+    if (line.indexOf(")")>=0) {
+      line = line.substring(0,line.indexOf(")"));
+    }
     
     line = line.trim();
-    if (line.startsWith("\"")) line = line.substring(1,line.indexOf("\"",2));
+    if (line.startsWith("\"")) {
+      line = line.substring(1,line.indexOf("\"",2));
+    }
     
-    if (!resourceKeys.contains(line)) {
-      resourceKeys.add(line);
+    if (!FindResources.resourceKeys.contains(line)) {
+      FindResources.resourceKeys.add(line);
     }
     
     return line;

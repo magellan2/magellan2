@@ -38,9 +38,10 @@ import magellan.library.utils.Score;
 public class RegionNameMapping implements DataMapping {
   private static RegionNameMapping singleton = new RegionNameMapping();
   public static RegionNameMapping getSingleton() {
-    return singleton;
+    return RegionNameMapping.singleton;
   }
   
+  @Override
   public String toString() {
     return "RegionName";
   }

@@ -38,7 +38,8 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 	 *
 	 * 
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.operationswitch.description");
 	}
 
@@ -56,7 +57,7 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 		} catch(NullPointerException npe) {
 		}
 
-		return BLANK;
+		return Replacer.BLANK;
 	}
 
 	/**

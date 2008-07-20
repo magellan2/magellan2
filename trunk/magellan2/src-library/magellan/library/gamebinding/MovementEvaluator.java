@@ -28,7 +28,7 @@ public interface MovementEvaluator {
 	/* The unit is not sufficiently skilled in horse riding */
 
 	/** DOCUMENT-ME */
-	public static final int CAP_UNSKILLED = CAP_NO_HORSES + 1;
+	public static final int CAP_UNSKILLED = MovementEvaluator.CAP_NO_HORSES + 1;
 
 	/**
 	 * Returns the maximum payload in GE  100 of this unit when it travels by horse. Horses, carts

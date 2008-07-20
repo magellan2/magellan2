@@ -23,9 +23,9 @@ import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.MessageRenderer;
 import magellan.library.rules.MessageType;
 import magellan.library.utils.OrderedHashtable;
-import magellan.library.gamebinding.MessageRenderer;
 
 
 /**
@@ -80,7 +80,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 * 
 	 */
 	public MagellanMessageImpl(String text) {
-		this(ambiguousID, text, null, null);
+		this(MagellanMessageImpl.ambiguousID, text, null, null);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 		super(id);
 
 		if((text == null) && (type != null)) {
-			this.text = render(null, type.getPattern(), attributes);
+			this.text = MagellanMessageImpl.render(null, type.getPattern(), attributes);
 		} else {
 			this.text = text;
 		}
@@ -287,7 +287,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 				while(tt.hasMoreTokens()) {
 					String strToken = tt.nextToken();
 					String value = attributes.get(strToken);
-					String strAttribute = renderAttribute(data, strToken, value);
+					String strAttribute = MagellanMessageImpl.renderAttribute(data, strToken, value);
 					sb.append(strAttribute);
 				}
 			} else {
@@ -329,7 +329,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 *
 	 * @return A hash code for this message
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		// identify Message by message text
 		return (text == null) ? superHashCode() : text.hashCode();
 	}
@@ -344,9 +345,10 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
-			boolean ret = this.getID().equals(ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
+			boolean ret = this.getID().equals(MagellanMessageImpl.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
 														   : isComplexEquals((MagellanMessageImpl) o);
 
 			/*
@@ -374,7 +376,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	private boolean isPrimitiveEquals(MagellanMessageImpl o) {
 		// we use == for ambiguousID as it is singleton
 		// this is true iff this.ID == o.ID == ambiguousID && this.text == o.text
-		return (this.getID() == o.getID()) && equalObjects(this.getText(), o.getText());
+		return (this.getID() == o.getID()) && MagellanMessageImpl.equalObjects(this.getText(), o.getText());
 	}
 
 	/**
@@ -394,9 +396,9 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 			   (equalObjects(this.getText(), o.getText()) &&
 			   equalObjects(this.getMessageType(), o.getMessageType())));
     */
-    return (!this.getID().equals(ambiguousID) && 
+    return (!this.getID().equals(MagellanMessageImpl.ambiguousID) && 
              this.getID().equals(o.getID()) &&
-             equalObjects(this.getMessageType(), o.getMessageType()));
+             MagellanMessageImpl.equalObjects(this.getMessageType(), o.getMessageType()));
 	}
 
 	private static final boolean equalObjects(Object a, Object b) {
@@ -411,7 +413,8 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    * changing this now the the text value
    * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
     return getText();
     
     /*

@@ -60,7 +60,8 @@ public class OptionAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		if(dialog == null) {
 			buildDialog();
 		}
@@ -72,7 +73,8 @@ public class OptionAction extends MenuAction {
 	private void initTimer() {
 		t = new Timer(true);
 		t.scheduleAtFixedRate(new TimerTask() {
-				public void run() {
+				@Override
+        public void run() {
 					buildDialog();
 				}
 			}, 1000, 1000);

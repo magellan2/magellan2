@@ -71,14 +71,16 @@ public class ChangeFactionConfirmationAction extends MenuAction {
     spies = spy;
 
     StringBuffer sb = new StringBuffer(100);
-    if (spies)
+    if (spies) {
       sb.append(Resources.get("actions.changefactionconfirmationaction.spies"));
-    else if(faction == null) 
+    } else if(faction == null) {
       sb.append(Resources.get("actions.changefactionconfirmationaction.all"));
-    else
+    } else {
       sb.append(faction.toString());
-    if (selectedRegionsOnly)
+    }
+    if (selectedRegionsOnly) {
       sb.append(" "+Resources.get("actions.changefactionconfirmationaction.postfix.selected"));
+    }
     setName(sb.toString());
 	}
 
@@ -87,7 +89,8 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(java.awt.event.ActionEvent e) {
+	@Override
+  public void menuActionPerformed(java.awt.event.ActionEvent e) {
 		Collection units = null;
 
 		if(faction == null) {

@@ -77,7 +77,6 @@ import magellan.library.utils.logging.Logger;
 
 
 public class IconStyleSetPreferences extends JPanel implements ActionListener, TreeSelectionListener, PreferencesAdapter {
-  private final Logger log = Logger.getInstance(IconStyleSetPreferences.class);
   protected JPanel content;
   protected CardLayout contentLayout;
   protected Map<String,Component> subPanels;
@@ -242,7 +241,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         break;
       }
 
-      Component c = (Component) subPanels.get(key);
+      Component c = subPanels.get(key);
       content.add(c, key);
       old.remove(key);
     }
@@ -255,10 +254,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         String name = (String) it.next();
 
         if(subPanels.containsKey(name)) {
-          c = (Component) subPanels.get(name);
+          c = subPanels.get(name);
           old.remove(name);
         } else {
-          c = new StylesetPanel((GraphicsStyleset) CellRenderer.getStylesets().get(name));
+          c = new StylesetPanel(CellRenderer.getStylesets().get(name));
           subPanels.put(name, c);
         }
 
@@ -376,7 +375,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) stylesets.getSelectionPath()
                                       .getLastPathComponent();
       TreeObject obj = (TreeObject) node.getUserObject();
-      Component c = (Component) subPanels.get(obj.name);
+      Component c = subPanels.get(obj.name);
 
       if(c != null) {
         content.remove(c);
@@ -926,6 +925,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
       return sName;
     }

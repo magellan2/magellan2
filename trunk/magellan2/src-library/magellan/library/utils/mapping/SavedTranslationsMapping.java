@@ -36,9 +36,10 @@ import magellan.library.utils.Score;
 public class SavedTranslationsMapping implements DataMapping {
   private static SavedTranslationsMapping singleton = new SavedTranslationsMapping();
   public static SavedTranslationsMapping getSingleton() {
-    return singleton;
+    return SavedTranslationsMapping.singleton;
   }
 
+  @Override
   public String toString() {
     return "SavedTranslation";
   }

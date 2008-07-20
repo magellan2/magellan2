@@ -57,7 +57,8 @@ public class StringEqualReplacer extends AbstractParameterSwitch {
 	 *
 	 * 
 	 */
-	public boolean isSwitchingObject(Object o) {
+	@Override
+  public boolean isSwitchingObject(Object o) {
 		Object o1 = getParameter(0, o);
 		Object o2 = getParameter(1, o);
 

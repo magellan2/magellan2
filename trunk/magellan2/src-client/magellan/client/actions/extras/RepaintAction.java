@@ -42,7 +42,8 @@ public class RepaintAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		client.getDesktop().repaintAllComponents();
 	}
 

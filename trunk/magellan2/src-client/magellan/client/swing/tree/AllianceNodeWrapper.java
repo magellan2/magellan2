@@ -49,10 +49,11 @@ public class AllianceNodeWrapper extends FactionNodeWrapper implements CellObjec
   @Override
   public String toString() {
     Alliance a = getAlliance(getFaction().getID());
-    if (a==null)
+    if (a==null) {
       return null;
-    else
+    } else {
       return a.toString();
+    }
   }
 
 }

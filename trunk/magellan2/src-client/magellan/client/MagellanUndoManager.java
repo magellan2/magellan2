@@ -94,35 +94,37 @@ public class MagellanUndoManager extends UndoManager {
 	/*
 	 This methods must be changed to throw the events.
 	 */
-	public synchronized void undo() {
+	@Override
+  public synchronized void undo() {
 		// TODO: implement undo history?
     undoneList.add(eventList.remove(eventList.size()-1));
     
 		// String oldUndo=getUndoPresentationName(),oldRedo=getRedoPresentationName();
 		try {
 			super.undo();
-			list.firePropertyChange(REDO, false, canRedo());
-			list.firePropertyChange(UNDO, false, canUndo());
+			list.firePropertyChange(MagellanUndoManager.REDO, false, canRedo());
+			list.firePropertyChange(MagellanUndoManager.UNDO, false, canUndo());
 		} catch(CannotUndoException e) {
-			log.info("MagellanUndoManager.undo: cannot undo");
-			log.debug("", e);
+			MagellanUndoManager.log.info("MagellanUndoManager.undo: cannot undo");
+			MagellanUndoManager.log.debug("", e);
 		}
 	}
 
 	/**
 	 * DOCUMENT-ME
 	 */
-	public synchronized void redo() {
+	@Override
+  public synchronized void redo() {
     eventList.add(undoneList.remove(eventList.size()-1));
 		try {
 			// TODO: implement redo history?
 			// String oldUndo=getUndoPresentationName(),oldRedo=getRedoPresentationName();
 			super.redo();
-			list.firePropertyChange(REDO, false, canRedo());
-			list.firePropertyChange(UNDO, false, canUndo());
+			list.firePropertyChange(MagellanUndoManager.REDO, false, canRedo());
+			list.firePropertyChange(MagellanUndoManager.UNDO, false, canUndo());
 		} catch(CannotRedoException e) {
-			log.info("MagellanUndoManager.redo: cannot redo");
-			log.debug("", e);
+			MagellanUndoManager.log.info("MagellanUndoManager.redo: cannot redo");
+			MagellanUndoManager.log.debug("", e);
 		}
 	}
 
@@ -130,9 +132,12 @@ public class MagellanUndoManager extends UndoManager {
    * DOCUMENT-ME
 	 * @see javax.swing.undo.UndoManager#addEdit(javax.swing.undo.UndoableEdit)
 	 */
-	public synchronized boolean addEdit(UndoableEdit e) {
+	@Override
+  public synchronized boolean addEdit(UndoableEdit e) {
     // FIXME stm 10.08.07 This class is broken, so we deactivate it for the time being
-    if (true) return false;
+    if (true) {
+      return false;
+    }
 		// TODO: implement undo/redo history?
     eventList.add(e);
     undoneList.clear();
@@ -142,8 +147,8 @@ public class MagellanUndoManager extends UndoManager {
 		boolean b = super.addEdit(e);
 
 		if(b) {
-			list.firePropertyChange(UNDO, oldUndo, canUndo());
-			list.firePropertyChange(REDO, oldRedo, canRedo());
+			list.firePropertyChange(MagellanUndoManager.UNDO, oldUndo, canUndo());
+			list.firePropertyChange(MagellanUndoManager.REDO, oldRedo, canRedo());
 		}
 
 		return b;
@@ -160,7 +165,7 @@ public class MagellanUndoManager extends UndoManager {
     boolean oldRedo = canRedo();
     super.discardAllEdits();
     // notify listeners that there are no more edits
-    list.firePropertyChange(UNDO, oldUndo, canUndo());
-    list.firePropertyChange(REDO, oldRedo, canRedo());
+    list.firePropertyChange(MagellanUndoManager.UNDO, oldUndo, canUndo());
+    list.firePropertyChange(MagellanUndoManager.REDO, oldRedo, canRedo());
   }
 }

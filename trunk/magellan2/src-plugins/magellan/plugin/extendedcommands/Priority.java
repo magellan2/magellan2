@@ -37,9 +37,13 @@ public enum Priority {
    * Returns the wanted priority.
    */
   public static Priority getPriority(String name) {
-    if (Utils.isEmpty(name)) return NORMAL;
-    for (Priority priority : values()) {
-      if (priority.toString().equalsIgnoreCase(name)) return priority;
+    if (Utils.isEmpty(name)) {
+      return NORMAL;
+    }
+    for (Priority priority : Priority.values()) {
+      if (priority.toString().equalsIgnoreCase(name)) {
+        return priority;
+      }
     }
     return NORMAL;
   }
@@ -47,6 +51,7 @@ public enum Priority {
   /**
    * @see java.lang.Enum#toString()
    */
+  @Override
   public String toString() {
     return Resources.get("extended_commands.priority."+name().toLowerCase());
   }

@@ -50,6 +50,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	/** The weight of the units and items on this ship in GE. 
 	 * @deprecated replaced by cargo
 	 */
+  @Deprecated
   protected int deprecatedLoad = -1;
 
 	/**
@@ -57,6 +58,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 * the ship is damaged.
 	 * @deprecated replaced by capacity
 	 */
+  @Deprecated
   protected int deprecatedCapacity = -1;
 
 	/** the weight of the units and items on this ship in silver */
@@ -148,11 +150,14 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 * @return Returns the cargo load of this ship
 	 */
 	public int getCargo() {
-		if(cargo != -1) return cargo;
-		if (deprecatedLoad!=-1)
-		  return deprecatedLoad*100;
-		else
-		  return -1;
+		if(cargo != -1) {
+      return cargo;
+    }
+		if (deprecatedLoad!=-1) {
+      return deprecatedLoad*100;
+    } else {
+      return -1;
+    }
 	}
 	
 	/**
@@ -204,7 +209,8 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 *
 	 * @return A string representation of this ship
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return toString(true);
 	}
 
@@ -237,8 +243,8 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 			}
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("Ship.toString: " + sb.toString());
+		if(MagellanShipImpl.log.isDebugEnabled()) {
+			MagellanShipImpl.log.debug("Ship.toString: " + sb.toString());
 		}
 
 		return sb.toString();

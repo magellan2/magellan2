@@ -63,17 +63,26 @@ public class LevelRelation extends CoordinateID {
   }
   
   public CoordinateID getRelatedCoordinate(CoordinateID c) {
-    if (c == null) return null;
-    if (c.z != fromLevel) return null;
+    if (c == null) {
+      return null;
+    }
+    if (c.z != fromLevel) {
+      return null;
+    }
     return new CoordinateID(c.x * scaleX + x, c.y * scaleY + y, z);
   }
   
   public CoordinateID getInverseRelatedCoordinate(CoordinateID c) {
-    if (c == null) return null;
-    if (c.z != z) return null;
+    if (c == null) {
+      return null;
+    }
+    if (c.z != z) {
+      return null;
+    }
     return new CoordinateID((c.x - x ) / scaleX, (c.y - y ) / scaleY, fromLevel);
   }
 
+  @Override
   public boolean equals(Object o) {
     if (o instanceof CoordinateID) {
       if (super.equals(o)) {
@@ -92,10 +101,12 @@ public class LevelRelation extends CoordinateID {
     }
   }
   
+  @Override
   public int hashCode() {
     return (super.hashCode() << 4) ^ fromLevel;
   }
   
+  @Override
   public String toString() {
     return "trans([0, 0, " + fromLevel + "] -> [" + x + ", " + y + ", " + z + "]) scale(" + scaleX + ", " + scaleY + ")"; 
   }

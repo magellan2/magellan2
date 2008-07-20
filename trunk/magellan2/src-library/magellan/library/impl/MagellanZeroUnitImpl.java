@@ -37,7 +37,7 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 */
 	public MagellanZeroUnitImpl(Region r) {
 		// pavkovic 2003.09.09: reduce amount of UnitID(0) from n regions to 1
-		super(ZERO_ID);
+		super(ZeroUnit.ZERO_ID);
 		setRegion(r);
 	}
 
@@ -46,7 +46,8 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 *
 	 * @param r the region of this unit
 	 */
-	public void setRegion(Region r) {
+	@Override
+  public void setRegion(Region r) {
 		if(r != getRegion()) {
 			if(this.region != null) {
 				this.region.removeUnit(this.getID());
@@ -65,7 +66,8 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 *
 	 * @return amount of recruitable persons
 	 */
-	public int getPersons() {
+	@Override
+  public int getPersons() {
 		// 
 		return getRegion().maxRecruit();
 	}
@@ -75,7 +77,8 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 *
 	 * @return amount of recruitable persons - recruited persons
 	 */
-	public int getModifiedPersons() {
+	@Override
+  public int getModifiedPersons() {
 		if(cache == null) {
 			cache = new Cache();
 		}
@@ -107,7 +110,8 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 *
 	 * @return a string representation of this temporary unit
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getRegion().toString();
 	}
 }

@@ -54,7 +54,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 
@@ -180,7 +181,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_SHIP;
 	}
 

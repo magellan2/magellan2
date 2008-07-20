@@ -35,9 +35,10 @@ import magellan.library.GameData;
 public class GameObjectIDMapping implements DataMapping {
   private static GameObjectIDMapping singleton = new GameObjectIDMapping();
   public static GameObjectIDMapping getSingleton() {
-    return singleton;
+    return GameObjectIDMapping.singleton;
   }
 
+  @Override
   public String toString() {
     return "GameObjectID";
   }
@@ -45,16 +46,24 @@ public class GameObjectIDMapping implements DataMapping {
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // HIGHTODO Automatisch generierte Methode implementieren
     CoordinateID translation = RegionIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) return translation;
+    if (translation != null ) {
+      return translation;
+    }
     
     translation = BuildingIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) return translation;
+    if (translation != null ) {
+      return translation;
+    }
 
     translation = ShipIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) return translation;
+    if (translation != null ) {
+      return translation;
+    }
 
     translation = UnitIDMapping.getSingleton().getMapping(fromData, toData, level);
-    if (translation != null ) return translation;
+    if (translation != null ) {
+      return translation;
+    }
 
     return null;
   }

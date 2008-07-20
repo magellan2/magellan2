@@ -42,9 +42,10 @@ import magellan.library.utils.Score;
 public class BuildingIDMapping implements DataMapping {
   private static BuildingIDMapping singleton = new BuildingIDMapping();
   public static BuildingIDMapping getSingleton() {
-    return singleton;
+    return BuildingIDMapping.singleton;
   }
   
+  @Override
   public String toString() {
     return "BuildingID";
   }

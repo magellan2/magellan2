@@ -40,7 +40,8 @@ public class UnitSelection extends EnvironmentPart {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void reset() {
+	@Override
+  public void reset() {
 		filters.clear();
 	}
 

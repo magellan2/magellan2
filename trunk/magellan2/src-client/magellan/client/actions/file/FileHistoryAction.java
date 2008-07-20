@@ -99,7 +99,8 @@ public class FileHistoryAction extends AbstractAction {
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return o != null && file.equals(((FileHistoryAction) o).getFile());
 		} catch(ClassCastException e) {

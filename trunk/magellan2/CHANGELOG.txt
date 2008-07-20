@@ -1,3 +1,7 @@
+2008-07-20 / Build 217 - Thoralf (thoralf@m84.de)
+    * bugfix for "cancel" in ExtCmds
+    * added a security question to avoid losing data (ExtCmds)
+
 2008-07-19 / Build 217 - Thoralf (thoralf@m84.de)
     * ExtCmds opens automatically the editor dock, if it isn'nt visible.
     * added messages for extcmds help dock title

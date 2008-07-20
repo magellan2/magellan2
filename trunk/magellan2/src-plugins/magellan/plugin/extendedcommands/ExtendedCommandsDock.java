@@ -36,10 +36,13 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
@@ -60,7 +63,7 @@ import net.infonode.docking.View;
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
-public class ExtendedCommandsDock extends JPanel implements ActionListener, CaretListener, DockingWindowListener {
+public class ExtendedCommandsDock extends JPanel implements ActionListener, CaretListener, DockingWindowListener, DocumentListener {
   public static final String IDENTIFIER = "ExtendedCommands";
   private BeanShellEditor scriptingArea = null;
   private JComboBox priorityBox = null;
@@ -72,6 +75,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
   private ExtendedCommands commands = null;
   private Script script = null;
   private boolean visible = false;
+  private boolean isModified = false;
   
   public ExtendedCommandsDock(ExtendedCommands commands) {
     this.commands = commands;
@@ -86,7 +90,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
     editor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     
     scriptingArea = new BeanShellEditor();
+    scriptingArea.getDocument().addDocumentListener(this);
     scriptingArea.addCaretListener(this);
+    
     editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
     
     add(editor,BorderLayout.CENTER);
@@ -163,28 +169,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    if (e.getActionCommand().equalsIgnoreCase("button.ok")) {
-      // save the script in the container
-      String scripttext = scriptingArea.getText();
-      Priority prio = (Priority)priorityBox.getSelectedItem();
-      int cursor = scriptingArea.getCaretPosition();
-      
-      if (unit != null) {
-        script.setScript(scripttext);
-        script.setPriority(prio);
-        script.setCursor(cursor);
-        commands.setCommands(unit,script);
-      } else if (container != null) {
-        script.setScript(scripttext);
-        script.setPriority(prio);
-        script.setCursor(cursor);
-        commands.setCommands(container,script);
-      } else {
-        script.setScript(scripttext);
-        script.setCursor(cursor);
-        commands.setLibrary(script);
-      }
-    } else if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
+    if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // execute the command, this means, to temporary store the script
       // and execute it. After that, restore the old script.
       Script newScript = (Script)script.clone();
@@ -217,9 +202,14 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
       }
       
       commands.save();
+      isModified = false;
       
     } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
       // just restore the old settings
+      if (isModified) {
+        int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
+        if (result != JOptionPane.OK_OPTION) return;
+      }
 
       if (unit != null) {
         commands.setCommands(unit, script); // reset to old script
@@ -229,7 +219,13 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
         commands.setLibrary(script); // reset to old script
       }
       
-      setVisible(false);
+      if (script != null) {
+        scriptingArea.setText(script.getScript());
+        scriptingArea.setCaretPosition(script.getCursor());
+        priorityBox.setSelectedItem(script.getPriority());
+      }
+        
+      isModified = false;
     }
   }
 
@@ -302,6 +298,11 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
    * @param script The value for script.
    */
   public void setScript(Script script) {
+    if (isModified) {
+      // ask if it is okay to load the new file
+      int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
+      if (result != JOptionPane.OK_OPTION) return;
+    }
     this.script = script;
     if (script != null) {
       scriptingArea.setText(script.getScript());
@@ -325,6 +326,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
     if (!visible) {
       MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
     }
+    
+    isModified = false;
   }
 
   /**
@@ -455,6 +458,27 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
       
       positionBox.setText(row+","+col);
     }
+  }
+
+  /**
+   * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void changedUpdate(DocumentEvent e) {
+    isModified = true;
+  }
+
+  /**
+   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void insertUpdate(DocumentEvent e) {
+    isModified = true;
+  }
+
+  /**
+   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void removeUpdate(DocumentEvent e) {
+    isModified = true;
   }
   
 }

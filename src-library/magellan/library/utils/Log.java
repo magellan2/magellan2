@@ -76,7 +76,8 @@ public class Log {
 			this.out = out;
 
 			Thread timeStamper = new Thread() {
-				public void run() {
+				@Override
+        public void run() {
 					while(true) {
 						try {
 							// 2002.05.05 pavkovic: Synchronization needed because of multithreading
@@ -99,7 +100,8 @@ public class Log {
 			timeStamper.start();
 
 			Thread flusher = new Thread() {
-				public void run() {
+				@Override
+        public void run() {
 					while(true) {
 						try {
 							StreamWrapper.this.out.flush();
@@ -124,7 +126,8 @@ public class Log {
 		 *
 		 * @throws IOException DOCUMENT-ME
 		 */
-		public void write(int b) throws IOException {
+		@Override
+    public void write(int b) throws IOException {
 			System.out.write(b);
 			out.write(b);
 		}

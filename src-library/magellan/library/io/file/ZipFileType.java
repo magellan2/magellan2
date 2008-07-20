@@ -50,7 +50,8 @@ public class ZipFileType extends FileType {
 	 *
 	 * @return the most inner name of a FileType.
 	 */
-	public String getInnerName() {
+	@Override
+  public String getInnerName() {
 		return zipentry.getName();
 	}
 
@@ -78,10 +79,11 @@ public class ZipFileType extends FileType {
 			}
 		}
 
-		return (ZipEntry[]) ret.toArray(new ZipEntry[] {  });
+		return ret.toArray(new ZipEntry[] {  });
 	}
 
-	protected InputStream createInputStream() throws IOException {
+	@Override
+  protected InputStream createInputStream() throws IOException {
 		InputStream is = new ZipFile(filename).getInputStream(zipentry);
 
 		if(is == null) {
@@ -92,7 +94,8 @@ public class ZipFileType extends FileType {
 		return is;
 	}
 
-	protected OutputStream createOutputStream() throws IOException {
+	@Override
+  protected OutputStream createOutputStream() throws IOException {
 		// here we need to do something special: all entries are copied expect the named zipentry, which will be overwritten
 		File tmpfile = CopyFile.copy(filename);
 		try {

@@ -77,7 +77,8 @@ public class Resource {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return "Resource: " + amount + " " + type;
 	}
 }

@@ -52,7 +52,7 @@ public class Direction {
 	private static List<String> shortNames = null;
 	private static List<String> longNames = null;
 	private static Locale usedLocale = null;
-	private int dir = DIR_INVALID;
+	private int dir = Direction.DIR_INVALID;
 
 	/**
 	 * Creates a new Direction object interpreting the specified integer as a direction according
@@ -64,7 +64,7 @@ public class Direction {
 		if((direction > -1) && (direction < 6)) {
 			dir = direction;
 		} else {
-			dir = DIR_INVALID;
+			dir = Direction.DIR_INVALID;
 		}
 	}
 
@@ -78,7 +78,7 @@ public class Direction {
 	 */
 	public Direction(CoordinateID c) {
 		if(c != null) {
-			dir = toInt(c);
+			dir = Direction.toInt(c);
 		} else {
 			throw new IllegalArgumentException("Direction.Direction(Coordinate c): invalid coordinate specified!");
 		}
@@ -94,7 +94,7 @@ public class Direction {
 	 */
 	public Direction(String str) {
 		if(str != null) {
-			dir = toInt(str);
+			dir = Direction.toInt(str);
 		} else {
 			throw new IllegalArgumentException("Direction.Direction(String str): invalid string specified!");
 		}
@@ -114,8 +114,9 @@ public class Direction {
 	 *
 	 * 
 	 */
-	public String toString() {
-		return toString(this.dir, false);
+	@Override
+  public String toString() {
+		return Direction.toString(this.dir, false);
 	}
 
 	/**
@@ -169,7 +170,7 @@ public class Direction {
 	 * 
 	 */
 	public static String toString(int dir) {
-		return toString(dir, false);
+		return Direction.toString(dir, false);
 	}
 
 	/**
@@ -180,7 +181,7 @@ public class Direction {
 	 * 
 	 */
 	public static String toString(CoordinateID c) {
-		return toString(toInt(c));
+		return Direction.toString(Direction.toInt(c));
 	}
 
 	/**
@@ -192,14 +193,14 @@ public class Direction {
 	 * 
 	 */
 	public static String toString(int dir, boolean shortForm) {
-		if((dir < DIR_NW) || (dir > DIR_W)) {
-			dir = DIR_INVALID;
+		if((dir < Direction.DIR_NW) || (dir > Direction.DIR_W)) {
+			dir = Direction.DIR_INVALID;
 		}
 
 		if(shortForm) {
-			return getShortDirectionString(dir);
+			return Direction.getShortDirectionString(dir);
 		} else {
-			return getLongDirectionString(dir);
+			return Direction.getLongDirectionString(dir);
 		}
 	}
 
@@ -211,25 +212,25 @@ public class Direction {
 	 * 
 	 */
 	public static int toInt(CoordinateID c) {
-		int dir = DIR_INVALID;
+		int dir = Direction.DIR_INVALID;
 
 		if(c.x == -1) {
 			if(c.y == 0) {
-				dir = DIR_W;
+				dir = Direction.DIR_W;
 			} else if(c.y == 1) {
-				dir = DIR_NW;
+				dir = Direction.DIR_NW;
 			}
 		} else if(c.x == 0) {
 			if(c.y == -1) {
-				dir = DIR_SW;
+				dir = Direction.DIR_SW;
 			} else if(c.y == 1) {
-				dir = DIR_NE;
+				dir = Direction.DIR_NE;
 			}
 		} else if(c.x == 1) {
 			if(c.y == -1) {
-				dir = DIR_SE;
+				dir = Direction.DIR_SE;
 			} else if(c.y == 0) {
-				dir = DIR_E;
+				dir = Direction.DIR_E;
 			}
 		}
 
@@ -244,13 +245,13 @@ public class Direction {
 	 * 
 	 */
 	public static int toInt(String str) {
-		int dir = DIR_INVALID;
+		int dir = Direction.DIR_INVALID;
 		String s = str.toLowerCase();
 
-		dir = find(s, getShortNames());
+		dir = Direction.find(s, Direction.getShortNames());
 
-		if(dir == DIR_INVALID) {
-			dir = find(s, getLongNames());
+		if(dir == Direction.DIR_INVALID) {
+			dir = Direction.find(s, Direction.getLongNames());
 		}
 
 		return dir;
@@ -310,21 +311,21 @@ public class Direction {
 	 * 
 	 */
 	public static List<String> getShortNames() {
-		if(!Locales.getOrderLocale().equals(usedLocale)) {
-			shortNames = null;
-			longNames = null;
+		if(!Locales.getOrderLocale().equals(Direction.usedLocale)) {
+			Direction.shortNames = null;
+			Direction.longNames = null;
 		}
 
-		if(shortNames == null) {
-			usedLocale = Locales.getOrderLocale();
-			shortNames = new ArrayList<String>(6);
+		if(Direction.shortNames == null) {
+			Direction.usedLocale = Locales.getOrderLocale();
+			Direction.shortNames = new ArrayList<String>(6);
 
 			for(int i = 0; i < 6; i++) {
-				shortNames.add(getShortDirectionString(i).toLowerCase());
+				Direction.shortNames.add(Direction.getShortDirectionString(i).toLowerCase());
 			}
 		}
 
-		return shortNames;
+		return Direction.shortNames;
 	}
 
 	/**
@@ -333,21 +334,21 @@ public class Direction {
 	 * 
 	 */
 	public static List getLongNames() {
-		if(!Locales.getOrderLocale().equals(usedLocale)) {
-			shortNames = null;
-			longNames = null;
+		if(!Locales.getOrderLocale().equals(Direction.usedLocale)) {
+			Direction.shortNames = null;
+			Direction.longNames = null;
 		}
 
-		if(longNames == null) {
-			usedLocale = Locales.getOrderLocale();
-			longNames = new ArrayList<String>(6);
+		if(Direction.longNames == null) {
+			Direction.usedLocale = Locales.getOrderLocale();
+			Direction.longNames = new ArrayList<String>(6);
 
 			for(int i = 0; i < 6; i++) {
-				longNames.add(getLongDirectionString(i).toLowerCase());
+				Direction.longNames.add(Direction.getLongDirectionString(i).toLowerCase());
 			}
 		}
 
-		return longNames;
+		return Direction.longNames;
 	}
 
 	/**

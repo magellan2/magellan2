@@ -109,7 +109,8 @@ public class MapSaverUI extends InternationalizedDialog {
 
 		setTitle(Resources.get("mapsaverui.window.title"));
 		addWindowListener(new java.awt.event.WindowAdapter() {
-				public void windowClosing(java.awt.event.WindowEvent evt) {
+				@Override
+        public void windowClosing(java.awt.event.WindowEvent evt) {
 					closeDialog(evt);
 				}
 			});
@@ -261,9 +262,9 @@ public class MapSaverUI extends InternationalizedDialog {
     int xSize = (int)getBounds().getWidth();
     int ySize = (int)getBounds().getHeight();
     if (xSize > 0 && ySize > 0) {
-      int x = (int) getToolkit().getScreenSize().width;
-      int y = (int) getToolkit().getScreenSize().height;
-      setLocation(new Point((int) (x / 2 - xSize / 2), (int) (y / 2 - ySize / 2)));
+      int x = getToolkit().getScreenSize().width;
+      int y = getToolkit().getScreenSize().height;
+      setLocation(new Point((x / 2 - xSize / 2), (y / 2 - ySize / 2)));
     }
   }
 
@@ -275,16 +276,16 @@ public class MapSaverUI extends InternationalizedDialog {
 
 	private void btnSaveAction(java.awt.event.ActionEvent evt) {
 		try {
-			int iType = SAVEAS_IMAGETYPE_JPEG;
+			int iType = MapSaverUI.SAVEAS_IMAGETYPE_JPEG;
 			String strBase;
 
 			switch(cbFormat.getSelectedIndex()) {
   			case 0:
-  				iType = SAVEAS_IMAGETYPE_JPEG;
+  				iType = MapSaverUI.SAVEAS_IMAGETYPE_JPEG;
   				break;
   
   			case 1:
-  				iType = SAVEAS_IMAGETYPE_PNG;
+  				iType = MapSaverUI.SAVEAS_IMAGETYPE_PNG;
   				break;
 			}
       
@@ -317,7 +318,7 @@ public class MapSaverUI extends InternationalizedDialog {
       						   Integer.parseInt(textY.getText()), quality, imageType);
       				}
             } catch(OutOfMemoryError oomError) {
-              log.error(oomError);
+              MapSaverUI.log.error(oomError);
               javax.swing.JOptionPane.showMessageDialog(Client.INSTANCE, Resources.get("mapsaverui.msg.outofmem.text"),
                                     Resources.get("mapsaverui.msg.outofmem.title"),
                                     javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -338,14 +339,14 @@ public class MapSaverUI extends InternationalizedDialog {
         }).start();
 			}
 		} catch(Exception ex) {
-			log.error(ex);
+			MapSaverUI.log.error(ex);
 			javax.swing.JOptionPane.showMessageDialog(this,
 													  Resources.get("mapsaverui.msg.erroronsave.text") +
 													  ex.toString(),
 													  Resources.get("mapsaverui.msg.erroronsave.title"),
 													  javax.swing.JOptionPane.ERROR_MESSAGE);
 		} catch(OutOfMemoryError oomError) {
-			log.error(oomError);
+			MapSaverUI.log.error(oomError);
 			javax.swing.JOptionPane.showMessageDialog(this, Resources.get("mapsaverui.msg.outofmem.text"),
 													  Resources.get("mapsaverui.msg.outofmem.title"),
 													  javax.swing.JOptionPane.ERROR_MESSAGE);
@@ -403,7 +404,7 @@ public class MapSaverUI extends InternationalizedDialog {
 
 		dim = null;
     
-    int size = iX*iY;
+    //int size = iX*iY;
 
 		try {
 			for(int y = 0; y < iY; y++) {
@@ -488,7 +489,7 @@ public class MapSaverUI extends InternationalizedDialog {
         
         strOutput = strOut + coords + extension;
   
-  			log.info(strOutput + " " + iOf + " of " + iMax);
+  			MapSaverUI.log.info(strOutput + " " + iOf + " of " + iMax);
         FileOutputStream fos = new FileOutputStream(strOutput);
         
         JimiWriter writer = Jimi.createJimiWriter("image/jpeg",fos);
@@ -536,6 +537,7 @@ class MapSaverFileFilter extends FileFilter {
     this.iType = iType;
   }
   
+  @Override
   public boolean accept(File f) {
     String fileName = f.getName().toLowerCase();
     switch (iType) {
@@ -549,6 +551,7 @@ class MapSaverFileFilter extends FileFilter {
     return false;
   }
 
+  @Override
   public String getDescription() {
     switch (iType) {
       case MapSaverUI.SAVEAS_IMAGETYPE_PNG: {

@@ -52,12 +52,10 @@ import magellan.library.utils.Resources;
  */
 public class PluginPreferences implements ExtendedPreferencesAdapter {
 
-  private Properties properties;
   private Collection<MagellanPlugIn> plugins;
   
   
   public PluginPreferences(Collection<MagellanPlugIn> plugins, Properties settings) {
-    this.properties = settings;
     this.plugins = plugins;
   }
 

@@ -56,7 +56,9 @@ public class Islands {
 			islands = new Hashtable<ID,Island>();
 		}
     
-    if (ui == null) ui = new NullUserInterface();
+    if (ui == null) {
+      ui = new NullUserInterface();
+    }
     ui.setTitle(Resources.get("progressdialog.islands.title"));
     ui.setMaximum(islands.size());
     ui.show();
@@ -73,7 +75,7 @@ public class Islands {
 			Collection oldRegions = curIsland.regions();
       
 			if(oldRegions.size() > 0) {
-				Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, (Region) oldRegions.iterator().next());
+				Map<CoordinateID,Region> islandRegions = Islands.getIsland(rules, unassignedPool, (Region) oldRegions.iterator().next());
 
 				for(Region curRegion : islandRegions.values()) {
 					curRegion.setIsland(curIsland);
@@ -93,7 +95,7 @@ public class Islands {
       ui.setProgress(Resources.get("progressdialog.islands.step02"), ++counter);
 
 			Region curRegion = unassignedPool.remove(unassignedPool.keySet().iterator().next());
-			Map<CoordinateID,Region> islandRegions = getIsland(rules, unassignedPool, curRegion);
+			Map<CoordinateID,Region> islandRegions = Islands.getIsland(rules, unassignedPool, curRegion);
       
 			if(islandRegions.size() > 0) {
 				while(islands.containsKey(newID)) {
@@ -139,7 +141,7 @@ public class Islands {
 			excludedRegionTypes.put(feuerwand.getID(),feuerwand);
 		}
 		if(excludedRegionTypes.isEmpty()) {
-			log.warn("Islands.getIsland(): unable to determine ocean region types!");
+			Islands.log.warn("Islands.getIsland(): unable to determine ocean region types!");
 
 			return null;
 		}

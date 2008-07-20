@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Vector;
 
 import magellan.library.GameData;
-import magellan.library.Spell;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.BuildingType;
@@ -32,8 +31,6 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Resources;
-import magellan.library.utils.SpellSyntax;
-import magellan.library.utils.SpellSyntaxToken;
 import magellan.library.utils.logging.Logger;
 
 
@@ -920,8 +917,9 @@ public class EresseaOrderParser implements OrderParser {
 		
 		if (tokenType==Type.CLOSING){
 		  // return true iff the innerText is an nonempty order
-		  if (completer!=null)
-		    completer.clear();
+		  if (completer!=null) {
+        completer.clear();
+      }
 		  return retVal && innerText.length()!=0;
 		}
 		
@@ -940,8 +938,9 @@ public class EresseaOrderParser implements OrderParser {
         }
         // add opening and closing quotes to value as fit, but not to name
         // this way, the completion list is filtered correctly, later
-        if (retVal)
+        if (retVal) {
           completer.cmplFinalQuote(lastToken,quote);
+        }
         if (tokenCount==1 && ! lastToken.followedBySpace()){
           completer.cmplOpeningQuote(null, quote);
         }
@@ -1576,7 +1575,7 @@ public class EresseaOrderParser implements OrderParser {
 		OrderToken t = (OrderToken) tokens.next();
 
 		// detect quoted strings
-		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText(QUOTES)) != null)) {
+		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText(EresseaOrderParser.QUOTES)) != null)) {
 			t.ttype = OrderToken.TT_STRING;
 			t = (OrderToken) tokens.next();
 
@@ -2702,42 +2701,42 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-  private boolean readZaubereSpruch(OrderToken token, Spell s) {
-    boolean retVal = false;
-    token.ttype = OrderToken.TT_STRING;
+//  private boolean readZaubereSpruch(OrderToken token, Spell s) {
+//    boolean retVal = false;
+//    token.ttype = OrderToken.TT_STRING;
+//
+//    OrderToken t = (OrderToken) tokens.next();
+//    
+//    SpellSyntax ss = s.getSpellSyntax();
+//    ss.reset();
+//    SpellSyntaxToken sst = ss.getNextToken();
+//   
+//    retVal = readZaubereSyntax(t, sst);
+//
+//    return retVal;
+//  }
 
-    OrderToken t = (OrderToken) tokens.next();
-    
-    SpellSyntax ss = s.getSpellSyntax();
-    ss.reset();
-    SpellSyntaxToken sst = ss.getNextToken();
-   
-    retVal = readZaubereSyntax(t, sst);
-
-    return retVal;
-  }
-
-  private boolean readZaubereSyntax(OrderToken token, SpellSyntaxToken sst) {
-    switch (sst.getTokenType()) {
-      case SpellSyntaxToken.SST_KeyWord: {
-        if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
-          token.ttype = OrderToken.TT_KEYWORD;
-          token = (OrderToken) tokens.next();
-          token.ttype = OrderToken.TT_ID;
-          
-        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
-          
-        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
-          
-        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
-          
-        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
-          
-        }
-      }
-    }
-    return false;
-  }
+//  private boolean readZaubereSyntax(OrderToken token, SpellSyntaxToken sst) {
+//    switch (sst.getTokenType()) {
+//      case SpellSyntaxToken.SST_KeyWord: {
+//        if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
+//          token.ttype = OrderToken.TT_KEYWORD;
+//          token = (OrderToken) tokens.next();
+//          token.ttype = OrderToken.TT_ID;
+//          
+//        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
+//          
+//        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
+//          
+//        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
+//          
+//        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
+//          
+//        }
+//      }
+//    }
+//    return false;
+//  }
   
   
   //************* ZEIGE
@@ -2944,7 +2943,7 @@ public class EresseaOrderParser implements OrderParser {
 	}
 
 	private boolean isID(String txt) {
-		boolean retVal = isNumeric(txt, data.base, 0, MAX_UID);
+		boolean retVal = isNumeric(txt, data.base, 0, EresseaOrderParser.MAX_UID);
 
 		if(retVal == false) {
 			retVal = isTempID(txt);
@@ -2965,7 +2964,7 @@ public class EresseaOrderParser implements OrderParser {
 			String temp = txt.substring(0, blankPos);
 			String nr = txt.substring(blankPos + 1);
 			retVal = (temp.equalsIgnoreCase("TEMP"));
-			retVal = retVal && isNumeric(nr, data.base, 0, MAX_UID);
+			retVal = retVal && isNumeric(nr, data.base, 0, EresseaOrderParser.MAX_UID);
 		}
 
 		return retVal;
@@ -2984,7 +2983,7 @@ public class EresseaOrderParser implements OrderParser {
 					Integer.parseInt(txt.substring(secondCommaPos + 1, txt.length()));
 					retVal = true;
 				} catch(NumberFormatException e) {
-					log.warn("OrderEditor.getColor()", e);
+					EresseaOrderParser.log.warn("OrderEditor.getColor()", e);
 				}
 			} else {
 				try {
@@ -2992,7 +2991,7 @@ public class EresseaOrderParser implements OrderParser {
 					Integer.parseInt(txt.substring(firstCommaPos + 1, txt.length()));
 					retVal = true;
 				} catch(NumberFormatException e) {
-					log.warn("OrderEditor.getColor()", e);
+					EresseaOrderParser.log.warn("OrderEditor.getColor()", e);
 				}
 			}
 		}
@@ -3079,13 +3078,12 @@ class TokenBucket extends Vector<OrderToken> {
 	 *
 	 * 
 	 */
+	@Override
 	public boolean add(OrderToken o) {
 		boolean retVal = false;
 
-		if(o instanceof OrderToken) {
-			retVal = true;
-			super.add(o);
-		}
+		retVal = true;
+		super.add(o);
 
 		return retVal;
 	}
@@ -3127,7 +3125,7 @@ class TokenBucket extends Vector<OrderToken> {
 						String nrText = nrToken.getText();
 						int nr = IDBaseConverter.parse(nrText,base);
 
-						if((nr >= 0) && (nr <= MAX_TEMP_NR)) {
+						if((nr >= 0) && (nr <= TokenBucket.MAX_TEMP_NR)) {
 							tempToken.setText("TEMP " + nrText);
 
 							if((tempToken.getEnd() > -1) && (nrToken.getEnd() > -1)) {

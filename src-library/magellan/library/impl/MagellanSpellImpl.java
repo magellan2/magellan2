@@ -13,8 +13,8 @@
 
 package magellan.library.impl;
 
-import java.util.Map;
 import java.util.Locale;
+import java.util.Map;
 
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -64,7 +64,8 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	/** 
 	 * @see magellan.library.Unique#getID()
 	 */
-	public ID getID() {
+	@Override
+  public ID getID() {
 	    return StringID.create(getName());
 	}
 
@@ -220,8 +221,9 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	 * 
 	 */
 	public Map<String,String> getComponents() {
-		if (components==null)
-			components = new OrderedHashtable<String,String>();
+		if (components==null) {
+      components = new OrderedHashtable<String,String>();
+    }
 		return components;
 	}
 
@@ -239,7 +241,8 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return this.getName();
 	}
 

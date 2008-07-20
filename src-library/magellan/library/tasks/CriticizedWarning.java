@@ -54,7 +54,8 @@ public class CriticizedWarning extends AbstractProblem implements Problem {
 	 *
 	 * 
 	 */
-	public int getType() {
-		return WARNING;
+	@Override
+  public int getType() {
+		return Problem.WARNING;
 	}
 }

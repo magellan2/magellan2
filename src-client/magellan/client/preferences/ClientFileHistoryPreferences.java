@@ -188,6 +188,7 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
        * 
        * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
        */
+      @Deprecated
       public void initPreferences() {
           // TODO: implement it
       }

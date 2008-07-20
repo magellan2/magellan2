@@ -49,7 +49,9 @@ public class Utils {
   }
   
   public static int getIntValue(String value) {
-    if (value == null) return 0;
+    if (value == null) {
+      return 0;
+    }
     try {
       return Integer.parseInt(value);
     } catch (Exception exception) {
@@ -58,7 +60,9 @@ public class Utils {
   }
   
   public static boolean getBoolValue(String value, boolean defaultValue) {
-    if (isEmpty(value)) return defaultValue;
+    if (Utils.isEmpty(value)) {
+      return defaultValue;
+    }
     try {
       return Boolean.parseBoolean(value);
     } catch (Exception exception) {
@@ -102,7 +106,9 @@ public class Utils {
    * Diese Methode prüft, ob eine Zahl null oder 0 ist.
    */
   public static boolean isNull(Long number) {
-    if(number == null) return true;
+    if(number == null) {
+      return true;
+    }
     return (number.longValue() == 0l);
   }
 
@@ -110,14 +116,18 @@ public class Utils {
    * Diese Methode prüft, ob eine Zahl null oder 0 ist.
    */
   public static boolean isNull(Date date) {
-    if (date == null) return true;
+    if (date == null) {
+      return true;
+    }
     return (date.getTime() == 0l);
   }
   /**
    * Diese Methode prüft, ob eine Zahl null oder 0 ist.
    */
   public static boolean isNull(Integer number) {
-    if (number == null) return true;
+    if (number == null) {
+      return true;
+    }
     return (number.intValue() == 0);
   }  
   /**
@@ -128,17 +138,27 @@ public class Utils {
   }
   
   public static String notNullString(Object string) {
-    return notNullString(string, "");
+    return Utils.notNullString(string, "");
   }
   
   public static String notNullString(Object object, String nullString) {
-    if (object==null) return nullString; else return object.toString();
+    if (object==null) {
+      return nullString;
+    } else {
+      return object.toString();
+    }
   }
   
   public static boolean equals(String a, String b) {
-    if (a==null && b!=null) return false;
-    if (b==null && a!=null) return false;
-    if (a==null && b==null) return false;
+    if (a==null && b!=null) {
+      return false;
+    }
+    if (b==null && a!=null) {
+      return false;
+    }
+    if (a==null && b==null) {
+      return false;
+    }
     return a.equals(b);
   }
 
@@ -147,16 +167,22 @@ public class Utils {
    * &amp;lt; und &amp;gt;.
    */
   public static String escapeXML(Object xmlString) {
-    if (xmlString == null) return "";
-    if (xmlString instanceof String) return escapeXML((String)xmlString);
-    return escapeXML(xmlString.toString());
+    if (xmlString == null) {
+      return "";
+    }
+    if (xmlString instanceof String) {
+      return Utils.escapeXML((String)xmlString);
+    }
+    return Utils.escapeXML(xmlString.toString());
   }
   /**
    * Diese Methode ersetzt in einem XML String alle &lt; und &gt; durch
    * &amp;lt; und &amp;gt;.
    */
   public static String escapeXML(String xmlString) {
-    if (isEmpty(xmlString)) return xmlString;
+    if (Utils.isEmpty(xmlString)) {
+      return xmlString;
+    }
     xmlString = xmlString.replaceAll("&amp;","&"); // kleiner Hint, um &amp; -> &amp;amp; zu vermeiden.
     xmlString = xmlString.replaceAll("&","&amp;");
     xmlString = xmlString.replaceAll("&lt;","&amp;lt;");
@@ -171,7 +197,9 @@ public class Utils {
     List<Element> result = new ArrayList<Element>();
     for (int i=0; i<subnodes.getLength(); i++) {
       Node node = subnodes.item(i);
-      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+      if (node.getNodeType() != Node.ELEMENT_NODE) {
+        continue;
+      }
       result.add((Element)node);
     }
     return result;
@@ -181,29 +209,41 @@ public class Utils {
     List<Element> result = new ArrayList<Element>();
     for (int i=0; i<subnodes.getLength(); i++) {
       Node node = subnodes.item(i);
-      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
-      if (!node.getNodeName().equalsIgnoreCase(name)) continue;
+      if (node.getNodeType() != Node.ELEMENT_NODE) {
+        continue;
+      }
+      if (!node.getNodeName().equalsIgnoreCase(name)) {
+        continue;
+      }
       result.add((Element)node);
     }
     return result;
   }
   public static Element getChildNode(Element root, String name) {
-    List<Element> children = getChildNodes(root, name);
-    if (Utils.isEmpty(children)) return null;
+    List<Element> children = Utils.getChildNodes(root, name);
+    if (Utils.isEmpty(children)) {
+      return null;
+    }
     return children.get(0);
   }
   public static Element getChildNode(Element root) {
     NodeList subnodes = root.getChildNodes();
     for (int i=0; i<subnodes.getLength(); i++) {
       Node node = subnodes.item(i);
-      if (node.getNodeType() != Node.ELEMENT_NODE) continue;
+      if (node.getNodeType() != Node.ELEMENT_NODE) {
+        continue;
+      }
       return (Element)node;
     }
     return null;
   }
   public static String getCData(Element root) {
-    if (root == null) return "";
-    if (root.getFirstChild() == null) return "";
+    if (root == null) {
+      return "";
+    }
+    if (root.getFirstChild() == null) {
+      return "";
+    }
     return root.getFirstChild().getNodeValue();
   }
   
@@ -214,30 +254,44 @@ public class Utils {
    * @return A color oder null.
    */
   public static Color getColor(String colorAsString) {
-    if (isEmpty(colorAsString)) return null;
+    if (Utils.isEmpty(colorAsString)) {
+      return null;
+    }
     int red   = 0;
     int green = 0;
     int blue  = 0;
     if (colorAsString.startsWith("#") &&  colorAsString.length() == 7) {
-      red   = hexadecimalToDecimal(colorAsString.substring(1,3));
-      green = hexadecimalToDecimal(colorAsString.substring(3,5));
-      blue  = hexadecimalToDecimal(colorAsString.substring(5,7));
+      red   = Utils.hexadecimalToDecimal(colorAsString.substring(1,3));
+      green = Utils.hexadecimalToDecimal(colorAsString.substring(3,5));
+      blue  = Utils.hexadecimalToDecimal(colorAsString.substring(5,7));
     } else if (colorAsString.length() == 6) {
-      red   = hexadecimalToDecimal(colorAsString.substring(0,2));
-      green = hexadecimalToDecimal(colorAsString.substring(2,4));
-      blue  = hexadecimalToDecimal(colorAsString.substring(4,6));
+      red   = Utils.hexadecimalToDecimal(colorAsString.substring(0,2));
+      green = Utils.hexadecimalToDecimal(colorAsString.substring(2,4));
+      blue  = Utils.hexadecimalToDecimal(colorAsString.substring(4,6));
     } else {
       return null;
     }
     
-    if (red < 0) red = 0;
-    if (red > 255) red = 255;
+    if (red < 0) {
+      red = 0;
+    }
+    if (red > 255) {
+      red = 255;
+    }
     
-    if (green < 0) green = 0;
-    if (green > 255) green = 255;
+    if (green < 0) {
+      green = 0;
+    }
+    if (green > 255) {
+      green = 255;
+    }
 
-    if (blue < 0) blue = 0;
-    if (blue > 255) blue = 255;
+    if (blue < 0) {
+      blue = 0;
+    }
+    if (blue > 255) {
+      blue = 255;
+    }
     
     return new Color(red,green,blue);
   }
@@ -249,27 +303,47 @@ public class Utils {
    * @return A color oder null.
    */
   public static String getColor(Color color) {
-    if (color == null) return null;
+    if (color == null) {
+      return null;
+    }
     int red = color.getRed();
     int green = color.getGreen();
     int blue = color.getBlue();
 
-    if (red < 0) red = 0;
-    if (red > 255) red = 255;
+    if (red < 0) {
+      red = 0;
+    }
+    if (red > 255) {
+      red = 255;
+    }
     
-    if (green < 0) green = 0;
-    if (green > 255) green = 255;
+    if (green < 0) {
+      green = 0;
+    }
+    if (green > 255) {
+      green = 255;
+    }
 
-    if (blue < 0) blue = 0;
-    if (blue > 255) blue = 255;
+    if (blue < 0) {
+      blue = 0;
+    }
+    if (blue > 255) {
+      blue = 255;
+    }
     
-    String r = decimalToHexadecimal(red);
-    String g = decimalToHexadecimal(green);
-    String b = decimalToHexadecimal(blue);
+    String r = Utils.decimalToHexadecimal(red);
+    String g = Utils.decimalToHexadecimal(green);
+    String b = Utils.decimalToHexadecimal(blue);
     
-    if (r.length()<2) r = "0"+r;
-    if (g.length()<2) g = "0"+g;
-    if (b.length()<2) b = "0"+b;
+    if (r.length()<2) {
+      r = "0"+r;
+    }
+    if (g.length()<2) {
+      g = "0"+g;
+    }
+    if (b.length()<2) {
+      b = "0"+b;
+    }
 
     return "#"+r+g+b;
   }
@@ -281,21 +355,37 @@ public class Utils {
     for(int i=hexadecimal.length()-1; i>=0; i--) {
       digit = hexadecimal.toUpperCase().substring(i,i+1);
 
-      if(digit.equals("1"))      number=1;
-      else if(digit.equals("2")) number=2;
-      else if(digit.equals("3")) number=3;
-      else if(digit.equals("4")) number=4;
-      else if(digit.equals("5")) number=5;
-      else if(digit.equals("6")) number=6;
-      else if(digit.equals("7")) number=7;
-      else if(digit.equals("8")) number=8;
-      else if(digit.equals("9")) number=9;
-      else if(digit.equals("A")) number=10;
-      else if(digit.equals("B")) number=11;
-      else if(digit.equals("C")) number=12;
-      else if(digit.equals("D")) number=13;
-      else if(digit.equals("E")) number=14;
-      else if(digit.equals("F")) number=15;
+      if(digit.equals("1")) {
+        number=1;
+      } else if(digit.equals("2")) {
+        number=2;
+      } else if(digit.equals("3")) {
+        number=3;
+      } else if(digit.equals("4")) {
+        number=4;
+      } else if(digit.equals("5")) {
+        number=5;
+      } else if(digit.equals("6")) {
+        number=6;
+      } else if(digit.equals("7")) {
+        number=7;
+      } else if(digit.equals("8")) {
+        number=8;
+      } else if(digit.equals("9")) {
+        number=9;
+      } else if(digit.equals("A")) {
+        number=10;
+      } else if(digit.equals("B")) {
+        number=11;
+      } else if(digit.equals("C")) {
+        number=12;
+      } else if(digit.equals("D")) {
+        number=13;
+      } else if(digit.equals("E")) {
+        number=14;
+      } else if(digit.equals("F")) {
+        number=15;
+      }
          
       decimal = decimal+(number*power);
       number = 0;
@@ -316,7 +406,7 @@ public class Utils {
       rest=result%16;
       result = result / 16;
       
-      hexadecimal.append(hex[(int)rest]);                   
+      hexadecimal.append(Utils.hex[(int)rest]);                   
     } while(result != 0);
     
     return hexadecimal.reverse().toString();
@@ -326,7 +416,9 @@ public class Utils {
    * Returns the date in the form "DD.MM.YYYY HH:MM:ss"
    */
   public static String toDayAndTime(Date date) {
-    if (date == null) return "-";
+    if (date == null) {
+      return "-";
+    }
     SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
     return format.format(date);
   }
@@ -335,7 +427,7 @@ public class Utils {
    * Returns the date in the form "yyyy-MM-dd HH:mm:ss"
    */
   public static Date toDate(String date) {
-    if(!isEmpty(date)) {
+    if(!Utils.isEmpty(date)) {
       try {
         SimpleDateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return formater.parse(date);

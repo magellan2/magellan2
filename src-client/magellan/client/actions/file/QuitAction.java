@@ -43,7 +43,8 @@ public class QuitAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		client.quit(true);
 	}
 

@@ -52,7 +52,7 @@ public class Script implements Cloneable {
   private Priority priority = Priority.NORMAL;
   private String containerId = null;
   private ContainerType type = ContainerType.UNKNOWN;
-  private int scripttype = SCRIPTTYPE_UNKNOWN;
+  private int scripttype = Script.SCRIPTTYPE_UNKNOWN;
   
   public Script(String containerId, int scripttype, ContainerType type, String script) {
     this.containerId = containerId;
@@ -63,13 +63,15 @@ public class Script implements Cloneable {
   
   
   public Script(Element node) {
-    if (node == null) return;
+    if (node == null) {
+      return;
+    }
     if (node.getNodeName().equalsIgnoreCase("library")) {
       script = Utils.getCData(node);
       priority = Priority.NORMAL;
       cursor = getCursor(node);
       containerId = null;
-      scripttype = SCRIPTTYPE_LIBRARY;
+      scripttype = Script.SCRIPTTYPE_LIBRARY;
       
     } else if (node.getNodeName().equalsIgnoreCase("container")) {
       script = Utils.getCData(node);
@@ -77,14 +79,14 @@ public class Script implements Cloneable {
       cursor = getCursor(node);
       containerId = getContainerId(node);
       type = getContainerType(node);
-      scripttype = SCRIPTTYPE_CONTAINER;
+      scripttype = Script.SCRIPTTYPE_CONTAINER;
       
     } else if (node.getNodeName().equalsIgnoreCase("unit")) {
       script = Utils.getCData(node);
       priority = getPriority(node);
       cursor = getCursor(node);
       containerId = getContainerId(node);
-      scripttype = SCRIPTTYPE_UNIT;
+      scripttype = Script.SCRIPTTYPE_UNIT;
       
     } else {
       throw new IllegalArgumentException("Unknown Script type");
@@ -132,7 +134,9 @@ public class Script implements Cloneable {
       } catch (Exception e) {
         cursor = 0;
       }
-      if (cursor<0) cursor = 0;
+      if (cursor<0) {
+        cursor = 0;
+      }
     }
     return cursor;
   }

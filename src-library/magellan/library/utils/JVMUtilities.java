@@ -39,10 +39,10 @@ public class JVMUtilities {
 		try {
 			return (Color) UIManager.getDefaults().get("Tree.selectionBorderColor");
 		} catch(ClassCastException cce) {
-			log.warn("JVM 1.4.2_01 bug! Switching to color black!");
+			JVMUtilities.log.warn("JVM 1.4.2_01 bug! Switching to color black!");
 
-			if(log.isDebugEnabled()) {
-				log.debug("JVM 1.4.2_01 bug: class " +
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug("JVM 1.4.2_01 bug: class " +
 						  UIManager.getDefaults().get("Tree.selectionBorderColor").getClass()
 								   .getName() + " instead of Color!");
 			}
@@ -63,8 +63,8 @@ public class JVMUtilities {
 			Object result = aObj.getClass().getMethod("requestFocusInWindow", new Class[] {  })
 								.invoke(aObj, new Object[] {  });
 
-			if(log.isDebugEnabled()) {
-				log.debug("JVMUtitities : successfully called Component.requestFocusInWindow()!");
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug("JVMUtitities : successfully called Component.requestFocusInWindow()!");
 			}
 
 			return ((Boolean) result).booleanValue();
@@ -72,8 +72,8 @@ public class JVMUtilities {
 		} catch(java.lang.IllegalAccessException ex) {
 		} catch(java.lang.reflect.InvocationTargetException ex) {
 		} catch(ClassCastException ex) {
-			if(log.isDebugEnabled()) {
-				log.debug(ex);
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug(ex);
 			}
 		}
 
@@ -96,8 +96,8 @@ public class JVMUtilities {
 			aObj.getClass().getMethod("setFocusableWindowState", new Class[] { Boolean.TYPE })
 				.invoke(aObj, new Object[] { aFlag ? Boolean.TRUE : Boolean.FALSE });
 
-			if(log.isDebugEnabled()) {
-				log.debug("JVMUtitities : successfully called Component.setFocusableWindowState(" +
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug("JVMUtitities : successfully called Component.setFocusableWindowState(" +
 						  aFlag + ")!");
 			}
 		} catch(java.lang.NoSuchMethodException ex) {
@@ -122,7 +122,7 @@ public class JVMUtilities {
 	public static final int MAXIMIZED_VERT = 4;
 
 	/** DOCUMENT-ME */
-	public static final int MAXIMIZED_BOTH = MAXIMIZED_VERT | MAXIMIZED_HORIZ;
+	public static final int MAXIMIZED_BOTH = JVMUtilities.MAXIMIZED_VERT | JVMUtilities.MAXIMIZED_HORIZ;
 
 	/**
 	 * This function calls Frame.getExtendedState (in java >= 1.4) to  keep GUI consistent with
@@ -139,8 +139,8 @@ public class JVMUtilities {
 																									   
 																								   });
 
-			if(log.isDebugEnabled()) {
-				log.debug("JVMUtitities : successfully called Window.getExtendedState()!");
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug("JVMUtitities : successfully called Window.getExtendedState()!");
 			}
 
 			return ((Integer) result).intValue();
@@ -148,12 +148,12 @@ public class JVMUtilities {
 		} catch(java.lang.IllegalAccessException ex) {
 		} catch(java.lang.reflect.InvocationTargetException ex) {
 		} catch(ClassCastException ex) {
-			if(log.isDebugEnabled()) {
-				log.debug(ex);
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug(ex);
 			}
 		}
 
-		return UNKNOWN;
+		return JVMUtilities.UNKNOWN;
 	}
 
 	/**
@@ -166,7 +166,7 @@ public class JVMUtilities {
 	 * 
 	 */
 	public static final boolean setExtendedState(Frame aObj, int state) {
-		if(state == UNKNOWN) {
+		if(state == JVMUtilities.UNKNOWN) {
 			return false;
 		}
 
@@ -176,8 +176,8 @@ public class JVMUtilities {
 																								   new Integer(state)
 																							   });
 
-			if(log.isDebugEnabled()) {
-				log.debug("JVMUtitities : successfully called Window.setExtendedState(" + state +
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug("JVMUtitities : successfully called Window.setExtendedState(" + state +
 						  ")!");
 			}
 
@@ -186,8 +186,8 @@ public class JVMUtilities {
 		} catch(java.lang.IllegalAccessException ex) {
 		} catch(java.lang.reflect.InvocationTargetException ex) {
 		} catch(ClassCastException ex) {
-			if(log.isDebugEnabled()) {
-				log.debug(ex);
+			if(JVMUtilities.log.isDebugEnabled()) {
+				JVMUtilities.log.debug(ex);
 			}
 		}
 
@@ -195,20 +195,20 @@ public class JVMUtilities {
 	}
 
 	/** 'true' iff the current runtime version is 1.2 or later */
-	public static final boolean JRE_1_2_PLUS = checkForJRE_1_2_PLUS();
+	public static final boolean JRE_1_2_PLUS = JVMUtilities.checkForJRE_1_2_PLUS();
 
 	/** 'true' iff the current runtime version is 1.3 or later */
-	public static final boolean JRE_1_3_PLUS = checkForJRE_1_3_PLUS();
+	public static final boolean JRE_1_3_PLUS = JVMUtilities.checkForJRE_1_3_PLUS();
 
 	/** 'true' iff the current runtime version is 1.4 or later */
-	public static final boolean JRE_1_4_PLUS = checkForJRE_1_4_PLUS();
+	public static final boolean JRE_1_4_PLUS = JVMUtilities.checkForJRE_1_4_PLUS();
 
 	static {
-		if(log.isDebugEnabled()) {
-			log.debug("Check for JRE: JRE_1_2_PLUS: " + JRE_1_2_PLUS);
-			log.debug("Check for JRE: JRE_1_3_PLUS: " + JRE_1_3_PLUS);
-			log.debug("Check for JRE: JRE_1_4_PLUS: " + JRE_1_4_PLUS);
-			log.debug("Check for JRE done");
+		if(JVMUtilities.log.isDebugEnabled()) {
+			JVMUtilities.log.debug("Check for JRE: JRE_1_2_PLUS: " + JVMUtilities.JRE_1_2_PLUS);
+			JVMUtilities.log.debug("Check for JRE: JRE_1_3_PLUS: " + JVMUtilities.JRE_1_3_PLUS);
+			JVMUtilities.log.debug("Check for JRE: JRE_1_4_PLUS: " + JVMUtilities.JRE_1_4_PLUS);
+			JVMUtilities.log.debug("Check for JRE done");
 		}
 	}
 
@@ -241,7 +241,7 @@ public class JVMUtilities {
 	}
 
 	/** !null iff the current system has a functional xml parser */
-	public static final String XML_PARSER_FOUND = checkForXML_Parser();
+	public static final String XML_PARSER_FOUND = JVMUtilities.checkForXML_Parser();
 
 	/**
 	 * Returns the String of a found (and tested) xml parser

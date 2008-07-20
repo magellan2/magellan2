@@ -49,16 +49,18 @@ public class Minimapper extends Mapper {
 	 * @param b ignored
 	 * @see magellan.client.swing.map.Mapper#setShowTooltip(boolean)
 	 */
-	public void setShowTooltip(boolean b) {
+	@Override
+  public void setShowTooltip(boolean b) {
 		// never show tooltips
 	}
   
   /**
    * @see magellan.client.swing.map.Mapper#setRenderer(magellan.client.swing.map.MapCellRenderer)
    */
+  @Override
   public void setRenderer(MapCellRenderer renderer) {
     if (renderer.getPlaneIndex()==Mapper.PLANE_REGION) {
-      log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
+      Minimapper.log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer);
 //      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
     }
@@ -67,9 +69,10 @@ public class Minimapper extends Mapper {
 	/**
 	 * 
 	 */
-	public void setRenderer(MapCellRenderer renderer, int plane) {
+	@Override
+  public void setRenderer(MapCellRenderer renderer, int plane) {
     if (plane==Mapper.PLANE_REGION) {
-      log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
+      Minimapper.log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer, plane);
 //      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
       /*
@@ -80,6 +83,7 @@ public class Minimapper extends Mapper {
     }
 	}
   
+  @Override
   protected String getPropertyName(int plane) {
     return "Minimap.Renderer";
   }
@@ -87,7 +91,8 @@ public class Minimapper extends Mapper {
   /**
    * @see magellan.client.swing.map.Mapper#initRenderingPlanes()
    */
-	protected RenderingPlane[] initRenderingPlanes() {
+	@Override
+  protected RenderingPlane[] initRenderingPlanes() {
 		RenderingPlane p[] = new RenderingPlane[Mapper.PLANE_REGION+1];
 		p[Mapper.PLANE_REGION] = new RenderingPlane(Mapper.PLANE_REGION, Resources.get("map.mapper.plane.region.name"), RenderingPlane.VISIBLE_REGIONS);
 		p[Mapper.PLANE_REGION].setRenderer(myRenderer = new RegionShapeCellRenderer(getCellGeometry(),
@@ -147,11 +152,13 @@ public class Minimapper extends Mapper {
 		repaint();
 	}
 
-	protected void setLastRegionRenderingType(int l) {
+	@Override
+  protected void setLastRegionRenderingType(int l) {
 		minimapLastType = l;
 	}
 
-	protected int getLastRegionRenderingType() {
+	@Override
+  protected int getLastRegionRenderingType() {
 		return minimapLastType;
 	}
 }

@@ -150,7 +150,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		public CompletionList() {
 			this.addKeyListener(this);
 			this.addMouseListener(new MouseAdapter() {
-					public void mouseClicked(MouseEvent e) {
+					@Override
+          public void mouseClicked(MouseEvent e) {
 						CompletionList.this.mouseClicked(e);
 					}
 				});
@@ -163,7 +164,9 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		 *
 		 * 
 		 */
-		public boolean isManagingFocus() {
+		@Deprecated
+    @Override
+    public boolean isManagingFocus() {
 			return true;
 		}
 
@@ -227,7 +230,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		 */
 		public ListPane() {
 			super(new JFrame() {
-					public boolean isShowing() {
+					@Override
+          public boolean isShowing() {
 						return true;
 					}
 				});
@@ -253,7 +257,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 			this.pack();
 
 			this.addFocusListener(new FocusAdapter() {
-					public void focusGained(FocusEvent e) {
+					@Override
+          public void focusGained(FocusEvent e) {
 						choiceList.requestFocus();
 					}
 				});

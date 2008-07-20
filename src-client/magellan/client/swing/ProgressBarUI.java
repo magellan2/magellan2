@@ -101,7 +101,7 @@ public class ProgressBarUI implements UserInterface {
     try {
       SwingUtilities.invokeAndWait(conf);
     } catch(Exception e) {
-      log.error(e);
+      ProgressBarUI.log.error(e);
     }
 
     return conf.bResult;
@@ -115,7 +115,7 @@ public class ProgressBarUI implements UserInterface {
     try {
       SwingUtilities.invokeAndWait(input);
     } catch (Exception e) {
-      log.error(e);
+      ProgressBarUI.log.error(e);
     }
     return input.sResult;
   }
@@ -137,8 +137,9 @@ public class ProgressBarUI implements UserInterface {
    */
   public void ready() {
     ready=true;
-    if (dlg.isVisible())
+    if (dlg.isVisible()) {
       dlg.setVisible(false);
+    }
     // if the progress dialog hasn't been set visible, because invokeLater is
     // waiting for an event, we cannot dispose the dialog, because this would
     // wait, too and could cause a deadlock. Therefore we only dispose if it has already been shown.
@@ -175,15 +176,17 @@ public class ProgressBarUI implements UserInterface {
     protected void processEvent(AWTEvent e) {
       if (e instanceof WindowEvent){
         WindowEvent we = (WindowEvent) e;
-        if (we.getID()!=WindowEvent.WINDOW_CLOSING)
+        if (we.getID()!=WindowEvent.WINDOW_CLOSING) {
           super.processEvent(e);
-        else if (JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-          log.info("aborted");
+        } else if (JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+          ProgressBarUI.log.info("aborted");
           super.processEvent(e);
-        }else
-          log.info("abort aborted");
-      }else
+        } else {
+          ProgressBarUI.log.info("abort aborted");
+        }
+      } else {
         super.processEvent(e);
+      }
 
     }
 

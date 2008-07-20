@@ -42,7 +42,7 @@ public class CopyFile {
 	 * @throws IOException if an I/O error occured.
 	 */
 	public static synchronized File copy(File source) throws IOException {
-		return copy(source, createTempFile());
+		return CopyFile.copy(source, CopyFile.createTempFile());
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class CopyFile {
 	 * @throws IOException if an I/O error occured.
 	 */
 	public static synchronized File copy(File source, File target) throws IOException {
-		copyStreams(new FileInputStream(source), new FileOutputStream(target));
+		CopyFile.copyStreams(new FileInputStream(source), new FileOutputStream(target));
 		target.setLastModified(source.lastModified());
 
 		return target;
@@ -70,7 +70,7 @@ public class CopyFile {
 	 * @throws IOException DOCUMENT-ME
 	 */
 	public static synchronized File createCrTempFile() throws IOException {
-		return createTempFile("magellan", ".tmp.cr");
+		return CopyFile.createTempFile("magellan", ".tmp.cr");
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class CopyFile {
 	 * @throws IOException DOCUMENT-ME
 	 */
 	public static synchronized File createTempFile() throws IOException {
-		return createTempFile("magellan");
+		return CopyFile.createTempFile("magellan");
 	}
 
 	/**
@@ -94,7 +94,7 @@ public class CopyFile {
 	 * @throws IOException DOCUMENT-ME
 	 */
 	public static synchronized File createTempFile(String prefix) throws IOException {
-		return createTempFile(prefix, null);
+		return CopyFile.createTempFile(prefix, null);
 	}
 
 	private static File createTempFile(String prefix, String suffix) throws IOException {
@@ -109,7 +109,7 @@ public class CopyFile {
 
 
 	public static synchronized void copyStreams(InputStream source, OutputStream target) throws IOException {
-		copyStreams(source, target, true);
+		CopyFile.copyStreams(source, target, true);
 	}
 
 	/**
@@ -125,19 +125,19 @@ public class CopyFile {
 	{
 		InputStream in = null;
 		OutputStream out = null;
-		byte buffer[] = new byte[BUFF_SIZE];
+		byte buffer[] = new byte[CopyFile.BUFF_SIZE];
 
 		try {
 			// encapsulate into BufferedInputStream if necessary
 			try {
-				in = (BufferedInputStream) source;
+				in = source;
 			} catch(ClassCastException e) {
 				in = new BufferedInputStream(source);
 			}
 
 			// encapsulate into BufferedInputStream if necessary
 			try {
-				out = (BufferedOutputStream) target;
+				out = target;
 			} catch(ClassCastException e) {
 				out = new BufferedOutputStream(target);
 			}

@@ -60,7 +60,7 @@ public abstract class AbstractPlugInLoader<T> {
       try {
         path = URLDecoder.decode(url.getFile(),"UTF-8");
       } catch (Exception exception) {
-        log.error("",exception);
+        AbstractPlugInLoader.log.error("",exception);
         continue;
       }
 
@@ -115,7 +115,7 @@ public abstract class AbstractPlugInLoader<T> {
       File file = new File(path);
       if (file.exists()) {
         if (file.isDirectory()) {
-          log.debug("Searching in " + file.getAbsolutePath() + "...");
+          AbstractPlugInLoader.log.debug("Searching in " + file.getAbsolutePath() + "...");
 
           // add files or subdirectories to search list
           File newPaths[] = file.listFiles();
@@ -126,7 +126,7 @@ public abstract class AbstractPlugInLoader<T> {
             classes.addAll(getClassesFromPath(resLoader, externalModuleClass, newPaths[i].getAbsolutePath(), newPrefix, postfix));
           }
         } else if (file.getName().toLowerCase().endsWith(".jar") || file.getName().toLowerCase().endsWith(".zip")) {
-          log.info("Searching " + file.getAbsolutePath() + "...");
+          AbstractPlugInLoader.log.info("Searching " + file.getAbsolutePath() + "...");
 
           ZipFile zip = new ZipFile(file);
 
@@ -143,7 +143,9 @@ public abstract class AbstractPlugInLoader<T> {
               Class interfaces[] = foundClass.getInterfaces();
               boolean found = false;
               
-              for (Class ainterface : interfaces) log.debug("interface: "+ainterface.getName());
+              for (Class ainterface : interfaces) {
+                AbstractPlugInLoader.log.debug("interface: "+ainterface.getName());
+              }
 
               for (int i = 0; (i < interfaces.length) && !found; i++) {
                 if (interfaces[i].equals(externalModuleClass)) {
@@ -155,7 +157,7 @@ public abstract class AbstractPlugInLoader<T> {
               if (found) {
                 // found a class that implements ExternalModule
                 classes.add(foundClass);
-                log.info("Found " + foundClass.getName());
+                AbstractPlugInLoader.log.info("Found " + foundClass.getName());
               }
             }
           }
@@ -179,21 +181,21 @@ public abstract class AbstractPlugInLoader<T> {
             if (interfaces[i].equals(externalModuleClass)) {
               // found a class that implements ExternalModule
               classes.add(foundClass);
-              log.info("Found " + foundClass.getName());
+              AbstractPlugInLoader.log.info("Found " + foundClass.getName());
 
               break;
             }
           }
         }
       } else {
-        log.info("File not found: " + file);
+        AbstractPlugInLoader.log.info("File not found: " + file);
       }
     } catch (IOException ioe) {
-      log.error(ioe);
+      AbstractPlugInLoader.log.error(ioe);
     } catch (NoClassDefFoundError ncdfe) {
-      log.error(ncdfe);
+      AbstractPlugInLoader.log.error(ncdfe);
     } catch (ClassNotFoundException cnfe) {
-      log.error(cnfe);
+      AbstractPlugInLoader.log.error(cnfe);
     }
 
     return classes;
@@ -239,8 +241,8 @@ public abstract class AbstractPlugInLoader<T> {
 
     for (char c = iter.last(); c != CharacterIterator.DONE; c = iter.previous()) {
       if ((c >= 'A') && (c <= 'Z')) {
-        if (log.isDebugEnabled()) {
-          log.debug("ExternalModuleLoader.getLastCapitalizedString(" + aString + "): " + aString.substring(iter.getIndex()));
+        if (AbstractPlugInLoader.log.isDebugEnabled()) {
+          AbstractPlugInLoader.log.debug("ExternalModuleLoader.getLastCapitalizedString(" + aString + "): " + aString.substring(iter.getIndex()));
         }
 
         return aString.substring(iter.getIndex());

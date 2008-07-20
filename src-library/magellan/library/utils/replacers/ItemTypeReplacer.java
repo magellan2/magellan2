@@ -79,7 +79,7 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
 				return new Integer(count);
 			}
 
-			return ZERO;
+			return ItemTypeReplacer.ZERO;
 		}
 
 		return null;

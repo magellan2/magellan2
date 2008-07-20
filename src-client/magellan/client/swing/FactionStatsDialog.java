@@ -175,11 +175,11 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 		// sort factions
 		if(sortByTrustLevel.equals("true")) {
-			Collections.sort(factions, factionTrustComparator);
+			Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
 		} else if (sortByTrustLevel.equals("detailed")){
 			Collections.sort(factions, FactionTrustComparator.DETAILED_COMPARATOR);
 		} else {
-			Collections.sort(factions, nameComparator);
+			Collections.sort(factions, FactionStatsDialog.nameComparator);
 		}
 
 		final FactionStatsDialog d = this;
@@ -246,11 +246,11 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					} else if (sortByTrust.equalsIgnoreCase("detailed")){
 						sortByTrust="false";
 						sort.setText(Resources.get("factionstatsdialog.btn.sort.trustlevel.caption"));
-						Collections.sort(factions, nameComparator);
+						Collections.sort(factions, FactionStatsDialog.nameComparator);
 					} else {
 						sortByTrust="true";
 						sort.setText(Resources.get("factionstatsdialog.btn.sort.detailed.caption"));
-						Collections.sort(factions, factionTrustComparator);
+						Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
 					}
 					settings.setProperty("FactionStatsDialog.SortByTrustLevel", String.valueOf(sortByTrust));
 
@@ -267,7 +267,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 				public void actionPerformed(ActionEvent e) {
           Object[] values = lstFaction.getSelectedValues();
 					List<Faction> victims = new LinkedList<Faction>();
-          for (Object value : values) victims.add((Faction)value);
+          for (Object value : values) {
+            victims.add((Faction)value);
+          }
 
 					for(ListIterator<Faction> iter = (ListIterator<Faction>) victims.iterator(); iter.hasNext();) {
 						Faction f = iter.next();
@@ -372,10 +374,11 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					    TrustLevels.recalculateTrustLevels(data);
 					  }
 					  
-					  if (dialog.isOwner())
-					    data.setOwnerFaction((EntityID) f.getID());
-					  else if (data.getOwnerFaction()!=null && data.getOwnerFaction().equals(f.getID()))
-					    data.setOwnerFaction(null);
+					  if (dialog.isOwner()) {
+              data.setOwnerFaction((EntityID) f.getID());
+            } else if (data.getOwnerFaction()!=null && data.getOwnerFaction().equals(f.getID())) {
+              data.setOwnerFaction(null);
+            }
 					  
 					  Collection<CoordinateID> translations = dialog.getTranslations();
 					  if (translations!=null){
@@ -453,7 +456,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 								// GameData did probably change
 								dispatcher.fire(new GameDataEvent(this, data));
-								Collections.sort(factions, factionTrustComparator);
+								Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
 							} else {
 								JOptionPane.showMessageDialog(FactionStatsDialog.this,
 															  Resources.get("factionstatsdialog.msg.trustlevelinputinvalid"));
@@ -544,9 +547,9 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 			return skillChartPanel;
 		} catch(Throwable t) {
-			log.warn(t+": "+t.getLocalizedMessage());
+			FactionStatsDialog.log.warn(t+": "+t.getLocalizedMessage());
 			t.printStackTrace();
-			log.warn("FactionStatsDialog.getSkillChartPanel(): Couldn't create skillChartPanel! Delivering null.");
+			FactionStatsDialog.log.warn("FactionStatsDialog.getSkillChartPanel(): Couldn't create skillChartPanel! Delivering null.");
 		}
 
 		return null;
@@ -566,7 +569,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		}
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		storeSettings();
 		super.quit();
 	}
@@ -576,12 +580,13 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	 *
 	 * 
 	 */
-	public void gameDataChanged(GameDataEvent e) {
+	@Override
+  public void gameDataChanged(GameDataEvent e) {
 		data = e.getGameData();
 		factions = new LinkedList<Faction>(data.factions().values());
 
 		// sort factions
-		Collections.sort(factions, factionTrustComparator);
+		Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
 		lstFaction.setListData(factions.toArray());
 
 		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID",

@@ -25,6 +25,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +46,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -160,7 +160,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     shortcuts = new ArrayList<KeyStroke>(1);
 
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_E, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK));
 
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
@@ -276,7 +276,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
           cmbFactions.addItem(f);
         }
       }
-      if (cmbFactions.getItemCount()>0) cmbFactions.setSelectedIndex(0);
+      if (cmbFactions.getItemCount()>0) {
+        cmbFactions.setSelectedIndex(0);
+      }
     }
 	}
 
@@ -432,7 +434,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 			r.close();
 			txtOutput.setText(sb.toString());
 		} catch(IOException e) {
-			log.error("ECheckPanel.runECheck(): error while reading ECheck output", e);
+			ECheckPanel.log.error("ECheckPanel.runECheck(): error while reading ECheck output", e);
 		}
 
 		// run echeck to get the messages
@@ -483,7 +485,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	/**
 	 * 
 	 */
-	public void quit() {
+	@Override
+  public void quit() {
 		if(dispatcher != null) {
 			dispatcher.removeSelectionListener(this);
 		}
@@ -707,36 +710,38 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	 *
 	 * 
 	 */
-	private String getFileName(String defaultFile) {
-		String retVal = null;
-
-		javax.swing.filechooser.FileFilter ff = new javax.swing.filechooser.FileFilter() {
-			public boolean accept(File f) {
-				String fileName = f.getName().toLowerCase();
-
-				return f.isDirectory() || (fileName.endsWith(".exe") || fileName.equals("echeck"));
-			}
-
-			public String getDescription() {
-				return Resources.get("echeckpanel.filter.echeckexe.desc");
-			}
-		};
-
-		JFileChooser fc = new JFileChooser();
-		fc.addChoosableFileFilter(ff);
-		fc.setFileFilter(ff);
-		fc.setMultiSelectionEnabled(false);
-
-		if(defaultFile != null) {
-			fc.setSelectedFile(new File(defaultFile));
-		}
-
-		if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			retVal = fc.getSelectedFile().getAbsolutePath();
-		}
-
-		return retVal;
-	}
+//	private String getFileName(String defaultFile) {
+//		String retVal = null;
+//
+//		javax.swing.filechooser.FileFilter ff = new javax.swing.filechooser.FileFilter() {
+//			@Override
+//      public boolean accept(File f) {
+//				String fileName = f.getName().toLowerCase();
+//
+//				return f.isDirectory() || (fileName.endsWith(".exe") || fileName.equals("echeck"));
+//			}
+//
+//			@Override
+//      public String getDescription() {
+//				return Resources.get("echeckpanel.filter.echeckexe.desc");
+//			}
+//		};
+//
+//		JFileChooser fc = new JFileChooser();
+//		fc.addChoosableFileFilter(ff);
+//		fc.setFileFilter(ff);
+//		fc.setMultiSelectionEnabled(false);
+//
+//		if(defaultFile != null) {
+//			fc.setSelectedFile(new File(defaultFile));
+//		}
+//
+//		if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+//			retVal = fc.getSelectedFile().getAbsolutePath();
+//		}
+//
+//		return retVal;
+//	}
 
 	/**
 	 * Default echeck options for given faction.
@@ -834,22 +839,22 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				JECheck.ECheckMessage m = (JECheck.ECheckMessage) value;
 
 				if(isSelected) {
-					this.setBackground(selectedBackground);
-					lblCaption.setForeground(selectedForeground);
-					txtMessage.setForeground(selectedForeground);
+					this.setBackground(ECheckMessageRenderer.selectedBackground);
+					lblCaption.setForeground(ECheckMessageRenderer.selectedForeground);
+					txtMessage.setForeground(ECheckMessageRenderer.selectedForeground);
 				} else {
-					this.setBackground(textBackground);
-					lblCaption.setForeground(textForeground);
-					txtMessage.setForeground(textForeground);
+					this.setBackground(ECheckMessageRenderer.textBackground);
+					lblCaption.setForeground(ECheckMessageRenderer.textForeground);
+					txtMessage.setForeground(ECheckMessageRenderer.textForeground);
 				}
 
 				if(cellHasFocus) {
-					this.setBorder(focusedBorder);
+					this.setBorder(ECheckMessageRenderer.focusedBorder);
 				} else {
 					if(isSelected) {
-						this.setBorder(selectedBorder);
+						this.setBorder(ECheckMessageRenderer.selectedBorder);
 					} else {
-						this.setBorder(plainBorder);
+						this.setBorder(ECheckMessageRenderer.plainBorder);
 					}
 				}
 
@@ -875,20 +880,20 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		}
 
 		private void applyUIDefaults() {
-			textForeground = (Color) UIManager.getDefaults().get("Tree.textForeground");
-			textBackground = (Color) UIManager.getDefaults().get("Tree.textBackground");
-			selectedForeground = (Color) UIManager.getDefaults().get("Tree.selectionForeground");
-			selectedBackground = (Color) UIManager.getDefaults().get("Tree.selectionBackground");
+			ECheckMessageRenderer.textForeground = (Color) UIManager.getDefaults().get("Tree.textForeground");
+			ECheckMessageRenderer.textBackground = (Color) UIManager.getDefaults().get("Tree.textBackground");
+			ECheckMessageRenderer.selectedForeground = (Color) UIManager.getDefaults().get("Tree.selectionForeground");
+			ECheckMessageRenderer.selectedBackground = (Color) UIManager.getDefaults().get("Tree.selectionBackground");
 
 			// pavkovic 2003.10.17: prevent jvm 1.4.2_01 bug
-			focusedBorder = new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
-			selectedBorder = new MatteBorder(1, 1, 1, 1, selectedBackground);
-			plainBorder = new EmptyBorder(1, 1, 1, 1);
+			ECheckMessageRenderer.focusedBorder = new MatteBorder(1, 1, 1, 1, JVMUtilities.getTreeSelectionBorderColor());
+			ECheckMessageRenderer.selectedBorder = new MatteBorder(1, 1, 1, 1, ECheckMessageRenderer.selectedBackground);
+			ECheckMessageRenderer.plainBorder = new EmptyBorder(1, 1, 1, 1);
 
 			this.setOpaque(true);
-			this.setBackground(textBackground);
-			lblCaption.setForeground(textBackground);
-			txtMessage.setForeground(textBackground);
+			this.setBackground(ECheckMessageRenderer.textBackground);
+			lblCaption.setForeground(ECheckMessageRenderer.textBackground);
+			txtMessage.setForeground(ECheckMessageRenderer.textBackground);
 		}
 	}
 
@@ -952,7 +957,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       break; // unknown shortcut
 
     case 0:
-      DesktopEnvironment.requestFocus(IDENTIFIER);
+      DesktopEnvironment.requestFocus(ECheckPanel.IDENTIFIER);
       break; 
     }
   }

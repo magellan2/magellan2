@@ -7,7 +7,8 @@
     * the debug dock blocked the default log listener (which prints to the error.txt)
     * Bookmark list is now a docking window (#81)
     * added check for JAVA_HOME in magellan.bat (bug #236)
-
+    * removed a lot of old and unnecessary code 
+    
 2008-07-17 / Build 216 - Thoralf (thoralf@m84.de)
     * added help dock for Extended Commands 
     

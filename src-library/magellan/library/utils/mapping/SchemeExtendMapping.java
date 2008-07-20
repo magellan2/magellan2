@@ -42,7 +42,7 @@ import magellan.library.rules.RegionType;
 public class SchemeExtendMapping implements LevelMapping {
   private static SchemeExtendMapping singleton = new SchemeExtendMapping();
   public static SchemeExtendMapping getSingleton() {
-    return singleton;
+    return SchemeExtendMapping.singleton;
   }
   
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {

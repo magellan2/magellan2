@@ -32,6 +32,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -48,7 +49,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import javax.swing.Action;
@@ -82,8 +82,6 @@ import magellan.library.utils.Resources;
  */
  public class DesktopShortCutPreferences extends JPanel implements PreferencesAdapter, ActionListener {
   private MagellanDesktop desktop;
-  private Client client;
-  private Properties settings;
   
   protected JTable table;
   protected DefaultTableModel model;
@@ -94,10 +92,8 @@ import magellan.library.utils.Resources;
   /**
    * Creates a new ShortcutList object.
    */
-  public DesktopShortCutPreferences(MagellanDesktop desktop, Client client, Properties settings) {
+  public DesktopShortCutPreferences(MagellanDesktop desktop, Client client) {
     this.desktop = desktop;
-    this.client = client;
-    this.settings = settings;
     
     try {
       collator = Collator.getInstance(magellan.library.utils.Locales.getGUILocale());
@@ -272,6 +268,7 @@ import magellan.library.utils.Resources;
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    * @deprecated TODO: implement it!
    */
+  @Deprecated
   public void initPreferences() {
       // TODO: implement it
   }
@@ -337,8 +334,8 @@ import magellan.library.utils.Resources;
      * 
      */
     public int compare(KeyStroke o1, KeyStroke o2) {
-      KeyStroke k1 = (KeyStroke) o1;
-      KeyStroke k2 = (KeyStroke) o2;
+      KeyStroke k1 = o1;
+      KeyStroke k2 = o2;
 
       if(k1.getModifiers() != k2.getModifiers()) {
         int i1 = k1.getModifiers();
@@ -384,6 +381,7 @@ import magellan.library.utils.Resources;
     /**
      * 
      */
+    @Override
     public boolean isCellEditable(int r, int c) {
       return false;
     }
@@ -404,6 +402,7 @@ import magellan.library.utils.Resources;
 
   protected MouseListener getMousePressedMouseListener() {
     return new MouseAdapter() {
+        @Override
         public void mousePressed(MouseEvent mouseEvent) {
           if(mouseEvent.getClickCount() == 2) {
             Point p = mouseEvent.getPoint();
@@ -451,7 +450,7 @@ import magellan.library.utils.Resources;
 
         if(doIt) {
           if(desktop.getShortCutTranslations().containsKey(stroke)) {
-            KeyStroke oldStroke = (KeyStroke) desktop.getShortCutTranslations().get(stroke);
+            KeyStroke oldStroke = desktop.getShortCutTranslations().get(stroke);
             desktop.removeTranslation(stroke);
             stroke = oldStroke;
           }
@@ -653,22 +652,22 @@ import magellan.library.utils.Resources;
 
           switch(key) {
           case KeyEvent.VK_SHIFT:
-            xored = KeyEvent.SHIFT_MASK;
+            xored = InputEvent.SHIFT_MASK;
 
             break;
 
           case KeyEvent.VK_CONTROL:
-            xored = KeyEvent.CTRL_MASK;
+            xored = InputEvent.CTRL_MASK;
 
             break;
 
           case KeyEvent.VK_ALT:
-            xored = KeyEvent.ALT_MASK;
+            xored = InputEvent.ALT_MASK;
 
             break;
 
           case KeyEvent.VK_ALT_GRAPH:
-            xored = KeyEvent.ALT_GRAPH_MASK;
+            xored = InputEvent.ALT_GRAPH_MASK;
 
             break;
           }
@@ -697,6 +696,7 @@ import magellan.library.utils.Resources;
       /** 
        * To allow "tab" as a key.
        */
+      @Override
       public boolean isManagingFocus() {
         return true;
       }
@@ -732,6 +732,7 @@ import magellan.library.utils.Resources;
     /**
      * 
      */
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value,
                              boolean isSelected,
                              boolean hasFocus, int row, int column) {

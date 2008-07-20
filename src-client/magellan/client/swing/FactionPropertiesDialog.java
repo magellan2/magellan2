@@ -48,7 +48,6 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT-ME
@@ -57,7 +56,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 324 $
  */
 public class FactionPropertiesDialog extends InternationalizedDataDialog {
-  private static final Logger log = Logger.getInstance(FactionPropertiesDialog.class);
   private JTextField txtPassword;
   private Faction faction;
   private JButton btnOK;
@@ -96,6 +94,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
   /**
    * @see magellan.client.swing.InternationalizedDataDialog#gameDataChanged(magellan.library.event.GameDataEvent)
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     this.data = e.getGameData();
   }
@@ -171,8 +170,9 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     addButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         CoordinateID translation = getTranslation();
-        if (translation == null)
+        if (translation == null) {
           return;
+        }
         DefaultListModel model = (DefaultListModel) translationList.getModel();
         int pos = -1;
         for (int i = 0; i < model.size(); ++i) {
@@ -198,11 +198,12 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
 
     DefaultListModel model = new DefaultListModel();
 
-    if (faction.getData().getCoordinateTranslationMap((EntityID) faction.getID()) != null)
+    if (faction.getData().getCoordinateTranslationMap((EntityID) faction.getID()) != null) {
       for (CoordinateID translation : faction.getData().getCoordinateTranslationMap(
           (EntityID) faction.getID()).values()) {
         model.addElement(translation);
       }
+    }
     translationList.setModel(model);
 
     GridBagConstraints cc = new GridBagConstraints();
@@ -244,8 +245,9 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     removeButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         int pos = translationList.getSelectedIndex();
-        if (pos == -1)
+        if (pos == -1) {
           return;
+        }
         DefaultListModel model = getModel();
         model.remove(pos);
       }
@@ -332,19 +334,16 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     approved = false;
   }
 
-  private void apply() {
-
-  }
-
   public boolean approved() {
     return approved;
   }
 
   public String getPassword() {
-    if (approved)
+    if (approved) {
       return txtPassword.getText();
-    else
+    } else {
       return null;
+    }
   }
 
   public Collection<CoordinateID> getTranslations() {

@@ -78,7 +78,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 	 *
 	 * 
 	 */
-	public void gameDataChanged(GameDataEvent e) {
+	@Override
+  public void gameDataChanged(GameDataEvent e) {
 		lastRegion = null;
 		parseDefinition(def);
 	}
@@ -116,7 +117,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 		if(!BasicHTML.isHTMLString(def)) {
 			// preparse the definition if not html format
-			def = makeHTMLFromString(def, false);
+			def = BasicRegionPanel.makeHTMLFromString(def, false);
 			settings.setProperty("BasicRegionPanel.Def", def);
 		}
 
@@ -156,8 +157,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		StringBuffer sb = new StringBuffer();
 		sb.append("<html>\n<body>\n<table  cellpadding=0 width=100%>\n");
 
-		if(log.isDebugEnabled()) {
-			log.debug("BasicRegionPanel.makeHTMLFromString: string (of length " + def.length() +
+		if(BasicRegionPanel.log.isDebugEnabled()) {
+			BasicRegionPanel.log.debug("BasicRegionPanel.makeHTMLFromString: string (of length " + def.length() +
 					  "):\n" + def);
 		}
 
@@ -165,8 +166,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 			// create new rows
 			String row = (String) iterRow.next();
 
-			if(log.isDebugEnabled()) {
-				log.debug("BasicRegionPanel.makeHTMLFromString: working on row " + row);
+			if(BasicRegionPanel.log.isDebugEnabled()) {
+				BasicRegionPanel.log.debug("BasicRegionPanel.makeHTMLFromString: working on row " + row);
 			}
 
 			sb.append("<tr>\n");
@@ -185,7 +186,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 				sb.append("</td>\n");
 				i++;
 
-				if(((i % separatorDist) == 0) && iter.hasNext()) {
+				if(((i % BasicRegionPanel.separatorDist) == 0) && iter.hasNext()) {
 					// mod seperatorDist: include new separator
 					sb.append("<td></td>\n");
 				}
@@ -198,8 +199,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 		String htmlText = sb.toString();
 
-		if(log.isDebugEnabled()) {
-			log.debug("BasicRegionPanel.makeHTMLFromString: transforming string \n" +
+		if(BasicRegionPanel.log.isDebugEnabled()) {
+			BasicRegionPanel.log.debug("BasicRegionPanel.makeHTMLFromString: transforming string \n" +
 					  def.replace('?', '#') + "\" to " + htmlText.replace('?', '#'));
 		}
 
@@ -461,7 +462,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		/**
 		 * DOCUMENT-ME
 		 */
-		public void updateUI() {
+		@Override
+    public void updateUI() {
 			super.updateUI();
 			LookAndFeel.installColorsAndFont(this, "Label.background", "Label.foreground",
 											 "Label.font");
@@ -475,7 +477,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 * @throws IllegalArgumentException DOCUMENT-ME
 		 */
 		public void setText(String s) {
-			if(equal(s, text)) {
+			if(HTMLLabel.equal(s, text)) {
 				return;
 			}
 
@@ -505,7 +507,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public Dimension getMinimumSize() {
+		@Override
+    public Dimension getMinimumSize() {
 			if(isMinimumSizeSet()) {
 				return super.getMinimumSize();
 			}
@@ -525,7 +528,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public Dimension getPreferredSize() {
+		@Override
+    public Dimension getPreferredSize() {
 			if(isPreferredSizeSet()) {
 				return super.getPreferredSize();
 			}
@@ -545,7 +549,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public Dimension getMaximumSize() {
+		@Override
+    public Dimension getMaximumSize() {
 			if(isMaximumSizeSet()) {
 				return super.getMaximumSize();
 			}
@@ -573,8 +578,9 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public void setForeground(Color c) {
-			if(!equal(c, getForeground())) {
+		@Override
+    public void setForeground(Color c) {
+			if(!HTMLLabel.equal(c, getForeground())) {
 				view = null;
 			}
 
@@ -586,13 +592,14 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public void setFont(Font f) {
-			if(!equal(f, getFont())) {
+		@Override
+    public void setFont(Font f) {
+			if(!HTMLLabel.equal(f, getFont())) {
 				view = null;
 			}
 
-			if(log.isDebugEnabled()) {
-				log.debug("HTMLLabel.setFont(" + f + " called");
+			if(HTMLLabel.log.isDebugEnabled()) {
+				HTMLLabel.log.debug("HTMLLabel.setFont(" + f + " called");
 			}
 
 			super.setFont(f);
@@ -602,7 +609,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 			return (a == null) ? (b == null) : a.equals(b);
 		}
 
-		protected void paintComponent(Graphics g) {
+		@Override
+    protected void paintComponent(Graphics g) {
 			if(isOpaque()) // incorrect, but done as everywhere
 			 {
 				g.setColor(getBackground());

@@ -34,8 +34,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import magellan.library.utils.logging.Logger;
 import magellan.library.utils.logging.LogListener;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This is a small listener dock that prints all log events
@@ -62,8 +62,10 @@ public class DebugDock extends JPanel implements LogListener {
   }
   
   public static DebugDock getInstance() {
-    if (INSTANCE == null) INSTANCE = new DebugDock();
-    return INSTANCE;
+    if (DebugDock.INSTANCE == null) {
+      DebugDock.INSTANCE = new DebugDock();
+    }
+    return DebugDock.INSTANCE;
   }
   
   /**
@@ -89,35 +91,35 @@ public class DebugDock extends JPanel implements LogListener {
    * 
    */
   public void debug(String str) {
-    log.debug(str);
+    DebugDock.log.debug(str);
   }
 
   /**
    * 
    */
   public void info(String str) {
-    log.info(str);
+    DebugDock.log.info(str);
   }
 
   /**
    * 
    */
   public void warn(String str) {
-    log.warn(str);
+    DebugDock.log.warn(str);
   }
 
   /**
    * 
    */
   public void error(String str) {
-    log.error(str);
+    DebugDock.log.error(str);
   }
   
   /**
    * 
    */
   public void fatal(String str) {
-    log.fatal(str);
+    DebugDock.log.fatal(str);
   }
 
   /**
@@ -152,7 +154,9 @@ public class DebugDock extends JPanel implements LogListener {
         break;
     }
     str += ": ";
-    if (obj != null) str += obj.toString(); 
+    if (obj != null) {
+      str += obj.toString();
+    } 
     setStatus(str, throwable);
   }
   
@@ -161,20 +165,20 @@ public class DebugDock extends JPanel implements LogListener {
    */
   protected void setStatus(String message, Throwable throwable) {
     calendar.setTimeInMillis(System.currentTimeMillis());
-    String time = toDay(calendar)+" "+toTime(calendar)+": ";
+    String time = DebugDock.toDay(calendar)+" "+toTime(calendar)+": ";
     
     if (logArea != null) {
       StringBuffer buffer = new StringBuffer(logArea.getText().trim());
       String newtext = "";
       newtext += "\r\n"+time+message.trim();
       if (throwable != null) {
-        newtext+="\r\n"+toString(throwable);
+        newtext+="\r\n"+DebugDock.toString(throwable);
       }
       
       buffer.append(newtext);
       // Text-Area eingrenzen
-      if (buffer.length()>BUFFER_LENGTH) {
-        buffer.delete(0, buffer.length()-BUFFER_LENGTH);
+      if (buffer.length()>DebugDock.BUFFER_LENGTH) {
+        buffer.delete(0, buffer.length()-DebugDock.BUFFER_LENGTH);
       }
       
       logArea.setText(buffer.toString());
@@ -186,16 +190,24 @@ public class DebugDock extends JPanel implements LogListener {
    * Returns the string representation of a time
    */
   protected String toTime(Calendar calendar) {
-    if (calendar == null) return "";
+    if (calendar == null) {
+      return "";
+    }
     int hour = calendar.get(Calendar.HOUR_OF_DAY);
     int min = calendar.get(Calendar.MINUTE);
     int sec = calendar.get(Calendar.SECOND);
     String r = "";
-    if (hour<10) r+="0";
+    if (hour<10) {
+      r+="0";
+    }
     r+=hour+":";
-    if (min<10) r+="0";
+    if (min<10) {
+      r+="0";
+    }
     r+=min+":";
-    if (sec<10) r+="0";
+    if (sec<10) {
+      r+="0";
+    }
     r+=sec;
     return r;
   }
@@ -205,17 +217,25 @@ public class DebugDock extends JPanel implements LogListener {
    * Returns the string representation of a day
    */
   protected static String toDay(Calendar calendar) {
-    if (calendar == null) return "";
+    if (calendar == null) {
+      return "";
+    }
     String d = "";
-    if (calendar.get(Calendar.DAY_OF_MONTH)<10) d+="0";
+    if (calendar.get(Calendar.DAY_OF_MONTH)<10) {
+      d+="0";
+    }
     d+=calendar.get(Calendar.DAY_OF_MONTH);
     d+=".";
     int month = calendar.get(Calendar.MONTH)+1;
-    if (month<10) d+="0";
+    if (month<10) {
+      d+="0";
+    }
     d+=month;
     d+=".";
     int year = calendar.get(Calendar.YEAR);
-    if (year<10) d+="0";
+    if (year<10) {
+      d+="0";
+    }
     d+=year;
     return d;
   }

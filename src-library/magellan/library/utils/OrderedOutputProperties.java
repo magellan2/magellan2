@@ -49,7 +49,8 @@ public class OrderedOutputProperties extends Properties {
 	 *
 	 * 
 	 */
-	public Enumeration<Object> keys() {
+	@Override
+  public Enumeration<Object> keys() {
 		List<Object> l = new LinkedList<Object>();
 		l.addAll(keySet());
 		Collections.sort(l, new ObjectComparator());
@@ -91,8 +92,12 @@ public class OrderedOutputProperties extends Properties {
 	private class ObjectComparator implements Comparator<Object> {
 
     public int compare(Object o1, Object o2) {
-      if (o1 == null) return Integer.MAX_VALUE;
-      if (o2 == null) return Integer.MIN_VALUE;
+      if (o1 == null) {
+        return Integer.MAX_VALUE;
+      }
+      if (o2 == null) {
+        return Integer.MIN_VALUE;
+      }
       if (o1 instanceof Comparable && o2 instanceof Comparable) {
         Comparable c1 = (Comparable)o1;
         Comparable c2 = (Comparable)o2;

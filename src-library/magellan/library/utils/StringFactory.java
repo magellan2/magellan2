@@ -35,7 +35,7 @@ public class StringFactory {
 	 * 
 	 */
 	public static StringFactory getFactory() {
-		return sf;
+		return StringFactory.sf;
 	}
 
 	private Map<String,String> strings = new HashMap<String, String>();
@@ -48,7 +48,7 @@ public class StringFactory {
 	 * 
 	 */
 	public String intern(String s) {
-		String is = (String) strings.get(s);
+		String is = strings.get(s);
 
 		if(is == null) {
 			is = getOptimizedString(s);

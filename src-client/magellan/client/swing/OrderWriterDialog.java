@@ -134,7 +134,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     try {
       settings.load(new FileInputStream(new File(System.getProperty("user.home"),"OrderWriterDialog.ini")));
     } catch(IOException e) {
-      log.error("OrderWriterDialog.OrderWriterDialog(),", e);
+      OrderWriterDialog.log.error("OrderWriterDialog.OrderWriterDialog(),", e);
     }
 
     init();
@@ -162,6 +162,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private void init() {
     addKeyListener(new KeyAdapter() {
+      @Override
         public void keyPressed(KeyEvent e) {
           if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             quit(false);
@@ -381,7 +382,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     cmbFaction.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         // in this situation we need to reinitialize the groups list
-        log.debug("Item even on faction combobox:" + e);
+        OrderWriterDialog.log.debug("Item even on faction combobox:" + e);
 
         switch(e.getStateChange()) {
           case ItemEvent.SELECTED:
@@ -501,8 +502,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         }else{
           chkAskPassword.setSelected(true);
         }
-        if (chkAskPassword.isSelected())
+        if (chkAskPassword.isSelected()) {
           txtServerPassword.setText("");
+        }
       }
     });
 
@@ -954,7 +956,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       try {
         settings.store(new FileOutputStream(new File(System.getProperty("user.home"),"OrderWriterDialog.ini")), "");
       } catch(IOException e) {
-        log.error("OrderWriterDialog.storeSettings()", e);
+        OrderWriterDialog.log.error("OrderWriterDialog.storeSettings()", e);
       }
     }
   }
@@ -973,8 +975,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     for(int i = 0; i < Math.min(combo.getItemCount(), 6); i++) {
       String item = (String)combo.getItemAt(i);
-      if (selected != null && item.equals(selected)) continue; // ignore
-      if (ret.contains(item)) continue; // no duplicates
+      if (selected != null && item.equals(selected)) {
+        continue; // ignore
+      }
+      if (ret.contains(item)) {
+        continue; // no duplicates
+      }
       ret.add(item);
     }
 
@@ -1179,8 +1185,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     String password = null;
     if (chkUseAuth.isSelected()){
       username = txtServerUsername.getText();
-      if (!chkAskPassword.isSelected())
+      if (!chkAskPassword.isSelected()) {
         password = new String(txtServerPassword.getPassword());
+      }
     }
     String recipient = txtMailRecipient.getText();
     String sender = txtMailSender.getText();
@@ -1244,7 +1251,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     }
     
-    log.debug("attempting to send mail: "+mailHost + ", " + port + ", " +username + ", " +password + ", " +sender + ", " +recipient + ", " +subject);
+    OrderWriterDialog.log.debug("attempting to send mail: "+mailHost + ", " + port + ", " +username + ", " +password + ", " +sender + ", " +recipient + ", " +subject);
     sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae);
 
 
@@ -1289,8 +1296,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           Resources.get("orderwriterdialog.msg.mailerror.title"),
           JOptionPane.WARNING_MESSAGE);
 
-      if(log.isDebugEnabled()) {
-        log.debug(e);
+      if(OrderWriterDialog.log.isDebugEnabled()) {
+        OrderWriterDialog.log.debug(e);
       }
 
       return;
@@ -1314,7 +1321,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 //  mailMessage.setPopBeforeSmtp(true, "host", "username", "password");
 
     try {
-      log.info("sending...");
+      OrderWriterDialog.log.info("sending...");
       mailMessage.send();
     } catch(EmailException e) {
       ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1324,9 +1331,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
                       (new java.text.MessageFormat(Resources.get("orderwriterdialog.msg.transfererror.text"))).format(msgArgs),
                       Resources.get("orderwriterdialog.msg.mailerror.title"),
                       JOptionPane.WARNING_MESSAGE);
-      log.info(e+((!e.getCause().equals(e))?(" "+e.getCause()):""));
-      if(log.isDebugEnabled()) {
-        log.debug(e);
+      OrderWriterDialog.log.info(e+((!e.getCause().equals(e))?(" "+e.getCause()):""));
+      if(OrderWriterDialog.log.isDebugEnabled()) {
+        OrderWriterDialog.log.debug(e);
       }
 
       return;
@@ -1343,7 +1350,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    */
   private String showPasswordDialog(JButton ae) {
     String title = Resources.get("orderwriterdialog.lbl.smtpserver.password");
-    JPasswordField passwd = new JPasswordField(20){ public void setVisible(boolean b){ super.setVisible(b); if (b) requestFocus();}  };
+    JPasswordField passwd = new JPasswordField(20){ public void setVisible(boolean b){ super.setVisible(b); if (b) {
+      requestFocus();
+    }}  };
     class MyPanel extends JPanel {
       JPasswordField pwd; 
       MyPanel(JPasswordField passwd) {
@@ -1357,10 +1366,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     panel.add(passwdLabel);
     panel.add(passwd);
     int value = JOptionPane.showOptionDialog(ae, panel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-    if (value==0)
+    if (value==0) {
       return new String(passwd.getPassword());
-    else
+    } else {
       return null;
+    }
   }
   
   /**
@@ -1381,15 +1391,16 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       // create backup file
       try {
         File backup = FileBackup.create(outputFile);
-        log.info("Created backupfile " + backup);
+        OrderWriterDialog.log.info("Created backupfile " + backup);
       } catch(IOException ie) {
-        log.warn("Could not create backupfile for file " + outputFile);
+        OrderWriterDialog.log.warn("Could not create backupfile for file " + outputFile);
       }
     } 
     
     try {
-      if (outputFile.exists() && !outputFile.canWrite())
+      if (outputFile.exists() && !outputFile.canWrite()) {
         throw new IOException("cannot write "+outputFile);
+      }
 
       // apexo (Fiete) 20061205: if in properties, force ISO encoding
       Writer stream = null;

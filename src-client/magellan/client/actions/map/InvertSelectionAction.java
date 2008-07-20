@@ -88,7 +88,8 @@ public class InvertSelectionAction extends MenuAction implements GameDataListene
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		Map<CoordinateID,Region> newSelectedRegions = new Hashtable<CoordinateID,Region>();
 
 		// add all regions that belong to the active level XOR were selected befor

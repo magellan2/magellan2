@@ -23,14 +23,14 @@
 // 
 package magellan.plugin.extendedcommands;
 
-import java.awt.Dimension; 
+import java.awt.Dimension;
 
-import javax.swing.JEditorPane; 
-import javax.swing.JViewport; 
-import javax.swing.plaf.TextUI; 
-import javax.swing.text.Document; 
-import javax.swing.text.EditorKit; 
-import javax.swing.text.StyledEditorKit; 
+import javax.swing.JEditorPane;
+import javax.swing.JViewport;
+import javax.swing.plaf.TextUI;
+import javax.swing.text.Document;
+import javax.swing.text.EditorKit;
+import javax.swing.text.StyledEditorKit;
 
 /**
  * A TextArea for BeanShell-Skripts. Including Syntax-Highlighting 
@@ -50,13 +50,14 @@ public class BeanShellEditor extends JEditorPane {
     charWidth = getFontMetrics(getFont()).charWidth( 'w' );
     
     document = new BeanShellSyntaxDocument();
-    document.setTabs(charWidth, TAB_WIDTH);
+    document.setTabs(charWidth, BeanShellEditor.TAB_WIDTH);
     setDocument(document);
     
     EditorKit editorKit = new StyledEditorKit() { 
+      @Override
       public Document createDefaultDocument() { 
         BeanShellSyntaxDocument document = new BeanShellSyntaxDocument();
-        document.setTabs(charWidth, TAB_WIDTH);
+        document.setTabs(charWidth, BeanShellEditor.TAB_WIDTH);
         return document;
       } 
     }; 
@@ -68,14 +69,15 @@ public class BeanShellEditor extends JEditorPane {
   /**
    * Override to get no Line-Wraps 
    */
+  @Override
   public boolean getScrollableTracksViewportWidth() { 
     if (getParent() instanceof JViewport) { 
       JViewport port = (JViewport) getParent(); 
       TextUI ui = getUI(); 
       int w = port.getWidth(); 
       
-      Dimension min = ui.getMinimumSize(this); 
-      Dimension max = ui.getMaximumSize(this); 
+//      Dimension min = ui.getMinimumSize(this); 
+//      Dimension max = ui.getMaximumSize(this); 
       Dimension pref = ui.getPreferredSize(this); 
       if ((w >= pref.width)) { 
         return true; 

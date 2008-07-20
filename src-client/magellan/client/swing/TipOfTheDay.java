@@ -203,7 +203,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 		JButton next = new JButton(Resources.get("tipoftheday.nextTip"));
 		next.addActionListener(this);
-		next.setActionCommand(NEXT);
+		next.setActionCommand(TipOfTheDay.NEXT);
 		next.setBackground(background);
 		next.setForeground(foreground);
 
@@ -227,7 +227,8 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		setContentPane(panel);
 
 		addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent e) {
+				@Override
+        public void windowClosing(WindowEvent e) {
 					quit();
 				}
 			});
@@ -288,7 +289,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		}
 
 		if(settings.getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
-			firstTime = true;
+			TipOfTheDay.firstTime = true;
 			settings.setProperty("TipOfTheDay.firstTime", "false");
 		}
 	}
@@ -299,7 +300,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 * 
 	 */
 	public boolean doShow() {
-		return firstTime || hasTips();
+		return TipOfTheDay.firstTime || hasTips();
 	}
 
 	/**
@@ -315,7 +316,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 * DOCUMENT-ME
 	 */
 	public void showNextTip() {
-		if(hasTips() || firstTime) {
+		if(hasTips() || TipOfTheDay.firstTime) {
 			// should be
 			if(nonShown.size() == 0) {
 				reloadTips();
@@ -323,8 +324,8 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 			Tip tip = null;
 
-			if(firstTime) {
-				firstTime = false;
+			if(TipOfTheDay.firstTime) {
+				TipOfTheDay.firstTime = false;
 				tip = new Tip();
 				tip.text = Resources.get("tipoftheday.warningString");
 			} else {
@@ -334,7 +335,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 					i++;
 
 					int pos = (int) (Math.random() * nonShown.size());
-					tip = (Tip) nonShown.get(pos);
+					tip = nonShown.get(pos);
 				} while((i < 10) && (nonShown.size() != 1) && (tip.number == lastNumber));
 
 				lastNumber = tip.number;
@@ -348,13 +349,13 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 			try {
 				HTMLDocument doc2 = new HTMLDocument();
 
-				if(tip.text.startsWith(E_KEY)) {
+				if(tip.text.startsWith(TipOfTheDay.E_KEY)) {
 					kit.insertHTML(doc2, 0,
-								   E_HTML_START + "<font size=+1>" + Resources.get("tipoftheday.tip.eressea") +
-								   "</font><br>" + tip.text.substring(E_KEY.length()) + E_HTML_END,
+								   TipOfTheDay.E_HTML_START + "<font size=+1>" + Resources.get("tipoftheday.tip.eressea") +
+								   "</font><br>" + tip.text.substring(TipOfTheDay.E_KEY.length()) + TipOfTheDay.E_HTML_END,
 								   0, 0, null);
 				} else {
-					kit.insertHTML(doc2, 0, HTML_START + tip.text + HTML_END, 0, 0, null);
+					kit.insertHTML(doc2, 0, TipOfTheDay.HTML_START + tip.text + TipOfTheDay.HTML_END, 0, 0, null);
 				}
 
 				tipText.setStyledDocument(doc2);
@@ -377,7 +378,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 * 
 	 */
 	public void actionPerformed(ActionEvent e) {
-		if(NEXT.equals(e.getActionCommand())) {
+		if(TipOfTheDay.NEXT.equals(e.getActionCommand())) {
 			showNextTip();
 
 			return;
@@ -390,7 +391,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 * DOCUMENT-ME
 	 */
 	public void showTipDialog() {
-		active = true;
+		TipOfTheDay.active = true;
 		super.setVisible(true);
 	}
 
@@ -399,13 +400,15 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	 *
 	 * 
 	 */
-	public void setVisible(boolean flag) {
+	@Override
+  public void setVisible(boolean flag) {
 		super.setVisible(flag);
-		active = flag;
+		TipOfTheDay.active = flag;
 	}
 
 	// close the dialog and save the settings
-	protected void quit() {
+	@Override
+  protected void quit() {
 		setVisible(false);
 
 		StringBuffer buf = new StringBuffer();

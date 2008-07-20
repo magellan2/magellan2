@@ -55,7 +55,8 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName();
 	}
 }

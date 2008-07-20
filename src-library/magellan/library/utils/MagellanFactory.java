@@ -233,7 +233,7 @@ public abstract class MagellanFactory {
    * 
    */
   public static void mergeFaction(GameData curGD, Faction curFaction, GameData newGD, Faction newFaction) {
-    mergeUnitContainer(curGD, curFaction, newGD, newFaction);
+    MagellanFactory.mergeUnitContainer(curGD, curFaction, newGD, newFaction);
 
     if((curFaction.getAllies() != null) && (curFaction.getAllies().size() > 0)) {
       if(newFaction.getAllies() == null) {
@@ -269,7 +269,7 @@ public abstract class MagellanFactory {
         } catch(CloneNotSupportedException e) {
         }
 
-        mergeGroup(curGD, curGroup, newGD, newGroup);
+        MagellanFactory.mergeGroup(curGD, curGroup, newGD, newGroup);
         newFaction.getGroups().put(newGroup.getID(), newGroup);
       }
     }
@@ -331,13 +331,13 @@ public abstract class MagellanFactory {
             for(Iterator msgs = curBattle.messages().iterator(); msgs.hasNext();) {
               Message curMsg = (Message) msgs.next();
               Message newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
-              mergeMessage(curGD, curMsg, newGD, newMsg);
+              MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
               newBattle.messages().add(newMsg);
             }
 
             newFaction.getBattles().add(curBattle);
           } catch(CloneNotSupportedException e) {
-            log.error("Faction.merge()", e);
+            MagellanFactory.log.error("Faction.merge()", e);
           }
         }
       }
@@ -362,7 +362,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
           newFaction.getMessages().add(newMsg);
         }
       }
@@ -582,7 +582,7 @@ public abstract class MagellanFactory {
    * @param newBuilding the new Building
    */
   public static void mergeBuilding(GameData curGD, Building curBuilding, GameData newGD, Building newBuilding) {
-    mergeUnitContainer(curGD, curBuilding, newGD, newBuilding);
+    MagellanFactory.mergeUnitContainer(curGD, curBuilding, newGD, newBuilding);
 
     if(curBuilding.getCost() != -1) {
       newBuilding.setCost(curBuilding.getCost());
@@ -668,7 +668,7 @@ public abstract class MagellanFactory {
   // sameTurn == false actually indicates that this method is to be called again
   // with the same "newRegion" but a more recent "curRegion".
   public static void mergeRegion(GameData curGD, Region curRegion, GameData newGD, Region newRegion,boolean sameTurn) {
-    mergeUnitContainer(curGD, curRegion, newGD, newRegion);
+    MagellanFactory.mergeUnitContainer(curGD, curRegion, newGD, newRegion);
     
     // *** OldTrees ****
     if(sameTurn) {
@@ -686,7 +686,7 @@ public abstract class MagellanFactory {
       } else {
         // curRegion is from a more recent round. Therefore
         // TODO: (stm) thinks this can never happen!
-        log.error("Warning: reached code in Region.merge, that (stm) thought could never be reached!");
+        MagellanFactory.log.error("Warning: reached code in Region.merge, that (stm) thought could never be reached!");
         if(curRegion.getTrees() == -1) {
           newRegion.setOldTrees(-1);
         }
@@ -886,7 +886,7 @@ public abstract class MagellanFactory {
         if(newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
           // the current block description
-          log.warn("WARNING: Invalid tag \"" + curPrice.getItemType() +
+          MagellanFactory.log.warn("WARNING: Invalid tag \"" + curPrice.getItemType() +
                "\" found in Region " + curRegion + ", ignoring it.");
         } else {
           newRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
@@ -1016,7 +1016,7 @@ public abstract class MagellanFactory {
           Border newBorder = null;
           ID newID = Regions.getNewBorderID(newRegion,curBorder);
          
-          newBorder = MagellanFactory.createBorder((ID) newID, curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
+          newBorder = MagellanFactory.createBorder(newID, curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
          
           if (newBorder!=null){
             newRegion.addBorder(newBorder);
@@ -1110,7 +1110,7 @@ public abstract class MagellanFactory {
       if(newIsland != null) {
         newRegion.setIsland(newIsland);
       } else {
-        log.warn("Region.merge(): island could not be found in the merged data: " +
+        MagellanFactory.log.warn("Region.merge(): island could not be found in the merged data: " +
              curRegion.getIsland());
       }
     }
@@ -1141,7 +1141,7 @@ public abstract class MagellanFactory {
         if(newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
           // the current block description
-          log.warn("Invalid tag \"" + curPrice.getItemType() + "\" found in Region " +
+          MagellanFactory.log.warn("Invalid tag \"" + curPrice.getItemType() + "\" found in Region " +
                curRegion + ", ignoring it.");
         } else {
           newRegion.getPrices().put(newPrice.getItemType().getID(), newPrice);
@@ -1189,7 +1189,7 @@ public abstract class MagellanFactory {
           RegionResource.merge(curGD, curRes, newGD, newRes, sameTurn);
           
         } catch(CloneNotSupportedException e) {
-          log.error(e);
+          MagellanFactory.log.error(e);
         }
       }
     }
@@ -1314,9 +1314,9 @@ public abstract class MagellanFactory {
             newRegion.addScheme(newScheme);
           }
 
-          mergeScheme(curGD, curScheme, newGD, newScheme);
+          MagellanFactory.mergeScheme(curGD, curScheme, newGD, newScheme);
         } catch(CloneNotSupportedException e) {
-          log.error(e);
+          MagellanFactory.log.error(e);
         }
       }
     }
@@ -1373,7 +1373,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
           newRegion.getEvents().add(newMsg);
         }
       }
@@ -1392,7 +1392,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
           newRegion.getMessages().add(newMsg);
         }
       }
@@ -1411,7 +1411,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
           newRegion.getPlayerMessages().add(newMsg);
         }
       }
@@ -1430,7 +1430,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
           newRegion.getSurroundings().add(newMsg);
         }
       }
@@ -1449,7 +1449,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
 
           // 2002.02.21 pavkovic: prevent double entries
           if(!newRegion.getTravelThru().contains(newMsg)) {
@@ -1482,7 +1482,7 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
 
           // 2002.02.21 pavkovic: prevent duplicate entries
           if(!newRegion.getTravelThruShips().contains(newMsg)) {
@@ -1516,7 +1516,7 @@ public abstract class MagellanFactory {
    * Merges ships.
    */
   public static void mergeShip(GameData curGD, Ship curShip, GameData newGD, Ship newShip) {
-    mergeUnitContainer(curGD, curShip, newGD, newShip);
+    MagellanFactory.mergeUnitContainer(curGD, curShip, newGD, newShip);
 
     if(curShip.getCargo() != -1) {
       newShip.setCargo( curShip.getCargo());
@@ -1610,7 +1610,7 @@ public abstract class MagellanFactory {
    * @param sameRound notifies if both game data objects have been from the same round
    */
   public static void merge(GameData curGD, TempUnit curTemp, GameData newGD, TempUnit newTemp,boolean sameRound) {
-    mergeUnit(curGD, curTemp, newGD, newTemp, sameRound);
+    MagellanFactory.mergeUnit(curGD, curTemp, newGD, newTemp, sameRound);
 
     if(curTemp.getParent() != null) {
       newTemp.setParent(newGD.getUnit(curTemp.getParent().getID()));
@@ -1628,8 +1628,9 @@ public abstract class MagellanFactory {
   // TODO (stm 2007-02-19) this is a workaround, we need a nicer solution
   public static void mergeComments(UnitContainer curShip, UnitContainer newShip) {
     if (newShip != null && curShip.getComments() != null) {
-      if (newShip.getComments() == null)
+      if (newShip.getComments() == null) {
         newShip.setComments(new LinkedList<String>());
+      }
       newShip.getComments().addAll(curShip.getComments());
     }
 
@@ -1716,7 +1717,7 @@ public abstract class MagellanFactory {
         } catch(CloneNotSupportedException e) {
         }
 
-        mergeCombatSpell(curGD, curCS, newGD, newCS);
+        MagellanFactory.mergeCombatSpell(curGD, curCS, newGD, newCS);
         newUnit.getCombatSpells().put(newCS.getID(), newCS);
       }
     }
@@ -1945,7 +1946,7 @@ public abstract class MagellanFactory {
       try {
         newUnit.setTempID((UnitID) curUnit.getTempID().clone());
       } catch(CloneNotSupportedException e) {
-        log.error(e);
+        MagellanFactory.log.error(e);
       }
     }
 
@@ -1985,7 +1986,7 @@ public abstract class MagellanFactory {
         } catch(CloneNotSupportedException e) {
         }
         
-        mergeMessage(curGD, curMsg, newGD, newMsg);
+        MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
         newUnit.getUnitMessages().add(newMsg);
       }
     }
@@ -2016,7 +2017,7 @@ public abstract class MagellanFactory {
    * Copies the skills of the given unit. Does not empty this unit's skills.
    */
   public static void copySkills(Unit u, Unit v) {
-    copySkills(u, v, true);
+    MagellanFactory.copySkills(u, v, true);
   }
 
   /**
@@ -2047,9 +2048,9 @@ public abstract class MagellanFactory {
    * Returns a locale specific string representation of the specified unit combat status.
    */
   public static String combatStatusToString(Unit u) {
-    String retVal = combatStatusToString(u.getCombatStatus());
+    String retVal = MagellanFactory.combatStatusToString(u.getCombatStatus());
     if (u.getModifiedCombatStatus()!=u.getCombatStatus()){
-      retVal += " (" + combatStatusToString(u.getModifiedCombatStatus()) + ")";
+      retVal += " (" + MagellanFactory.combatStatusToString(u.getModifiedCombatStatus()) + ")";
     }
     
     
@@ -2195,7 +2196,9 @@ public abstract class MagellanFactory {
       Faction faction = factions.get(id);
       
       // if the race is already set in the report ignore this algorithm
-      if (faction.getType() != null) continue;
+      if (faction.getType() != null) {
+        continue;
+      }
       
       Map<Race,Integer> personsPerRace = new HashMap<Race, Integer>();
       
@@ -2203,7 +2206,9 @@ public abstract class MagellanFactory {
       Collection<Unit> units = faction.units();
       for (Unit unit : units) {
         Race race = unit.getRace();
-        if (race == null) continue;
+        if (race == null) {
+          continue;
+        }
         if (personsPerRace.containsKey(race)) {
           int amount = personsPerRace.get(race) + unit.getPersons();
           personsPerRace.put(race, amount);
@@ -2223,7 +2228,9 @@ public abstract class MagellanFactory {
         }
       }
       
-      if (race != null) faction.setType(race);
+      if (race != null) {
+        faction.setType(race);
+      }
     }
   }
 }

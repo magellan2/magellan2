@@ -49,7 +49,7 @@ public class BOMReader extends Reader {
 	 *            default.
 	 */
 	public BOMReader(InputStream in, String defaultEnc) {
-		internalIn = new PushbackInputStream(in, BOM_SIZE);
+		internalIn = new PushbackInputStream(in, BOMReader.BOM_SIZE);
 		this.defaultEnc = defaultEnc;
 	}
 
@@ -57,7 +57,8 @@ public class BOMReader extends Reader {
 		return defaultEnc;
 	}
 
-	public boolean ready() throws IOException {
+	@Override
+  public boolean ready() throws IOException {
 		init();
 		return internalIn2 != null && internalIn2.ready();
 	}
@@ -67,7 +68,9 @@ public class BOMReader extends Reader {
 	 * initialize it.
 	 */
 	public String getEncoding() {
-		if (internalIn2 == null) return null;
+		if (internalIn2 == null) {
+      return null;
+    }
 		return internalIn2.getEncoding();
 	}
 
@@ -76,8 +79,9 @@ public class BOMReader extends Reader {
 	 * uninitialized. Call init() or read() method to initialize it.
 	 */
 	public Boolean hasBOM(){
-		if (internalIn2 == null)
-			return null;
+		if (internalIn2 == null) {
+      return null;
+    }
 		return new Boolean(hasBOM);
 	}
 	
@@ -86,11 +90,12 @@ public class BOMReader extends Reader {
 	 * only BOM bytes are skipped.
 	 */
 	public void init() throws IOException {
-		if (internalIn2 != null)
-			return;
+		if (internalIn2 != null) {
+      return;
+    }
 
 		String encoding;
-		byte bom[] = new byte[BOM_SIZE];
+		byte bom[] = new byte[BOMReader.BOM_SIZE];
 		int n, unread;
 		n = internalIn.read(bom, 0, bom.length);
 
@@ -124,8 +129,9 @@ public class BOMReader extends Reader {
 		}
 		// System.out.println("read=" + n + ", unread=" + unread);
 
-		if (unread > 0)
-			internalIn.unread(bom, (n - unread), unread);
+		if (unread > 0) {
+      internalIn.unread(bom, (n - unread), unread);
+    }
 
 		// Use given encoding
 		if (encoding == null) {
@@ -135,12 +141,14 @@ public class BOMReader extends Reader {
 		}
 	}
 
-	public void close() throws IOException {
+	@Override
+  public void close() throws IOException {
 		init();
 		internalIn2.close();
 	}
 
-	public int read(char[] cbuf, int off, int len) throws IOException {
+	@Override
+  public int read(char[] cbuf, int off, int len) throws IOException {
 		init();
 		return internalIn2.read(cbuf, off, len);
 	}

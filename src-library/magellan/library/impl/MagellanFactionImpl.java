@@ -26,15 +26,12 @@ import magellan.library.ID;
 import magellan.library.Message;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
-import magellan.library.utils.logging.Logger;
 
 
 /**
  * A class representing a faction in Eressea.
  */
 public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Faction {
-	private static final Logger log = Logger.getInstance(Faction.class);
-
 	/* Implementation note on trust levels:
 	 * Trust levels have been introduced to replace the inherently
 	 * wrong concept of owner factions. This way there can for
@@ -84,7 +81,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 * Indicates to what amount this faction can be trusted. It also influences the privileges of
 	 * this faction (e.g. being able to edit its units' orders).
 	 */
-  protected int trustLevel = TL_DEFAULT;
+  protected int trustLevel = Faction.TL_DEFAULT;
 	
 	/**
 	 * Indicates, if one priviliged faction has set the "GIVE" right
@@ -114,7 +111,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 * 
 	 */
 	public boolean isPrivileged() {
-		return trustLevel >= TL_PRIVILEGED;
+		return trustLevel >= Faction.TL_PRIVILEGED;
 	}
 
 	/**
@@ -214,7 +211,8 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName() + " (" + this.getID() + ")";
 	}
 

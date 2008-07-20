@@ -58,7 +58,8 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return island.getName();
 	}
 
@@ -68,7 +69,7 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
 	 * 
 	 */
 	public List getIconNames() {
-		return iconNames;
+		return IslandNodeWrapper.iconNames;
 	}
 
 	/**

@@ -36,7 +36,8 @@ public abstract class AbstractRegionSwitch extends AbstractSwitch {
 	 *
 	 * 
 	 */
-	public boolean isSwitchingObject(Object o) {
+	@Override
+  public boolean isSwitchingObject(Object o) {
 		if(o instanceof Region) {
 			return isSwitchingRegion((Region) o);
 		}

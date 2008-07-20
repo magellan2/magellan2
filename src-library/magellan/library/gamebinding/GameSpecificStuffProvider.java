@@ -39,7 +39,7 @@ public class GameSpecificStuffProvider {
 			gameSpecificStuff = new EresseaSpecificStuff();
 			// if classname is not provided..no warning is needed
 			if (className != null){
-				log.warn("Unable to determine GameSpecificStuff (class: " + className + ") . Falling back to EresseaSpecificStuff.");
+				GameSpecificStuffProvider.log.warn("Unable to determine GameSpecificStuff (class: " + className + ") . Falling back to EresseaSpecificStuff.");
 			}
 		}
 
@@ -60,13 +60,13 @@ public class GameSpecificStuffProvider {
 				return (GameSpecificStuff) result;
 			}
 		} catch(ClassNotFoundException e) {
-			log.warn("Class '" + className + "' not found.", e);
+			GameSpecificStuffProvider.log.warn("Class '" + className + "' not found.", e);
 		} catch(Exception e) {
 			// IllegalAccessException - if the class or its nullary constructor is not accessible. 
 			// InstantiationException - if this Class represents an abstract class, an interface, an array class, a primitive type, or void; or if the class has no nullary constructor; or if the instantiation fails for some other reason. 
 			// ExceptionInInitializerError - if the initialization provoked by this method fails. 
 			// SecurityException - if there is no permission to create a new
-			log.warn("Class '" + className + "' cannot be instantiated.", e);
+			GameSpecificStuffProvider.log.warn("Class '" + className + "' cannot be instantiated.", e);
 		}
 
 		return null;

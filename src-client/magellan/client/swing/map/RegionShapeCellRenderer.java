@@ -77,8 +77,6 @@ import magellan.library.utils.logging.Logger;
 public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	implements Initializable, ContextChangeable, GameDataListener
 {
-	private static final Logger log = Logger.getInstance(RegionShapeCellRenderer.class);
-
 	/** DOCUMENT-ME */
 	public static final String MAP_TAG = "mapcolor";
 
@@ -163,7 +161,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param context The Properties to be used
 	 */
 	public RegionShapeCellRenderer(CellGeometry geo, MagellanContext context) {
-		this(geo, context, DEFAULT_FACTION_KEY, DEFAULT_REGION_KEY, DEFAULT_PAINTMODE_KEY);
+		this(geo, context, RegionShapeCellRenderer.DEFAULT_FACTION_KEY, RegionShapeCellRenderer.DEFAULT_REGION_KEY, RegionShapeCellRenderer.DEFAULT_PAINTMODE_KEY);
 	}
 
 	/**
@@ -302,7 +300,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param c The (new) color
 	 */
 	public void setFactionColor(String name, Color c) {
-		Color oldC = (Color) factionColors.get(name);
+		Color oldC = factionColors.get(name);
 
 		if(!c.equals(oldC)) {
 			factionColors.put(name, c);
@@ -327,7 +325,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			}
 
 			if(o instanceof String) {
-				factionColors.put((String)o, map.get(o));
+				factionColors.put(o, map.get(o));
 			}
 		}
 
@@ -351,7 +349,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param c The (new) color
 	 */
 	public void setRegionColor(ID name, Color c) {
-		Color oldC = (Color) regionColors.get(name);
+		Color oldC = regionColors.get(name);
 
 		if(!c.equals(oldC)) {
 			regionColors.put(name, c);
@@ -662,8 +660,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	//////////////////////////////////////
 	// Rendering color decision methods //
 	//////////////////////////////////////
-	protected Color[] getColor(Region r) {
-		if(paintMode != PAINT_ALLFACTIONS) {
+	@Override
+  protected Color[] getColor(Region r) {
+		if(paintMode != RegionShapeCellRenderer.PAINT_ALLFACTIONS) {
 			return null;
 		}
 
@@ -698,7 +697,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 		}
 
 		if(factions.size() == 1) {
-			singleColorArray[0] = getFactionColor((String) factions.get(0));
+			singleColorArray[0] = getFactionColor(factions.get(0));
 
 			return singleColorArray;
 		}
@@ -706,13 +705,14 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 		Color cols[] = new Color[factions.size()];
 
 		for(int i = 0; i < cols.length; i++) {
-			cols[i] = (Color) getFactionColor((String) factions.get(i));
+			cols[i] = getFactionColor(factions.get(i));
 		}
 
 		return cols;
 	}
 
-	protected Color getSingleColor(Region r) {
+	@Override
+  protected Color getSingleColor(Region r) {
 		Color col = getTagColor(r);
 
 		if(col != null) {
@@ -741,8 +741,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	}
 
 	protected Color getTagColor(Region r) {
-		if(r.containsTag(MAP_TAG)) {
-			String s = r.getTag(MAP_TAG);
+		if(r.containsTag(RegionShapeCellRenderer.MAP_TAG)) {
+			String s = r.getTag(RegionShapeCellRenderer.MAP_TAG);
 
 			if(s.length() > 0) {
 				if(s.charAt(0) == '#') {
@@ -840,7 +840,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 */
 	protected Color getRegionTypeColor(RegionType type) {
 		if(type == null) {
-			return typelessColor;
+			return RegionShapeCellRenderer.typelessColor;
 		}
 
 		if(!regionColors.containsKey(type.getID())) {
@@ -852,7 +852,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			//adapter.addColor(0,type,c);
 		}
 
-		return (Color) regionColors.get(type.getID());
+		return regionColors.get(type.getID());
 	}
 
 	/**
@@ -874,7 +874,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			return getFactionColor(unit.getFaction());
 		}
 
-		Faction f = getMaxPeopleFaction(r);
+		Faction f = RegionShapeCellRenderer.getMaxPeopleFaction(r);
 
 		if(f != null) {
 			return getFactionColor(f);
@@ -921,7 +921,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			//adapter.addColor(1,f,c);
 		}
 
-		return (Color) factionColors.get(f);
+		return factionColors.get(f);
 	}
 
 	/**
@@ -953,7 +953,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			//adapter.addColor(1,f,c);
 		}
 
-		return (Color) factionColors.get(f);
+		return factionColors.get(f);
 	}
 
 	/**
@@ -1115,7 +1115,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 *
 	 * @return A GeomRendererAdapter instance
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		/*if (adapter==null)
 		    adapter=new GeomRendererAdapter();
 		return adapter;*/
@@ -1170,7 +1171,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public boolean equals(Object o) {
+				@Override
+        public boolean equals(Object o) {
 					return false;
 				}
 			}
@@ -1243,7 +1245,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public boolean equals(Object o) {
+				@Override
+        public boolean equals(Object o) {
 					return false;
 				}
 			}
@@ -1500,7 +1503,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 				final JList mList = list;
 				list.addMouseListener(new MouseAdapter() {
-						public void mouseClicked(MouseEvent e) {
+						@Override
+            public void mouseClicked(MouseEvent e) {
 							if(e.getClickCount() == 2) {
 								int index = mList.locationToIndex(e.getPoint());
 

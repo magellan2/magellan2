@@ -142,7 +142,9 @@ public class ItemType extends ObjectType implements Comparable {
 	 * 
 	 */
 	public Iterator<Item> getResources() {
-    if (resources == null) return null;
+    if (resources == null) {
+      return null;
+    }
     return resources.values().iterator();
 	}
 
@@ -155,7 +157,7 @@ public class ItemType extends ObjectType implements Comparable {
 	 */
 	public Item getResource(ID id) {
 		if(resources != null) {
-			return (Item) resources.get(id);
+			return resources.get(id);
 		} else {
 			return null;
 		}
@@ -223,7 +225,8 @@ public class ItemType extends ObjectType implements Comparable {
     return storableInBonw;
   }
   
-	public int compareTo(Object o){
+	@Override
+  public int compareTo(Object o){
 		ItemType cmpItemType = (ItemType)o;
 		return this.getName().compareTo(cmpItemType.getName());
 	}

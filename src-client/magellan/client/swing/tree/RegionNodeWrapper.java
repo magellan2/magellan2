@@ -92,7 +92,8 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return (amount > Integer.MIN_VALUE) ? (region.toString() + ": " + amount) : region.toString();
 	}
 
@@ -106,14 +107,14 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 	 */
 	public List getIconNames() {
 		Object key = region.getType().getID();
-		List iconNames = iconNamesLists.get(key);
+		List iconNames = RegionNodeWrapper.iconNamesLists.get(key);
 
 		if(iconNames == null) {
 			// in this situation init the region
 			region.refreshUnitRelations();
 
 			iconNames = Collections.singletonList(StringFactory.getFactory().intern(key.toString()));
-			iconNamesLists.put(key, iconNames);
+			RegionNodeWrapper.iconNamesLists.put(key, iconNames);
 		}
 
 		return iconNames;
@@ -192,7 +193,7 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 		 */
 		public RegionGraphicsElement(Object o, Icon i, Image im, String s) {
 			super(o, i, im, s);
-			setType(MAIN);
+			setType(GraphicsElement.MAIN);
 		}
 
 		/**
@@ -200,7 +201,8 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 		 *
 		 * 
 		 */
-		public boolean isEmphasized() {
+		@Override
+    public boolean isEmphasized() {
 			return emphasized();
 		}
 	}

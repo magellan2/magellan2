@@ -47,7 +47,6 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.tree.CellRenderer;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -58,7 +57,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0
  */
 public class IconPreferences extends InternationalizedPanel implements ExtendedPreferencesAdapter, ItemListener {
-  private static final Logger log = Logger.getInstance(IconPreferences.class);
 	protected List<NodeWrapperFactory> nwfactorys;
 	protected List<PreferencesAdapter> nwadapters;
 	protected IconStyleSetPreferences styles;

@@ -31,16 +31,19 @@ import magellan.library.Unit;
 public class UnitIDMapping implements DataMapping {
   private static UnitIDMapping singleton = new UnitIDMapping();
   public static UnitIDMapping getSingleton() {
-    return singleton;
+    return UnitIDMapping.singleton;
   }
   
+  @Override
   public String toString() {
     return "UnitID";
   }
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // create possible translations by same unit in both reports from same turn!
-    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) return null;
+    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) {
+      return null;
+    }
     
     for (Region region : fromData.regions().values()) {
       if (region.getCoordinate().z == level) {

@@ -61,7 +61,8 @@ public class RegionMethodReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region r) {
+	@Override
+  public Object getRegionReplacement(Region r) {
 		try {
 			Object o = method.invoke(r, (Object[])null);
 

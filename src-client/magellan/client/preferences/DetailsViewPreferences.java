@@ -30,7 +30,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -43,7 +42,6 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
 public class DetailsViewPreferences extends JPanel implements ExtendedPreferencesAdapter {
-  private Properties settings = null;
   private EMapDetailsPanel source = null;
   private List<PreferencesAdapter> subAdapters;
   private PreferencesAdapter regionPref;
@@ -53,8 +51,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   /**
    * Creates a new EMapDetailsPreferences object.
    */
-  public DetailsViewPreferences(Properties settings, EMapDetailsPanel source) {
-    this.settings = settings;
+  public DetailsViewPreferences(EMapDetailsPanel source) {
     this.source = source;
 
     subAdapters = new ArrayList<PreferencesAdapter>(2);
@@ -112,6 +109,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
    * @deprecated not implemented?
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
+  @Deprecated
   public void initPreferences() {
     regionPref.initPreferences();
     // TODO: implement it

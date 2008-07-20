@@ -31,7 +31,8 @@ public class HerbReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region r) {
+	@Override
+  public Object getRegionReplacement(Region r) {
 		if(r.getHerb() != null) {
 			return r.getHerb().getName();
 		}

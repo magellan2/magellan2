@@ -47,7 +47,8 @@ public class ArmyStatsAction extends MenuAction implements GameDataListener {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		new ArmyStatsDialog(client, client.getDispatcher(), client.getData(), client.getProperties()).setVisible(true);
 	}
 

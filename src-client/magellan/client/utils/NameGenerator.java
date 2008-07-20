@@ -49,16 +49,16 @@ public class NameGenerator {
 	 * 
 	 */
 	public static void init(Properties set) {
-		settings = set;
-		new NameGenerator(settings);
+		NameGenerator.settings = set;
+		new NameGenerator(NameGenerator.settings);
 	}
 
 	/**
 	 * DOCUMENT-ME
 	 */
 	public static void quit() {
-		if(gen != null) {
-			gen.close();
+		if(NameGenerator.gen != null) {
+			NameGenerator.gen.close();
 		}
 	}
 
@@ -68,18 +68,18 @@ public class NameGenerator {
 	 * 
 	 */
 	public static NameGenerator getInstance() {
-		if(gen == null) {
-			new NameGenerator(settings);
+		if(NameGenerator.gen == null) {
+			new NameGenerator(NameGenerator.settings);
 		}
 
-		return gen;
+		return NameGenerator.gen;
 	}
 
 	private NameGenerator(Properties settings) {
 		load(settings.getProperty("NameGenerator.Source"));
 		available = settings.getProperty("NameGenerator.active", "false").equals("true");
 
-		gen = this;
+		NameGenerator.gen = this;
 	}
 
 	public void load(String fileName) {
@@ -115,7 +115,7 @@ public class NameGenerator {
 	}
 
 	protected void close() {
-		String file = settings.getProperty("NameGenerator.Source");
+		String file = NameGenerator.settings.getProperty("NameGenerator.Source");
 
 		if (!Utils.isEmpty(file)) {
 			try {
@@ -170,7 +170,7 @@ public class NameGenerator {
 	 */
 	public String getName() {
 		if(names != null) {
-			String name = (String) names.remove(0);
+			String name = names.remove(0);
 
 			if(names.size() == 0) {
 				names = null;

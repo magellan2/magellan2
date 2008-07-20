@@ -45,7 +45,8 @@ public class SetOriginAction extends MenuAction {
 	 *
 	 * @param e 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		SetOriginDialog dialog = new SetOriginDialog(client, client.getDispatcher(), client.getData());
 		dialog.setVisible(true);
 		if (dialog.approved()){

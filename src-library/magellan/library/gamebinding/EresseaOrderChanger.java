@@ -47,7 +47,7 @@ public class EresseaOrderChanger implements OrderChanger {
 	 * 
 	 */
 	public static EresseaOrderChanger getSingleton() {
-		return singleton;
+		return EresseaOrderChanger.singleton;
 	}
 
 	/**

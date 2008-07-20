@@ -35,6 +35,7 @@ import magellan.library.rules.SkillType;
  * @author Ulrich Küster
  * @deprecated completely pointless
  */
+@Deprecated
 public class SkillTypeComparator implements Comparator<SkillType> {
 	private final Comparator<? super SkillType> typeCmp;
 	private final Comparator<? super SkillType> subCmp;

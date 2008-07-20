@@ -58,8 +58,8 @@ public class ImageFactory implements GameDataListener {
 		if(e.getGameData() != null) {
 			gamename = e.getGameData().getGameName().toLowerCase();
 
-			if(log.isDebugEnabled()) {
-				log.debug("ImageFactory.gameDataChanged: set gamename to " + gamename);
+			if(ImageFactory.log.isDebugEnabled()) {
+				ImageFactory.log.debug("ImageFactory.gameDataChanged: set gamename to " + gamename);
 			}
 
 			images.clear();
@@ -90,7 +90,7 @@ public class ImageFactory implements GameDataListener {
 
 		String fName = Umlaut.normalize(imageName).toLowerCase();
     
-    log.debug("Loading image "+fName);
+    ImageFactory.log.debug("Loading image "+fName);
 
 		ImageIcon img = doLoadImage(gamename + "/" + fName);
 
@@ -104,7 +104,7 @@ public class ImageFactory implements GameDataListener {
 		}
 
     if (img == null && errorIfNotFound) {
-		  log.errorOnce("ImageFactory.loadImage(" + imageName + "): found:" + (img != null));
+		  ImageFactory.log.errorOnce("ImageFactory.loadImage(" + imageName + "): not found");
     }
     
 		return img;
@@ -151,10 +151,18 @@ public class ImageFactory implements GameDataListener {
 
 			if(icon != null) {
         String iName = imageName;
-        if (iName.endsWith("_summer")) iName=iName.substring(0,iName.length()-7);
-        if (iName.endsWith("_winter")) iName=iName.substring(0,iName.length()-7);
-        if (iName.endsWith("_autumn")) iName=iName.substring(0,iName.length()-7);
-        if (iName.endsWith("_spring")) iName=iName.substring(0,iName.length()-7);
+        if (iName.endsWith("_summer")) {
+          iName=iName.substring(0,iName.length()-7);
+        }
+        if (iName.endsWith("_winter")) {
+          iName=iName.substring(0,iName.length()-7);
+        }
+        if (iName.endsWith("_autumn")) {
+          iName=iName.substring(0,iName.length()-7);
+        }
+        if (iName.endsWith("_spring")) {
+          iName=iName.substring(0,iName.length()-7);
+        }
         alphaIcon = MagellanImages.getImageIcon(iName + "-alpha.gif");
 			}
 		}
@@ -207,14 +215,14 @@ public class ImageFactory implements GameDataListener {
 			pgRGB.grabPixels();
 			pgAlpha.grabPixels();
 		} catch(InterruptedException e) {
-			log.warn("interrupted waiting for pixels!");
+			ImageFactory.log.warn("interrupted waiting for pixels!");
 
 			return null;
 		}
 
 		if(((pgRGB.getStatus() & ImageObserver.ABORT) != 0) ||
 			   ((pgAlpha.getStatus() & ImageObserver.ABORT) != 0)) {
-			log.warn("image fetch aborted or errored");
+			ImageFactory.log.warn("image fetch aborted or errored");
 
 			return null;
 		}
@@ -284,7 +292,9 @@ public class ImageFactory implements GameDataListener {
 	 */
 	public Image loadMapImage(String imageName,boolean errorIfNotFound) {
     ImageIcon icon = loadImage("etc/images/map/" + imageName,errorIfNotFound);
-    if (icon != null) return icon.getImage();
+    if (icon != null) {
+      return icon.getImage();
+    }
     return null;
 	}
 	

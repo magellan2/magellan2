@@ -196,10 +196,10 @@ public class ReplacerHelp implements GameDataListener {
     // special: mallornregion
     drf.putReplacer("mallornregion", MallornRegionSwitch.class);
 
-		reworkRegionSwitches(data);
+		ReplacerHelp.reworkRegionSwitches(data);
     
 
-		defaultFactory = drf;
+		ReplacerHelp.defaultFactory = drf;
 	}
 
 	protected static void reworkRegionSwitches(GameData data) {
@@ -212,7 +212,7 @@ public class ReplacerHelp implements GameDataListener {
 			Object arg[] = new Object[1];
 			String name = "is" + type.getID().toString();
 			arg[0] = type;
-			defaultFactory.putReplacer(name, RegionTypeSwitch.class, arg);
+			ReplacerHelp.defaultFactory.putReplacer(name, RegionTypeSwitch.class, arg);
 		}
 	}
 
@@ -248,7 +248,7 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerFactory getDefaultReplacerFactory() {
-		return defaultFactory;
+		return ReplacerHelp.defaultFactory;
 	}
 
 	/**
@@ -261,8 +261,8 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerSystem createReplacer(String def, String cmd, String unknown) {
-		if(defaultFactory != null) {
-			return DefinitionMaker.createDefinition(def, cmd, defaultFactory, unknown);
+		if(ReplacerHelp.defaultFactory != null) {
+			return DefinitionMaker.createDefinition(def, cmd, ReplacerHelp.defaultFactory, unknown);
 		}
 
 		return null;
@@ -276,7 +276,7 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerSystem createReplacer(String def) {
-		return createReplacer(def, "§", "-?-");
+		return ReplacerHelp.createReplacer(def, "§", "-?-");
 	}
 
 	/**
@@ -288,7 +288,7 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public static ReplacerSystem createReplacer(String def, String unknown) {
-		return createReplacer(def, "§", unknown);
+		return ReplacerHelp.createReplacer(def, "§", unknown);
 	}
 
 	/**
@@ -297,6 +297,6 @@ public class ReplacerHelp implements GameDataListener {
 	 * 
 	 */
 	public void gameDataChanged(GameDataEvent e) {
-		reworkRegionSwitches(e.getGameData());
+		ReplacerHelp.reworkRegionSwitches(e.getGameData());
 	}
 }

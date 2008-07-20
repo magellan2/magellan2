@@ -43,53 +43,53 @@ public class DesktopEnvironment extends Object {
 	 * 
 	 */
 	static void init(MagellanDesktop md) {
-		desktop = md;
-		initialized = true;
+		DesktopEnvironment.desktop = md;
+		DesktopEnvironment.initialized = true;
 
 		// somebody registered before init
-		if(pendingSCListeners != null) {
-			Iterator it = pendingSCListeners.iterator();
+		if(DesktopEnvironment.pendingSCListeners != null) {
+			Iterator it = DesktopEnvironment.pendingSCListeners.iterator();
 
 			while(it.hasNext()) {
 				try {
-					registerShortcutListener((ShortcutListener) it.next());
+					DesktopEnvironment.registerShortcutListener((ShortcutListener) it.next());
 				} catch(Exception exc) {
 				}
 			}
 
-			pendingSCListeners = null;
+			DesktopEnvironment.pendingSCListeners = null;
 		}
 
-		if(pendingSingleSCListeners != null) {
-			Iterator<Pair<KeyStroke,ShortcutListener>> it = pendingSingleSCListeners.iterator();
+		if(DesktopEnvironment.pendingSingleSCListeners != null) {
+			Iterator<Pair<KeyStroke,ShortcutListener>> it = DesktopEnvironment.pendingSingleSCListeners.iterator();
 
 			while(it.hasNext()) {
 				try {
           Pair<KeyStroke,ShortcutListener> pair = it.next();
 					KeyStroke ks = pair.getKey();
 					ShortcutListener sl = pair.getValue();
-					registerShortcutListener(ks, sl);
+					DesktopEnvironment.registerShortcutListener(ks, sl);
 				} catch(Exception exc) {
 				}
 			}
 
-			pendingSCListeners = null;
+			DesktopEnvironment.pendingSCListeners = null;
 		}
 
-		if(pendingAEListeners != null) {
-			Iterator<Pair<KeyStroke,ActionListener>> it = pendingAEListeners.iterator();
+		if(DesktopEnvironment.pendingAEListeners != null) {
+			Iterator<Pair<KeyStroke,ActionListener>> it = DesktopEnvironment.pendingAEListeners.iterator();
 
 			while(it.hasNext()) {
 				try {
           Pair<KeyStroke,ActionListener> pair = it.next();
 					KeyStroke ks = pair.getKey();
 					ActionListener al = pair.getValue();
-					registerActionListener(ks, al);
+					DesktopEnvironment.registerActionListener(ks, al);
 				} catch(Exception exc) {
 				}
 			}
 
-			pendingAEListeners = null;
+			DesktopEnvironment.pendingAEListeners = null;
 		}
 	}
 
@@ -97,14 +97,14 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void registerShortcutListener(ShortcutListener sl) {
-		if(initialized) {
-			desktop.registerShortcut(sl);
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.desktop.registerShortcut(sl);
 		} else {
-			if(pendingSCListeners == null) {
-				pendingSCListeners = new LinkedList<ShortcutListener>();
+			if(DesktopEnvironment.pendingSCListeners == null) {
+				DesktopEnvironment.pendingSCListeners = new LinkedList<ShortcutListener>();
 			}
 
-			pendingSCListeners.add(sl);
+			DesktopEnvironment.pendingSCListeners.add(sl);
 		}
 	}
 
@@ -112,14 +112,14 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void registerShortcutListener(KeyStroke stroke, ShortcutListener sl) {
-		if(initialized) {
-			desktop.registerShortcut(stroke, sl);
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.desktop.registerShortcut(stroke, sl);
 		} else {
-			if(pendingSingleSCListeners == null) {
-				pendingSingleSCListeners = new LinkedList<Pair<KeyStroke,ShortcutListener>>();
+			if(DesktopEnvironment.pendingSingleSCListeners == null) {
+				DesktopEnvironment.pendingSingleSCListeners = new LinkedList<Pair<KeyStroke,ShortcutListener>>();
 			}
 
-			pendingSingleSCListeners.add(new Pair<KeyStroke, ShortcutListener>(stroke,sl));
+			DesktopEnvironment.pendingSingleSCListeners.add(new Pair<KeyStroke, ShortcutListener>(stroke,sl));
 		}
 	}
 
@@ -127,14 +127,14 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void registerActionListener(KeyStroke stroke, ActionListener al) {
-		if(initialized) {
-			desktop.registerShortcut(stroke, al);
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.desktop.registerShortcut(stroke, al);
 		} else {
-			if(pendingAEListeners == null) {
-				pendingAEListeners = new LinkedList<Pair<KeyStroke,ActionListener>>();
+			if(DesktopEnvironment.pendingAEListeners == null) {
+				DesktopEnvironment.pendingAEListeners = new LinkedList<Pair<KeyStroke,ActionListener>>();
 			}
       
-			pendingAEListeners.add(new Pair<KeyStroke, ActionListener>(stroke,al));
+			DesktopEnvironment.pendingAEListeners.add(new Pair<KeyStroke, ActionListener>(stroke,al));
 		}
 	}
 
@@ -142,15 +142,15 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static MagellanDesktop getDesktop() {
-		return desktop;
+		return DesktopEnvironment.desktop;
 	}
 
 	/**
    * 
 	 */
 	public static void requestFocus(String component) {
-		if(initialized) {
-			getDesktop().componentRequestFocus(component);
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.getDesktop().componentRequestFocus(component);
 		}
 	}
 
@@ -158,8 +158,8 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void repaintComponent(String component) {
-		if(initialized) {
-			getDesktop().repaint(component);
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.getDesktop().repaint(component);
 		}
 	}
 
@@ -167,8 +167,8 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void repaintAll() {
-		if(initialized) {
-			getDesktop().repaintAllComponents();
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.getDesktop().repaintAllComponents();
 		}
 	}
 
@@ -176,8 +176,8 @@ public class DesktopEnvironment extends Object {
    * 
 	 */
 	public static void updateLaF() {
-		if(initialized) {
-			getDesktop().updateLaF();
+		if(DesktopEnvironment.initialized) {
+			DesktopEnvironment.getDesktop().updateLaF();
 		}
 	}
 }

@@ -46,17 +46,12 @@ import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * Encapsulates the preferences tab for the desktop.
  */
 public class DesktopPreferences extends JPanel implements ActionListener, ExtendedPreferencesAdapter {
-  private static final Logger log = Logger.getInstance(DesktopPreferences.class);
-  
   private MagellanDesktop desktop;
-  private Client client;
-  private Properties settings;
   
   private JPanel center;
   private List<PreferencesAdapter> scList;
@@ -68,8 +63,6 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
    */
   public DesktopPreferences(MagellanDesktop desktop, Client client, Properties settings) {
     this.desktop = desktop;
-    this.client = client;
-    this.settings = settings;
     this.setLayout(new BorderLayout());
 
     center = new JPanel();
@@ -116,7 +109,7 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
     add(center, BorderLayout.CENTER);
 
     scList = new ArrayList<PreferencesAdapter>(1);
-    scList.add(new DesktopShortCutPreferences(desktop,client,settings));
+    scList.add(new DesktopShortCutPreferences(desktop,client));
   }
 
   /**

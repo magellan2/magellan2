@@ -28,7 +28,6 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * DOCUMENT ME!
@@ -37,8 +36,6 @@ import magellan.library.utils.logging.Logger;
  * @version 1.0
  */
 public class LanguageDialog {
-  private static final Logger log = Logger.getInstance(LanguageDialog.class);
-
   // the settings needed for the resource loader
   protected Properties settings;
 
@@ -86,8 +83,9 @@ public class LanguageDialog {
       }
     }
 
-    if (sysDefault == null)
+    if (sysDefault == null) {
       new Lang(Locale.ENGLISH);
+    }
 
     languageList = new LinkedList<Lang>();
     for (Locale locale : locales) {
@@ -198,6 +196,7 @@ public class LanguageDialog {
      * 
      * 
      */
+    @Override
     public String toString() {
       return locale.getDisplayLanguage(locale);
     }
@@ -206,6 +205,7 @@ public class LanguageDialog {
       return toString().compareTo(o.toString());
     }
 
+    @Override
     public boolean equals(Object o) {
       if (o instanceof Lang) {
         Lang l = (Lang) o;

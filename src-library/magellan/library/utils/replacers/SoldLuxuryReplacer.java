@@ -51,13 +51,14 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region r) {
+	@Override
+  public Object getRegionReplacement(Region r) {
 		if(r.getPrices() != null) {
 			Iterator<ID> it = r.getPrices().keySet().iterator();
 
 			while(it.hasNext()) {
 				ID id = it.next();
-				LuxuryPrice lp = (LuxuryPrice) r.getPrices().get(id);
+				LuxuryPrice lp = r.getPrices().get(id);
 
 				if(lp.getPrice() < 0) {
 					switch(mode) {

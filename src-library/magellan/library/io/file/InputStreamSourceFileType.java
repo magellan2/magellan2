@@ -31,7 +31,8 @@ public class InputStreamSourceFileType extends FileType {
 		super(url, true);
 	}
 
-	protected InputStream createInputStream() throws IOException {
+	@Override
+  protected InputStream createInputStream() throws IOException {
 		URL url = MagellanImages.getResource(filename.getPath().toLowerCase());
 
 		if(url == null) {
@@ -41,7 +42,8 @@ public class InputStreamSourceFileType extends FileType {
 		return url.openStream();
 	}
 
-	protected OutputStream createOutputStream() throws IOException {
+	@Override
+  protected OutputStream createOutputStream() throws IOException {
 		throw new IOException("InputStreamSourceFileType does not support writing to a resource.");
 	}
 
@@ -53,7 +55,8 @@ public class InputStreamSourceFileType extends FileType {
 	 * @throws IOException if file cannot be determined, e.g. for  an url pointing to an
 	 * 		   InputStream.
 	 */
-	public File getFile() throws IOException {
+	@Override
+  public File getFile() throws IOException {
 		throw new IOException("Unable to determine File for InputStream URL '" + toString() + "'.");
 	}
 }

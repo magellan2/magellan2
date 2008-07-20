@@ -40,7 +40,8 @@ public class DivisionOperator extends AbstractOperator {
 	 *
 	 * 
 	 */
-	public Object compute(Object numbers[]) {
+	@Override
+  public Object compute(Object numbers[]) {
 		if(((Number) numbers[1]).floatValue() == 0) {
 			return null;
 		}

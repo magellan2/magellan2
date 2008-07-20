@@ -46,7 +46,6 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.SkillStats;
 import magellan.library.utils.logging.Logger;
 
-import com.jrefinery.chart.Axis;
 import com.jrefinery.chart.AxisNotCompatibleException;
 import com.jrefinery.chart.DefaultCategoryDataSource;
 import com.jrefinery.chart.HorizontalCategoryAxis;
@@ -91,14 +90,14 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		yAxis.setAutoRangeIncludesZero(true);
 
 		try {
-			Plot verticalBarPlot = new VerticalBarPlot(null, (Axis) xAxis, (Axis) yAxis);
+			Plot verticalBarPlot = new VerticalBarPlot(null, xAxis, yAxis);
 			DefaultCategoryDataSource dataSource = createDataSource(null);
 			chartPanel = new SkillChartJFreeChartPanel(new JFreeChart("",
 																	  new Font("Arial", Font.BOLD,
 																			   24), dataSource,
 																	  verticalBarPlot), this);
 		} catch(AxisNotCompatibleException e) { // work on this later...
-			log.warn(e);
+			SkillChartPanel.log.warn(e);
 		}
 
 		JFreeChart chart = chartPanel.getChart();
@@ -320,7 +319,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 	 *
 	 * 
 	 */
-	public void gameDataChanged(magellan.library.event.GameDataEvent e) {
+	@Override
+  public void gameDataChanged(magellan.library.event.GameDataEvent e) {
 		data = e.getGameData();
 
 		if(data.noSkillPoints) {
@@ -351,7 +351,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		if((type == null) || (i >= skillStats.getKnownSkills(type).size())) {
 			return null;
 		} else {
-			Skill skill = (Skill) skillStats.getKnownSkills(type).get(i);
+			Skill skill = skillStats.getKnownSkills(type).get(i);
 			String retVal = Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") +
 							skillStats.getPersonNumber(skill);
 			retVal += (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") +

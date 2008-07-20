@@ -119,7 +119,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			settings.load(new FileInputStream(new File(System.getProperty("user.home"),
 													   "CRWriterDialog.ini")));
 		} catch(IOException e) {
-			log.error("CRWriterDialog.CRWriterDialog()", e);
+			CRWriterDialog.log.error("CRWriterDialog.CRWriterDialog()", e);
 		}
 
 		init();
@@ -216,7 +216,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
             
 						quit();
 					} catch(IOException ioe) {
-						log.error(ioe);
+						CRWriterDialog.log.error(ioe);
 						JOptionPane.showMessageDialog((JButton) e.getSource(),
 						    Resources.getFormatted("crwriterdialog.msg.writeerror.text",outputFile.getName(), ioe.toString()),
 						    Resources.get("crwriterdialog.msg.exporterror.title"),
@@ -478,7 +478,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				settings.store(new FileOutputStream(new File(System.getProperty("user.home"),
 															 "CRWriterDialog.ini")), "");
 			} catch(IOException e) {
-				log.error("CRWriterDialog.storeSettings():", e);
+				CRWriterDialog.log.error("CRWriterDialog.storeSettings():", e);
 			}
 		}
 	}
@@ -573,13 +573,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           newData = (GameData) data.clone();
           if (newData!=null && newData.outOfMemory) {
             JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-            log.error(Resources.get("client.msg.outofmemory.text"));
+            CRWriterDialog.log.error(Resources.get("client.msg.outofmemory.text"));
           }
           if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
             JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
           }
         } catch(CloneNotSupportedException e) {
-          log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
+          CRWriterDialog.log.error("CRWriterDialog: trying to clone gamedata failed, fallback to merge method.",e);
           newData = GameData.merge(data, data);
         }
 			}
@@ -811,7 +811,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				}
 
 				if(trans.size() > 0) {
-					log.debug("Following translations will be removed:");
+					CRWriterDialog.log.debug("Following translations will be removed:");
 					stringIterator = trans.iterator();
 
 					// java.util.Map<String,String> newTrans = newData.translations();
@@ -821,8 +821,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 						Object o = stringIterator.next();
 						newTrans.remove((String)o);
 
-						if(log.isDebugEnabled()) {
-							log.debug("Removing: " + o);
+						if(CRWriterDialog.log.isDebugEnabled()) {
+							CRWriterDialog.log.debug("Removing: " + o);
 						}
 					}
 				}
@@ -839,7 +839,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         // Looping through the factions
         if(newData.factions() != null) {
           for (Iterator<Faction> it1 = newData.factions().values().iterator();it1.hasNext();){
-            Faction actF = (Faction)it1.next();
+            Faction actF = it1.next();
             boolean found = false;
             // Looping through exportet regions or all regions, lookup is set already
             if (lookup!=null && lookup.size()>0){
@@ -850,7 +850,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
                 while(!found && it3.hasNext()) {
                   Unit unit = it3.next();
                   if (actF.equals(unit.getFaction())){
-                    int i22=0;
+                    //int i22=0;
                   }
                   found = actF.equals(unit.getFaction());
                 }
@@ -897,7 +897,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.write(newData);
 			crw.close();
 		} catch(Exception exc) {
-			log.error(exc);
+			CRWriterDialog.log.error(exc);
 			JOptionPane.showMessageDialog(this, Resources.get("crwriterdialog.msg.exporterror.text") + exc.toString(),
           Resources.get("crwriterdialog.msg.exporterror.title"),
 										  JOptionPane.WARNING_MESSAGE);

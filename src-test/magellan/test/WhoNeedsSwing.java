@@ -39,7 +39,7 @@ public class WhoNeedsSwing {
    * @param args
    */
   public static void main(String[] args) throws Exception {
-    verify(new File("src-backend/"));
+    WhoNeedsSwing.verify(new File("src-backend/"));
     
   }
   
@@ -47,8 +47,10 @@ public class WhoNeedsSwing {
     if (root.isDirectory()) {
       File[] files = root.listFiles();
       for (File file : files) {
-        if (file.getName().startsWith(".")) continue;
-        verify(file);
+        if (file.getName().startsWith(".")) {
+          continue;
+        }
+        WhoNeedsSwing.verify(file);
       }
     } else if (root.getName().endsWith(".java")) {
       LineNumberReader reader = new LineNumberReader(new FileReader(root));

@@ -47,7 +47,8 @@ public class UnitContainerCommentNodeWrapper implements CellObject, SupportsClip
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return this.comment;
 	}
 

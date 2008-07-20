@@ -29,11 +29,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import magellan.library.utils.logging.Logger;
-
 public class MagellanImages {
-  private static final Logger log = Logger.getInstance(MagellanImages.class);
-  
   public static ImageIcon GUI_TOTD = null;
   public static  ImageIcon GUI_CREATETEMPUNIT = null;
   public static  ImageIcon GUI_DELETETEMPUNIT = null;
@@ -51,7 +47,7 @@ public class MagellanImages {
       File resFile = new File(path);
       if (!resFile.exists()){
         // try to use MagDir
-        resFile = new File(magellanDirectory,path);
+        resFile = new File(MagellanImages.magellanDirectory,path);
         if (!resFile.exists()){
           // OK give up here
           return null;
@@ -67,17 +63,14 @@ public class MagellanImages {
     // log.info("getImageIcon: " + path);
     File file = new File(path);
     if (!file.exists()){
-      file = new File(magellanDirectory,path);
+      file = new File(MagellanImages.magellanDirectory,path);
       // log.info("trying also: " + file.toString());
     }
-    if (!file.exists()) return null;
+    if (!file.exists()) {
+      return null;
+    }
     
     ImageIcon res = new ImageIcon(file.toString());
-    if (res==null){
-      // log.info("final: " + file.toString() +  "  NULL");
-    } else {
-      // log.info("final: " + file.toString() +  "  EXISTS");
-    }
     return res;
   }
 
@@ -88,15 +81,15 @@ public class MagellanImages {
    */
   public static void setMagellanDirectory(File magellanDirectory) {
     MagellanImages.magellanDirectory = magellanDirectory;
-    GUI_TOTD = getImageIcon("etc/images/gui/totd.gif");
-    GUI_CREATETEMPUNIT = getImageIcon("etc/images/gui/createtempunit.gif");
-    GUI_DELETETEMPUNIT = getImageIcon("etc/images/gui/deletetempunit.gif");
+    MagellanImages.GUI_TOTD = MagellanImages.getImageIcon("etc/images/gui/totd.gif");
+    MagellanImages.GUI_CREATETEMPUNIT = MagellanImages.getImageIcon("etc/images/gui/createtempunit.gif");
+    MagellanImages.GUI_DELETETEMPUNIT = MagellanImages.getImageIcon("etc/images/gui/deletetempunit.gif");
     
-    ABOUNT_APPLICATION_ICON = getImageIcon("etc/images/about/appicon.gif");
-    ABOUT_MAGELLAN = getImageIcon("etc/images/about/magellan.jpg");
-    BULLETS_LEAF = getImageIcon("etc/images/bullets/leaf.gif");
-    BULLETS_OPEN = getImageIcon("etc/images/bullets/open.gif");
-    BULLETS_CLOSED = getImageIcon("etc/images/bullets/closed.gif");    
+    MagellanImages.ABOUNT_APPLICATION_ICON = MagellanImages.getImageIcon("etc/images/about/appicon.gif");
+    MagellanImages.ABOUT_MAGELLAN = MagellanImages.getImageIcon("etc/images/about/magellan.jpg");
+    MagellanImages.BULLETS_LEAF = MagellanImages.getImageIcon("etc/images/bullets/leaf.gif");
+    MagellanImages.BULLETS_OPEN = MagellanImages.getImageIcon("etc/images/bullets/open.gif");
+    MagellanImages.BULLETS_CLOSED = MagellanImages.getImageIcon("etc/images/bullets/closed.gif");    
     
   }
 }

@@ -53,6 +53,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.AbstractBorder;
 import javax.swing.border.TitledBorder;
@@ -507,12 +508,15 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
     // workaround to support EMapOverviewPanel.filters
     int newFilter = TreeBuilder.UNITS;
-    if (chkRegionTreeBuilder_withBuildings.isSelected())
+    if (chkRegionTreeBuilder_withBuildings.isSelected()) {
       newFilter = newFilter | TreeBuilder.BUILDINGS;
-    if (chkRegionTreeBuilder_withShips.isSelected())
+    }
+    if (chkRegionTreeBuilder_withShips.isSelected()) {
       newFilter = newFilter | TreeBuilder.SHIPS;
-    if (chkRegionTreeBuilder_withComments.isSelected())
+    }
+    if (chkRegionTreeBuilder_withComments.isSelected()) {
       newFilter = newFilter | TreeBuilder.COMMENTS;
+    }
 
     settings.setProperty("EMapOverviewPanel.filters", String.valueOf(newFilter));
 
@@ -621,7 +625,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
 
       con.gridy++;
       con.fill = GridBagConstraints.HORIZONTAL;
-      this.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      this.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.fill = GridBagConstraints.NONE;
 
       radioButtons[1] = new JRadioButton(Resources.get("emapoverviewpanel.prefs.expand.faction"), (expanded && ((overviewPanel.getExpandMode() >> 2) == 0)));
@@ -750,7 +754,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       con.gridy++;
       con.fill = GridBagConstraints.HORIZONTAL;
       con.insets.left = 0;
-      this.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      this.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.insets.left = 3;
       con.fill = GridBagConstraints.NONE;
 
@@ -833,12 +837,13 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
        * Creates a new LeftBorder object.
        */
       public LeftBorder() {
-        sep = new JSeparator(JSeparator.VERTICAL);
+        sep = new JSeparator(SwingConstants.VERTICAL);
       }
 
       /**
        * DOCUMENT-ME
        */
+      @Override
       public Insets getBorderInsets(Component c) {
         return getBorderInsets(c, null);
       }
@@ -846,6 +851,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       /**
        * DOCUMENT-ME
        */
+      @Override
       public Insets getBorderInsets(Component c, Insets in) {
         if (in == null) {
           in = new Insets(0, 0, 0, 0);

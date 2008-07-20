@@ -119,7 +119,6 @@ import magellan.client.event.UnitOrdersListener;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
 import magellan.client.preferences.ClientPreferences;
-import magellan.client.swing.ArmyStatsPanel;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
 import magellan.client.swing.ECheckPanel;
@@ -131,7 +130,6 @@ import magellan.client.swing.MessagePanel;
 import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.StartWindow;
 import magellan.client.swing.TipOfTheDay;
-import magellan.client.swing.TradeOrganizer;
 import magellan.client.swing.map.CellGeometry;
 import magellan.client.swing.map.MapCellRenderer;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -215,24 +213,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   
   /** The open tasks panel */
   private TaskTablePanel taskPanel = null;
-  
-  /** The army statistics panel */
-  private ArmyStatsPanel armyStatsPanel = null;
-  
-  /** The trade organizer panel */
-  private TradeOrganizer tradeOrganizer = null;
-  
-  /**
-   * @deprecated, use info from GameData
-   */
-  //private File dataFile = null;
-
-  /** 
-   * indicates that the user loaded a report at least once
-   * in order to decide about showing a save dialog when
-   * quitting
-   */
-  private boolean everLoadedReport = false; // 
 
   private FileHistory fileHistory;
 
@@ -289,17 +269,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param settingsDir
    */
   public Client(GameData gd, File fileDir, File settingsDir) {
-    INSTANCE = this;
-    filesDirectory = fileDir;
-    settingsDirectory = settingsDir;
+    Client.INSTANCE = this;
+    Client.filesDirectory = fileDir;
+    Client.settingsDirectory = settingsDir;
     
     // get new dispatcher
     EventDispatcher dispatcher = new EventDispatcher();
 
-    startWindow.progress(1, Resources.get("clientstart.1"));
-    Properties settings = loadSettings(settingsDirectory, "magellan.ini");
+    Client.startWindow.progress(1, Resources.get("clientstart.1"));
+    Properties settings = Client.loadSettings(Client.settingsDirectory, "magellan.ini");
     if (settings == null) {
-      log.info("Client.loadSettings: settings file " + "magellan.ini" + " does not exist, using default values.");
+      Client.log.info("Client.loadSettings: settings file " + "magellan.ini" + " does not exist, using default values.");
       settings = new SelfCleaningProperties();
       settings.setProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL,"Windows");
       settings.setProperty(PropertiesHelper.ADVANCEDSHAPERENDERER_SETS,",Einkaufsgut");
@@ -355,8 +335,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
-    Properties completionSettings = loadSettings(settingsDirectory, "magellan_completions.ini");
-    if (completionSettings == null) completionSettings = new SelfCleaningProperties();
+    Properties completionSettings = Client.loadSettings(Client.settingsDirectory, "magellan_completions.ini");
+    if (completionSettings == null) {
+      completionSettings = new SelfCleaningProperties();
+    }
 
     // initialize the context, this has to be very early.
     context = new MagellanContext(this);
@@ -372,7 +354,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // create management and observer objects
     dispatcher.addSelectionListener(SelectionHistory.getSelectionEventHook());
     dispatcher.addTempUnitListener(SelectionHistory.getTempUnitEventHook());
-    bookmarkManager = new BookmarkManager(dispatcher, settings);
+    bookmarkManager = new BookmarkManager(dispatcher);
     undoMgr = new MagellanUndoManager();
     reportState = new ReportObserver(dispatcher);
 
@@ -380,7 +362,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     initPlugIns();
     
     // init components
-    startWindow.progress(2, Resources.get("clientstart.2"));
+    Client.startWindow.progress(2, Resources.get("clientstart.2"));
     panels = new LinkedList<JPanel>();
     nodeWrapperFactories = new LinkedList<NodeWrapperFactory>();
 
@@ -388,13 +370,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Map<String,Component> components = initComponents(topLevelComponents);
 
     // init desktop
-    startWindow.progress(3, Resources.get("clientstart.3"));
+    Client.startWindow.progress(3, Resources.get("clientstart.3"));
     Rectangle bounds = PropertiesHelper.loadRect(settings, null, "Client");
-    if (bounds != null)
+    if (bounds != null) {
       setBounds(bounds);
+    }
 
     desktop = MagellanDesktop.getInstance();
-    desktop.init(this, context, settings, components, settingsDirectory);
+    desktop.init(this, context, settings, components, Client.settingsDirectory);
 
     setContentPane(desktop);
     
@@ -436,9 +419,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (settingsFile.exists()) {
       try {
         settings.load(new BufferedInputStream(new FileInputStream(settingsFile)));
-        log.info("Client.loadSettings: successfully loaded " + settingsFile);
+        Client.log.info("Client.loadSettings: successfully loaded " + settingsFile);
       } catch (IOException e) {
-        log.error("Client.loadSettings: Error while loading " + settingsFile, e);
+        Client.log.error("Client.loadSettings: Error while loading " + settingsFile, e);
         return null;
       }
     } else {
@@ -449,17 +432,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   protected void initLocales(Properties settings, boolean ask) {
     if (ask) {
-      LanguageDialog ld = new LanguageDialog(startWindow, settings);
+      LanguageDialog ld = new LanguageDialog(Client.startWindow, settings);
 
       if (ld.languagesFound()) {
 //        startWindow.toBack();
-        Point p = startWindow.getLocation();
-        ld.setLocation((int) p.getX()+(startWindow.getWidth()-ld.getWidth())/2, (int) p.getY()-ld.getHeight()/2);
+        Point p = Client.startWindow.getLocation();
+        ld.setLocation((int) p.getX()+(Client.startWindow.getWidth()-ld.getWidth())/2, (int) p.getY()-ld.getHeight()/2);
         Locale locale = ld.show();
 //        startWindow.toFront();
         if (locale == null) {
           // without this decision we cannot start the application
-          log.error("can't work without locale");
+          Client.log.error("can't work without locale");
           quit(false);
         }
 
@@ -470,15 +453,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       }
     }
 
-    if (settings.getProperty("locales.gui") != null)
+    if (settings.getProperty("locales.gui") != null) {
       Locales.setGUILocale(new Locale(settings.getProperty("locales.gui")));
-    else
+    } else {
       Locales.setGUILocale(Locale.getDefault());
-    if (settings.getProperty("locales.orders") != null)
+    }
+    if (settings.getProperty("locales.orders") != null) {
       Locales.setOrderLocale(new Locale(settings.getProperty("locales.orders")));
-    else
+    } else {
       Locales.setOrderLocale(Locale.GERMAN);
-    log.info("GUI locale: " + Locales.getGUILocale() + settings.getProperty("locales.gui") + ", orders locale: " + Locales.getOrderLocale() + settings.getProperty("locales.orders"));
+    }
+    Client.log.info("GUI locale: " + Locales.getGUILocale() + settings.getProperty("locales.gui") + ", orders locale: " + Locales.getOrderLocale() + settings.getProperty("locales.orders"));
   }
 
   // TODO (stm) this is used by exactly once in the whole project. Why do we
@@ -514,7 +499,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * shortcut # L&F
    */
   protected void initUI() {
-    Image iconImage = getApplicationIcon();
+    Image iconImage = Client.getApplicationIcon();
 
     // set the application icon
     if (iconImage != null) {
@@ -550,7 +535,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
       }
     } catch (Exception e) {
-      log.error(e);
+      Client.log.error(e);
     }
 
     // initialize client shortcut - F5 to repaint
@@ -581,7 +566,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // load custom renderers
     // ForcedFileClassLoader.directory = filesDirectory;
-    RendererLoader rl = new RendererLoader(filesDirectory, ".", geo, getProperties());
+    RendererLoader rl = new RendererLoader(Client.filesDirectory, ".", geo, getProperties());
     Collection<MapCellRenderer> cR = rl.loadRenderers();
     
     // init mapper
@@ -607,7 +592,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     panels.add(detailsPanel);
     nodeWrapperFactories.add(detailsPanel.getNodeWrapperFactory());
 
-    Container c = (Container) detailsPanel.getNameAndDescriptionPanel();
+    Container c = detailsPanel.getNameAndDescriptionPanel();
     components.put("NAME&DESCRIPTION", c);
     components.put("NAME", c.getComponent(0));
     components.put("DESCRIPTION", c.getComponent(1));
@@ -643,10 +628,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 //    tradeOrganizer = new TradeOrganizer(this, getDispatcher(), getData(), getProperties());
 //    components.put(TradeOrganizer.IDENTIFIER, tradeOrganizer);
     
-    log.info("Checking for dock-providers...(MagellanPlugIns)");
+    Client.log.info("Checking for dock-providers...(MagellanPlugIns)");
     for (MagellanPlugIn plugIn : plugIns) {
       Map<String,Component> plugInDocks = plugIn.getDocks();
-      if (plugInDocks != null && plugInDocks.size() > 0) components.putAll(plugInDocks);
+      if (plugInDocks != null && plugInDocks.size() > 0) {
+        components.putAll(plugInDocks);
+      }
     }
 
     return components;
@@ -677,7 +664,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Map<String,JMenu> topLevel = new HashMap<String, JMenu>();
     List<JMenu> direction = new LinkedList<JMenu>();
     Iterator<Container> it = components.iterator();
-    log.info("Checking for menu-providers...");
+    Client.log.info("Checking for menu-providers...");
 
     while (it.hasNext()) {
       Container o = it.next();
@@ -704,7 +691,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     // add external modules if some can be found
     JMenu plugInMenu = null;
-    log.info("Checking for menu-providers...(MagellanPlugIns)");
+    Client.log.info("Checking for menu-providers...(MagellanPlugIns)");
     for (MagellanPlugIn plugIn : plugIns) {
       List<JMenuItem> plugInMenuItems = plugIn.getMenuItems();
       if (plugInMenuItems != null && plugInMenuItems.size()>0) {
@@ -1016,10 +1003,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           if (level != null) {
             level = level.toUpperCase();
             Logger.setLevel(level);
-            log.info("Client.main: Set logging to " + level);
+            Client.log.info("Client.main: Set logging to " + level);
 
             if ("A".equals(level)) {
-              log.awt("Start logging of awt events to awtdebug.txt.");
+              Client.log.awt("Start logging of awt events to awtdebug.txt.");
             }
           }
         } else if (args[i].equals("--help")) {
@@ -1034,10 +1021,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             if (tmpFile.exists() && tmpFile.isDirectory() && tmpFile.canWrite()) {
               fileDir = tmpFile;
             } else {
-              log.info("Client.main(): the specified files directory does not " + "exist, is not a directory or is not writeable.");
+              Client.log.info("Client.main(): the specified files directory does not " + "exist, is not a directory or is not writeable.");
             }
           } catch (Exception e) {
-            log.error("Client.main(): the specified files directory is invalid.", e);
+            Client.log.error("Client.main(): the specified files directory is invalid.", e);
           }
         } else {
           if (args[i].toLowerCase().endsWith(".cr") || args[i].toLowerCase().endsWith(".bz2") || args[i].toLowerCase().endsWith(".zip")) {
@@ -1057,11 +1044,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       // initialize start window
       Icon startIcon = MagellanImages.ABOUT_MAGELLAN;
 
-      startWindow = new StartWindow(startIcon, 5,fileDir);
+      Client.startWindow = new StartWindow(startIcon, 5,fileDir);
 
-      startWindow.setVisible(true);
+      Client.startWindow.setVisible(true);
 
-      startWindow.progress(0, Resources.get("clientstart.0"));
+      Client.startWindow.progress(0, Resources.get("clientstart.0"));
 
       // tell the user where we expect ini files and errors.txt
       PropertiesHelper.setSettingsDirectory(settFileDir);
@@ -1070,25 +1057,25 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Log LOG = new Log(fileDir);
       System.setErr(LOG.getPrintStream());
 
-      log.warn("Start writing error file with encoding " + LOG.encoding + ", log level " + Logger.getLevel(Logger.getLevel()));
+      Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level " + Logger.getLevel(Logger.getLevel()));
 
       String version = VersionInfo.getVersion(fileDir);
       if (version == null) {
-        log.warn("no magellan version available");
+        Client.log.warn("no magellan version available");
       } else {
-        log.warn("This is Magellan Version " + version);
+        Client.log.warn("This is Magellan Version " + version);
       }
       
       
       try {
-        log.warn("OS: "+System.getProperty("os.name")+" "+System.getProperty("os.arch")+" "+System.getProperty("os.version"));
-        log.warn("Java Version: "+System.getProperty("java.version")+" "+System.getProperty("java.vendor"));
-        log.warn("Java Spec: "+System.getProperty("java.specification.version")+" "+System.getProperty("java.specification.vendor")+" "+System.getProperty("java.specification.name"));
-        log.warn("VM Version: "+System.getProperty("java.vm.version")+" "+System.getProperty("java.vm.vendor")+" "+System.getProperty("java.vm.name"));
-        log.warn("VM Specification: "+System.getProperty("java.vm.specification.version")+" "+System.getProperty("java.vm.specification.vendor")+" "+System.getProperty("java.vm.specification.name"));
-        log.warn("Java Class Version: "+System.getProperty("java.class.version"));
+        Client.log.warn("OS: "+System.getProperty("os.name")+" "+System.getProperty("os.arch")+" "+System.getProperty("os.version"));
+        Client.log.warn("Java Version: "+System.getProperty("java.version")+" "+System.getProperty("java.vendor"));
+        Client.log.warn("Java Spec: "+System.getProperty("java.specification.version")+" "+System.getProperty("java.specification.vendor")+" "+System.getProperty("java.specification.name"));
+        Client.log.warn("VM Version: "+System.getProperty("java.vm.version")+" "+System.getProperty("java.vm.vendor")+" "+System.getProperty("java.vm.name"));
+        Client.log.warn("VM Specification: "+System.getProperty("java.vm.specification.version")+" "+System.getProperty("java.vm.specification.vendor")+" "+System.getProperty("java.vm.specification.name"));
+        Client.log.warn("Java Class Version: "+System.getProperty("java.class.version"));
       } catch (SecurityException e) {
-        log.warn("Unable to retrieve system properties: "+e);
+        Client.log.warn("Unable to retrieve system properties: "+e);
       }
       
       final File tFileDir = fileDir;
@@ -1106,15 +1093,15 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           // new CompleteData(new com.eressea.rules.Eressea(), "void");
           Client c = new Client(data, tFileDir, tsettFileDir);
           // setup a singleton instance of this client
-          INSTANCE = c;
+          Client.INSTANCE = c;
           
           String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
           if (!Utils.isEmpty(newestVersion)) {
             String currentVersion = VersionInfo.getVersion(tFileDir);
-            log.info("Newest Version on server: "+newestVersion);
-            log.info("Current Version: "+currentVersion);
+            Client.log.info("Newest Version on server: "+newestVersion);
+            Client.log.info("Current Version: "+currentVersion);
             if (VersionInfo.isNewer(currentVersion, newestVersion)) {
-              JOptionPane.showMessageDialog(startWindow, Resources.get("client.new_version",new Object[]{newestVersion}));
+              JOptionPane.showMessageDialog(Client.startWindow, Resources.get("client.new_version",new Object[]{newestVersion}));
             }
           }
     
@@ -1128,7 +1115,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               crFile = c.fileHistory.getLastExistingReport();
               if (crFile == null) {
                 // okay, ask for a file...
-                crFile = OpenCRAction.getFileFromFileChooser(c, startWindow);
+                crFile = OpenCRAction.getFileFromFileChooser(c, Client.startWindow);
               }
             }
           } else {
@@ -1137,7 +1124,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     
           if (crFile != null) {
-            startWindow.progress(4, Resources.get("clientstart.4"));
+            Client.startWindow.progress(4, Resources.get("clientstart.4"));
     
             //c.setDataFile(crFile);
     
@@ -1148,11 +1135,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     
           c.setReportChanged(false);
           
-          startWindow.progress(5, Resources.get("clientstart.5"));
+          Client.startWindow.progress(5, Resources.get("clientstart.5"));
           c.setAllVisible(true);
-          startWindow.setVisible(false);
-          startWindow.dispose();
-          startWindow = null;
+          Client.startWindow.setVisible(false);
+          Client.startWindow.dispose();
+          Client.startWindow = null;
               
           // show tip of the day window
           if (c.getProperties().getProperty("TipOfTheDay.showTips", "true").equals("true") || c.getProperties().getProperty("TipOfTheDay.firstTime", "true").equals("true")) {
@@ -1167,12 +1154,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
       });
     } catch (Throwable exc) { // any fatal error
-      log.error(exc); // print it so it can be written to errors.txt
+      Client.log.error(exc); // print it so it can be written to errors.txt
 
       // try to create a nice output
       String out = "A fatal error occured: " + exc.toString();
 
-      log.error(out, exc);
+      Client.log.error(out, exc);
       JOptionPane.showMessageDialog(new JFrame(), out);
       System.exit(1);
     }
@@ -1197,7 +1184,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           msg = Resources.get("client.msg.quit.confirmsavenofile.text");
         }
       } catch (IOException io) {
-        log.error("",io);
+        Client.log.error("",io);
         msg = Resources.get("client.msg.quit.confirmsavenofile.text");
       }
 
@@ -1208,11 +1195,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           FileType filetype = getData().getFileType();
           if (filetype==null){
             File file = FileSaveAsAction.getFile(this);
-            if (file!=null)
+            if (file!=null) {
               filetype = FileTypeFactory.singleton().createFileType(file, false);
+            }
           }
-          if (filetype==null)
+          if (filetype==null) {
             return false;
+          }
           CRWriter crw = saveReport(filetype);
           if (wait) {
             while (crw.savingInProgress()) {
@@ -1222,7 +1211,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
             }
           }
         } catch (Exception e) {
-          log.error(e);
+          Client.log.error(e);
 
           return false;
         }
@@ -1243,7 +1232,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       
       // log.info("debugging: doSaveAction (FileType) called for FileType: " + filetype.toString());
       // write cr to file
-      log.info("Client.saveReport Using encoding: "+getData().getEncoding());
+      Client.log.info("Client.saveReport Using encoding: "+getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
       crw = new CRWriter(ui,filetype,getData().getEncoding(),
           Integer.parseInt(getProperties().getProperty("Client.CRBackups.count",
@@ -1258,12 +1247,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       getData().resetToUnchanged();
       getProperties().setProperty("Client.lastCRSaved", filetype.getName());
     } catch(ReadOnlyException exc) {
-      log.error(exc);
+      Client.log.error(exc);
       JOptionPane.showMessageDialog(this, Resources.getFormatted("actions.filesaveasaction.msg.filesave.readonly", filetype.getName()),
           Resources.get("actions.filesaveasaction.msg.filesave.error.title"),
                       JOptionPane.ERROR_MESSAGE);
     } catch(IOException exc) {
-      log.error(exc);
+      Client.log.error(exc);
       JOptionPane.showMessageDialog(this, exc.toString(),
           Resources.get("actions.filesaveasaction.msg.filesave.error.title"),
                       JOptionPane.ERROR_MESSAGE);
@@ -1302,7 +1291,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     NameGenerator.quit();
 
-    if (fileHistory != null) fileHistory.storeFileHistory();
+    if (fileHistory != null) {
+      fileHistory.storeFileHistory();
+    }
 
     // store settings to file
     if (storeSettings) {
@@ -1311,26 +1302,26 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
       try {
         // if necessary, use settings file in local directory
-        File settingsFile = new File(settingsDirectory, "magellan.ini");
+        File settingsFile = new File(Client.settingsDirectory, "magellan.ini");
         
         if (settingsFile.exists() && settingsFile.canWrite()) {
           try {
             File backup = FileBackup.create(settingsFile);
-            log.info("Created backupfile " + backup);
+            Client.log.info("Created backupfile " + backup);
           } catch (IOException ie) {
-            log.warn("Could not create backupfile for file " + settingsFile);
+            Client.log.warn("Could not create backupfile for file " + settingsFile);
           }
         }
 
         if (settingsFile.exists() && !settingsFile.canWrite()){
           throw new IOException("cannot write "+settingsFile);
         }else{
-          log.info("Storing Magellan configuration to " + settingsFile);
+          Client.log.info("Storing Magellan configuration to " + settingsFile);
 
           getProperties().store(new FileOutputStream(settingsFile), "");
         }
       } catch (IOException ioe) {
-        log.error(ioe);
+        Client.log.error(ioe);
       }
     }
 
@@ -1362,25 +1353,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public GameData loadCR(UserInterface ui, File fileName) {
     GameData data = null;
     Client client = this;
-    if (ui == null) ui = new ProgressBarUI(client);
+    if (ui == null) {
+      ui = new ProgressBarUI(client);
+    }
 
-    //client.setDataFile(fileName);
-    
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
-      everLoadedReport = true;
     } catch (FileTypeFactory.NoValidEntryException e) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
     } catch (Exception exc) {
-      // here we also catch RuntimeExceptions on purpose!
-      // } catch (IOException exc) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc.toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
-      log.error(exc);
+      Client.log.error(exc);
     }
 
     if (data!=null && data.outOfMemory) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-      log.error(Resources.get("client.msg.outofmemory.text"));
+      Client.log.error(Resources.get("client.msg.outofmemory.text"));
     }
     if (!MemoryManagment.isFreeMemory(data.estimateSize())){
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
@@ -1442,7 +1430,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       newData = (GameData) getData().clone(newOrigin);
       if (newData!=null && newData.outOfMemory) {
         JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
-        log.error(Resources.get("client.msg.outofmemory.text"));
+        Client.log.error(Resources.get("client.msg.outofmemory.text"));
       }
       if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
         JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
@@ -1479,6 +1467,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
      * 
      * @see magellan.library.io.file.FileTypeFactory.FileTypeChooser#chooseZipEntry(java.util.zip.ZipEntry[])
      */
+    @Override
     public ZipEntry chooseZipEntry(ZipEntry entries[]) {
       String stringEntries[] = new String[entries.length];
 
@@ -1514,7 +1503,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     boolean factionsWithoutPassword = true;
     
     if (aData != null) {
-      if (aData.factions()==null || aData.factions().values().size()==0) factionsWithoutPassword = false;
+      if (aData.factions()==null || aData.factions().values().size()==0) {
+        factionsWithoutPassword = false;
+      }
     }
 
     if ((aData != null) && (aData.factions() != null)) {
@@ -1609,7 +1600,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       title = createTitle(getData(), showStatus, true);
     } catch (Exception e) {
-      log.error("createTitle failed!", e);
+      Client.log.error("createTitle failed!", e);
     }
 
     setTitle(title);
@@ -1619,7 +1610,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // set frame title (date)
     String title = "Magellan";
 
-    String version = VersionInfo.getVersion(filesDirectory);
+    String version = VersionInfo.getVersion(Client.filesDirectory);
 
     if (version != null) {
       title += (" " + version);
@@ -1803,7 +1794,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    */
   public String[] getLookAndFeels() {
-    return (String[]) MagellanLookAndFeel.getLookAndFeelNames().toArray(new String[] {});
+    return MagellanLookAndFeel.getLookAndFeelNames().toArray(new String[] {});
   }
 
   // ///////////////////
@@ -1896,7 +1887,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * 
    */
   public Properties getProperties() {
-    if (context == null) return null;
+    if (context == null) {
+      return null;
+    }
     return context.getProperties();
   }
 
@@ -1952,14 +1945,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Returns the directory the local copy of Magellan is inside.
    */
   public static File getMagellanDirectory() {
-    return filesDirectory;
+    return Client.filesDirectory;
   }
 
   /**
    * Returns the directory for the Magellan settings. 
    */
   public static File getSettingsDirectory() {
-    return settingsDirectory;
+    return Client.settingsDirectory;
   }
 
   /**
@@ -2009,7 +2002,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   private void saveExtendedState() {
-    if (getProperties() == null) return;
+    if (getProperties() == null) {
+      return;
+    }
     getProperties().setProperty("Client.extendedState", String.valueOf(JVMUtilities.getExtendedState(this)));
   }
 
@@ -2256,7 +2251,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     MagellanPlugInLoader loader = new MagellanPlugInLoader();
     Properties properties = getProperties();
     // helper: store Magellan-Dir in properties toBe changed
-    properties.setProperty("plugin.helper.magellandir", filesDirectory.toString());
+    properties.setProperty("plugin.helper.magellandir", Client.filesDirectory.toString());
     Collection<Class<MagellanPlugIn>> plugInClasses = loader.getExternalModuleClasses(properties);
     
     for (Class<MagellanPlugIn> plugInClass : plugInClasses) {
@@ -2281,7 +2276,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       result = "Container: "+container +"\n";
       result+="{";
       Component[] comps = container.getComponents();
-      for (Component acomp : comps) result+=" "+debug(acomp)+"\n";
+      for (Component acomp : comps) {
+        result+=" "+Client.debug(acomp)+"\n";
+      }
       result+=")";
     } else {
       result = "Component: "+comp+"\n";
@@ -2298,22 +2295,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     String osName = System.getProperty("os.name");
     osName = osName.toLowerCase();
     if (osName.indexOf("windows")>-1){
-      log.info("new ini. windows OS detected. (" + osName + ")");
+      Client.log.info("new ini. windows OS detected. (" + osName + ")");
       // we have a windows OS
       // lets asume the location
-      String actPath = settingsDirectory + File.separator + "echeck" + File.separator + "ECheck.exe";
-      log.info("checking for ECheck: " + actPath);
+      String actPath = Client.settingsDirectory + File.separator + "echeck" + File.separator + "ECheck.exe";
+      Client.log.info("checking for ECheck: " + actPath);
       File echeckFile = new File(actPath);
       if (echeckFile.exists()){
         // yep, we have an ECheck.exe here
         // lets add to the properties
         settings.setProperty("JECheckPanel.echeckEXE", echeckFile.toString());
-        log.info("set echeckEXE to: " + echeckFile.toString());
+        Client.log.info("set echeckEXE to: " + echeckFile.toString());
       } else {
-        log.info("ECheck.exe not found"); 
+        Client.log.info("ECheck.exe not found"); 
       }
     } else {
-      log.info("new ini. non - windows OS detected. (" + osName + ")");
+      Client.log.info("new ini. non - windows OS detected. (" + osName + ")");
     }
   }
   

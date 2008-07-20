@@ -41,7 +41,6 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.BuildingType;
@@ -65,7 +64,6 @@ public class ExtendedCommandsHelper {
 
   private GameData world = null;
   private Unit unit = null;
-  private UnitContainer container = null;
   
   public ExtendedCommandsHelper(GameData world) {
     this.world = world;
@@ -74,11 +72,6 @@ public class ExtendedCommandsHelper {
   public ExtendedCommandsHelper(GameData world, Unit unit) {
     this.world = world;
     this.unit = unit;
-  }
-  
-  public ExtendedCommandsHelper(GameData world, UnitContainer container) {
-    this.world = world;
-    this.container = container;
   }
   
   /**
@@ -106,7 +99,9 @@ public class ExtendedCommandsHelper {
   public Unit getUnitInRegion(Region region, String unitId) {
     if (region != null) {
       return region.getUnit(UnitID.createUnitID(unitId, world.base));
-    } else return null;
+    } else {
+      return null;
+    }
   }
   
   /**
@@ -143,10 +138,14 @@ public class ExtendedCommandsHelper {
    * purchase.
    */
   public ItemType getRegionLuxuryItem(Region region) {
-    if (region == null) return null;
+    if (region == null) {
+      return null;
+    }
     Map<ID,LuxuryPrice> prices = region.getPrices();
     for (LuxuryPrice price : prices.values()) {
-      if (price.getPrice()<0) return price.getItemType();
+      if (price.getPrice()<0) {
+        return price.getItemType();
+      }
     }
     return null;
   }
@@ -195,7 +194,9 @@ public class ExtendedCommandsHelper {
    * Adds an order to the given unit.
    */
   public void addOrder(Unit unit, String order) {
-    if (unit == null) return;
+    if (unit == null) {
+      return;
+    }
     unit.addOrder(order, false, 0);
   }
   
@@ -212,7 +213,9 @@ public class ExtendedCommandsHelper {
    * given commands.
    */
   public void setOrder(Unit unit, String order) {
-    if (unit == null) return;
+    if (unit == null) {
+      return;
+    }
     List<String> orders = new ArrayList<String>();
     orders.add(order);
     unit.setOrders(orders);
@@ -227,7 +230,7 @@ public class ExtendedCommandsHelper {
     ItemCategory weapons = world.rules.getItemCategory(StringID.create("weapons"), false);
     if (weapons == null) {
       // we don't know something about weapons.
-      log.info("World has no weapons rules");
+      ExtendedCommandsHelper.log.info("World has no weapons rules");
       return false;
     }
     
@@ -238,23 +241,23 @@ public class ExtendedCommandsHelper {
         continue;
       }
       if (itemCategory.equals(weapons)) {
-        log.info("Unit has a weapon");
+        ExtendedCommandsHelper.log.info("Unit has a weapon");
         // ah, a weapon...
         Skill useSkill = item.getItemType().getUseSkill();
         if (useSkill != null) {
-          log.info("Skill needed "+useSkill.getName());
+          ExtendedCommandsHelper.log.info("Skill needed "+useSkill.getName());
           // okay, has the unit the skill?
           for (Skill skill : unit.getSkills()) {
-            log.info("Skill "+skill.getName());
+            ExtendedCommandsHelper.log.info("Skill "+skill.getName());
             if (useSkill.getSkillType().equals(skill.getSkillType())) {
-              log.info("Unit is a soldier.");
+              ExtendedCommandsHelper.log.info("Unit is a soldier.");
               return true;
             }
           }
         }
       }
     }
-    log.info("Unit is not a soldier.");
+    ExtendedCommandsHelper.log.info("Unit is not a soldier.");
     return false;
   }
   
@@ -295,7 +298,9 @@ public class ExtendedCommandsHelper {
     
     if((path != null) && (path.size() > 1)) {
       int range = UnitRoutePlanner.getModifiedRadius(unit);
-      if (speed > 0) range = speed;
+      if (speed > 0) {
+        range = speed;
+      }
       
       if(makeRoute) {
         order = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
@@ -352,7 +357,6 @@ public class ExtendedCommandsHelper {
    */
   public String getPathToRegion(Ship ship, Region destination, int speed, boolean makeRoute) {
     Unit shipOwner = ship.getOwnerUnit();
-    Region source = unit.getRegion();
     String order = "";
     int aquarianBonus = 0;
 
@@ -397,7 +401,7 @@ public class ExtendedCommandsHelper {
             String dir = Regions.getDirections(curPath);
 
             if(dir != null) {
-              if((count == 0) || ((count != shipRange) && Regions.containsHarbour((Region) curPath.get(0), harbour))) {
+              if((count == 0) || ((count != shipRange) && Regions.containsHarbour(curPath.get(0), harbour))) {
                 count = shipRange;
 
                 if (!Utils.isEmpty(order)) {

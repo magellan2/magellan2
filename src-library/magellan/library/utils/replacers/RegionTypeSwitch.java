@@ -100,7 +100,8 @@ public class RegionTypeSwitch extends AbstractRegionSwitch {
 	 *
 	 * 
 	 */
-	public boolean isSwitchingRegion(Region r) {
+	@Override
+  public boolean isSwitchingRegion(Region r) {
 		boolean res = false;
 
 		if(type != null) {

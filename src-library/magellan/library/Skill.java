@@ -82,7 +82,7 @@ public class Skill {
 	public static final int getLevelAtPoints(int points) {
 		int i = 1;
 
-		while(getPointsAtLevel(i) <= points) {
+		while(Skill.getPointsAtLevel(i) <= points) {
 			++i;
 		}
 
@@ -102,7 +102,7 @@ public class Skill {
 	 */
 	public static final int getLevel(int pointsPerPerson, int raceBonus, int terrainBonus,
 									 int buildingBonus, boolean isStarving) {
-		int baseLevel = getLevelAtPoints(pointsPerPerson);
+		int baseLevel = Skill.getLevelAtPoints(pointsPerPerson);
 		int level = 0;
 
 		if(baseLevel > 0) {
@@ -150,7 +150,7 @@ public class Skill {
 				buildingBonus = (unit.getBuilding().getBuildingType()).getSkillBonus(getSkillType());
 			}
 
-			return getLevel(getPoints() / unit.getPersons(), raceBonus, terrainBonus, buildingBonus,
+			return Skill.getLevel(getPoints() / unit.getPersons(), raceBonus, terrainBonus, buildingBonus,
 							unit.isStarving());
 		}
 
@@ -166,7 +166,8 @@ public class Skill {
 	 * @deprecated (stm) This is not used by anyone and I'm not sure if it's correct any more.
 	 * 
 	 */
-	public int getModifiedLevel(Unit unit, boolean includeBuilding) {
+	@Deprecated
+  public int getModifiedLevel(Unit unit, boolean includeBuilding) {
 		if((unit != null) && (unit.getModifiedPersons() != 0)) {
 			int raceBonus = 0;
 			int terrainBonus = 0;
@@ -184,7 +185,7 @@ public class Skill {
 				buildingBonus = unit.getBuilding().getBuildingType().getSkillBonus(getSkillType());
 			}
 
-			return getLevel(getPoints() / unit.getModifiedPersons(), raceBonus, terrainBonus,
+			return Skill.getLevel(getPoints() / unit.getModifiedPersons(), raceBonus, terrainBonus,
 							buildingBonus, unit.isStarving());
 		}
 
@@ -223,7 +224,7 @@ public class Skill {
 		Race race = (unit.getRealRace() != null) ? unit.getRealRace() : unit.getRace();
 		RegionType terrain = (unit.getRegion() != null) ? unit.getRegion().getRegionType() : null;
 
-		return getModifier(skillType, race, terrain);
+		return Skill.getModifier(skillType, race, terrain);
 	}
 
 	/**
@@ -235,7 +236,7 @@ public class Skill {
 	 * 
 	 */
 	public int getModifier(Unit unit) {
-		return getModifier(this.type, unit);
+		return Skill.getModifier(this.type, unit);
 	}
 
 	/**
@@ -361,7 +362,8 @@ public class Skill {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(this.noSkillPoints()) {
 			return getName() + " " + getLevel();
 		} else {

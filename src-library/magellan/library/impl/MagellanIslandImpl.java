@@ -53,7 +53,8 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName() + " (ID: " + id + ")";
 	}
 
@@ -87,7 +88,9 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 			refreshRegions();
 		}
 
-    if (regions != null && regions.values() != null) return Collections.unmodifiableCollection(regions.values());
+    if (regions != null && regions.values() != null) {
+      return Collections.unmodifiableCollection(regions.values());
+    }
 		return Collections.emptyList();
 	}
 
@@ -104,7 +107,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 		}
 
 		if(regions != null) {
-			return (Region) regions.get(key);
+			return regions.get(key);
 		} else {
 			return null;
 		}

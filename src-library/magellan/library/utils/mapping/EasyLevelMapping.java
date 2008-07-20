@@ -36,7 +36,7 @@ import magellan.library.GameData;
 public class EasyLevelMapping implements LevelMapping {
   private static EasyLevelMapping singleton = new EasyLevelMapping();
   public static EasyLevelMapping getSingleton() {
-    return singleton;
+    return EasyLevelMapping.singleton;
   }
 
   public LevelRelation getMapping(GameData data, int fromLevel, int toLevel) {

@@ -33,7 +33,6 @@ import magellan.library.Region;
 import magellan.library.Scheme;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.LevelRelation;
 
 /**
@@ -43,8 +42,6 @@ import magellan.library.utils.mapping.LevelRelation;
  * @version 1.0, 13.12.2007
  */
 public class EresseaSchemesCellRenderer extends ImageCellRenderer {
-  private static final Logger log = Logger.getInstance(EresseaSchemesCellRenderer.class);
-  
   private static final int REAL_LAYER = 0;
   private static final int ASTRAL_LAYER = 1;
   
@@ -60,6 +57,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     // TODO Auto-generated constructor stub
   }
 
+  @Override
   public void setCellGeometry(CellGeometry geo) {
     CellGeometry newGeo = new CellGeometry();
     newGeo.setGeometry(geo.getPolygon().xpoints, geo.getPolygon().ypoints);
@@ -72,6 +70,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getName()
    */
+  @Override
   public String getName() {
     return Resources.get("map.eresseaschemescellrenderer.name");
   }
@@ -79,20 +78,25 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
    */
+  @Override
   public int getPlaneIndex() {
     return Mapper.PLANE_BEHIND;
   }
 
+  @Override
   public void init(GameData data, Graphics g, Rectangle offset) {
-    this.relation = data.getLevelRelation(ASTRAL_LAYER, REAL_LAYER);
+    this.relation = data.getLevelRelation(EresseaSchemesCellRenderer.ASTRAL_LAYER, EresseaSchemesCellRenderer.REAL_LAYER);
     super.init(data, g, offset);
   }
   
   /**
    * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
    */
+  @Override
   public void render(Object obj, boolean active, boolean selected) {
-    if (relation == null) return;
+    if (relation == null) {
+      return;
+    }
     if(obj instanceof Region) {
       Region ar = (Region) obj;
       CoordinateID c = ar.getCoordinate();
@@ -115,6 +119,7 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     }
   }
 
+  @Override
   public void scale(float scaleFactor) {
     scaleFactor *= 0.25f;
     super.scale(scaleFactor);

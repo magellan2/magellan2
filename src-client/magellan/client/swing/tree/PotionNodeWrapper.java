@@ -73,7 +73,8 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 	    return postfix == null ? name : (name+postfix);	}
 
 	/**

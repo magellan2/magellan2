@@ -71,7 +71,8 @@ public class GridLayout2 extends GridLayout {
 	 *
 	 * 
 	 */
-	public Dimension preferredLayoutSize(Container parent) {
+	@Override
+  public Dimension preferredLayoutSize(Container parent) {
 		//System.err.println("preferredLayoutSize");
 		synchronized(parent.getTreeLock()) {
 			Insets insets = parent.getInsets();
@@ -128,7 +129,8 @@ public class GridLayout2 extends GridLayout {
 	 *
 	 * 
 	 */
-	public Dimension minimumLayoutSize(Container parent) {
+	@Override
+  public Dimension minimumLayoutSize(Container parent) {
 		//System.err.println("minimumLayoutSize");
 		synchronized(parent.getTreeLock()) {
 			Insets insets = parent.getInsets();
@@ -190,7 +192,8 @@ public class GridLayout2 extends GridLayout {
 	 *
 	 * 
 	 */
-	public void layoutContainer(Container parent) {
+	@Override
+  public void layoutContainer(Container parent) {
 		//System.err.println("layoutContainer");
 		synchronized(parent.getTreeLock()) {
 			Insets insets = parent.getInsets();

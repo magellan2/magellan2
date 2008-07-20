@@ -43,7 +43,8 @@ public class VorlageAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		JVorlage v = new JVorlage(client, true, client.getProperties());
 		v.setVisible(true);
 	}

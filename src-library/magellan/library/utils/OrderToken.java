@@ -15,15 +15,12 @@ package magellan.library.utils;
 
 import java.util.Arrays;
 
-import magellan.library.utils.logging.Logger;
 
 
 /**
  * A class representing a token of an Eressea order.
  */
 public class OrderToken {
-  private static final Logger log = Logger.getInstance(OrderToken.class);
-
   /** Undefined token type */
 	public static final int TT_UNDEF = 0;
 
@@ -63,7 +60,7 @@ public class OrderToken {
 	 * @param text the text this order token represents.
 	 */
 	public OrderToken(String text) {
-		this(text, -1, -1, TT_UNDEF, false);
+		this(text, -1, -1, OrderToken.TT_UNDEF, false);
 	}
 
 	/**
@@ -75,7 +72,7 @@ public class OrderToken {
 	 * @param end the end position of the token in the underlying stream.
 	 */
 	public OrderToken(String text, int start, int end) {
-		this(text, start, end, TT_UNDEF, false);
+		this(text, start, end, OrderToken.TT_UNDEF, false);
 	}
 
 	/**
@@ -134,16 +131,20 @@ public class OrderToken {
    * 
    */
   public String getStrippedText(char [] delimiters) {
-    if (ttype!=TT_STRING)
+    if (ttype!=OrderToken.TT_STRING) {
       return getText();
+    }
     
     int begin = 0, end = text.length();
-    if (text.length()==0)
+    if (text.length()==0) {
       return text;
-    if (Arrays.binarySearch(delimiters, text.charAt(0))>0)
+    }
+    if (Arrays.binarySearch(delimiters, text.charAt(0))>0) {
       begin = 1;
-    if (text.length()>1 && Arrays.binarySearch(delimiters, text.charAt(0))>0)
+    }
+    if (text.length()>1 && Arrays.binarySearch(delimiters, text.charAt(0))>0) {
       end = text.length()-1;
+    }
     return text.substring(begin, end);
   }
 
@@ -197,7 +198,8 @@ public class OrderToken {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		String retVal = text + ": ";
 
 		switch(ttype) {

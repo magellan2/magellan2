@@ -29,6 +29,7 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -63,6 +64,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -116,8 +118,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		super(geo, context);
 		context.getEventDispatcher().addGameDataListener(this);
 
-		if(buffer == null) {
-			buffer = new LinkedList<String>();
+		if(AdvancedTextCellRenderer.buffer == null) {
+			AdvancedTextCellRenderer.buffer = new LinkedList<String>();
 		}
 
 		loadSet(settings.getProperty(PropertiesHelper.ATR_CURRENT_SET, "Standard"));
@@ -132,13 +134,13 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		try {
 			setHAlign(Integer.parseInt(settings.getProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, "0")));
 		} catch(Exception exc) {
-			setHAlign(CENTER);
+			setHAlign(AbstractTextCellRenderer.CENTER);
 		}
 
 		// create shortcut structure
 		DesktopEnvironment.registerShortcutListener(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-																		   KeyEvent.CTRL_MASK |
-																		   KeyEvent.ALT_MASK), this);
+																		   InputEvent.CTRL_MASK |
+																		   InputEvent.ALT_MASK), this);
 		deflistener = new DefListener();
 
 		// create the context menu as needed
@@ -293,7 +295,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 *
 	 * 
 	 */
-	public void setHAlign(int h) {
+	@Override
+  public void setHAlign(int h) {
 		super.setHAlign(h);
 		settings.setProperty(PropertiesHelper.ATR_HORIZONTAL_ALIGN, String.valueOf(h));
 	}
@@ -305,7 +308,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 * 
 	 * 
 	 */
-	public void init(GameData data, Graphics g, Rectangle offset) {
+	@Override
+  public void init(GameData data, Graphics g, Rectangle offset) {
 		if(cellGeo.getScaleFactor() != lastScale) {
 			set.clearCache();
 			lastScale = cellGeo.getScaleFactor();
@@ -320,7 +324,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	// never have single strings
-	public String getSingleString(Region r, Rectangle rect) {
+	@Override
+  public String getSingleString(Region r, Rectangle rect) {
 		return null;
 	}
 
@@ -332,7 +337,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 *
 	 * 
 	 */
-	public String[] getText(Region r, Rectangle rect) {
+	@Override
+  public String[] getText(Region r, Rectangle rect) {
 		return set.getReplacement(r, getCellGeometry(), getFontMetrics());
 	}
 
@@ -341,7 +347,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 *
 	 * 
 	 */
-	public String getName() {
+	@Override
+  public String getName() {
 		return "ATR";
 	}
 
@@ -365,7 +372,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 *
 	 * 
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new ATRPreferences(this);
 	}
 
@@ -509,18 +517,18 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			}
 		}
 
-		return BLANK;
+		return AdvancedTextCellRenderer.BLANK;
 	}
 
 	protected String[] breakString(String s, CellGeometry geo, FontMetrics fm) {
 		int maxWidth = (int) (geo.getCellSize().width * 0.9);
-		buffer.clear();
+		AdvancedTextCellRenderer.buffer.clear();
 
 		// create "defined" line breaks
 		StringTokenizer st = new StringTokenizer(s, "\n");
 
 		while(st.hasMoreTokens()) {
-			buffer.add(st.nextToken());
+			AdvancedTextCellRenderer.buffer.add(st.nextToken());
 		}
 
 		boolean changed = false;
@@ -528,14 +536,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		do {
 			changed = false;
 
-			Iterator it = buffer.iterator();
+			Iterator it = AdvancedTextCellRenderer.buffer.iterator();
 			int index = 0;
 
 			while(it.hasNext() && !changed) {
 				String part = (String) it.next();
 
 				if(fm.stringWidth(part) > maxWidth) {
-					breakStringImpl(part, buffer, fm, maxWidth, index);
+					breakStringImpl(part, AdvancedTextCellRenderer.buffer, fm, maxWidth, index);
 					changed = true;
 				}
 
@@ -543,10 +551,10 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			}
 		} while(changed);
 
-		String strbuf[] = new String[buffer.size()];
+		String strbuf[] = new String[AdvancedTextCellRenderer.buffer.size()];
 
 		for(int i = 0; i < strbuf.length; i++) {
-			strbuf[i] = (String) buffer.get(i);
+			strbuf[i] = AdvancedTextCellRenderer.buffer.get(i);
 		}
 
 		return strbuf;
@@ -848,7 +856,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			this.add(fontHelp, c);
 
 			c.gridy++;
-			this.add(new JSeparator(JSeparator.HORIZONTAL), c);
+			this.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
 			c.gridwidth = 1;
 			c.fill = GridBagConstraints.NONE;
@@ -864,7 +872,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			c.gridy++;
 			c.gridwidth = 2;
 			c.fill = GridBagConstraints.HORIZONTAL;
-			this.add(new JSeparator(JSeparator.HORIZONTAL), c);
+			this.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
 			c.gridwidth = 2;
 			c.gridy++;
@@ -910,7 +918,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			c.gridy++;
 			p.add(remove, c);
 			c.gridy++;
-			p.add(new JSeparator(JSeparator.HORIZONTAL), c);
+			p.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 			c.gridy++;
 			p.add(importB, c);
 			c.gridy++;

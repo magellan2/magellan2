@@ -49,7 +49,7 @@ public class RenderingPlane {
 	private int index = -1;
 	private String name = null;
 	private MapCellRenderer renderer = null;
-	protected int regionTypes = VISIBLE_REGIONS;
+	protected int regionTypes = RenderingPlane.VISIBLE_REGIONS;
 
 	/**
 	 * Creates a new RenderingPlane object representing the plane at the specified index and with
@@ -122,7 +122,7 @@ public class RenderingPlane {
 		this.renderer = renderer;
 
 		if((renderer != null) && (renderer.getPlaneIndex() != getIndex())) {
-			log.warn("RenderingPlane.setRenderer: the non-conforming renderer " + renderer + " (" +
+			RenderingPlane.log.warn("RenderingPlane.setRenderer: the non-conforming renderer " + renderer + " (" +
 					 renderer.getPlaneIndex() + ") has been set for rendering plane " + toString() +
 					 " (" + getIndex() + ")!");
 		}
@@ -151,7 +151,8 @@ public class RenderingPlane {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName();
 	}
 
@@ -160,7 +161,8 @@ public class RenderingPlane {
 	 *
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return getIndex();
 	}
 }

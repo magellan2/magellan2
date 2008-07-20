@@ -43,7 +43,8 @@ public class TipOfTheDayAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		if(!TipOfTheDay.active) {
 			TipOfTheDay totd = new TipOfTheDay(client, client.getProperties());
 			totd.showTipDialog();

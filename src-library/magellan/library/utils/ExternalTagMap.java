@@ -29,6 +29,7 @@ import magellan.library.utils.logging.Logger;
  * 
  * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
  */
+@Deprecated
 public class ExternalTagMap extends HashMap<ID,TagMap> {
 	private static final Logger log = Logger.getInstance(ExternalTagMap.class);
 	private static final String METHOD_NAME = "getID";
@@ -41,7 +42,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 		Class c = o.getClass();
 
 		try {
-			Method m = c.getMethod(METHOD_NAME, (Class<?>)null);
+			Method m = c.getMethod(ExternalTagMap.METHOD_NAME, (Class<?>)null);
 
 			if(m != null) {
 				try {
@@ -54,7 +55,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 				}
 			}
 		} catch(NoSuchMethodException nsme) {
-			log.error("Error trying to get ID: " + o);
+			ExternalTagMap.log.error("Error trying to get ID: " + o);
 		}
 
 		return null;
@@ -100,7 +101,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return null;
 		}
 
-		Map m = (Map) get(id);
+		Map m = get(id);
 
 		if(m == null) {
 			return null;
@@ -124,7 +125,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return false;
 		}
 
-		Map m = (Map) get(id);
+		Map m = get(id);
 
 		if(m == null) {
 			return false;
@@ -148,7 +149,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return null;
 		}
 
-		Map m = (Map) get(id);
+		Map m = get(id);
 
 		if(m == null) {
 			return null;

@@ -46,7 +46,8 @@ public class ConfirmAction extends MenuAction {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		target.shortCut_B();
 	}
 

@@ -36,11 +36,11 @@ public class Locales {
 	 * 
 	 */
 	public static void setGUILocale(Locale l) {
-		if (l==null)
-			guiLocale=Locale.getDefault();
-		else {
+		if (l==null) {
+      Locales.guiLocale=Locale.getDefault();
+    } else {
 			Locale.setDefault(l);
-			guiLocale = l;
+			Locales.guiLocale = l;
 		}
 	}
 
@@ -51,12 +51,12 @@ public class Locales {
 	 *
 	 */
 	public static Locale getGUILocale() throws IllegalStateException {
-		if(guiLocale == null) {
-			log.warn("Locales.getGUILocale: Locales is not initialized, falling back to default locale");
+		if(Locales.guiLocale == null) {
+			Locales.log.warn("Locales.getGUILocale: Locales is not initialized, falling back to default locale");
 			return Locale.getDefault();
 		}
 
-		return guiLocale;
+		return Locales.guiLocale;
 	}
 
 	/**
@@ -67,9 +67,10 @@ public class Locales {
 	 */
 	public static void setOrderLocale(Locale l) {
 		if (l == null){
-			orderLocale=Locale.GERMAN;
-		}else
-			orderLocale = l;
+			Locales.orderLocale=Locale.GERMAN;
+		} else {
+      Locales.orderLocale = l;
+    }
 	}
 
 	/**
@@ -81,12 +82,12 @@ public class Locales {
 	 * 		   setGUILocale() methodes were invoked earlier with valid arguments.
 	 */
 	public static Locale getOrderLocale() throws IllegalStateException {
-		if(orderLocale == null) {
-			log.warn("Locales.getOrderLocale: Locales is not initialized, falling back to GERMAN locale");
-			setOrderLocale(Locale.GERMAN);
+		if(Locales.orderLocale == null) {
+			Locales.log.warn("Locales.getOrderLocale: Locales is not initialized, falling back to GERMAN locale");
+			Locales.setOrderLocale(Locale.GERMAN);
 			return Locale.GERMAN;
 		}
 
-		return orderLocale;
+		return Locales.orderLocale;
 	}
 }

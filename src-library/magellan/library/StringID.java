@@ -69,11 +69,11 @@ public class StringID implements ID {
 			throw new NullPointerException();
 		}
 		
-		StringID id = idMap.get(o);
+		StringID id = StringID.idMap.get(o);
 
 		if(id == null) {
 			id = new StringID(o);
-			idMap.put(o, id);
+			StringID.idMap.put(o, id);
 		}
 
 		return id;
@@ -84,7 +84,8 @@ public class StringID implements ID {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return originalString;
 	}
 
@@ -107,7 +108,8 @@ public class StringID implements ID {
 	 *
 	 * 
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return (this == o) || id.equals(((StringID) o).id);
 		} catch(ClassCastException e) {
@@ -120,7 +122,8 @@ public class StringID implements ID {
 	 *
 	 * 
 	 */
-	public int hashCode() {
+	@Override
+  public int hashCode() {
 		return id.hashCode();
 	}
 
@@ -143,7 +146,8 @@ public class StringID implements ID {
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		// pavkovic 2003.07.08: we dont really clone this object as StringID are immutable after creation
 		return this;
 	}

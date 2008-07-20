@@ -62,7 +62,7 @@ public class SkillStats {
 	 * 
 	 */
 	public List<Unit> getUnits(Skill skill) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(skill.getSkillType());
+		SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
 		if(skillStorage == null) {
 			return Collections.emptyList();
@@ -88,7 +88,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getPersonNumber(Skill skill) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(skill.getSkillType());
+		SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
 		if(skillStorage == null) {
 			return 0;
@@ -112,7 +112,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getSkillPointsNumber(SkillType skillType) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(skillType);
+		SkillStorage skillStorage = skillData.get(skillType);
 
 		if(skillStorage == null) {
 			return 0;
@@ -147,7 +147,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getSkillLevelNumber(SkillType skillType) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(skillType);
+		SkillStorage skillStorage = skillData.get(skillType);
 
 		if(skillStorage == null) {
 			return 0;
@@ -183,7 +183,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getPersonNumber(SkillType skillType) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(skillType);
+		SkillStorage skillStorage = skillData.get(skillType);
 
 		if(skillStorage == null) {
 			return 0;
@@ -220,7 +220,7 @@ public class SkillStats {
 
 			return v;
 		} else {
-			SkillStorage skillStorage = (SkillStorage) skillData.get(type);
+			SkillStorage skillStorage = skillData.get(type);
 
 			if(skillStorage == null) {
 				return Collections.emptyList();
@@ -269,7 +269,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getLowestKnownSkillLevel(SkillType type) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(type);
+		SkillStorage skillStorage = skillData.get(type);
 
 		if(skillStorage == null) {
 			return 0;
@@ -297,7 +297,7 @@ public class SkillStats {
 	 * 
 	 */
 	public int getHighestKnownSkillLevel(SkillType type) {
-		SkillStorage skillStorage = (SkillStorage) skillData.get(type);
+		SkillStorage skillStorage = skillData.get(type);
 
 		if(skillStorage == null) {
 			return 0;
@@ -325,7 +325,7 @@ public class SkillStats {
 	public void addUnit(Unit u) {
 		for(Iterator iter = u.getSkills().iterator(); iter.hasNext();) {
 			Skill skill = (Skill) iter.next();
-			SkillStorage skillStorage = (SkillStorage) skillData.get(skill.getSkillType());
+			SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
 			if(skillStorage == null) {
 				skillStorage = new SkillStorage();
@@ -333,7 +333,7 @@ public class SkillStats {
 			}
 
 			Map<Integer,UnitVector> levelTable = skillStorage.levelTable;
-			UnitVector uv = (UnitVector) levelTable.get(new Integer(skill.getLevel()));
+			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
 			if(uv == null) {
 				uv = new UnitVector();

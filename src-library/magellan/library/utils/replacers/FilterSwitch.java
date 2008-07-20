@@ -61,7 +61,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 	 * 
 	 */
 	public String getBranchSign(int index) {
-		return END;
+		return Replacer.END;
 	}
 
 	/**
@@ -109,10 +109,10 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 				return r.getReplacement(o);
 			}
 
-			return BLANK;
+			return Replacer.BLANK;
 		}
 
-		return BLANK;
+		return Replacer.BLANK;
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 			if(o instanceof Replacer) {
 				rep = (Replacer) o;
 			} else {
-				if(o.toString().equals(TRUE)) {
+				if(o.toString().equals(Replacer.TRUE)) {
 					always = 1;
 				} else {
 					always = 2;
@@ -165,7 +165,8 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 		 *
 		 * 
 		 */
-		public boolean acceptUnit(Unit u) {
+		@Override
+    public boolean acceptUnit(Unit u) {
 			if(always != 0) {
 				return always == 1;
 			}
@@ -173,7 +174,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 			try {
 				String s = rep.getReplacement(u).toString();
 
-				return s.equals(TRUE);
+				return s.equals(Replacer.TRUE);
 			} catch(Exception exc) {
 			}
 

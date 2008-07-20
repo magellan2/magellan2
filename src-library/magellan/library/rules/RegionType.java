@@ -164,7 +164,8 @@ public class RegionType extends UnitContainerType {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		String s = getName();
 
 		if(s == null) {

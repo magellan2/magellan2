@@ -87,7 +87,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	/**
 	 * Clears this hashtable so that it contains neither keys nor values.
 	 */
-	public synchronized void clear() {
+	@Override
+  public synchronized void clear() {
 		super.clear();
 		keyList.clear();
 	}
@@ -97,7 +98,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * 
 	 */
-	public Set<K> keySet() {
+	@Override
+  public Set<K> keySet() {
 		return new KeySet();
 	}
 
@@ -107,8 +109,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public Iterator<K> iterator() {
-			return new OHIterator(KEYS);
+		@Override
+    public Iterator<K> iterator() {
+			return new OHIterator(OrderedHashtable.KEYS);
 		}
 
 		/**
@@ -116,7 +119,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public int size() {
+		@Override
+    public int size() {
 			return OrderedHashtable.this.size();
 		}
 
@@ -127,7 +131,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public boolean contains(Object o) {
+		@Override
+    public boolean contains(Object o) {
 			return containsKey(o);
 		}
 
@@ -138,14 +143,16 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public boolean remove(Object o) {
+		@Override
+    public boolean remove(Object o) {
 			return OrderedHashtable.this.remove(o) != null;
 		}
 
 		/**
 		 * DOCUMENT-ME
 		 */
-		public void clear() {
+		@Override
+    public void clear() {
 			OrderedHashtable.this.clear();
 		}
 	}
@@ -156,7 +163,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * @return an ordered clone of the ordered hashtable.
 	 */
-	public synchronized Object clone() {
+	@Override
+  public synchronized Object clone() {
 		return new OrderedHashtable(this);
 	}
 
@@ -166,8 +174,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * @return an enumeration of the values in this hashtable.
 	 */
-	public synchronized Enumeration elements() {
-		return new OHIterator(VALUES);
+	@Override
+  public synchronized Enumeration elements() {
+		return new OHIterator(OrderedHashtable.VALUES);
 	}
 
 	/**
@@ -224,7 +233,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * @return the previous value of the specified key in this hashtable, or <code>null</code> if
 	 * 		   it did not have one.
 	 */
-	public synchronized V put(K key, V value) {
+	@Override
+  public synchronized V put(K key, V value) {
 		V old = super.put(key, value);
 
 		if(old == null) {
@@ -244,7 +254,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * @param t Mappings to be stored in this map.
 	 */
-	public synchronized void putAll(Map t) {
+	@Override
+  public synchronized void putAll(Map t) {
 		Iterator<Map.Entry<K,V>> iter = null;
 
 		if(t instanceof OrderedHashtable) {
@@ -268,7 +279,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * @return the value to which the key had been mapped in this hashtable, or <code>null</code>
 	 * 		   if the key did not have a mapping.
 	 */
-	public synchronized V remove(Object key) {
+	@Override
+  public synchronized V remove(Object key) {
 		if(keyList.remove(key)) {
 			return super.remove(key);
 		} else {
@@ -286,7 +298,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * @return an ordered collection view of the values contained in this map.
 	 */
-	public Collection<V> values() {
+	@Override
+  public Collection<V> values() {
 		if(values == null || values.get()==null) {
 			values = new SoftReference<Collection<V>>(Collections.synchronizedCollection(new ValueCollection()));
 		}
@@ -300,8 +313,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public Iterator<V> iterator() {
-			return new OHIterator(VALUES);
+		@Override
+    public Iterator<V> iterator() {
+			return new OHIterator(OrderedHashtable.VALUES);
 		}
 
 		/**
@@ -309,7 +323,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public int size() {
+		@Override
+    public int size() {
 			return OrderedHashtable.this.size();
 		}
 
@@ -320,14 +335,16 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public boolean contains(Object o) {
+		@Override
+    public boolean contains(Object o) {
 			return containsValue(o);
 		}
 
 		/**
 		 * DOCUMENT-ME
 		 */
-		public void clear() {
+		@Override
+    public void clear() {
 			OrderedHashtable.this.clear();
 		}
 	}
@@ -378,7 +395,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		public Object next() {
 			last = base.next();
 
-			return (mode == KEYS) ? last : OrderedHashtable.this.get(last);
+			return (mode == OrderedHashtable.KEYS) ? last : OrderedHashtable.this.get(last);
 		}
 
 		/**
@@ -423,7 +440,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public boolean equals(Object o) {
+		@Override
+    public boolean equals(Object o) {
 			try {
 				OHEntry e2 = (OHEntry) o;
 				
@@ -457,7 +475,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public int hashCode() {
+		@Override
+    public int hashCode() {
 			return ((key == null) ? 0 : key.hashCode()) ^ ((value == null) ? 0 : value.hashCode());
 		}
 
@@ -501,7 +520,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		 *
 		 * 
 		 */
-		public String toString() {
+		@Override
+    public String toString() {
 			return key + "=" + value;
 		}
 	}

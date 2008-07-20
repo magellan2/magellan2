@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -121,9 +122,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	private SortedSet<Unit> units;
 
   // currently selected entities
-  private Island currentIsland = null;
-  private Region currentRegion = null;
-  private Faction currentFaction = null;
 	private Unit currentUnit = null;
 	
   // for remembering transitional selections
@@ -160,7 +158,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	protected ButtonPanel buttons;
 
 	// editor list generation mode
-	protected int listMode = 1 << LIST_REGION;
+	protected int listMode = 1 << MultiEditorOrderEditorList.LIST_REGION;
 	public static final int LIST_UNIT = 0;
   public static final int LIST_FACTION = 1;
   public static final int LIST_REGION = 2;
@@ -240,11 +238,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	/**
 	 * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
-	public void gameDataChanged(GameDataEvent e) {
+	@Override
+  public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
     initContent();
-    if (!multiEditorLayout)
+    if (!multiEditorLayout) {
       initSingleEditor();
+    }
 	}
 
 	/**
@@ -252,9 +252,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    */
   private void initContent() {
     clearUnits();
-    currentIsland = null;
-    currentRegion = null;
-    currentFaction = null;
     currentUnit = null;
     
     transitionalRegion=null;
@@ -291,11 +288,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 *
 	 * 
 	 */
-	public void paint(Graphics g) {
+	@Override
+  public void paint(Graphics g) {
 		super.paint(g);
 
-		if(log.isDebugEnabled()) {
-			log.debug("paint! [" + swingGlitch + "]");
+		if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
+			MultiEditorOrderEditorList.log.debug("paint! [" + swingGlitch + "]");
 		}
 
 		// we are in a situation AFTER painting (hopefully!)
@@ -311,14 +309,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent se) {
-	  if (log.isDebugEnabled()) {
-      log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject());
+	  if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+      MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject());
 
       if (se.getActiveObject() != null) {
-        log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject().getClass());
+        MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged: " + se.getActiveObject().getClass());
       }
 
-      log.debug("MultiEditorOrderEditorList.selectionChanged: " + (se.getSource() == this));
+      MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged: " + (se.getSource() == this));
     }
 
     // remember if we want to have the focus (see below)
@@ -343,11 +341,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 				if(currentUnit != null) {
           setEditor(currentUnit, null);
           deselectEditor(editorSingelton);
-          editorSingelton.setBorder(new TitledBorder(standardBorder,""));
+          editorSingelton.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder,""));
 					currentUnit = null;
-					currentRegion = null;
-          currentFaction=null;
-          currentIsland=null;
 					editorSingelton.setUnit(null);
 					editorSingelton.setEditable(false);
 				}
@@ -412,16 +407,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
         newIsland=null;
         newRegion=null;
         newFaction=null;
-        newUnit=null;
       }
     } 
 
     if ((newUnit == currentUnit && newUnit!=null) || 
         (newUnit!=null && currentUnit!=null && 
             newUnit.getRegion()==currentUnit.getRegion() && 
-            newUnit.getFaction() == currentUnit.getFaction()))
+            newUnit.getFaction() == currentUnit.getFaction())) {
       ; // no change necessary
-    else{
+    } else{
       loadEditors(newIsland, newRegion, newFaction, newUnit);
     }
     
@@ -440,15 +434,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * 
    */
   private void selectEditor(Unit newUnit) {
-    if (getEditor(currentUnit)!=null)
+    if (getEditor(currentUnit)!=null) {
       deselectEditor(currentUnit);
-    if (newUnit!=null)
+    }
+    if (newUnit!=null) {
       selectEditor(newUnit, getEditor(newUnit));
+    }
     this.currentUnit=newUnit;
     if (newUnit!=null){
-      this.currentFaction=newUnit.getFaction();
-      this.currentIsland=newUnit.getRegion().getIsland();
-      this.currentRegion=newUnit.getRegion();
+//      this.currentFaction=newUnit.getFaction();
+//      this.currentIsland=newUnit.getRegion().getIsland();
+//      this.currentRegion=newUnit.getRegion();
     }
   }    
   
@@ -459,10 +455,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @param editor 
    */
   private void selectEditor(Unit newUnit, OrderEditor editor){
-    if (newUnit==null)
+    if (newUnit==null) {
       throw new NullPointerException();
+    }
     if(editor != null) {
-      editor.setBorder(new TitledBorder(activeBorder,
+      editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.activeBorder,
                                    newUnit.toString() +
                                    ": " +
                                    newUnit.getPersons()));
@@ -502,7 +499,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @param editor Must not be <code>null</code>.
    */
   private void deselectEditor(OrderEditor editor){
-      editor.setBorder(new TitledBorder(standardBorder,currentUnit.toString() + ": " + currentUnit.getPersons()));
+      editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder,currentUnit.toString() + ": " + currentUnit.getPersons()));
 
       if(currentUnit.isOrdersConfirmed()) {
         editor.setBackground(standardBgColorConfirmed);
@@ -526,8 +523,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	public void tempUnitCreated(TempUnitEvent e) {
-		if(log.isDebugEnabled()) {
-			log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit());
+		if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
+			MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit());
 		}
 
 		if((currentUnit != null) && multiEditorLayout) {
@@ -536,9 +533,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       
 			this.revalidate();
 
-			if(log.isDebugEnabled()) {
-				log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit().getCache());
-				log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + getEditor(e.getTempUnit()));
+			if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit().getCache());
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + getEditor(e.getTempUnit()));
 			}
 
 //			if(getEditor(e.getTempUnit()) != null) {
@@ -569,7 +566,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	public void keyPressed(KeyEvent e) {
-		if((e.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+		if((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
 			if(multiEditorLayout) {
 				switch(e.getKeyCode()) {
 				case KeyEvent.VK_DOWN:
@@ -655,12 +652,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   public void mouseClicked(MouseEvent e) {
-    if (log.isDebugEnabled()){
-      log.debug("mouseClicked "+e.getSource());
+    if (MultiEditorOrderEditorList.log.isDebugEnabled()){
+      MultiEditorOrderEditorList.log.debug("mouseClicked "+e.getSource());
     }
     if (e.getSource() instanceof OrderEditor){
-      if (multiEditorLayout)
+      if (multiEditorLayout) {
         dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
+      }
     }
   }
 
@@ -1033,14 +1031,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    */
 	private void loadEditors(Island i, Faction f) {
 	  List<Unit> l = new LinkedList<Unit>();
-	  if (!isListMode(LIST_FACTION))
-	    f = null;
-	  if (isListMode(LIST_ISLAND)) {
+	  if (!isListMode(MultiEditorOrderEditorList.LIST_FACTION)) {
+      f = null;
+    }
+	  if (isListMode(MultiEditorOrderEditorList.LIST_ISLAND)) {
 	    // list units of specified Island
 	    for (Region r : i.regions()) {
-	      for (Unit u : r.units())
-	        if (EMapDetailsPanel.isPrivileged(f) && (f == null || u.getFaction().equals(f)))
-	          l.add(u);
+	      for (Unit u : r.units()) {
+          if (EMapDetailsPanel.isPrivileged(f) && (f == null || u.getFaction().equals(f))) {
+            l.add(u);
+          }
+        }
 	    }
 	  }
 
@@ -1054,15 +1055,17 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * @param f
 	 */
 	private void loadEditors(Region r, Faction f) {
-	  if (!isListMode(LIST_REGION) && r.getIsland()!=null){
-	    if (isListMode(LIST_ISLAND))
-	      loadEditors(r.getIsland(), f);
-	    else
-	      loadEditors(Collections.<Unit>emptyList());
+	  if (!isListMode(MultiEditorOrderEditorList.LIST_REGION) && r.getIsland()!=null){
+	    if (isListMode(MultiEditorOrderEditorList.LIST_ISLAND)) {
+        loadEditors(r.getIsland(), f);
+      } else {
+        loadEditors(Collections.<Unit>emptyList());
+      }
 	    return;
 	  }
-	  if (!isListMode(LIST_FACTION))
-	    f = null;
+	  if (!isListMode(MultiEditorOrderEditorList.LIST_FACTION)) {
+      f = null;
+    }
 
 	  List<Unit> l = new LinkedList<Unit>(r.units());
 
@@ -1088,18 +1091,21 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       return;
     }
     
-	  if (isListMode(LIST_REGION))
-	    if (isListMode(LIST_FACTION))
-	      loadEditors(u.getRegion(), u.getFaction());
-	    else 
-	      loadEditors(u.getRegion(), (Faction) null);
-	  else if (isListMode(LIST_ISLAND))
-	    if (isListMode(LIST_FACTION)) 
-	      loadEditors(u.getRegion().getIsland(), u.getFaction());
-	    else
-	      loadEditors(u.getRegion().getIsland(), (Faction) null);
-	  else 
-	    loadEditors(Collections.singletonList(u));
+	  if (isListMode(MultiEditorOrderEditorList.LIST_REGION)) {
+      if (isListMode(MultiEditorOrderEditorList.LIST_FACTION)) {
+        loadEditors(u.getRegion(), u.getFaction());
+      } else {
+        loadEditors(u.getRegion(), (Faction) null);
+      }
+    } else if (isListMode(MultiEditorOrderEditorList.LIST_ISLAND)) {
+      if (isListMode(MultiEditorOrderEditorList.LIST_FACTION)) {
+        loadEditors(u.getRegion().getIsland(), u.getFaction());
+      } else {
+        loadEditors(u.getRegion().getIsland(), (Faction) null);
+      }
+    } else {
+      loadEditors(Collections.singletonList(u));
+    }
 	}
 
 
@@ -1135,9 +1141,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	  }else {
 	    loadEditors(Collections.<Unit>emptyList());
 	  }
-    currentIsland = newIsland;
-    currentRegion  = newRegion;
-    currentFaction = newFaction;
+//    currentIsland = newIsland;
+//    currentRegion  = newRegion;
+//    currentFaction = newFaction;
     currentUnit = newUnit;
     transitionalIsland=null;
     transitionalRegion=null;
@@ -1171,10 +1177,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @return The cached editor for <code>u</code> or null if none exists 
    */
   private OrderEditor getEditor(Unit u) {
-    if(u!=null && u.getCache() != null && u.getCache().orderEditor != null) 
+    if(u!=null && u.getCache() != null && u.getCache().orderEditor != null) {
       return (OrderEditor) u.getCache().orderEditor;
-    else
+    } else {
       return null;
+    }
   }
 
   /**
@@ -1188,8 +1195,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    */
   private void setEditor(Unit u, CacheableOrderEditor editor) {
     if(u.getCache() == null) {
-      if (editor==null)
+      if (editor==null) {
         return;
+      }
       u.setCache(new Cache());
     }
     u.getCache().orderEditor=editor;
@@ -1207,22 +1215,25 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    *          <code>units.remove</code>.
    */
 	private void removeUnit(Unit u, Iterator<Unit> it) {
-    if (log.isDebugEnabled())
-      log.debug("MultiEditor.removeUnit  "+u);
+    if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+      MultiEditorOrderEditorList.log.debug("MultiEditor.removeUnit  "+u);
+    }
 	  JTextComponent c = getEditor(u);
 	  synchronized (content) {
-	    if (c==null)
-	      log.error(this.getClass()+": unit already removed; "+u);
-	    else{
+	    if (c==null) {
+        MultiEditorOrderEditorList.log.error(this.getClass()+": unit already removed; "+u);
+      } else{
 	      content.remove(c);
 	      removeListeners(c);
 	    }
-	    if (it!=null)
-	      it.remove();
-	    else
-	      units.remove(u);
-	    if (content.getComponentCount()==0 && this.content.hasFocus())
-	      this.requestFocus();
+	    if (it!=null) {
+        it.remove();
+      } else {
+        units.remove(u);
+      }
+	    if (content.getComponentCount()==0 && this.content.hasFocus()) {
+        this.requestFocus();
+      }
 	  }
 	}
 
@@ -1237,14 +1248,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    */
 	private void addUnit(Unit u) {
 	  if (!units.contains(u)){
-      if (log.isDebugEnabled())
-        log.debug("MultiEditor.add: "+u);
+      if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+        MultiEditorOrderEditorList.log.debug("MultiEditor.add: "+u);
+      }
 	    buildOrderEditor(u);
 
       units.add(u);
-      if (units.first()==u)
+      if (units.first()==u) {
         content.add(getEditor(u), 0);
-      else{
+      } else{
         Unit predUnit = getPreviousUnit(u);
         if (predUnit==null){
           content.add(getEditor(u));
@@ -1254,8 +1266,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       }
 	    addListeners(getEditor(u));
 	  }else{
-      if (log.isDebugEnabled())
-        log.debug("MultiEditor.not add: "+u);
+      if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+        MultiEditorOrderEditorList.log.debug("MultiEditor.not add: "+u);
+      }
     }
 	}
 
@@ -1273,14 +1286,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    */
     protected Unit getNextUnit(Unit u) {
       Iterator<Unit> it = units.tailSet(u).iterator();
-      if (!it.hasNext())
+      if (!it.hasNext()) {
         return null;
+      }
       it.next(); // skip the currentUnit
-      if (it.hasNext())
+      if (it.hasNext()) {
         return it.next();
-      else
+      } else {
         return null;
 //	  return ( units.get(units.indexOf(currentUnit) + 1));
+      }
 	}
 
   /**
@@ -1296,10 +1311,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
      */
     private Unit getPreviousUnit(Unit u) {
       SortedSet<Unit> pre = units.headSet(u);
-      if (pre.isEmpty())
+      if (pre.isEmpty()) {
         return null;
-      else
+      } else {
         return pre.last();
+      }
 	}
 
   /**
@@ -1331,7 +1347,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @param editor
    */
   private void attachOrderEditor(Unit u, OrderEditor editor){
-		editor.setBorder(new TitledBorder(standardBorder, u.toString() + ": " + u.getPersons()));
+		editor.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder, u.toString() + ": " + u.getPersons()));
 
 		if(u.isOrdersConfirmed()) {
 		  editor.setBackground(standardBgColorConfirmed);
@@ -1354,7 +1370,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * editors
 	 */
 	private void clearUnits() {
-    log.debug("clearUnits called");
+    MultiEditorOrderEditorList.log.debug("clearUnits called");
 		if(multiEditorLayout) {
 		  synchronized(content) {
 		    if(units != null) {
@@ -1398,12 +1414,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	/**
 	 * Ensures that the right order editor gets the focus.
 	 */
-	public void requestFocus() {
+	@Override
+  public void requestFocus() {
 	  if (multiEditorLayout){
 	    if(getEditor(currentUnit) != null) {
 	      requestFocus(getEditor(currentUnit));
-	    }else
-	      super.requestFocus();
+	    } else {
+        super.requestFocus();
+      }
 	  }else{
 	    editorSingelton.requestFocus();
 	  }
@@ -1413,12 +1431,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		try {
 			listMode = Integer.parseInt(settings.getProperty("OrderEditorList.listMode"));
 		} catch(Exception exc) {
-			listMode = 1 << LIST_REGION;
+			listMode = 1 << MultiEditorOrderEditorList.LIST_REGION;
 		}
 	}
 
 	public void saveListProperty() {
-		if(listMode == (1 << LIST_REGION)) {
+		if(listMode == (1 << MultiEditorOrderEditorList.LIST_REGION)) {
 			settings.remove("OrderEditorList.listMode");
 		} else {
 			settings.setProperty("OrderEditorList.listMode", String.valueOf(listMode));
@@ -1526,7 +1544,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     /**
      * @see java.awt.event.KeyAdapter#keyPressed(java.awt.event.KeyEvent)
      */
-		public void keyPressed(KeyEvent e) {
+		@Override
+    public void keyPressed(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
 				((KeyListener) iter.next()).keyPressed(e);
@@ -1543,7 +1562,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     /**
      * @see java.awt.event.KeyAdapter#keyReleased(java.awt.event.KeyEvent)
      */
-		public void keyReleased(KeyEvent e) {
+		@Override
+    public void keyReleased(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
 				((KeyListener) iter.next()).keyReleased(e);
@@ -1560,7 +1580,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     /**
      * @see java.awt.event.KeyAdapter#keyTyped(java.awt.event.KeyEvent)
      */
-		public void keyTyped(KeyEvent e) {
+		@Override
+    public void keyTyped(KeyEvent e) {
 			// first external listeners
 			for(Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
 				((KeyListener) iter.next()).keyTyped(e);
@@ -1590,7 +1611,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     /**
      * @see java.awt.event.FocusAdapter#focusGained(java.awt.event.FocusEvent)
      */
-		public void focusGained(FocusEvent e) {
+		@Override
+    public void focusGained(FocusEvent e) {
 			// first the source (maybe selection event!)
 			source.focusGained(e);
 
@@ -1603,7 +1625,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     /**
      * @see java.awt.event.FocusAdapter#focusLost(java.awt.event.FocusEvent)
      */
-		public void focusLost(FocusEvent e) {
+		@Override
+    public void focusLost(FocusEvent e) {
 			// first external listeners
 			for(Iterator iter = source.focusListeners.iterator(); iter.hasNext();) {
 				((FocusListener) iter.next()).focusLost(e);
@@ -1655,15 +1678,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			// first time they stay invalid.
 			Rectangle viewRect = scpContent.getViewport().getViewRect();
 
-			if(log.isDebugEnabled()) {
-				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" +
+			if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect:" +
 						  viewRect);
 			}
 
 			if(getEditor(currentUnit) != null) {
 			  OrderEditor editor = getEditor(currentUnit);
 				Rectangle bounds = editor.getBounds();
-				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds:" + bounds);
 
 				while(!viewRect.contains(viewRect.x, bounds.y, viewRect.width,
 											 Math.min(viewRect.height, bounds.height))) {
@@ -1677,8 +1700,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 					newPos.y = Math.max(0, newPos.y);
 
-					if(log.isDebugEnabled()) {
-						log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " +
+					if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
+						MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: newPos : " +
 								  newPos);
 					}
 
@@ -1703,9 +1726,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					}
 				}
 
-				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:" +
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: viewRect after:" +
 						  viewRect);
-				log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" +
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.selectionChanged.runnable: Bounds after:" +
 						  bounds);
 			}
 
@@ -1746,10 +1769,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 					public Iterator<KeyStroke> getShortCuts() {
 						if(shortcuts == null) {
 							shortcuts = new LinkedList<KeyStroke>();
-							shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, KeyEvent.CTRL_MASK));
+							shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK));
 							shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-																 KeyEvent.CTRL_MASK |
-																 KeyEvent.SHIFT_MASK));
+																 InputEvent.CTRL_MASK |
+																 InputEvent.SHIFT_MASK));
 						}
 
 						return shortcuts.iterator();
@@ -2031,8 +2054,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 								dispatcher.fire(new TempUnitEvent(this, tempUnit,
 																  TempUnitEvent.CREATED), true);
                 selectEditor(tempUnit);
-                if (getEditor(tempUnit)!=null)
+                if (getEditor(tempUnit)!=null) {
                   getEditor(tempUnit).requestFocus();
+                }
                 dispatcher.fire(new SelectionEvent<Unit>(this, null, tempUnit));
 								return;
 							} else {
@@ -2060,8 +2084,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
         TempUnit tempUnit = (TempUnit) currentUnit;
 				Unit parentUnit = tempUnit.getParent();
 				selectEditor(parentUnit);
-        if (getEditor(currentUnit)!=null)
+        if (getEditor(currentUnit)!=null) {
           getEditor(currentUnit).requestFocus();
+        }
         dispatcher.fire(new SelectionEvent<Unit>(this, null, parentUnit), true);
         dispatcher.fire(new TempUnitEvent(this, tempUnit,
             TempUnitEvent.DELETING), true);
@@ -2128,7 +2153,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		 *
 		 * 
 		 */
-		public Dimension getPreferredSize() {
+		@Override
+    public Dimension getPreferredSize() {
 			Container parent = this.getParent();
 
 			// this special case has become necessary with the
@@ -2162,7 +2188,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			if(orientation == SwingConstants.HORIZONTAL) {
 				return visibleRect.width / 5;
 			} else {
-        if (!MultiEditorOrderEditorList.this.isMultiEditorLayout()) return visibleRect.height/10;
+        if (!MultiEditorOrderEditorList.this.isMultiEditorLayout()) {
+          return visibleRect.height/10;
+        }
 				Component lastVisibleComponent = null;
 				Component nextComponent = null;
 

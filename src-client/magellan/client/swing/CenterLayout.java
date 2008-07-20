@@ -32,13 +32,13 @@ public class CenterLayout implements LayoutManager {
 	protected int mode = 0;
 
 	/** A layout that spans the x axis. */
-	public static final CenterLayout SPAN_X_LAYOUT = new CenterLayout(SPAN_X);
+	public static final CenterLayout SPAN_X_LAYOUT = new CenterLayout(CenterLayout.SPAN_X);
 
 	/** A layout that spans the y axis. */
-	public static final CenterLayout SPAN_Y_LAYOUT = new CenterLayout(SPAN_Y);
+	public static final CenterLayout SPAN_Y_LAYOUT = new CenterLayout(CenterLayout.SPAN_Y);
 
 	/** A layout that spans the x and y axis. */
-	public static final CenterLayout SPAN_BOTH_LAYOUT = new CenterLayout(SPAN_X | SPAN_Y);
+	public static final CenterLayout SPAN_BOTH_LAYOUT = new CenterLayout(CenterLayout.SPAN_X | CenterLayout.SPAN_Y);
 
 	private CenterLayout(int mode) {
 		this.mode = mode;
@@ -56,7 +56,7 @@ public class CenterLayout implements LayoutManager {
 			return container.getComponent(0).getMinimumSize();
 		}
 
-		return NULL;
+		return CenterLayout.NULL;
 	}
 
 	/**
@@ -83,19 +83,19 @@ public class CenterLayout implements LayoutManager {
 			Dimension pSize = first.getPreferredSize();
 			int x = (size.width - pSize.width) / 2;
 
-			if((x < 0) || ((mode & SPAN_X) != 0)) {
+			if((x < 0) || ((mode & CenterLayout.SPAN_X) != 0)) {
 				x = 0;
 			}
 
 			int y = (size.height - pSize.height) / 2;
 
-			if((y < 0) || ((mode & SPAN_Y) != 0)) {
+			if((y < 0) || ((mode & CenterLayout.SPAN_Y) != 0)) {
 				y = 0;
 			}
 
 			int width;
 
-			if((mode & SPAN_X) != 0) {
+			if((mode & CenterLayout.SPAN_X) != 0) {
 				width = size.width;
 			} else {
 				width = Math.min(pSize.width, size.width);
@@ -103,7 +103,7 @@ public class CenterLayout implements LayoutManager {
 
 			int height;
 
-			if((mode & SPAN_Y) != 0) {
+			if((mode & CenterLayout.SPAN_Y) != 0) {
 				height = size.height;
 			} else {
 				height = Math.min(pSize.height, size.height);
@@ -139,6 +139,6 @@ public class CenterLayout implements LayoutManager {
 			return container.getComponent(0).getPreferredSize();
 		}
 
-		return NULL;
+		return CenterLayout.NULL;
 	}
 }

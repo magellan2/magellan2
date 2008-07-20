@@ -173,7 +173,7 @@ public class ShipRoutePlanner {
 									if(dir != null) {
 										if((count == 0) ||
 											   ((count != shipRange) &&
-											   Regions.containsHarbour((Region) curPath.get(0),
+											   Regions.containsHarbour(curPath.get(0),
 																		   harbour))) {
 											after++;
 											count = shipRange;

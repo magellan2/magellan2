@@ -184,7 +184,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 	/**
 	 * 
 	 */
-	public void paintComponent(Graphics g) {
+	@Override
+  public void paintComponent(Graphics g) {
 		int x = 0;
 		int y = 1;
 
@@ -314,7 +315,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section."+message.getMessageType().getSection()+".color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -328,7 +329,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.economy.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -339,7 +340,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.errors.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -350,7 +351,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.events.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -361,7 +362,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.magic.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -383,7 +384,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.movement.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -394,7 +395,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.production.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -405,7 +406,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.study.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.
@@ -416,7 +417,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
         String colorName = "messagetype.section.battle.color";
         String color = Client.INSTANCE.getProperties().getProperty(colorName);
         if (color == null) {
-          log.warnOnce("Property "+colorName+" not found.");
+          LineWrapCellRenderer.log.warnOnce("Property "+colorName+" not found.");
           color = Client.INSTANCE.getProperties().getProperty(colorName, "-");
         }
         // color for message type found.

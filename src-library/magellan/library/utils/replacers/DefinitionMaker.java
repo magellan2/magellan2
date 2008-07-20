@@ -61,7 +61,7 @@ public class DefinitionMaker {
 
 	protected static String scanEscapes(String s, ReplacerFactory factory) {
 		// look for escape string
-		if(s.startsWith(ESCAPE)) {
+		if(s.startsWith(DefinitionMaker.ESCAPE)) {
 			String s2 = s.substring(1);
 
 			if((s2.length() > 0) && factory.isReplacer(s2)) {
@@ -82,7 +82,7 @@ public class DefinitionMaker {
 	 * 
 	 */
 	public ReplacerSystem createDefinition(String defStr, String cmdChars, ReplacerFactory factory) {
-		return createDefinition(defStr, cmdChars, factory, unknown);
+		return DefinitionMaker.createDefinition(defStr, cmdChars, factory, unknown);
 	}
 
 	/**
@@ -126,12 +126,12 @@ public class DefinitionMaker {
 				return sys;
 			}
 
-			sys.setBase(new SimpleStringReplacer(scanEscapes(s, factory)));
+			sys.setBase(new SimpleStringReplacer(DefinitionMaker.scanEscapes(s, factory)));
 
 			return sys;
 		}
 
-		sys.setBase(createListReplacer(st, factory, unknown, sys));
+		sys.setBase(DefinitionMaker.createListReplacer(st, factory, unknown, sys));
 
 		return sys;
 	}
@@ -142,7 +142,7 @@ public class DefinitionMaker {
 		int branches = branch.getBranchCount();
 
 		if(branches == -1) {
-			return createSwitchBranchReplacer(branch, st, factory, unknown, env);
+			return DefinitionMaker.createSwitchBranchReplacer(branch, st, factory, unknown, env);
 		}
 
 		String repEnd = branch.getBranchSign(branches);
@@ -161,9 +161,9 @@ public class DefinitionMaker {
 
 				if(!endReached && !repEndReached) {
 					if(factory.isReplacer(token)) {
-						subList.add(createReplacer(token, st, factory, unknown, env));
+						subList.add(DefinitionMaker.createReplacer(token, st, factory, unknown, env));
 					} else {
-						subList.add(scanEscapes(token, factory));
+						subList.add(DefinitionMaker.scanEscapes(token, factory));
 					}
 				}
 			}
@@ -206,9 +206,9 @@ public class DefinitionMaker {
 
 				if(!isBranchEnd && !endReached) {
 					if(factory.isReplacer(token)) {
-						subList.add(createReplacer(token, st, factory, unknown, env));
+						subList.add(DefinitionMaker.createReplacer(token, st, factory, unknown, env));
 					} else {
-						subList.add(scanEscapes(token, factory));
+						subList.add(DefinitionMaker.scanEscapes(token, factory));
 					}
 				}
 			}
@@ -239,9 +239,9 @@ public class DefinitionMaker {
 			String token = st.nextToken();
 
 			if(factory.isReplacer(token)) {
-				list.add(createReplacer(token, st, factory, unknown, env));
+				list.add(DefinitionMaker.createReplacer(token, st, factory, unknown, env));
 			} else {
-				list.add(scanEscapes(token, factory));
+				list.add(DefinitionMaker.scanEscapes(token, factory));
 			}
 		}
 
@@ -270,11 +270,11 @@ public class DefinitionMaker {
 		}
 
 		if(rep instanceof ParameterReplacer) {
-			rep = createParameterReplacer((ParameterReplacer) rep, st, factory, unknown, env);
+			rep = DefinitionMaker.createParameterReplacer((ParameterReplacer) rep, st, factory, unknown, env);
 		}
 
 		if(rep instanceof BranchReplacer) {
-			rep = createBranchReplacer((BranchReplacer) rep, st, factory, unknown, env);
+			rep = DefinitionMaker.createBranchReplacer((BranchReplacer) rep, st, factory, unknown, env);
 		}
 
 		return rep;
@@ -298,9 +298,9 @@ public class DefinitionMaker {
 							o = null;
 
 							if(factory.isReplacer(token)) {
-								o = createReplacer(token, st, factory, unknown, env);
+								o = DefinitionMaker.createReplacer(token, st, factory, unknown, env);
 							} else {
-								o = scanEscapes(token, factory);
+								o = DefinitionMaker.scanEscapes(token, factory);
 							}
 
 							if(!(o instanceof SwitchOnly)) {

@@ -33,10 +33,11 @@ public class MaxTradeReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region r) {
+	@Override
+  public Object getRegionReplacement(Region r) {
 		if(r.maxLuxuries() >= 0) {
 			if(r.maxLuxuries() == 0) {
-				return ZERO;
+				return MaxTradeReplacer.ZERO;
 			}
 
 			return new Integer(r.maxLuxuries());

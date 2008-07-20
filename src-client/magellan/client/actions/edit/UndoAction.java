@@ -58,7 +58,8 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 	 *
 	 * 
 	 */
-	public String getIconName() {
+	@Override
+  public String getIconName() {
 		return "undo_edit";
 	}
 
@@ -67,9 +68,11 @@ public class UndoAction extends MenuAction implements PropertyChangeListener {
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
-		if (undoManager.canUndo())
-			undoManager.undo();
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
+		if (undoManager.canUndo()) {
+      undoManager.undo();
+    }
 	}
 
 	/**

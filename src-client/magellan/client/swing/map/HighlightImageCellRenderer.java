@@ -49,7 +49,8 @@ public class HighlightImageCellRenderer extends ImageCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 
@@ -74,7 +75,7 @@ public class HighlightImageCellRenderer extends ImageCellRenderer {
 		if(img != null) {
 			graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
 		} else {
-			log.warn("HighlightImageCellRenderer.render(): image " + imgName + " is null!");
+			HighlightImageCellRenderer.log.warn("HighlightImageCellRenderer.render(): image " + imgName + " is null!");
 		}
 	}
 
@@ -83,7 +84,8 @@ public class HighlightImageCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_HIGHLIGHT;
 	}
 

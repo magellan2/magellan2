@@ -33,17 +33,20 @@ public class GZipFileType extends FileType {
 		super(aFile, readonly);
 	}
 
-	protected InputStream createInputStream() throws IOException {
+	@Override
+  protected InputStream createInputStream() throws IOException {
 		return new GZIPInputStream(new FileInputStream(filename));
 	}
 
-	protected OutputStream createOutputStream() throws IOException {
+	@Override
+  protected OutputStream createOutputStream() throws IOException {
 		return new GZIPOutputStream(new FileOutputStream(filename));
 	}
     
     /**
      * @see FileType#getInnerName()
      */
+    @Override
     public String getInnerName() {
         return getName().substring(0,getName().indexOf(FileType.GZIP));
     }

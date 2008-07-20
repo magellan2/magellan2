@@ -52,9 +52,13 @@ public enum PlugInAction {
   }
   
   public static PlugInAction getAction(ActionEvent e) {
-    if (e == null) return UNKNOWN;
-    for (PlugInAction action : values()) {
-      if (action.id.equalsIgnoreCase(e.getActionCommand())) return action;
+    if (e == null) {
+      return UNKNOWN;
+    }
+    for (PlugInAction action : PlugInAction.values()) {
+      if (action.id.equalsIgnoreCase(e.getActionCommand())) {
+        return action;
+      }
     }
     return UNKNOWN;
   }

@@ -102,6 +102,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   /**
    * DOCUMENT-ME
    */
+  @Override
   public String toString() {
     return text;
   }
@@ -120,7 +121,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   public List getIconNames() {
     if (returnIcons == null) {
       if ((icons == null)) {
-        returnIcons = defaultIcon;
+        returnIcons = UnitListNodeWrapper.defaultIcon;
       } else {
         returnIcons = icons;
       }

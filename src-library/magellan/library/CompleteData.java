@@ -52,7 +52,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Island> islands() {
+	@Override
+  public Map<ID,Island> islands() {
 		return islands;
 	}
 
@@ -61,7 +62,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<CoordinateID,Region> regions() {
+	@Override
+  public Map<CoordinateID,Region> regions() {
 		return regions;
 	}
 
@@ -70,7 +72,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Unit> units() {
+	@Override
+  public Map<ID,Unit> units() {
 		return units;
 	}
 
@@ -79,7 +82,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,TempUnit> tempUnits() {
+	@Override
+  public Map<ID,TempUnit> tempUnits() {
 		return tempUnits;
 	}
 
@@ -88,7 +92,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Faction> factions() {
+	@Override
+  public Map<ID,Faction> factions() {
 		return factions;
 	}
 
@@ -97,7 +102,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Ship> ships() {
+	@Override
+  public Map<ID,Ship> ships() {
 		return ships;
 	}
 
@@ -106,7 +112,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Building> buildings() {
+	@Override
+  public Map<ID,Building> buildings() {
 		return buildings;
 	}
 
@@ -115,7 +122,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,MessageType> msgTypes() {
+	@Override
+  public Map<ID,MessageType> msgTypes() {
 		return msgTypes;
 	}
 
@@ -124,7 +132,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID, Spell> spells() {
+	@Override
+  public Map<ID, Spell> spells() {
 		return spells;
 	}
 
@@ -133,7 +142,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,Potion> potions() {
+	@Override
+  public Map<ID,Potion> potions() {
 		return potions;
 	}
 
@@ -142,7 +152,8 @@ public class CompleteData extends GameData {
 	 * Returns a collection of the coordinates of selected regions.
 	 *
 	 */
-	public Map<CoordinateID,Region> getSelectedRegionCoordinates() {
+	@Override
+  public Map<CoordinateID,Region> getSelectedRegionCoordinates() {
 		return selectedRegions;
 	}
 
@@ -151,7 +162,8 @@ public class CompleteData extends GameData {
 	 *
 	 * @param regions the map of coordinates of selected regions
 	 */
-	public void setSelectedRegionCoordinates(Map<CoordinateID, Region> regions) {
+	@Override
+  public void setSelectedRegionCoordinates(Map<CoordinateID, Region> regions) {
 		selectedRegions = new TreeMap<CoordinateID, Region>();
 		if(regions != null) {
 			selectedRegions.putAll(regions);
@@ -164,7 +176,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Map<ID,HotSpot> hotSpots() {
+	@Override
+  public Map<ID,HotSpot> hotSpots() {
 		return hotSpots;
 	}
 
@@ -173,7 +186,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Translations translations() {
+	@Override
+  public Translations translations() {
 		return translations;
 	}
 
@@ -182,7 +196,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public void setLocale(Locale l) {
+	@Override
+  public void setLocale(Locale l) {
 		this.locale = l;
 	}
 
@@ -191,7 +206,8 @@ public class CompleteData extends GameData {
 	 *
 	 * 
 	 */
-	public Locale getLocale() {
+	@Override
+  public Locale getLocale() {
 		return locale;
 	}
 

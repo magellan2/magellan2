@@ -821,10 +821,11 @@ public class GenericRules implements Rules {
 	}
 
 	private Iterator getIterator(Class c, Map m) {
-    if (m != null && m.values() != null)
+    if (m != null && m.values() != null) {
       return new ClassIterator(c,Collections.unmodifiableCollection(m.values()).iterator());
-    else
+    } else {
       return new ClassIterator(c,Collections.emptyList().iterator());
+    }
 	}
 
 	/**
@@ -898,7 +899,7 @@ public class GenericRules implements Rules {
 
 	protected ObjectType changeName(ID id, String name, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
     String key = Umlaut.normalize(id.toString());
-		ObjectType ot = (ObjectType) mapObjectType.get(key);
+		ObjectType ot = mapObjectType.get(key);
 
 		if(ot != null) {
 			mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));
@@ -919,8 +920,8 @@ public class GenericRules implements Rules {
 	 * 
 	 */
 	private ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
-		if(log.isDebugEnabled()) {
-			log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID() + ")");
+		if(GenericRules.log.isDebugEnabled()) {
+			GenericRules.log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID() + ")");
 		}
 
 		//mapObjectType.put(o.getID().toString(), o);

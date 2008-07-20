@@ -42,12 +42,6 @@ public class SkillTypeRankComparator implements Comparator<SkillType> {
 	private final Comparator<? super SkillType> subCmp;
 	private final Properties settings;
 
-	// avoid unnecessary object creation
-	private SkillType s1;
-
-	// avoid unnecessary object creation
-	private SkillType s2;
-
 	/**
 	 * To reduces memory consumption the ranks of the various skills are cached. Keys are
 	 * SkillTypeIDs, values are Integers.
@@ -90,7 +84,7 @@ public class SkillTypeRankComparator implements Comparator<SkillType> {
 	}
 
 	private int getValue(SkillType s) {
-		Integer retVal = (Integer) skillRanks.get(s.getID());
+		Integer retVal = skillRanks.get(s.getID());
 
 		if(retVal == null) {
 			String prop = settings.getProperty("ClientPreferences.compareValue." + s.getID(), "-1");

@@ -68,7 +68,7 @@ public class ExecutionThread extends Thread {
     
     int counter = 0;
     
-    log.info("Executing commands for all configured containers...");
+    ExecutionThread.log.info("Executing commands for all configured containers...");
     Collections.sort(containers,new ContainerPriorityComparator());
     
     for (UnitContainer container : containers) {
@@ -76,7 +76,7 @@ public class ExecutionThread extends Thread {
       ui.setProgress(container.getName(), counter++);
     }
     
-    log.info("Executing commands for all configured units...");
+    ExecutionThread.log.info("Executing commands for all configured units...");
     Collections.sort(units,new UnitPriorityComparator());
     
     for (Unit unit : units) {

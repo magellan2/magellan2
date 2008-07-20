@@ -27,6 +27,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -86,7 +87,7 @@ public class InfoDialog extends InternationalizedDialog implements HyperlinkList
     jTextArea1.setPreferredSize(new Dimension(400, 400));
     jTextArea1.addHyperlinkListener(this);
     JScrollPane scrollPane = new JScrollPane(jTextArea1);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 //    scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
     scrollPane.setPreferredSize(new Dimension(400, 400));
     jPanel.add(scrollPane);

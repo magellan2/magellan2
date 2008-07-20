@@ -87,7 +87,8 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		Map<CoordinateID,Region> newSelectedRegions = new Hashtable<CoordinateID, Region>();
 
 		// add all regions, that were selected before and don't belong to the active level
@@ -101,7 +102,7 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
 			} else if(!newSelectedRegions.containsKey(c)) {
 				newSelectedRegions.putAll(Islands.getIsland(client.getData().rules,
 															client.getData().regions(),
-															(Region) client.getData().regions().get(c)));
+															client.getData().regions().get(c)));
 			}
 		}
 

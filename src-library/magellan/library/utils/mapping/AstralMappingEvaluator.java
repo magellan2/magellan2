@@ -44,12 +44,13 @@ import magellan.library.utils.Score;
 public class AstralMappingEvaluator extends MappingEvaluator {
   private static AstralMappingEvaluator singleton = new AstralMappingEvaluator();
   public static AstralMappingEvaluator getSingleton() {
-    return singleton;
+    return AstralMappingEvaluator.singleton;
   }
 
   public static final int SCORE_TERRAIN = 1;
   public static final int SCORE_SCHEME = 1;
   
+  @Override
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping) {
 
     RegionType dustTerrain = fromData.rules.getRegionType(StringID.create("Nebel"));
@@ -77,18 +78,18 @@ public class AstralMappingEvaluator extends MappingEvaluator {
 
         if ((sameRegion != null) && (sameRegion.getType() != null) && !(sameRegion.getType().equals(RegionType.unknown))) {
           if (region.getType().equals(sameRegion.getType())) {
-            score += SCORE_TERRAIN;
+            score += AstralMappingEvaluator.SCORE_TERRAIN;
             if ((region.getType().equals(dustTerrain)) && (region.schemes() != null) && (region.schemes().size() > 0) && (sameRegion.schemes() != null) && (sameRegion.schemes().size()>0)) {
               // both regions have schemes - lets compare them
               if (equalSchemes(region.schemes(), sameRegion.schemes())) {
-                score += SCORE_SCHEME*region.schemes().size();
+                score += AstralMappingEvaluator.SCORE_SCHEME*region.schemes().size();
               } else {
-                score -= SCORE_SCHEME*region.schemes().size();
+                score -= AstralMappingEvaluator.SCORE_SCHEME*region.schemes().size();
               }
             }
           } else {
             if ((fromData.getDate() != null) && fromData.getDate().equals(toData.getDate())) {
-              score -= SCORE_TERRAIN;
+              score -= AstralMappingEvaluator.SCORE_TERRAIN;
             }
           }
         }
@@ -98,14 +99,17 @@ public class AstralMappingEvaluator extends MappingEvaluator {
   }
 
   private boolean equalSchemes(Collection<Scheme> schemes1, Collection<Scheme> schemes2) {
-    if (schemes1 == null)
-      if (schemes2 == null)
+    if (schemes1 == null) {
+      if (schemes2 == null) {
         return true;
-      else
+      } else {
         return false;
+      }
+    }
 
-    if (schemes1.size() != schemes2.size())
+    if (schemes1.size() != schemes2.size()) {
       return false;
+    }
 
     Set<String> schemeNames1 = new HashSet<String>();
     Set<String> schemeNames2 = new HashSet<String>();

@@ -55,43 +55,9 @@ public class Loader {
 	  try {
 	    final FileType filetype = new PipeFileType();
 
-//	    UserInterface ui = new ProgressBarUI((JFrame)null);
       UserInterface ui = new NullUserInterface();
 	    final CRWriter crw = new CRWriter(ui, filetype, data.getEncoding());
 	    GameDataReader crReader = new GameDataReader(null);
-	    boolean done = false;
-
-	    class WriteRunner implements Runnable{
-	      boolean done = false;
-	      CRWriter crw;
-
-	      WriteRunner(CRWriter w){
-	        crw = w;
-	      }
-
-	      public void finish(){
-	        done = true;
-	      }
-
-	      public void run() {
-	        try {
-	          crw.write(data);
-	          crw.flush();
-	          crw.close();
-	          while (!done){
-	            try {
-	              Thread.sleep(1000);
-	            } catch (InterruptedException e) {
-	              // TODO Auto-generated catch block
-	              e.printStackTrace();
-	            }
-	          }
-	        } catch (IOException e1) {
-	          // TODO Auto-generated catch block
-	          e1.printStackTrace();
-	        }
-	      }
-	    }
 
       class ReadRunner implements Runnable{
         boolean done = false;
@@ -147,7 +113,7 @@ public class Loader {
       
 	    return newData[0];
 	  } catch(IOException ioe) {
-	    log.error("Loader.cloneGameData failed!", ioe);
+	    Loader.log.error("Loader.cloneGameData failed!", ioe);
 	    throw new CloneNotSupportedException(ioe.toString());
 	  }
 
@@ -185,7 +151,7 @@ public class Loader {
 
 	    return newData;
 	  } catch(IOException ioe) {
-	    log.error("Loader.cloneGameData failed!", ioe);
+	    Loader.log.error("Loader.cloneGameData failed!", ioe);
 	    throw new CloneNotSupportedException(ioe.toString());
 	  }
 	}

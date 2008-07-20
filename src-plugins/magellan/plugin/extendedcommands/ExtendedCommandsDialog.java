@@ -49,6 +49,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
@@ -124,6 +125,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     setWindowSize(800, 480);
 
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         updateWindowSettings();
       }
@@ -145,7 +147,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     goHome();
     help.setCaretPosition(0);
     JScrollPane scrollPane = new JScrollPane(help);
-    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     
     helpPanel.add(scrollPane,BorderLayout.CENTER);
     
@@ -303,7 +305,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     } else if (e.getActionCommand().equalsIgnoreCase("button.home")) {
       goHome();
     } else if (e.getActionCommand().equalsIgnoreCase("button.backward")) {
-      if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+      if (!homeButton.isEnabled()) {
+        homeButton.setEnabled(true);
+      }
       // move one position back in history
       if (pos > 0) {
         pos--;
@@ -311,10 +315,14 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
           help.setPage(history.get(pos));
         } catch (Exception exception) {}
         forwardButton.setEnabled(true);
-        if (pos == 0) backwardButton.setEnabled(false);
+        if (pos == 0) {
+          backwardButton.setEnabled(false);
+        }
       }
     } else if (e.getActionCommand().equalsIgnoreCase("button.forward")) {
-      if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+      if (!homeButton.isEnabled()) {
+        homeButton.setEnabled(true);
+      }
       // move one position forward in history
       if (pos < history.size()) {
         pos++;
@@ -322,7 +330,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
           help.setPage(history.get(pos));
         } catch (Exception exception) {}
         backwardButton.setEnabled(true);
-        if (pos == history.size()-1) forwardButton.setEnabled(false);
+        if (pos == history.size()-1) {
+          forwardButton.setEnabled(false);
+        }
       }
     } else if (e.getActionCommand().equalsIgnoreCase("button.browse")) {
       try {
@@ -356,8 +366,12 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     int width = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.width",xSize);
     int height = PropertiesHelper.getInteger(client.getProperties(),"ExtendedCommandsDialog.height",ySize);
     
-    if (width <= 0) width = xSize;
-    if (height <= 0) height = ySize;
+    if (width <= 0) {
+      width = xSize;
+    }
+    if (height <= 0) {
+      height = ySize;
+    }
     setSize(width, height);
   }
   
@@ -384,7 +398,9 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
         pos++;
         history.add(pos,url);
         backwardButton.setEnabled(true);
-        if (!homeButton.isEnabled()) homeButton.setEnabled(true);
+        if (!homeButton.isEnabled()) {
+          homeButton.setEnabled(true);
+        }
       }
       catch (Exception exc) {
       }
@@ -397,7 +413,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       // otherwise, we do nothing...
       Class<?> c = Class.forName("java.awt.Desktop");
       if (c != null) {
-        Object desktop = c.getMethod("getDesktop").invoke(null);
+        c.getMethod("getDesktop").invoke(null);
       }
       return true;
     } catch (Exception exception) {
@@ -413,18 +429,30 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
     if (unit != null) {
       // show help for unit commands
       path = new File(Client.getSettingsDirectory(),Resources.get("extended_commands.help.dialog.unit"));
-      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.unit"));
-      if (!path.exists()) path = null;
+      if (!path.exists()) {
+        path = new File(Resources.get("extended_commands.help.dialog.unit"));
+      }
+      if (!path.exists()) {
+        path = null;
+      }
     } else if (container != null) {
       // show help for container commands
       path = new File(Resources.get("extended_commands.help.dialog.container"));
-      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.container"));
-      if (!path.exists()) path = null;
+      if (!path.exists()) {
+        path = new File(Resources.get("extended_commands.help.dialog.container"));
+      }
+      if (!path.exists()) {
+        path = null;
+      }
     } else {
       // show help for library
       path = new File(Resources.get("extended_commands.help.dialog.library"));
-      if (!path.exists()) path = new File(Resources.get("extended_commands.help.dialog.library"));
-      if (!path.exists()) path = null;
+      if (!path.exists()) {
+        path = new File(Resources.get("extended_commands.help.dialog.library"));
+      }
+      if (!path.exists()) {
+        path = null;
+      }
     }
     try {
       if (path != null) {

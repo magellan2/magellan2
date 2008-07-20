@@ -101,7 +101,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	public void setArguments(String name, Object args[]) {
 		Object argCopy[] = new Object[args.length];
 		System.arraycopy(args, 0, argCopy, 0, argCopy.length);
-		((ReplacerInfo) replacers.get(name)).setArgs(argCopy);
+		(replacers.get(name)).setArgs(argCopy);
 	}
 
 	/**
@@ -112,7 +112,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	 * 
 	 */
 	public Replacer createReplacer(String name) {
-		ReplacerInfo repInfo = (ReplacerInfo) replacers.get(name);
+		ReplacerInfo repInfo = replacers.get(name);
 
 		try {
 			if(repInfo.args == null) {
@@ -121,7 +121,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 
 			return (Replacer) repInfo.replacerClass.getConstructor(repInfo.argClasses).newInstance(repInfo.args);
 		} catch(Exception exc) {
-      log.warn(exc);
+      DefaultReplacerFactory.log.warn(exc);
 		}
 
 		return null;

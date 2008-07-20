@@ -24,10 +24,10 @@
 package magellan.client.utils;
 
 import java.awt.BorderLayout;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Iterator;
-import java.util.Properties;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -55,7 +55,6 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   private static BookmarkDock _INSTANCE = null;
   private JList list;
   private BookmarkManager manager = null;
-  private Properties settings;
 
   /**
    * Creates a new BookmarkDialog object.
@@ -67,13 +66,14 @@ public class BookmarkDock extends JPanel implements SelectionListener {
    * Returns the single instance of this dock.
    */
   public static BookmarkDock getInstance() {
-    if (_INSTANCE == null) _INSTANCE = new BookmarkDock();
-    return _INSTANCE;
+    if (BookmarkDock._INSTANCE == null) {
+      BookmarkDock._INSTANCE = new BookmarkDock();
+    }
+    return BookmarkDock._INSTANCE;
   }
   
-  public void init(final BookmarkManager manager, final EventDispatcher dispatcher, Properties settings) {
+  public void init(final BookmarkManager manager, final EventDispatcher dispatcher) {
     this.manager = manager;
-    this.settings = settings;
     dispatcher.addSelectionListener(this);
     setLayout(new BorderLayout());
 
@@ -95,13 +95,14 @@ public class BookmarkDock extends JPanel implements SelectionListener {
     );
     
     list.addKeyListener(new KeyAdapter() {
-        public void keyReleased(KeyEvent e) {
+      @Override
+      public void keyReleased(KeyEvent e) {
           if(e.getKeyCode() == KeyEvent.VK_F2) {
-            if(e.getModifiers() == KeyEvent.CTRL_MASK) {
+            if(e.getModifiers() == InputEvent.CTRL_MASK) {
               manager.toggleBookmark();
             } else if(e.getModifiers() == 0) {
               manager.jumpForward();
-            } else if(e.getModifiers() == KeyEvent.SHIFT_MASK) {
+            } else if(e.getModifiers() == InputEvent.SHIFT_MASK) {
               manager.jumpBackward();
             }
           } else if(e.getKeyCode() == KeyEvent.VK_DELETE) {

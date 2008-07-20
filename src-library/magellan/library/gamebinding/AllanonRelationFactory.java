@@ -23,7 +23,6 @@
 // 
 package magellan.library.gamebinding;
 
-import magellan.library.utils.logging.Logger;
 
 /**
 *
@@ -31,7 +30,6 @@ import magellan.library.utils.logging.Logger;
 * @version 1.0, 17.04.2008
 */
 public class AllanonRelationFactory extends EresseaRelationFactory {
-  private static final Logger log = Logger.getInstance(AllanonRelationFactory.class);
   private static final AllanonRelationFactory singleton = new AllanonRelationFactory();
 
   /**
@@ -46,6 +44,6 @@ public class AllanonRelationFactory extends EresseaRelationFactory {
    * 
    */
   public static AllanonRelationFactory getSingleton() {
-    return singleton;
+    return AllanonRelationFactory.singleton;
   }
 }

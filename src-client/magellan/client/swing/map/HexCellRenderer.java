@@ -150,7 +150,8 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName();
 	}
 

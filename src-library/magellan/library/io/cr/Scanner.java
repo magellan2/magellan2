@@ -142,7 +142,7 @@ public class Scanner {
 					int lastQuote = line.lastIndexOf('"');
 					if (lastQuote<i){
 						// TODO throw IOException?
-						log.warn("Error parsing line "+lnr+": "+line);
+						Scanner.log.warn("Error parsing line "+lnr+": "+line);
 						break;
 					}
 					String str = Umlaut.replace(line.substring(i,lastQuote),"\\\"","\"");
@@ -169,7 +169,7 @@ public class Scanner {
 					}
 					
 					if(i == len) {
-						log.warn("Missing \" in line " + lnr);
+						Scanner.log.warn("Missing \" in line " + lnr);
 					}
 					
 					// pavkovic 2003.07.02: use String.intern() method to reduce memory consumption

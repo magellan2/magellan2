@@ -59,7 +59,8 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
 	 * 
 	 * 
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region && ((Region) obj).hasTags()) {
 			Region r = (Region) obj;
 			CoordinateID c = r.getCoordinate();
@@ -70,7 +71,7 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
 			int i = 1;
 
 			buf.setLength(0);
-			buf.append(ICON_TAG);
+			buf.append(MarkingsImageCellRenderer.ICON_TAG);
 
 			String key = null;
 
@@ -88,7 +89,7 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
 							graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
 						} else {
                             if(token != null && !markingRenderImagesNotFound.contains(token)) {
-                                log.warn("MarkingsImageCellRenderer.render(): marking image \""+token+"\" not found!");
+                                MarkingsImageCellRenderer.log.warn("MarkingsImageCellRenderer.render(): marking image \""+token+"\" not found!");
                                 markingRenderImagesNotFound.add(token);
                             }
 						}
@@ -110,7 +111,8 @@ public class MarkingsImageCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_MARKINGS;
 	}
 

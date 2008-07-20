@@ -33,7 +33,8 @@ public class LaenReplacer extends AbstractRegionReplacer {
 	 *
 	 * 
 	 */
-	public Object getRegionReplacement(Region region) {
+	@Override
+  public Object getRegionReplacement(Region region) {
 		ItemType laenType = region.getData().rules.getItemType("Laen");
 		if (laenType==null){
 			return new Integer(0);

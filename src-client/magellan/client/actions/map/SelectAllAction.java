@@ -86,7 +86,8 @@ public class SelectAllAction extends MenuAction implements SelectionListener, Ga
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		for(Iterator iter = client.getData().regions().keySet().iterator(); iter.hasNext();) {
 			CoordinateID c = (CoordinateID) iter.next();
 

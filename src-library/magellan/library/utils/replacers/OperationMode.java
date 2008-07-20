@@ -25,7 +25,8 @@ public class OperationMode extends EnvironmentPart {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void reset() {
+	@Override
+  public void reset() {
 		nullEqualsZero = false;
 	}
 

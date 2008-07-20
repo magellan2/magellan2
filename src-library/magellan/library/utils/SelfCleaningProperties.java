@@ -52,7 +52,8 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 	/**
 	 * Loads the properties from the given input stream and cleans them afterwards.
 	 */
-	public synchronized void load(InputStream inStream) throws IOException {
+	@Override
+  public synchronized void load(InputStream inStream) throws IOException {
 		super.load(inStream);
 		doClean();
 	}
@@ -77,8 +78,8 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 													   };
 
 	private boolean doRemoveProperties(String name) {
-		for(int i = 0; i < propertiesToRemove.length; i++) {
-			String property = propertiesToRemove[i];
+		for(int i = 0; i < SelfCleaningProperties.propertiesToRemove.length; i++) {
+			String property = SelfCleaningProperties.propertiesToRemove[i];
 
 			if(doRemoveProperty(name, property)) {
 				return true;
@@ -164,7 +165,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 
 			String newName2 = oldName + ".color.count";
 			setProperty(newName2, String.valueOf(i));
-			log.error("SelfCleaningProperties.doClean: Expanded property " + oldName + " to " +
+			SelfCleaningProperties.log.error("SelfCleaningProperties.doClean: Expanded property " + oldName + " to " +
 					  newName);
 
 			return newName;
@@ -230,7 +231,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 
 		String newName = oldName + ".count";
 		setProperty(newName, String.valueOf(i));
-		log.error("SelfCleaningProperties.doClean: Expanded property " + oldName + " to " +
+		SelfCleaningProperties.log.error("SelfCleaningProperties.doClean: Expanded property " + oldName + " to " +
 				  newName);
 
 		return newName;
@@ -265,7 +266,7 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 		String value = getProperty(oldName);
 		remove(oldName);
 		setProperty(newName, value);
-		log.error("SelfCleaningProperties.doClean: Renamed property " + oldName + " to " + newName);
+		SelfCleaningProperties.log.error("SelfCleaningProperties.doClean: Renamed property " + oldName + " to " + newName);
 
 		return newName;
 	}

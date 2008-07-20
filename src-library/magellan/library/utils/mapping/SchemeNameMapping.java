@@ -39,9 +39,10 @@ import magellan.library.utils.Score;
 public class SchemeNameMapping implements DataMapping {
   private static SchemeNameMapping singleton = new SchemeNameMapping();
   public static SchemeNameMapping getSingleton() {
-    return singleton;
+    return SchemeNameMapping.singleton;
   }
 
+  @Override
   public String toString() {
     return "SchemeName";
   }

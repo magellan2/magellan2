@@ -34,7 +34,6 @@ import magellan.library.Region;
 import magellan.library.Sign;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -42,7 +41,6 @@ import magellan.library.utils.logging.Logger;
  * @author Fiete
  */
 public class AddSignDialog extends InternationalizedDialog {
-	private static final Logger log = Logger.getInstance(AddSignDialog.class);
 	private Properties settings = null;
 	private EventDispatcher dispatcher = null;
 	private JTextField Line1 = null;
@@ -162,7 +160,8 @@ public class AddSignDialog extends InternationalizedDialog {
 	/**
 	 * stores position and exit
 	 */
-	protected void quit() {
+	@Override
+  protected void quit() {
 		storeSettings();
 		dispose();
 	}

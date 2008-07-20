@@ -37,7 +37,8 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName() + " (" + this.id.toString() + ")";
 	}
 	

@@ -39,14 +39,12 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 
 /**
  * A renderer for Building objects.
  */
 public class BuildingCellRenderer extends ImageCellRenderer{
-  private static final Logger log = Logger.getInstance(BuildingCellRenderer.class);
   
 	/**
 	 * Creates a new BuildingCellRenderer object.
@@ -100,6 +98,7 @@ public class BuildingCellRenderer extends ImageCellRenderer{
   /**
    * @see magellan.client.swing.map.HexCellRenderer#getPreferencesAdapter()
    */
+  @Override
   public PreferencesAdapter getPreferencesAdapter() {
     return new BuildingCellRendererPreferences(this);
   }

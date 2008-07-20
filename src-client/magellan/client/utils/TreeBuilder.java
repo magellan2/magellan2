@@ -69,7 +69,7 @@ public class TreeBuilder {
   public static final int CREATE_ISLANDS = 16384;
 
   /** the mode controls which elements are displayed */
-  private int displayMode = UNITS | BUILDINGS | SHIPS | COMMENTS;
+  private int displayMode = TreeBuilder.UNITS | TreeBuilder.BUILDINGS | TreeBuilder.SHIPS | TreeBuilder.COMMENTS;
 
   // TODO hides fields form EmapOverviewPanel! */
   private Map<ID,TreeNode> regionNodes;
@@ -205,11 +205,11 @@ public class TreeBuilder {
    * DOCUMENT-ME
    */
   public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
-    boolean unitInteresting = (getDisplayMode() & UNITS) != 0;
-    boolean buildingInteresting = (getDisplayMode() & BUILDINGS) != 0;
-    boolean shipInteresting = (getDisplayMode() & SHIPS) != 0;
-    boolean commentInteresting = (getDisplayMode() & COMMENTS) != 0;
-    boolean createIslandNodes = (getDisplayMode() & CREATE_ISLANDS) != 0;
+    boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
+    boolean buildingInteresting = (getDisplayMode() & TreeBuilder.BUILDINGS) != 0;
+    boolean shipInteresting = (getDisplayMode() & TreeBuilder.SHIPS) != 0;
+    boolean commentInteresting = (getDisplayMode() & TreeBuilder.COMMENTS) != 0;
+    boolean createIslandNodes = (getDisplayMode() & TreeBuilder.CREATE_ISLANDS) != 0;
 
     DefaultMutableTreeNode islandNode = null;
     DefaultMutableTreeNode regionNode = null;

@@ -62,7 +62,8 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 	 *
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		final Client theclient = client;
 		Collection<Object> selectedObjects = client.getSelectedObjects();
 		Properties settings = client.getProperties();

@@ -69,15 +69,15 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
         extensions.add(getExtension(flag));
         break;
       case ALLCR_FILTER:
-        extensions.add(getExtension(CR_FILTER));
-        extensions.add(getExtension(ZIP_FILTER));
-        extensions.add(getExtension(GZ_FILTER));
-        extensions.add(getExtension(BZ2_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.CR_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.ZIP_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.GZ_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.BZ2_FILTER));
         break;
       case ALLCR_COMPRESSED_FILTER:
-        extensions.add(getExtension(ZIP_FILTER));
-        extensions.add(getExtension(GZ_FILTER));
-        extensions.add(getExtension(BZ2_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.ZIP_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.GZ_FILTER));
+        extensions.add(getExtension(EresseaFileFilter.BZ2_FILTER));
         break;
       default:
         throw new IllegalArgumentException("Unsupported filter type");
@@ -127,11 +127,16 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	 *
 	 * @return <code>true</code> iff this file is accepted
 	 */
-	public boolean accept(File f) {
-		if (f.isDirectory()) return true;
-		for (String ext : extensions)
-			if (f.getName().toLowerCase().endsWith(ext))
-				return true;
+	@Override
+  public boolean accept(File f) {
+		if (f.isDirectory()) {
+      return true;
+    }
+		for (String ext : extensions) {
+      if (f.getName().toLowerCase().endsWith(ext)) {
+        return true;
+      }
+    }
 		return false;
 	}
 
@@ -140,9 +145,10 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	}
 
 	private String getExtension() {
-		if (extensions.isEmpty())
-			return null;
-		return (String) extensions.get(0);
+		if (extensions.isEmpty()) {
+      return null;
+    }
+		return extensions.get(0);
 	}
 
 	/**
@@ -150,7 +156,8 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	 *
 	 * @return The description of this filter
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return description;
 	}
 	
@@ -164,16 +171,19 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 	protected String getDescription(int flag) {
 		String retVal = "";
 		retVal = Resources.get("eresseafilefilter.defaults.description." + flag);
-		if (retVal==null)
-			retVal = "unknown";
-		if (!extensions.isEmpty())
-			retVal += " (";
+		if (retVal==null) {
+      retVal = "unknown";
+    }
+		if (!extensions.isEmpty()) {
+      retVal += " (";
+    }
 		for (Iterator it = extensions.iterator(); it.hasNext(); ){
 		    retVal += "*" + (String) it.next();
-		    if (it.hasNext())
-		    	retVal +=", ";
-		    else
-		    	retVal +=")";
+		    if (it.hasNext()) {
+          retVal +=", ";
+        } else {
+          retVal +=")";
+        }
 		}
 		return retVal;
 	}

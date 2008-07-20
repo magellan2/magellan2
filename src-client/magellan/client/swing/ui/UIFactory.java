@@ -48,7 +48,7 @@ public class UIFactory {
 	 */
 	public static JSplitPane createBorderlessJSplitPane(int orientation, Component first,
 														Component second) {
-		JSplitPane ret = createBorderlessJSplitPane(orientation);
+		JSplitPane ret = UIFactory.createBorderlessJSplitPane(orientation);
 		ret.setTopComponent(first);
 		ret.setBottomComponent(second);
 

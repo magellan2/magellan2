@@ -35,7 +35,8 @@ public class MallornRegionSwitch extends AbstractRegionSwitch {
 	 *
 	 * 
 	 */
-	public boolean isSwitchingRegion(Region r) {
+	@Override
+  public boolean isSwitchingRegion(Region r) {
 		return r.isMallorn();
 	}
 

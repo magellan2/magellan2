@@ -87,7 +87,8 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		if(text == null) {
 			StringBuffer sb = new StringBuffer();
 			sb.append(skill.getName()).append(' ');
@@ -180,7 +181,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingNextLevelPoints() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_NEXTLEVELPOINTS];
+			return adapter.properties[SkillNodeWrapper.SHOW_NEXTLEVELPOINTS];
 		}
 
 		return this.showNextLevelPoints;
@@ -205,7 +206,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingNextLevelLearnTurns() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_NEXTLEVELTURNS];
+			return adapter.properties[SkillNodeWrapper.SHOW_NEXTLEVELTURNS];
 		}
 
 		return this.showNextLevelLearnTurns;
@@ -218,7 +219,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingNextLevel() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_NEXTLEVEL];
+			return adapter.properties[SkillNodeWrapper.SHOW_NEXTLEVEL];
 		}
 
 		return true;
@@ -231,7 +232,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingChanges() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_CHANGES];
+			return adapter.properties[SkillNodeWrapper.SHOW_CHANGES];
 		}
 
 		return true;
@@ -244,7 +245,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingChangesStyled() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_CHANGE_STYLED];
+			return adapter.properties[SkillNodeWrapper.SHOW_CHANGE_STYLED];
 		}
 
 		return false;
@@ -257,7 +258,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public boolean isShowingChangesText() {
 		if(adapter != null) {
-			return adapter.properties[SHOW_CHANGE_TEXT];
+			return adapter.properties[SkillNodeWrapper.SHOW_CHANGE_TEXT];
 		}
 
 		return true;
@@ -333,9 +334,9 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 			}
 
 			if(isDiff && isShowingChanges() && isShowingChangesStyled()) {
-				ge.setStyleset(SKILL_CHANGE_STYLE_PREFIX +
+				ge.setStyleset(SkillNodeWrapper.SKILL_CHANGE_STYLE_PREFIX +
 							   ((skill.getChangeLevel() >= 0) ? ">." : "<.") +
-							   SKILL_CHANGE_STYLE_PREFIX + String.valueOf(skill.getChangeLevel()));
+							   SkillNodeWrapper.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(skill.getChangeLevel()));
 			}
 
 			GEs = Collections.singletonList(ge);

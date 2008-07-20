@@ -157,12 +157,12 @@ public class SpringUtilities {
             Spring width = Spring.constant(0);
             for (int r = 0; r < rows; r++) {
                 width = Spring.max(width,
-                                   getConstraintsForCell(r, c, parent, cols).
+                                   SpringUtilities.getConstraintsForCell(r, c, parent, cols).
                                        getWidth());
             }
             for (int r = 0; r < rows; r++) {
                 SpringLayout.Constraints constraints =
-                        getConstraintsForCell(r, c, parent, cols);
+                        SpringUtilities.getConstraintsForCell(r, c, parent, cols);
                 constraints.setX(x);
                 constraints.setWidth(width);
             }
@@ -175,12 +175,12 @@ public class SpringUtilities {
             Spring height = Spring.constant(0);
             for (int c = 0; c < cols; c++) {
                 height = Spring.max(height,
-                                    getConstraintsForCell(r, c, parent, cols).
+                                    SpringUtilities.getConstraintsForCell(r, c, parent, cols).
                                         getHeight());
             }
             for (int c = 0; c < cols; c++) {
                 SpringLayout.Constraints constraints =
-                        getConstraintsForCell(r, c, parent, cols);
+                        SpringUtilities.getConstraintsForCell(r, c, parent, cols);
                 constraints.setY(y);
                 constraints.setHeight(height);
             }

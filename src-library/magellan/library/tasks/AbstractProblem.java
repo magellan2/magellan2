@@ -116,7 +116,8 @@ public abstract class AbstractProblem implements Problem {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return message;
 	}
 	
@@ -128,13 +129,12 @@ public abstract class AbstractProblem implements Problem {
 	public Faction getFaction(){
 	  HasRegion hasR = getObject();
 	  Faction faction = null;
-	  if (hasR instanceof Unit)
-	    faction = ((Unit) hasR).getFaction();
-	  else if(hasR instanceof UnitContainer){
+	  if (hasR instanceof Unit) {
+      faction = ((Unit) hasR).getFaction();
+    } else if(hasR instanceof UnitContainer){
 	    Unit owner = ((UnitContainer) hasR).getOwner();
 	    faction=owner!=null?owner.getFaction():null;
-	  }else
-	    faction=null;
+	  }
 	  
 	  return faction;
 	}

@@ -58,7 +58,7 @@ public class OrderReader {
 		data = g;
 
 		if(data == null) {
-			log.info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
+			OrderReader.log.info("OrderReader.OrderReader(): game data is null! Creating empty game data to proceed.");
 			data = new CompleteData(new GenericRules());
 		}
 
@@ -121,12 +121,12 @@ public class OrderReader {
 						if(f != null) {
 							readFaction(fID);
 						} else {
-							log.info("OrderReader.read(): The faction with id " + fID + " (" +
+							OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" +
 									 token +
 									 ") is not present in the game data, skipping this faction.");
 						}
 					} catch(NumberFormatException e) {
-						log.error("OrderReader.read(): Unable to parse faction id: " +
+						OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " +
 								  e.toString() + " at line " + stream.getLineNumber(), e);
 					}
 				}
@@ -225,7 +225,7 @@ public class OrderReader {
 				try {
 					unitID = UnitID.createUnitID(token,data.base);
 				} catch(NumberFormatException e) {
-					log.error("OrderReader.readFaction(): " + e.toString() + " at line " +
+					OrderReader.log.error("OrderReader.readFaction(): " + e.toString() + " at line " +
 							  stream.getLineNumber(), e);
 				}
 

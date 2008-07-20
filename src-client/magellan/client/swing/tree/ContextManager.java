@@ -16,6 +16,7 @@ package magellan.client.swing.tree;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -168,8 +169,9 @@ public class ContextManager extends MouseAdapter {
 	 *
 	 * 
 	 */
-	public void mouseClicked(MouseEvent e) {
-		if((e.getModifiers() & MouseEvent.BUTTON3_MASK) != 0) {
+	@Override
+  public void mouseClicked(MouseEvent e) {
+		if((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
 			TreePath path = source.getPathForLocation(e.getX(), e.getY());
 			DefaultMutableTreeNode node = null;
 			boolean found = false;
@@ -235,7 +237,7 @@ public class ContextManager extends MouseAdapter {
 		try {
 			if(simpleObjects != null) {
 				if(simpleObjects.containsKey(user.getClass())) {
-					ContextFactory factory = (ContextFactory) simpleObjects.get(user.getClass());
+					ContextFactory factory = simpleObjects.get(user.getClass());
 					JPopupMenu menu = factory.createContextMenu(dispatcher, data, user, selection, node);
 
 					if(menu != null) {
@@ -246,7 +248,7 @@ public class ContextManager extends MouseAdapter {
 				}
 
 				if(simpleObjects.containsKey(node.getClass())) {
-					ContextFactory factory = (ContextFactory) simpleObjects.get(node.getClass());
+					ContextFactory factory = simpleObjects.get(node.getClass());
 					JPopupMenu menu = factory.createContextMenu(dispatcher, data, node, selection, node);
 
 					if(menu != null) {
@@ -257,7 +259,7 @@ public class ContextManager extends MouseAdapter {
 				}
 			}
 		} catch(Exception exc) {
-			log.error(exc);
+			ContextManager.log.error(exc);
 		}
 
 		return false;

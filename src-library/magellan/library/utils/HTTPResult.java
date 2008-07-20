@@ -65,7 +65,7 @@ public class HTTPResult {
         }
       }
     } catch (Exception exception) {
-      log.error("Konnte GET-Result nicht auslesen. "+exception.getMessage());
+      HTTPResult.log.error("Konnte GET-Result nicht auslesen. "+exception.getMessage());
     }
   }
 
@@ -81,7 +81,7 @@ public class HTTPResult {
       
       
     } catch (Exception exception) {
-      log.error("Konnte POST-Result nicht auslesen. "+exception.getMessage());
+      HTTPResult.log.error("Konnte POST-Result nicht auslesen. "+exception.getMessage());
     }
   }
 
@@ -98,7 +98,9 @@ public class HTTPResult {
    */
   public String getResultAsString() {
     try {
-      if (result == null) result = setResult(method.getResponseBodyAsStream());
+      if (result == null) {
+        result = setResult(method.getResponseBodyAsStream());
+      }
     } catch (Exception exception) {}
     
     String encoding = getEncoding();
@@ -126,7 +128,9 @@ public class HTTPResult {
     ByteArrayOutputStream outstream = new ByteArrayOutputStream(4096);
     byte[] buffer = new byte[4096];
     int len;
-    while ((len = stream.read(buffer)) > 0) outstream.write(buffer, 0, len);
+    while ((len = stream.read(buffer)) > 0) {
+      outstream.write(buffer, 0, len);
+    }
     outstream.close();
     return outstream.toByteArray();
   }
@@ -154,10 +158,13 @@ public class HTTPResult {
   }
   
   public String getHeader(String key) {
-    if (header.containsKey(key)) return header.get(key);
+    if (header.containsKey(key)) {
+      return header.get(key);
+    }
     return null;
   }
   
+  @Override
   public String toString() {
     return getResultAsString();
   }

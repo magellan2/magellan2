@@ -80,7 +80,8 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 	 *
 	 * 
 	 */
-	public String getSingleString(Region r, Rectangle rect) {
+	@Override
+  public String getSingleString(Region r, Rectangle rect) {
 		if(sellMode) {
 			if(r.getPrices() == null) {
 				return null;
@@ -113,7 +114,8 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 	 *
 	 * 
 	 */
-	public String[] getText(Region r, Rectangle rect) {
+	@Override
+  public String[] getText(Region r, Rectangle rect) {
 		if(sellMode) {
 			return null;
 		} else {
@@ -197,7 +199,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 
 			JMenuItem item = new JMenuItem(type.getName());
 			item.addActionListener(this);
-			item.putClientProperty(KEY, type);
+			item.putClientProperty(TradeTextCellRenderer.KEY, type);
 			context.add(item);
 			added = true;
 		}
@@ -212,7 +214,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 	 */
 	public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 		JMenuItem src = (JMenuItem) actionEvent.getSource();
-		item = (ItemType) src.getClientProperty(KEY);
+		item = (ItemType) src.getClientProperty(TradeTextCellRenderer.KEY);
 
 		if(item == null) {
 			sellMode = true;

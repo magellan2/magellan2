@@ -77,7 +77,7 @@ public abstract class MenuAction extends AbstractAction {
     try {
       menuActionPerformed(e);
     } catch (Throwable t) {
-      log.error(t.getMessage(),t);
+      MenuAction.log.error(t.getMessage(),t);
       ErrorWindow errorWindow = new ErrorWindow(Client.INSTANCE,t.getMessage(),"",t);
       errorWindow.setVisible(true);
     }
@@ -108,7 +108,7 @@ public abstract class MenuAction extends AbstractAction {
   public void setIcon(String aName) {
     Icon icon = null;
 
-    log.debug("MenuAction.setIcon(" + aName + ") called");
+    MenuAction.log.debug("MenuAction.setIcon(" + aName + ") called");
 
     if (aName != null) {
       String name = "etc/images/gui/actions/" + aName;
@@ -163,6 +163,7 @@ public abstract class MenuAction extends AbstractAction {
   /**
    * Returns a String representation of this MenuAction object.
    */
+  @Override
   public String toString() {
     return this.getName();
   }

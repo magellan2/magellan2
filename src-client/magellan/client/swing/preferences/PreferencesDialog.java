@@ -31,7 +31,6 @@ import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionListener;
@@ -94,7 +93,6 @@ public class PreferencesDialog extends InternationalizedDialog {
 	 * list of all PreferencesAdapters connected (also the children of ExtendedPreferencesAdapters)
 	 */
 	private Collection<PreferencesAdapter> adapters = null;
-	private JTabbedPane tabs = null;
 	private DialogTree dialogtree;
 	private Properties settings = null;
 
@@ -150,7 +148,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void setVisible(boolean isVisible) {
+	@Override
+  public void setVisible(boolean isVisible) {
     if (isVisible) {
       initPreferences();
   		dialogtree.showFirst();
@@ -228,7 +227,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void quit() {
+	@Override
+  public void quit() {
 		settings.setProperty("PreferencesDialog.width", getWidth() + "");
 		settings.setProperty("PreferencesDialog.height", getHeight() + "");
 		settings.setProperty("PreferencesDialog.x", getX() + "");
@@ -237,8 +237,6 @@ public class PreferencesDialog extends InternationalizedDialog {
 		adapters.clear();
 		adapters = null;
 
-		//tabs.removeAll();
-		tabs = null;
 		super.quit();
 	}
 
@@ -408,7 +406,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 			 *
 			 * 
 			 */
-			public String toString() {
+			@Override
+      public String toString() {
 				return adapter.getTitle();
 			}
 		}

@@ -25,23 +25,23 @@ public class SpellSyntaxToken {
 	public final static int SST_UnitID = 7;
 	
 	public int getTokenType(){
-		int retVal = SST_undef;	
+		int retVal = SpellSyntaxToken.SST_undef;	
 		if (this.tokenChar==null){
 			return retVal;
 		} else if (getTokenString().equals("c")){
-			retVal = SST_String;
+			retVal = SpellSyntaxToken.SST_String;
 		} else if (getTokenString().equals("k")){
-			retVal = SST_KeyWord;
+			retVal = SpellSyntaxToken.SST_KeyWord;
 		} else if (getTokenString().equals("i")){
-			retVal = SST_Number;
+			retVal = SpellSyntaxToken.SST_Number;
 		} else if (getTokenString().equals("s")){
-			retVal = SST_ShipID;
+			retVal = SpellSyntaxToken.SST_ShipID;
 		} else if (getTokenString().equals("b")){
-			retVal = SST_BuildingID;
+			retVal = SpellSyntaxToken.SST_BuildingID;
 		} else if (getTokenString().equals("r")){
-			retVal = SST_Coordinate;
+			retVal = SpellSyntaxToken.SST_Coordinate;
 		} else if (getTokenString().equals("u")){
-			retVal = SST_UnitID;
+			retVal = SpellSyntaxToken.SST_UnitID;
 		}
 		return retVal;
 	}
@@ -128,7 +128,8 @@ public class SpellSyntaxToken {
 	/**
 	 * returns a string representation of the object
 	 */
-	public String toString(){
+	@Override
+  public String toString(){
 		String retVal = getTokenString();
 		if (retVal==null){
 			return retVal;

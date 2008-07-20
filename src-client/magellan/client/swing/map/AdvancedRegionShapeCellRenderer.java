@@ -114,8 +114,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     protected String mapperTooltip;
 
     ARRSet(String set){
-      if (set==null)
+      if (set==null) {
         throw new NullPointerException();
+      }
       name = set;
       cTable = new ColorTable();
       vMapping = new ValueMapping();
@@ -125,8 +126,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     ARRSet(Properties settings, String set){
-      if (set==null)
+      if (set==null) {
         throw new NullPointerException();
+      }
       name = set;
       cTable = new ColorTable();
       vMapping = new ValueMapping();
@@ -265,6 +267,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       unknownString = s;
     }
 
+    @Override
     public String toString(){
       return name;
     }
@@ -274,11 +277,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     public void setName(String newName) {
-      if (newName==null)
+      if (newName==null) {
         throw new NullPointerException();
+      }
       this.name = newName;
     }
     
+    @Override
     public ARRSet clone() throws CloneNotSupportedException{
       ARRSet result = new ARRSet(getName());
       result.cTable = cTable;
@@ -345,6 +350,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     unknownColor = Colors.decode(settings.getProperty("GeomRenderer.UnknownColor", "128,128,128").replace(';', ','));
   }
 
+  @Override
   protected Color getSingleColor(Region r) {
     boolean nonFound = false;
     float minF = 0f;
@@ -433,6 +439,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   // we only have single colors
+  @Override
   protected Color[] getColor(Region r) {
     return null;
   }
@@ -446,8 +453,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   
   protected void applySet(ARRSet set){
     lastMapperDef = getMapperTooltip();
-    if (set.mapperTooltip!=null)
+    if (set.mapperTooltip!=null) {
       setMapperTooltip(set.mapperTooltip);
+    }
 
     // load ocean and unknown color from geom. renderer
     loadGeomColors();
@@ -515,7 +523,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      */
     public float addEntry(float val, float mval) {
       Float fval = new Float(val);
-      Float old = (Float) values.put(fval, new Float(mval));
+      Float old = values.put(fval, new Float(mval));
 
       if (old != null) { // clear interpolation buffer
 
@@ -585,7 +593,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public float getValueAt(float f) {
-      return ((Float) values.get(new Float(f))).floatValue();
+      return (values.get(new Float(f))).floatValue();
     }
 
     /**
@@ -596,13 +604,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       SortedMap m1 = values.headMap(fl);
 
       if ((m1 == null) || (m1.size() == 0)) {
-        return ((Float) values.get(values.firstKey())).floatValue();
+        return (values.get(values.firstKey())).floatValue();
       }
 
       SortedMap m2 = values.tailMap(fl);
 
       if ((m2 == null) || (m2.size() == 0)) {
-        float last = ((Float) values.get(values.lastKey())).floatValue();
+        float last = (values.get(values.lastKey())).floatValue();
 
         return last;
       }
@@ -646,7 +654,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      */
     public Color addEntry(float val, Color col) {
       Float fval = new Float(val);
-      Color old = (Color) colors.put(fval, col);
+      Color old = colors.put(fval, col);
 
       if (old != null) { // clear interpolation buffer
         clearBuffer();
@@ -725,7 +733,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      * DOCUMENT-ME
      */
     public Color getColorAt(float f) {
-      return (Color) colors.get(new Float(f));
+      return colors.get(new Float(f));
     }
 
     /**
@@ -736,13 +744,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       SortedMap<Float,Color> m1 = colors.headMap(fl);
 
       if ((m1 == null) || (m1.size() == 0)) {
-        return (Color) colors.get(colors.firstKey());
+        return colors.get(colors.firstKey());
       }
 
       SortedMap<Float,Color> m2 = colors.tailMap(fl);
 
       if ((m2 == null) || (m2.size() == 0)) {
-        return (Color) colors.get(colors.lastKey());
+        return colors.get(colors.lastKey());
       }
 
       if (m2.firstKey().equals(fl)) {
@@ -754,16 +762,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       Color leftColor = m1.get(left);
       Color rightColor = m2.get(right);
       float percent = (f - left.floatValue()) / (right.floatValue() - left.floatValue());
-      int red = (int) ((((float) leftColor.getRed()) * (1 - percent)) + (((float) rightColor.getRed()) * (percent)));
-      int green = (int) ((((float) leftColor.getGreen()) * (1 - percent)) + (((float) rightColor.getGreen()) * (percent)));
-      int blue = (int) ((((float) leftColor.getBlue()) * (1 - percent)) + (((float) rightColor.getBlue()) * (percent)));
+      int red = (int) (((leftColor.getRed()) * (1 - percent)) + ((rightColor.getRed()) * (percent)));
+      int green = (int) (((leftColor.getGreen()) * (1 - percent)) + ((rightColor.getGreen()) * (percent)));
+      int blue = (int) (((leftColor.getBlue()) * (1 - percent)) + ((rightColor.getBlue()) * (percent)));
       Integer integer = new Integer(((red & 255) << 16) | ((green & 255) << 8) | (blue & 255));
 
       if (interpolBuf.containsKey(integer)) {
         interpolLookup.remove(integer);
         interpolLookup.add(0, integer);
 
-        return (Color) interpolBuf.get(integer);
+        return interpolBuf.get(integer);
       }
 
       Color newColor = new Color(red, green, blue);
@@ -783,8 +791,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   /**
    * DOCUMENT-ME
    */
+  @Override
   public PreferencesAdapter getPreferencesAdapter() {
-    log.debug("new pref "+currentSett);
+    AdvancedRegionShapeCellRenderer.log.debug("new pref "+currentSett);
     preferences = new Preferences(currentSett);
     return preferences;
   }
@@ -792,8 +801,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   protected void reprocessMenu() {
     for (int i = 0; i<contextMenu.getItemCount(); ++i){
       JMenuItem item = contextMenu.getItem(i); 
-      if (item!=null)
+      if (item!=null) {
         item.removeActionListener(this);
+      }
     }
     contextMenu.removeAll();
 
@@ -817,8 +827,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    */
   public void actionPerformed(ActionEvent actionEvent) {
     loadSet(actionEvent.getActionCommand());
-    if (preferences!=null)
+    if (preferences!=null) {
       preferences.setSet(actionEvent.getActionCommand());
+    }
       
     if (obs != null) {
       obs.contextDataChanged();
@@ -853,8 +864,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
    */
   public boolean setMapperTooltip(String tooltip) {
     if (mapper != null) {
-      if (tooltip!=null)
+      if (tooltip!=null) {
         mapper.setTooltipDefinition(tooltip);
+      }
 
       return true;
     }
@@ -957,7 +969,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       con.gridy++;
       con.fill = GridBagConstraints.HORIZONTAL;
-      mainPanel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
 
       cPanel = new ColorPanel();
       cPanel.load(prefSet);
@@ -969,7 +981,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       con.gridy++;
       con.fill = GridBagConstraints.HORIZONTAL;
-      mainPanel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
 
       mPanel = new MappingPanel();
       mPanel.load(prefSet);
@@ -984,7 +996,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       con.gridy++;
       con.fill = GridBagConstraints.HORIZONTAL;
-      mainPanel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.fill = GridBagConstraints.NONE;
 
       con.gridwidth = 1;
@@ -1093,17 +1105,17 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       con.gridy++;
       panel.add(renameSet, con);
       con.gridy++;
-      panel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(removeSet, con);
       con.gridy++;
-      panel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(importSet, con);
       con.gridy++;
       panel.add(exportSet, con);
       con.gridy++;
-      panel.add(new JSeparator(JSeparator.HORIZONTAL), con);
+      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(setTooltip, con);
       con.gridy++;
@@ -1224,7 +1236,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
       ARRSet newSet = null;
       try {
-        newSet = (ARRSet) prefSet.clone();
+        newSet = prefSet.clone();
       } catch (CloneNotSupportedException e) {
         e.printStackTrace();
         return;
@@ -1501,8 +1513,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       prefSet = new ARRSet(settings, currentSelection);
       updateTables();
       updateTooltipLabel();
-      if (setList)
+      if (setList) {
         list.setSelectedValue(currentSelection, true);
+      }
     }
 
     protected class StringPair {
@@ -1526,6 +1539,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       /**
        * DOCUMENT-ME
        */
+      @Override
       public String toString() {
         return s3;
       }
@@ -1550,6 +1564,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       /**
        * DOCUMENT-ME
        */
+      @Override
       public void paintComponent(Graphics g) {
         Dimension size = this.getSize();
         float percent = 0;
@@ -1684,7 +1699,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         if (value.size() > 0) {
           for (int i = 0; i < value.size(); i++) {
-            prefSet.cTable.addEntry(((Float) value.get(i)).floatValue(), (Color) mapping.get(i));
+            prefSet.cTable.addEntry((value.get(i)).floatValue(), mapping.get(i));
           }
         }
       }
@@ -1694,7 +1709,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           int width = mapPainter.getWidth();
 
           for (int i = 0; i < value.size(); i++) {
-            Float next = (Float) value.get(i);
+            Float next = value.get(i);
             int j = (int) (next.floatValue() * width);
 
             if (Math.abs(x - j) <= maxDiff) {
@@ -1737,7 +1752,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         if (value.size() > 0) {
           for (int i = 0; i < value.size(); i++) {
-            if (newValue == ((Float) value.get(i)).floatValue()) {
+            if (newValue == (value.get(i)).floatValue()) {
               return false;
             }
           }
@@ -1754,9 +1769,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       protected void moved(MouseEvent e) {
         if (moveIndex >= 0) {
           float width = mapPainter.getWidth();
-          float oldX = ((Float) value.get(moveIndex)).floatValue();
+          float oldX = value.get(moveIndex).floatValue();
 
-          float newHoriz = ((float) e.getX()) / width;
+          float newHoriz = e.getX() / width;
 
           if (newHoriz < 0) {
             newHoriz = 0f;
@@ -1769,18 +1784,18 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           if (newHoriz != oldX) {
             // don't move endings horizontally
             // check sides
-            float leftX = ((Float) value.get(moveIndex - 1)).floatValue();
+            float leftX = value.get(moveIndex - 1).floatValue();
 
             if (newHoriz <= leftX) {
               int lx = (int) (leftX * width);
-              newHoriz = ((float) (lx + 1)) / width;
+              newHoriz = (lx + 1) / width;
             }
 
-            float rightX = ((Float) value.get(moveIndex + 1)).floatValue();
+            float rightX = value.get(moveIndex + 1).floatValue();
 
             if (rightX <= newHoriz) {
               int rx = (int) (rightX * width);
-              newHoriz = ((float) (rx - 1)) / width;
+              newHoriz = (rx - 1) / width;
             }
 
             value.set(moveIndex, new Float(newHoriz));
@@ -1931,7 +1946,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       protected void changeColor() {
-        Color col = JColorChooser.showDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.changecolor"), (Color) mapping.get(addX));
+        Color col = JColorChooser.showDialog(this, Resources.get("map.advancedregionshapecellrenderer.prefs.changecolor"), mapping.get(addX));
 
         if (col != null) {
           mapping.set(addX, col);
@@ -2031,8 +2046,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             y = Math.max(0, size.height - fm.getAscent() - 1);
 
             for (int i = 0; i < value.size(); i++) {
-              int x = (int) (size.width * ((Float) value.get(i)).floatValue());
-              paintIcon(g, x, y, (Color) mapping.get(i));
+              int x = (int) (size.width * value.get(i).floatValue());
+              paintIcon(g, x, y, mapping.get(i));
             }
           }
         }
@@ -2145,7 +2160,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
         if (value.size() > 0) {
           for (int i = 0; i < value.size(); i++) {
-            prefSet.vMapping.addEntry(((Float) value.get(i)).floatValue(), ((Float) mapping.get(i)).floatValue());
+            prefSet.vMapping.addEntry(value.get(i).floatValue(), mapping.get(i).floatValue());
           }
         }
       }
@@ -2156,11 +2171,11 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
           int height = mapPainter.getHeight();
 
           for (int i = 0; i < value.size(); i++) {
-            Float next = (Float) value.get(i);
+            Float next = value.get(i);
             int j = (int) (next.floatValue() * width);
 
             if (Math.abs(x - j) <= maxDiff) {
-              Float oheight = (Float) mapping.get(i);
+              Float oheight = mapping.get(i);
               int k = (int) ((1f - oheight.floatValue()) * height);
 
               if (Math.abs(y - k) <= maxDiff) {
@@ -2185,9 +2200,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         if (moveIndex >= 0) {
           float width = mapPainter.getWidth();
           float height = mapPainter.getHeight();
-          float oldX = ((Float) value.get(moveIndex)).floatValue();
-          float oldY = ((Float) mapping.get(moveIndex)).floatValue();
-          float newVert = ((float) (height - e.getY())) / height;
+          float oldX = value.get(moveIndex).floatValue();
+          float oldY = mapping.get(moveIndex).floatValue();
+          float newVert = (height - e.getY()) / height;
 
           if (newVert < 0) {
             newVert = 0f;
@@ -2197,7 +2212,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             newVert = 1f;
           }
 
-          float newHoriz = ((float) e.getX()) / width;
+          float newHoriz = e.getX() / width;
 
           if (newHoriz < 0) {
             newHoriz = 0f;
@@ -2218,18 +2233,18 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             } else {
               // check sides
               if (newHoriz != oldX) {
-                float leftX = ((Float) value.get(moveIndex - 1)).floatValue();
+                float leftX = value.get(moveIndex - 1).floatValue();
 
                 if (newHoriz <= leftX) {
                   int lx = (int) (leftX * width);
-                  newHoriz = ((float) (lx + 1)) / width;
+                  newHoriz = (lx + 1) / width;
                 }
 
-                float rightX = ((Float) value.get(moveIndex + 1)).floatValue();
+                float rightX = value.get(moveIndex + 1).floatValue();
 
                 if (rightX <= newHoriz) {
                   int rx = (int) (rightX * width);
-                  newHoriz = ((float) (rx - 1)) / width;
+                  newHoriz = (rx - 1) / width;
                 }
 
                 value.set(moveIndex, new Float(newHoriz));
@@ -2423,8 +2438,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
             int lastY = -1;
 
             for (int i = 0; i < value.size(); i++) {
-              int x = (int) (((Float) value.get(i)).floatValue() * fWidth);
-              int y = (int) ((1 - ((Float) mapping.get(i)).floatValue()) * fHeight);
+              int x = (int) (value.get(i).floatValue() * fWidth);
+              int y = (int) ((1 - mapping.get(i).floatValue()) * fHeight);
               g.fillRect(x - 2, y - 2, 5, 5);
 
               if (lastX >= 0) {

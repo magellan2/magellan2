@@ -48,7 +48,7 @@ public class AttackInspector extends AbstractInspector {
    * @return An instance of this class
    */
   public static AttackInspector getInstance() {
-    return INSPECTOR;
+    return AttackInspector.INSPECTOR;
   }
 
   protected AttackInspector() {
@@ -57,6 +57,7 @@ public class AttackInspector extends AbstractInspector {
   /**
    * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
    */
+  @Override
   public List<Problem> reviewUnit(Unit u, int type) {
     if((u == null) || u.ordersAreNull()) {
       return Collections.emptyList();
@@ -68,18 +69,20 @@ public class AttackInspector extends AbstractInspector {
 
     List<Problem> problems = new ArrayList<Problem>(2);
 
-    int line = 0;
+    //int line = 0;
     int wrongStatus = Integer.MAX_VALUE;
 
     List relations = u.getRelations(AttackRelation.class);
     for(Object o : relations) {
       if (o instanceof AttackRelation){
         AttackRelation relation = (AttackRelation) o;
-        if (!relation.source.equals(u))
+        if (!relation.source.equals(u)) {
           continue;
+        }
         if (type == Problem.WARNING){
-          if (relation.source.getFaction().getAllies().containsKey(relation.target.getFaction().getID()))
+          if (relation.source.getFaction().getAllies().containsKey(relation.target.getFaction().getID())) {
             problems.add(new CriticizedWarning(u, u, this, Resources.get("tasks.attackinspector.warning.friendlyfire"), relation.line));
+          }
         }
         // TODO define as constants
         // pre 57:
@@ -104,8 +107,9 @@ public class AttackInspector extends AbstractInspector {
       }
     }
     if (type == Problem.ERROR){
-      if (wrongStatus!=Integer.MAX_VALUE)
+      if (wrongStatus!=Integer.MAX_VALUE) {
         problems.add(new CriticizedError(u, u, this, Resources.get("tasks.attackinspector.warning.notfighting"), wrongStatus));
+      }
       
       // guard and not fighting (fleeing)?
       if (u.getModifiedGuard()!=0 && u.getModifiedCombatStatus()==5){

@@ -45,7 +45,8 @@ public class SchemeCellRenderer extends ImageCellRenderer {
 	 * @param selected region to be rendered shall be marked as part of the schemes that are active
 	 * 		  right now
 	 */
-	public void render(Object obj, boolean active, boolean selected) {
+	@Override
+  public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 
@@ -66,7 +67,8 @@ public class SchemeCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	public int getPlaneIndex() {
+	@Override
+  public int getPlaneIndex() {
 		return Mapper.PLANE_SCHEMES;
 	}
 

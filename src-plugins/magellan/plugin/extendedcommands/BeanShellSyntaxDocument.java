@@ -23,16 +23,17 @@
 // 
 package magellan.plugin.extendedcommands;
 
-import java.awt.Color; 
-import java.util.HashSet; 
-import javax.swing.text.AttributeSet; 
-import javax.swing.text.BadLocationException; 
-import javax.swing.text.DefaultEditorKit; 
-import javax.swing.text.DefaultStyledDocument; 
-import javax.swing.text.Element; 
-import javax.swing.text.MutableAttributeSet; 
-import javax.swing.text.SimpleAttributeSet; 
-import javax.swing.text.StyleConstants; 
+import java.awt.Color;
+import java.util.HashSet;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.TabSet;
 import javax.swing.text.TabStop;
 
@@ -75,28 +76,28 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     putProperty( DefaultEditorKit.EndOfLineStringProperty, "\n" ); 
     
     normal = new SimpleAttributeSet(); 
-    StyleConstants.setFontSize(normal,   NORMAL_SIZE);
-    StyleConstants.setForeground(normal, NORMAL_COLOR); 
-    StyleConstants.setItalic(normal,     NORMAL_ITALIC);
-    StyleConstants.setBold(normal,       NORMAL_BOLD);
+    StyleConstants.setFontSize(normal,   BeanShellSyntaxDocument.NORMAL_SIZE);
+    StyleConstants.setForeground(normal, BeanShellSyntaxDocument.NORMAL_COLOR); 
+    StyleConstants.setItalic(normal,     BeanShellSyntaxDocument.NORMAL_ITALIC);
+    StyleConstants.setBold(normal,       BeanShellSyntaxDocument.NORMAL_BOLD);
 
     comment = new SimpleAttributeSet(); 
-    StyleConstants.setFontSize(comment,  COMMENT_SIZE);
-    StyleConstants.setForeground(comment,COMMENT_COLOR); 
-    StyleConstants.setItalic(comment,    COMMENT_ITALIC); 
-    StyleConstants.setBold(comment,      COMMENT_BOLD); 
+    StyleConstants.setFontSize(comment,  BeanShellSyntaxDocument.COMMENT_SIZE);
+    StyleConstants.setForeground(comment,BeanShellSyntaxDocument.COMMENT_COLOR); 
+    StyleConstants.setItalic(comment,    BeanShellSyntaxDocument.COMMENT_ITALIC); 
+    StyleConstants.setBold(comment,      BeanShellSyntaxDocument.COMMENT_BOLD); 
 
     keyword = new SimpleAttributeSet(); 
-    StyleConstants.setFontSize(keyword,   KEYWORD_SIZE);
-    StyleConstants.setForeground(keyword, KEYWORD_COLOR); 
-    StyleConstants.setItalic(keyword,     KEYWORD_ITALIC); 
-    StyleConstants.setBold(keyword,       KEYWORD_BOLD); 
+    StyleConstants.setFontSize(keyword,   BeanShellSyntaxDocument.KEYWORD_SIZE);
+    StyleConstants.setForeground(keyword, BeanShellSyntaxDocument.KEYWORD_COLOR); 
+    StyleConstants.setItalic(keyword,     BeanShellSyntaxDocument.KEYWORD_ITALIC); 
+    StyleConstants.setBold(keyword,       BeanShellSyntaxDocument.KEYWORD_BOLD); 
 
     quote = new SimpleAttributeSet(); 
-    StyleConstants.setFontSize(quote,   QUOTE_SIZE);
-    StyleConstants.setForeground(quote, QUOTE_COLOR); 
-    StyleConstants.setItalic(quote,     QUOTE_ITALIC); 
-    StyleConstants.setBold(quote,       QUOTE_BOLD); 
+    StyleConstants.setFontSize(quote,   BeanShellSyntaxDocument.QUOTE_SIZE);
+    StyleConstants.setForeground(quote, BeanShellSyntaxDocument.QUOTE_COLOR); 
+    StyleConstants.setItalic(quote,     BeanShellSyntaxDocument.QUOTE_ITALIC); 
+    StyleConstants.setBold(quote,       BeanShellSyntaxDocument.QUOTE_BOLD); 
     
     // ---
     keywords = new HashSet<String>(); 
@@ -178,6 +179,7 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
   /**
    * Override to apply syntax highlighting after the document has been updated 
    */ 
+  @Override
   public void insertString(int offset, String str, AttributeSet a) throws BadLocationException { 
     super.insertString(offset, str, a); 
     processChangedLines(offset, str.length()); 
@@ -186,6 +188,7 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
   /**
    * Override to apply syntax highlighting after the document has been updated 
    */ 
+  @Override
   public void remove(int offset, int length) throws BadLocationException { 
     super.remove(offset, length); 
     processChangedLines(offset, 0); 
@@ -210,10 +213,11 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     for (int i = startLine; i <= endLine; i++) { applyHighlighting(content, i); } 
     
     // Resolve highlighting to the next end multi line delimiter 
-    if (isMultiLineComment()) 
-      commentLinesAfter(content, endLine); 
-    else 
-      highlightLinesAfter(content, endLine); 
+    if (isMultiLineComment()) {
+      commentLinesAfter(content, endLine);
+    } else {
+      highlightLinesAfter(content, endLine);
+    } 
   } 
  
   /**
@@ -225,11 +229,15 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     
     // Start of comment not found, nothing to do 
     int startDelimiter = lastIndexOf( content, getStartDelimiter(), offset - 2 ); 
-    if (startDelimiter < 0) return false; 
+    if (startDelimiter < 0) {
+      return false;
+    } 
     
     // Matching start/end of comment found, nothing to do 
     int endDelimiter = indexOf( content, getEndDelimiter(), startDelimiter ); 
-    if (endDelimiter < offset && endDelimiter != -1) return false; 
+    if (endDelimiter < offset && endDelimiter != -1) {
+      return false;
+    } 
     
     // End of comment not found, highlight the lines 
     doc.setCharacterAttributes(startDelimiter, offset - startDelimiter + 1, comment, false); 
@@ -244,7 +252,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     
     // End of comment not found, nothing to do 
     int endDelimiter = indexOf( content, getEndDelimiter(), offset ); 
-    if (endDelimiter < 0) return; 
+    if (endDelimiter < 0) {
+      return;
+    } 
     
     // Matching start/end of comment found, comment the lines 
     int startDelimiter = lastIndexOf( content, getStartDelimiter(), endDelimiter ); 
@@ -262,10 +272,16 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     // Start/End delimiter not found, nothing to do 
     int startDelimiter = indexOf( content, getStartDelimiter(), offset ); 
     int endDelimiter = indexOf( content, getEndDelimiter(), offset ); 
-    if (startDelimiter < 0) startDelimiter = content.length(); 
-    if (endDelimiter < 0) endDelimiter = content.length(); 
+    if (startDelimiter < 0) {
+      startDelimiter = content.length();
+    } 
+    if (endDelimiter < 0) {
+      endDelimiter = content.length();
+    } 
     int delimiter = Math.min(startDelimiter, endDelimiter); 
-    if (delimiter < offset) return; 
+    if (delimiter < offset) {
+      return;
+    } 
     
     // Start/End delimiter found, reapply highlighting 
     int endLine = rootElement.getElementIndex( delimiter ); 
@@ -273,7 +289,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
       Element branch = rootElement.getElement( i ); 
       Element leaf = doc.getCharacterElement( branch.getStartOffset() ); 
       AttributeSet as = leaf.getAttributes(); 
-      if ( as.isEqual(comment) ) applyHighlighting(content, i); 
+      if ( as.isEqual(comment) ) {
+        applyHighlighting(content, i);
+      } 
     } 
   }
    
@@ -281,7 +299,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
    * Parse the line to determine the appropriate highlighting 
    */ 
   private void applyHighlighting(String content, int line) throws BadLocationException { 
-    int startOffset = rootElement.getElement( line ).getStartOffset(); int endOffset = rootElement.getElement( line ).getEndOffset() - 1; int lineLength = endOffset - startOffset; int contentLength = content.length(); if (endOffset >= contentLength) endOffset = contentLength - 1;
+    int startOffset = rootElement.getElement( line ).getStartOffset(); int endOffset = rootElement.getElement( line ).getEndOffset() - 1; int lineLength = endOffset - startOffset; int contentLength = content.length(); if (endOffset >= contentLength) {
+      endOffset = contentLength - 1;
+    }
      
     // check for multi line comments 
     // (always set the comment attribute for the entire line) 
@@ -307,9 +327,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
    */ 
   private boolean startingMultiLineComment(String content, int startOffset, int endOffset) throws BadLocationException { 
     int index = indexOf( content, getStartDelimiter(), startOffset ); 
-    if ( (index < 0) || (index > endOffset) ) 
-      return false; 
-    else {
+    if ( (index < 0) || (index > endOffset) ) {
+      return false;
+    } else {
       setMultiLineComment( true ); 
       return true; 
     }
@@ -318,9 +338,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
   /* * Does this line contain the end delimiter */ 
   private boolean endingMultiLineComment(String content, int startOffset, int endOffset) throws BadLocationException { 
     int index = indexOf( content, getEndDelimiter(), startOffset ); 
-    if ( (index < 0) || (index > endOffset) ) 
-      return false; 
-    else { 
+    if ( (index < 0) || (index > endOffset) ) {
+      return false;
+    } else { 
       setMultiLineComment( false ); 
       return true; 
     } 
@@ -345,14 +365,19 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     while (startOffset <= endOffset) {
       // skip the delimiters to find the start of a new token 
       while ( isDelimiter( content.substring(startOffset, startOffset + 1) ) ) { 
-        if (startOffset < endOffset) startOffset++; else return; 
+        if (startOffset < endOffset) {
+          startOffset++;
+        } else {
+          return;
+        } 
       } 
       
       // Extract and process the entire token 
-      if ( isQuoteDelimiter( content.substring(startOffset, startOffset + 1) ) ) 
-        startOffset = getQuoteToken(content, startOffset, endOffset); 
-      else
-        startOffset = getOtherToken(content, startOffset, endOffset); 
+      if ( isQuoteDelimiter( content.substring(startOffset, startOffset + 1) ) ) {
+        startOffset = getQuoteToken(content, startOffset, endOffset);
+      } else {
+        startOffset = getOtherToken(content, startOffset, endOffset);
+      } 
     } 
   }
    
@@ -375,10 +400,11 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     
     // now find the matching delimiter 
     index = content.indexOf(quoteDelimiter, endOfQuote + 1); 
-    if ( (index < 0) || (index > endOffset) ) 
-      endOfQuote = endOffset; 
-    else 
-      endOfQuote = index; 
+    if ( (index < 0) || (index > endOffset) ) {
+      endOfQuote = endOffset;
+    } else {
+      endOfQuote = index;
+    } 
     
     doc.setCharacterAttributes(startOffset, endOfQuote - startOffset + 1, quote, false); 
     return endOfQuote + 1; 
@@ -390,7 +416,9 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
   private int getOtherToken(String content, int startOffset, int endOffset) { 
     int endOfToken = startOffset + 1; 
     while ( endOfToken <= endOffset ) { 
-      if ( isDelimiter( content.substring(endOfToken, endOfToken + 1) ) ) break; 
+      if ( isDelimiter( content.substring(endOfToken, endOfToken + 1) ) ) {
+        break;
+      } 
       endOfToken++; 
     } 
     
@@ -409,7 +437,11 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     int index; 
     while ( (index = content.indexOf(needle, offset)) != -1 ) { 
       String text = getLine( content, index ).trim(); 
-      if (text.startsWith(needle) || text.endsWith(needle)) break; else offset = index + 1; 
+      if (text.startsWith(needle) || text.endsWith(needle)) {
+        break;
+      } else {
+        offset = index + 1;
+      } 
     } 
     return index; 
   } 
@@ -421,7 +453,11 @@ public class BeanShellSyntaxDocument extends DefaultStyledDocument {
     int index; 
     while ( (index = content.lastIndexOf(needle, offset)) != -1 ) { 
       String text = getLine( content, index ).trim(); 
-      if (text.startsWith(needle) || text.endsWith(needle)) break; else offset = index - 1; 
+      if (text.startsWith(needle) || text.endsWith(needle)) {
+        break;
+      } else {
+        offset = index - 1;
+      } 
     } 
     return index; 
   }

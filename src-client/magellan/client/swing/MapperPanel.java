@@ -136,6 +136,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * @param e
    *          DOCUMENT-ME
    */
+  @Override
   public void gameDataChanged(GameDataEvent e) {
     data = e.getGameData();
     mapper.gameDataChanged(e);
@@ -185,8 +186,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    *          DOCUMENT-ME
    */
   public void selectionChanged(SelectionEvent se) {
-    if (log.isDebugEnabled()) {
-      log.debug("MapperPanel.selectionChanged called with " + se.getActiveObject());
+    if (MapperPanel.log.isDebugEnabled()) {
+      MapperPanel.log.debug("MapperPanel.selectionChanged called with " + se.getActiveObject());
     }
 
     // update the currently selected item in the level combo box
@@ -237,8 +238,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
          * DOCUMENT-ME
          */
         public void run() {
-          if (log.isDebugEnabled()) {
-            log.debug("MapperPanel.selectionChanged: Running CenterRunner on " + center);
+          if (MapperPanel.log.isDebugEnabled()) {
+            MapperPanel.log.debug("MapperPanel.selectionChanged: Running CenterRunner on " + center);
           }
 
           Rectangle cellRect = mapper.getCellRect(center);
@@ -265,7 +266,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
       if (!island.regions().isEmpty()) {
         // first set right level
-        Region r = (Region) island.regions().iterator().next();
+        Region r = island.regions().iterator().next();
         CoordinateID coord = r.getCoordinate();
 
         if (cmbLevel.isVisible()) {
@@ -303,8 +304,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
             Rectangle centerRect = islandBounds;
 
-            if (log.isDebugEnabled()) {
-              log.debug("MapperPanel.selectionChanged: Running ParamRunnable with " + centerRect);
+            if (MapperPanel.log.isDebugEnabled()) {
+              MapperPanel.log.debug("MapperPanel.selectionChanged: Running ParamRunnable with " + centerRect);
             }
 
             if (!scpMapper.getViewport().getViewRect().contains(centerRect)) {
@@ -357,11 +358,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // register own mouse listener for letting the user drag the
     // map
     mapper.addMouseListener(new MouseAdapter() {
+      @Override
       public void mousePressed(MouseEvent e) {
         dragStart = e.getPoint();
         dragValidated = false;
       }
 
+      @Override
       public void mouseReleased(MouseEvent e) {
         if (((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) || !dragValidated || ((e.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
           return;
@@ -406,6 +409,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // mouse while dragging
     // to avoid unintended drag effects
     mapper.addMouseMotionListener(new MouseMotionAdapter() {
+      @Override
       public void mouseDragged(MouseEvent e) {
         if (!dragValidated) {
           Rectangle bounds = new Rectangle(dragStart.x - 2, dragStart.y - 2, 4, 4);
@@ -422,32 +426,32 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     shortcuts = new ArrayList<KeyStroke>(13);
     // 0: request Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.CTRL_MASK));
     // 1: request Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_2, InputEvent.ALT_MASK));
     // 2: add Hotspot
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK));
     // 3: remove Hotspot
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
     // 4: fog of war
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
     // 5: tooltips ? open open problems
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
     
     // 6,7: Map Zoom in  First is numpad, scnd is normal key
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD  , KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS  , KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD  , InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS  , InputEvent.CTRL_MASK));
     //  8,9: Map Zoom out  
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , KeyEvent.CTRL_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , InputEvent.CTRL_MASK));
     
     // 3 Level Zoom in
     // 10,11 Fast Zoom In
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD , KeyEvent.ALT_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS , KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD , InputEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_PLUS , InputEvent.ALT_MASK));
     // 12,13 Fast Zoom out
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , KeyEvent.ALT_MASK));
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , KeyEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , InputEvent.ALT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , InputEvent.ALT_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
   }
@@ -493,7 +497,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public void setMinimapScale(int scale) {
     Dimension size = minimapGeometry.getCellSize();
-    minimap.setScaleFactor(((float) scale * minimapGeometry.getScaleFactor()) / (float) size.width);
+    minimap.setScaleFactor((scale * minimapGeometry.getScaleFactor()) / size.width);
     minimapPane.doLayout();
     minimapPane.repaint();
   }
@@ -727,7 +731,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       ID id = getNewHotSpotID();
 
       if (id == null) {
-        log.warn("MapperPanel.assignHotSpot(): unable to determine free id for new hot spot!");
+        MapperPanel.log.warn("MapperPanel.assignHotSpot(): unable to determine free id for new hot spot!");
 
         return;
       }
@@ -804,6 +808,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Stores the region that is at the center of the currently visible area.
    */
+  @Override
   public void quit() {
     settings.setProperty("Map.scaleFactor", Float.toString(getScaleFactor()));
 
@@ -875,12 +880,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     });
 
     sldScaling.addKeyListener(new KeyAdapter() {
+      @Override
       public void keyPressed(KeyEvent e) {
         if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
           sldScaling.setSnapToTicks(true);
         }
       }
 
+      @Override
       public void keyReleased(KeyEvent e) {
         if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
           sldScaling.setSnapToTicks(false);
@@ -1228,6 +1235,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      * @param e
      *          DOCUMENT-ME
      */
+    @Override
     public void componentResized(ComponentEvent e) {
       if (resizeMinimap && (e.getSource() == minimapPane)) {
         resizeMinimap = false;

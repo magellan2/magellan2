@@ -36,10 +36,10 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	 */
 	public String getBranchSign(int index) {
 		if(index == 1) {
-			return NEXT_BRANCH;
+			return Replacer.NEXT_BRANCH;
 		}
 
-		return END;
+		return Replacer.END;
 	}
 
 	/**
@@ -84,12 +84,12 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 
 			int index = 1;
 
-			if(ret.equals(TRUE)) {
+			if(ret.equals(Replacer.TRUE)) {
 				index = 0;
 			}
 
 			if(branches[index] == null) {
-				return BLANK;
+				return Replacer.BLANK;
 			}
 
 			if(branches[index] instanceof Replacer) {
@@ -135,7 +135,8 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		try {
 			return "if " + criterion + " then " + branches[0] + " else " + branches[1];
 		} catch(Exception exc) {

@@ -24,7 +24,7 @@ public class Completion {
 	private String name = null;
 	private String value = null;
 	private String postfix = null;
-	private int priority = DEFAULT_PRIORITY;
+	private int priority = Completion.DEFAULT_PRIORITY;
 	private int cursorOffset = 0;
 
 	/**
@@ -33,7 +33,7 @@ public class Completion {
 	 * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
 	 */
 	public Completion(String text) {
-		this(text, text, "", DEFAULT_PRIORITY, 0);
+		this(text, text, "", Completion.DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class Completion {
 	 *                for example, sorting
 	 */
 	public Completion(String name, String value, String postfix) {
-		this(name, value, postfix, DEFAULT_PRIORITY, 0);
+		this(name, value, postfix, Completion.DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public class Completion {
 	 *                for example, sorting
 	 */
 	public Completion(String text, String postfix) {
-		this(text, text, postfix, DEFAULT_PRIORITY, 0);
+		this(text, text, postfix, Completion.DEFAULT_PRIORITY, 0);
 	}
 
 	/**
@@ -191,7 +191,8 @@ public class Completion {
 	/**
 	 * @see java.lang.Object#toString()
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return name;
 	}
 }

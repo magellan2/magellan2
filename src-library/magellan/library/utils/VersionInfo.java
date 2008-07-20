@@ -47,13 +47,13 @@ public class VersionInfo {
 	 * Gets the Version of this Instance.
 	 */
 	public static String getVersion(File magellanDirectory) {
-	  if (versionIsSet){
-	    return Version;
+	  if (VersionInfo.versionIsSet){
+	    return VersionInfo.Version;
 	  }
 	  if (magellanDirectory==null){
 	    return null;
 	  }
-	  versionIsSet=true;
+	  VersionInfo.versionIsSet=true;
 		try {
 		  File versionFile = new File(magellanDirectory,"etc/VERSION");
 		  if (!versionFile.exists()) {
@@ -71,8 +71,8 @@ public class VersionInfo {
 		  
 			// ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream("etc/VERSION"));
 			ResourceBundle bundle = new PropertyResourceBundle(new FileInputStream(versionFile));
-			Version = bundle.getString("VERSION");
-			return Version;
+			VersionInfo.Version = bundle.getString("VERSION");
+			return VersionInfo.Version;
 		} catch(IOException e) {
 		} catch(MissingResourceException e) {
 		}
@@ -84,17 +84,21 @@ public class VersionInfo {
    * This method tries to get the newest Version from the webserver.
    */
   public static String getNewestVersion(Properties properties) {
-    if (properties == null) return null;
-    String urlstring = properties.getProperty(PROPERTY_KEY_UPDATECHECK_URL,DEFAULT_CHECK_URL);
-    boolean check = new Boolean(properties.getProperty(PROPERTY_KEY_UPDATECHECK_CHECK,String.valueOf(true)));
-    long failedTimestamp = new Long(properties.getProperty(PROPERTY_KEY_UPDATECHECK_FAILED,String.valueOf(0)));
+    if (properties == null) {
+      return null;
+    }
+    String urlstring = properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL,VersionInfo.DEFAULT_CHECK_URL);
+    boolean check = new Boolean(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,String.valueOf(true)));
+    long failedTimestamp = new Long(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED,String.valueOf(0)));
     
     boolean doCheck = check;
     
-    if (urlstring.length()<1) urlstring = DEFAULT_CHECK_URL;
+    if (urlstring.length()<1) {
+      urlstring = VersionInfo.DEFAULT_CHECK_URL;
+    }
     
     // reset url string to new location
-    properties.setProperty(PROPERTY_KEY_UPDATECHECK_URL, DEFAULT_CHECK_URL);
+    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL, VersionInfo.DEFAULT_CHECK_URL);
     
     // if the last failed time was now-7 days, then we try to check again.
     if (failedTimestamp > 0l && doCheck) {
@@ -123,24 +127,26 @@ public class VersionInfo {
           newestVersion = bundle.getString("VERSION");
         }
       } catch (Exception exception) {
-        log.info("",exception);
+        VersionInfo.log.info("",exception);
         failedTimestamp = Calendar.getInstance().getTimeInMillis();
       }
     }
     
     
-    properties.setProperty(PROPERTY_KEY_UPDATECHECK_URL,    urlstring);
-    properties.setProperty(PROPERTY_KEY_UPDATECHECK_CHECK,  String.valueOf(check));
-    properties.setProperty(PROPERTY_KEY_UPDATECHECK_FAILED, String.valueOf(failedTimestamp));
+    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL,    urlstring);
+    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,  String.valueOf(check));
+    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, String.valueOf(failedTimestamp));
     
     return newestVersion;
   }
   
   public static boolean isNewer(String currentVersion, String newVersion) {
-    if (Utils.isEmpty(currentVersion) || Utils.isEmpty(newVersion)) return false;
+    if (Utils.isEmpty(currentVersion) || Utils.isEmpty(newVersion)) {
+      return false;
+    }
     
-    log.debug("Current: "+currentVersion);
-    log.debug("Newest : "+newVersion);
+    VersionInfo.log.debug("Current: "+currentVersion);
+    VersionInfo.log.debug("Newest : "+newVersion);
     
     Version a = new Version(currentVersion,".",false);
     Version b = new Version(newVersion,".",false);

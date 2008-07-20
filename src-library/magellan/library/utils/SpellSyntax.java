@@ -72,7 +72,7 @@ public class SpellSyntax {
 			return null;
 		}
 		this.tokenIndex++;
-		return (SpellSyntaxToken)this.tokens.get(this.tokenIndex);
+		return this.tokens.get(this.tokenIndex);
 	}
 	
 	public int getTokenSize(){
@@ -97,7 +97,7 @@ public class SpellSyntax {
 	
 	public SpellSyntaxToken getCurrentToken(){
 		if (this.tokens != null && this.tokens.size()>0){
-			return (SpellSyntaxToken)this.tokens.get(this.tokenIndex);
+			return this.tokens.get(this.tokenIndex);
 		} else {
 			return null;
 		}
@@ -107,7 +107,8 @@ public class SpellSyntax {
 	/**
 	 * returns a string with token information or null
 	 */
-	public String toString(){
+	@Override
+  public String toString(){
 		String retVal = null;
 		if (this.tokens==null || this.tokens.size()==0){
 			return retVal;

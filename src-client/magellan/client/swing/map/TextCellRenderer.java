@@ -48,7 +48,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 299 $
  */
 public class TextCellRenderer extends AbstractTextCellRenderer {
-	private static final Logger log = Logger.getInstance(TextCellRenderer.class);
 	protected Color fontColor = Color.black;
 	protected Font unscaledFont = null;
 	protected Font font = null;
@@ -88,19 +87,22 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 		setShortenStrings(true);
 	}
 
-	protected void setFontColor(Color fontColor) {
+	@Override
+  protected void setFontColor(Color fontColor) {
 		super.setFontColor(fontColor);
 		settings.setProperty("TextCellRenderer.textColor", Colors.encode(fontColor));
 	}
 
-	protected void setFont(Font newFont) {
+	@Override
+  protected void setFont(Font newFont) {
 		super.setFont(newFont);
 		settings.setProperty("TextCellRenderer.fontName", newFont.getName());
 		settings.setProperty("TextCellRenderer.fontStyle", Integer.toString(newFont.getStyle()));
 		settings.setProperty("TextCellRenderer.fontSize", Integer.toString(newFont.getSize()));
 	}
 
-	protected void setScalingFont(boolean bool) {
+	@Override
+  protected void setScalingFont(boolean bool) {
 		if(bool != isScalingFont()) {
 			super.setScalingFont(bool);
 			settings.setProperty("TextCellRenderer.isScalingFont",
@@ -108,7 +110,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 		}
 	}
 
-	protected void setMinimumFontSize(int size) {
+	@Override
+  protected void setMinimumFontSize(int size) {
 		if(getMinimumFontSize() != size) {
 			super.setMinimumFontSize(size);
 			settings.setProperty("TextCellRenderer.minimumFontSize", size + "");
@@ -120,7 +123,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 	 *
 	 * 
 	 */
-	public PreferencesAdapter getPreferencesAdapter() {
+	@Override
+  public PreferencesAdapter getPreferencesAdapter() {
 		return new Preferences(this);
 	}
 
@@ -132,7 +136,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 	 *
 	 * 
 	 */
-	public String[] getText(Region r, Rectangle rect) {
+	@Override
+  public String[] getText(Region r, Rectangle rect) {
 		CoordinateID c = r.getCoordinate();
 
 		if((r.getName() == null) || ((c.x % 2) != 0) || ((c.y % 2) != 0)) {
@@ -153,7 +158,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 	 *
 	 * 
 	 */
-	public String getSingleString(Region r, Rectangle rect) {
+	@Override
+  public String getSingleString(Region r, Rectangle rect) {
 		if(r.getName() != null) {
 			return r.getName();
 		}
@@ -189,7 +195,8 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 			pnlFontColor.setSize(50, 50);
 			pnlFontColor.setBackground(source.getFontColor());
 			pnlFontColor.addMouseListener(new MouseAdapter() {
-					public void mousePressed(MouseEvent e) {
+					@Override
+          public void mousePressed(MouseEvent e) {
 						Color newColor = JColorChooser.showDialog(pnlFontColor.getTopLevelAncestor(),
 																  Resources.get("map.textcellrenderer.textcolor"),
 																  pnlFontColor.getBackground());

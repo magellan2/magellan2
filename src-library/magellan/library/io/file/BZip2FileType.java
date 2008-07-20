@@ -41,7 +41,8 @@ public class BZip2FileType extends FileType {
 	 * if createOutputStream is called or if the garbage collector decides to. */
 	private WeakReference tmpfileRef;
 
-	protected InputStream createInputStream() throws IOException {
+	@Override
+  protected InputStream createInputStream() throws IOException {
 		// normally the following lines would be ok. But somehow it does not work, so we copy the content of the 
 		// bzip2file into a tmpfile for reading with deleteonexit set.
 		//return new CBZip2InputStream(new FileInputStream(fileName));
@@ -63,7 +64,8 @@ public class BZip2FileType extends FileType {
 		return new FileInputStream(tmpfile);
 	}
 
-	protected OutputStream createOutputStream() throws IOException {
+	@Override
+  protected OutputStream createOutputStream() throws IOException {
 		tmpfileRef = null;
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filename));
 		bos.write('B');
@@ -75,6 +77,7 @@ public class BZip2FileType extends FileType {
     /**
      * @see FileType#getInnerName()
      */
+    @Override
     public String getInnerName() {
         return getName().substring(0,getName().lastIndexOf(FileType.BZIP2));
     }

@@ -240,7 +240,7 @@ public abstract class Category extends ObjectType {
 	 * 
 	 */
 	public boolean isDescendant(Category p) {
-		Category path[] = getPath(this);
+		Category path[] = Category.getPath(this);
 
 		for(int i = 0; i < path.length; i++) {
 			if(path[i].equals(p)) {
@@ -288,9 +288,10 @@ public abstract class Category extends ObjectType {
 	 *
 	 * 
 	 */
-	public int compareTo(Object o) {
-		Category path1[] = getPath(this);
-		Category path2[] = getPath((Category) o);
+	@Override
+  public int compareTo(Object o) {
+		Category path1[] = Category.getPath(this);
+		Category path2[] = Category.getPath((Category) o);
 		int j = path1.length;
 
 		if(path2.length < j) {
@@ -298,7 +299,7 @@ public abstract class Category extends ObjectType {
 		}
 
 		for(int i = 0; i < j; i++) {
-			int k = compareImpl(path1[i], path2[i]);
+			int k = Category.compareImpl(path1[i], path2[i]);
 
 			if(k != 0) {
 				return k;

@@ -56,7 +56,8 @@ public class SkillChartJFreeChartPanel extends JFreeChartPanel {
 	 *
 	 * 
 	 */
-	public String getToolTipText(MouseEvent e) {
+	@Override
+  public String getToolTipText(MouseEvent e) {
 		Vector barAreas = ((VerticalBarPlot) chart.getPlot()).getBarAreas();
 
 		if(barAreas.size() == 0) {

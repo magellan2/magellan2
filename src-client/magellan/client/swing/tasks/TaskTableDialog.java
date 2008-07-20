@@ -85,7 +85,8 @@ public class TaskTableDialog extends InternationalizedDataDialog {
 		settings.setProperty("TaskTableDialog.height", getHeight() + "");
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		storeSettings();
 		panel.quit();
 		super.quit();

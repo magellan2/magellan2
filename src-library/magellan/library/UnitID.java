@@ -59,11 +59,11 @@ public class UnitID extends EntityID {
 			throw new NullPointerException();
 		}
 
-		UnitID id = idMap.get(o);
+		UnitID id = UnitID.idMap.get(o);
 
 		if(id == null) {
 			id = new UnitID(o, radix);
-			idMap.put(o, id);
+			UnitID.idMap.put(o, id);
 		}
 
 		return id;
@@ -77,7 +77,7 @@ public class UnitID extends EntityID {
 	 * @return UnitID of the given int
 	 */
 	public static UnitID createUnitID(int i, int radix) {
-		return createUnitID(new Integer(i), radix);
+		return UnitID.createUnitID(new Integer(i), radix);
 	}
 
     /**
@@ -90,7 +90,7 @@ public class UnitID extends EntityID {
 	 * @return UnitID of the given string
 	 */
 	public static UnitID createUnitID(String s, int radix) {
-		return createUnitID(valueOf(s, radix),radix);
+		return UnitID.createUnitID(UnitID.valueOf(s, radix),radix);
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class UnitID extends EntityID {
 			int i = ((UnitID) parentUnit.getID()).intValue();
 
 			while(data.tempUnits().get(UnitID.createUnitID(-i,data.base)) != null) {
-				i = getNextDecimalID(i, data.base, true);
+				i = UnitID.getNextDecimalID(i, data.base, true);
 			}
 
 			return UnitID.createUnitID(-i,data.base);
@@ -128,7 +128,7 @@ public class UnitID extends EntityID {
 											.equalsIgnoreCase("true");
 
 				if(settings.getProperty("ClientPreferences.countDecimal", "true").equalsIgnoreCase("true")) {
-					i = getNextDecimalID(i, data.base, ascending);
+					i = UnitID.getNextDecimalID(i, data.base, ascending);
 				} else {
 					if(ascending) {
 						i++;
@@ -220,7 +220,8 @@ public class UnitID extends EntityID {
 	 *
 	 * @return String representation of this UnitID
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return IDBaseConverter.toString(Math.abs(this.intValue()),radix);
 	}
 
@@ -232,7 +233,8 @@ public class UnitID extends EntityID {
 	 * @return true, if o is an instance of UnitID and the integer values of this and the specfied
 	 * 		   object o are equal.
 	 */
-	public boolean equals(Object o) {
+	@Override
+  public boolean equals(Object o) {
 		try {
 			return this == o || id == ((EntityID) o).id;
 		} catch(ClassCastException e) {
@@ -248,7 +250,8 @@ public class UnitID extends EntityID {
 	 *
 	 * @return int based on comparability
 	 */
-	public int compareTo(Object o) {
+	@Override
+  public int compareTo(Object o) {
 		return Math.abs(this.intValue()) - Math.abs(((EntityID) o).intValue());
 	}
 

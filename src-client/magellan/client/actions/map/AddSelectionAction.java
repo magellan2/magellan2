@@ -39,12 +39,14 @@ public class AddSelectionAction extends OpenSelectionAction implements Selection
 		client.getDispatcher().addSelectionListener(this);
 	}
 
-	protected void preSetCleanSelection() {
+	@Override
+  protected void preSetCleanSelection() {
 		// adding does not clean selectedRegion
 		// System.out.println("do not clean selection");
 	}
 
-	protected String getPropertyName() {
+	@Override
+  protected String getPropertyName() {
 		return "Client.lastSELAdded";
 	}
 

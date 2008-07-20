@@ -56,7 +56,8 @@ public abstract class MagellanDescribedImpl extends MagellanNamedImpl implements
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 }

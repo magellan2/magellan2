@@ -336,7 +336,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
             if (h!=null){
               mp.showHotSpot(h);
             } else {
-              log.error("Hotspot not found: " + e.getActionCommand());
+              MapContextMenu.log.error("Hotspot not found: " + e.getActionCommand());
             }
           }
         });
@@ -445,7 +445,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 
 			JMenuItem item = new JMenuItem(s);
 			item.addActionListener(tListener);
-			item.putClientProperty(TKEY, tip);
+			item.putClientProperty(MapContextMenu.TKEY, tip);
 			tooltips.add(item);
 		}
 
@@ -465,7 +465,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		boolean added = false;
 
 		for (RenderingPlane rp : source.getPlanes()) {
-      if (rp == null) continue; 
+      if (rp == null) {
+        continue;
+      } 
 			MapCellRenderer r = rp.getRenderer();
 			if((r != null) && (r instanceof ContextChangeable)) {
 				JMenuItem mi = ((ContextChangeable) r).getContextAdapter();
@@ -489,7 +491,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 
     for (RenderingPlane rp : source.getPlanes()) {
-      if (rp == null) continue; 
+      if (rp == null) {
+        continue;
+      } 
       JMenu help = new JMenu(rp.getName());
 			Collection rs = source.getRenderers(rp.getIndex());
 			boolean addedi = false;
@@ -499,7 +503,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 
 				JMenuItem item = new JMenuItem(Resources.get("context.mapcontextmenu.menu.renderer.none"));
 				item.setEnabled(rp.getRenderer() != null);
-				item.putClientProperty(RKEY, new Integer(rp.getIndex()));
+				item.putClientProperty(MapContextMenu.RKEY, new Integer(rp.getIndex()));
 				item.addActionListener(rListener);
 				help.add(item);
 
@@ -510,7 +514,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 					item = new JMenuItem(mcp.getName());
 					item.setEnabled(mcp != rp.getRenderer());
 					item.addActionListener(rListener);
-					item.putClientProperty(RKEY, mcp);
+					item.putClientProperty(MapContextMenu.RKEY, mcp);
 					help.add(item);
 				}
 			}
@@ -618,7 +622,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 			if((source != null) && (actionEvent.getSource() instanceof JMenuItem)) {
 				JMenuItem src = (JMenuItem) actionEvent.getSource();
-				Object obj = src.getClientProperty(TKEY);
+				Object obj = src.getClientProperty(MapContextMenu.TKEY);
 
 				if(obj == null) {
 					return;
@@ -640,7 +644,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 				JMenuItem src = (JMenuItem) actionEvent.getSource();
 
 				try {
-					Object obj = src.getClientProperty(RKEY);
+					Object obj = src.getClientProperty(MapContextMenu.RKEY);
 
 					if(obj == null) {
 						return;

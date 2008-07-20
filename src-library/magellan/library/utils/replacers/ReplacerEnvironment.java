@@ -38,8 +38,8 @@ public class ReplacerEnvironment {
 		parts = new HashMap<String, EnvironmentPart>();
 
 		// put some default parts
-		parts.put(OPERATION_PART, new OperationMode());
-		parts.put(UNITSELECTION_PART, new UnitSelection());
+		parts.put(ReplacerEnvironment.OPERATION_PART, new OperationMode());
+		parts.put(ReplacerEnvironment.UNITSELECTION_PART, new UnitSelection());
 	}
 
 	/**

@@ -39,7 +39,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public int read() throws IOException {
+	@Override
+  public int read() throws IOException {
 		int c = super.read();
 		pos++;
 
@@ -87,7 +88,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public int read(char cbuf[], int off, int len) throws IOException {
+	@Override
+  public int read(char cbuf[], int off, int len) throws IOException {
 		int retVal = 0;
 		int c = 0;
 
@@ -112,7 +114,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void reset() throws IOException {
+	@Override
+  public void reset() throws IOException {
 		super.reset();
 		pos = 0;
 	}
@@ -124,7 +127,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void unread(char cbuf[]) throws IOException {
+	@Override
+  public void unread(char cbuf[]) throws IOException {
 		super.unread(cbuf);
 		pos -= cbuf.length;
 	}
@@ -138,7 +142,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void unread(char cbuf[], int off, int len) throws IOException {
+	@Override
+  public void unread(char cbuf[], int off, int len) throws IOException {
 		super.unread(cbuf, off, len);
 		pos -= len;
 	}
@@ -150,7 +155,8 @@ public class MergeLineReader extends PushbackReader {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void unread(int c) throws IOException {
+	@Override
+  public void unread(int c) throws IOException {
 		super.unread(c);
 		pos--;
 	}

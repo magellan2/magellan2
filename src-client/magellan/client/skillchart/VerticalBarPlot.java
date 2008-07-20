@@ -125,7 +125,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public CategoryDataSource getDataSource() {
+	@Override
+  public CategoryDataSource getDataSource() {
 		return (CategoryDataSource) chart.getDataSource();
 	}
 
@@ -147,7 +148,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * @throws AxisNotCompatibleException DOCUMENT-ME
 	 */
-	public void setVerticalAxis(Axis vAxis) throws AxisNotCompatibleException {
+	@Override
+  public void setVerticalAxis(Axis vAxis) throws AxisNotCompatibleException {
 		// check that the axis implements the required interface (if not raise an exception);
 		super.setVerticalAxis(vAxis);
 	}
@@ -169,7 +171,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * @throws AxisNotCompatibleException DOCUMENT-ME
 	 */
-	public void setHorizontalAxis(Axis axis) throws AxisNotCompatibleException {
+	@Override
+  public void setHorizontalAxis(Axis axis) throws AxisNotCompatibleException {
 		// check that the axis implements the required interface (if not raise an exception);
 		super.setHorizontalAxis(axis);
 	}
@@ -179,7 +182,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public java.util.List getCategories() {
+	@Override
+  public java.util.List getCategories() {
 		return getDataSource().getCategories();
 	}
 
@@ -191,7 +195,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public double getCategoryCoordinate(int category, Rectangle2D area) {
+	@Override
+  public double getCategoryCoordinate(int category, Rectangle2D area) {
 		int seriesCount = getDataSource().getSeriesCount();
 		double barWidth = calculateBarWidth(area);
 
@@ -233,7 +238,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public boolean isCompatibleHorizontalAxis(Axis axis) {
+	@Override
+  public boolean isCompatibleHorizontalAxis(Axis axis) {
 		if(axis instanceof CategoryAxis) {
 			return true;
 		} else {
@@ -249,7 +255,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public boolean isCompatibleVerticalAxis(Axis axis) {
+	@Override
+  public boolean isCompatibleVerticalAxis(Axis axis) {
 		if(axis instanceof VerticalNumberAxis) {
 			return true;
 		} else {
@@ -263,7 +270,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 * @param g2 The graphics device;
 	 * @param drawArea The area within which the plot should be drawn.
 	 */
-	public void draw(Graphics2D g2, Rectangle2D drawArea) {
+	@Override
+  public void draw(Graphics2D g2, Rectangle2D drawArea) {
 		if(insets != null) {
 			drawArea = new Rectangle2D.Double(drawArea.getX() + insets.left,
 											  drawArea.getY() + insets.top,
@@ -319,7 +327,8 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public String getPlotType() {
+	@Override
+  public String getPlotType() {
 		return "Bar Plot";
 	}
 
@@ -400,20 +409,20 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 
 							if(value < maximum) {
 								top = valueAxis.translatedValue(dataValue, plotArea);
-								base = valueAxis.translatedValue(ZERO, plotArea);
+								base = valueAxis.translatedValue(Plot.ZERO, plotArea);
 							} else {
 								top = valueAxis.translatedValue(valueAxis.getMaximumAxisValue(),
 																plotArea);
-								base = valueAxis.translatedValue(ZERO, plotArea);
+								base = valueAxis.translatedValue(Plot.ZERO, plotArea);
 							}
 						} else if(value < 0.0) {
 							barVisible = true;
 
 							if(value > minimum) {
-								top = valueAxis.translatedValue(ZERO, plotArea);
+								top = valueAxis.translatedValue(Plot.ZERO, plotArea);
 								base = valueAxis.translatedValue(dataValue, plotArea);
 							} else {
-								top = valueAxis.translatedValue(ZERO, plotArea);
+								top = valueAxis.translatedValue(Plot.ZERO, plotArea);
 								base = valueAxis.translatedValue(valueAxis.getMinimumAxisValue(),
 																 plotArea);
 							}

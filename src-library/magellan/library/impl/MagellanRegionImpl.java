@@ -48,7 +48,6 @@ import magellan.library.utils.Cache;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
-import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -58,8 +57,6 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 356 $
  */
 public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Region {
-	private static final Logger log = Logger.getInstance(MagellanRegionImpl.class);
-
 	/** DOCUMENT-ME */
 	public int trees = -1;
 
@@ -323,7 +320,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	    boolean qualifiedUnitInCurRegion=false;
       if (this.units()!=null && this.units().size()>0){
         for (Iterator<Unit> iter = this.units().iterator();iter.hasNext();){
-          Unit actUnit = (Unit)iter.next();
+          Unit actUnit = iter.next();
           if (actUnit.getCombatStatus()!=-1){
             // -1 is default for this int and stays, if no info is available
             qualifiedUnitInCurRegion=true;
@@ -510,7 +507,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			return null;
 		}
 
-		RegionResource ret = (RegionResource) this.resources.remove(type);
+		RegionResource ret = this.resources.remove(type);
 
 		if(this.resources.isEmpty()) {
 			this.resources = null;
@@ -798,7 +795,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			return null;
 		}
 
-		Ship ret = (Ship) ships.remove(s.getID());
+		Ship ret = ships.remove(s.getID());
 
 		if(ships.isEmpty()) {
 			ships = null;
@@ -865,7 +862,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			return null;
 		}
 
-		Building ret = (Building) this.buildings.remove(b.getID());
+		Building ret = this.buildings.remove(b.getID());
 
 		if(buildings.isEmpty()) {
 			buildings = null;
@@ -946,7 +943,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			if(u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
 				for(Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
 					Item item = (Item) unitItemIterator.next();
-					Item i = (Item) cache.regionItems.get(item.getItemType().getID());
+					Item i = cache.regionItems.get(item.getItemType().getID());
 
 					if(i == null) {
 						i = new Item(item.getItemType(), 0);
@@ -980,7 +977,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			
 			for(Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
 				Item item = (Item) unitItemIterator.next();
-				Item i = (Item) cache.allRegionItems.get(item.getItemType().getID());
+				Item i = cache.allRegionItems.get(item.getItemType().getID());
 
 				if(i == null) {
 					i = new Item(item.getItemType(), 0);
@@ -1000,7 +997,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public int maxRecruit() {
 		// pavkovic 2002.05.10: in case we dont have a recruit max set we evaluate it
-		return (recruits == -1) ? maxRecruit(peasants) : recruits;
+		return (recruits == -1) ? MagellanRegionImpl.maxRecruit(peasants) : recruits;
 	}
 
 	/**
@@ -1008,7 +1005,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 */
 	public int maxOldRecruit() {
 		// pavkovic 2002.05.10: in case we dont have a recruit max set we evaluate it
-		return (oldRecruits == -1) ? maxRecruit(oldPeasants) : oldRecruits;
+		return (oldRecruits == -1) ? MagellanRegionImpl.maxRecruit(oldPeasants) : oldRecruits;
 	}
 
 	/**
@@ -1027,14 +1024,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * Returns the silver that can be earned through entertainment in this region.
 	 */
 	public int maxEntertain() {
-		return maxEntertain(silver);
+		return MagellanRegionImpl.maxEntertain(silver);
 	}
 
 	/**
 	 * Returns the silver that could be earned through entertainment in this region.
 	 */
 	public int maxOldEntertain() {
-		return maxEntertain(oldSilver);
+		return MagellanRegionImpl.maxEntertain(oldSilver);
 	}
 
 	/**
@@ -1054,7 +1051,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * penalty.
 	 */
 	public int maxLuxuries() {
-		return maxLuxuries(peasants);
+		return MagellanRegionImpl.maxLuxuries(peasants);
 	}
 
 	/**
@@ -1062,7 +1059,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * price penalty.
 	 */
 	public int maxOldLuxuries() {
-		return maxLuxuries(oldPeasants);
+		return MagellanRegionImpl.maxLuxuries(oldPeasants);
 	}
 
 	/**
@@ -1100,7 +1097,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * Returns a String representation of this Region object. If region has no name the string
 	 * representation of the  region type is used.
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		StringBuffer sb = new StringBuffer();
 
 		if(getName() == null) {
@@ -1189,7 +1187,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	/**
 	 * DOCUMENT-ME
 	 */
-	public Unit getUnit(ID key) {
+	@Override
+  public Unit getUnit(ID key) {
 		if(ZeroUnit.ZERO_ID.equals(key)) {
 			return getZeroUnit();
 		} else {
@@ -1900,7 +1899,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   public void setActive(boolean isActive) {
     if (isActive) {
       // remove old active region...
-      for (Region r : getData().regions().values()) r.setActive(false);
+      for (Region r : getData().regions().values()) {
+        r.setActive(false);
+      }
     }
     this.isActive = isActive;
   }

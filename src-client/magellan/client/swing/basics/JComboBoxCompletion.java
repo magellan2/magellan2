@@ -53,18 +53,27 @@ public class JComboBoxCompletion extends PlainDocument {
         model = comboBox.getModel();
         comboBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (!selecting) highlightCompletedText(0);
+                if (!selecting) {
+                  highlightCompletedText(0);
+                }
             }
         });
         comboBox.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent e) {
-                if (e.getPropertyName().equals("editor")) configureEditor((ComboBoxEditor) e.getNewValue());
-                if (e.getPropertyName().equals("model")) model = (ComboBoxModel) e.getNewValue();
+                if (e.getPropertyName().equals("editor")) {
+                  configureEditor((ComboBoxEditor) e.getNewValue());
+                }
+                if (e.getPropertyName().equals("model")) {
+                  model = (ComboBoxModel) e.getNewValue();
+                }
             }
         });
         editorKeyListener = new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
-                if (comboBox.isDisplayable()) comboBox.setPopupVisible(true);
+                if (comboBox.isDisplayable()) {
+                  comboBox.setPopupVisible(true);
+                }
                 hitBackspace=false;
                 switch (e.getKeyCode()) {
                     // determine if the pressed key is backspace (needed by the remove method)
@@ -82,18 +91,24 @@ public class JComboBoxCompletion extends PlainDocument {
         hidePopupOnFocusLoss=System.getProperty("java.version").startsWith("1.5");
         // Highlight whole text when gaining focus
         editorFocusListener = new FocusAdapter() {
+            @Override
             public void focusGained(FocusEvent e) {
                 highlightCompletedText(0);
             }
+            @Override
             public void focusLost(FocusEvent e) {
                 // Workaround for Bug 5100422 - Hide Popup on focus loss
-                if (hidePopupOnFocusLoss) comboBox.setPopupVisible(false);
+                if (hidePopupOnFocusLoss) {
+                  comboBox.setPopupVisible(false);
+                }
             }
         };
         configureEditor(comboBox.getEditor());
         // Handle initially selected object
         Object selected = comboBox.getSelectedItem();
-        if (selected!=null) setText(selected.toString());
+        if (selected!=null) {
+          setText(selected.toString());
+        }
         highlightCompletedText(0);
     }
     
@@ -118,14 +133,19 @@ public class JComboBoxCompletion extends PlainDocument {
         }
     }
     
+    @Override
     public void remove(int offs, int len) throws BadLocationException {
         // return immediately when selecting an item
-        if (selecting) return;
+        if (selecting) {
+          return;
+        }
         if (hitBackspace) {
             // user hit backspace => move the selection backwards
             // old item keeps being selected
             if (offs>0) {
-                if (hitBackspaceOnSelection) offs--;
+                if (hitBackspaceOnSelection) {
+                  offs--;
+                }
             } else {
                 // User hit backspace with the cursor positioned on the start => beep
                 comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
@@ -136,9 +156,12 @@ public class JComboBoxCompletion extends PlainDocument {
         }
     }
     
+    @Override
     public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
         // return immediately when selecting an item
-        if (selecting) return;
+        if (selecting) {
+          return;
+        }
         // insert the string into the document
         super.insertString(offs, str, a);
         // lookup and select a matching item
@@ -162,7 +185,9 @@ public class JComboBoxCompletion extends PlainDocument {
 		setSelectedItem(item);
         setText(item.toString());
         // select the completed part
-        if(listContainsSelectedItem) highlightCompletedText(offs+str.length());
+        if(listContainsSelectedItem) {
+          highlightCompletedText(offs+str.length());
+        }
     }
     
     private void setText(String text) {
@@ -227,7 +252,7 @@ public class JComboBoxCompletion extends PlainDocument {
     public static void main(String[] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                JComboBoxCompletion.createAndShowGUI();
             }
         });
     }

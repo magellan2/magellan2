@@ -67,7 +67,8 @@ public abstract class InternationalizedDataDialog extends InternationalizedDialo
 		this.data = e.getGameData();
 	}
 
-	protected void quit() {
+	@Override
+  protected void quit() {
 		super.quit();
 
 		if(dispatcher != null) {

@@ -208,7 +208,8 @@ public class GraphicsStyleset {
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return getName();
 	}
 

@@ -52,7 +52,8 @@ public class CriticizedError extends AbstractProblem implements Problem {
 	 *
 	 * 
 	 */
-	public int getType() {
-		return ERROR;
+	@Override
+  public int getType() {
+		return Problem.ERROR;
 	}
 }

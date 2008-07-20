@@ -33,7 +33,7 @@ public class FileTypeFactory {
 	 * @return the singleton <code>FileTypeFactory</code>
 	 */
 	public static FileTypeFactory singleton() {
-		return singleton;
+		return FileTypeFactory.singleton;
 	}
 
 	/**
@@ -115,7 +115,7 @@ public class FileTypeFactory {
 	{
 		ZipFile zFile = new ZipFile(fileName);
 
-		ZipEntry entries[] = ZipFileType.getZipEntries(zFile, ENDINGS);
+		ZipEntry entries[] = ZipFileType.getZipEntries(zFile, FileTypeFactory.ENDINGS);
 
 		if(entries.length == 0) {
 			throw new NoValidEntryException();

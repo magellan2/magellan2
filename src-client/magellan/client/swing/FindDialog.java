@@ -161,10 +161,9 @@ public class FindDialog extends InternationalizedDataDialog
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
+  @Override
 	public void gameDataChanged(GameDataEvent e) {
 		this.data = e.getGameData();
 		this.selectedRegions.clear();
@@ -538,7 +537,7 @@ public class FindDialog extends InternationalizedDataDialog
 			try {
 				st.nextToken();
 			} catch(java.io.IOException e) {
-				log.error(e);
+				FindDialog.log.error(e);
 			}
 
 			if((st.ttype == StreamTokenizer.TT_WORD) || (st.ttype == '\'') || (st.ttype == '"')) {
@@ -546,7 +545,7 @@ public class FindDialog extends InternationalizedDataDialog
 
 				//				System.out.println(st.sval);
 			} else if(st.ttype != StreamTokenizer.TT_EOF) {
-				log.warn("Found uncexpected TokenType (" + st.ttype +
+				FindDialog.log.warn("Found uncexpected TokenType (" + st.ttype +
 						 ") in FindDialog.find() while parsing token: " + st.toString());
 			}
 		} while(st.ttype != StreamTokenizer.TT_EOF);
@@ -744,7 +743,7 @@ public class FindDialog extends InternationalizedDataDialog
 		if(id != null) {
 			return id.toString();
 		} else {
-			log.error("Found Unique without id: " + item);
+			FindDialog.log.error("Found Unique without id: " + item);
 
 			return "";
 		}

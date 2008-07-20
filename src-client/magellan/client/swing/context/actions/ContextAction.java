@@ -25,7 +25,9 @@ public abstract class ContextAction extends AbstractAction {
     
     
     public ContextAction(Object selected, EventDispatcher dispatcher) {
-        if(selected == null) throw new NullPointerException();
+        if(selected == null) {
+          throw new NullPointerException();
+        }
         this.selected = selected;
         this.dispatcher = dispatcher;
         
@@ -44,7 +46,9 @@ public abstract class ContextAction extends AbstractAction {
      * @return list of filtered objects
      */
     public static <T> List<T> filterObjects(Collection<T> selectedObjects, Class clazz) {
-        if(selectedObjects == null) return new ArrayList<T>();
+        if(selectedObjects == null) {
+          return new ArrayList<T>();
+        }
         List<T> filteredObjects = new ArrayList<T>(selectedObjects.size());
         for(Iterator<T> iter = selectedObjects.iterator(); iter.hasNext(); ) {
             T o = iter.next();
@@ -58,6 +62,7 @@ public abstract class ContextAction extends AbstractAction {
     public abstract void actionPerformed(java.awt.event.ActionEvent e);
     
     
+    @Override
     public String toString() {
         return getName();
     };

@@ -47,7 +47,7 @@ public class FixedWidthWriter extends Writer {
 	/** The maximum line width this class supports */
 	public static final int MAX_WIDTH = 1000;
 	protected BufferedWriter out = null;
-	protected int width = MAX_WIDTH;
+	protected int width = FixedWidthWriter.MAX_WIDTH;
 	private StringBuffer lineBuffer = new StringBuffer();
 	private int lastNonWhitespace = 0;
 	private boolean forceUnixLineBreaks = false;
@@ -108,8 +108,8 @@ public class FixedWidthWriter extends Writer {
 
 		if(width < 3) {
 			this.width = 3;
-		} else if(width > MAX_WIDTH) {
-			this.width = MAX_WIDTH;
+		} else if(width > FixedWidthWriter.MAX_WIDTH) {
+			this.width = FixedWidthWriter.MAX_WIDTH;
 		} else {
 			this.width = width;
 		}
@@ -120,7 +120,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void close() throws IOException {
+	@Override
+  public void close() throws IOException {
 		if(lineBuffer.length() > 0) {
 			out.write(lineBuffer.toString());
 		}
@@ -133,7 +134,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void flush() throws IOException {
+	@Override
+  public void flush() throws IOException {
 		int curWidth = lineBuffer.length();
 
 		if(curWidth > 0) {
@@ -153,7 +155,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void write(char cbuf[], int off, int len) throws IOException {
+	@Override
+  public void write(char cbuf[], int off, int len) throws IOException {
 		for(int i = off; i < (off + len); i++) {
 			write(cbuf[i]);
 		}
@@ -166,7 +169,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void write(int c) throws IOException {
+	@Override
+  public void write(int c) throws IOException {
 		int curWidth = lineBuffer.length();
 
 		if((c == '\n') || (c == '\r')) {
@@ -210,7 +214,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void write(String str) throws IOException {
+	@Override
+  public void write(String str) throws IOException {
 		write(str.toCharArray());
 	}
 
@@ -223,7 +228,8 @@ public class FixedWidthWriter extends Writer {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void write(String str, int off, int len) throws IOException {
+	@Override
+  public void write(String str, int off, int len) throws IOException {
 		write(str.toCharArray(), off, len);
 	}
 

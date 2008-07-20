@@ -198,8 +198,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		// Focus management/Default opening state
 		boolean open = false;
 
-		if(settings.containsKey(SETTINGS_KEY)) {
-			String s = settings.getProperty(SETTINGS_KEY);
+		if(settings.containsKey(TempUnitDialog.SETTINGS_KEY)) {
+			String s = settings.getProperty(TempUnitDialog.SETTINGS_KEY);
 
 			if(s.equalsIgnoreCase("true")) {
 				open = true;
@@ -218,14 +218,15 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		loadBounds();
 
 		addWindowListener(new WindowAdapter() {
-				public void windowActivated(WindowEvent e) {
+				@Override
+        public void windowActivated(WindowEvent e) {
 					// dont look too close on this method. It recalls itself until this.name is 
 					// showing on screen and then it calls requestFocusInWindow on it (via
 					// reflection api to stay compatible with jdk < 1.4
 					SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								if(log.isDebugEnabled()) {
-									log.debug("TempUnitDialog.requestFocusInWindows: " +
+								if(TempUnitDialog.log.isDebugEnabled()) {
+									TempUnitDialog.log.debug("TempUnitDialog.requestFocusInWindows: " +
 											  TempUnitDialog.this.name.isShowing());
 								}
 
@@ -242,7 +243,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 
 	// overrides InternationalizedDialog.quit()
 	// do not dispose
-	protected void quit() {
+	@Override
+  protected void quit() {
 		settings.setProperty("TempUnitDialog.LastOrderEmpty",
 							 (order.getText().length() == 0) ? "true" : "false");
 		approved = false;
@@ -255,7 +257,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 	 *
 	 * 
 	 */
-	public void setVisible(boolean b) {
+	@Override
+  public void setVisible(boolean b) {
 		super.setVisible(b);
 
 		if(order != null) {
@@ -425,7 +428,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 	 *
 	 * 
 	 */
-	public String getName() {
+	@Override
+  public String getName() {
 		return name.getText();
 	}
 
@@ -492,7 +496,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			c.add(morePanel, con);
 			more.setText(Resources.get("completion.tempunitdialog.more.less"));
 			setFocusList(true);
-			settings.setProperty(SETTINGS_KEY, "true");
+			settings.setProperty(TempUnitDialog.SETTINGS_KEY, "true");
 		} else { // remove
 			c.remove(morePanel);
 			con.gridx = 0;
@@ -503,7 +507,7 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			layout.setConstraints(bPanel, con);
 			more.setText(Resources.get("completion.tempunitdialog.more.more"));
 			setFocusList(false);
-			settings.setProperty(SETTINGS_KEY, "false");
+			settings.setProperty(TempUnitDialog.SETTINGS_KEY, "false");
 		}
 
 		pack();
@@ -527,7 +531,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		 *
 		 * 
 		 */
-		public boolean isManagingFocus() {
+		@Override
+    public boolean isManagingFocus() {
 			return false;
 		}
 	}

@@ -51,7 +51,8 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
 	/**
 	 * 
 	 */
-	public void menuActionPerformed(ActionEvent e) {
+	@Override
+  public void menuActionPerformed(ActionEvent e) {
 		FindDialog f = new FindDialog(client, false, client.getDispatcher(), client.getData(), client.getProperties(), selectedRegions);
 		f.setVisible(true);
 	}

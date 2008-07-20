@@ -29,8 +29,8 @@ public class Sizeof {
 	 */
 	public static void main(String args[]) throws Exception {
 		// Warm up all classes/methods we will use
-		runGC();
-		usedMemory();
+		Sizeof.runGC();
+		Sizeof.usedMemory();
 
 		// Array to keep strong references to allocated objects
 		final int count = 100000;
@@ -53,14 +53,14 @@ public class Sizeof {
 				objects[i] = object;
 			} else {
 				object = null; // Discard the warm up object
-				runGC();
-				heap1 = usedMemory(); // Take a before heap snapshot
+				Sizeof.runGC();
+				heap1 = Sizeof.usedMemory(); // Take a before heap snapshot
 			}
 		}
 
-		runGC();
+		Sizeof.runGC();
 
-		long heap2 = usedMemory(); // Take an after heap snapshot:
+		long heap2 = Sizeof.usedMemory(); // Take an after heap snapshot:
 
 		final int size = Math.round(((float) (heap2 - heap1)) / count);
 		System.out.println("'before' heap: " + heap1 + ", 'after' heap: " + heap2);
@@ -78,26 +78,26 @@ public class Sizeof {
 		// It helps to call Runtime.gc()
 		// using several method calls:
 		for(int r = 0; r < 4; ++r) {
-			_runGC();
+			Sizeof._runGC();
 		}
 	}
 
 	private static void _runGC() throws Exception {
-		long usedMem1 = usedMemory();
+		long usedMem1 = Sizeof.usedMemory();
 		long usedMem2 = Long.MAX_VALUE;
 
 		for(int i = 0; (usedMem1 < usedMem2) && (i < 500); ++i) {
-			s_runtime.runFinalization();
-			s_runtime.gc();
+			Sizeof.s_runtime.runFinalization();
+			Sizeof.s_runtime.gc();
 			Thread.yield();
 
 			usedMem2 = usedMem1;
-			usedMem1 = usedMemory();
+			usedMem1 = Sizeof.usedMemory();
 		}
 	}
 
 	private static long usedMemory() {
-		return s_runtime.totalMemory() - s_runtime.freeMemory();
+		return Sizeof.s_runtime.totalMemory() - Sizeof.s_runtime.freeMemory();
 	}
 
 	private static final Runtime s_runtime = Runtime.getRuntime();

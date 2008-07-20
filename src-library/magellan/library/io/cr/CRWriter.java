@@ -113,7 +113,9 @@ public class CRWriter extends BufferedWriter {
   public CRWriter(UserInterface ui, Writer out) {
     super(out);
     this.ui = ui;
-    if (this.ui == null) ui = new NullUserInterface();
+    if (this.ui == null) {
+      ui = new NullUserInterface();
+    }
   }
 
   /**
@@ -127,7 +129,9 @@ public class CRWriter extends BufferedWriter {
     super(fileType.createWriter(encoding));
     this.ui = ui;
     this.encoding = encoding;
-    if (this.ui == null) ui = new NullUserInterface();
+    if (this.ui == null) {
+      ui = new NullUserInterface();
+    }
   }
 
   /**
@@ -141,7 +145,9 @@ public class CRWriter extends BufferedWriter {
     super(fileType.createWriter(encoding,numberOfBackups));
     this.ui = ui;
     this.encoding = encoding;
-    if (this.ui == null) ui = new NullUserInterface();
+    if (this.ui == null) {
+      ui = new NullUserInterface();
+    }
   }
   
   
@@ -154,7 +160,7 @@ public class CRWriter extends BufferedWriter {
 	 */
 	private String escapeQuotes(String text) {
 		if(text == null) {
-			log.warn("CRWriter.escapeQuotes(): argument 'text' is null");
+			CRWriter.log.warn("CRWriter.escapeQuotes(): argument 'text' is null");
 
 			return null;
 		}
@@ -184,7 +190,7 @@ public class CRWriter extends BufferedWriter {
 	 */
 	private String tildeQuotes(String text) {
 		if(text == null) {
-			log.warn("CRWriter.tildeQuotes(): argument 'text' is null");
+			CRWriter.log.warn("CRWriter.tildeQuotes(): argument 'text' is null");
 
 			return null;
 		}
@@ -217,7 +223,7 @@ public class CRWriter extends BufferedWriter {
 	 */
 	private void writeQuotedString(String str) throws IOException {
 		if(str == null) {
-			log.warn("CRWriter.writeQuotedString(): argument str is null");
+			CRWriter.log.warn("CRWriter.writeQuotedString(): argument str is null");
 
 			return;
 		}
@@ -226,12 +232,12 @@ public class CRWriter extends BufferedWriter {
 
 		if(str.indexOf('\n') != -1) {
 			repairString = true;
-			log.warn("CRWriter.writeQuotedString(): argument str contains \'\\n\'. Splitting line.");
+			CRWriter.log.warn("CRWriter.writeQuotedString(): argument str contains \'\\n\'. Splitting line.");
 		}
 
 		if(str.indexOf('\r') != -1) {
 			repairString = true;
-			log.warn("CRWriter.writeQuotedString(): argument str contains \'\\r\'. Splitting line.");
+			CRWriter.log.warn("CRWriter.writeQuotedString(): argument str contains \'\\r\'. Splitting line.");
 		}
 
 		if(repairString) {
@@ -267,13 +273,13 @@ public class CRWriter extends BufferedWriter {
 	 */
 	private void writeQuotedTag(String str, String tag) throws IOException {
 		if(str == null) {
-			log.warn("CRWriter.writeQuotedTag(): argument str is null");
+			CRWriter.log.warn("CRWriter.writeQuotedTag(): argument str is null");
 
 			return;
 		}
 
 		if(tag == null) {
-			log.warn("CRWriter.writeQuotedTag(): argument tag is null");
+			CRWriter.log.warn("CRWriter.writeQuotedTag(): argument tag is null");
 
 			return;
 		}
@@ -349,17 +355,17 @@ public class CRWriter extends BufferedWriter {
 				String value =  msg.getAttributes().get(key);
 
 				try {
-					Integer.parseInt((String) value);
+					Integer.parseInt(value);
 					write(value + ";" + key);
 					newLine();
 				} catch(NumberFormatException e) {
-					CoordinateID c = CoordinateID.parse((String) value, " ");
+					CoordinateID c = CoordinateID.parse(value, " ");
 
 					if(c != null) {
 						write(value + ";" + key);
 						newLine();
 					} else {
-						writeQuotedTag((String) value, (String) key);
+						writeQuotedTag(value, key);
 					}
 				}
 			}
@@ -482,7 +488,7 @@ public class CRWriter extends BufferedWriter {
 		String actGameName = world.getGameName().toLowerCase();
 		if ((actGameName.indexOf("eressea")>-1 || actGameName.indexOf("vinyambar")>-1) && (world.base!=36)){
 			// this should not happen
-			log.warn("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was " + world.base + ")");
+			CRWriter.log.warn("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was " + world.base + ")");
 			world.base = 36;
 		}
 		write(world.base + ";Basis");
@@ -857,18 +863,21 @@ public class CRWriter extends BufferedWriter {
 
     // write owner first
     Faction ownerFaction = null;
-    if (map.values().size() > 0)
+    if (map.values().size() > 0) {
       ownerFaction = map.values().iterator().next();
-    if (ownerFaction != null)
+    }
+    if (ownerFaction != null) {
       writeFaction(ownerFaction);
+    }
     List<Faction> sorted = new ArrayList<Faction>(map.values());
     Comparator<Faction> sortIndexComparator = new SortIndexComparator<Faction>(IDComparator.DEFAULT);
     Collections.sort(sorted, sortIndexComparator);
 
     // write other factions
     for (Faction f : sorted) {
-      if (ownerFaction == null || !f.equals(ownerFaction))
+      if (ownerFaction == null || !f.equals(ownerFaction)) {
         writeFaction(f);
+      }
     }
 	}
 
@@ -1305,19 +1314,19 @@ public class CRWriter extends BufferedWriter {
 					if(cs.getSpell().getName() != null) {
 						writeQuotedTag(cs.getSpell().getName(), "name");
 					} else {
-						log.warn("CRWriter.write(CombatSpell): warning: spell name is null!");
+						CRWriter.log.warn("CRWriter.write(CombatSpell): warning: spell name is null!");
 					}
 				} else {
-					log.warn("CRWriter.write(CombatSpell): warning: spell is null!");
+					CRWriter.log.warn("CRWriter.write(CombatSpell): warning: spell is null!");
 				}
 
 				write(cs.getCastingLevel() + ";level");
 				newLine();
 			} else {
-				log.warn("CRWriter.write(CombatSpell): warning: combat spell ID is null!");
+				CRWriter.log.warn("CRWriter.write(CombatSpell): warning: combat spell ID is null!");
 			}
 		} else {
-			log.warn("CRWriter.write(CombatSpell): warning: combat spell is null!");
+			CRWriter.log.warn("CRWriter.write(CombatSpell): warning: combat spell is null!");
 		}
 	}
 
@@ -1431,12 +1440,12 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if(unit.getTempID() != null) {
-			write(((UnitID) unit.getTempID()).intValue() + ";temp");
+			write(unit.getTempID().intValue() + ";temp");
 			newLine();
 		}
 
 		if(unit.getAlias() != null) {
-			write(((UnitID) unit.getAlias()).intValue() + ";alias");
+			write( unit.getAlias().intValue() + ";alias");
 			newLine();
 		}
 
@@ -1717,7 +1726,9 @@ public class CRWriter extends BufferedWriter {
 			return;
 		}
     
-    if (ui != null) ui.setMaximum(regions.size());
+    if (ui != null) {
+      ui.setMaximum(regions.size());
+    }
     int counter = 0;
 
 		for(Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
@@ -1733,8 +1744,12 @@ public class CRWriter extends BufferedWriter {
       
 			writeRegion(region);
 		}
-    if (ui != null) ui.setMaximum(11);
-    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.07"), counter++);
+    if (ui != null) {
+      ui.setMaximum(11);
+    }
+    if (ui != null) {
+      ui.setProgress(Resources.get("crwriterdialog.progress.07"), counter++);
+    }
 	}
 
 	/**
@@ -2135,19 +2150,19 @@ public class CRWriter extends BufferedWriter {
 	 */
 	public void writeMessageType(MessageType msgType) throws IOException {
 		if(msgType == null) {
-			log.warn("CRWriter.writeMessageType(): argument msgType is null");
+			CRWriter.log.warn("CRWriter.writeMessageType(): argument msgType is null");
 
 			return;
 		}
 
 		if((msgType.getID() == null) || (((IntegerID) msgType.getID()).intValue() < 0)) {
-			log.warn("CRWriter.writeMessageType(): invalid ID");
+			CRWriter.log.warn("CRWriter.writeMessageType(): invalid ID");
 
 			return;
 		}
 
 		if(msgType.getPattern() == null) {
-			log.warn("CRWriter.writeMessageType(): pattern of message type " + msgType.getID() +
+			CRWriter.log.warn("CRWriter.writeMessageType(): pattern of message type " + msgType.getID() +
 					 " is null");
 
 			return;
@@ -2187,7 +2202,7 @@ public class CRWriter extends BufferedWriter {
             close(true);
             savingInProgress=false;
           } catch (Exception exception) {
-            log.error(exception);
+            CRWriter.log.error(exception);
             ui.showException(Resources.get("crwriterdialog.exception"), null, exception);
           }
         }
@@ -2215,9 +2230,11 @@ public class CRWriter extends BufferedWriter {
   /**
    * @see java.io.BufferedWriter#close()
    */
+  @Override
   public void close() throws IOException {
-    if (savingInProgress) 
+    if (savingInProgress) {
       return;
+    }
     super.close();
   }
   
@@ -2230,16 +2247,24 @@ public class CRWriter extends BufferedWriter {
    */
   protected void writeThread(GameData world) throws IOException, NullPointerException {
     
-    log.info("Saving report. Encoding: " + encoding);
+    CRWriter.log.info("Saving report. Encoding: " + encoding);
     if (!encoding.equalsIgnoreCase(world.getEncoding())){
-      log.warn("Encodings differ while writing CR: writer users " + encoding + ", gamadata is set to " + world.getEncoding() + ", setting charset to:" + world.getEncoding());
+      CRWriter.log.warn("Encodings differ while writing CR: writer users " + encoding + ", gamadata is set to " + world.getEncoding() + ", setting charset to:" + world.getEncoding());
       this.encoding = world.getEncoding();
     }
-    if (ui != null) ui.setMaximum(11);
-    if (ui != null) ui.setTitle(Resources.get("crwriterdialog.progress.title"));
-    if (ui != null) ui.show();
+    if (ui != null) {
+      ui.setMaximum(11);
+    }
+    if (ui != null) {
+      ui.setTitle(Resources.get("crwriterdialog.progress.title"));
+    }
+    if (ui != null) {
+      ui.show();
+    }
     
-    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.01"), 1);
+    if (ui != null) {
+      ui.setProgress(Resources.get("crwriterdialog.progress.01"), 1);
+    }
 		writeVersion(world);
 
     if(!serverConformance) {
@@ -2247,7 +2272,9 @@ public class CRWriter extends BufferedWriter {
     }
 
 		if(!serverConformance && exportHotspots) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.02"), 2);
+      }
 			writeHotSpots(world.hotSpots());
 		}
 
@@ -2255,25 +2282,35 @@ public class CRWriter extends BufferedWriter {
     // also factions aren't necessary; maybe this needs further
     // specification
     if(includeUnits) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
+      }
       writeFactions(world.factions());
     }
     
 		if(includeSpellsAndPotions) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.04"), 4);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.04"), 4);
+      }
 			writeSpells(world.spells());
       
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.05"), 5);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.05"), 5);
+      }
 			writePotions(world.potions());
 		}
 
 		if(!serverConformance && includeIslands) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.06"), 6);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.06"), 6);
+      }
 			writeIslands(world.islands());
 		}
 
 		if(includeRegions) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.07"), 7);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.07"), 7);
+      }
 			if((regions != null) && (regions.size() > 0)) {
 				writeRegions(regions);
 			} else {
@@ -2282,15 +2319,21 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if(includeMessages) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.08"), 8);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.08"), 8);
+      }
 			writeMsgTypes(world.msgTypes());
 		}
 
-    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.09"), 9);
+    if (ui != null) {
+      ui.setProgress(Resources.get("crwriterdialog.progress.09"), 9);
+    }
 		writeTranslations(world.translations());
 
 		if(includeRegions && includeUnits && ((regions == null) || (regions.size() == 0))) {
-      if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.10"), 10);
+      if (ui != null) {
+        ui.setProgress(Resources.get("crwriterdialog.progress.10"), 10);
+      }
 			if(world.units() != null) {
 				if(world.units().size() != unitsWritten) {
 					int homelessUnitsCounter = 0;
@@ -2312,10 +2355,14 @@ public class CRWriter extends BufferedWriter {
 			}
 		}
 
-    if (ui != null) ui.setProgress(Resources.get("crwriterdialog.progress.11"), 11);
+    if (ui != null) {
+      ui.setProgress(Resources.get("crwriterdialog.progress.11"), 11);
+    }
     
-    if (ui != null) ui.ready();
-    log.info("Done saving report");
+    if (ui != null) {
+      ui.ready();
+    }
+    CRWriter.log.info("Done saving report");
 	}
   
   public boolean savingInProgress() {

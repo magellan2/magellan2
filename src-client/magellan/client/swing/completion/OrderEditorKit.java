@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.Action;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.TextAction;
@@ -37,11 +38,11 @@ public class OrderEditorKit extends StyledEditorKit {
 	public static final String copyLineAction = "copy-line-to-clipboard";
 	private static final Action defaultActions[] = {
 													   new CopyLineAction(),
-													   new PreviousWordAction(previousWordAction,
+													   new PreviousWordAction(DefaultEditorKit.previousWordAction,
 																			  false), // CTRL-Left
-	new NextWordAction(nextWordAction, false), // CTRL-Right
-	new PreviousWordAction(selectionPreviousWordAction, true), // CTRL-Left selected
-	new NextWordAction(selectionNextWordAction, true) // CTRL-Right selected
+	new NextWordAction(DefaultEditorKit.nextWordAction, false), // CTRL-Right
+	new PreviousWordAction(DefaultEditorKit.selectionPreviousWordAction, true), // CTRL-Left selected
+	new NextWordAction(DefaultEditorKit.selectionNextWordAction, true) // CTRL-Right selected
 												   };
 
 	/**
@@ -57,7 +58,8 @@ public class OrderEditorKit extends StyledEditorKit {
 	 *
 	 * @return the order list
 	 */
-	public Action[] getActions() {
+	@Override
+  public Action[] getActions() {
 		return TextAction.augmentList(super.getActions(), OrderEditorKit.defaultActions);
 	}
 
@@ -72,7 +74,7 @@ public class OrderEditorKit extends StyledEditorKit {
 		 * Creates a new CopyLineAction object.
 		 */
 		public CopyLineAction() {
-			super(copyLineAction);
+			super(OrderEditorKit.copyLineAction);
 		}
 
 		/**

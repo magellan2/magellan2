@@ -35,7 +35,8 @@ public class AdditionOperator extends AbstractOperator {
 	 *
 	 * 
 	 */
-	public Object compute(Object numbers[]) {
+	@Override
+  public Object compute(Object numbers[]) {
 		return new Float(((Number) numbers[0]).floatValue() + ((Number) numbers[1]).floatValue());
 	}
 }

@@ -43,12 +43,13 @@ public class AllanonOrderWriter extends EresseaOrderWriter {
    * Returns the instance of this class.
    */
   public static GameSpecificOrderWriter getSingleton() {
-    return instance;
+    return AllanonOrderWriter.instance;
   }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerName()
    */
+  @Override
   public String getCheckerName() {
     return "ACheck";
   }
@@ -56,6 +57,7 @@ public class AllanonOrderWriter extends EresseaOrderWriter {
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
    */
+  @Override
   public String getCheckerDefaultParameter() {
     return "";
   }

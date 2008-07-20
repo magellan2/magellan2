@@ -93,13 +93,13 @@ public class DockingLayout {
       DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       Document document = builder.parse(file);
       if (!document.getDocumentElement().getNodeName().equals("dock")) {
-        log.fatal("The file "+file+" does NOT contain Docking-layouts for Magellan. Missing XML root element 'dock'");
+        DockingLayout.log.fatal("The file "+file+" does NOT contain Docking-layouts for Magellan. Missing XML root element 'dock'");
         return null;
       }
       
-      load(layouts,document.getDocumentElement(), viewMap, views);
+      DockingLayout.load(layouts,document.getDocumentElement(), viewMap, views);
     } catch (Exception exception) {
-      log.error(exception);
+      DockingLayout.log.error(exception);
       ErrorWindow errorWindow = new ErrorWindow("Could not load docking layouts.",exception);
       errorWindow.open();
     }
@@ -112,17 +112,19 @@ public class DockingLayout {
   protected static synchronized void load(List<DockingLayout> layouts, Element root, StringViewMap viewMap, Map<String,View> views) {
     if (root.getNodeName().equalsIgnoreCase("dock")) {
       List<Element> subnodes = Utils.getChildNodes(root);
-      log.info("Found "+subnodes.size()+" Docking layouts.");
+      DockingLayout.log.info("Found "+subnodes.size()+" Docking layouts.");
       for (int i=0; i<subnodes.size(); i++) {
         Element node = subnodes.get(i);
-        load(layouts, node, viewMap, views);
+        DockingLayout.load(layouts, node, viewMap, views);
       }
     } else if (root.getNodeName().equalsIgnoreCase("rootwindow")) {
       String layoutName = root.getAttribute("name");
-      if (Utils.isEmpty(layoutName)) layoutName = "Standard";
+      if (Utils.isEmpty(layoutName)) {
+        layoutName = "Standard";
+      }
       boolean isActive = Utils.getBoolValue(root.getAttribute("isActive"),true);
       
-      log.warn("Lade Layout "+layoutName);
+      DockingLayout.log.warn("Lade Layout "+layoutName);
       DockingLayout layout = new DockingLayout(layoutName,root, viewMap, views);
       layout.setActive(isActive);
       layouts.add(layout);
@@ -133,8 +135,10 @@ public class DockingLayout {
    * Removes all views from the root window.
    */
   public void dispose() {
-    if (window == null) return;
-    log.info("Dispose Docking Layout "+name);
+    if (window == null) {
+      return;
+    }
+    DockingLayout.log.info("Dispose Docking Layout "+name);
     
     // save the current layout
     setActive(false);
@@ -144,7 +148,7 @@ public class DockingLayout {
     
     if (views != null) {
       for (View view : views.values()) {
-        log.info("Remove View "+view.getName());
+        DockingLayout.log.info("Remove View "+view.getName());
         DockingFrameworkBuilder.getInstance().setInActive(view);
         window.removeView(view);
       }
@@ -155,13 +159,19 @@ public class DockingLayout {
   protected void dispose(DockingWindow window) {
     for (int i=0; i<window.getChildWindowCount(); i++) {
       DockingWindow child = window.getChildWindow(i);
-      if (child == null) return;
+      if (child == null) {
+        return;
+      }
       
       RootWindow root = child.getRootWindow();
-      if (root == null) root = this.window;
+      if (root == null) {
+        root = this.window;
+      }
       if (child instanceof View) {
-        if (root == null) continue;
-        log.info("Remove View "+child.getName());
+        if (root == null) {
+          continue;
+        }
+        DockingLayout.log.info("Remove View "+child.getName());
         root.removeView((View)child);
       } else {
         dispose(child);
@@ -174,7 +184,9 @@ public class DockingLayout {
    * Creates the Docking Layout inside the RootWindow.
    */
   public void open(RootWindow window, Properties settings) {
-    if (window == null) log.error("RootWindow is null");
+    if (window == null) {
+      DockingLayout.log.error("RootWindow is null");
+    }
     setRootWindow(window);
     open(window,root);
     
@@ -198,9 +210,15 @@ public class DockingLayout {
       for (int i=0; i<subnodes.size(); i++) {
         Element node = subnodes.get(i);
         child = open(window,node);
-        if (child == null) continue;
-        if (child instanceof FloatingWindow) continue;
-        if (child instanceof WindowBar) continue;
+        if (child == null) {
+          continue;
+        }
+        if (child instanceof FloatingWindow) {
+          continue;
+        }
+        if (child instanceof WindowBar) {
+          continue;
+        }
         window.setWindow(child);
       }
     } else if (root.getNodeName().equalsIgnoreCase("windowbar")) {
@@ -257,14 +275,18 @@ public class DockingLayout {
       Element e = nodes.get(i);
         
       boolean isActive = Boolean.valueOf(e.getAttribute("isActive"));
-      if (isActive) selected = i;
+      if (isActive) {
+        selected = i;
+      }
       
       try {
         DockingWindow tab = open(window,Utils.getChildNode(e));
-        if (tab == null) continue;
+        if (tab == null) {
+          continue;
+        }
         tabWindow.addTab(tab);
       } catch (Throwable t) {
-        log.error(t);
+        DockingLayout.log.error(t);
       }
     }
     
@@ -283,7 +305,7 @@ public class DockingLayout {
       view = views.get(key);
       DockingFrameworkBuilder.getInstance().setActive(view);
     } catch (Throwable t) {
-      log.error(t);
+      DockingLayout.log.error(t);
     }
     return view;
   }
@@ -297,9 +319,13 @@ public class DockingLayout {
     for (int i=0; i<subnodes.size(); i++) {
       Element element = subnodes.get(i);
       child = open(window,element);
-      if (child != null) break;
+      if (child != null) {
+        break;
+      }
     }
-    if (child == null) return null;
+    if (child == null) {
+      return null;
+    }
     int x = Utils.getIntValue(root.getAttribute("x"));
     int y = Utils.getIntValue(root.getAttribute("y"));
     int width = Utils.getIntValue(root.getAttribute("width"));
@@ -334,7 +360,9 @@ public class DockingLayout {
       for (int i=0; i<subnodes.size(); i++) {
         Element element = subnodes.get(i);
         DockingWindow child = open(window,element);
-        if (child != null) windowBar.addTab(child);
+        if (child != null) {
+          windowBar.addTab(child);
+        }
       }
     }
     
@@ -353,7 +381,7 @@ public class DockingLayout {
       Document document = builder.parse(new StringInputStream(buffer.toString()));
       return document.getDocumentElement();
     } catch (Exception exception) {
-      log.error(exception);
+      DockingLayout.log.error(exception);
     }
     return null;
   }
@@ -381,7 +409,9 @@ public class DockingLayout {
    * Writes all informations about a DockingWindow into the StringBuffer as XML.
    */
   protected synchronized void save(StringBuffer buffer, DockingWindow window, String offset) {
-    if (window == null) return;
+    if (window == null) {
+      return;
+    }
     if (window instanceof SplitWindow) {
       save(buffer,(SplitWindow)window,offset);
     } else if (window instanceof TabWindow) {
@@ -395,9 +425,9 @@ public class DockingLayout {
     } else if (window instanceof WindowBar) {
       save(buffer,(WindowBar)window,offset);
     } else {
-      log.warn("UNKNOWN DockingWindow Type");
-      log.warn("Title:"+window.getTitle());
-      log.warn("Type.:"+window.getClass().getName());
+      DockingLayout.log.warn("UNKNOWN DockingWindow Type");
+      DockingLayout.log.warn("Title:"+window.getTitle());
+      DockingLayout.log.warn("Type.:"+window.getClass().getName());
       for (int i=0; i<window.getChildWindowCount(); i++) {
         save(buffer,window.getChildWindow(i),offset+"  ");
       }
@@ -436,7 +466,9 @@ public class DockingLayout {
     for (int i=0; i<window.getChildWindowCount(); i++) {
       DockingWindow tab = window.getChildWindow(i);
       boolean active = false;
-      if (window.getSelectedWindow() != null && tab != null) active = window.getSelectedWindow().equals(tab); 
+      if (window.getSelectedWindow() != null && tab != null) {
+        active = window.getSelectedWindow().equals(tab);
+      } 
       buffer.append(offset+" <tab isActive='"+active+"'>\r\n");
       save(buffer,tab,offset+"  ");
       buffer.append(offset+" </tab>\r\n");
@@ -499,7 +531,7 @@ public class DockingLayout {
       
       buffer.append("\r\n").append(offset).append(output).append("\r\n");
     } catch (Exception exception) {
-      log.error("error during dock layout save process.",exception);
+      DockingLayout.log.error("error during dock layout save process.",exception);
     }
   }
   
@@ -597,7 +629,7 @@ public class DockingLayout {
       Document document = builder.parse(new StringInputStream(buffer.toString()));
       return document.getDocumentElement();
     } catch (Exception exception) {
-      log.error("Error during default layout creating",exception);
+      DockingLayout.log.error("Error during default layout creating",exception);
       return null;
     }
   }

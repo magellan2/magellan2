@@ -53,7 +53,8 @@ public class SkillCategory extends Category {
 	 *
 	 * 
 	 */
-	public boolean isInstance(Object o) {
+	@Override
+  public boolean isInstance(Object o) {
 		if(o instanceof SkillType) {
 			SkillType st = (SkillType) o;
 

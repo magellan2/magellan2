@@ -83,8 +83,10 @@ public class Resources {
    * This method returns the singleton of this class
    */
   public static synchronized Resources getInstance() {
-    if (_instance == null) _instance = new Resources();
-    return _instance;
+    if (Resources._instance == null) {
+      Resources._instance = new Resources();
+    }
+    return Resources._instance;
   }
   
   /**
@@ -94,8 +96,10 @@ public class Resources {
    * files from files called "mapedit_resources.properties".
    */
   public void initialize(File magellanDirectory, String prefix) {
-    if (prefix == null) prefix = "";
-    log.info("Initializing resources for prefix...'"+prefix+"'");
+    if (prefix == null) {
+      prefix = "";
+    }
+    Resources.log.info("Initializing resources for prefix...'"+prefix+"'");
     
     File resourceDirectory = new File(magellanDirectory,"etc");
     
@@ -108,18 +112,18 @@ public class Resources {
       }
     }
     
-    log.info("Searching resources in "+resourceDirectory);
+    Resources.log.info("Searching resources in "+resourceDirectory);
     File[] files = resourceDirectory.listFiles(new ResourceFilenameFilter(prefix));
     
     for (File file : files) {
       String resourceName = file.getName();
       if (resourceName.equalsIgnoreCase(prefix+"resources.properties")) {
         // default resource...
-        resourceName = DEFAULT;
+        resourceName = Resources.DEFAULT;
       } else {
         resourceName = resourceName.substring(prefix.length()+10,resourceName.length()-11);
       }
-      log.info("Load resource '"+file.getName()+"' as "+resourceName);
+      Resources.log.info("Load resource '"+file.getName()+"' as "+resourceName);
       try {
         FileInputStream stream = new FileInputStream(file);
         MyResourceBundle bundle = new MyResourceBundle(stream);
@@ -130,7 +134,7 @@ public class Resources {
           bundles.put(resourceName, bundle);
         }
       } catch (Exception exception) {
-        log.error("Could not load resource '"+file+"'");
+        Resources.log.error("Could not load resource '"+file+"'");
       }
     }
     
@@ -141,11 +145,11 @@ public class Resources {
    * the default translation as ENGLISH.
    */
   public static List<Locale> getAvailableLocales() {
-    Resources resources = getInstance();
+    Resources resources = Resources.getInstance();
     List<Locale> locales = new ArrayList<Locale>();
     for (String bundlename : resources.bundles.keySet()) {
       Locale locale = null;
-      if (bundlename.equals(DEFAULT)) {
+      if (bundlename.equals(Resources.DEFAULT)) {
         locale = Locale.ENGLISH;
       } else {
         if (bundlename.indexOf("_")>0) {
@@ -156,8 +160,12 @@ public class Resources {
           locale = new Locale(bundlename);
         }
       }
-      if (locale == null) continue;
-      if (locales.contains(locale)) continue;
+      if (locale == null) {
+        continue;
+      }
+      if (locales.contains(locale)) {
+        continue;
+      }
       locales.add(locale);
     }
     return locales;
@@ -167,10 +175,10 @@ public class Resources {
    * This method returns the wanted resourcebundle.
    */
   public static ResourceBundle getResourceBundle(Locale locale) {
-    Resources resources = getInstance();
+    Resources resources = Resources.getInstance();
     if (locale == null) {
-      if (resources.bundles.containsKey(DEFAULT)) {
-        return resources.bundles.get(DEFAULT);
+      if (resources.bundles.containsKey(Resources.DEFAULT)) {
+        return resources.bundles.get(Resources.DEFAULT);
       }
     } else {
       String localeName = locale.toString();
@@ -196,7 +204,7 @@ public class Resources {
    * the resource in the default resources.
    */
   public static String get(String key) {
-    return get(key,true);
+    return Resources.get(key,true);
   }
   
   /**
@@ -206,7 +214,7 @@ public class Resources {
    * the resource in the default resources.
    */
   public static String get(String key, Object... args) {
-    String value = get(key);
+    String value = Resources.get(key);
     if (value != null) {
       value = new MessageFormat(value).format(args);
     }
@@ -223,7 +231,7 @@ public class Resources {
    * the method returns null otherwise it returns a String
    */
   public static String get(String key, boolean returnKey) {
-    return get(key,Locale.getDefault(),returnKey);
+    return Resources.get(key,Locale.getDefault(),returnKey);
   }
   
   /**
@@ -231,8 +239,8 @@ public class Resources {
    */
   public Enumeration<String> getKeys(Locale locale) {
     if (locale == null) {
-      if (bundles.containsKey(DEFAULT)) {
-        return bundles.get(DEFAULT).getKeys();
+      if (bundles.containsKey(Resources.DEFAULT)) {
+        return bundles.get(Resources.DEFAULT).getKeys();
       }
     } else {
       String localeName = locale.toString();
@@ -261,13 +269,15 @@ public class Resources {
    * is returned.
    */
   public static String get(String key, Locale locale, boolean returnKey) {
-    if (locale == null) locale = Locale.getDefault();
+    if (locale == null) {
+      locale = Locale.getDefault();
+    }
     key = key.trim().replaceAll(" ","");
     if (key.startsWith("magellan.")) {
-      log.warn("Using deprecated resource key with prefix 'magellan.'. The key '"+key+"' will be truncated.");
+      Resources.log.warn("Using deprecated resource key with prefix 'magellan.'. The key '"+key+"' will be truncated.");
       key = key.substring(9);
     }
-    Resources resources = getInstance();
+    Resources resources = Resources.getInstance();
     String result = resources.getResource(key, locale);
     
     if (result == null) {
@@ -277,7 +287,7 @@ public class Resources {
       }
     }
     if (result == null && returnKey) {
-      log.warn("Could not find the resource key '"+key+"' in the resources. See "+getLine()+" for more details");
+      Resources.log.warn("Could not find the resource key '"+key+"' in the resources. See "+Resources.getLine()+" for more details");
       result = key;
       // try to find out who calls us
     }
@@ -291,29 +301,33 @@ public class Resources {
    * the resource in the default resources.
    */
   public static String getFormatted(String key, Object... args){
-    String message = get(key, false);
+    String message = Resources.get(key, false);
     if (message==null){
-      log.warn("Could not find the resource key '"+key+"' in the resources. See "+getLine()+" for more details");
+      Resources.log.warn("Could not find the resource key '"+key+"' in the resources. See "+Resources.getLine()+" for more details");
       return key;
     }
     return (new java.text.MessageFormat(message)).format(args);
   }
   
   protected static StringWriter sw = new StringWriter();
-  protected static PrintWriter pw = new PrintWriter(sw);
+  protected static PrintWriter pw = new PrintWriter(Resources.sw);
   
   /**
    * Liefert die Zeilennummer, von der eine Operation aufgerufen wurde.
    */
   private static String getLine() {
-    int lineNumber = 0;
+    //int lineNumber = 0;
     Throwable throwable = new Throwable();
-    if (sw == null) sw = new StringWriter();
-    if (pw == null) pw = new PrintWriter(sw);
-    throwable.printStackTrace(pw);
+    if (Resources.sw == null) {
+      Resources.sw = new StringWriter();
+    }
+    if (Resources.pw == null) {
+      Resources.pw = new PrintWriter(Resources.sw);
+    }
+    throwable.printStackTrace(Resources.pw);
     throwable = null;
-    String s = sw.toString();
-    sw.getBuffer().setLength(0);
+    String s = Resources.sw.toString();
+    Resources.sw.getBuffer().setLength(0);
     StringTokenizer tokenizer = new StringTokenizer(s,"\n");
     String caller1 = null;
     String caller2 = null;
@@ -328,13 +342,19 @@ public class Resources {
       // Suche nach der ersten Zeile, die nicht in dieser Klasse liegt.
       if (token.indexOf(Resources.class.getName()) < 0) {
         caller1 = token;
-        if (tokenizer.hasMoreTokens()) caller2 = tokenizer.nextToken();
+        if (tokenizer.hasMoreTokens()) {
+          caller2 = tokenizer.nextToken();
+        }
         break;
       }
     }
-    if (caller1 == null) return caller1;
+    if (caller1 == null) {
+      return caller1;
+    }
     caller1 = caller1.trim().substring(3);
-    if (caller2 != null) caller1 = caller1+" & "+caller2.trim().substring(3);
+    if (caller2 != null) {
+      caller1 = caller1+" & "+caller2.trim().substring(3);
+    }
     return caller1;
   }
    
@@ -346,7 +366,7 @@ public class Resources {
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getOrderTranslation(String key) {
-    return getOrderTranslation(key, Locales.getOrderLocale());
+    return Resources.getOrderTranslation(key, Locales.getOrderLocale());
   }
   
   /**
@@ -357,7 +377,7 @@ public class Resources {
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getRuleItemTranslation(String key) {
-    return getRuleItemTranslation(key, Locales.getOrderLocale());
+    return Resources.getRuleItemTranslation(key, Locales.getOrderLocale());
   }
   
   /**
@@ -369,28 +389,28 @@ public class Resources {
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getRuleItemTranslation(String key, Locale locale) {
-    Resources resources = getInstance();
+    Resources resources = Resources.getInstance();
     key = "rules."+key;
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {
-      if (log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
-        log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + translation + "\"");
-        loggedOrderTranslations.add(key);
+      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
+        Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + translation + "\"");
+        Resources.loggedOrderTranslations.add(key);
       }
 
       return translation;
     }
 
     // no translation found, give back key
-    if(log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
-      log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key + "\"");
-      loggedOrderTranslations.add(key);
+    if(Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
+      Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key + "\"");
+      Resources.loggedOrderTranslations.add(key);
     }
 
     // no translation found, give back key
     if(!Locale.GERMAN.equals(locale)) {
-      log.warn("Resources.getOrderTranslation(" + key + "," + locale +"): no valid translation found, returning key");
+      Resources.log.warn("Resources.getOrderTranslation(" + key + "," + locale +"): no valid translation found, returning key");
     }
 
     return key;
@@ -407,28 +427,28 @@ public class Resources {
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getOrderTranslation(String key, Locale locale) {
-    Resources resources = getInstance();
+    Resources resources = Resources.getInstance();
     key = "orders."+key;
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {
-      if (log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
-        log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + translation + "\"");
-        loggedOrderTranslations.add(key);
+      if (Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
+        Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + translation + "\"");
+        Resources.loggedOrderTranslations.add(key);
       }
 
       return translation;
     }
 
     // no translation found, give back key
-    if(log.isDebugEnabled() && !loggedOrderTranslations.contains(key)) {
-      log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key + "\"");
-      loggedOrderTranslations.add(key);
+    if(Resources.log.isDebugEnabled() && !Resources.loggedOrderTranslations.contains(key)) {
+      Resources.log.debug("Resources.getOrderTranslation(" + key + "," + locale + "): \"" + key + "\"");
+      Resources.loggedOrderTranslations.add(key);
     }
 
     // no translation found, give back key
     if(!Locale.ENGLISH.equals(locale)) {
-      log.warn("Resources.getOrderTranslation(" + key + "," + locale +"): no valid translation found, returning key");
+      Resources.log.warn("Resources.getOrderTranslation(" + key + "," + locale +"): no valid translation found, returning key");
     }
 
     return key;
@@ -441,7 +461,7 @@ public class Resources {
    * @see ResourcePathClassLoader
    */
   public static Collection<URL> getStaticPaths() {
-    return Collections.unmodifiableCollection(staticResourcePaths);
+    return Collections.unmodifiableCollection(Resources.staticResourcePaths);
   }
 
 
@@ -451,9 +471,9 @@ public class Resources {
    */
   public static void setStaticPaths(Collection<URL> paths) {
     if(paths == null) {
-      staticResourcePaths = new LinkedList<URL>();
+      Resources.staticResourcePaths = new LinkedList<URL>();
     } else {
-      staticResourcePaths = paths;
+      Resources.staticResourcePaths = paths;
     }
   }
   
@@ -468,7 +488,7 @@ public class Resources {
       try {
         resourcePaths.add(new URL(location));
       } catch(MalformedURLException e) {
-        log.error(e);
+        Resources.log.error(e);
       }
     }
     Resources.setStaticPaths(resourcePaths);
@@ -491,13 +511,13 @@ public class Resources {
    */
   private String getResource(String key, Locale locale) {
     if (locale == null) {
-      if (bundles.containsKey(DEFAULT) && bundles.get(DEFAULT).containsKey(key)) {
-        return bundles.get(DEFAULT).getResource(key);
+      if (bundles.containsKey(Resources.DEFAULT) && bundles.get(Resources.DEFAULT).containsKey(key)) {
+        return bundles.get(Resources.DEFAULT).getResource(key);
       }
     } else {
       String localeName = locale.toString();
       if (Locale.ENGLISH.equals(locale)){
-        localeName = DEFAULT;
+        localeName = Resources.DEFAULT;
       }
       if (bundles.containsKey(localeName) && bundles.get(localeName).containsKey(key)) {
         return bundles.get(localeName).getResource(key);
@@ -535,7 +555,9 @@ class ResourceFilenameFilter implements FilenameFilter {
   }
 
   public ResourceFilenameFilter(String prefix) {
-    if (prefix == null) prefix = "";
+    if (prefix == null) {
+      prefix = "";
+    }
     this.prefix = prefix;
   }
   
@@ -580,7 +602,9 @@ class MyResourceBundle extends PropertyResourceBundle {
     } catch (Exception exception) {
       if (childResources.size()>0) {
         for (MyResourceBundle child : childResources) {
-          if (child.containsKey(key)) return child.getResource(key);
+          if (child.containsKey(key)) {
+            return child.getResource(key);
+          }
         }
       }
     }
@@ -594,6 +618,7 @@ class MyResourceBundle extends PropertyResourceBundle {
    * 
    * @see java.util.ResourceBundle#containsKey(java.lang.String)
    */
+  @Override
   public boolean containsKey(String key) {
     try {
       getString(key);
@@ -602,7 +627,9 @@ class MyResourceBundle extends PropertyResourceBundle {
       // let us try the childs...
       if (childResources.size()>0) {
         for (MyResourceBundle child : childResources) {
-          if (child.containsKey(key)) return true;
+          if (child.containsKey(key)) {
+            return true;
+          }
         }
       }
       return false;

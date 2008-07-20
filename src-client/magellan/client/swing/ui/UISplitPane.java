@@ -59,7 +59,8 @@ public class UISplitPane extends JSplitPane {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void updateUI() {
+	@Override
+  public void updateUI() {
 		/* take care of UI changes */
 		super.updateUI();
 		changeDividerBorder();

@@ -51,7 +51,8 @@ public class ReserveRelation extends UnitRelation {
 	/* (non-Javadoc)
 	 * @see com.eressea.relation.UnitRelation#toString()
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return super.toString() + "@ITEMTYPE=" + itemType + "@AMOUNT="+amount;
 	}
 

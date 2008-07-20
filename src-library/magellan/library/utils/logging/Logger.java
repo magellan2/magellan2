@@ -56,7 +56,7 @@ public class Logger {
 	public static final int AWT = 6;
 
   private static Logger DEFAULT = new Logger("");
-	private static int verboseLevel = INFO;
+	private static int verboseLevel = Logger.INFO;
 	private static Object awtLogger = null;
 	private static boolean searchAwtLogger = true;
   private static LogListener DEFAULTLOGLISTENER = new DefaultLogListener();
@@ -83,7 +83,7 @@ public class Logger {
 			throw new NullPointerException();
 		}
 
-		return getInstance(aClass.getName());
+		return Logger.getInstance(aClass.getName());
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class Logger {
 		// of different loggers, so reduce memory footprint
 		// of Magellan
 		// return new Logger(aBase);
-		return DEFAULT;
+		return Logger.DEFAULT;
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class Logger {
    * @param level The new log level.
    */
 	public static void setLevel(int level) {
-		verboseLevel = level;
+		Logger.verboseLevel = level;
 	}
 
 	/**
@@ -120,31 +120,31 @@ public class Logger {
 		String level = aLevel.toUpperCase();
 
 		if(level.startsWith("O")) {
-			setLevel(OFF);
+			Logger.setLevel(Logger.OFF);
 		}
 
 		if(level.startsWith("F")) {
-			setLevel(FATAL);
+			Logger.setLevel(Logger.FATAL);
 		}
 
 		if(level.startsWith("E")) {
-			setLevel(ERROR);
+			Logger.setLevel(Logger.ERROR);
 		}
 
 		if(level.startsWith("W")) {
-			setLevel(WARN);
+			Logger.setLevel(Logger.WARN);
 		}
 
 		if(level.startsWith("I")) {
-			setLevel(INFO);
+			Logger.setLevel(Logger.INFO);
 		}
 
 		if(level.startsWith("D")) {
-			setLevel(DEBUG);
+			Logger.setLevel(Logger.DEBUG);
 		}
 
 		if(level.startsWith("A")) {
-			setLevel(AWT);
+			Logger.setLevel(Logger.AWT);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class Logger {
 	 * @return The current verbosity level
 	 */
 	public static int getLevel(){
-	  return verboseLevel;
+	  return Logger.verboseLevel;
 	}
 	
 	/**
@@ -160,7 +160,7 @@ public class Logger {
 	 * @return The string representation of <code>level</code> 
 	 */
 	public static String getLevel(int level) {
-		if(level <= OFF) {
+		if(level <= Logger.OFF) {
 			return "OFF";
 		}
 
@@ -189,22 +189,22 @@ public class Logger {
 	 * 
 	 */
 	private void log(int aLevel, Object aObj, Throwable aThrowable) {
-		if(verboseLevel >= aLevel) {
-			if(logListeners.isEmpty()) {
-				DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
+		if(Logger.verboseLevel >= aLevel) {
+			if(Logger.logListeners.isEmpty()) {
+				Logger.DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
 			} else {
-				for(LogListener l : logListeners ) {
+				for(LogListener l : Logger.logListeners ) {
 					l.log(aLevel, aObj, aThrowable);
 				}
 				if (Logger.activateDefaultLogListener) {
-				  DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
+				  Logger.DEFAULTLOGLISTENER.log(aLevel, aObj, aThrowable);
 				}
 			}
 		}
 	}
 	
 	public static void activateDefaultLogListener(boolean activate) {
-	  activateDefaultLogListener = activate;
+	  Logger.activateDefaultLogListener = activate;
 	}
 
 	/**
@@ -218,14 +218,14 @@ public class Logger {
 	 * 
 	 */
 	public void fatal(Object aObj, Throwable aThrowable) {
-		log(FATAL, aObj, aThrowable);
+		log(Logger.FATAL, aObj, aThrowable);
 	}
 
 	/**
 	 * 
 	 */
 	public boolean isFatalEnabled() {
-		return verboseLevel >= FATAL;
+		return Logger.verboseLevel >= Logger.FATAL;
 	}
 
 	/**
@@ -239,16 +239,16 @@ public class Logger {
    * 
    */
   public void errorOnce(Object aObj) {
-    if (onceErrors == null){
+    if (Logger.onceErrors == null){
       // create new list
-      onceErrors = new HashSet<Object>();
+      Logger.onceErrors = new HashSet<Object>();
     }
-    if (onceErrors.contains(aObj)){
+    if (Logger.onceErrors.contains(aObj)){
       // already processed error
       return;
     }
     // add to errors - list
-    onceErrors.add(aObj);
+    Logger.onceErrors.add(aObj);
     // normal call to Logger.error
     error(aObj);
   }
@@ -258,14 +258,14 @@ public class Logger {
 	 * 
 	 */
 	public void error(Object aObj, Throwable aThrowable) {
-		log(ERROR, aObj, aThrowable);
+		log(Logger.ERROR, aObj, aThrowable);
 	}
 
 	/**
 	 * 
 	 */
 	public boolean isErrorEnabled() {
-		return verboseLevel >= ERROR;
+		return Logger.verboseLevel >= Logger.ERROR;
 	}
 
 	/**
@@ -280,16 +280,16 @@ public class Logger {
    * 
    */
   public void warnOnce(Object aObj) {
-    if (onceWarnings == null){
+    if (Logger.onceWarnings == null){
       // create new list
-      onceWarnings = new HashSet<Object>();
+      Logger.onceWarnings = new HashSet<Object>();
     }
-    if (onceWarnings.contains(aObj)){
+    if (Logger.onceWarnings.contains(aObj)){
       // already processed warning
       return;
     }
     // add to warnings - list
-    onceWarnings.add(aObj);
+    Logger.onceWarnings.add(aObj);
     // normal call to Logger.warn
     warn(aObj);
   }
@@ -299,14 +299,14 @@ public class Logger {
 	 * 
 	 */
 	public void warn(Object aObj, Throwable aThrowable) {
-		log(WARN, aObj, aThrowable);
+		log(Logger.WARN, aObj, aThrowable);
 	}
 
 	/**
 	 * 
 	 */
 	public boolean isWarnEnabled() {
-		return verboseLevel >= WARN;
+		return Logger.verboseLevel >= Logger.WARN;
 	}
 
 	/**
@@ -320,14 +320,14 @@ public class Logger {
 	 * 
 	 */
 	public void info(Object aObj, Throwable aThrowable) {
-		log(INFO, aObj, aThrowable);
+		log(Logger.INFO, aObj, aThrowable);
 	}
 
 	/**
 	 * 
 	 */
 	public boolean isInfoEnabled() {
-		return verboseLevel >= INFO;
+		return Logger.verboseLevel >= Logger.INFO;
 	}
 
 	/**
@@ -341,14 +341,14 @@ public class Logger {
 	 * 
 	 */
 	public void debug(Object aObj, Throwable aThrowable) {
-		log(DEBUG, aObj, aThrowable);
+		log(Logger.DEBUG, aObj, aThrowable);
 	}
 
 	/**
 	 * 
 	 */
 	public boolean isDebugEnabled() {
-		return verboseLevel >= DEBUG;
+		return Logger.verboseLevel >= Logger.DEBUG;
 	}
 
 	/**
@@ -362,14 +362,14 @@ public class Logger {
 	 * 
 	 */
 	public void awt(Object aObj, Throwable aThrowable) {
-		log(AWT, aObj, aThrowable);
+		log(Logger.AWT, aObj, aThrowable);
 
 		if(isAwtEnabled()) {
-			if(searchAwtLogger) {
-				searchAwtLogger = false;
+			if(Logger.searchAwtLogger) {
+				Logger.searchAwtLogger = false;
 
 				try {
-					awtLogger = Class.forName("magellan.library.utils.logging.AWTLogger").newInstance();
+					Logger.awtLogger = Class.forName("magellan.library.utils.logging.AWTLogger").newInstance();
 				} catch(ClassNotFoundException e) {
 					debug("AWTLogger not found", e);
 				} catch(InstantiationException e) {
@@ -380,12 +380,12 @@ public class Logger {
 			}
 		}
 
-		if(awtLogger != null) {
+		if(Logger.awtLogger != null) {
 			try {
 				Class parameterTypes[] = new Class[] { Object.class, Throwable.class };
 				Object arguments[] = new Object[] { aObj, aThrowable };
-				Method method = awtLogger.getClass().getMethod("log", parameterTypes);
-				method.invoke(awtLogger, arguments);
+				Method method = Logger.awtLogger.getClass().getMethod("log", parameterTypes);
+				method.invoke(Logger.awtLogger, arguments);
 			} catch(NoSuchMethodException e) {
 				debug(e);
 			} catch(InvocationTargetException e) {
@@ -400,17 +400,17 @@ public class Logger {
 	 * 
 	 */
 	public boolean isAwtEnabled() {
-		return verboseLevel >= AWT;
+		return Logger.verboseLevel >= Logger.AWT;
 	}
 	
 	private static Collection<LogListener> logListeners = new ArrayList<LogListener>();
 
 	public static void addLogListener(LogListener l) {
-		logListeners.add(l);
+		Logger.logListeners.add(l);
 	}
 
 	public static void removeLogListener(LogListener l) {
-		logListeners.remove(l);
+		Logger.logListeners.remove(l);
 	}
 
 	

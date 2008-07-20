@@ -230,9 +230,9 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 * 
 	 */
 	public void selectionChanged(SelectionEvent e) {
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.selectionChanged: " + e.getActiveObject());
-			log.debug("OrderEditor.selectionChanged: " + e.getActiveObject().getClass());
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject());
+			OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject().getClass());
 		}
 
 		Object activeObject = e.getActiveObject();
@@ -296,8 +296,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	}
 
 	private void setOrdersAndFireEvent() {
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.setOrdersAndFireEvent(" + isModified() + "," + unit + ")");
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.setOrdersAndFireEvent(" + isModified() + "," + unit + ")");
 		}
 
 		if(isModified() && (unit != null)) {
@@ -381,7 +381,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 			stream.close();
 		} catch(IOException ioe) {
-			log.warn(ioe);
+			OrderEditor.log.warn(ioe);
 		}
 
 		return orders;
@@ -432,7 +432,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 				formatTokens(insertPos);
 			}
 		} catch(BadLocationException e) {
-			log.warn("OrderEditor.addOrder(): " + e.toString());
+			OrderEditor.log.warn("OrderEditor.addOrder(): " + e.toString());
 		}
 
 		ignoreModifications = false;
@@ -516,32 +516,32 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 */
 	private void initStyles() {
 		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-		Style regular = addStyle(S_REGULAR, def);
-		Style s = addStyle(S_KEYWORD, regular);
+		Style regular = addStyle(OrderEditor.S_REGULAR, def);
+		Style s = addStyle(OrderEditor.S_KEYWORD, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		S_KEYWORD + ".color",
-																		getDefaultColor(S_KEYWORD))));
-		s = addStyle(S_STRING, regular);
+																		OrderEditor.S_KEYWORD + ".color",
+																		getDefaultColor(OrderEditor.S_KEYWORD))));
+		s = addStyle(OrderEditor.S_STRING, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		S_STRING + ".color",
-																		getDefaultColor(S_STRING))));
-		s = addStyle(S_NUMBER, regular);
+																		OrderEditor.S_STRING + ".color",
+																		getDefaultColor(OrderEditor.S_STRING))));
+		s = addStyle(OrderEditor.S_NUMBER, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		S_NUMBER + ".color",
-																		getDefaultColor(S_NUMBER))));
-		s = addStyle(S_ID, regular);
+																		OrderEditor.S_NUMBER + ".color",
+																		getDefaultColor(OrderEditor.S_NUMBER))));
+		s = addStyle(OrderEditor.S_ID, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		S_ID + ".color",
-																		getDefaultColor(S_ID))));
-		s = addStyle(S_COMMENT, regular);
+																		OrderEditor.S_ID + ".color",
+																		getDefaultColor(OrderEditor.S_ID))));
+		s = addStyle(OrderEditor.S_COMMENT, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		S_COMMENT + ".color",
-																		getDefaultColor(S_COMMENT))));
+																		OrderEditor.S_COMMENT + ".color",
+																		getDefaultColor(OrderEditor.S_COMMENT))));
 	}
 
 	/**
@@ -554,15 +554,15 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	private String getDefaultColor(String styleName) {
 		String retVal = "0,0,0";
 
-		if(styleName.equals(S_KEYWORD)) {
+		if(styleName.equals(OrderEditor.S_KEYWORD)) {
 			retVal = "0,0,255";
-		} else if(styleName.equals(S_STRING)) {
+		} else if(styleName.equals(OrderEditor.S_STRING)) {
 			retVal = "192,0,0";
-		} else if(styleName.equals(S_NUMBER)) {
+		} else if(styleName.equals(OrderEditor.S_NUMBER)) {
 			retVal = "0,0,0";
-		} else if(styleName.equals(S_ID)) {
+		} else if(styleName.equals(OrderEditor.S_ID)) {
 			retVal = "168,103,0";
-		} else if(styleName.equals(S_COMMENT)) {
+		} else if(styleName.equals(OrderEditor.S_COMMENT)) {
 			retVal = "0,128,0";
 		}
 
@@ -578,36 +578,36 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 */
 	private Style getTokenStyle(OrderToken t) {
 		StyledDocument doc = (StyledDocument) getDocument();
-		Style retVal = doc.getStyle(S_REGULAR);
+		Style retVal = doc.getStyle(OrderEditor.S_REGULAR);
 
 		switch(t.ttype) {
 		case OrderToken.TT_UNDEF:
-			retVal = doc.getStyle(S_REGULAR);
+			retVal = doc.getStyle(OrderEditor.S_REGULAR);
 
 			break;
 
 		case OrderToken.TT_KEYWORD:
-			retVal = doc.getStyle(S_KEYWORD);
+			retVal = doc.getStyle(OrderEditor.S_KEYWORD);
 
 			break;
 
 		case OrderToken.TT_STRING:
-			retVal = doc.getStyle(S_STRING);
+			retVal = doc.getStyle(OrderEditor.S_STRING);
 
 			break;
 
 		case OrderToken.TT_NUMBER:
-			retVal = doc.getStyle(S_NUMBER);
+			retVal = doc.getStyle(OrderEditor.S_NUMBER);
 
 			break;
 
 		case OrderToken.TT_ID:
-			retVal = doc.getStyle(S_ID);
+			retVal = doc.getStyle(OrderEditor.S_ID);
 
 			break;
 
 		case OrderToken.TT_COMMENT:
-			retVal = doc.getStyle(S_COMMENT);
+			retVal = doc.getStyle(OrderEditor.S_COMMENT);
 
 			break;
 		}
@@ -621,7 +621,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 *
 	 * 
 	 */
-	public String getText() {
+	@Override
+  public String getText() {
 		String text = super.getText();
 
 		if((text == null) || (text.indexOf('\r') == -1)) {
@@ -664,15 +665,15 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 		newStartPos = pos[0];
 
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + "," + pos[0] + "," +
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + "," + pos[0] + "," +
 					  pos[1] + ")");
 		}
 
 		text = text.substring(pos[0], pos[1]);
 
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
 		}
 
 		parser.read(new StringReader(text));
@@ -680,16 +681,16 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		for(Iterator iter = parser.getTokens().iterator(); iter.hasNext();) {
 			OrderToken token = (OrderToken) iter.next();
 
-			if(log.isDebugEnabled()) {
-				log.debug("OrderEditor.formatTokens: token " + token);
+			if(OrderEditor.log.isDebugEnabled()) {
+				OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);
 			}
 
 			if(token.ttype != OrderToken.TT_EOC) {
 				Style style = getTokenStyle(token);
 
 				if(style != null) {
-					if(log.isDebugEnabled()) {
-						log.debug("OrderEditor.formatTokens setting style from " +
+					if(OrderEditor.log.isDebugEnabled()) {
+						OrderEditor.log.debug("OrderEditor.formatTokens setting style from " +
 								  (newStartPos + token.getStart()) + " length " +
 								  (token.getEnd() - token.getStart()));
 					}
@@ -719,8 +720,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		int pos = 0;
 
 		while(pos != -1) {
-			if(log.isDebugEnabled()) {
-				log.debug("OrderEditor.formatTokens(): formatting pos " + pos);
+			if(OrderEditor.log.isDebugEnabled()) {
+				OrderEditor.log.debug("OrderEditor.formatTokens(): formatting pos " + pos);
 			}
 
 			formatTokens(pos);
@@ -731,8 +732,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			}
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.formatTokens(): formatting done");
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.formatTokens(): formatting done");
 		}
 	}
 
@@ -778,18 +779,18 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 				ret[1] = text.length();
 			}
 		} catch(StringIndexOutOfBoundsException e) {
-			log.error("OrderEditor.getLineBorders(), text: " + text + ", offset: " + offset +
+			OrderEditor.log.error("OrderEditor.getLineBorders(), text: " + text + ", offset: " + offset +
 					  ", ret: (" + ret[0] + ", " + ret[1] + ")", e);
 		}
 
-		if(log.isDebugEnabled()) {
-			log.debug("OrderEditor.getLineBorders:(" + text + "," + offset + ") " + ret[0] + "," +
+		if(OrderEditor.log.isDebugEnabled()) {
+			OrderEditor.log.debug("OrderEditor.getLineBorders:(" + text + "," + offset + ") " + ret[0] + "," +
 					  ret[1]);
 		}
 
 		if(ret[0] >= 0) {
 			if(ret[1] > ret[0]) {
-				log.debug("OrderEditor.getLineBorders would be \"" +
+				OrderEditor.log.debug("OrderEditor.getLineBorders would be \"" +
 						  text.substring(ret[0], ret[1]) + "\"");
 			}
 		}
@@ -823,9 +824,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	private class OrderEditorCaret extends DefaultCaret {
 		private boolean keepVis = true;
 
-		protected void adjustVisibility(Rectangle nloc) {
-			if(log.isDebugEnabled()) {
-				log.debug("OrderEditor(" + unit + "): adjustVisibility(" + keepVis + "," + nloc +
+		@Override
+    protected void adjustVisibility(Rectangle nloc) {
+			if(OrderEditor.log.isDebugEnabled()) {
+				OrderEditor.log.debug("OrderEditor(" + unit + "): adjustVisibility(" + keepVis + "," + nloc +
 						  ")");
 			}
 
@@ -840,8 +842,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		 * 
 		 */
 		public void setKeepVisible(boolean mode) {
-			if(log.isDebugEnabled()) {
-				log.debug("OrderEditor: setting caret.setKeepVisible(" + mode + ")");
+			if(OrderEditor.log.isDebugEnabled()) {
+				OrderEditor.log.debug("OrderEditor: setting caret.setKeepVisible(" + mode + ")");
 			}
 
 			keepVis = mode;

@@ -60,7 +60,8 @@ public abstract class MagellanNamedImpl extends MagellanIdentifiableImpl impleme
 	 *
 	 * 
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return this.name;
 	}
 
@@ -71,7 +72,8 @@ public abstract class MagellanNamedImpl extends MagellanIdentifiableImpl impleme
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+  public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 

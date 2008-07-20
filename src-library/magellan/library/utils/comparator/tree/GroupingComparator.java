@@ -42,8 +42,9 @@ public class GroupingComparator<T> implements Comparator<T> {
    *          delivers 0.
    */
   public GroupingComparator(Comparator<? super T> mainComparator, GroupingComparator<? super T> subComparator) {
-    if (mainComparator == null)
+    if (mainComparator == null) {
       throw new NullPointerException();
+    }
     main = mainComparator;
     sub = subComparator;
   }
@@ -63,7 +64,7 @@ public class GroupingComparator<T> implements Comparator<T> {
   }
 
   public static<S> GroupingComparator<S> buildFromList(Comparator<S>[] comparators) {
-    return buildFromList(Arrays.asList(comparators));
+    return GroupingComparator.buildFromList(Arrays.asList(comparators));
   }
 
   private static<S> GroupingComparator<S> buildFromList(List<Comparator<S> > comparators) {
@@ -71,6 +72,6 @@ public class GroupingComparator<T> implements Comparator<T> {
       return null;
     }
 
-    return new GroupingComparator<S>(comparators.remove(0), buildFromList(comparators));
+    return new GroupingComparator<S>(comparators.remove(0), GroupingComparator.buildFromList(comparators));
   }
 }

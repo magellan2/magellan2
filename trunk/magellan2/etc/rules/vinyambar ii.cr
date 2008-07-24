@@ -1344,8 +1344,8 @@ ITEM "Sphäre der Unsichtbarkeit"
 1;weight
 1;storeinbonw
 
-ITEM "Tigel mit Krötenschleim"
-"Tigel mit Krötenschleim";name
+ITEM "Tiegel mit Krötenschleim"
+"Tiegel mit Krötenschleim";name
 "misc";category
 1;weight
 1;storeinbonw

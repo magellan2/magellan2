@@ -1154,7 +1154,7 @@ public abstract class GameData implements Cloneable {
               GameData.log.errorOnce("Region without ID!");
             }
           } else {
-            GameData.log.errorOnce("Ship without Region!");
+            GameData.log.errorOnce("Building without Region!" + b.toString());
           }
 
           if ((curRegion == null) || curRegion.units().isEmpty()) {

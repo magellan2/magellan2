@@ -1,3 +1,7 @@
+2008-07-24 / Build 218 - Fiete (sf@fietefietz.de)
+	* rules (Eressea + Vi II): weight of some artefacts added
+	* GameData: infomsg for #287 completed
+
 2008-07-20 / Build 217 - Thoralf (thoralf@m84.de)
     * bugfix for "cancel" in ExtCmds
     * added a security question to avoid losing data (ExtCmds)

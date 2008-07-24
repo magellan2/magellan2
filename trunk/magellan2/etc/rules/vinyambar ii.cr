@@ -1332,6 +1332,24 @@ ITEM "Orkhauer"
 "trophies";category
 0.01;weight
 
+ITEM "Zauberbeutel"
+"Zauberbeutel";name
+"misc";category
+1;weight
+0;storeinbonw
+
+ITEM "Sphäre der Unsichtbarkeit"
+"Sphäre der Unsichtbarkeit";name
+"misc";category
+1;weight
+1;storeinbonw
+
+ITEM "Tigel mit Krötenschleim"
+"Tigel mit Krötenschleim";name
+"misc";category
+1;weight
+1;storeinbonw
+
 SHIPTYPE "Boot"
 "Boot";name
 5;size

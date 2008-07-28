@@ -1350,6 +1350,30 @@ ITEM "Tiegel mit Krötenschleim"
 1;weight
 1;storeinbonw
 
+ITEM "Magischer Kräuterbeutel"
+"Magischer Kräuterbeutel";name
+1;weight
+"misc";category
+1;storeinbonw
+
+ITEM "Schlangenkopf"
+"Schlangenkopf";name
+5;weight
+"trophies";category
+1;storeinbonw
+
+ITEM "Drachenkopf"
+"Drachenkopf";name
+5;weight
+"trophies";category
+1;storeinbonw
+
+ITEM "Ring der flinken Finger"
+"Ring der flinken Finger";name
+1;weight
+"misc";category
+1;storeinbonw
+
 SHIPTYPE "Boot"
 "Boot";name
 5;size

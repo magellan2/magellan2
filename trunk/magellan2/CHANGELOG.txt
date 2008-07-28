@@ -1,3 +1,6 @@
+2008-07-28 / Build 219 - Fiete  <Fiete@users.sourceforge.net>
+	* added some Items to rules, incl weight of AdmantiumX
+
 2008-07-24 / Build 218 - Fiete (sf@fietefietz.de)
 	* rules (Eressea + Vi II): weight of some artefacts added
 	* GameData: infomsg for #287 completed

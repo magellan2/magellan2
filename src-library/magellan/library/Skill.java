@@ -134,12 +134,8 @@ public class Skill {
 			int terrainBonus = 0;
 			int buildingBonus = 0;
 
-			if(unit.getRealRace() != null) {
-				raceBonus = unit.getRealRace().getSkillBonus(getSkillType());
-			} else {
-				if(unit.getRace() != null) {
-					raceBonus = unit.getRace().getSkillBonus(getSkillType());
-				}
+			if(unit.getRace() != null) {
+				raceBonus = unit.getRace().getSkillBonus(getSkillType());
 			}
 
 			if(unit.getRegion() != null) {
@@ -221,10 +217,10 @@ public class Skill {
 	 * the specified unit resides in.
 	 */
 	public static int getModifier(SkillType skillType, Unit unit) {
-		Race race = (unit.getRealRace() != null) ? unit.getRealRace() : unit.getRace();
+		Race realRace = unit.getRace();
 		RegionType terrain = (unit.getRegion() != null) ? unit.getRegion().getRegionType() : null;
 
-		return Skill.getModifier(skillType, race, terrain);
+		return Skill.getModifier(skillType, realRace, terrain);
 	}
 
 	/**

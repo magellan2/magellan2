@@ -220,10 +220,6 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	private Race getRace(Unit unit) {
 		Race race = unit.getRace();
 
-		if(unit.getRealRace() != null) {
-			race = unit.getRealRace();
-		}
-
 		return race;
 	}
 

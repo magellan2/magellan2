@@ -722,20 +722,23 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return the name or null if this unit's race or its name is not set.
 	 */
 	public String getRaceName(GameData data) {
-		if(this.race != null) {
+	  Race tempRace = getDisguiseRace();
+	  if (tempRace==null)
+	    tempRace = getRace();
+		if(tempRace != null) {
 			if(this.getRaceNamePrefix() != null) {
 				return data.getTranslation(this.getRaceNamePrefix()) +
-					   this.race.getName().toLowerCase();
+					   tempRace.getName().toLowerCase();
 			} else {
 				if((this.group != null) && (this.group.getRaceNamePrefix() != null)) {
 					return data.getTranslation(this.group.getRaceNamePrefix()) +
-						   this.race.getName().toLowerCase();
+						   tempRace.getName().toLowerCase();
 				} else {
 					if((this.faction != null) && (this.faction.getRaceNamePrefix() != null)) {
 						return data.getTranslation(this.faction.getRaceNamePrefix()) +
-							   this.race.getName().toLowerCase();
+							   tempRace.getName().toLowerCase();
 					} else {
-						return this.race.getName();
+						return tempRace.getName();
 					}
 				}
 			}
@@ -748,12 +751,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return The String of the RealRace. If no RealRace is known( = null)
 	 * the normal raceName is returned.
 	 */
-	public String getRealRaceName(){
+	public String getSimpleRealRaceName(){
 		if (this.realRace==null) {
-			// return this.race.toString();
-			return this.race.id.toString();
+			return getSimpleRaceName();
 		} else {
-			return this.realRace.id.toString();
+			return this.realRace.getName();
 		}
 	}
 	
@@ -765,7 +767,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return Name of the race
 	 */
 	public String getSimpleRaceName(){
-		return this.race.toString();
+		return this.race.getName();
 	}
 	
 	
@@ -1823,11 +1825,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				Item modifiedItem = cache.modifiedItems.get(StringID.create("Silber"));
 
 				if(modifiedItem != null) {
-					Race recruitmentRace = this.realRace;
-
-					if(recruitmentRace == null) {
-						recruitmentRace = this.race;
-					}
+					Race recruitmentRace = this.getRace();
 
 					if((recruitmentRace != null) && (recruitmentRace.getRecruitmentCosts() > 0)) {
 						modifiedItem.setAmount(modifiedItem.getAmount() -
@@ -3144,12 +3142,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
   }
 
   /**
-   * Returns the value of race.
-   * 
-   * @return Returns race.
+   * @see magellan.library.Unit#getRace()
    */
   public Race getRace() {
-    return race;
+    if (realRace!=null)
+      return realRace;
+    else
+      return race;
   }
 
   /**
@@ -3162,12 +3161,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
   }
 
   /**
-   * Returns the value of realRace.
-   * 
-   * @return Returns realRace.
+   * @see magellan.library.Unit#getDisguiseRace()
    */
-  public Race getRealRace() {
-    return realRace;
+  public Race getDisguiseRace() {
+    if (realRace!=null)
+      return race;
+    else
+      return null;
   }
 
   /**

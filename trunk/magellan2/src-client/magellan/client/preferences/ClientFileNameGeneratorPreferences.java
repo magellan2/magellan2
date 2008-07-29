@@ -29,20 +29,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.FileNameGenerator;
 import magellan.library.utils.Resources;
 
-public class ClientFileNameGeneratorPreferences extends JPanel implements PreferencesAdapter {
+public class ClientFileNameGeneratorPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private Properties settings;
   protected JTextField patternField;
 
@@ -55,31 +50,11 @@ public class ClientFileNameGeneratorPreferences extends JPanel implements Prefer
   }
 
   private void initGUI() {
-    /*
-    */
-
-    // set up the panel for the maximum file history size
-    // layout this container
-    setLayout(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints();
-
-    c.insets.top = 10;
-    c.insets.bottom = 10;
-    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
-                   GridBagConstraints.NORTHWEST,
-                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    this.add(getFileNameGeneratorPanel(), c);
-
+    getFileNameGeneratorPanel(addPanel(Resources.get("util.filenamegenerator.prefs.title")));
   }
 
-  private Component getFileNameGeneratorPanel() {
-    JPanel fileNameGeneratorPanel = new JPanel();
+  private Component getFileNameGeneratorPanel(JPanel fileNameGeneratorPanel) {
     fileNameGeneratorPanel.setLayout(new GridBagLayout());
-    fileNameGeneratorPanel.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-                               new EmptyBorder(0, 3, 3, 3)),
-                    Resources.get("util.filenamegenerator.prefs.title")));
 
     GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
                             GridBagConstraints.WEST,

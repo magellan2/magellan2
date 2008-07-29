@@ -62,7 +62,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 
-import magellan.client.swing.InternationalizedPanel;
+import magellan.client.preferences.AbstractPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -70,9 +70,9 @@ import magellan.library.utils.replacers.ReplacerFactory;
 
 
 /**
- * The pereferences panel providing a GUI to configure a Mapper object.
+ * The preferences panel providing a GUI to configure a Mapper object.
  */
-public class MapperPreferences extends InternationalizedPanel implements PreferencesAdapter,
+public class MapperPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter,
 																		 ActionListener
 {
 	// The source component to configure
@@ -113,8 +113,7 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		JButton configureTooltips = new JButton(Resources.get("map.mapperpreferences.showtooltips.configure.caption"));
 		configureTooltips.addActionListener(this);
 
-		JPanel helpPanel = new JPanel(new GridBagLayout());
-		helpPanel.setBorder(BorderFactory.createTitledBorder(""));
+		JPanel helpPanel = addPanel(null, new GridBagLayout());
 
 		GridBagConstraints gbc = new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST,
 														GridBagConstraints.HORIZONTAL,
@@ -128,9 +127,9 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 		gbc.fill = GridBagConstraints.NONE;
 		helpPanel.add(configureTooltips, gbc);
 
-		JPanel rendererPanel = new JPanel(new BorderLayout());
-		rendererPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("map.mapperpreferences.border.rendereroptions")));
-		planes = new JTabbedPane();
+		JPanel rendererPanel = addPanel(Resources.get("map.mapperpreferences.border.rendereroptions"), new BorderLayout());
+
+		planes = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.WRAP_TAB_LAYOUT);
 		rendererPanel.add(planes, BorderLayout.CENTER);
 
 		for(RenderingPlane plane : source.getPlanes()) {
@@ -156,10 +155,10 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
         Component adapterComponent = adap.getComponent();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(adapterComponent,BorderLayout.NORTH);
-				temp.add(panel, r.getName());
-				rendererAdapters.add(adap);
+        temp.add(panel, r.getName());
+        rendererAdapters.add(adap);
 			}
-
+			
 			availableRenderers.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent e) {
 						if(e.getStateChange() == ItemEvent.SELECTED) {
@@ -212,16 +211,6 @@ public class MapperPreferences extends InternationalizedPanel implements Prefere
 			planes.addTab(plane.toString(), aRendererPanel);
 		}
 
-		setLayout(new GridBagLayout());
-
-		GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.CENTER,
-													  GridBagConstraints.HORIZONTAL,
-													  new Insets(3, 3, 3, 3), 0, 0);
-		add(helpPanel, c);
-		c.gridy++;
-		c.weighty = 1;
-		c.fill = GridBagConstraints.BOTH;
-		add(rendererPanel, c);
 	}
 
     public void initPreferences() {

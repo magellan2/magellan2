@@ -1516,7 +1516,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					});
 
 				this.setLayout(new BorderLayout());
-				this.add(new JScrollPane(list), BorderLayout.CENTER);
+				JScrollPane scrollPane = new JScrollPane(list);
+				// list gets too wide if we have very long faction names so...
+				scrollPane.setPreferredSize(new Dimension(200, 100));
+				this.add(scrollPane, BorderLayout.CENTER);
 
 				if(mode) {
 					JPanel left = new JPanel(magellan.client.swing.CenterLayout.SPAN_X_LAYOUT);

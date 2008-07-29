@@ -31,24 +31,19 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.NameGenerator;
 import magellan.library.utils.Resources;
 
 
- public class ClientNameGeneratorPreferences extends JPanel implements PreferencesAdapter, ActionListener {
+ public class ClientNameGeneratorPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter, ActionListener {
   protected JCheckBox active;
   protected JTextField fileField;
   protected Properties settings;
@@ -62,32 +57,11 @@ import magellan.library.utils.Resources;
   }
 
   private void initGUI() {
-    /*
-    */
-
-    // set up the panel for the maximum file history size
-    // layout this container
-    setLayout(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints();
-
-    c.insets.top = 10;
-    c.insets.bottom = 10;
-    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
-                   GridBagConstraints.NORTHWEST,
-                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    // help panel
-    this.add(getNameGeneratorPanel(), c);
-    c.insets.top = 0;
+    getNameGeneratorPanel(addPanel(Resources.get("util.namegenerator.prefs.title")));
   }
 
-  private Component getNameGeneratorPanel() {
-    JPanel help = new JPanel();
+  private Component getNameGeneratorPanel(JPanel help) {
     help.setLayout(new GridBagLayout());
-    help.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-                               new EmptyBorder(0, 3, 3, 3)),
-                    Resources.get("util.namegenerator.prefs.title")));
 
     GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
                             GridBagConstraints.WEST,

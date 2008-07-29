@@ -113,8 +113,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 
 		setContentPane(getMainPane());
 
-		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "760"));
-		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "500"));
+		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "790"));
+		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "690"));
 		setSize(width, height);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

@@ -924,8 +924,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       boolean infoExists = false;
 
+      JTextArea info=null;
       try {
-        JTextArea info = new JTextArea(Resources.get("map.advancedregionshapecellrenderer.prefs.help"), 10, 5);
+        info = new JTextArea(Resources.get("map.advancedregionshapecellrenderer.prefs.help"), 10, 10);
         info.setLineWrap(true);
         info.setWrapStyleWord(true);
         info.setEditable(false);
@@ -950,11 +951,12 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         con.gridx = 2;
         con.gridy = 2;
         con.fill = GridBagConstraints.VERTICAL;
-        con.gridheight = 3;
+        con.gridheight = 4;
         mainPanel.add(info, con);
         con.insets = oldInsets;
         infoExists = true;
       } catch (Exception exc) {
+        info=null;
       }
 
       con.gridx = 1;
@@ -986,43 +988,52 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       mPanel = new MappingPanel();
       mPanel.load(prefSet);
 
-      con.fill = GridBagConstraints.NONE;
+      con.fill = GridBagConstraints.BOTH;
       con.gridy++;
+      con.gridheight=2;
+//      con.weighty=0;
       mainPanel.add(mPanel, con);
-
+//      con.weighty=.2;
+      con.gridheight=1;
+      
       if (infoExists) {
         con.gridwidth = 2;
       }
 
-      con.gridy++;
+      con.gridy+=2;
       con.fill = GridBagConstraints.HORIZONTAL;
       mainPanel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.fill = GridBagConstraints.NONE;
 
-      con.gridwidth = 1;
-
+      con.gridwidth = 2;
       con.gridy++;
-      mainPanel.add(new JLabel(Resources.get("map.advancedregionshapecellrenderer.prefs.result")), con);
+
+      JPanel resultPanel = new JPanel(new FlowLayout());
+      resultPanel.add(new JLabel(Resources.get("map.advancedregionshapecellrenderer.prefs.result")));
 
       cShowPanel = new ColorShowPanel();
 
       Dimension dim = new Dimension(mPanel.getPreferredSize());
+      if (info!=null)
+        dim.width+=info.getPreferredSize().width/2;
       dim.height = 30;
       cShowPanel.setPreferredSize(dim);
       cShowPanel.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-      con.gridy++;
-      mainPanel.add(cShowPanel, con);
-
+      resultPanel.add(cShowPanel);
+      
+      mainPanel.add(resultPanel, con);
+      
       con.fill = GridBagConstraints.NONE;
       con.anchor = GridBagConstraints.CENTER;
       con.gridx = 0;
       con.gridy = 0;
-      con.gridheight = 3;
+      con.gridwidth=1;
+      con.gridheight = 5;
       con.insets = new Insets(1, 1, 1, 10);
       mainPanel.add(createMenu(), con);
 
-      con.gridy = 3;
-      con.gridheight = 5;
+      con.gridy = 5;
+      con.gridheight = 3;
       con.fill = GridBagConstraints.BOTH;
       mainPanel.add(createList(), con);
 
@@ -1104,18 +1115,18 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       panel.add(addSet, con);
       con.gridy++;
       panel.add(renameSet, con);
-      con.gridy++;
-      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
+//      con.gridy++;
+//      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(removeSet, con);
-      con.gridy++;
-      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
+//      con.gridy++;
+//      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(importSet, con);
       con.gridy++;
       panel.add(exportSet, con);
-      con.gridy++;
-      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
+//      con.gridy++;
+//      panel.add(new JSeparator(SwingConstants.HORIZONTAL), con);
       con.gridy++;
       panel.add(setTooltip, con);
       con.gridy++;
@@ -1126,7 +1137,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     protected Container createTexts() {
       JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(1, 1, 0, 0), 0, 0);
+      GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.LINE_START, GridBagConstraints.NONE, new Insets(1, 1, 0, 0), 0, 0);
 
       for (int i = 0; i < 4; i++) {
         con.gridx = (i % 2) * 2;
@@ -1628,12 +1639,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         help.add(myShow, BorderLayout.CENTER);
         help.add(mapPainter, BorderLayout.SOUTH);
         help.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        help.setMinimumSize(new Dimension(300, 50));
-        help.setPreferredSize(new Dimension(300, 50));
+        help.setMinimumSize(new Dimension(250, 50));
+        help.setPreferredSize(new Dimension(250, 50));
         this.add(help, BorderLayout.CENTER);
 
         textValue = new JTextField(5);
         textValue.addActionListener(this);
+        textValue.setEditable(false);
+        textValue.setEnabled(true);
         help = new JPanel(new FlowLayout(FlowLayout.CENTER));
         help.add(textValue);
         this.add(help, BorderLayout.SOUTH);
@@ -2093,7 +2106,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
        * Creates a new MappingPanel object.
        */
       public MappingPanel() {
-        this.setPreferredSize(new Dimension(300, 150));
+        this.setPreferredSize(new Dimension(150, 100));
         this.setLayout(new BorderLayout());
 
         normCursor = this.getCursor();

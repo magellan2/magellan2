@@ -26,14 +26,12 @@ package magellan.client.preferences;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
@@ -50,7 +48,6 @@ import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import magellan.client.Client;
 import magellan.client.swing.MagellanLookAndFeel;
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -62,7 +59,7 @@ import magellan.library.utils.logging.Logger;
  * @author ...
  * @version 1.0, 15.02.2008
  */
-public class ClientLookAndFeelPreferences extends JPanel implements PreferencesAdapter, ActionListener {
+public class ClientLookAndFeelPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter, ActionListener {
   private final Logger log = Logger.getInstance(ClientLookAndFeelPreferences.class);
   
   protected JTextField editFontSize;
@@ -87,40 +84,13 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
   }
 
   private void initGUI() {
-    this.setLayout(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints();
-    c.insets.top = 10;
-    c.insets.bottom = 10;
-    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 0.0,
-                   GridBagConstraints.NORTHWEST,
-                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    // Look And Feel Panel
-    add(createLAndFPanel(), c);
-
-    c.insets.top = 0;
-
-    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 0.0, /* different weighty!*/
-                   GridBagConstraints.NORTHWEST,
-                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    // font panel
-    add(createFontPanel(), c);
-    
-    GridBagHelper.setConstraints(c, 0, 2, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, /* different weighty!*/
-        GridBagConstraints.NORTHWEST,
-        GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    //  font panel
-    add(createMiscPanel(), c);
-    
+    createLAndFPanel(addPanel(Resources.get("clientpreferences.border.lookandfeel")));
+    createFontPanel(addPanel(Resources.get("clientpreferences.border.fontsize")));
+    createMiscPanel(addPanel(Resources.get("clientpreferences.border.misc")));
   }
 
-  protected Container createFontPanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-                               Resources.get("clientpreferences.border.fontsize")));
+  protected Container createFontPanel(JPanel panel) {
+    panel.setLayout(new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
                             GridBagConstraints.WEST,
@@ -171,12 +141,12 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
     return panel;
   }
 
-  protected Container createLAndFPanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
+  protected Container createLAndFPanel(JPanel panel) {
+    panel.setLayout(new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                            GridBagConstraints.NORTHWEST,
-                            GridBagConstraints.HORIZONTAL,
+                            GridBagConstraints.FIRST_LINE_START,
+                            GridBagConstraints.NONE,
                             new Insets(3, 3, 3, 3), 0, 0);
 
     panel.add(new JLabel( Resources.get("clientpreferences.lbl.lafrenderer.caption")), con);
@@ -186,30 +156,25 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
     jComboBoxLaF.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     jComboBoxLaF.setSelectedValue(settings.getProperty(PropertiesHelper.CLIENT_LOOK_AND_FEEL, "Metal"), true);
     con.gridx = 1;
-    con.weightx = 0;
+    con.weightx = 1;
     panel.add(new JScrollPane(jComboBoxLaF), con);
 
     JButton button = new JButton( Resources.get("clientpreferences.desktopcolor.button"));
     button.addActionListener(this);
     con.gridx = 1;
     con.gridy = 1;
-    con.weightx = 0;
+    con.weightx = 1;
     panel.add(button, con);
 
-    JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEADING));
-    panel2.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-                                Resources.get("clientpreferences.border.lookandfeel")));
-    panel2.add(panel);
-
-    return panel2;
+    return panel;
   }
 
-  protected Container createMiscPanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
+  protected Container createMiscPanel(JPanel panel) {
+    panel.setLayout(new GridBagLayout());
 
-    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
-                            GridBagConstraints.NORTHWEST,
-                            GridBagConstraints.HORIZONTAL,
+    GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 1, 0,
+                            GridBagConstraints.FIRST_LINE_START,
+                            GridBagConstraints.NONE,
                             new Insets(3, 3, 3, 3), 0, 0);
 
     chkRootHandles = new JCheckBox(Resources.get("clientpreferences.lbl.roothandles"));
@@ -219,12 +184,7 @@ public class ClientLookAndFeelPreferences extends JPanel implements PreferencesA
 //    lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), source.getMessagePanel().isLineWrap());
 //    panel.add(lineWrap);
     
-    JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEADING));
-    panel2.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-                                Resources.get("clientpreferences.border.misc")));
-    panel2.add(panel);
-
-    return panel2;
+    return panel;
   }
 
   /**

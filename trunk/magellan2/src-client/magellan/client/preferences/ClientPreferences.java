@@ -34,8 +34,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
-import magellan.client.swing.InternationalizedPanel;
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.FileNameGenerator;
@@ -53,7 +51,7 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 350 $
  */
-public class ClientPreferences extends InternationalizedPanel implements ExtendedPreferencesAdapter {
+public class ClientPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
 	private static final Logger log = Logger.getInstance(ClientPreferences.class);
 	Properties settings = null;
 	Client source = null;
@@ -123,42 +121,16 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
     
     subAdapters.add(new ClientMessagePreferences(source.getMessagePanel()));
 
-		// layout this container
-		setLayout(new GridBagLayout());
-
-		GridBagConstraints c = new GridBagConstraints();
-
-		c.insets.top = 10;
-		c.insets.bottom = 10;
-		GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 0.0,
-									 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-									 c.insets, 0, 0);
-
-		c.insets.top = 0;
-
 		// locales
-		add(getLocalesPanel(), c);
-
-		GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.REMAINDER, 1, 1.0, 0.0,
-									 GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-									 c.insets, 0, 0);
-
-		// temp unit panel
-		add(getTempUnitPanel(), c);
-    
-    GridBagHelper.setConstraints(c, 0, 4, GridBagConstraints.REMAINDER, 1, 1.0, 1.0, /* different weighty!*/
-         GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL,
-         c.insets, 0, 0);
-
-    // add the misc panel...
-    add(getMiscPanel(),c);
+		getLocalesPanel();
+		getTempUnitPanel();
+		getMiscPanel();
 		
 	}
 	
 
   private Component getMiscPanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    panel.setBorder(new TitledBorder( Resources.get("clientpreferences.misc.border")));
+    JPanel panel = addPanel(Resources.get("clientpreferences.misc.border"), new GridBagLayout());
 
     GridBagConstraints c = new GridBagConstraints();
     c.insets = new Insets(2, 2, 2, 2);
@@ -232,12 +204,11 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 
 	private Component getTempUnitPanel() {
 		// tempUnitIDs
-		JPanel tempIDs = new JPanel(new GridBagLayout());
+		JPanel tempIDs = addPanel(Resources.get("clientpreferences.border.temps"), new GridBagLayout());
 		GridBagConstraints c2 = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 													   GridBagConstraints.WEST,
 													   GridBagConstraints.VERTICAL,
 													   new Insets(4, 4, 4, 4), 0, 0);
-		tempIDs.setBorder(new TitledBorder( Resources.get("clientpreferences.border.temps")));
 
 		JLabel label = new JLabel( Resources.get("clientpreferences.tempids"));
 		tempIDs.add(label, c2);
@@ -308,8 +279,7 @@ public class ClientPreferences extends InternationalizedPanel implements Extende
 	private Component getLocalesPanel() {
 		Object availLocales[] = { new LocaleWrapper(Locale.GERMAN), new LocaleWrapper(Locale.ENGLISH) };
 
-		JPanel pnlLocales = new JPanel(new GridBagLayout());
-    pnlLocales.setBorder(new TitledBorder( Resources.get("clientpreferences.border.locales")));
+		JPanel pnlLocales = addPanel(Resources.get("clientpreferences.border.locales"), new GridBagLayout());
 
 		cmbGUILocale = new JComboBox(availLocales);
 		cmbGUILocale.setSelectedItem(new LocaleWrapper(Locales.getGUILocale()));

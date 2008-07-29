@@ -29,11 +29,11 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComponent;
@@ -55,7 +55,7 @@ import magellan.library.utils.Resources;
  * @author ...
  * @version 1.0, 15.11.2007
  */
-public class ClientMessagePreferences extends JPanel implements PreferencesAdapter {
+public class ClientMessagePreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   protected MessagePanel src;
   protected JCheckBox lineWrap;
   
@@ -74,43 +74,23 @@ public class ClientMessagePreferences extends JPanel implements PreferencesAdapt
    * Creates a new Pref object.
    */
   public ClientMessagePreferences(MessagePanel src) {
-    super(new GridBagLayout());
+    JPanel help =
+        addPanel(Resources.get("messagepanel.prefs.border.title"), new FlowLayout(
+            FlowLayout.LEADING));
     this.src = src;
-
-    JPanel help = new JPanel(new FlowLayout(FlowLayout.LEADING));
-    help.setBorder(BorderFactory.createTitledBorder(Resources.get("messagepanel.prefs.border.title")));
 
     lineWrap = new JCheckBox(Resources.get("messagepanel.prefs.linewrap"), src.isLineWrap());
     help.add(lineWrap);
 
-    GridBagConstraints c = new GridBagConstraints();
 
-    setLayout(new GridBagLayout());
-    c.insets.top = 5;
-    c.insets.left = 5;
-    c.insets.right = 5;
-    c.insets.bottom = 5;
-    GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.RELATIVE, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-    this.add(help, c);
-    
-    JPanel colors = new JPanel(new GridBagLayout());
-    colors.setBorder(BorderFactory.createTitledBorder(Resources.get("clientpreferences.border.messagecolors")));
-    GridBagHelper.setConstraints(c, 0, 1, GridBagConstraints.RELATIVE, 2, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-    this.add(colors, c);
-    
-    JPanel dummy = new JPanel(new GridBagLayout());
-    GridBagHelper.setConstraints(c, 0, 2, GridBagConstraints.REMAINDER, 3, 1.0, 2.0, GridBagConstraints.NORTHWEST, GridBagConstraints.BOTH, c.insets, 0, 0);
-    this.add(dummy, c);
+    JPanel colors = addPanel(Resources.get("clientpreferences.border.messagecolors"), new GridBagLayout());
     
     Properties settings = Client.INSTANCE.getProperties();
-    c = new GridBagConstraints();
-    c.insets.top = 5;
-    c.insets.left = 5;
-    c.insets.right = 20;
-    c.insets.bottom = 5;
     
     
     JLabel label = new JLabel(Resources.get("clientpreferences.messagecolors.events"));
+    GridBagConstraints c = new GridBagConstraints(0, 0, GridBagConstraints.RELATIVE, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, new Insets(3,3,3,3), 0, 0);
+    
     GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.RELATIVE, 1, 1.0, 1.0, GridBagConstraints.NORTHWEST, GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
     colors.add(label, c);
     

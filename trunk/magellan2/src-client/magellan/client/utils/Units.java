@@ -27,6 +27,7 @@ import javax.swing.tree.TreeNode;
 
 import magellan.client.EMapDetailsPanel;
 import magellan.client.swing.GiveOrderDialog;
+import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
@@ -536,7 +537,7 @@ public class Units {
    * @see GiveOrderDialog#showGiveOrderDialog()
    * @param s
    */
-  public static void changeOrders(Unit u, String[] s) {
+  public static void addOrders(Unit u, String[] s) {
     if (s == null || s.length != 4) {
       throw new IllegalArgumentException("expecting exactly 4 arguments");
     }
@@ -561,7 +562,6 @@ public class Units {
               }
             }
 
-            System.err.println(position);
             if (position.equals(GiveOrderDialog.FIRST_POS)) {
               for (String sHelp : newOrderArray) {
                 newOrders.add(0, sHelp);
@@ -591,6 +591,42 @@ public class Units {
             }
           }
         }
+      }
+    }
+  }
+
+  /**
+   * Modifies <code>u</code>'s orders as specified in <code>s</code>.
+   * 
+   * @see RemoveOrderDialog#showDialog()
+   * @param s
+   */
+  public static void removeOrders(Unit u, String[] s) {
+    if (s == null || s.length != 3) {
+      throw new IllegalArgumentException("expecting exactly 3 arguments");
+    }
+
+    if (s[0] != null) {
+      String pattern = s[0];
+      String mode = s[1];
+      String matchCase = s[2];
+      
+      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+        Collection oldOrders = u.getOrders();
+        List<String> newOrders = new LinkedList<String>();
+
+        for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
+          String order = (String) iterator.next();
+          String casedOrder;
+          if (matchCase.equals("false"))
+            casedOrder = order.toLowerCase();
+          else
+            casedOrder = order;
+          if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern)) 
+                || (mode.equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern))))
+            newOrders.add(order);
+        }
+        u.setOrders(newOrders);
       }
     }
   }

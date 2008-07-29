@@ -28,6 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -57,7 +59,7 @@ public class GiveOrderDialog extends InternationalizedDialog {
 	 *
 	 * 
 	 */
-	public GiveOrderDialog(Frame owner) {
+	public GiveOrderDialog(Frame owner, String caption) {
 		super(owner, true);
 		setTitle(Resources.get("giveorderdialog.window.title"));
 
@@ -68,7 +70,17 @@ public class GiveOrderDialog extends InternationalizedDialog {
 													  GridBagConstraints.BOTH,
 													  new Insets(3, 3, 3, 3), 0, 0);
 
-		cp.add(new JLabel(Resources.get("giveorderdialog.window.message")), c);
+    c.gridwidth=2;
+    JLabel captionLabel = new JLabel(caption);
+    captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
+    captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+    cp.add(captionLabel, c);
+
+    c.gridwidth=1;
+    c.gridy++;
+
+    cp.add(new JLabel(Resources.get("giveorderdialog.window.message")), c);
 
 		order = new JTextArea(3,25);
 		// order.setPreferredSize(new Dimension(200, 75));
@@ -89,12 +101,11 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		position.add(lastButton);
 		position.setSelected(firstButton.getModel(), true);
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy++;
 		c.weightx = 0;
 		c.anchor = GridBagConstraints.WEST;
 		cp.add(firstButton, c);
 		c.gridx = 1;
-		c.gridy = 1;
 		c.weightx = 0;
 		c.anchor = GridBagConstraints.EAST;
 		cp.add(lastButton, c);
@@ -102,20 +113,20 @@ public class GiveOrderDialog extends InternationalizedDialog {
 		
 		replaceOrders = new JCheckBox(Resources.get("giveorderdialog.chkbox.replaceOrder.title"));
 		c.gridx = 0;
-		c.gridy = 2;
+    c.gridy++;
 		c.weightx = 0;
 		cp.add(replaceOrders, c);
 
 		keepComments = new JCheckBox(Resources.get("giveorderdialog.chkbox.keepComments.title"));
 		keepComments.setSelected(true);
-		c.gridy = 3;
+    c.gridy++;
 		cp.add(keepComments, c);
 
 		ok = new JButton(Resources.get("giveorderdialog.btn.ok.caption"));
 		ok.setMnemonic(Resources.get("giveorderdialog.btn.ok.mnemonic").charAt(0));
 
 		// actionListener is added in the show() method
-		c.gridy = 4;
+    c.gridy++;
 		c.anchor = GridBagConstraints.EAST;
 		cp.add(ok, c);
 

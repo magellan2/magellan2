@@ -492,8 +492,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    */
   public Skill getSkill(SkillType type);
   
+  /**
+   * @return
+   * 
+   * FIXME explain
+   */
   public boolean isSkillsCopied();
 
+  /**
+   * @param skillsCopied
+   * 
+   * FIXME explain
+   */
   public void setSkillsCopied(boolean skillsCopied);
 
   /**

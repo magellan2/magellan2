@@ -358,7 +358,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * @return The String of the RealRace. If no RealRace is known( = null) the
    *         normal raceName is returned.
    */
-  public String getRealRaceName();
+  public String getSimpleRealRaceName();
 
   /**
    * Delivers the info "typ" from CR without any prefixes and translations used
@@ -1017,7 +1017,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public void setPrivDesc(String privDesc);
 
   /**
-   * Returns the value of race.
+   * Returns race.<br/>
+   * <b>Warning:</b> This should the real race but could be the disguised race!
    * 
    * @return Returns race.
    */
@@ -1031,11 +1032,11 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public void setRace(Race race);
 
   /**
-   * Returns the value of realRace.
+   * Returns the disguised race or <code>null</code> if unit has no race disguise.
    * 
-   * @return Returns realRace.
+   * @return 
    */
-  public Race getRealRace();
+  public Race getDisguiseRace();
 
   /**
    * Sets the value of realRace.

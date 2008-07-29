@@ -1995,11 +1995,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 													if(dialog.isGiveRecruitCost()) {
 														int recCost = 0;
 
-														if(parentUnit.getRealRace() != null) {
-															recCost = parentUnit.getRealRace().getRecruitmentCosts();
-														} else {
-															recCost = parentUnit.getRace().getRecruitmentCosts();
-														}
+														recCost = parentUnit.getRace().getRecruitmentCosts();
 
 														recCost = i * recCost;
 

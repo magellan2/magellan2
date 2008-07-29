@@ -28,7 +28,7 @@ public class RecruitmentRelation extends PersonTransferRelation {
 	 * @param line The line in the source's orders
 	 */
 	public RecruitmentRelation(Unit t, int a, int line) {
-		super(t.getRegion().getZeroUnit(), t, a, (t.getRealRace() != null) ? t.getRealRace() : t.getRace(), line);
+		super(t.getRegion().getZeroUnit(), t, a, t.getRace(), line);
 
 		// super(t, t.getRegion().getZeroUnit(), -amount, t.realRace != null ? t.realRace : t.race);
 		// ...but we need to remember that the target unit is the originator of this

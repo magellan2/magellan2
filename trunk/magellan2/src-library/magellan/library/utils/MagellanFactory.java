@@ -1802,16 +1802,15 @@ public abstract class MagellanFactory {
       newUnit.setPrivDesc(curUnit.getPrivDesc());
     }
 
-    if(curUnit.getRace() != null) {
+    if(curUnit.getDisguiseRace() != null) {
+      newUnit.setRealRace(newGD.rules.getRace(curUnit.getRace().getID(), true));
+      newUnit.setRace(newGD.rules.getRace(curUnit.getDisguiseRace().getID(), true));
+    } else {
       newUnit.setRace(newGD.rules.getRace(curUnit.getRace().getID(), true));
     }
 
     if(curUnit.getRaceNamePrefix() != null) {
       newUnit.setRaceNamePrefix(curUnit.getRaceNamePrefix());
-    }
-
-    if(curUnit.getRealRace() != null) {
-      newUnit.setRealRace(newGD.rules.getRace(curUnit.getRealRace().getID(), true));
     }
 
     if(curUnit.getRegion() != null) {

@@ -120,9 +120,9 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	}
 	
 	/**
-	 * Sets the trueBuildingType which es not realy a type but
+	 * Sets the trueBuildingType which is not really a type but
 	 * just a String
-	 * only occurance now "Traumschlößchen",wahrerTyp
+	 * only occurrence now "Traumschlößchen",wahrerTyp
 	 * Fiete 20060910
 	 * 
 	 * @param trueBuildingType  as string
@@ -134,7 +134,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	/**
 	 * Gets the trueBuildingType which es not realy a type but
 	 * just a String
-	 * only occurance now "Traumschlößchen",wahrerTyp
+	 * only occurrence now "Traumschlößchen",wahrerTyp
 	 * Fiete 20060910
 	 * 
 	 * 

@@ -1576,7 +1576,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				rInfo = new RaceInfo();
 				// rInfo.raceNoPrefix = com.eressea.util.Umlaut.convertUmlauts(u.getRealRaceName());
 				// umlaut check is done late when loading the image
-				rInfo.raceNoPrefix = u.getRealRaceName();
+				rInfo.raceNoPrefix = u.getSimpleRealRaceName();
 			}
 			
 			rInfo.amount +=u.getPersons();
@@ -2087,8 +2087,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 		*/
 		// now we check if a specific race icon exists, if true, we use it
-		if (getMagellanContext().getImageFactory().existImageIcon(u.getRealRaceName())){
-			iconPersonName = u.getRealRaceName();
+		if (getMagellanContext().getImageFactory().existImageIcon(u.getSimpleRealRaceName())){
+			iconPersonName = u.getSimpleRealRaceName();
 		}
 		DefaultMutableTreeNode personNode = createSimpleNode(strPersons, iconPersonName);
 		parent.add(personNode);
@@ -2201,10 +2201,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
   private void appendUnitRaceInfo(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
     if(u.getRace() != null) {
-      StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.race")).append(": ").append(u.getRaceName(this.data));
+      StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.race")).append(": ");
 	
-      if(u.getRealRace() != null) {
-        nodeText.append(" (").append(u.getRealRace().getName()).append(")");
+      if (u.getDisguiseRace()!=null){
+        nodeText.append(u.getRaceName(this.data));
+        nodeText.append(" (").append(u.getRace().getName()).append(")");
+      }else{
+        nodeText.append(u.getRaceName(data));
       }
 	
       parent.add(createSimpleNode(nodeText.toString(), "rasse"));

@@ -354,7 +354,7 @@ public class EresseaRelationFactory implements RelationFactory {
               UnitRelation r = new ControlRelation(u, target, line);
               relations.add(r);
             } else if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_UNIT))) {
-              UnitRelation r = new UnitTransferRelation(u, target, (u.getRealRace() != null) ? u.getRealRace() : u.getRace(), line);
+              UnitRelation r = new UnitTransferRelation(u, target, u.getRace(), line);
               relations.add(r);
             } else {
               boolean parseItem = false;
@@ -399,7 +399,7 @@ public class EresseaRelationFactory implements RelationFactory {
                         rel.amount = Math.min(modPersons, rel.amount);
                       }
 
-                      rel = new PersonTransferRelation(u, target, rel.amount, (u.getRealRace() != null) ? u.getRealRace() : u.getRace(), line);
+                      rel = new PersonTransferRelation(u, target, rel.amount, u.getRace(), line);
 
                       // update the modified person amount
                       modPersons = Math.max(0, modPersons - rel.amount);

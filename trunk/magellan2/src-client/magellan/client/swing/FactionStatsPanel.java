@@ -294,11 +294,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           personCounter += u.getPersons();
           skillStats.addUnit(u);
 
-          Race race = u.getRealRace();
-
-          if (race == null) {
-            race = u.getRace();
-          }
+          Race race = u.getRace();
 
           if ((u.getFaction().getRace() != null) && !race.equals(u.getFaction().getRace())) {
             List<Unit> v = specialPersons.get(race.getName());
@@ -506,7 +502,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           for (Iterator<Unit> iterator = v.iterator(); iterator.hasNext();) {
             Unit actU = iterator.next();
             count += actU.getPersons();
-            actRealRaceName = actU.getRealRaceName();
+            actRealRaceName = actU.getSimpleRealRaceName();
 
           }
           String iconPersonName = "person";

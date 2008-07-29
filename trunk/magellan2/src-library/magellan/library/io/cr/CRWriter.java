@@ -1434,10 +1434,15 @@ public class CRWriter extends BufferedWriter {
 		write(unit.getPersons() + ";Anzahl");
 		newLine();
 
-		if(unit.getRace() != null) {
-			write("\"" + unit.getRace().getID().toString() + "\";Typ");
-			newLine();
-		}
+    if(unit.getDisguiseRace() != null) {
+      write("\"" + unit.getDisguiseRace().getID().toString() + "\";Typ");
+      newLine();
+      write("\"" + unit.getRace() + "\";wahrerTyp");
+      newLine();
+    } else {
+      write("\"" + unit.getRace().getID().toString() + "\";Typ");
+      newLine();
+    }
 
 		if(unit.getTempID() != null) {
 			write(unit.getTempID().intValue() + ";temp");
@@ -1461,11 +1466,6 @@ public class CRWriter extends BufferedWriter {
 
 		if(unit.getStealth() != -1) {
 			write(unit.getStealth() + ";Tarnung");
-			newLine();
-		}
-
-		if(unit.getRealRace() != null) {
-			write("\"" + unit.getRealRace() + "\";wahrerTyp");
 			newLine();
 		}
 

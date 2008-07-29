@@ -1,4 +1,4 @@
-<project name="magellan">
+<project name="magellan" default="distribute">
   <description>
     This is the ANT compile script for magellan. This script helps you
     to compile a distributable version of magellan.

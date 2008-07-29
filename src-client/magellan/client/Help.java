@@ -32,7 +32,9 @@ import java.util.Properties;
 import javax.swing.JOptionPane;
 
 import magellan.library.utils.ResourcePathClassLoader;
+import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.Utils;
+import magellan.library.utils.logging.Logger;
 
 /**
  * This class is a help tool from outside Magellan. It will be startet via
@@ -42,10 +44,13 @@ import magellan.library.utils.Utils;
  * @version 1.0, 15.11.2007
  */
 public class Help {
+  private static final Logger log = Logger.getInstance(Help.class);
+
   public static void open(String[] args) {
     
     try {
       Properties settings = Client.loadSettings(new File("."), "magellan.ini");
+      if (settings==null) settings=new SelfCleaningProperties();
       ClassLoader loader = new ResourcePathClassLoader(settings);
       String language = settings.getProperty("locales.gui", "");
       if (!Utils.isEmpty(language)) {
@@ -75,8 +80,8 @@ public class Help {
         Class.forName("javax.help.CSH$DisplayHelpFromSource", true, ClassLoader.getSystemClassLoader());
         helpBrokerClass = Class.forName("javax.help.HelpBroker", true, ClassLoader.getSystemClassLoader());
       } catch (ClassNotFoundException ex) {
-        JOptionPane.showMessageDialog(null, "Could nor find the Java Help environment.");
-  
+        log.warn(ex);
+        JOptionPane.showMessageDialog(null, "Could not find the Java Help environment.");
         return;
       }
       
@@ -103,7 +108,8 @@ public class Help {
       // this calls new javax.help.HelpBroker.setDisplayed(true)
       setDisplayedMethod.invoke(helpBroker, setDisplayedMethodArgs);
     } catch (Exception e) {
-      JOptionPane.showMessageDialog(null, "Could nor initialize the Java Help environment.");
+      log.warn(e);
+      JOptionPane.showMessageDialog(null, "Could not initialize the Java Help environment.");
     }
   }
 }

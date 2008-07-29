@@ -1,5 +1,7 @@
 2008-07-29 / Build 219 - stm (stm_@users.sourceforge.net)
 	* added "remove orders" dialog to unit context menu
+	* compactified options layout
+	* added class AbstractPreferencesAdapter for unified layout of option panels
 
 2008-07-28 / Build 219 - Fiete  <Fiete@users.sourceforge.net>
 	* added some Items to rules, incl weight of AdmantiumX

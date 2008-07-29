@@ -45,14 +45,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.completion.MultiEditorOrderEditorList;
 import magellan.client.swing.completion.OrderEditor;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
-public class DetailsViewOrderEditorPreferences extends JPanel implements PreferencesAdapter {
+public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private MultiEditorOrderEditorList source = null;
   private JPanel pnlStandardColor = null;
   private JPanel pnlStandardColorConfirmed = null;
@@ -74,32 +73,19 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
    */
   public DetailsViewOrderEditorPreferences(MultiEditorOrderEditorList source) {
     this.source = source;
-    this.setLayout(new BorderLayout());
+
+    getLayoutPanel();
+
+    getColorPanel();
+
+    getHighlightPanel();
+
+    getListModePanel();
     
-    JPanel panel = new JPanel(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                            GridBagConstraints.WEST,
-                            GridBagConstraints.HORIZONTAL,
-                            new Insets(0, 0, 0, 0), 0, 0);
-
-    panel.add(getLayoutPanel(), c);
-
-    c.gridy++;
-    panel.add(getColorPanel(), c);
-
-    c.gridy++;
-    panel.add(getHighlightPanel(), c);
-
-    c.gridy++;
-    panel.add(getListModePanel(), c);
-    
-    add(panel,BorderLayout.NORTH);
   }
 
   protected Container getLayoutPanel() {
-    JPanel content = new JPanel(new FlowLayout(FlowLayout.LEADING, 3, 0));
-    content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.layout")));
+    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.layout"), new FlowLayout(FlowLayout.LEADING, 3, 0));
 
     chkMultiEditorLayout = new JCheckBox(Resources.get("completion.multieditorordereditorlist.prefs.multieditorlayout"),
                        source.isMultiEditorLayout());
@@ -115,8 +101,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
   }
 
   protected Container getColorPanel() {
-    JPanel content = new JPanel(new GridBagLayout());
-    content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.colors")));
+    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.colors"), new GridBagLayout());
 
     GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
                             GridBagConstraints.WEST,
@@ -230,8 +215,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
   }
 
   protected Container getHighlightPanel() {
-    JPanel content = new JPanel(new GridBagLayout());
-    content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting")));
+    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.syntaxhighlighting"), new GridBagLayout());
 
     GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0,
                             GridBagConstraints.WEST,
@@ -251,8 +235,7 @@ public class DetailsViewOrderEditorPreferences extends JPanel implements Prefere
   }
 
   protected Container getListModePanel() {
-    JPanel content = new JPanel(new BorderLayout(2, 2));
-    content.setBorder(new TitledBorder(Resources.get("completion.multieditorordereditorlist.prefs.listMode")));
+    JPanel content = addPanel(Resources.get("completion.multieditorordereditorlist.prefs.listMode"), new BorderLayout(2, 2));
     
     JLabel dummy = new JLabel();
 

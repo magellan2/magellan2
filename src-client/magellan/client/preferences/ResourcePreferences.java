@@ -28,7 +28,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -44,10 +43,8 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.extern.MagellanPlugIn;
-import magellan.client.swing.InternationalizedPanel;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.Resources;
 
@@ -58,7 +55,7 @@ import magellan.library.utils.Resources;
  * @author $Author: $
  * @version $Revision: 269 $
  */
-public class ResourcePreferences extends InternationalizedPanel implements PreferencesAdapter {
+public class ResourcePreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private JButton btnAdd = null;
   private JButton btnRemove = null;
   private JButton btnEdit = null;
@@ -78,9 +75,6 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
    * 
    */
   private void initComponents() {
-    this.setLayout(new java.awt.GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.NORTH,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
 
     JTextArea comment = new JTextArea(Resources.get("resource.resourcesettings.comment"));
     comment.setEditable(false);
@@ -94,21 +88,13 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
     comment.setSelectedTextColor(getForeground());
     comment.setFont(new JLabel().getFont());
 
-    c.gridwidth=3;
-    c.gridy=1;
-    add(new JPanel(), c);
-    c.gridy=2;
-    add(comment,c);
+    addComponent(comment);
 
-    c.gridy = 3;
-    add(getSpecialPathsPanel(), c);
+    getSpecialPathsPanel();
 
-    c.gridy = 4;
-    add(getExternalPanel(), c);
+    getExternalPanel();
 
-    c.gridy=5;
-    c.weighty = 1;
-    add(getResourcePathsPanel(), c);
+    getResourcePathsPanel();
 
   }
 
@@ -119,12 +105,8 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
    * Miscellaneous external modules settings
    */
   protected Component getExternalPanel() {
-    JPanel extPanel = new JPanel(new GridBagLayout());
+    JPanel extPanel = addPanel(Resources.get("resource.externalmodulesettings.border.externalmodules"), new GridBagLayout());
 
-    JPanel pnl = new JPanel(new GridBagLayout());
-    pnl.setBorder(new javax.swing.border.TitledBorder(BorderFactory.createEtchedBorder(),
-        Resources.get("resource.externalmodulesettings.border.externalmodules")));
-    
     GridBagConstraints c = new GridBagConstraints();
 
     chkSearchResources = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchResources"),
@@ -137,7 +119,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
     c.fill = GridBagConstraints.NONE;
     c.weightx = 1.0;
     c.weighty = 1.0;
-    pnl.add(chkSearchResources, c);
+    extPanel.add(chkSearchResources, c);
 
     chkSearchClassPath = new JCheckBox(Resources.get("resource.externalmodulesettings.chk.searchClassPath"),
         Boolean.valueOf(settings.getProperty("ExternalModuleLoader.searchClassPath",
@@ -145,11 +127,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
 
     c.gridx = 0;
     c.gridy = 1;
-    pnl.add(chkSearchClassPath, c);
-
-    c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTH,
-        GridBagConstraints.HORIZONTAL, new Insets(0, 0, 2, 0), 0, 0);
-    extPanel.add(pnl, c);
+    extPanel.add(chkSearchClassPath, c);
 
     return extPanel;
   }
@@ -166,8 +144,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
    * ECheck and Vorlage paths (and the like...)
    */
   protected Component getSpecialPathsPanel() {
-    spPanel = new JPanel(new GridBagLayout());
-    spPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("resource.resourcesettings.special.title")));
+    spPanel = addPanel(Resources.get("resource.resourcesettings.special.title"), new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints();
     con.anchor = GridBagConstraints.CENTER;
@@ -234,8 +211,7 @@ public class ResourcePreferences extends InternationalizedPanel implements Prefe
    * All other resource paths...
    */
   protected Component getResourcePathsPanel(){
-    JPanel rpPanel = new JPanel(new java.awt.GridBagLayout());
-    rpPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("resource.resourcesettings.resourcepaths.title")));
+    JPanel rpPanel = addPanel(Resources.get("resource.resourcesettings.resourcepaths.title"), new java.awt.GridBagLayout());
 
     lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume that this list's model is a DefaultListModel!
 

@@ -32,12 +32,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
 import magellan.client.desktop.DockingFrameworkBuilder;
@@ -50,7 +48,7 @@ import magellan.library.utils.Resources;
 /**
  * Encapsulates the preferences tab for the desktop.
  */
-public class DesktopPreferences extends JPanel implements ActionListener, ExtendedPreferencesAdapter {
+public class DesktopPreferences extends AbstractPreferencesAdapter implements ActionListener, ExtendedPreferencesAdapter {
   private MagellanDesktop desktop;
   
   private JPanel center;
@@ -65,9 +63,7 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
     this.desktop = desktop;
     this.setLayout(new BorderLayout());
 
-    center = new JPanel();
-    center.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("desktop.magellandesktop.prefs.border.options")));
-    center.setLayout(new BorderLayout());
+    center = addPanel(Resources.get("desktop.magellandesktop.prefs.border.options"), new BorderLayout());
     
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -105,8 +101,6 @@ public class DesktopPreferences extends JPanel implements ActionListener, Extend
 
     
     center.add(panel,BorderLayout.NORTH);
-
-    add(center, BorderLayout.CENTER);
 
     scList = new ArrayList<PreferencesAdapter>(1);
     scList.add(new DesktopShortCutPreferences(desktop,client));

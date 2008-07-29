@@ -40,7 +40,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import magellan.client.swing.InternationalizedPanel;
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
@@ -56,7 +55,7 @@ import magellan.library.utils.Resources;
  * @author Andreas
  * @version 1.0
  */
-public class IconPreferences extends InternationalizedPanel implements ExtendedPreferencesAdapter, ItemListener {
+public class IconPreferences extends JPanel implements ExtendedPreferencesAdapter, ItemListener {
 	protected List<NodeWrapperFactory> nwfactorys;
 	protected List<PreferencesAdapter> nwadapters;
 	protected IconStyleSetPreferences styles;

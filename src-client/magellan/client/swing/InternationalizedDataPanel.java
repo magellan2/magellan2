@@ -15,6 +15,8 @@ package magellan.client.swing;
 
 import java.util.Properties;
 
+import javax.swing.JPanel;
+
 import magellan.client.MagellanContext;
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
@@ -27,7 +29,7 @@ import magellan.library.event.GameDataListener;
  * @author $Author: $
  * @version $Revision: 242 $
  */
-public abstract class InternationalizedDataPanel extends InternationalizedPanel implements GameDataListener {
+public abstract class InternationalizedDataPanel extends JPanel implements GameDataListener {
   protected GameData data = null;
   protected Properties settings = null;
   protected EventDispatcher dispatcher = null;

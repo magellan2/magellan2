@@ -19,17 +19,12 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -42,7 +37,7 @@ import magellan.library.utils.Resources;
  * @author Fiete
  * @version 1.0
  */
-public class ClientTextEncodingPreferences extends JPanel implements PreferencesAdapter {
+public class ClientTextEncodingPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
 
 	static Properties settings;
 	protected JCheckBox saveISOOrders;
@@ -67,33 +62,14 @@ public class ClientTextEncodingPreferences extends JPanel implements Preferences
 	}
 	
 	private void initGUI() {
-		/*
-		*/
-
-		// layout this container
-		setLayout(new GridBagLayout());
-
-		GridBagConstraints c = new GridBagConstraints();
-
-		c.insets.top = 10;
-		c.insets.bottom = 10;
-		GridBagHelper.setConstraints(c, 0, 0, GridBagConstraints.REMAINDER, 1, 1.0, 1.0,
-									 GridBagConstraints.NORTHWEST,
-									 GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-		this.add(TextEncodingPrefrencesPanel(), c);
-
+	  getTextEncodingPrefrencesPanel(addPanel(Resources.get("util.textencodingpreferences.prefs.title")));
 	}
 
   /**
    * 
    */
-	private Component TextEncodingPrefrencesPanel() {
-		JPanel textEncodingPrefrencesPanel = new JPanel();
+	private Component getTextEncodingPrefrencesPanel(JPanel textEncodingPrefrencesPanel) {
 		textEncodingPrefrencesPanel.setLayout(new GridBagLayout());
-		textEncodingPrefrencesPanel.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-														   new EmptyBorder(0, 3, 3, 3)),
-										Resources.get("util.textencodingpreferences.prefs.title")));
 
 		GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1, 0,
 													  GridBagConstraints.WEST,

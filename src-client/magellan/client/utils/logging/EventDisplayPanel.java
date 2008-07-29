@@ -6,20 +6,20 @@ package magellan.client.utils.logging;
 
 import java.awt.BorderLayout;
 
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
-import magellan.client.swing.InternationalizedPanel;
 
 
 /**
  * @author pavkovic
  *
  */
-public class EventDisplayPanel extends InternationalizedPanel implements UnitOrdersListener {
+public class EventDisplayPanel extends JPanel implements UnitOrdersListener {
 	JTextArea area;
 	EventDispatcher dispatcher;
 	

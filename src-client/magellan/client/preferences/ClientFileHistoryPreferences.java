@@ -29,24 +29,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Properties;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
-import magellan.client.swing.CenterLayout;
-import magellan.client.swing.layout.GridBagHelper;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.io.file.FileBackup;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-public class ClientFileHistoryPreferences extends JPanel implements PreferencesAdapter {
+public class ClientFileHistoryPreferences extends AbstractPreferencesAdapter implements PreferencesAdapter {
   private final Logger log = Logger.getInstance(ClientFileHistoryPreferences.class);
   protected JTextField txtFileHistorySize;
   protected JTextField txtCRBackupsCount;
@@ -63,13 +57,8 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
   }
 
   private void initGUI() {
-    // set up the panel for the maximum file history size
-    this.setLayout(CenterLayout.SPAN_X_LAYOUT);
+    JPanel help = addPanel(Resources.get("clientpreferences.border.filehistory"));
 
-    JPanel help = new JPanel();
-    help.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-                               new EmptyBorder(0, 3, 3, 3)),
-                     Resources.get("clientpreferences.border.filehistory")));
     help.setLayout(new GridBagLayout());
 
     GridBagConstraints con = new GridBagConstraints(0, 0, 1, 1, 0, 0,
@@ -103,25 +92,8 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
     txtFoo.setForeground((java.awt.Color) javax.swing.UIManager.getDefaults().get("Label.foreground"));
     help.add(txtFoo, con);
 
-    // layout this container
-    setLayout(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints();
-
-    c.insets.top = 10;
-    c.insets.bottom = 10;
-    GridBagHelper.setConstraints(c, 0, 0, 1, 1, 1.0, 0.0,
-                   GridBagConstraints.NORTHWEST,
-                   GridBagConstraints.HORIZONTAL, c.insets, 0, 0);
-
-    // help panel
-    this.add(help, c);
-    // c.insets.top = 0;
     
-    JPanel jpanel_CRBackups = new JPanel(new GridBagLayout());
-    jpanel_CRBackups.setBorder(new TitledBorder(new CompoundBorder(BorderFactory.createEtchedBorder(),
-                               new EmptyBorder(0, 3, 3, 3)),
-                     Resources.get("clientpreferences.border.crbackups")));
+    JPanel jpanel_CRBackups = addPanel(Resources.get("clientpreferences.border.crbackups"), new GridBagLayout());
     
     GridBagConstraints c_CR = new GridBagConstraints();
     JLabel l2 = new JLabel( Resources.get("clientpreferences.lbl.numberofbackups.caption"));
@@ -156,11 +128,6 @@ public class ClientFileHistoryPreferences extends JPanel implements PreferencesA
     c_CR.weightx=0.0;
     c_CR.gridwidth=2;
     jpanel_CRBackups.add(txtFoo2,c_CR);
-    
-    c.gridx=0;
-    c.gridy=1;
-    c.weighty=1.0;
-    this.add(jpanel_CRBackups,c);
     
   }
 

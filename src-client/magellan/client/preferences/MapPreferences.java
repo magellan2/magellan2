@@ -25,13 +25,9 @@ package magellan.client.preferences;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
@@ -42,7 +38,7 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
-public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter {
+public class MapPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
 
   // The source component to configure
   private MapperPanel source = null;
@@ -83,26 +79,15 @@ public class MapPreferences extends JPanel implements ExtendedPreferencesAdapter
    * 
    */
   public Component getComponent() {
-    JPanel erg = new JPanel(new GridBagLayout());
-    
-    JPanel helperPanel = new JPanel(new BorderLayout());
-    
-    helperPanel.setBorder(BorderFactory.createTitledBorder(Resources.get("map.mapperpanelpreferences.border.caption")));
-    GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
-        GridBagConstraints.HORIZONTAL,
-        new Insets(3, 3, 3, 3), 0, 0);
+    JPanel erg = addPanel(Resources.get("map.mapperpanelpreferences.border.caption"), new BorderLayout());
     
     showNavigation = new JCheckBox(Resources.get("mapperpanel.prefs.details.chk.shownavigation"), source.getContext().getProperties().getProperty("MapperPannel.Details.showNavigation", "true").equals("true"));
     useSeasonImages = new JCheckBox(Resources.get("map.bordercellrenderer.useseasonimages"), source.getContext().getProperties().getProperty(PropertiesHelper.BORDERCELLRENDERER_USE_SEASON_IMAGES, "true").equals("true"));
-    helperPanel.add(showNavigation,BorderLayout.WEST);
-    helperPanel.add(useSeasonImages,BorderLayout.SOUTH);
+    erg.add(showNavigation,BorderLayout.WEST);
+    erg.add(useSeasonImages,BorderLayout.SOUTH);
     
-    erg.add(helperPanel,gbc);
-    gbc.gridy++;
-    erg.add(prefMapper.getComponent(),gbc);
-    erg.validate();
-    return erg;
-    // return prefMapper.getComponent();
+    addComponent(prefMapper.getComponent());
+    return this;
   }
 
   public void initPreferences() {

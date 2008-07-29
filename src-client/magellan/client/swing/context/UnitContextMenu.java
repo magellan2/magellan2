@@ -48,6 +48,7 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.GiveOrderDialog;
+import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.RoutingDialog;
 import magellan.client.swing.context.actions.ContextAction;
 import magellan.client.utils.UnitRoutePlanner;
@@ -108,6 +109,10 @@ public class UnitContextMenu extends JPopupMenu {
   private void init(Collection<Unit> selectedObjects) {
     selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
+    JMenuItem unitString = new JMenuItem(getCaption());
+    unitString.setEnabled(false);
+    add(unitString);
+
     if (selectedUnits.size() <= 1) {
       initSingle();
     } else {
@@ -117,14 +122,33 @@ public class UnitContextMenu extends JPopupMenu {
     initBoth(selectedObjects);
   }
 
+  private String getCaption() {
+    if (selectedUnits.size()==1)
+      return selectedUnits.iterator().next().toString();
+    else
+      return selectedUnits.size() + " " + Resources.get("context.unitcontextmenu.units");
+  }
+
   /**
    * Sets some menu entries that can be used for one or multiple selected units.
    */
   private void initBoth(Collection<Unit> selectedObjects) {
     // this part for both (but only for selectedUnits)
-    
+
+    if (getComponentCount() > 0) {
+      addSeparator();
+    }
+
+    // change confirmation status
     if (containsPrivilegedUnit()) {
-      JMenuItem validateOrders = new JMenuItem(Resources.get("context.unitcontextmenu.menu.confirm.caption"));
+      JMenuItem validateOrders;
+      if (shouldConfirm(selectedUnits)) {
+        validateOrders =
+            new JMenuItem(Resources.get("context.unitcontextmenu.menu.confirm.caption"));
+      } else {
+        validateOrders =
+            new JMenuItem(Resources.get("context.unitcontextmenu.menu.unconfirm.caption"));
+      }
       validateOrders.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           event_confirmOrders();
@@ -132,6 +156,7 @@ public class UnitContextMenu extends JPopupMenu {
       });
       add(validateOrders);
 
+      // add order
       JMenuItem addOrder = new JMenuItem(Resources.get("context.unitcontextmenu.menu.addorder.caption"));
       addOrder.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -140,8 +165,18 @@ public class UnitContextMenu extends JPopupMenu {
       });
       add(addOrder);
 
+      // remove orders
+      JMenuItem removeOrders = new JMenuItem(Resources.get("context.unitcontextmenu.menu.removeorder.caption"));
+      removeOrders.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          event_removeOrders();
+        }
+      });
+      add(removeOrders);
+
     }
 
+    // select selected units in overview
     if (this.selectedUnits.size() > 0) {
       JMenuItem selectUnits = null;
       if (this.selectedUnits.size() == 1) {
@@ -162,6 +197,7 @@ public class UnitContextMenu extends JPopupMenu {
       addSeparator();
     }
 
+    // add tag menu
     JMenuItem addTag = new JMenuItem(Resources.get("context.unitcontextmenu.addtag.caption"));
     addTag.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -170,6 +206,7 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(addTag);
 
+    // remove tag menu
     Collection<String> tags = new TreeSet<String>();
     for (Unit u : selectedUnits) {
       tags.addAll(u.getTagMap().keySet());
@@ -184,6 +221,8 @@ public class UnitContextMenu extends JPopupMenu {
       add(removeTag);
     }
 
+    // route planning menus
+    
     // test route planning capability
     boolean canPlan = UnitRoutePlanner.canPlan(unit);
     Region reg = unit.getRegion();
@@ -246,10 +285,8 @@ public class UnitContextMenu extends JPopupMenu {
 
   private void initMultiple() {
     // this part for multiple unit-selections
-    JMenuItem unitString = new JMenuItem(selectedUnits.size() + " " + Resources.get("context.unitcontextmenu.units"));
-    unitString.setEnabled(false);
-    add(unitString);
 
+    // copy IDs to clipboard
     JMenuItem copyMultipleID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyids.caption"));
     copyMultipleID.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -258,6 +295,7 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(copyMultipleID);
 
+    // copy IDs+names to clipboard
     JMenuItem copyMultipleNameID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidsandnames.caption"));
     copyMultipleNameID.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -266,6 +304,7 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(copyMultipleNameID);
     
+    // copy IDs+names+numPersons to clipboard
     JMenuItem copyMultipleNameIDPersonCount = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidsandnamesandcounts.caption"));
     copyMultipleNameIDPersonCount.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -278,10 +317,8 @@ public class UnitContextMenu extends JPopupMenu {
 
   private void initSingle() {
     // This part for single-unit-selections
-    JMenuItem unitString = new JMenuItem(unit.toString());
-    unitString.setEnabled(false);
-    add(unitString);
 
+    // copy ID to clipboard
     JMenuItem copyUnitID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyid.caption"));
     copyUnitID.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -290,6 +327,7 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(copyUnitID);
 
+    // copy ID+name to clipboard
     JMenuItem copyUnitNameID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidandname.caption"));
     copyUnitNameID.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -298,6 +336,7 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(copyUnitNameID);
     
+    // add ID+name+numPersons to clipboard
     JMenuItem copyUnitNameIDPersonCount = new JMenuItem(Resources.get("context.unitcontextmenu.menu.copyidandnameandcount.caption"));
     copyUnitNameIDPersonCount.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
@@ -306,6 +345,11 @@ public class UnitContextMenu extends JPopupMenu {
     });
     add(copyUnitNameIDPersonCount);
 
+    if (getComponentCount() > 0) {
+      addSeparator();
+    }
+
+    // add orders to disguise unit
     if (EMapDetailsPanel.isPrivilegedAndNoSpy(unit)) {
       JMenuItem hideID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.disguise.caption"));
 
@@ -317,8 +361,8 @@ public class UnitContextMenu extends JPopupMenu {
       add(hideID);
     }
 
+    // remove unit from list of a teacher
     // is student of someone?
-    
     for (Unit teacher : unit.getTeachers()){
       JMenuItem removeFromTeachersList = new JMenuItem(
           Resources.get("context.unitcontextmenu.menu.removeFromTeachersList") + ": " + teacher.toString());
@@ -328,6 +372,7 @@ public class UnitContextMenu extends JPopupMenu {
     }
     
 
+    // plan ship route
     if ((unit.getShip() != null) && unit.equals(unit.getShip().getOwnerUnit())) {
       JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontextmenu.menu.planshiproute.caption"));
       planShipRoute.addActionListener(new ActionListener() {
@@ -360,13 +405,33 @@ public class UnitContextMenu extends JPopupMenu {
    * Gives an order (optional replacing the existing ones) to the selected units.
    */
   private void event_addOrder() {
-    GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this));
+    GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
     String s[] = giveOderDialog.showGiveOrderDialog();
     if (s[0] != null) {
       for (Unit u : selectedUnits) {
 
         if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
-          Units.changeOrders(u, s);
+          Units.addOrders(u, s);
+          dispatcher.fire(new UnitOrdersEvent(this, u));
+        }
+      }
+    }
+
+    unit = null;
+    selectedUnits.clear();
+  }
+
+  /**
+   * Removes order containing certain strings of the selected units.
+   */
+  private void event_removeOrders() {
+    RemoveOrderDialog removeOderDialog = new RemoveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
+    String s[] = removeOderDialog.showDialog();
+    if (s[0] != null) {
+      for (Unit u : selectedUnits) {
+
+        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+          Units.removeOrders(u, s);
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
       }
@@ -380,7 +445,7 @@ public class UnitContextMenu extends JPopupMenu {
    * Changes the confirmation state of the selected units.
    */
   private void event_confirmOrders() {
-    boolean status = !(selectedUnits.iterator().next()).isOrdersConfirmed();
+    boolean status = shouldConfirm(selectedUnits);
 
     for (Unit u : selectedUnits) {
       u.setOrdersConfirmed(status);
@@ -390,6 +455,10 @@ public class UnitContextMenu extends JPopupMenu {
 
     unit = null;
     selectedUnits.clear();
+  }
+
+  private boolean shouldConfirm(Collection<Unit> selectedUnits) {
+    return !(selectedUnits.iterator().next()).isOrdersConfirmed();
   }
 
   private void event_addTag() {

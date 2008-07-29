@@ -76,7 +76,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	}
 
 	private void initMenu() {
-		JMenuItem name = new JMenuItem(uc.toString());
+		JMenuItem name = new JMenuItem(getCaption());
 		name.setEnabled(false);
 		add(name);
 
@@ -188,6 +188,10 @@ public class UnitContainerContextMenu extends JPopupMenu {
     initContextMenuProviders(uc);
 	}
   
+
+  private String getCaption() {
+    return uc.toString();
+  }
 
   private void initContextMenuProviders(UnitContainer unitContainer) {
     Collection<UnitContainerContextMenuProvider> cmpList = getContextMenuProviders();
@@ -302,7 +306,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	 * Gives the orders only to actual captns of selected ships
 	 */
 	private void event_addShipOrder() {
-		GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this));
+		GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
 		String s[] = giveOderDialog.showGiveOrderDialog();
 		for(Iterator iter = this.selectedObjects.iterator(); iter.hasNext();) {
 			Object o = iter.next();
@@ -311,7 +315,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 				Unit u = ship.getOwnerUnit();
 
 				if(u!=null && EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
-					Units.changeOrders(u, s);
+					Units.addOrders(u, s);
 					dispatcher.fire(new UnitOrdersEvent(this, u));
 				}
 			}

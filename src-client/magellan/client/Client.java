@@ -660,7 +660,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     menuBar.add(createBookmarkMenu());
     menuBar.add(createMapMenu());
 
-    // create dynamix menus
+    // create dynamix menus -- currently not used (stm)
     Map<String,JMenu> topLevel = new HashMap<String, JMenu>();
     List<JMenu> direction = new LinkedList<JMenu>();
     Iterator<Container> it = components.iterator();
@@ -685,6 +685,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
       }
     }
+    
+    // currently not used (stm)
+//    for (JMenu menu:topLevel.values()){
+//      menuBar.add(menu);
+//    }
     
     // desktop and extras last
     menuBar.add(desktop.getDesktopMenu());

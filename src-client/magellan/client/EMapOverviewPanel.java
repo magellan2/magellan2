@@ -2000,7 +2000,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Class encapsulating the menu for the Overview.
    * 
-   * @deprecated I think this is needless. (stm)
+   * @deprecated Currently unused. (stm)
    */
   @Deprecated
   class OverviewMenu extends JMenu implements ActionListener {

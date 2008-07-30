@@ -26,23 +26,16 @@ package magellan.plugin.extendedcommands;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.event.CaretEvent;
-import javax.swing.event.CaretListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
@@ -53,6 +46,10 @@ import net.infonode.docking.DockingWindow;
 import net.infonode.docking.DockingWindowListener;
 import net.infonode.docking.OperationAbortedException;
 import net.infonode.docking.View;
+import net.infonode.tabbedpanel.Tab;
+import net.infonode.tabbedpanel.TabDropDownListVisiblePolicy;
+import net.infonode.tabbedpanel.TabbedPanel;
+import net.infonode.tabbedpanel.titledtab.TitledTab;
 
 
 /**
@@ -63,104 +60,62 @@ import net.infonode.docking.View;
  * @author Thoralf Rickert
  * @version 1.0, 11.09.2007
  */
-public class ExtendedCommandsDock extends JPanel implements ActionListener, CaretListener, DockingWindowListener, DocumentListener {
+public class ExtendedCommandsDock extends JPanel implements ActionListener, DockingWindowListener {
   public static final String IDENTIFIER = "ExtendedCommands";
-  private BeanShellEditor scriptingArea = null;
-  private JComboBox priorityBox = null;
-  private GameData world = null;
-  private Unit unit = null;
-  private UnitContainer container = null;
-  private JLabel elementBox = null;
-  private JLabel positionBox = null;
   private ExtendedCommands commands = null;
-  private Script script = null;
   private boolean visible = false;
-  private boolean isModified = false;
+  private TabbedPanel tabs = null;
+  private GameData world = null;
+  private Map<String, Tab> tabMap = new HashMap<String, Tab>();
+  private Map<String, ExtendedCommandsDocument> docMap = new HashMap<String, ExtendedCommandsDocument>();
   
   public ExtendedCommandsDock(ExtendedCommands commands) {
     this.commands = commands;
-    
     init();
   }
   
   protected void init() {
     setLayout(new BorderLayout());
+    
+    tabs = new TabbedPanel();
+    tabs.getProperties().setTabReorderEnabled(true);
+    tabs.getProperties().setTabDropDownListVisiblePolicy(TabDropDownListVisiblePolicy.TABS_NOT_VISIBLE);
+    
+    add(tabs,BorderLayout.CENTER);
 
-    JPanel editor = new JPanel(new BorderLayout());
-    editor.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    
-    scriptingArea = new BeanShellEditor();
-    scriptingArea.getDocument().addDocumentListener(this);
-    scriptingArea.addCaretListener(this);
-    
-    editor.add(new JScrollPane(scriptingArea),BorderLayout.CENTER);
-    
-    add(editor,BorderLayout.CENTER);
-    
     JPanel north = new JPanel();
     north.setLayout(new BoxLayout(north, BoxLayout.X_AXIS));
-    north.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    north.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+  
+//    north.add(Box.createRigidArea(new Dimension(30, 0)));
     
-    JLabel label = new JLabel(Resources.get("extended_commands.element.caption"));
-    north.add(label);
-    
-    north.add(Box.createRigidArea(new Dimension(5, 0)));
-    elementBox = new JLabel();
-    elementBox.setFont(elementBox.getFont().deriveFont(Font.BOLD));
-    north.add(elementBox);
-    
-    north.add(Box.createHorizontalGlue());
-
-    label = new JLabel(Resources.get("extended_commands.position.caption"));
-    north.add(label);
-    north.add(Box.createRigidArea(new Dimension(5, 0)));
-    
-    positionBox = new JLabel("0,0");
-    north.add(positionBox);
-    
-    add(north,BorderLayout.NORTH);
-    
-    JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
-    buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    buttonPanel.add(Box.createHorizontalGlue());
-    
-    label = new JLabel(Resources.get("extended_commands.priority.caption"));
-    buttonPanel.add(label);
-    
-    priorityBox = new JComboBox(Priority.values());
-    buttonPanel.add(priorityBox);
-    
-    buttonPanel.add(Box.createRigidArea(new Dimension(30, 0)));
-    
-    JButton cancelButton = new JButton(Resources.get("button.cancel"));
-    cancelButton.setRequestFocusEnabled(false);
-    cancelButton.setActionCommand("button.cancel");
-    cancelButton.addActionListener(this);
-    cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    buttonPanel.add(cancelButton);
-    
-    buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+//    JButton cancelButton = new JButton(Resources.get("button.cancel"));
+//    cancelButton.setRequestFocusEnabled(false);
+//    cancelButton.setActionCommand("button.cancel");
+//    cancelButton.addActionListener(this);
+//    cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//    north.add(cancelButton);
+//    
+//    north.add(Box.createRigidArea(new Dimension(10, 0)));
     
     JButton executeButton = new JButton(Resources.get("button.execute"));
     executeButton.setRequestFocusEnabled(false);
     executeButton.setActionCommand("button.execute");
     executeButton.addActionListener(this);
     executeButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    buttonPanel.add(executeButton);
+    north.add(executeButton);
 
-    buttonPanel.add(Box.createRigidArea(new Dimension(10, 0)));
+    north.add(Box.createRigidArea(new Dimension(5, 0)));
     
     JButton saveButton = new JButton(Resources.get("button.save"));
     saveButton.setRequestFocusEnabled(false);
     saveButton.setActionCommand("button.save");
     saveButton.addActionListener(this);
     saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-    buttonPanel.add(saveButton);
+    north.add(saveButton);
 
-    buttonPanel.add(Box.createHorizontalGlue());
-    
-    add(buttonPanel,BorderLayout.SOUTH);
+    north.add(Box.createHorizontalGlue());
+    add(north,BorderLayout.NORTH);
   }
 
   /**
@@ -169,64 +124,97 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
+    
+    
     if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
-      // execute the command, this means, to temporary store the script
-      // and execute it. After that, restore the old script.
-      Script newScript = (Script)script.clone();
-      newScript.setScript(scriptingArea.getText());
-
-      if (unit != null) {
-        commands.setCommands(unit,newScript);
-        commands.execute(world, unit);
-        commands.setCommands(unit, script); // reset to old script
-      } else if (container != null) {
-        commands.setCommands(container,newScript);
-        commands.execute(world, container);
-        commands.setCommands(container, script); // reset to old script
-      } else {
-        commands.setLibrary(newScript);
-        commands.execute(world);
-        commands.setLibrary(script); // reset to old script
-      }
+      // let's get the tab and execute it inside the doc.
+      Tab tab = tabs.getSelectedTab();
+      if (tab == null) return; // we don't execute everything here....
+      ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+      doc.actionPerformed(e);
       
     } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
-      Script newScript = (Script)script.clone();
-      newScript.setScript(scriptingArea.getText());
+      // iterate thru all tabs and save the scripts
+      for (int i=0; i<tabs.getTabCount(); i++) {
+        Tab tab = tabs.getTabAt(i);
+        if (tab == null) continue;
+        ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+        Script newScript = (Script)doc.getScript().clone();
+        newScript.setScript(doc.getScriptingArea().getText());
 
-      if (unit != null) {
-        commands.setCommands(unit,newScript);
-      } else if (container != null) {
-        commands.setCommands(container,newScript);
-      } else {
-        commands.setLibrary(newScript);
-      }
-      
-      commands.save();
-      isModified = false;
-      
-    } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
-      // just restore the old settings
-      if (isModified) {
-        int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
-        if (result != JOptionPane.OK_OPTION) return;
-      }
-
-      if (unit != null) {
-        commands.setCommands(unit, script); // reset to old script
-      } else if (container != null) {
-        commands.setCommands(container, script); // reset to old script
-      } else {
-        commands.setLibrary(script); // reset to old script
-      }
-      
-      if (script != null) {
-        scriptingArea.setText(script.getScript());
-        scriptingArea.setCaretPosition(script.getCursor());
-        priorityBox.setSelectedItem(script.getPriority());
-      }
+        if (doc.getUnit() != null) {
+          commands.setCommands(doc.getUnit(),newScript);
+        } else if (doc.getContainer() != null) {
+          commands.setCommands(doc.getContainer(),newScript);
+        } else {
+          commands.setLibrary(newScript);
+        }
         
-      isModified = false;
+        doc.setModified(false);
+      }
+      commands.save();
+      
+//    } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
+//      // just restore the old settings
+//      if (isModified) {
+//        int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
+//        if (result != JOptionPane.OK_OPTION) return;
+//      }
+//
+//      if (unit != null) {
+//        commands.setCommands(unit, script); // reset to old script
+//      } else if (container != null) {
+//        commands.setCommands(container, script); // reset to old script
+//      } else {
+//        commands.setLibrary(script); // reset to old script
+//      }
+//      
+//      if (script != null) {
+//        scriptingArea.setText(script.getScript());
+//        scriptingArea.setCaretPosition(script.getCursor());
+//        priorityBox.setSelectedItem(script.getPriority());
+//      }
+//        
+//      isModified = false;
     }
+  }
+  
+  /**
+   * Setups the dock and opens the script for the given unit or container.
+   */
+  public void setScript(Unit unit, UnitContainer container, Script script) {
+
+    String key = createKey(unit,container);
+    if (tabMap.containsKey(key)) {
+      // ok, the entry already exists.
+      tabs.setSelectedTab(tabMap.get(key));
+    } else {
+      // we have to create a tab (normal operation)
+      ExtendedCommandsDocument doc = new ExtendedCommandsDocument();
+      doc.setWorld(world);
+      doc.setUnit(unit);
+      doc.setContainer(container);
+      doc.setScript(script);
+      TitledTab tab = new TitledTab(key, null, doc, null);
+      
+      tabs.addTab(tab);
+      tabs.setSelectedTab(tab);
+      
+      tabMap.put(key, tab);
+      docMap.put(key, doc);
+    }
+    
+    // Visibility
+    if (!visible) {
+      MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
+    }
+    
+  }
+  
+  protected String createKey(Unit unit, UnitContainer container) {
+    if (unit != null) return Resources.get("extended_commands.element.unit",unit.getName(),unit.getID()); 
+    if (container != null) return Resources.get("extended_commands.element.container",container.getName(),container.getID());
+    return Resources.get("extended_commands.element.library");
   }
 
   /**
@@ -245,91 +233,17 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
    */
   public void setWorld(GameData world) {
     this.world = world;
-  }
-
-  /**
-   * Returns the value of unit.
-   * 
-   * @return Returns unit.
-   */
-  public Unit getUnit() {
-    return unit;
-  }
-
-  /**
-   * Sets the value of unit.
-   *
-   * @param unit The value for unit.
-   */
-  public void setUnit(Unit unit) {
-    this.unit = unit;
-  }
-
-  /**
-   * Returns the value of container.
-   * 
-   * @return Returns container.
-   */
-  public UnitContainer getContainer() {
-    return container;
-  }
-
-  /**
-   * Sets the value of container.
-   *
-   * @param container The value for container.
-   */
-  public void setContainer(UnitContainer container) {
-    this.container = container;
-  }
-
-  /**
-   * Returns the value of script.
-   * 
-   * @return Returns script.
-   */
-  public Script getScript() {
-    return script;
-  }
-
-  /**
-   * Sets the value of script.
-   *
-   * @param script The value for script.
-   */
-  public void setScript(Script script) {
-    if (isModified) {
-      // ask if it is okay to load the new file
-      int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
-      if (result != JOptionPane.OK_OPTION) return;
+    // this means, we have to close all currently open tabs
+    if (tabs != null && tabs.getTabCount()>0) {
+      tabMap.clear();
+      docMap.clear();
+      
+      for (int i=0; i<tabs.getTabCount(); i++) {
+        tabs.removeTab(tabs.getTabAt(i));
+        i--;
+      }
     }
-    this.script = script;
-    if (script != null) {
-      scriptingArea.setText(script.getScript());
-      scriptingArea.setCaretPosition(script.getCursor());
-      priorityBox.setSelectedItem(script.getPriority());
-    } else {
-      scriptingArea.setText("");
-      scriptingArea.setCaretPosition(0);
-      priorityBox.setSelectedItem(Priority.NORMAL);
-    }
-    
-    if (unit != null) {
-      elementBox.setText(Resources.get("extended_commands.element.unit",unit.getName(),unit.getID()));
-    } else if (container != null) {
-      elementBox.setText(Resources.get("extended_commands.element.container",container.getName(),container.getID()));
-    } else {
-      elementBox.setText(Resources.get("extended_commands.element.library"));
-    }
-    
-    // Visibility
-    if (!visible) {
-      MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
-    }
-    
-    isModified = false;
-  }
-
+  }  
   /**
    * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View, net.infonode.docking.View)
    */
@@ -433,52 +347,4 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Care
    */
   public void windowUndocking(DockingWindow window) throws OperationAbortedException {
   }
-
-  /**
-   * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
-   */
-  public void caretUpdate(CaretEvent e) {
-    if (positionBox != null && scriptingArea != null) {
-      int pos = e.getDot();
-      String text = scriptingArea.getText();
-      int row = 1;
-      int col = 1;
-      for (int i=0; i<text.length(); i++) {
-        if (i==pos) {
-          break;
-        }
-        char c = text.charAt(i);
-        if (c == '\n') {
-          row++;
-          col = 1;
-        } else {
-          col++;
-        }
-      }
-      
-      positionBox.setText(row+","+col);
-    }
-  }
-
-  /**
-   * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
-   */
-  public void changedUpdate(DocumentEvent e) {
-    isModified = true;
-  }
-
-  /**
-   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-   */
-  public void insertUpdate(DocumentEvent e) {
-    isModified = true;
-  }
-
-  /**
-   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-   */
-  public void removeUpdate(DocumentEvent e) {
-    isModified = true;
-  }
-  
 }

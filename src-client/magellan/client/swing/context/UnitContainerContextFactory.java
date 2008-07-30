@@ -21,6 +21,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.swing.tree.FactionNodeWrapper;
+import magellan.client.swing.tree.IslandNodeWrapper;
 import magellan.client.swing.tree.RegionNodeWrapper;
 import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.library.GameData;
@@ -72,6 +73,9 @@ public class UnitContainerContextFactory implements ContextFactory {
 		} else if(argument instanceof UnitContainerNodeWrapper) {
 			return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
 												dispatcher, data, settings,selectedObjects);
+    } else if(argument instanceof IslandNodeWrapper) {
+      return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(),
+                        dispatcher, data, settings,selectedObjects);
 		}
 
 		return null;

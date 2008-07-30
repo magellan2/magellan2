@@ -13,6 +13,11 @@
 
 package magellan.client.swing.context;
 
+import java.awt.Container;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -21,11 +26,17 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.SwingConstants;
+import javax.swing.border.BevelBorder;
 
 import magellan.client.Client;
 import magellan.client.EMapDetailsPanel;
@@ -34,14 +45,19 @@ import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.FactionStatsDialog;
 import magellan.client.swing.GiveOrderDialog;
+import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.RoutingDialog;
 import magellan.client.utils.Units;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.IntegerID;
+import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.event.GameDataEvent;
+import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 
@@ -125,9 +141,25 @@ public class UnitContainerContextMenu extends JPopupMenu {
           });
         add(copyNameIDRegionID);
       }
-    }
+
+      JMenuItem addToIsland = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.addToIsland.caption"));
+      addToIsland.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            addToIsland();
+          }
+        });
+      add(addToIsland);
+
+      JMenuItem removeFromIsland = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.removeFromIsland.caption"));
+      removeFromIsland.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            removeFromIsland();
+          }
+        });
+      add(removeFromIsland);
+		}
     
-    
+		
 		if(uc instanceof Ship) {
 			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
 			planShipRoute.addActionListener(new ActionListener() {
@@ -188,6 +220,128 @@ public class UnitContainerContextMenu extends JPopupMenu {
     initContextMenuProviders(uc);
 	}
   
+  protected void removeFromIsland() {
+    boolean changed = false;
+    for (Object o : selectedObjects){
+      if (o instanceof Region){
+        changed = true;
+        ((Region) o).setIsland(null);
+      }
+    }
+    if (changed)
+      dispatcher.fire(new GameDataEvent(this,data));
+  }
+
+  public Island newIsland = null;
+
+	protected class AddToIslandDialog extends InternationalizedDialog {
+	  private JComboBox islandBox;
+	  private JButton ok;
+	  private JButton cancel;
+
+	  
+	  /**
+	   * Creates a new GiveOrderDialog object.
+	   *
+	   * 
+	   */
+	  public AddToIslandDialog(Frame owner, String caption) {
+	    super(owner, true);
+	    setTitle(Resources.get("addtoislanddialog.window.title"));
+
+	    Container cp = getContentPane();
+	    cp.setLayout(new GridBagLayout());
+
+	    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST,
+	        GridBagConstraints.BOTH,
+	        new Insets(3, 3, 3, 3), 0, 0);
+
+	    c.gridwidth=2;
+	    JLabel captionLabel = new JLabel(caption);
+	    captionLabel.setBorder(new BevelBorder(BevelBorder.RAISED));
+	    captionLabel.setHorizontalAlignment(SwingConstants.CENTER);
+	    captionLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+	    cp.add(captionLabel, c);
+
+	    c.gridwidth=1;
+	    c.gridy++;
+
+	    cp.add(new JLabel(Resources.get("addtoislanddialog.window.message")), c);
+
+	    List<Island> islandList = new ArrayList<Island>(data.islands().size()+2);
+      newIsland.setName(Resources.get("addtoislanddialog.newisland.caption"));
+	   
+	    islandList.add(newIsland);
+	    islandList.addAll(data.islands().values());
+	    islandBox = new JComboBox(islandList.toArray());
+
+	    c.gridx=1;
+	    cp.add(islandBox, c);
+	    
+	    c.gridx=0;
+	    
+	    ok = new JButton(Resources.get("giveorderdialog.btn.ok.caption"));
+	    ok.setMnemonic(Resources.get("giveorderdialog.btn.ok.mnemonic").charAt(0));
+
+	    // actionListener is added in the show() method
+	    c.gridy++;
+	    c.anchor = GridBagConstraints.EAST;
+	    cp.add(ok, c);
+
+	    cancel = new JButton(Resources.get("giveorderdialog.btn.cancel.caption"));
+	    cancel.setMnemonic(Resources.get("giveorderdialog.btn.cancel.mnemonic").charAt(0));
+	    cancel.addActionListener(new ActionListener() {
+	      public void actionPerformed(ActionEvent e) {
+	        quit();
+	      }
+	    });
+	    c.gridx = 1;
+	    c.anchor = GridBagConstraints.WEST;
+	    cp.add(cancel, c);
+
+	  }
+
+    public Island showDialog() {
+      final Island[] retVal = new Island[1];
+      ActionListener okButtonAction = new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          retVal[0] = (Island) islandBox.getSelectedItem();
+          quit();
+        }
+      };
+
+      ok.addActionListener(okButtonAction);
+      // order.addActionListener(okButtonAction);
+      pack();
+      setLocationRelativeTo(getOwner());
+      setVisible(true);
+
+      return retVal[0];
+    }
+
+	}
+	
+  protected void addToIsland() {
+    for (int i=1; newIsland == null ;++i){
+      if (data.getIsland(IntegerID.create(i))==null){
+        newIsland = MagellanFactory.createIsland(IntegerID.create(i), data);
+      }
+    }
+    AddToIslandDialog dialog = new AddToIslandDialog(JOptionPane.getFrameForComponent(this), getCaption());
+    Island island = dialog.showDialog();
+    if (island!=null){
+      if (island==newIsland) {
+        data.addIsland(newIsland);
+        island.setName(island.getID().toString());
+      }
+      for (Object o : selectedObjects){
+        if (o instanceof Region){
+          ((Region) o).setIsland(island);
+        }
+      }
+      dispatcher.fire(new GameDataEvent(this,data));
+    }
+  }
 
   private String getCaption() {
     return uc.toString();

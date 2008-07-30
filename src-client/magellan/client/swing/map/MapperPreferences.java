@@ -213,12 +213,18 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 
 	}
 
-    public void initPreferences() {
-        // TODO: implement it
-    }
+	/**
+	 * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
+	 */
+	public void initPreferences() {
+	  for(Iterator iter = rendererAdapters.iterator(); iter.hasNext();) {
+	    PreferencesAdapter adap = (PreferencesAdapter) iter.next();
+	    adap.initPreferences();
+	  }
+	}
 
 	/**
-	 * DOCUMENT-ME
+	 * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
 	 */
 	public void applyPreferences() {
 		source.deferPainting(chkDeferPainting.isSelected());
@@ -250,18 +256,14 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
 	 */
 	public Component getComponent() {
 		return this;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
 	 */
 	public String getTitle() {
 		return Resources.get("map.mapperpreferences.title");

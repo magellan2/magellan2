@@ -27,6 +27,8 @@ import java.util.List;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
 import magellan.client.MagellanContext;
@@ -138,9 +140,11 @@ public class BuildingCellRenderer extends ImageCellRenderer{
     protected BuildingCellRendererPreferences(MapCellRenderer source) {
       super(new BorderLayout());
       this.source = (BuildingCellRenderer)source;
-      this.data = Client.INSTANCE.getData();
+    }
       
+    protected void initGUI(){ 
       JPanel panel = new JPanel(new GridBagLayout());
+      panel.setBorder(new TitledBorder(new EtchedBorder(), Resources.get("building.renderer.show.caption")));
       
       GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
       c.gridwidth = 1;
@@ -210,6 +214,9 @@ public class BuildingCellRenderer extends ImageCellRenderer{
      * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
      */
     public void initPreferences() {
+      this.removeAll();
+      this.data = Client.INSTANCE.getData();
+      initGUI();
     }
   }
 }

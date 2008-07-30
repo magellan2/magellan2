@@ -113,8 +113,8 @@ public class PreferencesDialog extends InternationalizedDialog {
 
 		setContentPane(getMainPane());
 
-		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "790"));
-		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "690"));
+		int width = Integer.parseInt(settings.getProperty("PreferencesDialog.width", "800"));
+		int height = Integer.parseInt(settings.getProperty("PreferencesDialog.height", "700"));
 		setSize(width, height);
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -176,12 +176,24 @@ public class PreferencesDialog extends InternationalizedDialog {
 	}
 
 	private void initPreferences() {
-		for(Iterator<PreferencesAdapter> iter = adapters.iterator(); iter.hasNext(); ) {
-		    (iter.next()).initPreferences();
-		}
+	  initPreferences(adapters);
 	}
 
-	private Container getMainPane() {
+	private void initPreferences(Collection<PreferencesAdapter> children) {
+    for(Iterator<PreferencesAdapter> iter = children.iterator(); iter.hasNext(); ) {
+      PreferencesAdapter adapter = iter.next();
+      initPreferences(adapter);
+      if (adapter instanceof ExtendedPreferencesAdapter){
+        initPreferences(((ExtendedPreferencesAdapter) adapter).getChildren());
+      }
+    }
+  }
+
+  private void initPreferences(PreferencesAdapter adapter) {
+    adapter.initPreferences();
+  }
+
+  private Container getMainPane() {
     Dimension preferredSize = new Dimension(100,24);
 		JButton okButton = new JButton(Resources.get("preferences.preferencesdialog.btn.ok.caption"));
     okButton.setPreferredSize(preferredSize);

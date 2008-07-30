@@ -1456,8 +1456,8 @@ ITEM "Magischer Kräuterbeutel"
 "misc";category
 1;storeinbonw
 
-ITEM "Schlangenkopf"
-"Schlangenkopf";name
+ITEM "Seeschlangenkopf"
+"Seeschlangenkopf";name
 5;weight
 "trophies";category
 1;storeinbonw

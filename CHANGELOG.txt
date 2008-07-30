@@ -1,6 +1,7 @@
 2008-07-30 / Build 222 - stm (stm_@users.sourceforge.net)
 	* additional fixes to options dialogs
-	* fixed bug #283
+	* fixed bug #283, #243
+	* completed #261
 
 2008-07-30 / Build 222 - Thoralf (thoralf@m84.de)
     * ExtCmds scripts as Tabs in a dock.

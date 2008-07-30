@@ -81,9 +81,10 @@ import magellan.library.utils.Resources;
 public class DetailsViewAutoCompletionPreferences extends JPanel implements PreferencesAdapter {
   protected AutoCompletion source;
   protected JCheckBox cEnable;
-  protected JCheckBox iPopup;
-  protected JCheckBox limitMakeCompletion;
-  protected JComboBox forGUIs;
+  protected JCheckBox cPopup;
+  protected JCheckBox cHotKey;
+  protected JCheckBox cLimitMakeCompletion;
+  protected JComboBox cForGUIs;
   protected JTextField tTime;
   protected KeyTextField keyFields[];
 
@@ -109,13 +110,17 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     panel.add(cEnable, c);
 
     c.gridy++;
-    limitMakeCompletion = new JCheckBox(Resources.get("completion.autocompletion.prefs.limitmakecompletion"), source.getLimitMakeCompletion());
-    limitMakeCompletion.setToolTipText(Resources.get("completion.autocompletion.prefs.limitmakecompletion.tooltip"));
-    panel.add(limitMakeCompletion, c);
+    cLimitMakeCompletion = new JCheckBox(Resources.get("completion.autocompletion.prefs.limitmakecompletion"), source.getLimitMakeCompletion());
+    cLimitMakeCompletion.setToolTipText(Resources.get("completion.autocompletion.prefs.limitmakecompletion.tooltip"));
+    panel.add(cLimitMakeCompletion, c);
 
-    iPopup = new JCheckBox(Resources.get("completion.autocompletion.prefs.stubmode"), source.getEmptyStubMode());
+    cPopup = new JCheckBox(Resources.get("completion.autocompletion.prefs.stubmode"), source.getEmptyStubMode());
     c.gridy++;
-    panel.add(iPopup, c);
+    panel.add(cPopup, c);
+
+    cHotKey = new JCheckBox(Resources.get("completion.autocompletion.prefs.hotkeymode"), source.getHotKeyMode());
+    c.gridy++;
+    panel.add(cHotKey, c);
 
     c.gridy++;
 
@@ -133,14 +138,14 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     inner.add(tTime, con2);
     con2.gridy++;
 
-    forGUIs = new JComboBox(source.getCompletionGUIs());
-    forGUIs.setEditable(false);
+    cForGUIs = new JComboBox(source.getCompletionGUIs());
+    cForGUIs.setEditable(false);
 
     if (source.getCurrentGUI() != null) {
-      forGUIs.setSelectedItem(source.getCurrentGUI());
+      cForGUIs.setSelectedItem(source.getCurrentGUI());
     }
 
-    inner.add(forGUIs, con2);
+    inner.add(cForGUIs, con2);
 
     panel.add(inner, c);
 
@@ -160,7 +165,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     this.selfDefinedCompletions = new OrderedHashtable<String, String>(source.getSelfDefinedCompletionsMap());
 
     c.gridx = 0;
-    c.gridy = 5;
+    c.gridy = 6;
     c.gridheight = 1;
     c.gridwidth = 2;
     c.weighty = 0;
@@ -168,7 +173,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     panel.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
     JPanel sDCPanel = getSelfDefinedCompletionPanel();
-    c.gridy = 6;
+    c.gridy++;
     c.weighty = 0.2;
     c.fill = GridBagConstraints.BOTH;
     c.insets = new Insets(0, 0, 0, 0);
@@ -313,17 +318,17 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     JPanel p = new JPanel(new java.awt.GridBagLayout());
     java.awt.GridBagConstraints c = new java.awt.GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < AutoCompletion.numKeys; i++) {
       c.gridy = i;
       p.add(new JLabel(Resources.get("completion.autocompletion.prefs.keys." + String.valueOf(i))), c);
     }
 
     c.gridx = 1;
-    keyFields = new KeyTextField[4];
+    keyFields = new KeyTextField[AutoCompletion.numKeys];
 
     int ck[][] = s.getCompleterKeys();
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < AutoCompletion.numKeys; i++) {
       c.gridy = i;
       keyFields[i] = new KeyTextField();
       keyFields[i].init(ck[i][0], ck[i][1]);
@@ -340,7 +345,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
    *          DOCUMENT-ME
    */
   public void addCompletionGUI(CompletionGUI cGUI) {
-    forGUIs.addItem(cGUI);
+    cForGUIs.addItem(cGUI);
     this.revalidate();
     this.doLayout();
   }
@@ -352,7 +357,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
    *          DOCUMENT-ME
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
-    forGUIs.setSelectedItem(cGUI);
+    cForGUIs.setSelectedItem(cGUI);
   }
 
   /**
@@ -387,9 +392,10 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
    */
   public void applyPreferences() {
     source.setEnableAutoCompletion(cEnable.isSelected());
-    source.setCurrentGUI((CompletionGUI) forGUIs.getSelectedItem());
-    source.setLimitMakeCompletion(limitMakeCompletion.isSelected());
-    source.setEmptyStubMode(iPopup.isSelected());
+    source.setCurrentGUI((CompletionGUI) cForGUIs.getSelectedItem());
+    source.setLimitMakeCompletion(cLimitMakeCompletion.isSelected());
+    source.setEmptyStubMode(cPopup.isSelected());
+    source.setHotKeyMode(cHotKey.isSelected());
 
     int t = 150;
 
@@ -402,9 +408,9 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     source.setActivationTime(t);
 
     // maybe we could use the given array from AutoCompletion directly?
-    int ck[][] = new int[4][2];
+    int ck[][] = new int[AutoCompletion.numKeys][2];
 
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < AutoCompletion.numKeys; i++) {
       ck[i][0] = keyFields[i].getModifiers();
       ck[i][1] = keyFields[i].getKeyCode();
     }

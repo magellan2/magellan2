@@ -70,6 +70,7 @@ import javax.swing.undo.UndoManager;
 
 import magellan.client.EMapDetailsPanel;
 import magellan.client.EMapOverviewPanel;
+import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.DesktopEnvironment;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.OrderConfirmEvent;
@@ -163,6 +164,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
   public static final int LIST_FACTION = 1;
   public static final int LIST_REGION = 2;
   public static final int LIST_ISLAND = 3;
+
+  private AutoCompletion completion;
 
 	/**
 	 * Creates a new MultiEditorOrderEditorList object.
@@ -280,7 +283,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	}
 
 	private boolean swingGlitch = false;
-
 
 
 	/**
@@ -567,6 +569,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 */
 	public void keyPressed(KeyEvent e) {
 		if((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+		  if (e.getKeyCode() == KeyEvent.VK_SPACE){
+		    getCompleter().offerCompletion(getCurrentEditor());
+		  }
 			if(multiEditorLayout) {
 				switch(e.getKeyCode()) {
 				case KeyEvent.VK_DOWN:
@@ -2283,6 +2288,22 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     settings.setProperty("OrderEditor.editAllFactions", String.valueOf(SetEditAllFactions));
     editAllFactions = SetEditAllFactions;
     redrawPane();
+  }
+
+  /**
+   * Sets completion as the completion for order auto completion.
+   * 
+   * @param completion
+   */
+  public void setCompleter(AutoCompletion completion) {
+    this.completion = completion;
+  }
+
+  /**
+   * @return The current order completer
+   */
+  public AutoCompletion getCompleter() {
+    return completion;
   }
 
 }

@@ -1,3 +1,6 @@
+2008-07-30 / Build 221 - Fiete  <Fiete@users.sourceforge.net>
+	* Rules: Schlangenkopf->Seeschlangenkopf
+
 2008-07-29 / Build 220 - stm (stm_@users.sourceforge.net)
 	* added "remove orders" dialog to unit context menu
 	* compactified options layout

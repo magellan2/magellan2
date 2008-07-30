@@ -38,6 +38,9 @@
     <res id="useNativeLAF"     src="release/README.txt"/>
     <!--<res id="Installer.image" src="...."/>-->
     <res id="shortcutSpec.xml" src="installer/install.shortcut.xml"/>
+    <res id="Unix_shortcutSpec.xml" src="installer/install.shortcut.unix.xml"/>
+    <res id="shortcutSpec.xml_deu" src="installer/install.shortcut.deu.xml"/>
+    <res id="Unix_shortcutSpec.xml_deu" src="installer/install.shortcut.unix.deu.xml"/>
   </resources>
 
   <panels>

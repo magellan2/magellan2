@@ -290,9 +290,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // open a dialog for the commands...
 //    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,container,script);
 //    dialog.setVisible(true);
-    dock.setUnit(null);
-    dock.setContainer(container);
-    dock.setScript(script);
+    dock.setScript(null,container,script);
     
   }
 
@@ -320,9 +318,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // open a dialog for the commands...
 //    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
 //    dialog.setVisible(true);
-    dock.setUnit(unit);
-    dock.setContainer(null);
-    dock.setScript(script);
+    dock.setScript(unit,null,script);
   }
 
   /**
@@ -352,9 +348,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // open a dialog for the commands...
 //    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
 //    dialog.setVisible(true);
-    dock.setUnit(null);
-    dock.setContainer(null);
-    dock.setScript(script);
+    dock.setScript(null,null,script);
   }
 
   protected void clearCommands() {

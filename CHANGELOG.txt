@@ -1,3 +1,6 @@
+2008-07-30 / Build 222 - Thoralf (thoralf@m84.de)
+    * ExtCmds scripts as Tabs in a dock.
+
 2008-07-30 / Build 221 - Fiete  <Fiete@users.sourceforge.net>
 	* Rules: Schlangenkopf->Seeschlangenkopf
 

@@ -1496,7 +1496,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 				listModel.sort(nameComp, mode ? 2 : 0);
 
-				prefDim = new Dimension(100, 10);
+				prefDim = new Dimension(50, 10);
 
 				list = new JList(listModel);
 				list.setCellRenderer(new ModePanelCellRenderer());
@@ -1518,7 +1518,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				this.setLayout(new BorderLayout());
 				JScrollPane scrollPane = new JScrollPane(list);
 				// list gets too wide if we have very long faction names so...
-				scrollPane.setPreferredSize(new Dimension(200, 100));
+				scrollPane.setPreferredSize(new Dimension(150, 100));
 				this.add(scrollPane, BorderLayout.CENTER);
 
 				if(mode) {

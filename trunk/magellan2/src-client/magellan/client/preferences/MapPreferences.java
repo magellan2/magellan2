@@ -92,6 +92,7 @@ public class MapPreferences extends AbstractPreferencesAdapter implements Extend
 
   public void initPreferences() {
     // TODO: implement it
+    prefMapper.initPreferences();
   }
 
   /**

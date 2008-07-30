@@ -43,6 +43,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -113,6 +117,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     
     protected String mapperTooltip;
 
+    public final String zero = (new Float(0)).toString();
+    public final String pointFive = (new Float(0.5)).toString();
+    public final String one = (new Float(1)).toString();
+    
     ARRSet(String set){
       if (set==null) {
         throw new NullPointerException();
@@ -120,9 +128,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       name = set;
       cTable = new ColorTable();
       vMapping = new ValueMapping();
-      minDef = "0";
-      maxDef = "1";
-      curDef = "0.5";
+      minDef = zero;
+      maxDef = one;
+      curDef = pointFive;
     }
 
     ARRSet(Properties settings, String set){
@@ -133,7 +141,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       cTable = new ColorTable();
       vMapping = new ValueMapping();
 
-      StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, "0.0;0,0,0;1.0;255,255,255"), ";");
+
+      StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS, zero+";0,0,0;"+one+";255,255,255"), ";");
       cTable.removeAll();
 
       while (st.hasMoreTokens()) {
@@ -146,7 +155,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
       }
 
-      st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, "0.0;0.0;1.0;1.0"), ";");
+      st = new StringTokenizer(settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_VALUES, zero+";0.0;"+one+";"+one), ";");
       vMapping.removeAll();
 
       while (st.hasMoreTokens()) {
@@ -160,9 +169,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         }
       }
 
-      minDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, "0");
-      curDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, "0.5");
-      maxDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, "1");
+      minDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MINIMUM, zero);
+      curDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_CURRENT, pointFive);
+      maxDef = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_MAXIMUM, one);
 
       unknownString = settings.getProperty(PropertiesHelper.ADVANCEDSHAPERENDERER + set + PropertiesHelper.ADVANCEDSHAPERENDERER_UNKNOWN, "?");
 
@@ -358,17 +367,12 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     if (minEvalfed) {
       minF = minEvalf;
     } else if (minList != null) {
-      Object obj = minList.getReplacement(r);
-
-      if (obj == null) {
+      try {
+        minF = parseFloat(minList.getReplacement(r));
+        log.info("min " + r.getName()+" "+minF);
+      } catch (Exception e){
+        log.info("min " + r.getName()+" --- ");
         nonFound = true;
-      } else {
-        String ret = obj.toString();
-
-        try {
-          minF = Float.parseFloat(ret);
-        } catch (Exception exc) {
-        }
       }
     }
 
@@ -378,43 +382,28 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       if (maxEvalfed) {
         maxF = maxEvalf;
       } else if (maxList != null) {
-        Object obj = maxList.getReplacement(r);
-
-        if (obj == null) {
+        try {
+          maxF = parseFloat(maxList.getReplacement(r));
+          log.info("max " + r.getName()+" "+maxF);
+        } catch (Exception e){
+          log.info("max " + r.getName()+" --- ");
           nonFound = true;
-        } else {
-          String ret = obj.toString();
-
-          try {
-            maxF = Float.parseFloat(ret);
-          } catch (Exception exc) {
-          }
         }
       }
     }
-
+    
     float curF = 0.5f;
 
     if (!nonFound) {
       if (curList != null) {
-        Object obj = curList.getReplacement(r);
-
-        if (obj == null) {
+        try {
+          curF = parseFloat(curList.getReplacement(r));
+          if (Logger.getLevel()>=Logger.DEBUG)
+            log.debug("cur " + r.getName()+" "+curF);
+        } catch (Exception e){
+          if (Logger.getLevel()>=Logger.DEBUG)
+            log.debug("cur " + r.getName()+" --- ");
           nonFound = true;
-        } else {
-          String ret = obj.toString();
-          // does not work for english locale...
-//          // in case we have formatted strings
-//          // ignore points
-//          ret = ret.replace(".","");
-//          // comma to points
-//          ret = ret.replace(",",".");
-          
-          try {
-            curF = Float.parseFloat(ret);
-          } catch (Exception exc) {
-            nonFound = true;
-          }
         }
       }
     }
@@ -471,13 +460,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     if (minList != null) {
       try {
-        String ret = minList.getReplacement(null).toString();
-
-        try {
-          minEvalf = Float.parseFloat(ret);
-        } catch (NumberFormatException exc2) {
-        }
-
+        minEvalf = parseFloat(minList.getReplacement(null));
+        log.info("min: "+minEvalf);
         minEvalfed = true;
       } catch (Exception exc) {
         minEvalfed = false;
@@ -489,13 +473,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     if (maxList != null) {
       try {
-        String ret = maxList.getReplacement(null).toString();
-
-        try {
-          maxEvalf = Float.parseFloat(ret);
-        } catch (NumberFormatException exc2) {
-        }
-
+        maxEvalf = parseFloat(maxList.getReplacement(null));
+        log.info("max: "+maxEvalf);
         maxEvalfed = true;
       } catch (Exception exc) {
         maxEvalfed = false;
@@ -504,6 +483,25 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     
     reprocessMenu();
   }
+
+  private float parseFloat(Object replacement) throws ParseException {
+    if (replacement instanceof Number){
+      return ((Number) replacement).floatValue();
+    } else {
+
+      BigDecimal bd = null;
+
+      NumberFormat f = NumberFormat.getInstance(Locales.getGUILocale());
+      if (f instanceof DecimalFormat) {
+        DecimalFormat df = (DecimalFormat)f;
+        df.setParseBigDecimal(true);
+
+        return df.parse(replacement.toString()).floatValue();
+      } else {
+        return f.parse(replacement.toString()).floatValue();
+      }
+    }
+}
 
   /**
    * Implementation via SortedMap, maybe inefficient for small number of entries

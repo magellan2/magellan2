@@ -20,6 +20,7 @@ package magellan.client.swing.map;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -841,18 +842,20 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			this.s = s;
 			this.setLayout(new GridBagLayout());
 
-			GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1.0, 1.0,
-														  GridBagConstraints.CENTER,
-														  GridBagConstraints.HORIZONTAL,
+			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+														  GridBagConstraints.FIRST_LINE_START,
+														  GridBagConstraints.NONE,
 														  new Insets(1, 1, 1, 1), 0, 0);
-
-			JTextArea fontHelp = new JTextArea(Resources.get("map.advancedtextcellrenderer.prefs.fonthelp"));
+			String helpText = Resources.get("map.advancedtextcellrenderer.prefs.fonthelp");
+			JTextArea fontHelp = new JTextArea(helpText);//, 2, helpText.length()/2);
+      fontHelp.setFont((new JLabel()).getFont());
+			fontHelp.setPreferredSize(new Dimension(500, 30));
 			fontHelp.setEditable(false);
 			fontHelp.setBorder(null);
 			fontHelp.setBackground(this.getBackground());
 			fontHelp.setLineWrap(true);
 			fontHelp.setWrapStyleWord(true);
-
+			
 			this.add(fontHelp, c);
 
 			c.gridy++;
@@ -865,16 +868,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			linebreak = new JCheckBox(Resources.get("map.advancedtextcellrenderer.prefs.breakline"), s.breakLines);
 			this.add(linebreak, c);
 
-			c.gridx = 1;
+			c.gridy++;
 			this.add(createAlignPanel(), c);
 
 			c.gridx = 0;
 			c.gridy++;
-			c.gridwidth = 2;
 			c.fill = GridBagConstraints.HORIZONTAL;
 			this.add(new JSeparator(SwingConstants.HORIZONTAL), c);
 
-			c.gridwidth = 2;
 			c.gridy++;
 			c.fill = GridBagConstraints.BOTH;
 			this.add(createFullSetPanel(), c);
@@ -918,14 +919,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			c.gridy++;
 			p.add(remove, c);
 			c.gridy++;
-			p.add(new JSeparator(SwingConstants.HORIZONTAL), c);
-			c.gridy++;
 			p.add(importB, c);
 			c.gridy++;
 			p.add(export, c);
 			c.gridy++;
 			c.fill = GridBagConstraints.BOTH;
-			p.add(new JScrollPane(list), c);
+			JScrollPane scrollPane = new JScrollPane(list);
+			scrollPane.setPreferredSize(new Dimension(rename.getPreferredSize().width, 100));
+			p.add(scrollPane, c);
 
 			list.addListSelectionListener(this);
 
@@ -942,7 +943,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 
 			help = new JPanel();
 			help.add(new JLabel(Resources.get("map.advancedtextcellrenderer.prefs.def"))); //Resources.get("map.advancedtextcellrenderer.prefs.planes")),c);
-			help.add(new JScrollPane(def = new JTextArea(set.getDef(), 15, 30)));
+			help.add(new JScrollPane(def = new JTextArea(set.getDef(), 11, 30)));
 			sPanel.add(help, BorderLayout.CENTER);
 
 			return sPanel;

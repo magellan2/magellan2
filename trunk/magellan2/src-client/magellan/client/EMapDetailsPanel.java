@@ -565,6 +565,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// build auto completion structure
 		orders = new AutoCompletion(dispatcher.getMagellanContext());
 		orders.attachEditorManager(editor);
+		editor.setCompleter(orders);
 		shortCuts = new ArrayList<KeyStroke>(3);
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.CTRL_MASK));
 		shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_3, KeyEvent.ALT_MASK));

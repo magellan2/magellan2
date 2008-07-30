@@ -78,10 +78,16 @@ public class PropertiesHelper {
   public static final String AUTOCOMPLETION_EMPTY_STUB_MODE = "AutoCompletion.EmptyStubMode";
   
   /** Property type boolean: */
+  public static final String AUTOCOMPLETION_HOTKEY_MODE = "AutoCompletion.HotKeyMode";
+  
+  /** Property type boolean: */
   public static final String AUTOCOMPLETION_ENABLED = "AutoCompletion.Enabled";
   
   /** */
   public static final String AUTOCOMPLETION_KEYS_BREAK = "AutoCompletion.Keys.Break";
+  
+  /** */
+  public static final String AUTOCOMPLETION_KEYS_START = "AutoCompletion.Keys.Start";
   
   /** */
   public static final String AUTOCOMPLETION_KEYS_COMPLETE = "AutoCompletion.Keys.Complete";

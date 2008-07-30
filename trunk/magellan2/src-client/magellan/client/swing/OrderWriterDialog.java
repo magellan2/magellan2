@@ -914,6 +914,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER,String.valueOf(chkCCToSender.isSelected()));
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix,String.valueOf(chkCCToSender.isSelected()));
 
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL,String.valueOf(chkUseSSL.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS,String.valueOf(chkUseTLS.isSelected()));
+    
     if(chkSelRegionsOnly.isEnabled()) {
       settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS,String.valueOf(chkSelRegionsOnly.isSelected()));
       settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix,String.valueOf(chkSelRegionsOnly.isSelected()));

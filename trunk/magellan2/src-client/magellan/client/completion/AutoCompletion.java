@@ -69,6 +69,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * completerKeys[][0] completerKeys[1] cycle forward modifier key cycle
    * backward modifier key complete modifier key break modifier key
    */
+  public static final int numKeys = 5;
   private int completerKeys[][];
   private Timer timer;
   private List<Completion> completions = null;
@@ -76,10 +77,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private String lastStub = null;
   private boolean enableAutoCompletion = true;
 
-  // limits the completion of the make-order to items
+ // limits the completion of the make-order to items
   // whose resources are available
   private boolean limitMakeCompletion = true;
   private boolean emptyStubMode = false;
+  private boolean hotKeyMode = false;
+  
   private String activeGUI = null;
   private int time = 150;
 
@@ -141,6 +144,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
 
+    String keyMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, "true");
+    hotKeyMode = keyMode.equalsIgnoreCase("true");
+
     activeGUI = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_COMPLETION_GUI, "List");
 
     try {
@@ -149,7 +155,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       time = 150;
     }
 
-    completerKeys = new int[4][2]; // cycle forward, cycle backward, complete,
+    completerKeys = new int[numKeys][2]; // cycle forward, cycle backward, complete,
                                     // break
 
     String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
@@ -194,6 +200,17 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     } catch (Exception exc) {
       completerKeys[3][0] = 0;
       completerKeys[3][1] = KeyEvent.VK_ESCAPE;
+    }
+
+    String startKey = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START);
+
+    try {
+      StringTokenizer st = new StringTokenizer(startKey, ",");
+      completerKeys[4][0] = Integer.parseInt(st.nextToken());
+      completerKeys[4][1] = Integer.parseInt(st.nextToken());
+    } catch (Exception exc) {
+      completerKeys[4][0] = InputEvent.CTRL_MASK;
+      completerKeys[4][1] = KeyEvent.VK_SPACE;
     }
 
     selfDefinedCompletions = getSelfDefinedCompletions(settings);
@@ -365,7 +382,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
   }
 
-  protected void offerCompletion(JTextComponent j) {
+  public void offerCompletion(JTextComponent j) {
     if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null) || (completer == null) || !j.isVisible()) {
       return;
     }
@@ -420,28 +437,26 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
 
       // show completions
-      if (line.length() > 0) {
-        String stub = AutoCompletion.getStub(line);
-        lastStub = stub;
-        
-        // Fiete: try to detect, if we fully typed a offered completion
-        // ennos feature wish: in that case do not offer the completion anymore
-        // we check, if we have only one completion left AND if the last word typed is just
-        // this last completion - in that case we do not offer the completion
-        boolean completionCompleted = false;
-        if ((completions != null) && (completions.size() == 1) && !inWord){
-          // we have just 1 completion avail and we are not in a word
-          Completion c = completions.iterator().next();
-          if (c.getValue().equalsIgnoreCase(stub)){
-            // last completion equals last fully typed word
-            completionCompleted=true;
-          }
-        }
+      String stub = AutoCompletion.getStub(line);
+      lastStub = stub;
 
-        if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord && !completionCompleted) {
-          currentGUI.offerCompletion(j, completions, stub);
-          completionIndex = 0;
+      // Fiete: try to detect, if we fully typed a offered completion
+      // ennos feature wish: in that case do not offer the completion anymore
+      // we check, if we have only one completion left AND if the last word typed is just
+      // this last completion - in that case we do not offer the completion
+      boolean completionCompleted = false;
+      if ((completions != null) && (completions.size() == 1) && !inWord){
+        // we have just 1 completion avail and we are not in a word
+        Completion c = completions.iterator().next();
+        if (c.getValue().equalsIgnoreCase(stub)){
+          // last completion equals last fully typed word
+          completionCompleted=true;
         }
+      }
+
+      if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord && !completionCompleted) {
+        currentGUI.offerCompletion(j, completions, stub);
+        completionIndex = 0;
       }
     }
   }
@@ -742,6 +757,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
+    if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code)) {
+      
+      return;
+    }
+    
     if (!plain) {
       return;
     }
@@ -780,7 +800,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     timer.stop();
 
-    if (enableAutoCompletion) {
+    if (enableAutoCompletion && !hotKeyMode) {
       offerCompletion(editors.getCurrentEditor());
     }
   }
@@ -918,6 +938,23 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
+   * Setter for hot key mode
+   * 
+   * @param b
+   */
+  public void setHotKeyMode(boolean b) {
+    hotKeyMode = b;
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+  }
+
+  /**
+   * Getter for hot key mode
+   */
+  public boolean getHotKeyMode() {
+    return hotKeyMode;
+  }
+
+  /**
    * DOCUMENT-ME
    * 
    * 
@@ -964,6 +1001,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
     settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
     settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START, String.valueOf(ck[4][0]) + ',' + String.valueOf(ck[4][1]));
   }
 
   /**

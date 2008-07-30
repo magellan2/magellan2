@@ -1642,7 +1642,7 @@ RAWMATERIALS
 
 REGIONTYPE "Ozean"
 "Ozean";name
-1;isOcean
+"true";isOcean
 REGIONTYPE "Ebene"
 "Ebene";name
 10000;maxworkers

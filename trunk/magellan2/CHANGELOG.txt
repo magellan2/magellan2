@@ -3,7 +3,8 @@
 	* compactified options layout
 	* added class AbstractPreferencesAdapter for unified layout of option panels
 	* changed semantics of Unit.getRace() etc!
-	* made installer fit for *nix 
+	* made installer fit for *nix (#184)
+	* fixed #276, added context menu items for islands
 
 2008-07-28 / Build 219 - Fiete  <Fiete@users.sourceforge.net>
 	* added some Items to rules, incl weight of AdmantiumX

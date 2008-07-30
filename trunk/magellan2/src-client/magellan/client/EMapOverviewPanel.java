@@ -257,6 +257,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     contextManager.putSimpleObject(FactionNodeWrapper.class, conMenu);
     contextManager.putSimpleObject(RegionNodeWrapper.class, conMenu);
     contextManager.putSimpleObject(UnitContainerNodeWrapper.class, conMenu);
+    contextManager.putSimpleObject(IslandNodeWrapper.class, conMenu);
 
     // history list
     lstHistory = new JList();

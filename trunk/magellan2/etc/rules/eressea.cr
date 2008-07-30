@@ -1908,6 +1908,12 @@ REGIONTYPE "Ozean"
 "true";isOcean
 "false";isAstralVisible
 
+REGIONTYPE "Mahlstrom"	
+"Ozean";name
+0;maxworkers
+"true";isOcean
+"false";isAstralVisible
+
 REGIONTYPE "Feuerwand"
 "Feuerwand";name
 0;maxworkers

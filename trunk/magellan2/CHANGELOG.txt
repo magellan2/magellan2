@@ -1,7 +1,11 @@
+2008-07-30 / Build 223 - stm (stm_@users.sourceforge.net)
+    * starting feature #163 (AutoCompletion)
+    
 2008-07-30 / Build 222 - stm (stm_@users.sourceforge.net)
 	* additional fixes to options dialogs
-	* fixed bug #283, #243
-	* completed #261
+	* fixed bug #283, floats in ARR
+	* fixed #243 (AutoCompletion)
+	* completed #261 (TLS)
 
 2008-07-30 / Build 222 - Thoralf (thoralf@m84.de)
     * ExtCmds scripts as Tabs in a dock.

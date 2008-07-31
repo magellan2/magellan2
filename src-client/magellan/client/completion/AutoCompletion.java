@@ -383,6 +383,10 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   public void offerCompletion(JTextComponent j) {
+    offerCompletion(j, true);
+  }
+  
+  protected void offerCompletion(JTextComponent j, boolean manual) {
     if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null)
         || (completer == null) || !j.isVisible() ) {
       return;
@@ -412,6 +416,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     // remember CaretPosition
     lastCaretPosition = j.getCaretPosition();
 
+    boolean doOffer = false;
+    String stub = "";
     // run completer engine
     if (editors.getCurrentUnit() != null) {
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
@@ -438,7 +444,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
 
       // show completions
-      String stub = AutoCompletion.getStub(line);
+      stub  = AutoCompletion.getStub(line);
       lastStub = stub;
 
       // Fiete: try to detect, if we fully typed a offered completion
@@ -455,12 +461,18 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         }
       }
 
-      if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord && !completionCompleted) {
-        currentGUI.offerCompletion(j, completions, stub);
-        completionIndex = 0;
-      }else{
-        currentGUI.stopOffer();
+      if (completions != null){
+        if (manual || 
+            (line.length()>0 && (emptyStubMode || (stub.length() > 0)) && (completions.size() > 0) && !inWord && !completionCompleted)) {
+          doOffer  = true;
+        }
       }
+    }
+    if (doOffer){
+      currentGUI.offerCompletion(j, completions, stub);
+      completionIndex = 0;
+    }else if (currentGUI != null){
+      currentGUI.stopOffer();
     }
   }
 
@@ -616,7 +628,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       j.getCaret().setDot((stubBeg + completion.getValue().length()) - completion.getCursorOffset());
 
       // pavkovic 2003.03.04: enforce focus request
-      j.requestFocus();
+      j.requestFocusInWindow();
     } catch (BadLocationException exc) {
       AutoCompletion.log.info(exc);
     }
@@ -794,10 +806,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Offer autocompletion when timer has fired.
    * 
    * @param e
-   *          DOCUMENT-ME
+   *          
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent e) {
     if (AutoCompletion.log.isDebugEnabled()) {
@@ -807,7 +820,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     timer.stop();
 
     if (enableAutoCompletion && !hotKeyMode) {
-      offerCompletion(editors.getCurrentEditor());
+      offerCompletion(editors.getCurrentEditor(), false);
     }
   }
 
@@ -825,7 +838,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
 //      currentGUI.stopOffer();
       if (currentGUI.isOfferingCompletion()){
-        offerCompletion(editors.getCurrentEditor());
+        offerCompletion(editors.getCurrentEditor(), false);
       }
       timer.restart();
     }
@@ -877,7 +890,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    *          DOCUMENT-ME
    */
   public void focusLost(java.awt.event.FocusEvent p1) {
-    if ((currentGUI != null) && !currentGUI.editorMayLoseFocus()) {
+    if ((currentGUI != null) && (!currentGUI.editorMayLoseFocus())) {
       currentGUI.stopOffer();
     }
   }

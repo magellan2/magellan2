@@ -52,6 +52,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	protected ListPane listPane;
 	protected AutoCompletion ac;
 	protected int specialKeys[];
+  private Point position;
 
 	/**
 	 * DOCUMENT-ME
@@ -82,7 +83,8 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		try {
 			Rectangle caretBounds = editor.modelToView(editor.getCaretPosition());
 			Point p = new Point(editor.getLocationOnScreen());
-			p.translate(caretBounds.x, caretBounds.y + caretBounds.height);
+//			p.translate(caretBounds.x, caretBounds.y + caretBounds.height);
+      p.translate(5, caretBounds.y + caretBounds.height);
 
 			if((p.getY() + listPane.getHeight()) > Toolkit.getDefaultToolkit().getScreenSize()
 															  .getHeight()) {
@@ -95,17 +97,25 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 			if(outOfSight > 0) {
 				p.translate(-outOfSight, 0);
 			}
-
-			listPane.setLocation(p);
+			updatePosition(p);
+	    if(!listPane.isVisible()) {
+	      listPane.setVisible(true);
+	    }
 		} catch(BadLocationException ble) {
+		  ble.printStackTrace();
+		  listPane.setVisible(false);
 		}
 
-		if(!listPane.isVisible()) {
-			listPane.setVisible(true);
-		}
 	}
 
-	/** sets the currently selected index in the list
+	private void updatePosition(Point p) {
+	  if (position == null || position.y != p.y){
+	    listPane.setLocation(p);
+	    position = p;
+	  }
+  }
+
+  /** sets the currently selected index in the list
 	 *  DOCUMENT-ME
 	 *  
 	 * @see magellan.client.swing.completion.CompletionGUI#cycleCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String, int)

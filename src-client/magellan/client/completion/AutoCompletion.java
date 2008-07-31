@@ -383,7 +383,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   public void offerCompletion(JTextComponent j) {
-    if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null) || (completer == null) || !j.isVisible()) {
+    if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null)
+        || (completer == null) || !j.isVisible() ) {
       return;
     }
 
@@ -457,6 +458,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       if ((emptyStubMode || (stub.length() > 0)) && (completions != null) && (completions.size() > 0) && !inWord && !completionCompleted) {
         currentGUI.offerCompletion(j, completions, stub);
         completionIndex = 0;
+      }else{
+        currentGUI.stopOffer();
       }
     }
   }
@@ -765,6 +768,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (!plain) {
       return;
     }
+    if (!Character.isLetterOrDigit(e.getKeyChar())){
+      currentGUI.stopOffer();
+    }
 
     int keys[] = currentGUI.getSpecialKeys();
 
@@ -817,7 +823,10 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
-      currentGUI.stopOffer();
+//      currentGUI.stopOffer();
+      if (currentGUI.isOfferingCompletion()){
+        offerCompletion(editors.getCurrentEditor());
+      }
       timer.restart();
     }
   }
@@ -978,6 +987,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     settings.setProperty(PropertiesHelper.AUTOCOMPLETION_TIME, String.valueOf(time));
     timer.setDelay(time);
+    timer.setInitialDelay(time);
   }
 
   /**

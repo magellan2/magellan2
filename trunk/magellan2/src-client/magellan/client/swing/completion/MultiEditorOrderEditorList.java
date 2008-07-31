@@ -651,6 +651,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	public void focusLost(FocusEvent e) {
+//	  getCompleter().focusLost(e)
 	}
 
   /**

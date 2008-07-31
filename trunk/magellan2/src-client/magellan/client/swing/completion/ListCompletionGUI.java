@@ -83,8 +83,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		try {
 			Rectangle caretBounds = editor.modelToView(editor.getCaretPosition());
 			Point p = new Point(editor.getLocationOnScreen());
-//			p.translate(caretBounds.x, caretBounds.y + caretBounds.height);
-      p.translate(5, caretBounds.y + caretBounds.height);
+			p.translate(caretBounds.x, caretBounds.y + caretBounds.height);
 
 			if((p.getY() + listPane.getHeight()) > Toolkit.getDefaultToolkit().getScreenSize()
 															  .getHeight()) {
@@ -110,8 +109,11 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
 	private void updatePosition(Point p) {
 	  if (position == null || position.y != p.y){
+	    // we were invisible or new line: draw at new location
 	    listPane.setLocation(p);
 	    position = p;
+	  } else {
+	    // same line: keep position
 	  }
   }
 
@@ -130,6 +132,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	 */
 	public void stopOffer() {
 		listPane.setVisible(false);
+		position = null;
 	}
 
 	/**
@@ -225,7 +228,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
 	/**
 	 * A floating window that holds a list of choices. Implements FocusListener
-	 * in order to be distroyed if the "owning" window loses the focus.
+	 * in order to be destroyed if the "owning" window loses the focus.
 	 *
 	 */
 	class ListPane extends JWindow { // implements FocusListener{
@@ -247,7 +250,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 				});
 
 			// call setFocusableWindowState (true) on java 1.4 while staying compatible with Java 1.3
-			JVMUtilities.setFocusableWindowState(this, true);
+			JVMUtilities.setFocusableWindowState(this, false);
 
 			JScrollPane scrollPane = new JScrollPane();
 
@@ -269,7 +272,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 			this.addFocusListener(new FocusAdapter() {
 					@Override
           public void focusGained(FocusEvent e) {
-						choiceList.requestFocus();
+						choiceList.requestFocusInWindow();
 					}
 				});
 		}
@@ -300,7 +303,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	 */
 	public void specialKeyPressed(int key) {
 		if(listPane.isVisible()) {
-			listPane.requestFocus();
+			listPane.requestFocusInWindow();
 		}
 	}
 
@@ -314,12 +317,11 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Since Java 1.4 this cannot happen.
+	 *  
 	 */
 	public boolean editorMayLoseFocus() {
-		return true;
+		return false;
 	}
 
 	/**

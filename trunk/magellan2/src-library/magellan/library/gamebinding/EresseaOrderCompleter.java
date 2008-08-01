@@ -1500,11 +1500,13 @@ public class EresseaOrderCompleter implements Completer {
 
       if((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)) {
         int weight = (int) (type.getWeight() * 100);
-        if((maxOnFoot - modLoad) > 0) {
-          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxfootamount"), (maxOnFoot-modLoad) / weight+" "+type.getOrderName(),""));
-        }
-        if((maxOnFoot - modLoad) > 0) {
-          completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxhorseamount"), (maxOnHorse-modLoad) / weight+" "+type.getOrderName(),""));
+        if (weight>0){
+          if((maxOnFoot - modLoad) > 0) {
+            completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxfootamount"), (maxOnFoot-modLoad) / weight+" "+type.getOrderName(),""));
+          }
+          if((maxOnHorse - modLoad) > 0) {
+            completions.add(new Completion(type.getName()+" "+Resources.get("gamebinding.eressea.eresseaordercompleter.maxhorseamount"), (maxOnHorse-modLoad) / weight+" "+type.getOrderName(),""));
+          }
         }
       }
     } 

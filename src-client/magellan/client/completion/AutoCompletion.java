@@ -144,7 +144,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
 
-    String keyMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, "true");
+    String keyMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, "false");
     hotKeyMode = keyMode.equalsIgnoreCase("true");
 
     activeGUI = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_COMPLETION_GUI, "List");

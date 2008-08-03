@@ -39,13 +39,17 @@ import javax.swing.JPanel;
 
 import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
 import net.infonode.docking.DockingWindowListener;
 import net.infonode.docking.OperationAbortedException;
 import net.infonode.docking.View;
+import net.infonode.gui.ButtonFactory;
+import net.infonode.gui.icon.button.CloseIcon;
 import net.infonode.tabbedpanel.Tab;
 import net.infonode.tabbedpanel.TabDropDownListVisiblePolicy;
 import net.infonode.tabbedpanel.TabbedPanel;
@@ -62,6 +66,7 @@ import net.infonode.tabbedpanel.titledtab.TitledTab;
  */
 public class ExtendedCommandsDock extends JPanel implements ActionListener, DockingWindowListener {
   public static final String IDENTIFIER = "ExtendedCommands";
+  private static final Logger log = Logger.getInstance(ExtendedCommandsDock.class);
   private ExtendedCommands commands = null;
   private boolean visible = false;
   private TabbedPanel tabs = null;
@@ -80,6 +85,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     tabs = new TabbedPanel();
     tabs.getProperties().setTabReorderEnabled(true);
     tabs.getProperties().setTabDropDownListVisiblePolicy(TabDropDownListVisiblePolicy.TABS_NOT_VISIBLE);
+    tabs.getProperties().setEnsureSelectedTabVisible(true);
+    tabs.getProperties().setShadowEnabled(true);
     
     add(tabs,BorderLayout.CENTER);
 
@@ -124,21 +131,24 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    
-    
     if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // let's get the tab and execute it inside the doc.
-      Tab tab = tabs.getSelectedTab();
+      TitledTab tab = (TitledTab)tabs.getSelectedTab();
       if (tab == null) return; // we don't execute everything here....
       ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+      
+      log.info("Execute button selected on tab "+tab.getText());
       doc.actionPerformed(e);
       
     } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
       // iterate thru all tabs and save the scripts
       for (int i=0; i<tabs.getTabCount(); i++) {
-        Tab tab = tabs.getTabAt(i);
+        TitledTab tab = (TitledTab)tabs.getTabAt(i);
         if (tab == null) continue;
         ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+        log.info("Save tab '"+tab.getText()+"' contents");
+        
+        
         Script newScript = (Script)doc.getScript().clone();
         newScript.setScript(doc.getScriptingArea().getText());
 
@@ -192,10 +202,12 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       // we have to create a tab (normal operation)
       ExtendedCommandsDocument doc = new ExtendedCommandsDocument();
       doc.setWorld(world);
+      doc.setCommands(commands);
       doc.setUnit(unit);
       doc.setContainer(container);
       doc.setScript(script);
       TitledTab tab = new TitledTab(key, null, doc, null);
+      tab.setHighlightedStateTitleComponent(createCloseTabButton(key,tab));
       
       tabs.addTab(tab);
       tabs.setSelectedTab(tab);
@@ -212,8 +224,18 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   }
   
   protected String createKey(Unit unit, UnitContainer container) {
-    if (unit != null) return Resources.get("extended_commands.element.unit",unit.getName(),unit.getID()); 
-    if (container != null) return Resources.get("extended_commands.element.container",container.getName(),container.getID());
+    if (unit != null) {
+      String unitName = unit.getName();
+      if (unitName == null) unitName = "";
+      return Resources.get("extended_commands.element.unit",unitName,unit.getID()); 
+    }
+    if (container != null) {
+      String containerName = container.getName();
+      if (containerName == null) {
+        if (container instanceof Region) containerName = ((Region)container).getRegionType().getName();
+      }
+      return Resources.get("extended_commands.element.container",containerName,container.getID());
+    }
     return Resources.get("extended_commands.element.library");
   }
 
@@ -346,5 +368,23 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
    */
   public void windowUndocking(DockingWindow window) throws OperationAbortedException {
+  }
+  
+  /**
+   * Creates a close tab button that closes the given tab when the button is
+   * selected
+   *
+   * @param tab the tab what will be closed when the button is pressed
+   * @return the close button
+   */
+  private JButton createCloseTabButton(final String key, final TitledTab tab) {
+    return ButtonFactory.createFlatHighlightButton(new CloseIcon(), "Schließen", 0, new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        // Closing the tab by removing it from the tabbed panel it is a member of
+        tab.getTabbedPanel().removeTab(tab);
+        tabMap.remove(key);
+        docMap.remove(key);
+      }
+    });
   }
 }

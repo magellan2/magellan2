@@ -157,7 +157,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       // and execute it. After that, restore the old script.
       Script newScript = (Script)script.clone();
       newScript.setScript(scriptingArea.getText());
-
+      
       if (unit != null) {
         commands.setCommands(unit,newScript);
         commands.execute(world, unit);
@@ -326,4 +326,24 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   public void setModified(boolean modified) {
     this.isModified = modified;
   }
+
+  /**
+   * Returns the value of commands.
+   * 
+   * @return Returns commands.
+   */
+  public ExtendedCommands getCommands() {
+    return commands;
+  }
+
+  /**
+   * Sets the value of commands.
+   *
+   * @param commands The value for commands.
+   */
+  public void setCommands(ExtendedCommands commands) {
+    this.commands = commands;
+  }
+  
+  
 }

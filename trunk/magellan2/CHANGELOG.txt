@@ -5,6 +5,9 @@
 	* added ClosingListener and optional non-modality to ProgressBarUI
     * made Cache a SoftReference
 
+2008-08-04 / Build 225 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed UnitContainer.getModifiedUnitContainer (until now only ships recognized)
+
 2008-08-04 / Build 225 - stm (stm_@users.sourceforge.net)
     * replaced some occurences of "Silber" by EresseaConstants.I_SILBER
     

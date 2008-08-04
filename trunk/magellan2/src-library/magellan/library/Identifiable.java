@@ -47,11 +47,6 @@ public interface Identifiable extends Unique, Comparable, Cloneable {
 	public int hashCode();
 
 	/**
-	 * DOCUMENT-ME
-	 */
-	public int superHashCode() ;
-
-	/**
 	 * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes
 	 * of Identifiable, such orderings will often be established by the natural order of ids.
 	 */

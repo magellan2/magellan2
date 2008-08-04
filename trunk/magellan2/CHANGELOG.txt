@@ -1,3 +1,13 @@
+2008-08-04 / Build XXX (not yet committed) - stm (stm_@users.sourceforge.net)
+    * made TaskTable thread safe, moved to background process
+    * added region/unit selection mode to TaskTable
+    * added "ignore problem" feature to TaskTable (context menu)
+	* added ClosingListener and optional non-modality to ProgressBarUI
+    * made Cache a SoftReference
+
+2008-08-04 / Build 225 - stm (stm_@users.sourceforge.net)
+    * replaced some occurences of "Silber" by EresseaConstants.I_SILBER
+    
 2008-08-03 / Build 224 - Thoralf (thoralf@m84.de)
     * Added a close button to ExtCmds tabs
     * Some small bugfixes (for ExtCmds)

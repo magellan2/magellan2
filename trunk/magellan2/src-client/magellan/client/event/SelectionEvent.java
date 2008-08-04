@@ -30,21 +30,25 @@ import magellan.library.utils.logging.Logger;
 public class SelectionEvent<T> extends EventObject {
   private static final Logger log = Logger.getInstance(SelectionEvent.class);
   
-	/**
-	 * Some flags to specify what to do with SE or where they come from etc. Please document, where
-	 * an whatfor they are used
+	/** Default selection type. 
+	 *  
+	 *   @see #ST_REGIONSs
 	 */
-	/** Default value. */
 	public static final int ST_DEFAULT = 0;
 
 	/**
-	 * Indicates, that some regions on the map have been selected or shall be selected. Used by the
-	 * SelectionActions classes and in the Mapper class. These selections have to be ignored by
-	 * some components (like EMapOverviewPanel) as the selectionstate of the map is not mirrored
-	 * in the tree in EMapOverviewPanel. On the other hand the Mapper class should ignore all
-	 * SelectionEvents with a type different to <code>ST_REGIONS</code> (This makes it possible for the user to
-	 * treat selections of regions on the map and other selections in different ways.)
-	 */
+   * Indicates, that some regions on the map have been selected or shall be
+   * selected.
+   * <p>
+   * Used by the SelectionActions classes and in the Mapper class. These
+   * selections have to be ignored by some components (like EMapOverviewPanel)
+   * as the selectionstate of the map is not mirrored in the tree in
+   * EMapOverviewPanel. On the other hand the Mapper class should ignore all
+   * SelectionEvents with a type different to <code>ST_REGIONS</code> (This
+   * makes it possible for the user to treat selections of regions on the map
+   * and other selections in different ways.)
+   * </p>
+   */
 	public static final int ST_REGIONS = 1;
 
 

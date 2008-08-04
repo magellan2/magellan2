@@ -47,6 +47,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
@@ -1555,13 +1556,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// Fiete: Value: raceInfo with realRace ( nor Prefix, and the amount of Persons
 		Map<String,RaceInfo> races = new Hashtable<String, RaceInfo>();
 
-		
-		// Fiete: calculate weight and modified weight within this loop
-		float uWeight = 0;
-		float modUWeight = 0;
-		
-		
-		// iterate thru all units...
+		// persons of all races
+		RaceInfo allInfo = new RaceInfo();
+		allInfo.raceNoPrefix = "";
+
+    float uWeight = 0;
+    float modUWeight = 0;
+
+		// count persons of different races, weight and modified weight and skills within this loop
 		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
 			Unit u = iter.next();
 			
@@ -1572,6 +1574,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			Float actModUWeight= new Float(u.getModifiedWeight() / 100.0F);
 			modUWeight += actModUWeight.floatValue();
 			
+			// persons
 			RaceInfo rInfo = races.get(u.getRaceName(data));
 			if (rInfo == null){
 				rInfo = new RaceInfo();
@@ -1582,10 +1585,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			
 			rInfo.amount +=u.getPersons();
 			rInfo.amount_modified += u.getModifiedPersons();
+			allInfo.amount+=u.getPersons();
+			allInfo.amount_modified += u.getModifiedPersons();
 			
 			races.put(u.getRaceName(data), rInfo);
 			
-
+			// skills
 			for(Iterator<Skill> i = u.getSkills().iterator(); i.hasNext();) {
 				Skill skill = i.next();
 				SkillStatItem stored = skills.get(skill.getName() + skill.getLevel());
@@ -1601,9 +1606,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		}
 		
-		for(Iterator<String> iter = races.keySet().iterator(); iter.hasNext();) {
-			String race = iter.next();
-			RaceInfo rI = races.get(race);
+		// show xyz Personen:
+		if (races.size()>1){
+		  if (allInfo.amount==allInfo.amount_modified)
+		    parent.add(createSimpleNode(allInfo.amount+" "+Resources.get("emapdetailspanel.node.persons")+":", "person"));
+		  else
+		    parent.add(createSimpleNode(allInfo.amount+" "+Resources.get("emapdetailspanel.node.persons")+":", "person"));
+		}
+		// show abc Dwarfs\n 123 Zwerge...
+		for(Entry<String, RaceInfo> e : races.entrySet()) {
+			String race = e.getKey();
+			RaceInfo rI = e.getValue();
 			int i = rI.amount;
 			int i_modified = rI.amount_modified;
 			String personIconName = "person";
@@ -1625,7 +1638,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		}
 
-		// weight (Fiete)
+		// show weight (Fiete)
 		text = Resources.get("emapdetailspanel.node.totalweight") + ": " + EMapDetailsPanel.weightNumberFormat.format(uWeight);
 
 		if(uWeight != modUWeight) {
@@ -1655,6 +1668,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 		}
 
+		// show skills
 		if(skills.size() > 0) {
 			// DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
 			DefaultMutableTreeNode skillsNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.skills"),
@@ -3061,9 +3075,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
-		ItemType horses = data.rules.getItemType(StringID.create("Pferd"));
-		ItemType carts = data.rules.getItemType(StringID.create("Wagen"));
-		ItemType silver = data.rules.getItemType(StringID.create("Silber"));
+		ItemType horses = data.rules.getItemType(EresseaConstants.I_HORSE);
+		ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
+		ItemType silver = data.rules.getItemType(EresseaConstants.I_SILVER);
 		// Fiete: feature request...showing not only capacity for "good" items in region...
 		if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)){
 			for(Iterator iter = u.getRegion().items().iterator(); iter.hasNext();) {

@@ -75,6 +75,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.event.GameDataEvent;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
@@ -796,7 +797,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                     BuildingType bT = b.getBuildingType();
                     if (bT!=null){
                       // get Maintenance cost Silver
-                      ItemType silverType = data.rules.getItemType("Silber",false);
+                      ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER,false);
                       if (silverType!=null){
                         Item silverItem = bT.getMaintenance(silverType.getID());
                         if (silverItem!=null){

@@ -1476,8 +1476,8 @@ public class EresseaOrderCompleter implements Completer {
   private void addMaxReserve(Unit otherUnit) {
     // reserve the maximim the unit can carry
     int modLoad = otherUnit.getModifiedLoad();
-    ItemType horses = data.rules.getItemType(StringID.create("Pferd"));
-    ItemType carts = data.rules.getItemType(StringID.create("Wagen"));
+    ItemType horses = data.rules.getItemType(EresseaConstants.I_HORSE);
+    ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
 //    ItemType silver = data.rules.getItemType(StringID.create("Silber"));
     int maxOnFoot = otherUnit.getPayloadOnFoot();
     int maxOnHorse = otherUnit.getPayloadOnHorse();

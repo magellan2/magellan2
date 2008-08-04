@@ -18,7 +18,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -133,9 +132,9 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     JPanel echeckPanel = new JPanel();
     echeckPanel.setLayout(new BorderLayout());
     
-    JPanel northPanel = new JPanel(new BorderLayout());
+    JPanel northPanel = new JPanel(new BorderLayout(1,3));
     northPanel.add(getControlsPanel(), BorderLayout.CENTER);
-    northPanel.add(getButtonPanel(), BorderLayout.SOUTH);
+    northPanel.add(getButtonPanel(), BorderLayout.EAST);
     
     echeckPanel.add(northPanel, BorderLayout.NORTH);
 
@@ -208,12 +207,22 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 
     });
     
-    JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(btnRun);
+    JPanel buttonPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.HORIZONTAL,
+            new Insets(0, 0, 0, 0), 0, 0);
+    buttonPanel.add(btnRun, c);
     //buttonPanel.add(btnClose);
-    buttonPanel.add(btnHelp);
-    buttonPanel.add(btnHide);
-
+    c.gridy++;
+    buttonPanel.add(btnHelp, c);
+    c.gridy++;
+    buttonPanel.add(btnHide, c);
+    c.gridy++;
+    c.fill=GridBagConstraints.BOTH;
+    c.weighty=1.0;
+    JPanel filler = new JPanel();
+//    filler.setPreferredSize(new Dimension(1, 1000));
+    buttonPanel.add(filler,c);
     return buttonPanel;
   }
 
@@ -639,18 +648,18 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		c.gridwidth = 2;
 		controls.add(usedOptions, c);
 
-		c.gridx = 1;
+		c.gridx = 0;
 		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
+		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.gridwidth = 2;
 		controls.add(chkConfirmedOnly, c);
 
-		c.gridx = 1;
+		c.gridx = 0;
 		c.gridy++;
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1.0;
+		c.weightx = 0.0;
 		c.weighty = 0.0;
 		c.gridwidth = 2;
 		controls.add(chkSelRegionsOnly, c);

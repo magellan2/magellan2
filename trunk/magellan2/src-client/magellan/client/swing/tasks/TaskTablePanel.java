@@ -443,17 +443,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         if (u != null) {
           // remove previous problems of this unit AND the given inspector
           model.removeProblems(c, u);
-
+          
           // add new problems if found
-          if (data.getOwnerFaction()==null || !restrictToOwner() || data.getOwnerFaction().equals(u.getFaction().getID())){
-            List<Problem> problems = c.reviewUnit(u);
-            model.addProblems(problems);
-          } else {
-            if (restrictToPassword() && u.getFaction().getPassword()!=null && u.getFaction().getPassword().length()>0){
-              List<Problem> problems = c.reviewUnit(u);
-              model.addProblems(problems);
-            }
-          }
+          List<Problem> problems = c.reviewUnit(u);
+          
+          model.addProblems(filterProblems(problems));          
         }
       }
     }
@@ -563,7 +557,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
       Object[] o = new Object[TaskTableModel.NUMBEROF_POS+1];
       int i=0;
-      o[i++] = Integer.toString(p.getType());
+      // o[i++] = Integer.toString(p.getType());
+      // tasks.tasktablepanel.problemtype_0 (-2)
+      o[i++] = Resources.get("tasks.tasktablepanel.problemtype_" +  Integer.toString(p.getType()));
       o[i++] = p;
       o[i++] = hasR;
       o[i++] = hasR.getRegion();

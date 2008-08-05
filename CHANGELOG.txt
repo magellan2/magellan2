@@ -7,6 +7,7 @@
 	* added readable info for Type of Task in TaskTablePanel
 	* small change in use of "filterProblems" in TaskTablePanel
 	* changed shipinspektor to check for empty ships under construction
+	* fixed #280: sorting of temp units in RegionOverview
 
 2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
     * closing a ExtCmds script now chekcs if it contains unsaved data.

@@ -144,7 +144,7 @@ public class TreeHelper {
         Collections.sort(units, unitSorting);
       }
 
-      addUnits(regionNode, treeStructure, 0, units, factory, activeAlliances, unitNodes, data);
+      addUnits(regionNode, treeStructure, 0, units, factory, activeAlliances, unitNodes, data, unitSorting);
     }
 
     // add ships
@@ -203,7 +203,7 @@ public class TreeHelper {
    */
   private int addUnits(DefaultMutableTreeNode mother, int treeStructure[], int sortCriteria,
       List<Unit> units, NodeWrapperFactory factory, Map<ID, Alliance> activeAlliances,
-      Map<ID, TreeNode> unitNodes, GameData data) {
+      Map<ID, TreeNode> unitNodes, GameData data, Comparator<Unit> unitSorting) {
     SupportsEmphasizing se = null;
 
     if (mother.getUserObject() instanceof SupportsEmphasizing) {
@@ -246,19 +246,23 @@ public class TreeHelper {
         retVal += curUnit.getPersons();
 
         // take care of temp units
-        for (Iterator<TempUnit> tempUnits = curUnit.tempUnits().iterator(); tempUnits.hasNext();) {
-          Unit tempUnit = tempUnits.next();
-          UnitNodeWrapper tempNodeWrapper =
-              factory.createUnitNodeWrapper(tempUnit, tempUnit.getPersons());
-          DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(tempNodeWrapper);
-          node.add(tempNode);
-          nodeWrapper.getSubordinatedElements().add(tempNodeWrapper);
-
-          if (unitNodes != null) {
-            unitNodes.put(tempUnit.getID(), tempNode);
+        if (!curUnit.tempUnits().isEmpty()){
+          ArrayList<TempUnit> temps = new ArrayList<TempUnit>();
+          temps.addAll(curUnit.tempUnits());
+          Collections.sort(temps, unitSorting);
+          for (Iterator<TempUnit> tempUnits = temps.iterator(); tempUnits.hasNext();) {
+            Unit tempUnit = tempUnits.next();
+            UnitNodeWrapper tempNodeWrapper =
+                factory.createUnitNodeWrapper(tempUnit, tempUnit.getPersons());
+            DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(tempNodeWrapper);
+            node.add(tempNode);
+            nodeWrapper.getSubordinatedElements().add(tempNodeWrapper);
+  
+            if (unitNodes != null) {
+              unitNodes.put(tempUnit.getID(), tempNode);
+            }
           }
         }
-
         /*
          * if(curUnit.getShip() != null){ Ship s = curUnit.getShip(); // also
          * add ships under parent of the current unit node = new
@@ -284,7 +288,7 @@ public class TreeHelper {
 
             retVal +=
                 addUnits(factionNode, treeStructure, sortCriteria + 1, helpList, factory,
-                    activeAlliances, unitNodes, data);
+                    activeAlliances, unitNodes, data, unitSorting);
             helpList.clear();
 
             break;
@@ -303,7 +307,7 @@ public class TreeHelper {
 
               retVal +=
                   addUnits(fdsNode, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             } else if (prevUnit.getGuiseFaction()!=null){ 
               FactionNodeWrapper guiseFactionNodeWrapper =
                 factory.createFactionNodeWrapper(prevUnit.getGuiseFaction(), prevUnit.getRegion(),
@@ -317,11 +321,11 @@ public class TreeHelper {
 
               retVal +=
                 addUnits(guiseFactionNode, treeStructure, sortCriteria + 1, helpList, factory,
-                    activeAlliances, unitNodes, data);
+                    activeAlliances, unitNodes, data,unitSorting);
             } else {
               retVal +=
                   addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             }
 
             helpList.clear();
@@ -342,11 +346,11 @@ public class TreeHelper {
 
               retVal +=
                   addUnits(fdsNode, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             } else {
               retVal +=
                   addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             }
 
             helpList.clear();
@@ -375,11 +379,11 @@ public class TreeHelper {
 
               retVal +=
                   addUnits(groupNode, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             } else {
               retVal +=
                   addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             }
 
             helpList.clear();
@@ -411,7 +415,7 @@ public class TreeHelper {
 
             retVal +=
                 addUnits(healthNode, treeStructure, sortCriteria + 1, helpList, factory,
-                    activeAlliances, unitNodes, data);
+                    activeAlliances, unitNodes, data,unitSorting);
             helpList.clear();
 
             break;
@@ -429,7 +433,7 @@ public class TreeHelper {
 
             retVal +=
                 addUnits(combatNode, treeStructure, sortCriteria + 1, helpList, factory,
-                    activeAlliances, unitNodes, data);
+                    activeAlliances, unitNodes, data,unitSorting);
             helpList.clear();
 
             break;
@@ -448,7 +452,7 @@ public class TreeHelper {
 
             retVal +=
                 addUnits(trustlevelNode, treeStructure, sortCriteria + 1, helpList, factory,
-                    activeAlliances, unitNodes, data);
+                    activeAlliances, unitNodes, data,unitSorting);
             helpList.clear();
 
             break;
@@ -470,11 +474,11 @@ public class TreeHelper {
 
               retVal +=
                   addUnits(taggableNode, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             } else {
               retVal +=
                   addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory,
-                      activeAlliances, unitNodes, data);
+                      activeAlliances, unitNodes, data,unitSorting);
             }
             helpList.clear();
 
@@ -591,7 +595,7 @@ public class TreeHelper {
       if (node == null) {
         retVal +=
             addUnits(mother, treeStructure, sortCriteria + 1, helpList, factory, activeAlliances,
-                unitNodes, data);
+                unitNodes, data,unitSorting);
       } else {
         mother.add(node);
 
@@ -601,7 +605,7 @@ public class TreeHelper {
 
         retVal +=
             addUnits(node, treeStructure, sortCriteria + 1, helpList, factory, activeAlliances,
-                unitNodes, data);
+                unitNodes, data,unitSorting);
       }
     }
 

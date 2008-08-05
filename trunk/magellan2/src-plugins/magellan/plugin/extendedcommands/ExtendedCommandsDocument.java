@@ -326,6 +326,9 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   public void setModified(boolean modified) {
     this.isModified = modified;
   }
+  public boolean isModified() {
+    return isModified;
+  }
 
   /**
    * Returns the value of commands.

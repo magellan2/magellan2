@@ -368,11 +368,11 @@ public class DockingFrameworkBuilder  {
     // remove all layout items from the menu
     for (int i=0; i<DockingFrameworkBuilder.layoutMenu.getItemCount(); i++) {
       if (DockingFrameworkBuilder.layoutMenu.getItem(i) instanceof LayoutCheckboxMenuItem) {
-        DockingFrameworkBuilder.log.info("Removing Layout Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText());
+        DockingFrameworkBuilder.log.debug("Removing Layout Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText());
         DockingFrameworkBuilder.layoutMenu.remove(i);
         i--;
       } else if (DockingFrameworkBuilder.layoutMenu.getItem(i) != null) {
-        DockingFrameworkBuilder.log.info("Don't remove Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText()+" ("+DockingFrameworkBuilder.layoutMenu.getItem(i).getClass().getName()+")");
+        DockingFrameworkBuilder.log.debug("Don't remove Menu Entry "+DockingFrameworkBuilder.layoutMenu.getItem(i).getText()+" ("+DockingFrameworkBuilder.layoutMenu.getItem(i).getClass().getName()+")");
       }
     }
     
@@ -382,7 +382,7 @@ public class DockingFrameworkBuilder  {
     for (DockingLayout layout : DockingFrameworkBuilder.layouts) {
       LayoutCheckboxMenuItem item = new LayoutCheckboxMenuItem(layout);
       group.add(item);
-      DockingFrameworkBuilder.log.info("Add Layout Menu Entry ("+i+"): "+layout.getName());
+      DockingFrameworkBuilder.log.debug("Add Layout Menu Entry ("+i+"): "+layout.getName());
       DockingFrameworkBuilder.layoutMenu.insert(item,i++);
     }
     
@@ -438,14 +438,14 @@ public class DockingFrameworkBuilder  {
     }
     
     DockingLayout deletableLayout = DockingFrameworkBuilder.activeLayout;
-    DockingFrameworkBuilder.log.info("Remove docking layout '"+deletableLayout.getName()+"'");
+    DockingFrameworkBuilder.log.debug("Remove docking layout '"+deletableLayout.getName()+"'");
     int index = DockingFrameworkBuilder.layouts.indexOf(DockingFrameworkBuilder.activeLayout);
     if (index == 0) {
       index=1;
     } else {
       index=0; // if the first layout is active, use the second layout.
     }
-    DockingFrameworkBuilder.log.info("index:"+index);
+    DockingFrameworkBuilder.log.debug("index:"+index);
     setActiveLayout(DockingFrameworkBuilder.layouts.get(index));
     
     DockingFrameworkBuilder.layouts.remove(deletableLayout);

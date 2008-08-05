@@ -14,6 +14,7 @@
 package magellan.library.utils.replacers;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import magellan.library.Region;
 import magellan.library.impl.MagellanRegionImpl;
@@ -36,6 +37,11 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
 	public static final int MODE_POSITIVE = 2;
 	protected Field field;
 	protected int mode;
+  
+  // Fiete 20080805
+  // made the fields private, now going to use the methods!
+  protected Method method;
+  
 
 	/**
 	 * Creates a new RegionFieldReplacer object.
@@ -49,8 +55,22 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
 		try {
 			this.field = MagellanRegionImpl.class.getField(field);
 		} catch(Exception exc) {
-			throw new RuntimeException("Error retrieving region field " + field);
+			// throw new RuntimeException("Error retrieving region field " + field);
+      this.field=null;
 		}
+    if (this.field==null){
+      try {
+        String normalizedField = field.substring(0,1).toUpperCase() + field.substring(1);
+        this.method = MagellanRegionImpl.class.getMethod("get" + normalizedField,null);
+      } catch(Exception exc) {
+        // throw new RuntimeException("Error retrieving region field " + field);
+        this.method=null;
+      }
+    }
+    if (this.field==null && this.method==null){
+      throw new RuntimeException("Error retrieving region field " + field);
+    }
+    
 
 		this.mode = mode;
 	}
@@ -64,8 +84,13 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
 	 */
 	@Override
   public Object getRegionReplacement(Region r) {
+    if (this.field==null && this.method==null){
+      return null;
+    }
 		try {
-			Object o = field.get(r);
+			Object o = null;
+      if (this.field!=null) {o = field.get(r);}
+      if (this.method!=null) {o = this.method.invoke(r, null);}
 
 			if(o != null) {
 				if(!(o instanceof Number)) {

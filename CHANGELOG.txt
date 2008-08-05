@@ -2,6 +2,8 @@
 	* fix #274: redundant region info (resource blocks)
 	* getSilver, getIron etc looks first in resource blocks now
 	* fix #282: FactionStatsPanel multipleFactions -> one Income/Expences
+	* RegionFieldReplacer: public fields -> public methods
+	* added some tooltips and titles for docks in resources
 
 2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
     * closing a ExtCmds script now chekcs if it contains unsaved data.

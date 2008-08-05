@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -461,7 +460,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     if (minList != null) {
       try {
         minEvalf = parseFloat(minList.getReplacement(null));
-        log.info("min: "+minEvalf);
+        // log.info("min: "+minEvalf);
         minEvalfed = true;
       } catch (Exception exc) {
         minEvalfed = false;
@@ -474,7 +473,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     if (maxList != null) {
       try {
         maxEvalf = parseFloat(maxList.getReplacement(null));
-        log.info("max: "+maxEvalf);
+        // log.info("max: "+maxEvalf);
         maxEvalfed = true;
       } catch (Exception exc) {
         maxEvalfed = false;
@@ -489,7 +488,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       return ((Number) replacement).floatValue();
     } else {
 
-      BigDecimal bd = null;
+      // BigDecimal bd = null;
 
       NumberFormat f = NumberFormat.getInstance(Locales.getGUILocale());
       if (f instanceof DecimalFormat) {

@@ -4,6 +4,9 @@
 	* fix #282: FactionStatsPanel multipleFactions -> one Income/Expences
 	* RegionFieldReplacer: public fields -> public methods
 	* added some tooltips and titles for docks in resources
+	* added readable info for Type of Task in TaskTablePanel
+	* small change in use of "filterProblems" in TaskTablePanel
+	* changed shipinspektor to check for empty ships under construction
 
 2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
     * closing a ExtCmds script now chekcs if it contains unsaved data.

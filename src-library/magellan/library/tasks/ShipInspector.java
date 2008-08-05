@@ -104,7 +104,10 @@ public class ShipInspector extends AbstractInspector implements Inspector {
     
 		if (s.getSize() != nominalShipSize) {
 			// ship will be built, so dont review ship
-			return Collections.emptyList();
+      // wrong! also while building someone should be on the ship!
+			// return Collections.emptyList();
+      // true is, tht we don´t go through the other checks
+      return problems;
 		}
 
 

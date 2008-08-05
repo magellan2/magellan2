@@ -249,6 +249,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private final ID sproutsID = StringID.create("Schoesslinge");
 	private final ID mallornSproutsID = StringID.create("Mallornschösslinge");
 	private final ID stonesID = StringID.create("Steine");
+  private final ID horsesID = StringID.create("Pferde");
+  private final ID silverID = StringID.create("Silber");
+  private final ID peasantsID = StringID.create("Bauern");
 
 	/**
 	 * Creates a new EMapDetailsPanel object.
@@ -870,6 +873,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		DefaultMutableTreeNode peasantsNode = createSimpleNode(Resources.get("emapdetailspanel.node.peasants") + ": " +
 															   peasantsInfo, "bauern");
+    // Fiete 20080805: if we have peasants in Ressources, this would be redundant
+    // in that case, we change NodeInfo to "region details"
+    if (isResourceTypeIDInRegionResources(r, peasantsID)){
+      peasantsNode = createSimpleNode(Resources.get("emapdetailspanel.node.regiondetails"), "bauern");
+    }
 		parent.add(peasantsNode);
 		expandableNodes.add(new NodeWrapper(peasantsNode, "EMapDetailsPanel.RegionPeasantsExpanded"));
 
@@ -880,9 +888,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 										  Resources.get("emapdetailspanel.node.of") + " " + r.maxRecruit(), "rekruten"));
 
 		// silver
-		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " +
+    //   Fiete 20080805: if we have silver in Ressources, this would be redundant
+    if (!isResourceTypeIDInRegionResources(r, silverID)){
+      peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": " +
 										  getDiffString(r.getSilver(), r.getOldSilver()), "items/silber"));
-
+    }
 		// surplus
 		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.surplus") + ": " +
 										  getDiffString(surplus, oldSurplus), "items/silber"));
@@ -914,6 +924,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 										  "items/silber"));
 	}
 
+  
+  
+  
+  
+  
 	 /**
 	  * Appends the resources of the region. 
 	  *
@@ -982,12 +997,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		// horse
 		if((r.getHorses() > 0) || (r.getOldHorses() > 0)) {
-			icon = "items/pferd";
-			if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
-				icon += "_region";
-			}
-			resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.horses") + ": " +
-											  getDiffString(r.getHorses(), r.getOldHorses()), icon));
+			// Fiete 20080805: only, if horses are not already included in ressources
+      if (!isResourceTypeIDInRegionResources(r, horsesID)){
+        icon = "items/pferd";
+  			if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")){
+  				icon += "_region";
+  			}
+  			resourceNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.horses") + ": " +
+  											  getDiffString(r.getHorses(), r.getOldHorses()), icon));
+      }
 		}
 
 		// herb
@@ -1042,10 +1060,38 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		if(res.getType().getID().equals(stonesID)) {
 			return r.getOldStones();
 		}
+    
+    if(res.getType().getID().equals(horsesID)) {
+      return r.getOldHorses();
+    }
+    
+    if(res.getType().getID().equals(silverID)) {
+      return r.getOldSilver();
+    }
 
+    if(res.getType().getID().equals(peasantsID)) {
+      return r.getOldPeasants();
+    }
+    
 		return -1;
 	}
 
+  private boolean isResourceTypeIDInRegionResources(Region r, ID resourceID){
+    if (r.resources()==null || r.resources().isEmpty()){
+       return false;
+    }
+    for(Iterator iter = r.resources().iterator(); iter.hasNext();) {
+      RegionResource res = (RegionResource) iter.next();
+      if (res.getType().getID().equals(resourceID)){
+        return true;
+      }
+    }
+    
+    
+    return false;
+  }
+  
+  
 	private void appendMultipleRegionInfo(Collection<Region> r, DefaultMutableTreeNode parent,
 										  Collection<NodeWrapper> expandableNodes) {
 		// collect the data
@@ -1524,7 +1570,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			for(Iterator<Unit> iter = lastRegion.units().iterator(); iter.hasNext();) {
 				Unit u = iter.next();
 
-				if((u.getFaction() != null) && factions.contains(u.getFaction())) {
+				if((u.getFaction() != null) && factions!=null && factions.contains(u.getFaction())) {
 					units.add(u);
 				}
 			}
@@ -1533,9 +1579,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		// comments
-		for(Iterator<Faction> iter = factions.iterator(); iter.hasNext();) {
-			appendComments(iter.next(), parent, expandableNodes);
-		}
+    if (factions!=null){
+    	for(Iterator<Faction> iter = factions.iterator(); iter.hasNext();) {
+    		appendComments(iter.next(), parent, expandableNodes);
+    	}
+    }
 	}
 
 	/** 

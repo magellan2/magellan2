@@ -38,9 +38,9 @@ import magellan.library.RegionResource;
 import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Sign;
-import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.ZeroUnit;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
@@ -49,6 +49,12 @@ import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 
+// Fiete 20080806: prepare for loosing special info in CR
+// pre eressearound 570+(?) we have ;silber as region tag
+// in eressearound 570(?) we have ;silver as region tag AND "Silber"-resource
+// we can expect that the region tag will not hold forever...
+// all requests to resources (old tags) have to check, if
+// the requested Resource is in the r.resources
 
 /**
  * DOCUMENT-ME
@@ -58,55 +64,55 @@ import magellan.library.utils.Regions;
  */
 public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Region {
 	/** DOCUMENT-ME */
-	public int trees = -1;
+	private int trees = -1;
 
 	/** DOCUMENT-ME */
-	public int oldTrees = -1;
+	private int oldTrees = -1;
 
 	/** DOCUMENT-ME */
-	public int sprouts = -1;
+	private int sprouts = -1;
 
 	/** DOCUMENT-ME */
-	public int oldSprouts = -1;
+	private int oldSprouts = -1;
 
 	/** DOCUMENT-ME */
-	public boolean mallorn = false;
+	private boolean mallorn = false;
 
 	/** DOCUMENT-ME */
-	public int iron = -1;
+	private int iron = -1;
 
 	/** DOCUMENT-ME */
-	public int oldIron = -1;
+	private int oldIron = -1;
 
 	/** DOCUMENT-ME */
-	public int laen = -1;
+	private int laen = -1;
 
 	/** DOCUMENT-ME */
-	public int oldLaen = -1;
+	private int oldLaen = -1;
 
 	/** DOCUMENT-ME */
-	public int peasants = -1;
+	private int peasants = -1;
 
 	/** DOCUMENT-ME */
-	public int oldPeasants = -1;
+	private int oldPeasants = -1;
 
 	/** DOCUMENT-ME */
-	public int silver = -1;
+	private int silver = -1;
 
 	/** DOCUMENT-ME */
-	public int oldSilver = -1;
+	private int oldSilver = -1;
 
 	/** DOCUMENT-ME */
-	public int horses = -1;
+	private int horses = -1;
 
 	/** DOCUMENT-ME */
-	public int oldHorses = -1;
+	private int oldHorses = -1;
 
 	/** DOCUMENT-ME */
-	public int stones = -1;
+	private int stones = -1;
 
 	/** DOCUMENT-ME */
-	public int oldStones = -1;
+	private int oldStones = -1;
 
 	/**
 	 * The wage persons can earn by working in this region. Unfortunately this is not the wage
@@ -151,12 +157,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * 1 -> ozean and neighboring land 
 	 */
 	private int ozeanWithCoast = -1;
-	
-	
-	private ID treesID = StringID.create("Baeume");
-	private ID mallornID = StringID.create("Mallorn");
-	private ID sproutsID = StringID.create("Schoesslinge");
-	private ID mallornSproutsID = StringID.create("Mallornschösslinge");
 	
 
 	/** Informs about the reason why this region is visible. */
@@ -485,6 +485,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		// 			log.debug("Region.addResource:" + resource);
 		// 			log.debug("Region.addResource:" + resources);
 		// 		}
+    
+ 
+    
 		return resource;
 	}
 
@@ -1370,6 +1373,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns horses.
    */
   public int getHorses() {
+    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_HORSE);
+    RegionResource horseRR = this.getResource(horsesIT);
+    if (horseRR!=null){
+      return horseRR.getAmount();
+    }
     return horses;
   }
 
@@ -1388,6 +1396,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns iron.
    */
   public int getIron() {
+    ItemType ironIT = data.rules.getItemType(EresseaConstants.I_IRON);
+    RegionResource ironRR = this.getResource(ironIT);
+    if (ironRR!=null){
+      return ironRR.getAmount();
+    }
     return iron;
   }
 
@@ -1406,6 +1419,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns laen.
    */
   public int getLaen() {
+    ItemType laenIT = data.rules.getItemType(EresseaConstants.I_LAEN);
+    RegionResource laenRR = this.getResource(laenIT);
+    if (laenRR!=null){
+      return laenRR.getAmount();
+    }
     return laen;
   }
 
@@ -1676,6 +1694,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns peasants.
    */
   public int getPeasants() {
+    ItemType peasonsIT = data.rules.getItemType(EresseaConstants.I_PEASONS);
+    RegionResource peasonsRR = this.getResource(peasonsIT);
+    if (peasonsRR!=null){
+      return peasonsRR.getAmount();
+    }
     return peasants;
   }
 
@@ -1748,6 +1771,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns silver.
    */
   public int getSilver() {
+    ItemType silverIT = data.rules.getItemType(EresseaConstants.I_SILVER);
+    RegionResource silverRR = this.getResource(silverIT);
+    if (silverRR!=null){
+      return silverRR.getAmount();
+    }
     return silver;
   }
 
@@ -1766,6 +1794,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns sprouts.
    */
   public int getSprouts() {
+    ItemType sproutsIT = data.rules.getItemType(EresseaConstants.I_SPROUTS);
+    RegionResource sproutsRR = this.getResource(sproutsIT);
+    if (sproutsRR!=null){
+      return sproutsRR.getAmount();
+    }
     return sprouts;
   }
 
@@ -1784,6 +1817,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns stones.
    */
   public int getStones() {
+    ItemType stonesIT = data.rules.getItemType(EresseaConstants.I_STONES);
+    RegionResource stonesRR = this.getResource(stonesIT);
+    if (stonesRR!=null){
+      return stonesRR.getAmount();
+    }
     return stones;
   }
 
@@ -1856,6 +1894,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns trees.
    */
   public int getTrees() {
+    ItemType treesIT = data.rules.getItemType(EresseaConstants.I_TREES);
+    RegionResource treesRR = this.getResource(treesIT);
+    if (treesRR!=null){
+      return treesRR.getAmount();
+    }
     return trees;
   }
 

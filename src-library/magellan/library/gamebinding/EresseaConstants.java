@@ -569,20 +569,33 @@ public class EresseaConstants {
 
 	// public static final int A_ALL = 0x003B;
 	//public static final int A_ALL = A_SILVER | A_COMBAT | A_GIVE | A_GUARD | A_GUISE | A_WHATEVER; // (binary value should be: 111101 (#123) )
+  
+  /** Bag of negative weight - this bad weights 1 GE but stores 200 GE. However not all items can be stored in the bag. */
+  public static final ID I_BONW = StringID.create("Zauberbeutel");
+  
+  /** DOCUMENT-ME */
+  public static final ID I_CART = StringID.create("Wagen");
+  
+  /** DOCUMENT-ME */
+  public static final ID I_GOTS = StringID.create("Gürtel der Trollstärke");
+  
 	public static final ID I_HORSE = StringID.create("Pferd");
 
-	/** DOCUMENT-ME */
-	public static final ID I_CART = StringID.create("Wagen");
+  public static final ID I_IRON = StringID.create("Eisen");
+  
+  public static final ID I_LAEN = StringID.create("Laen");
+  
+  public static final ID I_PEASONS = StringID.create("Bauern");
 
   /** DOCUMENT-ME */
   public static final ID I_SILVER = StringID.create("Silber");
 
-	/** DOCUMENT-ME */
-	public static final ID I_GOTS = StringID.create("Gürtel der Trollstärke");
-
-  /** Bag of negative weight - this bad weights 1 GE but stores 200 GE. However not all items can be stored in the bag. */
-  public static final ID I_BONW = StringID.create("Zauberbeutel");
-
+  public static final ID I_SPROUTS = StringID.create("Schösslinge");
+  
+  public static final ID I_STONES = StringID.create("Steine");
+  
+  public static final ID I_TREES = StringID.create("Bäume");
+  
 	/** DOCUMENT-ME */
 	public static final ID RT_OCEAN = StringID.create("Ozean");
 

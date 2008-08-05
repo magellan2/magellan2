@@ -1,3 +1,8 @@
+2008-08-05 / Build 226 - Fiete  <Fiete@users.sourceforge.net>
+	* fix #274: redundant region info (resource blocks)
+	* getSilver, getIron etc looks first in resource blocks now
+	* fix #282: FactionStatsPanel multipleFactions -> one Income/Expences
+
 2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
     * closing a ExtCmds script now chekcs if it contains unsaved data.
     * New button for saving a single script / all scripts

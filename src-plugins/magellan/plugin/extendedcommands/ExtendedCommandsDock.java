@@ -35,8 +35,10 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import magellan.client.Client;
 import magellan.client.desktop.MagellanDesktop;
 import magellan.library.GameData;
 import magellan.library.Region;
@@ -105,7 +107,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 //    
 //    north.add(Box.createRigidArea(new Dimension(10, 0)));
     
-    JButton executeButton = new JButton(Resources.get("button.execute"));
+    JButton executeButton = new JButton(Resources.get("extended_commands.button.execute.caption"));
     executeButton.setRequestFocusEnabled(false);
     executeButton.setActionCommand("button.execute");
     executeButton.addActionListener(this);
@@ -114,12 +116,21 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
     north.add(Box.createRigidArea(new Dimension(5, 0)));
     
-    JButton saveButton = new JButton(Resources.get("button.save"));
+    JButton saveButton = new JButton(Resources.get("extended_commands.button.save.caption"));
     saveButton.setRequestFocusEnabled(false);
     saveButton.setActionCommand("button.save");
     saveButton.addActionListener(this);
     saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
     north.add(saveButton);
+
+    north.add(Box.createRigidArea(new Dimension(5, 0)));
+    
+    JButton saveAllButton = new JButton(Resources.get("extended_commands.button.saveall.caption"));
+    saveAllButton.setRequestFocusEnabled(false);
+    saveAllButton.setActionCommand("button.saveall");
+    saveAllButton.addActionListener(this);
+    saveAllButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+    north.add(saveAllButton);
 
     north.add(Box.createHorizontalGlue());
     add(north,BorderLayout.NORTH);
@@ -139,8 +150,26 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       
       log.info("Execute button selected on tab "+tab.getText());
       doc.actionPerformed(e);
+    } else if (e.getActionCommand().equalsIgnoreCase("button.saveall")) {
       
-    } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
+      TitledTab tab = (TitledTab)tabs.getSelectedTab();
+      if (tab == null) return; // we don't execute everything here....
+      ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+      log.info("Save tab '"+tab.getText()+"' contents");
+      
+      Script newScript = (Script)doc.getScript().clone();
+      newScript.setScript(doc.getScriptingArea().getText());
+
+      if (doc.getUnit() != null) {
+        commands.setCommands(doc.getUnit(),newScript);
+      } else if (doc.getContainer() != null) {
+        commands.setCommands(doc.getContainer(),newScript);
+      } else {
+        commands.setLibrary(newScript);
+      }
+      
+      doc.setModified(false);
+    } else if (e.getActionCommand().equalsIgnoreCase("button.saveall")) {
       // iterate thru all tabs and save the scripts
       for (int i=0; i<tabs.getTabCount(); i++) {
         TitledTab tab = (TitledTab)tabs.getTabAt(i);
@@ -264,6 +293,8 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         tabs.removeTab(tabs.getTabAt(i));
         i--;
       }
+      
+      // TODO: show library at startup
     }
   }  
   /**
@@ -378,13 +409,30 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @return the close button
    */
   private JButton createCloseTabButton(final String key, final TitledTab tab) {
-    return ButtonFactory.createFlatHighlightButton(new CloseIcon(), "Schließen", 0, new ActionListener() {
+    return ButtonFactory.createFlatHighlightButton(new CloseIcon(), Resources.get("extended_commands.button.close.tooltip"), 0, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        // Closing the tab by removing it from the tabbed panel it is a member of
-        tab.getTabbedPanel().removeTab(tab);
-        tabMap.remove(key);
-        docMap.remove(key);
+        
+        ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+        if (doc.isModified()) {
+          int answer = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("extended_commands.questions.not_saved"), Resources.get("extended_commands.questions.not_saved_title"), JOptionPane.YES_NO_OPTION);
+          if (answer == JOptionPane.YES_OPTION) {
+            closeTab(key,tab);
+          }
+        } else {
+          closeTab(key,tab);
+        }
       }
     });
+  }
+  
+  public void closeTab(String key, Tab tab) {
+    // Closing the tab by removing it from the tabbed panel it is a member of
+    Tab t1 = tabMap.remove(key);
+    if (t1 != null && !tab.equals(tab)) {
+      log.error("Whoops - here is something wrong");
+    }
+    docMap.remove(key);
+    
+    tab.getTabbedPanel().removeTab(tab);
   }
 }

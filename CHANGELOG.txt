@@ -1,12 +1,16 @@
-2008-08-04 / Build XXX (not yet committed) - stm (stm_@users.sourceforge.net)
+2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
+    * closing a ExtCmds script now chekcs if it contains unsaved data.
+    * New button for saving a single script / all scripts
+
+2008-08-04 / Build 225 (not yet committed) - stm (stm_@users.sourceforge.net)
     * made TaskTable thread safe, moved to background process
     * added region/unit selection mode to TaskTable
     * added "ignore problem" feature to TaskTable (context menu)
-	* added ClosingListener and optional non-modality to ProgressBarUI
+    * added ClosingListener and optional non-modality to ProgressBarUI
     * made Cache a SoftReference
 
 2008-08-04 / Build 225 - Fiete  <Fiete@users.sourceforge.net>
-	* fixed UnitContainer.getModifiedUnitContainer (until now only ships recognized)
+    * fixed UnitContainer.getModifiedUnitContainer (until now only ships recognized)
 
 2008-08-04 / Build 225 - stm (stm_@users.sourceforge.net)
     * replaced some occurences of "Silber" by EresseaConstants.I_SILBER
@@ -19,31 +23,31 @@
     * done feature #163 (AutoCompletion)
     
 2008-07-30 / Build 222 - stm (stm_@users.sourceforge.net)
-	* additional fixes to options dialogs
-	* fixed bug #283, floats in ARR
-	* fixed #243 (AutoCompletion)
-	* completed #261 (TLS)
+    * additional fixes to options dialogs
+    * fixed bug #283, floats in ARR
+    * fixed #243 (AutoCompletion)
+    * completed #261 (TLS)
 
 2008-07-30 / Build 222 - Thoralf (thoralf@m84.de)
     * ExtCmds scripts as Tabs in a dock.
 
 2008-07-30 / Build 221 - Fiete  <Fiete@users.sourceforge.net>
-	* Rules: Schlangenkopf->Seeschlangenkopf
+    * Rules: Schlangenkopf->Seeschlangenkopf
 
 2008-07-29 / Build 220 - stm (stm_@users.sourceforge.net)
-	* added "remove orders" dialog to unit context menu
-	* compactified options layout
-	* added class AbstractPreferencesAdapter for unified layout of option panels
-	* changed semantics of Unit.getRace() etc!
-	* made installer fit for *nix (#184)
-	* fixed #276, added context menu items for islands
+    * added "remove orders" dialog to unit context menu
+    * compactified options layout
+    * added class AbstractPreferencesAdapter for unified layout of option panels
+    * changed semantics of Unit.getRace() etc!
+    * made installer fit for *nix (#184)
+    * fixed #276, added context menu items for islands
 
 2008-07-28 / Build 219 - Fiete  <Fiete@users.sourceforge.net>
-	* added some Items to rules, incl weight of AdmantiumX
+    * added some Items to rules, incl weight of AdmantiumX
 
 2008-07-24 / Build 218 - Fiete (sf@fietefietz.de)
-	* rules (Eressea + Vi II): weight of some artefacts added
-	* GameData: infomsg for #287 completed
+    * rules (Eressea + Vi II): weight of some artefacts added
+    * GameData: infomsg for #287 completed
 
 2008-07-20 / Build 217 - Thoralf (thoralf@m84.de)
     * bugfix for "cancel" in ExtCmds

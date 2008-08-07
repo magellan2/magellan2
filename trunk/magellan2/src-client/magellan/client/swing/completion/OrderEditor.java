@@ -14,7 +14,6 @@
 package magellan.client.swing.completion;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -157,7 +156,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
         }
       }
     };
-		dispatcher.addUnitOrdersListener(orderListener);
 		initStyles();
 
 		//bind ctrl-shift C to OrderEditor
@@ -172,15 +170,26 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		//	}
 		//}
 	}
+  
+  /**
+   * registers an OrderListener with the event dispatcher
+   */
+  public void registerListener() {
+    dispatcher.addUnitOrdersListener(orderListener);
+  }
+
 	
-  public void release() {
+  /**
+   * release an OrderListener with the event dispatcher
+   */
+  public void releaseListener() {
     dispatcher.removeUnitOrdersListener(orderListener);
   }
 
 	@Override
 	protected void finalize() throws Throwable {
 //	  instanceCount--;
-	  release();
+	  releaseListener();
 	  super.finalize();
 	}
 

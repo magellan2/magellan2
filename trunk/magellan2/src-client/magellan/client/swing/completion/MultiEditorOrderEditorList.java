@@ -989,7 +989,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     j.removeMouseListener(this);
     if (j instanceof OrderEditor) {
       OrderEditor editor = (OrderEditor) j;
-      editor.release();
+      editor.releaseListener();
     }
 	}
 
@@ -1014,11 +1014,12 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 *
 	 * 
 	 */
-	private void addListeners(JTextComponent j) {
+	private void addListeners(OrderEditor j) {
 		j.addFocusListener(focusAdapter);
 		j.addKeyListener(keyAdapter);
 		j.addCaretListener(caretAdapter);
     j.addMouseListener(this);
+    j.registerListener();
 	}
 
 	/**

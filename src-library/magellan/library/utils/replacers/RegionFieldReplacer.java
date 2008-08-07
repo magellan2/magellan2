@@ -61,7 +61,7 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
     if (this.field==null){
       try {
         String normalizedField = field.substring(0,1).toUpperCase() + field.substring(1);
-        this.method = MagellanRegionImpl.class.getMethod("get" + normalizedField,null);
+        this.method = MagellanRegionImpl.class.getMethod("get" + normalizedField,(Class []) null);
       } catch(Exception exc) {
         // throw new RuntimeException("Error retrieving region field " + field);
         this.method=null;
@@ -90,7 +90,7 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
 		try {
 			Object o = null;
       if (this.field!=null) {o = field.get(r);}
-      if (this.method!=null) {o = this.method.invoke(r, null);}
+      if (this.method!=null) {o = this.method.invoke(r, (Object []) null);}
 
 			if(o != null) {
 				if(!(o instanceof Number)) {

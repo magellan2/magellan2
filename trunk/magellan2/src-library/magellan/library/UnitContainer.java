@@ -19,9 +19,9 @@ import java.util.Map;
 
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.UnitContainerType;
-import magellan.library.utils.Cache;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
+import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 
 /**
  * DOCUMENT-ME
@@ -29,7 +29,7 @@ import magellan.library.utils.Taggable;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public interface UnitContainer extends Related, Sorted, Taggable {
+public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
 
   /**
    * Adds an item to the unitcontainer. If the unitcontainer already has an item
@@ -205,18 +205,14 @@ public interface UnitContainer extends Related, Sorted, Taggable {
    */
   public void setEffects(List<String> effects);
 
-  /**
-   * Returns the value of cache.
-   * 
-   * @return Returns cache.
-   */
-  public Cache getCache();
-
-  /**
-   * Sets the value of cache.
-   *
-   * @param cache The value for cache.
-   */
-  public void setCache(Cache cache);
   
+  /**
+   * Always returns <code>null</code>. UnitContainers do not have order editors.
+   * 
+   * @return
+   */
+  public CacheableOrderEditor getOrderEditor();
+
+  public void setOrderEditor(CacheableOrderEditor editor);
+
 }

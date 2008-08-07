@@ -47,6 +47,7 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.event.GameDataEvent;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
@@ -370,8 +371,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // execute the commands for this container.
     commands.execute(data, container);
     
-    container.getCache().orderEditor.reloadOrders();
-    
+    client.getDispatcher().fire(new GameDataEvent(this, data));
+//    container.getCache().orderEditor.reloadOrders();  
   }
   
   /**
@@ -396,8 +397,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       }
     }
 
-    
-    container.getCache().orderEditor.reloadOrders();
+    client.getDispatcher().fire(new GameDataEvent(this, data));
+//     client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
+//    container.getCache().orderEditor.reloadOrders();
     
   }
   
@@ -410,8 +412,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // execute the commands for this unit.
     commands.execute(data, unit);
     
-    unit.getCache().orderEditor.reloadOrders();
-    unit.getCache().orderEditor.fireOrdersChangedEvent();
+    unit.getOrderEditor().reloadOrders();
+    unit.getOrderEditor().fireOrdersChangedEvent();
   }
   
   /**

@@ -78,7 +78,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	public static Map<String,Color> colorMap;
 
 	/** DOCUMENT-ME */
-	public static boolean showTooltips;
+	private static boolean showTooltips;
 	private boolean initialized = false;
 	private CellObject cellObj = null;
 	private CellObject2 cellObj2 = null;
@@ -213,7 +213,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 
 		// now give the renderer our values
 		CellRenderer.colorMap = cMap;
-		CellRenderer.showTooltips = tTip;
+		CellRenderer.setShowTooltips(tTip);
 	}
 
 	protected static void loadEmphasizeData() {
@@ -268,13 +268,31 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 * 
 	 */
 	public static void setAdditionalValueProperties(Map<String,Color> colorM, boolean sTip) {
-		CellRenderer.showTooltips = sTip;
+		CellRenderer.setShowTooltips(sTip);
 		CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SHOW_TOOLTIPS, sTip ? "true" : "false");
 
 		CellRenderer.setColorMap(colorM);
 	}
 
 	/**
+   * Sets the value of showTooltips.
+   *
+   * @param showTooltips The value for showTooltips.
+   */
+  public static void setShowTooltips(boolean showTooltips) {
+    CellRenderer.showTooltips = showTooltips;
+  }
+
+  /**
+   * Returns the value of showTooltips.
+   * 
+   * @return Returns showTooltips.
+   */
+  public static boolean isShowTooltips() {
+    return showTooltips;
+  }
+
+  /**
 	 * Sets the current color mapping and stores it in the settings.
 	 *
 	 * 
@@ -576,7 +594,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				formatLabel(iconLabels[i], set, false, false);
 				iconLabels[i].setIcon(icon);
 
-				if(CellRenderer.showTooltips) {
+				if(CellRenderer.isShowTooltips()) {
 					iconLabels[i].setToolTipText(iconName);
 				} else {
 					iconLabels[i].setToolTipText(null);

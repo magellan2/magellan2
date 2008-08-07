@@ -60,7 +60,7 @@ public class DescriptionReplacer implements Replacer {
 		}
 
 		if(mode) {
-			return Replacer.BLANK;
+			return Replacer.EMPTY;
 		}
 
 		return null;

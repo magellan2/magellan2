@@ -1,3 +1,11 @@
+2008-08-04 / Build 227 - stm (stm_@users.sourceforge.net)
+    * added ClosingListener and optional non-modality to ProgressBarUI
+    * made Cache (used in Unit, Unitcontainer...) a SoftReference
+    * added "ignore problem" feature to TaskTable (context menu)
+    * made TaskTable a bit more thread safe
+    * added region/unit selection mode to TaskTable
+    * added de-registering of OrderEditors with EventDispatcher
+
 2008-08-05 / Build 226 - Fiete  <Fiete@users.sourceforge.net>
 	* fix #274: redundant region info (resource blocks)
 	* getSilver, getIron etc looks first in resource blocks now
@@ -12,13 +20,6 @@
 2008-08-05 / Build 226 - Thoralf (thoralf@m84.de)
     * closing a ExtCmds script now chekcs if it contains unsaved data.
     * New button for saving a single script / all scripts
-
-2008-08-04 / Build 225 (not yet committed) - stm (stm_@users.sourceforge.net)
-    * made TaskTable thread safe, moved to background process
-    * added region/unit selection mode to TaskTable
-    * added "ignore problem" feature to TaskTable (context menu)
-    * added ClosingListener and optional non-modality to ProgressBarUI
-    * made Cache a SoftReference
 
 2008-08-04 / Build 225 - Fiete  <Fiete@users.sourceforge.net>
     * fixed UnitContainer.getModifiedUnitContainer (until now only ships recognized)

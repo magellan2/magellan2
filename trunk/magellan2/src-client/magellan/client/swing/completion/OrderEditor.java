@@ -14,6 +14,7 @@
 package magellan.client.swing.completion;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,6 +71,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 {
 	private static final Logger log = Logger.getInstance(OrderEditor.class);
 
+//	private static int instanceCount = 0;
+	
 	// Style name constants
 
 	/** DOCUMENT-ME */
@@ -103,6 +106,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	private DocumentUpdateRunnable docUpdateThread = new DocumentUpdateRunnable(null); // keep this udpate runnable instead of re-creating it over and over again
 	private OrderEditorCaret myCaret = null;
 
+  private UnitOrdersListener orderListener;
+
 	/**
 	 * Creates a new OrderEditor object.
 	 *
@@ -113,6 +118,9 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 */
 	public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d) {
 		super();
+//		if (++instanceCount % 10 == 0) 
+//		  log.info("OE: "+instanceCount);
+		
 
 		// pavkovic 2002.11.11: use own caret for more logical refreshing
 		myCaret = new OrderEditorCaret();
@@ -140,15 +148,16 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		addKeyListener(this);
 		addFocusListener(this);
 
-		dispatcher.addUnitOrdersListener(new UnitOrdersListener() {
-				public void unitOrdersChanged(UnitOrdersEvent e) {
-					// refresh local copy of orders in editor
-					if((e.getSource() != OrderEditor.this) &&
-						   e.getUnit().equals(OrderEditor.this.unit)) {
-						setOrders(OrderEditor.this.unit.getOrders());
-					}
-				}
-			});
+		orderListener = new UnitOrdersListener() {
+      public void unitOrdersChanged(UnitOrdersEvent e) {
+        // refresh local copy of orders in editor
+        if((e.getSource() != OrderEditor.this) &&
+             e.getUnit().equals(OrderEditor.this.unit)) {
+          setOrders(OrderEditor.this.unit.getOrders());
+        }
+      }
+    };
+		dispatcher.addUnitOrdersListener(orderListener);
 		initStyles();
 
 		//bind ctrl-shift C to OrderEditor
@@ -162,6 +171,17 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		//				  com.eressea.util.logging.SwingInspector.printKeybindings(this));
 		//	}
 		//}
+	}
+	
+  public void release() {
+    dispatcher.removeUnitOrdersListener(orderListener);
+  }
+
+	@Override
+	protected void finalize() throws Throwable {
+//	  instanceCount--;
+	  release();
+	  super.finalize();
 	}
 
 	//private boolean swingInspected;

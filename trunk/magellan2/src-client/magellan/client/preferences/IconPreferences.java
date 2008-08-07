@@ -84,7 +84,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
 		con.gridheight = 1;
 		con.gridx = 0;
 		con.gridy = 0;
-		toolTipOn = new JCheckBox(Resources.get("tree.iconadapter.tooltips.show.text"), CellRenderer.showTooltips);
+		toolTipOn = new JCheckBox(Resources.get("tree.iconadapter.tooltips.show.text"), CellRenderer.isShowTooltips());
 		add(toolTipOn, con);
 		con.gridx = 1;
 

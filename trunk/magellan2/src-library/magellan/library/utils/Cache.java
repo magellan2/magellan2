@@ -121,11 +121,15 @@ public class Cache {
   /** DOCUMENT-ME */
   public Boolean movementPathIsPassive = null;
 
+  
+  public Cache(){
+    super();
+  }
+  
   /**
-   * DOCUMENT-ME
+   * Register a CacheHandler.
    * 
    * @param h
-   *          DOCUMENT-ME
    */
   public void addHandler(CacheHandler h) {
     if (handlers == null) {
@@ -136,10 +140,9 @@ public class Cache {
   }
 
   /**
-   * DOCUMENT-ME
+   * Un-register a CacheHandler.
    * 
    * @param h
-   *          DOCUMENT-ME
    */
   public void removeHandler(CacheHandler h) {
     if (handlers != null) {
@@ -148,7 +151,7 @@ public class Cache {
   }
 
   /**
-   * DOCUMENT-ME
+   * Clears all members of this Cache.
    */
   public void clear() {
     if (handlers != null) {

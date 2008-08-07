@@ -43,6 +43,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -368,9 +369,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     } else if (minList != null) {
       try {
         minF = parseFloat(minList.getReplacement(r));
-        log.info("min " + r.getName()+" "+minF);
+//        log.info("min " + r.getName()+" "+minF);
       } catch (Exception e){
-        log.info("min " + r.getName()+" --- ");
+//        log.info("min " + r.getName()+" --- ");
         nonFound = true;
       }
     }
@@ -383,9 +384,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       } else if (maxList != null) {
         try {
           maxF = parseFloat(maxList.getReplacement(r));
-          log.info("max " + r.getName()+" "+maxF);
+//          log.info("max " + r.getName()+" "+maxF);
         } catch (Exception e){
-          log.info("max " + r.getName()+" --- ");
+//          log.info("max " + r.getName()+" --- ");
           nonFound = true;
         }
       }
@@ -460,7 +461,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     if (minList != null) {
       try {
         minEvalf = parseFloat(minList.getReplacement(null));
-        // log.info("min: "+minEvalf);
+//        log.info("min: "+minEvalf);
         minEvalfed = true;
       } catch (Exception exc) {
         minEvalfed = false;
@@ -473,7 +474,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     if (maxList != null) {
       try {
         maxEvalf = parseFloat(maxList.getReplacement(null));
-        // log.info("max: "+maxEvalf);
+//        log.info("max: "+maxEvalf);
         maxEvalfed = true;
       } catch (Exception exc) {
         maxEvalfed = false;
@@ -488,7 +489,6 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       return ((Number) replacement).floatValue();
     } else {
 
-      // BigDecimal bd = null;
 
       NumberFormat f = NumberFormat.getInstance(Locales.getGUILocale());
       if (f instanceof DecimalFormat) {

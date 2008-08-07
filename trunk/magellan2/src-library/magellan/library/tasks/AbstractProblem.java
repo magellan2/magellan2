@@ -138,4 +138,12 @@ public abstract class AbstractProblem implements Problem {
 	  
 	  return faction;
 	}
+	
+	/**
+	 * @see magellan.library.tasks.Problem#addSuppressComment()
+	 */
+	public Unit addSuppressComment(){
+    return getInspector().suppress(this);
+	}
+	
 }

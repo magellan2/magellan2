@@ -26,9 +26,9 @@ import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 import magellan.library.rules.SkillType;
-import magellan.library.utils.Cache;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.Taggable;
+import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 
 /**
  * This is a Unit. A unit is an object that contains one or more persons.
@@ -37,7 +37,7 @@ import magellan.library.utils.Taggable;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public interface Unit extends Related, HasRegion, Sorted, Taggable {
+public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /** The unit does not possess horses */
   public static final int CAP_NO_HORSES = MovementEvaluator.CAP_NO_HORSES;
 
@@ -822,20 +822,6 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
   public void setAuraMax(int auraMax);
 
   /**
-   * Returns the value of cache.
-   * 
-   * @return Returns cache.
-   */
-  public Cache getCache();
-
-  /**
-   * Sets the value of cache.
-   *
-   * @param cache The value for cache.
-   */
-  public void setCache(Cache cache);
-
-  /**
    * Returns the value of combatSpells.
    * 
    * @return Returns combatSpells.
@@ -1135,5 +1121,26 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable {
    * @param weight The value for weight.
    */
   public void setWeight(int weight);
+
+  public CacheableOrderEditor getOrderEditor();
+
+  public void setOrderEditor(CacheableOrderEditor editor);
+
+  /**
+   * this function inspects travelthru an travelthruship to find the movement in the past
+   *
+   * 
+   *
+   * @return List of coordinates from start to end region.
+   */
+  public List<CoordinateID> getPastMovement(GameData data);
+
+  /** 
+   * Checks if the unit's movement was passive (transported or shipped).
+   * 
+   * @return
+   */
+  public boolean isPastMovementPassive();
+
 
 }

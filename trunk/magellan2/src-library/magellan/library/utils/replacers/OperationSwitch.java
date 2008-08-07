@@ -57,7 +57,7 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 		} catch(NullPointerException npe) {
 		}
 
-		return Replacer.BLANK;
+		return Replacer.EMPTY;
 	}
 
 	/**

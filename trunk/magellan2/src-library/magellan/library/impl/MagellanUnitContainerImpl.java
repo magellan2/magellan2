@@ -13,6 +13,7 @@
 
 package magellan.library.impl;
 
+import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -37,10 +38,12 @@ import magellan.library.relation.UnitRelation;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Cache;
+import magellan.library.utils.CacheHandler;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Sorted;
 import magellan.library.utils.TagMap;
 import magellan.library.utils.Taggable;
+import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
 
@@ -70,11 +73,12 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	/** The game data this unit capsule refers to. */
 	protected GameData data = null;
 
-	/**
-	 * The cache object containing cached information that may be not related enough to be
-	 * encapsulated as a function and is time consuming to gather.
-	 */
-	protected Cache cache = null;
+	 /**
+   * The cache object containing cached information that may be not related enough to be
+   * encapsulated as a function and is time consuming to gather.
+   */
+	protected SoftReference<Cache> cacheReference = null;
+
 
 	/**
 	 * The items carried by this unitcontainer. The keys are the IDs of the item's type, the values are the
@@ -276,13 +280,13 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * 
 	 */
 	public Collection<Unit> modifiedUnits() {
-		if((cache == null) || (cache.modifiedContainerUnits == null)) {
+		if(!hasCache() || (getCache().modifiedContainerUnits == null)) {
 			refreshModifiedUnits();
 		}
 
-		if((cache != null) && (cache.modifiedContainerUnits != null)) {
-      if (cache.modifiedContainerUnits.values() != null) {
-        return Collections.unmodifiableCollection(cache.modifiedContainerUnits.values());
+		if(hasCache() && (getCache().modifiedContainerUnits != null)) {
+      if (getCache().modifiedContainerUnits.values() != null) {
+        return Collections.unmodifiableCollection(getCache().modifiedContainerUnits.values());
       } else {
         return Collections.emptyList();
       }
@@ -291,15 +295,13 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 		}
 	}
 
+
     @Override
     protected Collection<UnitRelation> getRelations() {
-        if(cache == null) {
-            cache = new Cache();
+        if(getCache().relations == null) {
+            getCache().relations = new ArrayList<UnitRelation>();
         }
-        if(cache.relations == null) {
-            cache.relations = new ArrayList<UnitRelation>();
-        }
-        return cache.relations;
+        return getCache().relations;
     }
 	/**
 	 * DOCUMENT-ME
@@ -309,21 +311,19 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * 
 	 */
 	public Unit getModifiedUnit(ID key) {
-		if((cache == null) || (cache.modifiedContainerUnits == null)) {
+		if(!hasCache() || (getCache().modifiedContainerUnits == null)) {
 			refreshModifiedUnits();
 		}
 
-		if(cache.modifiedContainerUnits == null) {
+		if(getCache().modifiedContainerUnits == null) {
 			return null;
 		}
 
-		return cache.modifiedContainerUnits.get(key);
+		return getCache().modifiedContainerUnits.get(key);
 	}
 
 	private void refreshModifiedUnits() {
-		if(cache == null) {
-			cache = new Cache();
-		}
+	  Cache cache = getCache();
 
 		// be careful when clearing modifiedContainerUnits, it could
 		// be the normal units
@@ -439,39 +439,34 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 */
 	@Override
   public void addRelation(UnitRelation rel) {
-		if(cache == null) {
-			cache = new Cache();
-		}
-
+	  Cache cache = getCache();
+	  
 		if(cache.relations == null) {
 			cache.relations = new LinkedList<UnitRelation>();
 		}
 
 		cache.relations.add(rel);
 
-        invalidateCache();
+		invalidateCache();
 
 	}
 
-    private void invalidateCache() {
-        if(cache != null) {
-            cache.modifiedName = null;
-            cache.modifiedContainerUnits = null;
-        }
-    }
+	private void invalidateCache() {
+	  if (hasCache()){
+	    getCache().modifiedName = null;
+	    getCache().modifiedContainerUnits = null;
+	  }
+	}
     
     /**
      * @see magellan.library.Named#getModifiedName()
      */
     @Override
     public String getModifiedName() {
-        if(cache == null) {
-            cache = new Cache();
-        } 
-        if(cache.modifiedName == null) {
-            cache.modifiedName = super.getModifiedName();
+        if(getCache().modifiedName == null) {
+          getCache().modifiedName = super.getModifiedName();
         }
-        return cache.modifiedName != null ? cache.modifiedName : getName(); 
+        return getCache().modifiedName != null ? getCache().modifiedName : getName(); 
     }
 
 	/**
@@ -485,8 +480,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   public UnitRelation removeRelation(UnitRelation rel) {
 		UnitRelation r = null;
 
-		if((cache != null) && (cache.relations != null)) {
-			if(cache.relations.remove(rel)) {
+		if(hasCache() && (getCache().relations != null)) {
+			if(getCache().relations.remove(rel)) {
 				r = rel;
                 invalidateCache();
 			}
@@ -603,12 +598,25 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 
 
   /**
+   * @see magellan.library.Unit#hasCache()
+   */
+  public boolean hasCache(){
+    return cacheReference!=null && cacheReference.get()!=null;
+  }
+  /**
    * Returns the value of cache.
    * 
    * @return Returns cache.
    */
   public Cache getCache() {
-    return cache;
+    Cache c;
+    if (cacheReference!=null && (c = cacheReference.get())!=null)
+      return c;
+    else{
+      c = new Cache();
+      cacheReference = new SoftReference<Cache>(c);
+      return c;
+    }
   }
 
   /**
@@ -617,6 +625,47 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    * @param cache The value for cache.
    */
   public void setCache(Cache cache) {
-    this.cache = cache;
+    cacheReference = new SoftReference<Cache>(cache);
   }
+
+  /**
+   * @see magellan.library.Unit#clearCache()
+   */
+  public void clearCache(){
+    if (cacheReference==null)
+      return;
+    Cache c = cacheReference.get();
+    if (c!=null)
+      c.clear();
+    cacheReference.clear();
+    cacheReference = null;
+  }
+  
+
+  /**
+   * @see magellan.library.HasCache#addCacheHandler(magellan.library.utils.CacheHandler)
+   */
+  public void addCacheHandler(CacheHandler handler) {
+    getCache().addHandler(handler);
+  }
+
+  /**
+   * Always returns <code>null</code>. UnitContainers do not have order editors.
+   * 
+   * @return
+   */
+  public CacheableOrderEditor getOrderEditor(){
+    Cache cache = getCache();
+    if(hasCache() && cache.orderEditor != null) {
+      return cache.orderEditor;
+    } else {
+      return null;
+    }
+  }
+
+  public void setOrderEditor(CacheableOrderEditor editor){
+    getCache().orderEditor=editor;
+  }
+
+
 }

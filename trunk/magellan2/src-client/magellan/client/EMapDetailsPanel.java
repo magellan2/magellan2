@@ -228,9 +228,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	protected AbstractButton removeTag;
 	protected Container tagContainer;
 	protected Container treeContainer;
+
 	protected boolean showTagButtons = false;
   protected boolean allowCustomIcons = true;
-	protected ContextManager contextManager;
+  private boolean compactLayout = false;
+	
+  protected ContextManager contextManager;
 	protected StealthContextFactory stealthContext;
 	protected CombatStateContextFactory combatContext;
 	protected CommentContextFactory commentContext;
@@ -558,6 +561,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
     allowCustomIcons = settings.getProperty("EMapDetailsPanel.AllowCustomIcons", "true").equals("true");
+    
+    compactLayout = settings.getProperty("EMapDetailsPanel.AllowCustomIcons", "false").equals("true");
     
 		// split pane combining name, desc & tree
 		topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
@@ -4630,6 +4635,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     return allowCustomIcons;
   }
   
+  public boolean isCompactLayout() {
+    return compactLayout;
+  }
+
   /**
 	 * DOCUMENT-ME
 	 *
@@ -4663,6 +4672,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
   
+
+  public void setCompactLayout(boolean selected) {
+    if (selected != isCompactLayout()){
+      compactLayout = selected;
+      settings.setProperty("EMapDetailsPanel.CompactLayout", selected ? "true" : "false");
+    }
+  }
+
 	/**
 	 * DOCUMENT-ME
 	 *

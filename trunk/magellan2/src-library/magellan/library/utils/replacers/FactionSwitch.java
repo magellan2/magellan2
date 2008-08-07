@@ -81,7 +81,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 		} catch(NullPointerException npe) {
 		}
 
-		return Replacer.BLANK;
+		return Replacer.EMPTY;
 	}
 
 	/**

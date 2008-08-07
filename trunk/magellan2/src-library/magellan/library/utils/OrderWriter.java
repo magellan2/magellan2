@@ -25,7 +25,6 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.Item;
 import magellan.library.Region;
-import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
@@ -240,7 +239,7 @@ public class OrderWriter {
 			// unit.getRegion().refreshUnitRelations();
 			//Item silver = unit.getModifiedItem(world.rules.getItemType(StringID.create("Silber"), true));
 			// pavkovic 2004.09.13: dont use modified items as it creates some bugs
-			Item silver = unit.getItem(world.rules.getItemType(StringID.create("Silber"), true));
+			Item silver = unit.getItem(world.rules.getItemType(EresseaConstants.I_SILVER, true));
 
 			if(silver != null) {
 				money = silver.getAmount();
@@ -253,7 +252,7 @@ public class OrderWriter {
 					BuildingType type = unit.getBuilding().getBuildingType();
 
 					if(type != null) {
-						Item i = type.getMaintenance(StringID.create("Silber"));
+						Item i = type.getMaintenance(EresseaConstants.I_SILVER);
 
 						if(i != null) {
 							stream.write(",U" + i.getAmount());

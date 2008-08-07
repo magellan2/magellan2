@@ -47,6 +47,7 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
   private PreferencesAdapter regionPref;
   private JCheckBox chkShowTagButtons;
   private JCheckBox chkAllowCustomIcons;
+  private JCheckBox chkCompact;
 
   /**
    * Creates a new EMapDetailsPreferences object.
@@ -89,11 +90,17 @@ public class DetailsViewPreferences extends JPanel implements ExtendedPreference
             .isShowingTagButtons());
     help.add(chkShowTagButtons, c);
 
-    c.gridy = 1;
+    c.gridy++;
     chkAllowCustomIcons =
         new JCheckBox(Resources.get("emapdetailspanel.prefs.allowCustomIcons"), source
             .isAllowingCustomIcons());
     help.add(chkAllowCustomIcons, c);
+
+    c.gridy++;
+    chkCompact =
+        new JCheckBox(Resources.get("emapdetailspanel.prefs.compact"), source
+            .isCompactLayout());
+    help.add(chkCompact, c);
 
     return help;
   }

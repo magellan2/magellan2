@@ -15,6 +15,7 @@ package magellan.library.tasks;
 
 import magellan.library.Faction;
 import magellan.library.HasRegion;
+import magellan.library.Unit;
 
 /**
  * DOCUMENT-ME
@@ -80,4 +81,15 @@ public interface Problem {
    * @return The faction this problem belongs to or <code>null</code> if not applicable
    */
   public Faction getFaction();
+
+  /**
+   * Modifies the orders such that this problem is not listed by the inspector
+   * in the future, i.e. by adding a comment to the source unit's orders. Note
+   * that it is in the responsibility of the caller to fire OrderChangedEvents.
+   * 
+   * @return Returns a Unit whose orders were changed to suppress this warning
+   *         or <code>null</code> if no orders were changed
+   */
+  public Unit addSuppressComment();
+
 }

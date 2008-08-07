@@ -348,6 +348,9 @@ public class Units {
         giveNodeWrapper.setReverseOrder(true);
         giveNodeWrapper.setAdditionalIcon(addIcon);
 
+//        if (currentRelation.warning) {
+//          giveNodeWrapper.setAdditionalIcon("warnung");
+//        }
         itemNode.add(new DefaultMutableTreeNode(giveNodeWrapper));
 
         addItemNode = true;

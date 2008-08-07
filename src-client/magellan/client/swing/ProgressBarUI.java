@@ -1,29 +1,30 @@
-// class magellan.client.swing.SwingUserInterface
-// created on 07.11.2007
-//
-// Copyright 2003-2007 by magellan project team
-//
-// Author : $Author: $
-// $Id: $
-//
-// This program is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2 of the License, or
-// (at your option) any later version.
-// 
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-// 
+//class magellan.client.swing.SwingUserInterface
+//created on 07.11.2007
+
+//Copyright 2003-2007 by magellan project team
+
+//Author : $Author: $
+//$Id: $
+
+//This program is free software; you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation; either version 2 of the License, or
+//(at your option) any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program (see doc/LICENCE.txt); if not, write to the
+//Free Software Foundation, Inc., 
+//59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
 package magellan.client.swing;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -54,12 +55,20 @@ public class ProgressBarUI implements UserInterface {
   protected boolean ready=false;
 
   public ProgressBarUI(JFrame parent) {
-    dlg = new ProgressDlg(parent, true);
-    init();
+    this(parent, true, null);
   }
 
   public ProgressBarUI(JDialog parent) {
-    dlg = new ProgressDlg(parent, true);
+    this(parent, true, null);
+  }
+
+  public ProgressBarUI(JFrame parent, boolean modal, ClosingListener listener) {
+    dlg = new ProgressDlg(parent, modal, listener);
+    init();
+  }
+
+  public ProgressBarUI(JDialog parent, boolean modal, ClosingListener listener) {
+    dlg = new ProgressDlg(parent, modal, listener);
     init();
   }
 
@@ -72,14 +81,14 @@ public class ProgressBarUI implements UserInterface {
     setTitle(Resources.get("progressbarui.title.default"));
     setProgress(Resources.get("progressbarui.label.default"), 0);
   }
-  
+
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
     dlg.progressBar.setMaximum(progressmaximum);
   }
-  
+
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
@@ -120,7 +129,7 @@ public class ProgressBarUI implements UserInterface {
     return input.sResult;
   }
 
-  
+
   /**
    * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
    */
@@ -133,6 +142,8 @@ public class ProgressBarUI implements UserInterface {
   }
 
   /**
+   * Hide window.
+   * 
    * @see magellan.library.utils.UserInterface#ready()
    */
   public void ready() {
@@ -147,7 +158,7 @@ public class ProgressBarUI implements UserInterface {
       dlg.dispose();
     }
   }
-  
+
   public boolean isVisible() {
     return dlg.isVisible();
   }
@@ -164,7 +175,33 @@ public class ProgressBarUI implements UserInterface {
     ew.setShutdownOnCancel(false);
     ew.setVisible(true);
 
-//    throw new RuntimeException(exception);
+//  throw new RuntimeException(exception);
+  }
+
+
+  public interface ClosingListener {
+
+    /**
+     * Returns <code>true</code> if the dialog should be closed after
+     * receiving an event <code>e</code> of type
+     * {@link WindowEvent#WINDOW_CLOSING}.
+     * 
+     * @param e
+     * @return
+     */
+    public boolean proceed(WindowEvent e);
+  }
+
+  public static ClosingListener getDefaultClosingListener(final Component parent) {
+    return new ClosingListener() {
+
+      public boolean proceed(WindowEvent e) {
+        return (JOptionPane.showConfirmDialog(parent, Resources
+            .get("progressbarui.abort.message"), Resources.get("progressbarui.abort.title"),
+            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
+      }
+
+    };
   }
 
   /**
@@ -172,13 +209,20 @@ public class ProgressBarUI implements UserInterface {
    */
   private class ProgressDlg extends JDialog {
 
+    private ClosingListener closingListener;
+
+
+
+    /**
+     * @see java.awt.Window#processEvent(java.awt.AWTEvent)
+     */
     @Override
     protected void processEvent(AWTEvent e) {
       if (e instanceof WindowEvent){
         WindowEvent we = (WindowEvent) e;
         if (we.getID()!=WindowEvent.WINDOW_CLOSING) {
           super.processEvent(e);
-        } else if (JOptionPane.showConfirmDialog(this, "really abort?", "Warning -- possible data loss", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+        } else if (closingListener.proceed(we)){
           ProgressBarUI.log.info("aborted");
           super.processEvent(e);
         } else {
@@ -193,29 +237,34 @@ public class ProgressBarUI implements UserInterface {
 
     public JLabel labelText;
     public JProgressBar progressBar;
-    
+
     /**
      * Creates new form ProgressDlg
      */
-    public ProgressDlg(Dialog parent, boolean modal) {
+    public ProgressDlg(Dialog parent, boolean modal, ClosingListener listener) {
       super(parent, modal);
-//      setUndecorated(true);
-      init();
+//    setUndecorated(true);
+      init(listener);
     }
-    
+
     /**
      * Creates new form ProgressDlg
      */
-    public ProgressDlg(Frame parent, boolean modal) {
+    public ProgressDlg(Frame parent, boolean modal, ClosingListener listener) {
       super(parent, modal);
-//      setUndecorated(true);
-      init();
+//    setUndecorated(true);
+      init(listener);
     }
-    
-    protected void init() {
+
+    protected void init(ClosingListener listener) {
+      if (listener == null) {
+        closingListener = getDefaultClosingListener(ProgressDlg.this);
+      } else
+        closingListener = listener;
+
       initComponents();
       pack();
-      
+
       Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
       setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
 
@@ -279,53 +328,53 @@ public class ProgressBarUI implements UserInterface {
   /**
    *
    */
- private class Confirm implements Runnable {
-   String strMessage;
-   String strTitle;
-   boolean bResult = false;
+  private class Confirm implements Runnable {
+    String strMessage;
+    String strTitle;
+    boolean bResult = false;
 
-   public Confirm(String t, String m){
-     strTitle = t;
-     strMessage = m;
-   }
-   
-   /**
-    * 
-    */
-   public void run() {
-     if (JOptionPane.showConfirmDialog(dlg, strMessage, strTitle, JOptionPane.YES_NO_OPTION,
+    public Confirm(String t, String m){
+      strTitle = t;
+      strMessage = m;
+    }
+
+    /**
+     * 
+     */
+    public void run() {
+      if (JOptionPane.showConfirmDialog(dlg, strMessage, strTitle, JOptionPane.YES_NO_OPTION,
           JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
         bResult = true;
       } else {
         bResult = false;
       }
     }
- }
+  }
 
- private class Input implements Runnable {
-   String strMessage;
-   String strTitle;
+  private class Input implements Runnable {
+    String strMessage;
+    String strTitle;
 
-   Object [] values;
-   Object initialSelection;
-   
-   Object sResult = null;
-   
-   public Input(String m, String t, Object [] val, Object initial){
-     strMessage = m;
-     strTitle = t;
-     values = val;
-     initialSelection = initial;
-   }
-   
-   /**
-    * 
-    */
-   public void run() {
-     sResult = JOptionPane.showInputDialog(dlg, strMessage,
-         strTitle, JOptionPane.QUESTION_MESSAGE, null, values, initialSelection);
-   }
- }
+    Object [] values;
+    Object initialSelection;
+
+    Object sResult = null;
+
+    public Input(String m, String t, Object [] val, Object initial){
+      strMessage = m;
+      strTitle = t;
+      values = val;
+      initialSelection = initial;
+    }
+
+    /**
+     * 
+     */
+    public void run() {
+      sResult = JOptionPane.showInputDialog(dlg, strMessage,
+          strTitle, JOptionPane.QUESTION_MESSAGE, null, values, initialSelection);
+    }
+  }
 
 }
 

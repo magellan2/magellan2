@@ -62,7 +62,7 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 				if(param1.toString().equals(Replacer.CLEAR)) {
 					((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).removeFilters(UnitFactionTLFilter.class);
 
-					return Replacer.BLANK;
+					return Replacer.EMPTY;
 				}
 			}
 
@@ -71,7 +71,7 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 		} catch(RuntimeException npe) {
 		}
 
-		return Replacer.BLANK;
+		return Replacer.EMPTY;
 	}
 
 	/**

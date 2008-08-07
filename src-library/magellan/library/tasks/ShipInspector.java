@@ -229,4 +229,12 @@ public class ShipInspector extends AbstractInspector implements Inspector {
     return false;
   }
   
+  
+  /**
+   * @see magellan.library.tasks.Inspector#getSuppressComment()
+   */
+  public String getSuppressComment(){
+    return null;
+  }
+
 }

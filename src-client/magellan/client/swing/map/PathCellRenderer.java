@@ -24,7 +24,6 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,13 +36,8 @@ import javax.swing.JPanel;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
-import magellan.library.IntegerID;
-import magellan.library.Message;
 import magellan.library.Ship;
 import magellan.library.Unit;
-import magellan.library.UnitID;
-import magellan.library.rules.MessageType;
-import magellan.library.utils.Cache;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
@@ -117,13 +111,13 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 
 		if(drawPastPath) {
-			List<CoordinateID> pastMovement = getPastMovement(u);
+			List<CoordinateID> pastMovement = u.getPastMovement(data);
 
 			if(PathCellRenderer.log.isDebugEnabled()) {
 				PathCellRenderer.log.debug("render for unit u " + u + " travelled through " + pastMovement);
 			}
 
-			renderPath(u, pastMovement, isPastMovementPassive(u) ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
+			renderPath(u, pastMovement, u.isPastMovementPassive() ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
 		}
 
 		List<CoordinateID> activeMovement = getModifiedMovement(u);
@@ -157,124 +151,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 	}
 
-	/**
-	 * this function inspects travelthru an travelthruship to find the movement in the past
-	 *
-	 * 
-	 *
-	 * @return List of coordinates from start to end region.
-	 */
-	private List<CoordinateID> getPastMovement(Unit u) {
-		// FIXME(pavkovic) move this stuff into unit.java!
-		if(u.getCache() == null) {
-			u.setCache(new Cache());
-		}
 
-		if(u.getCache().movementPath == null) {
-			// the result may be null!
-			u.getCache().movementPath = Regions.getMovement(data, u);
-		}
-
-		if(u.getCache().movementPath == null) {
-			return Collections.emptyList();
-		} else {
-			return Collections.unmodifiableList(u.getCache().movementPath);
-		}
-	}
-
-	private boolean isPastMovementPassive(Unit u) {
-		// FIXME(pavkovic) move this stuff into unit.java!
-		if(u.getCache() == null) {
-			u.setCache(new Cache());
-		}
-
-		if(u.getCache().movementPathIsPassive == null) {
-			u.getCache().movementPathIsPassive = evaluatePastMovementPassive(u) ? Boolean.TRUE : Boolean.FALSE;
-		}
-
-		return u.getCache().movementPathIsPassive.booleanValue();
-	}
-
-	private static final MessageType transportMessageType = new MessageType(IntegerID.create(891175669));
-
-	private boolean evaluatePastMovementPassive(Unit u) {
-		// FIXME(pavkovic) move this stuff into unit.java!
-		if(u.getShip() != null) {
-			if(u.equals(u.getShip().getOwnerUnit())) {
-				// unit is on ship and the owner
-				if(PathCellRenderer.log.isDebugEnabled()) {
-					PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false on ship");
-				}
-
-				return false;
-			}
-
-			// unit is on a ship and not the owner
-			if(PathCellRenderer.log.isDebugEnabled()) {
-				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):true on ship");
-			}
-
-			return true;
-		}
-
-		// we assume a transportation to be passive, if
-		// there is no message of type 891175669
-		if(u.getFaction() == null) {
-			if(PathCellRenderer.log.isDebugEnabled()) {
-				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false no faction");
-			}
-
-			return false;
-		}
-
-		if(u.getFaction().getMessages() == null) {
-			// faction has no message at all
-			if(PathCellRenderer.log.isDebugEnabled()) {
-				PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false no faction");
-			}
-
-			return true;
-		}
-
-		for(Iterator<Message> iter = u.getFaction().getMessages().iterator(); iter.hasNext();) {
-			Message m = iter.next();
-
-			if(false) {
-				if(PathCellRenderer.log.isDebugEnabled()) {
-					if(PathCellRenderer.transportMessageType.equals(m.getMessageType())) {
-						PathCellRenderer.log.debug("PathCellRenderer(" + u + ") Message " + m);
-
-						if((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
-							PathCellRenderer.log.debug("PathCellRenderer(" + u + ") Unit   " +
-									  m.getAttributes().get("unit"));
-							PathCellRenderer.log.debug("PathCellRenderer(" + u + ") UnitID " +
-									  UnitID.createUnitID(m.getAttributes().get("unit"), 10));
-						}
-					}
-				}
-			}
-
-			if(PathCellRenderer.transportMessageType.equals(m.getMessageType()) && (m.getAttributes() != null) &&
-				   (m.getAttributes().get("unit") != null) &&
-				   u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) {
-				// found a transport message; this is only valid in 
-				// units with active movement
-				if(PathCellRenderer.log.isDebugEnabled()) {
-					PathCellRenderer.log.debug("PathCellRenderer(" + u + "):false with message " + m);
-				}
-
-				return false;
-			}
-		}
-
-		if(PathCellRenderer.log.isDebugEnabled()) {
-			PathCellRenderer.log.debug("PathCellRenderer(" + u + "):true with messages");
-		}
-
-		return true;
-	}
-
-	private List<CoordinateID> getModifiedMovement(Unit u) {
+ 	private List<CoordinateID> getModifiedMovement(Unit u) {
 		return (u == null) ? new ArrayList<CoordinateID>() : u.getModifiedMovement();
 	}
 

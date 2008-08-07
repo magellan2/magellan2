@@ -104,13 +104,15 @@ public class EventDispatcher implements EventDispatcherInterface {
     }
 
     listeners[pos].add(obj);
+//    if (listeners[pos].size()%10==0)
+//      log.info(pos + " "+listeners[pos].size());
   }
 
   private void addPriorityListener(int pos, Object obj) {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.debug("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     listeners[pos].add(0, obj);
@@ -120,8 +122,10 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
+//      EventDispatcher.log.debug("The following exception shall be reported to bugzilla!", new Exception());
     }
+//    if (listeners[pos].size()%10==0)
+//      log.info(pos + " "+listeners[pos].size());
 
     return listeners[pos].remove(l);
   }

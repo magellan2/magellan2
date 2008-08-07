@@ -44,7 +44,6 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
-import magellan.library.utils.Cache;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
@@ -57,7 +56,7 @@ import magellan.library.utils.Regions;
 // the requested Resource is in the r.resources
 
 /**
- * DOCUMENT-ME
+ * 
  *
  * @author $Author: $
  * @version $Revision: 356 $
@@ -193,7 +192,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	private int fogOfWar = -1;
 
 	/**
-	 * DOCUMENT-ME
+	 * @see magellan.library.Region#fogOfWar()
 	 */
 	public synchronized boolean fogOfWar() {
 		if(fogOfWar == -1) {
@@ -214,7 +213,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * @see magellan.library.Region#setFogOfWar(int)
 	 */
 	public synchronized void setFogOfWar(int fog) {
 		fogOfWar = fog;
@@ -601,32 +600,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	}
 
 	
-	// TODO: clean up
-	// stm  2006.10.20
-	// this is needed by nobody and unclear if it works, so I commented it out
-//	/**
-//	 * Removes the scheme with the specified id from this region.
-//	 *
-//	 * 
-//	 *
-//	 * @return the removed scheme or null if no scheme with the specified id exists in this region.
-//	 */
-//	public Scheme removeScheme(Scheme s) {
-//		if(this.schemes == null) {
-//			return null;
-//		}
-//
-//		Scheme ret = (Scheme) this.schemes.remove(id);
-//
-//		if(this.schemes.isEmpty()) {
-//			this.schemes = null;
-//			this.schemeCollection = null;
-//		}
-//
-//		return ret;
-//	}
-
-
 	/**
 	 * Removes all schemes from this region.
 	 */
@@ -697,30 +670,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 		return border;
 	}
 
-	// TODO: clean up
-	// stm
-	// see removeScheme above
-//	/**
-//	 * Removes the border with the specified id from this region.
-//	 *
-//	 * 
-//	 *
-//	 * @return the removed border or null if no border with the specified id exists in this region.
-//	 */
-//	public Border removeBorder(Border b) {
-//		if(borders == null) {
-//			return null;
-//		}
-//
-//		Border ret = (Border) borders.remove(id);
-//
-//		if(borders.isEmpty()) {
-//			clearBorders();
-//		}
-//
-//		return ret;
-//	}
-	//// edited by stm
 
 	/**
 	 * Removes all borders from this region.
@@ -882,12 +831,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * here.
 	 */
 	public Collection<Item> items() {
-		if((cache == null) || (cache.regionItems == null)) {
+		if(!hasCache() || (getCache().regionItems == null)) {
 			refreshItems();
 		}
     
-    if (cache.regionItems != null && cache.regionItems.values() != null) {
-      return Collections.unmodifiableCollection(cache.regionItems.values());
+    if (getCache().regionItems != null && getCache().regionItems.values() != null) {
+      return Collections.unmodifiableCollection(getCache().regionItems.values());
     } else {
       return Collections.emptyList();
     }
@@ -900,12 +849,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * here.
 	 */
 	public Collection<Item> allItems() {
-		if((cache == null) || (cache.allRegionItems == null)) {
+		if(!hasCache() || (getCache().allRegionItems == null)) {
 			refreshAllItems();
 		}
 
-    if (cache.allRegionItems != null && cache.allRegionItems.values() != null) {
-      return Collections.unmodifiableCollection(cache.allRegionItems.values());
+    if (getCache().allRegionItems != null && getCache().allRegionItems.values() != null) {
+      return Collections.unmodifiableCollection(getCache().allRegionItems.values());
     } else {
       return Collections.emptyList();
     }
@@ -915,12 +864,12 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * Returns a specific item from the items() collection identified by the item type.
 	 */
 	public Item getItem(ItemType type) {
-		if((cache == null) || (cache.regionItems == null)) {
+		if(!hasCache() || (getCache().regionItems == null)) {
 			refreshItems();
 		}
 
-		return ((cache != null) && (cache.regionItems != null))
-			   ? (Item) cache.regionItems.get(type.getID()) : null;
+		return ((getCache() != null) && (getCache().regionItems != null))
+			   ? (Item) getCache().regionItems.get(type.getID()) : null;
 	}
 
 	/**
@@ -928,16 +877,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * Fiete 20061224: ...and the factions with "GIVE" alliances too.
 	 */
 	private void refreshItems() {
-		if(cache != null) {
-			if(cache.regionItems != null) {
-				cache.regionItems.clear();
-			} else {
-				cache.regionItems = new Hashtable<ID, Item>();
-			}
-		} else {
-			cache = new Cache();
-			cache.regionItems = new Hashtable<ID, Item>();
-		}
+	  if(getCache().regionItems != null) {
+	    getCache().regionItems.clear();
+	  } else {
+	    getCache().regionItems = new Hashtable<ID, Item>();
+	  }
 
 		for(Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
 			Unit u = iter.next();
@@ -946,11 +890,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 			if(u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
 				for(Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
 					Item item = (Item) unitItemIterator.next();
-					Item i = cache.regionItems.get(item.getItemType().getID());
+					Item i = getCache().regionItems.get(item.getItemType().getID());
 
 					if(i == null) {
 						i = new Item(item.getItemType(), 0);
-						cache.regionItems.put(item.getItemType().getID(), i);
+						getCache().regionItems.put(item.getItemType().getID(), i);
 					}
 
 					i.setAmount(i.getAmount() + item.getAmount());
@@ -964,27 +908,22 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 	 * @author Fiete
 	 */
 	private void refreshAllItems() {
-		if(cache != null) {
-			if(cache.allRegionItems != null) {
-				cache.allRegionItems.clear();
+			if(getCache().allRegionItems != null) {
+				getCache().allRegionItems.clear();
 			} else {
-				cache.allRegionItems = new Hashtable<ID, Item>();
+				getCache().allRegionItems = new Hashtable<ID, Item>();
 			}
-		} else {
-			cache = new Cache();
-			cache.allRegionItems = new Hashtable<ID, Item>();
-		}
 
 		for(Iterator iter = units().iterator(); iter.hasNext();) {
 			Unit u = (Unit) iter.next();
 			
 			for(Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
 				Item item = (Item) unitItemIterator.next();
-				Item i = cache.allRegionItems.get(item.getItemType().getID());
+				Item i = getCache().allRegionItems.get(item.getItemType().getID());
 
 				if(i == null) {
 					i = new Item(item.getItemType(), 0);
-					cache.allRegionItems.put(item.getItemType().getID(), i);
+					getCache().allRegionItems.put(item.getItemType().getID(), i);
 				}
 
 				i.setAmount(i.getAmount() + item.getAmount());
@@ -1188,7 +1127,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
 
 	/**
-	 * DOCUMENT-ME
+	 * @see magellan.library.impl.MagellanUnitContainerImpl#getUnit(magellan.library.ID)
 	 */
 	@Override
   public Unit getUnit(ID key) {

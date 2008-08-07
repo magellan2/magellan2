@@ -89,7 +89,7 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 			}
 
 			if(branches[index] == null) {
-				return Replacer.BLANK;
+				return Replacer.EMPTY;
 			}
 
 			if(branches[index] instanceof Replacer) {

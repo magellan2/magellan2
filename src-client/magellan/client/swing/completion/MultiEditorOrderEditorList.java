@@ -88,7 +88,6 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.Island;
 import magellan.library.Region;
-import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -341,7 +340,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			} else {
         // no unit selected --> no editor active
 				if(currentUnit != null) {
-          setEditor(currentUnit, null);
+				  currentUnit.setOrderEditor(null);
           deselectEditor(editorSingelton);
           editorSingelton.setBorder(new TitledBorder(MultiEditorOrderEditorList.standardBorder,""));
 					currentUnit = null;
@@ -536,7 +535,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			this.revalidate();
 
 			if(MultiEditorOrderEditorList.log.isDebugEnabled()) {
-				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit().getCache());
+				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + e.getTempUnit());
 				MultiEditorOrderEditorList.log.debug("MultiEditorOrderEditorList.tempUnitCreated: " + getEditor(e.getTempUnit()));
 			}
 
@@ -693,9 +692,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
   }
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.CacheHandler#clearCache(magellan.library.utils.Cache)
 	 */
 	public void clearCache(Cache c) {
 		if(c.orderEditor != null) {
@@ -990,7 +987,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		j.removeKeyListener(keyAdapter);
 		j.removeCaretListener(caretAdapter);
     j.removeMouseListener(this);
-
+    if (j instanceof OrderEditor) {
+      OrderEditor editor = (OrderEditor) j;
+      editor.release();
+    }
 	}
 
 	/**
@@ -1183,31 +1183,32 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
    * @return The cached editor for <code>u</code> or null if none exists 
    */
   private OrderEditor getEditor(Unit u) {
-    if(u!=null && u.getCache() != null && u.getCache().orderEditor != null) {
-      return (OrderEditor) u.getCache().orderEditor;
-    } else {
-      return null;
+    if (u!=null){
+      CacheableOrderEditor ce = u.getOrderEditor();
+      if (ce!=null){
+        if (ce instanceof OrderEditor) {
+          return (OrderEditor) ce;
+        } else {
+          log.error("wrong type of editor!");
+        }
+      }
     }
+    return null;
   }
 
-  /**
-   * Sets the cached editor of the specified unit.
-   * 
-   * @param u
-   *          The unit, not <code>null</code>.
-   * @param editor
-   *          The new editor or <code>null</code> to dispose the currently
-   *          cached editor of <code>u</code>.
-   */
-  private void setEditor(Unit u, CacheableOrderEditor editor) {
-    if(u.getCache() == null) {
-      if (editor==null) {
-        return;
-      }
-      u.setCache(new Cache());
-    }
-    u.getCache().orderEditor=editor;
-  }
+//  /**
+//   * Sets the cached editor of the specified unit.
+//   * 
+//   * @param u
+//   *          The unit, not <code>null</code>.
+//   * @param editor
+//   *          The new editor or <code>null</code> to dispose the currently
+//   *          cached editor of <code>u</code>.
+//   */
+//  private void setEditor(Unit u, CacheableOrderEditor editor) {
+//    if(u.hasCache() || editor==null) 
+//      u.setOrderEditor(editor);
+//  }
 
   
   /**
@@ -1271,6 +1272,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
         }
       }
 	    addListeners(getEditor(u));
+//	    getEditor(u).setOrders(u.getOrders());
 	  }else{
       if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
         MultiEditorOrderEditorList.log.debug("MultiEditor.not add: "+u);
@@ -1329,21 +1331,20 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * 
 	 */
 	private OrderEditor buildOrderEditor(Unit u) {
-	  // TODO (stm) use SoftReferences
     if (u==null){
       return null;
     }
-    OrderEditor editor = getEditor(u);
-    boolean created = false;
-		if(editor == null) {
-			editor = new OrderEditor(data, settings, undoMgr, dispatcher);
-      created = true;
+    CacheableOrderEditor cEditor = getEditor(u);
+    if (cEditor == null || !(cEditor instanceof OrderEditor)){
+			OrderEditor editor = new OrderEditor(data, settings, undoMgr, dispatcher);
+      u.addCacheHandler(this);
+      attachOrderEditor(u, editor);
+      return editor;
+    } else {
+      OrderEditor editor = (OrderEditor) cEditor;
+      attachOrderEditor(u, editor);
+      return editor;
     }
-		attachOrderEditor(u, editor);
-    if (created){
-      u.getCache().addHandler(this);
-    }
-    return editor;
   }
   
   /**
@@ -1368,7 +1369,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 		editor.setUnit(u);
 
-		setEditor(u, editor);
+		u.setOrderEditor(editor);
 	}
 
 	/**
@@ -1391,7 +1392,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 			if(currentUnit != null) {
 				if(getEditor(currentUnit) != null) {
 					removeListeners(getEditor(currentUnit));
-					setEditor(currentUnit, null);
+					currentUnit.setOrderEditor(null);
 				}
 
 				editorSingelton.setUnit(null);
@@ -1988,7 +1989,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 
 												if(dialog.isGiveMaintainCost() ||
 													   dialog.isGiveRecruitCost()) {
-													ItemType silverType = data.rules.getItemType(StringID.create("Silber"),
+													ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER,
 																								 false);
 													String silver = null;
 

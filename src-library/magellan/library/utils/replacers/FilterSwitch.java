@@ -109,10 +109,10 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 				return r.getReplacement(o);
 			}
 
-			return Replacer.BLANK;
+			return Replacer.EMPTY;
 		}
 
-		return Replacer.BLANK;
+		return Replacer.EMPTY;
 	}
 
 	/**

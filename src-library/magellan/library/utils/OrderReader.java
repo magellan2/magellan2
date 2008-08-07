@@ -67,10 +67,7 @@ public class OrderReader {
 			for(Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
 				Unit u = iter.next();
 
-				if(u.getCache() != null) {
-					u.getCache().clear();
-					u.setCache(null);
-				}
+				u.clearCache();
 			}
 		}
 
@@ -78,10 +75,7 @@ public class OrderReader {
 			for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
         Region uc = iter.next();
 
-				if(uc.getCache() != null) {
-					uc.getCache().clear();
-					uc.setCache(null);
-				}
+        uc.clearCache();
 			}
 		}
 	}

@@ -18,47 +18,56 @@ import java.util.List;
 import magellan.library.Region;
 import magellan.library.Unit;
 
-
 /**
- * An Inspector review the given resource and returns a list of problems
+ * An Inspector reviews the given resource and returns a list of problems
  */
 public interface Inspector {
-	/**
-	 * This Function is called to review a unit and returns a list of <tt>Problem</tt> objects. It
-	 * should generally call reviewUnit(u,Problem.INFO), reviewUnit(u,Problem.WARNING)...
-	 *
-	 * 
-	 */
-	public List<Problem> reviewUnit(Unit u);
 
-	/**
-	 * This Function is called to review a unit and returns a list of <tt>Problem</tt> objects.
-	 *
-	 * @param u unit to review
-	 * @param type the type of the review e.g. Problem.INFO
-	 *
-	 * 
-	 */
-	public List<Problem> reviewUnit(Unit u, int type);
+  /**
+   * Reviews a unit and returns a list of <tt>Problem</tt> objects associated
+   * with it.
+   */
+  public List<Problem> reviewUnit(Unit u);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public List<Problem> reviewRegion(Region r);
+  /**
+   * Reviews a unit and returns the list of <tt>Problem</tt> objects which are
+   * of the given type.
+   * 
+   * @param u
+   *          The unit to review
+   * @param type
+   *          The type of problems to filter, e.g. Problem.INFO
+   */
+  public List<Problem> reviewUnit(Unit u, int type);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public List<Problem> reviewRegion(Region r, int type);
+  /**
+   * Reviews a region and returns a list of <code>Problem</code> objects
+   * associated with it.
+   */
+  public List<Problem> reviewRegion(Region r);
 
-	// public List reviewGameData(GameData gd); 
+  /**
+   * Reviews a region and returns the list of <tt>Problem</tt> objects which
+   * are of the given type.
+   */
+  public List<Problem> reviewRegion(Region r, int type);
+
+  /**
+   * Modifies the orders such that this problem is not listed by the inspector
+   * in the future, i.e. by adding a comment to the source unit's orders. Note
+   * that it is in the responsibility of the caller to fire OrderChangedEvents.
+   * 
+   * @param problem
+   * @return Returns a unit whose orders were changed
+   */
+  public Unit suppress(Problem problem);
+
+  /**
+   * Removes all additions made by suppress of this Inspector to the Unit's orders.
+   * 
+   * @param u
+   */
+  public void unSuppress(Unit u);
+
+
 }

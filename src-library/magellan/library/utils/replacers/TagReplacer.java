@@ -61,7 +61,7 @@ public class TagReplacer extends AbstractParameterReplacer {
 				}
 
 				if(mode) {
-					return Replacer.BLANK;
+					return Replacer.EMPTY;
 				}
 			}
 		}

@@ -79,10 +79,7 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 */
 	@Override
   public int getModifiedPersons() {
-		if(cache == null) {
-			cache = new Cache();
-		}
-
+	  Cache cache = getCache();
 		if(cache.modifiedPersons == -1) {
 			cache.modifiedPersons = super.getModifiedPersons() - getGivenPersons();
 		}

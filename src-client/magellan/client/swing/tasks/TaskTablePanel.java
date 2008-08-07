@@ -16,11 +16,17 @@ package magellan.client.swing.tasks;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -29,6 +35,9 @@ import java.util.Vector;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
@@ -50,6 +59,7 @@ import magellan.client.swing.ProgressBarUI;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.client.swing.table.TableSorter;
+import magellan.client.swing.tree.ContextManager;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
@@ -78,16 +88,17 @@ import net.infonode.docking.View;
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
 																		  SelectionListener, ShortcutListener, GameDataListener, 
-																		  PreferencesFactory, DockingWindowListener
+																		  PreferencesFactory, DockingWindowListener, MouseListener
 {
 	private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   public static final String IDENTIFIER = "TASKS";
 
-	protected JTable table;
-	TableSorter sorter;
-	TaskTableModel model;
-	protected List<Inspector> inspectors;
+  private JTable table;
+	private TableSorter sorter;
+	private TaskTableModel model;
+	
+	private List<Inspector> inspectors;
   
   /**
    * Not easy to detect if this panel is shown / visible
@@ -105,8 +116,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   private boolean needRefresh = true;
 
-  // shortcuts
+  /** list of registered keyboard shortcuts */
   private List<KeyStroke> shortcuts;
+
+  private Collection<Region> lastSelection = Collections.emptyList();
+
+  private Region lastActiveRegion;
+
+  private Vector<String> headerTitles;
+
+  private boolean secondThreadInvoked = false;
+
+  protected static int threadCounter = 0;
+
 
 	/**
 	 * Creates a new TaskTablePanel object.
@@ -117,27 +139,24 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	 */
 	public TaskTablePanel(EventDispatcher d, GameData initData, Properties p) {
 		super(d, initData, p);
-		init(d);
+		init();
 	}
 
-	private void init(EventDispatcher d) {
-		d.addUnitOrdersListener(this);
-		d.addGameDataListener(this);
-
-		// TODO (stm): this is broken, so for now we don't care about selection
-    //		d.addSelectionListener(this);
-
+	private void init() {
+	  registerListeners();
+	  
 		initGUI();
+    initInspectors();
 		refreshProblems();
+		
 	}
 
 	private void initGUI() {
 		model = new TaskTableModel(getHeaderTitles());
 		sorter = new TableSorter(model);
 		table = new JTable(sorter);
-//		sorter.addMouseListenerToHeaderInTable(table); // OLD
+
 		sorter.setTableHeader(table.getTableHeader());   //NEW
-		
 		
 		// allow reordering of headers
 		table.getTableHeader().setReorderingAllowed(true);
@@ -145,42 +164,26 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		// set row selection to single selection
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-		// Row 0 ("I"): smallest possible, not resizeable
-		table.getColumnModel().getColumn(TaskTableModel.IMAGE_POS).setResizable(false);
-		table.getColumnModel().getColumn(TaskTableModel.IMAGE_POS).setMaxWidth(table.getColumnModel()
-																					.getColumn(TaskTableModel.IMAGE_POS)
-																					.getMinWidth()*3);
-
-//		// Row 1 ("!"): smallest possible, not resizeable
-//		table.getColumnModel().getColumn(TaskTableModel.UNKNOWN_POS).setResizable(false);
-//		table.getColumnModel().getColumn(TaskTableModel.UNKNOWN_POS).setMaxWidth(table.getColumnModel()
-//																					  .getColumn(TaskTableModel.UNKNOWN_POS)
-//																					  .getMinWidth()*3);
-
-		// Row 2 ("Line"): smallest possible, not resizeable
-		table.getColumnModel().getColumn(TaskTableModel.LINE_POS).setResizable(true);
-		table.getColumnModel().getColumn(TaskTableModel.LINE_POS).setMaxWidth(table.getColumnModel()
-																				   .getColumn(TaskTableModel.LINE_POS)
-																				   .getMinWidth()*2);
+//		// Col 0 ("I"): smallest possible, not resizeable
+//		table.getColumnModel().getColumn(TaskTableModel.IMAGE_POS).setResizable(false);
+//		table.getColumnModel().getColumn(TaskTableModel.IMAGE_POS).setMaxWidth(table.getColumnModel()
+//																					.getColumn(TaskTableModel.IMAGE_POS)
+//																					.getMinWidth()*3);
+//
+//		// Col 1 ("Line"): smallest possible, not resizeable
+//		table.getColumnModel().getColumn(TaskTableModel.LINE_POS).setResizable(true);
+//		table.getColumnModel().getColumn(TaskTableModel.LINE_POS).setMaxWidth(table.getColumnModel()
+//																				   .getColumn(TaskTableModel.LINE_POS)
+//																				   .getMinWidth()*2);
+		
 		// react on double clicks on a row
-		table.addMouseListener(new MouseAdapter() {
-				@Override
-        public void mouseClicked(MouseEvent e) {
-					if(e.getClickCount() == 2) {
-						JTable target = (JTable) e.getSource();
-						int row = target.getSelectedRow();
-
-						if(TaskTablePanel.log.isDebugEnabled()) {
-							TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
-						}
-						selectObjectOnRow(row);
-					}
-				}
-			});
+		table.addMouseListener(this);
 
 		// layout component
 		this.setLayout(new BorderLayout());
 		this.add(new JScrollPane(table), BorderLayout.CENTER);
+		
+		this.setFocusable(false);
     
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(1);
@@ -193,21 +196,133 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 	}
 
+  /**
+   * Create and show context menu.
+   * 
+   * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+   */
+  public void mouseClicked(final MouseEvent e) {
+    if(e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
+      JTable target = (JTable) e.getSource();
+      int row = target.getSelectedRow();
+
+      if(TaskTablePanel.log.isDebugEnabled()) {
+        TaskTablePanel.log.debug("TaskTablePanel: Double click on row " + row);
+      }
+      selectObjectOnRow(row);
+    }
+
+    if (e.getButton() == MouseEvent.BUTTON3) {
+      JPopupMenu menu = new JPopupMenu();
+      final int row = table.rowAtPoint(e.getPoint());
+      int col = table.columnAtPoint(e.getPoint());
+      
+      Object o = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
+      
+      
+      JMenuItem refreshMenu;
+      JMenuItem acknowledgeMenu;
+      JMenuItem unAcknowledgeMenu;
+      
+      refreshMenu = new JMenuItem(Resources.get("tasks.contextmenu.refresh.title"));
+      acknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.acknowledge.title"));
+      unAcknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.unacknowledge.title"));
+      
+      menu.add(refreshMenu);
+      menu.add(acknowledgeMenu);
+      menu.add(unAcknowledgeMenu);
+
+      refreshMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+           refreshProblems();
+        }
+      });
+      
+      
+      acknowledgeMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          acknowledge(row);
+        }
+      });
+
+      unAcknowledgeMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          unAcknowledge();
+        }
+      });
+      
+      if (menu != null) {
+        ContextManager.showMenu(menu, this, e.getX(), e.getY());
+      }
+
+    }
+  }
+
+  public void mouseEntered(MouseEvent e) {
+  }
+
+  public void mouseExited(MouseEvent e) {
+  }
+
+  public void mousePressed(MouseEvent e) {
+  }
+
+  public void mouseReleased(MouseEvent e) {
+  }
+
+	protected void unAcknowledge() {
+    Window w = SwingUtilities.getWindowAncestor(this);
+    final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
+    progressUI.setTitle(Resources.get("tasks.progressbar.unack.title"));
+
+    progressUI.setMaximum(data.regions().size());
+
+    new Thread(new Runnable() {
+     public void run() {
+       try {
+         progressUI.show();
+         int iProgress=0;
+         for (Inspector i : getInspectors()){
+           for (Region r : data.regions().values()){
+             progressUI.setProgress(r.getName(), ++iProgress);
+             for (Unit u : r.units()){
+               i.unSuppress(u);
+             }
+           }
+         }
+         dispatcher.fire(new GameDataEvent(this, data));
+       }finally{
+         try {
+           progressUI.ready();
+         } catch (Exception e){
+           e.printStackTrace();
+         }
+       }
+     }
+
+   }).start();
+
+    
+  }
+
+  protected void acknowledge(int row) {
+    Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
+    
+    Unit u = p.addSuppressComment();
+    if (u!=null)
+      dispatcher.fire(new UnitOrdersEvent(this, u));
+  }
+
+  /**
+	 * Fire selection event for object associated with row
+	 * 
+	 * @param row
+	 */
 	private void selectObjectOnRow(int row) {
 		Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
 		dispatcher.fire(new SelectionEvent<Object>(this, null, obj));
 	}
 
-	// TODO make this configurable
-
-//	private Timer timer;
-//	private Iterator regionsIterator;
-
-  /**
-   * counts Threads - to identify different Threads
-   * (not needed anymore)
-   */
-  protected static int threadRunning=0;
   
   /**
    * The Thread which refreshes the List of Problems
@@ -215,14 +330,57 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   protected static Thread refreshThread = null;
   
+	/**
+	 * Rebuild the complete table.
+	 */
 	public void refreshProblems() {
-    if (TaskTablePanel.refreshThread!=null && TaskTablePanel.refreshThread.isAlive()){
-      // do not refresh if another refreshThread is still running
-      // log.info("new call to refreshProblems rejected, thread still running");
-      return;
+	  synchronized (lastSelection) {
+	    clearProblems();
+	    if (restrictToSelection() && lastSelection!=null && !lastSelection.isEmpty()){
+	      refreshProblems(lastSelection, Collections.<Region>emptyList());
+	    } else {
+	      refreshProblems(data.regions().values(), Collections.<Region>emptyList());
+	    }
     }
+	}
+
+	/**
+   * First remove problems from <code>regionsToRemove</code>. Then add
+   * problems from <code>regionsToRemove</code> to model. These sets may be identical.
+   * 
+   * <p>The necessary work is done in a separate background thread. Multiple threads are supported.
+   * 
+   * @param regionsToAdd
+   * @param regionsToRemove
+   */
+	protected void refreshProblems(final Collection<Region> regionsToAdd, final Collection<Region> regionsToRemove) {
+	  // Fiete: do nothing if Panel is hidden
+	  this.needRefresh=true;
+	  if (!this.isShown){
+	    return;
+	  }
+
+	  if (TaskTablePanel.log.isDebugEnabled()){
+	    log.debug("refreshProblems called by: ", (new Exception()));
+	  }
+
+	  // if another refresh thread is running, first wait for a short while
+	  if (TaskTablePanel.refreshThread!=null && TaskTablePanel.refreshThread.isAlive()){
+	    try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+      }
+	    // if still running, notify it of this new request via secondThreadInvoked
+	    if (TaskTablePanel.refreshThread!=null && TaskTablePanel.refreshThread.isAlive()){
+	      synchronized (TaskTablePanel.this) {
+	        this.secondThreadInvoked =true;
+	        log.debug("new call to refreshProblems rejected, thread still running");
+	        return;
+	      }
+	    }
+	  }
     
-    // Fiete: check, if open Problems is open anyway
+    // check, if TaskTablePanel is visible anyway
     MagellanDesktop MD = MagellanDesktop.getInstance();
     JMenu desktopMenu = MD.getDesktopMenu();
     boolean menuSelected = true;
@@ -242,58 +400,123 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
     
     if (!this.isShown || !this.needRefresh) {
-      // log.info("call to refreshProblems rejected  (not visisble Panel)");
+      log.debug("call to refreshProblems rejected  (panel not visible), reason: "+this.isShown);
       return;
     }
-    
-    initInspectors();
-	  
-	  Window w = SwingUtilities.getWindowAncestor(this);
-	  final ProgressBarUI ui = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null));
-	  ui.setMaximum(data.regions().size());
-	  ui.setTitle(Resources.get("dock.TASKS.progressBar.title"));
-	  // creating new Thread
+
+    // start work in a background thread
+    final Window w = SwingUtilities.getWindowAncestor(this);
+
+    // creating new Thread
     TaskTablePanel.refreshThread = new Thread(new Runnable() {
-	    final int myThread = ++TaskTablePanel.threadRunning;
-	      
+	    boolean closeRequest = false;  
+      final int id = ++threadCounter ;
+	    
       public void run() {
+        
+        // this listener  asks for confirmation if the user attempts to close the progress dialog
+        final ProgressBarUI.ClosingListener listener = new ProgressBarUI.ClosingListener() {
+        
+          public boolean proceed(WindowEvent e) {
+            if (JOptionPane.showConfirmDialog(TaskTablePanel.this, Resources
+                .get("tasks.runthread.abort.message"), Resources.get("tasks.runthread.abort.title", new  Object[] { id }),
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+              closeRequest=true;
+              try {
+                Thread.sleep(500);
+              } catch (InterruptedException e1) {
+              }
+              return true;
+            }else
+              return false;
+          }
+          
+        };
+        
+        // init progress bar
+        final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof JFrame?w:null), false, listener);
+        progressUI.setTitle(Resources.get("tasks.progressBar.refresh.title", new  Object[] { id }));
+        progressUI.setMaximum(regionsToAdd.size()+regionsToRemove.size());
+
         try {
-          int iProgress=0;
-          // log.info("started refresh Problems "+myThread);
-          ui.show();
-          synchronized (model) {
-            model.clearProblems();
-          }
-          for (Region r  : data.regions().values()){
-            if (TaskTablePanel.threadRunning>myThread) {
-              break;
+          int restarts = 0;
+          boolean doRestart=true;
+          // restart 10 times if necessary 
+          while (doRestart && restarts<10){
+            doRestart = false;
+            int iProgress=0;
+            log.debug("started refresh Problems "+id+" "+restarts+" times.");
+            progressUI.show();
+
+            // remove problems of deleted regions
+            for (Region r : regionsToRemove) {
+              // if a refresh was invoked a second time: signal restart
+              if (secondThreadInvoked && restarts<8){
+                log.debug("restarted "+id);
+                doRestart = true;
+                restarts++;
+                break;
+              }
+              // user requested abort
+              if (closeRequest){
+                progressUI.setMaximum(1);
+                progressUI.setProgress("aborted", 1);
+                TaskTablePanel.this.needRefresh=true;
+                log.debug("aborted "+id);
+                break;
+              }
+              progressUI.setProgress(r.getName(), ++iProgress);
+              r.refreshUnitRelations();
+              unReviewRegionAndUnits(r);
             }
-            ui.setProgress(r.getName(), ++iProgress);
-            r.refreshUnitRelations();
-            reviewRegionAndUnits(r);
+
+            // add problems of added regions
+            for (Region r : regionsToAdd) {
+              // if a refresh was invoked a second time: signal restart
+              if (secondThreadInvoked  && restarts<8){
+                log.debug("restarted "+id);
+                doRestart = true;
+                restarts++;
+                break;
+              }
+              // user requestet abort
+              if (closeRequest){
+                progressUI.setMaximum(1);
+                progressUI.setProgress("aborted", 1);
+                TaskTablePanel.this.needRefresh=true;
+                log.debug("aborted "+id);
+                break;
+              }
+
+              progressUI.setProgress(r.getName(), ++iProgress);
+              reviewRegionAndUnits(r);
+            }
+            // clean up
+            synchronized (TaskTablePanel.this) {
+              secondThreadInvoked=false;
+            }
           }
-          if (TaskTablePanel.threadRunning>myThread){
-            ui.setMaximum(1);
-            ui.setProgress("aborted", 1);
-            // log.info("aborted "+myThread);
-          }
-          // log.info("finished refreshed Problems "+myThread);
         }finally{
           try {
-            ui.ready();
+            // clean up
+            log.debug("exited refresh Problems "+id);
+            secondThreadInvoked=false;
+            progressUI.ready();
           } catch (Exception e){
             e.printStackTrace();
           }
         }
-      }  
+      }
+
     });
     // starting the thread
     TaskTablePanel.refreshThread.start();
     this.needRefresh=false;
 	}
 
-	
-
+	/**
+	 * Register all inspectors we know of.
+	 */
 	private void initInspectors() {
 		inspectors = new ArrayList<Inspector>();
 		
@@ -314,93 +537,146 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 	}
 
+	 private List<Inspector> getInspectors() {
+	    return inspectors;
+	  }
+
+
 	/**
 	 * clean up
 	 */
 	@Override
   public void quit() {
-		if(this.dispatcher != null) {
-			dispatcher.removeUnitOrdersListener(this);
-			dispatcher.removeSelectionListener(this);
-		}
-
+	  removeListeners();
+	  
 		super.quit();
 	}
 
-	/**
+	private void removeListeners() {
+	  if(this.dispatcher != null) {
+	    this.dispatcher.removeUnitOrdersListener(this);
+	    this.dispatcher.removeGameDataListener(this);
+	    this.dispatcher.removeSelectionListener(this);
+	  }
+	}
+
+	private void registerListeners() {
+	  if (this.dispatcher!=null){
+	    this.dispatcher.addUnitOrdersListener(this);
+	    this.dispatcher.addGameDataListener(this);
+	    this.dispatcher.addSelectionListener(this);
+	  }
+	}
+
+  /**
 	 * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	@Override
   public void gameDataChanged(GameDataEvent e) {
 		super.gameDataChanged(e);
 		// rebuild warning list
-		this.needRefresh=true;
 		refreshProblems();
 	}
 
 	/**
-	 * @see SelectionListener#selectionChanged(com.eressea.event.SelectionEvent)
-	 */
-	public void selectionChanged(SelectionEvent e) {
-		// (stm) this is pretty broken
-		if((e.getSource() == this) || (e.getSelectionType() == SelectionEvent.ST_REGIONS)) {
-			// ignore multiple region selections
-			return;
-		}
-		
-		// Fiete: do nothing if Panel is hidden 
-		this.needRefresh=true;
-		if (!this.isShown){
-		  return;
-		}
-		
-		Unit u = null;
+   * @see SelectionListener#selectionChanged(com.eressea.event.SelectionEvent)
+   */
+  public void selectionChanged(SelectionEvent e) {
+    if ((e.getSource() == this)) {
+      return;
+    }
 
-		try {
-			u = (Unit) e.getActiveObject();
-		} catch(ClassCastException cce) {
-		}
+    // do nothing if Panel is hidden
+    if (!this.isShown) {
+      return;
+    }
 
-		Region r = null;
+    synchronized (lastSelection) {
+      // if selection has changed, refresh delta
+      if (e.getSelectionType() == SelectionEvent.ST_REGIONS) {
+        // no selection: refresh all
+        if (e.getSelectedObjects() == null || e.getSelectedObjects().isEmpty()) {
+          lastSelection = data.regions().values();
+          refreshProblems();
+        } else {
+          Collection<Region> newSelection = new HashSet<Region>();
+          Collection<Region> addSelection = new HashSet<Region>();
+          Collection<Region> delSelection = new HashSet<Region>();
 
-		try {
-			r = ((HasRegion) e.getActiveObject()).getRegion();
-		} catch(ClassCastException cce) {
-		}
+          // remove problems of regions that are not selected any more
+          for (Iterator<Region> it = lastSelection.iterator(); it.hasNext();) {
+            Object o = it.next();
+            if (o instanceof Region) {
+              if (!e.getSelectedObjects().contains(o)) {
+                delSelection.add((Region) o);
+              }
+            }
+          }
 
-		if(r == null) {
-			try {
-				r = (Region) e.getActiveObject();
-			} catch(ClassCastException cce) {
-			}
-		}
+          // add problems of newly selected region
+          for (Object o : e.getSelectedObjects()) {
+            if (o instanceof Region) {
+              newSelection.add((Region) o);
+              if (!lastSelection.contains(o)) {
+                addSelection.add((Region) o);
+              }
+            }
+          }
+          lastSelection = newSelection;
+          if(restrictToSelection()){
+            if (delSelection.size()>newSelection.size()*2){
+              // if there are very many regions to delete, rather refresh all...
+              refreshProblems();
+            } else
+              refreshProblems(addSelection, delSelection);
+          }
+        }
+      }
+    }
 
-		reviewRegionAndUnits(r);
-		reviewObjects(u, null);
+    // if we are in active region mode, check if active region has changed and
+    // if so, refresh
+    Region r = null;
+    if (e.getActiveObject() instanceof Unit) {
+      Unit u = (Unit) e.getActiveObject();
+      if (u != null)
+        r = u.getRegion();
+    }
+    if (e.getActiveObject() instanceof HasRegion) {
+      r = ((HasRegion) e.getActiveObject()).getRegion();
+    }
+    if (e.getActiveObject() instanceof Region) {
+      r = (Region) e.getActiveObject();
+    }
+
+    if (restrictToActiveRegion() && r != null && r != lastActiveRegion) {
+      clearProblems();
+      refreshProblems(Collections.singleton(r), Collections.<Region> emptyList());
+    }
+    lastActiveRegion = r;
+
+}
+
+  private void clearProblems() {
+	  model.clearProblems();
 	}
 
-	/**
+  /**
 	 * Updates reviews when orders have changed.
 	 *
 	 * @param e 
 	 * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
 	 */
 	public void unitOrdersChanged(UnitOrdersEvent e) {
-	  // Fiete: do nothing if Panel is hidden
-	  this.needRefresh=true;
-	  if (!this.isShown){
-	    
-	    return;
-	  }
 		// rebuild warning list for given unit
     // this is not enough, also other units can be affected
 		// reviewObjects(e.getUnit(), e.getUnit().getRegion());
     // try to recalc the region again
-    reviewRegionAndUnits(e.getUnit().getRegion());
+	  refreshProblems(Collections.singleton(e.getUnit().getRegion()), Collections.singleton(e.getUnit().getRegion()));
 	}
 
 	/**
-	 * 
+	 * Reviews a region with all units within.
 	 */
 	private void reviewRegionAndUnits(Region r) {
 		if(r == null) {
@@ -411,7 +687,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			TaskTablePanel.log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
 		}
 
-		reviewObjects(null, r);
+		reviewRegion(r);
 
 		if(r.units() == null) {
 			return;
@@ -419,62 +695,104 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
 		for(Iterator iter = r.units().iterator(); iter.hasNext();) {
 			Unit u = (Unit) iter.next();
-			reviewObjects(u, null);
+			reviewUnit(u);
 		}
+		
 	}
 
-	/**
-	 * 
-	 */
-	private void reviewObjects(Unit u, Region r) {
-	  synchronized (model) {
-      for (Iterator iter = inspectors.iterator(); iter.hasNext();) {
-        Inspector c = (Inspector) iter.next();
-        if (r != null) {
-          // remove previous problems of this unit AND the given inspector
-          model.removeProblems(c, r);
-
-          // add new problems if found
-          List<Problem> problems = c.reviewRegion(r);
-          
-          model.addProblems(filterProblems(problems));
-        }
-
-        if (u != null) {
-          // remove previous problems of this unit AND the given inspector
-          model.removeProblems(c, u);
-          
-          // add new problems if found
-          List<Problem> problems = c.reviewUnit(u);
-          
-          model.addProblems(filterProblems(problems));          
-        }
-      }
+  /**
+   * Reviews a region with all units within.
+   */
+  private void unReviewRegionAndUnits(Region r) {
+    if(r == null) {
+      return;
     }
+
+    if(TaskTablePanel.log.isDebugEnabled()) {
+      TaskTablePanel.log.debug("TaskTablePanel.reviewRegionAndUnits(" + r + ") called");
+    }
+
+    removeRegion(r);
+
+    if(r.units() == null) {
+      return;
+    }
+
+    for(Iterator iter = r.units().iterator(); iter.hasNext();) {
+      Unit u = (Unit) iter.next();
+      removeUnit(u);
+    }
+  }
+
+	private void removeUnit(Unit u) {
+    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
+      Inspector c = (Inspector) iter.next();
+      model.removeProblems(c, u);
+    }    
+  }
+
+  private void removeRegion(Region r) {
+    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
+      Inspector c = (Inspector) iter.next();
+      model.removeProblems(c, r);
+    }    
+  }
+
+  /**
+	 * Reviews a the specified region and the specified unit.
+	 */
+	private void reviewRegion(Region r) {
+	  removeRegion(r);
+	  for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
+	    Inspector c = (Inspector) iter.next();
+	    if (r != null) {
+	      // add new problems if found
+	      List<Problem> problems = c.reviewRegion(r);
+
+	      model.addProblems(filterProblems(problems));
+	    }
+	  }
 	}
 
 	/**
-	 * 
+	 * Reviews a the specified region and the specified unit.
 	 */
+	private void reviewUnit(Unit u) {
+	  removeUnit(u);
+	  for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
+	    Inspector c = (Inspector) iter.next();
+	    if (u != null) {
+	      // add new problems if found
+	      List<Problem> problems = c.reviewUnit(u);
+	      model.addProblems(problems);
+	    }
+	  }
+	}
+	
+  /**
+   * Filter list of problems according to {@link #restrictToOwner()} and
+   * {@link #restrictToPassword()}.
+   */
 	private List<Problem> filterProblems(List<Problem> problems) {
 	  if (!restrictToOwner()) {
       return problems;
     }
-	  
-     List<Problem> filteredList = new ArrayList<Problem>(problems.size());
-     for (Problem p: problems){
-       Faction f = p.getFaction();
-       if (data.getOwnerFaction()==null || !restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
-         filteredList.add(p);
-       } else {
-         if (restrictToPassword() && f!=null && f.getPassword()!=null && f.getPassword().length()>0){
-           filteredList.add(p);
-         }
-       }
-       
-     }
-     return filteredList;
-  }
+
+	  // TODO(stm) low performance here?
+	  List<Problem> filteredList = new ArrayList<Problem>(problems.size());
+	  for (Problem p: problems){
+	    Faction f = p.getFaction();
+	    if (data.getOwnerFaction()==null || !restrictToOwner() || f==null || data.getOwnerFaction().equals(f.getID())){
+	      filteredList.add(p);
+	    } else {
+	      if (restrictToPassword() && f!=null && f.getPassword()!=null && f.getPassword().length()>0){
+	        filteredList.add(p);
+	      }
+	    }
+
+	  }
+	  return filteredList;
+	}
 
   private boolean restrictToOwner() {
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, true);
@@ -484,21 +802,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, true);
   }
 
-  private Vector<String> getHeaderTitles() {
-		Vector<String> v = new Vector<String>(7);
-		v.add(Resources.get("tasks.tasktablepanel.header.type"));
-		v.add(Resources.get("tasks.tasktablepanel.header.description"));
-		v.add(Resources.get("tasks.tasktablepanel.header.object"));
-		v.add(Resources.get("tasks.tasktablepanel.header.region"));
-		v.add(Resources.get("tasks.tasktablepanel.header.faction"));
-		v.add(Resources.get("tasks.tasktablepanel.header.line"));
-//		v.add(Resources.get("tasks.tasktablepanel.header.unknown"));
+  // TODO make configurable
+  private boolean restrictToSelection() {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_SELECTION, false);
+  }
 
-		return v;
+  // TODO make configurable
+  private boolean restrictToActiveRegion() {
+    return PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_RESTRICT_TO_ACTIVEREGION, false);
+  }
+
+
+  private Vector<String> getHeaderTitles() {
+    if (headerTitles==null){
+      headerTitles = new Vector<String>(7);
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.type"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.description"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.object"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.region"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.faction"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.line"));
+    }
+		return headerTitles;
 	}
 
 	private static class TaskTableModel extends DefaultTableModel {
-		/**
+
+	  /**
 		 * Creates a new TaskTableModel object.
 		 *
 		 * @param header 
@@ -520,11 +850,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 			return false;
 		}
 
-		// TODO : find better solution!
 		public void clearProblems() {
-			for(int i = getRowCount() - 1; i >= 0; i--) {
-				removeRow(i);
-			}
+		  synchronized (getLock()) {
+		    for(int i = getRowCount() - 1; i >= 0; i--) {
+		      removeRow(i);
+		    }
+      }
 		}
 
 		/**
@@ -533,18 +864,24 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		 * @param p 
 		 */
 		public void addProblems(List<Problem> problems) {
-			for(Problem p: problems) {
-				addProblem(p);
-			}
+		  synchronized (getLock()) {
+		    for(Problem p: problems) {
+		      addProblem(p);
+		    }
+		  }
 		}
 
-		private static final int IMAGE_POS = 0;
-		private static final int PROBLEM_POS = 1;
-		private static final int OBJECT_POS = 2;
+		private Object getLock(){
+		  return this;
+		}
+		
+		protected static final int IMAGE_POS = 0;
+		protected static final int PROBLEM_POS = 1;
+		protected static final int OBJECT_POS = 2;
 //		private static final int REGION_POS = 3;
 //		private static final int FACTION_POS = 4;
-		private static final int LINE_POS = 5;
-		private static final int NUMBEROF_POS = 6;
+		protected static final int LINE_POS = 5;
+		protected static final int NUMBEROF_POS = 6;
 
 		/**
 		 * Add a problem to this model.
@@ -552,48 +889,54 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 		 * @param p 
 		 */
 		public void addProblem(Problem p) {
-      HasRegion hasR = p.getObject();
-      Faction faction = p.getFaction();
+		  synchronized (getLock()) {
+		    HasRegion hasR = p.getObject();
+		    Faction faction = p.getFaction();
 
-      Object[] o = new Object[TaskTableModel.NUMBEROF_POS+1];
-      int i=0;
-      // o[i++] = Integer.toString(p.getType());
-      // tasks.tasktablepanel.problemtype_0 (-2)
-      o[i++] = Resources.get("tasks.tasktablepanel.problemtype_" +  Integer.toString(p.getType()));
-      o[i++] = p;
-      o[i++] = hasR;
-      o[i++] = hasR.getRegion();
-      o[i++] = faction==null?"":faction;
-      o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
-      o[i++] = null;
-      this.addRow(o);
-      
+		    Object[] o = new Object[TaskTableModel.NUMBEROF_POS+1];
+		    int i=0;
+	      o[i++] = Resources.get("tasks.tasktablepanel.problemtype_" +  Integer.toString(p.getType()));
+		    o[i++] = p;
+		    o[i++] = hasR;
+		    o[i++] = hasR.getRegion();
+		    o[i++] = faction==null?"":faction;
+		    o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
+		    o[i++] = null;
+		    this.addRow(o);
+      }
 		}
 
-    // TODO : find better solution!
+		/**
+		 * Remove all problems of the given inspector <i>and</i> the given source.
+		 * 
+		 * @param inspector
+		 * @param source
+		 */
 		public void removeProblems(Inspector inspector, Object source) {
-			Vector dataVector = getDataVector();
+		  synchronized (getLock()) {
 
-			for(int i = getRowCount() - 1; i >= 0; i--) {
-        if (i>=dataVector.size()){
-          TaskTablePanel.log.warn("TaskTablePanel: synchronization problem");
-          break;
-        }
-				Vector v = (Vector) dataVector.get(i);
-				Problem p = (Problem) v.get(TaskTableModel.PROBLEM_POS);
+		    Vector dataVector = getDataVector();
 
-				// Inspector and region: only non unit objects will be removed
-				if(p.getInspector().equals(inspector) && p.getSource().equals(source)) {
-					removeRow(i);
-				}
-			}
+		    for(int i = getRowCount() - 1; i >= 0; i--) {
+		      if (i>=dataVector.size()){
+		        TaskTablePanel.log.warn("TaskTablePanel: synchronization problem");
+		        break;
+		      }
+		      Vector v = (Vector) dataVector.get(i);
+		      Problem p = (Problem) v.get(TaskTableModel.PROBLEM_POS);
+
+		      // Inspector and region: only non unit objects will be removed
+		      if(p.getInspector().equals(inspector) && p.getSource().equals(source)) {
+		        removeRow(i);
+		      }
+		    }
+		  }
 		}
 	}
   
   /**
    * Should return all short cuts this class want to be informed. The elements
    * should be of type javax.swing.KeyStroke
-   * 
    * 
    */
   public Iterator<KeyStroke> getShortCuts() {
@@ -604,7 +947,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * This method is called when a shortcut from getShortCuts() is recognized.
    * 
    * @param shortcut
-   *          DOCUMENT-ME
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
     int index = shortcuts.indexOf(shortcut);
@@ -645,9 +987,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   @Override
   public void paint(Graphics g){
      if (!this.isShown){
-       // Panel was deactivated eralier (or never opened)
+       // Panel was deactivated earlier (or never opened)
        // and new we have a paint command...
-       // need to rebuild the prolems
+       // need to rebuild the problems
        this.isShown=true;
        // log.info("TaskTablePanel shown after hide! -> refreshing.");
        this.refreshProblems();
@@ -759,6 +1101,5 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   public void windowUndocking(DockingWindow arg0) throws OperationAbortedException {
   }
-  
   
 }

@@ -15,42 +15,41 @@ package magellan.library.utils.replacers;
 
 /**
  * Base interface for Replacer architecture.
- *
+ * <p>
+ * A Replacer's getReplacement method takes an object and replaces it by
+ * something else. Replacers with several arguments can by implemented by using
+ * a {@link BranchReplacer}.
+ * 
  * @author Andreas
  * @version 1.0
  */
 public interface Replacer {
-	/** DOCUMENT-ME */
-	public static final String BLANK = "";
+	/** An empty String. */
+	public static final String EMPTY = "";
 
-	/** DOCUMENT-ME */
+	/** The <code>true</code> keyword. */
 	public static final String TRUE = "true";
 
-	/** DOCUMENT-ME */
+	/** The <code>false</code> keyword. */
 	public static final String FALSE = "false";
 
-	/** DOCUMENT-ME */
+	/** The "clear" keyword */
 	public static final String CLEAR = "clear";
 
-	/** DOCUMENT-ME */
+	/** The "else" keyword. */
 	public static final String NEXT_BRANCH = "else";
 
-	/** DOCUMENT-ME */
+	/** The end marker. */
 	public static final String END = "end";
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Apply this replacer to the argument.
 	 * 
 	 */
-	public Object getReplacement(Object o);
+	public Object getReplacement(Object argument);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 *  Returns a description for the user of what this replacer does.
 	 */
 	public String getDescription();
 }

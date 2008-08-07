@@ -223,6 +223,12 @@ public class PropertiesHelper {
   public static final String TASKTABLE_RESTRICT_TO_PASSWORD = "TaskTable.restrictToPassword";
 
   /** Property type boolean: */
+  public static final String TASKTABLE_RESTRICT_TO_SELECTION = "TaskTable.restrictToSelection";
+  
+  /** Property type boolean: */
+  public static final String TASKTABLE_RESTRICT_TO_ACTIVEREGION = "TaskTable.restrictToSelection";
+  
+  /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_ATTACK = "TaskTable.inspectors.attack";
 
   /** Property type boolean: */

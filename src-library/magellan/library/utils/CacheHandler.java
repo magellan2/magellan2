@@ -19,9 +19,9 @@ package magellan.library.utils;
  */
 public interface CacheHandler {
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Called if a cache is cleared. 
 	 * 
+	 * @param c The cache that is going to be cleared.
 	 */
 	public void clearCache(Cache c);
 }

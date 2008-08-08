@@ -764,7 +764,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 	    if (u != null) {
 	      // add new problems if found
 	      List<Problem> problems = c.reviewUnit(u);
-	      model.addProblems(problems);
+	      model.addProblems(filterProblems(problems));
 	    }
 	  }
 	}

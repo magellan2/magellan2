@@ -1,4 +1,7 @@
-2008-08-04 / Build 227 - stm (stm_@users.sourceforge.net)
+2008-08-08 / Build 228 - Fiete  <Fiete@users.sourceforge.net>
+	* (again) small change in use of "filterProblems" in TaskTablePanel
+
+2008-08-07 / Build 227 - stm (stm_@users.sourceforge.net)
     * added ClosingListener and optional non-modality to ProgressBarUI
     * made Cache (used in Unit, Unitcontainer...) a SoftReference
     * added "ignore problem" feature to TaskTable (context menu)

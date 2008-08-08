@@ -440,7 +440,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /**
    * Handle a sequence of quoted strings, interpreting them as messages.
    *
-   * @param msgs a list to add the read messages to
+   * @param msgs a list to add the read messages to. May be <code>null</code>.
    *
    * @return the resulting list of <tt>Message</tt> objects.
    */
@@ -475,7 +475,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * Handle a sequence of quoted strings, storing them as <tt>String</tt> objects. String
    * interpretation starts with the next line.
    *
-   * @param strings a list to add the read strings to.
+   * @param strings a list to add the read strings to. May be <code>null</code>.
    *
    * @return the resulting list of <tt>String</tt> objects.
    */
@@ -655,7 +655,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * 
    * 
    *
-   * @return A List of instances of class Battle.
+   * @return A List of instances of class Battle. May be <code>null</code>.
    *
    * @throws IOException DOCUMENT-ME
    */

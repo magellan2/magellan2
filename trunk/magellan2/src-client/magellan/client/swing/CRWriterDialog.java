@@ -931,7 +931,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	
 	/**
 	 * Removes alliances to specific factions
-	 * @param allies
+	 * @param allies may be <code>null</code>
 	 * @param factionToDel
 	 */
 	private void cleanAllies(Map<ID,Alliance> allies, Faction factionToDel){

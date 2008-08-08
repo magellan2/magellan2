@@ -725,7 +725,7 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @param map a map containing the groups to write. The keys are expected to be
 	 * 		  <tt>Integer</tt> objects containing the ids of the alliances. The values are
-	 * 		  expected to be instances of class <tt>Group</tt>.
+	 * 		  expected to be instances of class <tt>Group</tt>. May be <code>null</code>.
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
@@ -770,7 +770,7 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @param map a map containing the alliances to write. The keys are expected to be
 	 * 		  <tt>Integer</tt> objects containing the ids of the alliances. The values are
-	 * 		  expected to be instances of class <tt>Alliance</tt>.
+	 * 		  expected to be instances of class <tt>Alliance</tt>. May be <code>null</code>.
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
@@ -808,13 +808,15 @@ public class CRWriter extends BufferedWriter {
 		newLine();
 	}
 
-	/**
-	 * Write a sequence of battle (BATTLE) blocks to the underlying stream.
-	 *
-	 * @param list a list containing the <tt>Battle</tt> objects to be written
-	 *
-	 * @throws IOException DOCUMENT-ME
-	 */
+  /**
+   * Write a sequence of battle (BATTLE) blocks to the underlying stream.
+   * 
+   * @param list
+   *          a list containing the <tt>Battle</tt> objects to be written. My be
+   *          <code>null</code>.
+   * @throws IOException
+   *           DOCUMENT-ME
+   */
 	public void writeBattles(List list) throws IOException {
 		if(list == null) {
 			return;

@@ -1518,8 +1518,12 @@ public class EresseaOrderCompleter implements Completer {
 
 	void cmpltReserviereAmount() {
 		Faction f = unit.getFaction();
-		boolean silverPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
-		boolean materialPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+		boolean silverPool = false;
+		boolean materialPool = false;
+		if (f.getOptions()!=null){
+		  silverPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_SILVERPOOL));
+		  materialPool = f.getOptions().isActive(StringID.create(EresseaConstants.O_ITEMPOOL));
+		}
 
 		if(!silverPool && !materialPool) {
 			addUnitItems("");
@@ -1954,10 +1958,16 @@ public class EresseaOrderCompleter implements Completer {
 			if(f == null) {
 				addUnit(curUnit, postfix);
 			} else if(!f.equals(unit.getFaction())) {
-				Alliance testAlliance = unit.getFaction().getAllies().get(f.getID());
-				if (unit.getGroup()!=null) {
-          testAlliance = unit.getGroup().allies().get(f.getID());
-        }
+			  Alliance testAlliance = null;
+			  if (unit.getGroup()!=null) {
+			    Map<ID, Alliance> allies = unit.getGroup().allies();
+			    if (allies!=null)
+			      testAlliance = unit.getGroup().allies().get(f.getID());
+			  }else{
+			    Map<ID, Alliance> allies = unit.getFaction().getAllies();
+			    if (allies!=null)
+			      testAlliance = unit.getFaction().getAllies().get(f.getID());
+			  }
 				if(testAlliance == null) {
 					// curUnit is not allied
 					addUnit(curUnit, postfix);

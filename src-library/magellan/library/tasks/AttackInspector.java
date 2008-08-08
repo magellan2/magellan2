@@ -80,7 +80,9 @@ public class AttackInspector extends AbstractInspector {
           continue;
         }
         if (type == Problem.WARNING){
-          if (relation.source.getFaction().getAllies().containsKey(relation.target.getFaction().getID())) {
+          if (relation.source.getFaction().getAllies() != null
+              && relation.source.getFaction().getAllies().containsKey(
+                  relation.target.getFaction().getID())) {
             problems.add(new CriticizedWarning(u, u, this, Resources.get("tasks.attackinspector.warning.friendlyfire"), relation.line));
           }
         }

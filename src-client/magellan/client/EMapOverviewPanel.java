@@ -690,7 +690,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * nodes in the tree.
    * 
    * @param allies
-   *          The alliances map to be used
+   *          The alliances map to be used, my be <code>null</code>
    * @param f
    *          The faction whose alliances are used
    */

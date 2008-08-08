@@ -47,6 +47,8 @@ public interface Faction extends UnitContainer {
 
 	/**
 	 * Returns the locale of this faction indicating the language of its report and orders.
+	 * 
+	 * @return My return <code>null</code>.
 	 */
 	public Locale getLocale();
 
@@ -57,6 +59,8 @@ public interface Faction extends UnitContainer {
 
 	/**
 	 * Returns the faction dependent prefix for the race name.
+	 * 
+	 * @return May return <code>null</code>
 	 */
 	public String getRaceNamePrefix();
 
@@ -87,14 +91,14 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of allies.
    * 
-   * @return Returns allies.
+   * @return Returns allies. May return <code>null</code>
    */
   public Map<ID, Alliance> getAllies();
 
   /**
    * Sets the value of allies.
    *
-   * @param allies The value for allies.
+   * @param allies The value for allies. May be <code>null</code>.
    */
   public void setAllies(Map<ID, Alliance> allies);
   /**
@@ -114,7 +118,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of battles.
    * 
-   * @return Returns battles.
+   * @return Returns battles. May return <code>null</code>.
    */
   public List<Battle> getBattles();
 
@@ -142,7 +146,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of errors.
    * 
-   * @return Returns errors.
+   * @return Returns errors. May return <code>null</code>.
    */
   public List<String> getErrors();
 
@@ -156,7 +160,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of groups.
    * 
-   * @return Returns groups.
+   * @return Returns groups. May return <code>null</code>.
    */
   public Map<ID, Group> getGroups();
 
@@ -226,7 +230,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of messages.
    * 
-   * @return Returns messages.
+   * @return Returns messages. May return <code>null</code>.
    */
   public List<Message> getMessages();
 
@@ -254,7 +258,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of options.
    * 
-   * @return Returns options.
+   * @return Returns options. May return <code>null</code>.
    */
   public Options getOptions();
 
@@ -268,7 +272,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of password.
    * 
-   * @return Returns password.
+   * @return Returns password. Returns <code>null</code> if no password is known.
    */
   public String getPassword();
 
@@ -310,7 +314,7 @@ public interface Faction extends UnitContainer {
   /**
    * Returns the value of spellSchool.
    * 
-   * @return Returns spellSchool.
+   * @return Returns spellSchool. May return <code>null</code>.
    */
   public String getSpellSchool();
 

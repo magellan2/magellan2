@@ -1,3 +1,7 @@
+2008-08-10 / Build 230 - Fiete  <Fiete@users.sourceforge.net>
+	* EmapDetailsPanel: workersInfo added, peasans supressed in resourceInfo
+	* added: emapdetailspanel.prefs.compact (no use of compactDesign yet (?))
+
 2008-08-08 / Build 228 - Fiete  <Fiete@users.sourceforge.net>
 	* (again) small change in use of "filterProblems" in TaskTablePanel
 

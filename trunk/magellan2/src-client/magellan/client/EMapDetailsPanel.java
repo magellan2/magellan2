@@ -562,7 +562,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     allowCustomIcons = settings.getProperty("EMapDetailsPanel.AllowCustomIcons", "true").equals("true");
     
-    compactLayout = settings.getProperty("EMapDetailsPanel.AllowCustomIcons", "false").equals("true");
+    compactLayout = settings.getProperty("EMapDetailsPanel.CompactLayout", "false").equals("true");
     
 		// split pane combining name, desc & tree
 		topSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, nameDescPanel, pnlRegionInfoTree);
@@ -878,11 +878,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		DefaultMutableTreeNode peasantsNode = createSimpleNode(Resources.get("emapdetailspanel.node.peasants") + ": " +
 															   peasantsInfo, "bauern");
-    // Fiete 20080805: if we have peasants in Ressources, this would be redundant
-    // in that case, we change NodeInfo to "region details"
-    if (isResourceTypeIDInRegionResources(r, peasantsID)){
-      peasantsNode = createSimpleNode(Resources.get("emapdetailspanel.node.regiondetails"), "bauern");
-    }
+    
 		parent.add(peasantsNode);
 		expandableNodes.add(new NodeWrapper(peasantsNode, "EMapDetailsPanel.RegionPeasantsExpanded"));
 
@@ -950,8 +946,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			// resources of region
 			for(Iterator iter = r.resources().iterator(); iter.hasNext();) {
 				RegionResource res = (RegionResource) iter.next();
-				int oldValue = findOldValueByResourceType(r, res);
-				appendResource(res, resourceNode, oldValue);
+				if (!res.getType().getID().equals(EresseaConstants.I_PEASONS)){
+  				int oldValue = findOldValueByResourceType(r, res);
+  				appendResource(res, resourceNode, oldValue);
+				}
 			}
 		} else {
 			// here we dont have resources, so make the "classic" way to create resource information

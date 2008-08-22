@@ -1633,7 +1633,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns peasants.
    */
   public int getPeasants() {
-    ItemType peasonsIT = data.rules.getItemType(EresseaConstants.I_PEASONS);
+    ItemType peasonsIT = data.rules.getItemType(EresseaConstants.I_PEASONS,true);
     RegionResource peasonsRR = this.getResource(peasonsIT);
     if (peasonsRR!=null){
       return peasonsRR.getAmount();

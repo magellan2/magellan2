@@ -100,7 +100,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAliveOnList[pos]) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.error("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     listeners[pos].add(obj);
@@ -112,7 +112,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.debug("The following exception shall be reported to bugzilla!", new Exception());
+      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!", new Exception());
     }
 
     listeners[pos].add(0, obj);
@@ -397,7 +397,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private class EManager implements Runnable {
     /**
-     * DOCUMENT-ME
+     * @see java.lang.Runnable#run()
      */
     public void run() {
       while (true) {

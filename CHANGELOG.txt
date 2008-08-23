@@ -1,8 +1,16 @@
+2008-08-12 / Build 228 - stm (stm_@users.sourceforge.net)
+    * fixed Faction.getAllies NPE bug and NPE bug on ships without owner
+    * fixed bug #297  (sort of)
+    * added options to TaskTable ("restrict to active region" and "restrict to selection")
+    * remodeled refresh policy of TaskTable (once again). Hope it's clean now.
+    * added optional delay to ProgressBarUI
+    * numerous smallest tweaks
+    
 2008-08-23 / Build 231 - Fiete  <Fiete@users.sourceforge.net>
-	* fixed #298: NPE if no peasons in region
+	* fixed #298: NPE if no peasants in region
 
 2008-08-10 / Build 230 - Fiete  <Fiete@users.sourceforge.net>
-	* EmapDetailsPanel: workersInfo added, peasans supressed in resourceInfo
+	* EmapDetailsPanel: workersInfo added, peasants supressed in resourceInfo
 	* added: emapdetailspanel.prefs.compact (no use of compactDesign yet (?))
 
 2008-08-08 / Build 228 - Fiete  <Fiete@users.sourceforge.net>

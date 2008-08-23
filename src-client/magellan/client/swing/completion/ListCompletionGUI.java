@@ -81,6 +81,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 
 		// align list pane
 		try {
+		  // FIXME: this might cause an NPE under certain circumstances, see Mantis bug #297
 			Rectangle caretBounds = editor.modelToView(editor.getCaretPosition());
 			Point p = new Point(editor.getLocationOnScreen());
 			p.translate(caretBounds.x, caretBounds.y + caretBounds.height);

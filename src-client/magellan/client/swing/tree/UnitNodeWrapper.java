@@ -356,11 +356,6 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 		GraphicsElement ge = null;
 
-		// Heldenanzeige
-		if(u.isHero()) {
-			names.add(new GraphicsElement(null, null, "hero"));
-		}
-
 		// Fiete Test: temps, die gef?llt werden..haben geburtstag
 		// Fiete removed 20060911 (creator wishes to use the icon for the item only
 		/**
@@ -388,6 +383,11 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 				names.add(ge);
 			}
 		}
+
+    // Heldenanzeige
+    if(u.isHero()) {
+      names.add(new GraphicsElement(null, null, "hero"));
+    }
 
 		for(Iterator iter = skills.iterator(); iter.hasNext();) {
 			Skill s = (Skill) iter.next();

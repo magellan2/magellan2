@@ -1134,8 +1134,11 @@ public class EresseaOrderParser implements OrderParser {
 		// would work better but breaks retVal
 		if(isID(t.getText()) == true) {
 			retVal = readGibUID(t);
+      if(completer != null && !t.followedBySpace()) {
+        completer.cmpltGib();
+      }
 		} else {
-			if(completer != null) {
+			if(completer != null  && !t.followedBySpace()) {
 				completer.cmpltGib();
 			}
 

@@ -995,7 +995,7 @@ public class EresseaOrderCompleter implements Completer {
         }
       }
       if(!"".equals(order)) {
-        completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), order, ""));
+        completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.allall"), order, ""));
       }
 		}
     

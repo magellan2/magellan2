@@ -1224,6 +1224,9 @@ public class EresseaOrderParser implements OrderParser {
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
+      if(completer != null && !t.followedBySpace()) {
+        completer.cmpltGibUIDAmount(uid, i, persons);
+      }
 		} else {
 			if(completer != null) {
 				completer.cmpltGibUIDAmount(uid, i, persons);

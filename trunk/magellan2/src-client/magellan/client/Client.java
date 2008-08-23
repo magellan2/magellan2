@@ -1375,7 +1375,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.error(Resources.get("client.msg.outofmemory.text"));
     }
-    if (!MemoryManagment.isFreeMemory(data.estimateSize())){
+    if (data!=null && !MemoryManagment.isFreeMemory(data.estimateSize())){
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
 

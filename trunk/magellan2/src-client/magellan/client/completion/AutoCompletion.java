@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.CaretListener;
 import javax.swing.text.BadLocationException;
@@ -399,20 +400,19 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    if (false) {
-      completions = null;
-    }
     if ((line.length() == 0) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n')) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
       // new line, delete old completions
       completions = null;
-    } else if (lastCaretPosition > j.getCaretPosition()) {
+    } else if (lastCaretPosition+1 != j.getCaretPosition()) {
       // Caret went backwards so line must be parsed again
       completions = null;
     } else if ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == ' ')) {
       // if Space typed, delete old completions to enforce new parsing
       completions = null;
     }
-
+    if (completions==null)
+      currentGUI.stopOffer();
+    
     // remember CaretPosition
     lastCaretPosition = j.getCaretPosition();
 
@@ -506,7 +506,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
-        if (stub.length()<common) {
+        if (stub.length()<common && !(commonPart + "...").equals(completions.get(0).getName())) {
           completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
         }
       }
@@ -825,10 +825,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * updates the completion gui when the user clicks inside editor or moves cursor.
    * 
    * @param e
-   *          DOCUMENT-ME
    */
   public void caretUpdate(javax.swing.event.CaretEvent e) {
     if (AutoCompletion.log.isDebugEnabled()) {
@@ -838,7 +837,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
 //      currentGUI.stopOffer();
       if (currentGUI.isOfferingCompletion()){
-        offerCompletion(editors.getCurrentEditor(), false);
+        SwingUtilities.invokeLater(new Runnable() {
+        
+          public void run() {
+            offerCompletion(editors.getCurrentEditor(), false);
+          }
+        });
+        
       }
       timer.restart();
     }

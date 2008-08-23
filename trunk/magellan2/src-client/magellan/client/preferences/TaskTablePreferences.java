@@ -68,6 +68,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   private JCheckBox chkOwnerParty;
   /** Nur Probleme von Parteien anzeigen lassen, bei denen wir etwas ändern können (Passwort haben) */
   private JCheckBox chkPasswordParties;
+  /** Nur Probleme der selektierten Regionen anzeigen */
+  private JCheckBox chkRestrictToSelection;
+  /** Nur Probleme der aktuellen Region anzeigen */
+  private JCheckBox chkRestrictToActiveRegion;
 
   private JCheckBox chkToDo;
   private JCheckBox chkMovement;
@@ -108,6 +112,14 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     panel.add(chkPasswordParties, c);
     
     c.gridy++;
+    chkRestrictToActiveRegion = new JCheckBox(Resources.get("tasks.prefs.restricttoactiveregion"), true);
+    panel.add(chkRestrictToActiveRegion, c);
+    
+    c.gridy++;
+    chkRestrictToSelection = new JCheckBox(Resources.get("tasks.prefs.restricttoselection"), true);
+    panel.add(chkRestrictToSelection, c);
+    
+    c.gridy++;
     chkToDo = new JCheckBox(Resources.get("tasks.prefs.inspectors.todo"), true);
     panel.add(chkToDo, c);
 
@@ -145,20 +157,15 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
    */
   public void initPreferences() {
 
-    //DefaultListModel model2 = new DefaultListModel();
-    // for (Faction f : data.factions().values()){
-    // model2.add(elementsListModel.getSize()-1, f);
-    // }
-
-    // useList.setModel(model2);
-
     /* restrict problems to owner faction */
-    chkOwnerParty.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, false));
+    chkOwnerParty.setSelected(taskPanel.restrictToOwner());
     
     /* restrict problems to factions with passwords */
-    chkPasswordParties.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, false));
+    chkPasswordParties.setSelected(taskPanel.restrictToPassword());
+
+    chkRestrictToActiveRegion.setSelected(taskPanel.restrictToActiveRegion());
+    
+    chkRestrictToSelection.setSelected(taskPanel.restrictToSelection());
 
     /* use attack inspector */
     chkAttack.setSelected(PropertiesHelper.getBoolean(settings,
@@ -182,31 +189,17 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    settings.setProperty(PropertiesHelper.TASKTABLE_RESTRICT_TO_OWNER, "" + chkOwnerParty.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_RESTRICT_TO_PASSWORD, "" + chkPasswordParties.isSelected());
-    
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, "" + chkAttack.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, "" + chkMovement.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, "" + chkOrderSyntax.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, "" + chkShip.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_TODO, "" + chkToDo.isSelected());
 
-    // DefaultListModel useListModel = (DefaultListModel) useList.getModel();
-    // StringBuffer definition = new StringBuffer("");
-    //
-    // DefaultListModel elementsListModel = (DefaultListModel)
-    // elementsList.getModel();
-    // for (int i = 0; i < useListModel.getSize(); i++) {
-    // String s = (String) useListModel.getElementAt(i);
-    //
-    // int pos = elementsListModel.indexOf(s);
-    // definition.append(pos).append(" ");
-    // }
-    //
-    // settings.setProperty("EMapOverviewPanel.treeStructure",
-    // definition.toString());
-    //
-
+    taskPanel.setRestrictToOwner(chkOwnerParty.isSelected());
+    taskPanel.setRestrictToPassword(chkPasswordParties.isSelected());
+    taskPanel.setRestrictToSelection(chkRestrictToSelection.isSelected());
+    taskPanel.setRestrictToActiveRegion(chkRestrictToActiveRegion.isSelected());
+    
     taskPanel.refreshProblems();
   }
 

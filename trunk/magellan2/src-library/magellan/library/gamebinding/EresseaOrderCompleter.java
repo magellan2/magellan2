@@ -132,10 +132,6 @@ public class EresseaOrderCompleter implements Completer {
 	 * Filters all Completion objects from list, that do not match the last word in txt, usually
 	 * the order entered so far.
 	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	public List<Completion> crop(List<Completion> list, String txt) {
 		List<Completion> ret = new LinkedList<Completion>();
@@ -387,7 +383,7 @@ public class EresseaOrderCompleter implements Completer {
          (unit.getShip().getOwnerUnit().equals(unit))) ||
          // ... vicious warriors destroying other peoples buildings or ships
          (unit.getModifiedBuilding()!=null && unit.getFaction()!=unit.getModifiedBuilding().getOwnerUnit().getFaction()) || 
-         (unit.getModifiedShip()!=null && unit.getFaction()!=unit.getModifiedShip().getOwnerUnit().getFaction())) {
+         (unit.getModifiedShip()!=null && (unit.getModifiedShip().getOwnerUnit()==null || unit.getFaction()!=unit.getModifiedShip().getOwnerUnit().getFaction()))) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESTROY)));
 		} else {
 			if(hasSkill(unit, EresseaConstants.S_STRASSENBAU) && (region != null) &&

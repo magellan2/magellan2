@@ -32,6 +32,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JDialog;
@@ -41,34 +43,86 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import magellan.client.utils.ErrorWindow;
 import magellan.library.utils.Resources;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
-public class ProgressBarUI implements UserInterface {
+public class ProgressBarUI implements UserInterface, ActionListener {
   private static final Logger log = Logger.getInstance(ProgressBarUI.class);
   // user interface
   protected ProgressDlg dlg = null;
   protected boolean showing=false;
   protected boolean ready=false;
+  private javax.swing.Timer timer;
+  private int delay;
 
+  /**
+   * Creates a modal progressbar with standard closing listener.
+   * 
+   * @param parent
+   */
   public ProgressBarUI(JFrame parent) {
-    this(parent, true, null);
+    this(parent, true, 200, null);
   }
 
+  /**
+   * Creates a modal progressbar with standard closing listener.
+   * 
+   * @param parent
+   */
   public ProgressBarUI(JDialog parent) {
-    this(parent, true, null);
+    this(parent, true, 200, null);
   }
 
-  public ProgressBarUI(JFrame parent, boolean modal, ClosingListener listener) {
+  /**
+   * Creates a ProgressBar Dialog which can be modal or non-modal.
+   * listener.proceed() is called if the dialog receives a WINDOW_CLOSING
+   * event(e.g., if the user clicks the dialog's close button. If
+   * <code>listener</code> is <code>null</code>, a standard listener shall be
+   * used which asks the user for confirmation. If listener.proceed() returns
+   * <code>true</code>, the ProgressBarUI is closed.
+   * 
+   * @param parent
+   *          The JFrame acting as the parent frame of the dialog.
+   * @param modal
+   *          Whether the dialog should be modal or not
+   * @param delay
+   *          The time after which the dialog shall be shown after show() has
+   *          been called.
+   * @param listener
+   *          The listener reacting to WINDOW_CLOSING events. If
+   *          <code>null</code>, a standard listener shall be used.
+   */
+  public ProgressBarUI(JFrame parent, boolean modal, int delay, ClosingListener listener) {
     dlg = new ProgressDlg(parent, modal, listener);
+    this.delay = delay;
     init();
   }
 
-  public ProgressBarUI(JDialog parent, boolean modal, ClosingListener listener) {
+  /**
+   * Creates a ProgressBar Dialog which can be modal or non-modal.
+   * listener.proceed() is called if the dialog receives a WINDOW_CLOSING
+   * event(e.g., if the user clicks the dialog's close button. If
+   * <code>listener</code> is <code>null</code>, a standard listener shall be
+   * used which asks the user for confirmation. If listener.proceed() returns
+   * <code>true</code>, the ProgressBarUI is closed.
+   * 
+   * @param parent
+   *          The JD acting as the parent frame of the dialog.
+   * @param modal
+   *          Whether the dialog should be modal or not
+   * @param delay
+   *          The time after which the dialog shall be shown after show() has
+   *          been called.
+   * @param listener
+   *          The listener reacting to WINDOW_CLOSING events.
+   */
+  public ProgressBarUI(JDialog parent, boolean modal, int delay, ClosingListener listener) {
     dlg = new ProgressDlg(parent, modal, listener);
+    this.delay = delay;
     init();
   }
 
@@ -80,6 +134,8 @@ public class ProgressBarUI implements UserInterface {
     dlg.progressBar.setMaximum(100);
     setTitle(Resources.get("progressbarui.title.default"));
     setProgress(Resources.get("progressbarui.label.default"), 0);
+    
+    timer = new Timer(delay, this);
   }
 
   /**
@@ -92,13 +148,8 @@ public class ProgressBarUI implements UserInterface {
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
-  public void show() {
-    SwingUtilities.invokeLater((new Runnable() {public void run() {
-      if (!ready){
-        showing=true;
-        ProgressBarUI.this.dlg.setVisible(true);
-      }
-    }})); 
+  public synchronized void show() {
+    timer.restart();
   }
 
   /**
@@ -146,7 +197,8 @@ public class ProgressBarUI implements UserInterface {
    * 
    * @see magellan.library.utils.UserInterface#ready()
    */
-  public void ready() {
+  public synchronized void ready() {
+    timer.stop();
     ready=true;
     if (dlg.isVisible()) {
       dlg.setVisible(false);
@@ -373,6 +425,22 @@ public class ProgressBarUI implements UserInterface {
     public void run() {
       sResult = JOptionPane.showInputDialog(dlg, strMessage,
           strTitle, JOptionPane.QUESTION_MESSAGE, null, values, initialSelection);
+    }
+  }
+
+  /**
+   * Called if the timer fires.
+   * 
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+   */
+  public synchronized void actionPerformed(ActionEvent e) {
+    if (e.getSource()==timer && !showing){
+      SwingUtilities.invokeLater((new Runnable() {public void run() {
+        if (!ready){
+          showing=true;
+          ProgressBarUI.this.dlg.setVisible(true);
+        }
+      }})); 
     }
   }
 

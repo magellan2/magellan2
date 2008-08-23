@@ -946,7 +946,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			// resources of region
 			for(Iterator iter = r.resources().iterator(); iter.hasNext();) {
 				RegionResource res = (RegionResource) iter.next();
-				if (!res.getType().getID().equals(EresseaConstants.I_PEASONS)){
+				if (!res.getType().getID().equals(EresseaConstants.I_PEASANTS)){
   				int oldValue = findOldValueByResourceType(r, res);
   				appendResource(res, resourceNode, oldValue);
 				}
@@ -3573,9 +3573,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		
 		// Besitzer
-		if (s.getOwnerUnit() != null) {
-			appendShipOwnerInfo(s, parent, expandableNodes);
-		}
+		appendShipOwnerInfo(s, parent, expandableNodes);
 
 		appendContainerCommandInfo(s, parent, expandableNodes);
 
@@ -3726,46 +3724,55 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		SkillType sailingSkillType = data.rules.getSkillType(StringID.create("Segeln"), true);
 		
 		// owner faction
-		Faction fac = owner.getFaction();
-		DefaultMutableTreeNode n;
-		if (fac == null) {
-			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-					Resources.get("emapdetailspanel.node.faction") + ": " + Resources.get("emapdetailspanel.node.unknownfaction"),
-					"faction"));
-		} else {
-			n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
-					Resources.get("emapdetailspanel.node.faction") + ": " + fac.toString(), "faction"));
+		if (owner!=null){
+		  Faction fac = owner.getFaction();
+		  DefaultMutableTreeNode factionNode;
+		  if (fac == null) {
+		    factionNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+		        Resources.get("emapdetailspanel.node.faction") + ": " + Resources.get("emapdetailspanel.node.unknownfaction"),
+		    "faction"));
+		  } else {
+		    factionNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+		        Resources.get("emapdetailspanel.node.faction") + ": " + fac.toString(), "faction"));
+		  }
+		  parent.add(factionNode);
 		}
-		parent.add(n);
 
 		// captain
-		UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(owner,
-				Resources.get("emapdetailspanel.node.captain") + ": ", owner.getPersons(), owner
-						.getModifiedPersons());
-		w.setReverseOrder(true);
-		w.setAdditionalIcon("captain");
-		DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(w);
-		parent.add(ownerNode);
+		
+		if (owner!=null){
+		  UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(owner,
+		      Resources.get("emapdetailspanel.node.captain") + ": ", owner.getPersons(), owner
+		      .getModifiedPersons());
+		  w.setReverseOrder(true);
+		  w.setAdditionalIcon("captain");
+		  DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(w);
+	    parent.add(ownerNode);
+		}
 		
 		// skill
-		Skill sailingSkill = s.getOwnerUnit().getModifiedSkill(sailingSkillType);
-		int sailingSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
+     
+    int captainSkillAmount = 0;
+    if (owner!=null){
+      Skill sailingSkill = owner.getModifiedSkill(sailingSkillType);
+      captainSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
+    }
 		String text = Resources.get("emapdetailspanel.node.sailingskill") + ": " + Resources.get("emapdetailspanel.node.captain")+" "
-				+ sailingSkillAmount + " / " + s.getShipType().getCaptainSkillLevel() + ", ";
+				+ captainSkillAmount + " / " + s.getShipType().getCaptainSkillLevel() + ", ";
 //		n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
 //				Resources.get("emapdetailspanel.node.captainskill") + ": " + sailingSkillAmount + " / "
 //						+ s.getShipType().getCaptainSkillLevel(), "captain"));
 //		parent.add(n);
 		
 		// Matrosen
-		sailingSkillAmount = 0;
+		int sailingSkillAmount = 0;
 
 		// pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
 		Collection modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
 
 		for(Iterator sailors = modUnits.iterator(); sailors.hasNext();) {
 			Unit u = (Unit) sailors.next();
-			sailingSkill = u.getModifiedSkill(sailingSkillType);
+			Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
 
 			if(sailingSkill != null) {
 				sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
@@ -3773,8 +3780,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 		text += Resources.get("emapdetailspanel.node.crew")+" "+sailingSkillAmount + " / "
 		+ s.getShipType().getSailorSkillLevel();
-		n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
-		parent.add(n);
+		if (captainSkillAmount>0 || sailingSkillAmount>0){
+		  DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
+		  parent.add(n);
+		}
 
 	}
 

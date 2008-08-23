@@ -585,7 +585,7 @@ public class EresseaConstants {
   
   public static final ID I_LAEN = StringID.create("Laen");
   
-  public static final ID I_PEASONS = StringID.create("Bauern");
+  public static final ID I_PEASANTS = StringID.create("Bauern");
 
   /** DOCUMENT-ME */
   public static final ID I_SILVER = StringID.create("Silber");

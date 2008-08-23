@@ -60,7 +60,6 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
   }
 
   public void applyPreferences() {
-    // TODO implement
   }
 
   /**
@@ -139,7 +138,6 @@ public class PluginPreferences implements ExtendedPreferencesAdapter {
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
-    // TODO implement
   }
 
 }

@@ -962,7 +962,7 @@ public class EresseaOrderCompleter implements Completer {
 					}
 
 					if(suggest) {
-						completions.add(new Completion("R-" + iType.getName(), order, "", 10));
+						completions.add(new Completion("R-" + iType.getName(), order, "", Completion.DEFAULT_PRIORITY+1));
 					}
 				}
 			}
@@ -2054,7 +2054,7 @@ public class EresseaOrderCompleter implements Completer {
 		for(Item i : unit.getItems()) {
 		  //String name = i.getName().replaceAll(" ", "~");
 		  // TODO use replaced name?
-      completions.add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount()>=amount) ? 0 : 10));
+      completions.add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount()>=amount) ? Completion.DEFAULT_PRIORITY : Completion.DEFAULT_PRIORITY+1));
 
       /*
       String name = i.getName();

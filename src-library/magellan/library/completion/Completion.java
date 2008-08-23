@@ -88,7 +88,7 @@ public class Completion {
 	 * @param value The value that is inserted if this completion is chosen
 	 * @param postfix This is what should be inserted after the value but should not influence, 
 	 *                for example, sorting
-	 * @param prio The sorting priority, higher priority comes first
+	 * @param prio The sorting priority, <em>lower</em> priority comes first
 	 */
 	public Completion(String name, String value, String postfix, int prio) {
 		this(name, value, postfix, prio, 0);

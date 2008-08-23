@@ -247,12 +247,11 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_GROW))) {
 			retVal = readZuechte(t);
 		} else {
-			if(completer != null) {
-				completer.cmplt();
-			}
-
 			retVal = checkFinal(t);
 		}
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmplt();
+    }
 
 		return retVal;
 	}
@@ -281,12 +280,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readAttackUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltAttack();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltAttack();
+    }
 
 		return retVal;
 	}
@@ -329,12 +328,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBeklaueUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBeklaue();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBeklaue();
+    }
 
 		return retVal;
 	}
@@ -355,12 +354,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBelagereBID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBelagere();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBelagere();
+    }
 
 		return retVal;
 	}
@@ -391,12 +390,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGN))) {
 			retVal = readBenenneFremdes(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenne();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBenenne();
+    }
 
 		return retVal;
 	}
@@ -431,12 +430,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
 			retVal = readBenenneFremdesSchiff(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdes();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBenenneFremdes();
+    }
 
 		return retVal;
 	}
@@ -450,12 +449,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdeEinheit();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBenenneFremdeEinheit();
+    }
 
 		return retVal;
 	}
@@ -469,12 +468,11 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdesGebaeude();
-			}
-
 			unexpected(t);
 		}
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBenenneFremdesGebaeude();
+    }
 
 		return retVal;
 	}
@@ -488,12 +486,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdePartei();
-			}
-
 			unexpected(t);
 		}
+
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltBenenneFremdePartei();
+    }
 
 		return retVal;
 	}
@@ -507,13 +505,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdesSchiff();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBenenneFremdesSchiff(); 
+		}
 		return retVal;
 	}
 
@@ -526,13 +523,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenenneFremdesTargetID();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBenenneFremdesTargetID(); 
+		}
 		return retVal;
 	}
 
@@ -546,13 +542,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBenutze();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBenutze(); 
+		}
 		return retVal;
 	}
 
@@ -574,13 +569,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
 			retVal = readBenenneBeschreibeTarget(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBeschreibe();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBeschreibe(); 
+		}
 		return retVal;
 	}
 
@@ -596,13 +590,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
 			retVal = readBetreteSchiff(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBetrete();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBetrete(); 
+		}
 		return retVal;
 	}
 
@@ -615,13 +608,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBetreteBurgBID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBetreteBurg();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBetreteBurg(); 
+		}
 		return retVal;
 	}
 
@@ -640,13 +632,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBetreteSchiffSID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBetreteSchiff();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBetreteSchiff(); 
+		}
 		return retVal;
 	}
 
@@ -699,13 +690,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
 			retVal = readBotschaftSchiff(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaft();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaft(); 
+		}
 		return retVal;
 	}
 
@@ -718,13 +708,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftEinheitUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftEinheit();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftEinheit(); 
+		}
 		return retVal;
 	}
 
@@ -752,13 +741,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftParteiFID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftPartei();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftPartei(); 
+		}
 		return retVal;
 	}
 
@@ -801,13 +789,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftGebaeudeID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftGebaeude();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftGebaeude(); 
+		}
 		return retVal;
 	}
 
@@ -820,13 +807,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftGebaeudeID();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftGebaeudeID(); 
+		}
 		return retVal;
 	}
 
@@ -839,13 +825,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftSchiffID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftSchiff();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftSchiff(); 
+		}
 		return retVal;
 	}
 
@@ -858,13 +843,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBotschaftSchiffID();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBotschaftSchiffID(); 
+		}
 		return retVal;
 	}
 
@@ -989,13 +973,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFahreUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltFahre();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltFahre(); 
+		}
 		return retVal;
 	}
 
@@ -1017,13 +1000,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP)) == true) {
 			retVal = readFolgeSchiff(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltFolge();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltFolge(); 
+		}
 		return retVal;
 	}
 
@@ -1036,13 +1018,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltFolgeEinheit();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltFolgeEinheit(); 
+		}
 		return retVal;
 	}
 
@@ -1055,13 +1036,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltFolgeSchiff();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltFolgeSchiff(); 
+		}
 		return retVal;
 	}
 
@@ -1077,10 +1057,11 @@ public class EresseaOrderParser implements OrderParser {
 		} else if (isString(t.getText())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBeanspruche();
-			}
 			unexpected(t);
+		}
+
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBeanspruche(); 
 		}
 		return retVal;
 	}
@@ -1094,10 +1075,11 @@ public class EresseaOrderParser implements OrderParser {
 		if (isString(t.getText())){
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltBeanspruche();
-			}
 			unexpected(t);
+		}
+
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltBeanspruche(); 
 		}
 		return retVal;
 	}
@@ -1113,13 +1095,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltForsche();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltForsche(); 
+		}
 		return retVal;
 	}
 
@@ -1130,22 +1111,17 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
-		// TODO (stm)     if(isID(t.getText()) && t.followedBySpace()) {
-		// would work better but breaks retVal
 		if(isID(t.getText()) == true) {
 			retVal = readGibUID(t);
-      if(completer != null && !t.followedBySpace()) {
-        completer.cmpltGib();
-      }
 		} else {
-			if(completer != null  && !t.followedBySpace()) {
-				completer.cmpltGib();
-			}
-
 			unexpected(t);
 		}
 
-		return retVal;
+    if(completer != null && !t.followedBySpace()) {
+      completer.cmpltGib();
+    }
+
+    return retVal;
 	}
 
 	private boolean readGibUID(OrderToken token) {
@@ -1169,13 +1145,12 @@ public class EresseaOrderParser implements OrderParser {
 // this is not allowed
 //			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltGibUID();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltGibUID(); 
+		}
 		return retVal;
 	}
 
@@ -1195,13 +1170,12 @@ public class EresseaOrderParser implements OrderParser {
 		if (isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if (completer != null) {
-				completer.cmpltGibJe();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltGibJe(); 
+		}
 		return retVal;
 	}
 	
@@ -1224,17 +1198,13 @@ public class EresseaOrderParser implements OrderParser {
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
-      if(completer != null && !t.followedBySpace()) {
-        completer.cmpltGibUIDAmount(uid, i, persons);
-      }
 		} else {
-			if(completer != null) {
-				completer.cmpltGibUIDAmount(uid, i, persons);
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltGibUIDAmount(uid, i, persons); 
+		}
 		return retVal;
 	}
 
@@ -1247,13 +1217,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltGibUIDAlles();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltGibUIDAlles(); 
+		}
 		return retVal;
 	}
 
@@ -1289,13 +1258,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readHelfeFID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltHelfe();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltHelfe(); 
+		}
 		return retVal;
 	}
 
@@ -1313,13 +1281,12 @@ public class EresseaOrderParser implements OrderParser {
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTIONSTEALTH))) {
 			retVal = readHelfeFIDModifier(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltHelfeFID();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltHelfeFID(); 
+		}
 		return retVal;
 	}
 
@@ -1332,13 +1299,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readHelfeFIDModifierNicht(t, token.getText());
 		} else {
-			if(completer != null) {
-				completer.cmpltHelfeFIDModifier();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltHelfeFIDModifier(); 
+		}
 		return retVal;
 	}
 
@@ -1368,13 +1334,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT))) {
 			retVal = readKaempfeHelfe(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKaempfe();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKaempfe(); 
+		}
 		return retVal;
 	}
 
@@ -1387,13 +1352,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKaempfeHelfe();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKaempfeHelfe(); 
+		}
 		return retVal;
 	}
 
@@ -1411,13 +1375,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(isString(t.getText())) {
 			retVal = readKampfzauberSpell(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKampfzauber();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKampfzauber(); 
+		}
 		return retVal;
 	}
 
@@ -1434,12 +1397,12 @@ public class EresseaOrderParser implements OrderParser {
 			if(isString(t.getText())) {
 				retVal = readFinalString(t);
 			} else {
-				if(completer != null) {
-					completer.cmpltKampfzauberStufe();
-				}
-
 				unexpected(t);
 			}
+
+		if(completer!=null && !t.followedBySpace()){
+					completer.cmpltKampfzauberStufe(); 
+		}
 		}
 
 		return retVal;
@@ -1454,13 +1417,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKampfzauberSpell();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKampfzauberSpell(); 
+		}
 		return retVal;
 	}
 
@@ -1474,13 +1436,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isNumeric(t.getText()) == true) {
 			retVal = readKaufeAmount(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKaufe();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKaufe(); 
+		}
 		return retVal;
 	}
 
@@ -1498,13 +1459,12 @@ public class EresseaOrderParser implements OrderParser {
 			   (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKaufeAmount();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKaufeAmount(); 
+		}
 		return retVal;
 	}
 
@@ -1518,13 +1478,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readKontaktiereUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltKontaktiere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltKontaktiere(); 
+		}
 		return retVal;
 	}
 
@@ -1544,13 +1503,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readLehreUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltLehre();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltLehre(); 
+		}
 		return retVal;
 	}
 
@@ -1563,13 +1521,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readLehreUID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltLehre();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltLehre(); 
+		}
 		return retVal;
 	}
 
@@ -1591,13 +1548,12 @@ public class EresseaOrderParser implements OrderParser {
 				retVal = checkFinal(t);
 			}
 		} else {
-			if(completer != null) {
-				completer.cmpltLerne();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltLerne(); 
+		}
 		return retVal;
 	}
 
@@ -1611,13 +1567,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltLocale();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltLocale(); 
+		}
 		return retVal;
 	}
 
@@ -1650,12 +1605,13 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SEED))) {
 			retVal = readFinalKeyword(t);
 		} else if(t.ttype == OrderToken.TT_EOC) {
-			if(completer != null) {
-				completer.cmpltMache();
-			}
-
 			retVal = false;
-		} else {
+		}
+
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMache(); 
+		}
+ else {
 			retVal = readMacheAnything(t);
 		}
 
@@ -1679,13 +1635,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
 			retVal = readMacheSchiff(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheAmount();
-			}
-
 			retVal = readMacheAnything(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheAmount(); 
+		}
 		return retVal;
 	}
 
@@ -1712,13 +1667,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheTempID();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheTempID(); 
+		}
 		return retVal;
 	}
 
@@ -1731,13 +1685,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheBurg();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheBurg(); 
+		}
 		return retVal;
 	}
 
@@ -1750,13 +1703,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheBuilding(token.getText());
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheBuilding(token.getText()); 
+		}
 		return retVal;
 	}
 
@@ -1775,13 +1727,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheSchiff();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheSchiff(); 
+		}
 		return retVal;
 	}
 
@@ -1794,13 +1745,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltMacheStrasse();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltMacheStrasse(); 
+		}
 		return retVal;
 	}
 
@@ -1825,13 +1775,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readNachDirection(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltNach();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltNach(); 
+		}
 		return retVal;
 	}
 
@@ -1844,13 +1793,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readNachDirection(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltNach();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltNach(); 
+		}
 		return retVal;
 	}
 
@@ -1870,13 +1818,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE)) == true) {
 			retVal = readNummerBurg(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltNummer();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltNummer(); 
+		}
 		return retVal;
 	}
 
@@ -1967,13 +1914,12 @@ public class EresseaOrderParser implements OrderParser {
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMPLATE))) {
 			retVal = readOptionOption(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltOption();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltOption(); 
+		}
 		return retVal;
 	}
 
@@ -1986,13 +1932,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltOptionOption();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltOptionOption(); 
+		}
 		return retVal;
 	}
 
@@ -2062,13 +2007,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readPiraterieFID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltPiraterie();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltPiraterie(); 
+		}
 		return retVal;
 	}
 
@@ -2081,13 +2025,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readPiraterieFID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltPiraterieFID();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltPiraterieFID(); 
+		}
 		return retVal;
 	}
 
@@ -2101,13 +2044,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltPraefix();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltPraefix(); 
+		}
 		return retVal;
 	}
 
@@ -2154,13 +2096,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_EACH))){
 			retVal = readReserviereJe(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltReserviere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltReserviere(); 
+		}
 		return retVal;
 	}
 	
@@ -2173,13 +2114,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isNumeric(t.getText()) == true) {
 			retVal = readReserviereAmount(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltReserviereJe();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltReserviereJe(); 
+		}
 		return retVal;
 
 	}
@@ -2193,13 +2133,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltReserviereAmount();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltReserviereAmount(); 
+		}
 		return retVal;
 	}
 
@@ -2215,13 +2154,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PAUSE))) {
 			retVal = readRouteDirection(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltRoute();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltRoute(); 
+		}
 		return retVal;
 	}
 
@@ -2236,13 +2174,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PAUSE))) {
 			retVal = readRouteDirection(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltRoute();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltRoute(); 
+		}
 		return retVal;
 	}
 
@@ -2259,13 +2196,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_AFTER))) {
 			retVal = readSortiereHinter(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltSortiere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltSortiere(); 
+		}
 		return retVal;
 	}
 
@@ -2278,13 +2214,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltSortiereVor();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltSortiereVor(); 
+		}
 		return retVal;
 	}
 
@@ -2297,13 +2232,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltSortiereHinter();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltSortiereHinter(); 
+		}
 		return retVal;
 	}
 
@@ -2317,13 +2251,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltSpioniere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltSpioniere(); 
+		}
 		return retVal;
 	}
 
@@ -2337,13 +2270,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltStirb();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltStirb(); 
+		}
 		return retVal;
 	}
 
@@ -2361,13 +2293,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if((data.rules != null) && (data.rules.getRace(t.getText()) != null)) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltTarne();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltTarne(); 
+		}
 		return retVal;
 	}
 
@@ -2382,13 +2313,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NUMBER))) {
 			retVal = readTarneParteiNummer(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltTarnePartei();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltTarnePartei(); 
+		}
 		return retVal;
 	}
 
@@ -2401,13 +2331,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltTarneParteiNummer();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltTarneParteiNummer(); 
+		}
 		return retVal;
 	}
 
@@ -2421,13 +2350,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltTransportiere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltTransportiere(); 
+		}
 		return retVal;
 	}
 
@@ -2504,13 +2432,12 @@ public class EresseaOrderParser implements OrderParser {
 		if((data.rules != null) && (data.rules.getSkillType(t.getText()) != null)) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltVergesse();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltVergesse(); 
+		}
 		return retVal;
 	}
 
@@ -2526,13 +2453,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
 			retVal = readVerkaufeAlles(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltVerkaufe();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltVerkaufe(); 
+		}
 		return retVal;
 	}
 
@@ -2549,13 +2475,12 @@ public class EresseaOrderParser implements OrderParser {
 			   (luxuryCategory != null) && type.getCategory().equals(luxuryCategory)) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltVerkaufeAmount();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltVerkaufeAmount(); 
+		}
 		return retVal;
 	}
 
@@ -2572,13 +2497,12 @@ public class EresseaOrderParser implements OrderParser {
 			   (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltVerkaufeAlles();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltVerkaufeAlles(); 
+		}
 		return retVal;
 	}
 
@@ -2601,13 +2525,12 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readFinalString(t);
 //      }
 		} else {
-			if(completer != null) {
-				completer.cmpltZaubere();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZaubere(); 
+		}
 		return retVal;
 	}
 
@@ -2620,13 +2543,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(isNumeric(t.getText(), 10, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
 			retVal = readZaubereRegionCoor(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZaubereRegion();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZaubereRegion(); 
+		}
 		return retVal;
 	}
 
@@ -2648,12 +2570,12 @@ public class EresseaOrderParser implements OrderParser {
 			} else if(isString(t.getText())) {
 				retVal = readFinalString(t);
 			} else {
-				if(completer != null) {
-					completer.cmpltZaubereRegionCoor();
-				}
-
 				unexpected(t);
 			}
+
+		if(completer!=null && !t.followedBySpace()){
+					completer.cmpltZaubereRegionCoor(); 
+		}
 		}
 
 		return retVal;
@@ -2672,12 +2594,12 @@ public class EresseaOrderParser implements OrderParser {
 			if(isString(t.getText())) {
 				retVal = readFinalString(t);
 			} else {
-				if(completer != null) {
-					completer.cmpltZaubereStufe();
-				}
-
 				unexpected(t);
 			}
+
+		if(completer!=null && !t.followedBySpace()){
+					completer.cmpltZaubereStufe(); 
+		}
 		}
 
 		return retVal;
@@ -2696,12 +2618,12 @@ public class EresseaOrderParser implements OrderParser {
 			if(isString(t.getText())) {
 				retVal = readFinalString(t);
 			} else {
-				if(completer != null) {
-					completer.cmpltZaubereRegionStufe();
-				}
-
 				unexpected(t);
 			}
+
+		if(completer!=null && !t.followedBySpace()){
+					completer.cmpltZaubereRegionStufe(); 
+		}
 		}
 
 		return retVal;
@@ -2757,13 +2679,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZeige();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZeige(); 
+		}
 		return retVal;
 	}
 
@@ -2777,13 +2698,12 @@ public class EresseaOrderParser implements OrderParser {
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SPELLS))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZeigeAlle();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZeigeAlle(); 
+		}
 		return retVal;
 	}
 
@@ -2799,13 +2719,12 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ROAD))) {
 			retVal = readZerstoereStrasse(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZerstoere();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZerstoere(); 
+		}
 		return retVal;
 	}
 
@@ -2818,13 +2737,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ROAD))) {
 			retVal = readZerstoereStrasse(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZerstoere();
-			}
-
 			retVal = checkFinal(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZerstoere(); 
+		}
 		return retVal;
 	}
 
@@ -2837,13 +2755,12 @@ public class EresseaOrderParser implements OrderParser {
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readFinalString(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZerstoereStrasse();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZerstoereStrasse(); 
+		}
 		return retVal;
 	}
 
@@ -2858,13 +2775,12 @@ public class EresseaOrderParser implements OrderParser {
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HORSES))) {
 			retVal = readFinalKeyword(t);
 		} else {
-			if(completer != null) {
-				completer.cmpltZuechte();
-			}
-
 			unexpected(t);
 		}
 
+		if(completer!=null && !t.followedBySpace()){
+				completer.cmpltZuechte(); 
+		}
 		return retVal;
 	}
 
@@ -2914,9 +2830,6 @@ public class EresseaOrderParser implements OrderParser {
 	 * Checks whether the token t is the end of line or a comment, i.e. the indicating a valid end
 	 * of the order. Reports an unexpected token if that is not the case.
 	 *
-	 * 
-	 *
-	 * 
 	 */
 	private boolean checkFinal(OrderToken t) {
 		boolean retVal = ((t.ttype == OrderToken.TT_EOC) || (t.ttype == OrderToken.TT_COMMENT));
@@ -3078,28 +2991,21 @@ class TokenBucket extends Vector<OrderToken> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.Vector#add(java.lang.Object)
 	 */
 	@Override
 	public boolean add(OrderToken o) {
-		boolean retVal = false;
-
-		retVal = true;
 		super.add(o);
 
-		return retVal;
+		return true;
 	}
 
 	/**
 	 * DOCUMENT-ME
 	 *
 	 * 
-	 *
-	 * 
+	 * @param in
+	 * @return
 	 */
 	public int read(Reader in) {
 		OrderTokenizer tokenizer = new OrderTokenizer(in);

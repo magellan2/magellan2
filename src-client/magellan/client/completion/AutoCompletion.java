@@ -403,7 +403,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if ((line.length() == 0) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n')) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
       // new line, delete old completions
       completions = null;
-    } else if (lastCaretPosition+1 != j.getCaretPosition()) {
+    } else if (lastCaretPosition+1 != j.getCaretPosition() && lastCaretPosition != j.getCaretPosition()) {
       // Caret went backwards so line must be parsed again
       completions = null;
     } else if ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == ' ')) {
@@ -506,11 +506,19 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
-        if (stub.length()<common && !(commonPart + "...").equals(completions.get(0).getName())) {
+        if (stub.length()<common && !conatained(commonPart + "...", completions)) {
           completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
         }
       }
     }
+  }
+
+  private boolean conatained(String commonPart, List<Completion> completions) {
+    for (Completion c : completions){
+     if (commonPart.equals(c.getName()))
+       return true;
+    }
+    return false;
   }
 
   /**
@@ -1042,14 +1050,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     for (Iterator<String> iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
       String name = iter.next();
       String value = selfDefinedCompletions.get(name);
-      Completion c = new Completion(name, value, "", 0);
+      Completion c = new Completion(name, value, "", 1);
       retVal.add(c);
     }
 
     for (Iterator<String> iter = selfDefinedCompletions2.keySet().iterator(); iter.hasNext();) {
       String name = iter.next();
       String value = selfDefinedCompletions2.get(name);
-      Completion c = new Completion(name, value, "", 0);
+      Completion c = new Completion(name, value, "", 1);
       retVal.add(c);
     }
 

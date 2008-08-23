@@ -78,6 +78,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		listPane.choiceList.setListData(completions.toArray());
 		listPane.choiceList.setSelectedIndex(0);
 		listPane.choiceList.setVisibleRowCount(0);
+    listPane.setSelectedIndex(0);
 
 		// align list pane
 		try {
@@ -119,7 +120,6 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
   }
 
   /** sets the currently selected index in the list
-	 *  DOCUMENT-ME
 	 *  
 	 * @see magellan.client.swing.completion.CompletionGUI#cycleCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String, int)
 	 */
@@ -285,6 +285,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 		 */
 		public void setSelectedIndex(int index) {
 			choiceList.setSelectedIndex(index);
+			choiceList.ensureIndexIsVisible(index);
 		}
 	}
 

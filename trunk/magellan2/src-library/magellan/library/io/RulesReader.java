@@ -71,7 +71,12 @@ public class RulesReader {
     File rules = new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending);
     // workaround for working with eclipse...
     if (!rules.exists()) {
+      log.error("Rule file '"+rules.getAbsolutePath()+"' could not be found. Switching to local.");
       rules = new File("etc/rules/" + name + ending);
+      
+      if (!rules.exists()) {
+        log.error("Cannot find rule files in '"+rules.getAbsolutePath()+"'...that might be a problem...");
+      }
     }
 
 		FileType filetype = FileTypeFactory.singleton().createInputStreamSourceFileType(rules);

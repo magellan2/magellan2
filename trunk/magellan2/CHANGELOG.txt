@@ -1,5 +1,6 @@
 2008-08-26 / Build 232 - Thoralf (thoralf@m84.de)
 	* fixed bug #301
+	* fixed bug #300
 
 2008-08-23 / Build 231 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed #298: NPE if no peasants in region

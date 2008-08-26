@@ -48,11 +48,11 @@ public class FileType {
   public static final String XML = ".xml";
 
   // basically identified compression types with single entry
-  static final String GZIP = ".gz";
-  static final String BZIP2 = ".bz2";
+  public static final String GZIP = ".gz";
+  public static final String BZIP2 = ".bz2";
 
   // basically identified compression types with multiple entries
-  static final String ZIP = ".zip";
+  public static final String ZIP = ".zip";
 
   /** The file this file type identifies. */
   protected File filename;

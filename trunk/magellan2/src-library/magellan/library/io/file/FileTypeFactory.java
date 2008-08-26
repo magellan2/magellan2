@@ -110,9 +110,21 @@ public class FileTypeFactory {
 
 	private static final String ENDINGS[] = new String[] { FileType.CR, FileType.XML };
 
-	protected FileType createZipFileType(File fileName, boolean readonly, FileTypeChooser ftc)
-								  throws IOException
-	{
+	/**
+	 * This method either loads a Zipfile and checks it content for a CR file or
+	 * it creates a new Zipfile by using ZipOutputStream to create a new ZipFile
+	 * with one entry. Actually this behaviour works only "sometimes"...wuuuha
+	 */
+	protected FileType createZipFileType(File fileName, boolean readonly, FileTypeChooser ftc) throws IOException {
+	  if (fileName != null && !fileName.exists() && !readonly) {
+	    // ok, the zipfile doesnt exist and the file mus be writeable
+	    // in this case we cannot use ZipFile because it reads first 
+	    // the content of the file and returns a ZipFileType with one
+	    // of the entries in this file...
+	    String entryName = fileName.getName().substring(0, fileName.getName().length()-FileType.ZIP.length())+FileType.CR;
+	    return new ZipFileType(fileName, readonly, entryName);
+	  }
+	  
 		ZipFile zFile = new ZipFile(fileName);
 
 		ZipEntry entries[] = ZipFileType.getZipEntries(zFile, FileTypeFactory.ENDINGS);

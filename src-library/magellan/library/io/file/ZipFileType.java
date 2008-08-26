@@ -26,14 +26,15 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 /**
- * DOCUMENT-ME
+ * TODO: ZipEntry may also be a "normal" FileType
  *
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public class ZipFileType extends FileType {
-	// TODO: ZipEntry may also be a "normal" FileType
 	protected ZipEntry zipentry = null;
+	
+	protected String entryName = null;
 
 	ZipFileType(File aFile, boolean readonly, ZipEntry aEntry) throws IOException {
 		super(aFile, readonly);
@@ -44,6 +45,16 @@ public class ZipFileType extends FileType {
 
 		zipentry = new ZipEntry(aEntry);
 	}
+	
+	/**
+	 * This constructor is used for Zip files that must be created.
+	 * Attention: The file aFile doesn't really exist.
+	 */
+	ZipFileType(File aFile, boolean readonly, String entryName) throws IOException {
+	  super(aFile, readonly);
+	  
+	  this.entryName = entryName;
+	}
 
 	/**
 	 * Returns the most inner name of the FileType. Will be overwritten in ZipFileType
@@ -52,6 +63,7 @@ public class ZipFileType extends FileType {
 	 */
 	@Override
   public String getInnerName() {
+	  if (entryName != null) return entryName;
 		return zipentry.getName();
 	}
 
@@ -82,13 +94,20 @@ public class ZipFileType extends FileType {
 		return ret.toArray(new ZipEntry[] {  });
 	}
 
+	/**
+	 * @see magellan.library.io.file.FileType#createInputStream()
+	 */
 	@Override
   protected InputStream createInputStream() throws IOException {
+	  if (entryName != null) {
+	    // this means we cannot handle an input stream - this file doesn't exist yet
+	    return null;
+	  }
+	  
 		InputStream is = new ZipFile(filename).getInputStream(zipentry);
 
 		if(is == null) {
-			throw new IOException("Cannot read zip entry '" + zipentry + "' in file '" + filename +
-								  "',");
+			throw new IOException("Cannot read zip entry '" + zipentry + "' in file '" + filename + "',");
 		}
 
 		return is;
@@ -96,6 +115,14 @@ public class ZipFileType extends FileType {
 
 	@Override
   protected OutputStream createOutputStream() throws IOException {
+	  if (entryName != null) {
+	    // let us create a new file 
+	    ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
+	    zos.putNextEntry(new ZipEntry(entryName));
+	    
+	    return zos;
+	  }
+	  
 		// here we need to do something special: all entries are copied expect the named zipentry, which will be overwritten
 		File tmpfile = CopyFile.copy(filename);
 		try {
@@ -124,6 +151,17 @@ public class ZipFileType extends FileType {
       throw exc;
 		}
 	}
+
+  /**
+   * @see magellan.library.io.file.FileType#checkConnection()
+   */
+  @Override
+  public FileType checkConnection() throws IOException {
+    if (entryName != null) return this;
+    return super.checkConnection();
+  }
+	
+	
 }
 
 

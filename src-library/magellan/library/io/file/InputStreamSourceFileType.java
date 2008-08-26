@@ -36,7 +36,12 @@ public class InputStreamSourceFileType extends FileType {
 		URL url = MagellanImages.getResource(filename.getPath().toLowerCase());
 
 		if(url == null) {
-			throw new IOException("URL '" + filename.getPath().toLowerCase() + "' not readable.");
+		  
+		  url = MagellanImages.getResource(filename.getPath());
+		  
+		  if (url == null) {
+  			throw new IOException("URL '" + filename.getPath().toLowerCase() + "' not readable.");
+		  }
 		}
 
 		return url.openStream();

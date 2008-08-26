@@ -66,6 +66,10 @@ public class RulesReader {
 	 */
 	private Rules loadRules(String name) throws IOException {
 		String ending = new File("XML").exists() ? ".xml" : ".cr";
+		
+    if (name != null) name = name.toLowerCase();
+    if (ending != null) ending = ending.toLowerCase();
+		
     RulesReader.log.debug("loading rules for \"" + name + "\" (ending: " + ending + ")");
     
     File rules = new File(PropertiesHelper.getSettingsDirectory(),"etc/rules/" + name + ending);

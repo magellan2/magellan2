@@ -1,3 +1,6 @@
+2008-08-26 / Build 232 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed bug #302 (duplicate potions)
+
 2008-08-26 / Build 232 - Thoralf (thoralf@m84.de)
 	* fixed bug #301
 	* fixed bug #300

@@ -47,6 +47,7 @@ public class OrderReader {
 	private boolean ignoreSemicolonComments = false;
 	private Status status = null;
   private boolean refreshUnitRelations = true;
+  private boolean doNotOverwriteConfirmedOrders = false;
 
 	/**
 	 * Creates a new OrderReader object adding the read orders to the units it can find in the
@@ -239,22 +240,31 @@ public class OrderReader {
 
 						data.addUnit(currentUnit);
 					} else {
-						/* the unit already exists so delete all its
-						   temp units */
-						Collection<ID> victimIDs = new LinkedList<ID>();
-
-						for(Iterator tempIter = currentUnit.tempUnits().iterator();
-								tempIter.hasNext();) {
-							victimIDs.add(((TempUnit) tempIter.next()).getID());
-						}
-
-						for(Iterator<ID> idIter = victimIDs.iterator(); idIter.hasNext();) {
-							currentUnit.deleteTemp(idIter.next(), data);
-						}
+					  if (currentUnit.isOrdersConfirmed() && this.doNotOverwriteConfirmedOrders){
+					    // we have a unit with confirmed orders and no OK for 
+					    // changing anything
+					    // feature request #296, Fiete
+					    currentUnit=null;
+					    status.confirmedUnitsNotOverwritten++;
+					  } else {
+  						/* the unit already exists so delete all its
+  						   temp units */
+  						Collection<ID> victimIDs = new LinkedList<ID>();
+  
+  						for(Iterator tempIter = currentUnit.tempUnits().iterator();
+  								tempIter.hasNext();) {
+  							victimIDs.add(((TempUnit) tempIter.next()).getID());
+  						}
+  
+  						for(Iterator<ID> idIter = victimIDs.iterator(); idIter.hasNext();) {
+  							currentUnit.deleteTemp(idIter.next(), data);
+  						}
+					  }
 					}
-
-					currentUnit.clearOrders();
-					currentUnit.setOrdersConfirmed(autoConfirm);
+					if (currentUnit!=null){
+  					currentUnit.clearOrders();
+  					currentUnit.setOrdersConfirmed(autoConfirm);
+					}
 				} else {
 					currentUnit = null;
 				}
@@ -324,6 +334,12 @@ public class OrderReader {
 
 		/** DOCUMENT-ME */
 		public int factions = 0;
+		
+		/** 
+		 * if doNotOverwriteConfirmedorders=true then this is a counter
+		 * of the units which were protected by this setting and left unchanged
+		 */
+		public int confirmedUnitsNotOverwritten = 0;
 	}
 
   public boolean isRefreshUnitRelations() {
@@ -332,5 +348,23 @@ public class OrderReader {
 
   public void setRefreshUnitRelations(boolean refreshUnitRelations) {
     this.refreshUnitRelations = refreshUnitRelations;
+  }
+
+  /**
+   * Returns the value of doNotOverwriteConfirmedOrders.
+   * 
+   * @return Returns doNotOverwriteConfirmedOrders.
+   */
+  public boolean DoNotOverwriteConfirmedOrders() {
+    return doNotOverwriteConfirmedOrders;
+  }
+
+  /**
+   * Sets the value of doNotOverwriteConfirmedOrders.
+   *
+   * @param doNotOverwriteConfirmedOrders The value for doNotOverwriteConfirmedOrders.
+   */
+  public void setDoNotOverwriteConfirmedOrders(boolean doNotOverwriteConfirmedOrders) {
+    this.doNotOverwriteConfirmedOrders = doNotOverwriteConfirmedOrders;
   }
 }

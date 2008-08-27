@@ -31,6 +31,7 @@ import magellan.library.utils.Resources;
 public class OpenOrdersAccessory extends HistoryAccessory {
 	private JCheckBox chkAutoConfirm = null;
 	private JCheckBox chkIgnoreSemicolonComments = null;
+	private JCheckBox chkDoNotOverwriteConfirmedOrders = null;
 
 	/**
 	 * Creates a new OpenOrdersAccessory object.
@@ -49,6 +50,9 @@ public class OpenOrdersAccessory extends HistoryAccessory {
 		chkIgnoreSemicolonComments = new JCheckBox(Resources.get("openordersaccessory.chk.ignoresemicoloncomments.caption"));
 		chkIgnoreSemicolonComments.setToolTipText(Resources.get("openordersaccessory.chk.ignoresemicoloncomments.tooltip"));
 
+		chkDoNotOverwriteConfirmedOrders = new JCheckBox(Resources.get("openordersaccessory.chk.donotoverwriteconfirmedorders.caption"));
+		chkDoNotOverwriteConfirmedOrders.setToolTipText(Resources.get("openordersaccessory.chk.donotoverwriteconfirmedorders.tooltip"));
+		
 		c.anchor = GridBagConstraints.NORTHWEST;
 		c.gridx = 0;
 		c.gridy = 2;
@@ -68,6 +72,21 @@ public class OpenOrdersAccessory extends HistoryAccessory {
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		this.add(chkIgnoreSemicolonComments, c);
+		
+		c.anchor = GridBagConstraints.NORTHWEST;
+    c.gridx = 0;
+    c.gridy = 4;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    this.add(chkDoNotOverwriteConfirmedOrders, c);
+    
+    
+		
+		
+		
 	}
 
 	/**
@@ -88,6 +107,23 @@ public class OpenOrdersAccessory extends HistoryAccessory {
 		chkAutoConfirm.setSelected(bool);
 	}
 
+	/**
+	 * 
+	 * @return true, if we must not overwrite existing confirmed orders
+	 */
+	public boolean getDoNotOverwriteConfirmedOrders(){
+	  return chkDoNotOverwriteConfirmedOrders.isSelected();
+	}
+	
+	/**
+	 * sets the value of DoNotOverwriteConfirmedOrders
+	 * @param bool
+	 */
+	public void setDoNotOverwriteConfirmedOrders(boolean bool){
+	  chkDoNotOverwriteConfirmedOrders.setSelected(bool);
+	}
+	
+	
 	/**
 	 * DOCUMENT-ME
 	 *

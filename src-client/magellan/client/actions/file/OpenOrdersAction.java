@@ -80,6 +80,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 			OrderReader r = new OrderReader(client.getData());
 			r.setAutoConfirm(acc.getAutoConfirm());
 			r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
+      r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
       
       // we clone later the hole gamedata, we do not need to
       // refresh the UnitRelations now
@@ -113,8 +114,12 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
 				
 				OrderReader.Status status = r.getStatus();
 				Object msgArgs[] = { new Integer(status.factions), new Integer(status.units) };
+				String messageS = Resources.get("actions.openordersaction.msg.fileordersopen.status.text");
+				if (status.confirmedUnitsNotOverwritten>0){
+				  messageS+="\n" + status.confirmedUnitsNotOverwritten + " " + Resources.get("actions.openordersaction.msg.fileordersopen.status.text2");
+				}
 				JOptionPane.showMessageDialog(client,
-											  (new java.text.MessageFormat(Resources.get("actions.openordersaction.msg.fileordersopen.status.text"))).format(msgArgs),
+											  (new java.text.MessageFormat(messageS)).format(msgArgs),
                                                      Resources.get("actions.openordersaction.msg.fileordersopen.status.title"),
 											  JOptionPane.PLAIN_MESSAGE);
 			} catch(Exception exc) {

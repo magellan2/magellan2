@@ -1,3 +1,7 @@
+2008-08-27 / Build 233 - Fiete  <Fiete@users.sourceforge.net>
+	* small improve for feature request #296: doNotOverwriteConfirmedOrders
+	  when loading orders
+
 2008-08-26 / Build 232 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed bug #302 (duplicate potions)
 

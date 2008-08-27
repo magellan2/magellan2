@@ -16,8 +16,10 @@ package magellan.library;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,8 +43,12 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
+import magellan.library.utils.comparator.IDComparator;
+import magellan.library.utils.comparator.NameComparator;
+import magellan.library.utils.comparator.RegionIslandComparator;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.LevelRelation;
+
 
 /**
  * This is the central class for collecting all the data representing one
@@ -1590,6 +1596,9 @@ public abstract class GameData implements Cloneable {
     // adding Default Translations to the translations
     postProcessDefaultTranslations();
     
+    // remove double potions
+    postProcessPotions();
+    
     postProcessed = true;
     
     GameData.log.info("finished GameData postProcess");
@@ -1702,6 +1711,57 @@ public abstract class GameData implements Cloneable {
     }
   }
 
+  /**
+   * This functions post processes the potions to remove duplicate potions
+   * (potions with different ID but the same name)
+   * It is tricky to determine which is the latest potion definition in the code
+   * as far as i know there was no change in potion-definitions last months
+   * but only the IDs chanegd over time - so it does not matter
+   * finally we could keep the potion with the highest ID - asuming that this was
+   * the last potion-definition reveived from the server
+   */
+  private void postProcessPotions(){
+    if (this.potions()==null || this.potions().size()==0){
+      // nothing to do
+      return;
+    }
+    // just for info:
+    int count_before = this.potions().size();
+    // The final Map of the potions
+    HashMap<String,Potion> potions = new HashMap<String, Potion>();
+    // To sort the Potions after ID we use a simple List
+    // and fill it with our Potions
+    List<Potion> sortedPotions = new LinkedList<Potion>(this.potions().values()); 
+    // use normal name and ID comparator
+    Comparator<Unique> idCmp = IDComparator.DEFAULT;
+    Collections.sort(sortedPotions, new NameComparator(idCmp));
+    
+    // fill our new PotionMap with the PotionNames as Keys
+    for (Potion p : sortedPotions){
+      // some  info, if replacing
+      if (potions.containsKey(p.getName().toLowerCase())){
+        Potion oldPotion = potions.get(p.getName().toLowerCase());
+        GameData.log.info("removing Potion " + oldPotion.getName() + "(ID: " + oldPotion.getID().toString() + ")");
+      }
+      potions.put(p.getName().toLowerCase(), p);
+    }
+    // we have a clean PotionMap now -> set the real  Potion Map
+    // erease all potions
+    this.potions().clear();
+    // fill again from our PotionMap
+    for (Potion p : potions.values()){
+      this.potions().put(p.getID(),p);
+    }
+    // ready
+    // some info?
+    int count_after = this.potions().size();
+    if (count_before != count_after){
+      GameData.log.info("postProcessPotions: changing number of potions from " + count_before + " to " + count_after);
+    }
+    
+  }
+  
+  
   /**
    * Postprocess a given list of messages. To remove duplicate messages we put
    * all messages in an ordered hashtable and put them back into the messages

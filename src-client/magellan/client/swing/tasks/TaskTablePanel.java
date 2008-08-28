@@ -449,6 +449,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @version 1.0, Aug 23, 2008
    */
   protected class UpdateEvent {
+    
     private final Object CLEAR = "EMPTY";
     private Region region;
     private Unit unit;
@@ -733,6 +734,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
               progressbar.setMaximum(0);
           } catch (Throwable t) {
             log.error("Exception in TaskTable update thread:" + t);
+            t.printStackTrace();
           }
         }
         stop = true;
@@ -1099,9 +1101,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     synchronized (lastSelection) {
       // if selection has changed, refresh delta
-      if (e.getSelectionType() == SelectionEvent.ST_REGIONS) {
+      if (e.getSelectionType() == SelectionEvent.ST_REGIONS && e.getSelectedObjects() != null) {
         // no selection: refresh all
-        if (e.getSelectedObjects() == null || e.getSelectedObjects().isEmpty()) {
+        if (e.getSelectedObjects().isEmpty()) {
           lastSelection = data.regions().values();
           refreshProblems();
         } else {

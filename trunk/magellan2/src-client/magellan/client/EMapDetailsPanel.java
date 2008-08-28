@@ -171,7 +171,7 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * Shows details about units, regions or whatever object is currently selected.
  *
  * @author $Author: $
  * @version $Revision: 390 $

@@ -507,7 +507,7 @@ public abstract class GameData implements Cloneable {
   }
 
   /**
-   * Add a pption to the specified game data. If potions() is <tt>null</tt>,
+   * Add a potion to the specified game data. If potions() is <tt>null</tt>,
    * this method has no effect.
    * 
    * @param p

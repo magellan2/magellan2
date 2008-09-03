@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Vector;
 
 import magellan.library.GameData;
+import magellan.library.Spell;
 import magellan.library.UnitID;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.BuildingType;
@@ -541,7 +542,10 @@ public class EresseaOrderParser implements OrderParser {
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
-		} else {
+		} else if (isNumeric(t.getText())){
+      retVal = readBenutzeAmount(t); 
+    }    
+     else {
 			unexpected(t);
 		}
 
@@ -551,6 +555,26 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
+  
+  private boolean readBenutzeAmount(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_KEYWORD;
+
+    OrderToken t = (OrderToken) tokens.next();
+
+    if(isString(t.getText()) == true) {
+      retVal = readFinalString(t);
+    } else {
+      unexpected(t);
+    }
+
+    if(completer!=null && !t.followedBySpace()){
+        completer.cmpltBenutze(); 
+    }
+    return retVal;
+  }
+  
+  
 	//************* BESCHREIBE
 	private boolean readBeschreibe(OrderToken token) {
 		boolean retVal = false;
@@ -1606,14 +1630,14 @@ public class EresseaOrderParser implements OrderParser {
 			retVal = readFinalKeyword(t);
 		} else if(t.ttype == OrderToken.TT_EOC) {
 			retVal = false;
-		}
+		} else {
+      retVal = readMacheAnything(t);
+    }
 
 		if(completer!=null && !t.followedBySpace()){
 				completer.cmpltMache(); 
 		}
- else {
-			retVal = readMacheAnything(t);
-		}
+ 
 
 		return retVal;
 	}
@@ -2522,7 +2546,7 @@ public class EresseaOrderParser implements OrderParser {
 //      if(s != null) {
 //        retVal = readZaubereSpruch(t, s);
 //      } else {
-        retVal = readFinalString(t);
+        retVal = readZaubereSpruch(t);
 //      }
 		} else {
 			unexpected(t);
@@ -2568,14 +2592,14 @@ public class EresseaOrderParser implements OrderParser {
 			if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
 				retVal = readZaubereRegionStufe(t);
 			} else if(isString(t.getText())) {
-				retVal = readFinalString(t);
+				retVal = readZaubereSpruch(t);
 			} else {
 				unexpected(t);
 			}
 
-		if(completer!=null && !t.followedBySpace()){
-					completer.cmpltZaubereRegionCoor(); 
-		}
+  		if(completer!=null && !t.followedBySpace()){
+  					completer.cmpltZaubereRegionCoor(); 
+  		}
 		}
 
 		return retVal;
@@ -2592,14 +2616,14 @@ public class EresseaOrderParser implements OrderParser {
 			t = (OrderToken) tokens.next();
 
 			if(isString(t.getText())) {
-				retVal = readFinalString(t);
+				retVal = readZaubereSpruch(t);
 			} else {
 				unexpected(t);
 			}
 
-		if(completer!=null && !t.followedBySpace()){
-					completer.cmpltZaubereStufe(); 
-		}
+  		if(completer!=null && !t.followedBySpace()){
+  					completer.cmpltZaubereStufe(); 
+  		}
 		}
 
 		return retVal;
@@ -2616,19 +2640,52 @@ public class EresseaOrderParser implements OrderParser {
 			t = (OrderToken) tokens.next();
 
 			if(isString(t.getText())) {
-				retVal = readFinalString(t);
+				retVal = readZaubereSpruch(t);
 			} else {
 				unexpected(t);
 			}
 
-		if(completer!=null && !t.followedBySpace()){
-					completer.cmpltZaubereRegionStufe(); 
-		}
+  		if(completer!=null && !t.followedBySpace()){
+  					completer.cmpltZaubereRegionStufe(); 
+  		}
 		}
 
 		return retVal;
 	}
 
+  private boolean readZaubereSpruch(OrderToken token){
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_STRING;
+    // checken, ob der Zauberspruch bekannt ist
+    // Problem: keine Referenz auf die Unit, wir können nicht die spells der unit durchgehen
+    // wir müssen spells der GameData durchgehen
+    if (data.spells()==null || data.spells().size()==0){return false;}
+    for (Spell s:data.spells().values()){
+      String test= token.getText().replaceAll("\"","").replaceAll("~"," ").replaceAll("\'","");
+      if (test.equalsIgnoreCase(s.getName())){
+        // here we return just true
+        // toDo: get Spell Syntax, check, if more tokens expected and
+        // do next checks
+        skipRestOfOrder();
+        return true;
+      }
+    }
+    return retVal;
+  }
+  
+  /**
+   * skipps rest of Line
+   *
+   */
+  private void skipRestOfOrder(){
+    if (!tokens.hasNext()) return;
+    OrderToken t = (OrderToken) tokens.next();
+    while ((t.ttype != OrderToken.TT_EOC) && (t.ttype != OrderToken.TT_COMMENT) && tokens.hasNext()){
+      t = (OrderToken) tokens.next();
+    }
+  }
+  
+  
 //  private boolean readZaubereSpruch(OrderToken token, Spell s) {
 //    boolean retVal = false;
 //    token.ttype = OrderToken.TT_STRING;
@@ -2921,10 +2978,17 @@ public class EresseaOrderParser implements OrderParser {
 	private boolean isQuoted(String txt) {
 		return (txt.startsWith("\"") && txt.endsWith("\""));
 	}
+  private boolean isSingleQuoted(String txt) {
+    return (txt.startsWith("\'") && txt.endsWith("\'"));
+  }
 
 	private boolean isString(String txt) {
 		boolean retVal = isQuoted(txt);
-
+		
+    if (retVal==false){
+      retVal = isSingleQuoted(txt);
+    }
+    
 		if((retVal == false) && (txt.length() > 0)) {
 			retVal = true;
 

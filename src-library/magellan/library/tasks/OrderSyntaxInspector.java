@@ -90,6 +90,10 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
       Integer line = 1;
       for (String order : orders) {
         StringReader reader = new StringReader(order);
+        // Debug
+        if (order.toLowerCase().startsWith("zaubere 'geister")){
+          int i = 1;
+        }
         boolean ok = parser.read(reader);
         if (!ok) {
           errors.add(new SyntaxWarning(this,unit,"tasks.ordersyntaxinspector.parse_warning",order,line));

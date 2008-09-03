@@ -13,6 +13,7 @@
 
 package magellan.library.impl;
 
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -275,8 +276,21 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		if (retVal.length()>0){
 			retVal += " ";
 		}
-		retVal += "[" + Resources.get("spell.level") + " n]";
-		
+    
+    // FF 20080903 that was not quite correct
+    // in mantis Pyanfar suggested:
+    /**
+    Vorschlag:
+      Der Magellan sollte das aus den im CR vermerktenAurakosten ablesen,
+      "1 1;Aura" heisst 1 Aura pro stufe => also variabel
+      "50 0;Aura" heisst 50 Aura Festkosten => also nicht variabel...
+    */
+    // and maybe we can use this kwowledge for open problems to we 
+    // built an little private function here
+    if (this.isAuraLevelDependend()){
+      retVal += "[" + Resources.get("spell.level") + " n]";
+    }
+    
 		// name of spell in "
 		if (retVal.length()>0){
 			retVal += " ";
@@ -307,7 +321,37 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 		return retVal;
 	}
 	
-	
+  /**
+   * checks, if we have knowledge about the components of the spell and if the 
+   * auro counts per level or absolute.
+   * if it counts per level we assume the aura-cost depends on level and we deliver true, alse false
+   * @return
+   */
+	private boolean isAuraLevelDependend(){
+    boolean retval = false;
+    if (this.components==null || this.components.size()==0){
+      return false;
+    }
+    for(Iterator<String> iter = this.components.keySet().iterator(); iter.hasNext();) {
+      String key = iter.next();
+      String val = this.components.get(key);
+      if(key.equalsIgnoreCase("Aura")) {
+        int blankPos = val.indexOf(" ");
+        if((blankPos > 0) && (blankPos < val.length())) {
+          String getLevelAtDays = val.substring(blankPos + 1, val.length());
+          if(getLevelAtDays.equals("1")) {
+            return true;
+          } else {
+            // return here, asuming, no other "aura" component will be found
+            return false;
+          }
+        }
+      }
+    }
+    return retval;
+  }
+  
+  
 
 	/**
 	 * Enno in e-client about the syntax:

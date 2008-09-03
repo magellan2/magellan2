@@ -1313,14 +1313,20 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     List<Problem> filteredList = new ArrayList<Problem>(problems.size());
     for (Problem p : problems) {
       Faction f = p.getFaction();
-      if (data.getOwnerFaction() == null || !restrictToOwner() || f == null
-          || data.getOwnerFaction().equals(f.getID())) {
+      // debug
+      if (f.getID().toString().equalsIgnoreCase("rd")){
+        int i =1 ;
+      }
+      
+      boolean filterOK = true;
+      if (restrictToOwner() && (data.getOwnerFaction()==null || f==null || !data.getOwnerFaction().equals(f.getID()))){
+        filterOK=false;
+      } 
+      if (restrictToPassword() && (f == null || f.getPassword() == null || f.getPassword().length() == 0)){
+        filterOK=false;
+      }
+      if (filterOK){
         filteredList.add(p);
-      } else {
-        if (restrictToPassword() && f != null && f.getPassword() != null
-            && f.getPassword().length() > 0) {
-          filteredList.add(p);
-        }
       }
 
     }

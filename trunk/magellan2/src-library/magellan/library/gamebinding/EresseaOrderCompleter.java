@@ -631,7 +631,8 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltBenutze() {
-		addUnitItems("");
+		// addUnitItems("");
+    addFactionItems("");
 	}
 
 	void cmpltBeanspruche(){
@@ -2068,6 +2069,18 @@ public class EresseaOrderCompleter implements Completer {
       */       
 		}
 	}
+  
+  private void addFactionItems(String postfix) {
+    addFactionItems(0, postfix);
+  }
+  
+  private void addFactionItems(int amount, String postfix) {
+    for(Item i : unit.getFaction().getItems()) {
+      // TODO use replaced name?
+      completions.add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount()>=amount) ? Completion.DEFAULT_PRIORITY : Completion.DEFAULT_PRIORITY+1));
+    }
+  }
+  
 
 	private void addFactions(String postfix) {
 		if(data != null) {

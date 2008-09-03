@@ -23,6 +23,8 @@ import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
@@ -95,7 +97,9 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	private List<Problem> reviewShip(Ship s) {
 		List<Problem> problems = new ArrayList<Problem>();
 		int nominalShipSize = s.getShipType().getMaxSize();
-
+		
+		// here we have all problems checked also for ships without a captn
+		
     // also if not ready yet, there should be someone to take care..
     if (s.modifiedUnits().isEmpty()) {
       problems.add(new CriticizedError(s.getRegion(), s, this,
@@ -111,12 +115,10 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		}
 
 
-		if (s.getModifiedLoad() > (s.getMaxCapacity())) {
-			problems.add(new CriticizedError(s.getRegion(), s, this,
-					Resources.get("tasks.shipinspector.error.overloaded.description")));
-		}
+		
 
-		problems.addAll(reviewMovingShip(s));
+		// problems.addAll(reviewMovingShip(s));
+		// moving ships are taken care of while checking units... 
 		return problems;
 	}
 
@@ -201,6 +203,13 @@ public class ShipInspector extends AbstractInspector implements Inspector {
       }
 		}
 
+		// overload
+		if (s.getModifiedLoad() > (s.getMaxCapacity())) {
+      problems.add(new CriticizedError(s.getRegion(), s, this,
+          Resources.get("tasks.shipinspector.error.overloaded.description")));
+    }
+		
+		
 		return problems;
 	}
   
@@ -227,6 +236,33 @@ public class ShipInspector extends AbstractInspector implements Inspector {
       }
     }
     return false;
+  }
+  
+  
+  /**
+   * Reviews the region for ships with problems. 
+   * 
+   * @see magellan.library.tasks.AbstractInspector#reviewRegion(magellan.library.Region, int)
+   */
+  @Override
+  public List<Problem> reviewUnit(Unit u, int type) {
+    // we notify errors only
+    if (type != Problem.ERROR) {
+      return Collections.emptyList();
+    }
+    // we check for captns of ships
+    UnitContainer UC = u.getModifiedUnitContainer();
+    if (UC==null){
+      return Collections.emptyList();
+    }
+    if (!(UC instanceof Ship)) {
+      return Collections.emptyList();
+    }
+    if (!UC.getOwner().equals(u)){
+      return Collections.emptyList();
+    }
+    
+    return reviewMovingShip((Ship)UC);
   }
   
   

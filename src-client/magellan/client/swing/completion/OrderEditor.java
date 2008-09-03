@@ -91,6 +91,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/** DOCUMENT-ME */
 	public static final String S_COMMENT = "comment";
+	
+	/** DOCUMENT-ME */
+  public static final String S_LONGORDER = "longorder";
+	
 	private Unit unit = null;
 	private boolean modified = false;
 	private List<String> orders = new LinkedList<String>();
@@ -571,6 +575,11 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_COMMENT + ".color",
 																		getDefaultColor(OrderEditor.S_COMMENT))));
+		
+		s = addStyle(OrderEditor.S_LONGORDER, regular);
+    StyleConstants.setBackground(s,Color.yellow);
+		
+		
 	}
 
 	/**

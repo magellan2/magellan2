@@ -1063,15 +1063,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private boolean msgUnitAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
     boolean erg = false;
     String value = msg.getAttributes().get(tagName);
-    if (value != null) {
+    if (value != null && value.indexOf(" ")<0) {
       erg = true;
       String number = value;
       UnitID id = UnitID.createUnitID(number, 10);
       Unit unit = data.units().get(id);
-
       if (unit != null) {
         Region r = unit.getRegion();
-
         if (r != null) {
           if (regionList.contains(r)) {
             return false;
@@ -1095,7 +1093,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   private boolean msgRegionAttributeNotInRegionList(GameData data,Message msg, String tagName,Collection<Region>regionList){
     boolean erg = false;
     String value = msg.getAttributes().get(tagName);
-    if (value != null) {
+    if (value != null && value.indexOf(" ")>0) {
       erg = true;
       String regionCoordinate = value;
       CoordinateID coordinate = CoordinateID.parse(regionCoordinate, ",");

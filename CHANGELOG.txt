@@ -1,3 +1,6 @@
+2008-08-28 / Build 234 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed cleanMessages for Attribut "target"
+
 2008-08-27 / Build 233 - Fiete  <Fiete@users.sourceforge.net>
 	* small improve for feature request #296: doNotOverwriteConfirmedOrders
 	  when loading orders

@@ -1,7 +1,8 @@
 2008-09-03 / Build 235 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed zauber syntax (level)
 	* adjusted readZauber
-	* work on filterProblems (not ready yet)
+	* removed filterProblems *after* Inspectors, now check units befor invoking Inspectors
+	* changes ShipInspector to check moving ships by the owner-units.
 
 2008-08-28 / Build 234 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed cleanMessages for Attribut "target"

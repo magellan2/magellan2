@@ -832,186 +832,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   }
 
-  // /**
-  // * First remove problems from <code>regionsToRemove</code>. Then add
-  // * problems from <code>regionsToRemove</code> to model. These sets may be
-  // identical.
-  // *
-  // * <p>The necessary work is done in a separate background thread. Multiple
-  // threads are supported.
-  // *
-  // * @param regionsToAdd
-  // * @param regionsToRemove
-  // */
-  // protected void refreshProblemss(final Collection<Region> regionsToAdd,
-  // final Collection<Region> regionsToRemove) {
-  // // Fiete: do nothing if Panel is hidden
-  // this.needRefresh=true;
-  // if (!this.isShown()){
-  // return;
-  // }
-  //
-  // if (TaskTablePanel.log.isDebugEnabled()){
-  // log.debug("refreshProblems called by: ", (new Exception()));
-  // }
-  //
-  // // if another refresh thread is running, first wait for a short while
-  // if (TaskTablePanel.refreshThread!=null &&
-  // TaskTablePanel.refreshThread.isAlive()){
-  // try {
-  // Thread.sleep(500);
-  // } catch (InterruptedException e) {
-  // }
-  // // if still running, notify it of this new request via secondThreadInvoked
-  // if (TaskTablePanel.refreshThread!=null &&
-  // TaskTablePanel.refreshThread.isAlive()){
-  // synchronized (TaskTablePanel.this) {
-  // this.secondThreadInvoked =true;
-  // log.debug("new call to refreshProblems rejected, thread still running");
-  // return;
-  // }
-  // }
-  // }
-  //    
-  // // check, if TaskTablePanel is visible anyway
-  // MagellanDesktop MD = MagellanDesktop.getInstance();
-  // JMenu desktopMenu = MD.getDesktopMenu();
-  // boolean menuSelected = true;
-  // if (desktopMenu!=null){
-  // for (int index=0; index<desktopMenu.getItemCount(); index++) {
-  // if (desktopMenu.getItem(index) instanceof JCheckBoxMenuItem) {
-  // JCheckBoxMenuItem menu = (JCheckBoxMenuItem)desktopMenu.getItem(index);
-  // if (menu.getActionCommand().equals("menu."+ TaskTablePanel.IDENTIFIER)) {
-  // menuSelected = menu.isSelected();
-  // }
-  // }
-  // }
-  // }
-  // if (!menuSelected){
-  // // Our Panel is not selected -> need no refresh
-  // this.setShown(false);
-  // }
-  //    
-  // if (!this.isShown() || !this.needRefresh) {
-  //log.debug("call to refreshProblems rejected  (panel not visible), reason: "+
-  // this.isShown());
-  // return;
-  // }
-  //
-  // // start work in a background thread
-  // final Window w = SwingUtilities.getWindowAncestor(this);
-  //
-  // // creating new Thread
-  // TaskTablePanel.refreshThread = new Thread(new Runnable() {
-  // boolean closeRequest = false;
-  // final int id = ++threadCounter ;
-  //	    
-  // public void run() {
-  //        
-  // // this listener asks for confirmation if the user attempts to close the
-  // progress dialog
-  // final ProgressBarUI.ClosingListener listener = new
-  // ProgressBarUI.ClosingListener() {
-  //        
-  // public boolean proceed(WindowEvent e) {
-  // if (JOptionPane.showConfirmDialog(TaskTablePanel.this, Resources
-  // .get("tasks.runthread.abort.message"),
-  // Resources.get("tasks.runthread.abort.title", new Object[] { id }),
-  // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-  // closeRequest=true;
-  // try {
-  // Thread.sleep(500);
-  // } catch (InterruptedException e1) {
-  // }
-  // return true;
-  // }else
-  // return false;
-  // }
-  //          
-  // };
-  //        
-  // // init progress bar
-  // final ProgressBarUI progressUI = new ProgressBarUI((JFrame) (w instanceof
-  // JFrame?w:null), false, 50, listener);
-  // progressUI.setTitle(Resources.get("tasks.progressBar.refresh.title", new
-  // Object[] { id }));
-  // progressUI.setMaximum(regionsToAdd.size()+regionsToRemove.size());
-  //
-  // try {
-  // int restarts = 0;
-  // boolean doRestart=true;
-  // // restart 10 times if necessary
-  // while (doRestart && restarts<10){
-  // doRestart = false;
-  // int iProgress=0;
-  // log.debug("started refresh Problems "+id+" "+restarts+" times.");
-  // progressUI.show();
-  //
-  // // remove problems of deleted regions
-  // for (Region r : regionsToRemove) {
-  // // if a refresh was invoked a second time: signal restart
-  // if (secondThreadInvoked && restarts<8){
-  // log.debug("restarted "+id);
-  // doRestart = true;
-  // restarts++;
-  // break;
-  // }
-  // // user requested abort
-  // if (closeRequest){
-  // progressUI.setMaximum(1);
-  // progressUI.setProgress("aborted", 1);
-  // TaskTablePanel.this.needRefresh=true;
-  // log.debug("aborted "+id);
-  // break;
-  // }
-  // progressUI.setProgress(r.getName(), ++iProgress);
-  // r.refreshUnitRelations();
-  // unReviewRegionAndUnits(r);
-  // }
-  //
-  // // add problems of added regions
-  // for (Region r : regionsToAdd) {
-  // // if a refresh was invoked a second time: signal restart
-  // if (secondThreadInvoked && restarts<8){
-  // log.debug("restarted "+id);
-  // doRestart = true;
-  // restarts++;
-  // break;
-  // }
-  // // user requestet abort
-  // if (closeRequest){
-  // progressUI.setMaximum(1);
-  // progressUI.setProgress("aborted", 1);
-  // TaskTablePanel.this.needRefresh=true;
-  // log.debug("aborted "+id);
-  // break;
-  // }
-  //
-  // progressUI.setProgress(r.getName(), ++iProgress);
-  // reviewRegionAndUnits(r);
-  // }
-  // // clean up
-  // synchronized (TaskTablePanel.this) {
-  // secondThreadInvoked=false;
-  // }
-  // }
-  // }finally{
-  // try {
-  // // clean up
-  // log.debug("exited refresh Problems "+id);
-  // secondThreadInvoked=false;
-  // progressUI.ready();
-  // } catch (Exception e){
-  // e.printStackTrace();
-  // }
-  // }
-  // }
-  //
-  // });
-  // // starting the thread
-  // TaskTablePanel.refreshThread.start();
-  // this.needRefresh=false;
-  // }
+
 
   /**
    * Register all inspectors we know of.
@@ -1269,7 +1090,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
       Inspector c = (Inspector) iter.next();
       if (r != null) {
-        final List<Problem> problems = filterProblems(c.reviewRegion(r));
+        final List<Problem> problems = c.reviewRegion(r);
         // add problems in the AWT event dispatching thread to avoid
         // synchronization issues!
         SwingUtilities.invokeLater(new Runnable() {
@@ -1285,10 +1106,11 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a the specified region and the specified unit.
    */
   private void reviewUnit(Unit u) {
+    if (!isValidUnitByFaction(u)){return;}
     for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
       Inspector c = (Inspector) iter.next();
       if (u != null) {
-        final List<Problem> problems = filterProblems(c.reviewUnit(u));
+        final List<Problem> problems = c.reviewUnit(u);
         // add problems in the AWT event dispatching thread to avoid
         // synchronization issues!
         SwingUtilities.invokeLater(new Runnable() {
@@ -1301,36 +1123,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   /**
-   * Filter list of problems according to {@link #restrictToOwner()} and
-   * {@link #restrictToPassword()}.
+   * checks, if the specified unit is valid according to the settings
+   * restrictToOwner and restrictToPassword
+   * @param u
+   * @return
    */
-  private List<Problem> filterProblems(List<Problem> problems) {
-    if (!restrictToOwner()) {
-      return problems;
+  private boolean isValidUnitByFaction(Unit u){
+    
+    if (this.restrictToOwner() && (data.getOwnerFaction()==null || u.getFaction()==null || !data.getOwnerFaction().equals(u.getFaction().getID()))){
+      return false;
     }
-
-    // TODO(stm) low performance here?
-    List<Problem> filteredList = new ArrayList<Problem>(problems.size());
-    for (Problem p : problems) {
-      Faction f = p.getFaction();
-      // debug
-      if (f.getID().toString().equalsIgnoreCase("rd")){
-        int i =1 ;
-      }
-      
-      boolean filterOK = true;
-      if (restrictToOwner() && (data.getOwnerFaction()==null || f==null || !data.getOwnerFaction().equals(f.getID()))){
-        filterOK=false;
-      } 
-      if (restrictToPassword() && (f == null || f.getPassword() == null || f.getPassword().length() == 0)){
-        filterOK=false;
-      }
-      if (filterOK){
-        filteredList.add(p);
-      }
-
+    if (this.restrictToPassword() && (u.getFaction()==null || u.getFaction().getPassword()==null || u.getFaction().getPassword().length()==0)){
+      return false;
     }
-    return filteredList;
+    
+    return true;
   }
 
   public boolean restrictToOwner() {

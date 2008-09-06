@@ -14,7 +14,6 @@
 package magellan.library.impl;
 
 import java.io.StringReader;
-import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -335,11 +334,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	/** DOCUMENT-ME */
   protected boolean isStarving = false; // hunger-Tag
 
-	/**
-	 * The cache object containing cached information that may be not related enough to be
-	 * encapsulated as a function and is time consuming to gather.
-	 */
-  protected SoftReference<Cache> cacheReference = null;
+  
+  // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with 
+  // updates of unit relations.
+//	/**
+//	 * The cache object containing cached information that may be not related enough to be
+//	 * encapsulated as a function and is time consuming to gather.
+//	 */
+//  protected SoftReference<Cache> cacheReference = null;
+
+  protected Cache cache;
 
 	/**
 	 * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt>
@@ -1044,18 +1048,18 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 	}
 
-    /**
-     * @see magellan.library.Named#getModifiedName()
-     */
-    @Override
-    public String getModifiedName() {
-      Cache cache = getCache();
-        if(cache.modifiedName == null) {
-          cache.modifiedName = super.getModifiedName();
-        }
-        return cache.modifiedName != null ? cache.modifiedName : getName();
-    }
-    
+	/**
+	 * @see magellan.library.Named#getModifiedName()
+	 */
+	@Override
+	public String getModifiedName() {
+	  Cache cache = getCache();
+	  if(cache.modifiedName == null) {
+	    cache.modifiedName = super.getModifiedName();
+	  }
+	  return cache.modifiedName != null ? cache.modifiedName : getName();
+	}
+
 	/**
 	 * Returns a Collection over the relations this unit has to other units. The iterator returns
 	 * <tt>UnitRelation</tt> objects. An empty iterator is returned if the relations have not been
@@ -1064,29 +1068,17 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
-    @Override
-    protected Collection<UnitRelation> getRelations() {
-      Cache cache = getCache();
-        if(cache.relations == null) {
-          cache.relations = new ArrayList<UnitRelation>();
-        }
-        return cache.relations;
-    }
-/*
-    public Collection getRelations() {
-		if((cache != null) && (cache.relations != null)) {
-			return CollectionFactory.unmodifiableCollection(cache.relations);
-		}
-
-		return CollectionFactory.EMPTY_COLLECTION;
+	@Override
+	protected Collection<UnitRelation> getRelations() {
+	  Cache cache = getCache();
+	  if(cache.relations == null) {
+	    cache.relations = new ArrayList<UnitRelation>();
+	  }
+	  return cache.relations;
 	}
-*/
     
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * @see magellan.library.impl.MagellanRelatedImpl#addRelation(magellan.library.relation.UnitRelation)
 	 */
 	@Override
   public void addRelation(UnitRelation rel) {
@@ -1095,11 +1087,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.impl.MagellanRelatedImpl#removeRelation(magellan.library.relation.UnitRelation)
 	 */
 	@Override
   public UnitRelation removeRelation(UnitRelation rel) {
@@ -2857,25 +2845,30 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
   }
 
   /**
-   * @see magellan.library.Unit#hasCache()
+   * @see magellan.library.HasCache#hasCache()
    */
   public boolean hasCache(){
-    return cacheReference!=null && cacheReference.get()!=null;
+//    return cacheReference!=null && cacheReference.get()!=null;
+    return cache!=null;
   }
+  
   /**
    * Returns the value of cache.
    * 
    * @return Returns cache.
    */
   public Cache getCache() {
-    Cache c;
-    if (cacheReference!=null && (c = cacheReference.get())!=null)
-      return c;
-    else{
-      c = new Cache();
-      cacheReference = new SoftReference<Cache>(c);
-      return c;
-    }
+//    Cache c;
+//    if (cacheReference!=null && (c = cacheReference.get())!=null)
+//      return c;
+//    else{
+//      c = new Cache();
+//      cacheReference = new SoftReference<Cache>(c);
+//      return c;
+//    }
+    if (cache==null)
+      cache = new Cache();
+    return cache;
   }
 
   /**
@@ -2884,20 +2877,25 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
    * @param cache The value for cache.
    */
   public void setCache(Cache cache) {
-    cacheReference = new SoftReference<Cache>(cache);
+//    cacheReference = new SoftReference<Cache>(cache);
+    this.cache = cache;
   }
 
   /**
    * @see magellan.library.Unit#clearCache()
    */
   public void clearCache(){
-    if (cacheReference==null)
+//    if (cacheReference==null)
+//      return;
+//    Cache c = cacheReference.get();
+//    if (c!=null)
+//      c.clear();
+//    cacheReference.clear();
+//    cacheReference = null;
+    if (cache==null)
       return;
-    Cache c = cacheReference.get();
-    if (c!=null)
-      c.clear();
-    cacheReference.clear();
-    cacheReference = null;
+    cache.clear();
+    cache=null;
   }
   
 

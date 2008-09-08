@@ -19,6 +19,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import com.sun.org.apache.bcel.internal.generic.ISUB;
+
 import magellan.library.GameData;
 import magellan.library.Spell;
 import magellan.library.UnitID;
@@ -795,7 +797,7 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
-		if(isQuoted(t.getText()) == true) {
+		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
 		} else {
 			unexpected(t);
@@ -2988,18 +2990,19 @@ public class EresseaOrderParser implements OrderParser {
     if (retVal==false){
       retVal = isSingleQuoted(txt);
     }
-    
+    // we only allow numbers within text
+    // otherwise 1234 would also match to isString
+    boolean isNumeric = isNumeric(txt);
 		if((retVal == false) && (txt.length() > 0)) {
 			retVal = true;
-
 			for(int i = 0; i < txt.length(); i++) {
 				char c = txt.charAt(i);
-
+				// we allow numbers if txt is not numeric
 				if(!(((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')) || (c == 'Ä') ||
 					   (c == 'Ö') || (c == 'Ü') || (c == 'ä') || (c == 'ö') || (c == 'ü') ||
-					   (c == '~') || (c == 'ß'))) {
+					   (c == '~') || (c == 'ß') || (c==',') || (c=='.') || (c=='_') || (c==':') || 
+             ((!isNumeric) && (c>='0') && (c<='9')))) {
 					retVal = false;
-
 					break;
 				}
 			}

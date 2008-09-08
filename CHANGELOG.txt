@@ -1,3 +1,6 @@
+2008-09-04 / Build 236 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed #217: wrong open tasks with "botschaft" and "beschreibe"
+
 2008-09-03 / Build 235 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed zauber syntax (level)
 	* adjusted readZauber

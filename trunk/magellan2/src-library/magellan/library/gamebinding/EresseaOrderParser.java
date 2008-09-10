@@ -552,7 +552,7 @@ public class EresseaOrderParser implements OrderParser {
 		}
 
 		if(completer!=null && !t.followedBySpace()){
-				completer.cmpltBenutze(); 
+				completer.cmpltBenutze(0); 
 		}
 		return retVal;
 	}
@@ -560,8 +560,16 @@ public class EresseaOrderParser implements OrderParser {
   
   private boolean readBenutzeAmount(OrderToken token) {
     boolean retVal = false;
-    token.ttype = OrderToken.TT_KEYWORD;
-
+    token.ttype = OrderToken.TT_NUMBER;
+    
+    // anzahl feststellen?
+    int minAmount = 0;
+    try {
+      minAmount = Integer.parseInt(token.getText());
+    } catch (NumberFormatException e){
+      // not parsable Number !?
+    }
+    
     OrderToken t = (OrderToken) tokens.next();
 
     if(isString(t.getText()) == true) {
@@ -571,7 +579,7 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     if(completer!=null && !t.followedBySpace()){
-        completer.cmpltBenutze(); 
+        completer.cmpltBenutze(minAmount); 
     }
     return retVal;
   }

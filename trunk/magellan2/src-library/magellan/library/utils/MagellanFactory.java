@@ -1204,6 +1204,9 @@ public abstract class MagellanFactory {
     ItemType mallornType = newGD.rules.getItemType("Mallorn");
     ItemType schoesslingeType = newGD.rules.getItemType("Schoesslinge");
     ItemType mallornSchoesslingeType = newGD.rules.getItemType("Mallornschoesslinge");
+    // FF 20080910...need new ressources too
+    ItemType bauernType = newGD.rules.getItemType("Bauern");
+    ItemType silberType = newGD.rules.getItemType("Silber");
     
     // ArrayList of above Types
     List<ItemType> skillIrrelavntTypes = new ArrayList<ItemType>();
@@ -1212,6 +1215,13 @@ public abstract class MagellanFactory {
     skillIrrelavntTypes.add(mallornType);
     skillIrrelavntTypes.add(schoesslingeType);
     skillIrrelavntTypes.add(mallornSchoesslingeType);
+    // FF 20080910...need new ressources too
+    if (bauernType!=null){
+      skillIrrelavntTypes.add(bauernType);
+    }
+    if (silberType!=null){
+      skillIrrelavntTypes.add(silberType);
+    }
     
     if((newRegion.resources() != null) && !newRegion.resources().isEmpty()) {
       List<ItemType> deleteRegionRessources = null;

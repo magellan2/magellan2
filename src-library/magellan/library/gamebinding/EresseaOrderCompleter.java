@@ -17,6 +17,7 @@ import java.io.StringReader;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -630,9 +631,15 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(" \"\"", " \"\"", "", Completion.DEFAULT_PRIORITY, 1));
 	}
 
-	void cmpltBenutze() {
+	
+	/**
+	 * Ergänzt alle Items der Faction in der Region, deren Anzahl größer als amount ist
+	 * @param amount
+	 */
+	void cmpltBenutze(int amount) {
 		// addUnitItems("");
-    addFactionItems("");
+    // addFactionItems("");
+	  addRegionItemsFaction(null, amount);
 	}
 
 	void cmpltBeanspruche(){
@@ -1996,7 +2003,36 @@ public class EresseaOrderCompleter implements Completer {
 		}
 	}
 
-
+	private void addRegionItemsFaction(String postfix, int minAmount) {
+    if(region != null) {
+      Map<ItemType,Integer> items = new HashMap<ItemType,Integer>();
+      for (Unit actUnit : region.units()){
+        if (actUnit.getFaction()!=null && actUnit.getFaction().equals(unit.getFaction())){
+          for (Item actUnitItem : actUnit.getItems()){
+            ItemType actItemType = actUnitItem.getItemType();
+            if (items.containsKey(actItemType)){
+              // our List contains the ItemType already
+              items.put(actItemType, new Integer((items.get(actItemType)).intValue() + actUnitItem.getAmount()));
+            } else {
+              // new ItemType on our List
+              items.put(actItemType, new Integer(actUnitItem.getAmount()));
+            }
+          }
+        }
+      }
+      if (items.size()>0){
+        for (ItemType itemType : items.keySet()){
+          int amount = items.get(itemType).intValue();
+          if (amount>=minAmount){
+            completions.add(new Completion(itemType.getName() + " (" + amount + ")", itemType.getOrderName(), postfix));
+          }
+        }
+      }
+    }
+  }
+	
+	
+	
   private void addRegionShipCommanders(String postfix) {
     addRegionShipCommanders(postfix, 0);
   }

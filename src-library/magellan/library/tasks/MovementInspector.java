@@ -16,8 +16,11 @@ package magellan.library.tasks;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import magellan.library.Unit;
+import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.Resources;
 
 
@@ -26,7 +29,7 @@ import magellan.library.utils.Resources;
  * 
  */
 public class MovementInspector extends AbstractInspector implements Inspector {
-	/** The singelton instance of this Inspector */
+	/** The singleton instance of this Inspector */
 	public static final MovementInspector INSPECTOR = new MovementInspector();
 
 	/**
@@ -59,7 +62,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 
 		List<Problem> problems = new ArrayList<Problem>();
 
-		if (!u.getModifiedMovement().isEmpty()) {
+		if (!u.getModifiedMovement().isEmpty() || hasMovementOrder(u)) {
 			// only test for foot/horse movement if unit is not owner of a modified ship
 			if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
 				problems.addAll(reviewUnitOnFoot(u));
@@ -69,7 +72,21 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			}
 		}
 
-		// TODO: check for movement length
+		for (String order : u.getOrders()) {
+		  try {
+		    if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW))){
+		      StringTokenizer st = new StringTokenizer(order.trim());
+		      st.nextToken();
+		      if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())){
+		        if  (UnitID.createUnitID(st.nextToken(), u.getRegion().getData().base).equals(u.getID())){
+		          problems.add(new CriticizedError(u, u, this, Resources.get("tasks.movementinspector.error.unitfollowsself.description")));
+		        }
+		      }
+		    }
+		  } catch (Exception e){
+		  }
+		}
+    // TODO: check for movement length
 		// TODO: check for roads
 
 		/*
@@ -89,7 +106,27 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 		}
 	}
 
-	private List<Problem> reviewUnitOnFoot(Unit u) {
+	private boolean hasMovementOrder(Unit u) {
+	  for (String order : u.getOrders()) {
+	    if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_MOVE))
+	        || order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_ROUTE)))
+	      return true;
+	    try {
+	      if (order.trim().startsWith(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW))){
+	        StringTokenizer st = new StringTokenizer(order.trim());
+	        st.nextToken();
+	        if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())){
+	          return true;
+	        }
+	      }
+	    } catch (Exception e){
+
+	    }
+    }
+    return false;
+  }
+
+  private List<Problem> reviewUnitOnFoot(Unit u) {
 		int maxOnFoot = u.getPayloadOnFoot();
 
 		if (maxOnFoot == Unit.CAP_UNSKILLED) {

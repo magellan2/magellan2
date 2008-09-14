@@ -1,3 +1,9 @@
+2008-09-14 / Build 239 - stm (stm_@users.sourceforge.net)
+	* tweaked behaviour when user tries to add orders of unknown faction
+	* removed unused "Zeige Warnhinweis" in icon options
+	* added option to show only two highest skill icons in UnitNodeWrapper
+	* added reviewing of units with "FOLGE EINHEIT" to MovementInspector and added "follows self" errror 
+
 2008-09-10 / Build 237 - Fiete  <Fiete@users.sourceforge.net>
 	* added Peasons and Silver to the skill independent Ressources (mergeRegion)
 	* fixed cmplBenutze - to show all Items of all Units of same Faction

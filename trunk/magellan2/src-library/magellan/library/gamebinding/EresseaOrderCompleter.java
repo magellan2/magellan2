@@ -639,7 +639,7 @@ public class EresseaOrderCompleter implements Completer {
 	void cmpltBenutze(int amount) {
 		// addUnitItems("");
     // addFactionItems("");
-	  addRegionItemsFaction(null, amount);
+	  addRegionItemsFaction("", amount);
 	}
 
 	void cmpltBeanspruche(){

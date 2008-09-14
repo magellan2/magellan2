@@ -501,7 +501,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 								count += item.getAmount();
 							}
 
-							if(count > 0) {
+							if(item !=null && (count > 0 || !isShowingExpectedOnly())) {
 							  Category catP = item.getItemType().getCategory();
 							  while (catP.getParent()!=null){
 							    catP = catP.getParent();

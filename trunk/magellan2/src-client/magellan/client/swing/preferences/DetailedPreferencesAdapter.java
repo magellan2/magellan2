@@ -71,13 +71,13 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 	/**
 	 * Creates new DetailedPreferencesAdapter
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+	 * @param count Number of options (top level check boxes)
+	 * @param subcount Number of sub-options (check boxes in details entry)
+	 * @param p Properties to store options
+	 * @param prefix Prefix for properties keys 
+	 * @param sK suffixes of properties keys
+	 * @param lK suffixes of resource keys
+	 * @param rows number of rows of boxes
 	 */
 	public DetailedPreferencesAdapter(int count, int subcount[], Properties p, String prefix,
 									  String sK[][], String lK[], int rows) {
@@ -87,14 +87,14 @@ public abstract class DetailedPreferencesAdapter extends JPanel implements Prefe
 	/**
 	 * Creates a new DetailedPreferencesAdapter object.
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+	 * @param count Number of options (top level check boxes)
+	 * @param subcount Number of sub-options (check boxes in details entry)
+	 * @param p Properties to store options
+	 * @param prefix Prefix for properties keys 
+	 * @param sK suffixes of properties keys
+	 * @param lK suffixes of resource keys
+	 * @param rows number of rows of boxes
+	 * @param waitWithInit
 	 */
 	public DetailedPreferencesAdapter(int count, int subcount[], Properties p, String prefix,
 									  String sK[][], String lK[], int rows, boolean waitWithInit) {

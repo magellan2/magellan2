@@ -44,7 +44,16 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
   boolean properties[];
 
   /**
-   * Creates new NodeWrapperPreferencesDialog
+   * Creates new NodeWrapperPreferencesDialog with subcategories
+   * 
+   * @param count Number of options (top level check boxes)
+   * @param subcount Number of sub-options (check boxes in details entry)
+   * @param p Properties to store options
+   * @param prefix Prefix for properties keys 
+   * @param sK suffixes of properties keys
+   * @param lK suffixes of resource keys
+   * @param rows number of rows of boxes
+   * @param resourcePrefix Prefix for resource keys
    */
   public DetailsNodeWrapperDrawPolicy(int count, int subcount[], Properties p, String prefix, String sK[][], String lK[], int rows, String resourcePrefix) {
     this.count = count;
@@ -87,6 +96,8 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
 
   /**
    * DOCUMENT-ME
+   * 
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
     return new DetailPolicyPreferencesAdapter(count, subcount, settings, prefix, sK, lK, rows, this);
@@ -108,8 +119,18 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
 
     /**
      * Creates a new DetailPolicyPreferencesAdapter object.
+     * 
+     * @param count Number of options (top level check boxes)
+     * @param subcount Number of sub-options (check boxes in details entry)
+     * @param p Properties to store options
+     * @param prefix Prefix for properties keys 
+     * @param sK suffixes of properties keys
+     * @param lK suffixes of resource keys
+     * @param rows number of rows of boxes
+     * @param resourcePrefix Prefix for resource keys
      */
-    public DetailPolicyPreferencesAdapter(int count, int subcount[], Properties p, String prefix, String sK[][], String lK[], int rows, DetailsNodeWrapperDrawPolicy parent) {
+    public DetailPolicyPreferencesAdapter(int count, int subcount[], Properties p, String prefix,
+        String sK[][], String lK[], int rows, DetailsNodeWrapperDrawPolicy parent) {
       super(count, subcount, p, prefix, sK, lK, rows, true);
       this.parent = parent;
       init();

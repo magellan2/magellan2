@@ -62,7 +62,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
   private String prfx = null;
 	private String text = null;
 	private boolean iconNamesCreated = false;
-	private List iconNames = null;
+	private List<GraphicsElement> iconNames = null;
 	private Boolean reverse;
 	private String additionalIcon = null;
 	private UnitNodeWrapperDrawPolicy adapter;
@@ -153,8 +153,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 			}
 
 			if(subordinatedElements != null) {
-				for(Iterator iter = subordinatedElements.iterator(); iter.hasNext();) {
-					SupportsEmphasizing se = (SupportsEmphasizing) iter.next();
+				for(Iterator<SupportsEmphasizing> iter = subordinatedElements.iterator(); iter.hasNext();) {
+					SupportsEmphasizing se = iter.next();
 
 					if(se.emphasized()) {
 						return true;
@@ -212,21 +212,37 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Return <code>true</code> iff skills with level less than one should be shown.
 	 * 
+	 * @return <code>true</code> iff skills with level less than one should be shown
 	 */
 	public boolean isShowingSkillsLessThanOne() {
 		return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_ONE];
 	}
 
   /**
-   * DOCUMENT-ME
-   *
+   * Return <code>true</code> iff skills with level less than two should be shown.
    * 
+   * @return <code>true</code> iff skills with level less than two should be shown
    */
   public boolean isShowingSkillsLessThanTwo() {
     return isShowingAdditional() && adapter.properties[adapter.SHOW_SKILL_LESS_TWO];
+  }
+  
+  /**
+   * Returns the maximum number of skill icons that should be shown.
+   * 
+   * @return The maximum number of skill icons that should be shown.
+   */
+  public int numberOfShownSkills() {
+    if  (!adapter.properties[adapter.NUMBER_OF_SHOWN_SKILLS])
+      return Integer.MAX_VALUE;
+    
+    for (int i=1; i<=5; ++i){
+      if (!adapter.properties[adapter.NUMBER_OF_SHOWN_SKILLS+i])
+        return i-1;
+    }
+    return 5;
   }
   
 	/**
@@ -305,7 +321,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		return sb.toString();
 	}
 
-	private List createGraphicsElements(Unit u) {
+	private List<GraphicsElement> createGraphicsElements(Unit u) {
 		List<GraphicsElement> names  = new LinkedList<GraphicsElement>();
 		List<Skill> skills = new LinkedList<Skill>();
 
@@ -356,7 +372,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 		GraphicsElement ge = null;
 
-		// Fiete Test: temps, die gef?llt werden..haben geburtstag
+		// Fiete Test: temps, die gefaellt werden..haben geburtstag
 		// Fiete removed 20060911 (creator wishes to use the icon for the item only
 		/**
 		if (u.getPersons()==0 && u.getModifiedPersons()>0){
@@ -389,8 +405,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
       names.add(new GraphicsElement(null, null, "hero"));
     }
 
-		for(Iterator iter = skills.iterator(); iter.hasNext();) {
-			Skill s = (Skill) iter.next();
+    int skillCounter = 0;
+		for(Iterator<Skill> iter = skills.iterator(); iter.hasNext() && skillCounter < numberOfShownSkills();) {
+			Skill s = iter.next();
+			skillCounter++;
 			ge = null;
 
 			if(isShowingIconText()) {
@@ -428,10 +446,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 		if(others != null) {
 			if(isShowingCategorized()) {
-				List<Item> categories[] = new List[7];
+				List<Item> categories[] = new List[adapter.NUMBER_OF_CATEGORIES];
 				boolean anything = false;
 
-				for(int i = 0; i < 7; i++) {
+				for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
 					if(isShowingCatagorized(i)) {
 						categories[i] = new LinkedList<Item>();
 						anything = true;
@@ -439,17 +457,15 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 				}
 
 				if(anything) {
-					Iterator it = others.iterator();
-
-					while(it.hasNext()) {
-						Item item = (Item) it.next();
+					for(Iterator<Item> it = others.iterator(); it.hasNext();) {
+						Item item = it.next();
 
 						try {
 							String cat = item.getItemType().getCategory().getID().toString();
 
 							int j = -1;
 
-							for(int i = 0; i < 7; i++) {
+							for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
 								if(adapter.categories[i].equals(cat) && isShowingCatagorized(i)) {
 									j = i;
 								}
@@ -465,17 +481,15 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 					StringBuffer buffer = new StringBuffer();
 
-					for(int i = 0; i < 7; i++) {
+					for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
 						if(categories[i] != null) {
-							it = categories[i].iterator();
 
-							int count = 0;
+						  int count = 0;
 							buffer.setLength(0);
-
 							Item item = null;
 
-							while(it.hasNext()) {
-								item = (Item) it.next();
+							for(Iterator<Item> it  = categories[i].iterator(); it.hasNext();) {
+								item = it.next();
 								buffer.append(item.getAmount());
 								buffer.append(' ');
 								buffer.append(item.getName());
@@ -494,6 +508,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 							  }
 							  String iconName = magellan.library.utils.Umlaut
                    .convertUmlauts(catP.getName());
+							  
+							  if (categories[i].size()==1){
+							    iconName = "items/" + item.getItemType().getIconName();
+							  }
 							  /**
 								if(isShowingIconText()) {
 									ge = new GraphicsElement(new Integer(count), null, null,
@@ -528,8 +546,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 				categories = null;
 			}
 
-			for(Iterator iter = others.iterator(); iter.hasNext();) {
-				Item s = (Item) iter.next();
+			for(Iterator<Item> iter = others.iterator(); iter.hasNext();) {
+				Item s = iter.next();
 
 				if(isShowingExpectedOnly()) {
 					if(s.getAmount() <= 0) {
@@ -679,7 +697,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	 *
 	 * 
 	 */
-	public List getGraphicsElements() {
+	public List<GraphicsElement> getGraphicsElements() {
 		if(!iconNamesCreated) {
 			this.iconNames = createGraphicsElements(this.unit);
 			iconNamesCreated = true;
@@ -718,23 +736,34 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/** DOCUMENT-ME */
 		public final int SHOW_EXPECTED_ONLY = 8;
 
+		/** option for showing only first x skills */
+		public final int NUMBER_OF_SHOWN_SKILLS = 9;
+    
+    public final int NUMBER_OF_SHOWN_SKILLS_START = 10;
+    
+    public final int NUMBER_OF_SHOWN_SKILLS_END = 14;
+    
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGES = 9;
+		public final int SHOW_CHANGES = 15;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGE_STYLED = 10;
+		public final int SHOW_CHANGE_STYLED = 16;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CHANGE_TEXT = 11;
+		public final int SHOW_CHANGE_TEXT = 17;
 
 		/** DOCUMENT-ME */
-		public final int SHOW_CATEGORIZED = 12;
+		public final int SHOW_CATEGORIZED = 18;
 
-		/** DOCUMENT-ME */
-		public final int CATEGORIZE_START = 13;
+    /** DOCUMENT-ME */
+		public final int CATEGORIZE_START = 19;
 
-		/** DOCUMENT-ME */
-		public final int SHOW_WARNINGS = 20;
+    public final int NUMBER_OF_CATEGORIES = 7;
+
+		// this is not used any more
+//		/** DOCUMENT-ME */
+//		public final int SHOW_WARNINGSs = 26;
+		
 		protected String categories[] = {
 											"weapons", "armour", "resources", "luxuries", "herbs",
 											"potions", "misc"
@@ -754,8 +783,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		 * 
 		 */
 		public UnitNodeWrapperDrawPolicy(Properties settings, String prefix) {
-			// super(5, new int[] {6, 2, 7, -1, -1}, settings, prefix,new String[][] {
-			super(4, new int[] { 8, 2, 7, 0 }, settings, prefix,
+			super(4, new int[] { 8, 5, 2, 7}, settings, prefix,
 				  new String[][] {
 					  { "showAdditional", "true" },
 					  { "showContainerIcons", "true" },
@@ -767,7 +795,14 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 					  { "showNamesFirst", "false" },
 					  { "showExpectedOnly", "false" },
 					  
-			{ "showChanges", "true" },
+            { "showHighest", "false" },
+            { "showHighest.1", "true" },
+            { "showHighest.2", "true" },
+            { "showHighest.3", "false" },
+            { "showHighest.4", "false" },
+            { "showHighest.5", "false" },
+
+            { "showChanges", "true" },
 					  { "showChangesStyled", "true" },
 					  { "showChangesText", "false" },
 					  
@@ -780,21 +815,25 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 					  { "showCategorized.5", "false" },
 					  { "showCategorized.6", "false" },
 					  
-			{ "showWarnings", "false" }
+//			{ "showWarnings", "false" }
 				  },
 				  new String[] {
 					  "prefs.additional.text", "prefs.container.text", "prefs.skill.text",
-					  "prefs.skilllessthanone.text", "prefs.skilllessthantwo.text", "prefs.other.text", "prefs.icontext.text",
+					  "prefs.skilllessthanone.text", "prefs.skilllessthantwo.text", 
+					  "prefs.other.text", "prefs.icontext.text",
 					  "prefs.nfirst.text", "prefs.showExpectedOnly",
 					  
-			"prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text",
+            "prefs.showhighest.text", "prefs.showhighest.1", "prefs.showhighest.2",
+              "prefs.showhighest.3", "prefs.showhighest.4", "prefs.showhighest.5",
+
+            "prefs.changes.text", "prefs.changes.mode0.text", "prefs.changes.mode1.text",
 					  
-			"prefs.categorized.text", "prefs.categorized.0", "prefs.categorized.1",
+            "prefs.categorized.text", "prefs.categorized.0", "prefs.categorized.1",
 					  "prefs.categorized.2", "prefs.categorized.3", "prefs.categorized.4",
 					  "prefs.categorized.5", "prefs.categorized.6",
 					  
-			"prefs.showWarnings"
-				  }, 0, "tree.unitnodewrapper.");
+					  "prefs.showWarnings"
+				  }, 4, "tree.unitnodewrapper.");
 
 			// context menu
 			contextMenu = new JMenu(Resources.get("tree.unitnodewrapper.prefs.title"));

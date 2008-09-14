@@ -2353,7 +2353,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @return <tt>true</tt> if the order was successfully added.
 	 */
 	public boolean addOrder(String order, boolean replace, int length) {
-		if((order == null) || order.trim().equals("") || ordersAreNull() ||
+		if((order == null) || order.trim().equals("") || 
 			   (replace && (length < 1))) {
 			return false;
 		}

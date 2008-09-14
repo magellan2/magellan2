@@ -319,6 +319,8 @@ public class OrderReader {
 	 * 
 	 */
 	public Status getStatus() {
+	  if (status==null)
+	    status=new Status();
 		return status;
 	}
 

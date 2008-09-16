@@ -533,11 +533,16 @@ public abstract class MagellanFactory {
         // we can only copy the text if it matches the locale
         newMsg.setText(curMsg.getText());
       } else {
+        if (curMsg.getMessageType()==null){
+          // if the message has no message type (e.g. DURCHSCHIFFUNG,
+          // DURCHREISE), the best thing we can do is to copy the text anyway...
+          newMsg.setText(curMsg.getText());
+        }
         // otherwise we can render the text from the probably localized messagetype
         /*
          * we dont render it here as the new GameData is not fully initialized.
          * as the text is null, it will be rendered on the first usage.
-        ewMsg.render(newGD);
+        newMsg.render(newGD);
         */
       }
     }
@@ -1209,18 +1214,18 @@ public abstract class MagellanFactory {
     ItemType silberType = newGD.rules.getItemType("Silber");
     
     // ArrayList of above Types
-    List<ItemType> skillIrrelavntTypes = new ArrayList<ItemType>();
-    skillIrrelavntTypes.add(horsesType);
-    skillIrrelavntTypes.add(treesType);
-    skillIrrelavntTypes.add(mallornType);
-    skillIrrelavntTypes.add(schoesslingeType);
-    skillIrrelavntTypes.add(mallornSchoesslingeType);
+    List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();
+    skillIrrelevantTypes.add(horsesType);
+    skillIrrelevantTypes.add(treesType);
+    skillIrrelevantTypes.add(mallornType);
+    skillIrrelevantTypes.add(schoesslingeType);
+    skillIrrelevantTypes.add(mallornSchoesslingeType);
     // FF 20080910...need new ressources too
     if (bauernType!=null){
-      skillIrrelavntTypes.add(bauernType);
+      skillIrrelevantTypes.add(bauernType);
     }
     if (silberType!=null){
-      skillIrrelavntTypes.add(silberType);
+      skillIrrelevantTypes.add(silberType);
     }
     
     if((newRegion.resources() != null) && !newRegion.resources().isEmpty()) {
@@ -1282,7 +1287,7 @@ public abstract class MagellanFactory {
           // this cannot be true in the first merge pass
           // in the second merge pass sameTurn is always true          
 //        if (sameTurn){
-            if (skillIrrelavntTypes.contains(newRes.getType())){
+            if (skillIrrelevantTypes.contains(newRes.getType())){
               // we have "our" Type
               // do we have units in newRegion
               // if (newRegion.units()!=null && newRegion.units().size()>0){

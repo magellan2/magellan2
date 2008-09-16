@@ -45,7 +45,6 @@ import magellan.library.utils.TranslationType;
 import magellan.library.utils.Translations;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
-import magellan.library.utils.comparator.RegionIslandComparator;
 import magellan.library.utils.logging.Logger;
 import magellan.library.utils.mapping.LevelRelation;
 
@@ -1368,7 +1367,7 @@ public abstract class GameData implements Cloneable {
         if (sameRound) { // full merge
           MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound);
         } else { // only copy the skills to get change-level base
-          if ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged())) {
+          if ((newerUnit!=null) && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
             MagellanFactory.copySkills(olderUnit, resultUnit);
           }
         }

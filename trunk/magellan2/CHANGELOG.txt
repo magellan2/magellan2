@@ -1,3 +1,6 @@
+2008-09-16 / Build 240 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed # 311 + #312
+	
 2008-09-14 / Build 239 - stm (stm_@users.sourceforge.net)
 	* tweaked behaviour when user tries to add orders of unknown faction
 	* removed unused "Zeige Warnhinweis" in icon options

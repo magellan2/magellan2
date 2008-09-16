@@ -168,6 +168,15 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 
 	protected void doSaveAction(FileType filetype) {
     client.saveReport(filetype);
+    File f = null;
+    try {
+      f = filetype.getFile();
+    } catch (IOException e){
+      // do nothing
+    }
+    if (f!=null){
+      client.addFileToHistory(f);
+    }
 	}
 
 	/**

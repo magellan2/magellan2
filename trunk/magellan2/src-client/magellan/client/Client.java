@@ -1250,6 +1250,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       setReportChanged(false);
       getData().setFileType(filetype);
       getData().resetToUnchanged();
+      this.updateTitleCaption();
       getProperties().setProperty("Client.lastCRSaved", filetype.getName());
     } catch(ReadOnlyException exc) {
       Client.log.error(exc);

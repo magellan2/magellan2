@@ -35,7 +35,13 @@ import magellan.library.utils.logging.Logger;
 public class NullUserInterface implements UserInterface {
   private static final Logger log = Logger.getInstance(NullUserInterface.class);
   private int max = 100;
+
+  private static NullUserInterface singleton = new NullUserInterface();
   
+  public static UserInterface getInstance() {
+    return singleton;
+  }
+
   /**
    * @see magellan.library.utils.UserInterface#ready()
    */
@@ -89,4 +95,5 @@ public class NullUserInterface implements UserInterface {
   public void showException(String message, String description, Exception exception) {
     throw new RuntimeException(exception);
   }
+
 }

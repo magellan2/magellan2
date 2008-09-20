@@ -19,8 +19,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import com.sun.org.apache.bcel.internal.generic.ISUB;
-
 import magellan.library.GameData;
 import magellan.library.Spell;
 import magellan.library.UnitID;

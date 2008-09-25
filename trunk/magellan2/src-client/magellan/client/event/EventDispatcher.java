@@ -100,7 +100,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAliveOnList[pos]) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!", new Exception());
+      log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
     }
 
     listeners[pos].add(obj);
@@ -112,7 +112,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-      EventDispatcher.log.warn("The following exception shall be reported to bugzilla!", new Exception());
+      log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
     }
 
     listeners[pos].add(0, obj);

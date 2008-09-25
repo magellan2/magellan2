@@ -43,6 +43,8 @@ import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import net.infonode.tabbedpanel.titledtab.TitledTab;
+
 
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -66,6 +68,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   private JLabel elementBox = null;
   private ExtendedCommands commands = null;
   private JLabel positionBox = null;
+  private TitledTab tab = null;
   
   /**
    * This constructor creates a single empty document.
@@ -261,15 +264,7 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
       priorityBox.setSelectedItem(Priority.NORMAL);
     }
     
-    if (unit != null) {
-      elementBox.setText(Resources.get("extended_commands.element.unit",unit.getName(),unit.getID()));
-    } else if (container != null) {
-      elementBox.setText(Resources.get("extended_commands.element.container",container.getName(),container.getID()));
-    } else {
-      elementBox.setText(Resources.get("extended_commands.element.library"));
-    }
-    
-    isModified = false;
+    setModified(false);
   }
 
   /**
@@ -302,21 +297,21 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
    * @see javax.swing.event.DocumentListener#changedUpdate(javax.swing.event.DocumentEvent)
    */
   public void changedUpdate(DocumentEvent e) {
-    isModified = true;
+    setModified(true);
   }
 
   /**
    * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
    */
   public void insertUpdate(DocumentEvent e) {
-    isModified = true;
+    setModified(true);
   }
 
   /**
    * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
    */
   public void removeUpdate(DocumentEvent e) {
-    isModified = true;
+    setModified(true);
   }
     
   public BeanShellEditor getScriptingArea() {
@@ -325,6 +320,26 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   
   public void setModified(boolean modified) {
     this.isModified = modified;
+    
+    String changed = "";
+    
+    if (modified) {
+      changed = " (*)";
+    }
+    
+    String title = "";
+    
+    if (unit != null) {
+      title = Resources.get("extended_commands.element.unit",unit.getName(),unit.getID())+changed;
+    } else if (container != null) {
+      title = Resources.get("extended_commands.element.container",container.getName(),container.getID())+changed;
+    } else {
+      title = Resources.get("extended_commands.element.library")+changed;
+    }
+    
+    elementBox.setText(title);
+    if (tab != null) tab.setText(title);
+    
   }
   public boolean isModified() {
     return isModified;
@@ -347,6 +362,25 @@ public class ExtendedCommandsDocument extends JPanel implements ActionListener, 
   public void setCommands(ExtendedCommands commands) {
     this.commands = commands;
   }
+
+  /**
+   * Returns the value of tab.
+   * 
+   * @return Returns tab.
+   */
+  public TitledTab getTab() {
+    return tab;
+  }
+
+  /**
+   * Sets the value of tab.
+   *
+   * @param tab The value for tab.
+   */
+  public void setTab(TitledTab tab) {
+    this.tab = tab;
+  }
+  
   
   
 }

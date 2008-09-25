@@ -13,7 +13,9 @@
 
 package magellan.library;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Resources;
@@ -57,13 +59,13 @@ public class Alliance {
 	}
 
 	private AllianceCategory getMaxAllianceCategory() {
-		Iterator iter = faction.getData().rules.getAllianceCategoryIterator();
+		Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator();
 
 		if(iter.hasNext()) {
-			AllianceCategory ret = (AllianceCategory) iter.next();
+			AllianceCategory ret = iter.next();
 
 			while(iter.hasNext()) {
-				AllianceCategory ac = (AllianceCategory) iter.next();
+				AllianceCategory ac = iter.next();
 
 				if(ac.compareTo(ret) > 0) {
 					ret = ac;
@@ -124,8 +126,8 @@ public class Alliance {
 		StringBuffer ret = new StringBuffer();
 
 		// connect all state strings separated by spaces
-		for(Iterator iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
-			AllianceCategory ac = (AllianceCategory) iter.next();
+		for(Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
+			AllianceCategory ac = iter.next();
 
 			if(!ac.equals(maxAC) && getState(ac.getBitMask())) {
 				ret.append(Resources.getOrderTranslation(ac.getName()));
@@ -137,6 +139,32 @@ public class Alliance {
 		}
 
 		return ret.toString();
+	}
+	
+	/**
+	 * Returns all alliance categories assigned to this alliance
+	 */
+	public List<AllianceCategory> getAllianceCategories() {
+	  List<AllianceCategory> categories = new ArrayList<AllianceCategory>();
+	  
+    AllianceCategory maxAC = getMaxAllianceCategory();
+    if(maxAC == null) return categories; 
+
+    if(getState(maxAC.getBitMask())) {
+      categories.add(maxAC);
+      return categories;
+    }
+	  
+	  
+    for(Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
+      AllianceCategory ac = iter.next();
+
+      if(!ac.equals(maxAC) && getState(ac.getBitMask())) {
+        categories.add(ac);
+      }
+    }
+    
+    return categories;
 	}
 
 	/**

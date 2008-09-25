@@ -1130,6 +1130,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   private boolean isValidUnitByFaction(Unit u){
     
+    // maybe it better to ignore the "restrictToOwner" setting, if there is no faction owner.
     if (this.restrictToOwner() && (data.getOwnerFaction()==null || u.getFaction()==null || !data.getOwnerFaction().equals(u.getFaction().getID()))){
       return false;
     }

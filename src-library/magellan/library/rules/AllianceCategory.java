@@ -19,10 +19,8 @@ import java.util.HashSet;
 
 import magellan.library.ID;
 
-
-
 /**
- * DOCUMENT-ME
+ * This class contains an alliance category. 
  *
  * @author $Author: $
  * @version $Revision: 271 $

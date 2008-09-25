@@ -477,44 +477,28 @@ public interface Rules {
 	public OptionCategory getOptionCategory(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns the alliance category with the given id.
 	 */
 	public AllianceCategory getAllianceCategory(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * Returns the alliance category with the given id. If add is true and
+	 * the id is not available, it will be added
 	 */
 	public AllianceCategory getAllianceCategory(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns a list of all possible alliance categories.
 	 */
-	public Iterator getAllianceCategoryIterator();
+	public Iterator<AllianceCategory> getAllianceCategoryIterator();
 
 	/**
 	 * get AllianceCategory by (possibly localized) name
-	 *
-	 * 
 	 */
 	public AllianceCategory getAllianceCategory(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+   * get AllianceCategory by (possibly localized) name
 	 */
 	public AllianceCategory getAllianceCategory(String id);
 

@@ -44,6 +44,7 @@ import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.utils.MagellanImages;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 import net.infonode.docking.DockingWindow;
@@ -81,6 +82,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     init();
   }
   
+  /**
+   * Initializes the GUI of the dock.
+   */
   protected void init() {
     setLayout(new BorderLayout());
     
@@ -96,18 +100,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     north.setLayout(new BoxLayout(north, BoxLayout.X_AXIS));
     north.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
   
-//    north.add(Box.createRigidArea(new Dimension(30, 0)));
-    
-//    JButton cancelButton = new JButton(Resources.get("button.cancel"));
-//    cancelButton.setRequestFocusEnabled(false);
-//    cancelButton.setActionCommand("button.cancel");
-//    cancelButton.addActionListener(this);
-//    cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
-//    north.add(cancelButton);
-//    
-//    north.add(Box.createRigidArea(new Dimension(10, 0)));
-    
-    JButton executeButton = new JButton(Resources.get("extended_commands.button.execute.caption"));
+    JButton executeButton = new JButton(Resources.get("extended_commands.button.execute.caption"), MagellanImages.getImageIcon("etc/images/gui/actions/execute.gif"));
     executeButton.setRequestFocusEnabled(false);
     executeButton.setActionCommand("button.execute");
     executeButton.addActionListener(this);
@@ -116,8 +109,10 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
     north.add(Box.createRigidArea(new Dimension(5, 0)));
     
-    JButton saveButton = new JButton(Resources.get("extended_commands.button.save.caption"));
+    JButton saveButton = new JButton(Resources.get("extended_commands.button.save.caption"), MagellanImages.getImageIcon("etc/images/gui/actions/save_edit.gif"));
     saveButton.setRequestFocusEnabled(false);
+    saveButton.setVerticalTextPosition(JButton.CENTER);
+    saveButton.setHorizontalTextPosition(JButton.LEADING);
     saveButton.setActionCommand("button.save");
     saveButton.addActionListener(this);
     saveButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -125,8 +120,10 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
 
     north.add(Box.createRigidArea(new Dimension(5, 0)));
     
-    JButton saveAllButton = new JButton(Resources.get("extended_commands.button.saveall.caption"));
+    JButton saveAllButton = new JButton(Resources.get("extended_commands.button.saveall.caption"), MagellanImages.getImageIcon("etc/images/gui/actions/saveas_edit.gif"));
     saveAllButton.setRequestFocusEnabled(false);
+    saveAllButton.setVerticalTextPosition(JButton.CENTER);
+    saveAllButton.setHorizontalTextPosition(JButton.LEADING);
     saveAllButton.setActionCommand("button.saveall");
     saveAllButton.addActionListener(this);
     saveAllButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
@@ -142,6 +139,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
+    log.info("Action '"+e.getActionCommand()+"' called");
     if (e.getActionCommand().equalsIgnoreCase("button.execute")) {
       // let's get the tab and execute it inside the doc.
       TitledTab tab = (TitledTab)tabs.getSelectedTab();
@@ -150,72 +148,46 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       
       log.info("Execute button selected on tab "+tab.getText());
       doc.actionPerformed(e);
-    } else if (e.getActionCommand().equalsIgnoreCase("button.saveall")) {
+    } else if (e.getActionCommand().equalsIgnoreCase("button.save")) {
       
       TitledTab tab = (TitledTab)tabs.getSelectedTab();
-      if (tab == null) return; // we don't execute everything here....
-      ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
-      log.info("Save tab '"+tab.getText()+"' contents");
+      if (tab == null) return; // we don't save everything here....
+      saveTab(tab);
+      commands.save();
       
-      Script newScript = (Script)doc.getScript().clone();
-      newScript.setScript(doc.getScriptingArea().getText());
-
-      if (doc.getUnit() != null) {
-        commands.setCommands(doc.getUnit(),newScript);
-      } else if (doc.getContainer() != null) {
-        commands.setCommands(doc.getContainer(),newScript);
-      } else {
-        commands.setLibrary(newScript);
-      }
-      
-      doc.setModified(false);
     } else if (e.getActionCommand().equalsIgnoreCase("button.saveall")) {
       // iterate thru all tabs and save the scripts
       for (int i=0; i<tabs.getTabCount(); i++) {
         TitledTab tab = (TitledTab)tabs.getTabAt(i);
-        if (tab == null) continue;
-        ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
-        log.info("Save tab '"+tab.getText()+"' contents");
-        
-        
-        Script newScript = (Script)doc.getScript().clone();
-        newScript.setScript(doc.getScriptingArea().getText());
-
-        if (doc.getUnit() != null) {
-          commands.setCommands(doc.getUnit(),newScript);
-        } else if (doc.getContainer() != null) {
-          commands.setCommands(doc.getContainer(),newScript);
-        } else {
-          commands.setLibrary(newScript);
-        }
-        
-        doc.setModified(false);
+        saveTab(tab);
       }
       commands.save();
-      
-//    } else if (e.getActionCommand().equalsIgnoreCase("button.cancel")) {
-//      // just restore the old settings
-//      if (isModified) {
-//        int result = JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.questions.not_saved"),Resources.get("extended_commands.questions.not_saved_title"),JOptionPane.OK_CANCEL_OPTION);
-//        if (result != JOptionPane.OK_OPTION) return;
-//      }
-//
-//      if (unit != null) {
-//        commands.setCommands(unit, script); // reset to old script
-//      } else if (container != null) {
-//        commands.setCommands(container, script); // reset to old script
-//      } else {
-//        commands.setLibrary(script); // reset to old script
-//      }
-//      
-//      if (script != null) {
-//        scriptingArea.setText(script.getScript());
-//        scriptingArea.setCaretPosition(script.getCursor());
-//        priorityBox.setSelectedItem(script.getPriority());
-//      }
-//        
-//      isModified = false;
     }
+  }
+  
+  /**
+   * Saves the content of a tab inside the Extended Commands List.
+   * Attention: This is NOT a save-to-disc Operation. It clones the content
+   * of the tab and set's it inside the Commands object.
+   */
+  protected void saveTab(TitledTab tab) {
+    if (tab == null) return;
+    ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
+    log.info("Save tab '"+tab.getText()+"' contents");
+    
+    
+    Script newScript = (Script)doc.getScript().clone();
+    newScript.setScript(doc.getScriptingArea().getText());
+
+    if (doc.getUnit() != null) {
+      commands.setCommands(doc.getUnit(),newScript);
+    } else if (doc.getContainer() != null) {
+      commands.setCommands(doc.getContainer(),newScript);
+    } else {
+      commands.setLibrary(newScript);
+    }
+    
+    doc.setModified(false);
   }
   
   /**
@@ -224,6 +196,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   public void setScript(Unit unit, UnitContainer container, Script script) {
 
     String key = createKey(unit,container);
+    String title = createTitle(unit,container);
     if (tabMap.containsKey(key)) {
       // ok, the entry already exists.
       tabs.setSelectedTab(tabMap.get(key));
@@ -235,8 +208,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       doc.setUnit(unit);
       doc.setContainer(container);
       doc.setScript(script);
-      TitledTab tab = new TitledTab(key, null, doc, null);
+      TitledTab tab = new TitledTab(title, null, doc, null);
       tab.setHighlightedStateTitleComponent(createCloseTabButton(key,tab));
+      doc.setTab(tab);
       
       tabs.addTab(tab);
       tabs.setSelectedTab(tab);
@@ -253,6 +227,12 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   }
   
   protected String createKey(Unit unit, UnitContainer container) {
+    if (unit != null) return unit.getID().toString();
+    if (container != null) return container.getID().toString();
+    return "---";
+  }
+  
+  protected String createTitle(Unit unit, UnitContainer container) {
     if (unit != null) {
       String unitName = unit.getName();
       if (unitName == null) unitName = "";
@@ -411,7 +391,6 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   private JButton createCloseTabButton(final String key, final TitledTab tab) {
     return ButtonFactory.createFlatHighlightButton(new CloseIcon(), Resources.get("extended_commands.button.close.tooltip"), 0, new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        
         ExtendedCommandsDocument doc = (ExtendedCommandsDocument)tab.getContentComponent();
         if (doc.isModified()) {
           int answer = JOptionPane.showConfirmDialog(Client.INSTANCE, Resources.get("extended_commands.questions.not_saved"), Resources.get("extended_commands.questions.not_saved_title"), JOptionPane.YES_NO_OPTION);

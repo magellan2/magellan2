@@ -157,6 +157,15 @@ public class AllianceStateComboBox extends JComboBox {
     return null;
   }
 
+  /**
+   * @see javax.swing.JComponent#getToolTipText()
+   */
+  @Override
+  public String getToolTipText() {
+    return getSelectedItem().toString();
+  }
+
+  
 }
 
 /**

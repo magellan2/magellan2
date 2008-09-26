@@ -27,6 +27,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import magellan.client.Client;
@@ -93,7 +95,19 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     add(factionBox,BorderLayout.NORTH);
     
     model = new GroupEditorTableModel();
-    table = new JTable(model);
+    table = new JTable(model) {
+      protected JTableHeader createDefaultTableHeader() {
+        return new JTableHeader(columnModel) {
+          public String getToolTipText(MouseEvent e) {
+            int index = columnModel.getColumnIndexAtX(e.getPoint().x);
+            Object tip = columnModel.getColumn(index).getHeaderValue();
+            if (tip == null) return "";
+            return tip.toString();
+          }
+        };
+      }
+    };
+
     table.setDefaultRenderer(AllianceState.class, new AllianceStateRenderer());
         
     add(new JScrollPane(table),BorderLayout.CENTER);
@@ -149,8 +163,8 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
       if (i == 0) continue;
       TableColumn column = table.getColumnModel().getColumn(i);
       AllianceStateComboBox box = new AllianceStateComboBox(world);
-      
-      column.setCellEditor(new DefaultCellEditor(box));
+      DefaultCellEditor editor = new DefaultCellEditor(box);
+      column.setCellEditor(editor);
     }
   }
   

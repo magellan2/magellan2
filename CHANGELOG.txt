@@ -1,4 +1,7 @@
 2008-09-25 / Build 242 - Thoralf <thoralf@m84.de>
+    * improved group editor by adding tool tips to the cells and headers
+
+2008-09-25 / Build 242 - Thoralf <thoralf@m84.de>
     * fixed bug #314 (problems saving extcmds)
     * added feature #315 (new group editor / alliance editor)
     * made some minor bugfixes (more debug output and more javadoc) 

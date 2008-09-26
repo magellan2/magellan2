@@ -39,6 +39,8 @@ import magellan.library.Unit;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
+import magellan.library.utils.comparator.IDComparator;
+import magellan.library.utils.comparator.NameComparator;
 
 /**
  * Represents the list off all possible alliance states
@@ -86,7 +88,8 @@ public class GroupEditorTableModel extends AbstractTableModel {
     newGroupStates.clear();
     
     if (owner.getGroups() != null) { 
-      Collection<Group> groups = owner.getGroups().values();
+      List<Group> groups = new ArrayList<Group>(owner.getGroups().values());
+      Collections.sort(groups, new NameComparator(IDComparator.DEFAULT));
   
       for (Group group : groups) {
         addColumn(group);

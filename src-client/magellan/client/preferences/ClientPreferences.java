@@ -18,6 +18,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +43,7 @@ import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Locales;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
+import magellan.library.utils.VersionInfo;
 import magellan.library.utils.logging.Logger;
 
 
@@ -51,7 +54,7 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 350 $
  */
-public class ClientPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter {
+public class ClientPreferences extends AbstractPreferencesAdapter implements ExtendedPreferencesAdapter, ActionListener {
 	private static final Logger log = Logger.getInstance(ClientPreferences.class);
 	Properties settings = null;
 	Client source = null;
@@ -77,6 +80,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
 	private JCheckBox showProgress;
 	private JCheckBox createVoidRegions;
   private JCheckBox checkForUpdates;
+  private JCheckBox checkForNightlyUpdates;
   private JCheckBox loadlastreport;
 	protected List<PreferencesAdapter> subAdapters;
 
@@ -132,27 +136,51 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
   private Component getMiscPanel() {
     JPanel panel = addPanel(Resources.get("clientpreferences.misc.border"), new GridBagLayout());
 
+    int line = 0;
     GridBagConstraints c = new GridBagConstraints();
     c.insets = new Insets(2, 2, 2, 2);
+    
+    // check for updates
     c.gridx = 0;
-    c.gridy = 0;
+    c.gridy = line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
-    // check for updates
-    checkForUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkforupdates.caption"), PropertiesHelper.getBoolean(settings, "UpdateCheck.Check", true));
+    checkForUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkforupdates.caption"), PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK, true));
     checkForUpdates.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(checkForUpdates,c);
     c.gridx = 1;
-    c.gridy = 0;
+    c.gridy = line;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.1;
     panel.add(new JLabel(""), c);
+    line++;
+
+    // check for nightly updates
+    c.gridx = 0;
+    c.gridy = line;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.WEST;
+    c.weightx = 0.0;
+    checkForNightlyUpdates = new JCheckBox( Resources.get("clientpreferences.misc.checkfornightlyupdates.caption"), PropertiesHelper.getBoolean(settings, VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK, false));
+    checkForNightlyUpdates.setHorizontalAlignment(SwingConstants.LEFT);
+    checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
+    panel.add(checkForNightlyUpdates,c);
+    c.gridx = 1;
+    c.gridy = line;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.EAST;
+    c.weightx = 0.1;
+    panel.add(new JLabel(""), c);
+    line++;
+    
+    checkForUpdates.setActionCommand(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK);
+    checkForUpdates.addActionListener(this);
 
     // load last report on startup
     c.gridx = 0;
-    c.gridy = 1;
+    c.gridy = line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
@@ -160,15 +188,16 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
     loadlastreport.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(loadlastreport,c);
     c.gridx = 1;
-    c.gridy = 1;
+    c.gridy = line;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.1;
     panel.add(new JLabel(""), c);
+    line++;
     
     // create void regions
     c.gridx = 0;
-    c.gridy = 2;
+    c.gridy = line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
@@ -176,16 +205,16 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
     createVoidRegions.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(createVoidRegions,c);
     c.gridx = 1;
-    c.gridy = 2;
+    c.gridy = line;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.1;
     panel.add(new JLabel(""), c);
-
+    line++;
 
     // progress in titlebar
     c.gridx = 0;
-    c.gridy = 3;
+    c.gridy = line;
     c.fill = GridBagConstraints.HORIZONTAL;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
@@ -193,11 +222,12 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
     showProgress.setHorizontalAlignment(SwingConstants.LEFT);
     panel.add(showProgress,c);
     c.gridx = 1;
-    c.gridy = 3;
+    c.gridy = line;
     c.fill = GridBagConstraints.NONE;
     c.anchor = GridBagConstraints.EAST;
     c.weightx = 0.1;
     panel.add(new JLabel(""), c);
+    line++;
 
     return panel;
   }
@@ -391,7 +421,8 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
 
 		settings.setProperty("map.creating.void",String.valueOf(createVoidRegions.isSelected()));
     
-    settings.setProperty("UpdateCheck.Check",String.valueOf(checkForUpdates.isSelected()));
+    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,String.valueOf(checkForUpdates.isSelected()));
+    settings.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,String.valueOf(checkForNightlyUpdates.isSelected()));
     settings.setProperty(PropertiesHelper.CLIENTPREFERENCES_LOAD_LAST_REPORT,String.valueOf(loadlastreport.isSelected()));
 		
 		source.setShowStatus(showProgress.isSelected());
@@ -466,5 +497,13 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
 			}
 		}
 	}
+
+  public void actionPerformed(ActionEvent e) {
+    if (e.getActionCommand().equals(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK)) {
+      checkForNightlyUpdates.setEnabled(checkForUpdates.isSelected());
+      if (!checkForUpdates.isSelected()) checkForNightlyUpdates.setSelected(false);
+    }
+    
+  }
 
 }

@@ -1,3 +1,8 @@
+2008-09-27 / Build 243 - Thoralf <thoralf@m84.de>
+    * RELEASE 2.0.3
+    * added configuration switch for update checking of Beta versions (nightly build)
+    * some more help texts
+
 2008-09-25 / Build 242 - Thoralf <thoralf@m84.de>
     * improved group editor by adding tool tips to the cells and headers
 

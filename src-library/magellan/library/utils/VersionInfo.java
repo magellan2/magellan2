@@ -34,10 +34,11 @@ public class VersionInfo {
 	private static final Logger log = Logger.getInstance(VersionInfo.class);
   
   public static final String PROPERTY_KEY_UPDATECHECK_CHECK  = "UpdateCheck.Check";
-  public static final String PROPERTY_KEY_UPDATECHECK_URL    = "UpdateCheck.URL";
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
+  public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
   
   private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/release/VERSION";
+  private static final String NIGHTLY_CHECK_URL = "http://magellan.log-out.net/nightly-build/VERSION";
 
   private static String Version = null;
   private static boolean versionIsSet=false;
@@ -87,18 +88,17 @@ public class VersionInfo {
     if (properties == null) {
       return null;
     }
-    String urlstring = properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL,VersionInfo.DEFAULT_CHECK_URL);
     boolean check = new Boolean(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,String.valueOf(true)));
+    boolean checkNightly = new Boolean(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK,String.valueOf(false)));
+    
+    String urlstring = VersionInfo.DEFAULT_CHECK_URL;
     long failedTimestamp = new Long(properties.getProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED,String.valueOf(0)));
     
     boolean doCheck = check;
     
-    if (urlstring.length()<1) {
-      urlstring = VersionInfo.DEFAULT_CHECK_URL;
+    if (checkNightly) {
+      urlstring = VersionInfo.NIGHTLY_CHECK_URL;
     }
-    
-    // reset url string to new location
-    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL, VersionInfo.DEFAULT_CHECK_URL);
     
     // if the last failed time was now-7 days, then we try to check again.
     if (failedTimestamp > 0l && doCheck) {
@@ -133,7 +133,6 @@ public class VersionInfo {
     }
     
     
-    properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_URL,    urlstring);
     properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_CHECK,  String.valueOf(check));
     properties.setProperty(VersionInfo.PROPERTY_KEY_UPDATECHECK_FAILED, String.valueOf(failedTimestamp));
     

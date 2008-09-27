@@ -4,7 +4,6 @@ Mit + ist in Arbeit
 
 ----- noch zu tun -----
 
-- Lesezeichenliste als Dock (siehe Menü) (?)
 - Koordinatentranslation raus aus Passwortabfrage in Parteistatistik
 
 ------ in Arbeit ------
@@ -22,6 +21,8 @@ Mit + ist in Arbeit
 + ReportMerger gradebügeln, Neue einbauen
 
 ------ erledigt -------
+* Lesezeichenliste als Dock (siehe Menü) (?)
+
 * Inseln werden nicht richtig erfasst (zumindest passiert da
   bei mir nichts)
 

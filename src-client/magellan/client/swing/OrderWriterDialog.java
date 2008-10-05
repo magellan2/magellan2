@@ -1327,6 +1327,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       OrderWriterDialog.log.info("sending...");
       mailMessage.send();
     } catch(EmailException e) {
+      log.error("",e);
       ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
       Object msgArgs[] = { e.toString() };

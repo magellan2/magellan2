@@ -893,6 +893,8 @@ public abstract class MagellanFactory {
           // the current block description
           MagellanFactory.log.warn("WARNING: Invalid tag \"" + curPrice.getItemType() +
                "\" found in Region " + curRegion + ", ignoring it.");
+          MagellanFactory.log.warn("curRegion Encoding: " + curRegion.getData().getEncoding()
+                + ", newRegion Enc: " + newRegion.getData().getEncoding());
         } else {
           newRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
         }

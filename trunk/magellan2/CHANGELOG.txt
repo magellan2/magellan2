@@ -1,3 +1,6 @@
+2008-10-19 / Build 244 - Fiete  <Fiete@users.sourceforge.net>
+	* fixed encoding bug in PipeFileType, effects CloningInMemory
+
 2008-09-27 / Build 243 - Thoralf <thoralf@m84.de>
     * RELEASE 2.0.3
     * added configuration switch for update checking of Beta versions (nightly build)

@@ -2249,22 +2249,15 @@ public class CRWriter extends BufferedWriter {
    */
   protected void writeThread(GameData world) throws IOException, NullPointerException {
     
-    CRWriter.log.info("Saving report. Encoding: " + encoding);
+    CRWriter.log.info("Start saving report. Encoding: " + encoding);
     if (!encoding.equalsIgnoreCase(world.getEncoding())){
       CRWriter.log.warn("Encodings differ while writing CR: writer users " + encoding + ", gamadata is set to " + world.getEncoding() + ", setting charset to:" + world.getEncoding());
       this.encoding = world.getEncoding();
     }
     if (ui != null) {
       ui.setMaximum(11);
-    }
-    if (ui != null) {
       ui.setTitle(Resources.get("crwriterdialog.progress.title"));
-    }
-    if (ui != null) {
       ui.show();
-    }
-    
-    if (ui != null) {
       ui.setProgress(Resources.get("crwriterdialog.progress.01"), 1);
     }
 		writeVersion(world);

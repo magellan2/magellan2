@@ -649,7 +649,7 @@ public class ReportMerger extends Object {
                          + Resources.get("util.reportmerger.status.translating"), iProgress);
         }
 
-        ReportMerger.log.info("Using this translation: " + bestTranslation.getKey());
+        ReportMerger.log.info("Using this (real) translation: " + bestTranslation.getKey());
         // store found translations
         EntityID newReportOwner = newReport.getData().getOwnerFaction();
         if (newReportOwner != null) {
@@ -713,14 +713,25 @@ public class ReportMerger extends Object {
           } catch (CloneNotSupportedException e) {
             ReportMerger.log.error(e);
           }
+        } else {
+          ReportMerger.log.info("Level 0 : using untranslated new report - same origin");
         }
         if (bestAstralTranslation.getKey().x != 0 || bestAstralTranslation.getKey().y != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
+            if (clonedData!=null && clonedData.outOfMemory) {
+              ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
+              ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
+            }
+            if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())){
+              ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
+            }
           } catch (CloneNotSupportedException e) {
             ReportMerger.log.error(e);
             // TODO if cloning the gamedata fails but translation is necessary we must stop merging!
           }
+        } else {
+          ReportMerger.log.info("Astral level : using untranslated new report - same origin or no Astral Regions");
         }
         
         /***************************************************************************
@@ -790,12 +801,13 @@ public class ReportMerger extends Object {
       ReportMerger.log.info("Found " + translationList.size() + " translations in layer " + layer + " for " + newReport.getFile().getName() + " (best(maxScore):" + bestTranslation.toString()+")");
       
       // Fiete: just see the other translations...
+      /*
       ReportMerger.log.info("DEBUG: all found translations:");
       
       for (Score<CoordinateID>myScore : translationList){
         ReportMerger.log.info(myScore.toString());
       }
-      
+      **/
       
     } else {
       ReportMerger.log.info("No translation in layer "+ layer+" found for " + newReport.getFile().getName());

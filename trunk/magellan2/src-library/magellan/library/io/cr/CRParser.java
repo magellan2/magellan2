@@ -2402,7 +2402,11 @@ public class CRParser implements RulesIO, GameDataIO {
     sc.getNextToken(); // skip PREISE
 
     while(!sc.eof && (sc.argc == 2)) {
-      ItemType itemType = world.rules.getItemType(StringID.create(sc.argv[1]), true);
+      ItemType itemType = world.rules.getItemType(StringID.create(sc.argv[1]), false);
+      if (itemType==null){
+        CRParser.log.warn("unknown price added: " + sc.argv[1] + ",maybe wrong coding?(actual:" + world.getEncoding()+")");
+        itemType = world.rules.getItemType(StringID.create(sc.argv[1]), true);
+      }
       LuxuryPrice pr = new LuxuryPrice(itemType, Integer.parseInt(sc.argv[0]));
 
       if(prices == null) {
@@ -3162,7 +3166,8 @@ public class CRParser implements RulesIO, GameDataIO {
     }
     this.world.setMaxSortIndex(++regionSortIndex);
     ui.ready();
-    CRParser.log.info("Done.");
+    
+    CRParser.log.info("Done reading.");
     return this.world;
   }
 

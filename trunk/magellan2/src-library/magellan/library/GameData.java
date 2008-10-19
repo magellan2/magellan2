@@ -750,8 +750,8 @@ public abstract class GameData implements Cloneable {
     String oldEncoding = olderGD.getEncoding();
     String newEncoding = newerGD.getEncoding();
     
-    GameData.log.info("Old Encoding: "+oldEncoding);
-    GameData.log.info("New Encoding: "+newEncoding);
+    // GameData.log.info("Old Encoding: "+oldEncoding);
+    // GameData.log.info("New Encoding: "+newEncoding);
     
     if (oldEncoding != null && newEncoding != null) {
       if (oldEncoding.equalsIgnoreCase(newEncoding)) {
@@ -774,7 +774,7 @@ public abstract class GameData implements Cloneable {
       resultGD.setEncoding(Encoding.UTF8.toString());
     }
     
-    GameData.log.info("Result: "+resultGD.getEncoding());
+    GameData.log.info("Old Encoding: "+oldEncoding + ",New Encoding: "+newEncoding + ",Result-Encoding: "+resultGD.getEncoding());
     
 
     boolean sameRound = olderGD.getDate().equals(newerGD.getDate());
@@ -1533,13 +1533,14 @@ public abstract class GameData implements Cloneable {
    */
   public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
     if (newOrigin.x == 0 && newOrigin.y == 0) {
+      GameData.log.info("no need to clone - same origin");
       return this.clone();
     } else{
       if (MemoryManagment.isFreeMemory(this.estimateSize()*3)){
         GameData.log.info("cloning in memory");
         GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);
         if (clonedData==null || clonedData.outOfMemory){
-          GameData.log.info("cloning externally");
+          GameData.log.info("cloning externally after failed memory-clone-attempt");
           clonedData = new Loader().cloneGameData(this, newOrigin);
         }
         return clonedData;

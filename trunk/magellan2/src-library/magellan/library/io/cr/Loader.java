@@ -53,8 +53,8 @@ public class Loader {
 
 	synchronized public GameData cloneGameDataInMemory(final GameData data, final CoordinateID newOrigin) throws CloneNotSupportedException {
 	  try {
-	    final FileType filetype = new PipeFileType();
-
+	    final PipeFileType filetype = new PipeFileType();
+	    filetype.setEncoding(data.getEncoding());
       UserInterface ui = new NullUserInterface();
 	    final CRWriter crw = new CRWriter(ui, filetype, data.getEncoding());
 	    GameDataReader crReader = new GameDataReader(null);

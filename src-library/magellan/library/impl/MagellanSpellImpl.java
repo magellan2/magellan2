@@ -324,7 +324,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   /**
    * checks, if we have knowledge about the components of the spell and if the 
    * auro counts per level or absolute.
-   * if it counts per level we assume the aura-cost depends on level and we deliver true, alse false
+   * if it counts per level we assume the aura-cost depends on level and we deliver true, else false
    * @return
    */
 	private boolean isAuraLevelDependend(){

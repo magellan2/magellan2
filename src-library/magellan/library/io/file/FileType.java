@@ -41,6 +41,7 @@ public class FileType {
 
   /** A String representation of the default encoding. */
   public static final Encoding DEFAULT_ENCODING = Encoding.ISO;
+  // public static final Encoding DEFAULT_ENCODING = Encoding.UTF8;
 
     
   // basically identified file types

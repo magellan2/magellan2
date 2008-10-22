@@ -118,6 +118,7 @@ import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.extern.MagellanPlugInLoader;
+import magellan.client.extern.MainMenuProvider;
 import magellan.client.preferences.ClientPreferences;
 import magellan.client.swing.AskForPasswordDialog;
 import magellan.client.swing.DebugDock;
@@ -711,7 +712,18 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
       }
     }
-
+    
+    // the special menu - a plugin with own main menu entry
+    for (MagellanPlugIn plugIn : plugIns) {
+      if (plugIn  instanceof MainMenuProvider) {
+        MainMenuProvider p = (MainMenuProvider)plugIn;
+        JMenu newJMenu = p.getJMenu();
+        if (newJMenu!=null){
+          menuBar.add(newJMenu);
+        }
+      }
+    }
+    
     menuBar.add(createExtrasMenu());
     return menuBar;
   }

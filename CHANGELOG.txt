@@ -1,3 +1,6 @@
+2008-10-19 / Build 246 - Fiete  <Fiete@users.sourceforge.net>
+	* MainMenuProvider...a chance for a plugin to get an own super-menu
+
 2008-10-19 / Build 244 - Fiete  <Fiete@users.sourceforge.net>
 	* fixed encoding bug in PipeFileType, effects CloningInMemory
 

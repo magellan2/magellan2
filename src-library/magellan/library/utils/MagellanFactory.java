@@ -455,6 +455,12 @@ public abstract class MagellanFactory {
       newUC.setOwner(null);
     }
 
+    if(curUC.getOwnerUnit() != null) {
+      newUC.setOwnerUnit(newGD.getUnit(curUC.getOwnerUnit().getID()));
+    } else {
+      newUC.setOwnerUnit(null);
+    }
+
     if(curUC.getType() != null) {
       if(curUC instanceof Building) {
         newUC.setType(newGD.rules.getBuildingType(curUC.getType().getID(), true));

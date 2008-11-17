@@ -258,7 +258,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
     if (!(UC instanceof Ship)) {
       return Collections.emptyList();
     }
-    if (!UC.getOwner().equals(u)){
+    if (UC.getOwnerUnit()==null || !UC.getOwner().equals(u)){
       return Collections.emptyList();
     }
     

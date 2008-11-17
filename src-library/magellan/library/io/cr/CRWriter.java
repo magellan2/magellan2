@@ -1074,12 +1074,12 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(shallExportUnit(ship.getOwnerUnit())) {
-			write(((UnitID) ship.getOwnerUnit().getID()).intValue() + ";Kapitaen");
+		if(ship.getOwner()!=null && shallExportUnit(ship.getOwner())) {
+			write(((UnitID) ship.getOwner().getID()).intValue() + ";Kapitaen");
 			newLine();
 
-			if(ship.getOwnerUnit().getFaction() != null) {
-				write(((EntityID) ship.getOwnerUnit().getFaction().getID()).intValue() + ";Partei");
+			if(ship.getOwner().getFaction() != null) {
+				write(((EntityID) ship.getOwner().getFaction().getID()).intValue() + ";Partei");
 				newLine();
 			}
 		}
@@ -1167,12 +1167,12 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(shallExportUnit(building.getOwnerUnit())) {
-			write(((UnitID) building.getOwnerUnit().getID()).intValue() + ";Besitzer");
+		if(building.getOwner()!=null && shallExportUnit(building.getOwner())) {
+			write(((UnitID) building.getOwner().getID()).intValue() + ";Besitzer");
 			newLine();
 
-			if(building.getOwnerUnit().getFaction() != null) {
-				write(((EntityID) building.getOwnerUnit().getFaction().getID()).intValue() +
+			if(building.getOwner().getFaction() != null) {
+				write(((EntityID) building.getOwner().getFaction().getID()).intValue() +
 					  ";Partei");
 				newLine();
 			}

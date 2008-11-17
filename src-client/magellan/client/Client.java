@@ -923,6 +923,12 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     return extras;
   }
   
+  /**
+   * @param font
+   * @return
+   * 
+   * @deprecated As of Java 1.2, the Font method getLineMetrics should be used.
+   */
   public static FontMetrics getDefaultFontMetrics(Font font) {
     return Toolkit.getDefaultToolkit().getFontMetrics(font);
   }

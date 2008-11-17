@@ -112,11 +112,26 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    */
   public String toString();
   
+  /**
+   * Returns value of the owner tag of the UnitContainer or <code>null</code>.
+   * Most callers should use {@link #getOwnerUnit()} instead!
+   * 
+   * @return The current owner of the UnitContainer or <code>null</code>.
+   */
   public Unit getOwner();
+
+  
+  /**
+   * Set the value of the owner tag. 
+   * 
+   * @param owner
+   */
   public void setOwner(Unit owner);
 
   /**
-   * DOCUMENT-ME
+   * Sets the unit owning this UnitContainer. You should probably use {@link #setOwner(Unit)} instead!
+   *
+   * @param unit
    */
   public void setOwnerUnit(Unit unit);
 

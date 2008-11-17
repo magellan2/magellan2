@@ -40,12 +40,6 @@ import java.util.Set;
  * @author ...
  * @version 1.0, Feb 26, 2008
  */
-/**
- * TODO This class must be commented
- *
- * @author ...
- * @version 1.0, Feb 26, 2008
- */
 public class TagMap implements Map<String,String> {
 	protected class Tag {
 		/** DOCUMENT-ME */

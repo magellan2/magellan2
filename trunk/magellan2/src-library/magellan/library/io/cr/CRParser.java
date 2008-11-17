@@ -2451,7 +2451,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Kapitaen")) {
-        ship.setOwnerUnit(getAddUnit(world, UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base)));
+        ship.setOwner(getAddUnit(world, UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base)));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Kueste")) {
         ship.setShoreId(Integer.parseInt(sc.argv[0]));
@@ -2523,7 +2523,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Besitzer")) {
         UnitID unitID = UnitID.createUnitID(Integer.parseInt(sc.argv[0]), world.base);
-        bld.setOwnerUnit(getAddUnit(world, unitID));
+        bld.setOwner(getAddUnit(world, unitID));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Partei")) {
         if((bld.getOwnerUnit() != null) && (bld.getOwnerUnit().getFaction() == null)) {

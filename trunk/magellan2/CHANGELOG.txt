@@ -1,3 +1,6 @@
+2008-11-17 / Build 247 - stm (stm_@users.sourceforge.net)
+    * fixed bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
+
 2008-10-19 / Build 246 - Fiete  <Fiete@users.sourceforge.net>
 	* MainMenuProvider...a chance for a plugin to get an own super-menu
 
@@ -36,7 +39,7 @@
 2008-09-03 / Build 235 - Fiete  <Fiete@users.sourceforge.net>
     * fixed zauber syntax (level)
     * adjusted readZauber
-    * removed filterProblems *after* Inspectors, now check units befor invoking Inspectors
+    * removed filterProblems *after* Inspectors, now check units before invoking Inspectors
     * changes ShipInspector to check moving ships by the owner-units.
 
 2008-08-28 / Build 234 - Fiete  <Fiete@users.sourceforge.net>

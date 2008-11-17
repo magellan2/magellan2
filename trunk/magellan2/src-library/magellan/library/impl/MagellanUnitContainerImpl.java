@@ -56,6 +56,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	private static final Logger log = Logger.getInstance(MagellanUnitContainerImpl.class);
 	private UnitContainerType type = null;
 	private Unit owner = null;
+  private Unit ownerUnit = null;
 
 	/**
 	 * A list containing <tt>String</tt> objects, specifying  effects on this
@@ -106,13 +107,18 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 		this.data = data;
 	}
 
+  /**
+   * @see magellan.library.UnitContainer#getOwner()
+   */
   public Unit getOwner() {
     return owner;
   }
+  /**
+   * @see magellan.library.UnitContainer#setOwner(magellan.library.Unit)
+   */
   public void setOwner(Unit owner) {
     this.owner = owner;
   }
-
 
 	/**
 	 * Adds an item to the unitcontainer. If the unitcontainer already has an item of the same type, the item is
@@ -386,7 +392,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * @see magellan.library.UnitContainer#setOwnerUnit(magellan.library.Unit)
 	 */
 	public void setOwnerUnit(Unit unit) {
-		this.owner = unit;
+		this.ownerUnit = unit;
 	}
 
 	/**
@@ -394,12 +400,11 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * Ship or Building the normal owning unit is returned (or null, if there is none). In case of
 	 * a Region, the OwnerUnit of the largest castle is returned. In case of a Faction, null is
 	 * returned.
-	 *
 	 * 
+	 * @see magellan.library.UnitContainer#getOwnerUnit()
 	 */
 	public Unit getOwnerUnit() {
-		if((owner == null) && this instanceof Region) {
-			Unit foundOwner = null;
+		if((ownerUnit == null) && this instanceof Region) {
 			int bSize = 0;
 
 			for(Iterator<Building> iter = ((Region) this).buildings().iterator(); iter.hasNext();) {
@@ -408,17 +413,13 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 				if(b.getType() instanceof CastleType) {
 					if(b.getSize() > bSize) {
 						bSize = b.getSize();
-						foundOwner = b.getOwnerUnit();
+						ownerUnit = b.getOwnerUnit();
 					}
 				}
 			}
-
-			if(foundOwner != null) {
-				owner = foundOwner;
-			}
 		}
 
-		return owner;
+		return ownerUnit;
 	}
 
 	/**

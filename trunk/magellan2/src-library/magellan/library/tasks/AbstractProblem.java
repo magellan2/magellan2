@@ -132,7 +132,7 @@ public abstract class AbstractProblem implements Problem {
 	  if (hasR instanceof Unit) {
       faction = ((Unit) hasR).getFaction();
     } else if(hasR instanceof UnitContainer){
-	    Unit owner = ((UnitContainer) hasR).getOwner();
+	    Unit owner = ((UnitContainer) hasR).getOwnerUnit();
 	    faction=owner!=null?owner.getFaction():null;
 	  }
 	  

@@ -404,7 +404,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	 * @see magellan.library.UnitContainer#getOwnerUnit()
 	 */
 	public Unit getOwnerUnit() {
-		if((ownerUnit == null) && this instanceof Region) {
+		if((owner == null) && this instanceof Region) {
 			int bSize = 0;
 
 			for(Iterator<Building> iter = ((Region) this).buildings().iterator(); iter.hasNext();) {
@@ -419,7 +419,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 			}
 		}
 
-		return ownerUnit;
+		return owner!=null?owner:ownerUnit;
 	}
 
 	/**

@@ -36,8 +36,9 @@ public interface Faction extends UnitContainer {
 	public static final int TL_PRIVILEGED = 100;
 
 	/**
-	 * DOCUMENT-ME
-	 */
+   * Returns <code>true</code> iff this faction has trustlevel at least
+   * {@value #TL_PRIVILEGED}TL_PRIVILEGED
+   */
 	public boolean isPrivileged();
 
 	/**

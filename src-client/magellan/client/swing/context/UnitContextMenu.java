@@ -41,7 +41,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.WindowConstants;
 
 import magellan.client.Client;
-import magellan.client.EMapDetailsPanel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.OrderConfirmEvent;
 import magellan.client.event.SelectionEvent;
@@ -350,7 +349,7 @@ public class UnitContextMenu extends JPopupMenu {
     }
 
     // add orders to disguise unit
-    if (EMapDetailsPanel.isPrivilegedAndNoSpy(unit)) {
+    if (magellan.library.utils.Units.isPrivilegedAndNoSpy(unit)) {
       JMenuItem hideID = new JMenuItem(Resources.get("context.unitcontextmenu.menu.disguise.caption"));
 
       hideID.addActionListener(new ActionListener() {
@@ -410,8 +409,8 @@ public class UnitContextMenu extends JPopupMenu {
     if (s[0] != null) {
       for (Unit u : selectedUnits) {
 
-        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
-          Units.addOrders(u, s);
+        if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
+          magellan.client.utils.Units.addOrders(u, s);
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
       }
@@ -430,8 +429,8 @@ public class UnitContextMenu extends JPopupMenu {
     if (s[0] != null) {
       for (Unit u : selectedUnits) {
 
-        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
-          Units.removeOrders(u, s);
+        if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
+          magellan.client.utils.Units.removeOrders(u, s);
           dispatcher.fire(new UnitOrdersEvent(this, u));
         }
       }
@@ -776,7 +775,7 @@ public class UnitContextMenu extends JPopupMenu {
    */
   private boolean containsPrivilegedUnit() {
     for (Unit u : selectedUnits) {
-      if (EMapDetailsPanel.isPrivileged(u.getFaction())) {
+      if (magellan.library.utils.Units.isPrivileged(u.getFaction())) {
         return true;
       }
     }

@@ -164,6 +164,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     sorter.setTableHeader(table.getTableHeader()); // NEW
 
+    // HACK: narrower columns for problem type and line numbers
+    table.getColumn(table.getColumnName(TaskTableModel.IMAGE_POS)).setPreferredWidth(10);
+    table.getColumn(table.getColumnName(TaskTableModel.LINE_POS)).setPreferredWidth(10);
+    
     // allow reordering of headers
     table.getTableHeader().setReorderingAllowed(true);
 
@@ -272,7 +276,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       }
 
       if (e.getSource() == table) {
-        // unselected rows if user clicke another row
+        // unselected rows if user clicks another row
         int rowClicked = table.rowAtPoint(e.getPoint());
         boolean clickedOnSelection = false;
         for (int i : table.getSelectedRows()) {
@@ -1237,8 +1241,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     protected static final int IMAGE_POS = 0;
     protected static final int PROBLEM_POS = 1;
     protected static final int OBJECT_POS = 2;
-    // private static final int REGION_POS = 3;
-    // private static final int FACTION_POS = 4;
+    protected static final int REGION_POS = 3;
+    protected static final int FACTION_POS = 4;
     protected static final int LINE_POS = 5;
     protected static final int NUMBEROF_POS = 6;
 

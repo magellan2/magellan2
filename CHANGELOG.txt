@@ -1,5 +1,6 @@
 2008-11-17 / Build 247 - stm (stm_@users.sourceforge.net)
-    * fixed bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
+    * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
+	* fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE
 
 2008-10-19 / Build 246 - Fiete  <Fiete@users.sourceforge.net>
 	* MainMenuProvider...a chance for a plugin to get an own super-menu

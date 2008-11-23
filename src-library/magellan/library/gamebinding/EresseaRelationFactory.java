@@ -289,7 +289,7 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       
-      // guard realtion
+      // guard relation
       if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GUARD))) {
         GuardRegionRelation guardRegionRelation = new GuardRegionRelation(u,1,line);
         if (tokens.size()>1){
@@ -557,22 +557,22 @@ public class EresseaRelationFactory implements RelationFactory {
           // additional info for battle status
           // lets detect new status
           OrderToken newStatusToken = (OrderToken)tokens.get(1);
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_AGGRESSIVE))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_AGGRESSIVE))) {
             combatStatusRelation = new CombatStatusRelation(u,0,line);
           }
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_FRONT))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_FRONT))) {
             combatStatusRelation = new CombatStatusRelation(u,1,line);
           }
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_REAR))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_REAR))) {
             combatStatusRelation = new CombatStatusRelation(u,2,line);
           }
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_DEFENSIVE))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_DEFENSIVE))) {
             combatStatusRelation = new CombatStatusRelation(u,3,line);
           }
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NOT))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_NOT))) {
             combatStatusRelation = new CombatStatusRelation(u,4,line);
           }
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_FLEE))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_FLEE))) {
             combatStatusRelation = new CombatStatusRelation(u,5,line);
           }
           if (newStatusToken.getText().length()==0) {
@@ -580,13 +580,13 @@ public class EresseaRelationFactory implements RelationFactory {
             combatStatusRelation = new CombatStatusRelation(u,1,line);
           }
           // check additional the unaided order
-          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_HELP_COMBAT))) {
+          if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_HELP))) {
             // "Kämpfe helfe" would change unaided from true to false
             combatStatusRelation = new CombatStatusRelation(u,false,line);
             if (tokens.size() > 2){
               // check if we have the NICHT
               OrderToken lastToken = (OrderToken)tokens.get(2);
-              if (lastToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NOT))) {
+              if (lastToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_NOT))) {
                 // "Kämpfe helfe nicht" would change unaided from false to true
                 combatStatusRelation = new CombatStatusRelation(u,true,line);
               }

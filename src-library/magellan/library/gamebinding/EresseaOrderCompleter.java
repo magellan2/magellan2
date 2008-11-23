@@ -64,6 +64,7 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.Units;
 import magellan.library.utils.logging.Logger;
 
 
@@ -1028,15 +1029,15 @@ public class EresseaOrderCompleter implements Completer {
 
 	void cmpltHelfeFID() {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_GUARD),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GIVE),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_GIVE),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SILVER),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_SILVER),
 									   " "));
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTIONSTEALTH),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_FACTIONSTEALTH),
 									   " "));
 	}
 
@@ -1056,32 +1057,32 @@ public class EresseaOrderCompleter implements Completer {
       }
     }
 		if((unit == null) || ((unit.getCombatStatus() != 0) && (unit.getCombatStatus() != -1))) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AGGRESSIVE), "", unit.getCombatStatus()));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE), "", unit.getCombatStatus()));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 2)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REAR), "", Math.abs(unit.getCombatStatus() - 2)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_REAR), "", Math.abs(unit.getCombatStatus() - 2)));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 3)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFENSIVE), "", Math.abs(unit.getCombatStatus() - 3)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE), "", Math.abs(unit.getCombatStatus() - 3)));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 4)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "", Math.abs(unit.getCombatStatus() - 4) + attackMalus));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT), "", Math.abs(unit.getCombatStatus() - 4) + attackMalus));
 		}
 
 		if((unit == null) || (unit.getCombatStatus() != 5)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FLEE), "", Math.abs(unit.getCombatStatus() - 5) + guardMalus + attackMalus));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FLEE), "", Math.abs(unit.getCombatStatus() - 5) + guardMalus + attackMalus));
 		}
 
 		// ACHTUNG!!!!
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT),
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_HELP),
 									   " "));
 	}
 
 	void cmpltKaempfeHelfe() {
-		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT)));
 	}
 
 	void cmpltKaufe() {
@@ -1535,17 +1536,17 @@ public class EresseaOrderCompleter implements Completer {
 			addUnitItems("");
 
 			// if unit doesn't have silver, but poolsilver is available
-			if((unit.getItem(data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) == null) &&
-				   (region.getItem(data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) != null)) {
-				completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SILVER)));
+			if((unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) == null) &&
+				   (region.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
+				completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_SILVER).getOrderName()));
 			}
 		} else if(!silverPool && materialPool) {
 			for(Iterator iter = region.items().iterator(); iter.hasNext();) {
 				Item item = (Item) iter.next();
 
 				if(silverPool ||
-					   (item.getItemType() != data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) ||
-					   (unit.getItem(data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) != null)) {
+					   (item.getItemType() != data.rules.getItemType(EresseaConstants.I_SILVER)) ||
+					   (unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
 					String name = item.getName();
 					String quotedName = name;
 
@@ -1562,8 +1563,8 @@ public class EresseaOrderCompleter implements Completer {
 
 				// silver only if silverpool activated or unit has silver
 				if(silverPool ||
-					   (item.getItemType() != data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) ||
-					   (unit.getItem(data.rules.getItemType(StringID.create(EresseaConstants.O_SILVER))) != null)) {
+					   (item.getItemType() != data.rules.getItemType(EresseaConstants.I_SILVER)) ||
+					   (unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
 					String name = item.getName();
 					String quotedName = name;
 
@@ -1646,7 +1647,7 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltStirb() {
-		if((unit.getFaction() != null) && (unit.getFaction().getPassword() != null)) {
+	  if (Units.isPrivilegedAndNoSpy(unit)){
 			completions.add(new Completion('"' + unit.getFaction().getPassword() + '"', ""));
 		}
 	}

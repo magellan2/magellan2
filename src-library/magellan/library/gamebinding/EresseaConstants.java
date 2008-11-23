@@ -80,7 +80,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_ADDRESSES = "ADDRESSES";
 
-	/** DOCUMENT-ME */
+	/** 
+	 * @deprecated replaced by COMBAT_AGGRESSIVE
+	 */
 	public static final String O_AGGRESSIVE = "AGGRESSIVE";
 
 	/** DOCUMENT-ME */
@@ -119,8 +121,26 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_CLAIM = "CLAIM";
 
-	/** DOCUMENT-ME */
+	/** "KÄMPFE [AGGRESSIV|HINTEN|DEFENSIV...]" */
 	public static final String O_COMBAT = "COMBAT";
+
+  /** argument of COMBAT order */
+  public static final String O_COMBAT_AGGRESSIVE = "AGGRESSIVE";
+
+  /** argument of COMBAT order */
+  public static final String O_COMBAT_DEFENSIVE = "DEFENSIVE";
+
+  /** argument of COMBAT order */
+  public static final String O_COMBAT_FLEE = "FLEE";
+
+  /** argument of COMBAT order */
+  public static final String O_COMBAT_FRONT = "FRONT";
+
+  /** argument of COMBAT order */
+	public static final String O_COMBAT_REAR = "REAR";
+
+  /** argument of COMBAT order */
+  public static final String O_COMBAT_NOT = "NOT";
 
 	/** DOCUMENT-ME */
 	public static final String O_COMBATSPELL = "COMBATSPELL";
@@ -137,7 +157,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_DEFAULT = "DEFAULT";
 
-	/** DOCUMENT-ME */
+	/** 
+	 * @deprecated replaced by O_COMBAT_DEFENSIVE
+	 */
 	public static final String O_DEFENSIVE = "DEFENSIVE";
 
 	/** DOCUMENT-ME */
@@ -167,10 +189,14 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_FACTION = "FACTION";
 
-	/** DOCUMENT-ME */
+	/**
+	 * @deprecated replaced by HELP_FACTIONSTEALTH
+	 */
 	public static final String O_FACTIONSTEALTH = "FACTIONSTEALTH";
 
-	/** DOCUMENT-ME */
+	/** 
+	 * @deprecated replaced by COMBAT_FLEE 
+	 */
 	public static final String O_FLEE = "FLEE";
 
 	/** DOCUMENT-ME */
@@ -182,7 +208,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_FORGET = "FORGET";
 
-	/** DOCUMENT-ME */
+	/** 
+	 * @deprecated replaced by COMBAT_FRONT
+	 */
 	public static final String O_FRONT = "FRONT";
 
 	/** DOCUMENT-ME */
@@ -200,10 +228,25 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_HELP = "HELP";
 
+  /** The "GIB" from HELFE GIB */
+  public static final String O_HELP_GIVE = "HELP_GIVE";
+
+  /** The "KÄMPFE" from HELFE KÄMPFE */
+  public static final String O_HELP_COMBAT = "HELP_COMBAT";
+
+  /** The "SILBER" from HELFE SILBER */
+  public static final String O_HELP_SILVER = "HELP_SILVER";
+
+  /** The "BEWACHE" from HELFE BEWACHE */
+  public static final String O_HELP_GUARD = "HELP_GUARD";
+
+  /** The "PARTEITARNUNG" from HELFE PARTEITARNUNG */
+  public static final String O_HELP_FACTIONSTEALTH = "HELP_FACTIONSTEALTH";
+
 	// FIXME(pavkovic) 2003.04.16: this is only used for german to distinguish between "HELFEN" and "HELFE"
 
-	/** DOCUMENT-ME */
-	public static final String O_HELP_COMBAT = "HELP_COMBAT";
+	/** The "HELFE" from KÄMPFE HELFE [NICHT] */
+	public static final String O_COMBAT_HELP = "COMBAT_HELP";
 
 	/** DOCUMENT-ME */
 	public static final String O_HERBS = "HERBS";
@@ -289,7 +332,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_QUIT = "QUIT";
 
-	/** DOCUMENT-ME */
+	/** 
+   * @deprecated replaced by O_COMBAT_REAR
+  */
 	public static final String O_REAR = "REAR";
 
 	/** DOCUMENT-ME */
@@ -340,7 +385,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_SIEGE = "SIEGE";
 
-	/** DOCUMENT-ME */
+	/** 
+	 * @deprecated use rules.getItemType(EresseaConstants.I_SILVER) instead
+	 */
 	public static final String O_SILVER = "SILVER";
 
 	/** DOCUMENT-ME */

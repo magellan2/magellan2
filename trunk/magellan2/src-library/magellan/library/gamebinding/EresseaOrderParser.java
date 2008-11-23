@@ -1306,11 +1306,11 @@ public class EresseaOrderParser implements OrderParser {
 		OrderToken t = (OrderToken) tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL)) ||
-			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_GUARD)) ||
-			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_GIVE)) ||
-			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT)) ||
-			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SILVER)) ||
-			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTIONSTEALTH))) {
+			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_GUARD)) ||
+			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_GIVE)) ||
+			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)) ||
+			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_SILVER)) ||
+			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_FACTIONSTEALTH))) {
 			retVal = readHelfeFIDModifier(t);
 		} else {
 			unexpected(t);
@@ -1353,17 +1353,17 @@ public class EresseaOrderParser implements OrderParser {
 
 		OrderToken t = (OrderToken) tokens.next();
 
-		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_AGGRESSIVE))) {
+		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE))) {
 			retVal = readFinalKeyword(t);
-		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REAR))) {
+		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_REAR))) {
 			retVal = readFinalKeyword(t);
-		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_DEFENSIVE))) {
+		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE))) {
 			retVal = readFinalKeyword(t);
-		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
+		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT))) {
 			retVal = readFinalKeyword(t);
-		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FLEE))) {
+		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FLEE))) {
 			retVal = readFinalKeyword(t);
-		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT))) {
+		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_HELP))) {
 			retVal = readKaempfeHelfe(t);
 		} else {
 			retVal = checkFinal(t);
@@ -2039,7 +2039,7 @@ public class EresseaOrderParser implements OrderParser {
 		if(isID(t.getText()) == true) {
 			retVal = readPiraterieFID(t);
 		} else {
-			unexpected(t);
+		  retVal = checkFinal(t);
 		}
 
 		if(completer!=null && !t.followedBySpace()){

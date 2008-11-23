@@ -68,7 +68,6 @@ import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
-import magellan.client.EMapDetailsPanel;
 import magellan.client.EMapOverviewPanel;
 import magellan.client.completion.AutoCompletion;
 import magellan.client.desktop.DesktopEnvironment;
@@ -83,6 +82,7 @@ import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewOrderEditorPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.preferences.PreferencesAdapter;
+import magellan.client.utils.Units;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -332,7 +332,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 		} else {
 			// single editor mode
 			Object activeObject = se.getActiveObject();   
-        if(activeObject instanceof Unit && (EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject) || editAllFactions)) {
+        if(activeObject instanceof Unit && (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject) || editAllFactions)) {
 				// update editor
         currentUnit = (Unit) activeObject;
         attachOrderEditor(currentUnit, editorSingelton);
@@ -386,7 +386,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
     Unit newUnit = null;
     if(activeObject != null) {
       if(activeObject instanceof Unit && 
-          (EMapDetailsPanel.isPrivilegedAndNoSpy((Unit) activeObject) 
+          (magellan.library.utils.Units.isPrivilegedAndNoSpy((Unit) activeObject) 
               || editAllFactions)) {
         newUnit = (Unit) activeObject;
         newRegion = newUnit.getRegion();
@@ -1045,7 +1045,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	    // list units of specified Island
 	    for (Region r : i.regions()) {
 	      for (Unit u : r.units()) {
-          if (EMapDetailsPanel.isPrivileged(f) && (f == null || u.getFaction().equals(f))) {
+          if (magellan.library.utils.Units.isPrivileged(f) && (f == null || u.getFaction().equals(f))) {
             l.add(u);
           }
         }
@@ -1079,7 +1079,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	  for(Iterator<Unit> iter = l.iterator(); iter.hasNext();) {
 	    Unit u = iter.next();
 
-	    if(!EMapDetailsPanel.isPrivileged(u.getFaction()) || (f!=null &&  !f.equals(u.getFaction()))) {
+	    if(!magellan.library.utils.Units.isPrivileged(u.getFaction()) || (f!=null &&  !f.equals(u.getFaction()))) {
 	      iter.remove();
 	    }
 	  }
@@ -1093,7 +1093,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
 	 * @param u
 	 */
 	private void loadEditors(Unit u) {
-    if (!EMapDetailsPanel.isPrivilegedAndNoSpy(u)){
+    if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(u)){
       loadEditors(Collections.<Unit>emptyList());
       return;
     }

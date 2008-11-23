@@ -224,32 +224,32 @@ public class EresseaOrderChanger implements OrderChanger {
 
 		switch(newState) {
 		case 0:
-			str += Resources.getOrderTranslation(EresseaConstants.O_AGGRESSIVE);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE);
 
 			break;
 
 		case 1:
-			str += Resources.getOrderTranslation(EresseaConstants.O_FRONT);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FRONT);
 
 			break;
 
 		case 2:
-			str += Resources.getOrderTranslation(EresseaConstants.O_REAR);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_REAR);
 
 			break;
 
 		case 3:
-			str += Resources.getOrderTranslation(EresseaConstants.O_DEFENSIVE);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_DEFENSIVE);
 
 			break;
 
 		case 4:
-			str += Resources.getOrderTranslation(EresseaConstants.O_NOT);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT);
 
 			break;
 
 		case 5:
-			str += Resources.getOrderTranslation(EresseaConstants.O_FLEE);
+			str += Resources.getOrderTranslation(EresseaConstants.O_COMBAT_FLEE);
 
 			break;
 

@@ -68,10 +68,10 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
     Collection<String> orders = unit.getOrders();
     List<Problem> errors = new ArrayList<Problem>();
     
-    if (Utils.isEmpty(orders) && type==Problem.ERROR) {
+    if ((Utils.isEmpty(orders) || orders.size()==0)&& type==Problem.ERROR) {
       // no orders...that could be a problem.
-      if (Utils.isEmpty(unit.getFaction().getPassword())) {
-        // okay, that isnt our unit... forget it
+      if (!magellan.library.utils.Units.isPrivilegedAndNoSpy(unit)) {
+        // okay, that isn't our unit... forget it
         return Collections.emptyList();
       } else {
         errors.add(new SyntaxError(this,unit,"tasks.ordersyntaxinspector.no_orders"));
@@ -79,7 +79,7 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
       
     }
     
-    // be carefull with the order parser. Some orders may be correct but will not get
+    // be careful with the order parser. Some orders may be correct but will not get
     // an OK from the parser: ZAUBERE und Benutze Trank ...
     // so I change that from error to warning
     
@@ -90,10 +90,6 @@ public class OrderSyntaxInspector extends AbstractInspector implements Inspector
       Integer line = 1;
       for (String order : orders) {
         StringReader reader = new StringReader(order);
-        // Debug
-        if (order.toLowerCase().startsWith("zaubere 'geister")){
-          int i = 1;
-        }
         boolean ok = parser.read(reader);
         if (!ok) {
           errors.add(new SyntaxWarning(this,unit,"tasks.ordersyntaxinspector.parse_warning",order,line));

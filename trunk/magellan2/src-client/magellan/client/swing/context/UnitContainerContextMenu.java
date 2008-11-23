@@ -39,7 +39,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import magellan.client.Client;
-import magellan.client.EMapDetailsPanel;
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
@@ -468,8 +467,8 @@ public class UnitContainerContextMenu extends JPopupMenu {
 				Ship ship = (Ship)o;
 				Unit u = ship.getOwnerUnit();
 
-				if(u!=null && EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
-					Units.addOrders(u, s);
+				if(u!=null && magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
+					magellan.client.utils.Units.addOrders(u, s);
 					dispatcher.fire(new UnitOrdersEvent(this, u));
 				}
 			}

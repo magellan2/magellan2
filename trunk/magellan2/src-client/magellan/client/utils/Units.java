@@ -25,7 +25,6 @@ import java.util.Map;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import magellan.client.EMapDetailsPanel;
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
@@ -544,27 +543,27 @@ public class Units {
     if (s == null || s.length != 4) {
       throw new IllegalArgumentException("expecting exactly 4 arguments");
     }
-
+  
     if (s[0] != null) {
       boolean replace = Boolean.valueOf(s[1]).booleanValue();
       boolean keepComments = Boolean.valueOf(s[2]).booleanValue();
       String position = s[3];
       String[] newOrderArray = s[0].split("\n");
-
-      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+  
+      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
         if (replace) {
           if (keepComments) {
             Collection oldOrders = u.getOrders();
             List<String> newOrders = new LinkedList<String>();
-
+  
             for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
               String order = (String) iterator.next();
-
+  
               if (order.trim().startsWith("//") || order.trim().startsWith(";")) {
                 newOrders.add(order);
               }
             }
-
+  
             if (position.equals(GiveOrderDialog.FIRST_POS)) {
               for (String sHelp : newOrderArray) {
                 newOrders.add(0, sHelp);
@@ -576,7 +575,7 @@ public class Units {
             }
             u.setOrders(newOrders);
           } else {
-
+  
             List<String> newOrders = new LinkedList<String>();
             for (String sHelp : newOrderArray) {
               newOrders.add(sHelp);
@@ -608,16 +607,16 @@ public class Units {
     if (s == null || s.length != 3) {
       throw new IllegalArgumentException("expecting exactly 3 arguments");
     }
-
+  
     if (s[0] != null) {
       String pattern = s[0];
       String mode = s[1];
       String matchCase = s[2];
       
-      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
+      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
         Collection oldOrders = u.getOrders();
         List<String> newOrders = new LinkedList<String>();
-
+  
         for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
           String order = (String) iterator.next();
           String casedOrder;

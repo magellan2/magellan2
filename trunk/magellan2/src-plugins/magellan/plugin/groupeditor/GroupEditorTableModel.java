@@ -237,7 +237,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
       unit.addOrders(helpcommand+" "+faction.getID()+" "+Resources.getOrderTranslation("ALL")+" "+Resources.getOrderTranslation("NOT"));
       unit.addOrders("; new help states for "+faction);
       for (AllianceCategory category : state.getCategories()) {
-        unit.addOrders(helpcommand+" "+faction.getID()+" "+Resources.getOrderTranslation(category.getName()));
+        unit.addOrders(helpcommand+" "+faction.getID()+" "+Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX+category.getName()));
       }
     }
   }

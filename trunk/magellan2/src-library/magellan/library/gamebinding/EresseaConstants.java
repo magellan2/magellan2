@@ -125,22 +125,22 @@ public class EresseaConstants {
 	public static final String O_COMBAT = "COMBAT";
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_AGGRESSIVE = "AGGRESSIVE";
+  public static final String O_COMBAT_AGGRESSIVE = "COMBAT_AGGRESSIVE";
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_DEFENSIVE = "DEFENSIVE";
+  public static final String O_COMBAT_DEFENSIVE = "COMBAT_DEFENSIVE";
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_FLEE = "FLEE";
+  public static final String O_COMBAT_FLEE = "COMBAT_FLEE";
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_FRONT = "FRONT";
+  public static final String O_COMBAT_FRONT = "COMBAT_FRONT";
 
   /** argument of COMBAT order */
-	public static final String O_COMBAT_REAR = "REAR";
+	public static final String O_COMBAT_REAR = "COMBAT_REAR";
 
   /** argument of COMBAT order */
-  public static final String O_COMBAT_NOT = "NOT";
+  public static final String O_COMBAT_NOT = "COMBAT_NOT";
 
 	/** DOCUMENT-ME */
 	public static final String O_COMBATSPELL = "COMBATSPELL";

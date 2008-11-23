@@ -16,7 +16,6 @@ package magellan.client.swing.map;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
@@ -25,7 +24,6 @@ import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +33,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
@@ -60,9 +57,9 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	protected Color brighterColor = Color.black.brighter();
 	protected Font unscaledFont = null;
 	protected Font font = null;
-	protected FontMetrics fontMetrics = null;
+//	protected FontMetrics fontMetrics = null;
 	protected int minimumFontSize = 10;
-	protected int fontHeight = 0;
+//	protected int fontHeight = 0;
 	protected boolean isScalingFont = false;
 	protected int hAlign = SignTextCellRenderer.CENTER;
 	protected String singleString[] = new String[1];
@@ -138,8 +135,8 @@ public class SignTextCellRenderer extends HexCellRenderer {
 												minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
-		fontMetrics = Client.getDefaultFontMetrics(this.font);
-		fontHeight = this.fontMetrics.getHeight();
+//		fontMetrics = Client.getDefaultFontMetrics(this.font);
+//		fontHeight = this.fontMetrics.getHeight();
 	}
 
 	protected boolean isScalingFont() {
@@ -174,13 +171,13 @@ public class SignTextCellRenderer extends HexCellRenderer {
 		hAlign = i;
 	}
 
-	protected FontMetrics getFontMetrics() {
-		if(fontMetrics == null) {
-			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
-		}
-
-		return fontMetrics;
-	}
+//	protected FontMetrics getFontMetrics() {
+//		if(fontMetrics == null) {
+//			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
+//		}
+//
+//		return fontMetrics;
+//	}
 
 	/**
 	 * DOCUMENT-ME
@@ -203,7 +200,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 	 *
 	 * @return Collection of Strings to put on the sign
 	 */
-	public Collection getText(Region r, Rectangle rect){
+	public Collection<Sign> getText(Region r, Rectangle rect){
 		return r.getSigns();
 	}
 
@@ -242,24 +239,32 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			CoordinateID c = r.getCoordinate();
 			Rectangle rect = cellGeo.getCellRect(c.x, c.y);
 
-			Collection display = getText(r, rect);
+      Collection<Sign> signs = getText(r, rect);
+      if (signs==null)
+        return;
+      
+      String[] display = new String[signs.size()]; 
+			int signCount=0;
+			for (Sign s : signs){
+			  display[signCount++]=s.getText();
+			}
 
-			if((display == null) || (display.size() == 0)) {
+			if((display == null) || (display.length == 0)) {
 				return;
 			}
 
 			graphics.setFont(font);
 			graphics.setColor(fontColor);
 
-			int height = (int) (fontHeight * 0.8);
+			int height = getHeight(display);
 			int middleX = (rect.x + (rect.width / 2)) - offset.x;
 			int middleY = (rect.y + (rect.height / 2) + 1) - offset.y;
 			int upperY = middleY;
 
-			if(display.size() == 1) {
+			if(display.length == 1) {
 				upperY += (height / 4);				
 			} else {
-				upperY -= (((display.size() - 1) * height) / 4);
+				upperY -= (((display.length - 1) * height) / 4);
 			}
 
 			// put the text above the cell...
@@ -273,8 +278,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 				int leftX = middleX - (getMaxWidth(display) / 2);
 				
 				i = 0;
-				for (Iterator iter = display.iterator();iter.hasNext();){
-					String s = ((Sign)iter.next()).getText();
+				for (String s : display){
 					drawString(graphics, s, leftX, upperY + (i * height));
 					i++;
 				}
@@ -286,12 +290,11 @@ public class SignTextCellRenderer extends HexCellRenderer {
 				// height/X is not good...but near.
 				// to have the border a bit away from text
 				int lmax = (getMaxWidth(display) + (height/4));
-				fillRectangle(middleX-(lmax/2), upperY - height, lmax, ((display.size()) * height) + (height/4));
+				fillRectangle(middleX-(lmax/2), upperY - height, lmax, ((display.length) * height) + (height/4));
 				
 				i = 0;
-				for (Iterator iter = display.iterator();iter.hasNext();){
-					String s = ((Sign)iter.next()).getText();
-					int l = fontMetrics.stringWidth(s);
+				for (String s : display){
+					int l = getWidth(s);
 					drawString(graphics, s, middleX - (l / 2), upperY + (i * height));
 					i++;
 				}
@@ -304,10 +307,9 @@ public class SignTextCellRenderer extends HexCellRenderer {
 				int rightX = middleX + (getMaxWidth(display) / 2);
 
 				i = 0;
-				for (Iterator iter = display.iterator();iter.hasNext();){
-					String s = ((Sign)iter.next()).getText();
+				for (String s : display){
 					i++;
-					drawString(graphics, s, rightX - fontMetrics.stringWidth(s),
+					drawString(graphics, s, rightX - getWidth(s),
 							   upperY + (i * height));
 				}
 
@@ -316,17 +318,34 @@ public class SignTextCellRenderer extends HexCellRenderer {
 		}
 	}
 
-	private int getMaxWidth(Collection display) {
+	 protected int getWidth(String string) {
+	    return (int) font.getStringBounds(string, graphics.getFontRenderContext()).getWidth();
+	  }
+
+	  protected int getWidth(char [] chars, int begin, int limit) {
+	    return (int) font.getStringBounds(chars, begin, limit, graphics.getFontRenderContext()).getWidth();
+	  }
+
+
+	private int getMaxWidth(String[] display) {
 		int maxWidth = -1;
-		for (Iterator iter = display.iterator();iter.hasNext();){
-			String s = ((Sign)iter.next()).getText();
-			if(fontMetrics.stringWidth(s) > maxWidth) {
-				maxWidth = fontMetrics.stringWidth(s);
+		for (String s : display){
+			if(getWidth(s) > maxWidth) {
+				maxWidth = getWidth(s);
 			}
 		}
 
 		return maxWidth;
 	}
+
+  private int getHeight(String[] display) {
+    float height = 1;
+    for (String text : display){
+      height=Math.max(height, font.getLineMetrics(text, graphics.getFontRenderContext()).getHeight());
+    }
+    return (int) (height * 0.9);
+  }
+
 
 	private void drawString(Graphics graphic, String text, int X, int Y) {
 		graphics.setColor(fontColor);

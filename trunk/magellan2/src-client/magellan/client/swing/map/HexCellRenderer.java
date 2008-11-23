@@ -15,6 +15,7 @@ package magellan.client.swing.map;
 
 import java.awt.Component;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Properties;
 
@@ -41,7 +42,7 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 	protected GameData data = null;
 
 	/** The graphics object set by init() to draw on in the render() method. */
-	protected Graphics graphics = null;
+	protected Graphics2D graphics = null;
 
 	/**
 	 * The pixel offset used to compensate the difference of axis origins between the graphics
@@ -81,7 +82,7 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 */
   public void init(GameData data, Graphics g, Rectangle offset) {
     this.data = data;
-    graphics = g;
+    graphics = (Graphics2D) g;
     this.offset = offset;
   }
 

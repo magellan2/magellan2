@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -340,7 +339,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	 */
 	@Override
   public String[] getText(Region r, Rectangle rect) {
-		return set.getReplacement(r, getCellGeometry(), getFontMetrics());
+		return set.getReplacement(r, getCellGeometry());
 	}
 
 	/**
@@ -521,7 +520,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		return AdvancedTextCellRenderer.BLANK;
 	}
 
-	protected String[] breakString(String s, CellGeometry geo, FontMetrics fm) {
+	protected String[] breakString(String s, CellGeometry geo) {
 		int maxWidth = (int) (geo.getCellSize().width * 0.9);
 		AdvancedTextCellRenderer.buffer.clear();
 
@@ -543,8 +542,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			while(it.hasNext() && !changed) {
 				String part = (String) it.next();
 
-				if(fm.stringWidth(part) > maxWidth) {
-					breakStringImpl(part, AdvancedTextCellRenderer.buffer, fm, maxWidth, index);
+				if(getWidth(part) > maxWidth) {
+					breakStringImpl(part, AdvancedTextCellRenderer.buffer, maxWidth, index);
 					changed = true;
 				}
 
@@ -561,11 +560,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		return strbuf;
 	}
 
-	private void breakStringImpl(String part, List<String> buffer, FontMetrics fm, int mw, int index) {
+	private void breakStringImpl(String part, List<String> buffer, int mw, int index) {
 		char chr[] = part.toCharArray();
 		int len = chr.length;
 
-		while(fm.charsWidth(chr, 0, len) > mw) {
+		while(getWidth(chr, 0, len) > mw) {
 			len--;
 		}
 
@@ -630,12 +629,12 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		 *
 		 * 
 		 */
-		public String[] getReplacement(Region r, CellGeometry geo, FontMetrics fm) {
+		public String[] getReplacement(Region r, CellGeometry geo) {
 			if(cache.containsKey(r)) {
 				return cache.get(r);
 			}
 
-			String buf[] = breakString(createString(replacer, r), geo, fm);
+			String buf[] = breakString(createString(replacer, r), geo);
 			cache.put(r, buf);
 
 			return buf;

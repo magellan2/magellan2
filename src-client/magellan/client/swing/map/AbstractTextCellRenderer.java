@@ -15,11 +15,9 @@ package magellan.client.swing.map;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-import magellan.client.Client;
 import magellan.client.MagellanContext;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
@@ -38,9 +36,9 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 	protected Color brighterColor = Color.black.brighter();
 	protected Font unscaledFont = null;
 	protected Font font = null;
-	protected FontMetrics fontMetrics = null;
+//	protected FontMetrics fontMetrics = null;
 	protected int minimumFontSize = 10;
-	protected int fontHeight = 0;
+//	protected int fontHeight = 0;
 	protected boolean isScalingFont = false;
 	protected int hAlign = AbstractTextCellRenderer.CENTER;
 	protected boolean shortenStrings = false;
@@ -88,8 +86,8 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 												minimumFontSize));
 
 		// using deprecated getFontMetrics() to avoid Java2D methods
-		fontMetrics = Client.getDefaultFontMetrics(this.font);
-		fontHeight = this.fontMetrics.getHeight();
+//		fontMetrics = Client.getDefaultFontMetrics(this.font);
+//		fontHeight = this.fontMetrics.getHeight();
 	}
 
 	protected boolean isScalingFont() {
@@ -116,13 +114,13 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 		hAlign = i;
 	}
 
-	protected FontMetrics getFontMetrics() {
-		if(fontMetrics == null) {
-			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
-		}
-
-		return fontMetrics;
-	}
+//	protected FontMetrics getFontMetrics() {
+//		if(fontMetrics == null) {
+//			fontMetrics = Client.getDefaultFontMetrics(new Font("TimesRoman",Font.PLAIN, 10));
+//		}
+//
+//		return fontMetrics;
+//	}
 
 	protected boolean isShortenStrings() {
 		return shortenStrings;
@@ -206,12 +204,12 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 				display = singleString;
 			}
 
+      graphics.setFont(font);
+      graphics.setColor(fontColor);
+
 			shortenStrings(display, rect.width);
 
-			graphics.setFont(font);
-			graphics.setColor(fontColor);
-
-			int height = (int) (fontHeight * 0.8);
+			int height = getHeight(display);
 			int middleX = (rect.x + (rect.width / 2)) - offset.x;
 			int middleY = (rect.y + (rect.height / 2) + 1) - offset.y;
 			int upperY = middleY;
@@ -238,7 +236,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 			case CENTER:
 
 				for(int i = 0; i < display.length; i++) {
-					int l = fontMetrics.stringWidth(display[i]);
+					int l = getWidth(display[i]);
 					drawString(graphics, display[i], middleX - (l / 2), upperY + (i * height));
 				}
 
@@ -250,7 +248,7 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 				int rightX = middleX + (getMaxWidth(display) / 2);
 
 				for(int i = 0; i < display.length; i++) {
-					drawString(graphics, display[i], rightX - fontMetrics.stringWidth(display[i]),
+					drawString(graphics, display[i], rightX - getWidth(display[i]),
 							   upperY + (i * height));
 				}
 
@@ -259,12 +257,28 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 		}
 	}
 
-	private int getMaxWidth(String display[]) {
+	protected int getWidth(String string) {
+	  return (int) font.getStringBounds(string, graphics.getFontRenderContext()).getWidth();
+  }
+
+  protected int getWidth(char [] chars, int begin, int limit) {
+    return (int) font.getStringBounds(chars, begin, limit, graphics.getFontRenderContext()).getWidth();
+  }
+
+  private int getHeight(String[] display) {
+	  float height = 1;
+	  for (String text : display){
+	    height=Math.max(height, font.getLineMetrics(text, graphics.getFontRenderContext()).getHeight());
+	  }
+	  return (int) (height * 0.9);
+  }
+
+  private int getMaxWidth(String display[]) {
 		int maxWidth = -1;
 
 		for(int i = 0; i < display.length; i++) {
-			if(fontMetrics.stringWidth(display[i]) > maxWidth) {
-				maxWidth = fontMetrics.stringWidth(display[i]);
+			if(getWidth(display[i]) > maxWidth) {
+				maxWidth = getWidth(display[i]);
 			}
 		}
 
@@ -282,13 +296,13 @@ public abstract class AbstractTextCellRenderer extends HexCellRenderer {
 		if(shortenStrings && (str != null) && (str.length > 0)) {
 			for(int i = 0; i < str.length; i++) {
 				if(str[i] != null) {
-					if(fontMetrics.stringWidth(str[i]) > maxWidth) {
+					if(getWidth(str[i]) > maxWidth) {
 						char name[] = str[i].toCharArray();
 						int nameLen = name.length;
 						int nameWidth = 0;
 
 						for(; nameLen > 0; nameLen--) {
-							nameWidth = fontMetrics.charsWidth(name, 0, nameLen);
+							nameWidth = getWidth(name , 0, nameLen);
 
 							if(nameWidth < (maxWidth * 0.9)) {
 								if(nameLen < name.length) {

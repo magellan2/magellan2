@@ -229,7 +229,7 @@ class AllianceState {
   @Override
   public String toString() {
     StringBuffer buffer = new StringBuffer();
-    for (AllianceCategory category : categories) buffer.append(Resources.getOrderTranslation(category.getName())).append(" ");
+    for (AllianceCategory category : categories) buffer.append(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX+category.getName())).append(" ");
     return buffer.toString();
   }
 }

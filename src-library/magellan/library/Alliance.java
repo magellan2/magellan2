@@ -26,7 +26,8 @@ import magellan.library.utils.Resources;
  * is implicit, the target faction is an explicite field of this class.
  */
 public class Alliance {
-	private final Faction faction;
+	public static final String ORDER_KEY_PREFIX = "HELP_";
+  private final Faction faction;
 	private int state = 0;
 
 	/**
@@ -120,7 +121,7 @@ public class Alliance {
 		}
 
 		if(getState(maxAC.getBitMask())) {
-			return Resources.getOrderTranslation(maxAC.getName());
+			return Resources.getOrderTranslation(ORDER_KEY_PREFIX+maxAC.getName());
 		}
 
 		StringBuffer ret = new StringBuffer();
@@ -130,7 +131,8 @@ public class Alliance {
 			AllianceCategory ac = iter.next();
 
 			if(!ac.equals(maxAC) && getState(ac.getBitMask())) {
-				ret.append(Resources.getOrderTranslation(ac.getName()));
+			  // TODO (stm) This is a hack. 
+				ret.append(Resources.getOrderTranslation(ORDER_KEY_PREFIX+ac.getName()));
 
 				if(iter.hasNext()) {
 					ret.append(" ");

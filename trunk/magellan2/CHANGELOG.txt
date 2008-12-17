@@ -1,3 +1,7 @@
+2008-12-17 / Build 251 - Thoralf <thoralf@m84.de>
+    * added Eisscholle as isOcean type (Allanon specific)
+    * added some Allanon specific resource keys
+
 2008-11-17 / Build 247 - stm (stm_@users.sourceforge.net)
     * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
 	* fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE

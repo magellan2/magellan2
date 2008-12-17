@@ -1675,6 +1675,7 @@ REGIONTYPE "Feuerwand"
 "Feuerwand";name
 REGIONTYPE "Eisscholle"
 "Eisscholle";name
+"true";isOcean
 REGIONTYPE "aktiver Vulkan"
 "aktiver Vulkan";name
 REGIONTYPE "Vulkan"

@@ -26,7 +26,8 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * This action will check the whole map and tries to find
+ * islands.
  *
  * @author Andreas
  * @version 1.0

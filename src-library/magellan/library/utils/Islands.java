@@ -72,10 +72,10 @@ public class Islands {
 		for(Island curIsland : islands.values()) {
       ui.setProgress(Resources.get("progressdialog.islands.step01"), ++counter);
 
-			Collection oldRegions = curIsland.regions();
+			Collection<Region> oldRegions = curIsland.regions();
       
 			if(oldRegions.size() > 0) {
-				Map<CoordinateID,Region> islandRegions = Islands.getIsland(rules, unassignedPool, (Region) oldRegions.iterator().next());
+				Map<CoordinateID,Region> islandRegions = Islands.getIsland(rules, unassignedPool, oldRegions.iterator().next());
 
 				for(Region curRegion : islandRegions.values()) {
 					curRegion.setIsland(curIsland);

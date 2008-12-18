@@ -1646,31 +1646,31 @@ REGIONTYPE "Ozean"
 REGIONTYPE "Ebene"
 "Ebene";name
 10000;maxworkers
-100;roadStones
+25;roadStones
 REGIONTYPE "Wald"
 "Wald";name
 10000;maxworkers
-100;roadStones
+25;roadStones
 REGIONTYPE "Sumpf"
 "Sumpf";name
 2000;maxworkers
-500;roadStones
+100;roadStones
 REGIONTYPE "Wüste"
 "Wüste";name
 500;maxworkers
-200;roadStones
+50;roadStones
 REGIONTYPE "Hochland"
 "Hochland";name
 4000;maxworkers
-200;roadStones
+50;roadStones
 REGIONTYPE "Berge"
 "Berge";name
 1000;maxworkers
-500;roadStones
+100;roadStones
 REGIONTYPE "Gletscher"
 "Gletscher";name
 100;maxworkers
-500;roadStones
+100;roadStones
 REGIONTYPE "Feuerwand"
 "Feuerwand";name
 REGIONTYPE "Eisscholle"
@@ -1678,10 +1678,11 @@ REGIONTYPE "Eisscholle"
 "true";isOcean
 REGIONTYPE "aktiver Vulkan"
 "aktiver Vulkan";name
+100;roadStones
 REGIONTYPE "Vulkan"
 "Vulkan";name
 10000;maxworkers
-500;roadStones
+100;roadStones
 
 
 BUILDINGTYPE "Monument"

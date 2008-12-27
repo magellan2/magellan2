@@ -1,3 +1,6 @@
+2008-12-27 / Build 252 - Thoralf <thoralf@m84.de>
+    * added getConfiguration, setConfiguration to ExtCmds Helper to read and write extra informations to a unit
+    
 2008-12-17 / Build 251 - Thoralf <thoralf@m84.de>
     * added Eisscholle as isOcean type (Allanon specific)
     * added some Allanon specific resource keys

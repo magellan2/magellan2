@@ -26,6 +26,7 @@ package magellan.plugin.extendedcommands;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -429,5 +430,48 @@ public class ExtendedCommandsHelper {
    */
   public Unit getUnit(String unitId) {
     return world.getUnit(UnitID.createUnitID(unitId, world.base));
+  }
+  
+  /**
+   * This method reads the orders of a unit and extracts
+   * all lines with the syntax '// extcmds:"<key>":value'.
+   * 
+   * This method returns always a map and never null.
+   */
+  public Map<String,String> getConfiguration(Unit unit) {
+    Map<String,String> configuration = new HashMap<String, String>();
+    if (unit == null) return configuration;
+    
+    Collection<String> orders = unit.getOrders();
+    if (orders == null) return configuration;
+    for (String order : orders) {
+      if (order == null) continue;
+      if (order.startsWith("// extcmds:")) {
+        // okay, we found a line with the configuration
+        String line = order.substring("// extcmds:".length()+1);
+        if (line.indexOf(":")>0) {
+          String key = line.substring(0,line.indexOf(":"));
+          String value = line.substring(line.indexOf(":"));
+          key = key.replaceAll("\"", "");
+          key = key.replaceAll(":", "");
+          configuration.put(key, value);
+        }
+      }
+    }
+      
+    return configuration;
+  }
+  
+  /** 
+   * This method writes the configuration of a unit into its
+   * orders based on the syntax: '// extcmds:"<key>":value'
+   */  
+  public void setConfiguration(Unit unit, Map<String,String> configuration) {
+    if (unit == null) return;
+    if (configuration == null) return;
+    for (String key : configuration.keySet()) {
+      String value = configuration.get(key);
+      addOrder("// extcmds:\""+key+"\":"+value);
+    }
   }
 }

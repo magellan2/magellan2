@@ -1078,6 +1078,9 @@ public class CRParser implements RulesIO, GameDataIO {
       if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("class")) {
         rules.setGameSpecificStuffClassName(sc.argv[0]);
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("orderFileStartingString")) {
+        rules.setOrderfileStartingString(sc.argv[0]);
+        sc.getNextToken();
       } else if(sc.isBlock) {
         break;
       } else {

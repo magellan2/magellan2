@@ -66,6 +66,11 @@ public class GenericRules implements Rules {
 	// Map consisting of SkillType
 	private Map<String,ObjectType> mapSkillType = new OrderedHashtable<String, ObjectType>();
 	private Map<String,ObjectType> mapSkillTypeNames = new OrderedHashtable<String, ObjectType>();
+	
+	// Class with gamespecific things...
+	private GameSpecificStuff gameSpecificStuff;
+	
+	private String orderFileStartingString = "ERESSEA";
 
 	/**
 	 * DOCUMENT-ME
@@ -977,7 +982,7 @@ public class GenericRules implements Rules {
 		gameSpecificStuffClassName = className;
 	}
 
-	private GameSpecificStuff gameSpecificStuff;
+	
 
 	/**
 	 * DOCUMENT-ME
@@ -1081,4 +1086,22 @@ public class GenericRules implements Rules {
 			givenIterator.remove();
 		}
 	}
+	
+	/**
+	 * 
+	 * @see magellan.library.Rules#getOrderfileStartingString()
+	 */
+	public String getOrderfileStartingString(){
+	    return orderFileStartingString;
+	}
+	
+	/**
+	 * 
+	 * @see magellan.library.Rules#setOrderfileStartingString(java.lang.String)
+	 */
+	public void setOrderfileStartingString(String startingString){
+	  orderFileStartingString = startingString;
+	}
+	
+	
 }

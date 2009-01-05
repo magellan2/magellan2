@@ -5,6 +5,8 @@
 	* fixed #346 (Dateiname beim Hinzufügen)
 	* added infos to eressea.cr #181
 	* added some icons for menouthis
+	* added OrderFileStartingString to Rules (#341) (defaults to ERESSEA)
+	* added menouthis.cr
 
 2008-12-27 / Build 252 - Thoralf <thoralf@m84.de>
     * added getConfiguration, setConfiguration to ExtCmds Helper to read and write extra informations to a unit

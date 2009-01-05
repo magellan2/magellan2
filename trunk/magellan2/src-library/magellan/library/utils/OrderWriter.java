@@ -157,7 +157,10 @@ public class OrderWriter {
 	}
 
 	private void writeHeader(BufferedWriter stream) throws IOException {
-		stream.write(Resources.getOrderTranslation(EresseaConstants.O_ERESSEA));
+	  // allways ERESSEA? this is not translation-dependend, but
+	  // game specific - with ERESSEA as default
+		// stream.write(Resources.getOrderTranslation(EresseaConstants.O_ERESSEA));
+		stream.write(world.rules.getOrderfileStartingString());
 		stream.write(" " + faction.getID());
 		writeln(stream, " \"" + faction.getPassword() + "\"");
 		

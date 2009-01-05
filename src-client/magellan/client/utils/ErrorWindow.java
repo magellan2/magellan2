@@ -94,6 +94,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   protected boolean actionPerformed = false;
   
+  protected boolean showCancel = true;
+  
   private static enum ActionCommand {
     CANCEL,
     DETAILS,
@@ -499,6 +501,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public void setShutdownOnCancel(boolean shutdownOnCancel) {
     this.shutdownOnCancel = shutdownOnCancel;
   }
+  
+
 
   // **********************************************************************
   /**

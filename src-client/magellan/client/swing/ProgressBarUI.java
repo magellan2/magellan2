@@ -229,7 +229,11 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
 //  throw new RuntimeException(exception);
   }
-
+  
+  
+  public void showMessageDialog(String message){
+    JOptionPane.showMessageDialog(dlg, message);
+  }
 
   public interface ClosingListener {
 
@@ -444,5 +448,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
   }
 
+  
+  
+  
 }
 

@@ -95,5 +95,9 @@ public class NullUserInterface implements UserInterface {
   public void showException(String message, String description, Exception exception) {
     throw new RuntimeException(exception);
   }
+  
+  public void showMessageDialog(String message){
+    NullUserInterface.log.debug("Error: "+message+")");
+  }
 
 }

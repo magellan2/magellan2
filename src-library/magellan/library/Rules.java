@@ -523,4 +523,18 @@ public interface Rules {
 	 * 
 	 */
 	public GameSpecificStuff getGameSpecificStuff();
+	
+	
+	/**
+	 * Gets the gamespecific string with which order files should start
+	 * @return
+	 */
+	public String getOrderfileStartingString();
+	
+	/**
+	 * sets the gamespecific string with which order files should start
+	 * @param startingString
+	 */
+	public void setOrderfileStartingString(String startingString);
+	
 }

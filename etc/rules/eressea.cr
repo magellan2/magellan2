@@ -3,6 +3,7 @@ RULES "$Id: eressea.cr 395 2007-04-18 23:29:32Z Fiete $"
 
 MAGELLAN
 "magellan.library.gamebinding.EresseaSpecificStuff";class
+"ERESSEA";orderFileStartingString
 
 OPTIONCATEGORY "REPORT"
 "REPORT";name

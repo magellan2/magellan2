@@ -3,6 +3,7 @@
 	* fixed #348 (senseless error msg when adding a order file to an CR)
 	* fixed #336 (UpdateCheck verursacht Fehler)
 	* fixed #346 (Dateiname beim Hinzufügen)
+	* added infos to eressea.cr #181
 
 2008-12-27 / Build 252 - Thoralf <thoralf@m84.de>
     * added getConfiguration, setConfiguration to ExtCmds Helper to read and write extra informations to a unit

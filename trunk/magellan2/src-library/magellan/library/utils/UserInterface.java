@@ -76,4 +76,8 @@ public interface UserInterface {
    * @param exception  
    */
   public void showException(String message, String description, Exception exception);
+  
+  
+  public void showMessageDialog(String message);
+  
 }

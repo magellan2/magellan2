@@ -27,6 +27,7 @@ import java.net.Proxy;
 import java.net.ProxySelector;
 import java.net.SocketTimeoutException;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Properties;
 
@@ -62,6 +63,11 @@ public class HTTPClient {
   
   /** The proxyserver */
   private ProxyHost proxy = null;
+  
+  /** to let other know if we succeeded */
+  private boolean connectionFailed = false;
+
+  
 
   /**
    * Creates a new HTTP Client to connect to remote HTTP servers.
@@ -151,9 +157,14 @@ public class HTTPClient {
       client.executeMethod(method);
       return new HTTPResult(method,async);
     } catch (SocketTimeoutException exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
+      HTTPClient.log.warn("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
+      this.connectionFailed=true;
+    } catch (UnknownHostException exception) {
+      HTTPClient.log.warn("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'. "+exception.getMessage());
+      this.connectionFailed=true;
     } catch (Exception exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'",exception);
+      HTTPClient.log.warn("Fehler beim Ausführen eines HTTP-GET auf '"+uri+"'",exception);
+      this.connectionFailed=true;
     }
     
     return null;
@@ -243,7 +254,7 @@ public class HTTPClient {
     } catch (SocketTimeoutException exception) {
       HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'. "+exception.getMessage());
     } catch (Exception exception) {
-      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);
+      HTTPClient.log.error("Fehler beim Ausführen eines HTTP-POST auf '"+uri+"'.",exception);      
     }
     
     return null;
@@ -308,4 +319,13 @@ public class HTTPClient {
   public Cookie[] getCookies() {
     return client.getState().getCookies();
   }
+
+  /**
+   * Liefert true genau dann, wenn keine verbindung hergestellt werden konnte
+   * @return
+   */
+  public boolean isConnectionFailed() {
+    return connectionFailed;
+  }
+
 }

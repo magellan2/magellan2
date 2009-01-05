@@ -506,8 +506,13 @@ public class DockingLayout {
   protected synchronized void save(StringBuffer buffer, FloatingWindow window, String offset) {
     Point location = window.getTopLevelAncestor().getLocation();
     Dimension dimension = window.getTopLevelAncestor().getSize();
+    // Fiete 20090105: fix http://magellan.log-out.net/mantis/view.php?id=338 
+    // (Floating Window changes Size between Saves and Loads)
+    java.awt.Insets insets = window.getTopLevelAncestor().getInsets();
+    int offsetHeight = insets.bottom +  insets.top;
+    int offsetWidth = insets.left + insets.right;
     boolean isVisible = window.getTopLevelAncestor().isVisible();
-    buffer.append(offset+"<floatingwindow x='"+((int)location.getX())+"' y='"+((int)location.getY())+"' width='"+((int)dimension.getWidth())+"' height='"+((int)dimension.getHeight())+"' isVisible='"+isVisible+"'>\r\n");
+    buffer.append(offset+"<floatingwindow x='"+((int)location.getX())+"' y='"+((int)location.getY())+"' width='"+((int)dimension.getWidth() - offsetWidth)+"' height='"+((int)dimension.getHeight() - offsetHeight)+"' isVisible='"+isVisible+"'>\r\n");
     for (int i=0; i<window.getChildWindowCount(); i++) {
       save(buffer,window.getChildWindow(i),offset+"  ");
     }

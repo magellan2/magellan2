@@ -1061,7 +1061,9 @@ public class ReportMerger extends Object {
       // game types doesn't match. Make sure, it will not be tried again.
 
       if (ui != null) {
-        ui.confirm(newReport.getFile().getName() + ": " + Resources.get("util.reportmerger.msg.wronggametype"), newReport.getFile().getName());
+        // Fiete 20090105: displayed a yes/no box with error message - bug #348
+        // ui.confirm(newReport.getFile().getName() + ": " + Resources.get("util.reportmerger.msg.wronggametype"), newReport.getFile().getName());
+        ui.showMessageDialog(newReport.getFile().getName() + ": " + Resources.get("util.reportmerger.msg.wronggametype"));
       }
       if (newReport.getData() == null) {
         ReportMerger.log.warn("ReportMerger.mergeReport(): got empty data.");

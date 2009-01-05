@@ -3175,7 +3175,7 @@ public class CRParser implements RulesIO, GameDataIO {
     if (newData.getOwnerFaction()==null){
       // in standard reports, the first faction of the report should always be the owner faction 
       Faction firstFaction = getFirstFaction();
-      if (getConfiguration().equals("Standard") && firstFaction!=null){
+      if (getConfiguration()!=null && getConfiguration().equals("Standard") && firstFaction!=null){
         newData.setOwnerFaction((EntityID) firstFaction.getID());
         CRParser.log.info("setOwner of Report to: " + firstFaction.toString());
         // set translation to (0,0,...) in all existing layers

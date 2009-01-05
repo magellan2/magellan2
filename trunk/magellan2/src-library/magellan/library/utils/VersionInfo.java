@@ -24,6 +24,9 @@ import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import magellan.library.utils.logging.Logger;
 
 
@@ -35,6 +38,7 @@ public class VersionInfo {
   
   public static final String PROPERTY_KEY_UPDATECHECK_CHECK  = "UpdateCheck.Check";
   public static final String PROPERTY_KEY_UPDATECHECK_FAILED = "UpdateCheck.Failed";
+  public static final String RESOURCE_KEY_NOUPDATE_AVAIL = "versioninfo.infodlg.updatefailed";
   public static final String PROPERTY_KEY_UPDATECHECK_NIGHTLY_CHECK = "UpdateCheck.Nightly.Check";
   
   private static final String DEFAULT_CHECK_URL = "http://magellan.log-out.net/release/VERSION";
@@ -84,7 +88,8 @@ public class VersionInfo {
   /**
    * This method tries to get the newest Version from the webserver.
    */
-  public static String getNewestVersion(Properties properties) {
+  public static String getNewestVersion(Properties properties, JFrame parent) {
+    
     if (properties == null) {
       return null;
     }
@@ -126,9 +131,15 @@ public class VersionInfo {
           ResourceBundle bundle = new PropertyResourceBundle(inputStream);
           newestVersion = bundle.getString("VERSION");
         }
+        if (client.isConnectionFailed() && !(parent==null)){
+          JOptionPane.showMessageDialog(parent,Resources.get(VersionInfo.RESOURCE_KEY_NOUPDATE_AVAIL));
+        }
       } catch (Exception exception) {
         VersionInfo.log.info("",exception);
         failedTimestamp = Calendar.getInstance().getTimeInMillis();
+        if (parent!=null){
+          JOptionPane.showMessageDialog(parent,Resources.get(VersionInfo.RESOURCE_KEY_NOUPDATE_AVAIL));
+        }
       }
     }
     

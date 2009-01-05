@@ -31,6 +31,7 @@ import magellan.library.utils.logging.Logger;
 public class CRGameNameIO implements GameNameIO {
 	private static final Logger log = Logger.getInstance(CRGameNameIO.class);
 
+	private static final String nameUndef = "undef";
 
 	/**
 	 * Tries to determine the game name from a report.
@@ -59,7 +60,9 @@ public class CRGameNameIO implements GameNameIO {
 		}
 
 		CRGameNameIO.log.warn("Loader.getGameName(): report header does not contain 'Spiel' tag!");
-
-		return "Eressea";
+		// oopsa! Fiete 20090105
+		// this means if we load bullshit eressea is returned. checkgametype is going to missfunction this way!
+		// return "Eressea";
+		return nameUndef;
 	}
 }

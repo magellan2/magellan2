@@ -709,7 +709,12 @@ public abstract class GameData implements Cloneable {
     if (gd2.getDate() == null) {
       gd2.setDate(new EresseaDate(0));
     }
-
+    
+    // setting FileType to gd1
+    if (gd1.filetype!=null){
+      gd2.setFileType(gd1.getFileType());
+    }
+    
     if (gd1.getDate().compareTo(gd2.getDate()) > 0) {
       return GameData.mergeIt(gd2, gd1);
     } else {

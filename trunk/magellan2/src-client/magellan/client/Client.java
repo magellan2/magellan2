@@ -1118,7 +1118,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           // setup a singleton instance of this client
           Client.INSTANCE = c;
           
-          String newestVersion = VersionInfo.getNewestVersion(c.getProperties());
+          String newestVersion = VersionInfo.getNewestVersion(c.getProperties(),Client.startWindow);
           if (!Utils.isEmpty(newestVersion)) {
             String currentVersion = VersionInfo.getVersion(tFileDir);
             Client.log.info("Newest Version on server: "+newestVersion);

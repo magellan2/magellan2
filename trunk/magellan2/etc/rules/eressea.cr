@@ -690,6 +690,26 @@ RACE "Dracoide"
 RACE "Jungdrachen"
 "Jungdrachen";name
 
+RACE "Schattendämonen"
+"Schattendämonen";name
+5;weight
+
+RACE "Schattenmeister"
+"Schattenmeister";name
+5;weight
+
+RACE "Bauern"
+"Bauern";name
+10;weight
+
+RACE "Ents"
+"Ents";name
+50;weight
+
+RACE "Schneemänner"
+"Schneemänner";name
+5;weight
+
 RACE "Untote"
 "Untote";name
 10;weight
@@ -705,6 +725,59 @@ RACE "Skelette"
 RACE "Ghoule"
 "Ghoule";name
 10;weight
+
+RACE "Kröten"
+"Kröten";name
+1;weight
+
+RACE "Adler"
+"Adler";name
+5;weight
+
+RACE "Delphine"
+"Delphine";name
+5;weight
+
+RACE "Einhörner"
+"Einhörner";name
+50;weight
+
+RACE "Eulen"
+"Eulen";name
+5;weight
+
+RACE "Geister"
+"Geister";name
+5;weight
+
+RACE "Luchse"
+"Luchse";name
+5;weight
+
+RACE "Nymphen"
+"Nymphen";name
+10;weight
+
+RACE "Ratten"
+"Ratten";name
+1;weight
+
+RACE "Riesenschildkröten"
+"Riesenschildkröten";name
+16;weight
+
+RACE "Teufelchen"
+"Teufelchen";name
+5;weight
+2;capacity
+
+RACE "Tunnelwürmer"
+"Tunnelwürmer";name
+300;weight
+
+RACE "Wölfe"
+"Wölfe";name
+5;weight
 
 ITEM "Silber"
 "Silber";name
@@ -1916,10 +1989,12 @@ REGIONTYPE "Feuerwand"
 
 REGIONTYPE "Vulkan"
 "Vulkan";name
-0;maxworkers
+500;maxworkers
+250;roadstones
 "true";isAstralVisible
 
 REGIONTYPE "Aktiver Vulkan"
 "Aktiver Vulkan";name
-0;maxworkers
+500;maxworkers
+250;roadstones
 "true";isAstralVisible

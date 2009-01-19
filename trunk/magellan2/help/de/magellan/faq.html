@@ -30,7 +30,7 @@
         <a href="#Installer">Was bedeutet Installer JAR</a>
       </li>
       <li>
-        <a href="#Dateiname">magellan.jar? Müßte die Datei nicht magellan.exe
+        <a href="#Dateiname">magellan-client.jar? Müßte die Datei nicht magellan.exe
         heißen?</a>
       </li>
       <li>
@@ -39,7 +39,7 @@
       </li>
       <li>
         <a href="#keinStart">Warum startet Magellan nicht, wenn ich auf die
-        Datei magellan.jar klicke?</a>
+        Datei magellan-client.jar klicke?</a>
       </li>
       <li>
         <a href="#CRVerknuepfung">Wie verknüpfe ich unter Windows2000/XP
@@ -105,14 +105,14 @@
       &nbsp;
     </p>
     <p style="font-weight: bold">
-      F: magellan.jar? Müßte die Datei nicht magellan.exe heißen?
+      F: magellan-client.jar? Müßte die Datei nicht magellan.exe heißen?
     </p>
     <p>
       <b>A:</b> Nein, um ehrlich zu sein, ist das (fast) nur eine umbenannte
       ZIP-Datei, aber eine, mit der Java etwas anfangen kann und die du deshalb
       auch nicht mit WinZip oder ähnlichen Programmen dekomprimieren musst.
       Magellan besteht eigentlich aus sehr vielen Programmdateien, die einfach
-      nur in magellan.jar zusammengefasst sind, trotzdem sollte Magellan nach
+      nur in magellan-client.jar zusammengefasst sind, trotzdem sollte Magellan nach
       einem Doppelklick auf die JAR-Datei starten.
     </p>
     <a id="Verknuepfung" name="Verknuepfung"></a> 
@@ -133,7 +133,7 @@
         Wähle im Startmenü den Punkt 'Ausführen'
       </li>
       <li>
-        Gib 'regedit' ein und klicke auf OK
+        Gib <tt>regedit</tt> ein und klicke auf OK
       </li>
       <li>
         Öffne links im Baum den Eintrag 'HKEY_CLASSES_ROOT' und dann klicke auf
@@ -143,7 +143,7 @@
         Mache nun im Fenster rechts einen Doppelklick auf '(Default)'
       </li>
       <li>
-        Gib 'jarfile' (natürlich ohne die ' Ticks) ein und klicke OK
+        Gib <tt>jarfile</tt> ein und klicke OK
       </li>
       <li>
         Schließe das regedit Programm - fertig
@@ -154,12 +154,12 @@
       &nbsp;
     </p>
     <p style="font-weight: bold">
-      F: Warum startet Magellan nicht, wenn ich auf die Datei magellan.jar
+      F: Warum startet Magellan nicht, wenn ich auf die Datei magellan-client.jar
       klicke?
     </p>
     <p>
       <b>A:</b> Eine mögliche Ursache dafür ist, dass sich die Datei
-      <tt>magellan.jar</tt> in einem Ordner befindet, dessen Name Leerzeichen
+      <tt>magellan-client.jar</tt> in einem Ordner befindet, dessen Name Leerzeichen
       enthält. Dieses Problem wird nicht durch einen Fehler in Magellan
       verursacht sondern durch eine ungeschickte Verknüpfung von
       <tt>.jar</tt>-Dateien mit java.
@@ -203,7 +203,7 @@
       starten, was nicht so richtig gut klappen kann. Mit den Anführungszeichen
       sieht es dann so aus: <tt>(Pfad zu java)\javaw.exe -jar "C:\Eigene
       Dateien\magellan-client.jar"</tt>, es wird hier also wirklich die Datei
-      <tt>magellan.jar</tt> gestartet.
+      <tt>magellan-client.jar</tt> gestartet.
     </p>
     <p>
       Sollte das nicht geholfen haben, kann man versuchen, <a
@@ -224,20 +224,20 @@
     </p>
     <ol>
       <li>
-        Wähle den Dateityp "CR"
+        Wähle den Dateityp "CR".
       </li>
       <li>
-        Wähle den Button "Erweitert"
+        Wähle den Button "Erweitert".
       </li>
       <li>
-        Wähle im Fenster "Dateityp bearbeiten" den Button "Neu"
+        Wähle im Fenster "Dateityp bearbeiten" den Button "Neu".
       </li>
       <li>
-        Trage im Feld "Vorgang" den Wert ' Magellan 'ein
+        Trage im Feld "Vorgang" den Wert <tt>Magellan</tt> ein.
       </li>
       <li>
-        Trage im Feld "Anwendung für diesen Vorgang" den Wert ' "java.exe" -jar
-        "magellan-client.jar" "%1" ' ein. Java.exe und magellan.jar müssen dabei mit
+        Trage im Feld "Anwendung für diesen Vorgang" den Wert <tt>"(Pfad zu Java)\javaw.exe" -jar
+        "(Pfad zu Magellan)\magellan-client.jar" "%1"</tt> ein. javaw.exe und magellan-client.jar müssen dabei mit
         vollständigem Pfad eingegeben werden (z.B.
         "c:\spiele\eressea\magellan-client.jar"). Enthält dieser Pfad Leerzeichen sind
         die umschließenden Anführungszeichen unbedingt notwendig.
@@ -325,15 +325,17 @@
       drauf und geh auf "Eigenschaften". Dort trägst Du unter "Ziel" folgende
       Zeile ein (die Pfade müssen natürlich an Deine Installation angepasst
       werden):<br />
-       <tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
-      c:\Programme\Eressea\Magellan\magellan-client.jar</tt>
+      <tt>"C:\Programme\Java\jre6/bin/javaw.exe" -Xms128M -Xmx512M -jar
+      "c:\Programme\Eressea\Magellan\magellan-client.jar"</tt>  oder einfach<br />
+       <tt>javaw.exe -Xms128M -Xmx512M -jar
+      "c:\Programme\Eressea\Magellan\magellan-client.jar"</tt>
     </p>
     <p>
-      Unter Linux einfach in der Shell:<br />
-       <tt>java -Xms128MB -Xmx256MB -jar magellan-client.jar</tt>
+      Unter Linux einfach (in der Shell, im Magellan-Verzeichnis):<br />
+       <tt>java -Xms128M -Xmx512M -jar magellan-client.jar</tt>
     </p>
     <p>
-      Dies weist die Java-VM an, sich min. 128MB und max. 256MB RAM zu sichern.
+      Dies weist die Java-VM an, sich mindestens 128MB und maximal 512MB RAM zu sichern.
       Je nach Speicherausbau kannst Du die Werte auch verändern.
     </p>
     <a id="base36nummern" name="base36nummern"></a> 

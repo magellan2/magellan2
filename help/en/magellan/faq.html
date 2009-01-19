@@ -9,7 +9,6 @@
 <meta name="keywords" content=
 "Magellan, Dokumentation, Eressea, PbeM, JavaClient">
 <meta name="description" content="Magellan Dokumentation">
-
 <link rel="stylesheet" href="../default.css" type="text/css">
 </head>
 <body>
@@ -23,17 +22,17 @@
 <h2>1. Questions about installation</h2>
 
 <ol>
-<li><a href="#Installer">What means Installer JAR?</a></li>
+<li><a href="#Installer">What does "Installer JAR" mean?</a></li>
 
-<li><a href="#Dateiname">magellan.jar? Shouldn't the file be called
-magellan.exe?</a></li>
+<li><a href="#Dateiname">magellan-client.jar? Shouldn't the file be
+called magellan.exe?</a></li>
 
 <li><a href="#Verknuepfung">Why does another program (e.g. WinZip
 or PowerArchiver) start, when I try to start Magellan by
 double-clicking?</a></li>
 
 <li><a href="#keinStart">Why doesn't Magellan start when I click
-the file magellan.jar?</a></li>
+the file magellan-client.jar?</a></li>
 
 <li><a href="#CRVerknuepfung">How do I make Magellan the default
 program for CR-files under Windows2000/XP?</a></li>
@@ -51,7 +50,7 @@ paths?</a></li>
 Magellan reports a lack of memory. Why?</a></li>
 </ol>
 
-<br>
+<br />
 <h2>2. Questions about Magellan</h2>
 
 <ol>
@@ -69,35 +68,30 @@ Tooltips!</a></li>
 
 <p>&nbsp;</p>
 
-<p><b>Q: What means Installer JAR?</b></p>
+<p><b>Q: What does "Installer JAR" mean?</b></p>
 
-<p> 
-      <b>A:</b> Ab Version 2 von Magellan ist das Programm nicht mehr nur eine Datei.
-      Wir haben Magellan in viele Dateien aufgeteilt. So sieht man jetzt im
-      Dateisystem alle Bilder und Icons, die Magellan verwendet oder auch
-      alle Sprachdateien für die Internationalisierung (sogenannte Resources). Damit
-      die Installation von Magellan nicht so aufwendig wird, liefern wir
-      das Programm jetzt in einem Paket aus, dass man als Installer JAR bezeichnet.
-      Es ist ein Java Programm, genauso wie Magellan. Es entpackt sich selbst
-      an einen beliebigen Ort, den du während der Installation festlegen kannst.<br/>
-      Ab Version 2.0 ist es übrigens einfach möglich, eine neue Version über 
-      eine alte Version zu installieren ohne vorher die alte Version zu deinstallieren.
-      Die Konfiguration bleibt erhalten und wird während des ersten Starts angepasst.
+<p><b>A:</b> Starting from Version 2, Magellan does not consist of just one file any more.
+We have divided it into several files. In order to keep the installation of Magellan simple, 
+we have packaged the program into one file called "Installer JAR". It's a Java program, just like
+Magellan itself. It unpacks its content to a location you can specify during installation. <br />
+Starting from version 2 it is also possible to copy a new version over an old version without first
+de-installing the old version. The configuration files are conserved and adjusted when you start
+magellan the next time.
 </p>
 
 <a name="Dateiname"></a> 
 
 <p>&nbsp;</p>
 
-<p><b>Q: magellan.jar? Shouldn't the file be called
+<p><b>Q: magellan-client.jar? Shouldn't the file be called
 magellan.exe?</b></p>
 
 <p><b>A:</b> No. To be honest, it is (almost) nothing more than a
 renamed ZIP-file, but one that Java can handle and that you
 therefore don't need to unpack with WinZip or a similar program.
 Magellan really consists of a lot of files that are simply gathered
-within magellan.jar, but Magellan should start when the JAR-file is
-double-clicked.</p>
+within magellan-client.jar, but Magellan should start when the
+JAR-file is double-clicked.</p>
 
 <a name="Verknuepfung"></a> 
 
@@ -121,8 +115,7 @@ click on the entry '.jar'</li>
 
 <li>In the window on the right, doubleclick on '(Default)'</li>
 
-<li>Type 'jarfile' (of course without the ' quotes) and click
-OK</li>
+<li>Type <tt>jarfile</tt> and click OK</li>
 
 <li>Close the regedit program - done.</li>
 </ol>
@@ -132,12 +125,12 @@ OK</li>
 <p>&nbsp;</p>
 
 <p><b>Q: Why doesn't Magellan start when I click the file
-magellan.jar?</b></p>
+magellan-client.jar?</b></p>
 
 <p><b>A:</b> A possible cause for this is that the file
-<tt>magellan-client.jar</tt> is in a folder with a name that has spaces in
-it. This isn't a problem that is caused by an error in Magellan,
-but by an inconvenience in the default link between
+<tt>magellan-client.jar</tt> is in a folder with a name that has
+spaces in it. This isn't a problem that is caused by an error in
+Magellan, but by an inconvenience in the default link between
 <tt>.jar</tt>-files with java.</p>
 
 <p>The simple solution is of course to move Magellan to a different
@@ -163,20 +156,21 @@ appear.</li>
 </ol>
 
 <p>Background: If Magellan is in <tt>C:\My
-Documents\magellan-client.jar</tt>, then the regedit entry would try to
-initiate java to call <tt>(Path to Java)\javaw.exe -jar C:\My
-Documents\magellan-client.jar</tt>, which means that java would try to run
-the file <tt>C:\My</tt> with parameters
-<tt>Documents\magellan-client.jar</tt>, which doesn't quite work out
-right. With the quotes this looks like this: <tt>(Path to
-java)\javaw.exe -jar "C:\My Documents\magellan-client.jar"</tt>, and here
-the actual <tt>magellan-client.jar</tt> file is started.</p>
+Documents\magellan-client.jar</tt>, then the regedit entry would
+try to initiate java to call <tt>(Path to Java)\javaw.exe -jar
+C:\My Documents\magellan-client.jar</tt>, which means that java
+would try to run the file <tt>C:\My</tt> with parameters
+<tt>Documents\magellan-client.jar</tt>, which doesn't quite work
+out right. With the quotes this looks like this: <tt>(Path to
+java)\javaw.exe -jar "C:\My Documents\magellan-client.jar"</tt>,
+and here the actual <tt>magellan-client.jar</tt> file is
+started.</p>
 
 <p>If this didn't help you can try to <a href="#4">start Magellan
 from the commandprompt</a></p>
 
-to be able to read possible error messages.<br>
-<br>
+to be able to read possible error messages.<br />
+<br />
  <a name="CRVerknuepfung"></a> 
 
 <p>&nbsp;</p>
@@ -184,7 +178,7 @@ to be able to read possible error messages.<br>
 <p><b>Q: How do I make Magellan the default program for CR-files
 under Windows2000/XP?</b></p>
 
-<p>To do this you need to set up a link between Magellan and the
+<p><b>A:</b> To do this you need to set up a link between Magellan and the
 "CR" filetype. You can do this in Explorer under Extras,
 Folderoptions, Filetypes:</p>
 
@@ -195,13 +189,14 @@ Folderoptions, Filetypes:</p>
 
 <li>In the "Edit filetype" window click the "New" button</li>
 
-<li>In the "Action" field, enter 'Magellan'</li>
+<li>In the "Action" field, enter <tt>Magellan</tt></li>
 
-<li>In the "Program for this action" field enter '"java.exe" -jar
-"magellan-client.jar" "%1"'. Java.exe and magellan.jar have to be entered
-with the complete path (e.g. "c:\games\eressea\magellan-client.jar"). If
-the path contains spaces, the surrounding quotes are
-mandatory.</li>
+<li>In the "Program for this action" field enter <tt>"(Path to
+java)\javaw.exe"
+-jar "(Path to magellan)\magellan-client.jar" "%1"</tt>. javaw.exe and
+magellan-client.jar have to be entered with the complete path (e.g.
+"c:\games\eressea\magellan-client.jar"). If the path contains
+spaces, the surrounding quotes are mandatory.</li>
 
 <li>Click "OK"</li>
 
@@ -225,8 +220,9 @@ the command prompt, therefore it can be useful to start Magellan
 from here.</p>
 
 <p>To do this you first start the command prompt (in Windows ME
-under Start menu open 'Run', type <tt>command</tt> and click OK, under Windows 2000/XP the command is <tt>cmd</tt>).
-Then enter the following command: <tt>javaw -jar "(Path to
+under Start menu open 'Run', type <tt>command</tt> and click OK,
+under Windows 2000/XP the command is <tt>cmd</tt>). Then enter the
+following command: <tt>javaw -jar "(Path to
 Magellan)\magellan-client.jar"</tt>, so e.g. <tt>javaw -jar "C:\My
 Documents\magellan-client.jar"</tt>.</p>
 
@@ -260,29 +256,28 @@ Magellan use the console the same as under Windows at the <a href=
 <p><b>Q: Even though I have enough RAM, Magellan reports a lack of
 memory. Why?</b></p>
 
-<p><b>A:</b> Du mu&szlig;t der Java-VM einfach etwas mehr Speicher
-zubilligen. Magellan fordert den Speicher von der VM an, wenn die
-ihm den Speicher nicht geben will, guckt Magellan in die
-R&ouml;hre.</p>
-
-<p><b>A:</b> Simply allocate Java-VM a bit more memory. Magellan
+<p><b>A:</b> Simply allocate a bit more memory for the Java Virtual Machine (VM). Magellan
 requests memory from the VM, and when VM does not have any to give,
-Magellan simply does not get any.</p>
+Magellan simply fails.</p>
 
 <p>You can allocate memory as follows:</p>
 
-<p>Under Windows:<br>
+<p>Under Windows:<br />
 Create an icon for Magellan on your desktop, right-click on it and
 go to "Properties". Under "Target" enter the following (the path
-should of course match your particular setup):<br>
-<tt>C:\WINDOWS\javaw.exe -Xms128MB -Xmx256MB -jar
-c:\Programs\Eressea\Magellan\magellan-client.jar</tt></p>
+should of course match your particular setup):<br />
+<tt>C:\Program Files\Java\jre6\bin\javaw.exe -Xms128M -Xmx512M -jar
+"c:\Program Files\Eressea\Magellan\magellan-client.jar"</tt> or simply<br />
+<tt>javaw -Xms128M -Xmx512M -jar "c:\Program
+Files\Eressea\Magellan\magellan-client.jar"</tt></p>
 
-<p>Under Linux simply in the shell:<br>
-<tt>java -Xms128MB -Xmx256MB -jar magellan-client.jar</tt></p>
+<p>Under Linux simply type (in the shell, in the magellan
+directory):<br />
+<tt>java -Xms128M -Xmx512M -jar magellan-client.jar</tt></p>
 
-<p>This tells the Java-VM to allocate min. 128MB and max. 256MB.
-You can change these values according to your own setup.</p>
+<p>This tells the Java-VM to allocate a minimum of 128MB and a
+maximum of 512MB. You can change these values according to your own
+setup.</p>
 
 <a name="base36nummern"></a> 
 

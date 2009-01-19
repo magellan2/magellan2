@@ -41,7 +41,7 @@ public class ShipIDMapping implements DataMapping {
 
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
     // create possible translations by same unit in both reports from same turn!
-    if ((fromData.getDate()==null) || (!fromData.getDate().equals(toData.getDate()))) {
+    if (fromData.getDate()==null || toData.getDate()==null || !fromData.getDate().equals(toData.getDate())) {
       return null;
     }
     

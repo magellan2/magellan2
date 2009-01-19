@@ -384,7 +384,7 @@ public class EresseaOrderCompleter implements Completer {
          ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null) &&
          (unit.getShip().getOwnerUnit().equals(unit))) ||
          // ... vicious warriors destroying other peoples buildings or ships
-         (unit.getModifiedBuilding()!=null && unit.getFaction()!=unit.getModifiedBuilding().getOwnerUnit().getFaction()) || 
+         (unit.getModifiedBuilding()!=null && unit.getModifiedBuilding().getOwnerUnit()!=null && unit.getFaction()!=unit.getModifiedBuilding().getOwnerUnit().getFaction()) || 
          (unit.getModifiedShip()!=null && (unit.getModifiedShip().getOwnerUnit()==null || unit.getFaction()!=unit.getModifiedShip().getOwnerUnit().getFaction()))) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESTROY)));
 		} else {

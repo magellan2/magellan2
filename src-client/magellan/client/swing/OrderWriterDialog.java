@@ -111,6 +111,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private JTextField txtMailServer = null;
   private JTextField txtMailServerPort = null;
   private JTextField txtMailRecipient = null;
+  private JTextField txtMailRecipient2 = null;
   private JTextField txtMailSender = null;
   private JTextField txtMailSubject = null;
   private JTextField txtServerUsername = null;
@@ -123,6 +124,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private JLabel lblServerPassword;
   private JLabel lblMailRecipient;
   private JLabel lblMailSubject;
+  private JLabel lblMailRecipient2;
   
   /**
    * Create a stand-alone instance of OrderWriterDialog.
@@ -554,6 +556,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     lblMailSubject = new JLabel(Resources.get("orderwriterdialog.lbl.subject"));
     txtMailSubject = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,defaultSubject), 20);
     lblMailSubject.setLabelFor(txtMailSubject);
+    
+    // CC: (Fiete 20090120)
+    lblMailRecipient2 = new JLabel("CC:");
+    txtMailRecipient2 = new JTextField(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, ""),20);
+    lblMailRecipient2.setLabelFor(txtMailRecipient2);
 
     JPanel pnlMail = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -733,6 +740,22 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     c.weightx = 0.2;
     c.weighty = 0.0;
     pnlMail.add(txtMailSubject, c);
+    
+    c.anchor = GridBagConstraints.WEST;
+    c.gridx = 0;
+    c.gridy++;
+    c.fill = GridBagConstraints.NONE;
+    c.weightx = 0.0;
+    c.weighty = 0.0;
+    pnlMail.add(lblMailRecipient2, c);
+
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 1;
+//    c.gridy = 3;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.2;
+    c.weighty = 0.0;
+    pnlMail.add(txtMailRecipient2, c);
 
     return pnlMail;
   }
@@ -849,6 +872,11 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     }
     
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2+suffix, null) != null) {
+      txtMailRecipient2.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2+suffix));
+    }
+    
+    
     setGroups(faction);
   }
 
@@ -954,7 +982,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SENDER+suffix, txtMailSender.getText());
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT, txtMailSubject.getText());
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT+suffix, txtMailSubject.getText());
-
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2, txtMailRecipient2.getText());
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT2+suffix, txtMailRecipient2.getText());
+    
     if(standAlone) {
       try {
         settings.store(new FileOutputStream(new File(System.getProperty("user.home"),"OrderWriterDialog.ini")), "");
@@ -1195,6 +1225,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     String recipient = txtMailRecipient.getText();
     String sender = txtMailSender.getText();
     String subject = txtMailSubject.getText();
+    String recipient2 = txtMailRecipient2.getText();
 
     if(chkUseSettingsFromCR.isEnabled() && chkUseSettingsFromCR.isSelected()) {
       subject = data.mailSubject;
@@ -1255,7 +1286,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     }
     
     OrderWriterDialog.log.debug("attempting to send mail: "+mailHost + ", " + port + ", " +username + ", " +password + ", " +sender + ", " +recipient + ", " +subject);
-    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae);
+    sendMailImpl(mailHost, port, username, password, sender, recipient, subject, ae, recipient2);
 
 
     ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -1263,7 +1294,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     storeSettings();
   }
 
-  private void sendMailImpl(String mailHost, int port,  String username, String password, String sender, String recipient, String subject, JButton ae) {
+  private void sendMailImpl(String mailHost, int port,  String username, String password, String sender, String recipient, String subject, JButton ae, String cc) {
 
     MultiPartEmail mailMessage;
     String contentType = "text/plain; charset=" + Encoding.DEFAULT;
@@ -1285,11 +1316,17 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     try {
       mailMessage.setFrom(sender);
       mailMessage.addTo(recipient);
-
+      
       // specify copy for sender if CC to sender is selected
       if(chkCCToSender.isSelected()) {
         mailMessage.addCc(sender);
       }
+      
+      // if users wants extra CC
+      if (cc!=null && cc.length()>0){
+        mailMessage.addCc(cc);
+      }
+      
     } catch(EmailException e) {
       ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
       

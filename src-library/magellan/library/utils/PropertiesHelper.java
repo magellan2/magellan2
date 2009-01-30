@@ -185,6 +185,8 @@ public class PropertiesHelper {
   public static final String ORDERWRITER_MAILSERVER_USEAUTH = "OrderWriter.useAuth";
 
   public static final String ORDERWRITER_MAILSERVER_RECIPIENT = "OrderWriter.mailRecipient";
+  
+  public static final String ORDERWRITER_MAILSERVER_RECIPIENT2 = "OrderWriter.mailRecipient2";
 
   public static final String ORDERWRITER_MAILSERVER_SENDER = "OrderWriter.mailSender";
 

@@ -788,6 +788,16 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       chkCCToSender.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix, true));
     }
 
+    // PropertiesHelper.ORDERWRITER_MAILSERVER_SSL+suffix
+    // PropertiesHelper.ORDERWRITER_MAILSERVER_TLS+suffix
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL+suffix, null) != null) {
+      chkUseSSL.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_SSL+suffix, false));
+    }
+    
+    if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS+suffix, null) != null) {
+      chkUseTLS.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_MAILSERVER_TLS+suffix, false));
+    }
+    
     if (settings.getProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix, null) != null) {
       chkSelRegionsOnly.setSelected(PropertiesHelper.getBoolean(settings, PropertiesHelper.ORDERWRITER_SELECTED_REGIONS+suffix, false));
     }
@@ -943,7 +953,9 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER+suffix,String.valueOf(chkCCToSender.isSelected()));
 
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL,String.valueOf(chkUseSSL.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SSL+suffix,String.valueOf(chkUseSSL.isSelected()));
     settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS,String.valueOf(chkUseTLS.isSelected()));
+    settings.setProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_TLS+suffix,String.valueOf(chkUseTLS.isSelected()));
     
     if(chkSelRegionsOnly.isEnabled()) {
       settings.setProperty(PropertiesHelper.ORDERWRITER_SELECTED_REGIONS,String.valueOf(chkSelRegionsOnly.isSelected()));

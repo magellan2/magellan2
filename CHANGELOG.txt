@@ -1,6 +1,7 @@
 2009-01-30 / Build 254 - Fiete <sf@fietefietz.de>
 	* [someone made some help adjustments and fail save additions]
-	* added CC: function to E-Mail Order Writer 
+	* added CC: function to E-Mail Order Writer
+	* fixed saving of useSSL and useTLS per Faction
 
 2009-01-05 / Build 253 - Fiete <sf@fietefietz.de>
 	* fixed #338 (Floating Window changes Size between Saves and Loads)

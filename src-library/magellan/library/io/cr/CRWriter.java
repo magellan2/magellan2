@@ -1965,8 +1965,8 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-			if(region.getVisibility() != null) {
-				writeQuotedTag(region.getVisibility(), "visibility");
+			if(region.getVisibilityString() != null) {
+				writeQuotedTag(region.getVisibilityString(), "visibility");
 			}
 
 			writeRegionResources(region.resources());

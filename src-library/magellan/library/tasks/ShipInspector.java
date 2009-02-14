@@ -151,8 +151,8 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		RegionType ebene = rules.getRegionType("Ebene"), wald = rules.getRegionType("Wald"), ozean = rules
 				.getRegionType("Ozean");
 
-		// TODO: We should consider harbours, too. But this is difficult because we don't know if
-		// harbour owner is allied with ship owner etc. We better leave it up to the user to decide...
+		// TODO: We should consider harbors, too. But this is difficult because we don't know if
+		// harbor owner is allied with ship owner etc. We better leave it up to the user to decide...
 		if (s.getShoreId() != -1) {
 		  if (nextRegion!=null && !nextRegion.getRegionType().equals(ozean)) {
         problems.add(new CriticizedError(s.getRegion(), s, this,

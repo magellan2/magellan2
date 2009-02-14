@@ -37,6 +37,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.Region.Visibility;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
@@ -178,18 +179,38 @@ public class EresseaPostProcessor {
 			for(Iterator regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
 				Region region = (Region) regionIter.next();
 
-				/* first determine whether we know everything about
+        // ------------------------------------------------------------------
+        // the following tags seem to be visible for "lighthouse";visibility:
+        // DURCHSCHIFFUNG
+        // SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, (Kueste)
+        // EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Schiff, (Burg)
+        // GEGENSTÄNDE
+        // ------------------------------------------------------------------
+        // the following tags seem to be visible for "travel";visibility:
+        // Baeume, Schoesslinge, Bauern, Pferde, Effects 
+        // DURCHSCHIFFUNG
+        // DURCHREISE
+        // BURG: Typ, Name, Beschr, Groesse, Besitzer, Partei
+        // SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, Kueste
+        // EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Burg, Schiff
+        // ------------------------------------------------------------------
+        // the following tags seem to be visible even for "neighbour";visibilty:
+        // Name, Terrain, Beschr 
+        // GRENZE -- in the direction of the region with own unit.
+
+        /* first determine whether we know everything about
 				this region */
-				if(!region.units().isEmpty()) {
+				if(region.getVisibilityy()==Visibility.UNIT) {
 					/* now patch as much missing information as
 					possible */
 					// FIXME (stm) 2006-10-28: this has bitten us already
 					// check what is visible in what visibility 
 					// (lighthouse, neigbbour, travel)   
 					
-					// the following tags seem to be present under undefined visibility even if they are zero :
-					// Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
-					if (region.getVisibility()==null){
+					// the following tags seem to be present under undefined visibility
+          // even if they are zero (but only if region is not an ocean):
+          // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
+					{
 						if(region.getPeasants() < 0) {
 							region.setPeasants(0);
 						}
@@ -207,114 +228,13 @@ public class EresseaPostProcessor {
 							region.setHorses(0);
 						}
 					}
-					// ------------------------------------------------------------------
-					// the following tags seem to be visible for "lighthouse";visibility:
-					// DURCHSCHIFFUNG
-					// SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, (Kueste)
-					// EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Schiff, (Burg)
-					// GEGENSTÄNDE
-					// ------------------------------------------------------------------
-					// the following tags seem to be visible for "travel";visibility:
-					// Baeume, Schoesslinge, Bauern, Pferde, Effects 
-					// DURCHSCHIFFUNG
-					// DURCHREISE
-					// BURG: Typ, Name, Beschr, Groesse, Besitzer, Partei
-					// SCHIFF: Name, Beschr, Typ, Groesse, Kapitaen, Partei, Kueste
-					// EINHEIT: Name, Beschr, Partei, Anderepartei, typprefix, Typ, Anzahl, Burg, Schiff
-					// ------------------------------------------------------------------
-					// the following tags seem to be visible even vor "neighbour";visibilty:
-					// Name, Terrain, Beschr 
 					
 					if(region.getSprouts() < 0) {
 						region.setSprouts(0);
 					}
-					/**
-					if(data.rules != null) {
-						// FIXME: we should finally remove this code, shouldn't we?
-						// 2002.05.21 pavkovic:
-						// first of all: Remove resource information for sprouts, trees,
-						// mallornsprouts and mallorntrees!
-						// this is cumbersome, and will only stay for some time (two months)
-						// to get rid of double or triple entries of these resources
-						//
-						boolean cleanup = true;
-
-						if(cleanup) {
-							Set cleanupSet = CollectionFactory.createHashSet();
-
-							for(Iterator riter = region.resources().iterator(); riter.hasNext();) {
-								RegionResource rr = (RegionResource) riter.next();
-
-								if(rr.getType().equals(sproutResourceID) ||
-									   rr.getType().equals(treeResourceID) ||
-									   rr.getType().equals(mallornSproutResourceID) ||
-									   rr.getType().equals(mallornTreeResourceID)) {
-									cleanupSet.add(rr.getType());
-								}
-							}
-
-							for(Iterator riter = cleanupSet.iterator(); riter.hasNext();) {
-								ItemType type = (ItemType) riter.next();
-								region.removeResource(type);
-							}
-						}
-
-						if(region.mallorn) {
-							// pavkovic 2002.05.06: remove disjunct resource (trees and sprouts)
-							region.removeResource(sproutResourceID);
-
-							// add new resource
-							if(region.getResource(mallornSproutResourceID) == null) {
-								RegionResource res = new RegionResource(LongID.create(mallornSproutResourceID.hashCode()),
-																		mallornSproutResourceID);
-								res.setAmount(region.sprouts);
-								region.addResource(res);
-							}
-						} else {
-							// pavkovic 2002.05.06: remove disjunct resource (trees and sprouts)
-							region.removeResource(mallornSproutResourceID);
-
-							// add new resource
-							if(region.getResource(sproutResourceID) == null) {
-								RegionResource res = new RegionResource(LongID.create(sproutResourceID.hashCode()),
-																		sproutResourceID);
-								res.setAmount(region.sprouts);
-								region.addResource(res);
-							}
-						}
-					}
-					**/
 					if(region.getTrees() < 0) {
 						region.setTrees(0);
 					}
-					/**
-					if(region.mallorn) {
-						// pavkovic 2002.05.06: remove disjunct resource (trees and sprouts)
-						region.removeResource(treeResourceID);
-
-						// add new resource
-						if(region.getResource(mallornTreeResourceID) == null) {
-							RegionResource res = new RegionResource(LongID.create(mallornTreeResourceID.hashCode()),
-																	mallornTreeResourceID);
-							res.setAmount(region.trees);
-							region.addResource(res);
-						}
-					} else {
-						// pavkovic 2002.05.06: remove disjunct resource (trees and sprouts)
-						region.removeResource(mallornTreeResourceID);
-
-						// add new resource
-						if(data.rules != null) {
-							if(region.getResource(treeResourceID) == null) {
-								RegionResource res = new RegionResource(LongID.create(treeResourceID.hashCode()),
-																		treeResourceID);
-								res.setAmount(region.trees);
-								region.addResource(res);
-							}
-						}
-					}
-					**/
-
 				}
 			}
 		}

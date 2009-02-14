@@ -2186,7 +2186,7 @@ public class EresseaOrderCompleter implements Completer {
 		for(Iterator<Region> iter = neighbours.values().iterator(); iter.hasNext();) {
 			Region r = iter.next();
 
-			if((region != null) && !region.equals(r)) {
+			if(r.getName()!=null && region != null && !region.equals(r)) {
 				// get a path from the current region to neighbouring
 				// translate the path of regions into a string of
 				// directions to take

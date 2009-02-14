@@ -223,11 +223,11 @@ public class Regions {
 
 			if(intDir != -1) {
 				directions.add(new Direction(intDir));
-			} else {
-				Regions.log.warn("Regions.getDirectionsOfCoordinates(): invalid direction encountered");
-
-				return null;
-			}
+			} // else {
+//				Regions.log.warn("Regions.getDirectionsOfCoordinates(): invalid direction encountered");
+//
+//				return null;
+//			}
 
 			prev = cur;
 		}

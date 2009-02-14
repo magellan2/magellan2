@@ -221,13 +221,10 @@ public class EresseaRelationFactory implements RelationFactory {
           OrderToken token = (OrderToken) iter2.next();
           int dir = Direction.toInt(token.getText());
 
-          if (dir != -1) {
-            c = new CoordinateID(c); // make c a new copy
+          c = new CoordinateID(c); // make c a new copy
+          if (dir!=-1)
             c.translate(Direction.toCoordinate(dir));
-            modifiedMovement.add(c);
-          } else {
-            break;
-          }
+          modifiedMovement.add(c);
         }
 
         relations.add(new MovementRelation(u, modifiedMovement, line));

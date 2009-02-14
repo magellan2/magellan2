@@ -29,6 +29,34 @@ import magellan.library.rules.RegionType;
 public interface Region extends UnitContainer {
 
   /**
+   * 0..very poor - no info (->visibility=null)<br /> 1..neighbour<br /> 2..lighthouse<br />
+   * 3..travel<br /> 4..qualified unit in region (->visibility=null)
+   */
+  public enum Visibility {
+    NULL, NEIGHBOR, LIGHTHOUSE, TRAVEL, UNIT;
+
+    public static Visibility getMax(Visibility vis1, Visibility vis2) {
+      return vis1.ordinal() > vis2.ordinal() ? vis1 : vis2;
+    }
+
+    public boolean lessEqual(Visibility otherVis) {
+      return this.ordinal() <= otherVis.ordinal();
+    }
+
+    public boolean lessThan(Visibility otherVis) {
+      return this.ordinal() < otherVis.ordinal();
+    }
+
+    public boolean greaterEqual(Visibility otherVis) {
+      return !otherVis.lessThan(this);
+    }
+
+    public boolean greaterThan(Visibility otherVis) {
+      return !otherVis.lessEqual(this);
+    }
+}
+
+  /**
    * Returns true if this region has fog of war.
    */
   public boolean fogOfWar();
@@ -44,7 +72,7 @@ public interface Region extends UnitContainer {
   public Unit getZeroUnit();
 
   /**
-   * Returns the number of modified peasons after a GIVE 0 or recruiting.
+   * Returns the number of modified peasants after a GIVE 0 or recruiting.
    * 
    * @return the number of modified persons after "give 0", recruit
    */
@@ -66,44 +94,45 @@ public interface Region extends UnitContainer {
   public Island getIsland();
 
   /**
-   * A string constant indicating why this region is visible.
+   * A string constant indicating why this region is visible. This should only
+   * be used when writing/reading a CR. Otherwise use {@link #getVisibilityy()}.
    * 
    * @return the string object or null, if the visibility is unspecified.
    */
-  public String getVisibility();
+  public String getVisibilityString();
 
   /**
-   * Sets a string constant indicating why this region is visible.
+   * Sets a string constant indicating why this region is visible. This should only
+   * be used when writing/reading a CR. Otherwise use {@link #setVisibilityy(Visibility)}.
    * 
    * @param vis
    *          a String object or null to indicate that the visibility cannot be
    *          determined.
    */
-  
+  public void setVisibilityString(String vis);
+
+
   /**
-   * Represents the quality of the visibility as an int value
-   * 0..very poor - no info (->visibility=null) 
-   * 1..neighbour
-   * 2..lighthouse
-   * 3..travel
+   * Represents the quality of the visibility as an int value.
+   * 
+   * 0..very poor - no info (->visibility=null)<br /> 
+   * 1..neighbour <br /> 
+   * 2..lighthouse <br /> 
+   * 3..travel <br /> 
    * 4..qualified unit in region (->visibility=null)
    */
-  public int getVisibilityInteger();
-  
-  
-  public void setVisibility(String vis);
-  
+  public Visibility getVisibilityy();
+
   /**
-   * 0..very poor - no info (->visibility=null) 
-   * 1..neighbour
-   * 2..lighthouse
-   * 3..travel
+   * 0..very poor - no info (->visibility=null) <br /> 
+   * 1..neighbour <br /> 
+   * 2..lighthouse <br /> 
+   * 3..travel <br /> 
    * 4..qualified unit in region (->visibility=null)
    * 
-   * @param i
+   * @param v
    */
-  public void setVisibility(int i);
-  
+  public void setVisibilityyy(Visibility v);
 
   /**
    * Returns all resources of this region.
@@ -340,7 +369,7 @@ public interface Region extends UnitContainer {
    * add guarding Unit to region
    */
   public void addGuard(Unit u);
-  
+
   /**
    * get The List of guarding Units
    */
@@ -352,16 +381,16 @@ public interface Region extends UnitContainer {
   // TODO should name this either sameTurn everywhere or sameRound everywhere
   // sameTurn == false actually indicates that this method is to be called again
   // with the same "newRegion" but a more recent "curRegion".
- // public static void merge(GameData curGD, Region curRegion, GameData newGD, Region newRegion,boolean sameTurn);
-
+  // public static void merge(GameData curGD, Region curRegion, GameData newGD,
+  // Region newRegion,boolean sameTurn);
   /**
    * DOCUMENT-ME
    */
   public Unit getUnit(ID key);
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>.
-   * If <tt>neighbours</tt> is null they will be evaluated.
+   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
+   * <tt>neighbours</tt> is null they will be evaluated.
    */
   public void setNeighbours(Collection<CoordinateID> neighbours);
 
@@ -403,8 +432,6 @@ public interface Region extends UnitContainer {
   public void addSigns(Collection<Sign> c);
 
   public void clearSigns();
-  
-  
 
   /**
    * Returns the value of events.
@@ -412,11 +439,12 @@ public interface Region extends UnitContainer {
    * @return Returns events.
    */
   public List<Message> getEvents();
-  
+
   /**
    * Sets the value of events.
-   *
-   * @param events The value for events.
+   * 
+   * @param events
+   *          The value for events.
    */
   public void setEvents(List<Message> events);
 
@@ -429,8 +457,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of herb.
-   *
-   * @param herb The value for herb.
+   * 
+   * @param herb
+   *          The value for herb.
    */
   public void setHerb(ItemType herb);
 
@@ -443,8 +472,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of herbAmount.
-   *
-   * @param herbAmount The value for herbAmount.
+   * 
+   * @param herbAmount
+   *          The value for herbAmount.
    */
   public void setHerbAmount(String herbAmount);
 
@@ -457,8 +487,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of horses.
-   *
-   * @param horses The value for horses.
+   * 
+   * @param horses
+   *          The value for horses.
    */
   public void setHorses(int horses);
 
@@ -471,8 +502,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of iron.
-   *
-   * @param iron The value for iron.
+   * 
+   * @param iron
+   *          The value for iron.
    */
   public void setIron(int iron);
 
@@ -482,10 +514,12 @@ public interface Region extends UnitContainer {
    * @return Returns laen.
    */
   public int getLaen();
+
   /**
    * Sets the value of laen.
-   *
-   * @param laen The value for laen.
+   * 
+   * @param laen
+   *          The value for laen.
    */
   public void setLaen(int laen);
 
@@ -498,8 +532,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of mallorn.
-   *
-   * @param mallorn The value for mallorn.
+   * 
+   * @param mallorn
+   *          The value for mallorn.
    */
   public void setMallorn(boolean mallorn);
 
@@ -512,8 +547,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of messages.
-   *
-   * @param messages The value for messages.
+   * 
+   * @param messages
+   *          The value for messages.
    */
   public void setMessages(List<Message> messages);
 
@@ -526,8 +562,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldHorses.
-   *
-   * @param oldHorses The value for oldHorses.
+   * 
+   * @param oldHorses
+   *          The value for oldHorses.
    */
   public void setOldHorses(int oldHorses);
 
@@ -540,8 +577,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldIron.
-   *
-   * @param oldIron The value for oldIron.
+   * 
+   * @param oldIron
+   *          The value for oldIron.
    */
   public void setOldIron(int oldIron);
 
@@ -554,8 +592,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldLaen.
-   *
-   * @param oldLaen The value for oldLaen.
+   * 
+   * @param oldLaen
+   *          The value for oldLaen.
    */
   public void setOldLaen(int oldLaen);
 
@@ -568,8 +607,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldPeasants.
-   *
-   * @param oldPeasants The value for oldPeasants.
+   * 
+   * @param oldPeasants
+   *          The value for oldPeasants.
    */
   public void setOldPeasants(int oldPeasants);
 
@@ -582,8 +622,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldPrices.
-   *
-   * @param oldPrices The value for oldPrices.
+   * 
+   * @param oldPrices
+   *          The value for oldPrices.
    */
   public void setOldPrices(Map<ID, LuxuryPrice> oldPrices);
 
@@ -596,8 +637,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldRecruits.
-   *
-   * @param oldRecruits The value for oldRecruits.
+   * 
+   * @param oldRecruits
+   *          The value for oldRecruits.
    */
   public void setOldRecruits(int oldRecruits);
 
@@ -610,8 +652,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldSilver.
-   *
-   * @param oldSilver The value for oldSilver.
+   * 
+   * @param oldSilver
+   *          The value for oldSilver.
    */
   public void setOldSilver(int oldSilver);
 
@@ -624,8 +667,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldSprouts.
-   *
-   * @param oldSprouts The value for oldSprouts.
+   * 
+   * @param oldSprouts
+   *          The value for oldSprouts.
    */
   public void setOldSprouts(int oldSprouts);
 
@@ -638,8 +682,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldStones.
-   *
-   * @param oldStones The value for oldStones.
+   * 
+   * @param oldStones
+   *          The value for oldStones.
    */
   public void setOldStones(int oldStones);
 
@@ -652,8 +697,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldTrees.
-   *
-   * @param oldTrees The value for oldTrees.
+   * 
+   * @param oldTrees
+   *          The value for oldTrees.
    */
   public void setOldTrees(int oldTrees);
 
@@ -666,8 +712,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of oldWage.
-   *
-   * @param oldWage The value for oldWage.
+   * 
+   * @param oldWage
+   *          The value for oldWage.
    */
   public void setOldWage(int oldWage);
 
@@ -680,8 +727,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of orcInfested.
-   *
-   * @param orcInfested The value for orcInfested.
+   * 
+   * @param orcInfested
+   *          The value for orcInfested.
    */
   public void setOrcInfested(boolean orcInfested);
 
@@ -694,8 +742,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of peasants.
-   *
-   * @param peasants The value for peasants.
+   * 
+   * @param peasants
+   *          The value for peasants.
    */
   public void setPeasants(int peasants);
 
@@ -708,8 +757,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of playerMessages.
-   *
-   * @param playerMessages The value for playerMessages.
+   * 
+   * @param playerMessages
+   *          The value for playerMessages.
    */
   public void setPlayerMessages(List<Message> playerMessages);
 
@@ -722,8 +772,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of prices.
-   *
-   * @param prices The value for prices.
+   * 
+   * @param prices
+   *          The value for prices.
    */
   public void setPrices(Map<ID, LuxuryPrice> prices);
 
@@ -736,10 +787,11 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of recruits.
-   *
-   * @param recruits The value for recruits.
+   * 
+   * @param recruits
+   *          The value for recruits.
    */
-  public void setRecruits(int recruits) ;
+  public void setRecruits(int recruits);
 
   /**
    * Returns the value of silver.
@@ -750,8 +802,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of silver.
-   *
-   * @param silver The value for silver.
+   * 
+   * @param silver
+   *          The value for silver.
    */
   public void setSilver(int silver);
 
@@ -764,8 +817,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of sprouts.
-   *
-   * @param sprouts The value for sprouts.
+   * 
+   * @param sprouts
+   *          The value for sprouts.
    */
   public void setSprouts(int sprouts);
 
@@ -778,8 +832,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of stones.
-   *
-   * @param stones The value for stones.
+   * 
+   * @param stones
+   *          The value for stones.
    */
   public void setStones(int stones);
 
@@ -792,8 +847,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of surroundings.
-   *
-   * @param surroundings The value for surroundings.
+   * 
+   * @param surroundings
+   *          The value for surroundings.
    */
   public void setSurroundings(List<Message> surroundings);
 
@@ -806,8 +862,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of travelThru.
-   *
-   * @param travelThru The value for travelThru.
+   * 
+   * @param travelThru
+   *          The value for travelThru.
    */
   public void setTravelThru(List<Message> travelThru);
 
@@ -820,8 +877,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of travelThruShips.
-   *
-   * @param travelThruShips The value for travelThruShips.
+   * 
+   * @param travelThruShips
+   *          The value for travelThruShips.
    */
   public void setTravelThruShips(List<Message> travelThruShips);
 
@@ -834,8 +892,9 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of trees.
-   *
-   * @param trees The value for trees.
+   * 
+   * @param trees
+   *          The value for trees.
    */
   public void setTrees(int trees);
 
@@ -848,15 +907,17 @@ public interface Region extends UnitContainer {
 
   /**
    * Sets the value of wage.
-   *
-   * @param wage The value for wage.
+   * 
+   * @param wage
+   *          The value for wage.
    */
   public void setWage(int wage);
-  
+
   /**
    * Sets the value of isActive.
-   *
-   * @param isActive The value for isActive.
+   * 
+   * @param isActive
+   *          The value for isActive.
    */
   public void setActive(boolean isActive);
 
@@ -866,7 +927,7 @@ public interface Region extends UnitContainer {
    * @return Returns isActive.
    */
   public boolean isActive();
-  
+
   /**
    * The returned integer is an BitMap representing the info,
    * if neighboriing regions are ozean or not
@@ -890,17 +951,16 @@ public interface Region extends UnitContainer {
    * @param bitMap an Integer as BitMap
    */
   public void setCoastBitMap(Integer bitMap);
-  
+
   /**
-   * Returns the unique regionID generated by the eressea-server
-   * used at first for merging
+   * Returns the unique regionID generated by the eressea-server used at first
+   * for merging
    */
   public long getUID();
-  
-  
+
   /**
    * sets the given long value as the unique regionID
    */
   public void setUID(long uID);
-  
+
 }

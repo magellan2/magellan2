@@ -33,12 +33,13 @@ public class MovementRelation extends UnitRelation implements LongOrderRelation 
 	 * @param m The list of region coordinates
 	 * @param line The line in the source's orders
 	 */
-	public MovementRelation(Unit s, List<CoordinateID> m, int line) {
-		super(s, line);
+	public MovementRelation(Unit u, List<CoordinateID> m, int line) {
+		super(u, line);
 		this.movement = m;
 	}
 
-	/**
+
+  /**
 	 * @see magellan.library.relation.UnitRelation#toString()
 	 */
 	@Override

@@ -15,9 +15,11 @@ package magellan.library.tasks;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import magellan.library.CoordinateID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
@@ -66,8 +68,18 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 			// only test for foot/horse movement if unit is not owner of a modified ship
 			if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
 				problems.addAll(reviewUnitOnFoot(u));
-				if (u.getModifiedMovement().size() > 2) {
-          problems.addAll(reviewUnitOnHorse(u));
+				if (u.getModifiedMovement().size()>0){
+				  Iterator<CoordinateID> it = u.getModifiedMovement().iterator();
+				  CoordinateID last = it.next();
+				  for (int count = 1; count <3 && it.hasNext(); ++count){
+				    CoordinateID current = it.next();
+				    if (current.equals(last)) break;
+				    if (count > 1) {
+		          problems.addAll(reviewUnitOnHorse(u));
+		          break;
+				    }
+				    last = current;
+				  }
         }
 			}
 		}
@@ -158,6 +170,7 @@ public class MovementInspector extends AbstractInspector implements Inspector {
             Resources.get("tasks.movementinspector.error.horseoverloaded.description"))));
 			}
 		}
+		// FIXME if unit has no horses, we should report an error
 
 		return Collections.emptyList();
 	}

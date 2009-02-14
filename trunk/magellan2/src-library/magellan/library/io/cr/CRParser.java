@@ -2123,15 +2123,16 @@ public class CRParser implements RulesIO, GameDataIO {
       unit.setRegion(region);
     }
 
-    // if there is a unit in the region, this means we have
-    // infos about it:
-    if(region != null) {
-      region.setTrees(Math.max(region.getTrees(), 0));
-      region.setPeasants(Math.max(region.getPeasants(), 0));
-      region.setHorses(Math.max(region.getHorses(), 0));
-      // Fiete 20061217 this was double...
-      // region.trees = Math.max(region.trees, 0);
-    }
+//  // FIXME: this code has a duplicate in EresseaPostProcessor
+//    // if there is a unit in the region, this means we have
+//    // infos about it:
+//    if(region != null) {
+//      // the following tags seem to be present under undefined visibility even if they are zero :
+//      // Bauern, Silber, Unterh, Rekruten, Pferde, (Lohn)
+//      region.setTrees(Math.max(region.getTrees(), 0));
+//      region.setPeasants(Math.max(region.getPeasants(), 0));
+//      region.setHorses(Math.max(region.getHorses(), 0));
+//    }
 
     sc.getNextToken(); // skip "EINHEIT nr"
 
@@ -2882,7 +2883,7 @@ public class CRParser implements RulesIO, GameDataIO {
         region.setOldStones(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("visibility")) {
-        region.setVisibility(sc.argv[0]);
+        region.setVisibilityString(sc.argv[0]);
         sc.getNextToken();
       } else if(sc.isBlock && sc.argv[0].equals("PREISE")) {
         region.setPrices(parsePrices(region.getPrices()));

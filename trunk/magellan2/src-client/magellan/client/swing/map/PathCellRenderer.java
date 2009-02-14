@@ -24,6 +24,7 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	private static final int PASSIVE = 1;
 	private static final int ACTIVEPAST = 2;
 	private static final int PASSIVEPAST = 3;
+  private static final int ACTIVEFUTURE = 4;
+	
 	private static final int ALPHALEVEL = 100;
 	private boolean drawPassivePath = false;
 	private boolean drawPastPath = false;
@@ -64,6 +67,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 	RGBImageFilter passiveFilter;
 	RGBImageFilter activePastFilter;
 	RGBImageFilter passivePastFilter;
+  RGBImageFilter activeFutureFilter;
 
 	/**
 	 * Creates a new PathCellRenderer object.
@@ -78,8 +82,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 		drawPastPath = (Boolean.valueOf(settings.getProperty("PathCellRenderer.drawPastPath", "true"))).booleanValue();
 
 		passiveFilter = new GrayFilter(true, 50);
-		activePastFilter = new AlphaFilter(PathCellRenderer.ALPHALEVEL);
-		passivePastFilter = new AlphaFilter(PathCellRenderer.ALPHALEVEL, new GrayFilter(false, 50));
+    activePastFilter = new ChannelFilter(ChannelFilter.ALPHA, PathCellRenderer.ALPHALEVEL);
+    passivePastFilter = new ChannelFilter(ChannelFilter.ALPHA, PathCellRenderer.ALPHALEVEL, new GrayFilter(false, 50));
+    activeFutureFilter = new ChannelFilter(ChannelFilter.ALPHA, PathCellRenderer.ALPHALEVEL, new ChannelFilter(ChannelFilter.RED, 0));
 	}
 
   /**
@@ -124,6 +129,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 		if(activeMovement.size() > 0) {
 			renderPath(u, activeMovement, PathCellRenderer.ACTIVE);
+	    List<CoordinateID> additionalMovement = getAdditionalMovement(u);
+			if (additionalMovement.size()>0)
+			  renderPath(u, additionalMovement, PathCellRenderer.ACTIVEFUTURE);
 		} else if(drawPassivePath) {
 			// unit does not move itself, check for passive movement
 			// Perhaps it is on a ship?
@@ -153,7 +161,40 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 
  	private List<CoordinateID> getModifiedMovement(Unit u) {
-		return (u == null) ? new ArrayList<CoordinateID>() : u.getModifiedMovement();
+ 	 return getMovement(u, false);
+ 	}
+ 	
+  private List<CoordinateID> getAdditionalMovement(Unit u) {
+    return getMovement(u, true);
+  }
+
+  private List<CoordinateID> getMovement(Unit u, boolean isSuffix){
+ 	  if (u==null)
+ 	    return Collections.emptyList();
+ 	  List<CoordinateID> movement = u.getModifiedMovement();
+ 	  CoordinateID last = movement.size()>0?movement.get(0):null;
+ 	  if (last!=null){
+ 	    List<CoordinateID> result = new ArrayList<CoordinateID>(2);
+      List<CoordinateID> suffix = new ArrayList<CoordinateID>(0);
+ 	    for (CoordinateID coord : movement){
+ 	      if (result.size()==0)
+ 	        result.add(coord);
+ 	      else if (coord.equals(result.get(result.size()-1)) || suffix.size()>0){
+ 	        if (isSuffix)
+ 	          suffix.add(coord);
+ 	        else
+ 	          break;
+ 	      } else {
+ 	        result.add(coord);
+ 	      }
+ 	    }
+ 	    if (isSuffix)
+ 	      return suffix;
+ 	    else
+ 	      return result;
+ 	  }else {
+ 	    return Collections.emptyList();
+ 	  }
 	}
 
 	private void renderPath(Unit u, List<CoordinateID> coordinates, int imageType) {
@@ -199,7 +240,6 @@ public class PathCellRenderer extends ImageCellRenderer {
 			String normName = Umlaut.convertUmlauts(name);
 
 			String storeName = imageType + normName;
-
 			if(ownImages.containsKey(storeName)) {
 				ImageContainer c = ownImages.get(storeName);
 
@@ -224,7 +264,11 @@ public class PathCellRenderer extends ImageCellRenderer {
 					break;
 
 				case PASSIVEPAST:
-					img = createImage(img, passivePastFilter);
+          img = createImage(img, passivePastFilter);
+
+          break;
+				case ACTIVEFUTURE:
+					img = createImage(img, new ChannelFilter(ChannelFilter.GREEN, 0, new ChannelFilter(ChannelFilter.ALPHA, PathCellRenderer.ALPHALEVEL)));
 
 					break;
 				}
@@ -252,27 +296,39 @@ public class PathCellRenderer extends ImageCellRenderer {
 		return Toolkit.getDefaultToolkit().createImage(prod);
 	}
 
-	private class AlphaFilter extends RGBImageFilter {
-		private int level;
+	private class ChannelFilter extends RGBImageFilter {
+	  public static final int RED = 0x00FF0000;
+    public static final int GREEN = 0x0000FF00;
+    public static final int BLUE = 0x000000FF;
+    public static final int ALPHA = 0xFF000000;
+	  
+    private int channel;
+	  private int level;
 		private RGBImageFilter parent;
 
 		/**
 		 * Creates a new AlphaFilter object.
 		 *
-		 * 
+		 * @param channel One of {@link #RED}, {@link #GREEN}, {@link #BLUE}, or {@link #ALPHA}.
+		 * @param level The filtering level 0 is "switch of", 255 is "switch on"
 		 */
-		public AlphaFilter(int level) {
-			this(level, null);
+		public ChannelFilter(int channel, int level) {
+			this(channel, level, null);
 		}
 
 		/**
-		 * Creates a new AlphaFilter object.
+		 * Creates a new ChannelFilter object.
 		 *
 		 * 
-		 * 
-		 */
-		public AlphaFilter(int level, RGBImageFilter parent) {
-			this.level = level * 0x01000000;
+     * @param channel One of {@link #RED}, {@link #GREEN}, {@link #BLUE}, or {@link #ALPHA}.
+     * @param level The filtering level 0 is "switch of", 255 is "switch on"
+     * @param parent A filter which is to be applied after this filter
+     */
+		public ChannelFilter(int channel, int level, RGBImageFilter parent) {
+      if (level<0 || level>255)
+        throw new IllegalArgumentException("wrong level "+level);
+      this.channel = channel;
+			this.level = level * (0x01010101 & channel);
 			this.parent = parent;
 
 			// canFilterIndexColorModel indicates whether or not it is acceptable
@@ -283,13 +339,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
+		 *  Sets the selected channel of the pixel to the selected level if the alpha value is not 0.
 		 * 
-		 * 
-		 * 
-		 *
-		 * 
+		 * @see java.awt.image.RGBImageFilter#filterRGB(int, int, int)
 		 */
 		@Override
     public int filterRGB(int x, int y, int rgb) {
@@ -307,7 +359,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				return rgb;
 			} else {
 				// we found a non-transparent pixel, so set given alpha level
-				return (rgb & 0x00ffffff) | level;
+				return (rgb & (~channel)) | level;
 			}
 		}
 	}

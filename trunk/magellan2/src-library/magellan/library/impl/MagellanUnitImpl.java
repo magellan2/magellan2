@@ -1149,25 +1149,26 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		}
 	}
 
-	/**
-	 * Returns a List of the reached coordinates of the units movement starting with the current
-	 * region or an empty list if unit is not moving.
-	 * 
-	 * @return A list of coordinates, empty list means no movement
-	 */
-	public List<CoordinateID> getModifiedMovement() {
-		if(this.ordersAreNull()) {
-			return Collections.emptyList();
-		}
+  /**
+   * Returns a List of the reached coordinates of the unit's movement starting with the current
+   * region or an empty list if unit is not moving.
+   * 
+   * @return A list of coordinates, empty list means no movement
+   */
+  public List<CoordinateID> getModifiedMovement() {
+    if(this.ordersAreNull()) {
+      return Collections.emptyList();
+    }
 
-		Collection movementRelations = getRelations(MovementRelation.class);
+    Collection movementRelations = getRelations(MovementRelation.class);
 
-		if(movementRelations.isEmpty()) {
-			return Collections.emptyList();
-		}
+    if(movementRelations.isEmpty()) {
+      return Collections.emptyList();
+    }
 
-		return Collections.unmodifiableList(((MovementRelation) movementRelations.iterator().next()).movement);
-	}
+    return Collections.unmodifiableList(((MovementRelation) movementRelations.iterator().next()).movement);
+  }
+
 
 	/**
 	 * @see magellan.library.Unit#getModifiedShip()

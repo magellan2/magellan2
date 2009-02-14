@@ -59,6 +59,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
+import magellan.library.Region.Visibility;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -677,305 +678,133 @@ public abstract class MagellanFactory {
    */
   // TODO should name this either sameTurn everywhere or sameRound everywhere
   // sameTurn == false actually indicates that this method is to be called again
-  // with the same "newRegion" but a more recent "curRegion".
-  public static void mergeRegion(GameData curGD, Region curRegion, GameData newGD, Region newRegion,boolean sameTurn) {
-    MagellanFactory.mergeUnitContainer(curGD, curRegion, newGD, newRegion);
+  // with the same "resultRegion" but a more recent "curRegion".
+  public static void mergeRegion(GameData curGD, Region curRegion, GameData resultGD,
+      Region resultRegion, boolean newTurn, boolean firstPass) {
+    MagellanFactory.mergeUnitContainer(curGD, curRegion, resultGD, resultRegion);
+
+    boolean sameTurn = !newTurn || !firstPass;
     
     // *** OldTrees ****
-    if(sameTurn) {
-      // if both regions are from the same turn, "old" information is always assumed to be accurate. 
-      // this is true, if curRegion is always younger for successive calls of Region.merge(). 
-      if(curRegion.getOldTrees() != -1) {
-        newRegion.setOldTrees(curRegion.getOldTrees());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        // curRegion is actually from an older round, so its information is old!
-        if(curRegion.getTrees() != -1) {
-          newRegion.setOldTrees(curRegion.getTrees());
-        }
-      } else {
-        // curRegion is from a more recent round. Therefore
-        // TODO: (stm) thinks this can never happen!
-        MagellanFactory.log.error("Warning: reached code in Region.merge, that (stm) thought could never be reached!");
-        if(curRegion.getTrees() == -1) {
-          newRegion.setOldTrees(-1);
-        }
-      }
-    }
+    if (newTurn && firstPass){
+      resultRegion.setOldTrees(curRegion.getTrees());
+      // resultRegion.setOldSprouts(-1);
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldTrees(curRegion.getOldTrees());
+    }  
 
-    
     // *** OldSprouts ****
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldSprouts() != -1) {
-        newRegion.setOldSprouts(curRegion.getOldSprouts());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getSprouts() != -1) {
-          newRegion.setOldSprouts(curRegion.getSprouts());
-        }
-      } else {
-        if(curRegion.getSprouts() == -1) {
-          newRegion.setOldSprouts(-1);
-        }
-      }
-    }
-    
-    // *** OldIron ****
-    // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldIron() != -1) {
-        newRegion.setOldIron(curRegion.getOldIron());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getIron() != -1) {
-          newRegion.setOldIron(curRegion.getIron());
-        }
-      } else {
-        if(curRegion.getIron() == -1) {
-          newRegion.setOldIron( -1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldSprouts(curRegion.getSprouts());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldSprouts(curRegion.getOldSprouts());
     }
 
-    
+    // *** OldIron ****
+    // same as with the old trees
+    if (newTurn && firstPass){
+      resultRegion.setOldIron(curRegion.getIron());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldIron(curRegion.getOldIron());
+    }
+
     // *** OldLaen ****
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldLaen() != -1) {
-        newRegion.setOldLaen(curRegion.getOldLaen());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getLaen() != -1) {
-          newRegion.setOldLaen(curRegion.getLaen());
-        }
-      } else {
-        if(curRegion.getLaen() == -1) {
-          newRegion.setOldLaen(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldLaen(curRegion.getLaen());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldLaen(curRegion.getOldLaen());
     }
 
     // *** Orc infest ****
-    if(sameTurn) {
-      // region is considered orc infested if one of the two regions considers it orc infested.
-      newRegion.setOrcInfested(newRegion.isOrcInfested() || curRegion.isOrcInfested());
+    if (!newTurn || !firstPass) {
+      // region is considered orc infested if one of the two regions considered
+      // it orc infested.
+      resultRegion.setOrcInfested(resultRegion.isOrcInfested() || curRegion.isOrcInfested());
     } else {
-      newRegion.setOrcInfested(curRegion.isOrcInfested());
+      resultRegion.setOrcInfested(curRegion.isOrcInfested());
     }
 
-    
     // *** OldPeasants ****
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldPeasants() != -1) {
-        newRegion.setOldPeasants(curRegion.getOldPeasants());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getPeasants() != -1) {
-          newRegion.setOldPeasants(curRegion.getPeasants());
-        }
-      } else {
-        if(curRegion.getPeasants() == -1) {
-          newRegion.setOldPeasants(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldPeasants(curRegion.getPeasants());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldPeasants(curRegion.getOldPeasants());
     }
 
     // *** OldSilver ****
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldSilver() != -1) {
-        newRegion.setOldSilver(curRegion.getOldSilver());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getSilver() != -1) {
-          newRegion.setOldSilver(curRegion.getSilver());
-        }
-      } else {
-        if(curRegion.getSilver() == -1) {
-          newRegion.setOldSilver(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldSilver(curRegion.getSilver());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldSilver(curRegion.getOldSilver());
     }
 
     // *** OldStones ****
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldStones() != -1) {
-        newRegion.setOldStones(curRegion.getOldStones());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getStones() != -1) {
-          newRegion.setOldStones(curRegion.getStones());
-        }
-      } else {
-        if(curRegion.getStones() == -1) {
-          newRegion.setOldStones(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldStones(curRegion.getStones());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldStones(curRegion.getOldStones());
     }
 
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldHorses() != -1) {
-        newRegion.setOldHorses(curRegion.getOldHorses());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getHorses() != -1) {
-          newRegion.setOldHorses(curRegion.getHorses());
-        }
-      } else {
-        if(curRegion.getHorses() == -1) {
-          newRegion.setOldHorses(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldHorses(curRegion.getHorses());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldHorses(curRegion.getOldHorses());
     }
 
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldWage() != -1) {
-        newRegion.setOldWage(curRegion.getOldWage());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getWage() != -1) {
-          newRegion.setOldWage(curRegion.getWage());
-        }
-      } else {
-        if(curRegion.getWage() == -1) {
-          newRegion.setOldWage(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldWage(curRegion.getWage());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldWage(curRegion.getOldWage());
     }
 
     // same as with the old trees
-    if(sameTurn) {
-      if(curRegion.getOldRecruits() != -1) {
-        newRegion.setOldRecruits(curRegion.getOldRecruits());
-      }
-    } else {
-      if(!curGD.getDate().equals(newGD.getDate())) {
-        if(curRegion.getRecruits() != -1) {
-          newRegion.setOldRecruits(curRegion.getRecruits());
-        }
-      } else {
-        if(curRegion.getRecruits() == -1) {
-          newRegion.setOldRecruits(-1);
-        }
-      }
+    if (newTurn && firstPass){
+      resultRegion.setOldRecruits(curRegion.getRecruits());
+    } else if (!newTurn && !firstPass){
+      resultRegion.setOldRecruits(curRegion.getOldRecruits());
     }
 
-    if((newRegion.getPrices() != null) && (curRegion.getPrices() != null) &&
-         !curRegion.getPrices().equals(newRegion.getPrices())) {
-      newRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
+    /******************* PRICES ******************************/
+    if ((resultRegion.getPrices() != null) && (curRegion.getPrices() != null)
+        && !curRegion.getPrices().equals(resultRegion.getPrices())) {
+      resultRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
 
-      for(Iterator iter = newRegion.getPrices().values().iterator(); iter.hasNext();) {
+      for (Iterator iter = resultRegion.getPrices().values().iterator(); iter.hasNext();) {
         LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice = new LuxuryPrice(newGD.rules.getItemType(curPrice.getItemType()
-                                             .getID()),
-                             curPrice.getPrice());
-        newRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
+        LuxuryPrice newPrice =
+            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+                .getPrice());
+        resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
       }
-    } else if(curRegion.getOldPrices() != null) {
-      newRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
+    } else if (curRegion.getOldPrices() != null) {
+      resultRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
 
-      for(Iterator iter = curRegion.getOldPrices().values().iterator(); iter.hasNext();) {
+      for (Iterator iter = curRegion.getOldPrices().values().iterator(); iter.hasNext();) {
         LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice = new LuxuryPrice(newGD.rules.getItemType(curPrice.getItemType()
-                                             .getID()),
-                             curPrice.getPrice());
+        LuxuryPrice newPrice =
+            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+                .getPrice());
 
-        if(newPrice.getItemType() == null) {
+        if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
           // the current block description
-          MagellanFactory.log.warn("WARNING: Invalid tag \"" + curPrice.getItemType() +
-               "\" found in Region " + curRegion + ", ignoring it.");
+          MagellanFactory.log.warn("WARNING: Invalid tag \"" + curPrice.getItemType()
+              + "\" found in Region " + curRegion + ", ignoring it.");
           MagellanFactory.log.warn("curRegion Encoding: " + curRegion.getData().getEncoding()
-                + ", newRegion Enc: " + newRegion.getData().getEncoding());
+              + ", newRegion Enc: " + resultRegion.getData().getEncoding());
         } else {
-          newRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
+          resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
         }
       }
     }
 
-   
-    
-    
-    /*
-        // from Region.java.~1.19~
-    // pavkovic 2002.04.12: This logic seems to be more reasonable:
-    // prerequisites: there are borders in the current region
-    // if there are no borders in the new region
-    //   -> the borders of the current region are added to the new region
-    // if there are borders in the new region *and* there is at least one
-    //    person in the current region
-    //   -> the borders of the current region are added to the new region
-    //
-    if(!curRegion.borders().isEmpty() &&
-         (newRegion.borders().isEmpty() || !curRegion.units().isEmpty())) {
-    */
-
-    /*
-    // pavkovic 2004.06.03: This logic seems to be more reasonable:
-    // 
-    // |new.units| == 0, |current.units| == 0: current
-    // |new.units| == 0, |current.units| != 0: current
-    // |new.units| != 0, |current.units| == 0: new
-    // |new.units| != 0, |current.units| != 0: sameTurn ? (merge/current) : current
-    //
-    // FIXME(pavkovic) bug# 819
-    //  the problem:
-    // we have a region with one person and one road not in the same turn
-    // and add a region with no person and no road: Who wins?
-    // If I would know that in the elder game data did exist a person the elder information
-    // wins.
-    // 
-    // nice try but still buggy:
-    if(!curRegion.units().isEmpty() || (newRegion.units().isEmpty() && curRegion.borders != null &&!(curRegion.borders.isEmpty()))) {
-    */
-    
-    // if we have units in the current region the current region wins.
-    // if we are not in the same turn the current region wins.
-    // if we dont have units in the new region the current region wins.
-    // if(!curRegion.units().isEmpty() || !sameTurn || newRegion.units().isEmpty()) {
-    
-    // test: determine, if newregion is seen just bei neighbour
-    // bug #37: such regions only contain borders to regions we have units in....
-    // we will try to the currentRegion win in that case, because newRegionData is not complete
-    /*
-    boolean newregionSeenByNeighbour = false;
-    if (newRegion.getVisibility()!=null && newRegion.getVisibility().equalsIgnoreCase("neighbour")){
-      newregionSeenByNeighbour=true;
-    }
-    
-    if((!curRegion.units().isEmpty() || !sameTurn || newRegion.units().isEmpty()) && !newregionSeenByNeighbour) {
-      // currentRegion wins
-      // take borders for new region from current
-      newRegion.clearBorders();
-
-      for(Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
-        Border curBorder = (Border) iter.next();
-        Border newBorder = null;
-
-        try {
-          newBorder = MagellanFactory.createBorder((ID) curBorder.getID().clone(), curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
-        } catch(CloneNotSupportedException e) {
-        }
-
-        newRegion.addBorder(newBorder);
-      }
-    }
-    */
-    
     /* next try, and pay attention to this:
      * neighbouring region; curRegion has no borders 
      * newRegion has a border because of vis=neighbour
@@ -993,10 +822,10 @@ public abstract class MagellanFactory {
     
     
     // *** borders ***
-    if (curRegion.getVisibilityInteger()==4 || curRegion.getVisibilityInteger()==3){
-      // curRegion wins
-     
-      newRegion.clearBorders();
+    if (curRegion.getVisibilityy() == Visibility.UNIT
+        || curRegion.getVisibilityy() == Visibility.TRAVEL) {
+
+      resultRegion.clearBorders();
 
       for(Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
         Border curBorder = (Border) iter.next();
@@ -1007,7 +836,7 @@ public abstract class MagellanFactory {
         } catch(CloneNotSupportedException e) {
         }
 
-        newRegion.addBorder(newBorder);
+        resultRegion.addBorder(newBorder);
       }
      
     } else {
@@ -1016,10 +845,11 @@ public abstract class MagellanFactory {
         Border curBorder = (Border) iter.next();
         
         // do we have already this border?
-        boolean curBorderPresent=false;
-        for(Iterator iter2 = newRegion.borders().iterator(); iter2.hasNext();) {
-          Border actNewBorder = (Border)iter2.next();
-          if (actNewBorder.getType().equalsIgnoreCase(curBorder.getType()) && actNewBorder.getDirection()==curBorder.getDirection()){
+        boolean curBorderPresent = false;
+        for (Iterator iter2 = resultRegion.borders().iterator(); iter2.hasNext();) {
+          Border actNewBorder = (Border) iter2.next();
+          if (actNewBorder.getType().equalsIgnoreCase(curBorder.getType())
+              && actNewBorder.getDirection() == curBorder.getDirection()) {
             curBorderPresent = true;
             break;
           }
@@ -1027,145 +857,108 @@ public abstract class MagellanFactory {
         
         if (!curBorderPresent){
           Border newBorder = null;
-          ID newID = Regions.getNewBorderID(newRegion,curBorder);
-         
-          newBorder = MagellanFactory.createBorder(newID, curBorder.getDirection(),curBorder.getType(), curBorder.getBuildRatio());
-         
-          if (newBorder!=null){
-            newRegion.addBorder(newBorder);
+          ID newID = Regions.getNewBorderID(resultRegion, curBorder);
+
+          newBorder =
+              MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder.getType(),
+                  curBorder.getBuildRatio());
+
+          if (newBorder != null) {
+            resultRegion.addBorder(newBorder);
           }
         }
       }
     }
 
-    //  TODO
-    if(!sameTurn) {
-      /* as long as both reports are from different turns we
-       can just overwrite the visibility status with the newer
-       version */
-      newRegion.setVisibility(curRegion.getVisibility());
+    if (firstPass){
+      if (newTurn) 
+        resultRegion.setVisibilityyy(Visibility.NULL);
+      else
+        resultRegion.setVisibilityyy(curRegion.getVisibilityy());
     } else {
-      /* this where trouble begins: reports from the same turn
-       so we basically have 4 visibility status:
-       1 contains units (implicit)
-       2 travel (explicit)
-       3 lighthouse (explicit)
-       4 next to a unit containing region (implicit)
-       Fiete: 4 is "neighbour" and explicit too
-       now - how do we merge this?
-       for a start, we just make sure that the visibility
-       value is not lost */
-      if(curRegion.getVisibility() != null) {
-        /* we should sort visisbilites like the server
-        here is the list from http://dose.0wnz.at/thewhitewolf/cr-format#region
-        ""   Entweder befindet sich eine eigene Einheit in der Region, oder es befindet sich weder eine Einheit in der Region noch trifft einer der unteren Fälle zu.
-        "travel"  Eine eigene Einheit hat diese Region durchreist
-        "lighthouse"  Diese Region wird mittels Leuchtturm erblickt
-        "neighbour"   Diese Region ist zumindest einer Region benachbart, in welcher man eigene Einheiten besitzt.
-
-        */
-        
-        int curRegionVis = curRegion.getVisibilityInteger();
-        int actNewRegionVis = newRegion.getVisibilityInteger();
-        int result = Math.max(curRegionVis, actNewRegionVis);
-        newRegion.setVisibility(result);
-        
-      } else {
-        /* curRegion.getVis == null !
-         -> either no info at all or a unit in the region
-         if in curRegion is a "owned" unit, we should set
-         visibility of newRegion also to null
-         owned unit means a unit with e.g. status info !=-1
-         (not units seen by travel-through in buildings)
-         lets search for them first
-         -> outsourced to Region
-        */
-               
-        if (curRegion.getVisibilityInteger()==4){
-          // OKAY, we change Visibility to NULL
-          // result: we asume, we have good info about this region
-          newRegion.setVisibility(null);
-        }
-      }
+      Visibility curRegionVis = curRegion.getVisibilityy();
+      Visibility actNewRegionVis = resultRegion.getVisibilityy();
+      Visibility result = Visibility.getMax(curRegionVis, actNewRegionVis);
+      resultRegion.setVisibilityyy(result);
     }
-    
-    
-    if(curRegion.getHerb() != null) {
-      newRegion.setHerb(newGD.rules.getItemType(curRegion.getHerb().getID(), true));
+
+    if (curRegion.getHerb() != null) {
+      resultRegion.setHerb(resultGD.rules.getItemType(curRegion.getHerb().getID(), true));
     }
 
     // Fiete 20080430: merging regionUIDs
-    if (curRegion.getUID()!=0){
-      newRegion.setUID(curRegion.getUID());
+    if (curRegion.getUID() != 0) {
+      resultRegion.setUID(curRegion.getUID());
     }
-    
-    
-    if(curRegion.getHerbAmount() != null) {
-      /* FIXME There was a bug around 2002.02.16 where numbers would be
-       stored in this field - filter them out. This should only
-       be here for one or two weeks. */
-      if(curRegion.getHerbAmount().length() > 2) {
-        newRegion.setHerbAmount(curRegion.getHerbAmount());
+
+    if (curRegion.getHerbAmount() != null) {
+      /*
+       * FIXME There was a bug around 2002.02.16 where numbers would be stored
+       * in this field - filter them out. This should only be here for one or
+       * two weeks.
+       */
+      if (curRegion.getHerbAmount().length() > 2) {
+        resultRegion.setHerbAmount(curRegion.getHerbAmount());
       }
     }
 
-    if(curRegion.getHorses() != -1) {
-      newRegion.setHorses(curRegion.getHorses());
+    if (curRegion.getHorses() != -1) {
+      resultRegion.setHorses(curRegion.getHorses());
     }
 
-    if(curRegion.getIron() != -1) {
-      newRegion.setIron(curRegion.getIron());
+    if (curRegion.getIron() != -1) {
+      resultRegion.setIron(curRegion.getIron());
     }
 
-    if(curRegion.getIsland() != null) {
-      Island newIsland = newGD.getIsland(curRegion.getIsland().getID());
+    if (curRegion.getIsland() != null) {
+      Island newIsland = resultGD.getIsland(curRegion.getIsland().getID());
 
-      if(newIsland != null) {
-        newRegion.setIsland(newIsland);
+      if (newIsland != null) {
+        resultRegion.setIsland(newIsland);
       } else {
-        MagellanFactory.log.warn("Region.merge(): island could not be found in the merged data: " +
-             curRegion.getIsland());
+        MagellanFactory.log.warn("Region.merge(): island could not be found in the merged data: "
+            + curRegion.getIsland());
       }
     }
 
-    if(curRegion.getLaen() != -1) {
-      newRegion.setLaen(curRegion.getLaen());
+    if (curRegion.getLaen() != -1) {
+      resultRegion.setLaen(curRegion.getLaen());
     }
 
-    newRegion.setMallorn(newRegion.isMallorn() || curRegion.isMallorn());
+    resultRegion.setMallorn(resultRegion.isMallorn() || curRegion.isMallorn());
 
-    if(curRegion.getPeasants() != -1) {
-      newRegion.setPeasants(curRegion.getPeasants());
+    if (curRegion.getPeasants() != -1) {
+      resultRegion.setPeasants(curRegion.getPeasants());
     }
 
-    if((curRegion.getPrices() != null) && (curRegion.getPrices().size() > 0)) {
-      if(newRegion.getPrices() == null) {
-        newRegion.setPrices(new OrderedHashtable<ID,LuxuryPrice>());
+    if ((curRegion.getPrices() != null) && (curRegion.getPrices().size() > 0)) {
+      if (resultRegion.getPrices() == null) {
+        resultRegion.setPrices(new OrderedHashtable<ID, LuxuryPrice>());
       } else {
-        newRegion.getPrices().clear();
+        resultRegion.getPrices().clear();
       }
 
-      for(Iterator iter = curRegion.getPrices().values().iterator(); iter.hasNext();) {
+      for (Iterator iter = curRegion.getPrices().values().iterator(); iter.hasNext();) {
         LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice = new LuxuryPrice(newGD.rules.getItemType(curPrice.getItemType()
-                                             .getID()),
-                             curPrice.getPrice());
+        LuxuryPrice newPrice =
+            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+                .getPrice());
 
-        if(newPrice.getItemType() == null) {
+        if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
           // the current block description
-          MagellanFactory.log.warn("Invalid tag \"" + curPrice.getItemType() + "\" found in Region " +
-               curRegion + ", ignoring it.");
+          MagellanFactory.log.warn("Invalid tag \"" + curPrice.getItemType()
+              + "\" found in Region " + curRegion + ", ignoring it.");
         } else {
-          newRegion.getPrices().put(newPrice.getItemType().getID(), newPrice);
+          resultRegion.getPrices().put(newPrice.getItemType().getID(), newPrice);
         }
       }
     }
 
-    if(!curRegion.resources().isEmpty()) {
-      for(Iterator iter = curRegion.resources().iterator(); iter.hasNext();) {
+    if (!curRegion.resources().isEmpty()) {
+      for (Iterator iter = curRegion.resources().iterator(); iter.hasNext();) {
         RegionResource curRes = (RegionResource) iter.next();
-        RegionResource newRes = newRegion.getResource(curRes.getType());
+        RegionResource newRes = resultRegion.getResource(curRes.getType());
 
         try {
           /**
@@ -1190,18 +983,18 @@ public abstract class MagellanFactory {
            * 
            * 
            */
-          
-          if(newRes == null) {
+
+          if (newRes == null) {
             // add Resource
-            newRes = new RegionResource((ID) curRes.getID().clone(),
-                          newGD.rules.getItemType(curRes.getType().getID(),
-                                      true));
-            newRegion.addResource(newRes);
+            newRes =
+                new RegionResource((ID) curRes.getID().clone(), resultGD.rules.getItemType(curRes
+                    .getType().getID(), true));
+            resultRegion.addResource(newRes);
           }
-          
-          RegionResource.merge(curGD, curRes, newGD, newRes, sameTurn);
-          
-        } catch(CloneNotSupportedException e) {
+
+          RegionResource.merge(curGD, curRes, resultGD, newRes, sameTurn);
+
+        } catch (CloneNotSupportedException e) {
           MagellanFactory.log.error(e);
         }
       }
@@ -1210,17 +1003,17 @@ public abstract class MagellanFactory {
     // Now look for those resources, that are in the new created game data,
     // but not in the current one. These are those, that are not seen in the
     // maybe newer report! This maybe because their level has changed.
-    
+
     // Types for which no skill is needed to see
-    ItemType horsesType = newGD.rules.getItemType("Pferde");
-    ItemType treesType = newGD.rules.getItemType("Baeume");
-    ItemType mallornType = newGD.rules.getItemType("Mallorn");
-    ItemType schoesslingeType = newGD.rules.getItemType("Schoesslinge");
-    ItemType mallornSchoesslingeType = newGD.rules.getItemType("Mallornschoesslinge");
+    ItemType horsesType = resultGD.rules.getItemType("Pferde");
+    ItemType treesType = resultGD.rules.getItemType("Baeume");
+    ItemType mallornType = resultGD.rules.getItemType("Mallorn");
+    ItemType schoesslingeType = resultGD.rules.getItemType("Schoesslinge");
+    ItemType mallornSchoesslingeType = resultGD.rules.getItemType("Mallornschoesslinge");
     // FF 20080910...need new ressources too
-    ItemType bauernType = newGD.rules.getItemType("Bauern");
-    ItemType silberType = newGD.rules.getItemType("Silber");
-    
+    ItemType bauernType = resultGD.rules.getItemType("Bauern");
+    ItemType silberType = resultGD.rules.getItemType("Silber");
+
     // ArrayList of above Types
     List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();
     skillIrrelevantTypes.add(horsesType);
@@ -1229,22 +1022,23 @@ public abstract class MagellanFactory {
     skillIrrelevantTypes.add(schoesslingeType);
     skillIrrelevantTypes.add(mallornSchoesslingeType);
     // FF 20080910...need new ressources too
-    if (bauernType!=null){
+    if (bauernType != null) {
       skillIrrelevantTypes.add(bauernType);
     }
-    if (silberType!=null){
+    if (silberType != null) {
       skillIrrelevantTypes.add(silberType);
     }
-    
-    if((newRegion.resources() != null) && !newRegion.resources().isEmpty()) {
+
+    if ((resultRegion.resources() != null) && !resultRegion.resources().isEmpty()) {
       List<ItemType> deleteRegionRessources = null;
-      for(Iterator<RegionResource> it = newRegion.resources().iterator(); it.hasNext();) {
+      for (Iterator<RegionResource> it = resultRegion.resources().iterator(); it.hasNext();) {
         RegionResource newRes = it.next();
         RegionResource curRes = curRegion.getResource(newRes.getType());
 
-        if(curRes == null) {
+        if (curRes == null) {
           // check wheather talent is good enogh that it should be seen!
-          // Keep in mind, that the units are not yet merged (Use those of curRegion)
+          // Keep in mind, that the units are not yet merged (Use those of
+          // curRegion)
           boolean found = false;
 
           /*              
@@ -1261,58 +1055,57 @@ public abstract class MagellanFactory {
             }
           }
 */
-
           // new coding with same effect but better performance
           Skill makeSkill = newRes.getType().getMakeSkill();
-          if(makeSkill != null) {
-            for(Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
+          if (makeSkill != null) {
+            for (Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
               Unit unit = i.next();
               Skill skill = unit.getSkill(makeSkill.getSkillType());
               if (skill != null) {
-                if(skill.getLevel() >= newRes.getSkillLevel()) {
+                if (skill.getLevel() >= newRes.getSkillLevel()) {
                   found = true;
                 }
               }
             }
           }
 
-          if(found) {
+          if (found) {
             // enforce this information to be taken!
-            if(newRes.getSkillLevel() == -1 && newRes.getAmount() == -1) {
+            if (newRes.getSkillLevel() == -1 && newRes.getAmount() == -1) {
               // but only if we don't have other informations.
 
               // TODO: (darcduck) i don't understand the following line
               newRes.setSkillLevel(newRes.getSkillLevel() + 1);
               newRes.setAmount(-1);
             }
-          } 
+          }
           // Fiete: check here if we have skillIrrelevantResources
           // if curRes == null AND we have units in curReg -> these
           // resources are realy not there anymore: Baeume, Mallorn
-          
+
           // sameTurn must be true here, otherwise we would not reach that code
           // to be here newRes!=null and curRes==null
           // this cannot be true in the first merge pass
-          // in the second merge pass sameTurn is always true          
-//        if (sameTurn){
-            if (skillIrrelevantTypes.contains(newRes.getType())){
-              // we have "our" Type
-              // do we have units in newRegion
-              // if (newRegion.units()!=null && newRegion.units().size()>0){
-              // better using the visibility 3 or 4 should show resources
-              // if (curRegion.units()!=null && curRegion.units().size()>0){
-              if (curRegion.getVisibilityInteger()>=3) {
-                // we have...so we know now for sure, that these 
-                // ressource disappeared..so lets delete it
-                if (deleteRegionRessources==null){
-                  deleteRegionRessources = new ArrayList<ItemType>();
-                }
-                deleteRegionRessources.add(newRes.getType());
+          // in the second merge pass sameTurn is always true
+          // if (sameTurn){
+          if (skillIrrelevantTypes.contains(newRes.getType())) {
+            // we have "our" Type
+            // do we have units in newRegion
+            // if (newRegion.units()!=null && newRegion.units().size()>0){
+            // better using the visibility 3 or 4 should show resources
+            // if (curRegion.units()!=null && curRegion.units().size()>0){
+            if (curRegion.getVisibilityy().greaterEqual(Visibility.TRAVEL)) {
+              // we have...so we know now for sure, that these
+              // ressource disappeared..so lets delete it
+              if (deleteRegionRessources == null) {
+                deleteRegionRessources = new ArrayList<ItemType>();
               }
-              
+              deleteRegionRessources.add(newRes.getType());
             }
-//          }
-          
+
+          }
+          // }
+
         }
       }
       if (deleteRegionRessources!=null){
@@ -1320,8 +1113,9 @@ public abstract class MagellanFactory {
         for (ItemType regResID : deleteRegionRessources){
           // this doesn't work, as the returned collection
           // newRegion.resources().remove(regResID);
-          // furthermore removeResource had an error, as it doesn't modifies the collection (only the hashset)
-          newRegion.removeResource(regResID);
+          // furthermore removeResource had an error, as it doesn't modifies the
+          // collection (only the hashset)
+          resultRegion.removeResource(regResID);
         }
       }
     }
@@ -1329,48 +1123,46 @@ public abstract class MagellanFactory {
     if(!curRegion.schemes().isEmpty()) {
       for(Iterator iter = curRegion.schemes().iterator(); iter.hasNext();) {
         Scheme curScheme = (Scheme) iter.next();
-        Scheme newScheme = newRegion.getScheme(curScheme.getID());
+        Scheme newScheme = resultRegion.getScheme(curScheme.getID());
 
         try {
           if(newScheme == null) {
             newScheme = MagellanFactory.createScheme((ID) curScheme.getID().clone());
-            newRegion.addScheme(newScheme);
+            resultRegion.addScheme(newScheme);
           }
 
-          MagellanFactory.mergeScheme(curGD, curScheme, newGD, newScheme);
-        } catch(CloneNotSupportedException e) {
+          MagellanFactory.mergeScheme(curGD, curScheme, resultGD, newScheme);
+        } catch (CloneNotSupportedException e) {
           MagellanFactory.log.error(e);
         }
       }
     }
 
-    if(curRegion.getSilver() != -1) {
-      newRegion.setSilver(curRegion.getSilver());
+    if (curRegion.getSilver() != -1) {
+      resultRegion.setSilver(curRegion.getSilver());
     }
 
-    if(curRegion.getSprouts() != -1) {
-      newRegion.setSprouts(curRegion.getSprouts());
+    if (curRegion.getSprouts() != -1) {
+      resultRegion.setSprouts(curRegion.getSprouts());
     }
 
-    if(curRegion.getStones() != -1) {
-      newRegion.setStones(curRegion.getStones());
+    if (curRegion.getStones() != -1) {
+      resultRegion.setStones(curRegion.getStones());
     }
 
-    if(curRegion.getTrees() != -1) {
-      newRegion.setTrees(curRegion.getTrees());
+    if (curRegion.getTrees() != -1) {
+      resultRegion.setTrees(curRegion.getTrees());
     }
 
-    
-
-    if(curRegion.getWage() != -1) {
-      newRegion.setWage(curRegion.getWage());
+    if (curRegion.getWage() != -1) {
+      resultRegion.setWage(curRegion.getWage());
     }
 
     //  signs
     if (curRegion.getSigns()!=null && curRegion.getSigns().size()>0){
       // new overwriting old ones...
-      newRegion.clearSigns();
-      newRegion.addSigns(curRegion.getSigns());
+      resultRegion.clearSigns();
+      resultRegion.addSigns(curRegion.getSigns());
     }
     
     
@@ -1381,10 +1173,10 @@ public abstract class MagellanFactory {
     // same turn and curGD is the newer game data or if both
     // are from the same turn. Both conditions are tested by the
     // following if statement
-    if(curGD.getDate().equals(newGD.getDate())) {
-      if((curRegion.getEvents() != null) && (curRegion.getEvents().size() > 0)) {
-        if(newRegion.getEvents() == null) {
-          newRegion.setEvents(new LinkedList<Message>());
+    if (curGD.getDate().equals(resultGD.getDate())) {
+      if ((curRegion.getEvents() != null) && (curRegion.getEvents().size() > 0)) {
+        if (resultRegion.getEvents() == null) {
+          resultRegion.setEvents(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getEvents().iterator(); iter.hasNext();) {
@@ -1396,14 +1188,14 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
-          newRegion.getEvents().add(newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          resultRegion.getEvents().add(newMsg);
         }
       }
 
-      if((curRegion.getMessages() != null) && (curRegion.getMessages().size() > 0)) {
-        if(newRegion.getMessages() == null) {
-          newRegion.setMessages(new LinkedList<Message>());
+      if ((curRegion.getMessages() != null) && (curRegion.getMessages().size() > 0)) {
+        if (resultRegion.getMessages() == null) {
+          resultRegion.setMessages(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getMessages().iterator(); iter.hasNext();) {
@@ -1412,17 +1204,17 @@ public abstract class MagellanFactory {
 
           try {
             newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
-          } catch(CloneNotSupportedException e) {
+          } catch (CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
-          newRegion.getMessages().add(newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          resultRegion.getMessages().add(newMsg);
         }
       }
 
-      if((curRegion.getPlayerMessages() != null) && (curRegion.getPlayerMessages().size() > 0)) {
-        if(newRegion.getPlayerMessages() == null) {
-          newRegion.setPlayerMessages(new LinkedList<Message>());
+      if ((curRegion.getPlayerMessages() != null) && (curRegion.getPlayerMessages().size() > 0)) {
+        if (resultRegion.getPlayerMessages() == null) {
+          resultRegion.setPlayerMessages(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getPlayerMessages().iterator(); iter.hasNext();) {
@@ -1434,14 +1226,14 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
-          newRegion.getPlayerMessages().add(newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          resultRegion.getPlayerMessages().add(newMsg);
         }
       }
 
-      if((curRegion.getSurroundings() != null) && (curRegion.getSurroundings().size() > 0)) {
-        if(newRegion.getSurroundings() == null) {
-          newRegion.setSurroundings(new LinkedList<Message>());
+      if ((curRegion.getSurroundings() != null) && (curRegion.getSurroundings().size() > 0)) {
+        if (resultRegion.getSurroundings() == null) {
+          resultRegion.setSurroundings(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getSurroundings().iterator(); iter.hasNext();) {
@@ -1453,14 +1245,14 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
-          newRegion.getSurroundings().add(newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
+          resultRegion.getSurroundings().add(newMsg);
         }
       }
 
-      if((curRegion.getTravelThru() != null) && (curRegion.getTravelThru().size() > 0)) {
-        if(newRegion.getTravelThru() == null) {
-          newRegion.setTravelThru(new LinkedList<Message>());
+      if ((curRegion.getTravelThru() != null) && (curRegion.getTravelThru().size() > 0)) {
+        if (resultRegion.getTravelThru() == null) {
+          resultRegion.setTravelThru(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getTravelThru().iterator(); iter.hasNext();) {
@@ -1472,28 +1264,19 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
 
           // 2002.02.21 pavkovic: prevent double entries
-          if(!newRegion.getTravelThru().contains(newMsg)) {
-            newRegion.getTravelThru().add(newMsg);
+          if (!resultRegion.getTravelThru().contains(newMsg)) {
+            resultRegion.getTravelThru().add(newMsg);
           } else {
-            //log.warn("Region.merge(): Duplicate message \"" + newMsg.getText() +
-            //     "\", removing it.");
-
-            /*
-            if(log.isDebugEnabled()) {
-                log.debug("list: "+newRegion.travelThru);
-                log.debug("entry:"+newMsg);
-            }
-            */
           }
         }
       }
 
-      if((curRegion.getTravelThruShips() != null) && (curRegion.getTravelThruShips().size() > 0)) {
-        if(newRegion.getTravelThruShips() == null) {
-          newRegion.setTravelThruShips(new LinkedList<Message>());
+      if ((curRegion.getTravelThruShips() != null) && (curRegion.getTravelThruShips().size() > 0)) {
+        if (resultRegion.getTravelThruShips() == null) {
+          resultRegion.setTravelThruShips(new LinkedList<Message>());
         }
 
         for(Iterator<Message> iter = curRegion.getTravelThruShips().iterator(); iter.hasNext();) {
@@ -1505,21 +1288,12 @@ public abstract class MagellanFactory {
           } catch(CloneNotSupportedException e) {
           }
 
-          MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
+          MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
 
           // 2002.02.21 pavkovic: prevent duplicate entries
-          if(!newRegion.getTravelThruShips().contains(newMsg)) {
-            newRegion.getTravelThruShips().add(newMsg);
+          if (!resultRegion.getTravelThruShips().contains(newMsg)) {
+            resultRegion.getTravelThruShips().add(newMsg);
           } else {
-            //log.warn("Region.merge(): Duplicate message \"" + newMsg.getText() +
-            //     "\", removing it.");
-
-            /*
-            if(log.isDebugEnabled()) {
-                log.debug("list: "+newRegion.travelThruShips);
-                log.debug("entry:"+newMsg);
-            }
-            */
           }
         }
       }

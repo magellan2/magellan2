@@ -1,3 +1,11 @@
+2008-02-14 / Build 257 - stm (stm_@users.sourceforge.net)
+	* added Visibility enum
+	* fixed visibility merging
+	* added Rendering of future paths
+	* fixed minor bug concerning tasks of factions with password
+	* improved readability of GameData.merge
+	* fixed merging of disappeared buildings
+
 2009-01-30 / Build 254 - Fiete <sf@fietefietz.de>
 	* [someone made some help adjustments and fail save additions]
 	* added CC: function to E-Mail Order Writer

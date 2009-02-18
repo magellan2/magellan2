@@ -200,7 +200,7 @@ public class EresseaPostProcessor {
 
         /* first determine whether we know everything about
 				this region */
-				if(region.getVisibilityy()==Visibility.UNIT) {
+				if(region.getVisibility()==Visibility.UNIT) {
 					/* now patch as much missing information as
 					possible */
 					// FIXME (stm) 2006-10-28: this has bitten us already

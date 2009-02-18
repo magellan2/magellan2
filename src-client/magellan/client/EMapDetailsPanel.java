@@ -764,7 +764,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
             + r.getType().getName()
             + " ("
             + Resources.get("emapdetailspanel.node.terrain.visibility."
-                + r.getVisibilityy().toString()) + ")", r.getType().getID() + "-detail"));
+                + r.getVisibility().toString()) + ")", r.getType().getID() + "-detail"));
 
 		// terrain coordinates
     String regionKoordinateInfo = Resources.get("emapdetailspanel.node.coordinates") + ": " + r.getID();

@@ -48,11 +48,11 @@ public interface Region extends UnitContainer {
     }
 
     public boolean greaterEqual(Visibility otherVis) {
-      return !otherVis.lessThan(this);
+      return otherVis.lessEqual(this);
     }
 
     public boolean greaterThan(Visibility otherVis) {
-      return !otherVis.lessEqual(this);
+      return otherVis.lessThan(this);
     }
 }
 
@@ -95,7 +95,7 @@ public interface Region extends UnitContainer {
 
   /**
    * A string constant indicating why this region is visible. This should only
-   * be used when writing/reading a CR. Otherwise use {@link #getVisibilityy()}.
+   * be used when writing/reading a CR. Otherwise use {@link #getVisibility()}.
    * 
    * @return the string object or null, if the visibility is unspecified.
    */
@@ -121,7 +121,7 @@ public interface Region extends UnitContainer {
    * 3..travel <br /> 
    * 4..qualified unit in region (->visibility=null)
    */
-  public Visibility getVisibilityy();
+  public Visibility getVisibility();
 
   /**
    * 0..very poor - no info (->visibility=null) <br /> 
@@ -132,7 +132,7 @@ public interface Region extends UnitContainer {
    * 
    * @param v
    */
-  public void setVisibilityyy(Visibility v);
+  public void setVisibility(Visibility v);
 
   /**
    * Returns all resources of this region.
@@ -156,7 +156,10 @@ public interface Region extends UnitContainer {
   public RegionResource removeResource(RegionResource r);
 
   /**
-   * DOCUMENT-ME
+   * Removes any reference to the Resource with ItemType type.
+   * 
+   * @param type
+   * @return
    */
   public RegionResource removeResource(ItemType type);
 

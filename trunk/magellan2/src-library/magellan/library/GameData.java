@@ -1162,7 +1162,7 @@ public abstract class GameData implements Cloneable {
             } else {
               curRegion = newerGD.getRegion((CoordinateID) oldBuilding.getRegion().getID());
 
-              if ((curRegion == null) || curRegion.getVisibilityy().lessThan(Visibility.TRAVEL)) {
+              if ((curRegion == null) || curRegion.getVisibility().lessThan(Visibility.TRAVEL)) {
                 try {
                   resultGD.addBuilding(MagellanFactory.createBuilding((ID) oldBuilding.getID().clone(),
                       resultGD));
@@ -1401,7 +1401,10 @@ public abstract class GameData implements Cloneable {
           MagellanFactory.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound, false);
         } else {
           // region not present in new report
-          resultRegion.setVisibilityyy(Visibility.NULL);
+          if (!sameRound && resultRegion.getVisibility()!=Visibility.NULL){
+            log.warn("region should not be visible: "+resultRegion.getName());
+            resultRegion.setVisibility(Visibility.NULL);
+          }
         }
       }
     }
@@ -1644,7 +1647,7 @@ public abstract class GameData implements Cloneable {
       CoordinateID actRegionID = (CoordinateID) iter.next();
       Region actRegion = regions().get(actRegionID);
       boolean shouldHaveAllNeighbours = false;
-      if (actRegion.getVisibilityy().greaterEqual(Region.Visibility.TRAVEL)){
+      if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)){
         shouldHaveAllNeighbours = true;
       }
       if (shouldHaveAllNeighbours) {
@@ -1666,7 +1669,7 @@ public abstract class GameData implements Cloneable {
               RegionType type = this.rules.getRegionType(StringID.create("Leere"), true);
               r.setType(type);
               r.setName(Resources.get("completedata.region.thevoid.name"));
-              r.setDescription(Resources.get("completedata.region.thevoid..beschr"));
+              r.setDescription(Resources.get("completedata.region.thevoid.beschr"));
               newRegions.add(r);
               this.addTranslation("Leere", Resources.get("completedata.region.thevoid.name"),
                   TranslationType.sourceMagellan);

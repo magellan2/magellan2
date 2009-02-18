@@ -297,7 +297,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * info (->visibility=null) 1..neighbour 2..lighthouse 3..travel 4..qualified
    * unit in region (->visibility=null)
    */
-  public Visibility getVisibilityy() {
+  public Visibility getVisibility() {
     if (this.visibility == null) {
       // we have 0 or 4
       // check for qualified units
@@ -352,7 +352,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 
    * @param i
    */
-  public void setVisibilityyy(Visibility vis) {
+  public void setVisibility(Visibility vis) {
     switch (vis) {
     case NULL:
     case UNIT:
@@ -498,7 +498,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Region#removeResource(magellan.library.rules.ItemType)
    */
   public RegionResource removeResource(ItemType type) {
     if (this.resources == null) {

@@ -129,6 +129,11 @@ EINHEIT 1
 696873;Partei
 1;Anzahl
 "Menschen";Typ
+5;Kampfstatus
+COMMANDS
+"PLAY"
+TALENTE
+180 3;Taktik
 GEGENSTAENDE
 1000;Silber
 EINHEIT 2

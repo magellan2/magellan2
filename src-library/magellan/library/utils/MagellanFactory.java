@@ -696,11 +696,25 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Merges regions.
+   * Merges all info from curRegion into newRegion. The result is influenced by the
+   * <code>sameRound</code> parameter (indicating if the region infos are from the same round)
+   * and the <code>firstPass</code> parameter. Merging is usually done in two passes. In the
+   * first pass, the old info is copied into an intermediate object. In the
+   * second pass, the new object is merged into this intermediate object.
+   * 
+   * @param curGD
+   *          The GameData of curUnit
+   * @param curRegion
+   *          The region where the info is taken from
+   * @param resultGD
+   *          The GameData of resultRegion
+   * @param resultRegion
+   *          The info is merged into this region
+   * @param newTurn
+   *          notifies if both game data objects have been from the same round
+   * @param firstPass
+   *          notifies if this is the first of two passes
    */
-  // TODO should name this either sameTurn everywhere or sameRound everywhere
-  // sameTurn == false actually indicates that this method is to be called again
-  // with the same "resultRegion" but a more recent "curRegion".
   public static void mergeRegion(GameData curGD, Region curRegion, GameData resultGD,
       Region resultRegion, boolean newTurn, boolean firstPass) {
     MagellanFactory.mergeUnitContainer(curGD, curRegion, resultGD, resultRegion);
@@ -1407,8 +1421,8 @@ public abstract class MagellanFactory {
    *          notifies if both game data objects have been from the same round
    */
   public static void merge(GameData curGD, TempUnit curTemp, GameData newGD, TempUnit newTemp,
-      boolean sameRound) {
-    MagellanFactory.mergeUnit(curGD, curTemp, newGD, newTemp, sameRound);
+      boolean sameRound, boolean firstPass) {
+    MagellanFactory.mergeUnit(curGD, curTemp, newGD, newTemp, sameRound, firstPass);
 
     if (curTemp.getParent() != null) {
       newTemp.setParent(newGD.getUnit(curTemp.getParent().getID()));
@@ -1434,13 +1448,27 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * DOCUMENT-ME
+   * Merges all info from curUnit into newUnit. The result is influenced by the
+   * <code>sameRound</code> parameter (indicating if the unit infos are from the same round)
+   * and the <code>firstPass</code> parameter. Merging is usually done in two passes. In the
+   * first pass, the old info is copied into an intermediate object. In the
+   * second pass, the new object is merged into this intermediate object.
    * 
+   * @param curGD
+   *          The GameData of curUnit
+   * @param curUnit
+   *          The unit where the info is taken from
+   * @param resultGD
+   *          The GameData of newUnit
+   * @param resultUnit
+   *          The info is merged into this unit
    * @param sameRound
    *          notifies if both game data objects have been from the same round
+   * @param firstPass
+   *          notifies if this is the first of two passes
    */
-  public static void mergeUnit(GameData curGD, Unit curUnit, GameData newGD, Unit newUnit,
-      boolean sameRound) {
+  public static void mergeUnit(GameData curGD, Unit curUnit, GameData resultGD, Unit resultUnit,
+      boolean sameRound, boolean firstPass) {
     /*
      * True, when curUnit is seen by the faction it belongs to and is therefore
      * fully specified.
@@ -1451,58 +1479,50 @@ public abstract class MagellanFactory {
      * True, when newUnit is seen by the faction it belongs to and is therefore
      * fully specified. This is only meaningful in the second pass.
      */
-    boolean newWellKnown = !newUnit.ordersAreNull() || (newUnit.getCombatStatus() != -1);
-
-    /*
-     * True, when newUnit is completely uninitialized, i.e. this invokation of
-     * merge is the first one of the two to be expected.
-     */
-
-    // boolean firstPass = (newUnit.getPersons() == 0);
-    boolean firstPass = newUnit.getRegion() == null;
+    boolean newWellKnown = !resultUnit.ordersAreNull() || (resultUnit.getCombatStatus() != -1);
 
     if (curUnit.getName() != null) {
-      newUnit.setName(curUnit.getName());
+      resultUnit.setName(curUnit.getName());
     }
 
     if (curUnit.getDescription() != null) {
-      newUnit.setDescription(curUnit.getDescription());
+      resultUnit.setDescription(curUnit.getDescription());
     }
 
     if (curUnit.getAlias() != null) {
       try {
-        newUnit.setAlias((UnitID) curUnit.getAlias().clone());
+        resultUnit.setAlias((UnitID) curUnit.getAlias().clone());
       } catch (CloneNotSupportedException e) {
       }
     }
 
     if (curUnit.getAura() != -1) {
-      newUnit.setAura(curUnit.getAura());
+      resultUnit.setAura(curUnit.getAura());
     }
 
     if (curUnit.getAuraMax() != -1) {
-      newUnit.setAuraMax(curUnit.getAuraMax());
+      resultUnit.setAuraMax(curUnit.getAuraMax());
     }
 
     if (curUnit.getFamiliarmageID() != null) {
-      newUnit.setFamiliarmageID(curUnit.getFamiliarmageID());
+      resultUnit.setFamiliarmageID(curUnit.getFamiliarmageID());
     }
 
     if (curUnit.isWeightWellKnown()) {
-      newUnit.setWeight(curUnit.getWeight());
+      resultUnit.setWeight(curUnit.getWeight());
     }
 
     if (curUnit.getBuilding() != null) {
-      newUnit.setBuilding(newGD.getBuilding(curUnit.getBuilding().getID()));
+      resultUnit.setBuilding(resultGD.getBuilding(curUnit.getBuilding().getID()));
     }
 
-    newUnit.setCache(null);
+    resultUnit.setCache(null);
 
     if ((curUnit.getCombatSpells() != null) && (curUnit.getCombatSpells().size() > 0)) {
-      if (newUnit.getCombatSpells() == null) {
-        newUnit.setCombatSpells(new Hashtable<ID, CombatSpell>());
+      if (resultUnit.getCombatSpells() == null) {
+        resultUnit.setCombatSpells(new Hashtable<ID, CombatSpell>());
       } else {
-        newUnit.getCombatSpells().clear();
+        resultUnit.getCombatSpells().clear();
       }
 
       for (Iterator<CombatSpell> iter = curUnit.getCombatSpells().values().iterator(); iter
@@ -1515,44 +1535,44 @@ public abstract class MagellanFactory {
         } catch (CloneNotSupportedException e) {
         }
 
-        MagellanFactory.mergeCombatSpell(curGD, curCS, newGD, newCS);
-        newUnit.getCombatSpells().put(newCS.getID(), newCS);
+        MagellanFactory.mergeCombatSpell(curGD, curCS, resultGD, newCS);
+        resultUnit.getCombatSpells().put(newCS.getID(), newCS);
       }
     }
 
     if (!curUnit.ordersAreNull() && (curUnit.getCompleteOrders().size() > 0)) {
-      newUnit.setOrders(curUnit.getCompleteOrders(), false);
+      resultUnit.setOrders(curUnit.getCompleteOrders(), false);
     }
 
-    newUnit.setOrdersConfirmed(newUnit.isOrdersConfirmed() || curUnit.isOrdersConfirmed());
+    resultUnit.setOrdersConfirmed(resultUnit.isOrdersConfirmed() || curUnit.isOrdersConfirmed());
 
     if ((curUnit.getEffects() != null) && (curUnit.getEffects().size() > 0)) {
-      if (newUnit.getEffects() == null) {
-        newUnit.setEffects(new LinkedList<String>());
+      if (resultUnit.getEffects() == null) {
+        resultUnit.setEffects(new LinkedList<String>());
       } else {
-        newUnit.getEffects().clear();
+        resultUnit.getEffects().clear();
       }
 
-      newUnit.getEffects().addAll(curUnit.getEffects());
+      resultUnit.getEffects().addAll(curUnit.getEffects());
     }
 
     if (curUnit.getFaction() != null) {
-      if ((newUnit.getFaction() == null) || curWellKnown) {
-        newUnit.setFaction(newGD.getFaction(curUnit.getFaction().getID()));
+      if ((resultUnit.getFaction() == null) || curWellKnown) {
+        resultUnit.setFaction(resultGD.getFaction(curUnit.getFaction().getID()));
       }
     }
 
     if (curUnit.getFollows() != null) {
-      newUnit.setFollows(newGD.getUnit(curUnit.getFollows().getID()));
+      resultUnit.setFollows(resultGD.getUnit(curUnit.getFollows().getID()));
     }
 
-    if ((curUnit.getGroup() != null) && (newUnit.getFaction() != null)
-        && (newUnit.getFaction().getGroups() != null)) {
-      newUnit.setGroup(newUnit.getFaction().getGroups().get(curUnit.getGroup().getID()));
+    if ((curUnit.getGroup() != null) && (resultUnit.getFaction() != null)
+        && (resultUnit.getFaction().getGroups() != null)) {
+      resultUnit.setGroup(resultUnit.getFaction().getGroups().get(curUnit.getGroup().getID()));
     }
 
     if (curUnit.getGuard() != -1) {
-      newUnit.setGuard(curUnit.getGuard());
+      resultUnit.setGuard(curUnit.getGuard());
     }
 
     /*
@@ -1561,18 +1581,18 @@ public abstract class MagellanFactory {
      * isSpy value
      */
     if (curUnit.getGuiseFaction() != null) {
-      newUnit.setGuiseFaction(newGD.getFaction(curUnit.getGuiseFaction().getID()));
+      resultUnit.setGuiseFaction(resultGD.getFaction(curUnit.getGuiseFaction().getID()));
     }
 
-    newUnit.setSpy((curUnit.isSpy() || newUnit.isSpy()) && (newUnit.getGuiseFaction() == null));
+    resultUnit.setSpy((curUnit.isSpy() || resultUnit.isSpy()) && (resultUnit.getGuiseFaction() == null));
 
     if (curUnit.getHealth() != null) {
-      newUnit.setHealth(curUnit.getHealth());
+      resultUnit.setHealth(curUnit.getHealth());
     }
 
-    newUnit.setHideFaction(newUnit.isHideFaction() || curUnit.isHideFaction());
-    newUnit.setStarving(newUnit.isStarving() || curUnit.isStarving());
-    newUnit.setHero(newUnit.isHero() || curUnit.isHero());
+    resultUnit.setHideFaction(resultUnit.isHideFaction() || curUnit.isHideFaction());
+    resultUnit.setStarving(resultUnit.isStarving() || curUnit.isStarving());
+    resultUnit.setHero(resultUnit.isHero() || curUnit.isHero());
 
     // do not overwrite the items in one special case:
     // if both source units are from the same turn, the first one
@@ -1580,73 +1600,72 @@ public abstract class MagellanFactory {
     // second pass
     if (firstPass || !newWellKnown || curWellKnown) {
       if ((curUnit.getItems() != null) && (curUnit.getItems().size() > 0)) {
-        if (newUnit.getItemMap() == null) {
-          newUnit.setItems(new Hashtable<ID, Item>());
+        if (resultUnit.getItemMap() == null) {
+          resultUnit.setItems(new Hashtable<ID, Item>());
         } else {
-          newUnit.getItemMap().clear();
+          resultUnit.getItemMap().clear();
         }
 
         for (Iterator<Item> iter = curUnit.getItems().iterator(); iter.hasNext();) {
           Item curItem = iter.next();
           Item newItem =
-              new Item(newGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
+              new Item(resultGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
                   .getAmount());
-          newUnit.getItemMap().put(newItem.getItemType().getID(), newItem);
+          resultUnit.getItemMap().put(newItem.getItemType().getID(), newItem);
         }
       }
     }
 
     if (curUnit.getPersons() != -1) {
-      newUnit.setPersons(curUnit.getPersons());
+      resultUnit.setPersons(curUnit.getPersons());
     }
 
     if (curUnit.getPrivDesc() != null) {
-      newUnit.setPrivDesc(curUnit.getPrivDesc());
+      resultUnit.setPrivDesc(curUnit.getPrivDesc());
     }
 
     if (curUnit.getDisguiseRace() != null) {
-      newUnit.setRealRace(newGD.rules.getRace(curUnit.getRace().getID(), true));
-      newUnit.setRace(newGD.rules.getRace(curUnit.getDisguiseRace().getID(), true));
+      resultUnit.setRealRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
+      resultUnit.setRace(resultGD.rules.getRace(curUnit.getDisguiseRace().getID(), true));
     } else {
-      newUnit.setRace(newGD.rules.getRace(curUnit.getRace().getID(), true));
+      resultUnit.setRace(resultGD.rules.getRace(curUnit.getRace().getID(), true));
     }
 
     if (curUnit.getRaceNamePrefix() != null) {
-      newUnit.setRaceNamePrefix(curUnit.getRaceNamePrefix());
+      resultUnit.setRaceNamePrefix(curUnit.getRaceNamePrefix());
     }
 
     if (curUnit.getRegion() != null) {
-      newUnit.setRegion(newGD.getRegion((CoordinateID) curUnit.getRegion().getID()));
+      resultUnit.setRegion(resultGD.getRegion((CoordinateID) curUnit.getRegion().getID()));
     }
 
     if (curUnit.getCombatStatus() != -1) {
-      newUnit.setCombatStatus(curUnit.getCombatStatus());
+      resultUnit.setCombatStatus(curUnit.getCombatStatus());
     }
 
     if (curUnit.getShip() != null) {
-      newUnit.setShip(newGD.getShip(curUnit.getShip().getID()));
+      resultUnit.setShip(resultGD.getShip(curUnit.getShip().getID()));
     }
 
     if (curUnit.getSiege() != null) {
-      newUnit.setSiege(newGD.getBuilding(curUnit.getSiege().getID()));
+      resultUnit.setSiege(resultGD.getBuilding(curUnit.getSiege().getID()));
     }
 
     // this block requires newUnit.person to be already set!
     Collection<Skill> oldSkills = new LinkedList<Skill>();
 
-    if (newUnit.getSkillMap() == null) {
-      newUnit.setSkills(new OrderedHashtable<ID, Skill>());
+    if (resultUnit.getSkillMap() == null) {
+      resultUnit.setSkills(new OrderedHashtable<ID, Skill>());
     } else {
-      oldSkills.addAll(newUnit.getSkills());
+      oldSkills.addAll(resultUnit.getSkills());
     }
 
     if ((curUnit.getSkills() != null) && (curUnit.getSkills().size() > 0)) {
-      for (Iterator<Skill> iter = curUnit.getSkills().iterator(); iter.hasNext();) {
-        Skill curSkill = iter.next();
-        SkillType newSkillType = newGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
+      for (Skill curSkill : curUnit.getSkills()) {
+        SkillType newSkillType = resultGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
         Skill newSkill =
             new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(),
-                newUnit.getPersons(), curSkill.noSkillPoints());
+                resultUnit.getPersons(), curSkill.noSkillPoints());
 
         if (curSkill.isLevelChanged()) {
           newSkill.setLevelChanged(true);
@@ -1658,9 +1677,8 @@ public abstract class MagellanFactory {
         }
 
         // NOTE: Maybe some decision about change-level computation in reports
-        // of
-        // same date here
-        Skill oldSkill = newUnit.getSkillMap().put(newSkillType.getID(), newSkill);
+        // of same date here
+        Skill oldSkill = resultUnit.getSkillMap().put(newSkillType.getID(), newSkill);
 
         if (!sameRound) {
           // notify change as we are not in the same round.
@@ -1679,8 +1697,7 @@ public abstract class MagellanFactory {
           // report from the same round, the level changes are not updates
           //
           // my solution now is to set the level if we found an old skill. The
-          // old
-          // skill is actually the negative current level of the first pass
+          // old skill is actually the negative current level of the first pass
           //
           // there is a known problem if there are more known factions with
           // unknown skills (not imported factions). At the moment I don't
@@ -1696,7 +1713,8 @@ public abstract class MagellanFactory {
               }
             }
           } else {
-            if (curSkill.getLevel() == 0 && newSkill.getLevel() == 0 && curSkill.isLevelChanged()) {
+            if (curSkill.getLevel() == 0 && newSkill.getLevel() == 0 && curSkill.isLevelChanged()
+                && !curWellKnown) {
               newSkill.setLevel(curSkill.getLevel() + curSkill.getChangeLevel() * (-1));
             }
           }
@@ -1720,7 +1738,7 @@ public abstract class MagellanFactory {
         Skill oldSkill = iter.next();
 
         if (oldSkill.isLostSkill()) { // remove if it was lost
-          newUnit.getSkillMap().remove(oldSkill.getSkillType().getID());
+          resultUnit.getSkillMap().remove(oldSkill.getSkillType().getID());
         } else { // dont remove it but mark it as a lostSkill
           oldSkill.setChangeLevel(-oldSkill.getLevel());
           oldSkill.setLevel(-1);
@@ -1728,29 +1746,29 @@ public abstract class MagellanFactory {
       }
     }
 
-    newUnit.setSortIndex(Math.max(newUnit.getSortIndex(), curUnit.getSortIndex()));
+    resultUnit.setSortIndex(Math.max(resultUnit.getSortIndex(), curUnit.getSortIndex()));
 
     if ((curUnit.getSpells() != null) && (curUnit.getSpells().size() > 0)) {
-      if (newUnit.getSpells() == null) {
-        newUnit.setSpells(new Hashtable<ID, Spell>());
+      if (resultUnit.getSpells() == null) {
+        resultUnit.setSpells(new Hashtable<ID, Spell>());
       } else {
-        newUnit.getSpells().clear();
+        resultUnit.getSpells().clear();
       }
 
       for (Iterator<Spell> iter = curUnit.getSpells().values().iterator(); iter.hasNext();) {
         Spell curSpell = iter.next();
-        Spell newSpell = newGD.getSpell(curSpell.getID());
-        newUnit.getSpells().put(newSpell.getID(), newSpell);
+        Spell newSpell = resultGD.getSpell(curSpell.getID());
+        resultUnit.getSpells().put(newSpell.getID(), newSpell);
       }
     }
 
     if (curUnit.getStealth() != -1) {
-      newUnit.setStealth(curUnit.getStealth());
+      resultUnit.setStealth(curUnit.getStealth());
     }
 
     if (curUnit.getTempID() != null) {
       try {
-        newUnit.setTempID((UnitID) curUnit.getTempID().clone());
+        resultUnit.setTempID((UnitID) curUnit.getTempID().clone());
       } catch (CloneNotSupportedException e) {
         MagellanFactory.log.error(e);
       }
@@ -1760,10 +1778,10 @@ public abstract class MagellanFactory {
     // the GameData class
     // new true iff cur true, new false iff cur false and well known
     if (curUnit.isUnaided()) {
-      newUnit.setUnaided(true);
+      resultUnit.setUnaided(true);
     } else {
       if (curWellKnown) {
-        newUnit.setUnaided(false);
+        resultUnit.setUnaided(false);
       }
     }
 
@@ -1775,12 +1793,12 @@ public abstract class MagellanFactory {
     // are from the same turn. Both conditions are tested by the
     // following if statement
     if (!sameRound) {
-      newUnit.setUnitMessages(null);
+      resultUnit.setUnitMessages(null);
     }
 
     if ((curUnit.getUnitMessages() != null) && (curUnit.getUnitMessages().size() > 0)) {
-      if (newUnit.getUnitMessages() == null) {
-        newUnit.setUnitMessages(new LinkedList<Message>());
+      if (resultUnit.getUnitMessages() == null) {
+        resultUnit.setUnitMessages(new LinkedList<Message>());
       }
 
       for (Iterator<Message> iter = curUnit.getUnitMessages().iterator(); iter.hasNext();) {
@@ -1792,27 +1810,27 @@ public abstract class MagellanFactory {
         } catch (CloneNotSupportedException e) {
         }
 
-        MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
-        newUnit.getUnitMessages().add(newMsg);
+        MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
+        resultUnit.getUnitMessages().add(newMsg);
       }
     }
 
     if ((curUnit.getComments() != null) && (curUnit.getComments().size() > 0)) {
-      if (newUnit.getComments() == null) {
-        newUnit.setComments(new LinkedList<String>());
+      if (resultUnit.getComments() == null) {
+        resultUnit.setComments(new LinkedList<String>());
       }
       // else {
       // newUnit.comments.clear();
       // }
 
-      newUnit.getComments().addAll(curUnit.getComments());
+      resultUnit.getComments().addAll(curUnit.getComments());
     }
 
     // merge tags
     if (curUnit.hasTags()) {
       for (Iterator iter = curUnit.getTagMap().keySet().iterator(); iter.hasNext();) {
         String tag = (String) iter.next();
-        newUnit.putTag(tag, curUnit.getTag(tag));
+        resultUnit.putTag(tag, curUnit.getTag(tag));
       }
     }
   }

@@ -1350,9 +1350,7 @@ public abstract class GameData implements Cloneable {
      * dates are equal, a fully merge is done, if not, only the skills are
      * retrieved.
      */
-    for (Iterator<Unit> it = resultGD.units().values().iterator(); it.hasNext();) {
-      Unit resultUnit = it.next();
-
+    for (Unit resultUnit : resultGD.units().values()) {
       // find the second first since we may need the temp id
       Unit newerUnit = newerGD.findUnit(resultUnit.getID(), null, null);
 
@@ -1376,7 +1374,7 @@ public abstract class GameData implements Cloneable {
       // first merge step
       if (olderUnit != null) {
         if (sameRound) { // full merge
-          MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound);
+          MagellanFactory.mergeUnit(olderGD, olderUnit, resultGD, resultUnit, sameRound, true);
         } else { // only copy the skills to get change-level base
           if ((newerUnit != null)
               && ((newerUnit.getSkills() != null) || (olderUnit.getFaction().isPrivileged()))) {
@@ -1387,7 +1385,7 @@ public abstract class GameData implements Cloneable {
 
       // second merge step
       if (newerUnit != null) {
-        MagellanFactory.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound);
+        MagellanFactory.mergeUnit(newerGD, newerUnit, resultGD, resultUnit, sameRound, false);
       }
     }
 

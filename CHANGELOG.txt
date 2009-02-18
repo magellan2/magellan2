@@ -1,6 +1,7 @@
-2008-02-14 / Build 259 - stm (stm_@users.sourceforge.net)
+2008-02-14 / Build 260 - stm (stm_@users.sourceforge.net)
 	* fixed broken Resource merging
 	* added iceberg icons
+	* fixed bug #351
 	
 2008-02-14 / Build 257 - stm (stm_@users.sourceforge.net)
 	* added Visibility enum

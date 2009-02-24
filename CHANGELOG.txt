@@ -1,6 +1,11 @@
+2009-02-24 / Build 262 - Fiete <sf@fietefietz.de>
+	* fixed #343: change herb type via map edit plugin
+	* added Eisberg Region type to eressea.cr
+	* added detail images to mapedit-terrain-menu
+
 2009-02-24 / Build 261 - Fiete <sf@fietefietz.de>
 	* fixed #0349: unmodified(modified) Ressources in FactionStats and other
-	* fixed #0352: real race of demons is not seen by Faction Stats
+	* fixed #0352: real race of demons was not seen in Faction Stats after merge
 
 2008-02-14 / Build 260 - stm (stm_@users.sourceforge.net)
 	* fixed broken Resource merging

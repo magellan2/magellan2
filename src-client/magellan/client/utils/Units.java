@@ -126,9 +126,19 @@ public class Units {
         }
 
         stored.setAmount(stored.getAmount() + amount);
-
+        
+        // try to remember unmodifiedAmount
+        Item unmodifiedItem = u.getItem(item.getItemType());
+        int unmodifiedAmount=0;
+        if (unmodifiedItem!=null){
+          unmodifiedAmount=unmodifiedItem.getAmount();
+        }
+        stored.setUnmodifiedAmount(stored.getUnmodifiedAmount() + unmodifiedAmount);
+        
+        UnitWrapper uW = new UnitWrapper(u, amount);
+        uW.setUnmodifiedAmount(unmodifiedAmount);
         // add the unit owning the item to the stat item
-        stored.units.add(new UnitWrapper(u, amount));
+        stored.units.add(uW);
       }
     }
 
@@ -138,44 +148,7 @@ public class Units {
     return sortedCategories;
   }
 
-  /**
-   * DOCUMENT-ME
-   */
-  public Collection sumUpUnitItems(Collection units) {
-    Map<ID, StatItem> items = new Hashtable<ID, StatItem>();
-
-    for (Iterator it = units.iterator(); it.hasNext();) {
-      Unit u = (Unit) it.next();
-
-      for (Iterator i = u.getModifiedItems().iterator(); i.hasNext();) {
-        Item item = (Item) i.next();
-
-        // get the stat item by item type
-        StatItem stored = items.get(item.getItemType().getID());
-
-        if (stored == null) {
-          stored = new StatItem(item.getItemType(), 0);
-          items.put(stored.getItemType().getID(), stored);
-        }
-
-        // add up the amount in the stat item
-        // multiply amount with unit.persons if item is
-        // silver
-        int amount = item.getAmount();
-
-        if (item.getItemType().equals(Units.silberbeutel) || item.getItemType().equals(Units.silberkassette)) {
-          amount *= u.getPersons();
-        }
-
-        stored.setAmount(stored.getAmount() + amount);
-
-        // add the unit owning the item to the stat item
-        stored.units.add(new UnitWrapper(u, amount));
-      }
-    }
-
-    return items.values();
-  }
+  
 
   /**
    * This method takes all items carried by units in the units Collection and
@@ -249,20 +222,27 @@ public class Units {
         }
 
         int catNumber = 0;
-
+        int unmodifiedCatNumber = 0;
+        
         Unit u = null;
         if (units.size() == 1) {
           u = units.iterator().next();
         }
         for (Iterator<StatItem> iter = sortedItems.iterator(); iter.hasNext();) {
           StatItem currentItem = iter.next();
-          catNumber +=
-              addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory);
+          addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory);
+          catNumber += currentItem.getAmount();
+          unmodifiedCatNumber += currentItem.getUnmodifiedAmount();
         }
 
         if ((catNumber > 0)
             && !currentCategoryMap.category.equals(rules.getItemCategory(StringID.create("misc")))) {
           wrapper.setAmount(catNumber);
+        }
+        if ((unmodifiedCatNumber > 0)
+            && !currentCategoryMap.category.equals(rules.getItemCategory(StringID.create("misc")))) {
+          // wrapper.setAmount(catNumber);
+            wrapper.setUnmodifiedAmount(unmodifiedCatNumber);
         }
       }
     }
@@ -287,11 +267,11 @@ public class Units {
   /**
    * @param currentItem
    */
-  private int addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u,
+  private void addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u,
       Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
       NodeWrapperFactory factory) {
 
-    ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u, currentItem);
+    ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u, currentItem,currentItem.getUnmodifiedAmount());
     DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
 
     categoryNode.add(itemNode);
@@ -369,14 +349,17 @@ public class Units {
             .getAmount())));
       }
     }
-    return currentItem.getAmount();
+    // return currentItem.getAmount();
+    // return currentItem;
 
   }
 
   private static class StatItem extends Item implements Comparable<StatItem> {
     /** DOCUMENT-ME */
     public List<UnitWrapper> units = new LinkedList<UnitWrapper>();
-
+    
+    private int unmodifiedAmount=0;
+    
     /**
      * Creates a new StatItem object.
      */
@@ -390,11 +373,30 @@ public class Units {
     public int compareTo(StatItem o) {
       return this.getItemType().getName().compareTo((o).getItemType().getName());
     }
+
+    /**
+     * Returns the value of unmodifiedAmount.
+     * 
+     * @return Returns unmodifiedAmount.
+     */
+    public int getUnmodifiedAmount() {
+      return unmodifiedAmount;
+    }
+
+    /**
+     * Sets the value of unmodifiedAmount.
+     *
+     * @param unmodifiedAmount The value for unmodifiedAmount.
+     */
+    public void setUnmodifiedAmount(int unmodifiedAmount) {
+      this.unmodifiedAmount = unmodifiedAmount;
+    }
   }
 
   private static class UnitWrapper {
     private Unit unit = null;
     private int number = -1;
+    private int unmodifiedNumber = -1;
 
     /**
      * Creates a new UnitWrapper object.
@@ -431,10 +433,32 @@ public class Units {
     @Override
     public String toString() {
       if (number > -1) {
-        return unit.toString() + ": " + number;
+        if (unmodifiedNumber > -1 && unmodifiedNumber!=number){
+          return unit.toString() + ": " + unmodifiedNumber + " (" + number + ")";
+        } else {
+          return unit.toString() + ": " + number;
+        }
       }
 
       return unit.toString();
+    }
+
+    /**
+     * Returns the value of unmodifiedNumber.
+     * 
+     * @return Returns unmodifiedNumber.
+     */
+    public int getUnmodifiedAmount() {
+      return unmodifiedNumber;
+    }
+
+    /**
+     * Sets the value of unmodifiedNumber.
+     *
+     * @param unmodifiedNumber The value for unmodifiedNumber.
+     */
+    public void setUnmodifiedAmount(int unmodifiedNumber) {
+      this.unmodifiedNumber = unmodifiedNumber;
     }
   }
 

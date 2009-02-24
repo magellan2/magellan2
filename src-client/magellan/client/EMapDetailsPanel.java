@@ -1703,6 +1703,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		text += (" " + Resources.get("emapdetailspanel.node.weightunits"));
 		parent.add(createSimpleNode(text, "gewicht"));
+		
 		// categorized items
 		Collection catNodes = unitsTools.addCategorizedUnitItems(units, parent, null, null,
 																 true, nodeWrapperFactory);

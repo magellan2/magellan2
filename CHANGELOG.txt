@@ -1,3 +1,7 @@
+2009-02-24 / Build 261 - Fiete <sf@fietefietz.de>
+	* fixed #0349: unmodified(modified) Ressources in FactionStats and other
+	* fixed #0352: real race of demons is not seen by Faction Stats
+
 2008-02-14 / Build 260 - stm (stm_@users.sourceforge.net)
 	* fixed broken Resource merging
 	* added iceberg icons

@@ -45,6 +45,8 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 	protected boolean warning = false;
 	
+	protected int unmodifiedAmount = -1;
+	
 	//protected ItemNodeWrapperPreferencesAdapter adapter=null;
 	protected boolean showRegionItemAmount = false;
 	protected DetailsNodeWrapperDrawPolicy adapter;
@@ -61,6 +63,19 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 		this.modItem = item;
 	}
 
+	/**
+   * Creates new ItemNodeWrapper
+   *
+   * 
+   * 
+   */
+  public ItemNodeWrapper(Unit unit, Item item, int unmodfiedAmount) {
+    this.unit = unit;
+    this.modItem = item;
+    this.unmodifiedAmount = unmodfiedAmount;
+  }
+	
+	
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -180,7 +195,14 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 			StringBuffer nodeText = new StringBuffer();
 
 			if(item == null) {
-				nodeText.append(modItem.getAmount()).append(' ');
+
+				// special if unmodifiedAmount is known
+				if (this.unmodifiedAmount>-1 && this.unmodifiedAmount!=modItem.getAmount()){
+				  nodeText.append(this.unmodifiedAmount).append(" (").append(modItem.getAmount()).append(")").append(' ');
+				} else {
+				  nodeText.append(modItem.getAmount()).append(' ');
+				}
+				
 				if (warning) {
           nodeText.append(" (!!!) ");
         }
@@ -198,7 +220,14 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 				if(modItem.getItemType().getWeight() > 0) {
 					float weight = (((int) (modItem.getItemType().getWeight() * 100)) * modItem.getAmount()) / 100.0f;
-					nodeText.append(": ").append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
+					nodeText.append(": ");
+					if (this.unmodifiedAmount>-1 && this.unmodifiedAmount!=modItem.getAmount()){
+					  float unmodifiedWeight = (((int) (modItem.getItemType().getWeight() * 100)) * this.unmodifiedAmount) / 100.0f;
+					  nodeText.append(ItemNodeWrapper.weightNumberFormat.format(new Float(unmodifiedWeight)));
+					  nodeText.append(" (").append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight))).append(")");
+					} else {
+					  nodeText.append(ItemNodeWrapper.weightNumberFormat.format(new Float(weight)));
+					}
 					nodeText.append(" " + Resources.get("tree.itemnodewrapper.node.weightunits"));
 				}
 			} else {

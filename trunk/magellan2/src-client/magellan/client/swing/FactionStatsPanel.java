@@ -351,6 +351,33 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.race")
         // + f.getType().getName());
         currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName(), "race"));
+        
+        // Fiete 20090224: realRace for demons
+        // not visisable in CR-Block for faction "PARTEI"
+        // after merging the "Demon" is not visisble anymore
+        // trick: check realrace irgendeiner Unit
+        Race orgRace = null;
+        for (Region r:regions.values()){
+           for (Unit u:r.units()){
+             if (u.getFaction().equals(f)){
+               if (u.getDisguiseRace()!=null && u.getDisguiseRace()!=u.getRace()){
+                   // Bingo. Units DisguisedRace is different then the "Race"
+                   // last Check - OutputNames different?
+                   if (!f.getType().getName().equalsIgnoreCase(u.getRace().getName())){
+                     orgRace = u.getRace();
+                     break;
+                   }
+               }
+             }
+           }
+           if (orgRace!=null){
+             break;
+           }
+        }
+        if (orgRace!=null){
+          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName() + " (" + orgRace.getName() + ")", "race"));
+        }
+        
         rootNode.add(currentNode);
       }
 

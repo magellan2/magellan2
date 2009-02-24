@@ -425,6 +425,22 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	}
 
 	/**
+   * DOCUMENT-ME
+   *
+   * 
+   * 
+   *
+   * 
+   */
+  public ItemNodeWrapper createItemNodeWrapper(Unit unit, Item item, int unmodifiedAmount) {
+    ItemNodeWrapper inw = new ItemNodeWrapper(unit, item, unmodifiedAmount);
+    init(inw, NodeWrapperFactory.ITEM);
+
+    return inw;
+  }
+	
+	
+	/**
 	 * DOCUMENT-ME
 	 *
 	 * 

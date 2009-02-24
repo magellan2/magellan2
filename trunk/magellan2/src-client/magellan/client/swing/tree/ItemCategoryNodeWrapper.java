@@ -31,6 +31,7 @@ import magellan.library.rules.ItemCategory;
  */
 public class ItemCategoryNodeWrapper implements CellObject{
 	private int amount = -1;
+	private int unmodifiedAmount = -1;
 	private ItemCategory cat = null;
 	private String setCatName = null;
 	protected List<String> icons;
@@ -87,10 +88,16 @@ public class ItemCategoryNodeWrapper implements CellObject{
 				return this.setCatName;
 			}
 		} else {
+		  String amountInfo = "";
+		  if (unmodifiedAmount==-1 || unmodifiedAmount==amount){
+		    amountInfo = ": " +  amount;
+		  } else {
+		    amountInfo = ": " +  unmodifiedAmount + " (" + amount + ")";
+		  }
 			if (this.setCatName==null) {
-				return cat.toString() + ": " + amount;
+				return cat.toString() + amountInfo;
 			} else {
-				return this.setCatName + ": " + amount;
+				return this.setCatName + amountInfo;
 			}
 		}
 	}
@@ -161,5 +168,21 @@ public class ItemCategoryNodeWrapper implements CellObject{
 
 		return returnIcons;
 	}
+  /**
+   * Returns the value of unmodifiedAmount.
+   * 
+   * @return Returns unmodifiedAmount.
+   */
+  public int getUnmodifiedAmount() {
+    return unmodifiedAmount;
+  }
+  /**
+   * Sets the value of unmodifiedAmount.
+   *
+   * @param unmodifiedAmount The value for unmodifiedAmount.
+   */
+  public void setUnmodifiedAmount(int unmodifiedAmount) {
+    this.unmodifiedAmount = unmodifiedAmount;
+  }
 	
 }

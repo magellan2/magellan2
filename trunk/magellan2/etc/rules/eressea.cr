@@ -1945,6 +1945,11 @@ REGIONTYPE "Gletscher"
 "Tunnel";roadsupportbuilding
 "true";isAstralVisible
 
+REGIONTYPE "Eisberg"
+"Eisberg";name
+0;maxworkers
+"false";isAstralVisible
+
 REGIONTYPE "Hochland"
 "Hochland";name
 4000;maxworkers
@@ -1978,7 +1983,7 @@ REGIONTYPE "Ozean"
 "false";isAstralVisible
 
 REGIONTYPE "Mahlstrom"	
-"Ozean";name
+"Mahlstrom";name
 0;maxworkers
 "true";isOcean
 "false";isAstralVisible

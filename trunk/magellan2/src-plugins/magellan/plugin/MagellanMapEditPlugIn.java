@@ -49,6 +49,8 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
+import magellan.library.rules.ItemCategory;
+import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.Resources;
@@ -70,6 +72,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   private JMenu setTerrain = null;
   private JMenuItem delRegion = null;
   
+  private JMenu setHerbs = null;
+  
   private Region r = null;
   private CoordinateID c = null;
   
@@ -77,6 +81,9 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   private Client client = null;
   
   private final String regionTypeIdentifier = "regiontype.";
+  private final String herbTypeIdentifier = "herbtype.";
+  private final String unknownHerbType = "unknownHerb";
+  private ArrayList<ItemType> herbTypes = new ArrayList<ItemType>();
   
   /**
    * Creates the Context-MenuItem (after Right-Click on Map)
@@ -107,6 +114,11 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     delRegion.addActionListener(this);
     delRegion.setActionCommand("delRegion");
     rootTitle.add(delRegion);
+    
+    setHerbs = new JMenu(Resources.get("mapedit.menu.setherbs"));
+    this.addHerbs(setHerbs);
+    rootTitle.add(setHerbs);
+    
     return rootTitle;
   }
   
@@ -132,8 +144,56 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       JMenuItem toAdd = new JMenuItem(rType.getName());
       toAdd.setActionCommand(this.regionTypeIdentifier + rType.getID().toString());
       toAdd.addActionListener(this);
+      toAdd.setIcon(client.getMagellanContext().getImageFactory().loadImageIcon(rType.getID().toString() + "-detail"));
       menu.add(toAdd);
     }
+  }
+  
+  /**
+   * adds all herbs to a JMenu
+   * @param menu
+   */
+  private void addHerbs(JMenu menu){
+    if (this.data==null || menu==null){
+      return;
+    }
+    
+    menu.removeAll();
+    herbTypes.clear();
+    
+    // get the right ItemCat from Rules
+    ItemCategory herbCat = this.data.rules.getItemCategory("herbs");
+    ItemType kraeuterbeutelType = this.data.rules.getItemType("Kräuterbeutel"); 
+    if (herbCat!=null){
+       
+       for (Iterator<ItemType> iter = this.data.rules.getItemTypeIterator();iter.hasNext();){
+         ItemType type = iter.next();
+         if (type.getCategory()!=null && type.getCategory().equals(herbCat)){
+           if (kraeuterbeutelType!=null && !type.equals(kraeuterbeutelType)){
+             herbTypes.add(type);
+           }
+         }
+       }
+       if (herbTypes.size()>0){
+         Collections.sort(herbTypes,new HerbTypeComparator());
+         for (ItemType type:herbTypes){
+           JMenuItem toAdd = new JMenuItem(type.getName());
+           toAdd.setActionCommand(this.herbTypeIdentifier + type.getID().toString());
+           toAdd.addActionListener(this);
+           toAdd.setIcon(client.getMagellanContext().getImageFactory().loadImageIcon("/items/" + type.getIconName()));
+           menu.add(toAdd);  
+         }
+         menu.addSeparator();
+         // unknwon
+         JMenuItem toAdd = new JMenuItem(Resources.get("mapedit.menu." + this.unknownHerbType));
+         toAdd.setActionCommand(this.herbTypeIdentifier + this.unknownHerbType);
+         toAdd.addActionListener(this);
+         toAdd.setIcon(client.getMagellanContext().getImageFactory().loadImageIcon("kraeuter.gif"));
+         menu.add(toAdd);
+       }
+    }
+    
+    
   }
   
   
@@ -176,7 +236,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.rootTitle.setText("MapEdit: " + r.toString());
       this.rootTitle.setEnabled(true);
       
-      if (r.getRegionType().getID().toString().equalsIgnoreCase("Ozean")){
+      // if (r.getRegionType().getID().toString().equalsIgnoreCase("Ozean")){
+      if  (r.getRegionType().isOcean()){
         // keine benannten Ozeane
         this.setName.setEnabled(false);
         // zombies löschen können
@@ -186,11 +247,16 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
         } else {
           this.delName.setEnabled(false);
         }
+        // definitiv keine Kräuter auf dem Ozean
+        this.setHerbs.setEnabled(false);
+        
       } else {
         // benannten Regionen
         this.setName.setEnabled(true);
         // keine Unbenannten LandRegionen
         this.delName.setEnabled(false);
+        // Kräuter auch in Vulkanen...?!
+        this.setHerbs.setEnabled(true);
       }
       
       // Terrainänderung
@@ -245,6 +311,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     MagellanMapEditPlugIn.log.info("MapEdit initialized...(GameData)");
     this.data=data;
     this.addTerrains(this.setTerrain);
+    this.addHerbs(this.setHerbs);
   }
 
   /**
@@ -268,6 +335,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
       this.runDelRegion();
     } else if (e.getActionCommand().startsWith(this.regionTypeIdentifier)){
       this.runSetTerrain(e.getActionCommand());
+    } else if (e.getActionCommand().startsWith(this.herbTypeIdentifier)){
+      this.runSetHerb(e.getActionCommand());
     }
       
   }
@@ -393,8 +462,56 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
   }
   
   /**
+   * Herb einer vorhandenen Region ändern
+   * 
+   */
+  private void runSetHerb(String actionCommand){
+    // zuerst RegionType organisieren und checken
+    String herbName = actionCommand.substring(this.herbTypeIdentifier.length());
+    if (herbName==null || herbName.length()==0){
+      MagellanMapEditPlugIn.log.error("MapEdit: runSetherb unknown Herb Type Name");
+      return;
+    }
+    
+    // the Item Type to set
+    ItemType setherbType = null;
+    
+    if (herbTypes!=null){
+      for (ItemType type:herbTypes){
+        if (type.getID().toString().equalsIgnoreCase(herbName)){
+          setherbType = type;
+          break;
+        }
+      }
+    }
+    if (setherbType==null && !herbName.equals(this.unknownHerbType)){
+      MagellanMapEditPlugIn.log.error("MapEdit: herbType not found:" + herbName);
+      return;
+    }
+    
+    // the Region to work on
+    Region workingRegion = r;
+    if (workingRegion==null){
+        MagellanMapEditPlugIn.log.error("MapEdit: can not work without region!");
+        return;
+    }
+    
+    if (herbName.equals(this.unknownHerbType)){
+      workingRegion.setHerb(null);
+    }
+    if (setherbType!=null){
+      // set the new (or old) herb
+      workingRegion.setHerb(setherbType);
+    }
+    
+    
+    this.updateClient();
+  }
+  
+  
+  /**
    * fires the GameDataChanged Event to notify all Listeners
-   * (refreshes map, details...all.
+   * (refreshes map, details...all.)
    */
   private void updateClient(){
     if (this.client!=null){
@@ -411,6 +528,14 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     }
   }
 
+  //inner class //
+  private class HerbTypeComparator implements Comparator<ItemType> {
+    public int compare(ItemType arg0, ItemType arg1) {
+      return arg0.getName().compareToIgnoreCase(arg1.getName());
+    }
+  }
+  
+  
   /**
    * 
    */

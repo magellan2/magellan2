@@ -2855,7 +2855,7 @@ public class EresseaOrderParser implements OrderParser {
 		return checkNextFinal();
 	}
 
-	private boolean readFinalString(OrderToken token) {
+	protected boolean readFinalString(OrderToken token) {
 		token.ttype = OrderToken.TT_STRING;
 
 		return checkNextFinal();
@@ -2920,7 +2920,7 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private boolean isNumeric(String txt) {
+	protected boolean isNumeric(String txt) {
 		return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
 	}
 
@@ -2988,7 +2988,7 @@ public class EresseaOrderParser implements OrderParser {
     return (txt.startsWith("\'") && txt.endsWith("\'"));
   }
 
-	private boolean isString(String txt) {
+	protected boolean isString(String txt) {
 		boolean retVal = isQuoted(txt);
 		
     if (retVal==false){

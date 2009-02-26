@@ -50,7 +50,7 @@ public class EresseaOrderParser implements OrderParser {
   private static final char[] QUOTES = new char[] { '\'', '"'};
 	private String errMsg = null;
 	private TokenBucket tokenBucket = null;
-	private Iterator tokens = null;
+	private Iterator<OrderToken> tokens = null;
 	private EresseaOrderCompleter completer = null;
 	private GameData data = null;
 
@@ -114,7 +114,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = true;
 
 		while(tokens.hasNext() && retVal) {
-			OrderToken token = (OrderToken) tokens.next();
+			OrderToken token = tokens.next();
 
 			if(token.ttype != OrderToken.TT_COMMENT) {
 				retVal = readOrder(token);
@@ -124,7 +124,7 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private boolean readOrder(OrderToken t) {
+	protected boolean readOrder(OrderToken t) {
 		boolean retVal = false;
 
 		if(t.ttype == OrderToken.TT_PERSIST) {
@@ -259,7 +259,7 @@ public class EresseaOrderParser implements OrderParser {
 
 	//************* AT
 	private boolean readAt(OrderToken token) {
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		return readOrder(t);
 	}
@@ -276,7 +276,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readAttackUID(t);
@@ -301,7 +301,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -324,7 +324,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBeklaueUID(t);
@@ -350,7 +350,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBelagereBID(t);
@@ -372,11 +372,11 @@ public class EresseaOrderParser implements OrderParser {
 	}
 
 	//************* BENENNE
-	private boolean readBenenne(OrderToken token) {
+	protected boolean readBenenne(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
 			retVal = readBenenneBeschreibeTarget(t);
@@ -401,11 +401,11 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private boolean readBenenneBeschreibeTarget(OrderToken token) {
+	protected boolean readBenenneBeschreibeTarget(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -416,11 +416,11 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private boolean readBenenneFremdes(OrderToken token) {
+	protected boolean readBenenneFremdes(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
 			retVal = readBenenneFremdeEinheit(t);
@@ -445,7 +445,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
@@ -464,7 +464,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
@@ -482,7 +482,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
@@ -501,7 +501,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readBenenneFremdesTargetID(t);
@@ -519,7 +519,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
@@ -538,7 +538,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -568,7 +568,7 @@ public class EresseaOrderParser implements OrderParser {
       // not parsable Number !?
     }
     
-    OrderToken t = (OrderToken) tokens.next();
+    OrderToken t = tokens.next();
 
     if(isString(t.getText()) == true) {
       retVal = readFinalString(t);
@@ -588,7 +588,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
 			retVal = readBenenneBeschreibeTarget(t);
@@ -611,11 +611,11 @@ public class EresseaOrderParser implements OrderParser {
 	}
 
 	//************* BETRETE
-	private boolean readBetrete(OrderToken token) {
+	protected boolean readBetrete(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
 			retVal = readBetreteBurg(t);
@@ -631,11 +631,11 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private boolean readBetreteBurg(OrderToken token) {
+	protected boolean readBetreteBurg(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBetreteBurgBID(t);
@@ -655,11 +655,11 @@ public class EresseaOrderParser implements OrderParser {
 		return checkNextFinal();
 	}
 
-	private boolean readBetreteSchiff(OrderToken token) {
+	protected boolean readBetreteSchiff(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBetreteSchiffSID(t);
@@ -684,7 +684,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readBewacheNicht(t);
@@ -706,7 +706,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		// FIX
 		if(t.equalsToken("AN")) {
@@ -735,7 +735,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftEinheitUID(t);
@@ -753,7 +753,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -768,7 +768,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftParteiFID(t);
@@ -786,7 +786,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -801,7 +801,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -816,7 +816,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftGebaeudeID(t);
@@ -834,7 +834,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -852,7 +852,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readBotschaftSchiffID(t);
@@ -870,7 +870,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -890,7 +890,7 @@ public class EresseaOrderParser implements OrderParser {
 	private boolean readDefault(OrderToken token) {
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 		
 		// the following can be string literal, a string literal within quotes or with an opening quote
 		// find out which type we have
@@ -971,7 +971,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isEmailAddress(t.getText()) == true) {
 			retVal = readEmailAddress(t);
@@ -1000,7 +1000,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFahreUID(t);
@@ -1025,7 +1025,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT)) == true) {
 			retVal = readFolgeEinheit(t);
@@ -1045,7 +1045,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1063,7 +1063,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1082,7 +1082,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if (isNumeric(t.getText())){
 			retVal = readBeansprucheAmount(t);
@@ -1102,7 +1102,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if (isString(t.getText())){
 			retVal = readFinalString(t);
@@ -1122,7 +1122,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
 			retVal = readFinalKeyword(t);
@@ -1141,7 +1141,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readGibUID(t);
@@ -1161,7 +1161,7 @@ public class EresseaOrderParser implements OrderParser {
 		token.ttype = OrderToken.TT_ID;
 
 		UnitID uid = UnitID.createUnitID(token.getText(),data.base);
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readGibUIDAmount(t, uid, Integer.parseInt(t.getText()), true);
@@ -1190,7 +1190,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if (isNumeric(t.getText()) == true) {
 			retVal = readGibUIDAmount(t, uid, Integer.parseInt(t.getText()), false); // GIB JE PERSONS is illegal
@@ -1226,7 +1226,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -1244,7 +1244,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -1263,7 +1263,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -1285,7 +1285,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readHelfeFID(t);
@@ -1303,7 +1303,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL)) ||
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HELP_GUARD)) ||
@@ -1326,7 +1326,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readHelfeFIDModifierNicht(t, token.getText());
@@ -1351,7 +1351,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_AGGRESSIVE))) {
 			retVal = readFinalKeyword(t);
@@ -1379,7 +1379,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
@@ -1398,7 +1398,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
 			retVal = readKampfzauberStufe(t);
@@ -1420,11 +1420,11 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText())) {
 			t.ttype = OrderToken.TT_NUMBER;
-			t = (OrderToken) tokens.next();
+			t = tokens.next();
 
 			if(isString(t.getText())) {
 				retVal = readFinalString(t);
@@ -1444,7 +1444,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_STRING;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
@@ -1463,7 +1463,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readKaufeAmount(t);
@@ -1484,7 +1484,7 @@ public class EresseaOrderParser implements OrderParser {
 									  ? data.rules.getItemCategory(EresseaConstants.C_LUXURIES) : null;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		// 
 		if((data.rules != null) && ((type = data.rules.getItemType(t.getText())) != null) &&
@@ -1505,7 +1505,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readKontaktiereUID(t);
@@ -1530,7 +1530,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readLehreUID(t);
@@ -1548,7 +1548,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readLehreUID(t);
@@ -1567,12 +1567,12 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		// detect quoted strings
 		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText(EresseaOrderParser.QUOTES)) != null)) {
 			t.ttype = OrderToken.TT_STRING;
-			t = (OrderToken) tokens.next();
+			t = tokens.next();
 
 			if(isNumeric(t.getText()) == true) {
 				retVal = readFinalNumber(t);
@@ -1594,7 +1594,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
@@ -1614,7 +1614,7 @@ public class EresseaOrderParser implements OrderParser {
 		BuildingType type = null;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readMacheAmount(t);
@@ -1655,7 +1655,7 @@ public class EresseaOrderParser implements OrderParser {
 		BuildingType type = null;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
 			retVal = readMacheBurg(t);
@@ -1679,7 +1679,7 @@ public class EresseaOrderParser implements OrderParser {
 	private boolean readMacheTemp(OrderToken token) {
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(completer != null) {
 			completer.cmpltMacheTemp();
@@ -1694,7 +1694,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText())) {
 			retVal = readFinalString(t);
@@ -1712,7 +1712,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
@@ -1730,7 +1730,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_STRING;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1754,7 +1754,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_STRING;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1772,7 +1772,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_STRING;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readFinalString(t);
@@ -1802,7 +1802,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readNachDirection(t);
@@ -1820,7 +1820,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readNachDirection(t);
@@ -1839,7 +1839,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT)) == true) {
 			retVal = readNummerEinheit(t);
@@ -1863,7 +1863,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1880,7 +1880,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1897,7 +1897,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1914,7 +1914,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -1932,7 +1932,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ADDRESSES)) ||
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REPORT)) ||
@@ -1959,7 +1959,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
@@ -1978,7 +1978,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readParteiFID(t);
@@ -1993,7 +1993,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -2009,7 +2009,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.ttype == OrderToken.TT_EOC) {
 			retVal = true;
@@ -2026,7 +2026,7 @@ public class EresseaOrderParser implements OrderParser {
 	private boolean readPflanzen(OrderToken token) {
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		return checkFinal((OrderToken) tokens.next());
+		return checkFinal(tokens.next());
 	}
 
 	//************* PIRATERIE
@@ -2034,7 +2034,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readPiraterieFID(t);
@@ -2052,7 +2052,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readPiraterieFID(t);
@@ -2071,7 +2071,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -2090,7 +2090,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isRID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -2106,7 +2106,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readFinalNumber(t);
@@ -2122,7 +2122,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 		if(isNumeric(t.getText()) == true) {
 			retVal = readReserviereAmount(t);
 		} else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_EACH))){
@@ -2141,7 +2141,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 		
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 		
 		if(isNumeric(t.getText()) == true) {
 			retVal = readReserviereAmount(t);
@@ -2160,7 +2160,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isString(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -2179,7 +2179,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readRouteDirection(t);
@@ -2199,7 +2199,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readRouteDirection(t);
@@ -2220,7 +2220,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		// FIX
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_BEFORE))) {
@@ -2241,7 +2241,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
@@ -2259,7 +2259,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
@@ -2278,7 +2278,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -2297,7 +2297,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isQuoted(t.getText()) == true) {
 			retVal = readFinalString(t);
@@ -2316,7 +2316,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readFinalNumber(t);
@@ -2338,7 +2338,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 			retVal = readFinalKeyword(t);
@@ -2358,7 +2358,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText())) {
 			retVal = readFinalID(t);
@@ -2377,7 +2377,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isID(t.getText()) == true) {
 			retVal = readFinalID(t);
@@ -2396,7 +2396,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readFinalNumber(t);
@@ -2412,7 +2412,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readFinalNumber(t);
@@ -2428,7 +2428,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText(), 10, Integer.MIN_VALUE, Integer.MAX_VALUE) == true) {
 			retVal = readUrsprungX(t);
@@ -2443,7 +2443,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_ID;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText(), 10, Integer.MIN_VALUE, Integer.MAX_VALUE) == true) {
 			retVal = readFinalID(t);
@@ -2459,7 +2459,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if((data.rules != null) && (data.rules.getSkillType(t.getText()) != null)) {
 			retVal = readFinalString(t);
@@ -2478,7 +2478,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText()) == true) {
 			retVal = readVerkaufeAmount(t);
@@ -2501,7 +2501,7 @@ public class EresseaOrderParser implements OrderParser {
 									  ? data.rules.getItemCategory(EresseaConstants.C_LUXURIES) : null;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if((data.rules != null) && ((type = data.rules.getItemType(t.getText())) != null) &&
 			   (luxuryCategory != null) && type.getCategory().equals(luxuryCategory)) {
@@ -2523,7 +2523,7 @@ public class EresseaOrderParser implements OrderParser {
 									  ? data.rules.getItemCategory(EresseaConstants.C_LUXURIES) : null;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if((data.rules != null) && ((type = data.rules.getItemType(t.getText())) != null) && (type != null) &&
 			   (luxuryCategory != null) && luxuryCategory.equals(type.getCategory())) {
@@ -2543,7 +2543,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
 			retVal = readZaubereRegion(t);
@@ -2570,7 +2570,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText(), 10, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
 			retVal = readZaubereRegionCoor(t);
@@ -2590,12 +2590,12 @@ public class EresseaOrderParser implements OrderParser {
 		// x-coordinate
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText(), 10, Integer.MIN_VALUE, Integer.MAX_VALUE)) {
 			// y-coordinate
 			t.ttype = OrderToken.TT_NUMBER;
-			t = (OrderToken) tokens.next();
+			t = tokens.next();
 
 			if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
 				retVal = readZaubereRegionStufe(t);
@@ -2617,11 +2617,11 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText())) {
 			t.ttype = OrderToken.TT_NUMBER;
-			t = (OrderToken) tokens.next();
+			t = tokens.next();
 
 			if(isString(t.getText())) {
 				retVal = readZaubereSpruch(t);
@@ -2641,11 +2641,11 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText())) {
 			t.ttype = OrderToken.TT_NUMBER;
-			t = (OrderToken) tokens.next();
+			t = tokens.next();
 
 			if(isString(t.getText())) {
 				retVal = readZaubereSpruch(t);
@@ -2687,9 +2687,9 @@ public class EresseaOrderParser implements OrderParser {
    */
   private void skipRestOfOrder(){
     if (!tokens.hasNext()) return;
-    OrderToken t = (OrderToken) tokens.next();
+    OrderToken t = tokens.next();
     while ((t.ttype != OrderToken.TT_EOC) && (t.ttype != OrderToken.TT_COMMENT) && tokens.hasNext()){
-      t = (OrderToken) tokens.next();
+      t = tokens.next();
     }
   }
   
@@ -2698,7 +2698,7 @@ public class EresseaOrderParser implements OrderParser {
 //    boolean retVal = false;
 //    token.ttype = OrderToken.TT_STRING;
 //
-//    OrderToken t = (OrderToken) tokens.next();
+//    OrderToken t = tokens.next();
 //    
 //    SpellSyntax ss = s.getSpellSyntax();
 //    ss.reset();
@@ -2714,7 +2714,7 @@ public class EresseaOrderParser implements OrderParser {
 //      case SpellSyntaxToken.SST_KeyWord: {
 //        if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
 //          token.ttype = OrderToken.TT_KEYWORD;
-//          token = (OrderToken) tokens.next();
+//          token = tokens.next();
 //          token.ttype = OrderToken.TT_ID;
 //          
 //        } else if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
@@ -2737,7 +2737,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
 			retVal = readZeigeAlle(t);
@@ -2757,7 +2757,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_POTIONS)) ||
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SPELLS))) {
@@ -2777,7 +2777,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(isNumeric(t.getText())) {
 			retVal = readZerstoereAmount(t);
@@ -2797,7 +2797,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_NUMBER;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ROAD))) {
 			retVal = readZerstoereStrasse(t);
@@ -2815,7 +2815,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_STRING;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
 			retVal = readFinalString(t);
@@ -2834,7 +2834,7 @@ public class EresseaOrderParser implements OrderParser {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
 
-		OrderToken t = (OrderToken) tokens.next();
+		OrderToken t = tokens.next();
 
 		if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS)) ||
 			   t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HORSES))) {
@@ -2876,12 +2876,10 @@ public class EresseaOrderParser implements OrderParser {
 	/**
 	 * Checks whether the next token is the end of line or a comment, i.e. the indicating a valid
 	 * end of the order. Reports an unexpected token if that is not the case.
-	 *
-	 * 
 	 */
-	private boolean checkNextFinal() {
+	protected boolean checkNextFinal() {
 		if(tokens.hasNext()) {
-			OrderToken t = (OrderToken) tokens.next();
+			OrderToken t = tokens.next();
 
 			return checkFinal(t);
 		} else {
@@ -2906,7 +2904,7 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	private void unexpected(OrderToken t) {
+	protected void unexpected(OrderToken t) {
 		errMsg = "Unexpected token " + t.toString();
 	}
 
@@ -2926,7 +2924,7 @@ public class EresseaOrderParser implements OrderParser {
 		return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
 	}
 
-	private boolean isID(String txt) {
+	protected boolean isID(String txt) {
 		boolean retVal = isNumeric(txt, data.base, 0, EresseaOrderParser.MAX_UID);
 
 		if(retVal == false) {
@@ -3039,6 +3037,37 @@ public class EresseaOrderParser implements OrderParser {
 
 		return retVal;
 	}
+
+  /**
+   * Returns the value of tokenBucket.
+   * 
+   * @return Returns tokenBucket.
+   */
+  public Iterator<OrderToken> getTokensIterator() {
+    return tokens;
+  }
+
+  /**
+   * Returns the value of completer.
+   * 
+   * @return Returns completer.
+   */
+  public EresseaOrderCompleter getCompleter() {
+    return completer;
+  }
+
+  /**
+   * Returns the value of data.
+   * 
+   * @return Returns data.
+   */
+  public GameData getData() {
+    return data;
+  }
+	
+	
+	
+	
 }
 
 
@@ -3144,4 +3173,6 @@ class TokenBucket extends Vector<OrderToken> {
 
 		return retVal;
 	}
+	
+	
 }

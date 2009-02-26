@@ -1,3 +1,6 @@
+2009-02-26 / Build 265 - Thoralf <thoralf@m84.de>
+    * added some Allanon specific order completions
+
 2009-02-26 / Build 264 - Fiete <sf@fietefietz.de>
 	* fixed #353   UnitConextMenu from/in ErderEditor
 

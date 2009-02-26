@@ -397,10 +397,6 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW)," "));
 	}
 
-	void cmpltAt() {
-		cmplt();
-	}
-
 	void cmpltAttack() {
     // special request for myself (Darcduck)
     // if an attacking unit has the wrong combat state issue the start 
@@ -418,8 +414,8 @@ public class EresseaOrderCompleter implements Completer {
 		// to create a set of attack-orders against total factions later
 		Map<ID,List<Unit>> unitList = new Hashtable<ID, List<Unit>>();
 
-		for(Iterator iter = unit.getRegion().units().iterator(); iter.hasNext();) {
-			Unit curUnit = (Unit) iter.next();
+		for(Iterator<Unit> iter = unit.getRegion().units().iterator(); iter.hasNext();) {
+			Unit curUnit = iter.next();
 
 			if(curUnit.isSpy()) {
 				spies.add(curUnit);
@@ -455,14 +451,14 @@ public class EresseaOrderCompleter implements Completer {
 			completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.spies"), enemyUnits, "", 5, 0));
 		}
 
-		for(Iterator iter = unitList.keySet().iterator(); iter.hasNext();) {
-			ID fID = (ID) iter.next();
-			Iterator i = ((List) unitList.get(fID)).iterator();
-			Unit curUnit = (Unit) i.next();
+		for(Iterator<ID> iter = unitList.keySet().iterator(); iter.hasNext();) {
+			ID fID = iter.next();
+			Iterator<Unit> i = (unitList.get(fID)).iterator();
+			Unit curUnit = i.next();
 			String enemyUnits = curUnit.getID().toString() + " ;" + curUnit.getName();
 
 			while(i.hasNext()) {
-				curUnit = (Unit) i.next();
+				curUnit = i.next();
 				enemyUnits += ("\n" + Resources.getOrderTranslation(EresseaConstants.O_ATTACK) +
 				" " + curUnit.getID().toString() + " ;" + curUnit.getName());
 			}
@@ -676,15 +672,15 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltBetrete() {
-		Iterator iter = region.buildings().iterator();
+		Iterator<Building> iter1 = region.buildings().iterator();
 
-		if(iter.hasNext()) {
+		if(iter1.hasNext()) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
 										   " ", 7));
 		}
 
-		for(; iter.hasNext();) {
-			UnitContainer uc = (UnitContainer) iter.next();
+		for(; iter1.hasNext();) {
+			UnitContainer uc = iter1.next();
 
 			if(!uc.equals(unit.getBuilding())) {
 				completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")",
@@ -696,15 +692,15 @@ public class EresseaOrderCompleter implements Completer {
 			}
 		}
 
-		iter = region.ships().iterator();
+		Iterator<Ship> iter2 = region.ships().iterator();
 
-		if(iter.hasNext()) {
+		if(iter2.hasNext()) {
 			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP),
 										   " ", 7));
 		}
 
-		for(; iter.hasNext();) {
-			UnitContainer uc = (UnitContainer) iter.next();
+		for(; iter2.hasNext();) {
+			UnitContainer uc = iter2.next();
 
 			if(!uc.equals(unit.getShip())) {
 				completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")",
@@ -1182,7 +1178,7 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	/**
-	 * DOCUMENT ME!
+   * Returns the learn cost for a specific skill.
 	 *
 	 * @param skillType the skill to be learned
 	 * @param unit the Unit
@@ -2496,6 +2492,45 @@ public class EresseaOrderCompleter implements Completer {
 			return this.crop(old, line);
 		}
 	}
+
+  /**
+   * Returns the value of data.
+   * 
+   * @return Returns data.
+   */
+  public GameData getData() {
+    return data;
+  }
+
+  /**
+   * Returns the value of completions.
+   * 
+   * @return Returns completions.
+   */
+  public List<Completion> getCompletions() {
+    return completions;
+  }
+
+  /**
+   * Returns the value of region.
+   * 
+   * @return Returns region.
+   */
+  public Region getRegion() {
+    return region;
+  }
+
+  
+  /**
+   * Returns the value of unit.
+   * 
+   * @return Returns unit.
+   */
+  public Unit getUnit() {
+    return unit;
+  }
+
+  
 
 
 }

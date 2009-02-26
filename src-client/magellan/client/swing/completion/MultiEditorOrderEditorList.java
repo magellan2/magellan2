@@ -81,8 +81,8 @@ import magellan.client.event.TempUnitListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.preferences.DetailsViewOrderEditorPreferences;
 import magellan.client.swing.InternationalizedDataPanel;
+import magellan.client.swing.context.UnitContextMenu;
 import magellan.client.swing.preferences.PreferencesAdapter;
-import magellan.client.utils.Units;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -165,6 +165,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
   public static final int LIST_ISLAND = 3;
 
   private AutoCompletion completion;
+  
 
 	/**
 	 * Creates a new MultiEditorOrderEditorList object.
@@ -664,7 +665,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       if (multiEditorLayout) {
         dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
       }
+      if((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
+        // Right click -> UnitContextMenu (Fiete)
+        Unit u = ((OrderEditor) e.getSource()).getUnit();
+        if (u!=null){
+           UnitContextMenu unitContextMenu = new UnitContextMenu(u,null,dispatcher,data);
+           if (unitContextMenu!=null){
+             unitContextMenu.show(this, e.getX(), e.getY());
+           }
+        }
+      }
     }
+    
   }
 
   /**

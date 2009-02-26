@@ -1,3 +1,6 @@
+2009-02-26 / Build 264 - Fiete <sf@fietefietz.de>
+	* fixed #353   UnitConextMenu from/in ErderEditor
+
 2009-02-24 / Build 262 - Fiete <sf@fietefietz.de>
 	* fixed #343: change herb type via map edit plugin
 	* added Eisberg Region type to eressea.cr

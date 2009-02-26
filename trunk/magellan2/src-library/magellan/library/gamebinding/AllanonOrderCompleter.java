@@ -30,6 +30,7 @@ import java.util.List;
 
 import magellan.library.Building;
 import magellan.library.GameData;
+import magellan.library.Item;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
@@ -132,7 +133,8 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   void cmplt() {
     super.cmplt();
     getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN)));
-    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN)));
+    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_BEANSPRUCHE)," "));
+    getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN)," "));
   }
   
   
@@ -194,8 +196,10 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
     }
   }
   
-  
-  
+  /**
+   * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBenenne()
+   */
+  @Override
   void cmpltBenenne() {
     super.cmpltBenenne();
 
@@ -203,5 +207,15 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE),Resources.getOrderTranslation(AllanonConstants.O_KARAWANE)," \"\"", Completion.DEFAULT_PRIORITY, 1));
     }
   }
+  
+  /**
+   * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBeanspruche()
+   */
+  @Override
+  void cmpltBeanspruche(){
+    getCompletions().add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
+    getCompletions().add(new Completion(getData().rules.getItemType(EresseaConstants.I_SILVER).getOrderName()));
+  }
+
 
 }

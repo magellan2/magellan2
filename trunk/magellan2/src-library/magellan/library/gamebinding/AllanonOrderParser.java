@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.GameData;
+import magellan.library.completion.Completion;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
@@ -72,15 +73,15 @@ public class AllanonOrderParser extends EresseaOrderParser {
   }
 
   //************* ANWERBEN
-  private boolean readAnwerben(OrderToken token) {
+  protected boolean readAnwerben(OrderToken token) {
     token.ttype = OrderToken.TT_KEYWORD;
 
     return checkNextFinal();
   }
   
-  
+
   //************* MEUCHELN 
-  private boolean readMeucheln(OrderToken token) {
+  protected boolean readMeucheln(OrderToken token) {
     boolean retVal = false;
     token.ttype = OrderToken.TT_KEYWORD;
 
@@ -101,7 +102,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
     return retVal;
   }
 
-  private boolean readMeuchelnUID(OrderToken token) {
+  protected boolean readMeuchelnUID(OrderToken token) {
     token.ttype = OrderToken.TT_ID;
     return checkNextFinal();
   }
@@ -149,7 +150,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
     return retVal;
   }
   
-  private boolean readBetreteKarawaneID(OrderToken token) {
+  protected boolean readBetreteKarawaneID(OrderToken token) {
     token.ttype = OrderToken.TT_ID;
 
     return checkNextFinal();

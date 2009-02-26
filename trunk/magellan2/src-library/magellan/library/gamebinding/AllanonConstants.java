@@ -34,12 +34,14 @@ import magellan.library.StringID;
  */
 public class AllanonConstants extends EresseaConstants {
   public static final String O_ANWERBEN = "ANWERBEN";
+  public static final String O_BEANSPRUCHE = "BEANSPRUCHE";
   public static final String O_KARAWANE = "KARAWANE";
   public static final String O_MEUCHELN = "MEUCHELN";
 
   
   public static final ID S_ALCHIMIE = StringID.create("ALCHIMIE");
   public static final ID S_ANWERBEN = StringID.create("ANWERBEN");
+  public static final ID S_BEANSPRUCHE = StringID.create("BEANSPRUCHE");
   public static final ID S_MEUCHELN = StringID.create("MEUCHELN");
   public static final ID S_MECHANIK = StringID.create("MECHANIK");
 

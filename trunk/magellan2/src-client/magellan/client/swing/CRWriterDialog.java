@@ -340,13 +340,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 								 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeUnits",
 																   "true"))).booleanValue());
     chkUnitDetails = new JCheckBox(Resources.get("crwriterdialog.chk.unitdetails.caption"),
-        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeunitdetails",
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeUnitDetails",
                           "true"))).booleanValue());
     chkSkills = new JCheckBox(Resources.get("crwriterdialog.chk.skills.caption"),
-        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeskills",
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeSkills",
                           "true"))).booleanValue());
     chkItems = new JCheckBox(Resources.get("crwriterdialog.chk.items.caption"),
-        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeitems",
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeItems",
                           "true"))).booleanValue());
 		chkMessages = new JCheckBox(Resources.get("crwriterdialog.chk.messages.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.includeMessages",

@@ -47,10 +47,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
+import magellan.client.swing.basics.SpringUtilities;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Building;
@@ -156,7 +158,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private void init() {
 		setContentPane(getMainPane());
 		setTitle(Resources.get("crwriterdialog.window.title"));
-		setSize(700, 300);
+		pack();
 
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = Integer.parseInt(settings.getProperty("CRWriterDialog.x",
@@ -246,10 +248,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 0, 4));
+		JPanel buttonPanel = new JPanel(new SpringLayout());
+//    buttonPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(buttonPanel.getBackground(), buttonPanel.getBackground())," "));
 		buttonPanel.add(saveButton);
 		buttonPanel.add(clipboardButton);
 		buttonPanel.add(cancelButton);
+		SpringUtilities.makeCompactGrid(buttonPanel, 3, 1, 5, 10, 5, 5);
 
 		return buttonPanel;
 	}

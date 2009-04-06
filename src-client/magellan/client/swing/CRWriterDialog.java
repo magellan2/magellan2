@@ -95,6 +95,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private JCheckBox chkBuildings = null;
 	private JCheckBox chkShips = null;
 	private JCheckBox chkUnits = null;
+  private JCheckBox chkUnitDetails = null;
+  private JCheckBox chkSkills = null;
+  private JCheckBox chkItems = null;
 	private JCheckBox chkMessages = null;
 	private JCheckBox chkSpellsAndPotions = null;
 	private JCheckBox chkSelRegionsOnly = null;
@@ -336,6 +339,15 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		chkUnits = new JCheckBox(Resources.get("crwriterdialog.chk.units.caption"),
 								 (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeUnits",
 																   "true"))).booleanValue());
+    chkUnitDetails = new JCheckBox(Resources.get("crwriterdialog.chk.unitdetails.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeunitdetails",
+                          "true"))).booleanValue());
+    chkSkills = new JCheckBox(Resources.get("crwriterdialog.chk.skills.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeskills",
+                          "true"))).booleanValue());
+    chkItems = new JCheckBox(Resources.get("crwriterdialog.chk.items.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeitems",
+                          "true"))).booleanValue());
 		chkMessages = new JCheckBox(Resources.get("crwriterdialog.chk.messages.caption"),
 									(Boolean.valueOf(settings.getProperty("CRWriterDialog.includeMessages",
 																	  "true"))).booleanValue());
@@ -369,6 +381,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkBuildings.setToolTipText(Resources.get("crwriterdialog.chk.buildings.tooltip"));
     chkShips.setToolTipText(Resources.get("crwriterdialog.chk.ships.tooltip"));
     chkUnits.setToolTipText(Resources.get("crwriterdialog.chk.units.tooltip"));
+    chkUnitDetails.setToolTipText(Resources.get("crwriterdialog.chk.unitdetails.tooltip"));
+    chkSkills.setToolTipText(Resources.get("crwriterdialog.chk.skills.tooltip"));
+    chkItems.setToolTipText(Resources.get("crwriterdialog.chk.items.tooltip"));
     chkMessages.setToolTipText(Resources.get("crwriterdialog.chk.messages.tooltip"));
     chkSpellsAndPotions.setToolTipText(Resources.get("crwriterdialog.chk.spellsandpotions.tooltip"));
     chkSelRegionsOnly.setToolTipText(Resources.get("crwriterdialog.chk.selectedregions.tooltip"));
@@ -378,13 +393,28 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkExportHotspots.setToolTipText(Resources.get("crwriterdialog.chk.exporthotspots.tooltip"));
     
    
+    chkUnits.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent e) {
+        if (chkUnits.isSelected()){
+          chkUnitDetails.setEnabled(true);
+          chkSkills.setEnabled(true);
+          chkItems.setEnabled(true);
+        } else {
+          chkUnitDetails.setEnabled(false);
+          chkSkills.setEnabled(false);
+          chkItems.setEnabled(false);
+        }
+      }
+    });
+
+    chkUnits.setSelected(!chkUnits.isSelected());
+    chkUnits.setSelected(!chkUnits.isSelected());
+    
     // extra ActionListener
     chkServerConformance.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
         if (chkServerConformance.isSelected()){
-          chkIslands.setSelected(false);  
           chkIslands.setEnabled(false);
-          chkExportHotspots.setSelected(false);
           chkExportHotspots.setEnabled(false);
           
         } else {
@@ -398,22 +428,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       }
     });
     
-    // Relations
-    if (chkServerConformance.isSelected()){
-      chkIslands.setSelected(false);  
-      chkIslands.setEnabled(false);
-    } else {
-      chkIslands.setEnabled(true);
-    }
-    
-    if (!chkServerConformance.isSelected() && this.data!=null && this.data.hotSpots()!=null && this.data.hotSpots().size()>0){
-        chkExportHotspots.setEnabled(true);    
-     } else {
-        chkExportHotspots.setEnabled(false);
-     }
+    chkServerConformance.setSelected(!chkServerConformance.isSelected());
+    chkServerConformance.setSelected(!chkServerConformance.isSelected());
     
     
-		JPanel pnlOptions = new JPanel(new GridLayout(6, 2));
+    // layout: two columns, as many rows as needed
+		JPanel pnlOptions = new JPanel(new GridLayout(0, 2));
 		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
 											  Resources.get("crwriterdialog.border.options")));
 		pnlOptions.add(chkServerConformance);
@@ -423,6 +443,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		pnlOptions.add(chkBuildings);
 		pnlOptions.add(chkShips);
 		pnlOptions.add(chkUnits);
+    pnlOptions.add(chkUnitDetails);
+    pnlOptions.add(chkSkills);
+    pnlOptions.add(chkItems);
 		pnlOptions.add(chkMessages);
 		pnlOptions.add(chkSpellsAndPotions);
 		pnlOptions.add(chkSelRegionsOnly);
@@ -454,6 +477,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 							 String.valueOf(chkShips.isSelected()));
 		settings.setProperty("CRWriterDialog.includeUnits",
 							 String.valueOf(chkUnits.isSelected()));
+    settings.setProperty("CRWriterDialog.includeUnitDetails",
+        String.valueOf(chkUnitDetails.isSelected()));
+    settings.setProperty("CRWriterDialog.includeSkills",
+        String.valueOf(chkSkills.isSelected()));
+    settings.setProperty("CRWriterDialog.includeItems",
+        String.valueOf(chkItems.isSelected()));
 		settings.setProperty("CRWriterDialog.includeMessages",
 							 String.valueOf(chkMessages.isSelected()));
 		settings.setProperty("CRWriterDialog.includeSpellsAndPotions",
@@ -560,6 +589,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.setIncludeBuildings(chkBuildings.isSelected());
 			crw.setIncludeShips(chkShips.isSelected());
 			crw.setIncludeUnits(chkUnits.isSelected());
+      crw.setIncludeUnitDetails(chkUnitDetails.isSelected());
+      crw.setIncludeSkills(chkSkills.isSelected());
+      crw.setIncludeItems(chkItems.isSelected());
 			crw.setIncludeMessages(chkMessages.isSelected());
 			crw.setIncludeSpellsAndPotions(chkSpellsAndPotions.isSelected());
       crw.setExportHotspots(chkExportHotspots.isSelected());
@@ -718,6 +750,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         Iterator<String> stringIterator = null;
 				boolean checkShips = chkShips.isSelected();
 				boolean checkUnits = chkUnits.isSelected();
+        boolean checkUnitDetails = chkUnitDetails.isSelected();
+        boolean checkSkills = chkSkills.isSelected();
+        boolean checkItems = chkItems.isSelected();
 				boolean checkBuildings = chkBuildings.isSelected();
 				boolean checkSpells = chkSpellsAndPotions.isSelected();
 				boolean checkRegDetails = chkRegionDetails.isSelected();

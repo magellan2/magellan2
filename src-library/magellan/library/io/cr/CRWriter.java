@@ -1420,7 +1420,7 @@ public class CRWriter extends BufferedWriter {
 			writeQuotedTag(unit.getDescription(), "Beschr");
 		}
 
-		if(unit.getPrivDesc() != null) {
+		if(getIncludeUnitDetails() && unit.getPrivDesc() != null) {
 			writeQuotedTag(unit.getPrivDesc(), "privat");
 		}
 
@@ -1436,7 +1436,7 @@ public class CRWriter extends BufferedWriter {
 		write(unit.getPersons() + ";Anzahl");
 		newLine();
 
-    if(unit.getDisguiseRace() != null) {
+    if(getIncludeUnitDetails() && unit.getDisguiseRace() != null) {
       write("\"" + unit.getDisguiseRace().getID().toString() + "\";Typ");
       newLine();
       write("\"" + unit.getRace() + "\";wahrerTyp");
@@ -1456,17 +1456,17 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(unit.getCombatStatus() != -1) {
+		if(getIncludeUnitDetails() && unit.getCombatStatus() != -1) {
 			write(unit.getCombatStatus() + ";Kampfstatus");
 			newLine();
 		}
 
-		if(unit.isUnaided()) {
+		if(getIncludeUnitDetails() && unit.isUnaided()) {
 			write("1;unaided");
 			newLine();
 		}
 
-		if(unit.getStealth() != -1) {
+		if(getIncludeUnitDetails() && unit.getStealth() != -1) {
 			write(unit.getStealth() + ";Tarnung");
 			newLine();
 		}
@@ -1488,17 +1488,15 @@ public class CRWriter extends BufferedWriter {
 		 write(silver + ";Silber");
 		 newLine();
 		 }*/
-		if(unit.isHideFaction()) {
+		if(getIncludeUnitDetails() && unit.isHideFaction()) {
 			write("1;Parteitarnung");
 			newLine();
 		}
 
-		if(shallExportUnit(unit.getFollows())) {
+		if(getIncludeUnitDetails() && shallExportUnit(unit.getFollows())) {
 			write(((UnitID) unit.getFollows().getID()).intValue() + ";folgt");
 			newLine();
 		}
-
-		
 		
 		
 		if(unit.getGuard() != 0) {
@@ -1506,36 +1504,36 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(unit.getAura() != -1) {
+		if(getIncludeUnitDetails() && unit.getAura() != -1) {
 			write(unit.getAura() + ";Aura");
 			newLine();
 		}
 
-		if(unit.getAuraMax() != -1) {
+		if(getIncludeUnitDetails() && unit.getAuraMax() != -1) {
 			write(unit.getAuraMax() + ";Auramax");
 			newLine();
 		}
 
-		if(unit.getHealth() != null) {
+		if(getIncludeUnitDetails() && unit.getHealth() != null) {
 			writeQuotedTag(unit.getHealth(), "hp");
 		}
 
-		if(unit.isHero()) {
+		if(getIncludeUnitDetails() && unit.isHero()) {
 			write("1;hero");
 			newLine();
 		}
 
-		if(unit.isStarving()) {
+		if(getIncludeUnitDetails() && unit.isStarving()) {
 			write("1;hunger");
 			newLine();
 		}
 
-		if(!serverConformance && unit.isOrdersConfirmed()) {
+		if(getIncludeUnitDetails() && !serverConformance && unit.isOrdersConfirmed()) {
 			write("1;ejcOrdersConfirmed");
 			newLine();
 		}
 
-		if(unit.getGroup() != null) {
+		if(getIncludeUnitDetails() && unit.getGroup() != null) {
 			write(unit.getGroup().getID() + ";gruppe");
 			newLine();
 		}
@@ -1545,7 +1543,7 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
-		if(unit.getGuiseFaction() != null) {
+		if(getIncludeUnitDetails() && unit.getGuiseFaction() != null) {
 			// write(((IntegerID) unit.getGuiseFaction().getID()).intValue() + ";Verkleidung");
 			// Anderepartei
 			write(((IntegerID) unit.getGuiseFaction().getID()).intValue() + ";Anderepartei");
@@ -1558,7 +1556,7 @@ public class CRWriter extends BufferedWriter {
 		}
 		
 		//  fiete: familiarmage
-		if (unit.getFamiliarmageID()!=null) {
+		if (getIncludeUnitDetails() && unit.getFamiliarmageID()!=null) {
 			IntegerID iID = (IntegerID) unit.getFamiliarmageID();
 			write(iID.intValue() + ";familiarmage");
 			newLine();
@@ -1569,7 +1567,7 @@ public class CRWriter extends BufferedWriter {
 			writeQuotedTag(unit.getRaceNamePrefix(), "typprefix");
 		}
 
-		if(unit.hasTags()) {
+		if(getIncludeUnitDetails() && unit.hasTags()) {
 			java.util.Map map = unit.getTagMap();
 			java.util.Iterator it = map.keySet().iterator();
 
@@ -1587,7 +1585,7 @@ public class CRWriter extends BufferedWriter {
 			}
 		}
 
-		if(includeMessages) {
+		if(getIncludeUnitDetails() && includeMessages) {
 			writeStringBlock("EFFECTS", unit.getEffects());
 			writeMessageBlock("EINHEITSBOTSCHAFTEN", unit.getUnitMessages());
 			if(!serverConformance) {
@@ -1599,11 +1597,17 @@ public class CRWriter extends BufferedWriter {
 		//
 		//writeOrders(unit.orders);
 		//writeStringSequence(unit.getTempOrders());
-		writeOrders(unit.getCompleteOrders());
-		writeSkills(unit.getSkills().iterator(), unit.getPersons());
-		writeUnitSpells(unit.getSpells());
-		writeUnitCombatSpells(unit.getCombatSpells());
-		writeItems(unit.getItems().iterator());
+		if (getIncludeUnitDetails()) 
+		  writeOrders(unit.getCompleteOrders());
+		if (getIncludeUnitDetails()  || getIncludeSkills())
+		    writeSkills(unit.getSkills().iterator(), unit.getPersons());
+    if (getIncludeUnitDetails()) {
+		  writeUnitSpells(unit.getSpells());
+		  writeUnitCombatSpells(unit.getCombatSpells());
+    }
+    if (getIncludeUnitDetails() || getIncludeItems()) 
+		  writeItems(unit.getItems().iterator());
+		
 	}
 
 	/**
@@ -2464,7 +2468,64 @@ public class CRWriter extends BufferedWriter {
 		this.includeUnits = includeUnits;
 	}
 
-	private boolean includeRegionDetails = true;
+  private boolean includeUnitDetails;
+
+  /**
+   * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to
+   * the underlying stream.
+   * 
+   * @param newValue
+   */
+  public void setIncludeUnitDetails(boolean newValue) {
+    includeUnitDetails = newValue;
+  }
+
+  /**
+   * @return
+   */
+  public boolean getIncludeUnitDetails(){
+    return includeUnitDetails;
+  }
+
+  private boolean includeSkills;
+
+  /**
+   * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to
+   * the underlying stream.
+   * 
+   * @param newValue
+   */
+  public void setIncludeSkills(boolean newValue) {
+    includeSkills = newValue;
+  }
+
+  /**
+   * @return
+   */
+  public boolean getIncludeSkills(){
+    return includeSkills;
+  }
+
+  private boolean includeItems;
+
+  /**
+   * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to
+   * the underlying stream.
+   * 
+   * @param newValue
+   */
+  public void setIncludeItems(boolean newValue) {
+    includeItems = newValue;
+  }
+
+  /**
+   * @return
+   */
+  public boolean getIncludeItems(){
+    return includeItems;
+  }
+
+  private boolean includeRegionDetails = true;
 
 	/**
 	 * Returns whether <tt>write(GameData data)</tt> writes detailed information about the regions
@@ -2759,4 +2820,5 @@ public class CRWriter extends BufferedWriter {
 		}
 		*/
 	}
+
 }

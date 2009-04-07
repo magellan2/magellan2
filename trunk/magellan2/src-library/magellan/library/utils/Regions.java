@@ -346,7 +346,8 @@ public class Regions {
 					   distance from the start region to the current
 					   region taken from the backlog list */
 					// float curDistance = getDistance(curNb, curRegion) + dist.floatValue();
-					double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.floatValue();
+					// double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.floatValue();
+				  double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.doubleValue();
 
 					if(curDistance < minDistance) {
 						minDistance = curDistance;
@@ -389,7 +390,7 @@ public class Regions {
 				}
 			}
 		}
-
+		
 		// backtracking
 		/* now we know the distance of each region to the start region
 		   but we do not know a shortest path. We can find one simply
@@ -403,7 +404,6 @@ public class Regions {
 
 		while((curRegion != null) && (curCoord != null) && !curCoord.equals(start)) {
 			Double dist = distances.get(curCoord);
-
 			if(dist != null) {
         // double minDistance = dist.doubleValue();
         // now add the last mile at minimum dist
@@ -693,11 +693,11 @@ public class Regions {
 		// for Ships...prefer Regions near coasts
 		// for land units...prfer Regions with roads
 		// Trick: if suitable situation, reduce the distance minimal 
-		double suitErg = 0.999999999999999;
+		double suitErg = 0.99;
 		
 		// if we have 2 Ozean regions...
 		if (r1.getRegionType().isOcean() && r2.getRegionType().isOcean()) {
-			if (r2.getOzeanWithCoast()==1){
+			if (r2.getOceanWithCoast()==1){
 				return suitErg;
 			} else {
 				return erg;
@@ -707,7 +707,8 @@ public class Regions {
 		// if we have 2 non ozean regions....
 		if (!r1.getRegionType().isOcean() && !r2.getRegionType().isOcean()) {
 			if (Regions.isCompleteRoadConnection(r1, r2)){
-				return 2;
+				// return 2;
+				return (1 + suitErg);
 			} else {
 				return 3;
 			}

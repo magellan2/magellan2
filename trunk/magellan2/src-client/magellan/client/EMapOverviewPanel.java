@@ -2093,7 +2093,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * 
    */
-  public Collection getSelectedObjects() {
+  public Collection<Object> getSelectedObjects() {
     return this.contextManager.getSelection();
   }
   

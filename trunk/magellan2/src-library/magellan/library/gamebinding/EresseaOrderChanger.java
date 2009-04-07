@@ -36,7 +36,12 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class EresseaOrderChanger implements OrderChanger {
+  
+
   private static final EresseaOrderChanger singleton = new EresseaOrderChanger();
+  
+  private static final String eresseaOrderChangedMarker = ";changed by Magellan";
+  
   
 	protected EresseaOrderChanger() {
 	}
@@ -333,4 +338,156 @@ public class EresseaOrderChanger implements OrderChanger {
 
 		unit.addOrders(orders);
 	}
+	
+	/**
+   * @see magellan.library.gamebinding.OrderChanger#disableLongOrders(magellan.library.Unit)
+   */
+  public void disableLongOrders(Unit u) {
+    LinkedList<String> newOrders = new LinkedList<String>();
+    LinkedList<String> oldOrders = new LinkedList<String>();
+    if (u.getOrders()!=null && u.getOrders().size()>0){
+      oldOrders.addAll(u.getOrders());
+    }
+    if (oldOrders.size()>0){
+      for (String s:oldOrders){
+           
+      }
+    }
+  }
+
+  /**
+   * @see magellan.library.gamebinding.OrderChanger#isLongOrder(magellan.library.Unit, java.lang.String)
+   */
+  public boolean isLongOrder(String order) {
+    /*
+     * Wenn eine Order mit einem Eintrag aus LongOrdersTranslated 
+     * beginnt, aber nicht mit einem aus LongButShort, genau dann
+     * ist es eine long Order
+     */
+    String rOrder = order;
+    if (rOrder.startsWith("@")){
+      rOrder = rOrder.substring(1);
+    }
+    if (rOrder.startsWith(";")){
+      return false;
+    }
+    if (rOrder.startsWith("//")){
+      return false;
+    }
+    boolean isInLongorder=false;
+    for(String s:this.getLongOrdersTranslated()){
+      if (order.toLowerCase().startsWith(s.toLowerCase())){
+        isInLongorder = true;
+        break;
+      }
+    }
+    if (!isInLongorder){
+      return false;
+    }
+    
+    // Abgleich mit "NegativListe"
+    boolean isInLongButShortOrders = false;
+    for(String s:this.getLongButShortOrdersTranslated()){
+      if (order.toLowerCase().startsWith(s.toLowerCase())){
+        isInLongButShortOrders = true;
+        break;
+      }
+    }
+    if (isInLongButShortOrders){
+      return false;
+    }
+    return true;
+  }
+  
+  /**
+   * liefert eine Liste der Orders - übersetzt in die 
+   * gewählte Locale
+   * @return
+   */
+  private ArrayList<String> getLongOrdersTranslated(){
+     ArrayList<String> erg = new ArrayList<String>();
+     for (String s:this.getLongOrders()){
+       erg.add(Resources.getOrderTranslation(s)); 
+     }
+     if (erg.size()==0){
+       return null;
+     }
+     return erg;
+  }
+  
+  private ArrayList<String> getLongButShortOrdersTranslated(){
+    ArrayList<String> erg = new ArrayList<String>();
+    for (String s:this.getLongButShortOrders()){
+      // new here: have to expect multiple keywors
+      String[] part = s.split(" ");
+      String sTranslated = "";
+      for (int i =0;i<part.length;i++){
+        if (sTranslated.length()>0){
+          sTranslated+=" ";
+        }
+        sTranslated += Resources.getOrderTranslation(part[i]);
+      }
+      erg.add(sTranslated); 
+    }
+    if (erg.size()==0){
+      return null;
+    }
+    return erg;
+  }
+  
+  
+  
+  private ArrayList<String> longOrders = null;
+  
+  /**
+   * list of long orders in Eressea
+   * @return
+   */
+  private ArrayList<String> getLongOrders(){
+    if (this.longOrders==null){
+      this.longOrders = new ArrayList<String>();
+      this.longOrders.add(EresseaConstants.O_WORK);
+      this.longOrders.add(EresseaConstants.O_ATTACK);
+      this.longOrders.add(EresseaConstants.O_STEAL);
+      this.longOrders.add(EresseaConstants.O_SIEGE);
+      this.longOrders.add(EresseaConstants.O_RIDE);
+      this.longOrders.add(EresseaConstants.O_FOLLOW);
+      this.longOrders.add(EresseaConstants.O_RESEARCH);
+      this.longOrders.add(EresseaConstants.O_BUY);
+      this.longOrders.add(EresseaConstants.O_TEACH);
+      this.longOrders.add(EresseaConstants.O_LEARN);
+      this.longOrders.add(EresseaConstants.O_MAKE);
+      this.longOrders.add(EresseaConstants.O_MOVE);
+      this.longOrders.add(EresseaConstants.O_PLANT);
+      this.longOrders.add(EresseaConstants.O_ROUTE);
+      this.longOrders.add(EresseaConstants.O_SABOTAGE);
+      this.longOrders.add(EresseaConstants.O_SPY);
+      this.longOrders.add(EresseaConstants.O_TAX);
+      this.longOrders.add(EresseaConstants.O_ENTERTAIN);
+      this.longOrders.add(EresseaConstants.O_SELL);
+      this.longOrders.add(EresseaConstants.O_CAST);
+      this.longOrders.add(EresseaConstants.O_GROW);
+    }
+    return this.longOrders;
+  }
+	
+  private ArrayList<String> longButShortOrders = null;
+  
+  /**
+   * list of orders, which could be identified as long, but in
+   * the listed form are short orders..
+   * make temp = short (in this list)
+   * make sword = long (not in this list)
+   * @return
+   */
+  private ArrayList<String> getLongButShortOrders(){
+    if (this.longButShortOrders==null){
+      this.longButShortOrders = new ArrayList<String>();
+      this.longButShortOrders.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);
+    }
+    return this.longButShortOrders;
+  }
+  
+  
+  
 }

@@ -149,9 +149,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   private List<Sign> signs = null;
 
   /**
-   * a flag which indicates if this region is Ozean with a neighboring not-ozean
-   * region used for better pathfindung for ships -1 -> not computed yet 0 ->
-   * either no ozean or no neighboring land 1 -> ozean and neighboring land
+   * a flag which indicates if this region is ocean with a neighboring not-ocean
+   * region used for better pathfindung for ships 
+   * -1 -> not computed yet 
+   * 0 -> either no ozean or no neighboring land 
+   * 1 -> ozean and neighboring land
    */
   private int ozeanWithCoast = -1;
 
@@ -1181,11 +1183,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
+   * returns 1 if coast is nearby
+   * returns 0 if there es no coast
    * @return the ozeanWithCoast
    */
-  public int getOzeanWithCoast() {
+  public int getOceanWithCoast() {
     if (this.ozeanWithCoast == -1) {
-      this.ozeanWithCoast = this.calcOzeanWithCoast();
+      // value was not set until now
+      this.ozeanWithCoast = this.calcOceanWithCoast();
     }
     return ozeanWithCoast;
   }
@@ -1195,7 +1200,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 
    * @return 1 if this region is ozean and has neighboring non-ozean regions
    */
-  private int calcOzeanWithCoast() {
+  private int calcOceanWithCoast() {
     // start only if we are a ozean region
     if (!this.getRegionType().isOcean()) {
       return 0;

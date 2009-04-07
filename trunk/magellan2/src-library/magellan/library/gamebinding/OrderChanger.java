@@ -85,4 +85,22 @@ public interface OrderChanger {
 	 * @param u The affected unit.
 	 */
 	public void addMultipleHideOrder(Unit u);
+	
+	/**
+	 * searches the orders of the unit for long orders and comments them out
+	 * 
+	 * @param u
+	 */
+	public void disableLongOrders(Unit u);
+	
+	/**
+	 * 
+	 * checks, if  the given order is a long order
+	 * 
+	 * @param order
+	 * @return
+	 */
+	public boolean isLongOrder(String order);
+	
+	
 }

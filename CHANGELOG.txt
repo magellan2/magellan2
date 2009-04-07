@@ -1,3 +1,6 @@
+2009-04-07 / Build 267 - Fiete <sf@fietefietz.de>
+	* MapContextMenu improved: Paths (NACH, ROUTE)
+
 2009-04-07 / Build 266 - stm (stm_@users.sourceforge.net)
 	* added options to cr export dialog
 

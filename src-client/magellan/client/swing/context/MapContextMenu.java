@@ -88,6 +88,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	protected ActionListener rListener;
 	protected ActionListener tListener;
 	protected Mapper source;
+	
+	protected PathfinderMapContextMenu pathFinder;
   
   private Collection<MapContextMenuProvider> externalMapContectMenuProvider = null;
 
@@ -188,6 +190,13 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		renderer.setEnabled(false);
 		add(renderer);
     
+		pathFinder = new PathfinderMapContextMenu(dispatcher);
+		pathFinder.setEnabled(false);
+    add(pathFinder);
+    dispatcher.addSelectionListener(pathFinder);
+    dispatcher.addGameDataListener(pathFinder);
+		
+		
     this.initContextMenuProviders();
     
 	}
@@ -248,7 +257,9 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     updateLevelSelect();
     updateJumpToHotSpot();
 		updateSigns();
-    
+		
+		pathFinder.updateMenu(r);
+		
     updateMapContextMenuProvider(r,null);
     
 	}
@@ -282,6 +293,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		changeHotSpot.setEnabled(false);
 		armystats.setEnabled(false);
 		signs.setEnabled(false);
+    pathFinder.setEnabled(false);
     
     this.updateMapContextMenuProvider(null,c);
     
@@ -384,6 +396,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		});
 		signs.add(delAllSigns);
 	}
+	
+	
 	
 	/**
 	 * deletes all signs of the actual region

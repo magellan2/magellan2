@@ -100,7 +100,9 @@ public class MovementInspector extends AbstractInspector implements Inspector {
 		}
     // TODO: check for movement length
 		// TODO: check for roads
-
+		
+		// Reminder: Regions.isCompleteRoadConnection (Fiete) (nur für 2 benachbarte Regionen) 
+		
 		/*
 		switch(u.getRadius()) {
 		case 0:

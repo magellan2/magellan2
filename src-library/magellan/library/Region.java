@@ -407,7 +407,7 @@ public interface Region extends UnitContainer {
   /**
    * @return the ozeanWithCoast
    */
-  public int getOzeanWithCoast();
+  public int getOceanWithCoast();
 
   /**
    * Used for replacers..showing coordinates of region

@@ -224,9 +224,7 @@ public class UnitRoutePlanner {
 
 	/**
 	 * Returns a translation for the specified order key.
-	 *
-	 * 
-	 *
+
 	 * 
 	 */
 	private static String getOrder(String key) {

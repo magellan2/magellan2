@@ -2468,7 +2468,7 @@ public class CRWriter extends BufferedWriter {
 		this.includeUnits = includeUnits;
 	}
 
-  private boolean includeUnitDetails;
+  private boolean includeUnitDetails = true;
 
   /**
    * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to
@@ -2487,7 +2487,7 @@ public class CRWriter extends BufferedWriter {
     return includeUnitDetails;
   }
 
-  private boolean includeSkills;
+  private boolean includeSkills = true;
 
   /**
    * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to
@@ -2506,7 +2506,7 @@ public class CRWriter extends BufferedWriter {
     return includeSkills;
   }
 
-  private boolean includeItems;
+  private boolean includeItems = true;
 
   /**
    * Toggles whether <tt>write(GameData data)</tt> writes information about the unit skills in data to

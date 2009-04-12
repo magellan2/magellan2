@@ -62,7 +62,7 @@ import magellan.library.utils.mapping.LevelRelation;
  * you usually operate on the <tt>CompleteData</tt> subclass.
  * </p>
  */
-public abstract class GameData implements Cloneable {
+public abstract class GameData implements Cloneable,Addeable {
   private static final Logger log = Logger.getInstance(GameData.class);
 
   /** Game specific and usually fixed data (like races etc.). */
@@ -79,7 +79,7 @@ public abstract class GameData implements Cloneable {
   private Map<EntityID, Map<Integer, CoordinateID>> coordinateTranslations = new HashMap<EntityID, Map<Integer,CoordinateID>>();
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations = new HashMap<Integer, Map<Integer,LevelRelation>>();
-
+  
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's
    * suggested ID is usually curTempID and if this suggestion is accepted by the
@@ -90,6 +90,44 @@ public abstract class GameData implements Cloneable {
    * the tempunit).
    */
   protected int curTempID = -1;
+
+  /** Contains all attributes */
+  private Map<String,String> attributes = new HashMap<String,String>();
+  
+  /**
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
+   */
+  public void addAttribute(String key, String value) {
+    attributes.put(key, value);
+  }
+
+  /**
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
+   */
+  public boolean containsAttribute(String key) {
+    return attributes.containsKey(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
+   */
+  public String getAttribute(String key) {
+    return attributes.get(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeKeys()
+   */
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>(attributes.keySet());
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return attributes.size();
+  }
 
   /**
    * This method sets the current temp id with respect to the possible max value
@@ -828,6 +866,13 @@ public abstract class GameData implements Cloneable {
     } else {
       resultGD.curTempID = olderGD.curTempID;
     }
+    
+    if (olderGD.getAttributeSize() > 0) {
+      for (String key : olderGD.getAttributeKeys()) {
+        if (!newerGD.containsAttribute(key)) newerGD.addAttribute(key, olderGD.getAttribute(key));
+      }
+    }
+
 
     /**************************** LOCALE ***************************/
     if (sameRound) {

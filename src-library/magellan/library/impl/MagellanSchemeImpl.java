@@ -13,6 +13,9 @@
 
 package magellan.library.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import magellan.library.CoordinateID;
 import magellan.library.ID;
 import magellan.library.Scheme;
@@ -48,5 +51,40 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
    */
   public CoordinateID getCoordinate() {
           return (CoordinateID) this.getID();
+  }
+
+  /**
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
+   */
+  public void addAttribute(String key, String value) {
+    throw new RuntimeException("this method is not implemented");
+  }
+
+  /**
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
+   */
+  public boolean containsAttribute(String key) {
+    return false;
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
+   */
+  public String getAttribute(String key) {
+    throw new RuntimeException("this method is not implemented");
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeKeys()
+   */
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>();
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return 0;
   }
 }

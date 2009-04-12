@@ -13,7 +13,9 @@
 
 package magellan.library.impl;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -424,6 +426,40 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       this.locale = locale;
     } 
   }
-	
+
+  /**
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
+   */
+  public void addAttribute(String key, String value) {
+    throw new RuntimeException("this method is not implemented");
+  }
+
+  /**
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
+   */
+  public boolean containsAttribute(String key) {
+    return false;
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
+   */
+  public String getAttribute(String key) {
+    throw new RuntimeException("this method is not implemented");
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeKeys()
+   */
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>();
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return 0;
+  }
 	
 }

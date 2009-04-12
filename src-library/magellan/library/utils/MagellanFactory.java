@@ -234,6 +234,13 @@ public abstract class MagellanFactory {
     if (curGroup.getRaceNamePrefix() != null) {
       newGroup.setRaceNamePrefix(curGroup.getRaceNamePrefix());
     }
+    
+    if (curGroup.getAttributeSize() > 0) {
+      for (String key : curGroup.getAttributeKeys()) {
+        if (!newGroup.containsAttribute(key)) newGroup.addAttribute(key, curGroup.getAttribute(key));
+      }
+    }
+
   }
 
   /**
@@ -508,6 +515,12 @@ public abstract class MagellanFactory {
     newUC.setCache(null);
 
     newUC.setSortIndex(Math.max(newUC.getSortIndex(), curUC.getSortIndex()));
+    
+    if (curUC.getAttributeSize() > 0) {
+      for (String key : curUC.getAttributeKeys()) {
+        if (!newUC.containsAttribute(key)) newUC.addAttribute(key, curUC.getAttribute(key));
+      }
+    }
 
   }
 
@@ -693,6 +706,12 @@ public abstract class MagellanFactory {
     }
 
     newIsland.invalidateRegions();
+    
+    if (curIsland.getAttributeSize() > 0) {
+      for (String key : curIsland.getAttributeKeys()) {
+        if (!newIsland.containsAttribute(key)) newIsland.addAttribute(key, curIsland.getAttribute(key));
+      }
+    }
   }
 
   /**
@@ -1831,6 +1850,12 @@ public abstract class MagellanFactory {
       for (Iterator iter = curUnit.getTagMap().keySet().iterator(); iter.hasNext();) {
         String tag = (String) iter.next();
         resultUnit.putTag(tag, curUnit.getTag(tag));
+      }
+    }
+    
+    if (curUnit.getAttributeSize() > 0) {
+      for (String key : curUnit.getAttributeKeys()) {
+        if (!resultUnit.containsAttribute(key)) resultUnit.addAttribute(key, curUnit.getAttribute(key));
       }
     }
   }

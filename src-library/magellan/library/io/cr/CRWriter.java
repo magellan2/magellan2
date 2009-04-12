@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import magellan.library.Addeable;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Border;
@@ -763,6 +764,11 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		writeAlliances(group.allies());
+		
+		if (!serverConformance) {
+		  writeAttributes(group);
+		}
+		
 	}
 
 	/**
@@ -774,13 +780,13 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeAlliances(Map map) throws IOException {
+	public void writeAlliances(Map<ID,Alliance> map) throws IOException {
 		if(map == null) {
 			return;
 		}
 
-		for(Iterator iter = map.values().iterator(); iter.hasNext();) {
-			write((Alliance) iter.next());
+		for(Iterator<Alliance> iter = map.values().iterator(); iter.hasNext();) {
+			write(iter.next());
 		}
 	}
 
@@ -1009,6 +1015,7 @@ public class CRWriter extends BufferedWriter {
 
 			if(!serverConformance) {
 				writeStringBlock("COMMENTS", faction.getComments());
+	      writeAttributes(faction);
 			}
 		}
 	}
@@ -1103,6 +1110,10 @@ public class CRWriter extends BufferedWriter {
 			write(ship.getDeprecatedCapacity() + ";MaxLadung");
 			newLine();
 		}
+		
+		if (!serverConformance) {
+      writeAttributes(ship);
+		}
 
 		if(includeMessages) {
 			writeStringBlock("EFFECTS", ship.getEffects());
@@ -1181,6 +1192,10 @@ public class CRWriter extends BufferedWriter {
 		if(building.getCost() > 0) {
 			write(building.getCost() + ";Unterhalt");
 			newLine();
+		}
+		
+		if (!serverConformance) {
+      writeAttributes(building);
 		}
 
 		if(includeMessages) {
@@ -1608,6 +1623,10 @@ public class CRWriter extends BufferedWriter {
     if (getIncludeUnitDetails() || getIncludeItems()) 
 		  writeItems(unit.getItems().iterator());
 		
+    if (!serverConformance) {
+      writeAttributes(unit);
+    }
+
 	}
 
 	/**
@@ -1985,6 +2004,10 @@ public class CRWriter extends BufferedWriter {
 			}
 
 			writeBorders(region.borders());
+			
+			if (!serverConformance) {
+	      writeAttributes(region);
+			}
 
 			if(includeMessages) {
 				writeStringBlock("EFFECTS", region.getEffects());
@@ -2268,6 +2291,7 @@ public class CRWriter extends BufferedWriter {
 
     if(!serverConformance) {
       writeCoordinateTranslations(world);
+      writeAttributes(world);
     }
 
 		if(!serverConformance && exportHotspots) {
@@ -2337,8 +2361,8 @@ public class CRWriter extends BufferedWriter {
 				if(world.units().size() != unitsWritten) {
 					int homelessUnitsCounter = 0;
 
-					for(Iterator iter = world.units().values().iterator(); iter.hasNext();) {
-						Unit u = (Unit) iter.next();
+					for(Iterator<Unit> iter = world.units().values().iterator(); iter.hasNext();) {
+						Unit u = iter.next();
 
 						if(u.getRegion() == null) {
 							homelessUnitsCounter++;
@@ -2669,13 +2693,13 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeIslands(Map map) throws IOException {
+	public void writeIslands(Map<ID,Island> map) throws IOException {
 		if(map == null) {
 			return;
 		}
 
-		for(Iterator iter = map.values().iterator(); iter.hasNext();) {
-			write((Island) iter.next());
+		for(Iterator<Island> iter = map.values().iterator(); iter.hasNext();) {
+			write(iter.next());
 		}
 	}
 
@@ -2700,6 +2724,10 @@ public class CRWriter extends BufferedWriter {
 
 		if(island.getDescription() != null) {
 			writeQuotedTag(island.getDescription(), "Beschr");
+		}
+		
+		if (!serverConformance) {
+      writeAttributes(island);
 		}
 	}
 
@@ -2819,6 +2847,22 @@ public class CRWriter extends BufferedWriter {
 			writeQuotedTag(value, key);
 		}
 		*/
+	}
+	
+	/**
+	 * Writes all attributes to the stream
+	 */
+	public void writeAttributes(Addeable addeable) throws IOException {
+    if (addeable == null || addeable.getAttributeSize()<=0) return;
+    
+    write("ATTRIBUTES");
+    newLine();
+
+    List<String> keys = addeable.getAttributeKeys();
+    for (String key : keys) {
+      String value = addeable.getAttribute(key);
+      writeQuotedTag(value,key);
+    }
 	}
 
 }

@@ -8,7 +8,7 @@ import magellan.library.relation.UnitRelation;
 /**
  * An interface granting access to the relations of an object.
  */
-public interface Related extends Described {
+public interface Related extends Described,Addeable {
 
     /** 
      * add a new relation to this object

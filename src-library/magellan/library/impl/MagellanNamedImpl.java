@@ -21,7 +21,7 @@ import magellan.library.Named;
  */
 public abstract class MagellanNamedImpl extends MagellanIdentifiableImpl implements Named {
 	private String name = null;
-
+	
 	/**
 	 * Constructs a new named object that is uniquely identifiable by the specified id.
 	 *

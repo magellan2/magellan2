@@ -1,51 +1,54 @@
+2009-04-12 / Build 268 - Thoralf <thoralf@m84.de>
+    * different smaller bugfixes and encoding problems solved
+    
 2009-04-07 / Build 267 - Fiete <sf@fietefietz.de>
-	* MapContextMenu improved: Paths (NACH, ROUTE)
+    * MapContextMenu improved: Paths (NACH, ROUTE)
 
 2009-04-07 / Build 266 - stm (stm_@users.sourceforge.net)
-	* added options to cr export dialog
+    * added options to cr export dialog
 
 2009-02-26 / Build 265 - Thoralf <thoralf@m84.de>
     * added some Allanon specific order completions
 
 2009-02-26 / Build 264 - Fiete <sf@fietefietz.de>
-	* fixed #353   UnitConextMenu from/in ErderEditor
+    * fixed #353   UnitConextMenu from/in ErderEditor
 
 2009-02-24 / Build 262 - Fiete <sf@fietefietz.de>
-	* fixed #343: change herb type via map edit plugin
-	* added Eisberg Region type to eressea.cr
-	* added detail images to mapedit-terrain-menu
+    * fixed #343: change herb type via map edit plugin
+    * added Eisberg Region type to eressea.cr
+    * added detail images to mapedit-terrain-menu
 
 2009-02-24 / Build 261 - Fiete <sf@fietefietz.de>
-	* fixed #0349: unmodified(modified) Ressources in FactionStats and other
-	* fixed #0352: real race of demons was not seen in Faction Stats after merge
+    * fixed #0349: unmodified(modified) Ressources in FactionStats and other
+    * fixed #0352: real race of demons was not seen in Faction Stats after merge
 
 2008-02-14 / Build 260 - stm (stm_@users.sourceforge.net)
-	* fixed broken Resource merging
-	* added iceberg icons
-	* fixed bug #351
-	
+    * fixed broken Resource merging
+    * added iceberg icons
+    * fixed bug #351
+    
 2008-02-14 / Build 257 - stm (stm_@users.sourceforge.net)
-	* added Visibility enum
-	* fixed visibility merging
-	* added Rendering of future paths
-	* fixed minor bug concerning tasks of factions with password
-	* improved readability of GameData.merge
-	* fixed merging of disappeared buildings
+    * added Visibility enum
+    * fixed visibility merging
+    * added Rendering of future paths
+    * fixed minor bug concerning tasks of factions with password
+    * improved readability of GameData.merge
+    * fixed merging of disappeared buildings
 
 2009-01-30 / Build 254 - Fiete <sf@fietefietz.de>
-	* [someone made some help adjustments and fail save additions]
-	* added CC: function to E-Mail Order Writer
-	* fixed saving of useSSL and useTLS per Faction
+    * [someone made some help adjustments and fail save additions]
+    * added CC: function to E-Mail Order Writer
+    * fixed saving of useSSL and useTLS per Faction
 
 2009-01-05 / Build 253 - Fiete <sf@fietefietz.de>
-	* fixed #338 (Floating Window changes Size between Saves and Loads)
-	* fixed #348 (senseless error msg when adding a order file to an CR)
-	* fixed #336 (UpdateCheck verursacht Fehler)
-	* fixed #346 (Dateiname beim Hinzufügen)
-	* added infos to eressea.cr #181
-	* added some icons for menouthis
-	* added OrderFileStartingString to Rules (#341) (defaults to ERESSEA)
-	* added menouthis.cr
+    * fixed #338 (Floating Window changes Size between Saves and Loads)
+    * fixed #348 (senseless error msg when adding a order file to an CR)
+    * fixed #336 (UpdateCheck verursacht Fehler)
+    * fixed #346 (Dateiname beim Hinzufügen)
+    * added infos to eressea.cr #181
+    * added some icons for menouthis
+    * added OrderFileStartingString to Rules (#341) (defaults to ERESSEA)
+    * added menouthis.cr
 
 2008-12-27 / Build 252 - Thoralf <thoralf@m84.de>
     * added getConfiguration, setConfiguration to ExtCmds Helper to read and write extra informations to a unit
@@ -56,13 +59,13 @@
 
 2008-11-17 / Build 247 - stm (stm_@users.sourceforge.net)
     * fixed UnitContainer.getOwner() bug #340 Offene Probleme unvollständig wenn Schiff ohne Besitzer vorhanden
-	* fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE
+    * fixed small bug concerning syntax of PIRATERIE and HELFE BEWACHE
 
 2008-10-19 / Build 246 - Fiete  <Fiete@users.sourceforge.net>
-	* MainMenuProvider...a chance for a plugin to get an own super-menu
+    * MainMenuProvider...a chance for a plugin to get an own super-menu
 
 2008-10-19 / Build 244 - Fiete  <Fiete@users.sourceforge.net>
-	* fixed encoding bug in PipeFileType, effects CloningInMemory
+    * fixed encoding bug in PipeFileType, effects CloningInMemory
 
 2008-09-27 / Build 243 - Thoralf <thoralf@m84.de>
     * RELEASE 2.0.3

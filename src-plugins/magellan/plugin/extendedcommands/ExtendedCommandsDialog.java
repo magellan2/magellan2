@@ -458,6 +458,7 @@ public class ExtendedCommandsDialog extends JDialog implements ActionListener, H
       if (path != null) {
         URL url = path.toURI().toURL();
         help.setPage(url);
+        help.setContentType("text/html; charset=ISO-8859-1");
         history.add(url);
       } else {
         help.setText("Unable to locate help files...");

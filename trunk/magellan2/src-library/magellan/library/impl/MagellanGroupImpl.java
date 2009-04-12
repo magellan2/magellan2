@@ -13,10 +13,12 @@
 
 package magellan.library.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import magellan.library.Alliance;
@@ -37,6 +39,8 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	private Map<ID,Alliance> allies = new OrderedHashtable<ID,Alliance>();
 
 	private static Map<String, String> tagMap = null; // Map for external tags
+  /** Contains all attributes */
+  private Map<String,String> attributes = new HashMap<String,String>();
 
 	/**
 	 * Create a new <tt>Group</tt> object.
@@ -316,5 +320,40 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public void setAllies(Map<ID, Alliance> allies) {
     this.allies = allies;
+  }
+
+  /**
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
+   */
+  public void addAttribute(String key, String value) {
+    attributes.put(key, value);
+  }
+
+  /**
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
+   */
+  public boolean containsAttribute(String key) {
+    return attributes.containsKey(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
+   */
+  public String getAttribute(String key) {
+    return attributes.get(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeKeys()
+   */
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>(attributes.keySet());
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return attributes.size();
   }
 }

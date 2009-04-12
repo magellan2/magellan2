@@ -847,16 +847,45 @@ RESOURCES
 1;Eisen
 1;Schwarzer Lotus
 
+ITEM "Basiliskenzunge"
+"Basiliskenzunge";name
+1;weight
+"front weapons";category
+"Waffenbau";makeskill
+6;makeskilllevel
+RESOURCES
+1;Eisen
+
+ITEM "Harpune"
+"Harpune";name
+1;weight
+"distance weapons";category
+"Waffenbau";makeskill
+6;makeskilllevel
+RESOURCES
+1;Eisen
+
 ITEM "Katapult"
 "Katapult";name
 60;weight
 "distance weapons";category
 "Katapultbedienung";useskill
 "Wagenbau";makeskill
-4;makeskilllevel
+3;makeskilllevel
 RESOURCES
 10;Holz
 2;Eisen
+
+ITEM "Balliste"
+"Balliste";name
+30;weight
+"distance weapons";category
+"Katapultbedienung";useskill
+"Wagenbau";makeskill
+6;makeskilllevel
+RESOURCES
+5;Holz
+1;Eisen
 
 ITEM "Schwert"
 "Schwert";name
@@ -974,6 +1003,16 @@ ITEM "Kurzspeer"
 6;makeskilllevel
 RESOURCES
 1;Holz
+1;Eisen
+
+ITEM "Parierdolch"
+"Parierdolch";name
+1;weight
+"front weapons";category
+"Hiebwaffen";useskill
+"Waffenbau";makeskill
+6;makeskilllevel
+RESOURCES
 1;Eisen
 
 ITEM "Lederhemd"

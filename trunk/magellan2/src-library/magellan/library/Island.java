@@ -22,7 +22,7 @@ import java.util.Map;
  * @author $Author: $
  * @version $Revision: 305 $
  */
-public interface Island extends Described {
+public interface Island extends Described,Addeable {
   /**
    * Returns a String representation of this Island object.
    */

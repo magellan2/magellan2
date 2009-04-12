@@ -21,7 +21,7 @@ import magellan.library.utils.Taggable;
 /**
  * A class representing a group of units within a faction.
  */
-public interface Group extends Named, Taggable {
+public interface Group extends Named, Taggable, Addeable {
   /**
    * Set the faction this group belongs to.
    */

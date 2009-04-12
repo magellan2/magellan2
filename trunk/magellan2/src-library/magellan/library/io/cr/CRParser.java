@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import magellan.library.Addeable;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Border;
@@ -863,6 +864,8 @@ public class CRParser implements RulesIO, GameDataIO {
           island.setName(sc.argv[0]);
         } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
           island.setDescription(sc.argv[0]);
+        } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+          parseAttributes(island);
         } else {
           unknown("ISLAND", false);
         }
@@ -1061,6 +1064,8 @@ public class CRParser implements RulesIO, GameDataIO {
         parseMessageType(world);
       } else if((sc.argc == 1) && sc.argv[0].equals("TRANSLATION")) {
         parseTranslation(world);
+      } else if((sc.argc == 1) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(world);
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("CHARSET")) {
         // do nothing
         world.setEncoding(sc.argv[0]);
@@ -1925,6 +1930,8 @@ public class CRParser implements RulesIO, GameDataIO {
         faction.setComments(parseStringSequence(faction.getComments()));
       } else if((sc.argc == 1) && sc.argv[0].equals("FEHLER")) {
         faction.setErrors(parseStringSequence(faction.getErrors()));
+      } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(faction);
       } else if((sc.argc == 1) && sc.argv[0].equals("WARNUNGEN")) {
         /* Verdanon messages */
         faction.setMessages(parseMessageSequence(faction.getMessages()));
@@ -1964,32 +1971,34 @@ public class CRParser implements RulesIO, GameDataIO {
 
   private Map<ID,Group> parseGroup(Map<ID,Group> groups, Faction faction, int sortIndex) throws IOException {
     ID id = IntegerID.create(sc.argv[0].substring(7));
-    Group g = null;
+    Group group = null;
 
     if(groups == null) {
       groups = new OrderedHashtable<ID, Group>();
     }
 
-    g = groups.get(id);
+    group = groups.get(id);
 
-    if(g == null) {
-      g = MagellanFactory.createGroup(id, world);
+    if(group == null) {
+      group = MagellanFactory.createGroup(id, world);
     }
 
-    g.setFaction(faction);
-    g.setSortIndex(sortIndex);
-    groups.put(id, g);
+    group.setFaction(faction);
+    group.setSortIndex(sortIndex);
+    groups.put(id, group);
     sc.getNextToken(); // skip GRUPPE nr
 
     while(!sc.eof) {
       if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
-        g.setName(sc.argv[0]);
+        group.setName(sc.argv[0]);
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("typprefix")) {
-        g.setRaceNamePrefix(sc.argv[0]);
+        group.setRaceNamePrefix(sc.argv[0]);
         sc.getNextToken();
       } else if(sc.isBlock && sc.argv[0].startsWith("ALLIANZ ")) {
-        parseAlliance(g.allies());
+        parseAlliance(group.allies());
+      } else if(sc.isBlock && sc.argv[0].startsWith("ATTRIBUTES")) {
+        parseAttributes(group);
       } else if(sc.isBlock) {
         break;
       } else {
@@ -2330,6 +2339,8 @@ public class CRParser implements RulesIO, GameDataIO {
         unit.setEffects(parseStringSequence(unit.getEffects()));
       } else if((sc.argc == 1) && sc.argv[0].startsWith("KAMPFZAUBER ")) {
         parseUnitCombatSpells(world, unit);
+      } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(unit);
       } else if(sc.isBlock) {
         break;
       } else {
@@ -2486,6 +2497,8 @@ public class CRParser implements RulesIO, GameDataIO {
         ship.setEffects(parseStringSequence(ship.getEffects()));
       } else if((sc.argc == 1) && sc.argv[0].equals("COMMENTS")) {
         ship.setComments(parseStringSequence(ship.getComments()));
+      } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(ship);
       } else if(sc.isBlock) {
         break;
       } else {
@@ -2546,6 +2559,8 @@ public class CRParser implements RulesIO, GameDataIO {
         bld.setEffects(parseStringSequence(bld.getEffects()));
       } else if((sc.argc == 1) && sc.argv[0].equals("COMMENTS")) {
         bld.setComments(parseStringSequence(bld.getComments()));
+      } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(bld);
       } else if (sc.isBlock){
         break;
       } else {
@@ -2917,6 +2932,8 @@ public class CRParser implements RulesIO, GameDataIO {
         region.setTravelThruShips(parseMessageSequence(region.getTravelThruShips()));
       } else if(sc.isBlock && sc.argv[0].equals("EFFECTS")) {
         region.setEffects(parseStringSequence(region.getEffects()));
+      } else if((sc.isBlock) && sc.argv[0].equals("ATTRIBUTES")) {
+        parseAttributes(region);
       } else if(sc.isBlock && sc.argv[0].equals("COMMENTS")) {
         region.setComments(parseStringSequence(region.getComments()));
       } else if(sc.isBlock && sc.argv[0].startsWith("RESOURCE ")) {
@@ -3218,5 +3235,21 @@ public class CRParser implements RulesIO, GameDataIO {
       }
     }
   }
+  
+  /**
+   * This method reads all attributes from a CR
+   * "value":key
+   */
+  private void parseAttributes(Addeable data) throws IOException {
+    sc.getNextToken();
 
+    while(!sc.eof) {
+      if(sc.argc == 2) {
+        data.addAttribute(sc.argv[1], sc.argv[0]);
+        sc.getNextToken();
+      } else if(sc.isBlock) {
+        break;
+      }
+    }
+  }
 }

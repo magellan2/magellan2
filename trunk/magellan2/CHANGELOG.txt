@@ -1,5 +1,7 @@
 2009-04-12 / Build 268 - Thoralf <thoralf@m84.de>
     * different smaller bugfixes and encoding problems solved
+    * added feature to save & load client specific attributes for: 
+      game data (global), faction, group, island, region, unit, building, ship
     
 2009-04-07 / Build 267 - Fiete <sf@fietefietz.de>
     * MapContextMenu improved: Paths (NACH, ROUTE)

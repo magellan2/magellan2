@@ -58,6 +58,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	private Unit owner = null;
   private Unit ownerUnit = null;
 
+
 	/**
 	 * A list containing <tt>String</tt> objects, specifying  effects on this
 	 * <tt>UnitContainer</tt> object.
@@ -660,6 +661,5 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   public void setOrderEditor(CacheableOrderEditor editor){
     getCache().orderEditor=editor;
   }
-
 
 }

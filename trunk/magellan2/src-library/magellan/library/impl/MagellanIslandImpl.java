@@ -13,10 +13,13 @@
 
 package magellan.library.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import magellan.library.CoordinateID;
@@ -35,6 +38,8 @@ import magellan.library.Region;
 public class MagellanIslandImpl extends MagellanDescribedImpl implements Island {
 	/** The game data required to construct the collection of regions belonging to this island. */
 	private GameData data = null;
+  /** Contains all attributes */
+  private Map<String,String> attributes = new HashMap<String,String>();
 
 	/**
 	 * Constructs a new Island object uniquely identifiable by the specified id.
@@ -153,4 +158,40 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 		this.regions = r;
 		regionsInvalidated = false;
 	}
+
+
+  /**
+   * @see magellan.library.Addeable#addAttribute(java.lang.String, java.lang.String)
+   */
+  public void addAttribute(String key, String value) {
+    attributes.put(key, value);
+  }
+
+  /**
+   * @see magellan.library.Addeable#containsAttribute(java.lang.String)
+   */
+  public boolean containsAttribute(String key) {
+    return attributes.containsKey(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttribute(java.lang.String)
+   */
+  public String getAttribute(String key) {
+    return attributes.get(key);
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeKeys()
+   */
+  public List<String> getAttributeKeys() {
+    return new ArrayList<String>(attributes.keySet());
+  }
+
+  /**
+   * @see magellan.library.Addeable#getAttributeSize()
+   */
+  public int getAttributeSize() {
+    return attributes.size();
+  }
 }

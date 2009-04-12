@@ -109,4 +109,6 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
 	public int compareTo(Object o) {
 		return getID().compareTo(((MagellanIdentifiableImpl) o).getID());
 	}
+	
+	
 }

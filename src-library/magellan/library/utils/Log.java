@@ -55,7 +55,8 @@ public class Log {
 	 */
 	public PrintStream getPrintStream() throws IOException {
 	  File file = new File(baseDir,"errors.txt");
-	  if (!file.canWrite()) throw new IOException("Cannot write to file "+file);
+	  
+	  if (!baseDir.canWrite()) throw new IOException("Cannot write to file "+file);
 	  
 		OutputStreamWriter osw = FileType.createEncodingWriter(new FileOutputStream(file.getAbsolutePath(),true),FileType.DEFAULT_ENCODING.toString());
 		encoding = osw.getEncoding();

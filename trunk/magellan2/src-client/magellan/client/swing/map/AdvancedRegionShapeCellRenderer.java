@@ -43,7 +43,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -900,10 +899,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     protected AbstractButton importSet;
     protected AbstractButton exportSet;
     protected AbstractButton setTooltip;
+    protected AbstractButton showInfo;
     protected JLabel tooltipLabel;
 
     ARRSet prefSet;
     String currentSelection;
+
+    private ToolTipReplacersInfo infoDialog;
     
     /**
      * Creates a new Preferences object.
@@ -919,8 +921,8 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       selBorder = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), BorderFactory.createEmptyBorder(2, 2, 2, 2));
       nonSelBorder = BorderFactory.createCompoundBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED), BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
-      boolean infoExists = false;
-
+      JPanel infoPanel = new JPanel(new GridBagLayout());
+      GridBagConstraints infoPanelConstraint = new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.NORTH, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0);
       JTextArea info=null;
       try {
         info = new JTextArea(Resources.get("map.advancedregionshapecellrenderer.prefs.help"), 10, 10);
@@ -936,33 +938,42 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         info.setSelectionColor(mainPanel.getBackground());
         info.setSelectedTextColor(mainPanel.getForeground());
         info.setFont(new JLabel().getFont());
-
-        Insets oldInsets = con.insets;
-
-        if (oldInsets != null) {
-          con.insets = new Insets(oldInsets.top, Math.max(oldInsets.left, 5), oldInsets.bottom, oldInsets.right);
-        } else {
-          con.insets = new Insets(1, 5, 1, 1);
-        }
-
-        con.gridx = 2;
-        con.gridy = 2;
-        con.fill = GridBagConstraints.VERTICAL;
-        con.gridheight = 4;
-        mainPanel.add(info, con);
-        con.insets = oldInsets;
-        infoExists = true;
+        infoPanelConstraint.fill=GridBagConstraints.BOTH;
+        infoPanelConstraint.weighty=1.0;
+        infoPanel.add(info, infoPanelConstraint);
       } catch (Exception exc) {
         info=null;
       }
+
+      infoPanelConstraint.gridy = 1;
+      infoPanelConstraint.weighty=0;
+      infoPanelConstraint.fill=GridBagConstraints.HORIZONTAL;
+      showInfo = new JButton(Resources.get("map.advancedregionshapecellrenderer.prefs.menu.showinfo"));
+      showInfo.addActionListener(this);
+      infoPanel.add(showInfo, infoPanelConstraint);
+
+      Insets oldInsets = con.insets;
+
+      if (oldInsets != null) {
+        con.insets = new Insets(oldInsets.top, Math.max(oldInsets.left, 5), oldInsets.bottom, oldInsets.right);
+      } else {
+        con.insets = new Insets(1, 5, 1, 1);
+      }
+
+      con.gridx = 2;
+      con.gridy = 2;
+      con.fill = GridBagConstraints.VERTICAL;
+      con.gridheight = 4;
+      mainPanel.add(infoPanel, con);
+      
+      
+      con.insets = oldInsets;
 
       con.gridx = 1;
       con.gridy = 0;
       con.gridheight = 1;
 
-      if (infoExists) {
-        con.gridwidth = 2;
-      }
+      con.gridwidth = 2;
 
       mainPanel.add(createTexts(), con);
 
@@ -993,9 +1004,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 //      con.weighty=.2;
       con.gridheight=1;
       
-      if (infoExists) {
-        con.gridwidth = 2;
-      }
+      con.gridwidth = 2;
 
       con.gridy+=2;
       con.fill = GridBagConstraints.HORIZONTAL;
@@ -1011,8 +1020,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       cShowPanel = new ColorShowPanel();
 
       Dimension dim = new Dimension(mPanel.getPreferredSize());
-      if (info!=null)
-        dim.width+=info.getPreferredSize().width/2;
+      dim.width+=infoPanel.getPreferredSize().width/2;
       dim.height = 30;
       cShowPanel.setPreferredSize(dim);
       cShowPanel.setBorder(BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -1225,6 +1233,16 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         exportSet();
       } else if (actionEvent.getSource() == setTooltip) {
         setTooltip();
+      } else if (actionEvent.getSource() == showInfo){
+        if(infoDialog == null) {
+          infoDialog = new ToolTipReplacersInfo(null,
+                              Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+        }
+
+        if(!infoDialog.isVisible()) {
+          infoDialog.showDialog();
+        }
+
       }
     }
 

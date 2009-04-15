@@ -703,6 +703,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (plugInMenuItems != null && plugInMenuItems.size()>0) {
         if (plugInMenu == null) {
           plugInMenu = new JMenu(Resources.get("client.menu.plugins.caption"));
+          plugInMenu.setMnemonic(Resources.get("client.menu.plugins.mnemonic").charAt(0));
           menuBar.add(plugInMenu);
         } else {
           plugInMenu.addSeparator();

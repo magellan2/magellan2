@@ -1,0 +1,85 @@
+// class magellan.library.gamebinding.AllanonGameSpecificRules
+// created on 19.04.2009
+//
+// Copyright 2003-2009 by magellan project team
+//
+// Author : $Author: $
+// $Id: $
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program (see doc/LICENCE.txt); if not, write to the
+// Free Software Foundation, Inc., 
+// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// 
+package magellan.library.gamebinding;
+
+import magellan.library.Region;
+import magellan.library.rules.RegionType;
+
+/**
+ * This class implements all Eressea specific rule informations.
+ *
+ * @author Thoralf Rickert
+ * @version 1.0, 19.04.2009
+ */
+public class EresseaGameSpecificRules implements GameSpecificRules {
+  private static GameSpecificRules _instance = null;
+  private EresseaGameSpecificRules() {}
+  
+  public static synchronized GameSpecificRules getInstance() {
+    if (_instance == null) _instance = new EresseaGameSpecificRules();
+    return _instance;
+  }
+  
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getMaxWorkers(magellan.library.Region)
+   */
+  public Integer getMaxWorkers(Region region) {
+    
+    if((region.getTrees() != -1) && (region.getSprouts() != -1) && (region.getType() != null)) {
+      int inhabitants  = ((RegionType)region.getType()).getInhabitants();
+      int trees = Math.max(region.getTrees(),0);
+      int sprouts = Math.max(region.getSprouts(),0);
+      
+      return new Integer(inhabitants - (8 * trees) - (4 * sprouts));
+    }
+
+    return null;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
+   */
+  public Integer getMaxEntertain(Region region) {
+    return maxEntertain(region.getSilver());
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
+   */
+  public Integer getMaxOldEntertain(Region region) {
+    return maxEntertain(region.getOldSilver());
+  }
+
+  
+  /**
+   * Return the silver that can be earned through entertainment in a region with
+   * the given amount of silver.
+   */
+  private int maxEntertain(int silver) {
+    if (silver >= 0) {
+      return silver / 20;
+    }
+    return -1;
+  }
+}

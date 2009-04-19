@@ -120,4 +120,9 @@ public interface GameSpecificStuff {
    * some additional informations for a game specific order.
    */
   public GameSpecificOrderWriter getOrderWriter();
+  
+  /**
+   * Returns a game specific rule manager.
+   */
+  public GameSpecificRules getGameSpecificRules();
 }

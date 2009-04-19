@@ -65,7 +65,7 @@ public class RegionMethodReplacer extends AbstractRegionReplacer {
   public Object getRegionReplacement(Region r) {
 		try {
 			Object o = method.invoke(r, (Object[])null);
-
+			
 			if(o != null) {
 				if(!(o instanceof Number)) {
 					return o;
@@ -74,27 +74,27 @@ public class RegionMethodReplacer extends AbstractRegionReplacer {
 				Number n = (Number) o;
 
 				switch(mode) {
-				case MODE_ALL:
-					return o;
-
-				case MODE_NON_NEGATIVE:
-
-					if(n.doubleValue() >= 0) {
-						return o;
-					}
-
-					break;
-
-				case MODE_POSITIVE:
-
-					if(n.doubleValue() > 0) {
-						return o;
-					}
-
-					break;
-
-				default:
-					break;
+  				case MODE_ALL:
+  					return o;
+  
+  				case MODE_NON_NEGATIVE:
+  
+  					if(n.doubleValue() >= 0) {
+  						return o;
+  					}
+  
+  					break;
+  
+  				case MODE_POSITIVE:
+  
+  					if(n.doubleValue() > 0) {
+  						return o;
+  					}
+  
+  					break;
+  
+  				default:
+  					break;
 				}
 			}
 		} catch(Exception exc) {

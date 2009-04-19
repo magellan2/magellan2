@@ -116,4 +116,11 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   public GameSpecificOrderWriter getOrderWriter() {
     return EresseaOrderWriter.getSingleton();
   }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
+   */
+  public GameSpecificRules getGameSpecificRules() {
+    return EresseaGameSpecificRules.getInstance();
+  }
 }

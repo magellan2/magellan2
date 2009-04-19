@@ -2852,6 +2852,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Unterh")) {
         // Has not to be stored.
+        
         sc.getNextToken();
 
         // pavkovic 2002.05.10: recruits (and old recruits are used from cr)

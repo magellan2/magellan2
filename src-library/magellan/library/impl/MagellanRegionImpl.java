@@ -970,28 +970,17 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns the silver that can be earned through entertainment in this region.
    */
   public int maxEntertain() {
-    return MagellanRegionImpl.maxEntertain(silver);
+    return getData().getGameSpecificStuff().getGameSpecificRules().getMaxEntertain(this);
   }
 
   /**
    * Returns the silver that could be earned through entertainment in this
-   * region.
+   * region in the last week.
    */
   public int maxOldEntertain() {
-    return MagellanRegionImpl.maxEntertain(oldSilver);
+    return getData().getGameSpecificStuff().getGameSpecificRules().getMaxOldEntertain(this);
   }
 
-  /**
-   * Return the silver that can be earned through entertainment in a region with
-   * the given amount of silver.
-   */
-  private static int maxEntertain(int silver) {
-    if (silver >= 0) {
-      return silver / 20;
-    }
-
-    return -1;
-  }
 
   /**
    * Returns the maximum number of luxury items that can be bought in this
@@ -1028,8 +1017,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     int realWage = 11;
 
     if (buildings != null) {
-      for (Iterator iter = buildings().iterator(); iter.hasNext();) {
-        Building b = (Building) iter.next();
+      for (Iterator<Building> iter = buildings().iterator(); iter.hasNext();) {
+        Building b = iter.next();
 
         if (b.getType() instanceof CastleType) {
           CastleType ct = (CastleType) b.getType();
@@ -1748,8 +1737,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns silver.
    */
   public int getSilver() {
-    ItemType silverIT = data.rules.getItemType(EresseaConstants.I_SILVER);
-    RegionResource silverRR = this.getResource(silverIT);
+    RegionResource silverRR = this.getResource(data.rules.getItemType(EresseaConstants.I_SILVER));
     if (silverRR != null) {
       return silverRR.getAmount();
     }

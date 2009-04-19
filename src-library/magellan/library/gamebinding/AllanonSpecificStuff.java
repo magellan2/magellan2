@@ -110,4 +110,13 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   public GameSpecificOrderWriter getOrderWriter() {
     return AllanonOrderWriter.getSingleton();
   }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
+   */
+  public GameSpecificRules getGameSpecificRules() {
+    return AllanonGameSpecificRules.getInstance();
+  }
+  
+  
 }

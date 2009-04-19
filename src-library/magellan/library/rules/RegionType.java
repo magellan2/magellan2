@@ -65,9 +65,7 @@ public class RegionType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the number of max inhabitants in this region type
 	 */
 	public int getInhabitants() {
 		return inhabitants;

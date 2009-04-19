@@ -866,8 +866,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
     
 		// peasants
-		int maxWorkers = r.getRegionType().getInhabitants() - (Math.max(r.getTrees(), 0) * 8) -
-						 (Math.max(r.getSprouts(), 0) * 4);
+		int maxWorkers = r.getData().getGameSpecificStuff().getGameSpecificRules().getMaxWorkers(r);
 		int workers = Math.min(maxWorkers, r.getPeasants());
 		int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * 10);
 		int oldWorkers = Math.min(maxWorkers, r.getOldPeasants());
@@ -949,8 +948,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		String icon = null;
 		if(!r.resources().isEmpty()) {
 			// resources of region
-			for(Iterator iter = r.resources().iterator(); iter.hasNext();) {
-				RegionResource res = (RegionResource) iter.next();
+			for(Iterator<RegionResource> iter = r.resources().iterator(); iter.hasNext();) {
+				RegionResource res = iter.next();
 				if (!res.getType().getID().equals(EresseaConstants.I_PEASANTS)){
   				int oldValue = findOldValueByResourceType(r, res);
   				appendResource(res, resourceNode, oldValue);

@@ -1,3 +1,7 @@
+2009-04-19 / Build 270 - Thoralf <thoralf@m84.de>
+    * created a GameSpecificRules interface to make it possible to calculate game
+      specific data like max workers or max entertain
+
 2009-04-15 / Build 269 - stm (stm_@users.sourceforge.net)
     * fixed a few typos and translations
     * added info dialog to ARR options dialog

@@ -85,10 +85,6 @@ public class AllanonGameSpecificRules implements GameSpecificRules {
    */  
   private Integer getEntertain(int inhabitants, int trees, int sprouts, int wage) {
     int maxWorkers = getMaxWorkers(inhabitants, trees, sprouts);
-    
-    System.err.println("max workers: "+maxWorkers);
-    System.err.println("max entertain: "+(maxWorkers * wage * 0.05));
-    
     return (int)Math.round(maxWorkers * wage * 0.05);
   }
 

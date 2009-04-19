@@ -42,7 +42,7 @@ class ToolTipReplacersInfo extends JDialog
 	 * 
 	 */
 	public ToolTipReplacersInfo(Window parent, String title) {
-		super(parent, title, ModalityType.APPLICATION_MODAL);
+		super(parent, title);
 
 		list = new JList();
 		list.setFixedCellWidth(150);

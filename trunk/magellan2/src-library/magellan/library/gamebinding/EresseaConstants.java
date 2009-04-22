@@ -652,8 +652,8 @@ public class EresseaConstants {
   /** The RegionType plain */
   public static final ID RT_PLAIN = StringID.create("Ebene");
   
-  /** The RegionType wood */
-  public static final ID RT_WOOD = StringID.create("Wald");
+  /** The RegionType forest */
+  public static final ID RT_FOREST = StringID.create("Wald");
   
   /** The RegionType glacier */
   public static final ID RT_GLACIER = StringID.create("Gletscher");
@@ -679,4 +679,10 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
 	public static final ID B_LIGHTTOWER = StringID.create("Leuchtturm");
 
+  /** Shiptype Boat */
+  public static final ID ST_BOAT = StringID.create("Boot");
+  
+  /** Shiptype longboat */
+  public static final ID ST_LONGBOAT = StringID.create("Langboot");
+  
 }

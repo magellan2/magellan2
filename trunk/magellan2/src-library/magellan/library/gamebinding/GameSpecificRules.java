@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.Region;
+import magellan.library.Ship;
 
 
 /**
@@ -50,4 +51,16 @@ public interface GameSpecificRules {
    * Returns the amount of max entertainment in a specific region.
    */
   public Integer getMaxOldEntertain(Region region);
+  
+  /**
+   * Returns true, if the given ship is really a ship, because
+   * f.e. in Allanon a Karawane is marked as a ship, but it's
+   * travelling on land.
+   */
+  public boolean isShip(Ship ship);
+  
+  /**
+   * This method checks if a ship can land in a specific region
+   */
+  public boolean canLandInRegion(Ship ship, Region region);
 }

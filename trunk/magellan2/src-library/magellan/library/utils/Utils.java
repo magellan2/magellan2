@@ -59,6 +59,11 @@ public class Utils {
     }
   }
   
+  public static int getIntValue(Integer integer, int defaultValue) {
+    if (integer != null) return integer;
+    return defaultValue;
+  }
+  
   public static boolean getBoolValue(String value, boolean defaultValue) {
     if (Utils.isEmpty(value)) {
       return defaultValue;

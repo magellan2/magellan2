@@ -1,3 +1,8 @@
+2009-04-22 / Build 271 - Thoralf <thoralf@m84.de>
+    * Fix for NPE in EMapDetailsPanel because if Integer > int
+    * added check for Allanon because in Allanon ships can land everywhere (more or less)
+    * added fix for region silver in entertain calculation
+
 2009-04-19 / Build 270 - Thoralf <thoralf@m84.de>
     * created a GameSpecificRules interface to make it possible to calculate game
       specific data like max workers or max entertain

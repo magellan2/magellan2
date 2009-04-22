@@ -111,7 +111,7 @@ public class SchemeExtendMapping implements LevelMapping {
       HashSet<RegionType> scheme_rt = new HashSet<RegionType>();
       // create possible scheme terrains
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_PLAIN));
-      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_WOOD));
+      scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_FOREST));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_GLACIER));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_SWAMP));
       scheme_rt.add(data.rules.getRegionType(EresseaConstants.RT_HIGHLAND));

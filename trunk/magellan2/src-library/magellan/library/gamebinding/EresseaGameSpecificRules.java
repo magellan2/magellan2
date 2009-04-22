@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.rules.RegionType;
 
 /**
@@ -82,4 +83,27 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     }
     return -1;
   }
+  
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isShip(magellan.library.Ship)
+   */
+  public boolean isShip(Ship ship) {
+    // in Eressea is a ship a ship.
+    return true;
+  }
+  
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#canLandInRegion(magellan.library.Ship, magellan.library.Region)
+   */
+  public boolean canLandInRegion(Ship ship, Region region) {
+    if (region.getType().getID().equals(EresseaConstants.RT_FIREWALL)) return false;
+    
+    if (ship.getType().getID().equals(EresseaConstants.ST_BOAT)) return true; // can land everywhere
+    
+    if (region.getType().getID().equals(EresseaConstants.RT_PLAIN)) return true;
+    if (region.getType().getID().equals(EresseaConstants.RT_FOREST)) return true;
+    
+    return false;
+  }
+
 }

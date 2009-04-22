@@ -155,6 +155,7 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.Utils;
 import magellan.library.utils.comparator.AllianceFactionComparator;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
@@ -866,7 +867,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
     
 		// peasants
-		int maxWorkers = r.getData().getGameSpecificStuff().getGameSpecificRules().getMaxWorkers(r);
+		int maxWorkers = Utils.getIntValue(r.getData().getGameSpecificStuff().getGameSpecificRules().getMaxWorkers(r),0);
 		int workers = Math.min(maxWorkers, r.getPeasants());
 		int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * 10);
 		int oldWorkers = Math.min(maxWorkers, r.getOldPeasants());

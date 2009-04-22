@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.Region;
+import magellan.library.Ship;
 import magellan.library.rules.RegionType;
 
 /**
@@ -70,22 +71,46 @@ public class AllanonGameSpecificRules implements GameSpecificRules {
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
    */
   public Integer getMaxEntertain(Region region) {
-    return getEntertain(((RegionType)region.getType()).getInhabitants(),region.getTrees(),region.getSprouts(),region.getPeasantWage());
+    return getEntertain(((RegionType)region.getType()).getInhabitants(),region.getSilver(),region.getTrees(),region.getSprouts(),region.getPeasantWage());
   }
 
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
    */
   public Integer getMaxOldEntertain(Region region) {
-    return getEntertain(((RegionType)region.getType()).getInhabitants(),region.getOldTrees(),region.getOldSprouts(),region.getPeasantWage());
+    return getEntertain(((RegionType)region.getType()).getInhabitants(),region.getOldSilver(),region.getOldTrees(),region.getOldSprouts(),region.getPeasantWage());
   }
   
   /**
    * 
    */  
-  private Integer getEntertain(int inhabitants, int trees, int sprouts, int wage) {
+  private Integer getEntertain(int inhabitants, int regionSiver, int trees, int sprouts, int wage) {
     int maxWorkers = getMaxWorkers(inhabitants, trees, sprouts);
-    return (int)Math.round(maxWorkers * wage * 0.05);
+    return (int)Math.round((maxWorkers * wage + Math.max(regionSiver,0)) * 0.05);
   }
 
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#isShip(magellan.library.Ship)
+   */
+  public boolean isShip(Ship ship) {
+    if (ship.getType().getID().equals(AllanonConstants.ST_KARAWANE)) return false;
+    return true;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#canLandInRegion(magellan.library.Ship, magellan.library.Region)
+   */
+  public boolean canLandInRegion(Ship ship, Region region) {
+    if (region.getType().getID().equals(AllanonConstants.RT_FIREWALL)) return false;
+    
+    if (ship.getType().getID().equals(AllanonConstants.ST_BOAT)) return true; // can land everywhere
+    if (ship.getType().getID().equals(AllanonConstants.ST_LONGBOAT)) return true; // can land everywhere
+    
+    if (region.getType().getID().equals(AllanonConstants.RT_HIGHLAND)) return false;
+    if (region.getType().getID().equals(AllanonConstants.RT_GLACIER)) return false;
+    if (region.getType().getID().equals(AllanonConstants.RT_MOUNTAIN)) return false;
+    if (region.getType().getID().equals(AllanonConstants.RT_VOLCANO)) return false;
+    
+    return true;
+  }
 }

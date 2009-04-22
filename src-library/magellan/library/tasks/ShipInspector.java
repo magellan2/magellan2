@@ -122,61 +122,65 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		return problems;
 	}
 
-	private List<Problem> reviewMovingShip(Ship s) {
+	private List<Problem> reviewMovingShip(Ship ship) {
 		List<Problem> problems = new ArrayList<Problem>();
-		if (s.getOwnerUnit() == null) {
+		if (ship.getOwnerUnit() == null) {
 			return problems;
 		}
 
-		List<CoordinateID> modifiedMovement = s.getOwnerUnit().getModifiedMovement();
+		List<CoordinateID> modifiedMovement = ship.getOwnerUnit().getModifiedMovement();
 
 		if (modifiedMovement.isEmpty()) {
 			return problems;
 		}
 
-		Iterator movementIterator = modifiedMovement.iterator();
+		Iterator<CoordinateID> movementIterator = modifiedMovement.iterator();
 		movementIterator.next();
 		if (!movementIterator.hasNext()){
 		  // this happens when we have some kind of movement and an startRegion
 		  // but no next region
 		  // example: ROUTE PAUSE NO
-		  problems.add(new CriticizedError(s.getRegion(), s, this,
+		  
+		  // TODO That doesnt work anymore because iterator returns always next movement.
+		  problems.add(new CriticizedError(ship.getRegion(), ship, this,
           Resources.get("tasks.shipinspector.error.nonextregion.description")));
       return problems;
 		}
-		CoordinateID nextRegionCoord = (CoordinateID) movementIterator.next();
-		Region nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
-
-		Rules rules = s.getData().rules;
-		RegionType ebene = rules.getRegionType("Ebene"), wald = rules.getRegionType("Wald"), ozean = rules
-				.getRegionType("Ozean");
+		CoordinateID nextRegionCoord = movementIterator.next();
+		Region nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
+		
+		// actually we have to check - is this really a ship (karawane's are also marked as ships but travel on land)
+		boolean isShip = ship.getData().getGameSpecificStuff().getGameSpecificRules().isShip(ship);
+		
+		Rules rules = ship.getData().rules;
+		RegionType ozean = rules.getRegionType("Ozean");
 
 		// TODO: We should consider harbors, too. But this is difficult because we don't know if
 		// harbor owner is allied with ship owner etc. We better leave it up to the user to decide...
-		if (s.getShoreId() != -1) {
+		if (ship.getShoreId() != -1 && isShip) {
 		  if (nextRegion!=null && !nextRegion.getRegionType().equals(ozean)) {
-        problems.add(new CriticizedError(s.getRegion(), s, this,
+        problems.add(new CriticizedError(ship.getRegion(), ship, this,
             Resources.get("tasks.shipinspector.error.noocean.description")));
         return problems;
       }
 			// If ship is shored, it can only move deviate by one from the shore direction and only
 			// move to an ocean region
 			Direction d = Regions.getDirectionObjectsOfCoordinates(modifiedMovement).get(0);
-			if (Math.abs(s.getShoreId() - d.getDir()) > 1 && Math.abs(s.getShoreId() - d.getDir()) < 5) {
-				if (!this.hasHarbourInRegion(s.getRegion())){
-          problems.add(new CriticizedError(s.getRegion(), s, this,
+			if (Math.abs(ship.getShoreId() - d.getDir()) > 1 && Math.abs(ship.getShoreId() - d.getDir()) < 5) {
+				if (!this.hasHarbourInRegion(ship.getRegion())){
+          problems.add(new CriticizedError(ship.getRegion(), ship, this,
 						Resources.get("tasks.shipinspector.error.wrongshore.description")));
         } else {
           // harbour in Region -> just warn, no error
-          problems.add(new CriticizedWarning(s.getRegion(), s, this,
+          problems.add(new CriticizedWarning(ship.getRegion(), ship, this,
               Resources.get("tasks.shipinspector.error.wrongshore.harbour.description")));
         }
 				return problems;
 			}
 			
 			if (movementIterator.hasNext()) {
-				nextRegionCoord = (CoordinateID) movementIterator.next();
-				nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
+				nextRegionCoord = movementIterator.next();
+				nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
 			} else {
         nextRegion = null;
       }
@@ -185,27 +189,27 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		while (nextRegion != null) {
 			// if ship is not a boat and on ocean , it can only move to ocean, plain or forest
       // FF 20071119: don´t forget Harbors
-			if (!(s.getType().equals(rules.getShipType("Boot")) || (nextRegion.getRegionType()
-					.equals(ozean)
-					|| nextRegion.getRegionType().equals(wald) || nextRegion.getRegionType()
-					.equals(ebene)))) {
-            if (!this.hasHarbourInRegion(nextRegion)){
-              problems.add(new CriticizedError(s.getRegion(), s, this,
-                  Resources.get("tasks.shipinspector.error.shipwreck.description")));
-              return problems;
-            }
-			}
+		  
+		  // we have to check game specific stuff, because in Allanon a longboat can land everywhere too
+		  // for that we should game specific rules 
+		  if (isShip && !(ship.getData().getGameSpecificStuff().getGameSpecificRules().canLandInRegion(ship,nextRegion))) {
+        if (!this.hasHarbourInRegion(nextRegion)){
+          problems.add(new CriticizedError(ship.getRegion(), ship, this, Resources.get("tasks.shipinspector.error.shipwreck.description")));
+          return problems;
+        }
+		  }
+		  
 			if (movementIterator.hasNext()) {
-				nextRegionCoord = (CoordinateID) movementIterator.next();
-				nextRegion = s.getRegion().getData().getRegion(nextRegionCoord);
+				nextRegionCoord = movementIterator.next();
+				nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
 			} else {
         nextRegion = null;
       }
 		}
 
 		// overload
-		if (s.getModifiedLoad() > (s.getMaxCapacity())) {
-      problems.add(new CriticizedError(s.getRegion(), s, this,
+		if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
+      problems.add(new CriticizedError(ship.getRegion(), ship, this,
           Resources.get("tasks.shipinspector.error.overloaded.description")));
     }
 		
@@ -224,8 +228,8 @@ public class ShipInspector extends AbstractInspector implements Inspector {
       // check all buildings
       // i have no reference to the rules, do I?
       // so we have to check for Harbour by BuildingTypeName
-      for (Iterator iter = nextRegion.buildings().iterator();iter.hasNext();){
-        Building b = (Building)iter.next();
+      for (Iterator<Building> iter = nextRegion.buildings().iterator();iter.hasNext();){
+        Building b = iter.next();
         if (b.getBuildingType().getName().equalsIgnoreCase("Hafen")){
           // lets check size
           if (b.getSize()>=b.getBuildingType().getMaxSize()){

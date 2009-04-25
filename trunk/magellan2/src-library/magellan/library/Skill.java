@@ -35,7 +35,9 @@ public class Skill {
 	private int points = 0;
 	private int level = 0;
 
-	/** The number of persons in the unit this skill belongs to. */
+	/** The number of persons in the unit this skill belongs to. 
+	 * @deprecated (stm) This seems to be obsolete.
+	 */
 	private int persons = 0;
 
 	/** The level of change. Only important in merged reports. */
@@ -46,12 +48,12 @@ public class Skill {
 
 	/**
 	 * Creates a new Skill object.
-	 *
 	 * 
-	 * 
-	 * 
-	 * 
-	 * 
+	 * @param type
+	 * @param points
+	 * @param level
+	 * @param persons
+	 * @param noSkillPoints
 	 */
 	public Skill(SkillType type, int points, int level, int persons, boolean noSkillPoints) {
 		this.type = type;
@@ -62,23 +64,18 @@ public class Skill {
 	}
 
 	/**
-	 * Returns the skill points required to reach the specified level.
-	 *
-	 * 
-	 *
+	 * Returns the skill points required to reach the specified level. They are given by the formula
+	 * <code>pointsAtLevel(level) = 30 * (((level + 1) * level) / 2)</code>.
 	 * 
 	 */
 	public static final int getPointsAtLevel(int level) {
 		return 30 * (((level + 1) * level) / 2);
 	}
 
-	/**
-	 * Returns the skill level gained at the specified number of skill points.
-	 *
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Returns the skill level gained at the specified number of skill points
+   * according to {@link #getPointsAtLevel(int)}.
+   */
 	public static final int getLevelAtPoints(int points) {
 		int i = 1;
 
@@ -90,15 +87,15 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Recalculate the skill level from skill points according to the formula 
+	 * {@link #getLevelAtPoints(int)} including given bonuses.
 	 * 
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * @param pointsPerPerson 
+	 * @param raceBonus
+	 * @param terrainBonus
+	 * @param buildingBonus
+	 * @param isStarving
+	 * @return
 	 */
 	public static final int getLevel(int pointsPerPerson, int raceBonus, int terrainBonus,
 									 int buildingBonus, boolean isStarving) {
@@ -120,14 +117,14 @@ public class Skill {
 		return level;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Re-calculate the skill level from the skillPoints including race bonus,
+   * terrain bonus and (if includeBuilding==true) building bonus.
+   * 
+   * @param unit
+   * @param includeBuilding
+   * @return
+   */
 	public int getLevel(Unit unit, boolean includeBuilding) {
 		if((unit != null) && (unit.getPersons() != 0)) {
 			int raceBonus = 0;
@@ -156,8 +153,6 @@ public class Skill {
 	/**
 	 * Calculates the skill level for the given modified number of persons in the unit and the
 	 * skill points of this skill.
-	 *
-	 * 
 	 * 
 	 * @deprecated (stm) This is not used by anyone and I'm not sure if it's correct any more.
 	 * 
@@ -189,14 +184,14 @@ public class Skill {
 	}
 
 	/**
-	 * Returns the modifier of the specified race has on the specified skill in the specified
+	 * Returns the modifier that the specified race has on the specified skill in the specified
 	 * terrain.
 	 *
 	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * @param skillType
+	 * @param race
+	 * @param terrain
+	 * @return
 	 */
 	public static int getModifier(SkillType skillType, Race race, RegionType terrain) {
 		int modifier = 0;
@@ -213,8 +208,12 @@ public class Skill {
 	}
 
 	/**
-	 * Returns the modifier of the specified unit's race has on the specified skill in the terrain
+	 * Returns the modifier that the specified unit's race has on the specified skill in the terrain
 	 * the specified unit resides in.
+	 * 
+	 * @param skillType
+	 * @param unit
+	 * @return
 	 */
 	public static int getModifier(SkillType skillType, Unit unit) {
 		Race realRace = unit.getRace();
@@ -224,12 +223,11 @@ public class Skill {
 	}
 
 	/**
-	 * Returns the modifier of the specified unit's race has on this skill in the terrain the
+	 * Returns the modifier that the specified unit's race has on this skill in the terrain the
 	 * specified unit resides in.
 	 *
-	 * 
-	 *
-	 * 
+	 * @param unit
+	 * @return
 	 */
 	public int getModifier(Unit unit) {
 		return Skill.getModifier(this.type, unit);
@@ -247,35 +245,35 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Return the skill type of this skill.
 	 * 
+	 * @return
 	 */
 	public SkillType getSkillType() {
 		return type;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Return the name of this skill (which is the name of its SkillType).
 	 * 
+	 * @return
 	 */
 	public String getName() {
 		return type.getName();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the level of the skill to <code>l</code>. A level < 0 indicates a skill that was present
+	 * in the last round but is lost now.
 	 * 
+	 * @param l
 	 */
 	public void setLevel(int l) {
 		level = l;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the level of the skill. Returns 0 if level is less than 0.
 	 * 
 	 */
 	public int getLevel() {
@@ -283,17 +281,16 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Return the level of the skill, which may be negative (indicating a lost skill).
 	 * 
+	 * @return
 	 */
 	public int getRealLevel() {
 		return level;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the number of skill points.
 	 * 
 	 */
 	public void setPoints(int d) {
@@ -301,8 +298,7 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the number of skill points
 	 * 
 	 */
 	public int getPoints() {
@@ -310,8 +306,10 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 *  The number of persons in the unit this skill belongs to.
+	 * 
+	 * @param p
+	 * @deprecated (stm) This information seems to be obsolete.
 	 * 
 	 */
 	public void setPersons(int p) {
@@ -319,9 +317,9 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 * 
+	 * @deprecated This seems to be somewhat obsolete as skill points are not used consequently any more.
 	 */
 	public int getPointsPerPerson() {
 		if(persons != 0) {
@@ -332,17 +330,14 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * The level of change. Only important in merged reports (?). 
 	 */
 	public int getChangeLevel() {
 		return changeLevel;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Set the level of change. Only important in merged reports (?). 
 	 * 
 	 */
 	public void setChangeLevel(int change) {
@@ -354,9 +349,7 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Get a string representation of this skill.
 	 */
 	@Override
   public String toString() {
@@ -386,8 +379,7 @@ public class Skill {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Should return <code>true</code> if this skill was present in the previous round. 
 	 * 
 	 */
 	public boolean isLostSkill() {

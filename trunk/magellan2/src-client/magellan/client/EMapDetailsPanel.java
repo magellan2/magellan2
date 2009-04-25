@@ -1875,6 +1875,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 			}
 
+			/** DOCUMENT-ME */
 			if(skills.size() > 0) {
 				// n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
 				n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.skills"),

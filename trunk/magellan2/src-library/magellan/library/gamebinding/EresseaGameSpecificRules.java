@@ -102,6 +102,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     
     if (region.getType().getID().equals(EresseaConstants.RT_PLAIN)) return true;
     if (region.getType().getID().equals(EresseaConstants.RT_FOREST)) return true;
+    if (region.getType().getID().equals(EresseaConstants.RT_OCEAN)) return true;
     
     return false;
   }

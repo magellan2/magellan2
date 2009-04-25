@@ -79,6 +79,7 @@ import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
 import magellan.library.tasks.ShipInspector;
+import magellan.library.tasks.SkillInspector;
 import magellan.library.tasks.ToDoInspector;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -855,6 +856,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
       inspectors.add(ShipInspector.getInstance());
+    }
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL,
+        true)) {
+      inspectors.add(SkillInspector.getInstance());
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX,
         true)) {

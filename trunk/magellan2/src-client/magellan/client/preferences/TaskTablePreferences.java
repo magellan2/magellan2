@@ -76,6 +76,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   private JCheckBox chkToDo;
   private JCheckBox chkMovement;
   private JCheckBox chkShip;
+  private JCheckBox chkSkill;
   private JCheckBox chkAttack;
   private JCheckBox chkOrderSyntax;
 
@@ -132,6 +133,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     panel.add(chkShip, c);
 
     c.gridy++;
+    chkSkill = new JCheckBox(Resources.get("tasks.prefs.inspectors.skill"), true);
+    panel.add(chkSkill, c);
+
+    c.gridy++;
     chkAttack = new JCheckBox(Resources.get("tasks.prefs.inspectors.attack"), true);
     panel.add(chkAttack, c);
 
@@ -179,6 +184,9 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     /* use ship inspector */
     chkShip.setSelected(PropertiesHelper.getBoolean(settings,
         PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true));
+    /* use skill inspector */
+    chkSkill.setSelected(PropertiesHelper.getBoolean(settings,
+        PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true));
     /* use to do inspector */
     chkToDo.setSelected(PropertiesHelper.getBoolean(settings,
         PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true));
@@ -193,6 +201,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, "" + chkMovement.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, "" + chkOrderSyntax.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, "" + chkShip.isSelected());
+    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, "" + chkSkill.isSelected());
     settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_TODO, "" + chkToDo.isSelected());
 
     taskPanel.setRestrictToOwner(chkOwnerParty.isSelected());

@@ -1,3 +1,7 @@
+2009-04-23 / Build 273 - stm (stm_@users.sourceforge.net)
+    * added SkillInspector for decreasing skills
+    * fixed EresseaGameSpecificRules to include ocean in landable regions
+
 2009-04-22 / Build 271 - Thoralf <thoralf@m84.de>
     * Fix for NPE in EMapDetailsPanel because if Integer > int
     * added check for Allanon because in Allanon ships can land everywhere (more or less)

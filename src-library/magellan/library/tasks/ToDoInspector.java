@@ -66,14 +66,14 @@ public class ToDoInspector extends AbstractInspector implements Inspector {
 			if(order.startsWith("//")) {
 				order = order.substring(2).trim();
 
-				if(order.startsWith("TODO")) {
+				if(order.toLowerCase().startsWith("todo")) {
 					problems.add(new CriticizedInformation(u, u, this, order, line));
 				}
 			} else {
 				if(order.startsWith(";")) {
 					order = order.substring(1).trim();
 
-					if(order.startsWith("TODO")) {
+					if(order.toLowerCase().startsWith("todo")) {
 						problems.add(new CriticizedInformation(u, u, this, order, line));
 					}
 				}

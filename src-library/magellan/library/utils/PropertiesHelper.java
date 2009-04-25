@@ -243,6 +243,9 @@ public class PropertiesHelper {
   public static final String TASKTABLE_INSPECTORS_SHIP = "TaskTable.inspectors.ship";
 
   /** Property type boolean: */
+  public static final String TASKTABLE_INSPECTORS_SKILL = "TaskTable.inspectors.skill";
+
+  /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_TODO = "TaskTable.inspectors.todo";
 
 

@@ -1,3 +1,6 @@
+2009-05-01 / Build 274 - Fiete <sf@fietefietz.de>
+	* added Drachenblut to items (weight is 1 WU!) in eressea.cr
+	
 2009-04-23 / Build 273 - stm (stm_@users.sourceforge.net)
     * added SkillInspector for decreasing skills
     * fixed EresseaGameSpecificRules to include ocean in landable regions

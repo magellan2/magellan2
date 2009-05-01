@@ -1543,6 +1543,12 @@ ITEM "Ring der flinken Finger"
 "misc";category
 1;storeinbonw
 
+ITEM "Drachenblut"
+"Drachenblut";name
+"misc";category
+1;weight
+0;storeinbonw
+
 SHIPTYPE "Boot"
 "Boot";name
 5;size

@@ -3728,7 +3728,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendShipOwnerInfo(Ship s, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		Unit owner = s.getOwnerUnit();
-		SkillType sailingSkillType = data.rules.getSkillType(StringID.create("Segeln"), true);
 		
 		// owner faction
 		if (owner!=null){
@@ -3759,11 +3758,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		
 		// skill
      
-    int captainSkillAmount = 0;
-    if (owner!=null){
-      Skill sailingSkill = owner.getModifiedSkill(sailingSkillType);
-      captainSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
-    }
+    int captainSkillAmount = magellan.library.utils.Units.getCaptainSkillAmount(s);
 		String text = Resources.get("emapdetailspanel.node.sailingskill") + ": " + Resources.get("emapdetailspanel.node.captain")+" "
 				+ captainSkillAmount + " / " + s.getShipType().getCaptainSkillLevel() + ", ";
 //		n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
@@ -3772,25 +3767,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 //		parent.add(n);
 		
 		// Matrosen
-		int sailingSkillAmount = 0;
+		int sailingSkillAmount = magellan.library.utils.Units.getSailingSkillAmount(s);
 
-		// pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
-		Collection modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
-
-		for(Iterator sailors = modUnits.iterator(); sailors.hasNext();) {
-			Unit u = (Unit) sailors.next();
-			Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
-
-			if(sailingSkill != null) {
-				sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
-			}
-		}
 		text += Resources.get("emapdetailspanel.node.crew")+" "+sailingSkillAmount + " / "
 		+ s.getShipType().getSailorSkillLevel();
-		if (captainSkillAmount>0 || sailingSkillAmount>0){
-		  DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
-		  parent.add(n);
-		}
+
+		DefaultMutableTreeNode n = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(text, "crew"));
+		parent.add(n);
 
 	}
 

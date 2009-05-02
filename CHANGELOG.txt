@@ -1,3 +1,8 @@
+2009-04-23 / Build 275 - stm (stm_@users.sourceforge.net)
+    * refined ShipInspector to check for crew
+    * tweaked suppression of problems, especially from ShipInspector
+	* improved SkillInspector
+
 2009-05-01 / Build 274 - Fiete <sf@fietefietz.de>
 	* added Drachenblut to items (weight is 1 WU!) in eressea.cr
 	

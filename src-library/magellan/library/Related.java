@@ -28,8 +28,8 @@ public interface Related extends Described,Addeable {
     /**
      * delivers all relations of the given class
      * 
-     * @param relationClass
+     * @param relationClass Should be a subclass of {@link UnitRelation}
      * @return list of relations that are instance of relationClass
      */
-    public List getRelations(Class relationClass);
+    public List<UnitRelation> getRelations(Class relationClass);
 }

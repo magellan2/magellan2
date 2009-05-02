@@ -29,6 +29,7 @@ import magellan.library.rules.RegionType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 
 
 /**
@@ -95,35 +96,45 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 	}
 
 	private List<Problem> reviewShip(Ship s) {
+	  if (checkIgnoreUnitContainer(s))
+	    return Collections.emptyList();
+	  
 		List<Problem> problems = new ArrayList<Problem>();
 		int nominalShipSize = s.getShipType().getMaxSize();
 		
-		// here we have all problems checked also for ships without a captn
-		
+		// here we have all problems checked also for ships without a captain
+		boolean empty = false;
     // also if not ready yet, there should be someone to take care..
     if (s.modifiedUnits().isEmpty()) {
+      empty=true;
       problems.add(new CriticizedError(s.getRegion(), s, this,
-          Resources.get("tasks.shipinspector.error.nocrew.description")));
+          Resources.get("tasks.shipinspector.error.empty.description")));
     }
-    
-		if (s.getSize() != nominalShipSize) {
-			// ship will be built, so dont review ship
-      // wrong! also while building someone should be on the ship!
-			// return Collections.emptyList();
-      // true is, tht we don´t go through the other checks
+
+    if (s.getSize() != nominalShipSize) {
+			// ship will be built, so we don´t go through the other checks
       return problems;
 		}
-
-
-		
-
+    
+    Unit owner = s.getOwnerUnit();
+    if ((!empty && owner != null && Units.isPrivilegedAndNoSpy(owner))
+        && (Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel() || Units
+            .getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel())) {
+      problems.add(new CriticizedWarning(s.getRegion(), s, this,
+          Resources.get("tasks.shipinspector.error.nocrew.description")));
+    }
+      
+    
+    // moving ships are taken care of while checking units... 
 		// problems.addAll(reviewMovingShip(s));
-		// moving ships are taken care of while checking units... 
 		return problems;
 	}
 
 	private List<Problem> reviewMovingShip(Ship ship) {
-		List<Problem> problems = new ArrayList<Problem>();
+    if (checkIgnoreUnitContainer(ship))
+      return Collections.emptyList();
+
+    List<Problem> problems = new ArrayList<Problem>();
 		if (ship.getOwnerUnit() == null) {
 			return problems;
 		}
@@ -135,21 +146,22 @@ public class ShipInspector extends AbstractInspector implements Inspector {
 		}
 
 		Iterator<CoordinateID> movementIterator = modifiedMovement.iterator();
+		// skip origin
 		movementIterator.next();
 		if (!movementIterator.hasNext()){
 		  // this happens when we have some kind of movement and an startRegion
 		  // but no next region
 		  // example: ROUTE PAUSE NO
 		  
-		  // TODO That doesnt work anymore because iterator returns always next movement.
+		  // FIXME That doesnt work anymore because iterator returns always next movement.
 		  problems.add(new CriticizedError(ship.getRegion(), ship, this,
-          Resources.get("tasks.shipinspector.error.nonextregion.description")));
+          "please report this as a bug! "+Resources.get("tasks.shipinspector.error.nonextregion.description")));
       return problems;
 		}
 		CoordinateID nextRegionCoord = movementIterator.next();
 		Region nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
 		
-		// actually we have to check - is this really a ship (karawane's are also marked as ships but travel on land)
+		// actually we have to check - is this really a ship (caravans are also marked as ships but travel on land)
 		boolean isShip = ship.getData().getGameSpecificStuff().getGameSpecificRules().isShip(ship);
 		
 		Rules rules = ship.getData().rules;
@@ -262,7 +274,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
     if (!(UC instanceof Ship)) {
       return Collections.emptyList();
     }
-    if (UC.getOwnerUnit()==null || !UC.getOwner().equals(u)){
+    if (UC.getOwnerUnit()==null || !UC.getOwnerUnit().equals(u)){
       return Collections.emptyList();
     }
     
@@ -274,7 +286,7 @@ public class ShipInspector extends AbstractInspector implements Inspector {
    * @see magellan.library.tasks.Inspector#getSuppressComment()
    */
   public String getSuppressComment(){
-    return null;
+    return super.getSuppressComment();
   }
 
 }

@@ -24,8 +24,15 @@
 package magellan.library.utils;
 
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import magellan.library.Faction;
+import magellan.library.Ship;
+import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.rules.SkillType;
 
 public class Units {
 
@@ -43,6 +50,34 @@ public class Units {
    */
   public static boolean isPrivilegedAndNoSpy(Unit u) {
   	return (u != null) && Units.isPrivileged(u.getFaction()) && !u.isSpy();
+  }
+  
+  public static int getCaptainSkillAmount(Ship s) {
+    SkillType sailingSkillType = s.getData().rules.getSkillType(StringID.create("Segeln"), true);
+    Unit owner = s.getOwnerUnit();
+    int captainSkillAmount = 0;
+    if (owner!=null){
+      Skill sailingSkill = owner.getModifiedSkill(sailingSkillType);
+       captainSkillAmount = (sailingSkill == null) ? 0 : sailingSkill.getLevel();
+    }
+    return captainSkillAmount;
+  }
+
+  public static int getSailingSkillAmount(Ship s){
+    SkillType sailingSkillType = s.getData().rules.getSkillType(StringID.create("Segeln"), true);
+    int sailingSkillAmount = 0;
+    // pavkovic 2003.10.03: use modifiedUnits to reflect FUTURE value?
+    Collection modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
+
+    for(Iterator sailors = modUnits.iterator(); sailors.hasNext();) {
+      Unit u = (Unit) sailors.next();
+      Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
+
+      if(sailingSkill != null) {
+        sailingSkillAmount += (sailingSkill.getLevel() * u.getModifiedPersons());
+      }
+    }
+    return sailingSkillAmount;
   }
 
 }

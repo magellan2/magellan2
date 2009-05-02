@@ -71,48 +71,39 @@ public abstract class AbstractProblem implements Problem {
 	/**
 	 * returns the type of the problem
 	 *
-	 * 
 	 */
 	public abstract int getType();
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.tasks.Problem#getLine()
 	 */
 	public int getLine() {
 		return line;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.tasks.Problem#getInspector()
 	 */
 	public Inspector getInspector() {
 		return inspector;
 	}
 
 	/**
-	 * returns the object which originated this problem
-	 *
-	 * 
+	 * @see magellan.library.tasks.Problem#getSource()
 	 */
 	public Object getSource() {
 		return source;
 	}
 
 	/**
-	 * returns the object which is attached to this problem
-	 *
-	 * 
+	 * @see magellan.library.tasks.Problem#getObject()
 	 */
 	public HasRegion getObject() {
 		return object;
 	}
 
 	/**
-	 * returns the message of the problem
+	 * Returns the message of the problem.
 	 *
 	 * 
 	 */
@@ -140,6 +131,9 @@ public abstract class AbstractProblem implements Problem {
 	}
 	
 	/**
+	 * Adds a comment to the unit that is responsible for this problem. This comment causes the problem
+	 * to be suppressed in subsequent runs of inspectors.
+	 * 
 	 * @see magellan.library.tasks.Problem#addSuppressComment()
 	 */
 	public Unit addSuppressComment(){

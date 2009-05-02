@@ -1528,13 +1528,13 @@ ITEM "Magischer Kräuterbeutel"
 ITEM "Seeschlangenkopf"
 "Seeschlangenkopf";name
 5;weight
-"trophies";category
+"misc";category
 1;storeinbonw
 
 ITEM "Drachenkopf"
 "Drachenkopf";name
 5;weight
-"trophies";category
+"misc";category
 1;storeinbonw
 
 ITEM "Ring der flinken Finger"

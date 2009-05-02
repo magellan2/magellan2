@@ -168,7 +168,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     // HACK: narrower columns for problem type and line numbers
     table.getColumn(table.getColumnName(TaskTableModel.IMAGE_POS)).setPreferredWidth(10);
     table.getColumn(table.getColumnName(TaskTableModel.LINE_POS)).setPreferredWidth(10);
-    
+
     // allow reordering of headers
     table.getTableHeader().setReorderingAllowed(true);
 
@@ -181,7 +181,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     // layout component
     this.setLayout(new BorderLayout());
-    this.add(new JScrollPane(table), BorderLayout.CENTER);
+    JScrollPane tablePane = new JScrollPane(table);
+    tablePane.getViewport().addMouseListener(popupListener);
+    this.add(tablePane, BorderLayout.CENTER);
 
     JPanel statusBar = new JPanel(new GridBagLayout());
 
@@ -276,32 +278,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         return;
       }
 
-      if (e.getSource() == table) {
+      if (e.getSource() == activeRegionLabel) {
+        activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
+      } else if (e.getSource() == selectionLabel) {
+        selectionMenu.show(e.getComponent(), e.getX(), e.getY());
+      } else {
         // unselected rows if user clicks another row
         int rowClicked = table.rowAtPoint(e.getPoint());
-        boolean clickedOnSelection = false;
-        for (int i : table.getSelectedRows()) {
-          if (rowClicked == i) {
-            clickedOnSelection = true;
-            break;
+        if (rowClicked >= 0) {
+          boolean clickedOnSelection = false;
+          for (int i : table.getSelectedRows()) {
+            if (rowClicked == i) {
+              clickedOnSelection = true;
+              break;
+            }
+          }
+          if (!clickedOnSelection) {
+            table.clearSelection();
+            table.addRowSelectionInterval(rowClicked, rowClicked);
           }
         }
-        if (!clickedOnSelection) {
-          table.clearSelection();
-          table.addRowSelectionInterval(rowClicked, rowClicked);
-        }
-
         if (e.isPopupTrigger()) {
-          if (table.getSelectedRowCount() > 0)
+          if (rowClicked >= 0 && table.getSelectedRowCount() > 0)
             acknowledgeMenu.setEnabled(true);
           else
             acknowledgeMenu.setEnabled(false);
           tableMenu.show(e.getComponent(), e.getX(), e.getY());
         }
-      } else if (e.getSource() == activeRegionLabel) {
-        activeRegionMenu.show(e.getComponent(), e.getX(), e.getY());
-      } else if (e.getSource() == selectionLabel) {
-        selectionMenu.show(e.getComponent(), e.getX(), e.getY());
       }
     }
 
@@ -405,7 +408,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   protected void acknowledge(int row) {
     Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
     selectObjectOnRow(row);
-    log.info("ack " + row + " " + p.getObject());
 
     Unit u = p.addSuppressComment();
     if (u != null)
@@ -454,7 +456,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * @version 1.0, Aug 23, 2008
    */
   protected class UpdateEvent {
-    
+
     private final Object CLEAR = "EMPTY";
     private Region region;
     private Unit unit;
@@ -837,8 +839,6 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   }
 
-
-
   /**
    * Register all inspectors we know of.
    */
@@ -857,8 +857,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
       inspectors.add(ShipInspector.getInstance());
     }
-    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL,
-        true)) {
+    if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true)) {
       inspectors.add(SkillInspector.getInstance());
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX,
@@ -1115,7 +1114,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a the specified region and the specified unit.
    */
   private void reviewUnit(Unit u) {
-    if (!isValidUnitByFaction(u)){return;}
+    if (!isValidUnitByFaction(u)) {
+      return;
+    }
     for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
       Inspector c = (Inspector) iter.next();
       if (u != null) {
@@ -1134,19 +1135,26 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   /**
    * checks, if the specified unit is valid according to the settings
    * restrictToOwner and restrictToPassword
+   * 
    * @param u
    * @return
    */
-  private boolean isValidUnitByFaction(Unit u){
-    
-    // maybe it better to ignore the "restrictToOwner" setting, if there is no faction owner.
-    if (this.restrictToOwner() && !this.restrictToPassword() && (data.getOwnerFaction()==null || u.getFaction()==null || !data.getOwnerFaction().equals(u.getFaction().getID()))){
+  private boolean isValidUnitByFaction(Unit u) {
+
+    // maybe it better to ignore the "restrictToOwner" setting, if there is no
+    // faction owner.
+    if (this.restrictToOwner()
+        && !this.restrictToPassword()
+        && (data.getOwnerFaction() == null || u.getFaction() == null || !data.getOwnerFaction()
+            .equals(u.getFaction().getID()))) {
       return false;
     }
-    if (this.restrictToPassword() && (u.getFaction()==null || u.getFaction().getPassword()==null || u.getFaction().getPassword().length()==0)){
+    if (this.restrictToPassword()
+        && (u.getFaction() == null || u.getFaction().getPassword() == null || u.getFaction()
+            .getPassword().length() == 0)) {
       return false;
     }
-    
+
     return true;
   }
 

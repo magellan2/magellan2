@@ -19,6 +19,7 @@ import java.util.List;
 
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 
 /**
  * This is an abstract implementation of an inspector. You can use this as a
@@ -62,6 +63,20 @@ public abstract class AbstractInspector implements Inspector {
       if (order.equals(getSuppressComment()))
         return true;
     return false;
+  }
+
+  /**
+   * Returns <code>true</code> iff this container's owner unit's orders contain
+   * {@link #getSuppressComment()}. Sub-classes should overwrite this to add
+   * more sophisticated ignoring of errors.
+   * 
+   * @param u
+   * @return
+   */
+  protected boolean checkIgnoreUnitContainer(UnitContainer c) {
+    if (c.getOwnerUnit()==null)
+      return false;
+    return checkIgnoreUnit(c.getOwnerUnit());
   }
 
   /**
@@ -119,12 +134,27 @@ public abstract class AbstractInspector implements Inspector {
    */
   public Unit suppress(Problem p) {
 
+    // if the source is a unit we should suppress the problem in this unit's orders.
     if (p.getSource() instanceof Unit) {
       Unit u = (Unit) p.getSource();
       u.addOrder(getSuppressComment(), false, 0);
       return u;
+    } else {
+      // if the source is not a unit, we take the object
+      if (p.getObject() instanceof Unit) {
+        Unit u = (Unit) p.getObject();
+        u.addOrder(getSuppressComment(), false, 0);
+        return u;
+      }
+      // if the object is a container, we take the (old) owner unit
+      if (p.getObject() instanceof UnitContainer){
+        Unit u = ((UnitContainer) p.getObject()).getOwnerUnit();
+        if (u!=null){
+          u.addOrder(getSuppressComment(), false, 0);
+          return u;
+        }
+      } 
     }
-    
     return null;
   }
 

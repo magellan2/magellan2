@@ -24,59 +24,56 @@ import magellan.library.Unit;
  * @version $Revision: 171 $
  */
 public interface Problem {
-	/** DOCUMENT-ME */
+	/**
+   * A problem with this type has informational character. There is not
+   * necessarily something wrong.
+   */
 	public static final int INFORMATION = 0;
 
-	/** DOCUMENT-ME */
+	/** A problem of this type indicates that something might be wrong depending on context. */
 	public static final int WARNING = 1;
 
-	/** DOCUMENT-ME */
+	/** A problem of this type indicates some kind of error. */
 	public static final int ERROR = 2;
 
 	/**
-	 * returns the creating inspector
-	 *
+	 * Returns the inspector that created this problem.
 	 * 
 	 */
 	public Inspector getInspector();
 
 	/**
-	 * returns the type of the problem
-	 *
+	 * Returns the type of the problem. Current supported types are INFORMATION, WARNING, and ERROR.
 	 * 
 	 */
 	public int getType();
 
 	/**
-	 * returns the type of the problem
-	 *
+	 * Returns the line in the orders of the unit that
 	 * 
 	 */
 	public int getLine();
 
 	/**
-	 * returns the object this problem criticizes
-	 *
+	 * Returns the object this problem criticizes.
 	 * 
 	 */
 	public HasRegion getObject();
 
-	/**
-	 * returns the originating object
-	 *
-	 * 
-	 */
+  /**
+   * Returns the originating object, i.e., the object that was checked when this
+   * problem was created.
+   */
 	public Object getSource();
 
 	/**
-	 * returns the message of the problem
-	 *
+	 * Returns the message of the problem.
 	 * 
 	 */
 	public String toString();
 
   /**
-   * returns the faction this problem belongs to
+   * Returns the faction this problem belongs to.
    * 
    * @return The faction this problem belongs to or <code>null</code> if not applicable
    */

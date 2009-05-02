@@ -16,7 +16,7 @@ package magellan.library.rules;
 import magellan.library.ID;
 
 /**
- * DOCUMENT-ME
+ * Members of this class contain information about a type of ship.
  *
  * @author $Author: $
  * @version $Revision: 203 $
@@ -31,7 +31,6 @@ public class ShipType extends UnitContainerType {
 
 	/**
 	 * Creates a new ShipType object.
-	 *
 	 * 
 	 */
 	public ShipType(ID id) {
@@ -39,26 +38,23 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the maximum size. 
 	 */
 	public void setMaxSize(int s) {
 		maxSize = s;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * Returns the maximum size of the ship (which would usually be the number of
+   * wood needed to construct it).
+   * 
+   */
 	public int getMaxSize() {
 		return maxSize;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the skill level needed to build one unit of this ship. 
 	 * 
 	 */
 	public void setBuildLevel(int l) {
@@ -66,8 +62,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the skill level needed to build one unit of this ship. 
 	 * 
 	 */
 	public int getBuildLevel() {
@@ -75,8 +70,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the regular range of this ship type.
 	 * 
 	 */
 	public void setRange(int r) {
@@ -84,7 +78,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
+   * Returns the regular range of this ship type (before any modifiers).
 	 *
 	 * 
 	 */
@@ -93,8 +87,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the maximum capacity (in GE).
 	 * 
 	 */
 	public void setCapacity(int c) {
@@ -102,8 +95,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the maximum capacity (in GE).
 	 * 
 	 */
 	public int getCapacity() {
@@ -111,8 +103,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Set the skill level required to command the ship.
 	 * 
 	 */
 	public void setCaptainSkillLevel(int l) {
@@ -120,8 +111,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the skill level required to command the ship.
 	 * 
 	 */
 	public int getCaptainSkillLevel() {
@@ -129,8 +119,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the number of skill levels to sail the ship.
 	 * 
 	 */
 	public void setSailorSkillLevel(int l) {
@@ -138,8 +127,7 @@ public class ShipType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the number of skill levels to sail the ship.
 	 * 
 	 */
 	public int getSailorSkillLevel() {

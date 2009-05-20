@@ -1,3 +1,7 @@
+2009-05-20 / Build 279 - Fiete <sf@fietefietz.de>
+	* added comment "path is X regions long" to pathfinderContextMenu
+	* set weight of RdfF from 1 to 0
+
 2009-04-23 / Build 275 - stm (stm_@users.sourceforge.net)
     * refined ShipInspector to check for crew
     * tweaked suppression of problems, especially from ShipInspector

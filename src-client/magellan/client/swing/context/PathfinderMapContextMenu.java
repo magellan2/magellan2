@@ -186,7 +186,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 	}
 	
 	/**
-   * versucht, Aktion umzusetzen: Landbewegung
+   * versucht, Aktion umzusetzen: Seebewegung
    * @param mode
    */
   private void doNachSea(int mode){
@@ -211,8 +211,18 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
      }
   }
 	
+  /**
+   * 
+   * Setzt den gefundenen path als order
+   * 
+   * @param u
+   * @param regionList
+   * @param mode
+   * @param path
+   */
 	private void setOrder(Unit u, List<Region> regionList,int mode, String path){
 	  String order = "";
+	  
     if (mode==MOVE_NACH){
       order = getOrder(EresseaConstants.O_MOVE) + " " + path;
     } else {
@@ -230,6 +240,8 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
     // ToDo
     // Order setzen, anderes NACH ersetzen
     u.addOrder(order, true, 1);
+    // Fiete: addOn : give as comment number of regions to travel
+    u.addOrder("; path is " + (regionList.size()-1) + " regions long.", true, 1);
     dispatcher.fire(new UnitOrdersEvent(this, u));
 	}
 	

@@ -1370,7 +1370,7 @@ ITEM "Drachenkopf"
 
 ITEM "Ring der flinken Finger"
 "Ring der flinken Finger";name
-1;weight
+0;weight
 "misc";category
 1;storeinbonw
 

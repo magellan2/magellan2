@@ -46,11 +46,12 @@ import magellan.client.swing.FactionStatsDialog;
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.RoutingDialog;
-import magellan.client.utils.Units;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.Identifiable;
 import magellan.library.IntegerID;
 import magellan.library.Island;
+import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
@@ -94,6 +95,9 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		JMenuItem name = new JMenuItem(getCaption());
 		name.setEnabled(false);
 		add(name);
+
+    if (!selectedObjects.contains(uc))
+      return;
 
 		JMenuItem copyID = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copyid.caption"));
 		copyID.addActionListener(new ActionListener() {
@@ -353,7 +357,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     }
     
     for (UnitContainerContextMenuProvider cmp : cmpList) {
-      add(cmp.createContextMenu(dispatcher, data, unitContainer));
+      add(cmp.createContextMenu(dispatcher, data, unitContainer, selectedObjects));
     }
 
   }
@@ -376,24 +380,58 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	 * Copies the ID of the UnitContainer to the clipboard.
 	 */
 	private void copyID() {
-		StringSelection strSel = new StringSelection(uc.getID().toString());
-		Clipboard cb = getToolkit().getSystemClipboard();
-		cb.setContents(strSel, null);
+    StringBuffer idString = new StringBuffer("");
+
+    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+      Object o = iter.next();
+      if (o instanceof Identifiable){
+        Identifiable idf = (Identifiable) o;
+        idString.append(idf.getID());
+        if (iter.hasNext()) {
+          idString.append(" ");
+        }
+      }
+    }
+
+    StringSelection strSel = new StringSelection(idString.toString());
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
 	}
 
 	/**
 	 * Copies name and id to the sytem clipboard.
 	 */
 	private void copyNameID() {
-        StringSelection strSel = new StringSelection(uc.toString());
-		Clipboard cb = getToolkit().getSystemClipboard();
-		cb.setContents(strSel, null);
+    StringBuffer idString = new StringBuffer("");
+
+    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+      Object o = iter.next();
+      if (o instanceof Named){
+        idString.append(((Named)o).getName());
+        idString.append(" (");
+        idString.append(((Named)o).getID());
+        idString.append(")\n");
+      }
+    }
+
+    StringSelection strSel = new StringSelection(idString.toString());
+    Clipboard cb = getToolkit().getSystemClipboard();
+    cb.setContents(strSel, null);
 	}
   
   /**
    * Copies name to the sytem clipboard.
    */
   private void copyName() {
+    StringBuffer idString = new StringBuffer("");
+
+    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+      Object o = iter.next();
+      if (o instanceof Named){
+        idString.append(((Named)o).getName() + "\n");
+      }
+    }
+
     StringSelection strSel = new StringSelection(uc.getName());
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);

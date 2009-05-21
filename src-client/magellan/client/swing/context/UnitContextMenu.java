@@ -51,7 +51,6 @@ import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.RoutingDialog;
 import magellan.client.swing.context.actions.ContextAction;
 import magellan.client.utils.UnitRoutePlanner;
-import magellan.client.utils.Units;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
@@ -95,10 +94,8 @@ public class UnitContextMenu extends JPopupMenu {
     this.data = data;
     this.dispatcher = dispatcher;
 
-    if (selectedObjects !=null && selectedObjects.contains(unit)) {
+    if (selectedObjects !=null) {
       init(selectedObjects);
-    } else {
-      init(Collections.singletonList(unit));
     }
   }
 
@@ -112,18 +109,23 @@ public class UnitContextMenu extends JPopupMenu {
     unitString.setEnabled(false);
     add(unitString);
 
+    
+    if (!selectedObjects.contains(unit))
+      return;
+      
     if (selectedUnits.size() <= 1) {
       initSingle();
     } else {
       initMultiple();
     }
+    
 
     initBoth(selectedObjects);
   }
 
   private String getCaption() {
     if (selectedUnits.size()==1)
-      return selectedUnits.iterator().next().toString();
+      return unit.toString();
     else
       return selectedUnits.size() + " " + Resources.get("context.unitcontextmenu.units");
   }

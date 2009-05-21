@@ -183,9 +183,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   }
   
   /**
-   * @see magellan.client.swing.context.UnitContainerContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, magellan.library.UnitContainer)
+   * @see magellan.client.swing.context.UnitContainerContextMenuProvider#createContextMenu(EventDispatcher, GameData, UnitContainer, Collection)
    */
-  public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data, final UnitContainer container) {
+  public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data, final UnitContainer container, final Collection selectedObjects) {
     ContainerType type = ContainerType.getType(container.getType());
     if (type.equals(ContainerType.UNKNOWN)) {
       ExtendedCommandsPlugIn.log.error("Unknown containertype "+container.getType());

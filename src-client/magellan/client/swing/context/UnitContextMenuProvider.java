@@ -14,7 +14,6 @@ import magellan.library.Unit;
  * a JMenu as contextMenu after right-click on a Unit.
  *
  * @author Fiete
- * @version 1.0, 05.07.2007
  */
 public interface UnitContextMenuProvider {
     

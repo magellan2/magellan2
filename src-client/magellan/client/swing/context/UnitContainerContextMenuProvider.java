@@ -1,5 +1,7 @@
 package magellan.client.swing.context;
 
+import java.util.Collection;
+
 import javax.swing.JMenuItem;
 
 import magellan.client.event.EventDispatcher;
@@ -12,12 +14,17 @@ import magellan.library.UnitContainer;
  * a JMenu as contextMenu after right-click on a Unit.
  *
  * @author Fiete
- * @version 1.0, 05.07.2007
  */
 public interface UnitContainerContextMenuProvider {
     
   /**
-   * creates a JMenuItem. Will be called on right-clicking unit containers.
+   * Creates a JMenuItem. Will be called on right-clicking unit containers.
+   * 
+   * @param dispatcher      EventDispatcher
+   * @param data            the actual GameData or World
+   * @param unitContainer   last selected unit - is not required to be in selected objects
+   * @param selectedObjects null or Collection of selected objects which may be of different types
    */
-  public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data, UnitContainer container);
+  public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data,
+      UnitContainer unitContainer, Collection selectedObjects);
 }

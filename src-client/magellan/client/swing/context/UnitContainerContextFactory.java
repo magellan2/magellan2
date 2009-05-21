@@ -27,57 +27,48 @@ import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.library.GameData;
 import magellan.library.UnitContainer;
 
-
 /**
  * Context Factory for unit-container contexts.
- *
+ * 
  * @author Andreas
- * @version 1.0rn */
+ * @version 1.0rn
+ */
 public class UnitContainerContextFactory implements ContextFactory {
-	protected Properties settings;
+  protected Properties settings;
 
-	/**
-	 * Creates a new UnitContainerContextFactory object.
-	 *
-	 * 
-	 */
-	public UnitContainerContextFactory(Properties settings) {
-		this.settings = settings;
-	}
+  /**
+   * Creates a new UnitContainerContextFactory object.
+   */
+  public UnitContainerContextFactory(Properties settings) {
+    this.settings = settings;
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	public JPopupMenu createContextMenu(EventDispatcher dispatcher,
-            
-                    GameData data, 
-                                                    Object argument,
-													Collection selectedObjects,
-													DefaultMutableTreeNode node) {
-		if(argument instanceof UnitContainer) {
-			return new UnitContainerContextMenu((UnitContainer) argument,
-												dispatcher, data, settings,selectedObjects);
-		} else if(argument instanceof RegionNodeWrapper) {
-			return new UnitContainerContextMenu(((RegionNodeWrapper) argument).getRegion(),
-												dispatcher, data, settings,selectedObjects);
-		} else if(argument instanceof FactionNodeWrapper) {
-			return new UnitContainerContextMenu(((FactionNodeWrapper) argument).getFaction(),
-												dispatcher, data, settings,selectedObjects);
-		} else if(argument instanceof UnitContainerNodeWrapper) {
-			return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
-												dispatcher, data, settings,selectedObjects);
-    } else if(argument instanceof IslandNodeWrapper) {
-      return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(),
-                        dispatcher, data, settings,selectedObjects);
-		}
+  /**
+   * Creates a context menu based on the type of argument.
+   * 
+   * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
+   *      magellan.library.GameData, java.lang.Object, java.util.Collection,
+   *      javax.swing.tree.DefaultMutableTreeNode)
+   */
+  public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+      Collection selectedObjects, DefaultMutableTreeNode node) {
+    if (argument instanceof UnitContainer) {
+      return new UnitContainerContextMenu((UnitContainer) argument, dispatcher, data, settings,
+          selectedObjects);
+    } else if (argument instanceof RegionNodeWrapper) {
+      return new UnitContainerContextMenu(((RegionNodeWrapper) argument).getRegion(), dispatcher,
+          data, settings, selectedObjects);
+    } else if (argument instanceof FactionNodeWrapper) {
+      return new UnitContainerContextMenu(((FactionNodeWrapper) argument).getFaction(), dispatcher,
+          data, settings, selectedObjects);
+    } else if (argument instanceof UnitContainerNodeWrapper) {
+      return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
+          dispatcher, data, settings, selectedObjects);
+    } else if (argument instanceof IslandNodeWrapper) {
+      return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(), dispatcher, data,
+          settings, selectedObjects);
+    }
 
-		return null;
-	}
+    return null;
+  }
 }

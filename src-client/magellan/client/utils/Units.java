@@ -589,8 +589,8 @@ public class Units {
             }
   
             if (position.equals(GiveOrderDialog.FIRST_POS)) {
-              for (String sHelp : newOrderArray) {
-                newOrders.add(0, sHelp);
+              for (int i = newOrderArray.length-1; i>=0; --i) { 
+                newOrders.add(0, newOrderArray[i]);
               }
             } else {
               for (String sHelp : newOrderArray) {
@@ -608,8 +608,8 @@ public class Units {
           }
         } else {
           if (position.equals(GiveOrderDialog.FIRST_POS)) {
-            for (String sHelp : newOrderArray) {
-              u.addOrderAt(0, sHelp, true);
+            for (int i = newOrderArray.length-1; i>=0; --i) { 
+              u.addOrderAt(0, newOrderArray[i], true);
             }
           } else {
             for (String sHelp : newOrderArray) {

@@ -60,7 +60,7 @@ public interface Ship extends UnitContainer, HasRegion {
 	public int getCargo();
 	
 	/**
-	 * Returns the weight of all units of this ship that are not horses or carts in silver based
+	 * Returns the weight of all units of this ship in silver based
 	 * on the modified units.
 	 *
 	 * @return The modified weight of the modified units on the ship

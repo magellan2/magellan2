@@ -219,7 +219,11 @@ public class TreeBuilder {
     for (Iterator regions = regionCollection.iterator(); regions.hasNext();) {
       Region r = (Region) regions.next();
 
-      if (!((unitInteresting && !r.units().isEmpty()) || (buildingInteresting && !r.buildings().isEmpty()) || (shipInteresting && !r.ships().isEmpty()) || (commentInteresting && !((r.getComments() == null) || (r.getComments().size() == 0))))) {
+      // check preferences if we want to include this region
+      if (!((unitInteresting && !r.units().isEmpty())
+          || (buildingInteresting && !r.buildings().isEmpty())
+          || (shipInteresting && !r.ships().isEmpty()) || (commentInteresting && !((r.getComments() == null) || (r
+          .getComments().size() == 0))))) {
         continue;
       }
 

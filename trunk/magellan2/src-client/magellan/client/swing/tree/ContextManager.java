@@ -165,9 +165,9 @@ public class ContextManager extends MouseAdapter {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Handles right-click actions by selecting an appropriate context menu.
 	 * 
+	 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	@Override
   public void mouseClicked(MouseEvent e) {

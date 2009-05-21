@@ -1,3 +1,8 @@
+2009-05-22 / Build 281 - stm (stm_@users.sourceforge.net)
+    * adding multiple orders now in right order
+    * changed UnitContextMenuProvider Interface
+    * fixed #329 (right click works on wrong unit) 
+
 2009-05-20 / Build 279 - Fiete <sf@fietefietz.de>
 	* added comment "path is X regions long" to pathfinderContextMenu
 	* set weight of RdfF from 1 to 0

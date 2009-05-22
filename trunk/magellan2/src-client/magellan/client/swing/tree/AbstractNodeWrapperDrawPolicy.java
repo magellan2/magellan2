@@ -15,19 +15,19 @@ package magellan.client.swing.tree;
 
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-
 
 /**
- * DOCUMENT ME!
- *
+ * This class maintains a collection of WeakReferences to CellObjects. If
+ * necessary, their properties can be updated.
+ * 
  * @author Andreas
  * @version 1.0
  */
 public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPolicy {
-	protected List<WeakReference> nodes;
+	protected Collection<WeakReference<CellObject>> nodes;
 	protected ReferenceQueue<CellObject> refQueue;
 	protected boolean inUpdate = false;
 
@@ -35,7 +35,7 @@ public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPo
 	 * Creates new NodeWrapperPreferencesDialog
 	 */
 	public AbstractNodeWrapperDrawPolicy() {
-		nodes = new LinkedList<WeakReference>();
+		nodes = new HashSet<WeakReference<CellObject>>();
 		refQueue = new ReferenceQueue<CellObject>();
 	}
 
@@ -72,14 +72,14 @@ public abstract class AbstractNodeWrapperDrawPolicy implements NodeWrapperDrawPo
 		clearNodes();
 		inUpdate = true;
 
-		Iterator it = nodes.iterator();
+		Iterator<WeakReference<CellObject>> it = nodes.iterator();
 
 		try { // because of deletion of weak ref
 
 			while(it.hasNext()) {
 				try { // - || -
 
-					CellObject co = (CellObject) ((WeakReference) it.next()).get();
+					CellObject co = (it.next()).get();
 					co.propertiesChanged();
 				} catch(Exception inner) {
 					try {

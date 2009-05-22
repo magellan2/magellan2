@@ -95,7 +95,11 @@ public class UnitContextMenu extends JPopupMenu {
     this.dispatcher = dispatcher;
 
     if (selectedObjects !=null) {
+      // tree selection
       init(selectedObjects);
+    } else {
+      // order editor selection
+      init(Collections.singletonList(unit));
     }
   }
 

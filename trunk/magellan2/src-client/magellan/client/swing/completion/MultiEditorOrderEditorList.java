@@ -663,8 +663,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       MultiEditorOrderEditorList.log.debug("mouseClicked "+e.getSource());
     }
     if (e.getSource() instanceof OrderEditor){
-      if (multiEditorLayout && !((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)) {
-        // rightclick does not select (Fiete)
+      if (multiEditorLayout) {
+        // rightclick does select too(Fiete)
         dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
       }
       if((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
@@ -672,8 +672,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
         Unit u = ((OrderEditor) e.getSource()).getUnit();
         // Fiete 20090522
         // provide a extra selectedObject-List - otherwise UnitContextMenu will not be init
-        // and restrict to currentUnit
-        if (this.currentUnit!=null && this.currentUnit.equals(u)){
+
+        if (this.currentUnit!=null){
           ArrayList<Unit> myList = new ArrayList<Unit>();
           myList.add(u);
           if (u!=null){

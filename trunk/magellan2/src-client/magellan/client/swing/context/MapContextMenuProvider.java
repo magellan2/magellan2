@@ -20,7 +20,7 @@ public interface MapContextMenuProvider {
     /**
      * creates a JMenuItem. Will be called on right-clicking on map.
      */
-    public JMenuItem createContextMenu(
+    public JMenuItem createMapContextMenu(
             EventDispatcher dispatcher, 
             GameData data);
     /**

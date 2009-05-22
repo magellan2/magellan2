@@ -68,12 +68,13 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	private UnitNodeWrapperDrawPolicy adapter;
 
 	/**
-	 * Creates a new UnitNodeWrapper object.
+	 * Creates a new UnitNodeWrapper object. The text for the  unit is generated from the unit's name
+	 * and ID and from the arguments.
 	 *
-	 * 
-	 * 
-	 * 
-	 * 
+	 * @param u The unit
+	 * @param prfx A text that is displayed in front of the name
+	 * @param num The number of persons
+	 * @param mod The modified number of persons
 	 */
 	public UnitNodeWrapper(Unit u, String prfx, int num, int mod) {
 		this.unit = u;
@@ -84,10 +85,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * Creates a new UnitNodeWrapper object.
+	 * Creates a new UnitNodeWrapper with specified text.
 	 *
-	 * 
-	 * 
+	 * @param u The unit
+	 * @param text The text that is displayed for the unit
 	 */
 	public UnitNodeWrapper(Unit u, String text) {
 		unit = u;
@@ -113,8 +114,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Specifies an additional icon that is displayed in front of the unit text.
 	 * 
 	 */
 	public void setAdditionalIcon(String icon) {
@@ -301,6 +301,16 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		return adapter.properties[adapter.CATEGORIZE_START + type];
 	}
 
+	/**
+	 * Generates a text which is composed of the prefix, the units name and id, and amount1 and 
+	 * amount2.
+	 * 
+	 * @param u
+	 * @param prefix
+	 * @param amount1
+	 * @param amount2
+	 * @return
+	 */
 	private static String getText(Unit u, String prefix, int amount1, int amount2) {
 		StringBuffer sb = new StringBuffer();
 

@@ -302,50 +302,49 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Creates a wrapper node for a unit. The text will consist only of the unit's name and id
 	 * 
-	 *
-	 * 
+	 * @param unit The unit
+	 * @return The created node wrapper.
 	 */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit) {
 		return createUnitNodeWrapper(unit, null, -1, -1);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Creates a wrapper node for a unit. The text is generated from the unit's name and 
+   * ID, and num without mod or prefix.
+   * 
+   * @param unit The unit
+   * @param num The number of persons
+   * @return The created node wrapper.
+   */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num) {
 		return createUnitNodeWrapper(unit, null, num, -1);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Creates a wrapper node for a unit. The text is generated from the unit's name and 
+   * ID, and num and mod without prefix.
+   * 
+   * @param unit The unit
+   * @param num The number of persons
+   * @param mod The modified number of persons.
+   * @return The created node wrapper.
+   */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, int num, int mod) {
 		return createUnitNodeWrapper(unit, null, num, mod);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Creates a wrapper node for a unit. The text is generated from the prefix, the unit's name and 
+   * ID, and num and mod.
 	 * 
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * @param unit The unit
+	 * @param prfx A prefix which is displayed in front of the unit's name.
+	 * @param num The number of persons
+	 * @param mod The modified number of persons.
+   * @return The created node wrapper.
 	 */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String prfx, int num, int mod) {
 		UnitNodeWrapper unw = new UnitNodeWrapper(unit, prfx, num, mod);
@@ -355,12 +354,11 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Creates a wrapper node for a unit. The text will not be generated but taken from the argument.
 	 * 
-	 * 
-	 *
-	 * 
+	 * @param unit The unit
+	 * @param text The node will use this text.
+   * @return The created node wrapper.
 	 */
 	public UnitNodeWrapper createUnitNodeWrapper(Unit unit, String text) {
 		UnitNodeWrapper unw = new UnitNodeWrapper(unit, text);

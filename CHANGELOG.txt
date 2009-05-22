@@ -1,6 +1,4 @@
 2009-05-23 / Build 282 - Fiete <sf@fietefietz.de>
-	* #329: rightclick in orderEditor does not select unit
-	* UnitContextMenu after RightClick in orderEditor only for currentUnit
 	* changed Interface for MapContextMenuProvider
 
 2009-05-22 / Build 281 - stm (stm_@users.sourceforge.net)

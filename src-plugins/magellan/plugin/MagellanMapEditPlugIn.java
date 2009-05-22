@@ -93,7 +93,7 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
    * 
    * @return The JMenuItem to show in the MapContextMenu
    */
-  public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data) {
+  public JMenuItem createMapContextMenu(EventDispatcher dispatcher, GameData data) {
     rootTitle = new JMenu(Resources.get("mapedit.menu.title"));
     
     setName = new JMenuItem(Resources.get("mapedit.menu.setname"));

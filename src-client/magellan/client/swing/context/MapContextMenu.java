@@ -207,7 +207,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
       addSeparator();
     }
     for (MapContextMenuProvider cmp : cmpList) {
-      add(cmp.createContextMenu(dispatcher, data));
+      add(cmp.createMapContextMenu(dispatcher, data));
       if (this.externalMapContectMenuProvider==null){
         this.externalMapContectMenuProvider = new ArrayList<MapContextMenuProvider>();
       }

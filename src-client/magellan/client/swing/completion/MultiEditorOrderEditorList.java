@@ -36,6 +36,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -662,17 +663,25 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel
       MultiEditorOrderEditorList.log.debug("mouseClicked "+e.getSource());
     }
     if (e.getSource() instanceof OrderEditor){
-      if (multiEditorLayout) {
+      if (multiEditorLayout && !((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0)) {
+        // rightclick does not select (Fiete)
         dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, ((OrderEditor) e.getSource()).getUnit()));
       }
       if((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
         // Right click -> UnitContextMenu (Fiete)
         Unit u = ((OrderEditor) e.getSource()).getUnit();
-        if (u!=null){
-           UnitContextMenu unitContextMenu = new UnitContextMenu(u,null,dispatcher,data);
-           if (unitContextMenu!=null){
-             unitContextMenu.show(this, e.getX(), e.getY());
-           }
+        // Fiete 20090522
+        // provide a extra selectedObject-List - otherwise UnitContextMenu will not be init
+        // and restrict to currentUnit
+        if (this.currentUnit!=null && this.currentUnit.equals(u)){
+          ArrayList<Unit> myList = new ArrayList<Unit>();
+          myList.add(u);
+          if (u!=null){
+             UnitContextMenu unitContextMenu = new UnitContextMenu(u,myList,dispatcher,data);
+             if (unitContextMenu!=null){
+               unitContextMenu.show(this, e.getX(), e.getY());
+             }
+          }
         }
       }
     }

@@ -211,41 +211,44 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
         "simple.showIcon", "true" } }, new String[] { "icons.text" }, 0, "tree.simplenodewrapper.");
   }
 
-  /**
-   * protected String getString(String key) { return
-   * Resources.get("tree.simplenodewrapper.", key); }
-   */
 
   /**
-   * DOCUMENT-ME
+   * 
+   * @see magellan.client.swing.tree.Changeable#getContextFactory()
    */
   public ContextFactory getContextFactory() {
     return contextFactory;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.Changeable#getArgument()
    */
   public Object getArgument() {
     return contextArgument;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns {@link Changeable#CONTEXT_MENU}
+   * 
+   * @see magellan.client.swing.tree.Changeable#getChangeModes()
    */
   public int getChangeModes() {
     return Changeable.CONTEXT_MENU;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the context factory for this node.
+   * 
+   * @see magellan.client.swing.tree.Changeable
    */
   public void setContextFactory(ContextFactory contextFactory) {
     this.contextFactory = contextFactory;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the argument for the {@link ContextFactory}.
+   * 
+   * @see magellan.client.swing.tree.Changeable
    */
   public void setArgument(Object argument) {
     contextArgument = argument;

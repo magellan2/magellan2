@@ -137,11 +137,11 @@ public class RemoveOrderDialog extends InternationalizedDialog {
   /**
    * Shows the dialog.
    * 
-   * @return A string array with the following values: <br/> [0] : The order
-   *         fragment that was given <br/> [1] : One of
-   *         {@link RemoveOrderDialog#BEGIN_ACTION},
-   *         {@link RemoveOrderDialog#CONTAINS_ACTION} <br/> [2] : "true" if
-   *         case should not be ignored
+   * @return A string array with the following values: <br/>
+   *         [0] : The order fragment that was given <br/>
+   *         [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
+   *         {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
+   *         [2] : "true" if case should not be ignored
    */
   public String[] showDialog() {
     final String retVal[] = new String[3];

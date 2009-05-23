@@ -29,20 +29,22 @@ public interface Changeable {
 	/** DOCUMENT-ME */
 	public static final int CELL_EDITOR = 2;
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * Return the change mode. At this time this can be either
+   * {@link #CONTEXT_MENU} or {@link #CELL_EDITOR}
+   */
 	public int getChangeModes();
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns a factory for creating the appropriate context menu.
 	 * 
 	 */
 	public ContextFactory getContextFactory();
 
-	//public CellEditor getCellEditor();
+	/**
+	 * The game object for which this Changeable is responsible.
+	 * 
+	 * @return
+	 */
 	public Object getArgument();
 }

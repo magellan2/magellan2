@@ -307,7 +307,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 						if((((u.getName() == null) && (name.getText().equals("") == false)) ||
 							   ((u.getName() != null) &&
 							   (name.getText().equals(u.getName()) == false))) &&
-							   magellan.library.utils.Units.isPrivilegedAndNoSpy(u) && !u.ordersAreNull()) {
+							   (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) && !u.ordersAreNull()) {
 							// the following code only changes the name
 							// right now it is not necessary to refresh the relations; are we sure??
 							data.getGameSpecificStuff().getOrderChanger().addNamingOrder(u,name.getText());
@@ -373,7 +373,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 							   (description.getText().equals("") == false)) ||
 							   ((u.getDescription() != null) &&
 							   (description.getText().equals(u.getDescription()) == false))) &&
-							   magellan.library.utils.Units.isPrivilegedAndNoSpy(u) && !u.ordersAreNull()) {
+							   (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) && !u.ordersAreNull()) {
 							String descr = getDescriptionPart(description.getText());
 							String privat = getPrivatePart(description.getText());
 							data.getGameSpecificStuff().getOrderChanger().addDescribeUnitOrder(u,
@@ -625,6 +625,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		excludeTags.add("regionicon");
 	}
 
+	
+  private boolean isEditAll(){
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS).equals("true");
+  }
+
+
   /**
    * Returns a panel with a Textfield for the name and
    * a Textarea for the description.
@@ -738,7 +744,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private void showRegion(Region r) {
 		// make editable for privileged units
-		setNameAndDescription(r, (r != null) && magellan.library.utils.Units.isPrivilegedAndNoSpy(r.getOwnerUnit()));
+		setNameAndDescription(r, (r != null) && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(r.getOwnerUnit())));
 
 		// build tree
 		appendRegionInfo(r, rootNode, myExpandableNodes);
@@ -1964,7 +1970,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			strDesc += (EMapDetailsPanel.DESCRIPTION_SEPARATOR + u.getPrivDesc());
 		}
 
-		setNameAndDescription(u.getName(), strDesc, magellan.library.utils.Units.isPrivilegedAndNoSpy(u));
+		setNameAndDescription(u.getName(), strDesc, isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u));
 
 		appendUnitInfo(u, rootNode, myExpandableNodes);
 
@@ -2007,7 +2013,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				.createSimpleNodeWrapper(Resources.get("emapdetailspanel.node.combatstatus") + ": "
 						+ MagellanFactory.combatStatusToString(u), "kampfstatus");
 
-		if(magellan.library.utils.Units.isPrivileged(u.getFaction())) {
+		if(magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
 			cWrapper.setContextFactory(combatContext);
 			cWrapper.setArgument(u);
 		}
@@ -2349,7 +2355,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	
 			SimpleNodeWrapper wrapper = nodeWrapperFactory.createSimpleNodeWrapper(strHide, icon);
 	
-			if((stealthLevel > 0) && magellan.library.utils.Units.isPrivileged(u.getFaction())) {
+			if((stealthLevel > 0) && magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
 				wrapper.setContextFactory(stealthContext);
 				wrapper.setArgument(u);
 			}
@@ -3241,7 +3247,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	private void showBuilding(Building b) {
-		setNameAndDescription(b, magellan.library.utils.Units.isPrivilegedAndNoSpy(b.getOwnerUnit()));
+		setNameAndDescription(b, isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(b.getOwnerUnit()));
 
 		appendBuildingInfo(b, rootNode, myExpandableNodes);
 	}
@@ -3533,7 +3539,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * 
 	 */
 	private void showShip(Ship s) {
-		setNameAndDescription(s, magellan.library.utils.Units.isPrivilegedAndNoSpy(s.getOwnerUnit()));
+		setNameAndDescription(s, isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(s.getOwnerUnit()));
 
 		appendShipInfo(s, rootNode, myExpandableNodes);
 	}
@@ -5532,7 +5538,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     /**
      * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
      */
-		public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, Collection<Unit> selectedObjects, DefaultMutableTreeNode node) {
+		public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, Collection<?> selectedObjects, DefaultMutableTreeNode node) {
 			
 			
 			if(argument instanceof Unit) {

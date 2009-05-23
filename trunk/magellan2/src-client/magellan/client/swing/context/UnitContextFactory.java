@@ -32,18 +32,11 @@ import magellan.library.Unit;
  */
 public class UnitContextFactory implements ContextFactory {
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 *
 	 * 
 	 */
 	public JPopupMenu createContextMenu(EventDispatcher dispatcher,
             GameData data, Object argument,
-            Collection<Unit> selectedObjects,
+            Collection<?> selectedObjects,
             DefaultMutableTreeNode node) {
 		if(argument instanceof Unit) {
 			return new UnitContextMenu((Unit) argument, selectedObjects,

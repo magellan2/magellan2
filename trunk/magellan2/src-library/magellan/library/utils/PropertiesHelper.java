@@ -248,6 +248,15 @@ public class PropertiesHelper {
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_TODO = "TaskTable.inspectors.todo";
 
+  /** Property type boolean: edit orders for all factions */
+  public static final String ORDEREDITOR_EDITALLFACTIONS = "OrderEditor.editAllFactions";
+
+  /** Property type boolean: use multi editor layout */
+  public static final String ORDEREDITOR_MULTIEDITORLAYOUT = "OrderEditor.multiEditorLayout";
+
+  /** Property type boolean: hide temp unit buttons */
+  public static final String ORDEREDITOR_HIDEBUTTONS = "OrderEditor.hideButtons";
+
 
   /**
    * Searches the property with the given key and if it exists, it tries to

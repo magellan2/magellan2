@@ -561,7 +561,11 @@ public class Units {
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
    * 
    * @see GiveOrderDialog#showGiveOrderDialog()
-   * @param s
+   * @param s A string array with the following values: <br/>
+   *       [0] : The order that was given <br/>
+   *       [1] : A String representative of the boolean value for "Replace orders" <br/>
+   *       [2] : A String representative of the boolean value for "Keep comments" <br/>
+   *       [3] : One of {@link GiveOrderDialog#FIRST_POS}, {@link GiveOrderDialog#LAST_POS}
    */
   public static void addOrders(Unit u, String[] s) {
     if (s == null || s.length != 4) {
@@ -574,58 +578,61 @@ public class Units {
       String position = s[3];
       String[] newOrderArray = s[0].split("\n");
   
-      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
-        if (replace) {
-          if (keepComments) {
-            Collection oldOrders = u.getOrders();
-            List<String> newOrders = new LinkedList<String>();
-  
-            for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
-              String order = (String) iterator.next();
-  
-              if (order.trim().startsWith("//") || order.trim().startsWith(";")) {
-                newOrders.add(order);
-              }
+      if (replace) {
+        if (keepComments) {
+          Collection oldOrders = u.getOrders();
+          List<String> newOrders = new LinkedList<String>();
+
+          for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
+            String order = (String) iterator.next();
+
+            if (order.trim().startsWith("//") || order.trim().startsWith(";")) {
+              newOrders.add(order);
             }
-  
-            if (position.equals(GiveOrderDialog.FIRST_POS)) {
-              for (int i = newOrderArray.length-1; i>=0; --i) { 
-                newOrders.add(0, newOrderArray[i]);
-              }
-            } else {
-              for (String sHelp : newOrderArray) {
-                newOrders.add(newOrders.size(), sHelp);
-              }
-            }
-            u.setOrders(newOrders);
-          } else {
-  
-            List<String> newOrders = new LinkedList<String>();
-            for (String sHelp : newOrderArray) {
-              newOrders.add(sHelp);
-            }
-            u.setOrders(newOrders);
           }
-        } else {
+
           if (position.equals(GiveOrderDialog.FIRST_POS)) {
             for (int i = newOrderArray.length-1; i>=0; --i) { 
-              u.addOrderAt(0, newOrderArray[i], true);
+              newOrders.add(0, newOrderArray[i]);
             }
           } else {
             for (String sHelp : newOrderArray) {
-              u.addOrderAt(u.getOrders().size(), sHelp, true);
+              newOrders.add(newOrders.size(), sHelp);
             }
+          }
+          u.setOrders(newOrders);
+        } else {
+
+          List<String> newOrders = new LinkedList<String>();
+          for (String sHelp : newOrderArray) {
+            newOrders.add(sHelp);
+          }
+          u.setOrders(newOrders);
+        }
+      } else {
+        if (position.equals(GiveOrderDialog.FIRST_POS)) {
+          for (int i = newOrderArray.length-1; i>=0; --i) { 
+            u.addOrderAt(0, newOrderArray[i], true);
+          }
+        } else {
+          for (String sHelp : newOrderArray) {
+            u.addOrderAt(u.getOrders().size(), sHelp, true);
           }
         }
       }
     }
   }
 
+
   /**
    * Modifies <code>u</code>'s orders as specified in <code>s</code>.
    * 
    * @see RemoveOrderDialog#showDialog()
-   * @param s
+   * @param s A string array with the following values: <br/>
+   *         [0] : The order fragment that was given <br/>
+   *         [1] : One of {@link RemoveOrderDialog#BEGIN_ACTION},
+   *         {@link RemoveOrderDialog#CONTAINS_ACTION} <br/>
+   *         [2] : "true" if case should not be ignored
    */
   public static void removeOrders(Unit u, String[] s) {
     if (s == null || s.length != 3) {
@@ -637,23 +644,22 @@ public class Units {
       String mode = s[1];
       String matchCase = s[2];
       
-      if (magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
-        Collection oldOrders = u.getOrders();
-        List<String> newOrders = new LinkedList<String>();
-  
-        for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
-          String order = (String) iterator.next();
-          String casedOrder;
-          if (matchCase.equals("false"))
-            casedOrder = order.toLowerCase();
-          else
-            casedOrder = order;
-          if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern)) 
-                || (mode.equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern))))
-            newOrders.add(order);
-        }
-        u.setOrders(newOrders);
+      Collection oldOrders = u.getOrders();
+      List<String> newOrders = new LinkedList<String>();
+
+      for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
+        String order = (String) iterator.next();
+        String casedOrder;
+        if (matchCase.equals("false"))
+          casedOrder = order.toLowerCase();
+        else
+          casedOrder = order;
+        if (!((mode.equals(RemoveOrderDialog.BEGIN_ACTION) && casedOrder.startsWith(pattern)) 
+            || (mode.equals(RemoveOrderDialog.CONTAINS_ACTION) && casedOrder.contains(pattern))))
+          newOrders.add(order);
       }
+      u.setOrders(newOrders);
     }
   }
 }
+

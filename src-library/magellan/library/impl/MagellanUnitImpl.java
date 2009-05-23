@@ -457,9 +457,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	private boolean isSpy = false;
 
 	/**
-	 * Sets whether is unit really belongs to its unit or only pretends to do so.
-	 *
-	 * 
+	 * Sets whether is unit really belongs to its unit or only pretends to do so.  A unit cannot
+   * disguise itself as a different faction and at the same time be a spy of another faction,
+   * therefore, setting this attribute to true results in having the guiseFaction attribute set
+   * to null.
 	 */
 	public void setSpy(boolean bool) {
 		this.isSpy = bool;
@@ -470,7 +471,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	/**
-	 * Returns whether this unit only pretends to belong to its faction.
+	 * Returns whether this unit only pretends to belong to its faction.  A unit cannot
+   * disguise itself as a different faction and at the same time be a spy of another faction.
 	 *
 	 * @return true if the unit is identified as spy
 	 */
@@ -501,7 +503,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
 	/**
 	 * Returns the faction this unit pretends to belong to. If the unit is not disguised null is
-	 * returned.
+	 * returned. A unit cannot disguise itself as a
+   * different faction and at the same time be a spy of another faction.
 	 *
 	 * 
 	 */

@@ -198,31 +198,27 @@ public class ShipInspector extends AbstractInspector implements Inspector {
       }
 		}
 
-		while (nextRegion != null) {
-			// if ship is not a boat and on ocean , it can only move to ocean, plain or forest
-      // FF 20071119: don´t forget Harbors
-		  
-		  // we have to check game specific stuff, because in Allanon a longboat can land everywhere too
-		  // for that we should game specific rules 
-		  if (isShip && !(ship.getData().getGameSpecificStuff().getGameSpecificRules().canLandInRegion(ship,nextRegion))) {
-        if (!this.hasHarbourInRegion(nextRegion)){
-          problems.add(new CriticizedError(ship.getRegion(), ship, this, Resources.get("tasks.shipinspector.error.shipwreck.description")));
+		// loop until end of movement order or until first PAUSE
+    for (Region lastRegion = null; movementIterator.hasNext() && lastRegion != nextRegion; lastRegion =
+        nextRegion, nextRegion = ship.getRegion().getData().getRegion(movementIterator.next())) {
+      // check if next region is unknown or ship cannot land in next region and there is no harbor 
+      // we have to check game specific stuff, because in Allanon a longboat can
+      // land everywhere, too
+      if (isShip
+          && (nextRegion == null || !(ship.getData().getGameSpecificStuff().getGameSpecificRules()
+              .canLandInRegion(ship, nextRegion)))) {
+        if (nextRegion == null || !this.hasHarbourInRegion(nextRegion)) {
+          problems.add(new CriticizedError(ship.getRegion(), ship, this, Resources
+              .get("tasks.shipinspector.error.shipwreck.description")));
           return problems;
         }
-		  }
-		  
-			if (movementIterator.hasNext()) {
-				nextRegionCoord = movementIterator.next();
-				nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
-			} else {
-        nextRegion = null;
       }
-		}
+    }
 
-		// overload
-		if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
-      problems.add(new CriticizedError(ship.getRegion(), ship, this,
-          Resources.get("tasks.shipinspector.error.overloaded.description")));
+    // overload
+    if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
+      problems.add(new CriticizedError(ship.getRegion(), ship, this, Resources
+          .get("tasks.shipinspector.error.overloaded.description")));
     }
 		
 		

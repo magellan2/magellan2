@@ -1603,7 +1603,7 @@ public class EresseaOrderCompleter implements Completer {
 
 	void cmpltStirb() {
 	  if (Units.isPrivilegedAndNoSpy(unit)){
-			completions.add(new Completion('"' + unit.getFaction().getPassword() + '"', ""));
+			completions.add(new Completion('"' + Resources.get("gamebinding.eressea.eresseaordercompleter.password") + '"', ""));
 		}
 	}
 

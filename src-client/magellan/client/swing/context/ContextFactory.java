@@ -20,7 +20,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import magellan.client.event.EventDispatcher;
 import magellan.library.GameData;
-import magellan.library.Unit;
 
 
 /**
@@ -31,7 +30,15 @@ import magellan.library.Unit;
  */
 public interface ContextFactory {
 	/**
-	 * DOCUMENT-ME
+	 * Creates an appropriate context menu
+	 * 
+	 * @param dispatcher The responsible event dispatcher.
+	 * @param data The data
+	 * @param argument The object for which the context menu should be created
+	 * @param selectedObjects Additional selected objects
+	 * @param node
+	 * @return
 	 */
-	public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument, Collection<Unit> selectedObjects, DefaultMutableTreeNode node);
+	public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
+      Collection<?> selectedObjects, DefaultMutableTreeNode node);
 }

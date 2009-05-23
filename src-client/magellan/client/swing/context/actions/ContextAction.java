@@ -45,15 +45,15 @@ public abstract class ContextAction extends AbstractAction {
      * @param clazz class to filter objects
      * @return list of filtered objects
      */
-    public static <T> List<T> filterObjects(Collection<T> selectedObjects, Class clazz) {
+    public static <T> List<T> filterObjects(Collection<?> selectedObjects, Class<T> clazz) {
         if(selectedObjects == null) {
           return new ArrayList<T>();
         }
         List<T> filteredObjects = new ArrayList<T>(selectedObjects.size());
-        for(Iterator<T> iter = selectedObjects.iterator(); iter.hasNext(); ) {
-            T o = iter.next();
+        for(Iterator<?> iter = selectedObjects.iterator(); iter.hasNext(); ) {
+            Object o = iter.next();
             if(clazz.isInstance(o)) {
-                filteredObjects.add(o);
+                filteredObjects.add(clazz.cast(o));
             }
         }
         return filteredObjects;

@@ -52,6 +52,9 @@ import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
+import magellan.client.swing.context.ContextFactory;
+import magellan.client.swing.context.UnitContextFactory;
+import magellan.client.swing.tree.Changeable;
 import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.completion.OrderParser;
@@ -66,7 +69,7 @@ import magellan.library.utils.logging.Logger;
  * A text pane for convenient editing and handling of Eressea orders.
  */
 public class OrderEditor extends JTextPane implements DocumentListener, KeyListener,
-													  SelectionListener, FocusListener, CacheableOrderEditor
+													  SelectionListener, FocusListener, CacheableOrderEditor, Changeable
 {
 	private static final Logger log = Logger.getInstance(OrderEditor.class);
 
@@ -1019,5 +1022,27 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			}
 		}
 	}
+
+  /**
+   * Returns the unit for this editor.
+   * 
+   * @see magellan.client.swing.tree.Changeable#getArgument()
+   */
+  public Object getArgument() {
+    return getUnit();
+  }
+
+  /**
+   * Returns {@link magellan.client.swing.tree.Changeable#CONTEXT_MENU}.
+   * 
+   * @see magellan.client.swing.tree.Changeable#getChangeModes()
+   */
+  public int getChangeModes() {
+    return Changeable.CONTEXT_MENU;
+  }
+
+  public ContextFactory getContextFactory() {
+    return new UnitContextFactory();
+  }
   }
 

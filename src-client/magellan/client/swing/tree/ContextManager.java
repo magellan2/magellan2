@@ -33,7 +33,6 @@ import javax.swing.tree.TreePath;
 import magellan.client.event.EventDispatcher;
 import magellan.client.swing.context.ContextFactory;
 import magellan.library.GameData;
-import magellan.library.Unit;
 import magellan.library.utils.logging.Logger;
 
 
@@ -48,7 +47,7 @@ public class ContextManager extends MouseAdapter {
 	private Collection<ContextListener> listeners = null;
 	private JTree source;
     private EventDispatcher dispatcher;
-	private Collection<Unit> selection = null;
+	private Collection<?> selection = null;
 	private GameData data = null;
 	private ContextFactory failFactory = null;
 	private Object failArgument = null;
@@ -75,19 +74,20 @@ public class ContextManager extends MouseAdapter {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Notifies this object of a selection change.
 	 * 
+	 * @param selection
 	 */
-	public void setSelection(Collection<Unit> selection) {
+	public void setSelection(Collection<?> selection) {
 		this.selection = selection;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+  /**
+   * Sets a context factory which is used in case no factory can be found based
+   * on the selected element. 
+   * 
+	 * @param failArgument The argument which shall be passed to the factory
+	 * @param failFactory The fall-back factory
 	 */
 	public void setFailFallback(Object failArgument, ContextFactory failFactory) {
 		this.failArgument = failArgument;

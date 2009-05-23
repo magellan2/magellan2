@@ -58,6 +58,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
 
@@ -505,7 +506,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 				Ship ship = (Ship)o;
 				Unit u = ship.getOwnerUnit();
 
-				if(u!=null && magellan.library.utils.Units.isPrivilegedAndNoSpy(u)) {
+				if(u!=null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
 					magellan.client.utils.Units.addOrders(u, s);
 					dispatcher.fire(new UnitOrdersEvent(this, u));
 				}
@@ -513,6 +514,10 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		}
 	}
 	
+  private boolean isEditAll(){
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS).equals("true");
+  }
+
 	/**
    * Copies Info about selected ships to the clipboard
    */

@@ -1073,15 +1073,15 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Selection event handler, update the selection status of the tree. First the
    * active object is considered and selected in the tree if contained. After
-   * that selected objects are considered, but only if != null and selection
-   * type is different to SelectionEvent.ST_REGIONS. In this case the tree
+   * that selected objects are considered, but only selection
+   * type is different from SelectionEvent.ST_REGIONS. In this case the tree
    * selection is set to the selected objects (as long as they are contained in
-   * the tree anyway). Keep in mind, thtat this will produce the active object
+   * the tree anyway). Keep in mind, that this will produce the active object
    * _NOT_ to be selected, if selectedObjects != null &&
    * !selectedObjects.contains(activeObject) !!!
    * 
    * @param se
-   *          DOCUMENT-ME
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent se) {
     // update the selection in the context manager

@@ -862,14 +862,21 @@ public abstract class MagellanFactory {
     }
 
     /******************** BORDERS *************************************/
-    /*
-     * next try, and pay attention to this: neighbouring region; curRegion has
-     * no borders newRegion has a border because of vis=neighbour -> we should
-     * add the border ... it´s there! same situation next turn curRegion has
-     * Border, newRegion as no Borders but Vis=0 -> we should NOT delete the
-     * border, could still be there so: delete only, if you are really sure,
-     * otherwise only add Fiete 20080121: we have also full info about borders
-     * if we travelled (status==3) throug the region
+    /**
+     * <p>
+     * If we have first-hand visibility (unit, travel; FIXME what about
+     * lighthouse?), we should erase old borders. If visibility == 0, we should
+     * keep the border. It might be gone or it might still be there. It does not
+     * matter if sameRound or not.
+     * </p>
+     * <p>
+     * FIXME: If visibility==neighbor, we should remove borders to all visible
+     * regions without borders.
+     * </p>
+     * <p>
+     * Fiete 20080121: we have also full info about borders if we traveled
+     * (status==3) through the region.
+     * </p>
      */
     if (curRegion.getVisibility() == Visibility.UNIT
         || curRegion.getVisibility() == Visibility.TRAVEL) {
@@ -895,7 +902,7 @@ public abstract class MagellanFactory {
       for (Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
         Border curBorder = (Border) iter.next();
 
-        // do we have already this border?
+        // do we already have this border?
         boolean curBorderPresent = false;
         for (Iterator iter2 = resultRegion.borders().iterator(); iter2.hasNext();) {
           Border actNewBorder = (Border) iter2.next();
@@ -907,6 +914,7 @@ public abstract class MagellanFactory {
         }
 
         if (!curBorderPresent) {
+          // add border to result region
           Border newBorder = null;
           ID newID = Regions.getNewBorderID(resultRegion, curBorder);
 

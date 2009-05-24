@@ -100,7 +100,8 @@ import magellan.library.utils.logging.Logger;
 /**
  * A panel for showing statistics about factions.
  */
-public class FactionStatsPanel extends InternationalizedDataPanel implements SelectionListener, TreeSelectionListener {
+public class FactionStatsPanel extends InternationalizedDataPanel implements SelectionListener,
+    TreeSelectionListener {
   private static final Logger log = Logger.getInstance(FactionStatsPanel.class);
   private Map<ID, Faction> factions = null;
   private Map<CoordinateID, Region> regions = null;
@@ -109,7 +110,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   private CopyTree tree = null;
   private NodeWrapperFactory nodeWrapperFactory;
   private Units unitsTools = null;
-  
+
   /**
    * Creates a new FactionStatsPanel object.
    */
@@ -122,11 +123,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     dispatcher.addSelectionListener(this);
     unitsTools = (data != null) ? new Units(data.rules) : new Units(null);
     nodeWrapperFactory = new NodeWrapperFactory(settings);
-    
+
     // to get the pref-adapter
     Unit temp = MagellanFactory.createUnit(UnitID.createUnitID(0, data.base));
     nodeWrapperFactory.createUnitNodeWrapper(temp);
-    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
+    nodeWrapperFactory.createSkillNodeWrapper(temp, new Skill(
+        new SkillType(StringID.create("Test")), 0, 0, 0, false), null);
     nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
   }
 
@@ -234,7 +236,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     } else if (o instanceof UnitContainerNodeWrapper) {
       UnitContainer uc = ((UnitContainerNodeWrapper) o).getUnitContainer();
       dispatcher.fire(new SelectionEvent<UnitContainer>(this, null, uc));
-    } else if (o instanceof RegionNodeWrapper){
+    } else if (o instanceof RegionNodeWrapper) {
       Region r = ((RegionNodeWrapper) o).getRegion();
       dispatcher.fire(new SelectionEvent<Region>(this, null, r));
     }
@@ -254,7 +256,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
    * that persons can be given to '0'.)
    */
   private void updateTree() {
-    tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
+    tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings,
+        "EMapOverviewPanel.treeRootHandles", true));
 
     setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
@@ -325,11 +328,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     }
     /**
      * Fiete 20060918: made all nodes with icons, thx to khadar for icons n =
-     * new
-     * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.units") +
-     * (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")");
+     * new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.units")
+     * + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")");
      */
-    currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.units") + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")", "units"));
+    currentNode =
+        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+            .get("factionstatspanel.node.units")
+            + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")", "units"));
 
     rootNode.add(currentNode);
     /**
@@ -337,59 +342,74 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
      * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.persons") +
      * personCounter + " (" + modifiedPersonCounter + ")");
      */
-    currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.persons") + personCounter + " (" + modifiedPersonCounter + ")", "persons"));
+    currentNode =
+        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+            .get("factionstatspanel.node.persons")
+            + personCounter + " (" + modifiedPersonCounter + ")", "persons"));
 
     rootNode.add(currentNode);
 
     if (factions.size() == 1) {
       Faction f = null;
       f = factions.values().iterator().next();
-      
+
       /* Race node */
       if (f.getType() != null) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.race")
         // + f.getType().getName());
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName(), "race"));
-        
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.race")
+                + f.getType().getName(), "race"));
+
         // Fiete 20090224: realRace for demons
         // not visisable in CR-Block for faction "PARTEI"
         // after merging the "Demon" is not visisble anymore
         // trick: check realrace irgendeiner Unit
         Race orgRace = null;
-        for (Region r:regions.values()){
-           for (Unit u:r.units()){
-             if (u.getFaction().equals(f)){
-               if (u.getDisguiseRace()!=null && u.getDisguiseRace()!=u.getRace()){
-                   // Bingo. Units DisguisedRace is different then the "Race"
-                   // last Check - OutputNames different?
-                   if (!f.getType().getName().equalsIgnoreCase(u.getRace().getName())){
-                     orgRace = u.getRace();
-                     break;
-                   }
-               }
-             }
-           }
-           if (orgRace!=null){
-             break;
-           }
+        for (Region r : regions.values()) {
+          for (Unit u : r.units()) {
+            if (u.getFaction().equals(f)) {
+              if (u.getDisguiseRace() != null && u.getDisguiseRace() != u.getRace()) {
+                // Bingo. Units DisguisedRace is different then the "Race"
+                // last Check - OutputNames different?
+                if (!f.getType().getName().equalsIgnoreCase(u.getRace().getName())) {
+                  orgRace = u.getRace();
+                  break;
+                }
+              }
+            }
+          }
+          if (orgRace != null) {
+            break;
+          }
         }
-        if (orgRace!=null){
-          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.race") + f.getType().getName() + " (" + orgRace.getName() + ")", "race"));
+        if (orgRace != null) {
+          currentNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                  .get("factionstatspanel.node.race")
+                  + f.getType().getName() + " (" + orgRace.getName() + ")", "race"));
         }
-        
+
         rootNode.add(currentNode);
       }
 
       /* Age node */
       if (f.getAge() > -1) {
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.age") + ": " + f.getAge(), "age"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.age")
+                + ": " + f.getAge(), "age"));
         rootNode.add(currentNode);
       }
-      
+
       /* Locale node */
       if (f.getLocale() != null) {
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.locale") + ": " + f.getLocale(), "locale"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.locale")
+                + ": " + f.getLocale(), "locale"));
         rootNode.add(currentNode);
       }
 
@@ -398,7 +418,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.magicschool")
         // + f.spellSchool);
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.magicschool") + f.getSpellSchool(), "magicschool"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.magicschool")
+                + f.getSpellSchool(), "magicschool"));
         rootNode.add(currentNode);
       }
 
@@ -408,7 +431,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.banner")
         // + description);
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.banner") + description, "banner"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.banner")
+                + description, "banner"));
         rootNode.add(currentNode);
       }
 
@@ -418,34 +444,47 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         // SimpleNodeWrapper(Resources.get("factionstatspanel.node.e-mail")
         // + f.email, f.email));
         // added email icon
-        currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.e-mail") + f.getEmail(), "email2"));
+        currentNode =
+            new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.e-mail")
+                + f.getEmail(), "email2"));
 
         rootNode.add(currentNode);
       }
 
       { /* Trustlevel node */
-      String nodeLabel = FactionTrustComparator.getTrustLevelLabel(FactionTrustComparator.getTrustLevel(f.getTrustLevel()));
-      nodeLabel += (" (" + f.getTrustLevel() + ")");
-      // n = new DefaultMutableTreeNode(nodeLabel);
-      currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "trust"));
-      rootNode.add(currentNode);
-      }
-      
-      /* Report owner node */
-      if (f.getID().equals(data.getOwnerFaction())){
-        currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources.get("factionstatspanel.node.reportowner"), "reportowner"));
+        String nodeLabel =
+            FactionTrustComparator.getTrustLevelLabel(FactionTrustComparator.getTrustLevel(f
+                .getTrustLevel()));
+        nodeLabel += (" (" + f.getTrustLevel() + ")");
+        // n = new DefaultMutableTreeNode(nodeLabel);
+        currentNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(nodeLabel, "trust"));
         rootNode.add(currentNode);
       }
-      
+
+      /* Report owner node */
+      if (f.getID().equals(data.getOwnerFaction())) {
+        currentNode =
+            new DefaultMutableTreeNode(new SimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.reportowner"), "reportowner"));
+        rootNode.add(currentNode);
+      }
+
       /* Translation node */
       if (f.getID() instanceof EntityID) {
-        Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID)f.getID());
-        if (map!=null){
-          currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.translations"), "coordinatetranslation"));
+        Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID) f.getID());
+        if (map != null) {
+          currentNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                  .get("factionstatspanel.node.translations"), "coordinatetranslation"));
           SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
-          for (Integer i: layers){
+          for (Integer i : layers) {
             CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
-            DefaultMutableTreeNode translationNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer"))).format(new Integer [] { i })+" "+translation, "layer"));
+            DefaultMutableTreeNode translationNode =
+                new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+                    (new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer")))
+                        .format(new Integer[] { i })
+                        + " " + translation, "layer"));
             currentNode.add(translationNode);
           }
           rootNode.add(currentNode);
@@ -453,17 +492,22 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       } else {
         FactionStatsPanel.log.warn("faction ID is not EntityID");
       }
-      
+
       /* score node */
       if (f.getScore() > 0) {
         /**
          * n = new
-         * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.score") +
-         * f.score + "/" + f.averageScore + " (" + (int) ((100.0 * f.score) /
+         * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.score")
+         * + f.score + "/" + f.averageScore + " (" + (int) ((100.0 * f.score) /
          * f.averageScore) + "%)");
          */
-        String scoreLabel = Resources.get("factionstatspanel.node.score") + f.getScore() + "/" + f.getAverageScore() + " (" + (int) ((100.0 * f.getScore()) / f.getAverageScore()) + "%)";
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(scoreLabel, "score"));
+        String scoreLabel =
+            Resources.get("factionstatspanel.node.score") + f.getScore() + "/"
+                + f.getAverageScore() + " (" + (int) ((100.0 * f.getScore()) / f.getAverageScore())
+                + "%)";
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(scoreLabel,
+                "score"));
 
         rootNode.add(currentNode);
       }
@@ -471,35 +515,44 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       /* prefix node */
       if (f.getRaceNamePrefix() != null) {
         /**
-         * n = new
-         * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.racenameprefix") +
-         * f.getRaceNamePrefix());
+         * n = new DefaultMutableTreeNode(Resources.get(
+         * "factionstatspanel.node.racenameprefix") + f.getRaceNamePrefix());
          */
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.racenameprefix") + f.getRaceNamePrefix(), "prefix"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.racenameprefix")
+                + f.getRaceNamePrefix(), "prefix"));
         rootNode.add(currentNode);
       }
 
       /* migrants node */
       if (f.getMigrants() > 0) {
         /**
-         * n = new
-         * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.migrants") +
-         * f.migrants + "/" + f.maxMigrants);
+         * n = new DefaultMutableTreeNode(Resources.get(
+         * "factionstatspanel.node.migrants") + f.migrants + "/" +
+         * f.maxMigrants);
          */
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.migrants") + f.getMigrants() + "/" + f.getMaxMigrants(), "migrants"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.migrants")
+                + f.getMigrants() + "/" + f.getMaxMigrants(), "migrants"));
         rootNode.add(currentNode);
       }
 
       /* alliances node */
       if ((f.getAllies() != null) && (f.getAllies().size() > 0)) {
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.alliances"), "alliance"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
         showAlliances(f.getAllies(), currentNode);
       }
 
       /* group alliances node */
       if ((f.getGroups() != null) && (f.getGroups().size() > 0)) {
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.groups"), "groups"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.groups"), "groups"));
         rootNode.add(currentNode);
 
         for (Iterator<Group> iter = f.getGroups().values().iterator(); iter.hasNext();) {
@@ -508,18 +561,22 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           currentNode.add(subNode);
 
           if (g.getRaceNamePrefix() != null) {
-            subNode.add(new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.racenameprefix") + g.getRaceNamePrefix()));
+            subNode.add(new DefaultMutableTreeNode(Resources
+                .get("factionstatspanel.node.racenameprefix")
+                + g.getRaceNamePrefix()));
           }
 
           showAlliances(g.allies(), subNode);
         }
       }
-      
+
       /* other races node */
       if (specialPersons.size() > 0) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.otherrace"));
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                .get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
         rootNode.add(currentNode);
 
         for (Iterator iter = specialPersons.keySet().iterator(); iter.hasNext();) {
@@ -539,26 +596,30 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             iconPersonName = actRealRaceName;
           }
 
-          subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count, iconPersonName));
+          subNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": "
+                  + count, iconPersonName));
           /**
            * String raceNameLang =
            * com.eressea.util.Umlaut.convertUmlauts(obj.toString()); String
            * iconNameEn = getString(raceNameLang); if
            * (iconNameEn.equalsIgnoreCase(raceNameLang)) { m = new
            * DefaultMutableTreeNode(obj + ": " + count); } else { m = new
-           * DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " +
-           * count, iconNameEn)); }
+           * DefaultMutableTreeNode
+           * (nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count,
+           * iconNameEn)); }
            */
           currentNode.add(subNode);
 
           for (Iterator iterator = v.iterator(); iterator.hasNext();) {
             Unit actUnit = (Unit) iterator.next();
-            DefaultMutableTreeNode o = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(actUnit, actUnit.getPersons()));
+            DefaultMutableTreeNode o =
+                new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(actUnit,
+                    actUnit.getPersons()));
             subNode.add(o);
           }
         }
       }
-
 
       /* heroes node */
       if (f.getMaxHeroes() > -1 || heros_count > 0) {
@@ -577,149 +638,330 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
         String actHeroes = "";
         if (f.getHeroes() != heros_count && f.getHeroes() > -1) {
-          actHeroes = Resources.get("factionstatspanel.node.heroes") + " " + f.getHeroes() + "(" + heros_count + ")" + "/" + maxHeros2;
+          actHeroes =
+              Resources.get("factionstatspanel.node.heroes") + " " + f.getHeroes() + "("
+                  + heros_count + ")" + "/" + maxHeros2;
         } else {
-          actHeroes = Resources.get("factionstatspanel.node.heroes") + " " + heros_count + "/" + maxHeros2;
+          actHeroes =
+              Resources.get("factionstatspanel.node.heroes") + " " + heros_count + "/" + maxHeros2;
         }
 
-        currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actHeroes, "heroes"));
+        currentNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actHeroes,
+                "heroes"));
         rootNode.add(currentNode);
 
         for (Iterator iter = heroes.iterator(); iter.hasNext();) {
           Unit u = (Unit) iter.next();
 
-          subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, u.getPersons()));
+          subNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory
+                  .createUnitNodeWrapper(u, u.getPersons()));
           currentNode.add(subNode);
         }
 
       }
     }
-    
-    // earned amount of money
+
+    // Einnahmen
     // it is necessary to parse messages to get this information
-    //  0 = Arbeiten
+    // 0 = Arbeiten
     // 1 = Unterhaltung
     // 2 = Treiben
     // 3 = Handel
     // 4 = am Handel
     // 5 = Diebstahl
     // 6 = Zauberei
-    int earned[] = new int[] { 0, 0, 0, 0, 0, 0, 0};
-    int wanted[] = new int[] { 0, 0, 0, 0, 0, 0, 0};
-    int spentForTrade = 0;
+    final int E_WORK = 0;
+    final int E_ENTERTAIN = 1;
+    final int E_TAX = 2;
+    final int E_TRADE = 3;
+    final int E_TRADETAX = 4;
+    final int E_THEFT = 5;
+    final int E_MAGIC = 6;
+
+    int earned[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+    int wanted[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+
     int totalIncome = 0;
     int totalWanted = 0;
-    
+
+    final int EE_ALMS = 0;
+    final int EE_TRANSFERS = 1;
+    int extraEarned[] = new int[] { 0, 0 };
+    // 7 = Almosen
+    // 8 = Übergaben
+
     // Übergaben an andere Parteien
-    int transfers = 0;
-    Map<ID,Integer> factionGettings = new HashMap<ID, Integer>();
-    
-    // TODO Almosen berücksichtigen
+    Map<ID, Integer> factionGettings = new HashMap<ID, Integer>();
 
-    // iconnames for income groups
-    String incomeGroupIcon[] = new String[] {"Arbeiten","Unterhaltung","Steuereintreiben","Handeln","Handeln","Tarnung","Magie"};
-    
-    for (Iterator<Faction> fIter = factions.values().iterator(); fIter.hasNext();) {     
+    Map<ID, Integer> factionAlmsGotten = new HashMap<ID, Integer>();
+    Map<ID, Map<Region, Integer>> almGottenRegions = new HashMap<ID, Map<Region, Integer>>();
+
+    // Ausgaben
+    // it is necessary to parse messages to get this information
+    // 0 = Unterhalt (just count Persons * 10 ?)
+    // 1 = Gebäudeunterhalt
+    // 2 = Lernkosten
+    // 3 = Almosen
+    // 4 = Magiekosten (no chance: Messages contains just the magic item, no
+    // cost. No chance to find the spell for sure..)
+    // 5 = Handel
+    // 6 = Übergaben an andere Parteien
+    final int S_SUPPORT = 0;
+    final int S_UPKEEP = 1;
+    final int S_LEARN = 2;
+    final int S_MAGIC = 3;
+    final int S_TRADE = 4;
+    final int S_ALMS = 5;
+    final int S_TRANSFERS = 6;
+    int spent[] = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+
+    Map<ID, Integer> buildingUpkeep = new HashMap<ID, Integer>();
+
+    Map<ID, Integer> factionGivings = new HashMap<ID, Integer>();
+
+    Map<ID, Integer> factionAlmsGiven = new HashMap<ID, Integer>();
+    Map<ID, Map<Region, Integer>> almGivenRegions = new HashMap<ID, Map<Region, Integer>>();
+
+    int totalSpent = 0;
+
+    for (Iterator<Faction> fIter = factions.values().iterator(); fIter.hasNext();) {
       Faction faction = fIter.next();
-      if (faction.getMessages() != null) {
-        Iterator<Message> iter = faction.getMessages().iterator();
-        while (iter.hasNext()) {
-          Message msg = iter.next();
-          if (msg.getAttributes() != null) {
-            // check whether the message belongs to one of the selected regions
-            String value = msg.getAttributes().get("region");
-            if (value != null) {
-              String regionCoordinate = value;
-              ID coordinate = CoordinateID.parse(regionCoordinate, ",");
-              if (coordinate == null) {
-                coordinate = CoordinateID.parse(regionCoordinate, " ");
+      if (faction.getMessages() == null)
+        continue;
+
+      for (Message msg : faction.getMessages()) {
+        if (msg.getAttributes() == null)
+          continue;
+
+        // check whether the message belongs to one of the selected regions
+        String value = msg.getAttributes().get("region");
+        if (value != null) {
+          String regionCoordinate = value;
+          ID coordinate = CoordinateID.parse(regionCoordinate, ",");
+          if (coordinate == null) {
+            coordinate = CoordinateID.parse(regionCoordinate, " ");
+          }
+          if (!regions.containsKey(coordinate)) {
+            continue;
+          }
+        } else {
+          // some messages, for instance of type 170076 don't have
+          // a region tag but a unit tag. Therefore get the region
+          // via the unit of that message!
+          value = msg.getAttributes().get("unit");
+          if (value != null) {
+            String number = value;
+            UnitID id = UnitID.createUnitID(number, 10);
+            Unit unit = data.units().get(id);
+
+            if (unit != null) {
+              Region r = unit.getRegion();
+
+              if (r != null) {
+                CoordinateID c = r.getCoordinate();
+
+                if (!regions.containsKey(c)) {
+                  continue;
+                }
               }
-              if (!regions.containsKey(coordinate)) {
-                continue;
-              }
-            } else {
-              // some messages, for instance of type 170076 don't have
-              // a region tag but a unit tag. Therefore get the region
-              // via the unit of that message!
-              value = msg.getAttributes().get("unit");
+            }
+          }
+        } // region check done
+
+        if (msg.getMessageType() == null || msg.getMessageType().getID() == null)
+          continue;
+
+        int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
+        try {
+          if ((msgID == 771334452) || (msgID == 2097)) {
+            // xyz verdient ... [durch Unterhaltung | ]
+            String modeValue = msg.getAttributes().get("mode");
+
+            if (modeValue != null) {
+              int i = Integer.parseInt(modeValue);
+              value = msg.getAttributes().get("amount");
+
               if (value != null) {
-                String number = value;
-                UnitID id = UnitID.createUnitID(number, 10);
-                Unit unit = data.units().get(id);
+                earned[i] += Integer.parseInt(value);
+              }
 
-                if (unit != null) {
-                  Region r = unit.getRegion();
+              value = msg.getAttributes().get("wanted");
 
-                  if (r != null) {
-                    CoordinateID c = r.getCoordinate();
-
-                    if (!regions.containsKey(c)) {
-                      continue;
+              if (value != null) {
+                wanted[i] += Integer.parseInt(value);
+              }
+            }
+          } else if (msgID == 107552268) {
+            // Gebäudeunterhalt
+            String buildingNR = msg.getAttributes().get("building");
+            if (buildingNR != null) {
+              int i = Integer.parseInt(buildingNR);
+              EntityID id = EntityID.createEntityID(i, data.base);
+              // get the building
+              Building b = data.getBuilding(id);
+              if (b != null) {
+                // get Building type
+                BuildingType bT = b.getBuildingType();
+                if (bT != null) {
+                  // get Maintenance cost Silver
+                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER, false);
+                  if (silverType != null) {
+                    Item silverItem = bT.getMaintenance(silverType.getID());
+                    if (silverItem != null) {
+                      spent[S_UPKEEP] += silverItem.getAmount();
+                      // entry in building categories
+                      Integer actV = buildingUpkeep.get(bT.getID());
+                      if (actV == null) {
+                        actV = new Integer(silverItem.getAmount());
+                      } else {
+                        actV = new Integer(actV.intValue() + silverItem.getAmount());
+                      }
+                      buildingUpkeep.put(bT.getID(), actV);
                     }
                   }
                 }
               }
             }
+          } else if (msgID == 170076) {
+            // bezahlt für Kauf von Luxusgütern
+            value = msg.getAttributes().get("money");
 
-            // region check done
-            if ((msg.getMessageType() != null) && (msg.getMessageType().getID() != null)) {
-              int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
+            if (value != null) {
+              spent[S_TRADE] += Integer.parseInt(value);
+            }
+          } else if (msgID == 443066738) {
+            // Lernkosten
+            value = msg.getAttributes().get("cost");
+            if (value != null) {
+              spent[S_LEARN] += Integer.parseInt(value);
+            }
+          } else if (msgID == 1682429624) {
+            // Almosen
+            // müssen in den Regionsmessages überprüft werden
 
-              if ((msgID == 771334452) || (msgID == 2097)) {
-                // Einnahmen
-                String modeValue = msg.getAttributes().get("mode");
-
-                if (modeValue != null) {
-                  int i = Integer.parseInt(modeValue);
-                  value = msg.getAttributes().get("amount");
-
-                  if (value != null) {
-                    earned[i] += Integer.parseInt(value);
-                  }
-
-                  value = msg.getAttributes().get("wanted");
-
-                  if (value != null) {
-                    wanted[i] += Integer.parseInt(value);
-                  }
+          } else if (msgID == 5281483) {
+            // Übergaben
+            value = msg.getAttributes().get("resource");
+            String value2 = msg.getAttributes().get("amount");
+            if (value != null && value.equalsIgnoreCase(EresseaConstants.I_SILVER.toString())
+                && value2 != null) {
+              int menge = Integer.parseInt(value2);
+              value = msg.getAttributes().get("unit");
+              UnitID id = UnitID.createUnitID(Integer.parseInt(value), 10);
+              Unit giver = data.units().get(id);
+              ID giverID =
+                  (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
+                      data.base) : giver.getFaction().getID();
+              value = msg.getAttributes().get("target");
+              id = UnitID.createUnitID(Integer.parseInt(value), 10);
+              Unit target = data.units().get(id);
+              ID targetID =
+                  (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,
+                      data.base) : target.getFaction().getID();
+              // von factions an andere Parteien
+              if (giver != null && factions.containsKey(giverID)) {
+                Integer actV = factionGivings.get(targetID);
+                if (actV == null) {
+                  actV = new Integer(menge);
+                } else {
+                  actV = new Integer(menge + actV.intValue());
                 }
-              } else if (msgID == 170076) {
-                // bezahlt für Kauf von Luxusgütern
-                value = msg.getAttributes().get("money");
-
-                if (value != null) {
-                  spentForTrade += Integer.parseInt(value);
+                factionGivings.put(targetID, actV);
+                spent[S_TRANSFERS] += menge;
+              }
+              // von anderen Parteien an factions
+              if (target != null && factions.containsKey(target.getFaction().getID())) {
+                Integer actV = factionGettings.get(giverID);
+                if (actV == null) {
+                  actV = new Integer(menge);
+                } else {
+                  actV = new Integer(menge + actV.intValue());
                 }
-              } else if (msgID == 5281483) {
-                // Übergaben von fremden Nationen
-                value = msg.getAttributes().get("resource");
-                String value2 = msg.getAttributes().get("amount");
-                if (value != null && value.equalsIgnoreCase(EresseaConstants.I_SILVER.toString())
-                    && value2 != null) {
-                  int menge = Integer.parseInt(value2);
-                  value = msg.getAttributes().get("unit");
-                  UnitID id = UnitID.createUnitID(Integer.parseInt(value), 10);
-                  Unit giver = data.units().get(id);
-                  ID giverID =
-                      (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
-                          data.base) : giver.getFaction().getID();
-                  value = msg.getAttributes().get("target");
-                  id = UnitID.createUnitID(Integer.parseInt(value), 10);
-                  Unit target = data.units().get(id);
-                  // nur Übergaben von Parteien, die nicht in factions enthalten
-                  // sind, zählen
-                  if (target != null && !factions.containsKey(giverID)
-                      && factions.containsKey(target.getFaction().getID())) {
-                    if (giverID != null) {
-                      Integer actV = factionGettings.get(giverID);
-                      if (actV == null) {
-                        actV = new Integer(menge);
-                      } else {
-                        actV = new Integer(menge + actV.intValue());
-                      }
-                      factionGettings.put(giverID, actV);
-                      transfers += menge;
+                factionGettings.put(giverID, actV);
+                extraEarned[EE_TRANSFERS] += menge;
+              }
+            }
+          }
+        } catch (NumberFormatException e) {
+          log.error("unexpected message format: " + msg + "\n" + e);
+        }
+
+      } // loop messages
+
+      // search region messages for Almosen
+      if (regions != null && regions.size() > 0) {
+        for (Region actR : regions.values()) {
+          if (actR.getMessages() != null && actR.getMessages().size() > 0) {
+            for (Iterator<Message> iterM = actR.getMessages().iterator(); iterM.hasNext();) {
+              Message actM = iterM.next();
+              if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
+                int msgID = ((IntegerID) actM.getMessageType().getID()).intValue();
+                if (msgID == 1682429624) {
+                  // Almosen
+                  // check, ob from unsere Faction ist
+                  String from = actM.getAttributes().get("from");
+                  EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), data.base);
+                  // Faction beziehen
+                  Faction fromF = data.getFaction(fromID);
+                  ID fromFactionID =
+                    data.getFaction(fromID) == null ? EntityID.createEntityID(-1, data.base) : data
+                        .getFaction(fromID).getID();
+                  String to = actM.getAttributes().get("to");
+                  EntityID toID = EntityID.createEntityID(Integer.parseInt(to), data.base);
+                  ID toFactionID =
+                      data.getFaction(toID) == null ? EntityID.createEntityID(-1, data.base) : data
+                          .getFaction(toID).getID();
+                  Integer amount = Integer.parseInt(actM.getAttributes().get("amount"));
+                  if (fromFactionID.equals(faction.getID())) {
+                    // alms from us
+                    spent[S_ALMS] += amount;
+                    // collect data for subnodes
+                    Integer actV = factionAlmsGiven.get(toFactionID);
+                    if (actV == null) {
+                      actV = new Integer(amount);
+                    } else {
+                      actV = new Integer(actV.intValue() + amount);
                     }
+                    factionAlmsGiven.put(toFactionID, actV);
+
+                    Map<Region, Integer> actRI = almGivenRegions.get(toFactionID);
+                    if (actRI == null) {
+                      actRI = new HashMap<Region, Integer>();
+                    }
+                    actV = actRI.get(actR);
+                    if (actV == null) {
+                      actV = new Integer(amount);
+                    } else {
+                      actV = new Integer(amount + actV.intValue());
+                    }
+                    actRI.put(actR, actV);
+                    almGivenRegions.put(toFactionID, actRI);
+                  } else if (toFactionID.equals(faction.getID())) {
+                    // alms to us
+                    extraEarned[EE_ALMS] += amount;
+                    // collect data for subnodes
+                    Integer actV = factionAlmsGotten.get(fromFactionID);
+                    if (actV == null) {
+                      actV = new Integer(amount);
+                    } else {
+                      actV = new Integer(actV.intValue() + amount);
+                    }
+                    factionAlmsGotten.put(fromFactionID, actV);
+
+                    Map<Region, Integer> actRI = almGottenRegions.get(fromFactionID);
+                    if (actRI == null) {
+                      actRI = new HashMap<Region, Integer>();
+                    }
+                    actV = actRI.get(actR);
+                    if (actV == null) {
+                      actV = new Integer(amount);
+                    } else {
+                      actV = new Integer(amount + actV.intValue());
+                    }
+                    actRI.put(actR, actV);
+                    almGottenRegions.put(fromFactionID, actRI);
                   }
                 }
               }
@@ -728,288 +970,113 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         }
       }
 
+    } // loop factions
+
+    // Unterhalt
+    // we ignore persons of races which do not need support
+    spent[S_SUPPORT] = personCounter * 10;
+
+    for (int i = 0; i < spent.length; i++) {
+      totalSpent += spent[i];
     }
-    
+
     for (int i = 0; i < earned.length; i++) {
       totalIncome += earned[i];
       totalWanted += wanted[i];
     }
-    totalIncome += transfers;
-    totalWanted += transfers;
-    
+    for (int i = 0; i < extraEarned.length; i++) {
+      totalIncome += earned[i];
+      totalWanted += wanted[i];
+    }
+
+    // iconnames for income groups
+    String incomeGroupIcon[] =
+        new String[] { "Arbeiten", "Unterhaltung", "Steuereintreiben", "Handeln", "Handeln",
+            "Tarnung", "Magie" };
+    String incomeGroupIcon2[] = { "Alliance", "Persons" };
+
     if ((totalIncome != 0) || (totalWanted != 0)) {
       Object msgArgs[] = { new Integer(totalIncome), new Integer(totalWanted) };
       // n = new DefaultMutableTreeNode((new
       // java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs));
-      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper((new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"))).format(msgArgs), "income"));
+      currentNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+              (new java.text.MessageFormat(Resources.get("factionstatspanel.node.income")))
+                  .format(msgArgs), "income"));
       rootNode.add(currentNode);
     }
 
     for (int i = 0; i < earned.length; i++) {
+      // income by work, entertain, tax, theft, trade
       if ((earned[i] != 0) || (wanted[i] != 0)) {
         Object msgArgs[] = { new Integer(earned[i]) };
         StringBuffer sb = new StringBuffer();
-        sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income" + i)).format(msgArgs));
+        sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income" + i))
+            .format(msgArgs));
 
         if (earned[i] != wanted[i]) {
           msgArgs = new Object[] { new Integer(wanted[i]) };
           sb.append(" ");
-          sb.append((new java.text.MessageFormat(Resources.get("factionstatspanel.node.incomewanted"))).format(msgArgs));
+          sb.append((new java.text.MessageFormat(Resources
+              .get("factionstatspanel.node.incomewanted"))).format(msgArgs));
         }
 
-        subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(), incomeGroupIcon[i]));
+        subNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(),
+                incomeGroupIcon[i]));
         currentNode.add(subNode);
       }
-    }
-
-    if (transfers > 0) {
-      // Übergaben
-      subNode =
-          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get(
-              "factionstatspanel.node.income.transfers", new Object[] { NumberFormat
-                  .getNumberInstance().format(transfers) }), "Persons"));
-      currentNode.add(subNode);
-      if (factionGettings.size() > 0) {
-        for (Iterator<ID> iterFID = factionGettings.keySet().iterator(); iterFID.hasNext();) {
-          ID fID = iterFID.next();
-          Integer actV = factionGettings.get(fID);
-          Faction actTF = data.getFaction(fID);
-          if (actV != null && actV.intValue() > 0) {
-            DefaultMutableTreeNode subSubNode =
-                new DefaultMutableTreeNode(nodeWrapperFactory
-                    .createSimpleNodeWrapper(actTF == null ? Resources
-                        .get("emapdetailspanel.node.unknownfaction") : actTF.getName() + ": "
-                        + NumberFormat.getNumberInstance().format(actV.intValue()), "Silber"));
-            subNode.add(subSubNode);
-          }
-        }
+      if (i == E_TRADETAX && spent[S_TRADE] != 0) {
+        // insert extra node for trade expenses
+        Object msgArgs[] = { new Integer(-spent[S_TRADE]) };
+        String s =
+            (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade"))
+                .format(msgArgs));
+        subNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s, "Handeln"));
+        currentNode.add(subNode);
       }
+
     }
-    
-    if (spentForTrade != 0) {
-      Object msgArgs[] = { new Integer(-spentForTrade) };
-      String s = (new java.text.MessageFormat(Resources.get("factionstatspanel.node.spentfortrade")).format(msgArgs));
-      subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(s,"Handeln"));
-      currentNode.add(subNode);
-    }
-    
-    
-    
-    // Ausgaben
-    // earned amount of money
-    // it is necessary to parse messages to get this information
-    //  0 = Unterhalt (just count Persons * 10 ?)
-    // 1 = Gebäudeunterhalt 
-    // 2 = Lernkosten
-    // 3 = Almosen
-    // 4 = Magiekosten (no chance: Messages contains just the magic item, no cost. No chance to find the spell for sure..)
-    // 5 = Handel
-    // 6 = Übergaben an andere Parteien
-    int spent[] = new int[] { 0, 0, 0, 0, 0, 0, 0};
-    
-    Map<ID,Integer> buildingUpkeep = new HashMap<ID, Integer>();
-    Map<ID,Integer> factionAlms = new HashMap<ID, Integer>();
-    
-    Map<ID,Map<Region,Integer>> almRegions = new HashMap<ID, Map<Region,Integer>>();
-    Map<ID,Integer> factionGivings = new HashMap<ID, Integer>();
-    
-    // iconnames for income groups
-    String spentGroupIcon[] = new String[] {"Persons","Buildingcost","Skills","Alliance","Magie","Handeln","Persons"};
-    
-    int totalSpent = 0;
-    
-    for (Iterator<Faction> fIter = factions.values().iterator(); fIter.hasNext();) {
+    for (int i = 0; i < extraEarned.length; i++) {
+      // income by alms, transfers
+      if (extraEarned[i] != 0) {
+        Object msgArgs[] = { new Integer(extraEarned[i]) };
+        StringBuffer sb = new StringBuffer();
+        sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"
+            + (earned.length - 1 + i))).format(msgArgs));
 
-      Faction faction = fIter.next();
-
-      if (faction.getMessages() != null) {
-        for (Message msg : faction.getMessages()){
-          if (msg.getAttributes() != null) {
-            // check whether the message belongs to one of the selected regions
-            String value = msg.getAttributes().get("region");
-
-            if (value != null) {
-              String regionCoordinate = value;
-              ID coordinate = CoordinateID.parse(regionCoordinate, ",");
-
-              if (coordinate == null) {
-                coordinate = CoordinateID.parse(regionCoordinate, " ");
-              }
-
-              if (!regions.containsKey(coordinate)) {
-                continue;
-              }
-            } else {
-              // some messages, for instance of type 170076 don't have
-              // a region tag but a unit tag. Therefore get the region
-              // via the unit of that message!
-              value = msg.getAttributes().get("unit");
-
-              if (value != null) {
-                String number = value;
-                
-                UnitID id = UnitID.createUnitID(number, 10);
-                Unit unit = data.units().get(id);
-
-                if (unit != null) {
-                  Region r = unit.getRegion();
-
-                  if (r != null) {
-                    CoordinateID c = r.getCoordinate();
-
-                    if (!regions.containsKey(c) || !unit.getFaction().equals(faction)) {
-                      continue;
-                    }
-                  }
-                }
-              }
-            }
-
-            // region check done
-            if ((msg.getMessageType() != null) && (msg.getMessageType().getID() != null)) {
-              try {
-                int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
-
-                if (msgID == 107552268) {
-                  // Gebäudeunterhalt
-                  String buildingNR = msg.getAttributes().get("building");
-                  if (buildingNR != null) {
-                    int i = Integer.parseInt(buildingNR);
-                    EntityID id = EntityID.createEntityID(i,data.base);
-                    // get the building
-                    Building b = data.getBuilding(id);
-                    if (b!=null){
-                      // get Building type
-                      BuildingType bT = b.getBuildingType();
-                      if (bT!=null){
-                        // get Maintenance cost Silver
-                        ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER,false);
-                        if (silverType!=null){
-                          Item silverItem = bT.getMaintenance(silverType.getID());
-                          if (silverItem!=null){
-                            spent[1]+=silverItem.getAmount();
-                            // entry in building categories
-                            Integer actV = buildingUpkeep.get(bT.getID());
-                            if (actV==null){
-                              actV = new Integer(silverItem.getAmount());
-                            } else {
-                              actV = new Integer(actV.intValue() + silverItem.getAmount());
-                            }
-                            buildingUpkeep.put(bT.getID(),actV);
-                          }
-                        }
-                      }
-                    }
-                  }
-                } else if (msgID == 170076) {
-                  // bezahlt für Kauf von Luxusgütern
-                  value = msg.getAttributes().get("money");
-
-                  if (value != null) {
-                    spent[5] += Integer.parseInt(value);
-                  }
-                } else if (msgID == 443066738){
-                  // Lernkosten
-                  value = msg.getAttributes().get("cost");
-                  if (value != null) {
-                    spent[2] += Integer.parseInt(value);
-                  }
-                } else if (msgID == 1682429624){
-                  // Almosen
-                  // müssen in den Regionsmessages überprüft werden
-
-                } else if (msgID == 5281483) {
-                  // Übergaben an fremde Nationen
-                  value = msg.getAttributes().get("resource");
-                  String value2 = msg.getAttributes().get("amount");
-                  if (value != null && value.equalsIgnoreCase(EresseaConstants.I_SILVER.toString())
-                      && value2 != null) {
-                    int menge = Integer.parseInt(value2);
-                    value = msg.getAttributes().get("unit");
-                    UnitID id = UnitID.createUnitID(Integer.parseInt(value), 10);
-                    Unit giver = data.units().get(id);
-                    ID giverID =
-                        (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
-                            data.base) : giver.getFaction().getID();
-                    value = msg.getAttributes().get("target");
-                    id = UnitID.createUnitID(Integer.parseInt(value), 10);
-                    Unit target = data.units().get(id);
-                    ID targetID =
-                        (target == null || target.getFaction() == null) ? EntityID.createEntityID(
-                            -1, data.base) : target.getFaction().getID();
-                    // nur Übergaben an Parteien, die nicht in factions
-                    // enthalten sind, zählen
-                    if (giver != null && factions.containsKey(giverID)
-                        && !factions.containsKey(targetID)) {
-                      if (targetID != null) {
-                        Integer actV = factionGivings.get(targetID);
-                        if (actV == null) {
-                          actV = new Integer(menge);
-                        } else {
-                          actV = new Integer(menge + actV.intValue());
-                        }
-                        factionGivings.put(targetID, actV);
-                        spent[6] += menge;
-                      }
-                    }
-                  }
-                }
-              } catch (NumberFormatException e){
-                log.error("unexpected message format: "+msg+"\n"+e);
-              }
-            }
-          }
-        }
-      }
-      // search reagionsmessages for Almosen
-      if (regions!=null && regions.size()>0){
-        for (Iterator<Region> iterR = regions.values().iterator();iterR.hasNext();){
-          Region actR = iterR.next();
-          if (actR.getMessages()!=null && actR.getMessages().size()>0){
-            for (Iterator<Message> iterM = actR.getMessages().iterator();iterM.hasNext();){
-              Message actM = iterM.next();
-              if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
-                int msgID = ((IntegerID) actM.getMessageType().getID()).intValue();
-                if (msgID == 1682429624){
-                  // Almosen
-                  // check, ob from unsere Faction ist
-                  String value = actM.getAttributes().get("from");
-                  EntityID id = EntityID.createEntityID(Integer.parseInt(value), data.base);
-                  // Faction beziehen
-                  Faction actF = data.getFaction(id);
-                  if (actF!=null && actF.equals(faction)){
-                    // faction matches
-                    value = actM.getAttributes().get("amount");
-                    if (value != null) {
-                      int cost = Integer.parseInt(value);
-                      spent[3] += cost;
-                      
-                      // collect data for subnodes
-                      // alms for whom?
-                      value = actM.getAttributes().get("to");
-                      id = EntityID.createEntityID(Integer.parseInt(value), data.base);
-                      Faction toF = data.getFaction(id);
-                      if (toF!=null){
-                        Integer actV = factionAlms.get(toF.getID());
-                        if (actV==null){
-                          actV = new Integer(cost);
-                        } else {
-                          actV = new Integer(actV.intValue() + cost);
-                        }
-                        factionAlms.put(toF.getID(), actV);
-                        
-                        Map<Region,Integer> actRI = almRegions.get(toF.getID());
-                        if (actRI==null){
-                          actRI = new HashMap<Region, Integer>();
-                        }
-                        actV = actRI.get(actR);
-                        if (actV==null){
-                          actV = new Integer(cost);
-                        } else {
-                          actV = new Integer(cost+actV.intValue());
-                        }
-                        actRI.put(actR,actV);
-                        almRegions.put(toF.getID(),actRI);
+        subNode =
+            new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(),
+                incomeGroupIcon2[i]));
+        currentNode.add(subNode);
+        if (i == EE_ALMS) {
+          // Almosen nach Factions UND Regions
+          if (factionAlmsGotten.size() > 0) {
+            for (ID actFID : factionAlmsGotten.keySet()) {
+              Integer actV = factionAlmsGotten.get(actFID);
+              Faction actThisF = data.getFaction(actFID);
+              if (actV != null) {
+                // node für diese Faction hinzu
+                DefaultMutableTreeNode subSubNode =
+                    new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+                        actThisF == null ? Resources.get("emapdetailspanel.node.unknownfaction")
+                            : actThisF.getName() + ": "
+                                + NumberFormat.getNumberInstance().format(actV.intValue()),
+                        "Silber"));
+                subNode.add(subSubNode);
+                // regions für diese Faction dazu
+                if (actThisF != null) {
+                  Map<Region, Integer> actRM = almGottenRegions.get(actThisF.getID());
+                  if (actRM != null && actRM.size() > 0) {
+                    for (Iterator<Region> iterR = actRM.keySet().iterator(); iterR.hasNext();) {
+                      Region actRR = iterR.next();
+                      actV = actRM.get(actRR);
+                      if (actV != null && actV.intValue() > 0) {
+                        DefaultMutableTreeNode subSubSubNode =
+                            new DefaultMutableTreeNode(nodeWrapperFactory.createRegionNodeWrapper(
+                                actRR, actV.intValue()));
+                        subSubNode.add(subSubSubNode);
                       }
                     }
                   }
@@ -1017,18 +1084,36 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               }
             }
           }
+
+        }
+
+        if (i == EE_TRANSFERS) {
+          // Übergaben
+          if (factionGettings.size() > 0) {
+            for (Iterator<ID> iterFID = factionGettings.keySet().iterator(); iterFID.hasNext();) {
+              ID fID = iterFID.next();
+              Integer actV = factionGettings.get(fID);
+              Faction actTF = data.getFaction(fID);
+              if (actV != null && actV.intValue() > 0) {
+                DefaultMutableTreeNode subSubNode =
+                    new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
+                        actTF == null ? Resources.get("emapdetailspanel.node.unknownfaction")
+                            : actTF.getName() + ": "
+                                + NumberFormat.getNumberInstance().format(actV.intValue()),
+                        "Silber"));
+                subNode.add(subSubNode);
+              }
+            }
+          }
         }
       }
-  
-    } // loop factions
-    
-    //  Unterhalt
-    // we ignore persons of races which do not need support
-    spent[0] = personCounter * 10;
-    
-    for (int i = 0; i < spent.length; i++) {
-      totalSpent += spent[i];
     }
+
+    // iconnames for expense groups
+    String spentGroupIcon[] =
+        new String[] { "Persons", "Buildingcost", "Skills", "Alliance", "Magie", "Handeln",
+            "Persons" };
+
     if (totalSpent != 0) {
       currentNode =
           new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
@@ -1043,14 +1128,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   + ": " + NumberFormat.getNumberInstance().format(spent[i]), spentGroupIcon[i]));
           currentNode.add(subNode);
           // specials...
-          if (i==1){
+          if (i == S_UPKEEP) {
             // buildings after Type
-            if (buildingUpkeep.size()>0){
-              for (Iterator<ID> iterBT = buildingUpkeep.keySet().iterator();iterBT.hasNext();){
+            if (buildingUpkeep.size() > 0) {
+              for (Iterator<ID> iterBT = buildingUpkeep.keySet().iterator(); iterBT.hasNext();) {
                 ID btID = iterBT.next();
                 Integer actV = buildingUpkeep.get(btID);
                 BuildingType bT = data.rules.getBuildingType(btID);
-                if (bT!=null && actV!=null && actV.intValue()>0){
+                if (bT != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT
                           .getName()
@@ -1060,14 +1145,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 }
               }
             }
-          } else if (i==3){
+          } else if (i == S_ALMS) {
             // Almosen nach Factions UND Regions
-            if (factionAlms.size()>0){
-              for (Iterator<ID> iterF = factionAlms.keySet().iterator();iterF.hasNext();){
+            if (factionAlmsGiven.size() > 0) {
+              for (Iterator<ID> iterF = factionAlmsGiven.keySet().iterator(); iterF.hasNext();) {
                 ID actFID = iterF.next();
-                Integer actV = factionAlms.get(actFID);
+                Integer actV = factionAlmsGiven.get(actFID);
                 Faction actThisF = data.getFaction(actFID);
-                if (actV!=null){
+                if (actV != null) {
                   // node für diese Faction hinzu
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
@@ -1077,15 +1162,16 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                           "Silber"));
                   subNode.add(subSubNode);
                   // regions für diese Faction dazu
-                  if (actThisF!=null){
-                    Map<Region,Integer> actRM = almRegions.get(actThisF.getID());
-                    if (actRM!=null && actRM.size()>0){
-                      for (Iterator<Region> iterR = actRM.keySet().iterator();iterR.hasNext();){
+                  if (actThisF != null) {
+                    Map<Region, Integer> actRM = almGivenRegions.get(actThisF.getID());
+                    if (actRM != null && actRM.size() > 0) {
+                      for (Iterator<Region> iterR = actRM.keySet().iterator(); iterR.hasNext();) {
                         Region actRR = iterR.next();
                         actV = actRM.get(actRR);
-                        if (actV!=null && actV.intValue()>0){
-                          DefaultMutableTreeNode subSubSubNode = new DefaultMutableTreeNode(
-                              nodeWrapperFactory.createRegionNodeWrapper(actRR, actV.intValue()));
+                        if (actV != null && actV.intValue() > 0) {
+                          DefaultMutableTreeNode subSubSubNode =
+                              new DefaultMutableTreeNode(nodeWrapperFactory
+                                  .createRegionNodeWrapper(actRR, actV.intValue()));
                           subSubNode.add(subSubSubNode);
                         }
                       }
@@ -1094,14 +1180,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 }
               }
             }
-          } else if (i==6){
+          } else if (i == S_TRANSFERS) {
             // Übergaben
-            if (factionGivings.size()>0){
-              for (Iterator<ID> iterFID = factionGivings.keySet().iterator();iterFID.hasNext();){
-                ID fID = iterFID.next();
+            if (factionGivings.size() > 0) {
+              for (ID fID : factionGivings.keySet()) {
                 Integer actV = factionGivings.get(fID);
                 Faction actTF = data.getFaction(fID);
-                if (actTF!=null && actV!=null && actV.intValue()>0){
+                if (actTF != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(actTF
                           .getName()
@@ -1115,13 +1200,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         }
       }
     }
-    
+
     // show items and clear categories
-    unitsTools.addCategorizedUnitItems(units.values(), rootNode, null, null, true, nodeWrapperFactory);
-    
+    unitsTools.addCategorizedUnitItems(units.values(), rootNode, null, null, true,
+        nodeWrapperFactory);
+
     // add buildings
     // maps BuildingTypes to a List, containing the single buildings
-    Map<UnitContainerType, List<Building>> buildingsCounter = new Hashtable<UnitContainerType, List<Building>>();
+    Map<UnitContainerType, List<Building>> buildingsCounter =
+        new Hashtable<UnitContainerType, List<Building>>();
 
     // collect the buildings
     for (Iterator iterator = regions.values().iterator(); iterator.hasNext();) {
@@ -1130,7 +1217,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       for (Iterator iter = r.buildings().iterator(); iter.hasNext();) {
         Building building = (Building) iter.next();
 
-        if ((building.getOwnerUnit() != null) && factions.containsKey(building.getOwnerUnit().getFaction().getID())) {
+        if ((building.getOwnerUnit() != null)
+            && factions.containsKey(building.getOwnerUnit().getFaction().getID())) {
           if (!buildingsCounter.containsKey(building.getType())) {
             buildingsCounter.put(building.getType(), new LinkedList<Building>());
           }
@@ -1145,7 +1233,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.buildings"));
 
-      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.buildings"), "buildings"));
+      currentNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+              .get("factionstatspanel.node.buildings"), "buildings"));
       rootNode.add(currentNode);
     }
 
@@ -1156,19 +1246,24 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       // ((List) buildingsCounter.get(buildingType)).size());
 
       String buildingIconName = StringFactory.getFactory().intern(buildingType.getID().toString());
-      subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(buildingType.getName() + ": " + ((List) buildingsCounter.get(buildingType)).size(), buildingIconName));
+      subNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(buildingType
+              .getName()
+              + ": " + ((List) buildingsCounter.get(buildingType)).size(), buildingIconName));
 
       currentNode.add(subNode);
 
       for (Iterator i = ((List) buildingsCounter.get(buildingType)).iterator(); i.hasNext();) {
-        UnitContainerNodeWrapper uc = nodeWrapperFactory.createUnitContainerNodeWrapper((Building) i.next());
+        UnitContainerNodeWrapper uc =
+            nodeWrapperFactory.createUnitContainerNodeWrapper((Building) i.next());
         subNode.add(new DefaultMutableTreeNode(uc));
       }
     }
 
     // add ships
     // maps ShipTypes to Lists, containing the single ships
-    Map<UnitContainerType, List<Ship>> shipsCounter = new Hashtable<UnitContainerType, List<Ship>>();
+    Map<UnitContainerType, List<Ship>> shipsCounter =
+        new Hashtable<UnitContainerType, List<Ship>>();
 
     // collect the ships
     for (Iterator iterator = regions.values().iterator(); iterator.hasNext();) {
@@ -1177,7 +1272,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       for (Iterator iter = r.ships().iterator(); iter.hasNext();) {
         Ship ship = (Ship) iter.next();
 
-        if ((ship.getOwnerUnit() != null) && factions.containsKey(ship.getOwnerUnit().getFaction().getID())) {
+        if ((ship.getOwnerUnit() != null)
+            && factions.containsKey(ship.getOwnerUnit().getFaction().getID())) {
           if (!shipsCounter.containsKey(ship.getType())) {
             shipsCounter.put(ship.getType(), new LinkedList<Ship>());
           }
@@ -1191,26 +1287,31 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     if (shipsCounter.keySet().size() > 0) {
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.ships"));
-      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.ships"), "ships"));
+      currentNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+              .get("factionstatspanel.node.ships"), "ships"));
       rootNode.add(currentNode);
     }
 
     for (Iterator iter = shipsCounter.keySet().iterator(); iter.hasNext();) {
       UnitContainerType shipType = (UnitContainerType) iter.next();
       /**
-       * Fiete 20060911 m = new DefaultMutableTreeNode(shipType.getName() + ": " +
-       * ((List) shipsCounter.get(shipType)).size());
+       * Fiete 20060911 m = new DefaultMutableTreeNode(shipType.getName() + ": "
+       * + ((List) shipsCounter.get(shipType)).size());
        */
       // Fiete 20060911: added support for shiptypeicons
       // Fiete 20060915: get rid of english icon names...using stringfactory to
       // get the orginal names
       String shipIconName = StringFactory.getFactory().intern(shipType.getID().toString());
-      subNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName() + ": " + ((List) shipsCounter.get(shipType)).size(), shipIconName));
+      subNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName()
+              + ": " + ((List) shipsCounter.get(shipType)).size(), shipIconName));
 
       currentNode.add(subNode);
 
       for (Iterator i = ((List) shipsCounter.get(shipType)).iterator(); i.hasNext();) {
-        UnitContainerNodeWrapper uc = nodeWrapperFactory.createUnitContainerNodeWrapper((Ship) i.next());
+        UnitContainerNodeWrapper uc =
+            nodeWrapperFactory.createUnitContainerNodeWrapper((Ship) i.next());
         subNode.add(new DefaultMutableTreeNode(uc));
       }
     }
@@ -1221,7 +1322,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     if (sortedSkillTypes.size() > 0) {
       // n = new
       // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.skills"));
-      currentNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.skills"), "skills"));
+      currentNode =
+          new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+              .get("factionstatspanel.node.skills"), "skills"));
       rootNode.add(currentNode);
 
       for (Iterator iter = sortedSkillTypes.iterator(); iter.hasNext();) {
@@ -1230,14 +1333,18 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
         for (Iterator i = sortedSkills.iterator(); i.hasNext();) {
           Skill skill = (Skill) i.next();
-          subNode = new DefaultMutableTreeNode(new SimpleNodeWrapper(type.getName() + " T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill), type.getName()));
+          subNode =
+              new DefaultMutableTreeNode(new SimpleNodeWrapper(type.getName() + " T"
+                  + skill.getLevel() + ": " + skillStats.getPersonNumber(skill), type.getName()));
           currentNode.add(subNode);
 
           List<Unit> unitList = skillStats.getUnits(skill);
 
           // now sort the units and add them as nodes...
           Comparator<Unique> idCmp = IDComparator.DEFAULT;
-          Comparator<Unit> unitCmp = new UnitSkillComparator(new SpecifiedSkillTypeSkillComparator(type, new SkillComparator(), null), idCmp);
+          Comparator<Unit> unitCmp =
+              new UnitSkillComparator(new SpecifiedSkillTypeSkillComparator(type,
+                  new SkillComparator(), null), idCmp);
           Collections.sort(unitList, unitCmp);
 
           for (Iterator<Unit> iterator = unitList.iterator(); iterator.hasNext();) {
@@ -1255,7 +1362,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 turnsToLearn++;
               }
 
-              text += (": " + " [" + currentDays + " -> " + nextLevelDays + " {" + turnsToLearn + "}], " + u.getPersons());
+              text +=
+                  (": " + " [" + currentDays + " -> " + nextLevelDays + " {" + turnsToLearn
+                      + "}], " + u.getPersons());
 
             } else {
               text += ": " + u.getPersons();
@@ -1271,7 +1380,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // Add production
     // Mapping ItemCategory to Hashtable that maps resource (String) to
     // ProductionStats-Objects
-    Map<ItemCategory, Map<String, ProductionStats>> production = new Hashtable<ItemCategory, Map<String, ProductionStats>>();
+    Map<ItemCategory, Map<String, ProductionStats>> production =
+        new Hashtable<ItemCategory, Map<String, ProductionStats>>();
 
     for (Iterator<Faction> Iter = factions.values().iterator(); Iter.hasNext();) {
       Faction faction = Iter.next();
@@ -1280,7 +1390,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         for (Iterator<Message> i = faction.getMessages().iterator(); i.hasNext();) {
           Message msg = i.next();
           int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
-          
+
           // check whether the message belongs to one of the selected regions
           if (msg.getAttributes() != null) {
             String regionCoordinate = msg.getAttributes().get("region");
@@ -1298,7 +1408,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             }
 
             // find a valid amount
-            if ((msg.getMessageType() != null) && (msg.getMessageType().getSection() != null) && msg.getMessageType().getSection().equalsIgnoreCase("production")) {
+            if ((msg.getMessageType() != null) && (msg.getMessageType().getSection() != null)
+                && msg.getMessageType().getSection().equalsIgnoreCase("production")) {
               String value = msg.getAttributes().get("amount");
               int amount = 0;
 
@@ -1314,16 +1425,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   // possible a message containing ;herb instead of ;resource
                   resource = msg.getAttributes().get("herb");
                 }
-                
-                if (resource==null){
+
+                if (resource == null) {
                   // In Pferdezucht gezüchtete Pferde haben keine ressource
                   // Fiete: 20080521
-                  if (msgID==687207561){
+                  if (msgID == 687207561) {
                     resource = "Pferd";
                   }
                 }
-                
-                
+
                 if (resource != null) {
                   // find the category
                   ItemType itemType = data.rules.getItemType(StringID.create(resource));
@@ -1334,7 +1444,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   }
 
                   if (itemCategory == null) {
-                    FactionStatsPanel.log.info("Item without category: "+resource);
+                    FactionStatsPanel.log.info("Item without category: " + resource);
                   } else {
                     // add the data
                     Map<String, ProductionStats> h = production.get(itemCategory);
@@ -1379,17 +1489,19 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // to ProductionStats-Objects
     // DefaultMutableTreeNode prodNode = new
     // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.production"));
-    DefaultMutableTreeNode prodNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.production"), "production"));
+    DefaultMutableTreeNode prodNode =
+        new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+            .get("factionstatspanel.node.production"), "production"));
 
     for (Iterator iter = production.keySet().iterator(); iter.hasNext();) {
       ItemCategory iCategory = (ItemCategory) iter.next();
-      
+
       ArrayList<DefaultMutableTreeNode> subNodeChildList = new ArrayList<DefaultMutableTreeNode>();
-      
+
       String catIconName = magellan.library.utils.Umlaut.convertUmlauts(iCategory.getName());
       String nodeName = Resources.get("factionstatspanel." + catIconName);
 
-      Map<String,ProductionStats> h = production.get(iCategory);
+      Map<String, ProductionStats> h = production.get(iCategory);
       int totalAmount = 0;
 
       for (Iterator<String> iterator = h.keySet().iterator(); iterator.hasNext();) {
@@ -1399,9 +1511,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         DefaultMutableTreeNode o = null;
         // o = new DefaultMutableTreeNode(resource + ": " + stats.totalAmount);
         if (catIconName.equalsIgnoreCase("kraeuter")) {
-          o = createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/" + "kraeuter");
+          o =
+              createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/"
+                  + "kraeuter");
         } else {
-          o = createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/" + resource);
+          o =
+              createSimpleNode(data.getTranslation(resource) + ": " + stats.totalAmount, "items/"
+                  + resource);
         }
 
         // subNode.add(o);
@@ -1414,14 +1530,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           o.add(new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(u, amount)));
         }
       }
-      if (subNodeChildList!=null && subNodeChildList.size()>0) {
+      if (subNodeChildList != null && subNodeChildList.size() > 0) {
         subNode = createSimpleNode(nodeName + ":" + totalAmount, catIconName);
-        for (Iterator<DefaultMutableTreeNode> iterDMTN = subNodeChildList.iterator();iterDMTN.hasNext();){
+        for (Iterator<DefaultMutableTreeNode> iterDMTN = subNodeChildList.iterator(); iterDMTN
+            .hasNext();) {
           subNode.add(iterDMTN.next());
         }
         prodNode.add(subNode);
       }
-      
+
     }
 
     if (prodNode.getChildCount() > 0) {
@@ -1430,11 +1547,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // Fiete: Displaying Faction-Items
     // only if one faction is selected
-    if (factions.size()==1) {
+    if (factions.size() == 1) {
       Faction f = factions.values().iterator().next();
       if (f.getItems() != null) {
         if (f.getItems().size() > 0) {
-          DefaultMutableTreeNode factionPoolNode = new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources.get("factionstatspanel.node.factionpool"), "factionpool"));
+          DefaultMutableTreeNode factionPoolNode =
+              new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+                  .get("factionstatspanel.node.factionpool"), "factionpool"));
           for (Iterator iter = f.getItems().iterator(); iter.hasNext();) {
             Item actItem = (Item) iter.next();
             ItemNodeWrapper itemNodeWrapper = nodeWrapperFactory.createItemNodeWrapper(actItem);
@@ -1463,20 +1582,23 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       } else {
         List<Alliance> list = new LinkedList<Alliance>();
         list.add(alliance);
-        alliances.put(key,list);
+        alliances.put(key, list);
       }
     }
-    for(String key : alliances.keySet()) {
+    for (String key : alliances.keySet()) {
       List<Alliance> alliance = alliances.get(key);
-      Collections.sort(alliance, new AllianceFactionComparator(new NameComparator(IDComparator.DEFAULT)));
-      
-      DefaultMutableTreeNode m = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",new Object[]{key}));
+      Collections.sort(alliance, new AllianceFactionComparator(new NameComparator(
+          IDComparator.DEFAULT)));
+
+      DefaultMutableTreeNode m =
+          new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",
+              new Object[] { key }));
       for (Alliance a : alliance) {
         FactionNodeWrapper f = new FactionNodeWrapper(a.getFaction(), null, allies);
         DefaultMutableTreeNode o = new DefaultMutableTreeNode(f);
         m.add(o);
       }
-      
+
       rootNode.add(m);
     }
   }
@@ -1487,13 +1609,15 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     tree = new CopyTree(treeModel);
     // tree.setRootVisible(true);
     tree.setRootVisible(false);
-    
+
     tree.addTreeSelectionListener(this);
     tree.setShowsRootHandles(true);
     CellRenderer tr = new CellRenderer(getMagellanContext());
     tree.setCellRenderer(tr);
 
-    JScrollPane treeScrollPane = new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+    JScrollPane treeScrollPane =
+        new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
     treeScrollPane.setMinimumSize(new Dimension(100, 50));
 
     JPanel stats = new JPanel(new GridLayout(1, 1));
@@ -1509,9 +1633,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
   }
 
-//  private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
-//    return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, this.data.getTranslation(obj), (Object) icons));
-//  }
 
   /**
    * A little class used to store information about production statistics for a
@@ -1525,5 +1646,5 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // total amount produced by all units
     private int totalAmount;
   }
-    
+
 }

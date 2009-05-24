@@ -1,3 +1,6 @@
+2009-05-25 / Build 288 - stm (stm_@users.sourceforge.net)
+	* bug  #317 (faction stats panel, income) 
+
 2009-05-25 / Build 283 - stm (stm_@users.sourceforge.net)
 	* tweaked treatment of "edit all" action
 	* tweaked context menu stuff

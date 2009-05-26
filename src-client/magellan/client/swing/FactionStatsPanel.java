@@ -20,6 +20,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -680,8 +681,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     final int E_THEFT = 5;
     final int E_MAGIC = 6;
 
-    int earned[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-    int wanted[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+    int earned[] = new int[7];
+    int wanted[] = new int[7];
+    Arrays.fill(earned, 0);
+    Arrays.fill(wanted, 0);
 
     int totalIncome = 0;
     int totalWanted = 0;
@@ -703,19 +706,22 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 0 = Unterhalt (just count Persons * 10 ?)
     // 1 = Gebäudeunterhalt
     // 2 = Lernkosten
-    // 3 = Almosen
-    // 4 = Magiekosten (no chance: Messages contains just the magic item, no
+    // 3 = Magiekosten (no chance: Messages contains just the magic item, no
     // cost. No chance to find the spell for sure..)
-    // 5 = Handel
-    // 6 = Übergaben an andere Parteien
+    // 4 = Handel
+    // 5 = Diebstahl
+    // 6 = Almosen
+    // 7 = Übergaben an andere Parteien
     final int S_SUPPORT = 0;
     final int S_UPKEEP = 1;
     final int S_LEARN = 2;
     final int S_MAGIC = 3;
     final int S_TRADE = 4;
-    final int S_ALMS = 5;
-    final int S_TRANSFERS = 6;
-    int spent[] = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+    final int S_THEFT = 5;
+    final int S_ALMS = 6;
+    final int S_TRANSFERS = 7;
+    int spent[] = new int[8];
+    Arrays.fill(spent, 0);
 
     Map<ID, Integer> buildingUpkeep = new HashMap<ID, Integer>();
 
@@ -837,7 +843,18 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             if (value != null) {
               spent[S_LEARN] += Integer.parseInt(value);
             }
-          } else if (msgID == 1682429624) {
+          } else if (msgID == 1543395091) {
+            // Diebstahl
+            try {
+              Unit unit = data.getUnit(UnitID.createUnitID(Integer.parseInt(msg.getAttributes().get("unit")), data.base));
+              int amount = Integer.parseInt(msg.getAttributes().get("amount"));
+              if (factions.containsKey(unit.getFaction().getID())){
+                spent[S_THEFT] +=amount;
+              }
+            } catch (Exception e){
+              
+            }
+          }else if (msgID == 1682429624) {
             // Almosen
             // müssen in den Regionsmessages überprüft werden
 
@@ -990,6 +1007,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     }
 
     // iconnames for income groups
+    // 0 = Arbeiten
+    // 1 = Unterhaltung
+    // 2 = Treiben
+    // 3 = Handel
+    // 4 = am Handel
+    // 5 = Diebstahl
+    // 6 = Zauberei
     String incomeGroupIcon[] =
         new String[] { "Arbeiten", "Unterhaltung", "Steuereintreiben", "Handeln", "Handeln",
             "Tarnung", "Magie" };
@@ -1044,7 +1068,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         Object msgArgs[] = { new Integer(extraEarned[i]) };
         StringBuffer sb = new StringBuffer();
         sb.append(new java.text.MessageFormat(Resources.get("factionstatspanel.node.income"
-            + (earned.length - 1 + i))).format(msgArgs));
+            + (earned.length + i))).format(msgArgs));
 
         subNode =
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(sb.toString(),
@@ -1110,8 +1134,17 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     }
 
     // iconnames for expense groups
+    // 0 = Unterhalt (just count Persons * 10 ?)
+    // 1 = Gebäudeunterhalt
+    // 2 = Lernkosten
+    // 3 = Magiekosten (no chance: Messages contains just the magic item, no
+    // cost. No chance to find the spell for sure..)
+    // 4 = Handel
+    // 5 = Diebstahl
+    // 6 = Almosen
+    // 7 = Übergaben an andere Parteien
     String spentGroupIcon[] =
-        new String[] { "Persons", "Buildingcost", "Skills", "Alliance", "Magie", "Handeln",
+        new String[] { "Persons", "Buildingcost", "Skills", "Tarnung", "Alliance", "Magie", "Handeln",
             "Persons" };
 
     if (totalSpent != 0) {

@@ -976,7 +976,7 @@ public class CRParser implements RulesIO, GameDataIO {
           String actGameName = world.getGameName().toLowerCase();
           if ((actGameName.indexOf("eressea")>-1 || actGameName.indexOf("vinyambar")>-1) && (world.base!=36)){
             // this should not happen
-            CRParser.log.warn("BASE ERROR !! read report could have not base36 !! Changed to base36.");
+            CRParser.log.error("BASE ERROR !! read report could have not base36 !! Changed to base36.");
             world.base = 36;
           }
         }

@@ -489,7 +489,7 @@ public class CRWriter extends BufferedWriter {
 		String actGameName = world.getGameName().toLowerCase();
 		if ((actGameName.indexOf("eressea")>-1 || actGameName.indexOf("vinyambar")>-1) && (world.base!=36)){
 			// this should not happen
-			CRWriter.log.warn("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was " + world.base + ")");
+			CRWriter.log.error("BASE ERROR !! report to write could have not base36 !! Changed to base36. (Was " + world.base + ")");
 			world.base = 36;
 		}
 		write(world.base + ";Basis");

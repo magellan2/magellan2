@@ -34,6 +34,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -62,6 +63,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -1234,9 +1236,17 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       } else if (actionEvent.getSource() == setTooltip) {
         setTooltip();
       } else if (actionEvent.getSource() == showInfo){
-        if(infoDialog == null) {
-          infoDialog = new ToolTipReplacersInfo(SwingUtilities.getWindowAncestor(this),
-                              Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+        if (infoDialog == null) {
+          Window w = SwingUtilities.getWindowAncestor(this); 
+          if (SwingUtilities.getWindowAncestor(this) instanceof JDialog) {
+            infoDialog =
+                new ToolTipReplacersInfo((JDialog) w, Resources
+                    .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+          } else {
+            infoDialog =
+                new ToolTipReplacersInfo(Resources
+                    .get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
+          }
         }
 
         if(!infoDialog.isVisible()) {

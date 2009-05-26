@@ -331,7 +331,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 				}
 			});
 
-		JButton btnPassword = new JButton(Resources.get("factionstatsdialog.btn.setpwd.caption"));
+		final JButton btnPassword = new JButton(Resources.get("factionstatsdialog.btn.setpwd.caption"));
 		btnPassword.setMnemonic(Resources.get("factionstatsdialog.btn.setpwd.menmonic").charAt(0));
 		btnPassword.setToolTipText(Resources.get("factionstatsdialog.btn.setpwd.tooltip"));
 		btnPassword.addActionListener(new ActionListener() {
@@ -387,12 +387,19 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		            data.setCoordinateTranslation((EntityID) f.getID(), translation);
 					    }
 					  }
+	          // notify game data listeners
+	          dispatcher.fire(new GameDataEvent(this, data));
 					}
-					// notify game data listeners
-					dispatcher.fire(new GameDataEvent(this, data));
 				}
 			});
 
+		// enable password button only if exactly one faction is selected.
+    lstFaction.addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent e) {
+        btnPassword.setEnabled(lstFaction.getSelectedIndices().length == 1);
+      }
+    });
+		
 		JButton btnTrustlevel = new JButton(Resources.get("factionstatsdialog.btn.trustlevel.caption"));
 		btnTrustlevel.setMnemonic(Resources.get("factionstatsdialog.btn.trustlevel.mnemonic").charAt(0));
     btnTrustlevel.setToolTipText(Resources.get("factionstatsdialog.btn.trustlevel.tooltip"));
@@ -576,34 +583,35 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Rebuilds the faction list.
 	 * 
+	 * @see magellan.client.swing.InternationalizedDataDialog#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	@Override
   public void gameDataChanged(GameDataEvent e) {
-		data = e.getGameData();
-		factions = new LinkedList<Faction>(data.factions().values());
+    Object oldSelection = lstFaction.getSelectedValue();
+    data = e.getGameData();
+    factions = new LinkedList<Faction>(data.factions().values());
 
-		// sort factions
-		Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
-		lstFaction.setListData(factions.toArray());
+    // sort factions
+    Collections.sort(factions, FactionStatsDialog.factionTrustComparator);
+    lstFaction.setListData(factions.toArray());
 
-		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID",
-																   "-1"), 10);
-		Faction selFac = data.getFaction(selFacID);
+    ID selFacID =
+        EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10);
+    Faction selFac = data.getFaction(selFacID);
 
-		if(selFac != null) {
-			lstFaction.setSelectedValue(selFac, true);
-		} else {
-			lstFaction.setSelectedIndex(0);
-		}
+    if (selFac != null) {
+      lstFaction.setSelectedValue(selFac, true);
+    } else {
+      lstFaction.setSelectedIndex(0);
+    }
+    // select old selection if possible
+    if (oldSelection != null) {
+      lstFaction.setSelectedValue(oldSelection, true);
+    }
 
-		lstFaction.repaint();
-	}
-
-	//public void showEresseaOptions() {
-	//	tabPane.setSelectedComponent(optionPanel);
-	//}
+    lstFaction.repaint();
+  }
 
 }

@@ -2,7 +2,7 @@
 	* bug  #317,#318 (faction stats panel, income)
 	* bug #234 (multi editor selection)
 	* bug #306 (faction stats selection)
-	* Replacers description
+	* Replacers descriptions
 
 2009-05-25 / Build 283 - stm (stm_@users.sourceforge.net)
 	* tweaked treatment of "edit all" action
@@ -20,7 +20,7 @@
 	* added comment "path is X regions long" to pathfinderContextMenu
 	* set weight of RdfF from 1 to 0
 
-2009-04-23 / Build 275 - stm (stm_@users.sourceforge.net)
+2009-05-20 / Build 275 - stm (stm_@users.sourceforge.net)
     * refined ShipInspector to check for crew
     * tweaked suppression of problems, especially from ShipInspector
 	* improved SkillInspector

@@ -68,7 +68,14 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
   private JTextField tz;
 
   /**
-   * DOCUMENT ME!
+   * Create a new dialog for faction properties for the specified faction.
+   * 
+   * @param owner
+   * @param modal
+   * @param dispatcher
+   * @param d
+   * @param p
+   * @param f
    */
   public FactionPropertiesDialog(Frame owner, boolean modal, EventDispatcher dispatcher,
       GameData d, Properties p, Faction f) {
@@ -85,8 +92,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     setSize(420, 500);
 
     Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-    int x =(screen.width - getWidth()) / 2;
-    int y =(screen.height - getHeight()) / 2;
+    int x = (screen.width - getWidth()) / 2;
+    int y = (screen.height - getHeight()) / 2;
     setLocation(x, y);
     pack();
   }
@@ -127,7 +134,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     txtPassword.setPreferredSize(new Dimension(100, 25));
     txtPassword.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
 
-    JLabel l = new JLabel(Resources.get("factionpropertiesdialog.password.label") + ": ");
+    JLabel l = new JLabel(Resources.get("factionpropertiesdialog.password.label"));
     // l.setDisplayedMnemonic(Resources.get("finddialog.lbl.pattern.mnemonic").charAt(0));
     l.setLabelFor(txtPassword);
     l.setToolTipText(Resources.get("factionpropertiesdialog.password.tooltip"));
@@ -192,7 +199,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     });
 
     translationList = new JList();
-    translationList.setToolTipText(Resources.get("factionpropertiesdialog.translationlist.tooltip"));
+    translationList
+        .setToolTipText(Resources.get("factionpropertiesdialog.translationlist.tooltip"));
     translationList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     JScrollPane pane = new JScrollPane(translationList);
 
@@ -266,23 +274,11 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     c.fill = GridBagConstraints.HORIZONTAL;
     c.weightx = 0.0;
     c.weighty = 0.0;
-    main.add(pnlPassword, c);
 
-    // c.anchor = GridBagConstraints.NORTH;
-    // c.gridx = 1;
-    // c.gridy = 0;
-    // c.gridwidth = 1;
-    // c.gridheight = 2;
-    // c.fill = GridBagConstraints.NONE;
-    // c.insets = new Insets(2, 2, 2, 2);
-    // c.weightx = 0.0;
-    // c.weighty = 0.0;
-    // main.add(pnlButtons, c);
-
-    c.gridx = 0;
-    c.gridy++;
-    c.gridwidth = 2;
     main.add(chkOwner, c);
+
+    c.gridy++;
+    main.add(pnlPassword, c);
 
     c.gridx = 0;
     c.gridy++;

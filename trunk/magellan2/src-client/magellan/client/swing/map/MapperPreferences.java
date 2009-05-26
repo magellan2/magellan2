@@ -40,6 +40,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -450,9 +452,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
+			 * Reacts to clicks on Ok (approved=true) or Cancel (approved = false) and hides dialog.
 			 * 
+			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 			 */
 			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 				if(actionEvent.getSource() == ok) {
@@ -479,10 +481,6 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			/**
 			 * Creates a new AddTooltipDialog object.
 			 *
-			 * 
-			 * 
-			 * 
-			 * 
 			 * 
 			 */
 			public AddTooltipDialog(Dialog parent, String title, String name, String def, int index) {
@@ -549,9 +547,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
+			 * @see java.awt.Container#getMinimumSize()
 			 */
 			@Override
       public Dimension getMinimumSize() {
@@ -559,9 +555,10 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
+			 * Reacts to click on Ok (by creating and adding the new tooltip) or Cancel (by adding nothing)
+			 * and hiding the dialog.
 			 * 
+			 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 			 */
 			public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 				if(actionEvent.getSource() != cancel) {
@@ -600,6 +597,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			protected JButton ok;
 			protected JButton cancel;
 			protected JTextField title;
+      protected JTextField padding;
 			protected JTextField table[][];
 			protected JCheckBox excludeOceans;
 			protected String name;
@@ -620,11 +618,12 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				super(parent, title, true);
 			}
 
-			/**
-			 * DOCUMENT-ME
-			 */
-			@Override
-      public void show() {
+      /**
+       * Creates a dialog for adding a tooltip in table form. Asks for tooltip name, rows and cols.
+       * 
+       * @return <code>false</code> if input was aborted.
+       */
+      public boolean init() {
 				// clear parts to flag that this is a new mask
 				leftPart = null;
 				midPart = null;
@@ -634,7 +633,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				name = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.name"));
 
 				if((name == null) || (name.length() < 1)) {
-					return;
+					return false;
 				}
 
 				String s = JOptionPane.showInputDialog(this,
@@ -644,11 +643,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				try {
 					rows = Integer.parseInt(s);
 				} catch(Exception exc) {
-					return;
+          return false;
 				}
 
 				if(rows <= 0) {
-					return;
+          return false;
 				}
 
 				s = JOptionPane.showInputDialog(this, Resources.get("map.mapperpreferences.tooltipdialog.addbymask.columns"));
@@ -658,24 +657,24 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				try {
 					columns = Integer.parseInt(s);
 				} catch(Exception exc) {
-					return;
+          return false;
 				}
 
 				if(columns <= 0) {
-					return;
+          return false;
 				}
 
 				Container content = this.getContentPane();
+				content.setLayout(new GridBagLayout());
 				content.removeAll();
 
 				initComponents(content);
 
-				initUI(content, rows, columns, null, null, true); // emtpy table
+				initUI(content, rows, columns, null, "0", null, true); // emtpy table
 
 				this.pack();
 				this.setLocationRelativeTo(this.getParent());
-
-				super.setVisible(true);
+				return true;
 			}
 
 			protected String removePSigns(String s) {
@@ -694,14 +693,12 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				return s;
 			}
 
-			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
-			 * 
-			 * 
-			 */
-			public void show(String tipName, String tipDef, int index) {
+      /**
+       * Creates a dialog for editing a tooltip in table form. Asks for tooltip name, rows and cols.
+       * 
+       * @return <code>false</code> if input was aborted or old definition could not be parsed.
+       */
+      public boolean init(String tipName, String tipDef, int index) {
 				/* try to find the parts of the mask
 				 *
 				 * Assume: Start ... "<b><center>"title"</center></b>"..."<table"table data"</table>"...End
@@ -715,7 +712,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 					i = tipDef.indexOf("<center><b>");
 
 					if(i == -1) {
-						return;
+						return false;
 					}
 				}
 
@@ -729,7 +726,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 					i = tipDef.indexOf("</b></center>");
 
 					if(i == -1) {
-						return;
+            return false;
 					}
 				}
 
@@ -738,11 +735,14 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				rest = rest.substring(i + 13);
 
 				i = rest.indexOf("<table");
+				
+				int tagEnd = rest.indexOf("\">");
+				String paddingS = rest.substring(i+20, tagEnd);
 
 				int j = rest.indexOf("</table>");
 
 				if((i == -1) || (j == -1)) {
-					return;
+          return false;
 				}
 
 				String tData = rest.substring(i, j);
@@ -786,7 +786,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				}
 
 				if((rows == 0) || (columns == 0)) {
-					return;
+          return false;
 				}
 
 				// now get the table elements
@@ -860,12 +860,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 
 				initComponents(content);
 
-				initUI(content, rows, columns, titleS, values, false);
+				initUI(content, rows, columns, titleS, paddingS, values, false);
 
 				this.pack();
 				this.setLocationRelativeTo(this.getParent());
-
-				super.setVisible(true);
+        return true;
 			}
 
 			protected void initComponents(Container content) {
@@ -884,6 +883,10 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 					title.setText(null);
 				}
 
+        if(padding == null) {
+          padding = new JTextField("0", 3);
+        }
+
 				if(ok == null) {
 					ok = new JButton(Resources.get("map.mapperpreferences.tooltipdialog.addbymask.ok"));
 					ok.addActionListener(this);
@@ -900,16 +903,32 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				}
 			}
 
-			protected void initUI(Container content, int rows, int cols, String titleS,
+			protected void initUI(Container content, int rows, int cols, String titleS, String paddingS,
 								  String values[][], boolean showExclude) {
 				// title
-				title.setText(titleS);
+        if(title == null) {
+          title = new JTextField(20);
+        }				
+        title.setText(titleS);
 				gbc.gridx = 0;
 				gbc.gridy = 0;
 				gbc.gridwidth = 2;
 				gbc.gridheight = 1;
 				content.add(title, gbc);
 
+				JLabel label = new JLabel("cellpadding");
+				if(padding == null) {
+				  padding = new JTextField("0", 3);
+				}
+				padding.setText(paddingS);
+
+				gbc.gridwidth=1;
+				gbc.gridx=2;
+				content.add(label);
+				gbc.gridx++;
+				content.add(padding, gbc);
+
+        gbc.gridy=1;
 				gbc.gridwidth = 1;
 
 				// table
@@ -982,8 +1001,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 
 			protected void createEditedTable() {
 				String rowStart = "<tr>";
-				String columnStart = "<td>ï¿½";
-				String columnEnd = "ï¿½</td>";
+				String columnStart = "<td>§";
+				String columnEnd = "§</td>";
 				String rowEnd = "</tr>";
 
 				StringBuffer buf = new StringBuffer();
@@ -992,9 +1011,9 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 					buf.append(leftPart);
 				}
 
-				buf.append("<b><center>ï¿½");
+				buf.append("<b><center>§");
 				buf.append(title.getText());
-				buf.append("ï¿½</center></b>");
+				buf.append("§</center></b>");
 
 				if(midPart != null) {
 					buf.append(midPart);
@@ -1003,9 +1022,13 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				buf.append("<table");
 
 				if(tableAttribs != null) {
-					buf.append(tableAttribs);
-				}
-
+				  Pattern p = Pattern.compile("cellpadding=\"[^\"]*\"");
+				  Matcher m = p.matcher(tableAttribs);
+				  while (m.find()) {
+				    m.appendReplacement(buf, "cellpadding=\""+padding.getText()+"\"");
+				  }
+				  m.appendTail(buf);
+				}				
 				buf.append(">");
 
 				//table
@@ -1038,25 +1061,25 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 
 			protected void createNewTable() {
 				String rowStart = "<tr>";
-				String columnStart = "<td>ï¿½";
-				String columnEnd = "ï¿½</td>";
+				String columnStart = "<td>§";
+				String columnEnd = "§</td>";
 				String rowEnd = "</tr>";
 
 				StringBuffer buf = new StringBuffer("<html>");
 
 				// exclude oceans if selected
 				if(excludeOceans.isSelected()) {
-					buf.append("ï¿½ifï¿½isOzeanï¿½Ozeanï¿½elseï¿½");
+					buf.append("§if§isOzean§Ozean§else§");
 				}
 
-				buf.append("<b><center>ï¿½");
+				buf.append("<b><center>§");
 
 				// title
 				if(title.getText() != null) {
 					buf.append(title.getText());
 				}
 
-				buf.append("ï¿½</center></b><table cellpadding=\"0\">");
+				buf.append("§</center></b><table cellpadding=\""+padding.getText()+"\">");
 
 				//table
 				for(int i = 0; i < table.length; i++) {
@@ -1078,7 +1101,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				buf.append("</table>");
 
 				if(excludeOceans.isSelected()) {
-					buf.append("ï¿½endï¿½");
+					buf.append("§end§");
 				}
 
 				buf.append("</html>");
@@ -1139,6 +1162,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			main.setBorder(border);
 
 			text = new JTextField(30);
+			text.setEditable(false);
 			main.add(text, BorderLayout.NORTH);
 
 			JPanel mInner = new JPanel(new BorderLayout());
@@ -1315,9 +1339,10 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 					maskDialog = new AddByMaskDialog(this,
 													 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
 				}
-
-				maskDialog.show();
-				recreate();
+				if (maskDialog.init()){
+				  maskDialog.setVisible(true);
+				  recreate();
+				}
 			} else if(e.getSource() == editmask) {
 				if((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {
 					int index = tooltipList.getSelectedIndex();
@@ -1327,10 +1352,11 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 														 Resources.get("map.mapperpreferences.tooltipdialog.addbymask.title"));
 					}
 
-					log.info("Starting editing dialog...");
-					maskDialog.show(tooltipList.getSelectedValue().toString(),
-									tooltips.get(index), index * 2);
-					recreate();
+					if (maskDialog.init(tooltipList.getSelectedValue().toString(),
+									tooltips.get(index), index * 2)){
+					  maskDialog.setVisible(true);
+					  recreate();
+					}
 				}
 			} else if(e.getSource() == edit) {
 				if((tooltipList != null) && (tooltipList.getSelectedIndex() > -1)) {

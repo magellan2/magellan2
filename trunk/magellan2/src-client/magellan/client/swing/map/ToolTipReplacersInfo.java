@@ -2,8 +2,9 @@ package magellan.client.swing.map;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
-import java.awt.Window;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -35,15 +36,47 @@ class ToolTipReplacersInfo extends JDialog
 	protected List<String> rList;
 	protected ReplacerFactory replacerMap;
 
-	/**
-	 * Creates a new ToolTipReplacersInfo object.
-	 *
-	 * 
-	 * 
-	 */
-	public ToolTipReplacersInfo(Window parent, String title) {
-		super(parent, title);
+  /**
+   * Creates a new ToolTipReplacersInfo object without owner.
+   * 
+   * @param title
+   */
+  public ToolTipReplacersInfo(String title){
+    super();
+    setTitle(title);
+    init();
+  }
 
+  /**
+	 * Creates a new ToolTipReplacersInfo with the specified dialog as owner
+	 * 
+	 * @param parent The non-<code>null</code> dialog owner.
+	 * @param title
+	 */
+	public ToolTipReplacersInfo(Dialog parent, String title){
+	  super(parent, title);
+	  init();
+	}
+
+  /**
+   * Creates a new ToolTipReplacersInfo object. 
+   * 
+   * <p>NOTE: This constructor does not
+   * allow you to create an unowned JDialog. To create an unowned JDialog you
+   * must use the TooltipReplacersInfo(JDialog, String) constructor with an
+   * argument of null.</p>
+   */
+	/**
+	 * @param parent The non-<code>null</code> dialog owner.
+	 * @param title 
+	 */
+	public ToolTipReplacersInfo(Frame parent, String title) {
+		super(parent, title);
+		init();
+	}
+	
+	protected void init(){
+		
 		list = new JList();
 		list.setFixedCellWidth(150);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -70,7 +103,7 @@ class ToolTipReplacersInfo extends JDialog
 		c.add(south, BorderLayout.SOUTH);
 
 		this.setSize(600, 400); // because of some pack mysteries
-		this.setLocationRelativeTo(parent);
+		this.setLocationRelativeTo(getParent());
 	}
 
 	/**

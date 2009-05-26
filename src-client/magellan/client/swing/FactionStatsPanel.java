@@ -1144,7 +1144,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 6 = Almosen
     // 7 = Übergaben an andere Parteien
     String spentGroupIcon[] =
-        new String[] { "Persons", "Buildingcost", "Skills", "Tarnung", "Alliance", "Magie", "Handeln",
+        new String[] { "Persons", "Buildingcost", "Skills", "Magie", "Handeln", "Tarnung", "Alliance",
             "Persons" };
 
     if (totalSpent != 0) {

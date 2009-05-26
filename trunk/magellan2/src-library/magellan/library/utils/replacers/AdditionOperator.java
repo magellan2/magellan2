@@ -13,6 +13,8 @@
 
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 
 /**
  * An addition operator summing the given numbers.
@@ -29,14 +31,18 @@ public class AdditionOperator extends AbstractOperator {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Adds two numbers given as arguments.
 	 * 
 	 */
 	@Override
   public Object compute(Object numbers[]) {
 		return new Float(((Number) numbers[0]).floatValue() + ((Number) numbers[1]).floatValue());
 	}
+
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.additionoperator.description")+"\n\n"+super.getDescription();
+  }
 }

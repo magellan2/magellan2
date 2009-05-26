@@ -19,24 +19,19 @@
 package magellan.library.utils.replacers;
 
 /**
- * DOCUMENT ME!
+ * A replacer that accepts parameters
  *
  * @author Andreas
  * @version 1.0
  */
 public interface ParameterReplacer extends Replacer {
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the number of parameters.
 	 */
 	public int getParameterCount();
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * Sets the <code>index</code>-th parameter  to obj 
 	 */
 	public void setParameter(int index, Object obj);
 }

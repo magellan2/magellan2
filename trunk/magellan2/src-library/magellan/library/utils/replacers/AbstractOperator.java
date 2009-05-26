@@ -29,14 +29,22 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 	protected static final Float ZERO = new Float(0);
 	protected ReplacerEnvironment environment;
 
+	/**
+	 * Creates an AbstractOperator with the specified number of parameters.
+	 * 
+	 * @param params
+	 */
 	protected AbstractOperator(int params) {
 		super(params);
 		numbers = new Object[params];
 	}
 
-	// try to compute the operation to save time
+	/**
+	 * @see magellan.library.utils.replacers.AbstractParameterReplacer#setParameter(int, java.lang.Object)
+	 */
 	@Override
   public void setParameter(int param, Object obj) {
+	  // try to compute the operation to save time
 		evolved = null;
 		super.setParameter(param, obj);
 
@@ -50,31 +58,18 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Computes the result from the parameters in numbers and returns the result.
 	 * 
 	 */
 	public abstract Object compute(Object numbers[]);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *//*
-	public String getDescription() {
-		return Resources.get(this, "description");
-	}*/
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Converts all parameters and then returns the result from  {@link #compute(Object[])}.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
-	public Object getReplacement(Object o) {
+	public Object getReplacement(Object argument) {
 		if(evolved != null) {
 			return evolved;
 		}
@@ -82,7 +77,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 		boolean nullAsZero = ((OperationMode) environment.getPart(ReplacerEnvironment.OPERATION_PART)).isNullEqualsZero();
 
 		for(int i = 0; i < numbers.length; i++) {
-			Object param = getParameter(i, o);
+			Object param = getParameter(i, argument);
 
 			if(param == null) {
 				if(!nullAsZero) {
@@ -109,9 +104,7 @@ public abstract class AbstractOperator extends AbstractParameterReplacer
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
 	 */
 	public void setEnvironment(ReplacerEnvironment env) {
 		environment = env;

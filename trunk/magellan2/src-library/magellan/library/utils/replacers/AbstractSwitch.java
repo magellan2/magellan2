@@ -14,6 +14,7 @@
 package magellan.library.utils.replacers;
 
 
+
 /**
  * A replacer that modifies the definition list by skipping all elements till next occurence of the
  * implemented class if a certain condition is true.
@@ -48,12 +49,4 @@ public abstract class AbstractSwitch implements Replacer {
 	 */
 	public abstract boolean isSwitchingObject(Object o);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *//*
-	public String getDescription() {
-		return Resources.get("description");
-	}*/
 }

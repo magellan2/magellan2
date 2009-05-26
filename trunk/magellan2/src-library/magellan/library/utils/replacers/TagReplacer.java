@@ -35,6 +35,7 @@ public class TagReplacer extends AbstractParameterReplacer {
 	 * Creates new TagReplacer
 	 *
 	 * 
+	 * @param mode
 	 */
 	public TagReplacer(boolean mode) {
 		super(1);
@@ -42,18 +43,17 @@ public class TagReplacer extends AbstractParameterReplacer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns the value of the tag given as parameter from the unit given as argument. If mode==true,
+	 * an empty string is returned instead of null.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
-	public Object getReplacement(Object o) {
-		if(o instanceof Taggable) {
-			Object obj = getParameter(0, o);
+	public Object getReplacement(Object unit) {
+		if(unit instanceof Taggable) {
+			Object obj = getParameter(0, unit);
 
 			if(obj != null) {
-				Taggable t = (Taggable) o;
+				Taggable t = (Taggable) unit;
 				String s = obj.toString();
 
 				if(t.containsTag(s)) {
@@ -70,12 +70,11 @@ public class TagReplacer extends AbstractParameterReplacer {
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
 	 * 
-	 */
-	@Override
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
-		return Resources.get("util.replacers.tagreplacer.description." + mode);
+		return Resources.get("util.replacers.tagreplacer.description." + mode)+"\n\n"+super.getDescription();
 	}
 }

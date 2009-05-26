@@ -131,7 +131,7 @@ public class RegionFieldReplacer extends AbstractRegionReplacer {
   
 
   public String getDescription() {
-    return Resources.get("util.replacers.regionfieldreplacer.description");
+    return Resources.get("util.replacers.regionfieldreplacer."+(this.field!=null?this.field.getName():this.method!=null?this.method.getName():"")+".description");
   }  
 
 }

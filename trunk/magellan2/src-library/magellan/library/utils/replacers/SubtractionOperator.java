@@ -13,6 +13,8 @@
 
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 
 
 /**
@@ -30,14 +32,18 @@ public class SubtractionOperator extends AbstractOperator {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Subtracts the second number given as argument from the first one.
 	 * 
 	 */
 	@Override
   public Object compute(Object numbers[]) {
 		return new Float(((Number) numbers[0]).floatValue() - ((Number) numbers[1]).floatValue());
 	}
+
+	/**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.subtractionoperator.description")+"\n\n"+super.getDescription();
+  }
 }

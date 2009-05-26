@@ -130,7 +130,9 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 382 $
  */
-public class EMapOverviewPanel extends InternationalizedDataPanel implements TreeSelectionListener, TreeExpansionListener, SelectionListener, OrderConfirmListener, PreferencesFactory, TempUnitListener, ShortcutListener, ChangeListener, TreeUpdate, MenuProvider, Initializable {
+public class EMapOverviewPanel extends InternationalizedDataPanel implements TreeSelectionListener,
+    TreeExpansionListener, SelectionListener, OrderConfirmListener, PreferencesFactory,
+    TempUnitListener, ShortcutListener, ChangeListener, TreeUpdate, MenuProvider, Initializable {
   private static final Logger log = Logger.getInstance(EMapOverviewPanel.class);
 
   // GUI elements

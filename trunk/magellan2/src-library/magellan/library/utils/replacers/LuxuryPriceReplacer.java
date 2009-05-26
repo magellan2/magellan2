@@ -18,6 +18,7 @@ import java.util.Iterator;
 import magellan.library.LuxuryPrice;
 import magellan.library.Region;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.Resources;
 
 
 /**
@@ -64,4 +65,8 @@ public class LuxuryPriceReplacer extends AbstractParameterReplacer {
 
 		return null;
 	}
+
+  public String getDescription() {
+    return Resources.get("util.replacers.luxurypricereplacer.description")+"\n\n"+super.getDescription();
+  }
 }

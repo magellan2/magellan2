@@ -18,7 +18,7 @@ import magellan.library.utils.Resources;
 /**
  * A Switch that compares the following to elements by their String replacement. Possible replacers
  * are evaluated by forwarding the Switch object and iterator. If these two are not
- * evaluatable(list too short) or only on of them is <i>null</i> the Switch stays active. <i>Note
+ * evaluable (list too short) or only one of them is <i>null</i> the Switch stays active. <i>Note
  * that if both are null the switch is inactive!</i>
  *
  * @author Andreas
@@ -35,9 +35,6 @@ public class LessReplacer extends AbstractParameterSwitch {
 	/**
 	 * Checks the following two elements and evaluates their replacements. They are treated as
 	 * Strings through <i>toString()</i> and compared for equality.
-	 *
-	 * 
-	 *
 	 * 
 	 *
 	 * @throws IllegalArgumentException DOCUMENT-ME
@@ -76,7 +73,10 @@ public class LessReplacer extends AbstractParameterSwitch {
 	}
 
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
-    return Resources.get("util.replacers.lessreplacer.description");
+    return Resources.get("util.replacers.lessreplacer.description")+"\n\n"+super.getDescription();
   }  
 }

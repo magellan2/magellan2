@@ -14,6 +14,7 @@
 package magellan.library.utils.replacers;
 
 import magellan.library.Unit;
+import magellan.library.utils.Resources;
 import magellan.library.utils.filters.UnitFilter;
 
 
@@ -35,62 +36,48 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the (only) parameter.
 	 * 
-	 * 
+	 * @see magellan.library.utils.replacers.ParameterReplacer#setParameter(int, java.lang.Object)
 	 */
 	public void setParameter(int index, Object obj) {
 		createFilter(obj);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns 1.
 	 */
 	public int getParameterCount() {
 		return 1;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.BranchReplacer#getBranchSign(int)
 	 */
 	public String getBranchSign(int index) {
 		return Replacer.END;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * @see magellan.library.utils.replacers.BranchReplacer#setBranch(int, java.lang.Object)
 	 */
 	public void setBranch(int index, Object obj) {
 		branch = obj;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns 1.
 	 */
 	public int getBranchCount() {
 		return 1;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Applies the filter to the argument.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
-	public Object getReplacement(Object o) {
+	public Object getReplacement(Object argument) {
 		if(branch != null) {
 			if(branch instanceof Replacer) {
 				Replacer r = (Replacer) branch;
@@ -100,13 +87,13 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 					UnitSelection us = (UnitSelection) env.getPart(ReplacerEnvironment.UNITSELECTION_PART);
 					us.addFilter(myFilter);
 
-					Object obj = r.getReplacement(o);
+					Object obj = r.getReplacement(argument);
 					us.removeFilter(myFilter);
 
 					return obj;
 				}
 
-				return r.getReplacement(o);
+				return r.getReplacement(argument);
 			}
 
 			return Replacer.EMPTY;
@@ -117,24 +104,22 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 
 	/**
 	 * DOCUMENT-ME
-	 *
 	 * 
+	 * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
 	 */
 	public void setEnvironment(ReplacerEnvironment env) {
 		this.env = env;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getDescription()
 	 */
 	public String getDescription() {
-		return null;
+    return Resources.get("util.replacers.filterswitch.description");
 	}
 
-	protected void createFilter(Object o) {
-		myFilter = new MyFilterClass(o);
+	protected void createFilter(Object predicate) {
+		myFilter = new MyFilterClass(predicate);
 	}
 
 	protected class MyFilterClass extends UnitFilter {
@@ -144,13 +129,13 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 		/**
 		 * Creates a new MyFilterClass object.
 		 *
-		 * 
+		 * @param predicate A replacer used for deciding acceptance of units.
 		 */
-		public MyFilterClass(Object o) {
-			if(o instanceof Replacer) {
-				rep = (Replacer) o;
+		public MyFilterClass(Object predicate) {
+			if(predicate instanceof Replacer) {
+				rep = (Replacer) predicate;
 			} else {
-				if(o.toString().equals(Replacer.TRUE)) {
+				if(predicate.toString().equals(Replacer.TRUE)) {
 					always = 1;
 				} else {
 					always = 2;
@@ -159,10 +144,7 @@ public class FilterSwitch implements ParameterReplacer, BranchReplacer, Environm
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
+		 * Returns <code>true</code> iff the predicate replacer returns true for the unit.
 		 * 
 		 */
 		@Override

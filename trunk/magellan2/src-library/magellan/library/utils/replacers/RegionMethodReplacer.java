@@ -16,6 +16,7 @@ package magellan.library.utils.replacers;
 import java.lang.reflect.Method;
 
 import magellan.library.Region;
+import magellan.library.utils.Resources;
 
 
 /**
@@ -103,10 +104,6 @@ public class RegionMethodReplacer extends AbstractRegionReplacer {
 		return null;
 	}
 	public String getDescription() {
-		if(method != null) {
-			return method.getName();
-		}
-
-    return "no desc";
+    return Resources.get("util.replacers.regionmethodreplacer."+(this.method!=null?this.method.getName():"")+".description");
 	}
 }

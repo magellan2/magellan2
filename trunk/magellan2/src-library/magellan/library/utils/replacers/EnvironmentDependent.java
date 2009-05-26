@@ -14,15 +14,14 @@
 package magellan.library.utils.replacers;
 
 /**
- * DOCUMENT ME!
+ * Marks a replacer that depends on an environment.
  *
  * @author Andreas
  * @version 1.0
  */
 public interface EnvironmentDependent {
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the environment.
 	 * 
 	 */
 	public void setEnvironment(ReplacerEnvironment env);

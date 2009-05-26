@@ -83,13 +83,10 @@ public class TrustlevelSwitch extends AbstractParameterReplacer implements Envir
 		environment = env;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
-		return Resources.get("util.replacers.trustlevelswitch.description." +(getParameterCount() - 1));
+		return Resources.get("util.replacers.trustlevelswitch.description." +(getParameterCount() - 1))+"\n\n"+super.getDescription();
 	}
 }

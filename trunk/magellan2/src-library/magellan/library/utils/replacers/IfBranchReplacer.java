@@ -18,6 +18,8 @@
  */
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 /**
  * DOCUMENT ME!
  *
@@ -28,11 +30,9 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	protected Object branches[] = new Object[2];
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns "else" for the first branch, "end" for the next branch.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.BranchReplacer#getBranchSign(int)
 	 */
 	public String getBranchSign(int index) {
 		if(index == 1) {
@@ -43,30 +43,25 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * @see magellan.library.utils.replacers.BranchReplacer#setBranch(int, java.lang.Object)
 	 */
 	public void setBranch(int index, Object obj) {
 		branches[index] = obj;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns 2.
 	 * 
+	 * @see magellan.library.utils.replacers.BranchReplacer#getBranchCount()
 	 */
 	public int getBranchCount() {
 		return 2;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Replaces by the first branch if the predicate is true, else by the second branch.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
 	public Object getReplacement(Object o) {
 		if(criterion != null) {
@@ -108,7 +103,7 @@ public class IfBranchReplacer implements BranchReplacer, ParameterReplacer {
 	 * 
 	 */
 	public String getDescription() {
-		return null;
+    return Resources.get("util.replacers.ifbranch.description");
 	}
 
 	/**

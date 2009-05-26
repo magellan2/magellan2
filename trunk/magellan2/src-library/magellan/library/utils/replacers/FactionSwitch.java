@@ -25,7 +25,7 @@ import magellan.library.utils.filters.UnitFactionFilter;
 
 
 /**
- * DOCUMENT ME!
+ * Restricts selection of units to the faction given as argument.
  *
  * @author Andreas
  * @version 1.0
@@ -42,22 +42,17 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 		super(1);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
-		return Resources.get("util.replacers.factionswitch.description");
+		return Resources.get("util.replacers.factionswitch.description")+"\n\n"+super.getDescription();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Restricts selection of units to the faction given as argument.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
 	public Object getReplacement(Object src) {
 		try {
@@ -85,9 +80,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
 	 */
 	public void setEnvironment(ReplacerEnvironment env) {
 		environment = env;

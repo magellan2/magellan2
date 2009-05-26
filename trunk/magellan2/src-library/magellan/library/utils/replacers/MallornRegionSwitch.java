@@ -41,9 +41,7 @@ public class MallornRegionSwitch extends AbstractRegionSwitch {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getDescription()
 	 */
 	public String getDescription() {
     return Resources.get("util.replacers.mallornregion.description");

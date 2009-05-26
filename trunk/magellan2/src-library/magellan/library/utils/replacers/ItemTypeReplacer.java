@@ -20,6 +20,7 @@ import magellan.library.Item;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.rules.ItemType;
+import magellan.library.utils.Resources;
 
 
 /**
@@ -40,30 +41,29 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Searches the units in the region given as argument for the item given as parameter. Sensitive 
+	 * to the environment (for example unit filters).
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
-	public Object getReplacement(Object o) {
-		if(o instanceof Region) {
-			String items = getParameter(0, o).toString();
+	public Object getReplacement(Object region) {
+		if(region instanceof Region) {
+			String items = getParameter(0, region).toString();
 			int count = 0;
-			Collection c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits((Region) o);
+			Collection c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits((Region) region);
 
 			if(c == null) {
 				return null;
 			}
 
-			Iterator it = c.iterator();
+			Iterator unitIt = c.iterator();
 
-			while(it.hasNext()) {
-				Unit u = (Unit) it.next();
-				Iterator it2 = u.getItems().iterator();
+			while(unitIt.hasNext()) {
+				Unit u = (Unit) unitIt.next();
+				Iterator itemIt = u.getItems().iterator();
 
-				while(it2.hasNext()) {
-					Item i = (Item) it2.next();
+				while(itemIt.hasNext()) {
+					Item i = (Item) itemIt.next();
 					ItemType ity = i.getItemType();
 
 					if(ity.getName().equalsIgnoreCase(items) ||
@@ -86,11 +86,16 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
 	 */
 	public void setEnvironment(ReplacerEnvironment env) {
 		environment = env;
 	}
+
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.itemtypereplacer.description")+"\n\n"+super.getDescription();
+  }
 }

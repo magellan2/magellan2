@@ -78,11 +78,9 @@ public class StringIndexReplacer extends AbstractParameterSwitch {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.AbstractParameterSwitch#getDescription()
 	 */
 	public String getDescription() {
-		return Resources.get("util.replacers.stringindexreplacer.description." + ignoreCase);
+		return Resources.get("util.replacers.stringindexreplacer.description." + ignoreCase)+"\n\n"+super.getDescription();
 	}
 }

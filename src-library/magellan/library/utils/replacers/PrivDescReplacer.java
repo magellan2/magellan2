@@ -17,18 +17,15 @@ import magellan.library.Unit;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Returns the private description of a unit
  *
  * @author Andreas
  * @version 1.0
  */
 public class PrivDescReplacer extends AbstractUnitReplacer {
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+
+  /**
+	 * @see magellan.library.utils.replacers.AbstractUnitReplacer#getUnitReplacement(magellan.library.Unit)
 	 */
 	@Override
   public Object getUnitReplacement(Unit r) {
@@ -36,6 +33,9 @@ public class PrivDescReplacer extends AbstractUnitReplacer {
 	}
   
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
   public String getDescription() {
     return Resources.get("util.replacers.privdescreplacer.description");
   }  

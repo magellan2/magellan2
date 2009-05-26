@@ -16,7 +16,7 @@ package magellan.library.utils.replacers;
 import magellan.library.utils.Resources;
 
 /**
- * DOCUMENT ME!
+ * Sets the environment parameter "NullEqualsZero" to true.
  *
  * @author Andreas
  * @version 1.0
@@ -33,22 +33,9 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 		super(1);
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
-  public String getDescription() {
-		return Resources.get("util.replacers.operationswitch.description");
-	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
 	public Object getReplacement(Object src) {
 		try {
@@ -64,8 +51,17 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
 	 * DOCUMENT-ME
 	 *
 	 * 
+	 * @see magellan.library.utils.replacers.EnvironmentDependent#setEnvironment(magellan.library.utils.replacers.ReplacerEnvironment)
 	 */
 	public void setEnvironment(ReplacerEnvironment env) {
 		environment = env;
 	}
+
+
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.operationswitch.description")+"\n\n"+super.getDescription();
+  }
 }

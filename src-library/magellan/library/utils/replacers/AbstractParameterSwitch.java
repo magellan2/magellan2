@@ -18,8 +18,10 @@
  */
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 /**
- * DOCUMENT ME!
+ * A default implementation for replacers implementing AbstractSwitch and ParameterReplacer.
  *
  * @author Andreas
  * @version 1.0
@@ -37,19 +39,14 @@ public abstract class AbstractParameterSwitch extends AbstractSwitch implements 
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.ParameterReplacer#getParameterCount()
 	 */
 	public int getParameterCount() {
 		return parameters.length;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * @see magellan.library.utils.replacers.ParameterReplacer#setParameter(int, java.lang.Object)
 	 */
 	public void setParameter(int index, Object obj) {
 		parameters[index] = obj;
@@ -64,4 +61,14 @@ public abstract class AbstractParameterSwitch extends AbstractSwitch implements 
 
 		return parameters[index];
 	}
+	
+	 /**
+   * Returns a string describing the number of parameters.
+   * 
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription(){
+    return Resources.get("util.replacers.abstractparameter.description", new Object[] { getParameterCount() } );
+  }
+
 }

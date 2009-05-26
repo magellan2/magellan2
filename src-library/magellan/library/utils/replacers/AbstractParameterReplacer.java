@@ -18,8 +18,10 @@
  */
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 /**
- * DOCUMENT ME!
+ * A default implementation of ParameterReplacer.
  *
  * @author Andreas
  * @version 1.0
@@ -27,24 +29,27 @@ package magellan.library.utils.replacers;
 public abstract class AbstractParameterReplacer implements ParameterReplacer {
 	protected Object parameters[];
 
+	/**
+	 * Creates a new AbstractParameterReplacer
+	 * 
+	 * @param parameters The number of parameters
+	 */
 	protected AbstractParameterReplacer(int parameters) {
 		this.parameters = new Object[parameters];
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see magellan.library.utils.replacers.ParameterReplacer#getParameterCount()
 	 */
 	public int getParameterCount() {
 		return parameters.length;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 * 
+	 * @see magellan.library.utils.replacers.ParameterReplacer#setParameter(int, java.lang.Object)
 	 */
 	public void setParameter(int param, java.lang.Object obj) {
 		parameters[param] = obj;
@@ -61,11 +66,12 @@ public abstract class AbstractParameterReplacer implements ParameterReplacer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns a string describing the number of parameters.
 	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getDescription()
 	 */
-	public String getDescription() {
-		return null;
+	public String getDescription(){
+	  return Resources.get("util.replacers.abstractparameter.description", new Object[] { getParameterCount() } );
 	}
+	
 }

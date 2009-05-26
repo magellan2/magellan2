@@ -18,8 +18,10 @@
  */
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 /**
- * DOCUMENT ME!
+ * Negates the argument if it is TRUE or FALSE. Otherwise, the argument is not changed.
  *
  * @author Andreas
  * @version 1.0
@@ -33,11 +35,7 @@ public class NotReplacer extends AbstractParameterReplacer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.Replacer#getReplacement(java.lang.Object)
 	 */
 	public Object getReplacement(Object o) {
 		Object obj = getParameter(0, o);
@@ -54,4 +52,8 @@ public class NotReplacer extends AbstractParameterReplacer {
 
 		return null;
 	}
+
+  public String getDescription() {
+    return Resources.get("util.replacers.not.description")+"\n\n"+super.getDescription();
+  }
 }

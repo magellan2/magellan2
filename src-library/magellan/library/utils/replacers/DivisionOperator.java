@@ -13,6 +13,8 @@
 
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 
 
 /**
@@ -34,10 +36,7 @@ public class DivisionOperator extends AbstractOperator {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Divides the first argument number by the second.
 	 * 
 	 */
 	@Override
@@ -48,4 +47,11 @@ public class DivisionOperator extends AbstractOperator {
 
 		return new Float(((Number) numbers[0]).floatValue() / ((Number) numbers[1]).floatValue());
 	}
+
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.divisionoperator.description")+"\n\n"+super.getDescription();
+  }
 }

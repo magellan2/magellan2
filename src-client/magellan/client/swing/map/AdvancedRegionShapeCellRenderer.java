@@ -1235,7 +1235,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         setTooltip();
       } else if (actionEvent.getSource() == showInfo){
         if(infoDialog == null) {
-          infoDialog = new ToolTipReplacersInfo(null,
+          infoDialog = new ToolTipReplacersInfo(SwingUtilities.getWindowAncestor(this),
                               Resources.get("map.mapperpreferences.tooltipdialog.tooltipinfo.title"));
         }
 

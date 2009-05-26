@@ -23,8 +23,8 @@ import magellan.library.utils.Resources;
 import magellan.library.utils.replacers.ReplacerFactory;
 
 /**
- * A simple info dialog consisting of a list on the left side, where all currently known
- * replacers are shown, and a text area on the right that displays the description of the
+ * A simple info dialog consisting of a list on the left side, where all currently registered
+ * Replacer are shown, and a text area on the right that displays the description of the
  * selected replacer.
  */
 class ToolTipReplacersInfo extends JDialog
@@ -74,7 +74,8 @@ class ToolTipReplacersInfo extends JDialog
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Initializes the dialog 
+	 * from magellan.library.utils.replacers.ReplacerHelp.getDefaultReplacerFactory() and displays it.
 	 */
 	public void showDialog() {
 		replacerMap = magellan.library.utils.replacers.ReplacerHelp.getDefaultReplacerFactory();
@@ -93,8 +94,7 @@ class ToolTipReplacersInfo extends JDialog
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Hides the dialog.
 	 * 
 	 */
 	public void actionPerformed(ActionEvent e) {
@@ -102,8 +102,7 @@ class ToolTipReplacersInfo extends JDialog
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Displays the appropriate description.
 	 * 
 	 */
 	public void valueChanged(javax.swing.event.ListSelectionEvent lse) {
@@ -113,7 +112,7 @@ class ToolTipReplacersInfo extends JDialog
 			if(rep == null) {
 				text.setText("Internal error - please report.");
 			} else {
-				text.setText(rep.getDescription());
+				text.setText(rep.getDescription()); // Debug: +"\n\n--\n"+rep.getClass().getName());
 			}
 		}
 	}

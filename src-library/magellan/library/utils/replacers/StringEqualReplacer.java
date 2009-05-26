@@ -74,12 +74,10 @@ public class StringEqualReplacer extends AbstractParameterSwitch {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.utils.replacers.AbstractParameterSwitch#getDescription()
 	 */
 	public String getDescription() {
-		return Resources.get("util.replacers.stringequalreplacer.description." + ignoreCase);
+		return Resources.get("util.replacers.stringequalreplacer.description." + ignoreCase)+"\n\n"+super.getDescription();
 	}
 
 }

@@ -13,6 +13,8 @@
 
 package magellan.library.utils.replacers;
 
+import magellan.library.utils.Resources;
+
 
 
 /**
@@ -30,10 +32,7 @@ public class MultiplicationOperator extends AbstractOperator {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Multiplies two numbers given as arguments.
 	 * 
 	 */
 	@Override
@@ -41,4 +40,10 @@ public class MultiplicationOperator extends AbstractOperator {
 		return new Float(((Number) numbers[0]).floatValue() * ((Number) numbers[1]).floatValue());
 	}
 
+  /**
+   * @see magellan.library.utils.replacers.Replacer#getDescription()
+   */
+  public String getDescription() {
+    return Resources.get("util.replacers.multiplicationoperator.description")+"\n\n"+super.getDescription();
+  }
 }

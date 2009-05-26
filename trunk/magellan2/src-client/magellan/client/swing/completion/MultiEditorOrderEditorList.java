@@ -36,7 +36,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -582,7 +581,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * Processes CTRL+UP/DOWN keys.
    */
   public void keyPressed(KeyEvent e) {
     if ((e.getModifiers() & InputEvent.CTRL_MASK) != 0) {
@@ -632,20 +631,19 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * 
    */
   public void keyReleased(KeyEvent e) {
   }
 
   /**
-   * DOCUMENT-ME
+   * 
    */
   public void keyTyped(KeyEvent e) {
   }
 
   /**
-   * Fires an SelectionChanged event if a different editor than the current one
-   * is selected.
+   * 
    */
   public void focusGained(FocusEvent e) {
     // log.info("fcg: "+((OrderEditor)e.getSource()).getUnit());
@@ -658,13 +656,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   public void focusLost(FocusEvent e) {
     // getCompleter().focusLost(e)
   }
 
   /**
+   * Show a context menu on right-click.
+   * 
    * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
    */
   public void mouseClicked(MouseEvent e) {
@@ -673,20 +673,10 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
     if (e.getSource() instanceof OrderEditor) {
       OrderEditor editor = (OrderEditor) e.getSource();
-      if (multiEditorLayout) {
-        // rightclick does select too(Fiete)
-        dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, editor.getUnit()));
-      }
       if ((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
         // Right click -> UnitContextMenu (Fiete)
         Unit u = editor.getUnit();
-        // Fiete 20090522
-        // provide a extra selectedObject-List - otherwise UnitContextMenu will
-        // not be init
-
         if (this.currentUnit != null) {
-          ArrayList<Unit> myList = new ArrayList<Unit>();
-          myList.add(u);
           if (u != null) {
             JPopupMenu unitContextMenu =
                 editor.getContextFactory().createContextMenu(dispatcher, data, u, null, null);
@@ -713,9 +703,16 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
+   * Selects the editor in multi editor layout.
+   * 
    * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
    */
   public void mousePressed(MouseEvent e) {
+    if (multiEditorLayout) {
+      OrderEditor editor = (OrderEditor) e.getSource();
+      // rightclick does select too(Fiete)
+      dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, editor.getUnit()));
+    }
   }
 
   /**

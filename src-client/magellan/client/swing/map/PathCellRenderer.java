@@ -130,7 +130,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 		if(activeMovement.size() > 0) {
 			renderPath(u, activeMovement, PathCellRenderer.ACTIVE);
 	    List<CoordinateID> additionalMovement = getAdditionalMovement(u);
-			if (additionalMovement.size()>0)
+			if (drawPastPath && additionalMovement.size()>0)
 			  renderPath(u, additionalMovement, PathCellRenderer.ACTIVEFUTURE);
 		} else if(drawPassivePath) {
 			// unit does not move itself, check for passive movement

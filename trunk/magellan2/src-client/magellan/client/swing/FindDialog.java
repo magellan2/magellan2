@@ -639,10 +639,7 @@ public class FindDialog extends InternationalizedDataDialog
 		// determine the faction to limit the search to
 		Faction faction = getFactionFromCombo();
 
-		Iterator i = items.iterator();
-
-		while(i.hasNext() == true) {
-			Object item = i.next();
+		for (Unique item : items){
 
 			if(chkItems.isSelected() && (filterItem(item, patterns) == true)) {
 				hits.add(item);
@@ -676,7 +673,14 @@ public class FindDialog extends InternationalizedDataDialog
 		return wrap(hits);
 	}
 
-	private boolean filterId(Object item, Collection patterns) {
+	/**
+	 * 
+	 * 
+	 * @param item
+	 * @param patterns
+	 * @return
+	 */
+	private boolean filterId(Unique item, Collection<String> patterns) {
 		if(patterns.size() == 0) {
 			return true;
 		}
@@ -684,8 +688,8 @@ public class FindDialog extends InternationalizedDataDialog
 		boolean retVal = false;
 		String id = getID(item);
 
-		for(Iterator iter = patterns.iterator(); iter.hasNext();) {
-			if(id.equalsIgnoreCase((String) iter.next())) {
+    for(String pattern : patterns) {
+			if(id.equalsIgnoreCase(pattern)) {
 				retVal = true;
 				break;
 			}
@@ -695,9 +699,8 @@ public class FindDialog extends InternationalizedDataDialog
       Region r = (Region)item;
       String id1 = Integer.toString((int)r.getUID());
       String id2 = Integer.toString((int)r.getUID(),36);
-      for(Iterator iter = patterns.iterator(); iter.hasNext();) {
-        String check = (String)iter.next();
-        if(id1.equalsIgnoreCase(check) || id2.equalsIgnoreCase(check)) {
+      for(String pattern : patterns) {
+        if(id1.equalsIgnoreCase(pattern) || id2.equalsIgnoreCase(pattern)) {
           retVal = true;
           break;
         }
@@ -707,7 +710,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return retVal;
 	}
 
-	private boolean filterItem(Object item, Collection patterns) {
+	private boolean filterItem(Unique item, Collection patterns) {
 		if(patterns.size() == 0) {
 			return true;
 		}
@@ -749,7 +752,7 @@ public class FindDialog extends InternationalizedDataDialog
 		}
 	}
 
-	private boolean filterName(Object item, Collection patterns) {
+	private boolean filterName(Unique item, Collection patterns) {
 		boolean retVal = false;
 		String name = getName(item);
 
@@ -778,7 +781,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return name;
 	}
 
-	private boolean filterDesc(Object item, Collection patterns) {
+	private boolean filterDesc(Unique item, Collection patterns) {
 		boolean retVal = false;
 		String desc = getDesc(item);
 
@@ -807,7 +810,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return desc;
 	}
 
-	private boolean filterCmd(Object item, Collection patterns) {
+	private boolean filterCmd(Unique item, Collection patterns) {
 		boolean retVal = false;
 		Collection cmds = getCmds(item);
 
@@ -859,7 +862,7 @@ public class FindDialog extends InternationalizedDataDialog
 	 * @param patterns
 	 * @return <code>true</code> if  <code>item</code>'s messages contain one of the patterns
 	 */
-	private boolean filterMessage(Object item, Collection patterns) {
+	private boolean filterMessage(Unique item, Collection patterns) {
 		boolean retVal = false;
 		Collection msgs = getMessages(item);
 
@@ -889,7 +892,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return retVal;
 	}
 
-	private Collection<Object> getMessages(Object item) {
+	private Collection<Object> getMessages(Unique item) {
 		Collection<Object> retVal = new LinkedList<Object>();
 
 		if(item instanceof Unit) {
@@ -947,7 +950,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return retVal;
 	}
 
-	private boolean filterFaction(Object item, Faction pattern) {
+	private boolean filterFaction(Unique item, Faction pattern) {
 		boolean retVal = true;
 		Faction faction = getFaction(item);
 
@@ -958,7 +961,7 @@ public class FindDialog extends InternationalizedDataDialog
 		return retVal;
 	}
 
-	private Faction getFaction(Object item) {
+	private Faction getFaction(Unique item) {
 		Faction faction = null;
 
 		if(item instanceof Unit) {

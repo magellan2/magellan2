@@ -443,7 +443,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
    */
   private void copyNameIDRegionID() {
     Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(),36).replace("l","L") + ")");
+    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(),r.getData().base).replace("l","L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
@@ -453,7 +453,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
    */
   private void copyNameRegionID() {
     Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(),36).replace("l","L") + ")");
+    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(),r.getData().base).replace("l","L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }

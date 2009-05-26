@@ -67,6 +67,8 @@ public class ResourcePathClassLoader extends ClassLoader {
 
       try {
         resourcePaths.add(new URL(location));
+        if (!location.endsWith(File.separator))
+          resourcePaths.add(new URL(location+File.separator));
       } catch(MalformedURLException e) {
         ResourcePathClassLoader.log.error(e);
       } 

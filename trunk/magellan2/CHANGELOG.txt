@@ -1,4 +1,8 @@
 2009-05-26 / Build 286 - stm (stm_@users.sourceforge.net)
+	* added regexp and match case option to find dialog
+	* CRWriter: unit skills, orders, items are exported independently of unit details option 
+
+2009-05-26 / Build 286 - stm (stm_@users.sourceforge.net)
 	* bug  #317,#318 (faction stats panel, income)
 	* bug #234 (multi editor selection)
 	* bug #306 (faction stats selection)

@@ -99,6 +99,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	private JCheckBox chkUnits = null;
   private JCheckBox chkUnitDetails = null;
   private JCheckBox chkSkills = null;
+  private JCheckBox chkOrders = null;
   private JCheckBox chkItems = null;
 	private JCheckBox chkMessages = null;
 	private JCheckBox chkSpellsAndPotions = null;
@@ -349,6 +350,9 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkSkills = new JCheckBox(Resources.get("crwriterdialog.chk.skills.caption"),
         (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeSkills",
                           "true"))).booleanValue());
+    chkOrders = new JCheckBox(Resources.get("crwriterdialog.chk.orders.caption"),
+        (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeOrders",
+                          "true"))).booleanValue());
     chkItems = new JCheckBox(Resources.get("crwriterdialog.chk.items.caption"),
         (Boolean.valueOf(settings.getProperty("CRWriterDialog.includeItems",
                           "true"))).booleanValue());
@@ -387,6 +391,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkUnits.setToolTipText(Resources.get("crwriterdialog.chk.units.tooltip"));
     chkUnitDetails.setToolTipText(Resources.get("crwriterdialog.chk.unitdetails.tooltip"));
     chkSkills.setToolTipText(Resources.get("crwriterdialog.chk.skills.tooltip"));
+    chkOrders.setToolTipText(Resources.get("crwriterdialog.chk.orders.tooltip"));
     chkItems.setToolTipText(Resources.get("crwriterdialog.chk.items.tooltip"));
     chkMessages.setToolTipText(Resources.get("crwriterdialog.chk.messages.tooltip"));
     chkSpellsAndPotions.setToolTipText(Resources.get("crwriterdialog.chk.spellsandpotions.tooltip"));
@@ -402,10 +407,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         if (chkUnits.isSelected()){
           chkUnitDetails.setEnabled(true);
           chkSkills.setEnabled(true);
+          chkOrders.setEnabled(true);
           chkItems.setEnabled(true);
         } else {
           chkUnitDetails.setEnabled(false);
           chkSkills.setEnabled(false);
+          chkOrders.setEnabled(false);
           chkItems.setEnabled(false);
         }
       }
@@ -450,7 +457,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     pnlOptions.add(chkUnitDetails);
     pnlOptions.add(chkSkills);
     pnlOptions.add(chkItems);
-		pnlOptions.add(chkMessages);
+    pnlOptions.add(chkOrders);
+    pnlOptions.add(chkMessages);
 		pnlOptions.add(chkSpellsAndPotions);
 		pnlOptions.add(chkSelRegionsOnly);
 		pnlOptions.add(chkDelStats);
@@ -485,6 +493,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         String.valueOf(chkUnitDetails.isSelected()));
     settings.setProperty("CRWriterDialog.includeSkills",
         String.valueOf(chkSkills.isSelected()));
+    settings.setProperty("CRWriterDialog.includeOrders",
+        String.valueOf(chkOrders.isSelected()));
     settings.setProperty("CRWriterDialog.includeItems",
         String.valueOf(chkItems.isSelected()));
 		settings.setProperty("CRWriterDialog.includeMessages",
@@ -594,6 +604,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			crw.setIncludeShips(chkShips.isSelected());
 			crw.setIncludeUnits(chkUnits.isSelected());
       crw.setIncludeUnitDetails(chkUnitDetails.isSelected());
+      crw.setIncludeOrders(chkOrders.isSelected());
       crw.setIncludeSkills(chkSkills.isSelected());
       crw.setIncludeItems(chkItems.isSelected());
 			crw.setIncludeMessages(chkMessages.isSelected());
@@ -756,6 +767,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 				boolean checkUnits = chkUnits.isSelected();
         boolean checkUnitDetails = chkUnitDetails.isSelected();
         boolean checkSkills = chkSkills.isSelected();
+        boolean checkOrders = chkOrders.isSelected();
         boolean checkItems = chkItems.isSelected();
 				boolean checkBuildings = chkBuildings.isSelected();
 				boolean checkSpells = chkSpellsAndPotions.isSelected();

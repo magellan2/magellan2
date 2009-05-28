@@ -1612,15 +1612,15 @@ public class CRWriter extends BufferedWriter {
 		//
 		//writeOrders(unit.orders);
 		//writeStringSequence(unit.getTempOrders());
-		if (getIncludeUnitDetails()) 
+		if (getIncludeOrders()) 
 		  writeOrders(unit.getCompleteOrders());
-		if (getIncludeUnitDetails()  || getIncludeSkills())
+		if (getIncludeSkills())
 		    writeSkills(unit.getSkills().iterator(), unit.getPersons());
     if (getIncludeUnitDetails()) {
 		  writeUnitSpells(unit.getSpells());
 		  writeUnitCombatSpells(unit.getCombatSpells());
     }
-    if (getIncludeUnitDetails() || getIncludeItems()) 
+    if (getIncludeItems()) 
 		  writeItems(unit.getItems().iterator());
 		
     if (!serverConformance) {
@@ -2528,6 +2528,25 @@ public class CRWriter extends BufferedWriter {
    */
   public boolean getIncludeSkills(){
     return includeSkills;
+  }
+
+  private boolean includeOrders = true;
+
+  /**
+   * Toggles whether <tt>write(GameData data)</tt> writes the units' orders in data to
+   * the underlying stream.
+   * 
+   * @param newValue
+   */
+  public void setIncludeOrders(boolean newValue) {
+    includeOrders = newValue;
+  }
+
+  /**
+   * @return
+   */
+  public boolean getIncludeOrders(){
+    return includeOrders;
   }
 
   private boolean includeItems = true;

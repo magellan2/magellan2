@@ -477,7 +477,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     
     JPanel pnlButtons = new JPanel(new GridLayout(0,4));
     pnlButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-        Resources.get("crwriterdialog.border.preButtons")));
+        Resources.get("crwriterdialog.border.prebuttons")));
     pnlButtons.add(btnPreAll);
     pnlButtons.add(btnPreMap);
     pnlButtons.add(btnPreSkills);

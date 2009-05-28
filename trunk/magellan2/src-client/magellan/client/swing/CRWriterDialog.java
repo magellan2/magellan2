@@ -44,7 +44,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
@@ -174,9 +173,19 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		GridBagConstraints c = new GridBagConstraints();
 		mainPanel.setBorder(new EmptyBorder(4, 4, 4, 4));
 
+    c.anchor = GridBagConstraints.CENTER;
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.weightx = 0.1;
+    c.weighty = 0.0;
+    mainPanel.add(getFilePanel(), c);
+
 		c.anchor = GridBagConstraints.NORTH;
 		c.gridx = 0;
-		c.gridy = 0;
+		c.gridy = 1;
 		c.gridwidth = 1;
 		c.gridheight = 1;
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -186,23 +195,13 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 		c.anchor = GridBagConstraints.NORTH;
 		c.gridx = 1;
-		c.gridy = 0;
+		c.gridy = 1;
 		c.gridwidth = 1;
 		c.gridheight = 1;
 		c.fill = GridBagConstraints.NONE;
 		c.weightx = 0.0;
 		c.weighty = 0.0;
 		mainPanel.add(getButtonPanel(), c);
-
-		c.anchor = GridBagConstraints.CENTER;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 2;
-		c.gridheight = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 0.1;
-		c.weighty = 0.0;
-		mainPanel.add(getFilePanel(), c);
 
 		return mainPanel;
 	}
@@ -250,11 +249,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 			});
 
 		JPanel buttonPanel = new JPanel(new SpringLayout());
-//    buttonPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(buttonPanel.getBackground(), buttonPanel.getBackground())," "));
-		buttonPanel.add(saveButton);
-		buttonPanel.add(clipboardButton);
-		buttonPanel.add(cancelButton);
-		SpringUtilities.makeCompactGrid(buttonPanel, 3, 1, 5, 10, 5, 5);
+
+    buttonPanel.add(saveButton);
+    buttonPanel.add(clipboardButton);
+    buttonPanel.add(cancelButton);
+
+    SpringUtilities.makeCompactGrid(buttonPanel, 3, 1, 5, 10, 5, 5);
 
 		return buttonPanel;
 	}
@@ -265,8 +265,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 														.toArray());
 		comboOutputFile.setEditable(true);
 
-		JLabel lblOutputFile = new JLabel(Resources.get("crwriterdialog.lbl.targetfile"));
-		lblOutputFile.setLabelFor(comboOutputFile);
+//		JLabel lblOutputFile = new JLabel(Resources.get("crwriterdialog.lbl.targetfile"));
+//		lblOutputFile.setLabelFor(comboOutputFile);
 
 		JButton btnOutputFile = new JButton("...");
 		btnOutputFile.addActionListener(new ActionListener() {
@@ -288,16 +288,16 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
 		GridBagConstraints c = new GridBagConstraints();
 
-		// outputFile
-		c.anchor = GridBagConstraints.WEST;
-		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 1;
-		c.gridheight = 1;
-		c.fill = GridBagConstraints.NONE;
-		c.weightx = 0.0;
-		c.weighty = 0.0;
-		pnlFiles.add(lblOutputFile, c);
+//		// outputFile
+//		c.anchor = GridBagConstraints.WEST;
+//		c.gridx = 0;
+//		c.gridy = 1;
+//		c.gridwidth = 1;
+//		c.gridheight = 1;
+//		c.fill = GridBagConstraints.NONE;
+//		c.weightx = 0.0;
+//		c.weighty = 0.0;
+//		pnlFiles.add(lblOutputFile, c);
 		c.anchor = GridBagConstraints.CENTER;
 		c.gridx = 1;
 		c.gridy = 1;
@@ -321,8 +321,39 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 	}
 
 	private Container getOptionPanel() {
-		// TODO: add tooltips
-    // FIXED: tooltips (Fiete)
+    JButton btnPreAll = new JButton(Resources.get("crwriterdialog.btn.preall.caption"));
+    JButton btnPreMap = new JButton(Resources.get("crwriterdialog.btn.premap.caption"));
+    JButton btnPreSkills = new JButton(Resources.get("crwriterdialog.btn.preskills.caption"));
+    JButton btnPreNoTrust = new JButton(Resources.get("crwriterdialog.btn.prenotrust.caption"));
+
+    btnPreAll.setToolTipText(Resources.get("crwriterdialog.btn.preall.tooltip", false));
+    btnPreMap.setToolTipText(Resources.get("crwriterdialog.btn.premap.tooltip", false));
+    btnPreSkills.setToolTipText(Resources.get("crwriterdialog.btn.preskills.tooltip", false));
+    btnPreNoTrust.setToolTipText(Resources.get("crwriterdialog.btn.prenotrust.tooltip", false));
+
+    btnPreAll.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        setPreAll();
+      }
+    });
+    btnPreMap.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        setPreMap();
+      }
+    });
+    btnPreSkills.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        setPreSkills();
+      }
+    });
+    btnPreNoTrust.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent arg0) {
+        setPreNoTrust();
+      }
+    });
+
+
+
 		chkServerConformance = new JCheckBox(Resources.get("crwriterdialog.chk.servercompatibility.caption"),
 											 (Boolean.valueOf(settings.getProperty("CRWriterDialog.serverConformance",
 																			   "true"))).booleanValue());
@@ -443,10 +474,20 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkServerConformance.setSelected(!chkServerConformance.isSelected());
     
     
+    
+    JPanel pnlButtons = new JPanel(new GridLayout(0,4));
+    pnlButtons.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
+        Resources.get("crwriterdialog.border.preButtons")));
+    pnlButtons.add(btnPreAll);
+    pnlButtons.add(btnPreMap);
+    pnlButtons.add(btnPreSkills);
+    pnlButtons.add(btnPreNoTrust);
+
+    
     // layout: two columns, as many rows as needed
 		JPanel pnlOptions = new JPanel(new GridLayout(0, 2));
-		pnlOptions.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
-											  Resources.get("crwriterdialog.border.options")));
+		
+		
 		pnlOptions.add(chkServerConformance);
 		pnlOptions.add(chkIslands);
 		pnlOptions.add(chkRegions);
@@ -466,10 +507,101 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 		pnlOptions.add(chkDelEmptyFactions);
     pnlOptions.add(chkExportHotspots);
 
-		return pnlOptions;
+    JPanel optionPanel = new JPanel(new SpringLayout());
+    optionPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
+        Resources.get("crwriterdialog.border.options")));
+    optionPanel.add(pnlButtons);
+    optionPanel.add(pnlOptions);
+    SpringUtilities.makeCompactGrid(optionPanel, 2, 1, 0, 0, 1, 1);
+    
+		return optionPanel;
 	}
 
-	private void storeSettings() {
+	protected void setPreNoTrust() {
+    chkIslands.setSelected(true);
+    chkServerConformance.setSelected(false);
+    chkRegions.setSelected(true);
+    chkRegionDetails.setSelected(false);
+    chkBuildings.setSelected(true);
+    chkShips.setSelected(true);
+    chkUnitDetails.setSelected(false);
+    chkSkills.setSelected(false);
+    chkOrders.setSelected(false);
+    chkItems.setSelected(false);
+    chkUnits.setSelected(true);
+    chkMessages.setSelected(false);
+    chkSpellsAndPotions.setSelected(false);
+    // chkSelRegionsOnly.setSelected();
+    chkDelStats.setSelected(true);
+    chkDelTrans.setSelected(false);
+    chkDelEmptyFactions.setSelected(true);
+    chkExportHotspots.setSelected(false);
+  }
+
+  protected void setPreSkills() {
+    chkIslands.setSelected(true);
+    chkServerConformance.setSelected(false);
+    chkRegions.setSelected(true);
+    chkRegionDetails.setSelected(false);
+    chkBuildings.setSelected(false);
+    chkShips.setSelected(false);
+    chkUnitDetails.setSelected(false);
+    chkSkills.setSelected(true);
+    chkOrders.setSelected(true);
+    chkItems.setSelected(false);
+    chkUnits.setSelected(true);
+    chkMessages.setSelected(false);
+    chkSpellsAndPotions.setSelected(false);
+    // chkSelRegionsOnly.setSelected();
+    chkDelStats.setSelected(true);
+    chkDelTrans.setSelected(false);
+    chkDelEmptyFactions.setSelected(true);
+    chkExportHotspots.setSelected(false);
+   }
+
+  protected void setPreMap() {
+    chkIslands.setSelected(true);
+    chkServerConformance.setSelected(false);
+    chkRegions.setSelected(true);
+    chkRegionDetails.setSelected(true);
+    chkBuildings.setSelected(true);
+    chkShips.setSelected(false);
+    chkUnitDetails.setSelected(false);
+    chkSkills.setSelected(false);
+    chkOrders.setSelected(false);
+    chkItems.setSelected(false);
+    chkUnits.setSelected(false);
+    chkMessages.setSelected(false);
+    chkSpellsAndPotions.setSelected(false);
+    chkSelRegionsOnly.setSelected(true);
+    chkDelStats.setSelected(false);
+    chkDelTrans.setSelected(false);
+    chkDelEmptyFactions.setSelected(true);
+    chkExportHotspots.setSelected(false);
+  }
+
+  protected void setPreAll() {
+    chkIslands.setSelected(true);
+    chkServerConformance.setSelected(false);
+    chkRegions.setSelected(true);
+    chkRegionDetails.setSelected(true);
+    chkBuildings.setSelected(true);
+    chkShips.setSelected(true);
+    chkUnitDetails.setSelected(true);
+    chkSkills.setSelected(true);
+    chkOrders.setSelected(true);
+    chkItems.setSelected(true);
+    chkUnits.setSelected(true);
+    chkMessages.setSelected(true);
+    chkSpellsAndPotions.setSelected(true);
+    chkSelRegionsOnly.setSelected(false);
+    chkDelStats.setSelected(true);
+    chkDelTrans.setSelected(false);
+    chkDelEmptyFactions.setSelected(false);
+    chkExportHotspots.setSelected(true);
+  }
+
+  private void storeSettings() {
 		settings.setProperty("CRWriterDialog.x", getX() + "");
 		settings.setProperty("CRWriterDialog.y", getY() + "");
 

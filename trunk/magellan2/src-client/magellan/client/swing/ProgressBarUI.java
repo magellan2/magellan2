@@ -142,7 +142,10 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
-    dlg.progressBar.setMaximum(progressmaximum);
+    if (progressmaximum<=0)
+      dlg.progressBar.setIndeterminate(true);
+    else
+      dlg.progressBar.setMaximum(progressmaximum);
   }
 
   /**
@@ -233,6 +236,20 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   
   public void showMessageDialog(String message){
     JOptionPane.showMessageDialog(dlg, message);
+  }
+
+  public void showDialog(final JDialog dialog) {
+    try {
+      SwingUtilities.invokeAndWait(new Runnable(){
+      
+        public void run() {
+          dialog.setVisible(true);
+        }
+      });
+    } catch(Exception e) {
+      ProgressBarUI.log.error(e);
+    }
+
   }
 
   public interface ClosingListener {
@@ -448,8 +465,5 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
   }
 
-  
-  
-  
 }
 

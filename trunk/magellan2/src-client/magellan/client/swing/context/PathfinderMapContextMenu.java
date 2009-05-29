@@ -430,7 +430,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 	 * liefert nur die Units in den selectedObjects
 	 * @return
 	 */
-	private ArrayList<Unit> getSelectedUnits(){
+	private List<Unit> getSelectedUnits(){
 	    ArrayList<Unit> erg = new ArrayList<Unit>();
 	    if (this.selectedObjects!=null && this.selectedObjects.size()>0){
 	        for (Object o:this.selectedObjects){
@@ -448,7 +448,8 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 	    if (erg.size()>0){
 	        return erg;
 	    }
-	    return null;
+	    // don't return null, it's bad style
+	    return Collections.emptyList();
 	}
 	
 	

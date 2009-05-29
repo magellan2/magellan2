@@ -23,6 +23,8 @@
 // 
 package magellan.library.utils;
 
+import javax.swing.JDialog;
+
 /**
  * This interface represents a UserInterface that shows the user
  * the progress of an action.
@@ -32,15 +34,16 @@ package magellan.library.utils;
  * @version 1.0, 07.11.2007
  */
 public interface UserInterface {
-  /**
-   * Notifies the userface that the task is done. Destroys progress dialog.
-   */
-  public void ready();
-  
+
   /**
    * Shows the dialog
    */ 
   public void show();
+  
+  /**
+   * Notifies the interface that the task is done. Destroys progress dialog.
+   */
+  public void ready();
   
   /**
    * Sets the progress of the action.
@@ -51,16 +54,6 @@ public interface UserInterface {
    * Sets the maximum number of steps.
    */
   public void setMaximum(int maxProgress);
-  
-  /**
-   * Opens a confirm dialog.
-   */
-  public boolean confirm(String strMessage, String strTitle);
-  
-  /**
-   * Opens an input dialog.
-   */
-  public Object input(String strMessage, String strTitle, Object[] values, Object initial);
   
   /**
    * Sets the title of the progress dialog.
@@ -77,7 +70,29 @@ public interface UserInterface {
    */
   public void showException(String message, String description, Exception exception);
   
+  /**
+   * Opens a confirm dialog.
+   */
+  public boolean confirm(String strMessage, String strTitle);
   
+  /**
+   * Opens an input dialog.
+   */
+  public Object input(String strMessage, String strTitle, Object[] values, Object initial);
+  
+  /**
+   * Shows a message with an ok option
+   * 
+   * @param message
+   */
   public void showMessageDialog(String message);
+
+  
+  /**
+   * Displays the dialog.
+   * 
+   * @param dialog
+   */
+  public void showDialog(JDialog dialog);
   
 }

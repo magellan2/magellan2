@@ -23,6 +23,8 @@
 // 
 package magellan.library.utils;
 
+import javax.swing.JDialog;
+
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -98,6 +100,10 @@ public class NullUserInterface implements UserInterface {
   
   public void showMessageDialog(String message){
     NullUserInterface.log.debug("Error: "+message+")");
+  }
+
+  public void showDialog(JDialog optionPane) {
+    NullUserInterface.log.debug("dialog suppressed");
   }
 
 }

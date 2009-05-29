@@ -59,14 +59,38 @@ public class SelectionEvent<T> extends EventObject {
 
 	/**
 	 * Constructs a new selection event with selectionType = ST_DEFAULT and empty path.
+   * 
+   * @param source
+   *          the object issuing the event.
+   * @param selectedObjects
+   *          the objects selected by the user. This collection does not
+   *          necessarily contain activeObject. Specifying null for this
+   *          parameter indicates that the selected objects did actually not
+   *          change.
+   * @param activeObject
+   *          the single object activated by the user.
 	 */
 	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject) {
 		this(source, selectedObjects, activeObject, null, SelectionEvent.ST_DEFAULT);
 	}
 
   /**
-   * Constructs a new selection event with empty path.
-   */
+   * Constructs a new selection event with empty selection path.
+   * 
+   * @param source
+   *          the object issuing the event.
+   * @param selectedObjects
+   *          the objects selected by the user. This collection does not
+   *          necessarily contain activeObject. Specifying null for this
+   *          parameter indicates that the selected objects did actually not
+   *          change.
+   * @param activeObject
+   *          the single object activated by the user.
+   * @param selectionType
+   *          The type of selection event. Currently supported types are
+   *          {@link SelectionEvent#ST_DEFAULT},
+   *          {@link SelectionEvent#ST_REGIONS}, 
+	 */
 	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, int selectionType) {
     this(source, selectedObjects, activeObject, null, selectionType);
   }
@@ -74,8 +98,20 @@ public class SelectionEvent<T> extends EventObject {
 
   /**
    * Constructs a new selection event with empty path with <code>selectionType ST_DEFAULT</code>.
-   */
-  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> selectionPath) {
+   * 
+   * @param source
+   *          the object issuing the event.
+   * @param selectedObjects
+   *          the objects selected by the user. This collection does not
+   *          necessarily contain activeObject. Specifying null for this
+   *          parameter indicates that the selected objects did actually not
+   *          change.
+   * @param activeObject
+   *          the single object activated by the user.
+   * @param selectionPath
+   *          a sequence of object that are "parents" of the active object.
+   */          
+ public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> selectionPath) {
     this(source, selectedObjects, activeObject, selectionPath, SelectionEvent.ST_DEFAULT);
   }
 
@@ -98,9 +134,9 @@ public class SelectionEvent<T> extends EventObject {
    * @param path
    *          a sequence of object that are "parents" of the active object.
    * @param selectionType
-   *          The type of selection event. Currently supportet types are
-   *          {@link SelectionEvent#ST_DEFAULT},
-   *          {@link SelectionEvent#ST_REGIONS}, 
+   *          The type of selection event. Currently supported types are
+   *          {@link SelectionEvent#ST_DEFAULT} if some game object(s) are selected, and
+   *          {@link SelectionEvent#ST_REGIONS} if one or more regions are selected. 
    */          
   public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> path,
       int selectionType) {

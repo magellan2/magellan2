@@ -40,6 +40,7 @@ import javax.swing.border.BevelBorder;
 
 import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
+import magellan.client.event.SelectionEvent;
 import magellan.client.event.UnitOrdersEvent;
 import magellan.client.extern.MagellanPlugIn;
 import magellan.client.swing.FactionStatsDialog;
@@ -94,7 +95,14 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
 	private void initMenu() {
 		JMenuItem name = new JMenuItem(getCaption());
-		name.setEnabled(false);
+		if (selectedObjects.contains(uc))
+		  name.setEnabled(false);
+		name.addActionListener(new ActionListener() {
+    
+      public void actionPerformed(ActionEvent e) {
+        dispatcher.fire(new SelectionEvent<UnitContainer>(UnitContainerContextMenu.this, null, uc));
+      }
+    });
 		add(name);
 
     if (!selectedObjects.contains(uc))

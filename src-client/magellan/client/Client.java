@@ -38,6 +38,8 @@ import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -2280,7 +2282,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     Properties properties = getProperties();
     // helper: store Magellan-Dir in properties toBe changed
     properties.setProperty("plugin.helper.magellandir", Client.filesDirectory.toString());
-    Collection<Class<MagellanPlugIn>> plugInClasses = loader.getExternalModuleClasses(properties);
+    List<Class<MagellanPlugIn>> plugInClasses = new ArrayList<Class<MagellanPlugIn>>( 
+      loader.getExternalModuleClasses(properties));
+    Collections.sort(plugInClasses, new Comparator<Class<MagellanPlugIn>>() {
+    
+      public int compare(Class<MagellanPlugIn> o1, Class<MagellanPlugIn> o2) {
+        return o1.getName().compareTo(o2.getName());
+      }
+    });
     
     for (Class<MagellanPlugIn> plugInClass : plugInClasses) {
       try {

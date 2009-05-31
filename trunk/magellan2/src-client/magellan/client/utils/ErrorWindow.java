@@ -25,11 +25,11 @@ package magellan.client.utils;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,7 +40,6 @@ import java.io.PrintStream;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
@@ -68,7 +67,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
 
   private static final String SHOW_DETAILS_BUTTON = Resources.get("buttons.details.more");
 
-  private static final String HIDE_DETAILS_BUTTON = Resources.get("buttons.details.more");
+  private static final String HIDE_DETAILS_BUTTON = Resources.get("buttons.details.less");
 
   public static final String UNKNOWN_ERROR_MESSAGE = Resources.get("errorwindow.unknown");
 
@@ -182,8 +181,9 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
   public ErrorWindow(Frame owner, String message, String description, Throwable throwable) {
     super(owner, true);
     setWindowSize(400, 180);
-    setResizable(false);
     setup();
+    pack();
+    setResizable(false);
     setErrorMessage(message, description, throwable);
   }
 
@@ -273,6 +273,8 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
       message = ErrorWindow.UNKNOWN_ERROR_MESSAGE;
     }
     errorMessage.setText(message);
+    pack();
+    validate();
 
     StringBuffer sb = new StringBuffer();
     sb.append(message);
@@ -318,31 +320,30 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     getContentPane().setLayout(new BorderLayout());
 
     JPanel buttonPanel = new JPanel();
-    buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
+    buttonPanel.setLayout(new GridLayout(0, 1, 5, 5));
     buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-    okButton = new JButton(Resources.get("button.ok"));
+    okButton = new JButton(Resources.get("button.continue"));
     okButton.setRequestFocusEnabled(false);
     okButton.setActionCommand(ActionCommand.OK.toString());
     okButton.addActionListener(this);
-    okButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//    okButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(okButton);
 
-    buttonPanel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-    cancelButton = new JButton(Resources.get("button.cancel"));
+    cancelButton = new JButton(Resources.get("button.quit"));
     cancelButton.setRequestFocusEnabled(false);
     cancelButton.setActionCommand(ActionCommand.CANCEL.toString());
     cancelButton.addActionListener(this);
-    cancelButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//    cancelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(cancelButton);
 
-    buttonPanel.add(Box.createVerticalGlue());
+    buttonPanel.add(Box.createRigidArea(new Dimension(1, 10)));
 
     detailsButton = new JButton(ErrorWindow.SHOW_DETAILS_BUTTON);
     detailsButton.setRequestFocusEnabled(false);
     detailsButton.setActionCommand(ActionCommand.DETAILS.toString());
     detailsButton.addActionListener(this);
-    detailsButton.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//    detailsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     buttonPanel.add(detailsButton);
 
     errorMessage = new TextArea();
@@ -477,7 +478,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     ErrorWindow.log.debug("Open details panel...");
     detailsButton.setText(ErrorWindow.HIDE_DETAILS_BUTTON);
     scrollPane.setVisible(true);
-    setSize(xSize, 400);
+    pack();
     validate();
   }
 
@@ -489,7 +490,7 @@ public class ErrorWindow extends JDialog implements ActionListener,WindowCloseab
     ErrorWindow.log.debug("Close details panel...");
     detailsButton.setText(ErrorWindow.SHOW_DETAILS_BUTTON);
     scrollPane.setVisible(false);
-    setSize(xSize, 180);
+    pack();
     validate();
   }
   

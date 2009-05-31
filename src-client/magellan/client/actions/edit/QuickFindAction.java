@@ -13,7 +13,6 @@
 
 package magellan.client.actions.edit;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -38,6 +37,7 @@ import magellan.client.swing.InternationalizedDialog;
 import magellan.client.swing.basics.SpringUtilities;
 import magellan.library.EntityID;
 import magellan.library.GameData;
+import magellan.library.HasRegion;
 import magellan.library.Named;
 import magellan.library.utils.Resources;
 
@@ -167,6 +167,7 @@ public class QuickFindAction extends MenuAction {
     
     /** text for displaying the found units name */
     private JLabel entityText;
+    private JLabel regionText;
 
     /**
      * Create the dialog
@@ -191,6 +192,7 @@ public class QuickFindAction extends MenuAction {
       
       idInput = new JTextField(8);
       entityText = new JLabel("---");
+      regionText = new JLabel("---");
       
       // close dialog if ESCAPE (cancel) or ENTER (find) is pressed
       idInput.addKeyListener(new KeyAdapter() {
@@ -224,10 +226,14 @@ public class QuickFindAction extends MenuAction {
         }
         public void update(String text) {
           Named o = findEntity(text);
-          if (o==null)
+          if (o==null){
             entityText.setText("---");
-          else
+            regionText.setText("");
+          }else{
             entityText.setText(o.getName());
+            if (o instanceof HasRegion)
+              regionText.setText(((HasRegion) o).getRegion().toString());
+          }
           QuickFindDialog.this.validate();
           QuickFindDialog.this.pack();
         }
@@ -241,13 +247,11 @@ public class QuickFindAction extends MenuAction {
       panel.add(new JLabel(Resources.get("quickfinddialog.idinput.label")));
       panel.add(idInput);
       panel.add(entityText);
-      Component dummy = new JLabel();
-      panel.add(dummy); // dummy for grid
+      panel.add(regionText);
       getContentPane().add(panel);
       
       this.setUndecorated(true);
       SpringUtilities.makeCompactGrid(panel, 2, 2, 7, 7, 7, 7);
-      panel.remove(dummy);
     }
     
     /**

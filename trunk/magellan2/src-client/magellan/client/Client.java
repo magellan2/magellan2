@@ -67,6 +67,7 @@ import javax.swing.plaf.FontUIResource;
 
 import magellan.client.actions.MenuAction;
 import magellan.client.actions.edit.FindAction;
+import magellan.client.actions.edit.QuickFindAction;
 import magellan.client.actions.edit.RedoAction;
 import magellan.client.actions.edit.UndoAction;
 import magellan.client.actions.extras.ArmyStatsAction;
@@ -761,6 +762,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(edit, new RedoAction(this, undoMgr));
     edit.addSeparator();
     addMenuItem(edit, new FindAction(this));
+    addMenuItem(edit, new QuickFindAction(this));
 
     return edit;
   }
@@ -1081,6 +1083,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Log LOG = new Log(fileDir);
       System.setErr(LOG.getPrintStream());
 
+      // logging with level warning to get this information even if user selected low debug level...
       Client.log.warn("Start writing error file with encoding " + LOG.encoding + ", log level " + Logger.getLevel(Logger.getLevel()));
 
       String version = VersionInfo.getVersion(fileDir);
@@ -1424,18 +1427,18 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           client.setReportChanged(false);
           
           if (client.getSelectedObjects()!=null){
-            client.getDispatcher().fire(new SelectionEvent<Object>(this,client.getSelectedObjects(),null));
+            client.getDispatcher().fire(new SelectionEvent(this,client.getSelectedObjects(),null));
           }
           // if we have active Region, center on it
           Region activeRegion = data.getActiveRegion();
           if (activeRegion != null) {
-            client.getDispatcher().fire(new SelectionEvent<Region>(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
+            client.getDispatcher().fire(new SelectionEvent(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
           } else {
             // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
             CoordinateID cID = new CoordinateID(0,0);
             activeRegion = data.getRegion(cID);
             if (activeRegion != null) {
-              client.getDispatcher().fire(new SelectionEvent<Region>(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
+              client.getDispatcher().fire(new SelectionEvent(client, new ArrayList<Region>(), activeRegion, SelectionEvent.ST_REGIONS));
             }
           }
         }
@@ -1757,7 +1760,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     getDispatcher().fire(new GameDataEvent(this, getData(), true));
     // also inform system about the new selection found in the GameData
     // object
-    getDispatcher().fire(new SelectionEvent<Region>(this, getData().getSelectedRegionCoordinates().values(), null, SelectionEvent.ST_REGIONS));
+    getDispatcher().fire(new SelectionEvent(this, getData().getSelectedRegionCoordinates().values(), null, SelectionEvent.ST_REGIONS));
 
   }
 
@@ -2258,7 +2261,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  public Collection<Object> getSelectedObjects() {
+  public Collection<?> getSelectedObjects() {
     return overviewPanel.getSelectedObjects();
   }
   

@@ -59,15 +59,27 @@ public abstract class MenuAction extends AbstractAction {
   }
 
   /**
-   * These methods are now needed to keep translation in the corresponding
-   * class. they MAY deliver null!
+   * Returns an name which should depend on the current GUI locale for a menu action.
+   * May return <code>null</code>! 
    */
   protected abstract String getNameTranslated();
 
   protected abstract String getMnemonicTranslated();
 
+  /**
+   * Returns an accelerator key combination which should depend on the current GUI locale for a 
+   * menu action. 
+   * May return <code>null</code>! 
+   *
+   * @return A KeyStroke description
+   * @see KeyStroke#getKeyStroke(String)
+   */
   protected abstract String getAcceleratorTranslated();
 
+  /**
+   * Returns a tool tip text which should depend on the current GUI locale for a menu action. 
+   * May return <code>null</code>! 
+   */
   protected abstract String getTooltipTranslated();
   
   /**
@@ -128,7 +140,8 @@ public abstract class MenuAction extends AbstractAction {
   }
 
   /**
-   * Returns the mnemonic of the menu this menu action is to be associated with.
+   * Returns the mnemonic of the menu this menu action is to be associated with. The return value
+   * is a key code which should be one of the values specified in {@link java.awt.event.KeyEvent}.
    * 
    * @return the mnemonic, a value of 0 means that no mnemonic is set.
    */
@@ -143,7 +156,7 @@ public abstract class MenuAction extends AbstractAction {
   }
 
   /**
-   * Returns the shortcut key stroke this menu action is to be invokable with.
+   * Returns the shortcut {@link KeyStroke} this menu action is to be invokable with.
    * 
    * @return the accelerator or null, if the menu has no accelerator.
    */

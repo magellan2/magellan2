@@ -1,3 +1,6 @@
+2009-05-31 / Build 230 - stm (stm_@users.sourceforge.net)
+    * added new QuickFindDialog (STRG+G)
+
 2009-05-26 / Build 289 - stm (stm_@users.sourceforge.net)
     * improved progress indicator for orderwriter
 

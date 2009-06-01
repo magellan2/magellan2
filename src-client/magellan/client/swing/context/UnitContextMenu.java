@@ -826,7 +826,7 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private boolean isEditAll() {
-    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, "false").equals("true");
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
   }
 
   private class RemoveUnitFromTeachersListAction implements ActionListener {

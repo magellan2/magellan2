@@ -53,6 +53,7 @@ import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
 import magellan.client.swing.basics.SpringUtilities;
+import magellan.client.swing.layout.GridLayout2;
 import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Building;
@@ -467,7 +468,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     pnlButtons.add(btnPreLast);
 
     // layout: two columns, as many rows as needed
-    JPanel pnlOptions = new JPanel(new GridLayout(0, 2));
+    JPanel pnlOptions = new JPanel(new GridLayout2(0, 2, 7, 1));
 
     pnlOptions.add(chkServerConformance);
     pnlOptions.add(chkIslands);
@@ -924,10 +925,10 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         Iterator<String> stringIterator = null;
         boolean checkShips = chkShips.isSelected();
         boolean checkUnits = chkUnits.isSelected();
-        boolean checkUnitDetails = chkUnitDetails.isSelected();
-        boolean checkSkills = chkSkills.isSelected();
-        boolean checkOrders = chkOrders.isSelected();
-        boolean checkItems = chkItems.isSelected();
+//        boolean checkUnitDetails = chkUnitDetails.isSelected();
+//        boolean checkSkills = chkSkills.isSelected();
+//        boolean checkOrders = chkOrders.isSelected();
+//        boolean checkItems = chkItems.isSelected();
         boolean checkBuildings = chkBuildings.isSelected();
         boolean checkSpells = chkSpellsAndPotions.isSelected();
         boolean checkRegDetails = chkRegionDetails.isSelected();

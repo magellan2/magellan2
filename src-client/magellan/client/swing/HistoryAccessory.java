@@ -54,6 +54,10 @@ public class HistoryAccessory extends JPanel {
 		this.settings = setting;
 		this.chooser = fileChooser;
 
+		if (PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory").isEmpty())
+		  PropertiesHelper.setList(settings, "HistoryAccessory.directoryHistory", 
+		      Collections.singletonList(fileChooser.getCurrentDirectory()));
+
 		// load history fifo buffer
 		for(Iterator iter = PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory")
 											.iterator(); iter.hasNext();) {

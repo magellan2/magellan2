@@ -82,10 +82,6 @@ public class OpenOrdersAccessory extends HistoryAccessory {
     c.weightx = 0.0;
     c.weighty = 0.0;
     this.add(chkDoNotOverwriteConfirmedOrders, c);
-    
-    
-		
-		
 		
 	}
 

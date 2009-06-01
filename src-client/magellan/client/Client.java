@@ -2263,7 +2263,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  public Collection<?> getSelectedObjects() {
+  public Collection<Object> getSelectedObjects() {
     return overviewPanel.getSelectedObjects();
   }
   

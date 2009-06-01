@@ -31,7 +31,6 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -54,8 +53,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   private static final Logger log = Logger.getInstance(ProgressBarUI.class);
   // user interface
   protected ProgressDlg dlg = null;
-  protected boolean showing=false;
-  protected boolean ready=false;
+  protected boolean showing = false;
+  protected boolean ready = false;
   private javax.swing.Timer timer;
   private int delay;
 
@@ -134,19 +133,37 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     dlg.progressBar.setMaximum(100);
     setTitle(Resources.get("progressbarui.title.default"));
     setProgress(Resources.get("progressbarui.label.default"), 0);
-    
+
     timer = new Timer(delay, this);
+  }
+
+  /**
+   * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
+   */
+  public void setTitle(String title) {
+    dlg.setTitle(title);
   }
 
   /**
    * @see magellan.library.utils.UserInterface#setMaximum(int)
    */
   public void setMaximum(int progressmaximum) {
-    if (progressmaximum<=0)
+    if (progressmaximum <= 0)
       dlg.progressBar.setIndeterminate(true);
     else
       dlg.progressBar.setMaximum(progressmaximum);
   }
+
+  /**
+     * @see magellan.library.utils.UserInterface#setProgress(java.lang.String,
+     *      int)
+     */
+    public void setProgress(String strMessage, int iProgress) {
+      Progress progress = new Progress();
+      progress.strMessage = strMessage;
+      progress.iProgress = iProgress;
+      SwingUtilities.invokeLater(progress);
+    }
 
   /**
    * @see magellan.library.utils.UserInterface#show()
@@ -156,43 +173,22 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-   * @see magellan.library.utils.UserInterface#confirm(java.lang.String, java.lang.String)
+   * Called if the timer fires. Shows the dialog (in the AWTEvent thread).
+   * 
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
-  public boolean confirm(String strMessage, String strTitle) {
-    Confirm conf = new Confirm(strTitle, strMessage);
-
-    try {
-      SwingUtilities.invokeAndWait(conf);
-    } catch(Exception e) {
-      ProgressBarUI.log.error(e);
+  public synchronized void actionPerformed(ActionEvent e) {
+    if (e.getSource() == timer && !showing) {
+      (new Thread(new Runnable() {
+      
+        public void run() {
+          if (!ready) {
+            showing = true;
+            ProgressBarUI.this.dlg.setVisible(true);
+          }
+        }
+      })).start();
     }
-
-    return conf.bResult;
-  }
-
-  /**
-   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String, java.lang.Object[], java.lang.Object)
-   */
-  public Object input(String strMessage, String strTitle, Object [] values, Object initialSelection) {
-    Input input = new Input(strMessage, strTitle, values, initialSelection);
-    try {
-      SwingUtilities.invokeAndWait(input);
-    } catch (Exception e) {
-      ProgressBarUI.log.error(e);
-    }
-    return input.sResult;
-  }
-
-
-  /**
-   * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
-   */
-  public void setProgress(String strMessage, int iProgress) {
-    Progress progress = new Progress();
-    progress.strMessage = strMessage;
-    progress.iProgress = iProgress;
-
-    SwingUtilities.invokeLater(progress);
   }
 
   /**
@@ -202,13 +198,14 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    */
   public synchronized void ready() {
     timer.stop();
-    ready=true;
+    ready = true;
     if (dlg.isVisible()) {
       dlg.setVisible(false);
     }
     // if the progress dialog hasn't been set visible, because invokeLater is
     // waiting for an event, we cannot dispose the dialog, because this would
-    // wait, too and could cause a deadlock. Therefore we only dispose if it has already been shown.
+    // wait, too and could cause a deadlock. Therefore we only dispose if it
+    // has already been shown.
     if (showing) {
       dlg.dispose();
     }
@@ -219,62 +216,84 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-   * @see magellan.library.utils.UserInterface#setTitle(java.lang.String)
+   * @see magellan.library.utils.UserInterface#confirm(java.lang.String,
+   *      java.lang.String)
    */
-  public void setTitle(String title) {
-    dlg.setTitle(title);
+  public boolean confirm(String strMessage, String strTitle) {
+    Confirm conf = new Confirm(strTitle, strMessage);
+
+    try {
+      SwingUtilities.invokeAndWait(conf);
+    } catch (Exception e) {
+      ProgressBarUI.log.error(e);
+    }
+
+    return conf.bResult;
+  }
+
+  /**
+   * @see magellan.library.utils.UserInterface#input(java.lang.String,
+   *      java.lang.String, java.lang.Object[], java.lang.Object)
+   */
+  public Object input(String strMessage, String strTitle, Object[] values, Object initialSelection) {
+    Input input = new Input(strMessage, strTitle, values, initialSelection);
+    try {
+      SwingUtilities.invokeAndWait(input);
+    } catch (Exception e) {
+      ProgressBarUI.log.error(e);
+    }
+    return input.sResult;
   }
 
   public void showException(String message, String description, Exception exception) {
-    ErrorWindow ew = message==null?new ErrorWindow(Resources.get("progressbarui.message.unknownerror"), exception):new ErrorWindow(message, description, exception);
+    ErrorWindow ew =
+        message == null ? new ErrorWindow(Resources.get("progressbarui.message.unknownerror"),
+            exception) : new ErrorWindow(message, description, exception);
     ew.setShutdownOnCancel(false);
     ew.setVisible(true);
 
-//  throw new RuntimeException(exception);
+    // throw new RuntimeException(exception);
   }
-  
-  
-  public void showMessageDialog(String message){
+
+  public void showMessageDialog(String message) {
     JOptionPane.showMessageDialog(dlg, message);
   }
 
   public void showDialog(final JDialog dialog) {
     try {
-      SwingUtilities.invokeAndWait(new Runnable(){
-      
+      SwingUtilities.invokeAndWait(new Runnable() {
+
         public void run() {
           dialog.setVisible(true);
         }
       });
-    } catch(Exception e) {
+    } catch (Exception e) {
       ProgressBarUI.log.error(e);
     }
 
   }
 
+  public static ClosingListener getDefaultClosingListener(final Component parent) {
+    return new ClosingListener() {
+  
+      public boolean proceed(WindowEvent e) {
+        return (JOptionPane.showConfirmDialog(parent, Resources.get("progressbarui.abort.message"),
+            Resources.get("progressbarui.abort.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
+      }
+  
+    };
+  }
+
   public interface ClosingListener {
 
     /**
-     * Returns <code>true</code> if the dialog should be closed after
-     * receiving an event <code>e</code> of type
-     * {@link WindowEvent#WINDOW_CLOSING}.
+     * Returns <code>true</code> if the dialog should be closed after receiving
+     * an event <code>e</code> of type {@link WindowEvent#WINDOW_CLOSING}.
      * 
      * @param e
      * @return
      */
     public boolean proceed(WindowEvent e);
-  }
-
-  public static ClosingListener getDefaultClosingListener(final Component parent) {
-    return new ClosingListener() {
-
-      public boolean proceed(WindowEvent e) {
-        return (JOptionPane.showConfirmDialog(parent, Resources
-            .get("progressbarui.abort.message"), Resources.get("progressbarui.abort.title"),
-            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
-      }
-
-    };
   }
 
   /**
@@ -284,18 +303,16 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
     private ClosingListener closingListener;
 
-
-
     /**
      * @see java.awt.Window#processEvent(java.awt.AWTEvent)
      */
     @Override
     protected void processEvent(AWTEvent e) {
-      if (e instanceof WindowEvent){
+      if (e instanceof WindowEvent) {
         WindowEvent we = (WindowEvent) e;
-        if (we.getID()!=WindowEvent.WINDOW_CLOSING) {
+        if (we.getID() != WindowEvent.WINDOW_CLOSING) {
           super.processEvent(e);
-        } else if (closingListener.proceed(we)){
+        } else if (closingListener.proceed(we)) {
           ProgressBarUI.log.info("aborted");
           super.processEvent(e);
         } else {
@@ -307,7 +324,6 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
     }
 
-
     public JLabel labelText;
     public JProgressBar progressBar;
 
@@ -316,7 +332,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      */
     public ProgressDlg(Dialog parent, boolean modal, ClosingListener listener) {
       super(parent, modal);
-//    setUndecorated(true);
+      // setUndecorated(true);
       init(listener);
     }
 
@@ -325,7 +341,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      */
     public ProgressDlg(Frame parent, boolean modal, ClosingListener listener) {
       super(parent, modal);
-//    setUndecorated(true);
+      // setUndecorated(true);
       init(listener);
     }
 
@@ -336,11 +352,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
         closingListener = listener;
 
       initComponents();
+      setLocationRelativeTo(getParent());
       pack();
-
-      Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-      setLocation((screen.width - getWidth()) / 2, (screen.height - getHeight()) / 2);
-
     }
 
     /**
@@ -381,7 +394,6 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     }
   }
 
-
   /**
    *
    */
@@ -406,7 +418,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     String strTitle;
     boolean bResult = false;
 
-    public Confirm(String t, String m){
+    public Confirm(String t, String m) {
       strTitle = t;
       strMessage = m;
     }
@@ -428,12 +440,12 @@ public class ProgressBarUI implements UserInterface, ActionListener {
     String strMessage;
     String strTitle;
 
-    Object [] values;
+    Object[] values;
     Object initialSelection;
 
     Object sResult = null;
 
-    public Input(String m, String t, Object [] val, Object initial){
+    public Input(String m, String t, Object[] val, Object initial) {
       strMessage = m;
       strTitle = t;
       values = val;
@@ -444,26 +456,10 @@ public class ProgressBarUI implements UserInterface, ActionListener {
      * 
      */
     public void run() {
-      sResult = JOptionPane.showInputDialog(dlg, strMessage,
-          strTitle, JOptionPane.QUESTION_MESSAGE, null, values, initialSelection);
-    }
-  }
-
-  /**
-   * Called if the timer fires.
-   * 
-   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-   */
-  public synchronized void actionPerformed(ActionEvent e) {
-    if (e.getSource()==timer && !showing){
-      SwingUtilities.invokeLater((new Runnable() {public void run() {
-        if (!ready){
-          showing=true;
-          ProgressBarUI.this.dlg.setVisible(true);
-        }
-      }})); 
+      sResult =
+          JOptionPane.showInputDialog(dlg, strMessage, strTitle, JOptionPane.QUESTION_MESSAGE,
+              null, values, initialSelection);
     }
   }
 
 }
-

@@ -523,7 +523,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	}
 	
   private boolean isEditAll(){
-    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS).equals("true");
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
   }
 
 	/**

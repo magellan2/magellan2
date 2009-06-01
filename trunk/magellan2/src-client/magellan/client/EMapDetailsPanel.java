@@ -627,7 +627,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	
   private boolean isEditAll(){
-    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS).equals("true");
+    return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
   }
 
 

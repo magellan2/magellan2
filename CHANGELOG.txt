@@ -1,4 +1,7 @@
-2009-05-31 / Build 230 - stm (stm_@users.sourceforge.net)
+2009-06-01 / Build 293 - Thoralf (thoralf@m84.de)
+    * Release 2.0.4 published
+
+2009-05-31 / Build 290 - stm (stm_@users.sourceforge.net)
     * added new QuickFindDialog (STRG+G)
 
 2009-05-26 / Build 289 - stm (stm_@users.sourceforge.net)

@@ -10,7 +10,7 @@
 
   <property name="VERSION.MAJOR"         value="2"/>
   <property name="VERSION.MINOR"         value="0"/>
-  <property name="VERSION.SUB"           value="3"/>
+  <property name="VERSION.SUB"           value="4"/>
 
   <property name="VERSION"               value="${VERSION.MAJOR}_${VERSION.MINOR}_${VERSION.SUB}"/>
   <property name="VERSION.POINTED"       value="${VERSION.MAJOR}.${VERSION.MINOR}.${VERSION.SUB}"/>

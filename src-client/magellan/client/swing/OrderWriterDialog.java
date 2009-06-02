@@ -1350,11 +1350,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     String pattern = settings.getProperty("FileNameGenerator.ordersSaveFileNamePattern");
 
-    String newFileName = FileNameGenerator.getFileName(pattern, feed);
+    if (pattern!=null){
+      String newFileName = FileNameGenerator.getFileName(pattern, feed);
 
-    cmbOutputFile.insertItemAt(newFileName, 0);
-    cmbOutputFile.setSelectedItem(newFileName);
-
+      cmbOutputFile.insertItemAt(newFileName, 0);
+      cmbOutputFile.setSelectedItem(newFileName);
+    }
   }
 
   /**

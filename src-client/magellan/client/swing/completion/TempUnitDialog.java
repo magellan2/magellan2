@@ -275,11 +275,16 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 			int h = 0;
 			StringTokenizer st = new StringTokenizer(settings.getProperty("TempUnitDialog.bounds"),
 													 ",");
-			x = Integer.parseInt(st.nextToken());
-			y = Integer.parseInt(st.nextToken());
-			w = Integer.parseInt(st.nextToken());
-			h = Integer.parseInt(st.nextToken());
-			setBounds(x, y, w, h);
+			try {
+			  x = Integer.parseInt(st.nextToken());
+			  y = Integer.parseInt(st.nextToken());
+			  w = Integer.parseInt(st.nextToken());
+			  h = Integer.parseInt(st.nextToken());
+			  setBounds(x, y, w, h);
+			} catch (Exception e){
+			  pack();
+			  setLocationRelativeTo(posC);
+			}
 		} else {
 			pack();
 			setLocationRelativeTo(posC);

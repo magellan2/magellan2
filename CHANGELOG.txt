@@ -1,3 +1,6 @@
+2009-06-02 / Build 294 - Thoralf (thoralf@m84.de)
+    * Fixed a few NPEs in connection with properties.get()
+
 2009-06-01 / Build 293 - Thoralf (thoralf@m84.de)
     * Release 2.0.4 published
 

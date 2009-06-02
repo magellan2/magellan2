@@ -294,7 +294,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   
   private void showHelp() {
     // check the given executable
-    File exeFile = new File(settings.getProperty("JECheckPanel.echeckEXE"));
+    File exeFile = new File(settings.getProperty("JECheckPanel.echeckEXE", "echeck.exe"));
 
     if(!exeFile.exists()) {
       JOptionPane.showMessageDialog(this.getRootPane(), Resources.get("echeckpanel.msg.echeckmissing.text"),
@@ -353,7 +353,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		}
 
 		// check the given executable
-		File exeFile = new File(settings.getProperty("JECheckPanel.echeckEXE"));
+		File exeFile = new File(settings.getProperty("JECheckPanel.echeckEXE", "echeck.exe"));
 
 		if(!exeFile.exists()) {
 			JOptionPane.showMessageDialog(this.getRootPane(), Resources.get("echeckpanel.msg.echeckmissing.text"),

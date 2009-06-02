@@ -136,7 +136,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
     ARRSet(Properties settings, String set){
       if (set==null) {
-        throw new NullPointerException();
+        throw new NullPointerException("empty name");
       }
       name = set;
       cTable = new ColorTable();
@@ -1403,7 +1403,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         in.close();
         ARRSet newSet = new ARRSet(prop, prop.getProperty("Set.Name"));
         addSet(newSet);
-      } catch (IOException ioe) {
+      } catch (Exception ioe) {
         showIOError(ioe);
       }
     }
@@ -1498,7 +1498,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
     }
 
-    protected void showIOError(IOException ioe) {
+    protected void showIOError(Exception ioe) {
       log.error(ioe);
       JOptionPane.showMessageDialog(this, ioe);
     }

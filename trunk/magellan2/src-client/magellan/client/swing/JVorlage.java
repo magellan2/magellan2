@@ -579,7 +579,7 @@ public class JVorlage extends InternationalizedDialog {
 		StringBuffer sb = null;
 		FileReader reader = null;
 		File tempFile = null;
-		File vorlage = new File(settings.getProperty("JVorlage.vorlageFile"));
+		File vorlage = new File(settings.getProperty("JVorlage.vorlageFile", "vorlage.exe"));
 
 		if((vorlage.exists() == false) || (vorlage.canRead() == false)) {
 			JOptionPane.showMessageDialog(this, Resources.get("jvorlage.msg.invalidvorlage.text"),

@@ -390,7 +390,7 @@ public class Resources {
    */
   public static String getRuleItemTranslation(String key, Locale locale) {
     Resources resources = Resources.getInstance();
-    key = "rules."+key;
+    key = "rules."+key.trim().replaceAll(" ","");
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {
@@ -428,7 +428,7 @@ public class Resources {
    */
   public static String getOrderTranslation(String key, Locale locale) {
     Resources resources = Resources.getInstance();
-    key = "orders."+key;
+    key = "orders."+key.trim().replaceAll(" ","");
     String translation = resources.getResource(key, locale);
 
     if (translation != null) {
@@ -511,6 +511,7 @@ public class Resources {
    * This method tries to find a resource in the set of bundles.
    */
   private String getResource(String key, Locale locale) {
+    key=key.trim().replaceAll(" ","");
     if (locale == null) {
       if (bundles.containsKey(Resources.DEFAULT) && bundles.get(Resources.DEFAULT).containsKey(key)) {
         return bundles.get(Resources.DEFAULT).getResource(key);

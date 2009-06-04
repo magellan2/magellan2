@@ -1,3 +1,12 @@
+2009-06-05 / Build 299 - stm (stm_@users.sourceforge.net)
+    * Removed many warnings, mostly concerning Java generics
+    * Most notably SelectionEvent/SelectionListener interface and OrdererdHashtable were slightly changed
+    * added class CollectionFilters, especially useful for filtering selections
+    * listing persons per race as sub-node of persons in Details
+
+2009-06-04 / Build 295 - stm (stm_@users.sourceforge.net)
+    * fixed Rules.skill.Waffenloser Kampf and similar in Resources
+
 2009-06-02 / Build 294 - Thoralf (thoralf@m84.de)
     * Fixed a few NPEs in connection with properties.get()
 

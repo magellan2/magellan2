@@ -144,7 +144,7 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private String getCaption() {
-    if (selectedUnits.size() == 1)
+    if (selectedUnits.size() <= 1)
       return unit.toString();
     else
       return selectedUnits.size() + " " + Resources.get("context.unitcontextmenu.units");

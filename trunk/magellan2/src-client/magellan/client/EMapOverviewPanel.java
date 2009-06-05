@@ -156,7 +156,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   // region with previously selected item
   private Unique activeObject = null;
-  private List<Unique> selectedObjects = new LinkedList<Unique>();
+  private List<Object> selectedObjects = new LinkedList<Object>();
 
   // needed by FactionNodeWrapper to determine the active alliances
   // keys: FactionIDs, values: Alliance-objects
@@ -267,7 +267,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
           if (lstHistory.getSelectedValue()!=null){
-            dispatcher.fire(new SelectionEvent<Object>(lstHistory, null, lstHistory.getSelectedValue()));
+            dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getSelectedValue()));
           }
         }
       }
@@ -363,7 +363,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   public void rebuildTree() {
     Unique oldActiveObject = activeObject;
-    Collection<Unique> oldSelectedObjects = new LinkedList<Unique>(selectedObjects);
+    Collection<Object> oldSelectedObjects = new LinkedList<Object>(selectedObjects);
 
     // clear the history
     SelectionHistory.clear();
@@ -424,7 +424,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
-    this.selectionChanged(new SelectionEvent<Unique>(treeModel, oldSelectedObjects, oldActiveObject));
+    this.selectionChanged(new SelectionEvent(treeModel, oldSelectedObjects, oldActiveObject));
 
   }
 
@@ -464,7 +464,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     } else if (criteria.equals("names")) {
       cmp = EMapOverviewPanel.nameCmp;
     } else {
-      cmp = new SortIndexComparator(EMapOverviewPanel.idCmp);
+      cmp = new SortIndexComparator<Unit>(EMapOverviewPanel.idCmp);
     }
 
     // get an array of ints out of the definition string:
@@ -637,7 +637,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       if (o instanceof Unique){
         if (tse.isAddedPath(path)) {
-          selectedObjects.add((Unique) o);
+          selectedObjects.add(o);
         } else {
           selectedObjects.remove(o);
         }
@@ -650,7 +650,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
       }
     }
-    dispatcher.fire(new SelectionEvent<Unique>(this, selectedObjects, activeObject, selectionPath));
+    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
   }
 
   /**
@@ -1579,7 +1579,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // stupid value here, null is prohibited, else
       // the selectionChanged() method would reject
       // the event since it originates from this.
-      selectionChanged(new SelectionEvent<Object>(u, null, u));
+      selectionChanged(new SelectionEvent(u, null, u));
       // pavkovic 2004.04.28: we dont need to fire an event here as
       // treeValueChanged already does this for us
       // dispatcher.fire(new SelectionEvent(this, null, u));
@@ -1592,7 +1592,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
-  private Enumeration iterateToNode(Enumeration nodes, Object actNode) {
+  private Enumeration<?> iterateToNode(Enumeration nodes, Object actNode) {
     while (nodes.hasMoreElements()) {
       if (nodes.nextElement().equals(actNode)) {
         break;
@@ -1602,7 +1602,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     return nodes;
   }
 
-  private Unit getUnitInTree(Enumeration<TreeNode> nodes, Object actNode, boolean first) {
+  private Unit getUnitInTree(Enumeration nodes, Object actNode, boolean first) {
     Unit ret = null;
 
     while (nodes.hasMoreElements()) {
@@ -1915,8 +1915,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Updates UnitNodeWrappers on changes of orders
    */
   private class UnitWrapperUpdater implements UnitOrdersListener {
-    Collection buf[] = { new LinkedList(), new LinkedList() };
-
+    Collection<UnitRelation> buff1 = new LinkedList<UnitRelation>();
+    Collection<UnitRelation> buff2 = new LinkedList<UnitRelation>();
+    
     /**
      * Invoked when the orders of a unit are modified.
      * 
@@ -1936,26 +1937,24 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
         Collection<UnitRelation> relations = u.getRelations(TransferRelation.class);
 
+        // ensure that unitRelations has an entry for u
         if (!unitRelations.containsKey(u.getID())) {
           if (relations.size() == 0) {
             return;
           }
 
-          unitRelations.put(u.getID(), new LinkedList());
+          unitRelations.put(u.getID(), new LinkedList<UnitRelation>());
         }
 
+        
         List<UnitRelation> oldRelations = unitRelations.get(u.getID());
-        Collection<UnitRelation> buffer = buf[updateRelationPartners ? 0 : 1];
+        Collection<UnitRelation> buffer = updateRelationPartners ? buff1 : buff2;
 
         if (!relations.equals(oldRelations)) {
           buffer.clear();
           buffer.addAll(oldRelations);
 
-          Iterator<UnitRelation> it = relations.iterator();
-
-          while (it.hasNext()) {
-            UnitRelation o = it.next();
-
+          for (UnitRelation o : relations){
             if (oldRelations.contains(o)) {
               buffer.remove(o);
             } else {
@@ -1967,16 +1966,11 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
             }
           }
 
-          if (buffer.size() > 0) {
-            it = buffer.iterator();
+          for (Object o : buffer){
+            oldRelations.remove(o);
 
-            while (it.hasNext()) {
-              Object o = it.next();
-              oldRelations.remove(o);
-
-              if (updateRelationPartners) {
-                update(((TransferRelation) o).target, false);
-              }
+            if (updateRelationPartners) {
+              update(((TransferRelation) o).target, false);
             }
           }
         }
@@ -2095,7 +2089,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * 
    */
-  public Collection<Object> getSelectedObjects() {
+  public Collection<?> getSelectedObjects() {
     return this.contextManager.getSelection();
   }
   

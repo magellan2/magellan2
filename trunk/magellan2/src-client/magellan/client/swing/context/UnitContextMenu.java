@@ -125,7 +125,7 @@ public class UnitContextMenu extends JPopupMenu {
     unitString.addActionListener(new ActionListener() {
     
       public void actionPerformed(ActionEvent e) {
-        dispatcher.fire(new SelectionEvent<Unit>(UnitContextMenu.this, null, unit));
+        dispatcher.fire(new SelectionEvent(UnitContextMenu.this, null, unit));
       }
     });
 
@@ -431,10 +431,10 @@ public class UnitContextMenu extends JPopupMenu {
    */
   private void event_selectUnits() {
     if (this.selectedUnits.size() > 1) {
-      dispatcher.fire(new SelectionEvent<Unit>(this, this.selectedUnits, null));
+      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, null));
     }
     if (this.selectedUnits.size() == 1) {
-      dispatcher.fire(new SelectionEvent<Unit>(this, this.selectedUnits, (Unit) this.selectedUnits
+      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, this.selectedUnits
           .toArray()[0]));
     }
   }

@@ -178,7 +178,7 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		return null;
 	}
 

@@ -307,7 +307,7 @@ public class ContextManager extends MouseAdapter {
 	/**
 	 * @return the selection
 	 */
-	public Collection getSelection() {
+	public Collection<?> getSelection() {
 		return selection;
 	}
 }

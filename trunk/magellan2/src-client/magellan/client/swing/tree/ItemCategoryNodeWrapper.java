@@ -159,7 +159,7 @@ public class ItemCategoryNodeWrapper implements CellObject{
 	public void propertiesChanged() {
 		returnIcons = null;
 	}
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		if(returnIcons == null) {
 			
 				returnIcons = icons;

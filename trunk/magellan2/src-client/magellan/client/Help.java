@@ -37,7 +37,7 @@ import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This class is a help tool from outside Magellan. It will be startet via
+ * This class is a help tool from outside Magellan. It will be started via
  * a shortcut in the windows start menu, that was created by the installer.
  *
  * @author Thoralf Rickert

@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import magellan.client.swing.context.ContextFactory;
@@ -35,7 +34,7 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
   private List<SupportsEmphasizing> subordinatedElements = null;
   protected List<String> icons;
-  protected List returnIcons;
+  protected List<String> returnIcons;
   protected String text;
   protected Object object;
   protected String clipboardValue = null;
@@ -45,40 +44,77 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   protected Object contextArgument = null;
   protected int amount = -1;
 
+//  /**
+//   * Creates new SimpleNodeWrapper
+//   */
+//  public SimpleNodeWrapper(Object obj, String icon, String clipboardValue) {
+//    this(obj, obj == null ? "" : obj.toString(), icon, clipboardValue);
+//  }
+//
+//  /**
+//   * Creates new SimpleNodeWrapper
+//   */
+//  public SimpleNodeWrapper(Object obj, Collection<String> icons, String clipboardValue) {
+//    this(obj, obj == null ? "" : obj.toString(), icons, clipboardValue);
+//  }
+
   /**
-   * Creates new SimpleNodeWrapper
+   * @param obj
+   * @param text
+   * @param icons may be <code>null</code>
    */
-  public SimpleNodeWrapper(Object obj, Object icons, String clipboardValue) {
-    this(obj, obj == null ? "" : obj.toString(), icons, clipboardValue);
+  public SimpleNodeWrapper(Object obj, String text, String icon) {
+    this(obj, text, icon, null);
   }
 
-  public SimpleNodeWrapper(Object obj, String text, Object icons) {
+  /**
+   * @param obj
+   * @param text
+   * @param icons may be <code>null</code>
+   */
+  public SimpleNodeWrapper(Object obj, String text, Collection<String> icons) {
     this(obj, text, icons, null);
   }
 
   /**
-   * Creates new SimpleNodeWrapper
+   * Creates new SimpleNodeWrapper. 
+   * 
+   * @param obj
+   * @param text
+   * @param icon may be <code>null</code>
+   * @param clipboardValue
    */
-  public SimpleNodeWrapper(Object obj, String text, Object icons, String clipboardValue) {
+  public SimpleNodeWrapper(Object obj, String text, String icon, String clipboardValue) {
+    this(obj, text, icon==null?null:Collections.singletonList(icon), clipboardValue);
+  }
+
+  /**
+   * Creates new SimpleNodeWrapper. If <code>icon == null</code>, a default icon is displayed. If 
+   * <code>clipboardValue == null</code>, the text is returned as clipboard value. 
+   * 
+   * @param obj
+   * @param text 
+   * @param icons may be <code>null</code> meaning no icons
+   * @param clipboardValue may be <code>null</code>
+   */
+  public SimpleNodeWrapper(Object obj, String text, Collection<String> icons, String clipboardValue) {
     this.object = obj;
     this.text = text;
-    this.icons = null;
+    this.icons = icons==null?null:new ArrayList<String>(icons);
 
-    if (icons != null) {
-      if (icons instanceof Collection) {
-        this.icons = new ArrayList<String>((Collection<String>) icons);
-      } else if (icons instanceof Map) {
-        Map m = (Map) icons;
-
-        this.icons = new ArrayList<String>(m.size());
-
-        for (Iterator iter = m.values().iterator(); iter.hasNext();) {
-          this.icons.add(iter.next().toString());
-        }
-      } else {
-        this.icons = Collections.singletonList(icons.toString());
-      }
-    }
+//    if (icons != null) {
+//      if (icons instanceof Collection) {
+//        this.icons = new ArrayList<String>((Collection<String>) icons);
+//      } else if (icons instanceof Map) {
+//        Map m = (Map) icons;
+//
+//        this.icons = new ArrayList<String>(m.size());
+//
+//        for (Iterator iter = m.values().iterator(); iter.hasNext();) {
+//          this.icons.add(iter.next().toString());
+//        }
+//      }
+//    }
 
     this.clipboardValue = clipboardValue;
   }
@@ -86,8 +122,15 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   /**
    * Creates a new SimpleNodeWrapper object.
    */
-  public SimpleNodeWrapper(Object obj, Object icons) {
-    this(obj, icons, null);
+  public SimpleNodeWrapper(Object obj, Collection<String> icons) {
+    this(obj, obj == null ? "" : obj.toString(), icons, null);
+  }
+
+  /**
+   * Creates a new SimpleNodeWrapper object.
+   */
+  public SimpleNodeWrapper(Object obj, String icon) {
+    this(obj, obj == null ? "" : obj.toString(), icon==null?null:Collections.singletonList(icon), null);
   }
 
   /**
@@ -140,7 +183,7 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   /**
    * DOCUMENT-ME
    */
-  public List getIconNames() {
+  public List<String> getIconNames() {
     if (returnIcons == null) {
       if (!isShowingIcons() || (icons == null)) {
         returnIcons = SimpleNodeWrapper.defaultIcon;

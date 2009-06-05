@@ -198,7 +198,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     }
 
     if (fireObject != null) {
-      dispatcher.fire(new SelectionEvent<Object>(this, null, fireObject));
+      dispatcher.fire(new SelectionEvent(this, null, fireObject));
     }
   }
 

@@ -75,34 +75,66 @@ public class Utils {
     }
   }
   
+  /**
+   * @param object
+   * @return <code>true</code> if object is <code>null</code>
+   */
   public static boolean isEmpty(Object object) {
     return (object==null);
   }
   
+  /**
+   * @param date
+   * @return <code>true</code> if date is <code>null</code> or time is 0
+   */
   public static boolean isEmpty(Date date) {
     return (date==null || date.getTime()==0);
   }
 
+  /**
+   * @param string
+   * @return <code>true</code> if string is <code>null</code> or equals ""
+   */
   public static boolean isEmpty(String string) {
     return (string==null || string.trim().equals(""));
   }
   
+  /**
+   * @param list
+   * @return <code>true</code> if list is <code>null</code> or empty
+   */
   public static boolean isEmpty(List list) {
     return (list==null || list.size()==0);
   }
   
-  public static boolean isEmpty(HashMap hashMap) {
-    return (hashMap==null || hashMap.size()==0);
+  /**
+   * @param map
+   * @return <code>true</code> if map is <code>null</code> or empty
+   */
+  public static boolean isEmpty(HashMap map) {
+    return (map==null || map.size()==0);
   }
   
+  /**
+   * @param list
+   * @return <code>true</code> if list is <code>null</code> or empty
+   */
   public static boolean isEmpty(NodeList list) {
     return (list==null || list.getLength()==0);
   }
   
+  /**
+   * @param list
+   * @return <code>true</code> if list is <code>null</code> or empty
+   */
   public static boolean isEmpty(Number[] list) {
     return (list==null || list.length==0);
   }
   
+  /**
+   * @param list
+   * @return <code>true</code> if list is <code>null</code> or empty
+   */
   public static boolean isEmpty(String[] list) {
     return (list==null || list.length==0);
   }

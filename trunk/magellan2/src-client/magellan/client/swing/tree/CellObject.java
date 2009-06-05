@@ -13,7 +13,7 @@
 
 package magellan.client.swing.tree;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -38,7 +38,7 @@ public interface CellObject {
 	 *
 	 * @return list of iconnames or null if no icons shall be displayed.
 	 */
-	List getIconNames();
+	Collection<String> getIconNames();
 
 	/**
 	 * Controls whether the tree cell renderer should display this item more noticeably than other

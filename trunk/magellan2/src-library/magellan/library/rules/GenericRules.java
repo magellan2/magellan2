@@ -15,10 +15,8 @@ package magellan.library.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import magellan.library.ID;
 import magellan.library.Rules;
@@ -27,6 +25,7 @@ import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
 
 
@@ -78,7 +77,7 @@ public class GenericRules implements Rules {
 	 * 
 	 */
 	public Iterator<RegionType> getRegionTypeIterator() {
-		return getIterator(RegionType.class, mapUnitContainerType);
+		return CollectionFilters.getValueIterator(RegionType.class, mapUnitContainerType);
 	}
 
 	/**
@@ -159,8 +158,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getShipTypeIterator() {
-		return getIterator(ShipType.class, mapUnitContainerType);
+	public Iterator<ShipType> getShipTypeIterator() {
+		return CollectionFilters.getValueIterator(ShipType.class, mapUnitContainerType);
 	}
 
 	/**
@@ -233,7 +232,7 @@ public class GenericRules implements Rules {
 	 * 
 	 */
 	public Iterator<BuildingType> getBuildingTypeIterator() {
-		return getIterator(BuildingType.class, mapUnitContainerType);
+		return CollectionFilters.getValueIterator(BuildingType.class, mapUnitContainerType);
 	}
 
 	/**
@@ -305,8 +304,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getCastleTypeIterator() {
-		return getIterator(CastleType.class, mapUnitContainerType);
+	public Iterator<CastleType> getCastleTypeIterator() {
+		return CollectionFilters.getValueIterator(CastleType.class, mapUnitContainerType);
 	}
 
 	/**
@@ -378,8 +377,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getRaceIterator() {
-		return getIterator(Race.class, mapUnitContainerType);
+	public Iterator<Race> getRaceIterator() {
+		return CollectionFilters.getValueIterator(Race.class, mapUnitContainerType);
 	}
 
 	/**
@@ -451,7 +450,7 @@ public class GenericRules implements Rules {
 	 * 
 	 */
 	public Iterator<ItemType> getItemTypeIterator() {
-		return getIterator(ItemType.class, mapItemType);
+		return CollectionFilters.getValueIterator(ItemType.class, mapItemType);
 	}
 
 	/**
@@ -496,8 +495,8 @@ public class GenericRules implements Rules {
 	/**
    * 
 	 */
-	public Iterator getAllianceCategoryIterator() {
-		return getIterator(AllianceCategory.class, mapAllianceCategory);
+	public Iterator<AllianceCategory> getAllianceCategoryIterator() {
+		return CollectionFilters.getValueIterator(AllianceCategory.class, mapAllianceCategory);
 	}
 
 	/**
@@ -561,8 +560,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getOptionCategoryIterator() {
-		return getIterator(OptionCategory.class, mapOptionCategory);
+	public Iterator<OptionCategory> getOptionCategoryIterator() {
+		return CollectionFilters.getValueIterator(OptionCategory.class, mapOptionCategory);
 	}
 
 	/**
@@ -629,8 +628,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getSkillCategoryIterator() {
-		return getIterator(SkillCategory.class, mapSkillCategory);
+	public Iterator<SkillCategory> getSkillCategoryIterator() {
+		return CollectionFilters.getValueIterator(SkillCategory.class, mapSkillCategory);
 	}
 
 	/**
@@ -697,8 +696,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getItemCategoryIterator() {
-		return getIterator(ItemCategory.class, mapItemCategory);
+	public Iterator<ItemCategory> getItemCategoryIterator() {
+	  return CollectionFilters.getValueIterator(ItemCategory.class, mapItemCategory);
 	}
 
 	/**
@@ -764,8 +763,8 @@ public class GenericRules implements Rules {
 	 *
 	 * 
 	 */
-	public Iterator getSkillTypeIterator() {
-		return getIterator(SkillType.class, mapSkillType);
+	public Iterator<SkillType> getSkillTypeIterator() {
+		return CollectionFilters.getValueIterator(SkillType.class, mapSkillType);
 	}
 
 	/**
@@ -823,14 +822,6 @@ public class GenericRules implements Rules {
 		}
 
 		return getSkillType(StringID.create(id), add);
-	}
-
-	private Iterator getIterator(Class c, Map m) {
-    if (m != null && m.values() != null) {
-      return new ClassIterator(c,Collections.unmodifiableCollection(m.values()).iterator());
-    } else {
-      return new ClassIterator(c,Collections.emptyList().iterator());
-    }
 	}
 
 	/**
@@ -997,95 +988,6 @@ public class GenericRules implements Rules {
 		return gameSpecificStuff;
 	}
 
-	/**
-	 * An iterator implementation to iterate a Map of objects and return only  returns object
-	 * instances of the given Class.
-	 */
-	private static class ClassIterator implements Iterator {
-		private Class givenClass;
-		private Iterator givenIterator;
-		private Object currentObject;
-
-		/**
-		 * Creates a new ClassIterator object.
-		 *
-		 * 
-		 * 
-		 *
-		 * @throws NullPointerException DOCUMENT-ME
-		 */
-		public ClassIterator(Class c, Iterator i) {
-			if(c == null) {
-				throw new NullPointerException();
-			}
-
-			if(i == null) {
-				throw new NullPointerException();
-			}
-
-			givenClass = c;
-			givenIterator = i;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public boolean hasNext() {
-			possiblyMoveToNext();
-
-			return currentObject != null;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
-		 * @throws NoSuchElementException DOCUMENT-ME
-		 */
-		public Object next() {
-			possiblyMoveToNext();
-
-			if(currentObject == null) {
-				throw new NoSuchElementException();
-			}
-
-			Object ret = currentObject;
-			currentObject = null;
-
-			return ret;
-		}
-
-		private void possiblyMoveToNext() {
-			if(currentObject != null) {
-				return;
-			}
-
-			try {
-				Object newObject = null;
-
-				while(givenIterator.hasNext() && (newObject == null)) {
-					newObject = givenIterator.next();
-
-					if(!givenClass.isInstance(newObject)) {
-						newObject = null;
-					}
-				}
-
-				currentObject = newObject;
-			} catch(NoSuchElementException e) {
-			}
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 */
-		public void remove() {
-			givenIterator.remove();
-		}
-	}
 	
 	/**
 	 * 

@@ -13,6 +13,7 @@
 
 package magellan.client.swing.tree;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -136,7 +137,7 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		if(activeAlliances == null) {
 			// this should never happen !!
 			FactionNodeWrapper.log.warn("Found activeAlliances-map to be null in FactionNodeWrapper.getGraphicsElements()! Please report to an magellan developer.");
@@ -196,10 +197,11 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 	 * DOCUMENT-ME
 	 *
 	 * 
+	 * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
 	 */
-	public List getGraphicsElements() {
+	public List<GraphicsElement> getGraphicsElements() {
 		if(GEs == null) {
-			GEs = new LinkedList<GraphicsElement>();
+			GEs = new ArrayList<GraphicsElement>();
 		} else {
 			GEs.clear();
 		}

@@ -58,12 +58,9 @@ public class IntegerID implements ID {
 
 	/**
 	 * Returns a (possibly) new StringID object.
-	 *
 	 * 
 	 *
-	 * 
-	 *
-	 * @throws NullPointerException DOCUMENT-ME
+	 * @throws NullPointerException if <code>o==null</code>
 	 */
 	public static synchronized IntegerID create(Integer o) {
 		if(o == null) {
@@ -81,10 +78,7 @@ public class IntegerID implements ID {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+   * Creates a (possibly) new IntegerID object by parsing the specified string for a decimal integer.
 	 * 
 	 */
 	public static IntegerID create(String str) {
@@ -92,10 +86,7 @@ public class IntegerID implements ID {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+   * Returns a (possibly) new StringID object.
 	 * 
 	 */
 	public static IntegerID create(int i) {
@@ -104,8 +95,6 @@ public class IntegerID implements ID {
 
 	/**
 	 * Returns a string representation of the underlying integer.
-	 *
-	 * 
 	 */
 	@Override
   public String toString() {
@@ -115,9 +104,6 @@ public class IntegerID implements ID {
 	/**
 	 * Returns a string representation of the underlying integer.
 	 *
-	 * 
-	 *
-	 * 
 	 */
 	public String toString(String delim) {
 		return toString();
@@ -126,7 +112,6 @@ public class IntegerID implements ID {
 	/**
 	 * Returns the value of this IntegerID as an int.
 	 *
-	 * 
 	 */
 	public int intValue() {
 		return id;
@@ -135,10 +120,11 @@ public class IntegerID implements ID {
 	/**
 	 * Indicates whether this IntegerID object is equal to some other object.
 	 *
-	 * 
 	 *
 	 * @return true, if o is an instance of class IntegerID and the numerical values of this and
 	 * 		   the specified object are equal.
+	 *
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
   public boolean equals(Object o) {
@@ -153,9 +139,8 @@ public class IntegerID implements ID {
 	 * Imposes a natural ordering on IntegerID objects which is based on the natural ordering of
 	 * the underlying integers.
 	 *
-	 * 
 	 *
-	 * 
+	 * @see magellan.library.ID#compareTo(java.lang.Object)
 	 */
 	public int compareTo(Object o) {
 		int anotherId = ((IntegerID) o).id;
@@ -175,8 +160,6 @@ public class IntegerID implements ID {
 
 	/**
 	 * Returns a copy of this IntegerID object.
-	 *
-	 * 
 	 *
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */

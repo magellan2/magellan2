@@ -37,7 +37,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	protected DetailsNodeWrapperDrawPolicy adapter;
 	protected String text;
 	protected List<String> icon;
-	protected List<GraphicsElement> GEs;
+	protected List<GraphicsElement> elements;
 
 	/** DOCUMENT-ME */
 	public static final int SHOW_NEXTLEVEL = 0;
@@ -295,7 +295,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 */
 	public void propertiesChanged() {
 		text = null;
-		GEs = null;
+		elements = null;
 	}
   
 	/**
@@ -317,7 +317,7 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 	 * 
 	 */
 	public List<GraphicsElement> getGraphicsElements() {
-		if(GEs == null) {
+		if(elements == null) {
 			GraphicsElement ge = new GraphicsElement(toString(), null, null, null);
 			ge.setType(GraphicsElement.MAIN);
 
@@ -339,10 +339,10 @@ public class SkillNodeWrapper implements CellObject2, SupportsClipboard {
 							   SkillNodeWrapper.SKILL_CHANGE_STYLE_PREFIX + String.valueOf(skill.getChangeLevel()));
 			}
 
-			GEs = Collections.singletonList(ge);
+			elements = Collections.singletonList(ge);
 		}
 
-		return GEs;
+		return elements;
 	}
 
 	/**

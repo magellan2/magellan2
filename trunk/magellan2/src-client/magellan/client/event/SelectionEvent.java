@@ -27,7 +27,7 @@ import magellan.library.utils.logging.Logger;
  * @see SelectionListener
  * @see EventDispatcher
  */
-public class SelectionEvent<T> extends EventObject {
+public class SelectionEvent extends EventObject {
   private static final Logger log = Logger.getInstance(SelectionEvent.class);
   
 	/** Default selection type. 
@@ -52,8 +52,8 @@ public class SelectionEvent<T> extends EventObject {
 	public static final int ST_REGIONS = 1;
 
 
-	private Collection<T> selectedObjects;
-	private T activeObject;
+	private Collection<?> selectedObjects;
+	private Object activeObject;
   private Collection<Object> path;
 	private int selectionType;
 
@@ -70,7 +70,7 @@ public class SelectionEvent<T> extends EventObject {
    * @param activeObject
    *          the single object activated by the user.
 	 */
-	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject) {
+	public SelectionEvent(Object source, Collection<?> selectedObjects, Object activeObject) {
 		this(source, selectedObjects, activeObject, null, SelectionEvent.ST_DEFAULT);
 	}
 
@@ -91,7 +91,7 @@ public class SelectionEvent<T> extends EventObject {
    *          {@link SelectionEvent#ST_DEFAULT},
    *          {@link SelectionEvent#ST_REGIONS}, 
 	 */
-	public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, int selectionType) {
+	public SelectionEvent(Object source, Collection<?> selectedObjects, Object activeObject, int selectionType) {
     this(source, selectedObjects, activeObject, null, selectionType);
   }
 
@@ -111,7 +111,7 @@ public class SelectionEvent<T> extends EventObject {
    * @param selectionPath
    *          a sequence of object that are "parents" of the active object.
    */          
- public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> selectionPath) {
+ public SelectionEvent(Object source, Collection<?> selectedObjects, Object activeObject, Collection<Object> selectionPath) {
     this(source, selectedObjects, activeObject, selectionPath, SelectionEvent.ST_DEFAULT);
   }
 
@@ -138,7 +138,7 @@ public class SelectionEvent<T> extends EventObject {
    *          {@link SelectionEvent#ST_DEFAULT} if some game object(s) are selected, and
    *          {@link SelectionEvent#ST_REGIONS} if one or more regions are selected. 
    */          
-  public SelectionEvent(Object source, Collection<T> selectedObjects, T activeObject, Collection<Object> path,
+  public SelectionEvent(Object source, Collection<?> selectedObjects, Object activeObject, Collection<Object> path,
       int selectionType) {
     super(source);
 		this.selectedObjects = selectedObjects;
@@ -151,22 +151,23 @@ public class SelectionEvent<T> extends EventObject {
 	}
 
   /**
-	 * Returns the possibly mulitple objects selected by the user. They do not necessarrily include
+	 * Returns the possibly multiple objects selected by the user. They do not necessarily include
 	 * the active object. A value of null indicates that previously selected objects are not
 	 * affected by this event.
 	 *
 	 * 
 	 */
-	public Collection<T> getSelectedObjects() {
+	public Collection<?> getSelectedObjects() {
 		return selectedObjects;
 	}
+
 
 	/**
 	 * Returns the one single object activated by the user.
 	 *
 	 * 
 	 */
-	public T getActiveObject() {
+	public Object getActiveObject() {
 		return activeObject;
 	}
 
@@ -198,5 +199,13 @@ public class SelectionEvent<T> extends EventObject {
     buffer.append("selectionType:").append(selectionType).append("\n");
     buffer.append("}\n");
     return buffer.toString();
+  }
+
+  public <S> void addSelectedObjects(Collection<S> previousObjects, Class<S> class1) {
+    for (Object o : selectedObjects){
+      if (class1.isInstance(o)){
+        previousObjects.add(class1.cast(o));
+      }
+    }
   }
 }

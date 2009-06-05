@@ -680,7 +680,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 						}
 
 						if(msg.getAffectedObject() != null) {
-							dispatcher.fire(new SelectionEvent<Object>(ECheckPanel.this, null,
+							dispatcher.fire(new SelectionEvent(ECheckPanel.this, null,
 															   msg.getAffectedObject()));
 						} else {
 							JOptionPane.showMessageDialog(ECheckPanel.this.getRootPane(),

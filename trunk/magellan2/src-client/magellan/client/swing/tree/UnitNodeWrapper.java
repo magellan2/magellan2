@@ -43,7 +43,9 @@ import magellan.library.utils.comparator.SkillRankComparator;
 
 
 /**
- * DOCUMENT-ME
+ * A UnitNodeWrapper serves as an abstraction layer between a tree cell renderer and the unit to
+ * render. It manages a list of icons and text(s) that are to be displayed. It maintains a 
+ * {@link UnitNodeWrapperDrawPolicy} adapter which governs many of the object's properties.
  *
  * @author $Author: $
  * @version $Revision: 288 $
@@ -52,8 +54,6 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	private static final Comparator<Skill> skillComparator = new SkillComparator();
 	private static Comparator<Skill> rankComparator = null;
 
-	// just so that we can return an empty List without creating
-	// all the time a new one (for implementation of SupportsEmphasizing)
 	private List<SupportsEmphasizing> subordinatedElements = null;
 	private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
 	private Unit unit = null;
@@ -96,18 +96,15 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the unit represented by the wrapper. 
 	 */
 	public Unit getUnit() {
 		return unit;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns a string representation of the object, which is either pre-set by the constructor or
+	 * generated from the unit name, id, amount and modified amount (if applicable).
 	 */
 	public String toString() {
 		return text != null ? text : UnitNodeWrapper.getText(unit,prfx, amount, modified);
@@ -122,9 +119,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 * @see magellan.client.swing.tree.SupportsEmphasizing#getSubordinatedElements()
 	 */
 	public List<SupportsEmphasizing> getSubordinatedElements() {
 		if(subordinatedElements == null) {
@@ -134,15 +130,20 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		return subordinatedElements;
 	}
 
-	// we just don't support old style
-	public List getIconNames() {
+	/**
+	 * Returns <code>null</code>.
+	 * 
+	 * @see magellan.client.swing.tree.CellObject#getIconNames()
+	 */
+	public List<String> getIconNames() {
 		return null;
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Returns <code>true</code> if the unit's orders or one of the subordinate element's orders are
+	 * unconfirmed.
 	 *
-	 * 
+	 * @see magellan.client.swing.tree.CellObject#emphasized()
 	 */
 	public boolean emphasized() {
 		Faction f = unit.getFaction();
@@ -167,17 +168,14 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the accordant option of the draw policy.
 	 */
 	public boolean isShowingAdditional() {
 		return adapter.properties[adapter.SHOW_ADDITIONAL];
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingContainerIcons() {
@@ -185,8 +183,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingSkillIcons() {
@@ -194,8 +191,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingOtherIcons() {
@@ -203,8 +199,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingIconText() {
@@ -246,8 +241,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
   }
   
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingExpectedOnly() {
@@ -255,8 +249,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingChanges() {
@@ -264,8 +257,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingChangesStyled() {
@@ -273,8 +265,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingChangesText() {
@@ -282,8 +273,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the accordant option of the draw policy.
 	 * 
 	 */
 	public boolean isShowingCategorized() {
@@ -291,9 +281,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the accordant option of the draw policy.
 	 *
 	 * 
 	 */
@@ -332,7 +320,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	private List<GraphicsElement> createGraphicsElements(Unit u) {
-		List<GraphicsElement> names  = new LinkedList<GraphicsElement>();
+		List<GraphicsElement> names  = new ArrayList<GraphicsElement>();
 		List<Skill> skills = new LinkedList<Skill>();
 
 		if(isShowingSkillIcons() && (u.getSkills() != null)) {
@@ -415,6 +403,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
       names.add(new GraphicsElement(null, null, "hero"));
     }
 
+    // skills
     int skillCounter = 0;
 		for(Iterator<Skill> iter = skills.iterator(); iter.hasNext() && skillCounter < numberOfShownSkills();) {
 			Skill s = iter.next();
@@ -454,16 +443,17 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 			names.add(ge);
 		}
 
+		// items
 		if(others != null) {
 			if(isShowingCategorized()) {
-				List<Item> categories[] = new List[adapter.NUMBER_OF_CATEGORIES];
+				List<Item> categories[] = new List[adapter.NUMBER_OF_CATEGORIES]; 
 				boolean anything = false;
 
 				for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
 					if(isShowingCatagorized(i)) {
-						categories[i] = new LinkedList<Item>();
+	          categories[i]=new LinkedList<Item>();
 						anything = true;
-					}
+					} 
 				}
 
 				if(anything) {
@@ -619,18 +609,17 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Specifies if the icons should be displayed in reverse order. This overrides the settings
+	 * if the {@link UnitNodeWrapperDrawPolicy}.
 	 * 
+	 * @param bool
 	 */
 	public void setReverseOrder(boolean bool) {
 		reverse = bool ? Boolean.TRUE : Boolean.FALSE;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns <code>true</code> if the icons should be displayed in reverse order. 
 	 */
 	public boolean reverseOrder() {
 		if(reverse != null) {
@@ -641,7 +630,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Clears the collection of icons and indicates that it should be re-created.
 	 */
 	public void clearBuffer() {
 		if(iconNames != null) {
@@ -653,24 +642,18 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Indicates that the list icons should be re-created 
+	 * 
+	 * @see magellan.client.swing.tree.CellObject#propertiesChanged()
 	 */
 	public void propertiesChanged() {
-		if(iconNames != null) {
-			iconNames.clear();
-			iconNames = null;
-		}
-
-		iconNamesCreated = false;
+	  clearBuffer();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * DOCUMENT-ME
+	 *  
+	 * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, magellan.client.swing.tree.NodeWrapperDrawPolicy)
 	 */
 	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
 		return init(settings, "UnitNodeWrapper", adapter);
@@ -679,11 +662,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String, magellan.client.swing.tree.NodeWrapperDrawPolicy)
 	 */
 	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
 									  NodeWrapperDrawPolicy adapter) {
@@ -703,9 +682,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Returns the list of of {@link GraphicsElement}s that should be displayed. 
 	 *
 	 * 
+	 * @see magellan.client.swing.tree.CellObject2#getGraphicsElements()
 	 */
 	public List<GraphicsElement> getGraphicsElements() {
 		if(!iconNamesCreated) {
@@ -770,9 +750,6 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
     public final int NUMBER_OF_CATEGORIES = 7;
 
-		// this is not used any more
-//		/** DOCUMENT-ME */
-//		public final int SHOW_WARNINGSs = 26;
 		
 		protected String categories[] = {
 											"weapons", "armour", "resources", "luxuries", "herbs",
@@ -857,6 +834,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 
 		/**
 		 * DOCUMENT-ME
+		 * 
+		 * @see magellan.client.swing.tree.AbstractNodeWrapperDrawPolicy#applyPreferences()
 		 */
 		@Override
 		public void applyPreferences() {
@@ -872,7 +851,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see magellan.client.swing.context.ContextChangeable#getContextAdapter()
 		 */
 		public JMenuItem getContextAdapter() {
 			return contextMenu;
@@ -881,7 +860,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see magellan.client.swing.context.ContextChangeable#setContextObserver(magellan.client.swing.context.ContextObserver)
 		 */
 		public void setContextObserver(ContextObserver co) {
 			obs = co;
@@ -890,7 +869,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
 		public void actionPerformed(ActionEvent e) {
 			boolean changed = false;
@@ -936,7 +915,7 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @return
 		 */
 		public Properties getSettings() {
 			return settings;
@@ -986,9 +965,9 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 *
+	 * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
 	 */
 	public String getClipboardValue() {
 		if(unit != null) {

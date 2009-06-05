@@ -38,10 +38,10 @@ public class OrderedOutputProperties extends Properties {
 	/**
 	 * Creates a new OrderedOutputProperties object.
 	 *
-	 * 
+   * @param   defaults   the defaults.
 	 */
-	public OrderedOutputProperties(Properties def) {
-		super(def);
+	public OrderedOutputProperties(Properties defaults) {
+		super(defaults);
 	}
 
 	/**

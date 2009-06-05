@@ -30,7 +30,8 @@ public interface SupportsEmphasizing {
 	 * SupportsEmphasizing too. This way we can ask them and check whether all subordinated
 	 * elements are not emphasized.
 	 *
-	 * 
+	 * The returned list should be backed by the wrapper. This means that changed to it are reflected
+	 * the next time this method is called. 
 	 */
 	public List<SupportsEmphasizing> getSubordinatedElements();
 
@@ -40,4 +41,5 @@ public interface SupportsEmphasizing {
 	 * 
 	 */
 	public boolean emphasized();
+
 }

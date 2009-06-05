@@ -98,16 +98,16 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 	}
 
 	// pavkovic 2003.10.01: prevent multiple Lists to be generated for nearly static code
-	private static Map<Object,List> iconNamesLists = new Hashtable<Object, List>();
+	private static Map<Object,List<String>> iconNamesLists = new Hashtable<Object, List<String>>();
 
 	/**
 	 * DOCUMENT-ME
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		Object key = region.getType().getID();
-		List iconNames = RegionNodeWrapper.iconNamesLists.get(key);
+		List<String> iconNames = RegionNodeWrapper.iconNamesLists.get(key);
 
 		if(iconNames == null) {
 			// in this situation init the region
@@ -157,7 +157,7 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 	 *
 	 * 
 	 */
-	public List getGraphicsElements() {
+	public List<GraphicsElement> getGraphicsElements() {
 		if(GEs == null) {
 			// in this situation init the region
 			region.refreshUnitRelations();

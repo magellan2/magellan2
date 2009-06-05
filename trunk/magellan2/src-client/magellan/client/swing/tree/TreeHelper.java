@@ -131,7 +131,7 @@ public class TreeHelper {
    */
   public TreeNode createRegionNode(Region r, NodeWrapperFactory factory,
       Map<ID, Alliance> activeAlliances, Map<ID, TreeNode> unitNodes,
-      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes, Comparator<Unit> unitSorting,
+      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes, Comparator<? super Unit> unitSorting,
       int treeStructure[], GameData data, boolean sortUnderUnitParent) {
     RegionNodeWrapper regionNodeWrapper = factory.createRegionNodeWrapper(r, 0);
     DefaultMutableTreeNode regionNode = new DefaultMutableTreeNode(regionNodeWrapper);
@@ -203,7 +203,7 @@ public class TreeHelper {
    */
   private int addUnits(DefaultMutableTreeNode mother, int treeStructure[], int sortCriteria,
       List<Unit> units, NodeWrapperFactory factory, Map<ID, Alliance> activeAlliances,
-      Map<ID, TreeNode> unitNodes, GameData data, Comparator<Unit> unitSorting) {
+      Map<ID, TreeNode> unitNodes, GameData data, Comparator<? super Unit> unitSorting) {
     SupportsEmphasizing se = null;
 
     if (mother.getUserObject() instanceof SupportsEmphasizing) {
@@ -441,7 +441,7 @@ public class TreeHelper {
           case TRUSTLEVEL:
             SimpleNodeWrapper trustlevelNodeWrapper =
                 factory.createSimpleNodeWrapper(FactionTrustComparator.getTrustLevelLabel(prevUnit
-                    .getFaction().getTrustLevel()), null);
+                    .getFaction().getTrustLevel()), (String) null);
             DefaultMutableTreeNode trustlevelNode =
                 new DefaultMutableTreeNode(trustlevelNodeWrapper);
             mother.add(trustlevelNode);
@@ -464,7 +464,7 @@ public class TreeHelper {
           case TAGGABLE5:
             String label = getTaggableLabel(prevUnit, treeStructure[sortCriteria]);
             if (label != null) {
-              SimpleNodeWrapper simpleNodeWrapper = factory.createSimpleNodeWrapper(label, null);
+              SimpleNodeWrapper simpleNodeWrapper = factory.createSimpleNodeWrapper(label, (String) null);
               DefaultMutableTreeNode taggableNode = new DefaultMutableTreeNode(simpleNodeWrapper);
               mother.add(taggableNode);
 
@@ -571,7 +571,7 @@ public class TreeHelper {
         case TRUSTLEVEL:
           node =
               new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(FactionTrustComparator
-                  .getTrustLevelLabel(curUnit.getFaction().getTrustLevel()), null));
+                  .getTrustLevelLabel(curUnit.getFaction().getTrustLevel()), (String) null));
 
           break;
 
@@ -583,7 +583,7 @@ public class TreeHelper {
 
           String label = getTaggableLabel(curUnit, treeStructure[sortCriteria]);
           if (label != null) {
-            node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(label, null));
+            node = new DefaultMutableTreeNode(factory.createSimpleNodeWrapper(label, (String) null));
           }
           break;
 
@@ -697,7 +697,7 @@ public class TreeHelper {
     return false; // default
   }
 
-  public static Comparator buildComparator(Comparator<? super Unit> cmp, int[] treeStructure) {
+  public static Comparator<? super Unit> buildComparator(Comparator<? super Unit> cmp, int[] treeStructure) {
     // now build the Comparator used for unit sorting
     GroupingComparator<Unit> comp = new GroupingComparator<Unit>(cmp, null);
 

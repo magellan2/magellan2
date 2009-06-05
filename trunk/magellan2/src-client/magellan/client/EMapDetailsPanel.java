@@ -245,7 +245,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	// pre-initialize this comparator so it is not created over and
 	// over again when needed
-	private Comparator<Unit> sortIndexComparator = new SortIndexComparator(IDComparator.DEFAULT);
+	private Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
 	private final ID ironID = StringID.create("Eisen");
 	private final ID laenID = StringID.create("Laen");
 	private final ID treesID = StringID.create("Baeume");
@@ -280,7 +280,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 												  new Skill(new SkillType(StringID.create("Test")),
 															0, 0, 0, false), null);
 		nodeWrapperFactory.createItemNodeWrapper(new Item(new ItemType(StringID.create("Test")), 0));
-		nodeWrapperFactory.createSimpleNodeWrapper(null, null);
+		nodeWrapperFactory.createSimpleNodeWrapper(null, (Collection<String>) null);
 
 		EMapDetailsPanel.weightNumberFormat.setMaximumFractionDigits(2);
 		EMapDetailsPanel.weightNumberFormat.setMinimumFractionDigits(0);
@@ -1276,7 +1276,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
   private DefaultMutableTreeNode createSimpleNode(Named obj, String icons) {
-      return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj,this.data.getTranslation(obj),(Object) icons));
+      return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj,this.data.getTranslation(obj),icons));
   }
   
   private DefaultMutableTreeNode createSimpleNode(Object obj, ArrayList<String> icons) {
@@ -1667,14 +1667,23 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 			}
 		}
-		
-		// show xyz Personen:
-		if (races.size()>1){
-		  if (allInfo.amount==allInfo.amount_modified)
-		    parent.add(createSimpleNode(allInfo.amount+" "+Resources.get("emapdetailspanel.node.persons")+":", "person"));
-		  else
-		    parent.add(createSimpleNode(allInfo.amount+" "+Resources.get("emapdetailspanel.node.persons")+":", "person"));
-		}
+		DefaultMutableTreeNode raceparent = parent;
+    if (races.size() > 1) {
+      // show xyz Personen and later add race nodes to person node 
+      DefaultMutableTreeNode personNode;
+      if (allInfo.amount == allInfo.amount_modified)
+        personNode =
+            createSimpleNode(allInfo.amount + " " + Resources.get("emapdetailspanel.node.persons")
+                + ":", "person");
+      else
+        personNode =
+            createSimpleNode(allInfo.amount + " (" + allInfo.amount_modified + ") "
+                + Resources.get("emapdetailspanel.node.persons") + ":", "person");
+      parent.add(personNode);
+      raceparent = personNode;
+      expandableNodes.add(new NodeWrapper(raceparent,
+          "EMapDetailsPanel.persons.Expanded"));
+    }
 		// show abc Dwarfs\n 123 Zwerge...
 		for(Entry<String, RaceInfo> e : races.entrySet()) {
 			String race = e.getKey();
@@ -1682,21 +1691,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			int i = rI.amount;
 			int i_modified = rI.amount_modified;
 			String personIconName = "person";
-			/**
-			String gifNameEN = getString(rI.raceNoPrefix);
-			if (!gifNameEN.equalsIgnoreCase(rI.raceNoPrefix)){
-				personIconName = gifNameEN;
-			}
-			*/
 			// we check if specific icon for race exists, if so, we use it
 			// Fiete 20061218
 			if (getMagellanContext().getImageFactory().existImageIcon(rI.raceNoPrefix)){
 				personIconName = rI.raceNoPrefix;
 			}
 			if (i_modified==i){
-				parent.add(createSimpleNode(i + " " + race, personIconName));
+				raceparent.add(createSimpleNode(i + " " + race, personIconName));
 			} else {
-				parent.add(createSimpleNode(i + " (" + i_modified + ") " + race, personIconName));
+				raceparent.add(createSimpleNode(i + " (" + i_modified + ") " + race, personIconName));
 			}
 		}
 
@@ -4242,7 +4245,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * (selectedObjects). The display for collection is at the moment limited to collections
 		 * of regions. Other implementations should be added.
 		 */
-		Collection<? extends Unique> c = se.getSelectedObjects();
+		Collection<?> c = se.getSelectedObjects();
 
 		if((c != null) && (c.size() > 1)) {
 			if(showMultiple(c)) {
@@ -4264,13 +4267,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * Tries to show the given collection. If no implementation applies, false is returned,
 	 * otherwise true.
 	 */
-	protected boolean showMultiple(Collection<? extends Unique> c) {
+	@SuppressWarnings("unchecked") // the members are checked before casting, so an unchecked cast is ok
+  protected boolean showMultiple(Collection<?> c) {
 		boolean regions = true;
 		boolean factions = true;
 		boolean units = true;
 
-		for(Iterator<? extends Unique> iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {
-		  Unique o = iter.next();
+		for(Iterator<?> iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {
+		  Object o = iter.next();
 
 			if(regions && !(o instanceof Region)) {
 				regions = false;
@@ -4479,7 +4483,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		if(fireObj != null) {
-			dispatcher.fire(new SelectionEvent<Object>(this, null, fireObj));
+			dispatcher.fire(new SelectionEvent(this, null, fireObj));
 		}
 	}
 
@@ -4848,7 +4852,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * 
 		 */
-		public List getIconNames() {
+		public List<String> getIconNames() {
 			return icons;
 		}
 
@@ -4913,7 +4917,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 * 
 		 */
 		public void actionPerformed(ActionEvent e) {
-			dispatcher.fire(new SelectionEvent<Object>(EMapDetailsPanel.this, null, target));
+			dispatcher.fire(new SelectionEvent(EMapDetailsPanel.this, null, target));
 		}
 	}
 
@@ -4948,12 +4952,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
+		 * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
 		 */
 		public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, 
                                                         GameData data, Object argument,

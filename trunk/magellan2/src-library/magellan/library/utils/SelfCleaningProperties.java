@@ -15,10 +15,7 @@ package magellan.library.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 import magellan.library.utils.logging.Logger;
@@ -43,10 +40,10 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 	/**
 	 * Creates a new SelfCleaningProperties object.
 	 *
-	 * 
+   * @param   defaults   the defaults.
 	 */
-	public SelfCleaningProperties(Properties def) {
-		super(def);
+	public SelfCleaningProperties(Properties defaults) {
+		super(defaults);
 	}
 
 	/**
@@ -62,11 +59,11 @@ public class SelfCleaningProperties extends OrderedOutputProperties {
 	 * This operation iterates other a copy of all keys to check if they can be cleaned
 	 */
 	private void doClean() {
-		// operate on a copy of the keys as they can be deleted/changed while runtime
-    Set<String> keys = new HashSet(keySet());
-		for(Iterator<String> iter = keys.iterator(); iter.hasNext();) {
-			String name = iter.next();
-			doClean(name);
+	  for (Object name : keySet()){
+	    if (name instanceof String)
+	      doClean((String) name);
+	    else
+	      log.error("property key is not a String: "+name);
 		}
 	}
 	

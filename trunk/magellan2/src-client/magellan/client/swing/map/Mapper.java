@@ -242,13 +242,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               }
 
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent<Region>(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
               repaint();
               prevDragRegion = r;
             } else {
               activeRegion = r;
               activeObject = r;
-              dispatcher.fire(new SelectionEvent<Region>(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
               repaint();
             }
           } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
@@ -302,7 +302,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
             if (doFire) {
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent<Region>(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
             }
 
             repaint();
@@ -375,7 +375,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           CoordinateID c = new CoordinateID(activeRegion.getCoordinate());
           activeRegion = data.getRegion(c.translate(translationCoord));
           data.setSelectedRegionCoordinates(null);
-          dispatcher.fire(new SelectionEvent<Region>(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
+          dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
           repaint();
         }
       }
@@ -503,7 +503,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if ((plane >= 0) && (plane < planes.length)) {
       renderers = new LinkedList<MapCellRenderer>();
 
-      for (Iterator<MapCellRenderer> iter = availableRenderers.iterator(); iter.hasNext();) {
+      for (Iterator<MapCellRenderer> iter = getAvailableRenderers().iterator(); iter.hasNext();) {
         MapCellRenderer r = iter.next();
 
         if (r.getPlaneIndex() == plane) {
@@ -742,7 +742,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       }
     }
     /*
-     * get all regions as base Note: This may be a little bit to easy since I
+     * get all regions as base Note: This may be a little bit too simple since I
      * don't know if regions are sorted by coordinates in GameData. If not the
      * painting sequence may be bad... FIX: Have to look at the level...
      */
@@ -877,6 +877,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         }
 
         // maybe another region set
+        // FIXME (stm) background doesn't get rendered at startup
         if (planes[planeIndex].getRegionTypes() != getLastRegionRenderingType()) {
           setLastRegionRenderingType(planes[planeIndex].getRegionTypes());
           regList = createSubList(getLastRegionRenderingType(), upperLeftCorner, lowerRightCorner, regList, duration, paintNumber);
@@ -934,7 +935,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         if ((planes[planeIndex].getRegionTypes() != getLastRegionRenderingType()) || clipChanged) {
           setLastRegionRenderingType(planes[planeIndex].getRegionTypes());
-          regList = createSubList(lastRegionRenderingType, upperLeftCorner, lowerRightCorner, regList, duration, paintNumber);
+          regList = createSubList(getLastRegionRenderingType(), upperLeftCorner, lowerRightCorner, regList, duration, paintNumber);
           duration++;
         }
 
@@ -1355,6 +1356,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected RenderingPlane[] initRenderingPlanes() {
     RenderingPlane p[] = new RenderingPlane[Mapper.PLANES];
+    // FIXME (stm) background doesn't get rendered at startup
     p[Mapper.PLANE_BACKGROUND] = new RenderingPlane(Mapper.PLANE_BACKGROUND, Resources.get("map.mapper.plane.background.name"), RenderingPlane.ACTIVE_OBJECT);
     p[Mapper.PLANE_BACKGROUND].setRenderer(getRenderer(settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[Mapper.PLANE_BACKGROUND], BackgroundImageRenderer.class.getName())));
 
@@ -1444,7 +1446,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     MapCellRenderer renderer = null;
 
     if (!className.equals("none")) {
-      for (Iterator iter = availableRenderers.iterator(); iter.hasNext();) {
+      for (Iterator iter = getAvailableRenderers().iterator(); iter.hasNext();) {
         MapCellRenderer r = (MapCellRenderer) iter.next();
 
         if (r.getClass().getName().equals(className)) {

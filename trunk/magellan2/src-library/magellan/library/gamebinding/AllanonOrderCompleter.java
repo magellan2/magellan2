@@ -30,7 +30,6 @@ import java.util.List;
 
 import magellan.library.Building;
 import magellan.library.GameData;
-import magellan.library.Item;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;

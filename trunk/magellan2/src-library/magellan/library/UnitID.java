@@ -33,11 +33,16 @@ public class UnitID extends EntityID {
 	 * Constructs a new UnitID object based on an Integer object created from the specified int.
 	 *
 	 * @param i id as integer form
+	 * @param radix the base
 	 */
 	protected UnitID(int i, int radix) {
 		super(i,radix);
 	}
 
+	/**
+	 * @param i
+	 * @param radix
+	 */
 	protected UnitID(Integer i, int radix) {
 		super(i,radix);
 	}
@@ -84,11 +89,13 @@ public class UnitID extends EntityID {
 	 * Constructs a new UnitID object by parsing the specified string for an integer in the default
 	 * representation of class IDBaseConverter.
 	 *
-	 * @param s unitid as String
+	 * @param s unit id as String
 	 * @param radix radix as base for transforming string to int
 	 *
 	 * @return UnitID of the given string
-	 */
+   * @throws NumberFormatException if unit id is not parseable
+   */
+
 	public static UnitID createUnitID(String s, int radix) {
 		return UnitID.createUnitID(UnitID.valueOf(s, radix),radix);
 	}

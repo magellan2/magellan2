@@ -38,7 +38,6 @@ import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.cookie.CookiePolicy;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -60,9 +59,6 @@ public class HTTPClient {
   
   /** The real client that makes everything */
   protected HttpClient client = null;
-  
-  /** The proxyserver */
-  private ProxyHost proxy = null;
   
   /** to let other know if we succeeded */
   private boolean connectionFailed = false;
@@ -100,7 +96,6 @@ public class HTTPClient {
     }
     config.setProxy(host,port);
     
-    proxy = new ProxyHost(host, port); 
   }
   
   /**

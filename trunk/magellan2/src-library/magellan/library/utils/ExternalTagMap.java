@@ -39,7 +39,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return (ID) o;
 		}
 
-		Class c = o.getClass();
+		Class<? extends Object> c = o.getClass();
 
 		try {
 			Method m = c.getMethod(ExternalTagMap.METHOD_NAME, (Class<?>)null);

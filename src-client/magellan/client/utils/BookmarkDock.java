@@ -87,7 +87,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
             Object selectedValue = list.getSelectedValue();
 
             if((selectedValue != null) && (selectedValue != manager.getActiveObject())) {
-              dispatcher.fire(new SelectionEvent<Object>(this, null, selectedValue));
+              dispatcher.fire(new SelectionEvent(this, null, selectedValue));
             }
           }
         }

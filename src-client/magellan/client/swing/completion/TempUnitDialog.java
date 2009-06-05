@@ -350,7 +350,8 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		if(settings.getProperty("TempUnitDialog.LastOrderEmpty", "false").equals("true")) {
 			order.setText(null);
 		} else {
-			order.setText(Resources.get("completion.tempunitdialog.order.default") + " ");
+		  // FIXME (stm) for some reason Resources.getOrderTranslation(EresseaConstants.O_LEARN + " ") does not work
+      order.setText(Resources.get("completion.tempunitdialog.order.default") + " ");
 		}
 
 		descript.setText(null);

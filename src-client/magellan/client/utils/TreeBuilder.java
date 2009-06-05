@@ -77,7 +77,7 @@ public class TreeBuilder {
   private Map<ID,TreeNode> buildingNodes;
   private Map<ID,TreeNode> shipNodes;
   private Map<ID, Alliance> activeAlliances;
-  private Comparator unitComparator;
+  private Comparator<? super Unit> unitComparator;
   private int treeStructure[];
   private boolean sortShipUnderUnitParent = true;
   
@@ -154,7 +154,7 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void setUnitComparator(Comparator compare) {
+  public void setUnitComparator(Comparator<? super Unit> compare) {
     unitComparator = compare;
   }
 
@@ -204,7 +204,7 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
+  public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator<? super Unit> unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
     boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
     boolean buildingInteresting = (getDisplayMode() & TreeBuilder.BUILDINGS) != 0;
     boolean shipInteresting = (getDisplayMode() & TreeBuilder.SHIPS) != 0;

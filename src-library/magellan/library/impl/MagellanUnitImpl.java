@@ -1267,7 +1267,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		/* sort related units according to report order */
 		List<Unit> sortedUnits = new LinkedList<Unit>(relatedUnits);
 		Collections.sort(sortedUnits,
-						 new LinearUnitTempUnitComparator(new SortIndexComparator(null)));
+						 new LinearUnitTempUnitComparator(new SortIndexComparator<Unit>(null)));
 
 		/* clone units with all aspects relevant for skills */
 		Map<ID,MagellanUnitImpl> clones = new Hashtable<ID, MagellanUnitImpl>();

@@ -387,24 +387,13 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
   }
 
   public void initPreferences() {
-    // TODO: implement it
-  }
-
-  /**
-   * DOCUMENT-ME
-   *
-   * 
-   */
-  @Override
-  public void setVisible(boolean b) {
-    if(b && (textFields.size() > 0)) {
+    if(textFields.size() > 0) {
       for(int i = 0, max = textFields.size(); i < max; i++) {
         (textFields.get(i)).setText(settings.getProperty(keys.get(i)));
       }
     }
-
-    super.setVisible(b);
   }
+
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()

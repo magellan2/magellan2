@@ -148,7 +148,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	}
 
 	protected class ReplacerInfo {
-		Class replacerClass;
+		Class<?> replacerClass;
 		Object args[] = null;
 		Class argClasses[] = null;
 

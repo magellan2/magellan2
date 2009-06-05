@@ -162,7 +162,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 				jumpForward();
 			} else if(!o.equals(activeObject)) {
 				activeObject = o;
-				dispatcher.fire(new SelectionEvent<Object>(this, null, o));
+				dispatcher.fire(new SelectionEvent(this, null, o));
 
 				if(dialog != null) {
 					dialog.setSelectedObject(o);
@@ -187,7 +187,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 				jumpBackward();
 			} else if(!o.equals(activeObject)) {
 				activeObject = o;
-				dispatcher.fire(new SelectionEvent<Object>(this, null, o));
+				dispatcher.fire(new SelectionEvent(this, null, o));
 
 				if(dialog != null) {
 					dialog.setSelectedObject(o);

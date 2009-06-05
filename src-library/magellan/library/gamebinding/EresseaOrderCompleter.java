@@ -77,7 +77,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaOrderCompleter implements Completer {
 	private static final Logger log = Logger.getInstance(EresseaOrderCompleter.class);
-	private static final Comparator prioComp = new PrioComp();
+	private static final Comparator<Completion> prioComp = new PrioComp();
 	private OrderParser parser = null;
 	private List<Completion> completions = null;
 	private GameData data = null;
@@ -2062,6 +2062,7 @@ public class EresseaOrderCompleter implements Completer {
 		}
 	}
   
+  @SuppressWarnings("unused")
   private void addFactionItems(String postfix) {
     addFactionItems(0, postfix);
   }
@@ -2401,7 +2402,7 @@ public class EresseaOrderCompleter implements Completer {
 	/**
 	 * Priority comparator for Completion objects
 	 */
-	private static class PrioComp implements Comparator {
+	private static class PrioComp implements Comparator<Completion> {
 		/**
 		 * DOCUMENT-ME
 		 *
@@ -2410,22 +2411,13 @@ public class EresseaOrderCompleter implements Completer {
 		 *
 		 * 
 		 */
-		public int compare(Object o1, Object o2) {
+		public int compare(Completion o1, Completion o2) {
 			int retVal = 0;
 
-			if(o1 instanceof Completion && o2 instanceof Completion) {
-				Completion c1 = (Completion) o1;
-				Completion c2 = (Completion) o2;
-
-				if(c1.getPriority() != c2.getPriority()) {
-					retVal = c1.getPriority() - c2.getPriority();
-				} else {
-					retVal = c1.getName().compareToIgnoreCase(c2.getName());
-				}
-			} else if(o1 instanceof Completion && o2 instanceof String) {
-				retVal = -1;
-			} else if(o1 instanceof String && o2 instanceof Completion) {
-				retVal = 2;
+			if(o1.getPriority() != o2.getPriority()) {
+			  retVal = o1.getPriority() - o2.getPriority();
+			} else {
+			  retVal = o1.getName().compareToIgnoreCase(o2.getName());
 			}
 
 			return retVal;

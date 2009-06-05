@@ -34,7 +34,7 @@ public class EntityID extends IntegerID {
 	 */
 	protected EntityID(Integer i, int radix) {
 		super(i);
-        this.radix = radix;
+    this.radix = radix;
 	}
 
 	/**

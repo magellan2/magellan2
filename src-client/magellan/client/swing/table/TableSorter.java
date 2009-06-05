@@ -100,12 +100,18 @@ public class TableSorter extends AbstractTableModel {
 
     private static Directive EMPTY_DIRECTIVE = new Directive(-1, TableSorter.NOT_SORTED);
 
-    public static final Comparator COMPARABLE_COMAPRATOR = new Comparator<Object>() {
+    // FIXME (stm) This is a bit dodgy but should be safe. Maybe once I understand Java generics
+    // better, I will change it
+    public static final Comparator<Object> COMPARABLE_COMAPRATOR = new Comparator<Object>() {
+        @SuppressWarnings("unchecked")
         public int compare(Object o1, Object o2) {
+          if (o1 instanceof Comparable && o2 instanceof Comparable)
             return ((Comparable)o1).compareTo(o2);
+          else 
+            throw new RuntimeException("invalid arguments");
         }
     };
-    public static final Comparator LEXICAL_COMPARATOR = new Comparator<Object>() {
+    public static final Comparator<Object> LEXICAL_COMPARATOR = new Comparator<Object>() {
         public int compare(Object o1, Object o2) {
             return o1.toString().compareTo(o2.toString());
         }
@@ -117,7 +123,7 @@ public class TableSorter extends AbstractTableModel {
     private JTableHeader tableHeader;
     private MouseListener mouseListener;
     private TableModelListener tableModelListener;
-    private Map<Class,Comparator> columnComparators = new HashMap<Class, Comparator>();
+    private Map<Class,Comparator<Object>> columnComparators = new HashMap<Class, Comparator<Object>>();
     private List<Directive> sortingColumns = new ArrayList<Directive>();
 
     public TableSorter() {
@@ -229,7 +235,7 @@ public class TableSorter extends AbstractTableModel {
         sortingStatusChanged();
     }
 
-    public void setColumnComparator(Class type, Comparator comparator) {
+    public void setColumnComparator(Class type, Comparator<Object> comparator) {
         if (comparator == null) {
             columnComparators.remove(type);
         } else {
@@ -237,9 +243,9 @@ public class TableSorter extends AbstractTableModel {
         }
     }
 
-    protected Comparator getComparator(int column) {
+    protected Comparator<Object> getComparator(int column) {
         Class columnType = tableModel.getColumnClass(column);
-        Comparator comparator = columnComparators.get(columnType);
+        Comparator<Object> comparator = columnComparators.get(columnType);
         if (comparator != null) {
             return comparator;
         }

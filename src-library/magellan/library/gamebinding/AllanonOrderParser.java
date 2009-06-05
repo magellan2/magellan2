@@ -24,7 +24,6 @@
 package magellan.library.gamebinding;
 
 import magellan.library.GameData;
-import magellan.library.completion.Completion;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 

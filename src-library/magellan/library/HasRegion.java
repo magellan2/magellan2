@@ -18,16 +18,16 @@ package magellan.library;
  */
 public interface HasRegion {
 	/**
-	 * DOCUMENT-ME
+	 * Puts this entity into a new region 
 	 *
-	 * 
+	 * @param region the new region, possibly <code>null</code>
 	 */
 	public void setRegion(Region region);
 
 	/**
-	 * DOCUMENT-ME
+	 * Returns the region of this entity. 
 	 *
-	 * 
+	 * @return the region, possibly <code>null</code>
 	 */
 	public Region getRegion();
 }

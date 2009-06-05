@@ -63,6 +63,7 @@ import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
+import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
 
 
@@ -412,16 +413,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				armyRoot.add(lineRoot);
 
 				if(wl.categorized) {
-					Iterator it = wl.groups.iterator();
-
-					while(it.hasNext()) {
-						WeaponGroup wg = (WeaponGroup) it.next();
-
+		      for (WeaponGroup wg : wl.groups){
 						if(wg.units.size() == 1) {
 							PartUnit u = wg.units.iterator().next();
 							lineRoot.add(createNodeWrapper(u));
 						} else {
-							Object icon = null;
+							String icon = null;
 
 							if(wg.weapon != null) {
 								icon = "items/" + wg.weapon.getIconName();
@@ -442,7 +439,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 						}
 					}
 				} else {
-					addUnits(lineRoot, wl.groups);
+					addUnits(lineRoot, wl.units);
 				}
 			}
 		}
@@ -459,10 +456,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 	}
 
-	protected Object getIconObject(PartUnit unit) {
+	protected Collection<String> getIconObject(PartUnit unit) {
 		int i = 0;
 
-		if(unit.weapon != null) {
+    Collection<String> col = new LinkedList<String>();
+
+    if(unit.weapon != null) {
 			i++;
 		}
 
@@ -475,24 +474,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 
 		if(i == 0) {
-			return "warnung";
+		  col.add("warnung");
 		}
-
-		if(i == 1) {
-			if(unit.weapon != null) {
-				return "items/" + unit.weapon.getIconName();
-			}
-
-			if(unit.armour != null) {
-				return "items/" + unit.armour.getIconName();
-			}
-
-			if(unit.shield != null) {
-				return "items/" + unit.shield.getIconName();
-			}
-		}
-
-		Collection<String> col = new ArrayList<String>(i);
 
 		if(unit.weapon != null) {
 			col.add("items/" + unit.weapon.getIconName());
@@ -1131,11 +1114,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected WeaponGroup getWeaponGroup(WarLine wl, ItemType weapon) {
-		Iterator it = wl.groups.iterator();
-
-		while(it.hasNext()) {
-			WeaponGroup wg = (WeaponGroup) it.next();
-
+    for (WeaponGroup wg : wl.groups){
 			if(wg.weapon == weapon) {
 				return wg;
 			}
@@ -1267,12 +1246,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			Object o2 = ((DefaultMutableTreeNode) o).getUserObject();
 
 			if(o2 instanceof UnitNodeWrapper) {
-				dispatcher.fire(new SelectionEvent<Unit>(this, null, ((UnitNodeWrapper) o2).getUnit()));
+				dispatcher.fire(new SelectionEvent(this, null, ((UnitNodeWrapper) o2).getUnit()));
 			} else if(o2 instanceof SimpleNodeWrapper) {
 				Object o3 = ((SimpleNodeWrapper) o2).getObject();
 
 				if(o3 instanceof PartUnit) {
-					dispatcher.fire(new SelectionEvent<Unit>(this, null, ((PartUnit) o3).parent));
+					dispatcher.fire(new SelectionEvent(this, null, ((PartUnit) o3).parent));
 				} else if(o3 instanceof WeaponGroup) {
 					fireWeaponGroupSelection((WeaponGroup) o3);
 				} else if(o3 instanceof WarLine) {
@@ -1280,11 +1259,11 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				} else if(o3 instanceof Army) {
 					fireArmySelection((Army) o3);
 				} else if(o3 instanceof RegionArmies) {
-					dispatcher.fire(new SelectionEvent<Region>(this, null, ((RegionArmies) o3).region));
+					dispatcher.fire(new SelectionEvent(this, null, ((RegionArmies) o3).region));
 				} else if(o3 instanceof IslandArmy) {
-					dispatcher.fire(new SelectionEvent<Island>(this, null, ((IslandArmy) o3).island));
+					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmy) o3).island));
 				} else if(o3 instanceof IslandArmies) {
-					dispatcher.fire(new SelectionEvent<Island>(this, null, ((IslandArmies) o3).island));
+					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmies) o3).island));
 				}
 			} else if(o2 instanceof WarLine) {
 				fireWareLineSelection((WarLine) o2);
@@ -1314,7 +1293,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent<Unit>(this, s, o));
+		dispatcher.fire(new SelectionEvent(this, s, o));
 	}
 
 	protected Set<Unit> getWarLineUnits(WarLine w, Set<Unit> set) {
@@ -1323,13 +1302,11 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 
 		if(w.categorized) {
-			Iterator<WeaponGroup> it = w.groups.iterator();
-
-			while(it.hasNext()) {
-				getWeaponGroupUnits(it.next(), set);
+		  for (WeaponGroup wg : w.groups){
+				getWeaponGroupUnits(wg, set);
 			}
 		} else {
-			set.addAll(w.groups);
+			set.addAll(w.units);
 		}
 
 		return set;
@@ -1343,7 +1320,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent<Unit>(this, s, o));
+		dispatcher.fire(new SelectionEvent(this, s, o));
 	}
 
 	protected void fireArmySelection(Army a) {
@@ -1355,7 +1332,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			}
 		}
 
-		dispatcher.fire(new SelectionEvent(this, set, a.region));
+		if (a.region!=null)
+		  dispatcher.fire(new SelectionEvent(this, Collections.singleton(a.region), a.region, SelectionEvent.ST_REGIONS));
+		if (a instanceof IslandArmy){
+		  // TODO(stm) does not select anything
+		  dispatcher.fire(new SelectionEvent(this, Collections.singleton(((IslandArmy) a).island), ((IslandArmy) a).island, SelectionEvent.ST_REGIONS));
+		}
 	}
 
 	/**
@@ -1365,8 +1347,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 */
 	public void selectionChanged(SelectionEvent e) {
 		if((e.getSource() != this) && (e.getSelectionType() == SelectionEvent.ST_REGIONS)) {
-			lastSelected = e.getSelectedObjects();
-			updateData(data, e.getSelectedObjects());
+			lastSelected = CollectionFilters.filter(e.getSelectedObjects(), Region.class);
+			updateData(data, lastSelected);
 		}
 	}
 
@@ -1531,7 +1513,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 	protected class WarLine {
 		protected int lineType;
-		protected List groups;
+		protected List<WeaponGroup> groups;
+    protected List<Unit> units;
 		protected boolean categorized = true;
 		protected int men = 0;
 		protected int unarmed = 0;
@@ -1542,7 +1525,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 * 
 		 */
 		public WarLine(int lt) {
-			groups = new LinkedList();
+			groups = new LinkedList<WeaponGroup>();
+			units = new LinkedList<Unit>();
 			lineType = lt;
 		}
 
@@ -1564,7 +1548,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 */
 		@Deprecated
     public void addUnit(Unit u, int persons, int unarmed) {
-			groups.add(u);
+			units.add(u);
 			men += persons;
 			this.unarmed += unarmed;
 		}
@@ -1577,10 +1561,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		public int getMen() {
 			if(categorized) {
 				int men = 0;
-				Iterator it = groups.iterator();
-
-				while(it.hasNext()) {
-					WeaponGroup wg = (WeaponGroup) it.next();
+				for (WeaponGroup wg : groups){
 					men += wg.getMen();
 				}
 
@@ -1598,11 +1579,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		public int getUnarmed() {
 			if(categorized) {
 				int unarmed = 0;
-				Iterator it = groups.iterator();
-
-				while(it.hasNext()) {
-					WeaponGroup wg = (WeaponGroup) it.next();
-
+				for (WeaponGroup wg : groups){
 					if(wg.weapon == null) {
 						unarmed += wg.getMen();
 					}

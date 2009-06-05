@@ -59,13 +59,14 @@ public class ShipRoutePlanner {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Creates a route for a ship. It is configured by the given dialog. The orders are added to the
+	 * responsible unit that is then returned.
 	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
+	 * @param ship The ship for which a route is planned
+	 * @param data 
+	 * @param ui The parent component for message panes
+	 * @param picker The dialog for selecting target region and other options
+	 * @return the unit whose orders may have change
 	 */
 	public static Unit planShipRoute(Ship ship, GameData data, Component ui, RoutingDialogDataPicker picker) {
 		// fetch all coast regions

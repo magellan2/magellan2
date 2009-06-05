@@ -82,7 +82,7 @@ public class PotionNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 	  if(icon == null) {
       icon = new ArrayList<String>(1);
 

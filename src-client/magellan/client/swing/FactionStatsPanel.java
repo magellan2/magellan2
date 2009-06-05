@@ -153,6 +153,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
+   * Updates the panel if a new region has been selecte.
+   * 
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
@@ -186,7 +188,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the set of factions to display to fs and updates the panel contents.
    */
   public void setFactions(Collection<Faction> fs) {
     factions.clear();
@@ -233,13 +235,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     if (o instanceof UnitNodeWrapper) {
       Unit u = ((UnitNodeWrapper) o).getUnit();
-      dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
+      dispatcher.fire(new SelectionEvent(this, null, u));
     } else if (o instanceof UnitContainerNodeWrapper) {
       UnitContainer uc = ((UnitContainerNodeWrapper) o).getUnitContainer();
-      dispatcher.fire(new SelectionEvent<UnitContainer>(this, null, uc));
+      dispatcher.fire(new SelectionEvent(this, null, uc));
     } else if (o instanceof RegionNodeWrapper) {
       Region r = ((RegionNodeWrapper) o).getRegion();
-      dispatcher.fire(new SelectionEvent<Region>(this, null, r));
+      dispatcher.fire(new SelectionEvent(this, null, r));
     }
   }
 
@@ -673,13 +675,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 4 = am Handel
     // 5 = Diebstahl
     // 6 = Zauberei
-    final int E_WORK = 0;
-    final int E_ENTERTAIN = 1;
-    final int E_TAX = 2;
-    final int E_TRADE = 3;
+//    final int E_WORK = 0;
+//    final int E_ENTERTAIN = 1;
+//    final int E_TAX = 2;
+//    final int E_TRADE = 3;
     final int E_TRADETAX = 4;
-    final int E_THEFT = 5;
-    final int E_MAGIC = 6;
+//    final int E_THEFT = 5;
+//    final int E_MAGIC = 6;
 
     int earned[] = new int[7];
     int wanted[] = new int[7];
@@ -715,7 +717,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     final int S_SUPPORT = 0;
     final int S_UPKEEP = 1;
     final int S_LEARN = 2;
-    final int S_MAGIC = 3;
+//    final int S_MAGIC = 3;
     final int S_TRADE = 4;
     final int S_THEFT = 5;
     final int S_ALMS = 6;
@@ -921,7 +923,6 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   String from = actM.getAttributes().get("from");
                   EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), data.base);
                   // Faction beziehen
-                  Faction fromF = data.getFaction(fromID);
                   ID fromFactionID =
                     data.getFaction(fromID) == null ? EntityID.createEntityID(-1, data.base) : data
                         .getFaction(fromID).getID();

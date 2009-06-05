@@ -421,7 +421,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    */
   private void selectObjectOnRow(int row) {
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
-    dispatcher.fire(new SelectionEvent<Object>(this, null, obj));
+    dispatcher.fire(new SelectionEvent(this, null, obj));
   }
 
   private void initUpdateThread() {

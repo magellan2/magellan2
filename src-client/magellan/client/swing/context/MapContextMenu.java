@@ -560,7 +560,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 
 		data.setSelectedRegionCoordinates(selectedRegions);
-		dispatcher.fire(new SelectionEvent<Region>(this, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+		dispatcher.fire(new SelectionEvent(this, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
 	}
 
 	/**

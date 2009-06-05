@@ -65,7 +65,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 	@Override
   public void menuActionPerformed(ActionEvent e) {
 		final Client theclient = client;
-		Collection<Object> selectedObjects = client.getSelectedObjects();
+		Collection<?> selectedObjects = client.getSelectedObjects();
 		Properties settings = client.getProperties();
 		JFileChooser fc = new JFileChooser();
 		fc.setMultiSelectionEnabled(true);
@@ -76,7 +76,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 		fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ZIP_FILTER));
 		fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER));
 
-		int lastFileFilter = Integer.parseInt(settings.getProperty(PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(3)));
+		int lastFileFilter = Integer.parseInt(settings.getProperty(PropertiesHelper.CLIENT_LAST_SELECTED_ADD_CR_FILEFILTER, Integer.toString(5)));
 		// bugzilla #861
 		if(lastFileFilter < 0) {
 		  lastFileFilter = 0;
@@ -147,7 +147,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 
 			merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);
 			if (selectedObjects!=null){
-				client.getDispatcher().fire(new SelectionEvent<Object>(this,selectedObjects,null));
+				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
 			}
 		}
 	}

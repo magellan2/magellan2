@@ -966,6 +966,7 @@ public class CRParser implements RulesIO, GameDataIO {
         }
 
         if((world.base <= 0) || (world.base > 36)) {
+          log.warn("invalid base: "+world.base);
           world.base = 10;
         }
         /**

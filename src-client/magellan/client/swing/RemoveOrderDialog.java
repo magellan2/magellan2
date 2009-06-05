@@ -32,7 +32,6 @@ import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 
 import magellan.library.utils.Resources;
-import magellan.library.utils.logging.Logger;
 
 /**
  * A Dialog that asks the user for a string input. Returns all orders containing
@@ -41,7 +40,6 @@ import magellan.library.utils.logging.Logger;
  * @author stm
  */
 public class RemoveOrderDialog extends InternationalizedDialog {
-  private static final Logger log = Logger.getInstance(RemoveOrderDialog.class);
 
   public static final String BEGIN_ACTION = "begins";
   public static final String CONTAINS_ACTION = "contains";

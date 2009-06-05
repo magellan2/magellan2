@@ -16,7 +16,6 @@ package magellan.client.swing.map;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Polygon;
@@ -118,9 +117,7 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 
 		graphics.setColor(col);
 
-		if(graphics instanceof Graphics2D) {
-			((Graphics2D) graphics).setStroke(HighlightShapeCellRenderer.getDefaultStroke());
-		}
+	  graphics.setStroke(HighlightShapeCellRenderer.getDefaultStroke());
 
 		graphics.drawPolygon(p);
 

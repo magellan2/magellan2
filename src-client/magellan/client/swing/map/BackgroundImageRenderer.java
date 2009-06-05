@@ -59,9 +59,9 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
    */
   public BackgroundImageRenderer(CellGeometry geo, MagellanContext context) {
     super(geo, context);
-    this.filename = context.getProperties().getProperty("map.backgroundimagerenderer.image", "background");
+    this.filename =
+        context.getProperties().getProperty("map.backgroundimagerenderer.image", "background");
     setImage(loadImage(this.filename));
-    // TODO Auto-generated constructor stub
   }
 
   /**
@@ -73,7 +73,11 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
   }
 
   protected Image loadImage(String filename) {
-    ImageIcon icon = this.context.getImageFactory().loadImage(filename);
+    
+    ImageIcon icon = null;
+    if ((new File(filename)).exists()){
+      icon = this.context.getImageFactory().loadImage(filename);
+    }
     if (icon == null) {
       icon = this.context.getImageFactory().loadImage("etc/images/map/"+filename);
     }
@@ -87,6 +91,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     this.img = img;
     this.imgWidth = this.img.getWidth(null);
     this.imgHeight = this.img.getHeight(null);
+    // TODO repaint!?
   }
   
   /**
@@ -205,6 +210,8 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
         this.img = BackgroundImageRenderer.this.loadImage(this.filename);
         this.imgPanel.setImage(this.img);
       }  
+      validate();
+      repaint();
     }
 
     /**

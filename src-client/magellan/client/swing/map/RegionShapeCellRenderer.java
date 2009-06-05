@@ -1358,9 +1358,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			/**
 			 * A small ListModel implementation that allows ordering through a Comparator.
 			 */
-			private class SortableListModel extends AbstractListModel {
-				protected List<Object> data;
-				protected Comparator<Object> comp = null;
+			private class SortableListModel<T> extends AbstractListModel {
+				protected List<T> data;
+				protected Comparator<T> comp = null;
 				protected int offset = -1;
 
 				/**
@@ -1368,8 +1368,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public SortableListModel(Collection<Object> initData) {
-					data = new LinkedList<Object>();
+				public SortableListModel(Collection<T> initData) {
+					data = new LinkedList<T>();
 
 					if(initData != null) {
 						data.addAll(initData);
@@ -1401,7 +1401,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 *
 				 * 
 				 */
-				public void add(Object o) {
+				public void add(T o) {
 					data.add(o);
 					fireIntervalAdded(this, data.size() - 1, data.size() - 1);
 
@@ -1434,17 +1434,17 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 * 
 				 * 
 				 */
-				public void sort(Comparator<Object> comp, int offset) {
+				public void sort(Comparator<T> comp, int offset) {
 					this.comp = comp;
 					this.offset = offset;
 
 					try {
-						Collection<Object> front = null;
+						Collection<T> front = null;
 
 						if(offset > 0) {
-							front = new LinkedList<Object>();
+							front = new LinkedList<T>();
 
-							Iterator it = data.iterator();
+							Iterator<T> it = data.iterator();
 
 							for(int i = 0; i < offset; i++) {
 								front.add(it.next());
@@ -1469,11 +1469,11 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			private Collection<Object> myColors;
 			private Dimension prefDim;
 			private JList list;
-			private SortableListModel listModel;
+			private SortableListModel<ListElement> listModel;
 			private String oceanLabel;
 			private String unknownLabel;
-			private Comparator nameComp;
-			private Comparator trustComp;
+			private Comparator<ListElement> nameComp;
+			private Comparator<ListElement> trustComp;
 			private JCheckBox nameBox;
 
 			/**
@@ -1490,7 +1490,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				nameComp = new NameComparator();
 				trustComp = new ListElementFactionTrustComparator();
 
-				listModel = new SortableListModel(null);
+				listModel = new SortableListModel<ListElement>(null);
 				myColors = new LinkedList<Object>();
 				loadElements(mode ? factionColors : regionColors);
 

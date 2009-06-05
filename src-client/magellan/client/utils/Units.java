@@ -341,7 +341,7 @@ public class Units {
     }
 
     if (showUnits && (currentItem.units != null)) {
-      Collections.sort(currentItem.units, new UnitWrapperComparator<Unit>(unitComparator));
+      Collections.sort(currentItem.units, new UnitWrapperComparator(unitComparator));
 
       for (Iterator it = currentItem.units.iterator(); it.hasNext();) {
         UnitWrapper uw = (UnitWrapper) it.next();
@@ -462,41 +462,42 @@ public class Units {
     }
   }
 
-  private static class UnitWrapperComparator<E> implements Comparator<UnitWrapper> {
-    private Comparator<E> unitCmp = null;
+  private static class UnitWrapperComparator implements Comparator<UnitWrapper> {
+    private Comparator<? super Unit> unitCmp = null;
 
     /**
      * Creates a new UnitWrapperComparator object.
      */
-    public UnitWrapperComparator(Comparator<E> unitCmp) {
+    public UnitWrapperComparator(Comparator<? super Unit> unitCmp) {
       this.unitCmp = unitCmp;
     }
 
     /**
-     * DOCUMENT-ME
+     * If a unit comparator was specified, it is used to compare the arguments, otherwise the 
+     * getAmout() values are compared.
      */
     public int compare(UnitWrapper o1, UnitWrapper o2) {
       if (unitCmp != null) {
-        return unitCmp.compare((E) o1.getUnit(), (E) o2.getUnit());
+        return unitCmp.compare(o1.getUnit(), o2.getUnit());
       } else {
         return o2.getAmount() - o1.getAmount();
       }
     }
 
-    /**
-     * DOCUMENT-ME
-     */
-    @Override
-    public boolean equals(Object o) {
-      return false;
-    }
+//    /**
+//     * DOCUMENT-ME
+//     */
+//    @Override
+//    public boolean equals(Object o) {
+//      return false;
+//    }
   }
 
   /**
    * This will be a Map&lt;ItemType.id, StatItem&gt;, which is a Map of items of
    * one category.
    */
-  private static class StatItemContainer extends Hashtable<ID, StatItem> implements Comparable {
+  private static class StatItemContainer extends Hashtable<ID, StatItem> implements Comparable<StatItemContainer> {
     private ItemCategory category = null;
 
     /**
@@ -516,8 +517,8 @@ public class Units {
     /**
      * DOCUMENT-ME
      */
-    public int compareTo(Object o) {
-      return this.category.compareTo(((StatItemContainer) o).getCategory());
+    public int compareTo(StatItemContainer o) {
+      return this.category.compareTo(o.getCategory());
     }
   }
 

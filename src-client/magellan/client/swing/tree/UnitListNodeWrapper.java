@@ -13,12 +13,9 @@
 
 package magellan.client.swing.tree;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.Unit;
@@ -42,8 +39,8 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
   protected String text = null;
   protected String clipboardValue = null;
 
-  protected List<String> icons;
-  protected List returnIcons;
+  protected Collection<String> icons;
+  protected Collection<String> returnIcons;
   protected DetailsNodeWrapperDrawPolicy adapter;
 
   /**
@@ -63,26 +60,22 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
     this.clipboardValue = clipboardValue;
   }
 
+  /**
+   * @param text
+   * @param clipboardValue
+   * @param units
+   * @param icons
+   */
   public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units,
-      Object icons) {
+      String icon) {
+    this(text, clipboardValue, units, icon==null?null:Collections.singleton(icon));
+  }
+  
+  public UnitListNodeWrapper(String text, String clipboardValue, Collection<Unit> units,
+      Collection<String> icons) {
     this(text, clipboardValue, units);
-    this.icons = null;
+    this.icons = icons;
 
-    if (icons != null) {
-      if (icons instanceof Collection) {
-        this.icons = new ArrayList<String>((Collection) icons);
-      } else if (icons instanceof Map) {
-        Map m = (Map) icons;
-
-        this.icons = new ArrayList<String>(m.size());
-
-        for (Iterator iter = m.values().iterator(); iter.hasNext();) {
-          this.icons.add(iter.next().toString());
-        }
-      } else {
-        this.icons = Collections.singletonList(icons.toString());
-      }
-    }
   }
 
   /**
@@ -118,7 +111,7 @@ public class UnitListNodeWrapper implements CellObject, SupportsClipboard {
     }
   }
 
-  public List getIconNames() {
+  public Collection<String> getIconNames() {
     if (returnIcons == null) {
       if ((icons == null)) {
         returnIcons = UnitListNodeWrapper.defaultIcon;

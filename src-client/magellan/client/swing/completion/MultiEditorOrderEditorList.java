@@ -603,7 +603,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               currentUnit.refreshRelations();
             }
 
-            dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
+            dispatcher.fire(new SelectionEvent(this, null, u));
           }
 
           break;
@@ -621,7 +621,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               currentUnit.refreshRelations();
             }
 
-            dispatcher.fire(new SelectionEvent<Unit>(this, null, u));
+            dispatcher.fire(new SelectionEvent(this, null, u));
           }
 
           break;
@@ -711,7 +711,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
       OrderEditor editor = (OrderEditor) e.getSource();
       // rightclick does select too(Fiete)
-      dispatcher.fire(new SelectionEvent<Unit>(e.getSource(), null, editor.getUnit()));
+      dispatcher.fire(new SelectionEvent(e.getSource(), null, editor.getUnit()));
     }
   }
 
@@ -1929,7 +1929,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         // don't show any dialogs, simply create the tempunit and finish.
         TempUnit tempUnit = parentUnit.createTemp(id);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
-        dispatcher.fire(new SelectionEvent<Unit>(this, null, tempUnit));
+        dispatcher.fire(new SelectionEvent(this, null, tempUnit));
       } else {
         // do all the tempunit-dialog-stuff
         UnitID newID = UnitID.createUnitID(-id.intValue(), data.base); // unit
@@ -2070,7 +2070,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 if (getEditor(tempUnit) != null) {
                   getEditor(tempUnit).requestFocus();
                 }
-                dispatcher.fire(new SelectionEvent<Unit>(this, null, tempUnit));
+                dispatcher.fire(new SelectionEvent(this, null, tempUnit));
                 return;
               } else {
                 JOptionPane.showMessageDialog(this, Resources
@@ -2101,7 +2101,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         if (getEditor(currentUnit) != null) {
           getEditor(currentUnit).requestFocus();
         }
-        dispatcher.fire(new SelectionEvent<Unit>(this, null, parentUnit), true);
+        dispatcher.fire(new SelectionEvent(this, null, parentUnit), true);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.DELETING), true);
         parentUnit.deleteTemp(tempUnit.getID(), data);
       }

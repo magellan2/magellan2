@@ -79,7 +79,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * 
 	 */
-	public OrderedHashtable(Map t) {
+	public OrderedHashtable(Map<? extends K, ? extends V> t) {
 		this(Math.max(2 * t.size(), 11), 0.75f);
 		this.putAll(t);
 	}
@@ -94,9 +94,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns a view on the set of keys which is backed by the Hashtable  
 	 * 
+	 * @see java.util.Hashtable#keySet()
 	 */
 	@Override
   public Set<K> keySet() {
@@ -105,19 +105,15 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 
 	private class KeySet extends AbstractSet<K> {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * Returns an iterator over the keys. 
 		 */
 		@Override
     public Iterator<K> iterator() {
-			return new OHIterator(OrderedHashtable.KEYS);
+			return new OHKeyIterator();
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see java.util.AbstractCollection#size()
 		 */
 		@Override
     public int size() {
@@ -125,11 +121,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * 
-		 *
-		 * 
+		 * @see java.util.AbstractCollection#contains(java.lang.Object)
 		 */
 		@Override
     public boolean contains(Object o) {
@@ -137,11 +130,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
+		 * Removes o from the Hashtable
 		 * 
-		 *
-		 * 
+		 * @see java.util.AbstractCollection#remove(java.lang.Object)
 		 */
 		@Override
     public boolean remove(Object o) {
@@ -149,7 +140,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Removes all elements from the Hashtable
+		 * 
+		 * @see java.util.AbstractCollection#clear()
 		 */
 		@Override
     public void clear() {
@@ -165,7 +158,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 */
 	@Override
   public synchronized Object clone() {
-		return new OrderedHashtable(this);
+		return new OrderedHashtable<K, V>(this);
 	}
 
 	/**
@@ -175,8 +168,8 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * @return an enumeration of the values in this hashtable.
 	 */
 	@Override
-  public synchronized Enumeration elements() {
-		return new OHIterator(OrderedHashtable.VALUES);
+  public synchronized Enumeration<V> elements() {
+		return new OHValueIterator();
 	}
 
 	/**
@@ -202,8 +195,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		// As I said before, this is a very expensive operation.
 		Map.Entry<K, V> alist[] = new Map.Entry[entrySet().size()];
 
-		for(Iterator<Map.Entry<K,V>> iter = entrySet().iterator(); iter.hasNext();) {
-			Map.Entry<K,V> entry = iter.next();
+		for (Map.Entry<K,V> entry : entrySet()){
 			OHEntry<K,V> newE = new OHEntry<K,V>(entry);
 			alist[keyList.indexOf(newE.key)] = newE;
 		}
@@ -245,18 +237,23 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		return old;
 	}
 
+
+  /* a view on this hashtable */
+  private transient SoftReference<Collection<V> > values = null;
+
 	/**
-	 * Copies all of the mappings from the specified Map to this Hashtable These mappings will
+	 * Copies all of the mappings from the specified Map to this Hashtable. These mappings will
 	 * replace any mappings that this Hashtable had for any of the keys currently in the specified
 	 * Map. This method maintains the order of entries as they are returned by
 	 * <tt>t.entrySet()</tt>.or <tt>t.entryList()</tt> if t is an instance of
 	 * <tt>OrderedHashtable</tt>.
 	 *
 	 * @param t Mappings to be stored in this map.
+   * @see java.util.Hashtable#putAll(java.util.Map)
 	 */
 	@Override
-  public synchronized void putAll(Map t) {
-		Iterator<Map.Entry<K,V>> iter = null;
+  public synchronized void putAll(Map<? extends K, ? extends V> t) {
+		Iterator<?> iter = null;
 
 		if(t instanceof OrderedHashtable) {
 			iter = ((OrderedHashtable) t).entryList().iterator();
@@ -265,7 +262,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		while(iter.hasNext()) {
-			Map.Entry<K,V> e = iter.next();
+			Map.Entry<K,V> e = (java.util.Map.Entry<K, V>) iter.next();
 			this.put(e.getKey(), e.getValue());
 		}
 	}
@@ -288,9 +285,6 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 	}
 
-	/* a view on this hashtable */
-	private transient SoftReference<Collection<V> > values = null;
-
 	/**
 	 * Returns a Collection view of the values contained in this Hashtable. The Collection does not
 	 * support element removal or addition. The Collection returns the Hashtable's values in the
@@ -309,19 +303,19 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 
 	private class ValueCollection extends AbstractCollection<V> {
 		/**
-		 * DOCUMENT-ME
+		 * Returns an iterator over the values of the map. 
 		 *
-		 * 
+		 * @see java.util.AbstractCollection#iterator()
 		 */
 		@Override
     public Iterator<V> iterator() {
-			return new OHIterator(OrderedHashtable.VALUES);
+			return new OHValueIterator();
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Returns the map's size. 
 		 *
-		 * 
+		 * @see java.util.AbstractCollection#size()
 		 */
 		@Override
     public int size() {
@@ -329,11 +323,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Returns true iff the map contains o as value. 
 		 *
-		 * 
-		 *
-		 * 
+		 * @see java.util.AbstractCollection#contains(java.lang.Object)
 		 */
 		@Override
     public boolean contains(Object o) {
@@ -341,7 +333,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
+		 * Clears the map.
 		 */
 		@Override
     public void clear() {
@@ -349,59 +341,89 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 	}
 
-	private static final int KEYS = 0;
-	private static final int VALUES = 1;
+	private class OHValueIterator implements Iterator<V>, Enumeration<V> {
 
-	private class OHIterator implements Iterator, Enumeration {
+	  OHKeyIterator keyIterator = new OHKeyIterator();
+	  
+	  public OHValueIterator() {
+      
+    }
+	  
+    public boolean hasNext() {
+      return keyIterator.hasNext();
+    }
+
+    public V next() {
+      return OrderedHashtable.this.get(keyIterator.next()); 
+    }
+
+    public void remove() {
+      keyIterator.remove();
+    }
+
+    public boolean hasMoreElements() {
+      return keyIterator.hasMoreElements();
+    }
+
+    public V nextElement() {
+      return OrderedHashtable.this.get(keyIterator.nextElement());
+    }
+	  
+	}
+
+	private class OHKeyIterator implements Iterator<K>, Enumeration<K> {
 		Iterator<K> base;
 		K last = null;
-		int mode = 0;
 
 		/**
 		 * Creates a new OHIterator object.
-		 *
-		 * 
 		 */
-		public OHIterator(int mode) {
+		public OHKeyIterator() {
 			// we use the keys iterator as base for value iterator
 			base = OrderedHashtable.this.keyList.iterator();
-			this.mode = mode;
 		}
 
 		// Enumeration methods
+		/**
+		 * @see java.util.Enumeration#hasMoreElements()
+		 */
 		public boolean hasMoreElements() {
 			return hasNext();
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
+		 * @see java.util.Enumeration#nextElement()
 		 */
-		public Object nextElement() {
+		public K nextElement() {
 			return next();
 		}
 
 		// Iterator methods
+		/**
+		 * @see java.util.Iterator#hasNext()
+		 */
 		public boolean hasNext() {
 			return base.hasNext();
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see java.util.Iterator#next()
 		 */
-		public Object next() {
+		public K next() {
 			last = base.next();
-
-			return (mode == OrderedHashtable.KEYS) ? last : OrderedHashtable.this.get(last);
+			
+			return last;
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * @throws IllegalStateException DOCUMENT-ME
+		 * @see java.util.Iterator#remove()
+     * @throws IllegalStateException if the <tt>next</tt> method has not
+     *      yet been called, or the <tt>remove</tt> method has already
+     *      been called after the last call to the <tt>next</tt>
+     *      method. 
 		 */
 		public void remove() {
 			if(last == null) {
@@ -413,16 +435,14 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 	}
 
-	private static class OHEntry<K,V> implements Map.Entry {
-		private Object key;
-		private Object value;
+	private static class OHEntry<K,V> implements Map.Entry<K,V> {
+		private K key;
+		private V value;
 
 		/**
 		 * Creates a new OHEntry object.
 		 *
-		 * 
-		 *
-		 * @throws NullPointerException DOCUMENT-ME
+		 * @throws NullPointerException if key or value of the specified entry are <code>null</code>.
 		 */
 		public OHEntry(Map.Entry<K,V> entry) {
 			key = entry.getKey();
@@ -434,10 +454,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
+		 * Returns <code>true</code> if o is an OHEntry and its key and value match this entry.
 		 * 
 		 */
 		@Override
@@ -453,27 +470,23 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see java.util.Map.Entry#getKey()
 		 */
-		public Object getKey() {
+		public K getKey() {
 			return key;
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
+		 * @see java.util.Map.Entry#getValue()
 		 */
-		public Object getValue() {
+		public V getValue() {
 			return value;
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see java.lang.Object#hashCode()
 		 */
 		@Override
     public int hashCode() {
@@ -481,45 +494,23 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * 
 		 *
-		 * 
-		 *
-		 * @throws NullPointerException DOCUMENT-ME
+		 * @see java.util.Map.Entry#setValue(java.lang.Object)
+     * @throws NullPointerException if the specified value is <code>null</code>.
 		 */
-		public Object setValue(Object value) {
+		public V setValue(V value) {
 			if(value == null) {
 				throw new NullPointerException();
 			}
 
-			Object oldValue = this.value;
+			V oldValue = this.value;
 			this.value = value;
 
 			return oldValue;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
-		 * @throws NullPointerException DOCUMENT-ME
-		 */
-		public void setKey(Object key) {
-			if(key == null) {
-				throw new NullPointerException();
-			}
 
-			this.key = key;
-		}
-
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
 		@Override
     public String toString() {
 			return key + "=" + value;

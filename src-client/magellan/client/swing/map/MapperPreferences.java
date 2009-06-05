@@ -1110,7 +1110,6 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 			}
 		}
 
-    private final Logger log = Logger.getInstance(ToolTipSwitcherDialog.class);
 		protected JList tooltipList;
 		protected List<String> tooltips;
 		protected JButton add;

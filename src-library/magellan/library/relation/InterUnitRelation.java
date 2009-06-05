@@ -19,7 +19,7 @@ import magellan.library.Unit;
  * A (possibly abstract) relation indicating between a source and a target unit.
  */
 public class InterUnitRelation extends UnitRelation {
-	/** DOCUMENT-ME */
+	/** The unit that is the target of the relation */
 	public Unit target;
 
 	/**

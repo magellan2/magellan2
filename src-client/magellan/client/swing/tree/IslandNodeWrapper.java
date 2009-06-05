@@ -68,7 +68,7 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		return IslandNodeWrapper.iconNames;
 	}
 

@@ -15,7 +15,6 @@ package magellan.client.swing.context;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Properties;
 
@@ -37,11 +36,10 @@ import magellan.library.utils.Resources;
  * @author stm
  */
 public class IslandContextMenu extends JPopupMenu {
-  private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
 
   private EventDispatcher dispatcher;
 	private GameData data;
-	private Properties settings;
+//	private Properties settings;
 	private Collection selectedObjects;
 
   private Island island;
@@ -55,7 +53,7 @@ public class IslandContextMenu extends JPopupMenu {
 		this.island = island;
 		this.dispatcher = dispatcher;
 		this.data = data;
-		this.settings = settings;
+//		this.settings = settings;
 		this.selectedObjects = selectedObjects;
 
 		initMenu();

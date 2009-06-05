@@ -40,7 +40,7 @@ public class EresseaOrderChanger implements OrderChanger {
 
   private static final EresseaOrderChanger singleton = new EresseaOrderChanger();
   
-  private static final String eresseaOrderChangedMarker = ";changed by Magellan";
+  public static final String eresseaOrderChangedMarker = ";changed by Magellan";
   
   
 	protected EresseaOrderChanger() {
@@ -340,18 +340,20 @@ public class EresseaOrderChanger implements OrderChanger {
 	}
 	
 	/**
+	 * FIXME not implemented
+	 * 
    * @see magellan.library.gamebinding.OrderChanger#disableLongOrders(magellan.library.Unit)
    */
   public void disableLongOrders(Unit u) {
-    LinkedList<String> newOrders = new LinkedList<String>();
+//    LinkedList<String> newOrders = new LinkedList<String>();
     LinkedList<String> oldOrders = new LinkedList<String>();
     if (u.getOrders()!=null && u.getOrders().size()>0){
       oldOrders.addAll(u.getOrders());
     }
     if (oldOrders.size()>0){
-      for (String s:oldOrders){
-           
-      }
+//      for (String s:oldOrders){
+//           
+//      }
     }
   }
 

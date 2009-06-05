@@ -87,17 +87,16 @@ public class ImageFactory implements GameDataListener {
 		if(images.containsKey(imageName)) {
 			return images.get(imageName);
 		}
-
-		String fName = Umlaut.normalize(imageName).toLowerCase();
-    
-    ImageFactory.log.debug("Loading image "+fName);
-
-		ImageIcon img = doLoadImage(gamename + "/" + fName);
-
-		if(img == null) {
-			img = doLoadImage(fName);
+		
+		ImageIcon img = doLoadImage(imageName);
+    String fName = Umlaut.normalize(imageName).toLowerCase();
+		if (img == null){
+		  ImageFactory.log.debug("Loading image "+fName);
+		  img = doLoadImage(gamename + "/" + fName);
 		}
-
+		if (img == null){
+		  img = doLoadImage(fName);
+		}
 		// store into cache
 		if(img != null) {
 			images.put(imageName, img);

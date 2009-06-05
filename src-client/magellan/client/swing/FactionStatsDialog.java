@@ -196,13 +196,6 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					SelectionEvent se = null;
 					JList list = (JList) e.getSource();
 
-					if((list.getModel().getSize() > 0) && !list.isSelectionEmpty()) {
-						se = new SelectionEvent<Object>(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
-					} else {
-						se = new SelectionEvent<Object>(d, new LinkedList<Object>(), null);
-					}
-
-					// notify all components in the tabbed pane
 
 					/**
 					 * Ulrich Küster: (!) Special care has to be taken for the FactionStatsDialog.
@@ -217,8 +210,14 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 						Component c = tabPane.getComponentAt(i);
 
 						if(c instanceof FactionStatsPanel) {
-							((FactionStatsPanel) c).setFactions(se.getSelectedObjects());
+							((FactionStatsPanel) c).setFactions(magellan.library.utils.filters.CollectionFilters
+                .filter(list.getSelectedValues(), Faction.class));
 						} else if(c instanceof SelectionListener) {
+		          if((list.getModel().getSize() > 0) && !list.isSelectionEmpty()) {
+		            se = new SelectionEvent(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
+		          } else {
+		            se = new SelectionEvent(d, Collections.emptyList(), null);
+		          }
 							((SelectionListener) c).selectionChanged(se);
 						}
 					}

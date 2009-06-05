@@ -29,7 +29,7 @@ import javax.swing.tree.TreeCellRenderer;
  * @version 1.0
  */
 public class MixedTreeCellRenderer implements TreeCellRenderer {
-	protected Map<Class,TreeCellRenderer> renderers;
+	protected Map<Class<?>,TreeCellRenderer> renderers;
 	protected TreeCellRenderer defaultRenderer;
 
 	/**
@@ -39,7 +39,7 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 	 */
 	public MixedTreeCellRenderer(TreeCellRenderer defaultRenderer) {
 		this.defaultRenderer = defaultRenderer;
-		renderers = new HashMap<Class, TreeCellRenderer>();
+		renderers = new HashMap<Class<?>, TreeCellRenderer>();
 	}
 
 	/**
@@ -56,15 +56,15 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
   /**
    * 
    */
-	protected TreeCellRenderer findRenderer(Class c) {
+	protected TreeCellRenderer findRenderer(Class<?> c) {
 		if(renderers.containsKey(c)) {
 			return renderers.get(c);
 		}
 
-		Iterator<Class> it = renderers.keySet().iterator();
+		Iterator<Class<?>> it = renderers.keySet().iterator();
 
 		while(it.hasNext()) {
-			Class o = it.next();
+			Class<?> o = it.next();
 
 			if(o.isAssignableFrom(c)) {
 				return renderers.get(o);

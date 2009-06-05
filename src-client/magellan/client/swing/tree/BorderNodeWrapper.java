@@ -28,7 +28,7 @@ import magellan.library.Border;
  */
 public class BorderNodeWrapper implements CellObject, SupportsClipboard {
 	private Border border = null;
-	private List iconNames = null;
+	private List<String> iconNames = null;
 
 	/**
 	 * Creates a new BorderNodeWrapper object.
@@ -63,7 +63,7 @@ public class BorderNodeWrapper implements CellObject, SupportsClipboard {
 	 *
 	 * 
 	 */
-	public List getIconNames() {
+	public List<String> getIconNames() {
 		if(iconNames == null) {
 			iconNames = Collections.singletonList(border.getType());
 		}

@@ -39,7 +39,7 @@ public abstract class AbstractProblem implements Problem {
 	 * @param i The Inspector that reported this problem
    * @param m The message text of the problem  
 	 * 
-	 * 
+   * @throws NullPointerException if any of the parameters is null
 	 */
 	public AbstractProblem(Object s, HasRegion o, Inspector i, String m) {
 		this(s, o, i, m, -1);

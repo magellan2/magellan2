@@ -97,7 +97,6 @@ public abstract class AbstractRegionShapeCellRenderer extends HexCellRenderer {
 			int j;
 			int imax = bounds.x + bounds.width;
 			int jmax = bounds.y + bounds.height;
-			;
 
 			for(i = bounds.x; i < imax; i++) {
 				j = bounds.y;

@@ -249,7 +249,7 @@ public class SignTextCellRenderer extends HexCellRenderer {
 			  display[signCount++]=s.getText();
 			}
 
-			if((display == null) || (display.length == 0)) {
+			if(display.length == 0) {
 				return;
 			}
 

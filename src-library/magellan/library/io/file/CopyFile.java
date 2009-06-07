@@ -165,7 +165,8 @@ public class CopyFile {
 					}
 				}
 			} else {
-				out.flush();
+			  if (out!=null)
+			    out.flush();
 			}
 		}
 	}

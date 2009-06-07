@@ -511,7 +511,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						}
 					}
 				});
-			;
+			
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -733,7 +733,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						}
 					}
 				});
-			;
+			
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -923,7 +923,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 						}
 					}
 				});
-			;
+			
 
 			// sorting
 			this.getTableHeader().addMouseListener(new MouseAdapter() {

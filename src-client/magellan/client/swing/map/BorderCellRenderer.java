@@ -18,7 +18,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -71,16 +70,13 @@ public class BorderCellRenderer extends ImageCellRenderer {
 			Region r = (Region) obj;
 			Collection borders = r.borders();
 
-			if(borders.isEmpty() == false) {
+			if(!borders.isEmpty()) {
 				// since border objects are rare initialization is
 				// done as late as possible
-				CoordinateID c = null;
 				Point pos = null;
 				Dimension size = null;
 
-				for(Iterator iter = r.borders().iterator(); iter.hasNext();) {
-					Border b = (Border) iter.next();
-
+				for(Border b : r.borders()) {
 					if(magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE") &&
 						   (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
 						Image img = (b.getBuildRatio() == 100) ? getImage("Strasse" + b.getDirection())
@@ -92,8 +88,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
 						}
 
 						if(img != null) {
-							if(c == null) {
-								c = r.getCoordinate();
+							if(pos == null || size == null) {
+							  CoordinateID c = r.getCoordinate();
 								pos = new Point(cellGeo.getImagePosition(c.x, c.y));
 								pos.translate(-offset.x, -offset.y);
 								size = cellGeo.getImageSize();
@@ -119,7 +115,6 @@ public class BorderCellRenderer extends ImageCellRenderer {
    * @param r region we are in
    */
 	private void renderOtherBorders(Border b, Region r){
-    CoordinateID c = null;
     Point pos = null;
     Dimension size = null;
 	  // size of array of type names
@@ -131,8 +126,8 @@ public class BorderCellRenderer extends ImageCellRenderer {
            (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
         Image img = getImage("" + actBorderTypeName.toLowerCase() + b.getDirection());
         if(img != null) {
-          if(c == null) {
-            c = r.getCoordinate();
+          if(pos == null || size == null) {
+            CoordinateID c = r.getCoordinate();
             pos = new Point(cellGeo.getImagePosition(c.x, c.y));
             pos.translate(-offset.x, -offset.y);
             size = cellGeo.getImageSize();

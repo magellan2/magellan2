@@ -415,26 +415,19 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
   }
 
   /**
-   * DOCUMENT-ME
-   *
-   * 
+   * Does nothing.
    */
   public void keyReleased(KeyEvent e) {
   }
 
   /**
-   * DOCUMENT-ME
-   *
-   * 
+   * Does nothing.
    */
   public void keyTyped(KeyEvent e) {
   }
   
 
   /**
-   *
-   * @author ...
-   * @version 1.0, 16.02.2008
    */
   protected class MapElement {
     protected String value;
@@ -443,8 +436,6 @@ public class IconColorMappingPreferences extends JPanel implements ActionListene
 
   /**
    *
-   * @author ...
-   * @version 1.0, 16.02.2008
    */
   protected class ColorMappingListCellRenderer extends JLabel implements ListCellRenderer {
     protected class RoundRectIcon implements Icon {

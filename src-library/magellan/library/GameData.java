@@ -1216,7 +1216,6 @@ public abstract class GameData implements Cloneable,Addeable {
                 }
               } else {
                 // skip this building
-                int i = 1;
               }
             }
           }
@@ -1594,20 +1593,19 @@ public abstract class GameData implements Cloneable,Addeable {
     if (newOrigin.x == 0 && newOrigin.y == 0) {
       GameData.log.info("no need to clone - same origin");
       return this.clone();
-    } else{
-      if (MemoryManagment.isFreeMemory(this.estimateSize()*3)) {
-        GameData.log.info("cloning in memory");
-        GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);
-        if (clonedData == null || clonedData.outOfMemory) {
-          GameData.log.info("cloning externally after failed memory-clone-attempt");
-          clonedData = new Loader().cloneGameData(this, newOrigin);
-        }
-        return clonedData;
-      } else {
-        GameData.log.info("cloning externally");
-        return new Loader().cloneGameData(this, newOrigin);
-      }
     }
+    if (MemoryManagment.isFreeMemory(this.estimateSize()*3)) {
+      GameData.log.info("cloning in memory");
+      GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);
+      if (clonedData == null || clonedData.outOfMemory) {
+        GameData.log.info("cloning externally after failed memory-clone-attempt");
+        clonedData = new Loader().cloneGameData(this, newOrigin);
+      }
+      return clonedData;
+    }
+    GameData.log.info("cloning externally");
+    return new Loader().cloneGameData(this, newOrigin);
+
   }
 
   /**

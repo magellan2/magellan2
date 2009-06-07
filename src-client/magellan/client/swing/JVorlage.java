@@ -604,52 +604,53 @@ public class JVorlage extends InternationalizedDialog {
 		if(tempFile != null) {
 			commandLine += (" -e " + tempFile.getAbsolutePath() + " -do " +
 			tempFile.getAbsolutePath() + " -to " + tempFile.getAbsolutePath());
+		} else {
+
+		  commandLine += options;
+
+		  Process p = null;
+		  long start = System.currentTimeMillis();
+
+		  try {
+		    setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		    p = Runtime.getRuntime().exec(commandLine);
+		  } catch(Exception e) {
+		    JVorlage.log.error("JVorlage.execVorlage()", e);
+		  }
+
+		  if (p!=null){
+		    while(true) {
+		      try {
+		        Thread.sleep(300);
+		      } catch(InterruptedException e) {
+		      }
+
+		      if((System.currentTimeMillis() - start) > 5000) {
+		        if(JOptionPane.showConfirmDialog(this, Resources.get("jvorlage.msg.stopvorlage.text"),
+		            Resources.get("jvorlage.msg.stopvorlage.title"),
+		            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+		          p.destroy();
+
+		          break;
+		        }
+		        start = System.currentTimeMillis();
+		      }
+
+		      try {
+		        if(p.exitValue() != 0) {
+		          Object msgArgs[] = { new Integer(p.exitValue()) };
+		          JOptionPane.showMessageDialog(this,
+		              (new java.text.MessageFormat(Resources.get("jvorlage.msg.execerror.text"))).format(msgArgs),
+		              Resources.get("jvorlage.msg.execerror.title"),
+		              JOptionPane.WARNING_MESSAGE);
+		        }
+
+		        break;
+		      } catch(IllegalThreadStateException e) {
+		      }
+		    }
+		  }
 		}
-
-		commandLine += options;
-
-		Process p = null;
-		long start = System.currentTimeMillis();
-
-		try {
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			p = Runtime.getRuntime().exec(commandLine);
-		} catch(Exception e) {
-			JVorlage.log.error("JVorlage.execVorlage()", e);
-		}
-
-		while(true) {
-			try {
-				Thread.sleep(300);
-			} catch(InterruptedException e) {
-			}
-
-			if((System.currentTimeMillis() - start) > 5000) {
-				if(JOptionPane.showConfirmDialog(this, Resources.get("jvorlage.msg.stopvorlage.text"),
-													 Resources.get("jvorlage.msg.stopvorlage.title"),
-													 JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					p.destroy();
-
-					break;
-				} else {
-					start = System.currentTimeMillis();
-				}
-			}
-
-			try {
-				if(p.exitValue() != 0) {
-					Object msgArgs[] = { new Integer(p.exitValue()) };
-					JOptionPane.showMessageDialog(this,
-												  (new java.text.MessageFormat(Resources.get("jvorlage.msg.execerror.text"))).format(msgArgs),
-												  Resources.get("jvorlage.msg.execerror.title"),
-												  JOptionPane.WARNING_MESSAGE);
-				}
-
-				break;
-			} catch(IllegalThreadStateException e) {
-			}
-		}
-
 		setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
 		if(tempFile != null) {

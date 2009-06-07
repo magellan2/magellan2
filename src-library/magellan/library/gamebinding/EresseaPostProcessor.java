@@ -79,9 +79,11 @@ public class EresseaPostProcessor {
 	 * @param data 
 	 */
 	public void postProcess(GameData data) {
+	  if (data==null)
+	    throw new NullPointerException();
     cleanAstralSchemes(data);
 		/* scan the messages for additional information */
-		if((data != null) && (data.factions() != null)) {
+		if(data.factions() != null) {
 			for(Iterator factions = data.factions().values().iterator(); factions.hasNext();) {
 				Faction f = (Faction) factions.next();
 
@@ -408,7 +410,7 @@ public class EresseaPostProcessor {
             }
           }
           // Check 3. (extension)
-          if (min == null) {
+          if (min == null || max == null) {
             min = new CoordinateID(schemeID);
             max = new CoordinateID(schemeID);
             min.z = max.z = schemeID.x + schemeID.y;

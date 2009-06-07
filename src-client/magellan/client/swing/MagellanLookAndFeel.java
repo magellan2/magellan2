@@ -339,7 +339,7 @@ public class MagellanLookAndFeel {
 																										themepack
 																									});
 		} catch(ClassNotFoundException e) {
-			;
+			
 		} catch(IllegalAccessException e) {
 			MagellanLookAndFeel.log.error("MagellanLookAndfeel.loadSkinLFThemepack(" + themepack +
 					  "): unable to access instantiation method.");
@@ -368,7 +368,7 @@ public class MagellanLookAndFeel {
 
 			return true;
 		} catch(ClassNotFoundException e) {
-			;
+			
 		} catch(IllegalAccessException e) {
 			MagellanLookAndFeel.log.error("MagellanLookAndfeel.prepareSkinLFTheme(): unable to access instantiation method.");
 		} catch(NoSuchMethodException e) {

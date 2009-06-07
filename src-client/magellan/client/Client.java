@@ -448,9 +448,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           // without this decision we cannot start the application
           Client.log.error("can't work without locale");
           quit(false);
-        }
-
-        if (!locale.equals(Locale.getDefault())) {
+        } else if (!locale.equals(Locale.getDefault())) {
           settings.setProperty("locales.gui", locale.getLanguage());
           settings.setProperty("locales.orders", locale.getLanguage());
         }
@@ -1389,18 +1387,22 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     try {
       data = new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName, true, new ClientFileTypeChooser(client)));
+      if (data==null)
+        throw new NullPointerException();
     } catch (FileTypeFactory.NoValidEntryException e) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.missingcr.text.1") + fileName + Resources.get("client.msg.loadcr.missingcr.text.2"), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
+      return null;
     } catch (Exception exc) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.loadcr.error.text") + exc.toString(), Resources.get("client.msg.loadcr.error.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.error(exc);
+      return null;
     }
 
-    if (data!=null && data.outOfMemory) {
+    if (data.outOfMemory) {
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
       Client.log.error(Resources.get("client.msg.outofmemory.text"));
     }
-    if (data!=null && !MemoryManagment.isFreeMemory(data.estimateSize())){
+    if (!MemoryManagment.isFreeMemory(data.estimateSize())){
       JOptionPane.showMessageDialog(client, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
 
@@ -1458,21 +1460,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     GameData newData = null;
     try {
       newData = (GameData) getData().clone(newOrigin);
-      if (newData!=null && newData.outOfMemory) {
+      if (newData==null)
+        throw new NullPointerException();
+      if (newData.outOfMemory) {
         JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
         Client.log.error(Resources.get("client.msg.outofmemory.text"));
       }
-      if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
-        JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
-      }
     } catch (final CloneNotSupportedException e) {
-      e.printStackTrace();
+      throw new RuntimeException("cannot happen");
+    }
+    if (!MemoryManagment.isFreeMemory(newData.estimateSize())){
+      JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
     }
 
-    if (newData != null) {
-      setData(newData);
-      setReportChanged(false);
-    }
+    setData(newData);
+    setReportChanged(false);
   }
 
   /**

@@ -1296,13 +1296,12 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     Faction f = (Faction) cmbFaction.getSelectedItem();
 
     if (f == null || f.getPassword() == null) {
-      Object msgArgs[] = { f.toString() };
+      Object msgArgs[] = { f==null?"null":f.toString() };
       JOptionPane.showMessageDialog(getRootPane(), (new java.text.MessageFormat(Resources
           .get("orderwriterdialog.msg.nopassword.text"))).format(msgArgs));
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   /**
@@ -1568,15 +1567,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     class MyPanel extends JPanel {
       JPasswordField pwd;
 
-      MyPanel(JPasswordField passwd) {
-        pwd = passwd;
+      MyPanel(JPasswordField passwdf) {
+        pwd = passwdf;
       }
 
       public void requestFocus() {
         pwd.requestFocus();
       }
     }
-    ;
+    
     JLabel passwdLabel = new JLabel(title);
     JPanel panel = new MyPanel(passwd);
     panel.add(passwdLabel);

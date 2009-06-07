@@ -304,7 +304,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																						  "insel"));
 		root.add(islRoot);
 
-		Iterator it = armies.armies.iterator();
+		Iterator it = armies.iarmies.iterator();
 
 		while(it.hasNext()) {
 			IslandArmy iArmy = (IslandArmy) it.next();
@@ -1869,7 +1869,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 	protected class IslandArmies implements Armies {
 		protected Island island;
-		protected List<IslandArmy> armies;
+		protected List<IslandArmy> iarmies;
 		protected List<RegionArmies> rarmies;
 		protected int men = 0;
 		protected int unarmed = 0;
@@ -1881,7 +1881,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 */
 		public IslandArmies(Island i) {
 			island = i;
-			armies = new LinkedList<IslandArmy>();
+			iarmies = new LinkedList<IslandArmy>();
 			rarmies = new LinkedList<RegionArmies>();
 		}
 
@@ -1891,7 +1891,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		 * 
 		 */
 		public void addArmy(IslandArmy army) {
-			armies.add(army);
+			iarmies.add(army);
 			men += army.men;
 			unarmed += army.unarmed;
 		}

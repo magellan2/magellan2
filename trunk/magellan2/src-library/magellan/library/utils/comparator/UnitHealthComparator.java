@@ -58,12 +58,13 @@ public class UnitHealthComparator implements Comparator<Unit> {
 		String health1 = u1.getHealth();
 		String health2 = u2.getHealth();
 
-		if((health1 == null) && (health2 != null)) {
-			retVal = Integer.MIN_VALUE;
-		} else if((health2 == null) && (health1 != null)) {
+		if(health1 == null){
+		  if (health2 != null)
+		    retVal = Integer.MIN_VALUE;
+		  else
+		    return 0;
+		} else if(health2 == null) {
 			retVal = Integer.MAX_VALUE;
-		} else if((health1 == null) && (health2 == null)) {
-			retVal = 0;
 		} else {
 			// the alphabetical sorting is not very pretty
 			// this is a try to create a better order

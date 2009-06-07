@@ -282,6 +282,7 @@ public abstract class MagellanFactory {
         try {
           newGroup = MagellanFactory.createGroup((ID) curGroup.getID().clone(), newGD);
         } catch (CloneNotSupportedException e) {
+          throw new NullPointerException("cannot happen");
         }
 
         MagellanFactory.mergeGroup(curGD, curGroup, newGD, newGroup);
@@ -1560,6 +1561,7 @@ public abstract class MagellanFactory {
         try {
           newCS = MagellanFactory.createCombatSpell((ID) curCS.getID().clone());
         } catch (CloneNotSupportedException e) {
+          throw new RuntimeException("should never happen");
         }
 
         MagellanFactory.mergeCombatSpell(curGD, curCS, resultGD, newCS);

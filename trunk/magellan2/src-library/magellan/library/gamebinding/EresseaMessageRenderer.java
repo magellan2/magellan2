@@ -68,7 +68,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaMessageRenderer implements MessageRenderer {
   private static final Logger log = Logger.getInstance(EresseaMessageRenderer.class);
-  private static final Map<MessageType, MessageType> loggedTypes = new Hashtable<MessageType, MessageType>();;  
+  private static final Map<MessageType, MessageType> loggedTypes = new Hashtable<MessageType, MessageType>();  
   /**
    * The GameData as we need a lot of "background" information from it. 
    */

@@ -780,19 +780,22 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         // make the clone here already.
         try {
           newData = (GameData) data.clone();
-          if (newData != null && newData.outOfMemory) {
+          if (newData==null){
+            throw new NullPointerException();
+          }
+          if (newData.outOfMemory) {
             JOptionPane.showMessageDialog(this, Resources.get("client.msg.outofmemory.text"),
                 Resources.get("client.msg.outofmemory.title"), JOptionPane.ERROR_MESSAGE);
             CRWriterDialog.log.error(Resources.get("client.msg.outofmemory.text"));
-          }
-          if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
-            JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
-                .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
           }
         } catch (CloneNotSupportedException e) {
           CRWriterDialog.log.error(
               "CRWriterDialog: trying to clone gamedata failed, fallback to merge method.", e);
           newData = GameData.merge(data, data);
+        }
+        if (!MemoryManagment.isFreeMemory(newData.estimateSize())) {
+          JOptionPane.showMessageDialog(this, Resources.get("client.msg.lowmem.text"), Resources
+              .get("client.msg.lowmem.title"), JOptionPane.WARNING_MESSAGE);
         }
       }
 
@@ -1164,12 +1167,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           allianceRemoveList.add(allianceID);
         }
       }
-    }
-    // something to delete?
-    if (allianceRemoveList != null && allianceRemoveList.size() > 0) {
-      Iterator<ID> i3 = allianceRemoveList.iterator();
-      while (i3.hasNext()) {
-        allies.remove(i3.next());
+      // something to delete?
+      if (allianceRemoveList != null && allianceRemoveList.size() > 0) {
+        Iterator<ID> i3 = allianceRemoveList.iterator();
+        while (i3.hasNext()) {
+          allies.remove(i3.next());
+        }
       }
     }
   }

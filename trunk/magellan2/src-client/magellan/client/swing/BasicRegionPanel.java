@@ -131,7 +131,6 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 									 c.insets, 0, 0);
 
 		//html = new JLabel();
-		;
 
 		//html.setContentType("text/html");
 		//html.setFont(new Font("Arial", Font.PLAIN, html.getFont().getSize()));

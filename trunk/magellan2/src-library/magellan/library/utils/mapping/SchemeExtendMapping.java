@@ -61,7 +61,7 @@ public class SchemeExtendMapping implements LevelMapping {
           int ny = scheme.getCoordinate().y - 4 * region.getCoordinate().y;
           // this is a virtual third axis diagonal to x and y in the same level, but we store it in the z coordinate
           int nd = nx + ny;
-          if (minExtend == null) {
+          if (minExtend == null || maxExtend == null) {
             minExtend = new CoordinateID(nx, ny, nd);
             maxExtend = new CoordinateID(nx, ny, nd);
           } else {

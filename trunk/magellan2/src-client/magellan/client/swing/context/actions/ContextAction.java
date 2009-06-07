@@ -65,7 +65,7 @@ public abstract class ContextAction extends AbstractAction {
     @Override
     public String toString() {
         return getName();
-    };
+    }
     
     /**
      * Sets the name of this menu action.

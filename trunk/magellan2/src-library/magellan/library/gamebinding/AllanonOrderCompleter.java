@@ -78,7 +78,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
       int level = 0;
       Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
 
-      if(skill != null) {
+      if(skill != null && unit!=null) {
         if(skill.noSkillPoints()) {
           level = skill.getLevel() - skill.getModifier(unit);
         } else {

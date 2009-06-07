@@ -522,7 +522,7 @@ public class ReportMerger extends Object {
       ui.showException("Exception while merging report", null, e);
     }
 
-    if (globalData!=null && globalData.outOfMemory) {
+    if (globalData.outOfMemory) {
       ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
       ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
     }
@@ -703,15 +703,18 @@ public class ReportMerger extends Object {
         if (bestTranslation.getKey().x != 0 || bestTranslation.getKey().y != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestTranslation.getKey());
-            if (clonedData!=null && clonedData.outOfMemory) {
+            if (clonedData==null)
+              throw new NullPointerException();
+            if (clonedData.outOfMemory) {
               ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
               ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
             }
-            if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())){
-              ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
-            }
           } catch (CloneNotSupportedException e) {
             ReportMerger.log.error(e);
+            throw new RuntimeException("problems while cloning", e);
+          }
+          if (!MemoryManagment.isFreeMemory(clonedData.estimateSize())){
+            ui.confirm(Resources.get("client.msg.lowmem.text"), Resources.get("client.msg.lowmem.title"));
           }
         } else {
           ReportMerger.log.info("Level 0 : using untranslated new report - same origin");
@@ -719,7 +722,9 @@ public class ReportMerger extends Object {
         if (bestAstralTranslation.getKey().x != 0 || bestAstralTranslation.getKey().y != 0) {
           try {
             clonedData = (GameData) clonedData.clone(bestAstralTranslation.getKey());
-            if (clonedData!=null && clonedData.outOfMemory) {
+            if (clonedData==null)
+              throw new RuntimeException("problems during cloning");
+            if (clonedData.outOfMemory) {
               ui.confirm(Resources.get("client.msg.outofmemory.text"), Resources.get("client.msg.outofmemory.title"));
               ReportMerger.log.error(Resources.get("client.msg.outofmemory.text"));
             }
@@ -728,7 +733,7 @@ public class ReportMerger extends Object {
             }
           } catch (CloneNotSupportedException e) {
             ReportMerger.log.error(e);
-            // TODO if cloning the gamedata fails but translation is necessary we must stop merging!
+            throw new RuntimeException("problems while cloning", e);
           }
         } else {
           ReportMerger.log.info("Astral level : using untranslated new report - same origin or no Astral Regions");

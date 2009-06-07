@@ -177,7 +177,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		if((race == null) || (race.getID().equals(EresseaConstants.R_TROLLE) == false)) {
 			capacity = (((((carts - cartsWithoutHorses) * 140) + (horsesWithoutCarts * 20)) -
 					   (cartsWithoutHorses * 40)) * 100) +
-					   (((int) (race.getCapacity() * 100)) * unit.getModifiedPersons());
+					   (((int) ((race==null?10:race.getCapacity()) * 100)) * unit.getModifiedPersons());
 		} else {
 			int horsesMasteredPerPerson = (skillLevel * 4) + 1;
 			int trollsMasteringHorses = horses / horsesMasteredPerPerson;

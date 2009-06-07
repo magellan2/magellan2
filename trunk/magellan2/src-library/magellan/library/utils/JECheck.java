@@ -624,7 +624,8 @@ public class JECheck extends Reader {
 
     } catch(Exception e) {
       JECheck.log.error(e);
-      br.close();
+      if (br!=null)
+        br.close();
       throw new IOException("Cannot retrieve help: " + e.toString());
     }
 

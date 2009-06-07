@@ -488,19 +488,15 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   private float parseFloat(Object replacement) throws ParseException {
     if (replacement instanceof Number){
       return ((Number) replacement).floatValue();
-    } else {
-
-
-      NumberFormat f = NumberFormat.getInstance(Locales.getGUILocale());
-      if (f instanceof DecimalFormat) {
-        DecimalFormat df = (DecimalFormat)f;
-        df.setParseBigDecimal(true);
-
-        return df.parse(replacement.toString()).floatValue();
-      } else {
-        return f.parse(replacement.toString()).floatValue();
-      }
     }
+    NumberFormat f = NumberFormat.getInstance(Locales.getGUILocale());
+    if (f instanceof DecimalFormat) {
+      DecimalFormat df = (DecimalFormat)f;
+      df.setParseBigDecimal(true);
+
+      return df.parse(replacement.toString()).floatValue();
+    }
+    return f.parse(replacement.toString()).floatValue();
 }
 
   /**

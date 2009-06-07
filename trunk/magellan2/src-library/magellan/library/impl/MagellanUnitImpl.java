@@ -913,8 +913,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
 		for(Iterator iter = tempUnits().iterator(); iter.hasNext();) {
 			TempUnit u = (TempUnit) iter.next();
-			cmds.add(getOrder(EresseaConstants.O_MAKE) + " " +
-					 getOrder(EresseaConstants.O_TEMP) + " " + u.getID().toString());
+			cmds.add(Resources.getOrderTranslation(EresseaConstants.O_MAKE) + " " +
+			    Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " " + u.getID().toString());
 			cmds.addAll(u.getCompleteOrders(writeUnitTagsAsVorlageComment));
 
 			if(u.isOrdersConfirmed()) {
@@ -930,7 +930,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
                 }
             }
                         
-			cmds.add(getOrder(EresseaConstants.O_END));
+			cmds.add(Resources.getOrderTranslation(EresseaConstants.O_END));
 		}
 
 		return cmds;
@@ -1290,11 +1290,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 					clone.addSkill(new Skill(s.getSkillType(), s.getPoints(), s.getLevel(),
 											 clone.persons, s.noSkillPoints()));
 				}
+	      clones.put(clone.getID(), clone);
 			} catch(CloneNotSupportedException e) {
 				// won't fail
 			}
 
-			clones.put(clone.getID(), clone);
 		}
 
 		// now modify the skills according to changes introduced by the relations
@@ -2394,12 +2394,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				}
 
 				if(false == tempBlock) {
-					if(t.equalsToken(getOrder(EresseaConstants.O_MAKE))) {
+					if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
 						t = ct.getNextToken();
 
 						if(OrderToken.TT_EOC == t.ttype) {
 							continue;
-						} else if(t.equalsToken(getOrder(EresseaConstants.O_TEMP))) {
+						} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
 							tempBlock = true;
 
 							continue;
@@ -2429,7 +2429,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 						continue;
 					}
 				} else {
-					if(t.equalsToken(getOrder(EresseaConstants.O_END))) {
+					if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
 						tempBlock = false;
 
 						continue;
@@ -2443,29 +2443,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		return true;
 	}
 
-
-	/**
-	 * Returns a translation for the specified order key.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	private String getOrder(String key) {
-		return Resources.getOrderTranslation(key);
-	}
-
-	/**
-	 * Returns a translation for the specified order key in the specified locale.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-	private String getOrder(String key, Locale locale) {
-		return Resources.getOrderTranslation(key, locale);
-	}
 
 	/**
 	 * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects
@@ -2503,10 +2480,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				OrderToken token = ct.getNextToken();
 
 				if(tempUnit == null) {
-					if(token.equalsToken(getOrder(EresseaConstants.O_MAKE, locale))) {
+					if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE, locale))) {
 						token = ct.getNextToken();
 
-						if(token.equalsToken(getOrder(EresseaConstants.O_TEMP, locale))) {
+						if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP, locale))) {
 							token = ct.getNextToken();
 
 							try {
@@ -2521,9 +2498,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 									token = ct.getNextToken();
 
 									if(token.ttype != OrderToken.TT_EOC) {
-										tempUnit.addOrders(getOrder(EresseaConstants.O_NAME,
+										tempUnit.addOrders(Resources.getOrderTranslation(EresseaConstants.O_NAME,
 																	locale) + " " +
-														   getOrder(EresseaConstants.O_UNIT,
+																	Resources.getOrderTranslation(EresseaConstants.O_UNIT,
 																	locale) + " " +
 														   token.getText(), false);
 									}
@@ -2540,7 +2517,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				} else {
 					cmdIterator.remove();
 
-					if(token.equalsToken(getOrder(EresseaConstants.O_END, locale))) {
+					if(token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END, locale))) {
 						tempUnit = null;
 					} else {
 						scanTempOrder(tempUnit, line);

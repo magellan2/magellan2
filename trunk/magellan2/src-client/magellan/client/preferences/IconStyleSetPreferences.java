@@ -13,26 +13,27 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.client.preferences;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -75,12 +76,12 @@ import magellan.client.swing.tree.GraphicsStyleset;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
-public class IconStyleSetPreferences extends JPanel implements ActionListener, TreeSelectionListener, PreferencesAdapter {
+public class IconStyleSetPreferences extends JPanel implements ActionListener,
+    TreeSelectionListener, PreferencesAdapter {
   protected JPanel content;
   protected CardLayout contentLayout;
-  protected Map<String,Component> subPanels;
-  protected Map<String,TreeNode> nodeMap;
+  protected Map<String, Component> subPanels;
+  protected Map<String, TreeNode> nodeMap;
   protected JTree stylesets;
   protected AbstractButton removeButton;
   protected DefaultTreeModel treeModel;
@@ -89,7 +90,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
    * Creates a new Stylesets object.
    */
   public IconStyleSetPreferences() {
-    this.setLayout(new BorderLayout(1, 5));
+    this.setLayout(new GridBagLayout());
     this.setBorder(new TitledBorder(Resources.get("tree.iconadapter.styles.title")));
 
     // left: "add" & "remove" buttons + styleset combobox
@@ -101,7 +102,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     stylesets.setEditable(false);
     stylesets.addTreeSelectionListener(this);
 
-    this.add(new JScrollPane(stylesets), BorderLayout.WEST);
+    JScrollPane pane = new JScrollPane(stylesets);
+    pane.setPreferredSize(new Dimension(150, pane.getPreferredSize().height));
 
     JButton button = new JButton(Resources.get("tree.iconadapter.styles.add"));
     button.addActionListener(this);
@@ -116,17 +118,16 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     p2.setLayout(new BoxLayout(p2, BoxLayout.Y_AXIS));
     p2.add(p);
     p2.add(new JSeparator());
-    this.add(p2, BorderLayout.NORTH);
 
     // center content
     content = new JPanel(contentLayout = new CardLayout());
 
     subPanels = new HashMap<String, Component>();
 
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
       String key = null;
 
-      switch(i) {
+      switch (i) {
       case 0:
         key = "SIMPLE";
 
@@ -148,9 +149,20 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       subPanels.put(key, c);
     }
 
-    this.add(content, BorderLayout.CENTER);
+    GridBagConstraints gbc =
+        new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+            new Insets(0, 0, 0, 0), 1, 5);
+    this.add(p2, gbc);
+    gbc.gridy = 1;
+    gbc.gridwidth = 1;
+    gbc.weightx = 0.5;
+    gbc.weighty = 1;
+    this.add(pane, gbc);
 
-    //stylesets.setSelectionPath(0);
+    gbc.gridx++;
+    gbc.weightx = 1;
+    this.add(content, gbc);
+
   }
 
   /**
@@ -159,7 +171,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
   public void updatePreferences() {
     DefaultMutableTreeNode newRoot = new DefaultMutableTreeNode();
 
-    if(nodeMap == null) {
+    if (nodeMap == null) {
       nodeMap = new HashMap<String, TreeNode>();
     } else {
       nodeMap.clear();
@@ -178,31 +190,31 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     newRoot.add(node);
     nodeMap.put("MAIN", node);
 
-    Map<String,GraphicsStyleset> map = CellRenderer.getStylesets();
+    Map<String, GraphicsStyleset> map = CellRenderer.getStylesets();
     List<String> list = null;
 
-    if(map != null) {
+    if (map != null) {
       list = new LinkedList<String>(map.keySet());
       list.remove("DEFAULT");
       list.remove("MAIN");
       list.remove("SIMPLE");
       list.remove("ADDITIONAL");
 
-      if(list.size() > 0) {
+      if (list.size() > 0) {
         Collections.sort(list);
 
         Iterator it = list.iterator();
 
-        while(it.hasNext()) {
+        while (it.hasNext()) {
           String s = (String) it.next();
 
           node = new DefaultMutableTreeNode(new TreeObject(s));
           nodeMap.put(s, node);
 
-          if(s.indexOf('.') > 0) {
+          if (s.indexOf('.') > 0) {
             String parent = s.substring(0, s.lastIndexOf('.'));
 
-            if(nodeMap.containsKey(parent)) {
+            if (nodeMap.containsKey(parent)) {
               DefaultMutableTreeNode pNode = (DefaultMutableTreeNode) nodeMap.get(parent);
               pNode.add(node);
             } else { // this may happen if the user inserted one directly and it was not needed
@@ -221,10 +233,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
 
     Collection<String> old = new LinkedList<String>(subPanels.keySet());
 
-    for(int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++) {
       String key = null;
 
-      switch(i) {
+      switch (i) {
       case 0:
         key = "SIMPLE";
 
@@ -246,14 +258,14 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       old.remove(key);
     }
 
-    if((list != null) && (list.size() > 0)) {
+    if ((list != null) && (list.size() > 0)) {
       Iterator it = list.iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         Component c = null;
         String name = (String) it.next();
 
-        if(subPanels.containsKey(name)) {
+        if (subPanels.containsKey(name)) {
           c = subPanels.get(name);
           old.remove(name);
         } else {
@@ -265,10 +277,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       }
     }
 
-    if(old.size() > 0) {
+    if (old.size() > 0) {
       Iterator it = old.iterator();
 
-      while(it.hasNext()) {
+      while (it.hasNext()) {
         subPanels.remove(it.next());
       }
     }
@@ -281,23 +293,23 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
    */
   protected void openTree(TreeNode root, TreePath first) {
     // expand all nodes
-    if(root.getChildCount() > 0) {
-      for(int i = 0, max = root.getChildCount(); i < max; i++) {
+    if (root.getChildCount() > 0) {
+      for (int i = 0, max = root.getChildCount(); i < max; i++) {
         openNode(root.getChildAt(i));
       }
     }
 
     stylesets.setSelectionPath(first);
   }
-  
+
   /**
    * 
    */
   protected void openNode(TreeNode node) {
     stylesets.expandPath(new TreePath(treeModel.getPathToRoot(node)));
 
-    if(node.getChildCount() > 0) {
-      for(int i = 0, max = node.getChildCount(); i < max; i++) {
+    if (node.getChildCount() > 0) {
+      for (int i = 0, max = node.getChildCount(); i < max; i++) {
         openNode(node.getChildAt(i));
       }
     }
@@ -307,7 +319,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
-    if(e.getSource() != removeButton) {
+    if (e.getSource() != removeButton) {
       addStyleset();
 
       return;
@@ -315,30 +327,30 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
 
     removeStyleset();
   }
-  
+
   /**
    * 
    */
   protected void addStyleset() {
     String name = JOptionPane.showInputDialog(this, Resources.get("tree.iconadapter.styles.add.text"));
 
-    if(name == null) {
+    if (name == null) {
       return;
     }
 
     name = name.trim();
 
-    if(name.equals("")) {
+    if (name.equals("")) {
       return;
     }
 
-    if(subPanels.containsKey(name)) {
+    if (subPanels.containsKey(name)) {
       return;
     }
 
-    if(!stylesets.isSelectionEmpty()) {
+    if (!stylesets.isSelectionEmpty()) {
       TreeObject obj = (TreeObject) ((DefaultMutableTreeNode) stylesets.getSelectionPath()
-                                       .getLastPathComponent()).getUserObject();
+              .getLastPathComponent()).getUserObject();
       name = obj.name + "." + name;
     }
 
@@ -349,10 +361,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeObject(name));
     MutableTreeNode root = (MutableTreeNode) treeModel.getRoot();
 
-    if(name.indexOf('.') > 0) {
+    if (name.indexOf('.') > 0) {
       String parent = name.substring(0, name.lastIndexOf('.'));
 
-      if(nodeMap.containsKey(parent)) {
+      if (nodeMap.containsKey(parent)) {
         root = (MutableTreeNode) nodeMap.get(parent);
         treeModel.insertNodeInto(node, root, root.getChildCount());
       } else {
@@ -366,18 +378,18 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
 
     return;
   }
-  
+
   /**
    * 
    */
   protected void removeStyleset() {
-    if(!stylesets.isSelectionEmpty()) {
+    if (!stylesets.isSelectionEmpty()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) stylesets.getSelectionPath()
                                       .getLastPathComponent();
       TreeObject obj = (TreeObject) node.getUserObject();
       Component c = subPanels.get(obj.name);
 
-      if(c != null) {
+      if (c != null) {
         content.remove(c);
       }
 
@@ -390,13 +402,13 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   public void valueChanged(TreeSelectionEvent e) {
-    if(stylesets.isSelectionEmpty()) {
+    if (stylesets.isSelectionEmpty()) {
       removeButton.setEnabled(false);
     } else {
       TreeObject obj = (TreeObject) ((DefaultMutableTreeNode) e.getPath()
                                    .getLastPathComponent()).getUserObject();
 
-      if(obj != null) {
+      if (obj != null) {
         contentLayout.show(content, obj.name);
 
         boolean removeEnabled = true;
@@ -424,9 +436,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
   public void applyPreferences() {
     Component comp[] = content.getComponents();
 
-    if(comp != null) {
-      for(int i = 0; i < comp.length; i++) {
-        if(comp[i] instanceof StylesetPanel) {
+    if (comp != null) {
+      for (int i = 0; i < comp.length; i++) {
+        if (comp[i] instanceof StylesetPanel) {
           ((StylesetPanel) comp[i]).apply();
         }
       }
@@ -448,9 +460,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
   public Component getComponent() {
     return this;
   }
-  
+
   /**
-   *
    * @author ...
    * @version 1.0, 16.02.2008
    */
@@ -476,10 +487,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
 
         ButtonGroup gr = new ButtonGroup();
 
-        for(int j = 0; j < 3; j++) {
+        for (int j = 0; j < 3; j++) {
           int jv = 0;
 
-          switch(j) {
+          switch (j) {
           case 0:
             jv = SwingConstants.TOP;
 
@@ -496,10 +507,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
             break;
           }
 
-          for(int i = 0; i < 3; i++) {
+          for (int i = 0; i < 3; i++) {
             int iv = 0;
 
-            switch(i) {
+            switch (i) {
             case 0:
               iv = SwingConstants.LEFT;
 
@@ -537,21 +548,21 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       public void setStyleset(GraphicsStyleset set) {
         int j = 0;
 
-        if(set.getVerticalPos() == SwingConstants.CENTER) {
+        if (set.getVerticalPos() == SwingConstants.CENTER) {
           j = 1;
         }
 
-        if(set.getVerticalPos() == SwingConstants.BOTTOM) {
+        if (set.getVerticalPos() == SwingConstants.BOTTOM) {
           j = 2;
         }
 
         int i = 0;
 
-        if(set.getHorizontalPos() == SwingConstants.CENTER) {
+        if (set.getHorizontalPos() == SwingConstants.CENTER) {
           i = 1;
         }
 
-        if(set.getHorizontalPos() == SwingConstants.RIGHT) {
+        if (set.getHorizontalPos() == SwingConstants.RIGHT) {
           i = 2;
         }
 
@@ -564,8 +575,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
        * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
        */
       public void actionPerformed(ActionEvent e) {
-        if(last != null) {
-          if(last == buttons[4]) {
+        if (last != null) {
+          if (last == buttons[4]) {
             last.setText(Resources.get("tree.iconadapter.icontext.position.icon"));
           } else {
             last.setText(null);
@@ -574,7 +585,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
 
         last = (AbstractButton) e.getSource();
 
-        if(last == buttons[4]) {
+        if (last == buttons[4]) {
           last.setText(Resources.get("tree.iconadapter.icontext.position.icon&text"));
         } else {
           last.setText(Resources.get("tree.iconadapter.icontext.position.t"));
@@ -592,9 +603,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         // work-around for corner-bug
         int i = vertic;
 
-        if((last == buttons[0]) || (last == buttons[2]) || (last == buttons[6]) ||
-             (last == buttons[8])) {
-          if(vertic == SwingConstants.TOP) {
+        if ((last == buttons[0]) || (last == buttons[2]) || (last == buttons[6])
+            || (last == buttons[8])) {
+          if (vertic == SwingConstants.TOP) {
             i = SwingConstants.BOTTOM;
           } else {
             i = SwingConstants.TOP;
@@ -634,7 +645,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         try {
           fontNa = GraphicsEnvironment.getLocalGraphicsEnvironment()
                         .getAvailableFontFamilyNames();
-        } catch(NullPointerException e) {
+        } catch (NullPointerException e) {
           // FIXME(pavkovic) 2003.03.17: This is bad!
           log.error("Probably your are running jdk1.4.1 on Apple. Perhaps we can keep Magellan running. But don't count on it!");
           fontNa = new String[0];
@@ -661,8 +672,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         // Font-size box
         String sizes[] = new String[11];
 
-        for(int i = 0; i < 11; i++) // values 8-18
-         {
+        for (int i = 0; i < 11; i++) // values 8-18
+        {
           sizes[i] = String.valueOf(i + 8);
         }
 
@@ -675,7 +686,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
        * DOCUMENT-ME
        */
       public void setStyleset(GraphicsStyleset set) {
-        if(set.getFont() != null) {
+        if (set.getFont() != null) {
           Font f = set.getFont();
           fonts.setSelectedItem(f.getFamily());
           styles[0].setSelected(f.isBold());
@@ -690,11 +701,11 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       public Font getSelectedFont() {
         int style = 0;
 
-        if(styles[0].isSelected()) {
+        if (styles[0].isSelected()) {
           style |= Font.BOLD;
         }
 
-        if(styles[1].isSelected()) {
+        if (styles[1].isSelected()) {
           style |= Font.ITALIC;
         }
 
@@ -705,7 +716,6 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     }
 
     /**
-     *
      * @author ...
      * @version 1.0, 16.02.2008
      */
@@ -727,7 +737,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
         boxes = new JCheckBox[4];
         buttons = new JButton[4];
 
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
           con.gridx = 0;
           con.gridy = i;
           this.add(boxes[i] = new JCheckBox(Resources.get("tree.iconadapter.styles.color." +
@@ -743,28 +753,28 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
        * DOCUMENT-ME
        */
       public void setStyleset(GraphicsStyleset set) {
-        if(set.getForeground() != null) {
+        if (set.getForeground() != null) {
           boxes[0].setSelected(true);
           buttons[0].setBackground(set.getForeground());
         } else {
           boxes[0].setSelected(false);
         }
 
-        if(set.getBackground() != null) {
+        if (set.getBackground() != null) {
           boxes[1].setSelected(true);
           buttons[1].setBackground(set.getBackground());
         } else {
           boxes[1].setSelected(false);
         }
 
-        if(set.getSelectedForeground() != null) {
+        if (set.getSelectedForeground() != null) {
           boxes[2].setSelected(true);
           buttons[2].setBackground(set.getSelectedForeground());
         } else {
           boxes[2].setSelected(false);
         }
 
-        if(set.getSelectedBackground() != null) {
+        if (set.getSelectedBackground() != null) {
           boxes[2].setSelected(true);
           buttons[2].setBackground(set.getSelectedBackground());
         } else {
@@ -776,25 +786,25 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
        * DOCUMENT-ME
        */
       public void apply(GraphicsStyleset set) {
-        if(boxes[0].isSelected()) {
+        if (boxes[0].isSelected()) {
           set.setForeground(buttons[0].getBackground());
         } else {
           set.setForeground(null);
         }
 
-        if(boxes[1].isSelected()) {
+        if (boxes[1].isSelected()) {
           set.setBackground(buttons[1].getBackground());
         } else {
           set.setBackground(null);
         }
 
-        if(boxes[2].isSelected()) {
+        if (boxes[2].isSelected()) {
           set.setSelectedForeground(buttons[2].getBackground());
         } else {
           set.setSelectedForeground(null);
         }
 
-        if(boxes[3].isSelected()) {
+        if (boxes[3].isSelected()) {
           set.setSelectedBackground(buttons[3].getBackground());
         } else {
           set.setSelectedBackground(null);
@@ -807,14 +817,14 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
       public void actionPerformed(ActionEvent e) {
         JButton source = (JButton) e.getSource();
         Color col = JColorChooser.showDialog(this, Resources.get("tree.iconadapter.colorchooser.title"),
-                           source.getBackground());
+                source.getBackground());
 
-        if(col != null) {
+        if (col != null) {
           source.setBackground(col);
 
           int index = 0;
 
-          while(source != buttons[index]) {
+          while (source != buttons[index]) {
             index++;
           }
 
@@ -881,7 +891,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
      * DOCUMENT-ME
      */
     public void apply() {
-      if(fontEnabled.isSelected()) {
+      if (fontEnabled.isSelected()) {
         this.set.setFont(font.getSelectedFont());
       } else {
         this.set.setFont(null);
@@ -893,7 +903,6 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
   }
 
   /**
-   *
    * @author ...
    * @version 1.0, 16.02.2008
    */
@@ -907,7 +916,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
     public TreeObject(String name) {
       this.name = name;
 
-      if(name.indexOf('.') > 0) {
+      if (name.indexOf('.') > 0) {
         sName = name.substring(name.lastIndexOf('.') + 1);
       } else {
         sName = name;
@@ -932,4 +941,3 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener, T
   }
 
 }
-

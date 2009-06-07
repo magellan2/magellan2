@@ -36,7 +36,7 @@ import magellan.library.utils.Units;
  * This class inspects ships and checks for overload, missing crew and bad routes.
  * 
  */
-public class ShipInspector extends AbstractInspector implements Inspector {
+public class ShipInspector extends AbstractInspector {
 
 	/** The singleton instance of the ShipInspector */
 	public static final ShipInspector INSPECTOR = new ShipInspector();

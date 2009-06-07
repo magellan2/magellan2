@@ -71,7 +71,7 @@ public class AllianceStateRenderer extends JLabel implements ListCellRenderer, T
         setForeground(component.getForeground());
     }
     
-    setToolTipText(state.toString());
+    setToolTipText(state==null?"state":state.toString());
 
     //Set the icon and text.  If icon was null, say so.
     ImageIcon icon = MagellanImages.getImageIcon("etc/images/icons/alliancestate_"+bitmask+".gif");

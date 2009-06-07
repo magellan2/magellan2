@@ -25,7 +25,7 @@ import magellan.library.Unit;
  * This Inspector inspects a unit's orders and reports an item for every comment
  * that starts with "TODO".
  */
-public class ToDoInspector extends AbstractInspector implements Inspector {
+public class ToDoInspector extends AbstractInspector {
 	/** The singleton instance. */
 	public static final ToDoInspector INSPECTOR = new ToDoInspector();
 

@@ -436,7 +436,8 @@ public class MapSaverUI extends InternationalizedDialog {
 				g2 = null;
 			}
 
-			bimg.flush();
+			if (bimg!=null)
+			  bimg.flush();
 			bimg = null;
 
 			throw e;
@@ -563,5 +564,5 @@ class MapSaverFileFilter extends FileFilter {
     }
     return "*.*";
   }
-};
+}
 

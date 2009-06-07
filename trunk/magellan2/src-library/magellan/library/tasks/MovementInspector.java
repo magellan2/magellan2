@@ -30,7 +30,7 @@ import magellan.library.utils.Resources;
  * Checks land movement for overload or too many horses.
  * 
  */
-public class MovementInspector extends AbstractInspector implements Inspector {
+public class MovementInspector extends AbstractInspector {
 	/** The singleton instance of this Inspector */
 	public static final MovementInspector INSPECTOR = new MovementInspector();
 

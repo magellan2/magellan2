@@ -213,24 +213,24 @@ public class Regions {
 
 		if(iter.hasNext()) {
 			prev = iter.next();
-		}
+			while(iter.hasNext()) {
+			  cur = iter.next();
 
-		while(iter.hasNext()) {
-			cur = iter.next();
+			  CoordinateID diffCoord = new CoordinateID(cur.x - prev.x, cur.y - prev.y, 0);
+			  int intDir = Direction.toInt(diffCoord);
 
-			CoordinateID diffCoord = new CoordinateID(cur.x - prev.x, cur.y - prev.y, 0);
-			int intDir = Direction.toInt(diffCoord);
-
-			if(intDir != -1) {
-				directions.add(new Direction(intDir));
-			} // else {
+			  if(intDir != -1) {
+			    directions.add(new Direction(intDir));
+			  } // else {
 //				Regions.log.warn("Regions.getDirectionsOfCoordinates(): invalid direction encountered");
 //
 //				return null;
 //			}
 
-			prev = cur;
+			  prev = cur;
+			}
 		}
+
 
 		return directions;
 	}

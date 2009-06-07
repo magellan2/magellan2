@@ -429,7 +429,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         || (newUnit != null && currentUnit != null
             && newUnit.getRegion() == currentUnit.getRegion() && newUnit.getFaction() == currentUnit
             .getFaction())) {
-      ; // no change necessary
+      // no change necessary
     } else {
       loadEditors(newIsland, newRegion, newFaction, newUnit);
     }

@@ -2350,9 +2350,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	
 			String icon = null;
 	
-			try {
+			if (stealth!=null && stealth.getSkillType()!=null && stealth.getSkillType().getID()!=null) {
 				icon = stealth.getSkillType().getID().toString();
-			} catch(Exception exc) {
+			} else {
 				icon = "tarnung";
 			}
 	
@@ -3310,7 +3310,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			parent.add(n);
 			expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.BuildingCostExpanded"));
 		} else {
-			n=null;
+			return;
 		}
 
 		DefaultMutableTreeNode m;

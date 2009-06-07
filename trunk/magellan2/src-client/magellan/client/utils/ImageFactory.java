@@ -90,6 +90,8 @@ public class ImageFactory implements GameDataListener {
 		
 		ImageIcon img = doLoadImage(imageName);
     String fName = Umlaut.normalize(imageName).toLowerCase();
+    // we do not replace spaces by strings 
+//    fName = fName.trim().replaceAll(" ","");
 		if (img == null){
 		  ImageFactory.log.debug("Loading image "+fName);
 		  img = doLoadImage(gamename + "/" + fName);

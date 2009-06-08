@@ -1,143 +1,226 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.library.tasks;
 
 import magellan.library.Faction;
-import magellan.library.HasRegion;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 
 /**
- * DOCUMENT-ME
- *
+ * A default implementation serving as template for more specialized problems.
+ * 
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public abstract class AbstractProblem implements Problem {
-	protected Object source;
-	protected HasRegion object;
-	protected Inspector inspector;
-	protected String message;
-	protected int line;
+public class AbstractProblem implements Problem {
+  protected Severity severity;
+  protected ProblemType type;
+  protected String name;
+  protected Region region;
+  protected Unit owner;
+  protected Faction faction;
+  protected Object objectt;
+  protected Inspector inspector;
+  protected String message;
+  protected int line;
 
-	/**
-	 * Creates a new AbstractProblem object.
-	 *
-	 * @param s The origin of the problem
-   * @param o The object that this problem critisizes
-	 * @param i The Inspector that reported this problem
-   * @param m The message text of the problem  
-	 * 
-   * @throws NullPointerException if any of the parameters is null
-	 */
-	public AbstractProblem(Object s, HasRegion o, Inspector i, String m) {
-		this(s, o, i, m, -1);
-	}
+  /**
+   * Creates a new AbstractProblem object.
+   * 
+   * @param type One of {@link Problem#INFORMATION}, {@link Problem#WARNING}, {@link Problem#ERROR}
+   * @param region A region where the problem occurs
+   * @param owner The unit responsible for this problem or <code>null</code>. If
+   *          <code>line >= 0 </code>, it refers to an order of this unit.
+   * @param faction The faction this problem belongs to or <code>null</code>
+   * @param object The object that this problem criticizes
+   * @param inspector The Inspector that reported this problem
+   * @param message The message text of the problem
+   * @param line The line number in the orders of owner where the problem occured or -1 if no such
+   *          order can be identified. The first line is line 1!
+   * @throws NullPointerException if object, inspector or message is <code>null</code>.
+   */
+  public AbstractProblem(Severity severity, ProblemType type, Region region, Unit owner,
+      Faction faction, Object object, Inspector inspector, String message, int line) {
+    if (object == null || inspector == null || message == null) {
+      throw new NullPointerException();
+    }
+    this.severity = severity;
+    this.type = type;
+    this.region = region;
+    this.owner = owner;
+    this.faction = faction;
+    this.objectt = object;
+    this.inspector = inspector;
+    this.message = message;
+    this.line = line;
+  }
 
-	/**
-	 * Creates a new AbstractProblem object.
-	 *
-   * @param s The origin of the problem
-   * @param o The object that this problem critisizes
-   * @param i The Inspector that reported this problem
-   * @param m The message text of the problem
-   * @param l The line number where the problem occured  
-	 *
-	 * @throws NullPointerException if any of the parameters is null
-	 */
-	public AbstractProblem(Object s, HasRegion o, Inspector i, String m, int l) {
-		if((s == null) || (o == null) || (i == null) || (m == null)) {
-			throw new NullPointerException();
-		}
+  /**
+   * Creates a problem. Tries to deduce region and faction from the Unit, and inspector and message
+   * from the ProblemType.
+   * 
+   * @param severity
+   * @param type
+   * @param u
+   * @param line
+   */
+  public AbstractProblem(Severity severity, ProblemType type, Unit u, int line) {
+    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), type
+        .getMessage(), line);
+  }
 
-		source = s;
-		object = o;
-		inspector = i;
-		message = m;
-		line = l;
-	}
+  /**
+   * Creates a problem without line. Tries to deduce region and faction from the Unit, and inspector
+   * and message from the ProblemType.
+   * 
+   * @param severity
+   * @param type
+   * @param u
+   */
+  public AbstractProblem(Severity severity, ProblemType type, Unit u) {
+    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), type
+        .getMessage(), -1);
+  }
 
-	/**
-	 * returns the type of the problem
-	 *
-	 */
-	public abstract int getType();
+  /**
+   * Creates a problem. Tries to deduce unit, region and faction from the UnitContainer, and
+   * inspector and message from the ProblemType.
+   * 
+   * @param severity
+   * @param type
+   * @param c
+   * @param line
+   */
+  public AbstractProblem(Severity severity, ProblemType type, UnitContainer c, int line) {
+    this(severity, type, c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c
+        .getOwner() == null ? null : c.getOwner().getFaction(), c, type.getInspector(), type
+        .getMessage(), line);
+  }
 
-	/**
-	 * @see magellan.library.tasks.Problem#getLine()
-	 */
-	public int getLine() {
-		return line;
-	}
+  /**
+   * Creates a problem without line. Tries to deduce unit, region and faction from the
+   * UnitContainer, and inspector and message from the ProblemType.
+   * 
+   * @param severity
+   * @param type
+   * @param c
+   */
+  public AbstractProblem(Severity severity, ProblemType type, UnitContainer c) {
+    this(severity, type, c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c
+        .getOwner() == null ? null : c.getOwner().getFaction(), c, type.getInspector(), type
+        .getMessage(), -1);
+  }
 
-	/**
-	 * @see magellan.library.tasks.Problem#getInspector()
-	 */
-	public Inspector getInspector() {
-		return inspector;
-	}
+  /**
+   * Creates a problem. Tries to deduce region and faction from the Unit, and the inspector from the
+   * ProblemType but uses the given message.
+   * 
+   * @param severity
+   * @param type
+   * @param u
+   * @param inspector
+   * @param message
+   * @param line
+   */
+  public AbstractProblem(Severity severity, ProblemType type, Unit u, String message, int line) {
+    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), message, line);
+  }
 
-	/**
-	 * @see magellan.library.tasks.Problem#getSource()
-	 */
-	public Object getSource() {
-		return source;
-	}
+  /**
+   * Returns the value of faction.
+   * 
+   * @see magellan.library.tasks.Problem#getFaction()
+   */
+  public Faction getFaction() {
+    return faction;
+  }
 
-	/**
-	 * @see magellan.library.tasks.Problem#getObject()
-	 */
-	public HasRegion getObject() {
-		return object;
-	}
+  /**
+   * Returns the value of object.
+   * 
+   * @see magellan.library.tasks.Problem#getObject()
+   */
+  public Object getObject() {
+    return objectt;
+  }
 
-	/**
-	 * Returns the message of the problem.
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * @see magellan.library.tasks.Problem#getType()
+   */
+  public Severity getSeverity() {
+    return severity;
+  }
+
+  /**
+   * @see magellan.library.tasks.Problem#getType()
+   */
+  public ProblemType getType() {
+    return type;
+  }
+
+  /**
+   * @see magellan.library.tasks.Problem#getLine()
+   */
+  public int getLine() {
+    return line;
+  }
+
+  /**
+   * Returns the value of region.
+   * 
+   * @see magellan.library.tasks.Problem#getRegion()
+   */
+  public Region getRegion() {
+    return region;
+  }
+
+  /**
+   * Returns the value of owner.
+   * 
+   * @see magellan.library.tasks.Problem#getOwner()
+   */
+  public Unit getOwner() {
+    return owner;
+  }
+
+  /**
+   * Returns the value of message.
+   * 
+   * @see magellan.library.tasks.Problem#getMessage()
+   */
+  public String getMessage() {
+    return message;
+  }
+
+  /**
+   * @see magellan.library.tasks.Problem#getInspector()
+   */
+  public Inspector getInspector() {
+    return inspector;
+  }
+
+  /**
+   * Returns the message of the problem.
+   */
+  @Override
   public String toString() {
-		return message;
-	}
-	
-	/**
-	 * Returns the faction owning this problem by evaluating the object.
-	 * 
-	 * @see magellan.library.tasks.Problem#getFaction()
-	 */
-	public Faction getFaction(){
-	  HasRegion hasR = getObject();
-	  Faction faction = null;
-	  if (hasR instanceof Unit) {
-      faction = ((Unit) hasR).getFaction();
-    } else if(hasR instanceof UnitContainer){
-	    Unit owner = ((UnitContainer) hasR).getOwnerUnit();
-	    faction=owner!=null?owner.getFaction():null;
-	  }
-	  
-	  return faction;
-	}
-	
-	/**
-	 * Adds a comment to the unit that is responsible for this problem. This comment causes the problem
-	 * to be suppressed in subsequent runs of inspectors.
-	 * 
-	 * @see magellan.library.tasks.Problem#addSuppressComment()
-	 */
-	public Unit addSuppressComment(){
+    return message;
+  }
+
+  /**
+   * Adds a comment to the unit that is responsible for this problem. This comment causes the
+   * problem to be suppressed in subsequent runs of inspectors.
+   * 
+   * @see magellan.library.tasks.Problem#addSuppressComment()
+   */
+  public Unit addSuppressComment() {
     return getInspector().suppress(this);
-	}
-	
+  }
+
 }

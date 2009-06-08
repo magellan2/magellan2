@@ -25,7 +25,7 @@ public abstract class UnitRelation {
 	/** the source of this relation */
 	public final Unit source;
 
-	/** DOCUMENT-ME */
+	/** The line in the source's orders that is the cause for this relation. The first line is 1. */
 	public final int line;
 
 	/** if somethin is amiss, this should be true */
@@ -35,7 +35,7 @@ public abstract class UnitRelation {
 	 * Creates a new UnitRelation object.
 	 *
 	 * @param s The source unit
-	 * @param line The line in the source's orders
+	 * @param line The line in the source's orders. The first line is 1.
 	 * @param w <code>true</code> iff this relation causes a warning
 	 */
 	public UnitRelation(Unit s, int line, boolean w) {

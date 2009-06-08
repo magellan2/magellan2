@@ -14,11 +14,13 @@
 package magellan.library.tasks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import magellan.library.Unit;
+import magellan.library.tasks.Problem.Severity;
 
 
 /**
@@ -28,6 +30,8 @@ import magellan.library.Unit;
 public class ToDoInspector extends AbstractInspector {
 	/** The singleton instance. */
 	public static final ToDoInspector INSPECTOR = new ToDoInspector();
+
+	private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, getInstance());
 
 	/**
 	 * Returns a (singleton) instance.
@@ -45,12 +49,12 @@ public class ToDoInspector extends AbstractInspector {
 	 * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
 	 */
 	@Override
-  public List<Problem> reviewUnit(Unit u, int type) {
+  public List<Problem> reviewUnit(Unit u, Severity severity) {
 		if((u == null) || u.ordersAreNull()) {
 			return Collections.emptyList();
 		}
 
-		if(type != Problem.WARNING) {
+		if(severity != Severity.WARNING) {
 			return Collections.emptyList();
 		}
 
@@ -59,24 +63,23 @@ public class ToDoInspector extends AbstractInspector {
 		int line = 0;
 
 		for(Iterator iter = u.getOrders().iterator(); iter.hasNext();) {
-			line++;
-
+      line++;
 			String order = ((String) iter.next()).trim();
 
 			if(order.startsWith("//")) {
 				order = order.substring(2).trim();
 
 				if(order.toLowerCase().startsWith("todo")) {
-					problems.add(new CriticizedInformation(u, u, this, order, line));
+					problems.add(new AbstractProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
 				}
-			} else {
+			} else 
 				if(order.startsWith(";")) {
 					order = order.substring(1).trim();
 
 					if(order.toLowerCase().startsWith("todo")) {
-						problems.add(new CriticizedInformation(u, u, this, order, line));
+	          problems.add(new AbstractProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
 					}
-				}
+				
 			}
 		}
 
@@ -86,4 +89,9 @@ public class ToDoInspector extends AbstractInspector {
 			return problems;
 		}
 	}
+
+  public Collection<ProblemType> getTypes() {
+    return Collections.singletonList(TODOTYPE);
+  }
+
 }

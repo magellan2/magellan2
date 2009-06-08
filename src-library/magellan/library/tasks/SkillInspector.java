@@ -13,24 +13,27 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.library.tasks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.UnitRelation;
+import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Resources;
 
 public class SkillInspector extends AbstractInspector {
@@ -46,6 +49,18 @@ public class SkillInspector extends AbstractInspector {
     return SkillInspector.INSPECTOR;
   }
 
+
+  protected static final ProblemType SKILLDECREASE;
+  
+  static {
+    String message = Resources.get("tasks.skillinspector.skilldecrease.message");
+    String typeName = Resources.get("tasks.skillinspector.skilldecrease.name", false);
+    if (typeName == null)
+      typeName = message;
+    String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
+    SKILLDECREASE = new ProblemType(typeName, description, message, getInstance());
+  }
+  
   protected SkillInspector() {
   }
 
@@ -53,37 +68,41 @@ public class SkillInspector extends AbstractInspector {
    * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
    */
   @Override
-  public List<Problem> reviewUnit(Unit u, int type) {
-    if(type != Problem.WARNING) {
+  public List<Problem> reviewUnit(Unit u, Severity severity) {
+    if (severity != Severity.WARNING) {
       return Collections.emptyList();
     }
 
     // check all person transfer relations
     List<Problem> problems = new ArrayList<Problem>(2);
     int maxDecrease = 0;
-    for (UnitRelation rel : u.getRelations(PersonTransferRelation.class)){
-      if (rel instanceof PersonTransferRelation){
+    for (UnitRelation rel : u.getRelations(PersonTransferRelation.class)) {
+      if (rel instanceof PersonTransferRelation) {
         PersonTransferRelation relation = (PersonTransferRelation) rel;
         Unit u1 = relation.source;
         Unit u2 = relation.target;
-        if (u1!=u)
+        if (u1 != u)
           break;
         // FIXME when passing persons to an empty unit, no warning is necessary
         // except when multiple units pass persons to the empty unit
-        for (Skill skill : u1.getModifiedSkills()){
-          Skill skill1 = u1.getSkill(skill.getSkillType()); 
+        List<Skill> skills = new LinkedList<Skill>(u1.getModifiedSkills());
+        skills.addAll(u2.getModifiedSkills());
+        for (Skill skill : skills) {
+          Skill skill1 = u1.getSkill(skill.getSkillType());
           Skill skill2 = u2.getSkill(skill.getSkillType());
-          // if a skill of the source unit is higher than the target unit, issue a warning at the source
-          if (skill1!=null){
-            if (skill2 ==null ||              skill1.getLevel() > skill2.getLevel()){
-              problems.add(new CriticizedWarning(u, u1, this, Resources.get("tasks.skillinspector.warning.skilldecrease", maxDecrease)));
+          // if a skill of the source unit is higher than the target unit, issue a warning at the
+          // source
+          if (skill1 != null) {
+            if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
+              problems.add(new AbstractProblem(Severity.WARNING, SKILLDECREASE, u, relation.line));
               break;
             }
           }
-          // if a skill of the target unit is higher than the source unit, issue a warning at the target
-          if (skill2!=null){
-            if (skill1 ==null ||              skill2.getLevel() > skill1.getLevel()){
-              problems.add(new CriticizedWarning(u, u2, this, Resources.get("tasks.skillinspector.warning.skilldecrease", maxDecrease)));
+          // if a skill of the target unit is higher than the source unit, issue a warning at the
+          // target
+          if (skill2 != null) {
+            if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
+              problems.add(new AbstractProblem(Severity.WARNING, SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(), relation.line));
               break;
             }
           }
@@ -91,12 +110,14 @@ public class SkillInspector extends AbstractInspector {
       }
     }
 
-    if(problems.isEmpty()) {
+    if (problems.isEmpty()) {
       return Collections.emptyList();
     } else {
       return problems;
     }
   }
 
-
+  public Collection<ProblemType> getTypes() {
+    return Collections.singletonList(SKILLDECREASE);
+  }
 }

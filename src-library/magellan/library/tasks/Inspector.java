@@ -13,15 +13,20 @@
 
 package magellan.library.tasks;
 
+import java.util.Collection;
 import java.util.List;
 
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.tasks.Problem.Severity;
 
 /**
  * An Inspector reviews the given resource and returns a list of problems
  */
 public interface Inspector {
+
+  /** All lines suppressing problems must start with this prefix. */
+  public static final String SUPPRESS_PREFIX = "; @suppressProblem";
 
   /**
    * Reviews a unit and returns a list of <tt>Problem</tt> objects associated
@@ -35,10 +40,10 @@ public interface Inspector {
    * 
    * @param u
    *          The unit to review
-   * @param type
-   *          The type of problems to filter, e.g. Problem.INFO
+   * @param severity
+   *          The type of problems to filter, e.g. Severity.INFORMATION
    */
-  public List<Problem> reviewUnit(Unit u, int type);
+  public List<Problem> reviewUnit(Unit u, Severity severity);
 
   /**
    * Reviews a region and returns a list of <code>Problem</code> objects
@@ -50,7 +55,7 @@ public interface Inspector {
    * Reviews a region and returns the list of <tt>Problem</tt> objects which
    * are of the given type.
    */
-  public List<Problem> reviewRegion(Region r, int type);
+  public List<Problem> reviewRegion(Region r, Severity severity);
 
   /**
    * Modifies the orders such that this problem is not listed by the inspector
@@ -69,5 +74,11 @@ public interface Inspector {
    */
   public void unSuppress(Unit u);
 
+
+  /**
+   * Returns all ProblemTypes this Inspector may return.
+   * 
+   */
+  public Collection<ProblemType> getTypes();
 
 }

@@ -8,7 +8,7 @@
 package magellan.library.tasks;
 
 import magellan.library.Faction;
-import magellan.library.HasRegion;
+import magellan.library.Region;
 import magellan.library.Unit;
 
 /**
@@ -17,19 +17,20 @@ import magellan.library.Unit;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public interface Problem {
-  /**
-   * A problem with this type has informational character. There is not necessarily something wrong.
-   */
-  public static final int INFORMATION = 0;
+public interface Problem {  
+  
+  enum Severity { INFORMATION, WARNING, ERROR }
 
   /**
-   * A problem of this type indicates that something might be wrong depending on context.
+   * Returns the severity of the problem. Current supported types are INFORMATION, WARNING, and ERROR.
    */
-  public static final int WARNING = 1;
+  public Severity getSeverity();
 
-  /** A problem of this type indicates some kind of error. */
-  public static final int ERROR = 2;
+  /**
+   * Returns the type of the problem.
+   * 
+   */
+  public ProblemType getType();
 
   /**
    * Returns the inspector that created this problem.
@@ -37,12 +38,7 @@ public interface Problem {
   public Inspector getInspector();
 
   /**
-   * Returns the type of the problem. Current supported types are INFORMATION, WARNING, and ERROR.
-   */
-  public int getType();
-
-  /**
-   * Returns the line in the orders of the unit that caused the problem.
+   * Returns the line in the orders of the unit that caused the problem. The first order is line 1!
    * 
    * @return The line that is the cause of the order or -1 if no single line can be made responsible
    */
@@ -51,18 +47,7 @@ public interface Problem {
   /**
    * Returns the object this problem criticizes.
    */
-  public HasRegion getObject();
-
-  /**
-   * Returns the originating object, i.e., the object that was checked when this problem was
-   * created.
-   */
-  public Object getSource();
-
-  /**
-   * Returns the message of the problem.
-   */
-  public String toString();
+  public Object getObject();
 
   /**
    * Returns the faction this problem belongs to.
@@ -70,6 +55,28 @@ public interface Problem {
    * @return The faction this problem belongs to or <code>null</code> if not applicable
    */
   public Faction getFaction();
+
+  
+  /**
+   * Returns the value of region.
+   * 
+   * @return Returns region.
+   */
+  public Region getRegion();
+
+  /**
+   * Returns a unit responsible for this problem. 
+   * 
+   * @return Returns owner.
+   */
+  public Unit getOwner();
+
+  /**
+   * Returns a message for the user.
+   * 
+   * @return Returns message.
+   */
+  public String getMessage();
 
   /**
    * Modifies the orders such that this problem is not listed by the inspector in the future, i.e.

@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.swing.tasks;
@@ -35,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JCheckBoxMenuItem;
@@ -112,11 +107,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private List<Inspector> inspectors;
 
   /**
-   * Not easy to detect if this panel is shown / visible switched OFF: if
-   * refreshProblems is detecting, that the JMenu entry in
-   * MagellanDeskTop.desktopMenu is not selected switched ON: if paint(Graphics
-   * g) is detected and isShown=false in that case refreshProblems is called
-   * too. adjusted by Events from DockingWindowFramework
+   * Not easy to detect if this panel is shown / visible switched OFF: if refreshProblems is
+   * detecting, that the JMenu entry in MagellanDeskTop.desktopMenu is not selected switched ON: if
+   * paint(Graphics g) is detected and isShown=false in that case refreshProblems is called too.
+   * adjusted by Events from DockingWindowFramework
    */
   private boolean shown = true;
 
@@ -135,6 +129,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private Vector<String> headerTitles;
 
   private magellan.client.swing.tasks.TaskTablePanel.UpdateEventDispatcher updateDispatcher;
+
+  private Set<Object> activeProblems;
 
   /**
    * Creates a new TaskTablePanel object.
@@ -166,7 +162,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     sorter.setTableHeader(table.getTableHeader()); // NEW
 
     // HACK: narrower columns for problem type and line numbers
-    table.getColumn(table.getColumnName(TaskTableModel.IMAGE_POS)).setPreferredWidth(10);
+    table.getColumn(table.getColumnName(TaskTableModel.TYPE_POS)).setPreferredWidth(10);
     table.getColumn(table.getColumnName(TaskTableModel.LINE_POS)).setPreferredWidth(10);
 
     // allow reordering of headers
@@ -463,12 +459,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     private boolean add;
 
     /**
-     * @param r
-     *          This update concerns a region
-     * @param add
-     *          <code>true</code> if this region is added to the watched set,
-     *          <code>false</code> if the corresponding problems should be
-     *          removed.
+     * @param r This update concerns a region
+     * @param add <code>true</code> if this region is added to the watched set, <code>false</code>
+     *          if the corresponding problems should be removed.
      */
     public UpdateEvent(Region r, boolean add) {
       this.region = r;
@@ -476,10 +469,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * @param u
-     *          This update concerns this unit
-     * @param add
-     *          <code>true</code> if this unit is added to the watched set.
+     * @param u This update concerns this unit
+     * @param add <code>true</code> if this unit is added to the watched set.
      */
     public UpdateEvent(Unit u, boolean add) {
       this.unit = u;
@@ -524,8 +515,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * Returns either the region or the unit for this event whichever is non-
-     * <code>null</code>
+     * Returns either the region or the unit for this event whichever is non- <code>null</code>
      * 
      * @return Return the object.
      */
@@ -554,8 +544,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     private boolean clear = false;
 
     /**
-     * Take an object out of the queue. Returns the first event that was not
-     * inserted again later in the queue.
+     * Take an object out of the queue. Returns the first event that was not inserted again later in
+     * the queue.
      */
     public synchronized UpdateEvent poll() {
       UpdateEvent event = events.remove(0);
@@ -651,8 +641,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   /**
-   * This class registers and handles events in a separate thread. Events are
-   * first enqueued here and than handled one by one in the refreshThread.
+   * This class registers and handles events in a separate thread. Events are first enqueued here
+   * and than handled one by one in the refreshThread.
    * 
    * @author stm
    * @version 1.0, Aug 23, 2008
@@ -679,8 +669,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * Return <code>true</code> if there are events in the queue. This is not
-     * really thread safe so don't rely too much on it!
+     * Return <code>true</code> if there are events in the queue. This is not really thread safe so
+     * don't rely too much on it!
      * 
      * @return <code>true</code> if there are events in the queue.
      */
@@ -799,8 +789,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * Enqueue an event for adding events corresponding to unit. Currently this
-     * is pretty much equivalent to calling addRegion(u.getRegion()).
+     * Enqueue an event for adding events corresponding to unit. Currently this is pretty much
+     * equivalent to calling addRegion(u.getRegion()).
      * 
      * @param u
      */
@@ -817,8 +807,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * Enqueue an event for removing all events corresponding to unit. Currently
-     * this is pretty much equivalent to calling removeRegion(u.getRegion()).
+     * Enqueue an event for removing all events corresponding to unit. Currently this is pretty much
+     * equivalent to calling removeRegion(u.getRegion()).
      * 
      * @param u
      */
@@ -866,8 +856,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
   }
 
-  private List<Inspector> getInspectors() {
-    return inspectors;
+  public List<Inspector> getInspectors() {
+    return Collections.unmodifiableList(inspectors);
   }
 
   /**
@@ -1101,13 +1091,20 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         final List<Problem> problems = c.reviewRegion(r);
         // add problems in the AWT event dispatching thread to avoid
         // synchronization issues!
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            model.addProblems(problems);
-          }
-        });
+        if (!problems.isEmpty())
+          SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+              addProblems(problems);
+            }
+          });
       }
     }
+  }
+
+  protected void addProblems(List<Problem> problems) {
+    for (Problem p : problems)
+      if (checkActive(p))
+        model.addProblem(p);
   }
 
   /**
@@ -1125,7 +1122,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         // synchronization issues!
         SwingUtilities.invokeLater(new Runnable() {
           public void run() {
-            model.addProblems(problems);
+            addProblems(problems);
           }
         });
       }
@@ -1133,8 +1130,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   /**
-   * checks, if the specified unit is valid according to the settings
-   * restrictToOwner and restrictToPassword
+   * checks, if the specified unit is valid according to the settings restrictToOwner and
+   * restrictToPassword
    * 
    * @param u
    * @return
@@ -1157,6 +1154,21 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     return true;
   }
+
+  /**
+   * Specifies which problems to use. Only problems whose <code>ProblemType.getName()</code> matches
+   * one in result will be displayed.
+   * 
+   * @param result A list of name. If <code>null</code>, all problems will be displayed.
+   */
+  public void setActiveProblems(Set<Object> result) {
+    activeProblems = result;
+  }
+
+  private boolean checkActive(Problem p) {
+    return activeProblems==null || activeProblems.contains(p.getType().getName());
+  }
+
 
   public boolean restrictToOwner() {
     return PropertiesHelper
@@ -1199,12 +1211,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private Vector<String> getHeaderTitles() {
     if (headerTitles == null) {
       headerTitles = new Vector<String>(7);
-      headerTitles.add(Resources.get("tasks.tasktablepanel.header.type"));
       headerTitles.add(Resources.get("tasks.tasktablepanel.header.description"));
       headerTitles.add(Resources.get("tasks.tasktablepanel.header.object"));
       headerTitles.add(Resources.get("tasks.tasktablepanel.header.region"));
       headerTitles.add(Resources.get("tasks.tasktablepanel.header.faction"));
       headerTitles.add(Resources.get("tasks.tasktablepanel.header.line"));
+      headerTitles.add(Resources.get("tasks.tasktablepanel.header.type"));
     }
     return headerTitles;
   }
@@ -1240,8 +1252,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
 
     /**
-     * Adds a list of problems one by one. Should be called in the AWT event
-     * dispatch thread!
+     * Adds a list of problems one by one. Should be called in the AWT event dispatch thread!
      * 
      * @param p
      */
@@ -1251,39 +1262,38 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       }
     }
 
-    protected static final int IMAGE_POS = 0;
-    protected static final int PROBLEM_POS = 1;
-    protected static final int OBJECT_POS = 2;
-    protected static final int REGION_POS = 3;
-    protected static final int FACTION_POS = 4;
-    protected static final int LINE_POS = 5;
+    protected static final int PROBLEM_POS = 0;
+    protected static final int OBJECT_POS = 1;
+    protected static final int REGION_POS = 2;
+    protected static final int FACTION_POS = 3;
+    protected static final int LINE_POS = 4;
+    protected static final int TYPE_POS = 5;
     protected static final int NUMBEROF_POS = 6;
 
     /**
-     * Add a problem to this model. Should be called in the AWT event dispatch
-     * thread!
+     * Add a problem to this model. Should be called in the AWT event dispatch thread!
      * 
      * @param p
      */
     public void addProblem(final Problem p) {
-      HasRegion hasR = p.getObject();
       Faction faction = p.getFaction();
 
-      Object[] o = new Object[TaskTableModel.NUMBEROF_POS + 1];
+      Object[] newRow = new Object[TaskTableModel.NUMBEROF_POS + 1];
       int i = 0;
-      o[i++] = Resources.get("tasks.tasktablepanel.problemtype_" + Integer.toString(p.getType()));
-      o[i++] = p;
-      o[i++] = hasR;
-      o[i++] = hasR.getRegion();
-      o[i++] = faction == null ? "" : faction;
-      o[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
-      o[i++] = null;
-      addRow(o);
+      newRow[i++] = p;
+      newRow[i++] = p.getObject();
+      newRow[i++] = p.getRegion();
+      newRow[i++] = faction == null ? "" : faction;
+      newRow[i++] = (p.getLine() < 1) ? "" : Integer.toString(p.getLine());
+      newRow[i++] =
+        Resources.get("tasks.tasktablepanel.problemtype_" + p.getSeverity().toString());
+      newRow[i++] = null;
+      addRow(newRow);
     }
 
     /**
-     * Remove all problems of the given inspector <i>and</i> the given source.
-     * Should be called in the AWT event dispatch thread!
+     * Remove all problems of the given inspector <i>and</i> the given source. Should be called in
+     * the AWT event dispatch thread!
      * 
      * @param inspector
      * @param source
@@ -1300,16 +1310,23 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
         Problem p = (Problem) v.get(TaskTableModel.PROBLEM_POS);
 
         // Inspector and region: only non unit objects will be removed
-        if (p.getInspector().equals(inspector) && p.getSource().equals(source)) {
-          removeRow(i);
+        // FIXME (stm)
+        if (source instanceof Region && p.getRegion() != null) {
+          if (p.getInspector().equals(inspector) && p.getRegion().equals(source)) {
+            removeRow(i);
+          }
+        } else if (source instanceof Unit && p.getOwner() != null) {
+          if (p.getInspector().equals(inspector) && p.getOwner().equals(source)) {
+            removeRow(i);
+          }
         }
       }
     }
   }
 
   /**
-   * Should return all short cuts this class want to be informed. The elements
-   * should be of type javax.swing.KeyStroke
+   * Should return all short cuts this class want to be informed. The elements should be of type
+   * javax.swing.KeyStroke
    */
   public Iterator<KeyStroke> getShortCuts() {
     return shortcuts.iterator();
@@ -1372,8 +1389,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   /**
    * Sets the value of isShown.
    * 
-   * @param isShown
-   *          The value for isShown.
+   * @param isShown The value for isShown.
    */
   private void setShown(boolean isShown) {
     this.shown = isShown;

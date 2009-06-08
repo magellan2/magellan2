@@ -248,6 +248,10 @@ public class PropertiesHelper {
   /** Property type boolean: */
   public static final String TASKTABLE_INSPECTORS_TODO = "TaskTable.inspectors.todo";
 
+  /** Property type list of names */
+  public static final String TASKTABLE_INSPECTORS_LIST = "TaskTable.inspectors.list";
+
+  
   /** Property type boolean: edit orders for all factions */
   public static final String ORDEREDITOR_EDITALLFACTIONS = "OrderEditor.editAllFactions";
 

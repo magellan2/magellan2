@@ -28,20 +28,32 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tasks.TaskTablePanel;
 import magellan.library.GameData;
+import magellan.library.tasks.Inspector;
+import magellan.library.tasks.ProblemType;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 
@@ -79,6 +91,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   private JCheckBox chkSkill;
   private JCheckBox chkAttack;
   private JCheckBox chkOrderSyntax;
+  private JList inspectorsList;
+  private JList useList;
 
   /**
    * @param parent
@@ -120,30 +134,10 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     chkRestrictToSelection = new JCheckBox(Resources.get("tasks.prefs.restricttoselection"), true);
     panel.add(chkRestrictToSelection, c);
     
-    c.gridy++;
-    chkToDo = new JCheckBox(Resources.get("tasks.prefs.inspectors.todo"), true);
-    panel.add(chkToDo, c);
 
     c.gridy++;
-    chkMovement = new JCheckBox(Resources.get("tasks.prefs.inspectors.movement"), true);
-    panel.add(chkMovement, c);
-
-    c.gridy++;
-    chkShip = new JCheckBox(Resources.get("tasks.prefs.inspectors.ship"), true);
-    panel.add(chkShip, c);
-
-    c.gridy++;
-    chkSkill = new JCheckBox(Resources.get("tasks.prefs.inspectors.skill"), true);
-    panel.add(chkSkill, c);
-
-    c.gridy++;
-    chkAttack = new JCheckBox(Resources.get("tasks.prefs.inspectors.attack"), true);
-    panel.add(chkAttack, c);
-
-    c.gridy++;
-    chkOrderSyntax = new JCheckBox(Resources.get("tasks.prefs.inspectors.ordersyntax"), true);
-    panel.add(chkOrderSyntax, c);
-
+    panel.add(getInspectorPanel(), c);
+    
     c.gridx = 1;
     c.gridy = 0;
     c.fill = GridBagConstraints.NONE;
@@ -155,6 +149,100 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
     add(restrictPanel, BorderLayout.CENTER);
 
+  }
+
+  private JPanel getInspectorPanel() {
+    JPanel pnlSelection = new JPanel();
+    pnlSelection.setLayout(new GridBagLayout());
+
+    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
+    pnlSelection.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.selection")));
+
+    JPanel inspectorsPanel = new JPanel();
+    inspectorsPanel.setLayout(new BorderLayout(0, 0));
+    inspectorsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.available")));
+
+    DefaultListModel inspectorsListModel = new DefaultListModel();
+    for (Inspector i : taskPanel.getInspectors()){
+      for (ProblemType p : i.getTypes()){
+        inspectorsListModel.addElement(p);
+      }
+    }
+
+    inspectorsList = new JList(inspectorsListModel);
+
+    JScrollPane pane = new JScrollPane(inspectorsList);
+    inspectorsPanel.add(pane, BorderLayout.CENTER);
+
+    JPanel usePanel = new JPanel();
+    usePanel.setLayout(new GridBagLayout());
+    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.use")));
+
+    useList = new JList();
+    useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    pane = new JScrollPane(useList);
+    c.gridheight = 4;
+    usePanel.add(pane, c);
+
+    c.gridheight = 1;
+    c.gridx = 1;
+    c.weightx = 0;
+    usePanel.add(new JPanel(), c);
+
+    c.gridx = 0;
+    c.gridy = 0;
+    c.gridheight = 4;
+    c.weightx = 0.5;
+    c.weighty = 0.5;
+    pnlSelection.add(inspectorsPanel, c);
+
+    c.gridx = 2;
+    pnlSelection.add(usePanel, c);
+
+    c.gridx = 1;
+    c.gridheight = 1;
+    c.weightx = 0;
+    c.weighty = 1.0;
+    pnlSelection.add(new JPanel(), c);
+
+    c.gridy++;
+    c.weighty = 0;
+
+    JButton right = new JButton("  -->  ");
+    right.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Object selection[] = inspectorsList.getSelectedValues();
+        DefaultListModel model = (DefaultListModel) useList.getModel();
+
+        for (int i = 0; i < selection.length; i++) {
+          if (!model.contains(selection[i])) {
+            model.add(model.getSize(), selection[i]);
+          }
+        }
+      }
+    });
+    pnlSelection.add(right, c);
+
+    c.gridy++;
+
+    JButton left = new JButton("  <--  ");
+    left.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        DefaultListModel model = (DefaultListModel) useList.getModel();
+        Object selection[] = useList.getSelectedValues();
+
+        for (int i = 0; i < selection.length; i++) {
+          model.removeElement(selection[i]);
+        }
+      }
+    });
+    pnlSelection.add(left, c);
+
+    c.gridy++;
+    c.weighty = 1;
+    pnlSelection.add(new JPanel(), c);
+    
+    return pnlSelection;
   }
 
   /**
@@ -172,37 +260,54 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     
     chkRestrictToSelection.setSelected(taskPanel.restrictToSelection());
 
-    /* use attack inspector */
-    chkAttack.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, true));
-    /* use movement inspector */
-    chkMovement.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true));
-    /* use order syntax inspector */
-    chkOrderSyntax.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, true));
-    /* use ship inspector */
-    chkShip.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true));
-    /* use skill inspector */
-    chkSkill.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true));
-    /* use to do inspector */
-    chkToDo.setSelected(PropertiesHelper.getBoolean(settings,
-        PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true));
 
+    String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
+    if (criteria == null){
+      StringBuffer sb = new StringBuffer();
+      for (Inspector i : taskPanel.getInspectors()){
+        for (ProblemType p : i.getTypes()){
+          if (sb.length()>0)
+            sb.append(" ");
+          sb.append(p);
+        }
+      }
+      criteria = sb.toString();
+    }
+    
+    DefaultListModel model2 = new DefaultListModel();
+
+    for (StringTokenizer tokenizer = new StringTokenizer(criteria); tokenizer.hasMoreTokens();) {
+      String s = tokenizer.nextToken();
+      try {
+        try {
+          model2.add(model2.size(), s);
+        } catch (ArrayIndexOutOfBoundsException e) {
+          model2.add(model2.size(), "unknown");
+        }
+      } catch (NumberFormatException e) {
+      }
+    }
+    useList.setModel(model2);
   }
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, "" + chkAttack.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, "" + chkMovement.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX, "" + chkOrderSyntax.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, "" + chkShip.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, "" + chkSkill.isSelected());
-    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_TODO, "" + chkToDo.isSelected());
+    DefaultListModel useListModel = (DefaultListModel) useList.getModel();
+    StringBuffer definition = new StringBuffer("");
+
+    Set<Object> result = new HashSet<Object>();
+    for (int i = 0; i < useListModel.getSize(); i++) {
+      Object s = useListModel.getElementAt(i);
+      result.add(useListModel.getElementAt(i));
+      if (definition.length()>0)
+        definition.append(" ");
+      definition.append(s);
+    }
+    taskPanel.setActiveProblems(result);
+
+    settings.setProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST, definition.toString());
 
     taskPanel.setRestrictToOwner(chkOwnerParty.isSelected());
     taskPanel.setRestrictToPassword(chkPasswordParties.isSelected());

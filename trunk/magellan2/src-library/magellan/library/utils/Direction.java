@@ -134,16 +134,16 @@ public class Direction {
 		switch(dir) {
 		case DIR_NW:
 			x = -1;
+			y = 1;
 			break;
 		case DIR_NE:
-		  x = -1;
 			y = 1;
 			break;
 		case DIR_SE:
 			y = -1;
+			x = 1;
 			break;
 		case DIR_E:
-      y = -1;
 			x = 1;
 			break;
 		case DIR_SW:

@@ -189,9 +189,9 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setOrders(Collection<String> newOrders, boolean refreshRelations);
 
   /**
-   * Delivers a readonly collection of alle orders of this unit.
+   * Delivers a read-only collection of all orders of this unit.
    */
-  public Collection<String> getOrders();
+  public List<String> getOrders();
 
   /**
    * Sets the group this unit belongs to.

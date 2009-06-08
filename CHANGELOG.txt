@@ -1,4 +1,9 @@
-2009-06-05 / Build 299 - stm (stm_@users.sourceforge.net)
+2009-06-05 / Build 298 - stm (stm_@users.sourceforge.net)
+    * overhaul of TaskTablePanel etc.
+    * removed a bunch of compiler warnings
+    * added a few icons
+
+2009-06-05 / Build 296 - stm (stm_@users.sourceforge.net)
     * Removed many warnings, mostly concerning Java generics
     * Most notably SelectionEvent/SelectionListener interface and OrdererdHashtable were slightly changed
     * added class CollectionFilters, especially useful for filtering selections

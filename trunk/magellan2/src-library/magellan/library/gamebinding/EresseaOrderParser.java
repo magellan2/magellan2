@@ -84,6 +84,7 @@ public class EresseaOrderParser implements OrderParser {
     tokenBucket = new TokenBucket();
     setCompleter(cc);
     this.data = data;
+    commandTrie = new RadixTreeImpl<OrderHandler>();
     initCommands();
   }
 

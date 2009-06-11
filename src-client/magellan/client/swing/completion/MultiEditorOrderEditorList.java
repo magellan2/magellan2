@@ -128,6 +128,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   private Island transitionalIsland = null;
   private Faction transitionalFaction = null;
 
+  private Color errorBgColor = null;
+
   private Color standardBgColor = null;
   private Color activeBgColor = null;
   private Color standardBgColorConfirmed = null;
@@ -288,6 +290,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     standardBgColorConfirmed =
         Colors.decode(settings.getProperty("OrderEditor.standardBackgroundColorConfirmed",
             "255,204,0"));
+    errorBgColor =
+      Colors.decode(settings.getProperty("OrderEditor.errorBgColor",
+          "255,128,0"));
   }
 
   private boolean swingGlitch = false;
@@ -807,6 +812,18 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       editorSingelton.setTokenColor(styleName, color);
     }
   }
+
+  public Color getErrorBackground() {
+    return errorBgColor;
+  }
+
+  public void setErrorBackground(Color c) {
+    if ((errorBgColor != c) && (c != null)) {
+      errorBgColor = c;
+      settings.setProperty("OrderEditor.errorBgColor", Colors.encode(c));
+    }
+  }
+
 
   /**
    * DOCUMENT-ME

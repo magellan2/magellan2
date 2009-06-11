@@ -31,7 +31,7 @@ public class ToDoInspector extends AbstractInspector {
 	/** The singleton instance. */
 	public static final ToDoInspector INSPECTOR = new ToDoInspector();
 
-	private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, getInstance());
+	private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, null, getInstance());
 
 	/**
 	 * Returns a (singleton) instance.
@@ -70,14 +70,14 @@ public class ToDoInspector extends AbstractInspector {
 				order = order.substring(2).trim();
 
 				if(order.toLowerCase().startsWith("todo")) {
-					problems.add(new AbstractProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
+					problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
 				}
 			} else 
 				if(order.startsWith(";")) {
 					order = order.substring(1).trim();
 
 					if(order.toLowerCase().startsWith("todo")) {
-	          problems.add(new AbstractProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
+	          problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
 					}
 				
 			}

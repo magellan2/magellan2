@@ -57,7 +57,8 @@ public class AttackInspector extends AbstractInspector {
       if (typeName == null)
         typeName = message;
       String description = Resources.get("tasks.attackinspector." + name + ".description", false);
-      type = new ProblemType(typeName, description, message, getInstance());
+      String group = Resources.get("tasks.attackinspector."+name+".group", false); 
+      type = new ProblemType(typeName, group, description, message, getInstance());
     }
 
     ProblemType getType() {
@@ -108,7 +109,7 @@ public class AttackInspector extends AbstractInspector {
           if (relation.source.getFaction().getAllies() != null
               && relation.source.getFaction().getAllies().containsKey(
                   relation.target.getFaction().getID())) {
-            problems.add(new AbstractProblem(severity, AttackProblemTypes.FRIENDLYFIRE.getType(),
+            problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE.getType(),
                 u, relation.line));
           }
         }
@@ -136,13 +137,13 @@ public class AttackInspector extends AbstractInspector {
     }
     if (severity == Severity.ERROR) {
       if (wrongStatus != Integer.MAX_VALUE) {
-        problems.add(new AbstractProblem(severity, AttackProblemTypes.NOTFIGHTING.getType(), u,
+        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING.getType(), u,
             wrongStatus));
       }
 
       // guard and not fighting (fleeing)?
       if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == 5) {
-        problems.add(new AbstractProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD.getType(),
+        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD.getType(),
             u));
       }
 

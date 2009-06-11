@@ -23,7 +23,6 @@
 // 
 package magellan.client.preferences;
 
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -36,10 +35,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -78,13 +75,17 @@ import magellan.library.utils.logging.Logger;
 
 public class IconStyleSetPreferences extends JPanel implements ActionListener,
     TreeSelectionListener, PreferencesAdapter {
-  protected JPanel content;
-  protected CardLayout contentLayout;
-  protected Map<String, Component> subPanels;
+
+  /** For each styleset a mapping of the name to a copy of the styleset (used in the styleSetPanel) */
+  protected Map<String, GraphicsStyleset> stylesetCopies;
+  /** For each styleset a mapping of the name to the original styleset (used for actual changes) */
+  protected Map<String, GraphicsStyleset> stylesetOriginals;
+
   protected Map<String, TreeNode> nodeMap;
   protected JTree stylesets;
   protected AbstractButton removeButton;
   protected DefaultTreeModel treeModel;
+  private StylesetPanel styleSetPanel;
 
   /**
    * Creates a new Stylesets object.
@@ -96,6 +97,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     // left: "add" & "remove" buttons + styleset combobox
     JPanel p = new JPanel(new FlowLayout(FlowLayout.LEADING));
 
+    // the tree of stylesets
     treeModel = new DefaultTreeModel(new DefaultMutableTreeNode());
     stylesets = new JTree(treeModel);
     stylesets.setRootVisible(false);
@@ -120,9 +122,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     p2.add(new JSeparator());
 
     // center content
-    content = new JPanel(contentLayout = new CardLayout());
-
-    subPanels = new HashMap<String, Component>();
+    stylesetCopies = new HashMap<String, GraphicsStyleset>();
+    stylesetOriginals = new HashMap<String, GraphicsStyleset>();
 
     for (int i = 0; i < 3; i++) {
       String key = null;
@@ -144,10 +145,12 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         break;
       }
 
-      Component c = new StylesetPanel(CellRenderer.getTypeset(i));
-      content.add(c, key);
-      subPanels.put(key, c);
+      stylesetCopies.put(key, CellRenderer.getTypeset(i).clone());
+      stylesetOriginals.put(key, CellRenderer.getTypeset(i));
     }
+
+    // this is re-initialized every time a new styleset is selected in the tree
+    styleSetPanel = new StylesetPanel(CellRenderer.getTypeset(0));
 
     GridBagConstraints gbc =
         new GridBagConstraints(0, 0, 2, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
@@ -161,12 +164,12 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
     gbc.gridx++;
     gbc.weightx = 1;
-    this.add(content, gbc);
+    this.add(styleSetPanel, gbc);
 
   }
 
   /**
-   * DOCUMENT-ME
+   * Re-builds the tree from {@link CellRenderer#getStylesets()} and re-fills the styleset mappings.
    */
   public void updatePreferences() {
     DefaultMutableTreeNode newRoot = new DefaultMutableTreeNode();
@@ -190,23 +193,19 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     newRoot.add(node);
     nodeMap.put("MAIN", node);
 
-    Map<String, GraphicsStyleset> map = CellRenderer.getStylesets();
-    List<String> list = null;
+    List<String> stylesetNames = null;
 
-    if (map != null) {
-      list = new LinkedList<String>(map.keySet());
-      list.remove("DEFAULT");
-      list.remove("MAIN");
-      list.remove("SIMPLE");
-      list.remove("ADDITIONAL");
+    if (CellRenderer.getStylesets() != null) {
+      stylesetNames = new LinkedList<String>(CellRenderer.getStylesets().keySet());
+      stylesetNames.remove("DEFAULT");
+      stylesetNames.remove("MAIN");
+      stylesetNames.remove("SIMPLE");
+      stylesetNames.remove("ADDITIONAL");
 
-      if (list.size() > 0) {
-        Collections.sort(list);
+      if (stylesetNames.size() > 0) {
+        Collections.sort(stylesetNames);
 
-        Iterator it = list.iterator();
-
-        while (it.hasNext()) {
-          String s = (String) it.next();
+        for (String s : stylesetNames) {
 
           node = new DefaultMutableTreeNode(new TreeObject(s));
           nodeMap.put(s, node);
@@ -229,10 +228,11 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
     treeModel.setRoot(newRoot);
 
-    content.removeAll();
-
-    Collection<String> old = new LinkedList<String>(subPanels.keySet());
-
+    Map<String, GraphicsStyleset> oldCopies = new HashMap<String, GraphicsStyleset>(stylesetCopies);
+    Map<String, GraphicsStyleset> oldOriginals = new HashMap<String, GraphicsStyleset>(stylesetOriginals);
+    stylesetCopies.clear();
+    stylesetOriginals.clear();
+    
     for (int i = 0; i < 3; i++) {
       String key = null;
 
@@ -253,35 +253,21 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
         break;
       }
 
-      Component c = subPanels.get(key);
-      content.add(c, key);
-      old.remove(key);
+      stylesetCopies.put(key, oldCopies.get(key));
+      stylesetOriginals.put(key, oldOriginals.get(key));
     }
 
-    if ((list != null) && (list.size() > 0)) {
-      Iterator it = list.iterator();
+    if ((stylesetNames != null) && (stylesetNames.size() > 0)) {
+      for (String name : stylesetNames){
 
-      while (it.hasNext()) {
-        Component c = null;
-        String name = (String) it.next();
-
-        if (subPanels.containsKey(name)) {
-          c = subPanels.get(name);
-          old.remove(name);
+        if (oldCopies.containsKey(name)){
+          stylesetOriginals.put(name, oldOriginals.get(name));
+          stylesetCopies.put(name, oldCopies.get(name));
         } else {
-          c = new StylesetPanel(CellRenderer.getStylesets().get(name));
-          subPanels.put(name, c);
+          stylesetCopies.put(name, CellRenderer.getStylesets().get(name).clone());
+          stylesetOriginals.put(name, CellRenderer.getStylesets().get(name));
         }
-
-        content.add(c, name);
-      }
-    }
-
-    if (old.size() > 0) {
-      Iterator it = old.iterator();
-
-      while (it.hasNext()) {
-        subPanels.remove(it.next());
+          
       }
     }
 
@@ -344,9 +330,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       return;
     }
 
-    if (subPanels.containsKey(name)) {
+    if (stylesetCopies.containsKey(name))
       return;
-    }
 
     if (!stylesets.isSelectionEmpty()) {
       TreeObject obj = (TreeObject) ((DefaultMutableTreeNode) stylesets.getSelectionPath()
@@ -356,7 +341,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
 
     GraphicsStyleset set = new GraphicsStyleset(name);
     CellRenderer.addStyleset(set);
-    content.add(new StylesetPanel(set), name);
+    stylesetCopies.put(name, set.clone());
+    stylesetOriginals.put(name, set);
 
     DefaultMutableTreeNode node = new DefaultMutableTreeNode(new TreeObject(name));
     MutableTreeNode root = (MutableTreeNode) treeModel.getRoot();
@@ -387,11 +373,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) stylesets.getSelectionPath()
                                       .getLastPathComponent();
       TreeObject obj = (TreeObject) node.getUserObject();
-      Component c = subPanels.get(obj.name);
-
-      if (c != null) {
-        content.remove(c);
-      }
+      
+      stylesetCopies.remove(obj.name);
+      stylesetOriginals.remove(obj.name);
 
       CellRenderer.removeStyleset(obj.name);
       treeModel.removeNodeFromParent(node);
@@ -399,6 +383,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
   }
 
   /**
+   * Updates stylePanel and buttons after a new styleset has been selected in the tree.
+   * 
    * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   public void valueChanged(TreeSelectionEvent e) {
@@ -409,7 +395,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
                                    .getLastPathComponent()).getUserObject();
 
       if (obj != null) {
-        contentLayout.show(content, obj.name);
+        apply(obj.name);
 
         boolean removeEnabled = true;
 
@@ -423,6 +409,10 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     }
   }
 
+  private void apply(String name) {
+    styleSetPanel.show(stylesetCopies.get(name));
+  }
+
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
@@ -434,16 +424,16 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    Component comp[] = content.getComponents();
 
-    if (comp != null) {
-      for (int i = 0; i < comp.length; i++) {
-        if (comp[i] instanceof StylesetPanel) {
-          ((StylesetPanel) comp[i]).apply();
-        }
-      }
+    GraphicsStyleset shownSet = styleSetPanel.set;
+    styleSetPanel.setVisible(false);
+    for (String name : stylesetCopies.keySet()){
+      styleSetPanel.show(stylesetCopies.get(name));
+      styleSetPanel.apply(stylesetOriginals.get(name));
     }
-
+    styleSetPanel.setVisible(true);
+    styleSetPanel.show(shownSet);
+    
     CellRenderer.saveStylesets();
   }
 
@@ -543,7 +533,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       }
 
       /**
-       * DOCUMENT-ME
+       * Applies the properties getVerticalPos(), getHorizontalPos() to this panel.
        */
       public void setStyleset(GraphicsStyleset set) {
         int j = 0;
@@ -597,9 +587,9 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       }
 
       /**
-       * DOCUMENT-ME
+       * Applies the settings of this panel to <code>resultSet</code>.
        */
-      public void apply(GraphicsStyleset set) {
+      public void apply(GraphicsStyleset resultSet) {
         // work-around for corner-bug
         int i = vertic;
 
@@ -612,8 +602,8 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           }
         }
 
-        set.setHorizontalPos(horiz);
-        set.setVerticalPos(i);
+        resultSet.setHorizontalPos(horiz);
+        resultSet.setVerticalPos(i);
       }
     }
 
@@ -683,7 +673,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
       }
 
       /**
-       * DOCUMENT-ME
+       * Applies the font properties of <code>set</code> to this panel.
        */
       public void setStyleset(GraphicsStyleset set) {
         if (set.getFont() != null) {
@@ -692,11 +682,13 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           styles[0].setSelected(f.isBold());
           styles[1].setSelected(f.isItalic());
           size.setSelectedItem(String.valueOf(f.getSize()));
+        } else {
+          // we could set everything back to default here but maybe the user doesn't want this.
         }
       }
 
       /**
-       * DOCUMENT-ME
+       * Returns a new Font according to the settings of this panel.
        */
       public Font getSelectedFont() {
         int style = 0;
@@ -722,6 +714,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     protected class ColorPanel extends JPanel implements ActionListener {
       protected JCheckBox boxes[];
       protected JButton buttons[];
+      private Color neutralColor;
 
       /**
        * Creates a new ColorPanel object.
@@ -747,10 +740,11 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           buttons[i].addActionListener(this);
           buttons[i].setFocusPainted(false);
         }
+        neutralColor = buttons[0].getBackground();
       }
 
       /**
-       * DOCUMENT-ME
+       * Applies the foreground and background properties of <code>set</code> to this panel.
        */
       public void setStyleset(GraphicsStyleset set) {
         if (set.getForeground() != null) {
@@ -758,6 +752,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           buttons[0].setBackground(set.getForeground());
         } else {
           boxes[0].setSelected(false);
+          buttons[0].setBackground(neutralColor);
         }
 
         if (set.getBackground() != null) {
@@ -765,6 +760,7 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           buttons[1].setBackground(set.getBackground());
         } else {
           boxes[1].setSelected(false);
+          buttons[1].setBackground(neutralColor);
         }
 
         if (set.getSelectedForeground() != null) {
@@ -772,42 +768,44 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
           buttons[2].setBackground(set.getSelectedForeground());
         } else {
           boxes[2].setSelected(false);
+          buttons[2].setBackground(neutralColor);
         }
 
         if (set.getSelectedBackground() != null) {
-          boxes[2].setSelected(true);
-          buttons[2].setBackground(set.getSelectedBackground());
+          boxes[3].setSelected(true);
+          buttons[3].setBackground(set.getSelectedBackground());
         } else {
-          boxes[2].setSelected(false);
+          boxes[3].setSelected(false);
+          buttons[3].setBackground(neutralColor);
         }
       }
 
       /**
-       * DOCUMENT-ME
+       * Applies the settings of this panel to <code>resultSet</code>.
        */
-      public void apply(GraphicsStyleset set) {
+      public void apply(GraphicsStyleset resultSet) {
         if (boxes[0].isSelected()) {
-          set.setForeground(buttons[0].getBackground());
+          resultSet.setForeground(buttons[0].getBackground());
         } else {
-          set.setForeground(null);
+          resultSet.setForeground(null);
         }
 
         if (boxes[1].isSelected()) {
-          set.setBackground(buttons[1].getBackground());
+          resultSet.setBackground(buttons[1].getBackground());
         } else {
-          set.setBackground(null);
+          resultSet.setBackground(null);
         }
 
         if (boxes[2].isSelected()) {
-          set.setSelectedForeground(buttons[2].getBackground());
+          resultSet.setSelectedForeground(buttons[2].getBackground());
         } else {
-          set.setSelectedForeground(null);
+          resultSet.setSelectedForeground(null);
         }
 
         if (boxes[3].isSelected()) {
-          set.setSelectedBackground(buttons[3].getBackground());
+          resultSet.setSelectedBackground(buttons[3].getBackground());
         } else {
-          set.setSelectedBackground(null);
+          resultSet.setSelectedBackground(null);
         }
       }
 
@@ -888,17 +886,43 @@ public class IconStyleSetPreferences extends JPanel implements ActionListener,
     }
 
     /**
-     * DOCUMENT-ME
+     * Sets <code>this.set</code> and updates panel.
+     * 
+     * @param newSet
+     */
+    public void show(GraphicsStyleset newSet) {
+      apply(this.set);
+      this.set=newSet;
+
+      fontEnabled.setSelected(newSet.getFont()!=null);
+
+      font.setStyleset(newSet);
+
+      direction.setStyleset(newSet);
+
+      colors.setStyleset(newSet);
+    }
+
+    /**
+     * Applies the settings of the panel to <code>this.set</code>.
      */
     public void apply() {
+      apply(this.set);
+
+    }
+    
+    /**
+     * Applies the settings of the panel to <code>resultSet</code>.
+     */
+    public void apply(GraphicsStyleset resultSet) {
       if (fontEnabled.isSelected()) {
-        this.set.setFont(font.getSelectedFont());
+        resultSet.setFont(font.getSelectedFont());
       } else {
-        this.set.setFont(null);
+        resultSet.setFont(null);
       }
 
-      direction.apply(this.set);
-      colors.apply(this.set);
+      direction.apply(resultSet);
+      colors.apply(resultSet);
     }
   }
 

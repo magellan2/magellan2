@@ -275,6 +275,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_MAKE = "MAKE";
 
+  /** DOCUMENT-ME */
+  public static final String O_MALLORNSEED = "MALLORNSEED";
+
 	/** DOCUMENT-ME */
 	public static final String O_MEN = "MEN";
 
@@ -422,6 +425,9 @@ public class EresseaConstants {
 
 	/** DOCUMENT-ME */
 	public static final String O_TEMPLATE = "TEMPLATE";
+
+  /** DOCUMENT-ME */
+  public static final String O_TREES = "TREES";
 
 	/** DOCUMENT-ME */
 	public static final String O_UNIT = "UNIT";

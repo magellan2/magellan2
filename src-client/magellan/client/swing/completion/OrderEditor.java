@@ -79,24 +79,31 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/** DOCUMENT-ME */
 	public static final String S_REGULAR = "regular";
+  public static final String S_REGULAR_INV = "regular_inv";
 
 	/** DOCUMENT-ME */
 	public static final String S_KEYWORD = "keyword";
+  public static final String S_KEYWORD_INV = "keyword_inv";
 
 	/** DOCUMENT-ME */
 	public static final String S_STRING = "string";
+  public static final String S_STRING_INV = "string_inv";
 
 	/** DOCUMENT-ME */
 	public static final String S_NUMBER = "number";
+  public static final String S_NUMBER_INV = "number_inv";
 
 	/** DOCUMENT-ME */
 	public static final String S_ID = "id";
+  public static final String S_ID_INV = "id_inv";
 
 	/** DOCUMENT-ME */
 	public static final String S_COMMENT = "comment";
+  public static final String S_COMMENT_INV = "comment_inv";
 	
 	/** DOCUMENT-ME */
   public static final String S_LONGORDER = "longorder";
+  public static final String S_LONGORDER_INV = "longorder_inv";
 	
 	private Unit unit = null;
 	private boolean modified = false;
@@ -551,36 +558,57 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 * Adds styles to this component with one style for each token type.
 	 */
 	private void initStyles() {
+	  Color errorColor = new Color(1f, .5f, 0f);
+	  
 		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
 		Style regular = addStyle(OrderEditor.S_REGULAR, def);
-		Style s = addStyle(OrderEditor.S_KEYWORD, regular);
+		Style s = addStyle(OrderEditor.S_REGULAR_INV, regular);
+    StyleConstants.setBackground(s, errorColor);
+		
+		s = addStyle(OrderEditor.S_KEYWORD, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_KEYWORD + ".color",
 																		getDefaultColor(OrderEditor.S_KEYWORD))));
-		s = addStyle(OrderEditor.S_STRING, regular);
+    s = addStyle(OrderEditor.S_KEYWORD_INV, s);
+    StyleConstants.setBackground(s, errorColor);
+		
+    s = addStyle(OrderEditor.S_STRING, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_STRING + ".color",
 																		getDefaultColor(OrderEditor.S_STRING))));
-		s = addStyle(OrderEditor.S_NUMBER, regular);
+    s = addStyle(OrderEditor.S_STRING_INV, s);
+    StyleConstants.setBackground(s, errorColor);
+		
+    s = addStyle(OrderEditor.S_NUMBER, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_NUMBER + ".color",
 																		getDefaultColor(OrderEditor.S_NUMBER))));
-		s = addStyle(OrderEditor.S_ID, regular);
+    s = addStyle(OrderEditor.S_NUMBER_INV, s);
+    StyleConstants.setBackground(s, errorColor);
+		
+    s = addStyle(OrderEditor.S_ID, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_ID + ".color",
 																		getDefaultColor(OrderEditor.S_ID))));
-		s = addStyle(OrderEditor.S_COMMENT, regular);
+    s = addStyle(OrderEditor.S_ID_INV, s);
+    StyleConstants.setBackground(s, errorColor);
+
+    s = addStyle(OrderEditor.S_COMMENT, regular);
 		StyleConstants.setForeground(s,
 									 Colors.decode(settings.getProperty("OrderEditor.styles." +
 																		OrderEditor.S_COMMENT + ".color",
 																		getDefaultColor(OrderEditor.S_COMMENT))));
+    s = addStyle(OrderEditor.S_COMMENT_INV, s);
+    StyleConstants.setBackground(s, errorColor);
 		
 		s = addStyle(OrderEditor.S_LONGORDER, regular);
     StyleConstants.setBackground(s,Color.yellow);
+    s = addStyle(OrderEditor.S_LONGORDER_INV, s);
+    StyleConstants.setBackground(s, errorColor);
 		
 		
 	}
@@ -617,40 +645,60 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 *
 	 * 
 	 */
-	private Style getTokenStyle(OrderToken t) {
+	private Style getTokenStyle(OrderToken t, boolean valid) {
 		StyledDocument doc = (StyledDocument) getDocument();
 		Style retVal = doc.getStyle(OrderEditor.S_REGULAR);
 
 		switch(t.ttype) {
 		case OrderToken.TT_UNDEF:
-			retVal = doc.getStyle(OrderEditor.S_REGULAR);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_REGULAR);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
 
-			break;
+		  break;
 
 		case OrderToken.TT_KEYWORD:
-			retVal = doc.getStyle(OrderEditor.S_KEYWORD);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_KEYWORD);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_KEYWORD_INV);
 
-			break;
+		  break;
 
 		case OrderToken.TT_STRING:
-			retVal = doc.getStyle(OrderEditor.S_STRING);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_STRING);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_STRING_INV);
 
-			break;
+		  break;
 
 		case OrderToken.TT_NUMBER:
-			retVal = doc.getStyle(OrderEditor.S_NUMBER);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_NUMBER);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_NUMBER_INV);
 
-			break;
+		  break;
 
 		case OrderToken.TT_ID:
-			retVal = doc.getStyle(OrderEditor.S_ID);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_ID);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_ID_INV);
 
-			break;
+		  break;
 
 		case OrderToken.TT_COMMENT:
-			retVal = doc.getStyle(OrderEditor.S_COMMENT);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_COMMENT);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_COMMENT_INV);
 
-			break;
+		  break;
+		default:
+		  retVal = doc.getStyle(OrderEditor.S_REGULAR);
 		}
 
 		return retVal;
@@ -717,8 +765,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
 		}
 
-		parser.read(new StringReader(text));
+		boolean valid = parser.read(new StringReader(text));
 
+    doc.setCharacterAttributes(pos[0], pos[1], doc.getStyle(S_REGULAR), true);
+    
 		for(Iterator iter = parser.getTokens().iterator(); iter.hasNext();) {
 			OrderToken token = (OrderToken) iter.next();
 
@@ -727,7 +777,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 			}
 
 			if(token.ttype != OrderToken.TT_EOC) {
-				Style style = getTokenStyle(token);
+				Style style = getTokenStyle(token, valid);
 
 				if(style != null) {
 					if(OrderEditor.log.isDebugEnabled()) {
@@ -735,10 +785,9 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 								  (newStartPos + token.getStart()) + " length " +
 								  (token.getEnd() - token.getStart()));
 					}
-
 					doc.setCharacterAttributes(newStartPos + token.getStart(),
 											   token.getEnd() - token.getStart(),
-											   getTokenStyle(token), true);
+											   style, true);
 				}
 			}
 		}

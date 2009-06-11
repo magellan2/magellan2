@@ -21,6 +21,8 @@ import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.relation.ControlRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.rules.RegionType;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.Direction;
@@ -48,7 +50,8 @@ public class ShipInspector extends AbstractInspector {
       if (typeName == null)
         typeName = message;
       String description = Resources.get("tasks.shipinspector." + name + ".description", false);
-      type = new ProblemType(typeName, description, message, getInstance());
+      String group = Resources.get("tasks.shipinspector." + name + ".group", false);
+      type = new ProblemType(typeName, group, description, message, getInstance());
     }
 
     ProblemType getType() {
@@ -124,7 +127,7 @@ public class ShipInspector extends AbstractInspector {
     // also if not ready yet, there should be someone to take care..
     if (s.modifiedUnits().isEmpty()) {
       empty = true;
-      problems.add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.EMPTY.getType(), s));
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.EMPTY.getType(), s));
     }
 
     if (s.getSize() != nominalShipSize) {
@@ -133,10 +136,20 @@ public class ShipInspector extends AbstractInspector {
     }
 
     Unit owner = s.getOwnerUnit();
-    if ((!empty && owner != null && Units.isPrivilegedAndNoSpy(owner))
+    // the problem also belongs to the faction of the new owner...
+    Unit newOwner = null;
+    for (UnitRelation u : owner.getRelations(ControlRelation.class)){
+      if (u instanceof ControlRelation){
+        ControlRelation ctr = (ControlRelation) u;
+        if (u.source==owner)
+          newOwner = ctr.target;
+      }
+    }
+    if ((!empty && ((owner != null && Units.isPrivilegedAndNoSpy(owner)) || (newOwner != null && Units
+        .isPrivilegedAndNoSpy(newOwner))))
         && (Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel() || Units
             .getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel())) {
-      problems.add(new AbstractProblem(Severity.WARNING, ShipProblemTypes.NOCREW.getType(), s));
+      problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCREW.getType(), s));
     }
 
     // moving ships are taken care of while checking units...
@@ -168,8 +181,8 @@ public class ShipInspector extends AbstractInspector {
       // example: ROUTE PAUSE NO
 
       // FIXME That doesnt work anymore because iterator returns always next movement.
-      problems.add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION.getType(),
-          ship));
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
+          .getType(), ship));
       return problems;
     }
     CoordinateID nextRegionCoord = movementIterator.next();
@@ -186,7 +199,8 @@ public class ShipInspector extends AbstractInspector {
     // harbor owner is allied with ship owner etc. We better leave it up to the user to decide...
     if (ship.getShoreId() != -1 && isShip) {
       if (nextRegion != null && !nextRegion.getRegionType().equals(ozean)) {
-        problems.add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.NOOCEAN.getType(), ship));
+        problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NOOCEAN
+            .getType(), ship));
         return problems;
       }
       // If ship is shored, it can only move deviate by one from the shore direction and only
@@ -195,12 +209,12 @@ public class ShipInspector extends AbstractInspector {
       if (Math.abs(ship.getShoreId() - d.getDir()) > 1
           && Math.abs(ship.getShoreId() - d.getDir()) < 5) {
         if (!this.hasHarbourInRegion(ship.getRegion())) {
-          problems.add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE.getType(),
-              ship));
+          problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
+              .getType(), ship));
         } else {
           // harbour in Region -> just warn, no error
-          problems.add(new AbstractProblem(Severity.WARNING, ShipProblemTypes.WRONGSHOREHARBOUR
-              .getType(), ship));
+          problems.add(ProblemFactory.createProblem(Severity.WARNING,
+              ShipProblemTypes.WRONGSHOREHARBOUR.getType(), ship));
         }
         return problems;
       }
@@ -214,8 +228,9 @@ public class ShipInspector extends AbstractInspector {
     }
 
     // loop until end of movement order or until first PAUSE
-    for (Region lastRegion = null; movementIterator.hasNext() && lastRegion != nextRegion; lastRegion =
-        nextRegion, nextRegion = ship.getRegion().getData().getRegion(movementIterator.next())) {
+    for (Region lastRegion = null; movementIterator.hasNext()
+        && (lastRegion == null || lastRegion != nextRegion); lastRegion = nextRegion, nextRegion =
+        ship.getRegion().getData().getRegion(movementIterator.next())) {
       // check if next region is unknown or ship cannot land in next region and there is no harbor
       // we have to check game specific stuff, because in Allanon a longboat can
       // land everywhere, too
@@ -223,8 +238,8 @@ public class ShipInspector extends AbstractInspector {
           && (nextRegion == null || !(ship.getData().getGameSpecificStuff().getGameSpecificRules()
               .canLandInRegion(ship, nextRegion)))) {
         if (nextRegion == null || !this.hasHarbourInRegion(nextRegion)) {
-          problems.add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK.getType(),
-              ship));
+          problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK
+              .getType(), ship));
           return problems;
         }
       }
@@ -232,8 +247,8 @@ public class ShipInspector extends AbstractInspector {
 
     // overload
     if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
-      problems
-          .add(new AbstractProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED.getType(), ship));
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
+          .getType(), ship));
     }
 
     return problems;
@@ -276,24 +291,24 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
     }
     // we check for captns of ships
-    UnitContainer UC = u.getModifiedUnitContainer();
-    if (UC == null) {
+    UnitContainer uc = u.getModifiedUnitContainer();
+    if (uc == null) {
       return Collections.emptyList();
     }
-    if (!(UC instanceof Ship)) {
+    if (!(uc instanceof Ship)) {
       return Collections.emptyList();
     }
-    if (UC.getOwnerUnit() == null || !UC.getOwnerUnit().equals(u)) {
+    if (uc.getOwnerUnit() == null || !uc.getOwnerUnit().equals(u)) {
       return Collections.emptyList();
     }
 
-    return reviewMovingShip((Ship) UC);
+    return reviewMovingShip((Ship) uc);
   }
 
   public Collection<ProblemType> getTypes() {
-    if (types==null){
+    if (types == null) {
       types = new LinkedList<ProblemType>();
-      for (ShipProblemTypes t : ShipProblemTypes.values()){
+      for (ShipProblemTypes t : ShipProblemTypes.values()) {
         types.add(t.getType());
       }
     }

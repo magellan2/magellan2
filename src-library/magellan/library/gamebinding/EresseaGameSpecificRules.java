@@ -35,7 +35,7 @@ import magellan.library.rules.RegionType;
  */
 public class EresseaGameSpecificRules implements GameSpecificRules {
   private static GameSpecificRules _instance = null;
-  private EresseaGameSpecificRules() {}
+  protected EresseaGameSpecificRules() {}
   
   public static synchronized GameSpecificRules getInstance() {
     if (_instance == null) _instance = new EresseaGameSpecificRules();

@@ -18,6 +18,7 @@ import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 import magellan.library.GameData;
 import magellan.library.Spell;
@@ -27,6 +28,7 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.SkillType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.OrderToken;
@@ -73,11 +75,38 @@ public class EresseaOrderParser implements OrderParser {
 	 */
 	public EresseaOrderParser(GameData data, EresseaOrderCompleter cc) {
 		tokenBucket = new TokenBucket();
-		completer = cc;
+		setCompleter(cc);
 		this.data = data;
 	}
 
+  /**
+   * Returns the value of data.
+   * 
+   * @return Returns data.
+   */
+  public GameData getData() {
+    return data;
+  }
+
+  /**
+   * Returns the value of completer.
+   * 
+   * @return Returns completer.
+   */
+  public EresseaOrderCompleter getCompleter() {
+    return completer;
+  }
+
 	/**
+   * Sets the value of completer.
+   *
+   * @param completer The value for completer.
+   */
+  protected void setCompleter(EresseaOrderCompleter completer) {
+    this.completer = completer;
+  }
+
+  /**
 	 * Returns the tokens read by the parser.
 	 *
 	 * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
@@ -126,7 +155,7 @@ public class EresseaOrderParser implements OrderParser {
 
 	protected boolean readOrder(OrderToken t) {
 		boolean retVal = false;
-
+    
 		if(t.ttype == OrderToken.TT_PERSIST) {
 			retVal = readAt(t);
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_WORK))) {
@@ -204,7 +233,7 @@ public class EresseaOrderParser implements OrderParser {
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD))) {
 			retVal = readPasswort(t);
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PLANT))) {
-			retVal = readPflanzen(t);
+			retVal = readPflanze(t);
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PIRACY))) {
 			retVal = readPiraterie(t);
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PREFIX))) {
@@ -247,6 +276,8 @@ public class EresseaOrderParser implements OrderParser {
 			retVal = readZerstoere(t);
 		} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_GROW))) {
 			retVal = readZuechte(t);
+    } else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE))) {
+      retVal = readSabotiere(t);
 		} else {
 			retVal = checkFinal(t);
 		}
@@ -884,7 +915,7 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-  private static enum Type { EMPTY, OPENING, CLOSING };
+  private static enum Type { EMPTY, OPENING, CLOSING }
 
 	//************* DEFAULT
 	private boolean readDefault(OrderToken token) {
@@ -1570,17 +1601,11 @@ public class EresseaOrderParser implements OrderParser {
 		OrderToken t = tokens.next();
 
 		// detect quoted strings
-		if((data.rules != null) && (data.rules.getSkillType(t.getStrippedText(EresseaOrderParser.QUOTES)) != null)) {
-			t.ttype = OrderToken.TT_STRING;
-			t = tokens.next();
-
-			if(isNumeric(t.getText()) == true) {
-				retVal = readFinalNumber(t);
-			} else {
-				retVal = checkFinal(t);
-			}
+    SkillType skill = data.rules.getSkillType(t.getStrippedText(EresseaOrderParser.QUOTES));
+		if((data.rules != null) && (skill != null)) {
+		  retVal = readLerneTalent(t);
 		} else {
-			unexpected(t);
+		  retVal = checkFinal(t);
 		}
 
 		if(completer!=null && !t.followedBySpace()){
@@ -1589,7 +1614,28 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
-	//************* LOCALE
+	private boolean readLerneTalent(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_STRING;
+    SkillType skill = data.rules.getSkillType(token.getStrippedText(EresseaOrderParser.QUOTES));
+
+    OrderToken t = tokens.next();
+
+    if(isNumeric(t.getText()) == true) {
+      retVal = readFinalNumber(t);
+    } else if (t.ttype!=OrderToken.TT_EOC && skill.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE))){
+      retVal = readFinalString(t);
+    } else {
+      retVal = checkFinal(t);
+    }
+
+    if(completer!=null && !t.followedBySpace()){
+      completer.cmpltLerneTalent(skill); 
+    }
+    return retVal;
+  }
+
+  //************* LOCALE
 	private boolean readLocale(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
@@ -2023,13 +2069,71 @@ public class EresseaOrderParser implements OrderParser {
 	}
 
 	//************* PFLANZEN
-	private boolean readPflanzen(OrderToken token) {
-		token.ttype = OrderToken.TT_KEYWORD;
+	private boolean readPflanze(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_KEYWORD;
 
-		return checkFinal(tokens.next());
+    OrderToken t = tokens.next();
+
+    if(isNumeric(t.getText()) == true) {
+      retVal = readPflanzeAmount(t);
+    } else {
+      unexpected(t);
+    }
+
+    if(completer!=null && !t.followedBySpace()){
+        completer.cmpltPflanze(); 
+    }
+    return retVal;
 	}
 
-	//************* PIRATERIE
+	private boolean readPflanzeAmount(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_NUMBER;
+    
+    // anzahl feststellen?
+    int minAmount = 0;
+    try {
+      minAmount = Integer.parseInt(token.getText());
+    } catch (NumberFormatException e){
+      // not parsable Number !?
+    }
+    
+    OrderToken t = tokens.next();
+
+    if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS)) ||
+        t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SEED)) ||
+        t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MALLORNSEED)) ||
+        t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TREES))) {
+      t.ttype = OrderToken.TT_KEYWORD;
+      retVal = checkNextFinal();
+    } else {
+      unexpected(t);
+    }
+
+    if(completer!=null && !t.followedBySpace()){
+        completer.cmpltPflanze(minAmount); 
+    }
+    return retVal;
+  }
+
+  private boolean readPflanzeWas(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_KEYWORD;
+
+    OrderToken t = tokens.next();
+
+    // might want to treat these not as keywords but as items...?
+    if(false) {
+      retVal = checkFinal(t);
+    } else {
+      unexpected(t);
+    }
+
+    return retVal;
+  }
+
+  //************* PIRATERIE
 	private boolean readPiraterie(OrderToken token) {
 		boolean retVal = false;
 		token.ttype = OrderToken.TT_KEYWORD;
@@ -2113,6 +2217,10 @@ public class EresseaOrderParser implements OrderParser {
 		} else {
 			unexpected(t);
 		}
+
+    if(completer!=null && !t.followedBySpace()){
+      completer.cmpltRekrutiere(); 
+    }
 
 		return retVal;
 	}
@@ -2214,6 +2322,25 @@ public class EresseaOrderParser implements OrderParser {
 		}
 		return retVal;
 	}
+
+  //************* SABOTIERE
+  private boolean readSabotiere(OrderToken token) {
+    boolean retVal = false;
+    token.ttype = OrderToken.TT_KEYWORD;
+
+    OrderToken t = tokens.next();
+
+    if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
+      retVal = readFinalKeyword(t);
+    } else {
+      unexpected(t);
+    }
+
+    if(completer!=null && !t.followedBySpace()){
+        completer.cmpltSabotiere(); 
+    }
+    return retVal;
+  }
 
 	//************* SORTIERE
 	private boolean readSortiere(OrderToken token) {
@@ -2908,6 +3035,16 @@ public class EresseaOrderParser implements OrderParser {
 		errMsg = "Unexpected token " + t.toString();
 	}
 
+	/**
+	 * Tests if <code>txt</code> represents an integer with the given radix between min and max 
+	 * (inclusively).
+	 * 
+	 * @param txt
+	 * @param radix
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	private boolean isNumeric(String txt, int radix, int min, int max) {
 		boolean retVal = false;
 
@@ -2924,6 +3061,13 @@ public class EresseaOrderParser implements OrderParser {
 		return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
 	}
 
+	/**
+	 * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code> 
+	 * and {@link #MAX_UID}.
+	 * 
+	 * @param txt
+	 * @return
+	 */
 	protected boolean isID(String txt) {
 		boolean retVal = isNumeric(txt, data.base, 0, EresseaOrderParser.MAX_UID);
 
@@ -2934,6 +3078,12 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
+	/**
+	 * Tests if <code>txt</code> represents a valid TEMP id.
+	 * 
+	 * @param txt
+	 * @return
+	 */
 	private boolean isTempID(String txt) {
 		boolean retVal = false;
 		int blankPos = txt.indexOf(" ");
@@ -2981,13 +3131,32 @@ public class EresseaOrderParser implements OrderParser {
 		return retVal;
 	}
 
+	/**
+	 * Tests if <code>txt</code> is surrounded by double quotes.
+	 * 
+	 * @param txt
+	 * @return
+	 */
 	private boolean isQuoted(String txt) {
-		return (txt.startsWith("\"") && txt.endsWith("\""));
+		return (txt.startsWith("\"") && txt.endsWith("\"") && txt.length()>=2);
 	}
+  /**
+   * Tests if <code>txt</code> is surrounded by single quotes.
+   * 
+   * @param txt
+   * @return
+   */
   private boolean isSingleQuoted(String txt) {
-    return (txt.startsWith("\'") && txt.endsWith("\'"));
+    return (txt.startsWith("\'") && txt.endsWith("\'") && txt.length()>=2);
   }
 
+	/**
+	 * Tests if <code>txt</code> is a nonempty string which is either surrounded by quotes or by 
+	 * double quotes, or is composed solely by the characters [A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:].
+	 * 
+	 * @param txt
+	 * @return
+	 */
 	protected boolean isString(String txt) {
 		boolean retVal = isQuoted(txt);
 		
@@ -3011,10 +3180,19 @@ public class EresseaOrderParser implements OrderParser {
 				}
 			}
 		}
+		
+		if (retVal!=Pattern.matches("(\".*\")|(\'.*\')|([A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:][A-Za-zƒ÷‹‰ˆ¸ﬂ~,._:0-9]*)", txt))
+		  throw new AssertionError("isString \""+txt+"\"");
 
 		return retVal;
 	}
 
+	/**
+	 * Tests if <code>txt</code> is (syntactically) a valid email address.
+	 * 
+	 * @param txt
+	 * @return
+	 */
 	private boolean isEmailAddress(String txt) {
 		boolean retVal = true;
 		int atIndex = txt.indexOf("@");
@@ -3047,27 +3225,6 @@ public class EresseaOrderParser implements OrderParser {
     return tokens;
   }
 
-  /**
-   * Returns the value of completer.
-   * 
-   * @return Returns completer.
-   */
-  public EresseaOrderCompleter getCompleter() {
-    return completer;
-  }
-
-  /**
-   * Returns the value of data.
-   * 
-   * @return Returns data.
-   */
-  public GameData getData() {
-    return data;
-  }
-	
-	
-	
-	
 }
 
 

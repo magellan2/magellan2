@@ -61,7 +61,8 @@ public class OrderSyntaxInspector extends AbstractInspector {
         typeName = message;
       String description =
           Resources.get("tasks.ordersyntaxinspector." + name + ".description", false);
-      type = new ProblemType(typeName, description, message, getInstance());
+      String group = Resources.get("tasks.ordersyntaxinspector."+name+".group", false); 
+      type = new ProblemType(typeName, group, description, message, getInstance());
     }
 
     ProblemType getType() {
@@ -98,7 +99,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
         // okay, that isn't our unit... forget it
         return Collections.emptyList();
       } else {
-        errors.add(new AbstractProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS.getType(),
+        errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS.getType(),
             unit));
       }
 
@@ -118,7 +119,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
         StringReader reader = new StringReader(order);
         boolean ok = parser.read(reader);
         if (!ok) {
-          errors.add(new AbstractProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING
+          errors.add(ProblemFactory.createProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING
               .getType(), unit, getWarningMessage(order, line), line));
         }
       }

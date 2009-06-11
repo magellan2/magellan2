@@ -16,6 +16,8 @@ package magellan.library.completion;
 import java.io.Reader;
 import java.util.List;
 
+import magellan.library.utils.OrderToken;
+
 /**
  * DOCUMENT-ME
  *
@@ -38,5 +40,5 @@ public interface OrderParser {
 	 * @return all <tt>OrderToken</tt> object produced by the underlying <tt>OrderTokenizer</tt> by
 	 * 		   reading a order.
 	 */
-	public List getTokens();
+	public List<OrderToken> getTokens();
 }

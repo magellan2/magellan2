@@ -1,3 +1,6 @@
+2009-06-11 / Build 301 - stm (stm_@users.sourceforge.net)
+    * refactored EresseaOrderParser for easier subclassing 
+
 2009-06-11 / Build 300 - stm (stm_@users.sourceforge.net)
     * improving OrderParser: PFLANZE, OPTION, SABOTIERE, REKRUTIERE, LERNE
     * improved selection of Inspectors (ProblemType)

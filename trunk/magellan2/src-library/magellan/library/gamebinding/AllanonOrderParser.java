@@ -13,13 +13,13 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.library.gamebinding;
 
@@ -28,8 +28,6 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
 
 /**
- * 
- *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
@@ -47,145 +45,139 @@ public class AllanonOrderParser extends EresseaOrderParser {
    * <tt>OrderCompleter</tt> class itself.
    */
   public AllanonOrderParser(GameData data, AllanonOrderCompleter cc) {
-    super(data,cc);
+    super(data, cc);
   }
-  
+
   /**
-   * We have to override this method to get Allanon specific commands
-   * 
-   * @see magellan.library.gamebinding.EresseaOrderParser#readOrder(magellan.library.utils.OrderToken)
+   * @see magellan.library.gamebinding.EresseaOrderParser#initCommands()
    */
-  @Override
-  protected boolean readOrder(OrderToken t) {
-    boolean retVal = super.readOrder(t);
-    
-    if (!retVal) {
-      if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN))) {
-        retVal = readAnwerben(t);
-      } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN))) {
-        retVal = readMeucheln(t);
+  protected void initCommands() {
+    super.initCommands();
+    addCommand(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN), new AnwerbenReader());
+    addCommand(Resources.getOrderTranslation(AllanonConstants.O_MEUCHELN), new MeuchelnReader());
+  }
+
+  // ************* ANWERBEN
+  protected class AnwerbenReader extends OrderHandler {
+    public boolean read(OrderToken token) {
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      return checkNextFinal();
+    }
+  }
+
+  // ************* MEUCHELN
+  protected class MeuchelnReader extends OrderHandler {
+    public boolean read(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getTokensIterator().next();
+
+      if (isID(t.getText()) == true) {
+        retVal = readMeuchelnUID(t);
+      } else {
+        unexpected(t);
       }
 
+      if (getCompleter() != null && !t.followedBySpace()) {
+        // this is not optimal because the EresseaOrderCompleter does add an COMBAT state to the
+        // unit command
+        // but that isn't necessary for Allanon - but I don't want to change the whole API at the
+        // moment.
+        getCompleter().cmpltAttack();
+      }
+
+      return retVal;
     }
-    
-    return retVal;
+
+    public boolean readMeuchelnUID(OrderToken token) {
+      token.ttype = OrderToken.TT_ID;
+      return checkNextFinal();
+    }
   }
 
-  //************* ANWERBEN
-  protected boolean readAnwerben(OrderToken token) {
-    token.ttype = OrderToken.TT_KEYWORD;
+  // ************* BETRETE
+  protected class BetreteReader extends EresseaOrderParser.BetreteReader {
+    public boolean read(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
 
-    return checkNextFinal();
-  }
-  
+      OrderToken t = getTokensIterator().next();
 
-  //************* MEUCHELN 
-  protected boolean readMeucheln(OrderToken token) {
-    boolean retVal = false;
-    token.ttype = OrderToken.TT_KEYWORD;
+      if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
+        retVal = readBetreteBurg(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+        retVal = readBetreteKarawane(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_SHIP))) {
+        retVal = readBetreteSchiff(t);
+      } else {
+        unexpected(t);
+      }
 
-    OrderToken t = getTokensIterator().next();
-
-    if(isID(t.getText()) == true) {
-      retVal = readMeuchelnUID(t);
-    } else {
-      unexpected(t);
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBetrete();
+      }
+      return retVal;
     }
 
-    if(getCompleter() != null && !t.followedBySpace()) {
-      // this is not optimal because the EresseaOrderCompleter does add an COMBAT state to the unit command
-      // but that isn't necessary for Allanon - but I don't want to change the whole API at the moment.
-      getCompleter().cmpltAttack();
+    protected boolean readBetreteKarawane(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getTokensIterator().next();
+
+      if (isID(t.getText()) == true) {
+        retVal = readBetreteKarawaneID(t);
+      } else {
+        unexpected(t);
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBetreteSchiff();
+      }
+      return retVal;
     }
 
-    return retVal;
-  }
+    protected boolean readBetreteKarawaneID(OrderToken token) {
+      token.ttype = OrderToken.TT_ID;
 
-  protected boolean readMeuchelnUID(OrderToken token) {
-    token.ttype = OrderToken.TT_ID;
-    return checkNextFinal();
-  }
-  
-
-  //************* BETRETE
-  protected boolean readBetrete(OrderToken token) {
-    boolean retVal = false;
-    token.ttype = OrderToken.TT_KEYWORD;
-
-    OrderToken t = getTokensIterator().next();
-
-    if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
-      retVal = readBetreteBurg(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
-      retVal = readBetreteKarawane(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_SHIP))) {
-      retVal = readBetreteSchiff(t);
-    } else {
-      unexpected(t);
+      return checkNextFinal();
     }
-
-    if(getCompleter()!=null && !t.followedBySpace()){
-      getCompleter().cmpltBetrete(); 
-    }
-    return retVal;
-  }
-  
-
-  protected boolean readBetreteKarawane(OrderToken token) {
-    boolean retVal = false;
-    token.ttype = OrderToken.TT_KEYWORD;
-
-    OrderToken t = getTokensIterator().next();
-
-    if(isID(t.getText()) == true) {
-      retVal = readBetreteKarawaneID(t);
-    } else {
-      unexpected(t);
-    }
-
-    if(getCompleter()!=null && !t.followedBySpace()){
-      getCompleter().cmpltBetreteSchiff(); 
-    }
-    return retVal;
-  }
-  
-  protected boolean readBetreteKarawaneID(OrderToken token) {
-    token.ttype = OrderToken.TT_ID;
-
-    return checkNextFinal();
   }
 
-  //************* BENENNE
-  protected boolean readBenenne(OrderToken token) {
-    boolean retVal = false;
-    token.ttype = OrderToken.TT_KEYWORD;
+  // ************* BENENNE
+  protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+    public boolean read(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
 
-    OrderToken t = getTokensIterator().next();
+      OrderToken t = getTokensIterator().next();
 
-    if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_UNIT))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FACTION))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_REGION))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_SHIP))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
-      retVal = readBenenneBeschreibeTarget(t);
-    } else if(t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FOREIGN))) {
-      retVal = readBenenneFremdes(t);
-    } else {
-      unexpected(t);
+      if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_UNIT))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FACTION))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_REGION))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_SHIP))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
+        retVal = readBenenneBeschreibeTarget(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FOREIGN))) {
+        retVal = readBenenneFremdes(t);
+      } else {
+        unexpected(t);
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBenenne();
+      }
+
+      return retVal;
     }
-
-    if(getCompleter() != null && !t.followedBySpace()) {
-      getCompleter().cmpltBenenne();
-    }
-
-    return retVal;
   }
-
 
 }

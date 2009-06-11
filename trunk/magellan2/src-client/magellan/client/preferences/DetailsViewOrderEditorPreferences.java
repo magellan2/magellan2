@@ -58,6 +58,7 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   private JPanel pnlActiveColor = null;
   private JPanel pnlActiveColorConfirmed = null;
   private JPanel pnlStylesColor = null;
+  private JPanel pnlBackgroundColor = null;
   private JCheckBox chkMultiEditorLayout;
   private JCheckBox chkHideButtons;
   private JCheckBox chkEditAllFactions;
@@ -297,8 +298,8 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
   }
 
   protected Container createStylesContainer() {
-    JPanel content = new JPanel();
-
+    JPanel content = new JPanel(new GridBagLayout());
+    
     comboSHColors = new JComboBox(getStyles());
     comboSHColors.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent ae) {
@@ -306,7 +307,6 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
           pnlStylesColor.setBackground(c.color);
         }
       });
-    content.add(comboSHColors);
 
     pnlStylesColor = new JPanel();
     pnlStylesColor.setBorder(new LineBorder(Color.black));
@@ -326,7 +326,33 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
           }
         }
       });
+
+    pnlBackgroundColor = new JPanel();
+    pnlBackgroundColor.setBorder(new LineBorder(Color.black));
+    pnlBackgroundColor.setPreferredSize(prefDim);
+    pnlBackgroundColor.setBackground(source.getErrorBackground());
+    pnlBackgroundColor.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent me) {
+          Color newColor = JColorChooser.showDialog(((JComponent) me.getSource()).getTopLevelAncestor(),
+              Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.title"),
+                                source.getErrorBackground());
+
+          if(newColor != null) {
+            source.setErrorBackground(newColor);
+            pnlBackgroundColor.setBackground(newColor);
+          }
+        }
+      });
+
+    GridBagConstraints gbc = new GridBagConstraints(0, 0, 1, 1, 0, 0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0);
+    content.add(comboSHColors, gbc);
+
+    gbc.gridx++;
     content.add(pnlStylesColor);
+
+    gbc.gridx++;
+    content.add(pnlBackgroundColor);
 
     return content;
   }
@@ -353,9 +379,10 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     return styles;
   }
 
-      public void initPreferences() {
-          // TODO: implement it
-      }
+  public void initPreferences() {
+    // TODO: implement it
+  }
+
   /**
    * DOCUMENT-ME
    */
@@ -368,6 +395,8 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     source.setHideButtons(chkHideButtons.isSelected());
     source.setEditAllFactions(chkEditAllFactions.isSelected());
     source.setUseSyntaxHighlighting(chkSyntaxHighlighting.isSelected());
+    
+    source.setErrorBackground(pnlBackgroundColor.getBackground());
 
     for(int i = 0; i < comboSHColors.getItemCount(); i++) {
       StyleContainer sc = (StyleContainer) comboSHColors.getItemAt(i);

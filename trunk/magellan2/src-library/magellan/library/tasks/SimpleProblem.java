@@ -10,7 +10,6 @@ package magellan.library.tasks;
 import magellan.library.Faction;
 import magellan.library.Region;
 import magellan.library.Unit;
-import magellan.library.UnitContainer;
 
 /**
  * A default implementation serving as template for more specialized problems.
@@ -18,7 +17,7 @@ import magellan.library.UnitContainer;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class AbstractProblem implements Problem {
+public class SimpleProblem implements Problem {
   protected Severity severity;
   protected ProblemType type;
   protected String name;
@@ -45,7 +44,7 @@ public class AbstractProblem implements Problem {
    *          order can be identified. The first line is line 1!
    * @throws NullPointerException if object, inspector or message is <code>null</code>.
    */
-  public AbstractProblem(Severity severity, ProblemType type, Region region, Unit owner,
+  public SimpleProblem(Severity severity, ProblemType type, Region region, Unit owner,
       Faction faction, Object object, Inspector inspector, String message, int line) {
     if (object == null || inspector == null || message == null) {
       throw new NullPointerException();
@@ -59,77 +58,6 @@ public class AbstractProblem implements Problem {
     this.inspector = inspector;
     this.message = message;
     this.line = line;
-  }
-
-  /**
-   * Creates a problem. Tries to deduce region and faction from the Unit, and inspector and message
-   * from the ProblemType.
-   * 
-   * @param severity
-   * @param type
-   * @param u
-   * @param line
-   */
-  public AbstractProblem(Severity severity, ProblemType type, Unit u, int line) {
-    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), type
-        .getMessage(), line);
-  }
-
-  /**
-   * Creates a problem without line. Tries to deduce region and faction from the Unit, and inspector
-   * and message from the ProblemType.
-   * 
-   * @param severity
-   * @param type
-   * @param u
-   */
-  public AbstractProblem(Severity severity, ProblemType type, Unit u) {
-    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), type
-        .getMessage(), -1);
-  }
-
-  /**
-   * Creates a problem. Tries to deduce unit, region and faction from the UnitContainer, and
-   * inspector and message from the ProblemType.
-   * 
-   * @param severity
-   * @param type
-   * @param c
-   * @param line
-   */
-  public AbstractProblem(Severity severity, ProblemType type, UnitContainer c, int line) {
-    this(severity, type, c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c
-        .getOwner() == null ? null : c.getOwner().getFaction(), c, type.getInspector(), type
-        .getMessage(), line);
-  }
-
-  /**
-   * Creates a problem without line. Tries to deduce unit, region and faction from the
-   * UnitContainer, and inspector and message from the ProblemType.
-   * 
-   * @param severity
-   * @param type
-   * @param c
-   */
-  public AbstractProblem(Severity severity, ProblemType type, UnitContainer c) {
-    this(severity, type, c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c
-        .getOwner() == null ? null : c.getOwner().getFaction(), c, type.getInspector(), type
-        .getMessage(), -1);
-  }
-
-  /**
-   * Creates a problem. Tries to deduce region and faction from the Unit, and the inspector from the
-   * ProblemType but uses the given message.
-   * 
-   * @param severity
-   * @param type
-   * @param u
-   * @param inspector
-   * @param message
-   * @param line
-   */
-  public AbstractProblem(Severity severity, ProblemType type, Unit u, String message, int line) {
-    this(severity, type, u.getRegion(), u, u.getFaction(), u, type.getInspector(), message, line);
   }
 
   /**

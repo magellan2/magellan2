@@ -73,6 +73,7 @@ import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
 import magellan.library.tasks.OrderSyntaxInspector;
 import magellan.library.tasks.Problem;
+import magellan.library.tasks.ProblemType;
 import magellan.library.tasks.ShipInspector;
 import magellan.library.tasks.SkillInspector;
 import magellan.library.tasks.ToDoInspector;
@@ -130,7 +131,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   private magellan.client.swing.tasks.TaskTablePanel.UpdateEventDispatcher updateDispatcher;
 
-  private Set<Object> activeProblems;
+  private Set<ProblemType> activeProblems;
 
   /**
    * Creates a new TaskTablePanel object.
@@ -856,8 +857,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
   }
 
+  /**
+   * Returns a list of all registered inspectors.
+   * 
+   * @return
+   */
   public List<Inspector> getInspectors() {
     return Collections.unmodifiableList(inspectors);
+  }
+
+  /**
+   * Returns a list of all ProblemTypes of all registered inspectors.
+   * 
+   * @return
+   */
+  public List<ProblemType> getAllProblemTypes() {
+    List<ProblemType> types = null;
+    for (Inspector i : getInspectors()){
+      for (ProblemType p : i.getTypes()){
+        if (types==null)
+          types = new ArrayList<ProblemType>(getInspectors().size());
+        types.add(p);
+      }
+    }
+    if (types == null)
+      return Collections.emptyList();
+    else
+      return Collections.unmodifiableList(types);
   }
 
   /**
@@ -1161,12 +1187,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * 
    * @param result A list of name. If <code>null</code>, all problems will be displayed.
    */
-  public void setActiveProblems(Set<Object> result) {
+  public void setActiveProblems(Set<ProblemType> result) {
     activeProblems = result;
   }
 
   private boolean checkActive(Problem p) {
-    return activeProblems==null || activeProblems.contains(p.getType().getName());
+    return activeProblems==null || activeProblems.contains(p.getType());
   }
 
 

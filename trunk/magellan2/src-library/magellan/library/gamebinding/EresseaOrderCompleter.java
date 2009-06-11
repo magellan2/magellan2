@@ -275,7 +275,7 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD)," "));
 
 		if(hasSkill(unit, EresseaConstants.S_KRAEUTERKUNDE, 6)) {
-			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PLANT)));
+			completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PLANT), " "));
 		}
 
 		if(unit.getShip() != null) {
@@ -354,6 +354,7 @@ public class EresseaOrderCompleter implements Completer {
 		}
 
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW)," "));
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SABOTAGE)+" "+Resources.getOrderTranslation(EresseaConstants.O_SHIP)));
 	}
 
 	void cmpltAttack() {
@@ -1136,16 +1137,31 @@ public class EresseaOrderCompleter implements Completer {
 		}
 	}
 
+  public void cmpltLerneTalent(SkillType t) {
+    if(data != null && data.rules != null && t!=null) {
+      int cost = getSkillCost(t, unit);
+
+      if(cost > 0) {
+        completions.add(new Completion(Integer.toString(cost)));
+      }
+      if (t.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE))) {
+        completions.add(new Completion("\""
+            + Resources.get("gamebinding.eressea.eresseaordercompleter.magicarea") + "\"", "\"\"",
+            "", Completion.DEFAULT_PRIORITY, 1));
+      }
+    }
+  }
+
+
 	/**
    * Returns the learn cost for a specific skill.
 	 *
 	 * @param skillType the skill to be learned
-	 * @param unit the Unit
 	 *
 	 * @return the cost to learn a skill for the given unit. If the unit has no persons the cost
 	 * 		   for one person is returned.
 	 */
-	public int getSkillCost(SkillType skillType, Unit unit) {
+	public int getSkillCost(SkillType skillType, Unit someUnit) {
 		int cost = 0;
 
 		if(skillType.getID().equals(EresseaConstants.S_TAKTIK) ||
@@ -1157,13 +1173,13 @@ public class EresseaOrderCompleter implements Completer {
 		} else if(skillType.getID().equals(EresseaConstants.S_MAGIE)) {
 			// get magiclevel without modifier
 			int level = 0;
-			Skill skill = (unit != null) ? unit.getSkill(skillType) : null;
+			Skill skill = (someUnit != null) ? someUnit.getSkill(skillType) : null;
 
 			if(skill != null) {
 				if(skill.noSkillPoints()) {
-					level = skill.getLevel() - skill.getModifier(unit);
+					level = skill.getLevel() - skill.getModifier(someUnit);
 				} else {
-					int days = unit.getSkill(skillType).getPointsPerPerson();
+					int days = someUnit.getSkill(skillType).getPointsPerPerson();
 					level = (int) Math.floor(Math.sqrt((days / 15.0) + 0.25) - 0.5);
 				}
 			}
@@ -1172,9 +1188,9 @@ public class EresseaOrderCompleter implements Completer {
 			cost = (int) (50 + ((50 * (1 + nextLevel) * (nextLevel)) / 2.0));
 		}
 
-		if(unit != null) {
-			if((unit.getModifiedBuilding() != null) &&
-			   unit.getModifiedBuilding().getType().equals(data.rules.getBuildingType(StringID.create("Akademie")))) {
+		if(someUnit != null) {
+			if((someUnit.getModifiedBuilding() != null) &&
+			   someUnit.getModifiedBuilding().getType().equals(data.rules.getBuildingType(StringID.create("Akademie")))) {
 				if(cost == 0) {
 					cost = 50;
 				} else {
@@ -1182,7 +1198,7 @@ public class EresseaOrderCompleter implements Completer {
 				}
 			}
 
-			cost *= Math.max(1, unit.getModifiedPersons());
+			cost *= Math.max(1, someUnit.getModifiedPersons());
 		}
 
 		return cost;
@@ -1404,6 +1420,17 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
 	}
 
+  public void cmpltPflanze() {
+    completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
+  }
+
+  public void cmpltPflanze(int minAmount) {
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TREES)));
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SEED)));
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MALLORNSEED)));
+  }
+
 	void cmpltPiraterie() {
 		addOtherFactions(" ");
 	}
@@ -1416,10 +1443,14 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion("\"\"", "\"\"", "", Completion.DEFAULT_PRIORITY, 1));
 	}
 
+	void cmpltRekrutiere() {
+    completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
+	}
+	
 	void cmpltReserviere() {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EACH),
 				   " "));
-		completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "", ""));
+		completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
 
     // reserve all items that the unit has
     for (Item item : unit.getItems()){
@@ -1473,7 +1504,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   void cmpltReserviereJe() {
-		completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "", ""));
+		completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
 	}
 
 	void cmpltReserviereAmount() {
@@ -1538,6 +1569,11 @@ public class EresseaOrderCompleter implements Completer {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PAUSE),
 									   " "));
 	}
+
+	void cmpltSabotiere() {
+	  completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP)));
+	}
+
 
 	void cmpltSortiere() {
 		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BEFORE),
@@ -1628,7 +1664,7 @@ public class EresseaOrderCompleter implements Completer {
 			}
 		}
 
-		completions.add(new Completion(EresseaConstants.O_NOT));
+		completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
 		completions.add(new Completion("0"));
 	}
 
@@ -1780,7 +1816,7 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	void cmpltZaubereRegionStufe() {
-    this.cmpltZaubereStufe();
+    cmpltZaubereStufe();
     /*
 		if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
 			addFilteredSpells(unit.getSpells().values(), true,
@@ -2268,12 +2304,11 @@ public class EresseaOrderCompleter implements Completer {
 	}
 
 	/**
-	 * Returns the last word immediately at the end of the String txt.
-	 *
-	 */
-	private String getStub(String txt) {
-	  // FIXME (stm) this is identical to AutoCompletion.getStub(txt) but we don't wont to
-	  // reference src-client here...
+   * Returns the last word immediately at the end of the String txt. FIXME (stm) this is identical
+   * to <code>magellan.client.completion.AutoCompletion.getStub(String)</code> but we don't want to
+   * reference src-client here...
+   */
+	public static String getStub(String txt) {
 		StringBuffer retVal = new StringBuffer();
 
 		for(int i = txt.length() - 1; i >= 0; i--) {
@@ -2349,12 +2384,7 @@ public class EresseaOrderCompleter implements Completer {
 	 */
 	private class IgnrCsComp implements Comparator<Object> {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
+		 * Compares Strings or completions case insensitively.
 		 */
 		public int compare(Object o1, Object o2) {
 			if(o1 instanceof String && o2 instanceof String) {
@@ -2404,12 +2434,7 @@ public class EresseaOrderCompleter implements Completer {
 	 */
 	private static class PrioComp implements Comparator<Completion> {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
+		 * Compares to Completions by priority.  
 		 */
 		public int compare(Completion o1, Completion o2) {
 			int retVal = 0;
@@ -2423,13 +2448,6 @@ public class EresseaOrderCompleter implements Completer {
 			return retVal;
 		}
 
-		/**
-		 * 
-		 */
-    @Override
-		public boolean equals(Object obj) {
-			return false;
-		}
 	}
 
 	/**
@@ -2480,8 +2498,5 @@ public class EresseaOrderCompleter implements Completer {
   public Unit getUnit() {
     return unit;
   }
-
-  
-
 
 }

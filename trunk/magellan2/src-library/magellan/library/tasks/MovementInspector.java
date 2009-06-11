@@ -41,7 +41,8 @@ public class MovementInspector extends AbstractInspector {
       if (typeName == null)
         typeName = message;
       String description = Resources.get("tasks.movementinspector." + name + ".description", false);
-      type = new ProblemType(typeName, description, message, getInstance());
+      String group = Resources.get("tasks.movementinspector."+name+".group", false); 
+      type = new ProblemType(typeName, group, description, message, getInstance());
     }
 
     ProblemType getType() {
@@ -111,7 +112,7 @@ public class MovementInspector extends AbstractInspector {
           st.nextToken();
           if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())) {
             if (UnitID.createUnitID(st.nextToken(), u.getRegion().getData().base).equals(u.getID())) {
-              problems.add(new AbstractProblem(Severity.ERROR, MovementProblemTypes.UNITFOLLOWSSELF
+              problems.add(ProblemFactory.createProblem(Severity.ERROR, MovementProblemTypes.UNITFOLLOWSSELF
                   .getType(), u, line));
             }
           }
@@ -160,14 +161,14 @@ public class MovementInspector extends AbstractInspector {
     int maxOnFoot = u.getPayloadOnFoot();
 
     if (maxOnFoot == Unit.CAP_UNSKILLED) {
-      return Collections.singletonList((Problem) (new AbstractProblem(Severity.WARNING,
+      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
           MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u)));
     }
 
     int modLoad = u.getModifiedLoad();
 
     if ((maxOnFoot - modLoad) < 0) {
-      return Collections.singletonList((Problem) (new AbstractProblem(Severity.WARNING,
+      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
           MovementProblemTypes.FOOTOVERLOADED.getType(), u)));
     }
 
@@ -178,7 +179,7 @@ public class MovementInspector extends AbstractInspector {
     int maxOnHorse = u.getPayloadOnHorse();
 
     if (maxOnHorse == Unit.CAP_UNSKILLED) {
-      return Collections.singletonList((Problem) (new AbstractProblem(Severity.WARNING,
+      return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
           MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u)));
     }
 
@@ -186,7 +187,7 @@ public class MovementInspector extends AbstractInspector {
       int modLoad = u.getModifiedLoad();
 
       if ((maxOnHorse - modLoad) < 0) {
-        return Collections.singletonList((Problem) (new AbstractProblem(Severity.WARNING,
+        return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
             MovementProblemTypes.HORSEOVERLOADED.getType(), u)));
       }
     }

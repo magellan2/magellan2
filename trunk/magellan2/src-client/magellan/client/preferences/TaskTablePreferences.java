@@ -13,13 +13,13 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.client.preferences;
 
@@ -30,29 +30,36 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.JTextArea;
+import javax.swing.JTree;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import magellan.client.swing.preferences.ExtendedPreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.tasks.TaskTablePanel;
 import magellan.library.GameData;
-import magellan.library.tasks.Inspector;
 import magellan.library.tasks.ProblemType;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -65,14 +72,102 @@ import magellan.library.utils.Resources;
  */
 public class TaskTablePreferences extends JPanel implements ExtendedPreferencesAdapter {
 
-  private Properties settings;
-  TaskTablePanel taskPanel;
+  public class TypeTree extends JTree {
 
-  // protected ExpandPanel ePanel;
-  // protected CollapsePanel cPanel;
-  //
-  // private JList useList;
-  // private JList elementsList;
+    DefaultMutableTreeNode root;
+    DefaultTreeModel model; 
+    Map<String, DefaultMutableTreeNode> catNodes;
+    Set<ProblemType> problems;
+    
+    public TypeTree(boolean fill) {
+      root = new DefaultMutableTreeNode();
+      model = new DefaultTreeModel(root);
+      setModel(model);
+      setRootVisible(false);
+      catNodes = new HashMap<String, DefaultMutableTreeNode>();
+      problems = new HashSet<ProblemType>();
+      if (fill)
+        fill();
+    }
+
+    protected void fill() {
+      // TODO clear model
+      for (ProblemType p : taskPanel.getAllProblemTypes())
+        addProblem(p);
+    }
+
+    public Collection<ProblemType> getProblems() {
+      return Collections.unmodifiableCollection(problems);
+    }
+
+    public Collection<ProblemType> getSelectedProblems() {
+      List<ProblemType> result = new LinkedList<ProblemType>();
+      TreePath selection[] = getSelectionPaths();
+      if (selection==null)
+        return Collections.emptySet();
+
+      for (int i = 0; i < selection.length; i++) {
+        DefaultMutableTreeNode node =
+            (DefaultMutableTreeNode) selection[i].getLastPathComponent();
+        if (node.getUserObject() instanceof ProblemType) {
+          result.add((ProblemType) node.getUserObject());
+        } else{
+          for (Enumeration<?> children = node.children(); children.hasMoreElements();) {
+            result.add((ProblemType) ((DefaultMutableTreeNode) children.nextElement()).getUserObject());
+          }
+        }
+      }
+      return result;
+    }
+
+    public void addProblem(ProblemType p) {
+      if (problems.contains(p))
+        return;
+      String cat = p.getGroup();
+      if (cat == null){
+        root.add(new DefaultMutableTreeNode(p));
+        problems.add(p);
+      }else {
+        if (!catNodes.containsKey(cat)) {
+          DefaultMutableTreeNode catNode = new DefaultMutableTreeNode(cat);
+          root.add(catNode);
+          catNodes.put(cat, catNode);
+        }
+        catNodes.get(cat).add(new DefaultMutableTreeNode(p));
+        problems.add(p);
+      }
+      model.nodeStructureChanged(root);
+    }
+    
+    public void removeProblem(ProblemType p){
+      if (!problems.contains(p))
+        return;
+      String cat = p.getGroup();
+      if (cat == null){
+        remove(root, p);
+        problems.remove(p);
+      } else {
+        DefaultMutableTreeNode parent = catNodes.get(cat);
+        remove(parent, p);
+        problems.remove(p);
+        if (parent.getChildCount()==0){
+          catNodes.remove(cat);
+          root.remove(parent);
+        }
+      }
+      model.nodeStructureChanged(root);
+    }
+
+    private void remove(DefaultMutableTreeNode parent, ProblemType p) {
+      for (int i = 0; i<parent.getChildCount(); ++i){
+        if (((DefaultMutableTreeNode) parent.getChildAt(i)).getUserObject().equals(p))
+          parent.remove(i);
+      }
+    }
+  }
+
+  protected Properties settings;
+  protected TaskTablePanel taskPanel;
 
   private JPanel restrictPanel;
 
@@ -85,14 +180,8 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
   /** Nur Probleme der aktuellen Region anzeigen */
   private JCheckBox chkRestrictToActiveRegion;
 
-  private JCheckBox chkToDo;
-  private JCheckBox chkMovement;
-  private JCheckBox chkShip;
-  private JCheckBox chkSkill;
-  private JCheckBox chkAttack;
-  private JCheckBox chkOrderSyntax;
-  private JList inspectorsList;
-  private JList useList;
+  private TypeTree inspectorsList;
+  private TypeTree useList;
 
   /**
    * @param parent
@@ -116,7 +205,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
     c.gridx = 0;
     c.gridy = 0;
-    c.fill = GridBagConstraints.HORIZONTAL;
+    c.fill = GridBagConstraints.BOTH;
     c.anchor = GridBagConstraints.WEST;
     c.weightx = 0.0;
     chkOwnerParty = new JCheckBox(Resources.get("tasks.prefs.restricttoowner"), true);
@@ -125,27 +214,23 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.gridy++;
     chkPasswordParties = new JCheckBox(Resources.get("tasks.prefs.restricttopassword"), true);
     panel.add(chkPasswordParties, c);
-    
+
     c.gridy++;
-    chkRestrictToActiveRegion = new JCheckBox(Resources.get("tasks.prefs.restricttoactiveregion"), true);
+    chkRestrictToActiveRegion =
+        new JCheckBox(Resources.get("tasks.prefs.restricttoactiveregion"), true);
     panel.add(chkRestrictToActiveRegion, c);
-    
+
     c.gridy++;
     chkRestrictToSelection = new JCheckBox(Resources.get("tasks.prefs.restricttoselection"), true);
     panel.add(chkRestrictToSelection, c);
-    
 
     c.gridy++;
+    c.fill = GridBagConstraints.BOTH;
+    c.weightx = 1;
+    c.weighty = 1;
     panel.add(getInspectorPanel(), c);
-    
-    c.gridx = 1;
-    c.gridy = 0;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 0.1;
-    panel.add(new JLabel(""), c);
 
-    restrictPanel.add(panel, BorderLayout.NORTH);
+    restrictPanel.add(panel, BorderLayout.CENTER);
 
     add(restrictPanel, BorderLayout.CENTER);
 
@@ -153,34 +238,79 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
   private JPanel getInspectorPanel() {
     JPanel pnlSelection = new JPanel();
-    pnlSelection.setLayout(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(2, 2, 2, 2), 0, 0);
-    pnlSelection.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.selection")));
+    pnlSelection.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("tasks.prefs.inspectors.selection")));
 
     JPanel inspectorsPanel = new JPanel();
     inspectorsPanel.setLayout(new BorderLayout(0, 0));
-    inspectorsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.available")));
+    inspectorsPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("tasks.prefs.inspectors.available")));
 
-    DefaultListModel inspectorsListModel = new DefaultListModel();
-    for (Inspector i : taskPanel.getInspectors()){
-      for (ProblemType p : i.getTypes()){
-        inspectorsListModel.addElement(p);
-      }
-    }
+    inspectorsList = new TypeTree(true);
 
-    inspectorsList = new JList(inspectorsListModel);
-
+    inspectorsList.setVisibleRowCount(10);
     JScrollPane pane = new JScrollPane(inspectorsList);
     inspectorsPanel.add(pane, BorderLayout.CENTER);
 
+    final JTextArea description = new JTextArea();
+    description.setEditable(false);
+    description.setText(Resources.get("tasks.prefs.inspectors.help"));
+    description.setRows(3);
+    description.setLineWrap(true);
+    JPanel descPanel = new JPanel(new BorderLayout());
+    descPanel.add(new JScrollPane(description), BorderLayout.CENTER);
+    descPanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("tasks.prefs.inspectors.description")));
+
+    inspectorsList.addTreeSelectionListener(new TreeSelectionListener() {
+
+      public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
+        Object o = node.getUserObject();
+        if (o != null && o instanceof ProblemType) {
+          description.setText(((ProblemType) o).getDescription());
+        } else {
+          description.setText(Resources.get("tasks.prefs.inspectors.help"));
+        }
+      }
+
+    });
+
     JPanel usePanel = new JPanel();
     usePanel.setLayout(new GridBagLayout());
-    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("tasks.prefs.inspectors.use")));
+    usePanel.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
+        .get("tasks.prefs.inspectors.use")));
 
-    useList = new JList();
-    useList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    useList = new TypeTree(false);
+
+    JButton right = new JButton("  -->  ");
+    right.addActionListener(new ActionListener() {
+      /** add all selected nodes on the left to the useList */
+      public void actionPerformed(ActionEvent e) {
+        for (ProblemType p : inspectorsList.getSelectedProblems()){
+          useList.addProblem(p);
+        }
+      }
+    });
+
+    JButton left = new JButton("  <--  ");
+    left.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        for (ProblemType p : useList.getSelectedProblems()){
+          useList.removeProblem(p);
+        }
+      }
+    });
+
+    useList.setVisibleRowCount(10);
     pane = new JScrollPane(useList);
+
+    pnlSelection.setLayout(new GridBagLayout());
+
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(2, 2, 2, 2), 0, 0);
+
     c.gridheight = 4;
     usePanel.add(pane, c);
 
@@ -208,40 +338,23 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     c.gridy++;
     c.weighty = 0;
 
-    JButton right = new JButton("  -->  ");
-    right.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        Object selection[] = inspectorsList.getSelectedValues();
-        DefaultListModel model = (DefaultListModel) useList.getModel();
-
-        for (int i = 0; i < selection.length; i++) {
-          if (!model.contains(selection[i])) {
-            model.add(model.getSize(), selection[i]);
-          }
-        }
-      }
-    });
     pnlSelection.add(right, c);
 
     c.gridy++;
 
-    JButton left = new JButton("  <--  ");
-    left.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        DefaultListModel model = (DefaultListModel) useList.getModel();
-        Object selection[] = useList.getSelectedValues();
-
-        for (int i = 0; i < selection.length; i++) {
-          model.removeElement(selection[i]);
-        }
-      }
-    });
     pnlSelection.add(left, c);
 
     c.gridy++;
-    c.weighty = 1;
+    c.weighty = 1.0;
     pnlSelection.add(new JPanel(), c);
-    
+
+    c.gridy = 5;
+    c.gridx = 0;
+    c.gridwidth = 3;
+    c.weightx = 1;
+    c.weighty = 1;
+    pnlSelection.add(descPanel, c);
+
     return pnlSelection;
   }
 
@@ -252,58 +365,48 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
 
     /* restrict problems to owner faction */
     chkOwnerParty.setSelected(taskPanel.restrictToOwner());
-    
+
     /* restrict problems to factions with passwords */
     chkPasswordParties.setSelected(taskPanel.restrictToPassword());
 
     chkRestrictToActiveRegion.setSelected(taskPanel.restrictToActiveRegion());
-    
+
     chkRestrictToSelection.setSelected(taskPanel.restrictToSelection());
 
-
     String criteria = settings.getProperty(PropertiesHelper.TASKTABLE_INSPECTORS_LIST);
-    if (criteria == null){
+    if (criteria == null) {
       StringBuffer sb = new StringBuffer();
-      for (Inspector i : taskPanel.getInspectors()){
-        for (ProblemType p : i.getTypes()){
-          if (sb.length()>0)
-            sb.append(" ");
-          sb.append(p);
-        }
+      for (ProblemType p : taskPanel.getAllProblemTypes()) {
+        if (sb.length() > 0)
+          sb.append(";");
+        sb.append(p);
       }
       criteria = sb.toString();
     }
-    
-    DefaultListModel model2 = new DefaultListModel();
 
-    for (StringTokenizer tokenizer = new StringTokenizer(criteria); tokenizer.hasMoreTokens();) {
-      String s = tokenizer.nextToken();
-      try {
-        try {
-          model2.add(model2.size(), s);
-        } catch (ArrayIndexOutOfBoundsException e) {
-          model2.add(model2.size(), "unknown");
-        }
-      } catch (NumberFormatException e) {
-      }
+    Map<String, ProblemType> pMap = new HashMap<String, ProblemType>();
+    for (ProblemType p : taskPanel.getAllProblemTypes()){
+      pMap.put(p.getName(), p);
     }
-    useList.setModel(model2);
+    for (StringTokenizer tokenizer = new StringTokenizer(criteria, ";"); tokenizer.hasMoreTokens();) {
+      String s = tokenizer.nextToken();
+      if (pMap.containsKey(s))
+        useList.addProblem(pMap.get(s));
+    }
   }
 
   /**
    * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
-    DefaultListModel useListModel = (DefaultListModel) useList.getModel();
     StringBuffer definition = new StringBuffer("");
 
-    Set<Object> result = new HashSet<Object>();
-    for (int i = 0; i < useListModel.getSize(); i++) {
-      Object s = useListModel.getElementAt(i);
-      result.add(useListModel.getElementAt(i));
-      if (definition.length()>0)
-        definition.append(" ");
-      definition.append(s);
+    Set<ProblemType> result = new HashSet<ProblemType>();
+    for (ProblemType p : useList.getProblems()) {
+      result.add(p);
+      if (definition.length() > 0)
+        definition.append(";");
+      definition.append(p.getName());
     }
     taskPanel.setActiveProblems(result);
 
@@ -313,7 +416,7 @@ public class TaskTablePreferences extends JPanel implements ExtendedPreferencesA
     taskPanel.setRestrictToPassword(chkPasswordParties.isSelected());
     taskPanel.setRestrictToSelection(chkRestrictToSelection.isSelected());
     taskPanel.setRestrictToActiveRegion(chkRestrictToActiveRegion.isSelected());
-    
+
     taskPanel.refreshProblems();
   }
 

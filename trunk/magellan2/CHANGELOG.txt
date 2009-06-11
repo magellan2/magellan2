@@ -1,3 +1,10 @@
+2009-06-11 / Build 300 - stm (stm_@users.sourceforge.net)
+    * improving OrderParser: PFLANZE, OPTION, SABOTIERE, REKRUTIERE, LERNE
+    * improved selection of Inspectors (ProblemType)
+    * experimental error highlighting in OrderEditor
+    * quicker construction of OptionsPanel (esp. IconStyleSetPreferenceAdapter)
+    * unified behavior of CRParser on unknown tags
+    
 2009-06-05 / Build 298 - stm (stm_@users.sourceforge.net)
     * overhaul of TaskTablePanel etc.
     * removed a bunch of compiler warnings

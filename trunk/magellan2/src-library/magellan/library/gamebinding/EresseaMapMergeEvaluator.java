@@ -46,6 +46,9 @@ import magellan.library.utils.mapping.UnitIDMapping;
 
 public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
   private static MapMergeEvaluator singleton = new EresseaMapMergeEvaluator();
+  
+  protected EresseaMapMergeEvaluator() { }
+  
   public static MapMergeEvaluator getSingleton() {
     return EresseaMapMergeEvaluator.singleton;
   }

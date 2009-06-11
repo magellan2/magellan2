@@ -58,7 +58,8 @@ public class SkillInspector extends AbstractInspector {
     if (typeName == null)
       typeName = message;
     String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
-    SKILLDECREASE = new ProblemType(typeName, description, message, getInstance());
+    String group = Resources.get("tasks.skillinspector.skilldecrease.group", false); 
+    SKILLDECREASE = new ProblemType(typeName, group, description, message, getInstance());
   }
   
   protected SkillInspector() {
@@ -75,7 +76,6 @@ public class SkillInspector extends AbstractInspector {
 
     // check all person transfer relations
     List<Problem> problems = new ArrayList<Problem>(2);
-    int maxDecrease = 0;
     for (UnitRelation rel : u.getRelations(PersonTransferRelation.class)) {
       if (rel instanceof PersonTransferRelation) {
         PersonTransferRelation relation = (PersonTransferRelation) rel;
@@ -94,7 +94,7 @@ public class SkillInspector extends AbstractInspector {
           // source
           if (skill1 != null) {
             if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
-              problems.add(new AbstractProblem(Severity.WARNING, SKILLDECREASE, u, relation.line));
+              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u, relation.line));
               break;
             }
           }
@@ -102,7 +102,7 @@ public class SkillInspector extends AbstractInspector {
           // target
           if (skill2 != null) {
             if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
-              problems.add(new AbstractProblem(Severity.WARNING, SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(), relation.line));
+              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(), relation.line));
               break;
             }
           }

@@ -66,7 +66,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.addOrder(order, true, 2);
 	}
 
-	private String createNamingOrder(String name) {
+	protected String createNamingOrder(String name) {
 		return Resources.getOrderTranslation(EresseaConstants.O_NAME) + " " +
     Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " \"" + name + "\"";
 	}
@@ -83,7 +83,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.addOrder(order, true, 2);
 	}
 
-	private String createNamingOrder(UnitContainer uc, String name) {
+	protected String createNamingOrder(UnitContainer uc, String name) {
 		String order = null;
 
 		if(uc instanceof Building) {
@@ -112,7 +112,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.addOrder(order, true, (suborder.indexOf(" ") >= 0) ? 2 : 1);
 	}
 
-	private String createDescribeUnitContainerOrder(UnitContainer uc) {
+	protected String createDescribeUnitContainerOrder(UnitContainer uc) {
 		String order = null;
 
 		if(uc instanceof Building) {
@@ -142,7 +142,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.addOrder(order, true, 2);
 	}
 
-	private String createDescribeUnitPrivateOrder(String descr) {
+	protected String createDescribeUnitPrivateOrder(String descr) {
 		return Resources.getOrderTranslation(EresseaConstants.O_DESCRIBE) + " " +
     Resources.getOrderTranslation(EresseaConstants.O_PRIVATE) + " \"" + descr + "\"";
 	}
@@ -209,7 +209,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.setOrders(orders);
 	}
 
-	private String createHideOrder(String level) {
+	protected String createHideOrder(String level) {
 		return Resources.getOrderTranslation(EresseaConstants.O_HIDE) + " " + level;
 	}
 
@@ -224,7 +224,7 @@ public class EresseaOrderChanger implements OrderChanger {
 		unit.addOrder(order, true, 1);
 	}
 
-	private String getCombatOrder(Unit unit, int newState) {
+	protected String getCombatOrder(Unit unit, int newState) {
 		String str = Resources.getOrderTranslation(EresseaConstants.O_COMBAT) + " ";
 
 		switch(newState) {
@@ -445,7 +445,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * list of long orders in Eressea
    * @return
    */
-  private ArrayList<String> getLongOrders(){
+  protected ArrayList<String> getLongOrders(){
     if (this.longOrders==null){
       this.longOrders = new ArrayList<String>();
       this.longOrders.add(EresseaConstants.O_WORK);
@@ -482,7 +482,7 @@ public class EresseaOrderChanger implements OrderChanger {
    * make sword = long (not in this list)
    * @return
    */
-  private ArrayList<String> getLongButShortOrders(){
+  protected ArrayList<String> getLongButShortOrders(){
     if (this.longButShortOrders==null){
       this.longButShortOrders = new ArrayList<String>();
       this.longButShortOrders.add(EresseaConstants.O_MAKE + " " + EresseaConstants.O_TEMP);

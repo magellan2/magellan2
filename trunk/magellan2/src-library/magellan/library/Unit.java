@@ -430,7 +430,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public UnitRelation removeRelation(UnitRelation rel);
   
   /**
-   * deliver all directly related units
+   * Adds all directly related units to <code>units</code>.
    */
   public void getRelatedUnits(Collection<Unit> units);
   

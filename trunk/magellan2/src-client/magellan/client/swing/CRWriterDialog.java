@@ -618,7 +618,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     chkMessages.setSelected(true);
     chkSpellsAndPotions.setSelected(true);
     chkSelRegionsOnly.setSelected(false);
-    chkDelStats.setSelected(true);
+    chkDelStats.setSelected(false);
     chkDelTrans.setSelected(false);
     chkDelEmptyFactions.setSelected(false);
     chkExportHotspots.setSelected(true);

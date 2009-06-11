@@ -23,6 +23,7 @@ import magellan.client.actions.MenuAction;
 import magellan.client.swing.preferences.PreferencesDialog;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 
 /**
@@ -33,7 +34,9 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class OptionAction extends MenuAction {
-	private List<PreferencesFactory> adapters;
+  private static final Logger log = Logger.getInstance(OptionAction.class);
+
+  private List<PreferencesFactory> adapters;
 
 	/**
 	 * This timer object is used to rebuild the PreferencesDialog in background. If the
@@ -81,11 +84,12 @@ public class OptionAction extends MenuAction {
 	}
 
 	private void buildDialog() {
+	  log.info("OptionAction.buildDialog()");
 		if(dialog != null) {
 			return;
 		}
 
-		PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
+	    PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
 
 		if(dialog == null) {
 			dialog = pd;

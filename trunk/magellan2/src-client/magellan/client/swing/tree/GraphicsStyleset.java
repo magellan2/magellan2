@@ -22,7 +22,7 @@ import java.awt.Font;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class GraphicsStyleset {
+public class GraphicsStyleset implements Cloneable {
 	/** Holds value of property foreground. */
 	private Color foreground;
 
@@ -244,5 +244,19 @@ public class GraphicsStyleset {
 	 */
 	public void setParent(String parent) {
 		this.parent = parent;
+	}
+	
+	/**
+	 * Creates a shallow copy.
+	 * 
+	 * @see java.lang.Object#clone()
+	 */
+	public GraphicsStyleset clone() {
+	  try {
+      return (GraphicsStyleset) super.clone();
+    } catch (CloneNotSupportedException e) {
+      // should never happen
+      return null;
+    }
 	}
 }

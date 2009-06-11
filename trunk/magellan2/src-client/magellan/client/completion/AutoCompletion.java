@@ -29,6 +29,7 @@ import java.util.Vector;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.CaretListener;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.SimpleAttributeSet;
@@ -48,6 +49,7 @@ import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
+import magellan.library.gamebinding.EresseaOrderCompleter;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
@@ -71,6 +73,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * backward modifier key complete modifier key break modifier key
    */
   public static final int numKeys = 5;
+  private static final AttributeSet SIMPLEATTRIBUTESET = new SimpleAttributeSet();
   private int completerKeys[][];
   private Timer timer;
   private List<Completion> completions = null;
@@ -506,14 +509,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
-        if (stub.length()<common && !conatained(commonPart + "...", completions)) {
+        if (stub.length()<common && !contained(commonPart + "...")) {
           completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
         }
       }
     }
   }
 
-  private boolean conatained(String commonPart, List<Completion> completions) {
+  private boolean contained(String commonPart) {
     for (Completion c : completions){
      if (commonPart.equals(c.getName()))
        return true;
@@ -627,11 +630,11 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       // add additional blank if we are inside the line
       char c = text.length()>stubBeg+stubLen?text.charAt(stubBeg+stubLen):0;
       if (c=='\n' || c==0) {
-        j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
+        j.getDocument().insertString(stubBeg, completion.getValue(), SIMPLEATTRIBUTESET);
       } else if (c==' ') {
-        j.getDocument().insertString(stubBeg, completion.getValue(), new SimpleAttributeSet());
+        j.getDocument().insertString(stubBeg, completion.getValue(), SIMPLEATTRIBUTESET);
       } else {
-        j.getDocument().insertString(stubBeg, completion.getValue()+" ", new SimpleAttributeSet());
+        j.getDocument().insertString(stubBeg, completion.getValue()+" ", SIMPLEATTRIBUTESET);
       }
       j.getCaret().setDot((stubBeg + completion.getValue().length()) - completion.getCursorOffset());
 
@@ -707,21 +710,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * 
    */
   public static String getStub(String txt) {
-    StringBuffer retVal = new StringBuffer();
-
-    for (int i = txt.length() - 1; i >= 0; i--) {
-      char c = txt.charAt(i);
-
-//      if ((c == '"') || (c == '\'') || (c == '_') || (c == '-') || (Character.isLetterOrDigit(c) == true)) {
-      if ((!Character.isWhitespace(c) && c!='\'' && c!='"' && c!='@') ) {
-//      if ((!Character.isWhitespace(c))) {
-        retVal.append(c);
-      } else {
-        break;
-      }
-    }
-
-    return retVal.reverse().toString();
+    return EresseaOrderCompleter.getStub(txt);
   }
 
   /**

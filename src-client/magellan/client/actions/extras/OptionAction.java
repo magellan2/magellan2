@@ -84,16 +84,16 @@ public class OptionAction extends MenuAction {
 	}
 
 	private void buildDialog() {
+	  if(dialog != null) {
+	    return;
+	  }
 	  log.info("OptionAction.buildDialog()");
-		if(dialog != null) {
-			return;
-		}
 
-	    PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
+	  PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
 
-		if(dialog == null) {
-			dialog = pd;
-		}
+	  if(dialog == null) {
+	    dialog = pd;
+	  }
 	}
 
 	/**

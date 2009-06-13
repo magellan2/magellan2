@@ -13,34 +13,38 @@
 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import magellan.library.Item;
+import magellan.library.Rules;
 import magellan.library.Skill;
-import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.io.RulesReader;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
-import magellan.library.rules.SkillType;
 
 
 /**
- * DOCUMENT-ME
- *
+ * 
  * @author $Author: $
  * @version $Revision: 396 $
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
   private static final EresseaMovementEvaluator singleton = new EresseaMovementEvaluator();
+  private Rules rules;
 
   protected EresseaMovementEvaluator() {
+    try {
+      rules = (new RulesReader()).readRules("Eressea");
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
 	}
 
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Return a (the) EresseaMovementEvaluator
 	 */
 	public static EresseaMovementEvaluator getSingleton() {
 		return EresseaMovementEvaluator.singleton;
@@ -61,7 +65,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	public int getPayloadOnHorse(Unit unit) {
 		int capacity = 0;
 		int horses = 0;
-		Item i = unit.getModifiedItem(new ItemType(EresseaConstants.I_HORSE));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_HORSE, true));
 
 		if(i != null) {
 			horses = i.getAmount();
@@ -72,7 +76,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int skillLevel = 0;
-		Skill s = unit.getModifiedSkill(new SkillType(StringID.create("Reiten")));
+		Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
 
 		if(s != null) {
 			skillLevel = s.getLevel();
@@ -83,7 +87,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int carts = 0;
-		i = unit.getModifiedItem(new ItemType(EresseaConstants.I_CART));
+		i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
 
 		if(i != null) {
 			carts = i.getAmount();
@@ -124,7 +128,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	public int getPayloadOnFoot(Unit unit) {
 		int capacity = 0;
 		int horses = 0;
-		Item i = unit.getModifiedItem(new ItemType(EresseaConstants.I_HORSE));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_HORSE, true));
 
 		if(i != null) {
 			horses = i.getAmount();
@@ -135,7 +139,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int skillLevel = 0;
-		Skill s = unit.getModifiedSkill(new SkillType(StringID.create("Reiten")));
+		Skill s = unit.getModifiedSkill(rules.getSkillType(EresseaConstants.S_REITEN, true));
 
 		if(s != null) {
 			skillLevel = s.getLevel();
@@ -147,7 +151,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int carts = 0;
-		i = unit.getModifiedItem(new ItemType(EresseaConstants.I_CART));
+		i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
 
 		if(i != null) {
 			carts = i.getAmount();
@@ -200,7 +204,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	}
 
 	private int respectGOTS(Unit unit, int capacity) {
-		Item gots = unit.getModifiedItem(new ItemType(EresseaConstants.I_GOTS));
+		Item gots = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_GOTS, true));
 
 		if(gots == null) {
 			return capacity;
@@ -224,33 +228,34 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the weight of all items of this unit that are not horses or carts in silver
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.gamebinding.MovementEvaluator#getLoad(magellan.library.Unit)
 	 */
 	public int getLoad(Unit unit) {
 		return getLoad(unit, unit.getItems());
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+   * Returns the weight of all items of this unit that are not horses or carts in silver based
+   * on the modified items.
+   * 
+	 * @see magellan.library.gamebinding.MovementEvaluator#getModifiedLoad(magellan.library.Unit)
 	 */
 	public int getModifiedLoad(Unit unit) {
 		return getLoad(unit, unit.getModifiedItems());
 	}
 
+	/**
+   * Returns the weight of all items of this unit that are not horses or carts in silver based
+   * on the specified items.
+	 */
 	private int getLoad(Unit unit, Collection<Item> items) {
     int load = 0;
-		ItemType horse = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_HORSE);
-		ItemType cart = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_CART);
+		ItemType horse = rules.getItemType(EresseaConstants.I_HORSE, true);
+		ItemType cart = rules.getItemType(EresseaConstants.I_CART, true);
     // darcduck 2007-10-31: take care of bags of negative weight
-    ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
+    ItemType bonw = rules.getItemType(EresseaConstants.I_BONW, true);
 
 		for(Item i : items) {
 			if(!i.getItemType().equals(horse) && !i.getItemType().equals(cart)) {
@@ -269,7 +274,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	}
   
   /**
-   * Returns the load in GE 100 of the bag of negatvie weight (bonw).
+   * Returns the load in GE 100 of the bag of negative weight (bonw).
    * This might be 0 if nothing can be stored in the bag up to 200 per bag.
    * Items are only considered to be stored in the bonw if this is set in the rules.
    * ItemType returns this in method isStoreableInBonw()
@@ -322,17 +327,14 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
   }
   
   /**
-   * DOCUMENT-ME
-   *
-   * 
-   *
-   * 
+   * Returns the weight of the unit given the given collection of items and number of persons.
+   * Bags of negative weight are respected. 
    */
   private int getWeight(Unit unit, Collection<Item> items, int persons) {
     int weight = 0;
     float personWeight = getRace(unit).getWeight();
     // darcduck 2007-10-31: take care of bags of negative weight
-    ItemType bonw = unit.getRegion().getData().rules.getItemType(EresseaConstants.I_BONW);
+    ItemType bonw = rules.getItemType(EresseaConstants.I_BONW, true);
     
     for(Item item : items) {
       // pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount

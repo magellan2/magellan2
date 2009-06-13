@@ -258,7 +258,7 @@ public class EresseaPostProcessor {
 
 		// intialize the fog-of-war cache for all regions that are covered by lighthouses
 		if(data.buildings() != null) {
-			BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTTOWER);
+			BuildingType type = data.rules.getBuildingType(EresseaConstants.B_LIGHTHOUSE);
 			RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
 			Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
 

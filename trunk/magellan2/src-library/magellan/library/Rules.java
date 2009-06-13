@@ -39,7 +39,7 @@ import magellan.library.rules.SkillType;
  * <p>
  * If internationalization is a concern, implementing sub-classes should ensure that the
  * access-methods to the various collections (<tt>getXXX()</tt>) return their objects not only by
- * their (usually language-independent) id but also by their (laguage-dependent) name as it may be
+ * their (usually language-independent) id but also by their (language-dependent) name as it may be
  * supplied by the user.
  * </p>
  * 
@@ -54,73 +54,53 @@ import magellan.library.rules.SkillType;
  */
 public interface Rules {
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the region type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public RegionType getRegionType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getRegionType(id, false).
 	 */
 	public RegionType getRegionType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all region types. 
 	 */
 	public Iterator<RegionType> getRegionTypeIterator();
 
   
+  /**
+   * Returns a collection of all region types.
+   */
   public Collection<RegionType> getRegionTypes();
   
 	/**
-	 * get RegionType by (possibly localized) name
+	 * get RegionType by (possibly localized) name.
 	 *
 	 * 
 	 */
 	public RegionType getRegionType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getRegionType(id, false); 
 	 */
 	public RegionType getRegionType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Shorthand for getRace(id, false)
 	 * 
 	 */
 	public Race getRace(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the race with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public Race getRace(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all races. 
 	 */
 	public Iterator getRaceIterator();
 
@@ -132,37 +112,25 @@ public interface Rules {
 	public Race getRace(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * shorthand for getRace(id, false)
 	 * 
 	 */
 	public Race getRace(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Shorthand for getShipType(id, false)
 	 * 
 	 */
 	public ShipType getShipType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the ship type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public ShipType getShipType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all ship types. 
 	 */
 	public Iterator getShipTypeIterator();
 
@@ -174,37 +142,24 @@ public interface Rules {
 	public ShipType getShipType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Shorthand for getShipType(id, false)
 	 * 
 	 */
 	public ShipType getShipType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getBuildingType(id, false) 
 	 */
 	public BuildingType getBuildingType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the building type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public BuildingType getBuildingType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all building types. 
 	 */
 	public Iterator<BuildingType> getBuildingTypeIterator();
 
@@ -216,37 +171,23 @@ public interface Rules {
 	public BuildingType getBuildingType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getBuildingType(id, false) 
 	 */
 	public BuildingType getBuildingType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getCastleType(id, false) 
 	 */
 	public CastleType getCastleType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the castle type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public CastleType getCastleType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator of all castle types. 
 	 */
 	public Iterator getCastleTypeIterator();
 
@@ -258,37 +199,23 @@ public interface Rules {
 	public CastleType getCastleType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getCastleType(id, false) 
 	 */
 	public CastleType getCastleType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getItemType(id, false) 
 	 */
 	public ItemType getItemType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the item type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public ItemType getItemType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all item types. 
 	 */
 	public Iterator<ItemType> getItemTypeIterator();
 
@@ -300,37 +227,23 @@ public interface Rules {
 	public ItemType getItemType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getItemType(id, false). 
 	 */
 	public ItemType getItemType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+   * Shorthand for <code>getSkillType(id, false)</code>. 
 	 */
 	public SkillType getSkillType(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * Returns the skill type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public SkillType getSkillType(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all skill types. 
 	 */
 	public Iterator<SkillType> getSkillTypeIterator();
 
@@ -342,37 +255,23 @@ public interface Rules {
 	public SkillType getSkillType(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getSkillType(id, false) 
 	 */
 	public SkillType getSkillType(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getItemCategory(id, false) 
 	 */
 	public ItemCategory getItemCategory(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the item category with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public ItemCategory getItemCategory(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all item categories. 
 	 */
 	public Iterator getItemCategoryIterator();
 
@@ -384,37 +283,23 @@ public interface Rules {
 	public ItemCategory getItemCategory(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getItemCategory(id, false) 
 	 */
 	public ItemCategory getItemCategory(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getSkillCategory(id, false) 
 	 */
 	public SkillCategory getSkillCategory(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the skill category with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public SkillCategory getSkillCategory(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all skill categories. 
 	 */
 	public Iterator getSkillCategoryIterator();
 
@@ -426,37 +311,23 @@ public interface Rules {
 	public SkillCategory getSkillCategory(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getSkillCategory(id, false) 
 	 */
 	public SkillCategory getSkillCategory(String id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getOptionCategory(id, false) 
 	 */
 	public OptionCategory getOptionCategory(ID id);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the option category with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public OptionCategory getOptionCategory(ID id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns an iterator over all option categories. 
 	 */
 	public Iterator getOptionCategoryIterator();
 
@@ -468,11 +339,7 @@ public interface Rules {
 	public OptionCategory getOptionCategory(String id, boolean add);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Shorthand for getOptionCategory(id, false) 
 	 */
 	public OptionCategory getOptionCategory(String id);
 
@@ -511,15 +378,12 @@ public interface Rules {
 	public ObjectType changeName(String from, String to);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName. 
 	 */
 	public void setGameSpecificStuffClassName(String className);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName. 
 	 * 
 	 */
 	public GameSpecificStuff getGameSpecificStuff();

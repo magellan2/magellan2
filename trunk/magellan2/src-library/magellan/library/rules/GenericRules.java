@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import magellan.library.ID;
+import magellan.library.Named;
 import magellan.library.Rules;
 import magellan.library.StringID;
 import magellan.library.gamebinding.GameSpecificStuff;
@@ -43,8 +44,8 @@ public class GenericRules implements Rules {
 	private Map<String,ObjectType> mapUnitContainerTypeNames = new OrderedHashtable<String, ObjectType>();
 
 	// Map consisting of ItemType
-	private Map<String,ObjectType> mapItemType = new OrderedHashtable<String, ObjectType>();
-	private Map<String,ObjectType> mapItemTypeNames = new OrderedHashtable<String, ObjectType>();
+	private Map<String,ItemType> mapItemType = new OrderedHashtable<String, ItemType>();
+	private Map<String,ItemType> mapItemTypeNames = new OrderedHashtable<String, ItemType>();
 
 	// Map consisting of AllianceCategory
 	private Map<String,ObjectType> mapAllianceCategory = new OrderedHashtable<String, ObjectType>();
@@ -72,24 +73,21 @@ public class GenericRules implements Rules {
 	private String orderFileStartingString = "ERESSEA";
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRegionTypeIterator()
 	 */
 	public Iterator<RegionType> getRegionTypeIterator() {
 		return CollectionFilters.getValueIterator(RegionType.class, mapUnitContainerType);
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * @see magellan.library.Rules#getRegionType(magellan.library.ID)
 	 */
 	public RegionType getRegionType(ID id) {
 		return getRegionType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * @see magellan.library.Rules#getRegionType(magellan.library.ID, boolean)
 	 */
 	public RegionType getRegionType(ID id, boolean add) {
 		Object uct = getObjectType(mapUnitContainerType, mapUnitContainerTypeNames, id.toString());
@@ -101,7 +99,7 @@ public class GenericRules implements Rules {
 		RegionType r = (RegionType) uct;
 
 		if((r == null) && add) {
-			r = (RegionType) addObject(new RegionType(id), mapUnitContainerType,
+			r = addObject(new RegionType(id), mapUnitContainerType,
 									   mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -110,23 +108,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRegionType(java.lang.String)
 	 */
 	public RegionType getRegionType(String id) {
 		return getRegionType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRegionType(java.lang.String, boolean)
 	 */
 	public RegionType getRegionType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -152,34 +141,22 @@ public class GenericRules implements Rules {
     }
   }
   
-  
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getShipTypeIterator()
 	 */
 	public Iterator<ShipType> getShipTypeIterator() {
 		return CollectionFilters.getValueIterator(ShipType.class, mapUnitContainerType);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getShipType(magellan.library.ID)
 	 */
 	public ShipType getShipType(ID id) {
 		return getShipType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getShipType(magellan.library.ID, boolean)
 	 */
 	public ShipType getShipType(ID id, boolean add) {
 		Object uct = getObjectType(mapUnitContainerType, mapUnitContainerTypeNames, id.toString());
@@ -191,7 +168,7 @@ public class GenericRules implements Rules {
 		ShipType r = (ShipType) uct;
 
 		if((r == null) && add) {
-			r = (ShipType) addObject(new ShipType(id), mapUnitContainerType,
+			r = addObject(new ShipType(id), mapUnitContainerType,
 									 mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -200,23 +177,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getShipType(java.lang.String)
 	 */
 	public ShipType getShipType(String id) {
 		return getShipType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getShipType(java.lang.String, boolean)
 	 */
 	public ShipType getShipType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -227,32 +195,21 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getBuildingTypeIterator()
 	 */
 	public Iterator<BuildingType> getBuildingTypeIterator() {
 		return CollectionFilters.getValueIterator(BuildingType.class, mapUnitContainerType);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getBuildingType(magellan.library.ID)
 	 */
 	public BuildingType getBuildingType(ID id) {
 		return getBuildingType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getBuildingType(magellan.library.ID, boolean)
 	 */
 	public BuildingType getBuildingType(ID id, boolean add) {
 		Object uct = getObjectType(mapUnitContainerType, mapUnitContainerTypeNames, id.toString());
@@ -264,7 +221,7 @@ public class GenericRules implements Rules {
 		BuildingType r = (BuildingType) uct;
 
 		if((r == null) && add) {
-			r = (BuildingType) addObject(new BuildingType(id), mapUnitContainerType,
+			r = addObject(new BuildingType(id), mapUnitContainerType,
 										 mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -273,23 +230,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getBuildingType(java.lang.String)
 	 */
 	public BuildingType getBuildingType(String id) {
 		return getBuildingType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getBuildingType(java.lang.String, boolean)
 	 */
 	public BuildingType getBuildingType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -300,32 +248,21 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getCastleTypeIterator()
 	 */
 	public Iterator<CastleType> getCastleTypeIterator() {
 		return CollectionFilters.getValueIterator(CastleType.class, mapUnitContainerType);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getCastleType(magellan.library.ID)
 	 */
 	public CastleType getCastleType(ID id) {
 		return getCastleType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getCastleType(magellan.library.ID, boolean)
 	 */
 	public CastleType getCastleType(ID id, boolean add) {
 		Object uct = getObjectType(mapUnitContainerType, mapUnitContainerTypeNames, id.toString());
@@ -337,7 +274,7 @@ public class GenericRules implements Rules {
 		CastleType r = (CastleType) uct;
 
 		if((r == null) && add) {
-			r = (CastleType) addObject(new CastleType(id), mapUnitContainerType,
+			r = addObject(new CastleType(id), mapUnitContainerType,
 									   mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -346,23 +283,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getCastleType(java.lang.String)
 	 */
 	public CastleType getCastleType(String id) {
 		return getCastleType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getCastleType(java.lang.String, boolean)
 	 */
 	public CastleType getCastleType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -373,32 +301,21 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRaceIterator()
 	 */
 	public Iterator<Race> getRaceIterator() {
 		return CollectionFilters.getValueIterator(Race.class, mapUnitContainerType);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRace(magellan.library.ID)
 	 */
 	public Race getRace(ID id) {
 		return getRace(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRace(magellan.library.ID, boolean)
 	 */
 	public Race getRace(ID id, boolean add) {
 		ObjectType uct = getObjectType(mapUnitContainerType, mapUnitContainerTypeNames, id.toString());
@@ -410,7 +327,7 @@ public class GenericRules implements Rules {
 		Race r = (Race) uct;
 
 		if((r == null) && add) {
-			r = (Race) addObject(new Race(id), mapUnitContainerType, mapUnitContainerTypeNames);
+			r = addObject(new Race(id), mapUnitContainerType, mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -418,23 +335,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRace(java.lang.String)
 	 */
 	public Race getRace(String id) {
 		return getRace(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getRace(java.lang.String, boolean)
 	 */
 	public Race getRace(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -445,29 +353,27 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemTypeIterator()
 	 */
 	public Iterator<ItemType> getItemTypeIterator() {
 		return CollectionFilters.getValueIterator(ItemType.class, mapItemType);
 	}
 
 	/**
-	 * 
+	 * @see magellan.library.Rules#getItemType(magellan.library.ID)
 	 */
 	public ItemType getItemType(ID id) {
 		return getItemType(id, false);
 	}
 
 	/**
-   * 
+	 * @see magellan.library.Rules#getItemType(magellan.library.ID, boolean)
 	 */
 	public ItemType getItemType(ID id, boolean add) {
-		ItemType r = (ItemType) getObjectType(mapItemType, mapItemTypeNames, id.toString());
+		ItemType r = getObjectType(mapItemType, mapItemTypeNames, id.toString());
 
 		if((r == null) && add) {
-			r = (ItemType) addObject(new ItemType(id), mapItemType, mapItemTypeNames);
+			r = addObject(new ItemType(id), mapItemType, mapItemTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -475,14 +381,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * 
+	 * @see magellan.library.Rules#getItemType(java.lang.String)
 	 */
 	public ItemType getItemType(String id) {
 		return getItemType(id, false);
 	}
 
 	/**
-	 * 
+	 * @see magellan.library.Rules#getItemType(java.lang.String, boolean)
 	 */
 	public ItemType getItemType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -493,26 +399,21 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-   * 
+	 * @see magellan.library.Rules#getAllianceCategoryIterator()
 	 */
 	public Iterator<AllianceCategory> getAllianceCategoryIterator() {
 		return CollectionFilters.getValueIterator(AllianceCategory.class, mapAllianceCategory);
 	}
 
 	/**
-	 * 
+	 * @see magellan.library.Rules#getAllianceCategory(magellan.library.ID)
 	 */
 	public AllianceCategory getAllianceCategory(ID id) {
 		return getAllianceCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getAllianceCategory(magellan.library.ID, boolean)
 	 */
 	public AllianceCategory getAllianceCategory(ID id, boolean add) {
 		AllianceCategory r = (AllianceCategory) getObjectType(mapAllianceCategory,
@@ -520,7 +421,7 @@ public class GenericRules implements Rules {
 															  id.toString());
 
 		if((r == null) && add) {
-			r = (AllianceCategory) addObject(new AllianceCategory(id), mapAllianceCategory,
+			r = addObject(new AllianceCategory(id), mapAllianceCategory,
 											 mapAllianceCategoryNames);
 			r.setName(id.toString());
 		}
@@ -529,23 +430,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getAllianceCategory(java.lang.String)
 	 */
 	public AllianceCategory getAllianceCategory(String id) {
 		return getAllianceCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getAllianceCategory(java.lang.String, boolean)
 	 */
 	public AllianceCategory getAllianceCategory(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -556,39 +448,28 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getOptionCategoryIterator()
 	 */
 	public Iterator<OptionCategory> getOptionCategoryIterator() {
 		return CollectionFilters.getValueIterator(OptionCategory.class, mapOptionCategory);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getOptionCategory(magellan.library.ID)
 	 */
 	public OptionCategory getOptionCategory(ID id) {
 		return getOptionCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getOptionCategory(magellan.library.ID, boolean)
 	 */
 	public OptionCategory getOptionCategory(ID id, boolean add) {
 		OptionCategory r = (OptionCategory) getObjectType(mapOptionCategory,
 														  mapOptionCategoryNames, id.toString());
 
 		if((r == null) && add) {
-			r = (OptionCategory) addObject(new OptionCategory(id), mapOptionCategory,
+			r = addObject(new OptionCategory(id), mapOptionCategory,
 										   mapOptionCategoryNames);
 			r.setName(id.toString());
 		}
@@ -597,23 +478,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getOptionCategory(java.lang.String)
 	 */
 	public OptionCategory getOptionCategory(String id) {
 		return getOptionCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getOptionCategory(java.lang.String, boolean)
 	 */
 	public OptionCategory getOptionCategory(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -624,39 +496,28 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillCategoryIterator()
 	 */
 	public Iterator<SkillCategory> getSkillCategoryIterator() {
 		return CollectionFilters.getValueIterator(SkillCategory.class, mapSkillCategory);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillCategory(magellan.library.ID)
 	 */
 	public SkillCategory getSkillCategory(ID id) {
 		return getSkillCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillCategory(magellan.library.ID, boolean)
 	 */
 	public SkillCategory getSkillCategory(ID id, boolean add) {
 		SkillCategory r = (SkillCategory) getObjectType(mapSkillCategory, mapSkillCategoryNames,
 														id.toString());
 
 		if((r == null) && add) {
-			r = (SkillCategory) addObject(new SkillCategory(id), mapSkillCategory,
+			r = addObject(new SkillCategory(id), mapSkillCategory,
 										  mapSkillCategoryNames);
 			r.setName(id.toString());
 		}
@@ -665,23 +526,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillCategory(java.lang.String)
 	 */
 	public SkillCategory getSkillCategory(String id) {
 		return getSkillCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillCategory(java.lang.String, boolean)
 	 */
 	public SkillCategory getSkillCategory(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -692,39 +544,28 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemCategoryIterator()
 	 */
 	public Iterator<ItemCategory> getItemCategoryIterator() {
 	  return CollectionFilters.getValueIterator(ItemCategory.class, mapItemCategory);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemCategory(magellan.library.ID)
 	 */
 	public ItemCategory getItemCategory(ID id) {
 		return getItemCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemCategory(magellan.library.ID, boolean)
 	 */
 	public ItemCategory getItemCategory(ID id, boolean add) {
 		ItemCategory r = (ItemCategory) getObjectType(mapItemCategory, mapItemCategoryNames,
 													  id.toString());
 
 		if((r == null) && add) {
-			r = (ItemCategory) addObject(new ItemCategory(id), mapItemCategory, mapItemCategoryNames);
+			r = addObject(new ItemCategory(id), mapItemCategory, mapItemCategoryNames);
 			r.setName(id.toString());
 		}
 
@@ -732,23 +573,14 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemCategory(java.lang.String)
 	 */
 	public ItemCategory getItemCategory(String id) {
 		return getItemCategory(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getItemCategory(java.lang.String, boolean)
 	 */
 	public ItemCategory getItemCategory(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -759,38 +591,32 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillTypeIterator()
 	 */
 	public Iterator<SkillType> getSkillTypeIterator() {
 		return CollectionFilters.getValueIterator(SkillType.class, mapSkillType);
 	}
 
 	/**
-	 * DOCUMENT-ME
+   * Shorthand for <code>getSkillType(id, false)</code>. 
 	 *
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillType(magellan.library.ID)
 	 */
 	public SkillType getSkillType(ID id) {
 		return getSkillType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Returns the skill type with given id. If there is no such skill type and <code>add == true</code>, 
+	 * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#getSkillType(magellan.library.ID, boolean)
 	 */
 	public SkillType getSkillType(ID id, boolean add) {
 		SkillType r = (SkillType) getObjectType(mapSkillType, mapSkillTypeNames, id.toString());
 
 		if((r == null) && add) {
-			r = (SkillType) addObject(new SkillType(id), mapSkillType, mapSkillTypeNames);
+			r = addObject(new SkillType(id), mapSkillType, mapSkillTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -798,23 +624,15 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+   * Shorthand for <code>getSkillType(id, false)</code>. 
 	 */
 	public SkillType getSkillType(String id) {
 		return getSkillType(id, false);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
+   * Returns the skill type with given id. If there is no such skill type and <code>add == true</code>, 
+   * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
 	public SkillType getSkillType(String id, boolean add) {
 		if((id == null) || id.equals("")) {
@@ -825,12 +643,8 @@ public class GenericRules implements Rules {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.library.Rules#changeName(java.lang.String, java.lang.String)
 	 */
 	public ObjectType changeName(String from, String to) {
 		return changeName(StringID.create(from), to);
@@ -842,11 +656,6 @@ public class GenericRules implements Rules {
 	 * object type (ItemType, SkillType etc.) and accessing the corresponding data structures. It
 	 * also ensures that the object is also accessible by calling the getXXX methods with the new
 	 * name.
-	 *
-	 * 
-	 * 
-	 *
-	 * 
 	 */
 	private ObjectType changeName(ID id, String name) {
 		ObjectType ot = null;
@@ -893,9 +702,9 @@ public class GenericRules implements Rules {
 		return null;
 	}
 
-	protected ObjectType changeName(ID id, String name, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
+	protected static <T extends ObjectType> T changeName(ID id, String name, Map<String,T> mapObjectType, Map<String,T> mapObjectTypeNames) {
     String key = Umlaut.normalize(id.toString());
-		ObjectType ot = mapObjectType.get(key);
+		T ot = mapObjectType.get(key);
 
 		if(ot != null) {
 			mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));
@@ -908,19 +717,12 @@ public class GenericRules implements Rules {
 
 	/**
 	 * Adds the specified object to the specified map by id and by name.
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
 	 */
-	private ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
+	private static <T extends ObjectType> T addObject(T o, Map<String,? super T> mapObjectType, Map<String,? super T> mapObjectTypeNames) {
 		if(GenericRules.log.isDebugEnabled()) {
 			GenericRules.log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID() + ")");
 		}
 
-		//mapObjectType.put(o.getID().toString(), o);
     mapObjectType.put(Umlaut.normalize(o.getID().toString()), o);
 
 		if(o.getName() != null) {
@@ -935,25 +737,21 @@ public class GenericRules implements Rules {
 	 * as a key in the map but an object with the specified name exists, the object is put into
 	 * the map with the name as its key for speeding up future look-ups.
 	 */
-	private ObjectType getObjectType(Map<String,ObjectType> objects, Map<String, ObjectType> names, String name) {
+	private static <T extends Named> T getObjectType(Map<String,T> objects, Map<String, T> names, String name) {
 		String normName = Umlaut.normalize(name);
 
 		if(names.containsKey(normName)) {
 			return names.get(normName);
 		} else {
-			for(Iterator<ObjectType> iter = objects.values().iterator(); iter.hasNext();) {
-				ObjectType ot = iter.next();
-
+			for(T ot : objects.values()) {
 				if(Umlaut.normalize(ot.getName()).equals(normName)) {
 					names.put(normName, ot);
-
 					return ot;
 				}
         if(Umlaut.normalize(ot.getID().toString()).equals(normName)) {
           names.put(normName, ot);
           return ot;
         }
-        
 			}
 		}
 
@@ -965,9 +763,9 @@ public class GenericRules implements Rules {
 	private String gameSpecificStuffClassName;
 
 	/**
-	 * DOCUMENT-ME
+	 * Sets the name of the class for getGameSpecificStuff()
 	 *
-	 * 
+	 * @see magellan.library.Rules#setGameSpecificStuffClassName(java.lang.String)
 	 */
 	public void setGameSpecificStuffClassName(String className) {
 		gameSpecificStuffClassName = className;
@@ -976,9 +774,9 @@ public class GenericRules implements Rules {
 	
 
 	/**
-	 * DOCUMENT-ME
+   * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName. 
 	 *
-	 * 
+	 * @see magellan.library.Rules#getGameSpecificStuff()
 	 */
 	public GameSpecificStuff getGameSpecificStuff() {
 		if(gameSpecificStuff == null) {

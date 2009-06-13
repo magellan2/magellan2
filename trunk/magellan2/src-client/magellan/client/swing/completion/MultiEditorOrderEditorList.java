@@ -91,6 +91,7 @@ import magellan.library.Region;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.completion.OrderParser;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
@@ -168,22 +169,28 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
   private AutoCompletion completion;
 
+  private OrderParser parser;
+
   /**
    * Creates a new MultiEditorOrderEditorList object.
    */
-  public MultiEditorOrderEditorList(EventDispatcher d, GameData initData,
-      Properties settings, UndoManager _undoMgr) {
-    super(d, initData, settings);
+  public MultiEditorOrderEditorList(EventDispatcher dispatcher, GameData data,
+      Properties settings, UndoManager undoMgr) {
+    super(dispatcher, data, settings);
+    
+    // beware: an OrderParser is likely not thread-safe. so we better call it only from the
+    // EventDispatchThread...
+    this.parser = data.getGameSpecificStuff().getOrderParser(data);
 
     loadListProperty();
 
-    d.addTempUnitListener(this);
+    dispatcher.addTempUnitListener(this);
 
     keyAdapter = new MEKeyAdapter(this);
     caretAdapter = new MECaretAdapter(this);
     focusAdapter = new MEFocusAdapter(this);
 
-    undoMgr = _undoMgr;
+    this.undoMgr = undoMgr;
     initGUI();
     initContent();
     // startTimer();
@@ -245,7 +252,15 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
-    super.gameDataChanged(e);
+    setGameData(e.getGameData());
+  }
+  
+  /**
+   * @see magellan.client.swing.InternationalizedDataPanel#setGameData(magellan.library.GameData)
+   */
+  public void setGameData(GameData d){
+    super.setGameData(d);
+    this.parser = data.getGameSpecificStuff().getOrderParser(d);
     initContent();
     if (!multiEditorLayout) {
       initSingleEditor();
@@ -295,24 +310,25 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           "255,128,0"));
   }
 
-  private boolean swingGlitch = false;
+//  private boolean swingGlitch =false;
 
   /**
-   * DOCUMENT-ME
+   * @see javax.swing.JComponent#paint(java.awt.Graphics)
    */
   @Override
   public void paint(Graphics g) {
     super.paint(g);
 
-    if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
-      MultiEditorOrderEditorList.log.debug("paint! [" + swingGlitch + "]");
-    }
-
-    // we are in a situation AFTER painting (hopefully!)
-    if (swingGlitch) {
-      swingGlitch = false;
-      SwingUtilities.invokeLater(swingGlitchThread);
-    }
+    // stm: this does not make sense any more
+//    if (MultiEditorOrderEditorList.log.isDebugEnabled()) {
+//      MultiEditorOrderEditorList.log.debug("paint! [" + swingGlitch + "]");
+//    }
+//
+//    // we are in a situation AFTER painting (hopefully!)
+//    if (swingGlitch) {
+//      swingGlitch = false;
+//      SwingUtilities.invokeLater(swingGlitchThread);
+//    }
   }
 
   /**
@@ -506,11 +522,11 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * Reset a unit's editor border to normal.
    * 
-   * @param currentUnit
+   * @param selectedUnit
    */
-  private void deselectEditor(Unit currentUnit) {
-    if (getEditor(currentUnit) != null) {
-      deselectEditor(getEditor(currentUnit));
+  private void deselectEditor(Unit selectedUnit) {
+    if (getEditor(selectedUnit) != null) {
+      deselectEditor(getEditor(selectedUnit));
     }
   }
 
@@ -745,33 +761,24 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * Return whether syntax highlighting in the editor is enabled or disabled.
    */
   public boolean getUseSyntaxHighlighting() {
-    if (multiEditorLayout) {
-      return (new OrderEditor(data, settings, undoMgr, dispatcher)).getUseSyntaxHighlighting();
-    } else {
-      return editorSingelton.getUseSyntaxHighlighting();
-    }
+    return PropertiesHelper.getBoolean(settings, "OrderEditor.highlightSyntax", true);
   }
 
   /**
    * Enable or disable syntax highlighting in the editor.
    */
   public void setUseSyntaxHighlighting(boolean bool) {
-    if (multiEditorLayout) {
-      boolean foundEditor = false;
+    settings.setProperty("OrderEditor.highlightSyntax", String.valueOf(bool));
 
+    if (multiEditorLayout) {
       if (data.units() != null) {
         for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
           Unit u = (Unit) iter.next();
 
           if (getEditor(u) != null) {
-            foundEditor = true;
             getEditor(u).setUseSyntaxHighlighting(bool);
           }
         }
-      }
-
-      if (!foundEditor) {
-        (new OrderEditor(data, settings, undoMgr, dispatcher)).setUseSyntaxHighlighting(bool);
       }
     } else {
       editorSingelton.setUseSyntaxHighlighting(bool);
@@ -783,7 +790,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * in the editor.
    */
   public Color getTokenColor(String styleName) {
-    return (new OrderEditor(data, settings, undoMgr, dispatcher)).getTokenColor(styleName);
+    return Colors.decode(settings.getProperty("OrderEditor.styles." + styleName + ".color",
+        OrderEditor.getDefaultColor(styleName)));
   }
 
   /**
@@ -791,23 +799,20 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * the editor.
    */
   public void setTokenColor(String styleName, Color color) {
+    settings.setProperty("OrderEditor.styles." + styleName + ".color", Colors.encode(color));
+
     if (multiEditorLayout) {
-      boolean foundEditor = false;
 
       if (data.units() != null) {
         for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
           Unit u = (Unit) iter.next();
 
           if (getEditor(u) != null) {
-            foundEditor = true;
             getEditor(u).setTokenColor(styleName, color);
           }
         }
       }
 
-      if (!foundEditor) {
-        (new OrderEditor(data, settings, undoMgr, dispatcher)).setTokenColor(styleName, color);
-      }
     } else {
       editorSingelton.setTokenColor(styleName, color);
     }
@@ -826,14 +831,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
 
   /**
-   * DOCUMENT-ME
+   * Returns the background color for editors.
    */
   public Color getStandardBackgroundColor() {
     return standardBgColor;
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the background color for all editors.
    */
   public void setStandardBackgroundColor(Color c) {
     if ((standardBgColor != c) && (c != null)) {
@@ -847,7 +852,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           Unit u = (Unit) iter.next();
 
           if (getEditor(u) != null) {
-            getEditor(u).setBackground(c);
+            if (!u.isOrdersConfirmed() && u!=currentUnit)
+              getEditor(u).setBackground(c);
           }
         }
       }
@@ -855,14 +861,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the background color for confirmed unit's editrs.
    */
   public Color getStandardBackgroundColorConfirmed() {
     return standardBgColorConfirmed;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets and applies the background color for confirmed unit's editors for all editors.
    */
   public void setStandardBackgroundColorConfirmed(Color c) {
     if ((standardBgColorConfirmed != c) && (c != null)) {
@@ -876,7 +882,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           Unit u = (Unit) iter.next();
 
           if (getEditor(u) != null) {
-            getEditor(u).setBackground(c);
+            if (u.isOrdersConfirmed() && u!=currentUnit)
+              getEditor(u).setBackground(c);
           }
         }
       }
@@ -884,37 +891,41 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the color for the active unconfirmed unit's editor.
    */
   public Color getActiveBackgroundColor() {
     return activeBgColor;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets and applies the color for the active unconfirmed unit's editor.
    */
   public void setActiveBackgroundColor(Color c) {
     if ((activeBgColor != c) && (c != null)) {
       activeBgColor = c;
       settings.setProperty("OrderEditor.activeBackgroundColor", Colors.encode(c));
     }
+    if (currentUnit!=null && getEditor(currentUnit)!=null  && !currentUnit.isOrdersConfirmed())
+      getEditor(currentUnit).setBackground(c);
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the color for the active confirmed unit's editor.
    */
   public Color getActiveBackgroundColorConfirmed() {
     return activeBgColorConfirmed;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets and applies the color for the active confirmed unit's editor.
    */
   public void setActiveBackgroundColorConfirmed(Color c) {
     if ((activeBgColorConfirmed != c) && (c != null)) {
       activeBgColorConfirmed = c;
       settings.setProperty("OrderEditor.activeBackgroundColorConfirmed", Colors.encode(c));
     }
+    if (currentUnit!=null && getEditor(currentUnit)!=null && currentUnit.isOrdersConfirmed())
+      getEditor(currentUnit).setBackground(c);
   }
 
   /**
@@ -954,7 +965,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   private void initSingleEditor() {
-    editorSingelton = new OrderEditor(data, settings, undoMgr, dispatcher);
+    editorSingelton = new OrderEditor(data, settings, undoMgr, dispatcher, parser);
     editorSingelton.setCursor(new Cursor(Cursor.TEXT_CURSOR));
 
     // add listeners
@@ -964,14 +975,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if temp/confirmation buttons should be shown. 
    */
   public boolean isHideButtons() {
     return hideButtons;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets and applies if temp/confirmation buttons should be shown. 
    */
   public void setHideButtons(boolean bool) {
     if (bool != hideButtons) {
@@ -1354,7 +1365,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
     CacheableOrderEditor cEditor = getEditor(u);
     if (cEditor == null || !(cEditor instanceof OrderEditor)) {
-      OrderEditor editor = new OrderEditor(data, settings, undoMgr, dispatcher);
+      OrderEditor editor = new OrderEditor(data, settings, undoMgr, dispatcher, parser);
       u.addCacheHandler(this);
       attachOrderEditor(u, editor);
       return editor;
@@ -1916,10 +1927,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         currentUnit.setOrdersConfirmed(!currentUnit.isOrdersConfirmed());
         checkOrderConfirm.setSelected(currentUnit.isOrdersConfirmed());
 
-        List<Unit> units = new LinkedList<Unit>();
-
-        units.add(currentUnit);
-        dispatcher.fire(new OrderConfirmEvent(this, units));
+        dispatcher.fire(new OrderConfirmEvent(this, Collections.singletonList(currentUnit)));
       }
     }
 
@@ -2304,6 +2312,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    */
   public AutoCompletion getCompleter() {
     return completion;
+  }
+
+
+  /**
+   * Return whether syntax highlighting is enabled or disabled.
+   */
+  public static boolean getUseSyntaxHighlighting(Properties settings) {
+    return (Boolean.valueOf(settings.getProperty("OrderEditor.highlightSyntax", "true")).booleanValue());
   }
 
 }

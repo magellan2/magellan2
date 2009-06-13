@@ -320,6 +320,7 @@ HERB "Schneekristall"
 SKILL "Alchemie"
 "Alchemie";name
 "build";category
+200;cost
 SKILL "Armbrustschieﬂen"
 "Armbrustschieﬂen";name
 "war";category
@@ -350,9 +351,61 @@ SKILL "Katapultbedienung"
 SKILL "Kr‰uterkunde"
 "Kr‰uterkunde";name
 "resource";category
+200;cost
 SKILL "Magie"
 "Magie";name
 "magic";category
+COSTS
+100;1
+200;2
+350;3
+550;4
+800;5
+1100;6
+1450;7
+1850;8
+2300;9
+2800;10
+3350;11
+3950;12
+4600;13
+5300;14
+6050;15
+6850;16
+7700;17
+8600;18
+9550;19
+10550;20
+11600;21
+12700;22
+13850;23
+15050;24
+16300;25
+17600;26
+18950;27
+20350;28
+21800;29
+23300;30
+24850;31
+26450;32
+28100;33
+29800;34
+31550;35
+33350;36
+35200;37
+37100;38
+39050;39
+41050;40
+43100;41
+45200;42
+47350;43
+49550;44
+51800;45
+54100;46
+56450;47
+58850;48
+61300;49
+63800;50
 SKILL "Pferdedressur"
 "Pferdedressur";name
 "resource";category
@@ -371,6 +424,7 @@ SKILL "Segeln"
 SKILL "Spionage"
 "Spionage";name
 "misc";category
+100;cost
 SKILL "Stangenwaffen"
 "Stangenwaffen";name
 "war";category
@@ -386,6 +440,7 @@ SKILL "Straﬂenbau"
 SKILL "Taktik"
 "Taktik";name
 "war";category
+200;cost
 SKILL "Tarnung"
 "Tarnung";name
 "misc";category

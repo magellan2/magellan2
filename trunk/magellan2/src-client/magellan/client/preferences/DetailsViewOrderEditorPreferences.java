@@ -37,6 +37,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -349,7 +350,19 @@ public class DetailsViewOrderEditorPreferences extends AbstractPreferencesAdapte
     content.add(comboSHColors, gbc);
 
     gbc.gridx++;
+    content.add(Box.createRigidArea(new Dimension(5, 5)));
+
+    gbc.gridx++;
     content.add(pnlStylesColor);
+
+    gbc.gridx++;
+    content.add(Box.createRigidArea(new Dimension(10, 5)));
+    
+    gbc.gridx++;
+    content.add(new JLabel(Resources.get("completion.multieditorordereditorlist.prefs.backgroundcolorchooser.label")));
+    
+    gbc.gridx++;
+    content.add(Box.createRigidArea(new Dimension(5, 5)));
 
     gbc.gridx++;
     content.add(pnlBackgroundColor);

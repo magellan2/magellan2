@@ -129,7 +129,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	 * 
 	 * 
 	 */
-	public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d) {
+	public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d, OrderParser parser) {
 		super();
 //		if (++instanceCount % 10 == 0) 
 //		  log.info("OE: "+instanceCount);
@@ -143,7 +143,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		setEditorKit(new OrderEditorKit());
 		this.settings = settings;
 
-		this.parser = (data != null) ? data.getGameSpecificStuff().getOrderParser(data) : null;
+		this.parser = parser; //(data != null) ? data.getGameSpecificStuff().getOrderParser(data) : null;
 
 		this.undoMgr = _undoMgr;
 
@@ -493,8 +493,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/**
 	 * Return whether syntax highlighting is enabled or disabled.
-	 *
-	 * 
 	 */
 	public boolean getUseSyntaxHighlighting() {
 		return highlightSyntax;
@@ -502,42 +500,21 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/**
 	 * Enable or disable syntax highlighting.
-	 *
 	 * 
 	 */
 	public void setUseSyntaxHighlighting(boolean bool) {
 		if(highlightSyntax != bool) {
 			highlightSyntax = bool;
 
-			if(settings != null) {
-				settings.setProperty("OrderEditor.highlightSyntax", String.valueOf(bool));
-			}
-
 			formatTokens();
 		}
 	}
 
 	/**
-	 * Return the color of the specified token style used for syntax highlighting.
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public Color getTokenColor(String styleName) {
-		return Colors.decode(settings.getProperty("OrderEditor.styles." + styleName + ".color",
-												  getDefaultColor(styleName)));
-	}
-
-	/**
 	 * Set the color of the specified token style used for syntax highlighting.
 	 *
-	 * 
-	 * 
 	 */
 	public void setTokenColor(String styleName, Color color) {
-		settings.setProperty("OrderEditor.styles." + styleName + ".color", Colors.encode(color));
-
 		Style s = ((StyledDocument) getDocument()).getStyle(styleName);
 
 		if(s != null) {
@@ -615,12 +592,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/**
 	 * Return the default color as a string for the specified token style.
-	 *
-	 * 
-	 *
-	 * 
 	 */
-	private String getDefaultColor(String styleName) {
+	public static String getDefaultColor(String styleName) {
 		String retVal = "0,0,0";
 
 		if(styleName.equals(OrderEditor.S_KEYWORD)) {
@@ -891,7 +864,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see magellan.library.utils.guiwrapper.CacheableOrderEditor#setKeepVisible(boolean)
 	 */
 	public void setKeepVisible(boolean b) {
 		myCaret.setKeepVisible(b);
@@ -1093,5 +1066,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   public ContextFactory getContextFactory() {
     return new UnitContextFactory();
   }
-  }
+  
+}
 

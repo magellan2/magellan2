@@ -103,6 +103,10 @@ ALLIANCECATEGORY "PARTEITARNUNG"
 "ALLES";parent
 32;bitmask
 
+ITEMCATEGORY "silver"
+"Silber";name
+0;naturalorder
+
 ITEMCATEGORY "weapons"
 "Waffen";name
 0;naturalorder
@@ -320,6 +324,7 @@ HERB "Schneekristall"
 SKILL "Alchemie"
 "Alchemie";name
 "build";category
+200;cost
 SKILL "Armbrustschießen"
 "Armbrustschießen";name
 "war";category
@@ -350,9 +355,61 @@ SKILL "Katapultbedienung"
 SKILL "Kräuterkunde"
 "Kräuterkunde";name
 "resource";category
+200;cost
 SKILL "Magie"
 "Magie";name
 "magic";category
+COSTS
+100;1
+200;2
+350;3
+550;4
+800;5
+1100;6
+1450;7
+1850;8
+2300;9
+2800;10
+3350;11
+3950;12
+4600;13
+5300;14
+6050;15
+6850;16
+7700;17
+8600;18
+9550;19
+10550;20
+11600;21
+12700;22
+13850;23
+15050;24
+16300;25
+17600;26
+18950;27
+20350;28
+21800;29
+23300;30
+24850;31
+26450;32
+28100;33
+29800;34
+31550;35
+33350;36
+35200;37
+37100;38
+39050;39
+41050;40
+43100;41
+45200;42
+47350;43
+49550;44
+51800;45
+54100;46
+56450;47
+58850;48
+61300;49
+63800;50
 SKILL "Pferdedressur"
 "Pferdedressur";name
 "resource";category
@@ -371,6 +428,7 @@ SKILL "Segeln"
 SKILL "Spionage"
 "Spionage";name
 "misc";category
+100;cost
 SKILL "Stangenwaffen"
 "Stangenwaffen";name
 "war";category
@@ -386,6 +444,7 @@ SKILL "Straßenbau"
 SKILL "Taktik"
 "Taktik";name
 "war";category
+200;cost
 SKILL "Tarnung"
 "Tarnung";name
 "misc";category
@@ -395,6 +454,9 @@ SKILL "Unterhaltung"
 SKILL "Waffenbau"
 "Waffenbau";name
 "build";category
+SKILL "Waffenloser Kampf"
+"Waffenloser Kampf";name
+"war";category
 SKILL "Wagenbau"
 "Wagenbau";name
 "build";category
@@ -707,12 +769,14 @@ RACE "Ghoule"
 ITEM "Silber"
 "Silber";name
 0.01;weight
-"misc";category
+"silver";category
+1;storeinbonw
 
 ITEM "Juwel"
 "Juwel";name
 1;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 7;Silber
 
@@ -720,6 +784,7 @@ ITEM "Weihrauch"
 "Weihrauch";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 4;Silber
 
@@ -727,6 +792,7 @@ ITEM "Balsam"
 "Balsam";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 4;Silber
 
@@ -734,6 +800,7 @@ ITEM "Gewürz"
 "Gewürz";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 5;Silber
 
@@ -741,6 +808,7 @@ ITEM "Myrrhe"
 "Myrrhe";name
 2;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 5;Silber
 
@@ -748,6 +816,7 @@ ITEM "Öl"
 "Öl";name
 3;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 3;Silber
 
@@ -755,6 +824,7 @@ ITEM "Seide"
 "Seide";name
 3;weight
 "luxuries";category
+1;storeinbonw
 RESOURCES
 6;Silber
 
@@ -833,11 +903,18 @@ ITEM "Kräuter"
 1;makeskilllevel
 "resources";category
 
-ITEM "Samen"
-"Samen";name
+ITEM "Same"
+"Same";name
 0.1;weight
 "Kräuterkunde";makeskill
-1;makeskilllevel
+3;makeskilllevel
+"resources";category
+
+ITEM "Mallornsame"
+"Mallornsame";name
+0.1;weight
+"Kräuterkunde";makeskill
+4;makeskilllevel
 "resources";category
 
 ITEM "Wagen"
@@ -866,6 +943,7 @@ ITEM "Katapultmunition"
 "Katapultbedienung";useskill
 3;makeskilllevel
 "ammunition";category
+1;storeinbonw
 RESOURCES
 1;Stein
 
@@ -876,6 +954,7 @@ ITEM "Schwert"
 "Hiebwaffen";useskill
 3;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 1;Eisen
 
@@ -884,6 +963,7 @@ ITEM "Schartiges Schwert"
 1;weight
 "Hiebwaffen";useskill
 "weapons";category
+1;storeinbonw
 
 ITEM "Runenschwert"
 "Runenschwert";name
@@ -901,6 +981,7 @@ ITEM "Laenschwert"
 "Hiebwaffen";useskill
 8;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 1;Laen
 
@@ -909,6 +990,7 @@ ITEM "Flammenschwert"
 1;weight
 "Hiebwaffen";useskill
 "weapons";category
+1;storeinbonw
 
 ITEM "Bihänder"
 "Bihänder";name
@@ -917,8 +999,16 @@ ITEM "Bihänder"
 "Hiebwaffen";useskill
 4;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 2;Eisen
+
+ITEM "Rostiger Zweihänder"
+"Rostiger Zweihänder";name
+2;weight
+"Hiebwaffen";useskill
+"weapons";category
+1;storeinbonw
 
 ITEM "Speer"
 "Speer";name
@@ -927,6 +1017,7 @@ ITEM "Speer"
 "Stangenwaffen";useskill
 2;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 1;Holz
 
@@ -937,6 +1028,7 @@ ITEM "Lanze"
 "Stangenwaffen";useskill
 2;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 2;Holz
 
@@ -948,9 +1040,17 @@ ITEM "Hellebarde"
 3;makeskilllevel
 "weapons";category
 "hellebarde";iconname
+1;storeinbonw
 RESOURCES
 1;Eisen
 2;Holz
+
+ITEM "Rostige Hellebarde"
+"Rostige Hellebarde";name
+2;weight
+"Stangenwaffen";useskill
+"weapons";category
+1;storeinbonw
 
 ITEM "Kriegsaxt"
 "Kriegsaxt";name
@@ -959,6 +1059,7 @@ ITEM "Kriegsaxt"
 "Hiebwaffen";useskill
 3;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 1;Eisen
 1;Holz
@@ -970,6 +1071,7 @@ ITEM "Armbrust"
 "Armbrustschießen";useskill
 3;makeskilllevel
 "distance weapons";category
+1;storeinbonw
 RESOURCES
 1;Holz
 
@@ -980,6 +1082,7 @@ ITEM "Bogen"
 "Bogenschießen";useskill
 2;makeskilllevel
 "distance weapons";category
+1;storeinbonw
 RESOURCES
 1;Holz
 
@@ -990,6 +1093,8 @@ ITEM "Elfenbogen"
 "Bogenschießen";useskill
 5;makeskilllevel
 "distance weapons";category
+1;storeinbonw
+"bogen";iconname
 RESOURCES
 2;Mallorn
 
@@ -1000,6 +1105,7 @@ ITEM "Mallornbogen"
 "Bogenschießen";useskill
 5;makeskilllevel
 "distance weapons";category
+1;storeinbonw
 "bogen";iconname
 RESOURCES
 1;Mallorn
@@ -1011,6 +1117,7 @@ ITEM "Mallornarmbrust"
 "Armbrustschießen";useskill
 5;makeskilllevel
 "distance weapons";category
+1;storeinbonw
 "armbrust";iconname
 RESOURCES
 1;Mallorn
@@ -1022,6 +1129,7 @@ ITEM "Mallornlanze"
 "Stangenwaffen";useskill
 5;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 2;Mallorn
 
@@ -1032,6 +1140,7 @@ ITEM "Mallornspeer"
 "Stangenwaffen";useskill
 5;makeskilllevel
 "weapons";category
+1;storeinbonw
 RESOURCES
 1;Mallorn
 
@@ -1041,6 +1150,7 @@ ITEM "Kettenhemd"
 "Rüstungsbau";makeskill
 3;makeskilllevel
 "armour";category
+1;storeinbonw
 "ruestungen";iconname
 RESOURCES
 3;Eisen
@@ -1049,6 +1159,7 @@ ITEM "Rostiges Kettenhemd"
 "Rostiges Kettenhemd";name
 "armour";category
 2;weight
+1;storeinbonw
 
 ITEM "Laenkettenhemd"
 "Laenkettenhemd";name
@@ -1056,6 +1167,7 @@ ITEM "Laenkettenhemd"
 "Rüstungsbau";makeskill
 9;makeskilllevel
 "armour";category
+1;storeinbonw
 RESOURCES
 3;Laen
 
@@ -1065,6 +1177,7 @@ ITEM "Plattenpanzer"
 "Rüstungsbau";makeskill
 4;makeskilllevel
 "armour";category
+1;storeinbonw
 RESOURCES
 5;Eisen
 
@@ -1074,6 +1187,7 @@ ITEM "Schild"
 "Rüstungsbau";makeskill
 2;makeskilllevel
 "shield";category
+1;storeinbonw
 RESOURCES
 1;Eisen
 
@@ -1081,12 +1195,14 @@ ITEM "Rostiger Schild"
 "Rostiger Schild";name
 "shield";category
 1;weight
+1;storeinbonw
 
 ITEM "Laenschild"
 "Laenschild";name
 "Rüstungsbau";makeskill
 7;makeskilllevel
 "shield";category
+1;storeinbonw
 RESOURCES
 1;Laen
 
@@ -1155,7 +1271,7 @@ ITEM "Wundsalbe"
 RESOURCES
 1;Weißer Wüterich
 1;Blauer Baumringel
-1;W?rziger Wagemut
+1;Würziger Wagemut
 
 ITEM "Bauernblut"
 "Bauernblut";name
@@ -1268,54 +1384,63 @@ ITEM "Phiole"
 ITEM "Kraeuterbeutel"
 "Kräuterbeutel";name
 "herbs";category
+"kraeuterbeutel";iconname
 
 ITEM "Silberbeutel"
 "Silberbeutel";name
-"misc";category
+"silver";category
 
 ITEM "Silberkassette"
 "Silberkassette";name
-"misc";category
+"silver";category
 
 ITEM "Trollhorn"
 "Trollhorn";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Zwergenbart"
 "Zwergenbart";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Halblingfuß"
 "Halblingfuß";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Katzenschwanz"
 "Katzenschwanz";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Elfenohr"
 "Elfenohr";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Dämonenblut"
 "Dämonenblut";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Insektenfühler"
 "Insektenfühler";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Meermenschschuppe"
 "Meermenschschuppe";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Goblinkopf"
 "Goblinkopf";name
@@ -1326,11 +1451,13 @@ ITEM "Menschenskalp"
 "Menschenskalp";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Orkhauer"
 "Orkhauer";name
 "trophies";category
 0.01;weight
+1;storeinbonw
 
 ITEM "Zauberbeutel"
 "Zauberbeutel";name
@@ -1359,13 +1486,13 @@ ITEM "Magischer Kräuterbeutel"
 ITEM "Seeschlangenkopf"
 "Seeschlangenkopf";name
 5;weight
-"trophies";category
+"misc";category
 1;storeinbonw
 
 ITEM "Drachenkopf"
 "Drachenkopf";name
 5;weight
-"trophies";category
+"misc";category
 1;storeinbonw
 
 ITEM "Ring der flinken Finger"
@@ -1373,6 +1500,12 @@ ITEM "Ring der flinken Finger"
 0;weight
 "misc";category
 1;storeinbonw
+
+ITEM "Drachenblut"
+"Drachenblut";name
+"misc";category
+1;weight
+0;storeinbonw
 
 SHIPTYPE "Boot"
 "Boot";name
@@ -1776,6 +1909,11 @@ REGIONTYPE "Gletscher"
 "Tunnel";roadsupportbuilding
 "true";isAstralVisible
 
+REGIONTYPE "Eisberg"
+"Eisberg";name
+0;maxworkers
+"false";isAstralVisible
+
 REGIONTYPE "Hochland"
 "Hochland";name
 4000;maxworkers
@@ -1808,9 +1946,16 @@ REGIONTYPE "Ozean"
 "true";isOcean
 "false";isAstralVisible
 
+REGIONTYPE "Mahlstrom"	
+"Mahlstrom";name
+0;maxworkers
+"true";isOcean
+"false";isAstralVisible
+
 REGIONTYPE "Feuerwand"
 "Feuerwand";name
 0;maxworkers
+"false";isAstralVisible
 
 REGIONTYPE "Vulkan"
 "Vulkan";name

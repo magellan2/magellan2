@@ -2478,7 +2478,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 */
 	private void appendUnitHorses(Unit u, DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
 		int skillLevel = 0;
-		Skill s = u.getModifiedSkill(new SkillType(StringID.create("Reiten")));
+		Skill s = u.getModifiedSkill(data.rules.getSkillType(EresseaConstants.S_REITEN, true));
 	
 		if(s != null) {
 			skillLevel = s.getLevel();
@@ -2699,7 +2699,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		SkillType tradeSkill = null;
 	
 		if(tradeCat == null) {
-			tradeSkill = data.rules.getSkillType(StringID.create("Handeln"));
+			tradeSkill = data.rules.getSkillType(EresseaConstants.S_HANDELN);
 		}
 	
 		Collection<Skill> modSkills = u.getModifiedSkills();

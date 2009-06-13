@@ -1144,7 +1144,7 @@ public class EresseaOrderCompleter implements Completer {
       if(cost > 0) {
         completions.add(new Completion(Integer.toString(cost)));
       }
-      if (t.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE))) {
+      if (t.equals(data.rules.getSkillType(EresseaConstants.S_MAGIE)) && (unit.getFaction()==null || unit.getFaction().getSpellSchool()==null)) {
         completions.add(new Completion("\""
             + Resources.get("gamebinding.eressea.eresseaordercompleter.magicarea") + "\"", "\"\"",
             "", Completion.DEFAULT_PRIORITY, 1));
@@ -1163,7 +1163,14 @@ public class EresseaOrderCompleter implements Completer {
 	 */
 	public int getSkillCost(SkillType skillType, Unit someUnit) {
 		int cost = 0;
+		int c2 = 0;
 
+		Skill sk = someUnit.getSkill(skillType);
+		if (sk==null)
+		  c2 = skillType.getCost(1);
+		else
+		  c2 = skillType.getCost(sk.getLevel()-sk.getModifier(someUnit));
+		
 		if(skillType.getID().equals(EresseaConstants.S_TAKTIK) ||
 			   skillType.getID().equals(EresseaConstants.S_KRAEUTERKUNDE) ||
 			   skillType.getID().equals(EresseaConstants.S_ALCHEMIE)) {
@@ -1190,18 +1197,24 @@ public class EresseaOrderCompleter implements Completer {
 
 		if(someUnit != null) {
 			if((someUnit.getModifiedBuilding() != null) &&
-			   someUnit.getModifiedBuilding().getType().equals(data.rules.getBuildingType(StringID.create("Akademie")))) {
+			   someUnit.getModifiedBuilding().getType().equals(data.rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
 				if(cost == 0) {
 					cost = 50;
+					c2 = 50;
 				} else {
 					cost *= 2;
+					c2 *= 2;
 				}
 			}
 
 			cost *= Math.max(1, someUnit.getModifiedPersons());
+      c2 *= Math.max(1, someUnit.getModifiedPersons());
 		}
 
-		return cost;
+		if (c2!=cost){
+		  log.error("assertion error getSkillCost()");
+		}
+		return c2;
 	}
 
 	void cmpltLiefere() {

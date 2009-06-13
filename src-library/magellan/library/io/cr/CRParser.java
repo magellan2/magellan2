@@ -1291,6 +1291,16 @@ public class CRParser implements RulesIO, GameDataIO {
         SkillCategory cat = rules.getSkillCategory(catID, true);
         skillType.setCategory(cat);
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("cost")) {
+        try {
+          skillType.setCost(Integer.parseInt(sc.argv[0]));
+        } catch (NumberFormatException e){
+          log.error(e);
+          unknown("SKILL", false);
+        }
+         sc.getNextToken();
+      } else if(sc.isBlock && sc.argv[0].equals("COSTS")) {
+        parseSkillCosts(skillType, rules);
       } else if(sc.isBlock) {
         break;
       } else {
@@ -1300,6 +1310,25 @@ public class CRParser implements RulesIO, GameDataIO {
 
     if(skillType.getName() == null) {
       skillType.setName(id);
+    }
+  }
+
+  private void parseSkillCosts(SkillType skillType, Rules rules) throws IOException {
+    sc.getNextToken(); // skip COSTS
+    while (!sc.eof){
+      if (sc.argc==2){
+        try {
+          skillType.setCost(Integer.parseInt(sc.argv[1]), Integer.parseInt(sc.argv[0]));
+        } catch (NumberFormatException e){
+          log.error(e);
+          unknown("SKILL", false);
+        }
+        sc.getNextToken();
+      } else if (sc.isBlock) {
+        break;
+      } else {
+        unknown("SKILL", true);
+      }
     }
   }
 

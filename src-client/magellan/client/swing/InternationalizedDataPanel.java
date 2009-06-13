@@ -30,9 +30,9 @@ import magellan.library.event.GameDataListener;
  * @version $Revision: 242 $
  */
 public abstract class InternationalizedDataPanel extends JPanel implements GameDataListener {
-  protected GameData data = null;
-  protected Properties settings = null;
-  protected EventDispatcher dispatcher = null;
+  protected GameData data;
+  protected Properties settings;
+  protected EventDispatcher dispatcher;
   private MagellanContext context;
 
   /**
@@ -76,7 +76,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
   }
 
   /**
-   * DOCUMENT-ME
+   * Should be called if this dialog is no longer needed.
    */
   public void quit() {
     if (this.dispatcher != null) {
@@ -91,7 +91,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    this.data = e.getGameData();
+    setGameData(data);
   }
 
   /**

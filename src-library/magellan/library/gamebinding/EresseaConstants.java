@@ -682,13 +682,16 @@ public class EresseaConstants {
   /** The RegionType active volcano */
   public static final ID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
 
-  /** DOCUMENT-ME */
-	public static final ID B_LIGHTTOWER = StringID.create("Leuchtturm");
+  /** building type lighthouse */
+	public static final ID B_LIGHTHOUSE = StringID.create("Leuchtturm");
+
+  /** Building type academy */
+  public static final ID B_ACADEMY = StringID.create("Akademie");
 
   /** Shiptype Boat */
   public static final ID ST_BOAT = StringID.create("Boot");
   
   /** Shiptype longboat */
   public static final ID ST_LONGBOAT = StringID.create("Langboot");
-  
+
 }

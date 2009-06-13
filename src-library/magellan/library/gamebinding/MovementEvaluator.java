@@ -55,20 +55,13 @@ public interface MovementEvaluator {
 	public int getPayloadOnFoot(Unit unit);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+   * Returns the weight of all items of this unit that are not horses or carts in silver
 	 */
 	public int getLoad(Unit unit);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns the weight of all items of this unit that are not horses or carts in silver based
+   * on the modified items.
 	 */
 	public int getModifiedLoad(Unit unit);
   

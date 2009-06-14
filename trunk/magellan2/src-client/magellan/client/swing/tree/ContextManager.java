@@ -51,7 +51,7 @@ public class ContextManager extends MouseAdapter {
 	private GameData data = null;
 	private ContextFactory failFactory = null;
 	private Object failArgument = null;
-	private Map<Object,ContextFactory> simpleObjects = null;
+	private Map<Object,ContextFactory> simpleObjects;
 
 	/**
 	 * Creates new ContextManager
@@ -164,11 +164,16 @@ public class ContextManager extends MouseAdapter {
 		}
 	}
 
-	/**
-	 * Handles right-click actions by selecting an appropriate context menu.
-	 * 
-	 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
-	 */
+  /**
+   * Handles right-click actions by selecting an appropriate context menu. There are three ways to
+   * create a context menu: If the node's userObject is a {@link Changeable}, the Changeable's
+   * context factory is used. Else one of the factories registered by
+   * {@link #putSimpleObject(Object, ContextFactory)} is selected. If neither of those find a
+   * suitable factory, the fallback factory set in {@link #setFailFallback(Object, ContextFactory)}
+   * is used.
+   * 
+   * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
+   */
 	@Override
   public void mouseClicked(MouseEvent e) {
 		if((e.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {

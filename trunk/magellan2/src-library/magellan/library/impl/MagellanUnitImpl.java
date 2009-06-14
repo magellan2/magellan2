@@ -2755,7 +2755,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
      * elements to the left (subtracts one from their indices).
      * 
      * @param index
-     *          the index of the element to removed.
+     *          the index of the element to removed. The first order is 0!
      * @throws IndexOutOfBoundsException
      *           if the index is out of range (index &lt; 0 || index &gt;=
      *           getSize()).

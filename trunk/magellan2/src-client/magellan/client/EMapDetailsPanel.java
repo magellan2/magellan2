@@ -41,6 +41,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -49,6 +50,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -107,6 +109,8 @@ import magellan.client.swing.tree.UnitContainerCommentNodeWrapper;
 import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.client.swing.tree.UnitListNodeWrapper;
 import magellan.client.swing.tree.UnitNodeWrapper;
+import magellan.client.swing.tree.UnitRelationNodeWrapper;
+import magellan.client.swing.tree.UnitRelationNodeWrapper2;
 import magellan.client.utils.Units;
 import magellan.library.Alliance;
 import magellan.library.Border;
@@ -138,7 +142,10 @@ import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.relation.ControlRelation;
+import magellan.library.relation.ItemTransferRelation;
 import magellan.library.relation.PersonTransferRelation;
+import magellan.library.relation.ReserveRelation;
+import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
@@ -149,6 +156,7 @@ import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
 import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.Direction;
+import magellan.library.utils.Locales;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -240,6 +248,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	protected CommentContextFactory commentContext;
 	protected UnitCommentContextFactory unitCommentContext;
 	protected DetailsUnitContextFactory unitContext;
+	protected RelationContextFactory relationContext;
 	protected UndoManager undoMgr;
 	protected BasicRegionPanel regionPanel;
 
@@ -520,6 +529,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		commentContext = new CommentContextFactory();
 		unitCommentContext = new UnitCommentContextFactory();
 		unitContext = new DetailsUnitContextFactory();
+		relationContext = new RelationContextFactory();
 		contextManager.putSimpleObject(CommentListNode.class, commentContext);
 		contextManager.putSimpleObject(CommentNode.class, commentContext);
 		contextManager.putSimpleObject(UnitCommentNode.class, unitCommentContext);
@@ -527,7 +537,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		contextManager.putSimpleObject(UnitNodeWrapper.class, unitContext);
 		contextManager.putSimpleObject(UnitListNodeWrapper.class, unitContext);
 		contextManager.putSimpleObject(DefaultMutableTreeNode.class, unitContext);
-		
+		contextManager.putSimpleObject(UnitRelationNodeWrapper.class, relationContext);
+    contextManager.putSimpleObject(UnitRelationNodeWrapper2.class, relationContext);
 		
 		
 		JScrollPane treeScrollPane = new JScrollPane(tree);
@@ -1715,7 +1726,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		
 		// categorized items
 		Collection catNodes = unitsTools.addCategorizedUnitItems(units, parent, null, null,
-																 true, nodeWrapperFactory);
+																 true, nodeWrapperFactory, null);
 		if(catNodes != null) {
 			for(Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
@@ -1859,7 +1870,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			// categorized items
 			Collection catNodes = unitsTools.addCategorizedUnitItems(regionUnits, parent, null,
 																	 null, true,
-																	 nodeWrapperFactory);
+																	 nodeWrapperFactory, null);
 			if(catNodes != null) {
 				for(Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
@@ -2190,12 +2201,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				u2 = itr.source;
 			}
 	
-			UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2, prefix,
-																		   u2.getPersons(),
-																		   u2.getModifiedPersons());
-			unw.setAdditionalIcon(addIcon);
-			unw.setReverseOrder(true);
-			personNode.add(new DefaultMutableTreeNode(unw));
+			if (u2!=null){
+			  UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2, prefix,
+			      u2.getPersons(),
+			      u2.getModifiedPersons());
+			  unw.setAdditionalIcon(addIcon);
+			  unw.setReverseOrder(true);
+			  personNode.add(new DefaultMutableTreeNode(unw));
+			}
 		}
 		
 		for (Iterator it = u.getRelations(UnitTransferRelation.class).iterator(); it.hasNext(); ){
@@ -2604,7 +2617,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			parent.add(itemsNode);
 			expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.UnitItemsExpanded"));
 	
-			Collection catNodes = unitsTools.addCategorizedUnitItems(Collections.singleton(u), itemsNode, null, null, false, nodeWrapperFactory);	
+			Collection catNodes =
+          unitsTools.addCategorizedUnitItems(Collections.singleton(u), itemsNode, null, null,
+              false, nodeWrapperFactory, relationContext);	
 			if(catNodes != null) {
 				for(Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
 					DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
@@ -2658,7 +2673,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(itemsNode);
       expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.ShipItemsExpanded"));
   
-      Collection catNodes = unitsTools.addCategorizedUnitItems(allInmates, itemsNode, null, null, true, nodeWrapperFactory); 
+      Collection catNodes = unitsTools.addCategorizedUnitItems(allInmates, itemsNode, null, null, true, nodeWrapperFactory, null); 
       if(catNodes != null) {
         for(Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
           DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
@@ -3591,9 +3606,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// Besitzer
 		appendShipOwnerInfo(s, parent, expandableNodes);
 
-		appendContainerCommandInfo(s, parent, expandableNodes);
-
-
 		// Insassen
 		appendShipInmateInfo(s, parent, expandableNodes);
     
@@ -3670,7 +3682,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					//modLoad += u.getModifiedWeight();
 				}
 
-				// FIXME: pavkovic2004.07.01: check this out: load += u.getModifiedWeight();
  				load += u.getWeight();
 				text.append(u.toString()).append(": ").append(EMapDetailsPanel.weightNumberFormat.format(weight));
 
@@ -3720,16 +3731,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			if(ShipRoutePlanner.canPlan(s)) { // add a link to the ship route planer
-				parent.add(new DefaultMutableTreeNode(new ShipRoutingPlanerButton(s)));
+				parent.add(new DefaultMutableTreeNode(new ShipRoutingPlannerButton(s)));
 			}
 		}
 	}
 
 	/**
-	 * TODO DOCUMENT ME! 
-	 * One line description.
-	 *
-	 * Long description.
+	 * Append nodes for faction and owner. 
 	 *
 	 * @param s
 	 * @param parent
@@ -3763,6 +3771,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		  w.setAdditionalIcon("captain");
 		  DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(w);
 	    parent.add(ownerNode);
+	    appendContainerCommandInfo(s, ownerNode, expandableNodes);
 		}
 		
 		// skill
@@ -3787,10 +3796,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	/**
-	 * TODO DOCUMENT ME! 
-	 * One line description.
-	 *
-	 * Long description.
+	 * Append nodes for ship load and overload
 	 *
 	 * @param s
 	 * @param parent
@@ -4212,7 +4218,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Stores the expansion state.
+	 *
+	 * @see magellan.client.swing.InternationalizedDataPanel#quit()
 	 */
 	public void quit() {
 		storeExpansionState();
@@ -4221,7 +4229,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	/**
 	 * Selection event handler, update all elements in this panel with the appropriate data.
 	 *
-	 * 
+	 * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
 	 */
 	public void selectionChanged(SelectionEvent se) {
     addTag.setEnabled(false);
@@ -4390,7 +4398,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	 * Calculates the wage for the units of a certain faction in the specified region.
 	 *
 	 * 
-	 * 
+	 * FIXME Gamespecific!
 	 *
 	 * 
 	 */
@@ -4630,9 +4638,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
 	 */
 	public boolean isShowingTagButtons() {
 		return showTagButtons;
@@ -4714,10 +4719,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
 	 * 
 	 */
 	public String getShortcutDescription(Object stroke) {
@@ -4727,63 +4728,45 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public String getListenerDescription() {
 		return Resources.get("emapdetailspanel.shortcuts.title");
 	}
 
+	/**
+	 * A NodeWrapper for category nodes with a description, used for storing expansion states
+	 */
 	private class NodeWrapper {
 		private DefaultMutableTreeNode node = null;
 		private String desc = "";
 
 		/**
 		 * Creates a new NodeWrapper object.
-		 *
-		 * 
-		 * 
 		 */
 		public NodeWrapper(DefaultMutableTreeNode n, String d) {
 			node = n;
 			desc = d;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
 		public DefaultMutableTreeNode getNode() {
 			return node;
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
 		public String getDesc() {
 			return desc;
 		}
 	}
 
 	private class SkillStatItem {
-		/** DOCUMENT-ME */
 		public Skill skill = null;
 
-		/** DOCUMENT-ME */
 		public int unitCounter = 0;
 
-		/** DOCUMENT-ME */
 		public List<Unit> units = new LinkedList<Unit>();
 
 		/**
 		 * Creates a new SkillStatItem object.
-		 *
-		 * 
-		 * 
 		 */
 		public SkillStatItem(Skill skill, int unitCounter) {
 			this.skill = skill;
@@ -4793,12 +4776,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private class SkillStatItemComparator implements Comparator<SkillStatItem> {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
+		 * Compare by skill level.
 		 */
 		public int compare(SkillStatItem o1, SkillStatItem o2) {
 			int retVal = o1.skill.getName().compareTo(o2.skill.getName());
@@ -4818,6 +4796,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return false;
 		}
 	}
+
 	/**
 	 * A class that can be used to interpret a tree entry as a button
 	 */
@@ -4830,46 +4809,29 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public String toString() {
 			return Resources.get("emapdetailspanel."+key);
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public boolean emphasized() {
 			return false;
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public List<String> getIconNames() {
 			return icons;
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 */
 		public void propertiesChanged() {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
 		 */
 		public NodeWrapperDrawPolicy init(Properties settings, String prefix,
 										  NodeWrapperDrawPolicy adapter) {
@@ -4877,12 +4839,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
 		 */
 		public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
 			return null;
@@ -4903,18 +4859,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public Object getTarget() {
 			return target;
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public void actionPerformed(ActionEvent e) {
 			dispatcher.fire(new SelectionEvent(EMapDetailsPanel.this, null, target));
@@ -4924,10 +4874,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	/**
 	 * Ship routing planer button
 	 */
-	private class ShipRoutingPlanerButton extends SimpleActionObject {
+	private class ShipRoutingPlannerButton extends SimpleActionObject {
 		private Ship target;
 
-		ShipRoutingPlanerButton(Ship s) {
+		ShipRoutingPlannerButton(Ship s) {
 			super("shipplaner.text");
 			target = s;
 			icons = new ArrayList<String>(1);
@@ -4935,9 +4885,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public void actionPerformed(ActionEvent e) {
 			Unit unit = ShipRoutePlanner.planShipRoute(target, data, EMapDetailsPanel.this,new RoutingDialog(JOptionPane.getFrameForComponent(EMapDetailsPanel.this),data,false));
@@ -4950,8 +4897,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private class StealthContextFactory implements ContextFactory {
 		/**
-		 * DOCUMENT-ME
-		 *
 		 * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
 		 */
 		public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, 
@@ -4974,9 +4919,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			/**
 			 * Creates a new StealthContextMenu object.
 			 *
-			 * 
-			 *
-			 * @throws IllegalArgumentException DOCUMENT-ME
+			 * @throws IllegalArgumentException if unit's stealth level is 0.
 			 */
 			public StealthContextMenu(Unit u) {
 				unit = u;
@@ -4996,9 +4939,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
+			 * Adds a hide order.
 			 */
 			public void actionPerformed(ActionEvent e) {
 				int newStealth = Integer.parseInt(e.getActionCommand());
@@ -5049,9 +4990,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			}
 
 			/**
-			 * DOCUMENT-ME
-			 *
-			 * 
+			 * Adds an order for new combat status. 
 			 */
 			public void actionPerformed(ActionEvent e) {
 				int newState = Integer.parseInt(e.getActionCommand());
@@ -5070,14 +5009,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
+		 * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
 		 */
 		public javax.swing.JPopupMenu createContextMenu(EventDispatcher dispatcher, 
                                                         GameData data, Object argument,
@@ -5090,8 +5022,230 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 			return null;
 		}
 	}
+	
+	 /**
+	 * Creates context menus for {@link UnitRelationNodeWrapper} and {@link UnitRelationNodeWrapper2}.
+	 *
+	 */
+	private class RelationContextFactory implements ContextFactory {
+    /**
+     * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher,
+     *      magellan.library.GameData, java.lang.Object, java.util.Collection,
+     *      javax.swing.tree.DefaultMutableTreeNode)
+     */
+    public javax.swing.JPopupMenu createContextMenu(
+        EventDispatcher dispatcher,
+        GameData data, Object argument, Collection selectedObjects,
+        DefaultMutableTreeNode node) {
+      try {
+        if (argument instanceof UnitRelationNodeWrapper)
+          return new RelationContextMenu(((UnitRelationNodeWrapper) argument).getArgument());
+        else
+          return null;
+      } catch (IllegalArgumentException exc) {
+      }
 
-	// make comment nodes recognizable through this class
+      return null;
+    }
+
+    /**
+     * Context menu for unit relation nodes.
+     */
+    private class RelationContextMenu extends JPopupMenu implements ActionListener {
+
+      /**
+       * Action for changing an order
+       */
+      public abstract class SetAction extends AbstractAction {
+        protected UnitRelation relation;
+
+        public SetAction(UnitRelation r, String title) {
+          super(title);
+          this.relation = r;
+        }
+        
+        public void replace(String newOrder) {
+          relation.origin.removeOrderAt(relation.line - 1);
+          if (newOrder!=null)
+            relation.origin.addOrderAt(relation.line - 1, newOrder, true);
+          dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, relation.origin));
+        }
+      }
+      
+      /**
+       * Action for changing a reserve order
+       */
+      public abstract class SetReserveAction extends SetAction {
+        protected ReserveRelation reserveRelation;
+
+        public SetReserveAction(ReserveRelation r, String title) {
+          super(r, title);
+          this.reserveRelation = r;
+        }
+
+        public String getOrder(String amount, boolean each) {
+          Locale locale = Locales.getOrderLocale();
+//              relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
+
+          StringBuffer reserve =
+            new StringBuffer(Resources.getOrderTranslation(EresseaConstants.O_RESERVE, locale));
+          reserve.append(" ");
+          if (each){
+            reserve.append(Resources.getOrderTranslation(EresseaConstants.O_EACH, locale));
+            reserve.append(" ");
+          }
+          reserve.append(amount);
+          reserve.append(" ");
+          reserve.append(reserveRelation.itemType);
+          return reserve.toString();
+        }
+      }
+
+      /**
+       * Action for setting reserve order to 0.
+       */
+      public class Reserve0Action extends SetReserveAction {
+        public Reserve0Action(ReserveRelation r) {
+          super(r, Resources.get("emapdetailspanel.contextmenu.reserve.set0.title"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+          replace(null);
+        }
+      }
+
+      /**
+       * Action for setting reserve order to some amount.
+       */
+      public class ReserveNumberAction extends SetReserveAction {
+        private boolean each;
+
+        public ReserveNumberAction(ReserveRelation r, boolean each) {
+          super(r, Resources.get("emapdetailspanel.contextmenu.reserve.set."+each+".title"));
+          this.each = each;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+          String result =
+              JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each), Resources
+                  .get("emapdetailspanel.contextmenu.reserve.getamount."+each+".title"),
+                  JOptionPane.QUESTION_MESSAGE);
+          if (result != null)
+            try {
+              Integer.parseInt(result);
+              replace(getOrder(result, each));
+            } catch (NumberFormatException exc) {
+
+            }
+        }
+      }
+
+      /**
+       * Action for setting a give order.
+       */
+      public abstract class SetGiveAction extends SetAction {
+        private ItemTransferRelation transferRelation;
+
+        public SetGiveAction(ItemTransferRelation r, String title) {
+          super(r, title);
+          this.transferRelation = r;
+        }
+
+        public String getOrder(String amount, boolean each) {
+          Locale locale = Locales.getOrderLocale();
+//              relation.origin.getFaction() != null ? relation.origin.getFaction().getLocale() :
+
+          StringBuffer reserve =
+            new StringBuffer(Resources.getOrderTranslation(EresseaConstants.O_GIVE, locale));
+          reserve.append(" ");
+          reserve.append(transferRelation.target.getID());
+          reserve.append(" ");
+          if (each){
+            reserve.append(Resources.getOrderTranslation(EresseaConstants.O_EACH, locale));
+            reserve.append(" ");
+          }
+          reserve.append(amount);
+          reserve.append(" ");
+          reserve.append(transferRelation.itemType);
+          return reserve.toString();
+        }
+      }
+
+      /**
+       * Action for setting a give order to 0.
+       */
+      public class Give0Action extends SetGiveAction {
+        public Give0Action(ItemTransferRelation r) {
+          super(r, Resources.get("emapdetailspanel.contextmenu.give.set0.title"));
+        }
+
+        public void actionPerformed(ActionEvent e) {
+          replace(null);
+        }
+      }
+
+      /**
+       * Action for setting a give order to some amount.
+       */
+      public class GiveNumberAction extends SetGiveAction {
+        private boolean each;
+
+        public GiveNumberAction(ItemTransferRelation r, boolean each) {
+          super(r, Resources.get("emapdetailspanel.contextmenu.give.set."+each+".title"));
+          this.each = each;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+          String result =
+              JOptionPane.showInputDialog(RelationContextMenu.this, getOrder("...", each), Resources
+                  .get("emapdetailspanel.contextmenu.give.getamount."+each+".title"),
+                  JOptionPane.QUESTION_MESSAGE);
+          if (result != null)
+            try {
+              Integer.parseInt(result);
+              replace(getOrder(result, each));
+            } catch (NumberFormatException exc) {
+
+            }
+        }
+      }
+
+      /**
+       * Creates a new ReserveContextMenu object.
+       */
+      public RelationContextMenu(Object r) {
+        if (r instanceof ReserveRelation) {
+          JMenuItem item = new JMenuItem(new Reserve0Action((ReserveRelation) r));
+          item.addActionListener(this);
+          this.add(item);
+          item = new JMenuItem(new ReserveNumberAction((ReserveRelation) r, false));
+          item.addActionListener(this);
+          this.add(item);
+          item = new JMenuItem(new ReserveNumberAction((ReserveRelation) r, true));
+          item.addActionListener(this);
+          this.add(item);
+        } else if (r instanceof ItemTransferRelation) {
+          JMenuItem item = new JMenuItem(new Give0Action((ItemTransferRelation) r));
+          item.addActionListener(this);
+          this.add(item);
+          item = new JMenuItem(new GiveNumberAction((ItemTransferRelation) r, false));
+          item.addActionListener(this);
+          this.add(item);
+          item = new JMenuItem(new GiveNumberAction((ItemTransferRelation) r, true));
+          item.addActionListener(this);
+          this.add(item);
+        }
+      }
+
+      public void actionPerformed(ActionEvent e) {
+        // HIGHTODO Automatisch generierte Methode implementieren
+        
+      }
+
+    }
+  }
+
+	/** make comment nodes recognizable through this class */
 	private class CommentNode extends DefaultMutableTreeNode {
 		private UnitContainer uc = null;
 
@@ -5107,9 +5261,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public UnitContainer getUnitContainer() {
 			return uc;
@@ -5119,9 +5270,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	private class CommentListNode extends CommentNode {
 		/**
 		 * Creates a new CommentListNode object.
-		 *
-		 * 
-		 * 
 		 */
 		public CommentListNode(UnitContainer uc, String title) {
 			super(uc, title);
@@ -5145,9 +5293,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
 		 */
 		public Unit getUnit() {
 			return u;
@@ -5169,14 +5314,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	
 	private class CommentContextFactory implements ContextFactory {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
 		 */
 		public JPopupMenu createContextMenu(EventDispatcher dispatcher, 
 		        GameData data, Object argument,
@@ -5199,7 +5336,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		private class CommentContextMenu extends JPopupMenu implements ActionListener {
-      private final Logger log = Logger.getInstance(CommentContextMenu.class);
+      private final Logger contextLog = Logger.getInstance(CommentContextMenu.class);
 			private UnitContainer uc = null;
 			private DefaultMutableTreeNode node = null;
 			private UnitContainerCommentNodeWrapper nodeWrapper = null;
@@ -5279,7 +5416,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(uc.getComments().size() != parent.getChildCount()) {
-					log.info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+					contextLog.info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
 					return;
 				}
@@ -5308,7 +5445,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					if(uc.getComments().size() == parent.getChildCount()) {
 						uc.getComments().remove(parent.getIndex(node));
 					} else {
-						log.info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+						contextLog.info("EMapDetailsPanel.DetailsContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
 
 						return;
 					}
@@ -5351,14 +5488,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 	private class UnitCommentContextFactory implements ContextFactory {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 *
-		 * 
+		 * @see magellan.client.swing.context.ContextFactory#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, java.lang.Object, java.util.Collection, javax.swing.tree.DefaultMutableTreeNode)
 		 */
 		public JPopupMenu createContextMenu(EventDispatcher dispatcher, 
 		        GameData data, Object argument,
@@ -5379,7 +5509,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		}
 
 		private class UnitCommentContextMenu extends JPopupMenu implements ActionListener {
-      private final Logger log = Logger.getInstance(UnitCommentContextMenu.class);
+      private final Logger contextLog = Logger.getInstance(UnitCommentContextMenu.class);
 			private Unit u = null;
 			private DefaultMutableTreeNode node = null;
 			private UnitCommentNodeWrapper nodeWrapper = null;
@@ -5457,7 +5587,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 				}
 
 				if(u.getComments().size() != parent.getChildCount()) {
-					log.info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
+					contextLog.info("EMapDetailsPanel.DetailsContextMenu.getCreateCommentMenuItem(): number of comments and nodes differs!");
 
 					return;
 				}
@@ -5486,7 +5616,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 					if(u.getComments().size() == parent.getChildCount()) {
 						u.getComments().remove(parent.getIndex(node));
 					} else {
-						log.info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
+						contextLog.info("EMapDetailsPanel.DetailsUnitContextMenu.getDeleteCommentMenuItem(): number of comments and nodes differs!");
 						return;
 					}
 				}

@@ -29,6 +29,10 @@ public interface CellObject {
 
 	NodeWrapperDrawPolicy init(Properties settings, String prefix, NodeWrapperDrawPolicy adapter);
 
+	/**
+	 * Notifies this object that the draw policy may have changed. So it may have to recalculate its
+	 * appearance.
+	 */
 	void propertiesChanged();
 
 	/**

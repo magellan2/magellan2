@@ -27,11 +27,12 @@ import javax.swing.tree.TreeNode;
 
 import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RemoveOrderDialog;
+import magellan.client.swing.context.ContextFactory;
 import magellan.client.swing.tree.ItemCategoryNodeWrapper;
 import magellan.client.swing.tree.ItemNodeWrapper;
 import magellan.client.swing.tree.NodeWrapperFactory;
-import magellan.client.swing.tree.SimpleNodeWrapper;
 import magellan.client.swing.tree.UnitNodeWrapper;
+import magellan.client.swing.tree.UnitRelationNodeWrapper;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Rules;
@@ -177,7 +178,7 @@ public class Units {
    */
   public Collection addCategorizedUnitItems(Collection<Unit> units,
       DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
-      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory) {
+      Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
     DefaultMutableTreeNode categoryNode = null;
     Collection<TreeNode> categoryNodes = new LinkedList<TreeNode>();
@@ -230,7 +231,7 @@ public class Units {
         }
         for (Iterator<StatItem> iter = sortedItems.iterator(); iter.hasNext();) {
           StatItem currentItem = iter.next();
-          addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory);
+          addItemNode(currentItem, categoryNode, u, units, unitComparator, showUnits, factory, reserveContextFactory);
           catNumber += currentItem.getAmount();
           unmodifiedCatNumber += currentItem.getUnmodifiedAmount();
         }
@@ -252,12 +253,12 @@ public class Units {
 
   public int addItemNode(ItemType item, DefaultMutableTreeNode categoryNode, Unit u,
       Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
-      NodeWrapperFactory factory) {
+      NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
     categorizeUnitItems(units);
     for (StatItemContainer itemContainer : itemCategoriesMap.values()) {
       if (itemContainer.get(item.getID()) != null) {
         addItemNode(itemContainer.get(item.getID()), categoryNode, u, units, unitComparator,
-            showUnits, factory);
+            showUnits, factory, reserveContextFactory);
       }
     }
 
@@ -266,10 +267,11 @@ public class Units {
 
   /**
    * @param currentItem
+   * @param reserveContextFactory 
    */
   private void addItemNode(StatItem currentItem, DefaultMutableTreeNode categoryNode, Unit u,
       Collection<Unit> units, Comparator<Unit> unitComparator, boolean showUnits,
-      NodeWrapperFactory factory) {
+      NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
     ItemNodeWrapper itemNodeWrapper = factory.createItemNodeWrapper(u, currentItem,currentItem.getUnmodifiedAmount());
     DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(itemNodeWrapper);
@@ -279,30 +281,25 @@ public class Units {
     if (!showUnits && units.size() == 1) {
       boolean addItemNode = false;
 
-      for (Iterator reservedIterator =
-          u.getItemReserveRelations(currentItem.getItemType()).iterator(); reservedIterator
-          .hasNext();) {
-        ReserveRelation itr = (ReserveRelation) reservedIterator.next();
-        String text = String.valueOf(itr.amount) + " ";
+      for (ReserveRelation rrel : u.getItemReserveRelations(currentItem.getItemType())) {
+        String text = String.valueOf(rrel.amount) + " ";
         List<String> icons = new LinkedList<String>();
-        if (itr.warning) {
+        if (rrel.warning) {
           itemNodeWrapper.setWarningFlag(true);
-          text = String.valueOf(itr.amount) + " (!!!) "; // TODO: use append
+          text = String.valueOf(rrel.amount) + " (!!!) "; // TODO: use append
           icons.add("warnung");
         }
         text = text + Resources.get("util.units.node.reserved");
         icons.add("reserve");
 
-        SimpleNodeWrapper reserveNodeWrapper = factory.createSimpleNodeWrapper(text, icons);
-
+        UnitRelationNodeWrapper reserveNodeWrapper =
+            factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(text, icons));
         itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
         addItemNode = true;
       }
 
-      for (Iterator iter2 = u.getItemTransferRelations(currentItem.getItemType()).iterator(); iter2
-          .hasNext();) {
-        ItemTransferRelation currentRelation = (ItemTransferRelation) iter2.next();
+      for (ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem.getItemType())) {
         String prefix = String.valueOf(currentRelation.amount) + " ";
         if (currentRelation.warning) {
           itemNodeWrapper.setWarningFlag(true);
@@ -322,17 +319,21 @@ public class Units {
           u2 = currentRelation.source;
         }
 
-        UnitNodeWrapper giveNodeWrapper =
+        if (u2!=null){
+          UnitNodeWrapper giveNodeWrapper =
             factory.createUnitNodeWrapper(u2, prefix, u2.getPersons(), u2.getModifiedPersons());
-        giveNodeWrapper.setReverseOrder(true);
-        giveNodeWrapper.setAdditionalIcon(addIcon);
+          giveNodeWrapper.setReverseOrder(true);
+          giveNodeWrapper.setAdditionalIcon(addIcon);
 
+          UnitRelationNodeWrapper relationWrapper = factory.createRelationNodeWrapper(currentRelation, giveNodeWrapper);
+          
 //        if (currentRelation.warning) {
 //          giveNodeWrapper.setAdditionalIcon("warnung");
 //        }
-        itemNode.add(new DefaultMutableTreeNode(giveNodeWrapper));
+          itemNode.add(new DefaultMutableTreeNode(relationWrapper));
 
-        addItemNode = true;
+          addItemNode = true;
+        }
       }
       if (addItemNode) {
         // FIXME: we return different objects here!!

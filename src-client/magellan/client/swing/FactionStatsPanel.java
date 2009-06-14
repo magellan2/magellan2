@@ -1237,7 +1237,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // show items and clear categories
     unitsTools.addCategorizedUnitItems(units.values(), rootNode, null, null, true,
-        nodeWrapperFactory);
+        nodeWrapperFactory, null);
 
     // add buildings
     // maps BuildingTypes to a List, containing the single buildings

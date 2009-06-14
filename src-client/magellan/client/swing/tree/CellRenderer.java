@@ -26,6 +26,7 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -104,7 +105,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	 */
 	public CellRenderer(MagellanContext context) {
 		CellRenderer.settings = context.getProperties();
-        this.context = context;
+		this.context = context;
         
 		if(!initialized) {
 			emptyBorder = new EmptyBorder(0, 0, 0, 1);
@@ -411,108 +412,63 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 	}
 
 	protected void layoutComponent2(boolean isSelected, boolean hasFocus) {
-		Collection<GraphicsElement> iconNames = cellObj2.getGraphicsElements();
-		int iconNamesSizeMinusOne = iconNames.size() - 1;
-
-		Iterator<GraphicsElement> it = iconNames.iterator();
-
-		// construct the full information for MAIN
-		GraphicsElement ge = it.next();
-		GraphicsStyleset set = getStyleset(ge);
-
-		if(cellObj2.reverseOrder()) {
-			if(it.hasNext()) {
-				ge = it.next();
-			}
-
-			it = iconNames.iterator();
-			set = getStyleset(ge);
-			formatLabel(label, set, false, false);
-			fillLabel(label, ge);
-		} else {
-			formatLabel(label, set, isSelected, hasFocus);
-			fillLabel(label, ge);
-		}
+		List<GraphicsElement> iconNames = cellObj2.getGraphicsElements();
 
 		// if necessary, increase the size of the iconLabels array
-		if(iconNamesSizeMinusOne > iconLabels.length) {
-			for(int i = 0; i < iconLabels.length; i++) {
-				iconLabels[i] = null;
-			}
+    resizeLabels(iconNames.size() - 1);
 
-			iconLabels = new JLabel[iconNamesSizeMinusOne];
-
-			for(int i = 0; i < iconLabels.length; i++) {
-				iconLabels[i] = new JLabel();
-				iconLabels[i].setOpaque(false);
-				iconLabels[i].setIconTextGap(1);
-				iconLabels[i].setBorder(emptyBorder);
-			}
-
-			// remove all remaining (old) icon labels
-			while(this.getComponentCount() > 1) {
-				this.remove(0);
-			}
-		}
-
-		// add or remove icon labels to match the number of icons
-		// to be displayed
-		int iconLabelCountMinusOne = this.getComponentCount() - 1;
-
-		if(iconNamesSizeMinusOne < iconLabelCountMinusOne) {
-			for(int i = iconLabelCountMinusOne - 1; i >= iconNamesSizeMinusOne; i--) {
-				if(this.getComponent(i) == label) {
-					CellRenderer.log.info("iconLabelCount: " + iconLabelCountMinusOne + ", iconNamesSize: " +
-							 iconNamesSizeMinusOne);
-				}
-
-				this.remove(i);
-			}
-		} else {
-			for(int i = iconLabelCountMinusOne; i < iconNamesSizeMinusOne; i++) {
-				this.add(iconLabels[i], i);
-			}
-		}
-
+    if (cellObj2.reverseOrder()){
+      // the label is not actually the label (usually the unit name) but the first icon
+      GraphicsElement ge = iconNames.get(0);
+      if (iconNames.size()>1)
+        ge = iconNames.get(1);
+      GraphicsStyleset set = getStyleset(ge);
+      formatLabel(label, set, false, false);
+      fillLabel(label, ge);
+    } else {
+      // format the label
+      GraphicsElement ge = iconNames.get(0);
+      GraphicsStyleset set = getStyleset(ge);
+      formatLabel(label, set, isSelected, hasFocus);
+      fillLabel(label, ge);
+    }
+    
 		// load icons and put them into the icon labels
 		if(cellObj2.reverseOrder()) {
 			if(iconNames.size() > 1) {
-				ge = it.next();
-				set = getStyleset(ge);
-				formatLabel(iconLabels[0], set, isSelected, hasFocus);
-				fillLabel(iconLabels[0], ge);
-				it.next(); // skip the new last
-
-				int i = 1;
-
-				while(it.hasNext()) {
-					ge = it.next();
-					set = getStyleset(ge);
-					formatLabel(iconLabels[iconNamesSizeMinusOne - i], set, false, false);
-					fillLabel(iconLabels[iconNamesSizeMinusOne - i], ge);
-					i++;
-				}
+			  int i=iconNames.size();
+			  for (GraphicsElement ge : iconNames){
+			     GraphicsStyleset set = getStyleset(ge);
+			     if (i==iconNames.size()){
+			       // this is actually the label (usually the unit name)
+			       formatLabel(iconLabels[0], set, isSelected, hasFocus);
+			       fillLabel(iconLabels[0], ge);
+			       i--;
+			     } else if (i==iconNames.size()-1){
+			       // here we would format the label but we have done this above
+			       i--; 
+			     } else {
+		          formatLabel(iconLabels[i], set, false, false);
+		          fillLabel(iconLabels[i--], ge);
+			     }
+			  }
 			}
 		} else {
-			int i = 0;
-
-			while(it.hasNext()) {
-				ge = it.next();
-				set = getStyleset(ge);
-				formatLabel(iconLabels[i], set, false, false);
-				fillLabel(iconLabels[i], ge);
-				i++;
-			}
+			int i = -1;
+      for (GraphicsElement ge : iconNames){
+      	if (i==-1){
+      	  i++;
+      		continue; // skip first name (text)
+      	}
+        GraphicsStyleset set = getStyleset(ge);
+        formatLabel(iconLabels[i], set, false, false);
+        fillLabel(iconLabels[i++], ge);
+      }
 		}
 	}
 
 	private void layoutComponent(boolean isSelected, boolean hasFocus) {
-		Collection iconNames = cellObj.getIconNames();
-		int iconNamesSize = 0;
-
-		if(iconNames != null) {
-			iconNamesSize = iconNames.size();
-		}
+		Collection<String> iconNames = cellObj.getIconNames();
 
 		// we have to use a "full" styleset
 		GraphicsStyleset set = getStyleset(1);
@@ -530,60 +486,13 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		label.setText(cellObj.toString());
 
 		// if necessary, increase the size of the iconLabels array
-		if(iconNamesSize > iconLabels.length) {
-			for(int i = 0; i < iconLabels.length; i++) {
-				iconLabels[i] = null;
-			}
-
-			iconLabels = new JLabel[iconNamesSize];
-
-			for(int i = 0; i < iconLabels.length; i++) {
-				iconLabels[i] = new JLabel();
-				iconLabels[i].setOpaque(false);
-				iconLabels[i].setIconTextGap(1);
-				iconLabels[i].setBorder(emptyBorder);
-			}
-
-			// remove all remaining (old) icon labels
-			while(this.getComponentCount() > 1) {
-				this.remove(0);
-			}
-		}
-
-		// add or remove icon labels to match the number of icons
-		// to be displayed
-		int iconLabelCount = this.getComponentCount() - 1;
-
-		if(iconNamesSize < iconLabelCount) {
-			for(int i = iconLabelCount - 1; i >= iconNamesSize; i--) {
-				if(this.getComponent(i) == label) {
-					CellRenderer.log.info("iconLabelCount: " + iconLabelCount + ", iconNamesSize: " +
-							 iconNamesSize);
-				}
-
-				this.remove(i);
-			}
-		} else {
-			for(int i = iconLabelCount; i < iconNamesSize; i++) {
-				this.add(iconLabels[i], i);
-			}
-		}
+		resizeLabels(iconNames==null?0:iconNames.size());
 
 		// load icons and put them into the icon labels
 		if(iconNames != null) {
 			int i = 0;
 
-			for(Iterator iter = iconNames.iterator(); iter.hasNext(); i++) {
-				Object o = iter.next();
-				String iconName = null;
-
-				if(o instanceof String) {
-					iconName = (String) o;
-				} else { // unknown type
-
-					continue;
-				}
-
+			for(String iconName : iconNames){
 				Icon icon = getIcon(iconName);
 
 				// typeSets[3] is always full, so we don't need to
@@ -600,7 +509,49 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		}
 	}
 
-	/**
+  /** if necessary, increase the size of the iconLabels array */
+	private void resizeLabels(int newSize) {
+    if(newSize > iconLabels.length) {
+      for(int i = 0; i < iconLabels.length; i++) {
+        iconLabels[i] = null;
+      }
+
+      iconLabels = new JLabel[newSize];
+
+      for(int i = 0; i < iconLabels.length; i++) {
+        iconLabels[i] = new JLabel();
+        iconLabels[i].setOpaque(false);
+        iconLabels[i].setIconTextGap(1);
+        iconLabels[i].setBorder(emptyBorder);
+      }
+
+      // remove all remaining (old) icon labels
+      while(this.getComponentCount() > 1) {
+        this.remove(0);
+      }
+    }
+    
+    // add or remove icon labels to match the number of icons
+    // to be displayed
+    int iconLabelCountMinusOne = this.getComponentCount() - 1;
+
+    if(newSize < iconLabelCountMinusOne) {
+      for(int i = iconLabelCountMinusOne - 1; i >= newSize; i--) {
+        if(this.getComponent(i) == label) {
+          CellRenderer.log.info("iconLabelCount: " + iconLabelCountMinusOne + ", iconNamesSize: " +
+               newSize);
+        }
+
+        this.remove(i);
+      }
+    } else {
+      for(int i = iconLabelCountMinusOne; i < newSize; i++) {
+        this.add(iconLabels[i], i);
+      }
+    }
+  }
+
+  /**
 	 * Fills the given label with the information out of the given element.
 	 *
 	 * 

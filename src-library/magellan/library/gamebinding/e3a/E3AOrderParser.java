@@ -50,7 +50,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_STEAL));
     
-    removeCommand(Resources.getOrderTranslation(EresseaConstants.O_WORK));
+    // removeCommand(Resources.getOrderTranslation(EresseaConstants.O_WORK));
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_TAX));
     removeCommand(Resources.getOrderTranslation(EresseaConstants.O_ENTERTAIN));
 

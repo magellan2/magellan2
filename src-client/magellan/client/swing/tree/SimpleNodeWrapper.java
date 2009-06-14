@@ -16,23 +16,21 @@ package magellan.client.swing.tree;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
 import magellan.client.swing.context.ContextFactory;
 
 /**
- * DOCUMENT-ME
+ * A SimpleNodeWrapper wraps some object, displays a text and a set of icons and has a clipboard
+ * value.
  * 
  * @author $Author: $
  * @version $Revision: 259 $
  */
-public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changeable,
+public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard, Changeable,
     SupportsEmphasizing {
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
-  private List<SupportsEmphasizing> subordinatedElements = null;
   protected List<String> icons;
   protected List<String> returnIcons;
   protected String text;
@@ -101,21 +99,6 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
     this.object = obj;
     this.text = text;
     this.icons = icons==null?null:new ArrayList<String>(icons);
-
-//    if (icons != null) {
-//      if (icons instanceof Collection) {
-//        this.icons = new ArrayList<String>((Collection<String>) icons);
-//      } else if (icons instanceof Map) {
-//        Map m = (Map) icons;
-//
-//        this.icons = new ArrayList<String>(m.size());
-//
-//        for (Iterator iter = m.values().iterator(); iter.hasNext();) {
-//          this.icons.add(iter.next().toString());
-//        }
-//      }
-//    }
-
     this.clipboardValue = clipboardValue;
   }
 
@@ -131,35 +114,6 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
    */
   public SimpleNodeWrapper(Object obj, String icon) {
     this(obj, obj == null ? "" : obj.toString(), icon==null?null:Collections.singletonList(icon), null);
-  }
-
-  /**
-   * Controls whether the tree cell renderer should display this item more
-   * noticeably than other nodes.
-   */
-  public boolean emphasized() {
-    if (subordinatedElements != null) {
-      for (Iterator<SupportsEmphasizing> iter = subordinatedElements.iterator(); iter.hasNext();) {
-        SupportsEmphasizing se = iter.next();
-
-        if (se.emphasized()) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
-  /**
-   * DOCUMENT-ME
-   */
-  public List<SupportsEmphasizing> getSubordinatedElements() {
-    if (subordinatedElements == null) {
-      subordinatedElements = new LinkedList<SupportsEmphasizing>();
-    }
-
-    return subordinatedElements;
   }
 
   /**
@@ -181,7 +135,7 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
   public List<String> getIconNames() {
     if (returnIcons == null) {
@@ -196,14 +150,14 @@ public class SimpleNodeWrapper implements CellObject, SupportsClipboard, Changea
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
   public void propertiesChanged() {
     returnIcons = null;
   }
 
   /**
-   * DOCUMENT-ME
+   * @param i
    */
   public void setAmount(int i) {
     this.amount = i;

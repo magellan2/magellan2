@@ -14,9 +14,7 @@
 package magellan.client.swing.tree;
 
 import java.awt.Image;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,12 +29,11 @@ import magellan.library.Group;
  *
  * @author Andreas, Ulrich Küster
  */
-public class GroupNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	protected Group group;
 	protected List<GraphicsElement> GE;
 	protected static Icon icon;
 	private int amount = -1;
-	private List<SupportsEmphasizing> subordinatedElements = new ArrayList<SupportsEmphasizing>();
 
 	/**
 	 * Creates new GroupNodeWrapper
@@ -111,15 +108,6 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 	 *
 	 * 
 	 */
-	public List<SupportsEmphasizing> getSubordinatedElements() {
-		return subordinatedElements;
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
 	public boolean reverseOrder() {
 		return false;
 	}
@@ -154,23 +142,6 @@ public class GroupNodeWrapper implements CellObject2, SupportsClipboard, Support
 		} else {
 			return group.toString() + ": "+amount;
 		}
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean emphasized() {
-		for(Iterator iter = subordinatedElements.iterator(); iter.hasNext();) {
-			SupportsEmphasizing se = (SupportsEmphasizing) iter.next();
-
-			if(se.emphasized()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

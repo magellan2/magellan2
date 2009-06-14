@@ -240,7 +240,7 @@ public class TreeHelper {
         mother.add(node);
 
         if (se != null) {
-          se.getSubordinatedElements().add(nodeWrapper);
+          se.addSubordinatedElement(nodeWrapper);
         }
 
         retVal += curUnit.getPersons();
@@ -256,7 +256,7 @@ public class TreeHelper {
                 factory.createUnitNodeWrapper(tempUnit, tempUnit.getPersons());
             DefaultMutableTreeNode tempNode = new DefaultMutableTreeNode(tempNodeWrapper);
             node.add(tempNode);
-            nodeWrapper.getSubordinatedElements().add(tempNodeWrapper);
+            nodeWrapper.addSubordinatedElement(tempNodeWrapper);
   
             if (unitNodes != null) {
               unitNodes.put(tempUnit.getID(), tempNode);
@@ -283,7 +283,7 @@ public class TreeHelper {
             mother.add(factionNode);
 
             if (se != null) {
-              se.getSubordinatedElements().add(factionNodeWrapper);
+              se.addSubordinatedElement(factionNodeWrapper);
             }
 
             retVal +=
@@ -302,7 +302,7 @@ public class TreeHelper {
               mother.add(fdsNode);
 
               if (se != null) {
-                se.getSubordinatedElements().add(fdsNodeWrapper);
+                se.addSubordinatedElement(fdsNodeWrapper);
               }
 
               retVal +=
@@ -316,7 +316,7 @@ public class TreeHelper {
               mother.add(guiseFactionNode);
 
               if (se != null) {
-                se.getSubordinatedElements().add(guiseFactionNodeWrapper);
+                se.addSubordinatedElement(guiseFactionNodeWrapper);
               }
 
               retVal +=
@@ -341,7 +341,7 @@ public class TreeHelper {
               mother.add(fdsNode);
 
               if (se != null) {
-                se.getSubordinatedElements().add(fdsNodeWrapper);
+                se.addSubordinatedElement(fdsNodeWrapper);
               }
 
               retVal +=
@@ -374,7 +374,7 @@ public class TreeHelper {
               mother.add(groupNode);
 
               if (se != null) {
-                se.getSubordinatedElements().add(groupNodeWrapper);
+                se.addSubordinatedElement(groupNodeWrapper);
               }
 
               retVal +=
@@ -410,7 +410,7 @@ public class TreeHelper {
             mother.add(healthNode);
 
             if (se != null) {
-              se.getSubordinatedElements().add(healthNodeWrapper);
+              se.addSubordinatedElement(healthNodeWrapper);
             }
 
             retVal +=
@@ -428,7 +428,7 @@ public class TreeHelper {
             mother.add(combatNode);
 
             if (se != null) {
-              se.getSubordinatedElements().add(combatNodeWrapper);
+              se.addSubordinatedElement(combatNodeWrapper);
             }
 
             retVal +=
@@ -447,7 +447,7 @@ public class TreeHelper {
             mother.add(trustlevelNode);
 
             if (se != null) {
-              se.getSubordinatedElements().add(trustlevelNodeWrapper);
+              se.addSubordinatedElement(trustlevelNodeWrapper);
             }
 
             retVal +=
@@ -469,7 +469,7 @@ public class TreeHelper {
               mother.add(taggableNode);
 
               if (se != null) {
-                se.getSubordinatedElements().add(simpleNodeWrapper);
+                se.addSubordinatedElement(simpleNodeWrapper);
               }
 
               retVal +=
@@ -494,7 +494,8 @@ public class TreeHelper {
     // take care of all units that are left
     if (!helpList.isEmpty()) {
       DefaultMutableTreeNode node = null;
-
+      // FIXME (stm) check what this code does and check null pointer acces to curUnit!
+      
       if (sortCriteria <= treeStructure.length) {
         switch (treeStructure[sortCriteria]) {
         case FACTION:
@@ -600,7 +601,7 @@ public class TreeHelper {
         mother.add(node);
 
         if ((se != null) && node.getUserObject() instanceof SupportsEmphasizing) {
-          se.getSubordinatedElements().add((SupportsEmphasizing) node.getUserObject());
+          se.addSubordinatedElement((SupportsEmphasizing) node.getUserObject());
         }
 
         retVal +=

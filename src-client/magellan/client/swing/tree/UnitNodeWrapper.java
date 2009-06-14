@@ -50,11 +50,10 @@ import magellan.library.utils.comparator.SkillRankComparator;
  * @author $Author: $
  * @version $Revision: 288 $
  */
-public class UnitNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	private static final Comparator<Skill> skillComparator = new SkillComparator();
 	private static Comparator<Skill> rankComparator = null;
 
-	private List<SupportsEmphasizing> subordinatedElements = null;
 	private static final String SKILL_CHANGE_STYLE_PREFIX = "Talent";
 	private Unit unit = null;
 	private int amount = -1;
@@ -119,18 +118,6 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * 
-	 * @see magellan.client.swing.tree.SupportsEmphasizing#getSubordinatedElements()
-	 */
-	public List<SupportsEmphasizing> getSubordinatedElements() {
-		if(subordinatedElements == null) {
-			subordinatedElements = new LinkedList<SupportsEmphasizing>();
-		}
-
-		return subordinatedElements;
-	}
-
-	/**
 	 * Returns <code>null</code>.
 	 * 
 	 * @see magellan.client.swing.tree.CellObject#getIconNames()
@@ -140,8 +127,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	}
 
 	/**
-	 * Returns <code>true</code> if the unit's orders or one of the subordinate element's orders are
-	 * unconfirmed.
+	 * Returns <code>true</code> if the unit belongs to a priveleged faction and the unit's orders or 
+	 * one of the subordinate element's orders are unconfirmed.
 	 *
 	 * @see magellan.client.swing.tree.CellObject#emphasized()
 	 */
@@ -153,14 +140,10 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 				return true;
 			}
 
-			if(subordinatedElements != null) {
-				for(Iterator<SupportsEmphasizing> iter = subordinatedElements.iterator(); iter.hasNext();) {
-					SupportsEmphasizing se = iter.next();
-
-					if(se.emphasized()) {
-						return true;
-					}
-				}
+			for(SupportsEmphasizing se : getSubordinatedElements()) {
+			  if(se.emphasized()) {
+			    return true;
+			  }
 			}
 		}
 
@@ -655,8 +638,8 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	 *  
 	 * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, magellan.client.swing.tree.NodeWrapperDrawPolicy)
 	 */
-	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
-		return init(settings, "UnitNodeWrapper", adapter);
+	public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy newAdapter) {
+		return init(settings, "UnitNodeWrapper", newAdapter);
 	}
 
 	/**
@@ -665,20 +648,20 @@ public class UnitNodeWrapper implements CellObject2, SupportsClipboard, Supports
 	 * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String, magellan.client.swing.tree.NodeWrapperDrawPolicy)
 	 */
 	public NodeWrapperDrawPolicy init(Properties settings, String prefix,
-									  NodeWrapperDrawPolicy adapter) {
+									  NodeWrapperDrawPolicy newAdapter) {
 		// return the adapter
-		if(adapter == null) {
-			adapter = new UnitNodeWrapperDrawPolicy(settings, prefix);
+		if(newAdapter == null) {
+			newAdapter = new UnitNodeWrapperDrawPolicy(settings, prefix);
 		}
 
-		adapter.addCellObject(this);
-		this.adapter = (UnitNodeWrapperDrawPolicy) adapter;
+		newAdapter.addCellObject(this);
+		this.adapter = (UnitNodeWrapperDrawPolicy) newAdapter;
 
 		if(UnitNodeWrapper.rankComparator == null) {
 			UnitNodeWrapper.rankComparator = new SkillRankComparator(null, settings);
 		}
 
-		return adapter;
+		return newAdapter;
 	}
 
 	/**

@@ -29,11 +29,14 @@ public interface SupportsEmphasizing {
 	 * Retrieve the subordinate elements of this wrapper. They are supposed to implement
 	 * SupportsEmphasizing too. This way we can ask them and check whether all subordinated
 	 * elements are not emphasized.
-	 *
-	 * The returned list should be backed by the wrapper. This means that changed to it are reflected
-	 * the next time this method is called. 
 	 */
 	public List<SupportsEmphasizing> getSubordinatedElements();
+
+	
+  /**
+   * Adds an item to the list of subordinate elements.
+   */
+  public void addSubordinatedElement(SupportsEmphasizing nodeWrapper);
 
 	/**
 	 * Tells whether this element is emphasized or not.
@@ -41,5 +44,6 @@ public interface SupportsEmphasizing {
 	 * 
 	 */
 	public boolean emphasized();
+
 
 }

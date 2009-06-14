@@ -37,10 +37,7 @@ import magellan.library.utils.Resources;
  * @author $Author: $
  * @version $Revision: 288 $
  */
-public class MultiIconNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
-	// just so that we can return an empty List without creating
-	// all the time a new one (for implementation of SupportsEmphasizing)
-	private List<SupportsEmphasizing> subordinatedElements = null;
+public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 
 //  private int modified = -1;
 //	private String text = null;
@@ -83,19 +80,6 @@ public class MultiIconNodeWrapper implements CellObject2, SupportsClipboard, Sup
 //	public void setAdditionalIcon(String icon) {
 //		additionalIcon = icon;
 //	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<SupportsEmphasizing> getSubordinatedElements() {
-		if(subordinatedElements == null) {
-			subordinatedElements = new LinkedList<SupportsEmphasizing>();
-		}
-
-		return subordinatedElements;
-	}
 
 	// we just don't support old style
 	public List<String> getIconNames() {
@@ -515,8 +499,4 @@ public class MultiIconNodeWrapper implements CellObject2, SupportsClipboard, Sup
 	  return toString();
 	}
 
-  public boolean emphasized() {
-    // HIGHTODO Automatisch generierte Methode implementieren
-    return false;
-  }
 }

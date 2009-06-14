@@ -45,7 +45,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 
 	protected boolean warning = false;
 	
-	protected int unmodifiedAmount = -1;
+	protected int unmodifiedAmount;
 	
 	//protected ItemNodeWrapperPreferencesAdapter adapter=null;
 	protected boolean showRegionItemAmount = false;
@@ -59,8 +59,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 	 * 
 	 */
 	public ItemNodeWrapper(Unit unit, Item item) {
-		this.unit = unit;
-		this.modItem = item;
+		this(unit, item, -1);
 	}
 
 	/**

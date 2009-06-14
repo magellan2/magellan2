@@ -41,6 +41,7 @@ import magellan.library.Region;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.relation.UnitRelation;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -85,6 +86,9 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
   /** DOCUMENT-ME */
   public static final int SIMPLE = 10;
+
+  private static final int NUM_ADAPTERS = 11;
+  
   protected Properties settings;
   protected boolean initialized[];
   protected NodeWrapperDrawPolicy adapters[];
@@ -115,10 +119,10 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
 
     this.title = title;
     this.settings = settings;
-    initialized = new boolean[11];
-    adapters = new NodeWrapperDrawPolicy[11];
+    initialized = new boolean[NUM_ADAPTERS];
+    adapters = new NodeWrapperDrawPolicy[NUM_ADAPTERS];
 
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < NUM_ADAPTERS; i++) {
       initialized[i] = false;
       adapters[i] = null;
     }
@@ -173,18 +177,18 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
   }
 
   // initialize a CellObject by category index
-  protected void init(CellObject co, int index) {
+  protected void init(CellObject co, int policy) {
     NodeWrapperDrawPolicy o = null;
 
     if (initString == null) {
-      o = co.init(settings, adapters[index]);
+      o = co.init(settings, adapters[policy]);
     } else {
-      o = co.init(settings, initString, adapters[index]);
+      o = co.init(settings, initString, adapters[policy]);
     }
 
-    if (!initialized[index] && (o != null)) {
-      adapters[index] = o;
-      initialized[index] = true;
+    if (!initialized[policy] && (o != null)) {
+      adapters[policy] = o;
+      initialized[policy] = true;
 
       if (o instanceof ContextChangeable) {
         updateContextMenu();
@@ -240,6 +244,26 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
     RegionNodeWrapper rnw = new RegionNodeWrapper(r, amount);
     init(rnw, NodeWrapperFactory.REGION);
 
+    return rnw;
+  }
+
+  /**
+   * Creates a wrapper node for a unit relation.
+   */
+  public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject2 innerNode) {
+    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper2(rel, innerNode);
+    // FIXME which  policy?
+    init(rnw, NodeWrapperFactory.SIMPLE);
+    return rnw;
+  }
+
+  /**
+   * Creates a wrapper node for a unit relation.
+   */
+  public UnitRelationNodeWrapper createRelationNodeWrapper(UnitRelation rel, CellObject innerNode) {
+    UnitRelationNodeWrapper rnw = new UnitRelationNodeWrapper(rel, innerNode);
+    // FIXME which  policy?
+    init(rnw, NodeWrapperFactory.SIMPLE);
     return rnw;
   }
 
@@ -565,4 +589,5 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
       return title;
     }
   }
+
 }

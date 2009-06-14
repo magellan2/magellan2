@@ -16,8 +16,6 @@ package magellan.client.swing.tree;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,13 +34,12 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class FactionNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	private static final Logger log = Logger.getInstance(FactionNodeWrapper.class);
 	private Faction faction = null;
 	private Region region = null;
 	private List<GraphicsElement> GEs = null;
 	private int amount = -1;
-	private List<SupportsEmphasizing> subordinatedElements = new LinkedList<SupportsEmphasizing>();
 
 	/**
 	 * This Map is used to respond dynamically to changes of the currently active alliance-state
@@ -118,15 +115,7 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 		}
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<SupportsEmphasizing> getSubordinatedElements() {
-		return subordinatedElements;
-	}
-
+	
 	/** to stay compatible to CellObject */
 
 	// pavkovic 2003.10.01: prevent multiple Lists to be generated for nearly static code
@@ -170,22 +159,6 @@ public class FactionNodeWrapper implements CellObject2, SupportsClipboard, Suppo
 		return iconNames;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean emphasized() {
-		for(Iterator<SupportsEmphasizing> iter = subordinatedElements.iterator(); iter.hasNext();) {
-			SupportsEmphasizing se = iter.next();
-
-			if(se.emphasized()) {
-				return true;
-			}
-		}
-
-		return false;
-	}
 
 	/**
 	 * DOCUMENT-ME

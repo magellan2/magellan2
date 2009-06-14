@@ -16,8 +16,6 @@ package magellan.client.swing.tree;
 import java.awt.Image;
 import java.util.Collections;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,11 +32,10 @@ import magellan.library.utils.StringFactory;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class RegionNodeWrapper implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
 	private Region region = null;
 	private List<GraphicsElement> GEs = null;
 	private int amount = Integer.MIN_VALUE;
-	private List<SupportsEmphasizing> subordinatedElements = new LinkedList<SupportsEmphasizing>();
 
 	/**
 	 * Creates a new RegionNodeWrapper object.
@@ -118,32 +115,6 @@ public class RegionNodeWrapper implements CellObject2, SupportsClipboard, Suppor
 		}
 
 		return iconNames;
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public List<SupportsEmphasizing> getSubordinatedElements() {
-		return subordinatedElements;
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean emphasized() {
-		for(Iterator iter = subordinatedElements.iterator(); iter.hasNext();) {
-			SupportsEmphasizing se = (SupportsEmphasizing) iter.next();
-
-			if(se.emphasized()) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	/**

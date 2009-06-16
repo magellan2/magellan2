@@ -44,8 +44,8 @@ public class GenericRules implements Rules {
 	private Map<String,ObjectType> mapUnitContainerTypeNames = new OrderedHashtable<String, ObjectType>();
 
 	// Map consisting of ItemType
-	private Map<String,ItemType> mapItemType = new OrderedHashtable<String, ItemType>();
-	private Map<String,ItemType> mapItemTypeNames = new OrderedHashtable<String, ItemType>();
+	private Map<String,ObjectType> mapItemType = new OrderedHashtable<String, ObjectType>();
+	private Map<String,ObjectType> mapItemTypeNames = new OrderedHashtable<String, ObjectType>();
 
 	// Map consisting of AllianceCategory
 	private Map<String,ObjectType> mapAllianceCategory = new OrderedHashtable<String, ObjectType>();
@@ -99,7 +99,7 @@ public class GenericRules implements Rules {
 		RegionType r = (RegionType) uct;
 
 		if((r == null) && add) {
-			r = addObject(new RegionType(id), mapUnitContainerType,
+			r = (RegionType) addObject(new RegionType(id), mapUnitContainerType,
 									   mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -168,7 +168,7 @@ public class GenericRules implements Rules {
 		ShipType r = (ShipType) uct;
 
 		if((r == null) && add) {
-			r = addObject(new ShipType(id), mapUnitContainerType,
+			r = (ShipType) addObject(new ShipType(id), mapUnitContainerType,
 									 mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -221,7 +221,7 @@ public class GenericRules implements Rules {
 		BuildingType r = (BuildingType) uct;
 
 		if((r == null) && add) {
-			r = addObject(new BuildingType(id), mapUnitContainerType,
+			r = (BuildingType) addObject(new BuildingType(id), mapUnitContainerType,
 										 mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -274,7 +274,7 @@ public class GenericRules implements Rules {
 		CastleType r = (CastleType) uct;
 
 		if((r == null) && add) {
-			r = addObject(new CastleType(id), mapUnitContainerType,
+			r = (CastleType) addObject(new CastleType(id), mapUnitContainerType,
 									   mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
@@ -327,7 +327,7 @@ public class GenericRules implements Rules {
 		Race r = (Race) uct;
 
 		if((r == null) && add) {
-			r = addObject(new Race(id), mapUnitContainerType, mapUnitContainerTypeNames);
+			r = (Race) addObject(new Race(id), mapUnitContainerType, mapUnitContainerTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -370,10 +370,10 @@ public class GenericRules implements Rules {
 	 * @see magellan.library.Rules#getItemType(magellan.library.ID, boolean)
 	 */
 	public ItemType getItemType(ID id, boolean add) {
-		ItemType r = getObjectType(mapItemType, mapItemTypeNames, id.toString());
+		ItemType r = (ItemType) getObjectType(mapItemType, mapItemTypeNames, id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new ItemType(id), mapItemType, mapItemTypeNames);
+			r = (ItemType) addObject(new ItemType(id), mapItemType, mapItemTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -421,7 +421,7 @@ public class GenericRules implements Rules {
 															  id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new AllianceCategory(id), mapAllianceCategory,
+			r = (AllianceCategory) addObject(new AllianceCategory(id), mapAllianceCategory,
 											 mapAllianceCategoryNames);
 			r.setName(id.toString());
 		}
@@ -469,7 +469,7 @@ public class GenericRules implements Rules {
 														  mapOptionCategoryNames, id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new OptionCategory(id), mapOptionCategory,
+			r = (OptionCategory) addObject(new OptionCategory(id), mapOptionCategory,
 										   mapOptionCategoryNames);
 			r.setName(id.toString());
 		}
@@ -517,7 +517,7 @@ public class GenericRules implements Rules {
 														id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new SkillCategory(id), mapSkillCategory,
+			r = (SkillCategory) addObject(new SkillCategory(id), mapSkillCategory,
 										  mapSkillCategoryNames);
 			r.setName(id.toString());
 		}
@@ -565,7 +565,7 @@ public class GenericRules implements Rules {
 													  id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new ItemCategory(id), mapItemCategory, mapItemCategoryNames);
+			r = (ItemCategory) addObject(new ItemCategory(id), mapItemCategory, mapItemCategoryNames);
 			r.setName(id.toString());
 		}
 
@@ -616,7 +616,7 @@ public class GenericRules implements Rules {
 		SkillType r = (SkillType) getObjectType(mapSkillType, mapSkillTypeNames, id.toString());
 
 		if((r == null) && add) {
-			r = addObject(new SkillType(id), mapSkillType, mapSkillTypeNames);
+			r = (SkillType) addObject(new SkillType(id), mapSkillType, mapSkillTypeNames);
 			r.setName(id.toString());
 		}
 
@@ -702,9 +702,11 @@ public class GenericRules implements Rules {
 		return null;
 	}
 
-	protected static <T extends ObjectType> T changeName(ID id, String name, Map<String,T> mapObjectType, Map<String,T> mapObjectTypeNames) {
+  // this should do the trick here, but for some reason this led to an error when executing build.xml:
+	//	protected static <T extends ObjectType> T changeName(ID id, String name, Map<String,T> mapObjectType, Map<String,T> mapObjectTypeNames) {
+	protected static ObjectType changeName(ID id, String name, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
     String key = Umlaut.normalize(id.toString());
-		T ot = mapObjectType.get(key);
+    ObjectType ot = mapObjectType.get(key);
 
 		if(ot != null) {
 			mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));
@@ -715,10 +717,12 @@ public class GenericRules implements Rules {
 		return null;
 	}
 
+	// this should do the trick here, but for some reason this led to an error when executing build.xml:
+	//	private static <T extends ObjectType> T addObject(T o, Map<String,? super T> mapObjectType, Map<String,? super T> mapObjectTypeNames) {
 	/**
 	 * Adds the specified object to the specified map by id and by name.
 	 */
-	private static <T extends ObjectType> T addObject(T o, Map<String,? super T> mapObjectType, Map<String,? super T> mapObjectTypeNames) {
+	private static ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType, Map<String,ObjectType> mapObjectTypeNames) {
 		if(GenericRules.log.isDebugEnabled()) {
 			GenericRules.log.debug("GenericRules.addObject(" + o.getClass().toString() + "," + o.getID() + ")");
 		}

@@ -30,6 +30,5 @@
 	<classpathentry kind="lib" path="lib/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/ant-launcher-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/commons-email-1.1.jar" sourcepath="lib/commons-email-1.1/commons-email-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/RadixTree_0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

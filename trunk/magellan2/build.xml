@@ -56,7 +56,7 @@
     <antcall target="clear-classes"/>
     <mkdir dir="${classes}" />
   	
-    <javac srcdir="${src.library}/magellan"
+    <javac srcdir="${src.library}/"
            destdir="${classes}"
            includes="**"
            source="${compile.target}"

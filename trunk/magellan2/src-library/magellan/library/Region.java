@@ -303,7 +303,8 @@ public interface Region extends UnitContainer {
   public int maxOldRecruit();
 
   /**
-   * Returns the silver that can be earned through entertainment in this region.
+   * Returns the silver that can be earned through entertainment in this region. Returns
+   * Integer.MIN_VALUE if this is not applicable.
    */
   public int maxEntertain();
 
@@ -329,7 +330,7 @@ public interface Region extends UnitContainer {
    * Calculates the wage a peasant earns according to the biggest castle in this
    * region. While the value of the wage field is directly taken from the report
    * and may be biased by the race of the owner faction of that report, this
-   * function tries to determine the real wage a peasaent can earn in this
+   * function tries to determine the real wage a peasant can earn in this
    * region. Wage for player persons can be derived from that value
    */
   public int getPeasantWage();
@@ -902,7 +903,7 @@ public interface Region extends UnitContainer {
   public void setTrees(int trees);
 
   /**
-   * Returns the value of wage.
+   * Returns the value of wage. Returns -1 if unknown.
    * 
    * @return Returns wage.
    */

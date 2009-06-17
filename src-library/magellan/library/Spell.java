@@ -126,21 +126,23 @@ public interface Spell extends Described, Localized {
   public String getTypeName();
 
   /**
-   * A string with information about the syntax of the spell (FF)
+   * A human readable string with information about the syntax of the spell (FF)
    */
   public String getSyntaxString();
 
   /**
-   * Enno in e-client about the syntax: 
-   * 'c' = Zeichenkette 
-   * 'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE 
-   * 'i' = Zahl 
-   * 's' = Schiffsnummer 
-   * 'b' = Gebaeudenummer 
-   * 'r' = Regionskoordinaten (x, y) 
-   * 'u' = Einheit 
-   * '+' = Wiederholung des vorangehenden Parameters 
-   * '?' = vorangegangener Parameter
+   * Enno in e-client about the syntax:
+   * <ul> 
+   * <li>'c' = Zeichenkette</li> 
+   * <li>'k' = REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE </li>
+   * <li>'i' = Zahl </li>
+   * <li>'s' = Schiffsnummer </li>
+   * <li>'b' = Gebaeudenummer </li>
+   * <li>'r' = Regionskoordinaten (x, y) </li>
+   * <li>'u' = Einheit </li>
+   * <li>'+' = Wiederholung des vorangehenden Parameters </li>
+   * <li>'?' = vorangegangener Parameter</li>
+   * </ul>
    * ist nicht zwingend Syntaxcheks, die der Server auf dieser Basis macht, sind
    * nicht perfekt; es ist notwendig, aber nicht hinreichend, dass die Syntax
    * erfuellt wird. Aber in den vielen Faellen kann man damit schonmal sagen,

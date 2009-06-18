@@ -23,7 +23,6 @@
 // 
 package magellan.library.tasks;
 
-import java.util.regex.Pattern;
 
 public class ProblemType {
 
@@ -52,8 +51,8 @@ public class ProblemType {
       Inspector inspector) {
     if (name == null)
       throw new NullPointerException();
-    if (!Pattern.matches("[A-Za-z№ь÷цƒд][A-Za-z№ь÷цƒдя0-9-_ ]*", name))
-      throw new IllegalArgumentException("invalid problem type name " + name);
+//    if (!Pattern.matches("[A-Za-z№ь÷цƒд][A-Za-z№ь÷цƒдя0-9-_ .]*", name))
+//      throw new IllegalArgumentException("invalid problem type name " + name);
     this.name = name;
     this.group = group;
     this.description = description;

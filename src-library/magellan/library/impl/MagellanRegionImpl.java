@@ -1010,7 +1010,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   public RegionType getType() {
-    if (super.getType() instanceof RegionType)
+    if (super.getType()==null || super.getType() instanceof RegionType)
       return (RegionType) super.getType();
     throw new RuntimeException("invalid region type");
   }

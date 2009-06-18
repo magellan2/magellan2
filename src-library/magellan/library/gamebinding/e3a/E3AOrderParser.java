@@ -106,7 +106,7 @@ public class E3AOrderParser extends EresseaOrderParser {
       
       OrderToken t = getNextToken();
       
-      if (isNewString(t)){
+      if (isString(t)){
         retVal = new StringChecker(false, false, false) {
           protected boolean check(OrderToken[] tokens) {
             if (tokens[0]!=null || tokens[2]!=null)

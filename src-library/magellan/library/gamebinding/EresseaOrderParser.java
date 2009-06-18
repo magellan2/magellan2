@@ -643,7 +643,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else if (isNumeric(t.getText())) {
         retVal = readBenutzeAmount(t);
@@ -667,7 +667,7 @@ public class EresseaOrderParser implements OrderParser {
 
         OrderToken t = getNextToken();
 
-        if (isNewString(t)) {
+        if (isString(t)) {
           retVal = new StringChecker(false, false, false) {
             @Override
             protected void complete() {
@@ -953,7 +953,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         return new DefaultChecker().read(t);
       } else if (t.ttype != OrderToken.TT_EOC) {
         unexpected(t);
@@ -1041,7 +1041,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t, true)) {
+      if (isString(t)) {
         retVal = new StringChecker(true, true, false) {
           @Override
           protected boolean checkInner() {
@@ -1167,7 +1167,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isNumeric(t.getText())) {
         retVal = readBeansprucheAmount(t);
-      } else if (isNewString(t)) {
+      } else if (isString(t)) {
         retVal = new StringChecker(false, false, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
@@ -1191,7 +1191,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = new StringChecker(false, false, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
@@ -1288,7 +1288,7 @@ public class EresseaOrderParser implements OrderParser {
       // if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
       // retVal = readGibUIDAlles(t);
       // } else
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -1314,7 +1314,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -1332,7 +1332,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         retVal = checkFinal(t);
@@ -1353,7 +1353,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = new StringChecker(false, true, false) {
           @Override
           protected void complete() {
@@ -1503,7 +1503,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readZaubereStufe(t, true);
 // } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
 // retVal = readFinalKeyword(t);
-      } else if (isString(t, true)) {
+      } else if (isString(t)) {
         retVal = new ZaubereSpruchChecker(false, true, false, true) {
           @Override
           protected void complete() {
@@ -1657,7 +1657,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = new StringChecker(false, false, false) {
           SkillType skill = null;
 
@@ -1723,7 +1723,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t, true)) {
+      if (isString(t)) {
         retVal = readDescription(t, false);
       } else {
         unexpected(t);
@@ -1811,7 +1811,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readDescription(t, false);
       }
 
@@ -1903,7 +1903,7 @@ public class EresseaOrderParser implements OrderParser {
     protected boolean readMacheAnything(OrderToken token) {
       boolean retVal = true;
 
-      if (isNewString(token)) {
+      if (isString(token)) {
         retVal = new StringChecker(false, true, false).read(token);
       }
 
@@ -1958,7 +1958,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = new StringChecker(false, false, false) {
           @Override
           protected boolean checkInner() {
@@ -1973,7 +1973,7 @@ public class EresseaOrderParser implements OrderParser {
 
           @Override
           protected boolean checkNext() {
-            if (isString(nextToken, true)) {
+            if (isString(nextToken)) {
               // password
               return readDescription(nextToken, false);
             } else {
@@ -2163,7 +2163,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t, true)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2184,7 +2184,7 @@ public class EresseaOrderParser implements OrderParser {
       if (t.ttype == OrderToken.TT_EOC) {
         // PASSWORT without parameters is allowed
         retVal = true;
-      } else if (isString(t, true)) {
+      } else if (isString(t)) {
         retVal = readDescription(t, false);
       } else {
         unexpected(t);
@@ -2308,7 +2308,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t, true)) {
+      if (isString(t)) {
         retVal = readDescription(t);
       } else {
         retVal = checkFinal(t);
@@ -2407,7 +2407,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isNewString(t)) {
+      if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2573,7 +2573,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t, true)) {
+      if (isString(t)) {
         // password
         retVal = new StringChecker(true, true, false) {
           @Override
@@ -2604,7 +2604,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readFinalNumber(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
         retVal = readTarnePartei(t);
-      } else if (isNewString(t)) {
+      } else if (isString(t)) {
         retVal = new StringChecker(false, false, false) {
           @Override
           protected boolean checkInner() {
@@ -2859,7 +2859,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readZaubereRegion(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
         retVal = readZaubereStufe(t, false);
-      } else if (isString(t, true)) {
+      } else if (isString(t)) {
         retVal = new ZaubereSpruchChecker(false, false, true, true) {
         }.read(t);
       } else {
@@ -2905,7 +2905,7 @@ public class EresseaOrderParser implements OrderParser {
 
         if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_LEVEL))) {
           retVal = readZaubereRegionStufe(t);
-        } else if (isString(t, true)) {
+        } else if (isString(t)) {
           retVal = new ZaubereSpruchChecker(true, false, false, true).read(t);
         } else {
           unexpected(t);
@@ -2928,7 +2928,7 @@ public class EresseaOrderParser implements OrderParser {
       if (isNumeric(t.getText())) {
         t.ttype = OrderToken.TT_NUMBER;
         t = getNextToken();
-        if (isNewString(t)) {
+        if (isString(t)) {
           retVal = new ZaubereSpruchChecker(false, false, false, false).read(t);
         } else {
           unexpected(t);
@@ -2954,7 +2954,7 @@ public class EresseaOrderParser implements OrderParser {
       if (isNumeric(t.getText())) {
         t.ttype = OrderToken.TT_NUMBER;
         t = getNextToken();
-        if (isString(t, true)) {
+        if (isString(t)) {
           retVal = new ZaubereSpruchChecker(true, false, false, false).read(t);
         } else {
           unexpected(t);
@@ -3033,8 +3033,6 @@ public class EresseaOrderParser implements OrderParser {
 
       @Override
       protected boolean checkNext() {
-        if (foundSpell == null)
-          return false;
         return readZaubereEnde(nextToken, foundSpell);
       }
     }
@@ -3044,6 +3042,8 @@ public class EresseaOrderParser implements OrderParser {
       if (getCompleter() != null && !t.followedBySpace()) {
         getCompleter().cmpltZaubereSpruch(s);
       }
+      if (s==null || s.getSyntax()==null)
+        return false;
       return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().isEmpty();
     }
 
@@ -3109,7 +3109,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
         retVal = readZeigeAlle(t);
-      } else if (isNewString(t)) {
+      } else if (isString(t)) {
         retVal = new StringChecker(false, true, false) {
           @Override
           protected void complete() {
@@ -3279,8 +3279,7 @@ public class EresseaOrderParser implements OrderParser {
      * @see {@link EresseaOrderParser#getString(OrderToken)}
      */
     public boolean read(OrderToken token) {
-
-      if (!isString(token, forceQuotes))
+      if (!isString(token))
         throw new IllegalArgumentException(token.toString());
 
       OrderToken[] tokens = getString(token);
@@ -3465,7 +3464,7 @@ public class EresseaOrderParser implements OrderParser {
    * <code>allowEmpty</code>, it may also be an empty string.
    */
   protected boolean readDescription(OrderToken t, boolean allowEmpty) {
-    if (isString(t, true)) {
+    if (isString(t)) {
       return new StringChecker(true, true, allowEmpty).read(t);
     } else {
       unexpected(t);
@@ -3664,7 +3663,7 @@ public class EresseaOrderParser implements OrderParser {
    * 
    * @param txt
    * @return
-   * @deprecated you should prefer {@link #isNewString(OrderToken)} and {@link StringChecker}
+   * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
    */
   protected boolean isString(String txt) {
     boolean retVal = isQuoted(txt);
@@ -3697,9 +3696,9 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   /**
-   * Same as {@link #isString(OrderToken, true)}
+   * Same as {@link #isString(OrderToken, false)}
    */
-  protected boolean isNewString(OrderToken token) {
+  protected boolean isString(OrderToken token) {
     return isString(token, false);
   }
 
@@ -3719,7 +3718,7 @@ public class EresseaOrderParser implements OrderParser {
    * Parses token and the following tokens to identify a string.
    * 
    * @param token The current token which <em>must</em> be either a TT_OPENING_Quote or a simple
-   *          string. You may use {@link #isNewString(OrderToken)} to test validity of your token.
+   *          string. You may use {@link #isString(OrderToken)} to test validity of your token.
    * @return <code>result[0]</code> contains the opening quote, <code>result[1]</code> the content,
    *         <code>result[2]</code> the closing quote, and <code>result[3]</code> the token that
    *         follows the string. All except <code>result[3]</code> may be <code>null</code>.

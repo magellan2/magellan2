@@ -652,16 +652,18 @@ public class EresseaOrderCompleter implements Completer {
           7));
     }
 
-    addRegionBuildings(Resources.getOrderTranslation(EresseaConstants.O_CASTLE) + " ", "", unit
-        .getBuilding());
+    addRegionBuildings(Resources.getOrderTranslation(EresseaConstants.O_CASTLE) + " ", Resources
+        .getOrderTranslation(EresseaConstants.O_CASTLE)
+        + " ", unit.getBuilding());
 
     if (region.ships().size() > 0) {
       completions
           .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " ", 7));
     }
 
-    addRegionShips(Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ", "", unit.getShip());
-
+    addRegionShips(Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ", Resources
+        .getOrderTranslation(EresseaConstants.O_SHIP)
+        + " ", unit.getShip());
   }
 
   void cmpltBetreteBurg() {
@@ -811,8 +813,9 @@ public class EresseaOrderCompleter implements Completer {
       }
 
       // add ships from DURCHSCHIFFUNG
-      if (region.getTravelThruShips()!=null){
-        for (Iterator<Message> messages = region.getTravelThruShips().iterator(); messages.hasNext();) {
+      if (region.getTravelThruShips() != null) {
+        for (Iterator<Message> messages = region.getTravelThruShips().iterator(); messages
+            .hasNext();) {
           String text = messages.next().getText();
 
           // try to match a ship id in the text

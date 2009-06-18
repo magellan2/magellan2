@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-import magellan.client.completion.AutoCompletion;
 import magellan.library.Alliance;
 import magellan.library.GameData;
 import magellan.library.Spell;
@@ -3354,7 +3353,7 @@ public class EresseaOrderParser implements OrderParser {
     /**
      * If this returns <code>true</code>, an opening quote is added to completions. The default is
      * to add it if there is none and it is either forced or the content is empty (the
-     * {@link AutoCompletion} needs this to work properly).
+     * <code>magellan.client.completion.AutoCompletion</code> needs this to work properly).
      */
     protected boolean cmplOpening() {
       return closingToken == null

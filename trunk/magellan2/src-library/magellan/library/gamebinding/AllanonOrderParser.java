@@ -72,7 +72,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      OrderToken t = getTokensIterator().next();
+      OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
         retVal = readMeuchelnUID(t);
@@ -103,7 +103,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      OrderToken t = getTokensIterator().next();
+      OrderToken t = getNextToken();
 
       if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
         retVal = readBetreteBurg(t);
@@ -125,7 +125,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      OrderToken t = getTokensIterator().next();
+      OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
         retVal = readBetreteKarawaneID(t);
@@ -152,23 +152,25 @@ public class AllanonOrderParser extends EresseaOrderParser {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
-      OrderToken t = getTokensIterator().next();
+      OrderToken t = getNextToken();
+      t.ttype = OrderToken.TT_KEYWORD;
 
       if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_CASTLE))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_UNIT))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FACTION))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_REGION))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_SHIP))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE))) {
-        retVal = readBenenneBeschreibeTarget(t);
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(AllanonConstants.O_FOREIGN))) {
         retVal = readBenenneFremdes(t);
       } else {
+        t.ttype = OrderToken.TT_UNDEF;
         unexpected(t);
       }
 

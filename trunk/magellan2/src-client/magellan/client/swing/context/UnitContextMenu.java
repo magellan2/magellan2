@@ -55,8 +55,8 @@ import magellan.client.utils.UnitRoutePlanner;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
+import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.gamebinding.EresseaOrderParser;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
@@ -866,7 +866,7 @@ public class UnitContextMenu extends JPopupMenu {
       // look for teaching orders
       for (Iterator<String> iter = orders.iterator(); iter.hasNext(); i++) {
         order = iter.next();
-        EresseaOrderParser parser = new EresseaOrderParser(gameData);
+        OrderParser parser = gameData.getGameSpecificStuff().getOrderParser(gameData);
         if (!parser.read(new StringReader(order))) {
           continue;
         }

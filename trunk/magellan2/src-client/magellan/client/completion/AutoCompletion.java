@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.completion;
@@ -18,6 +12,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.StringReader;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +45,7 @@ import magellan.library.completion.Completion;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaOrderCompleter;
+import magellan.library.utils.OrderToken;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.logging.Logger;
@@ -59,7 +55,8 @@ import magellan.library.utils.logging.Logger;
  * 
  * @author Andreas Gampe, Ulrich Küster
  */
-public class AutoCompletion implements SelectionListener, KeyListener, ActionListener, CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
+public class AutoCompletion implements SelectionListener, KeyListener, ActionListener,
+    CaretListener, FocusListener, GameDataListener, CompleterSettingsProvider {
   private static final Logger log = Logger.getInstance(AutoCompletion.class);
   private OrderEditorList editors;
   private Vector<CompletionGUI> completionGUIs;
@@ -68,9 +65,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private int lastCaretPosition = 0;
 
   /**
-   * Keys for cycling, completing and breaking. completerKeys[]
-   * completerKeys[][0] completerKeys[1] cycle forward modifier key cycle
-   * backward modifier key complete modifier key break modifier key
+   * Keys for cycling, completing and breaking. completerKeys[] completerKeys[][0] completerKeys[1]
+   * cycle forward modifier key cycle backward modifier key complete modifier key break modifier key
    */
   public static final int numKeys = 5;
   private static final AttributeSet SIMPLEATTRIBUTESET = new SimpleAttributeSet();
@@ -81,12 +77,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   private String lastStub = null;
   private boolean enableAutoCompletion = true;
 
- // limits the completion of the make-order to items
+  // limits the completion of the make-order to items
   // whose resources are available
   private boolean limitMakeCompletion = true;
   private boolean emptyStubMode = false;
   private boolean hotKeyMode = false;
-  
+
   private String activeGUI = null;
   private int time = 150;
 
@@ -101,8 +97,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   /**
    * Creates new AutoCompletion
    * 
-   * @param context
-   *          The magellan context holding Client-Global informations
+   * @param context The magellan context holding Client-Global informations
    */
   public AutoCompletion(MagellanContext context) {
     this.settings = context.getProperties();
@@ -137,13 +132,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       if (autoCmp != null) {
         enableAutoCompletion = Boolean.valueOf(autoCmp).booleanValue();
         settings.remove("OrderEditingPanel.useOrderCompletion");
-        settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true" : "false");
+        settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true"
+            : "false");
       } else {
         enableAutoCompletion = true;
       }
     }
 
-    limitMakeCompletion = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true").equalsIgnoreCase("true");
+    limitMakeCompletion =
+        settings.getProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, "true")
+            .equalsIgnoreCase("true");
 
     String stubMode = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, "true");
     emptyStubMode = stubMode.equalsIgnoreCase("true");
@@ -160,7 +158,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     completerKeys = new int[numKeys][2]; // cycle forward, cycle backward, complete,
-                                    // break
+    // break
 
     String cycleForward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD);
 
@@ -173,7 +171,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       completerKeys[0][1] = KeyEvent.VK_DOWN;
     }
 
-    String cycleBackward = settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
+    String cycleBackward =
+        settings.getProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD);
 
     try {
       StringTokenizer st = new StringTokenizer(cycleBackward, ",");
@@ -227,14 +226,15 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    * 
    * @return Map containing name to
    */
-  private Map<String,String> getSelfDefinedCompletions(Properties aSettings) {
+  private Map<String, String> getSelfDefinedCompletions(Properties aSettings) {
     Map<String, String> result = new OrderedHashtable<String, String>();
 
     // load selfdefined completions
-    List<String> completionNames = PropertiesHelper.getList(aSettings, "AutoCompletion.SelfDefinedCompletions.name");
+    List<String> completionNames =
+        PropertiesHelper.getList(aSettings, "AutoCompletion.SelfDefinedCompletions.name");
     for (int i = 0, size = completionNames.size(); i < size; i++) {
       String name = completionNames.get(i);
-      String value = (String)aSettings.get("AutoCompletion.SelfDefinedCompletions.value" + i);
+      String value = (String) aSettings.get("AutoCompletion.SelfDefinedCompletions.value" + i);
       if (name != null && value != null) {
         result.put(name, value);
       }
@@ -244,9 +244,10 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * to choose the current GUI DOCUMENT-ME
+   * Tries to use the active GUI from the settings. If this is not available, some GUI from the list
+   * of available GUIs is chosen.
    */
-  public void loadComplete() {
+  protected void loadComplete() {
     if (completionGUIs.size() == 0) {
       return;
     }
@@ -273,10 +274,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param cel
-   *          DOCUMENT-ME
+   * Registers a new OrderEditorList to be used by this AutoCompletion.
    */
   public void attachEditorManager(OrderEditorList cel) {
     if (editors != null) {
@@ -295,10 +293,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param cGUI
-   *          DOCUMENT-ME
+   * Adds a new GUI to the list of available GUIs.
    */
   public void addCompletionGUI(CompletionGUI cGUI) {
     cGUI.init(this);
@@ -306,19 +301,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns the list of available GUIs.
    */
   public Vector<CompletionGUI> getCompletionGUIs() {
     return completionGUIs;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets <code>cGUI</code> as active GUI.
    * 
    * @param cGUI
-   *          DOCUMENT-ME
    */
   public void setCurrentGUI(CompletionGUI cGUI) {
     if (AutoCompletion.log.isDebugEnabled()) {
@@ -339,29 +331,21 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns the currently used GUI.
    */
   public CompletionGUI getCurrentGUI() {
     return currentGUI;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param c
-   *          DOCUMENT-ME
+   * Registers a new Completer to use.
    */
   public void setCompleter(Completer c) {
     completer = c;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
     if (AutoCompletion.log.isDebugEnabled()) {
@@ -386,13 +370,22 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
   }
 
+  /**
+   * Finds and displays a new list of completions according to the current editor and caret
+   * position.
+   */
   public void offerCompletion(JTextComponent j) {
     offerCompletion(j, true);
   }
-  
+
+  /**
+   * Finds and displays a new list of completions according to the current editor and caret
+   * position. If <code>manual</code> is <code>true</code>, the GUI is always shown. Otherwise, it
+   * is only shown if appropriate (i.e. there is something to complete).
+   */
   protected void offerCompletion(JTextComponent j, boolean manual) {
     if (!enableAutoCompletion || (currentGUI == null) || (completer == null) || (j == null)
-        || (completer == null) || !j.isVisible() ) {
+        || (completer == null) || !j.isVisible()) {
       return;
     }
 
@@ -403,19 +396,22 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    if ((line.length() == 0) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n')) || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
+    if ((line.length() == 0)
+        || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\n'))
+        || ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == '\r'))) {
       // new line, delete old completions
       completions = null;
-    } else if (lastCaretPosition+1 != j.getCaretPosition() && lastCaretPosition != j.getCaretPosition()) {
+    } else if (lastCaretPosition + 1 != j.getCaretPosition()
+        && lastCaretPosition != j.getCaretPosition()) {
       // Caret went backwards so line must be parsed again
       completions = null;
     } else if ((j.getCaretPosition() > 0) && (j.getText().charAt(j.getCaretPosition() - 1) == ' ')) {
       // if Space typed, delete old completions to enforce new parsing
       completions = null;
     }
-    if (completions==null)
+    if (completions == null)
       currentGUI.stopOffer();
-    
+
     // remember CaretPosition
     lastCaretPosition = j.getCaretPosition();
 
@@ -424,9 +420,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     // run completer engine
     if (editors.getCurrentUnit() != null) {
       completions = completer.getCompletions(editors.getCurrentUnit(), line, completions);
+      // try to get stub from last token
+      if (completer.getParser() != null) {
+        List<OrderToken> tokens = completer.getParser().getTokens();
+        stub = AutoCompletion.getStub(tokens);
+      } else {
+        stub = AutoCompletion.getStub(line);
+      }
+      addCommonCompletion(stub);
+      lastStub = stub;
 
-      addCommonCompletion(AutoCompletion.getStub(line));
-      
       // determine, whether the cursor is inside a word
       boolean inWord = true;
 
@@ -434,7 +437,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         inWord = false;
       } else {
         char c = j.getText().charAt(j.getCaretPosition());
-
+        // TODO test for quotes?
         if ((c == ' ') || (c == '\n') || (c == '\t')) {
           inWord = false;
         } else {
@@ -447,34 +450,33 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       }
 
       // show completions
-      stub  = AutoCompletion.getStub(line);
-      lastStub = stub;
 
       // Fiete: try to detect, if we fully typed a offered completion
       // ennos feature wish: in that case do not offer the completion anymore
       // we check, if we have only one completion left AND if the last word typed is just
       // this last completion - in that case we do not offer the completion
       boolean completionCompleted = false;
-      if ((completions != null) && (completions.size() == 1) && !inWord){
+      if ((completions != null) && (completions.size() == 1) && !inWord) {
         // we have just 1 completion avail and we are not in a word
         Completion c = completions.iterator().next();
-        if (c.getValue().equalsIgnoreCase(stub)){
+        if (c.getValue().equalsIgnoreCase(stub) && !stub.equals("")) {
           // last completion equals last fully typed word
-          completionCompleted=true;
+          completionCompleted = true;
         }
       }
 
-      if (completions != null){
-        if (manual || 
-            (line.length()>0 && (emptyStubMode || (stub.length() > 0)) && (completions.size() > 0) && !inWord && !completionCompleted)) {
-          doOffer  = true;
+      if (completions != null) {
+        if (manual
+            || (line.length() > 0 && (emptyStubMode || (stub.length() > 0))
+                && (completions.size() > 0) && !inWord && !completionCompleted)) {
+          doOffer = true;
         }
       }
     }
-    if (doOffer){
+    if (doOffer) {
       currentGUI.offerCompletion(j, completions, stub);
       completionIndex = 0;
-    }else if (currentGUI != null){
+    } else if (currentGUI != null) {
       currentGUI.stopOffer();
     }
   }
@@ -504,12 +506,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
           }
         }
       }
-      if (common > 0 && reference.getName().length()!=common && reference.getName().charAt(common)==' ') {
+      if (common > 0 && reference.getName().length() != common
+          && reference.getName().charAt(common) == ' ') {
         common--;
       }
       if (common > 0) {
         String commonPart = reference.getName().substring(0, common);
-        if (stub.length()<common && !contained(commonPart + "...")) {
+        if (stub.length() < common && !contained(commonPart + "...")) {
           completions.add(0, new Completion(commonPart + "...", commonPart, "", 0));
         }
       }
@@ -517,15 +520,15 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   private boolean contained(String commonPart) {
-    for (Completion c : completions){
-     if (commonPart.equals(c.getName()))
-       return true;
+    for (Completion c : completions) {
+      if (commonPart.equals(c.getName()))
+        return true;
     }
     return false;
   }
 
   /**
-   * DOCUMENT-ME
+   * Selects the next completion in the list, if available.
    */
   public void cycleForward() {
     if ((completions == null) || (completions.size() == 1) || (editors == null)) {
@@ -536,12 +539,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     completionIndex %= completions.size();
 
     if (currentGUI.isOfferingCompletion()) {
-      currentGUI.cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      currentGUI
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
   /**
-   * DOCUMENT-ME
+   * Selects the previous completion in the list, if available.
    */
   public void cycleBackward() {
     if ((completions == null) || (completions.size() == 1) || (editors == null)) {
@@ -557,15 +561,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     completionIndex %= completions.size();
 
     if (currentGUI.isOfferingCompletion()) {
-      currentGUI.cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
+      currentGUI
+          .cycleCompletion(editors.getCurrentEditor(), completions, lastStub, completionIndex);
     }
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param completion
-   *          DOCUMENT-ME
+   * Inserts <code>completion</code> into the current editor at the current position.
    */
   public void insertCompletion(Completion completion) {
     if (!enableAutoCompletion) {
@@ -580,77 +582,39 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     JTextComponent j = editors.getCurrentEditor();
     int caretPos = j.getCaretPosition();
-    String line = AutoCompletion.getCurrentLine(j);
-    String stub = AutoCompletion.getStub(line);
-    int stubLen = stub.length();
-    int stubBeg = caretPos - stubLen;
-    String text = j.getText();
-    
-    if (stubLen>0){
-      int temp1 = text.indexOf('\n', caretPos);
-
-      if (temp1 == -1) {
-        temp1 = Integer.MAX_VALUE;
-      }
-
-      int temp2 = text.indexOf('\r', caretPos);
-
-      if (temp2 == -1) {
-        temp2 = Integer.MAX_VALUE;
-      }
-
-      int temp3 = text.indexOf('\t', caretPos);
-
-      if (temp3 == -1) {
-        temp3 = Integer.MAX_VALUE;
-      }
-
-      int temp4 = text.indexOf(' ', caretPos);
-
-      if (temp4 == -1) {
-        temp4 = Integer.MAX_VALUE;
-      }
-
-      temp1 = Math.min(temp1, temp2);
-      temp3 = Math.min(temp3, temp4);
-
-      int stubEnd = Math.min(temp1, temp3);
-
-      if (stubEnd == Integer.MAX_VALUE) {
-        stubEnd = text.length();
-      } else if (text.charAt(stubEnd) == ' ') {
-        stubEnd++;
-      }
-
-      stubLen = stubEnd - stubBeg;
+    int lineBounds[] = AutoCompletion.getCurrentLineBounds(j.getText(), caretPos);
+    String line = AutoCompletion.getCurrentLine(j).substring(0, caretPos - lineBounds[0]);
+    String stub;
+    if (completer.getParser() != null) {
+      completer.getParser().read(new StringReader(line));
+      List<OrderToken> tokens = completer.getParser().getTokens();
+      stub = AutoCompletion.getStub(tokens);
+    } else {
+      // try your best...
+      stub = AutoCompletion.getStub(line);
     }
-    
-    try {
-      j.getDocument().remove(stubBeg, stubLen);
+    String newLine = completion.replace(line, stub);
+    if (caretPos != j.getText().length()) {
       // add additional blank if we are inside the line
-      char c = text.length()>stubBeg+stubLen?text.charAt(stubBeg+stubLen):0;
-      if (c=='\n' || c==0) {
-        j.getDocument().insertString(stubBeg, completion.getValue(), SIMPLEATTRIBUTESET);
-      } else if (c==' ') {
-        j.getDocument().insertString(stubBeg, completion.getValue(), SIMPLEATTRIBUTESET);
-      } else {
-        j.getDocument().insertString(stubBeg, completion.getValue()+" ", SIMPLEATTRIBUTESET);
-      }
-      j.getCaret().setDot((stubBeg + completion.getValue().length()) - completion.getCursorOffset());
+      char c = j.getText().charAt(caretPos);
+      if (!Character.isWhitespace(c))
+        newLine += " ";
+    }
+    try {
+      j.getDocument().remove(lineBounds[0], caretPos-lineBounds[0]);
+      j.getDocument().insertString(lineBounds[0], newLine, SIMPLEATTRIBUTESET);
+      j.getCaret().setDot(lineBounds[0] + newLine.length() - completion.getCursorOffset());
 
       // pavkovic 2003.03.04: enforce focus request
       j.requestFocusInWindow();
     } catch (BadLocationException exc) {
-      AutoCompletion.log.info(exc);
+      AutoCompletion.log.warn(exc);
     }
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param j
-   *          DOCUMENT-ME
-   * 
+   * Returns the current line in <code>j</code> according to the current caret position or
+   * <code>null</code> if there is no valid line for some reason.
    */
   public static String getCurrentLine(JTextComponent j) {
     int offset = j.getCaretPosition();
@@ -671,13 +635,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the line in <code>text</code> that includes <code>offset</code>, that is, the first
+   * position of a line break before offset (or 0) and the last position of a line break after
+   * offset (or <code>text.length()</code>.
    * 
-   * @param text
-   *          DOCUMENT-ME
-   * @param offset
-   *          DOCUMENT-ME
-   * 
+   * @return an array of two ints, the first one is the start position, the second one is (one
+   *         character after) the end position.
    */
   public static int[] getCurrentLineBounds(String text, int offset) {
     int ret[] = { -1, -1 };
@@ -703,30 +666,27 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param txt
-   *          DOCUMENT-ME
-   * 
+   * @see EresseaOrderCompleter#getStub(List)
+   */
+  public static String getStub(List<OrderToken> txt) {
+    return EresseaOrderCompleter.getStub(txt);
+  }
+
+  /**
+   * @see EresseaOrderCompleter#getStub(String)
    */
   public static String getStub(String txt) {
     return EresseaOrderCompleter.getStub(txt);
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param p1
-   *          DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
    */
   public void keyReleased(java.awt.event.KeyEvent p1) {
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param e
-   *          DOCUMENT-ME
+   * Handles special keys to control the GUI, mainly.
    */
   public void keyPressed(java.awt.event.KeyEvent e) {
     if (!enableAutoCompletion || (currentGUI == null) || !currentGUI.isOfferingCompletion()) {
@@ -770,14 +730,14 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     if ((completerKeys[3][0] == modifiers) && (completerKeys[3][1] == code)) {
-      
+
       return;
     }
-    
+
     if (!plain) {
       return;
     }
-    if (!Character.isLetterOrDigit(e.getKeyChar())){
+    if (!Character.isLetterOrDigit(e.getKeyChar())) {
       currentGUI.stopOffer();
     }
 
@@ -794,19 +754,15 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param p1
-   *          DOCUMENT-ME
+   * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
    */
   public void keyTyped(java.awt.event.KeyEvent p1) {
   }
 
   /**
-   * Offer autocompletion when timer has fired.
+   * Offer auto completion when timer has fired.
    * 
    * @param e
-   *          
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -832,25 +788,22 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     }
 
     if (enableAutoCompletion && (currentGUI != null) && !currentGUI.editorMayUpdateCaret()) {
-//      currentGUI.stopOffer();
-      if (currentGUI.isOfferingCompletion()){
+// currentGUI.stopOffer();
+      if (currentGUI.isOfferingCompletion()) {
         SwingUtilities.invokeLater(new Runnable() {
-        
+
           public void run() {
             offerCompletion(editors.getCurrentEditor(), false);
           }
         });
-        
+
       }
       timer.restart();
     }
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
     setCompleter(e.getGameData().getGameSpecificStuff().getCompleter(e.getGameData(), this));
@@ -861,19 +814,16 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.swing.completion.OrderEditorList#getPreferencesAdapter()
    */
   public PreferencesAdapter getPreferencesAdapter() {
     return new DetailsViewAutoCompletionPreferences(this);
   }
 
   /**
-   * DOCUMENT-ME
+   * Possibly activates the GUI.
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
    */
   public void focusGained(java.awt.event.FocusEvent e) {
     if (AutoCompletion.log.isDebugEnabled()) {
@@ -886,10 +836,9 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * Hides the GUI.
    * 
-   * @param p1
-   *          DOCUMENT-ME
+   * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
    */
   public void focusLost(java.awt.event.FocusEvent p1) {
     if ((currentGUI != null) && (!currentGUI.editorMayLoseFocus())) {
@@ -898,14 +847,12 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param b
-   *          DOCUMENT-ME
+   * Completely enables or disables auto completion.
    */
   public void setEnableAutoCompletion(boolean b) {
     enableAutoCompletion = b;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_ENABLED, enableAutoCompletion ? "true"
+        : "false");
 
     if (!b && (currentGUI != null)) {
       currentGUI.stopOffer();
@@ -913,29 +860,23 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns <code>true</code> if auto completion is enabled.
    */
   public boolean isEnableAutoCompletion() {
     return enableAutoCompletion;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param value
-   *          DOCUMENT-ME
+   * Control if completion of MACHE orders should be limited
    */
   public void setLimitMakeCompletion(boolean value) {
     limitMakeCompletion = value;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, value ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_LIMIT_MAKE_COMPLETION, value ? "true"
+        : "false");
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns if completion of MACHE orders is limited
    */
   public boolean getLimitMakeCompletion() {
     return limitMakeCompletion;
@@ -943,19 +884,15 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * @param b
-   *          DOCUMENT-ME
    */
   public void setEmptyStubMode(boolean b) {
     emptyStubMode = b;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, emptyStubMode ? "true" : "false");
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_EMPTY_STUB_MODE, emptyStubMode ? "true"
+        : "false");
   }
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public boolean getEmptyStubMode() {
     return emptyStubMode;
@@ -968,7 +905,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
    */
   public void setHotKeyMode(boolean b) {
     hotKeyMode = b;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
+    settings
+        .setProperty(PropertiesHelper.AUTOCOMPLETION_HOTKEY_MODE, hotKeyMode ? "true" : "false");
   }
 
   /**
@@ -980,18 +918,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public int getActivationTime() {
     return time;
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param t
-   *          DOCUMENT-ME
+   * Sets the time (in ms) after a key stroke until activating the GUI.
    */
   public void setActivationTime(int t) {
     time = t;
@@ -1007,8 +940,6 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * DOCUMENT-ME
-   * 
-   * 
    */
   public int[][] getCompleterKeys() {
     return completerKeys;
@@ -1017,21 +948,26 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
   /**
    * DOCUMENT-ME
    * 
-   * @param ck
-   *          DOCUMENT-ME
+   * @param ck DOCUMENT-ME
    */
   public void setCompleterKeys(int ck[][]) {
     completerKeys = ck;
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD, String.valueOf(ck[0][0]) + ',' + String.valueOf(ck[0][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, String.valueOf(ck[1][0]) + ',' + String.valueOf(ck[1][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, String.valueOf(ck[2][0]) + ',' + String.valueOf(ck[2][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, String.valueOf(ck[3][0]) + ',' + String.valueOf(ck[3][1]));
-    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START, String.valueOf(ck[4][0]) + ',' + String.valueOf(ck[4][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_FORWARD, String
+        .valueOf(ck[0][0])
+        + ',' + String.valueOf(ck[0][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_CYCLE_BACKWARD, String
+        .valueOf(ck[1][0])
+        + ',' + String.valueOf(ck[1][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_COMPLETE, String.valueOf(ck[2][0])
+        + ',' + String.valueOf(ck[2][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_BREAK, String.valueOf(ck[3][0]) + ','
+        + String.valueOf(ck[3][1]));
+    settings.setProperty(PropertiesHelper.AUTOCOMPLETION_KEYS_START, String.valueOf(ck[4][0]) + ','
+        + String.valueOf(ck[4][1]));
   }
 
   /**
-   * Returns a list containing the self defined completions as Completion
-   * objects.
+   * Returns a list containing the self defined completions as Completion objects.
    */
   public List<Completion> getSelfDefinedCompletions() {
     List<Completion> retVal = new Vector<Completion>();
@@ -1055,7 +991,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of completionGUIs.
-   *
+   * 
    * @param completionGUIs The value for completionGUIs.
    */
   public void setCompletionGUIs(Vector<CompletionGUI> completionGUIs) {
@@ -1073,7 +1009,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of settings.
-   *
+   * 
    * @param settings The value for settings.
    */
   public void setSettings(Properties settings) {
@@ -1082,13 +1018,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
   /**
    * Sets the value of selfDefinedCompletions.
-   *
+   * 
    * @param selfDefinedCompletions The value for selfDefinedCompletions.
    */
   public void setSelfDefinedCompletions(Map<String, String> selfDefinedCompletions) {
     this.selfDefinedCompletions = selfDefinedCompletions;
   }
-  
+
   /**
    * Returns the value of selfDefinedCompletions.
    */

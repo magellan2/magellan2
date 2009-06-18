@@ -137,7 +137,7 @@ public class Completion {
 	 * 
 	 */
 	public String getValue() {
-		return value + postfix;
+		return value;
 	}
 
 	/**
@@ -162,13 +162,6 @@ public class Completion {
 	}
 
 	/**
-	 * Set the postfix text. 
-	 */
-	public void setPostfix(String postfix) {
-		this.postfix = postfix;
-	}
-
-	/**
 	 * Returns the value the cursor should be set back after insertion.
 	 * 
 	 */
@@ -188,6 +181,16 @@ public class Completion {
 	    this.value = value;
 	}
 	*/
+	
+	@Override
+	public boolean equals(Object obj) {
+	  if (obj instanceof Completion){
+	    Completion c = (Completion) obj;
+	    return c.getName().equals(getName()) && c.getValue().equals(getValue()) && c.getPostfix().equals(getPostfix());
+	  }
+	  return obj!=this;
+	}
+	
 	/**
 	 * @see java.lang.Object#toString()
 	 */
@@ -195,4 +198,13 @@ public class Completion {
   public String toString() {
 		return name;
 	}
+
+  public String replace(String line, String stub) {
+      int stubBeg = line.length() - stub.length();
+
+      String newLine = line.substring(0, stubBeg);
+      String replacement = getValue() + getPostfix();
+      newLine = newLine.concat(replacement);
+      return newLine;
+  }
 }

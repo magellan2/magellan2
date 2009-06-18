@@ -154,9 +154,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 		getDocument().addDocumentListener(this);
 
-		SignificantUndos sigUndos = new SignificantUndos();
-		getDocument().addUndoableEditListener(sigUndos);
-		getDocument().addDocumentListener(sigUndos);
+		// TODO stm undo is deactivated
+//		SignificantUndos sigUndos = new SignificantUndos();
+//		getDocument().addUndoableEditListener(sigUndos);
+//		getDocument().addDocumentListener(sigUndos);
 
 		addKeyListener(this);
 		addFocusListener(this);
@@ -613,10 +614,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 	/**
 	 * Returns a style corresponding to a token type
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	private Style getTokenStyle(OrderToken t, boolean valid) {
 		StyledDocument doc = (StyledDocument) getDocument();
@@ -631,6 +628,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 		  break;
 
+		case OrderToken.TT_PERSIST:
 		case OrderToken.TT_KEYWORD:
 		  if (valid)
 		    retVal = doc.getStyle(OrderEditor.S_KEYWORD);
@@ -640,6 +638,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 		  break;
 
 		case OrderToken.TT_STRING:
+		case OrderToken.TT_OPENING_QUOTE:
+		case OrderToken.TT_CLOSING_QUOTE:
 		  if (valid)
 		    retVal = doc.getStyle(OrderEditor.S_STRING);
 		  else
@@ -671,7 +671,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
 		  break;
 		default:
-		  retVal = doc.getStyle(OrderEditor.S_REGULAR);
+		  if (valid)
+		    retVal = doc.getStyle(OrderEditor.S_REGULAR);
+		  else
+		    retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
 		}
 
 		return retVal;

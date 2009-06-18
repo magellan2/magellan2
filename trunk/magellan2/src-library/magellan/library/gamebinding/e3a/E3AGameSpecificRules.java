@@ -28,6 +28,7 @@ import magellan.library.Ship;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaGameSpecificRules;
 import magellan.library.gamebinding.GameSpecificRules;
+import magellan.library.rules.Race;
 
 /**
  * This class implements all Eressea specific rule informations.
@@ -53,7 +54,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
    * FIXME maybe return something depending on morale (and biggest castle or watch)
    */
   public Integer getMaxEntertain(Region region) {
-    return 0;
+    return Integer.MIN_VALUE;
   }
 
   /**
@@ -90,4 +91,16 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
     return false;
   }
 
+  /**
+   * @see magellan.library.gamebinding.EresseaGameSpecificRules#getWage(magellan.library.Region, magellan.library.rules.Race)
+   */
+  @Override
+  public int getWage(Region region, Race race) {
+    if (race.equals(region.getData().rules.getRace(EresseaConstants.R_GOBLINS)))
+      return 6;
+    else
+      return 10;
+  }
+
+  
 }

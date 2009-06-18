@@ -1,3 +1,14 @@
+2009-06-18 / Build 310 - stm (stm_@users.sourceforge.net)
+    * OrderParser/OrderCompleter
+    	+ improved string parsing (OrderToken.TT_...
+    	+ improved parsing of DEFAULT
+    	+ improved parsing of ZAUBERE
+    	+ improved completion of BEANSPRUCHE, EMAIL, BENENNE, BETRETE, HELFE, NEUSTART, TARNE and others
+    * calculate peasant wage game specifically
+    * use translated names and show types for spells 
+    * improved implementation of GenericRules
+    * added icons for stark, unbekannt-detail, portal 
+
 2009-06-11 / Build 301 - stm (stm_@users.sourceforge.net)
     * refactored EresseaOrderParser for easier subclassing 
     * added E3A classes

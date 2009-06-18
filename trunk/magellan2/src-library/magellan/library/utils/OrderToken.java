@@ -44,13 +44,19 @@ public class OrderToken {
 
 	/** A token making the order persistent */
 	public static final int TT_PERSIST = 7;
+
+  /** A token that is a quote which starts a string */
+  public static final int TT_OPENING_QUOTE = 8;
+  
+  /** A token that is a quote which matches an opening quote */
+  public static final int TT_CLOSING_QUOTE = 9;
   
   private String text = null; // the string representing this order token
 	private int start = 0; // the start position of the token in the stream the token was read from, -1 indicates that the position is invalid
 	private int end = 0; // the end position of the token in the stream the token was read from, -1 indicates that the position is invalid
 
-	/** DOCUMENT-ME */
-	public int ttype = 0; // the type of the token
+	/** the type of the token */
+	public int ttype = 0;
 	private boolean followedBySpace = false;
 
 	/**
@@ -107,28 +113,31 @@ public class OrderToken {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Should return <code>true</code> if the token is followed by a whitespace character
 	 */
 	public boolean followedBySpace() {
 		return followedBySpace;
 	}
 
+  /**
+   * Sets the followedBySpace() value.
+   * @deprecated better make this immutable...
+   */
+  public void setFollowedBySpace(boolean b) {
+    followedBySpace = b;
+  }
+
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the text. 
 	 */
 	public String getText() {
 		return text;
 	}
 
   static long count = 0;
+  
   /**
-   * Sames as getText() but removes enclosing quotes.
-   *
-   * 
+   * Same as getText() but removes enclosing quotes.
    */
   public String getStrippedText(char [] delimiters) {
     if (ttype!=OrderToken.TT_STRING) {
@@ -149,45 +158,39 @@ public class OrderToken {
   }
 
   /**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the token text. 
+	 * @deprecated better make this immutable...
 	 */
 	public void setText(String text) {
 		this.text = text;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the position of the first character of the token text in the order.
 	 */
 	public int getStart() {
 		return start;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Sets the position of the start of the token text in the order.
+   * @deprecated better make this immutable...
 	 */
 	public void setStart(int start) {
 		this.start = start;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the position of the first character <em>after</em> the token text in the order (i.e., 
+	 * <code>getEnd()-getStart()</code> is the length of the token).
 	 */
 	public int getEnd() {
 		return end;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the position of the end of the token text in the order.
+   * @deprecated better make this immutable...
 	 */
 	public void setEnd(int end) {
 		this.end = end;
@@ -195,66 +198,73 @@ public class OrderToken {
 
 	/**
 	 * Returns a string representation of this order token.
-	 *
-	 * 
 	 */
 	@Override
   public String toString() {
-		String retVal = text + ": ";
+		StringBuffer retVal = new StringBuffer(text);
+		retVal.append(": ");
 
 		switch(ttype) {
 		case TT_UNDEF:
-			retVal += "Undefined";
+			retVal.append("Undefined");
 
 			break;
 
 		case TT_EOC:
-			retVal += "End of order";
+			retVal.append("End of order");
 
 			break;
 
 		case TT_KEYWORD:
-			retVal += "Keyword";
+			retVal.append("Keyword");
 
 			break;
 
 		case TT_STRING:
-			retVal += "String";
+			retVal.append("String");
 
 			break;
 
 		case TT_NUMBER:
-			retVal += "Number";
+			retVal.append("Number");
 
 			break;
 
 		case TT_ID:
-			retVal += "ID";
+			retVal.append("ID");
 
 			break;
 
 		case TT_COMMENT:
-			retVal += "Comment";
+			retVal.append("Comment");
 
 			break;
 
 		case TT_PERSIST:
-			retVal += "Persistance marker";
+			retVal.append("Persistance marker");
 
 			break;
+			
+		case TT_OPENING_QUOTE:
+		  retVal.append("Opening quote");
+		  break;
+
+    case TT_CLOSING_QUOTE:
+      retVal.append("Closing quote");
+      break;
 		}
 
 		if(start != -1) {
-			retVal += (" (" + start + ", " + end + ")");
+			retVal.append("(").append(start).append(", ").append(end).append(")");
 		}
 
 		if(followedBySpace) {
-			retVal += ", followed by Space";
+			retVal.append(", followed by Space");
 		} else {
-			retVal += ", not followed by Space";
+			retVal.append(", not followed by Space");
 		}
 
-		return retVal;
+		return retVal.toString();
 	}
 
 	/**

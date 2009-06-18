@@ -137,11 +137,11 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
 		String cpltStr = null;
 
 		if(startsWith(cmp.getValue(), stub)) {
-			cpltStr = cmp.getValue();
+			cpltStr = cmp.getValue() + cmp.getPostfix();
 		} else if(startsWith(cmp.getName(), stub)) {
 			cpltStr = cmp.getName() + cmp.getPostfix();
 		} else {
-			cpltStr = cmp.getValue();
+			cpltStr = cmp.getValue() + cmp.getPostfix();
 		}
 
 		//check for line break and cut it
@@ -210,11 +210,11 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
 		String cpltStr = null;
 
 		if(cmp.getValue().startsWith(stub)) {
-			cpltStr = cmp.getValue();
+			cpltStr = cmp.getValue() + cmp.getPostfix();
 		} else if(cmp.getName().startsWith(stub)) {
 			cpltStr = cmp.getName() + cmp.getPostfix();
 		} else {
-			cpltStr = cmp.getValue();
+			cpltStr = cmp.getValue() + cmp.getPostfix();
 		}
 
 		//check for line break and cut it

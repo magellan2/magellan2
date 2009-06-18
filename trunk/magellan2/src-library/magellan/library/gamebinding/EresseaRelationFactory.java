@@ -33,6 +33,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.completion.OrderParser;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.ControlRelation;
@@ -147,7 +148,7 @@ public class EresseaRelationFactory implements RelationFactory {
     }
 
     // 4. parse the orders and create new relations
-    EresseaOrderParser parser = new EresseaOrderParser(data);
+    OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
 
     List<String> ordersCopy = new LinkedList<String>();
     for (Iterator<String> iter = orders; iter.hasNext();) {
@@ -182,19 +183,21 @@ public class EresseaRelationFactory implements RelationFactory {
         continue;
       }
 
-      List tokens = parser.getTokens();
+      List<OrderToken> tokens = parser.getTokens();
+      
+      // TODO (stm) use a radix tree for faster matching...
 
-      if (((OrderToken) tokens.get(0)).ttype == OrderToken.TT_COMMENT) {
+      if ((tokens.get(0)).ttype == OrderToken.TT_COMMENT) {
         continue;
       }
 
-      if (((OrderToken) tokens.get(0)).ttype == OrderToken.TT_PERSIST) {
+      if ((tokens.get(0)).ttype == OrderToken.TT_PERSIST) {
         tokens.remove(0);
       }
 
       if (tempOrders) {
         // end of temp unit
-        if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_END))) {
+        if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_END))) {
           tempOrders = false;
 
           continue;
@@ -202,14 +205,14 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // begin of temp unit
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MAKE)) && ((OrderToken) tokens.get(1)).getText().toUpperCase().startsWith(EresseaRelationFactory.getOrder(EresseaConstants.O_TEMP))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MAKE)) && (tokens.get(1)).getText().toUpperCase().startsWith(EresseaRelationFactory.getOrder(EresseaConstants.O_TEMP))) {
         tempOrders = true;
 
         continue;
       }
 
       // movement relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MOVE)) || ((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ROUTE))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MOVE)) || (tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ROUTE))) {
         List<CoordinateID> modifiedMovement = new ArrayList<CoordinateID>(2);
 
         // dissect the order into pieces to detect which way the unit
@@ -233,15 +236,15 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // enter relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ENTER))) {
-        OrderToken t = (OrderToken) tokens.get(1);
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ENTER))) {
+        OrderToken t = tokens.get(1);
         UnitContainer uc = null;
 
         if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CASTLE))) {
-          t = (OrderToken) tokens.get(2);
+          t = tokens.get(2);
           uc = u.getRegion().getBuilding(EntityID.createEntityID(t.getText(), data.base));
         } else if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SHIP))) {
-          t = (OrderToken) tokens.get(2);
+          t = tokens.get(2);
           uc = u.getRegion().getShip(EntityID.createEntityID(t.getText(), data.base));
         }
 
@@ -268,29 +271,29 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // income relation WORK
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_WORK))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_WORK))) {
         // TODO!
         continue;
       }
 
       // income relation ENTERTAIN
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ENTERTAIN))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ENTERTAIN))) {
         // TODO!
         continue;
       }
 
       // income relation TAX
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_TAX))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_TAX))) {
         // TODO!
         continue;
       }
 
       
       // guard relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GUARD))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GUARD))) {
         GuardRegionRelation guardRegionRelation = new GuardRegionRelation(u,1,line);
         if (tokens.size()>1){
-          if (((OrderToken) tokens.get(1)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NOT))) {
+          if ((tokens.get(1)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NOT))) {
             guardRegionRelation.guard=0;
           }
         }
@@ -299,8 +302,8 @@ public class EresseaRelationFactory implements RelationFactory {
       
       
       // transport relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CARRY))) {
-        OrderToken t = (OrderToken) tokens.get(1);
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CARRY))) {
+        OrderToken t = tokens.get(1);
         Unit target = getTargetUnit(t, u.getRegion());
 
         if ((target == null) || u.equals(target)) {
@@ -314,7 +317,7 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // transfer relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GIVE)) || ((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SUPPLY))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GIVE)) || (tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SUPPLY))) {
         // GIB 0|<enr> (ALLES|EINHEIT|KRaeUTER|KOMMANDO|((([JE] <amount>)|ALLES)
         // (SILBER|PERSONEN|<gegenstand>)))
         final int unitIndex = 1;
@@ -322,14 +325,14 @@ public class EresseaRelationFactory implements RelationFactory {
         int itemIndex = 3;
         boolean hasEach = false;
 
-        OrderToken t = (OrderToken) tokens.get(unitIndex);
+        OrderToken t = tokens.get(unitIndex);
         Unit target = getTargetUnit(t, u.getRegion());
 
         if (target != null) {
           if (!target.equals(u)) {
             TransferRelation rel = new TransferRelation(u, target, -1, line);
 
-            t = (OrderToken) tokens.get(amountIndex);
+            t = tokens.get(amountIndex);
             if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_HERBS))) {
               // if the 'amount' is HERBS then create relations for all herbs
               // the unit carries
@@ -364,7 +367,7 @@ public class EresseaRelationFactory implements RelationFactory {
                 // GIVE bla EACH ALL does not make a lot of sense
                 if ((t.ttype == OrderToken.TT_KEYWORD) && t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_EACH))) {
                   hasEach = true;
-                  t = (OrderToken) tokens.get(++amountIndex);
+                  t = tokens.get(++amountIndex);
                   ++itemIndex;
                 }
                 if (t.ttype == OrderToken.TT_NUMBER) {
@@ -379,7 +382,7 @@ public class EresseaRelationFactory implements RelationFactory {
                   // we could issue a warning to the user here
                   EresseaRelationFactory.log.debug("EresseaRelationFactory.createRelations(Unit): cannot parse amount in order " + order);
                 } else {
-                  t = (OrderToken) tokens.get(itemIndex);
+                  t = tokens.get(itemIndex);
 
                   if (t.ttype != OrderToken.TT_EOC) {
                     // now the order must look something like:
@@ -477,8 +480,8 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // recruitment relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_RECRUIT))) {
-        OrderToken t = (OrderToken) tokens.get(1);
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_RECRUIT))) {
+        OrderToken t = tokens.get(1);
 
         if (t.ttype == OrderToken.TT_NUMBER) {
           RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), line);
@@ -491,7 +494,7 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // leave relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_LEAVE))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_LEAVE))) {
         UnitContainer uc = u.getBuilding();
 
         if (uc == null) {
@@ -509,9 +512,9 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // teach relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_TEACH))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_TEACH))) {
         int tokCtr = 1;
-        OrderToken token = (OrderToken) tokens.get(tokCtr);
+        OrderToken token = tokens.get(tokCtr);
 
         while (token.ttype != OrderToken.TT_EOC) {
           Unit pupil = getTargetUnit(token, u.getRegion());
@@ -527,16 +530,16 @@ public class EresseaRelationFactory implements RelationFactory {
 
           // else pupil not found
           tokCtr++;
-          token = (OrderToken) tokens.get(tokCtr);
+          token = tokens.get(tokCtr);
         }
 
         continue;
       }
 
       // attack relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ATTACK))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ATTACK))) {
         if (tokens.size() > 1) {
-          OrderToken enemyToken = (OrderToken) tokens.get(1);
+          OrderToken enemyToken = tokens.get(1);
           Unit enemy = getTargetUnit(enemyToken, u.getRegion());
 
           if (enemy != null) {
@@ -548,12 +551,12 @@ public class EresseaRelationFactory implements RelationFactory {
 
       
       // battle status relation
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT))) {
          CombatStatusRelation combatStatusRelation = null;
         if (tokens.size() > 1) {
           // additional info for battle status
           // lets detect new status
-          OrderToken newStatusToken = (OrderToken)tokens.get(1);
+          OrderToken newStatusToken = tokens.get(1);
           if (newStatusToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_AGGRESSIVE))) {
             combatStatusRelation = new CombatStatusRelation(u,0,line);
           }
@@ -582,7 +585,7 @@ public class EresseaRelationFactory implements RelationFactory {
             combatStatusRelation = new CombatStatusRelation(u,false,line);
             if (tokens.size() > 2){
               // check if we have the NICHT
-              OrderToken lastToken = (OrderToken)tokens.get(2);
+              OrderToken lastToken = tokens.get(2);
               if (lastToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_COMBAT_NOT))) {
                 // "Kämpfe helfe nicht" would change unaided from false to true
                 combatStatusRelation = new CombatStatusRelation(u,true,line);
@@ -600,24 +603,24 @@ public class EresseaRelationFactory implements RelationFactory {
       
       // name relation
       // TODO: Do it right
-      if (((OrderToken) tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NAME))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NAME))) {
         if (tokens.size() > 2) {
-          OrderToken whatToken = (OrderToken) tokens.get(1);
+          OrderToken whatToken = tokens.get(1);
 
           if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_UNIT))) {
             if (tokens.size() > 3) {
-              relations.addAll(createRenameUnitRelation(u, (OrderToken) tokens.get(2), line));
+              relations.addAll(createRenameUnitRelation(u, tokens.get(2), line));
             }
           } else {
             if (tokens.size() > 4) {
               if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CASTLE))) {
-                relations.addAll(createRenameUnitContainerRelation(u, (OrderToken) tokens.get(2), (OrderToken) tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_FACTION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, (OrderToken) tokens.get(2), (OrderToken) tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_REGION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, (OrderToken) tokens.get(2), (OrderToken) tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SHIP))) {
-                relations.addAll(createRenameUnitContainerRelation(u, (OrderToken) tokens.get(2), (OrderToken) tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
               }
             }
           }
@@ -650,7 +653,7 @@ public class EresseaRelationFactory implements RelationFactory {
    *          The newly created {@link ReserveRelation}s are inserted into this
    *          list
    */
-  private static void createReserveRelations(Unit u, List<String> ordersCopy, int from, EresseaOrderParser parser, Map<ID,Item> modItems, List<UnitRelation> rels) {
+  private static void createReserveRelations(Unit u, List<String> ordersCopy, int from, OrderParser parser, Map<ID,Item> modItems, List<UnitRelation> rels) {
     from = 0;
     // parameter from is ignored because it violates execution order
 
@@ -675,22 +678,22 @@ public class EresseaRelationFactory implements RelationFactory {
         continue;
       }
 
-      List tokens = parser.getTokens();
+      List<OrderToken> tokens = parser.getTokens();
 
-      if (((OrderToken) tokens.get(0)).ttype == OrderToken.TT_COMMENT) {
+      if ((tokens.get(0)).ttype == OrderToken.TT_COMMENT) {
         continue;
       }
 
-      if (((OrderToken) tokens.get(0)).ttype == OrderToken.TT_PERSIST) {
+      if ((tokens.get(0)).ttype == OrderToken.TT_PERSIST) {
         orderIndex++;
         amountIndex++;
         itemIndex++;
       }
 
-      if (tokens.size() > orderIndex && ((OrderToken) tokens.get(orderIndex)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_RESERVE))) {
+      if (tokens.size() > orderIndex && (tokens.get(orderIndex)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_RESERVE))) {
         // RESERVE [EACH] <amount> <object><EOC>
         // RESERVIERE[JE] <amount> <object><EOC>
-        OrderToken t = (OrderToken) tokens.get(amountIndex);
+        OrderToken t = tokens.get(amountIndex);
         boolean hasEach = false;
         int amount = -1;
         boolean warning = false;
@@ -699,7 +702,7 @@ public class EresseaRelationFactory implements RelationFactory {
         if (t.ttype == OrderToken.TT_KEYWORD) {
           if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_EACH))) {
             hasEach = true;
-            t = (OrderToken) tokens.get(++amountIndex);
+            t = tokens.get(++amountIndex);
             ++itemIndex;
           }
         }
@@ -707,7 +710,7 @@ public class EresseaRelationFactory implements RelationFactory {
           amount = Integer.parseInt(t.getText());
 
           if (amount != -1) { // -1 means that the amount could not determined
-            t = (OrderToken) tokens.get(itemIndex);
+            t = tokens.get(itemIndex);
             if (t.ttype != OrderToken.TT_EOC) {
               String itemName = EresseaRelationFactory.stripQuotes(t.getText());
 

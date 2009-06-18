@@ -25,6 +25,7 @@ package magellan.library.gamebinding;
 
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.rules.Race;
 
 
 /**
@@ -63,4 +64,11 @@ public interface GameSpecificRules {
    * This method checks if a ship can land in a specific region
    */
   public boolean canLandInRegion(Ship ship, Region region);
+
+
+  /**
+   * Returns the wage for <code>race</code> in <code>region</code>. 
+   */
+  public int getWage(Region region, Race race);
+
 }

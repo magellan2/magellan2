@@ -202,8 +202,20 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_FOLLOW = "FOLLOW";
 
-	/** DOCUMENT-ME */
+	/** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP</code> */
 	public static final String O_FOREIGN = "FOREIGN";
+
+  /** BENENNE FREMDE EINHEIT */
+	public static final String O_FOREIGNUNIT = "FOREIGNUNIT";
+
+  /** BENENNE FREMDE PARTEI*/
+  public static final String O_FOREIGNFACTION = "FOREIGNFACTION";
+
+  /** BENENNE FREMDE BURG */
+  public static final String O_FOREIGNBUILDING = "FOREIGNBUILDING";
+
+  /** BENENNE FREMDES SCHIFF*/
+  public static final String O_FOREIGNSHIP = "FOREIGNSHIP";
 
 	/** DOCUMENT-ME */
 	public static final String O_FORGET = "FORGET";

@@ -29,7 +29,7 @@ public interface Completer {
 	/**
    * Get order completions for the order <code>line</code> and Unit
    * <code>u</code>. If <code>old</code> is <code>null</code> or empty,
-   * all possible completions matching (i.e. startin with) <code>line</code>
+   * all possible completions matching (i.e. starting with) <code>line</code>
    * should be computed. Else, the method may just return all completions in
    * <code>old</code> matching line.
    * 
@@ -39,4 +39,11 @@ public interface Completer {
 	 * @return The list of all Completions matching line.
 	 */
 	public List<Completion> getCompletions(Unit u, String line, List<Completion> old);
+	
+	/**
+	 * Returns the {@link OrderParser} that is used by this Completer.
+	 * 
+	 * @return the OrderParser used by this completer which <em>may</em> be <code>null</code>.
+	 */
+	public OrderParser getParser();
 }

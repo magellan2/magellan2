@@ -36,7 +36,11 @@ public class RegionType extends UnitContainerType {
   private boolean isOcean = false;
 
   private boolean isAstralVisible = false;
-  
+
+  private int peasantWage = 11;
+
+  private List<Resource> resources = new LinkedList<Resource>();
+
   /**
 	 * Creates a new RegionType object.
 	 *
@@ -101,8 +105,6 @@ public class RegionType extends UnitContainerType {
 		return null;
 	}
 
-	private List<Resource> resources = new LinkedList<Resource>();
-
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -157,6 +159,24 @@ public class RegionType extends UnitContainerType {
     this.isAstralVisible = isAstralVisible;
   }
 
+  /**
+   * Returns the peasantWage value for this region type. Defaults to 11.
+   * 
+   * @return Returns peasantWage.
+   */
+  public int getPeasantWage() {
+    return peasantWage;
+  }
+
+  /**
+   * Sets the peasantWage value for this region type.
+   *
+   * @param peasantWage The value for peasantWage.
+   */
+  public void setPeasantWage(int peasantWage) {
+    this.peasantWage = peasantWage;
+  }
+
 	/**
 	 * DOCUMENT-ME
 	 *
@@ -172,4 +192,5 @@ public class RegionType extends UnitContainerType {
 
 		return s;
 	}
+
 }

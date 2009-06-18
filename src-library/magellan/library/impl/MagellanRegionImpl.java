@@ -44,6 +44,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
@@ -968,6 +969,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /**
    * Returns the silver that can be earned through entertainment in this region.
+   *
+   * @see magellan.library.Region#maxEntertain()
    */
   public int maxEntertain() {
     return getData().getGameSpecificStuff().getGameSpecificRules().getMaxEntertain(this);
@@ -1006,24 +1009,33 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     return (peasants >= 0) ? (peasants / 100) : (-1);
   }
 
+  public RegionType getType() {
+    if (super.getType() instanceof RegionType)
+      return (RegionType) super.getType();
+    throw new RuntimeException("invalid region type");
+  }
+  
+  public void setType(UnitContainerType type){
+    if (type instanceof RegionType)
+      super.setType(type);
+    else
+      throw new IllegalArgumentException("invalid region type");
+  }
+  
   /**
    * Calculates the wage a peasant earns according to the biggest castle in this
    * region. While the value of the wage field is directly taken from the report
    * and may be biased by the race of the owner faction of that report, this
-   * function tries to determine the real wage a peasaent can earn in this
+   * function tries to determine the real wage a peasant can earn in this
    * region. Wage for player persons can be derived from that value
    */
   public int getPeasantWage() {
-    int realWage = 11;
+    int realWage = getType().getPeasantWage();
 
-    if (buildings != null) {
-      for (Iterator<Building> iter = buildings().iterator(); iter.hasNext();) {
-        Building b = iter.next();
-
-        if (b.getType() instanceof CastleType) {
-          CastleType ct = (CastleType) b.getType();
-          realWage = Math.max(ct.getPeasantWage(), realWage);
-        }
+    for (Building b : buildings()) {
+      if (b.getType() instanceof CastleType) {
+        CastleType ct = (CastleType) b.getType();
+        realWage = Math.max(ct.getPeasantWage(), realWage);
       }
     }
 
@@ -1064,7 +1076,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * short cut for retrieving and converting the RegionType of this region.
    */
   public RegionType getRegionType() {
-    return (RegionType) this.getType();
+    return this.getType();
   }
 
   /**
@@ -1824,7 +1836,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the value of travelThru.
    * 
-   * @return Returns travelThru.
+   * @return returns list of DURCHREISE messages or <code>null</code>
    */
   public List<Message> getTravelThru() {
     return travelThru;
@@ -1843,10 +1855,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Returns the value of travelThruShips.
    * 
-   * @return Returns travelThruShips.
+   * @return returns list of DURCHSCHIFFUNG messages or <code>null</code>
    */
   public List<Message> getTravelThruShips() {
-    return travelThruShips;
+      return travelThruShips;
   }
 
   /**

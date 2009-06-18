@@ -20,6 +20,7 @@ import magellan.library.Unit;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.Completion;
 import magellan.library.gamebinding.EresseaOrderCompleter;
+import magellan.library.utils.Resources;
 
 
 /**
@@ -36,6 +37,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 	 */
 	public E3AOrderCompleter(GameData gd, CompleterSettingsProvider ac) {
 	  super(gd, ac);
+	  setParser(new E3AOrderParser(gd, this));
 	}
 
   /**
@@ -44,6 +46,19 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
    */
   public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
     return super.getCompletions(u, line, old);
+  }
+  
+  protected void cmpltRekrutiere() {
+    super.cmpltRekrutiere();
+  }
+
+  void cmpltRekrutiereAmount() {
+    // could do that, but we have to filter player races somehow...
+    //    for (Iterator it = getData().rules.getRaceIterator(); it.hasNext(); ){
+//      Race r = (Race) it.next();
+//      addCompletion(new Completion(r.getName()));
+//    }
+    addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "", ""));
   }
 
 }

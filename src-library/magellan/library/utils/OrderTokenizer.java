@@ -29,6 +29,9 @@ import java.io.Reader;
 public class OrderTokenizer {
 	private MergeLineReader in = null;
 	private boolean isFirstToken = true;
+  private OrderToken quotedString;
+  private OrderToken closingQuote;
+  private OrderToken openingQuote;
 
 	/**
 	 * Creates a new <tt>OrderTokenizer</tt> object which will perform its read operations on the
@@ -49,18 +52,29 @@ public class OrderTokenizer {
 	 * 
 	 */
 	public OrderToken getNextToken() {
-		OrderToken retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC);
+    OrderToken retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC);
+	  if (quotedString!=null){
+	    retVal = quotedString;
+	    quotedString = null;
+	    return retVal;
+	  } else if (closingQuote!=null){
+	    retVal = closingQuote;
+	    closingQuote = null;
+	    return retVal;
+	  }
+	  
+		
 		int c = 0;
 
 		try {
 			eatWhiteSpace();
 
 			if((c = in.read()) != -1) {
-				if(isFirstToken && (c == '@')) {
+			  if(isFirstToken && (c == '@')) {
 					retVal = new OrderToken("@", in.getPos() - 1, in.getPos(),
 											OrderToken.TT_PERSIST, false);
 				} else if(c == '"' || c == '\'') {
-					retVal = readQuote(c);
+          retVal = readQuote(c);
 				} else if(c == ';') {
 					retVal = readSCComment();
 				} else if(c == '/') {
@@ -88,45 +102,54 @@ public class OrderTokenizer {
 	 * @throws IOException DOCUMENT-ME
 	 */
 	private OrderToken readQuote(int quote) throws IOException {
-		StringBuffer sb = new StringBuffer(""+(char)quote);
-		int c = 0;
-		int start = in.getPos() - 1;
+	  // setting followedBySpace to true here, is somewhat of a hack. It ensures that the OrderCompleter
+	  // will not insert completions at this point.
+    openingQuote = new OrderToken(""+(char)quote, in.getPos()-1, in.getPos(), OrderToken.TT_OPENING_QUOTE, false);
 
-		while((c = in.read()) != -1) {
-			if(c == quote) {
-				sb.append((char) c);
+    int c = 0;
+    int start = in.getPos();
+    StringBuffer sb = new StringBuffer();
 
-				break;
-			} else if((c == '\r') || (c == '\n')) {
-				break;
-			} else {
-				sb.append((char) c);
-			}
-		}
+    while((c = in.read()) != -1) {
+      if(c == quote) {
+        break;
+      } else if((c == '\r') || (c == '\n')) {
+        break;
+      } else {
+        sb.append((char) c);
+      }
+    }
 
-		int end = in.getPos();
-		OrderToken retVal;
+    int end = in.getPos();
 
-		if(c != quote) {
-			end--;
-			retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, true);
-		} else {
-			c = in.read();
+    
+    if(c != quote) {
+      end--;
+      if (sb.length()>0){
+        if (c=='\r' || c == '\n')
+          quotedString = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, true);
+        else
+          quotedString = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, false);
+      }
+    } else {
+      c = in.read();
+      quotedString = new OrderToken(sb.toString(), start, end-1, OrderToken.TT_STRING, false);
 
-			if((c == ' ') || (c == '\t')) {
-				retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, true);
-			} else {
-				retVal = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, false);
-			}
+      if((c == '\r') || (c == '\n') || (c == '\t') || (c == ' ')) {
+        closingQuote = new OrderToken(""+(char)quote, end-1, end, OrderToken.TT_CLOSING_QUOTE, true);
+      } else {
+        closingQuote = new OrderToken(""+(char)quote, end-1, end, OrderToken.TT_CLOSING_QUOTE, false);
+      }
 
-			if(c != -1) {
-				in.unread(c);
-			}
-		}
 
-		return retVal;
-	}
+      if(c != -1) {
+        in.unread(c);
+      }
+    }
 
+    return openingQuote;
+  }
+	  
 	/**
 	 * Reads a one line comment beginning with a semicolon up to the next line break.
 	 *

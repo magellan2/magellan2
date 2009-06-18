@@ -15,11 +15,12 @@ package magellan.library.impl;
 
 import magellan.library.Described;
 import magellan.library.ID;
+import magellan.library.rules.ObjectType;
 
 /**
  * A class representing a uniquely identifiable object with a modifiable name and description.
  */
-public abstract class MagellanDescribedImpl extends MagellanNamedImpl implements Described {
+public abstract class MagellanDescribedImpl extends ObjectType implements Described {
 	protected String description = null;
 
 	/**

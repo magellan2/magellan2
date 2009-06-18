@@ -151,6 +151,7 @@ import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.Race;
 import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillCategory;
 import magellan.library.rules.SkillType;
@@ -838,7 +839,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 																		 getDiffString(r.maxLuxuries(),
 																					   r.maxOldLuxuries()));
     */
-    DefaultMutableTreeNode luxuriesNode = createSimpleNode(Resources.get("emapdetailspanel.node.trade") + ": " + getDiffString(r.maxLuxuries(),r.maxOldLuxuries()), "handeln");
+    DefaultMutableTreeNode luxuriesNode =
+        createSimpleNode(Resources.get("emapdetailspanel.node.trade") + ": "
+            + getDiffString(r.maxLuxuries(), r.maxOldLuxuries()), "handeln");
     
 		parent.add(luxuriesNode);
 		expandableNodes.add(new NodeWrapper(luxuriesNode, "EMapDetailsPanel.RegionLuxuriesExpanded"));
@@ -921,30 +924,30 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 										  getDiffString(surplus, oldSurplus), "items/silber"));
 
 		// wage
-		int wage = r.getPeasantWage() - 1;
+		int wage = r.getWage();
+		
+		if (wage != Integer.MIN_VALUE) {
+      StringBuffer nodeText =
+          new StringBuffer(Resources.get("emapdetailspanel.node.wage")).append(": ").append(
+              getDiffString(r.getWage(), r.getOldWage()));
 
-		if((getWage(wage, false) != r.getWage()) && (getWage(wage, true) != r.getWage())) {
-			// well, this can't be standard or orc wage, so let's
-			// display this special wage
-			wage = r.getWage();
+      for (Iterator it = data.rules.getRaceIterator(); it.hasNext();){
+        Race race = (Race) it.next();
+        int rWage = data.rules.getGameSpecificStuff().getGameSpecificRules().getWage(r, race);
+        if (rWage!=wage){
+          nodeText.append(", ").append(race.getName()).append(
+          ": ").append(rWage);
+        }
+      }
+      peasantsNode.add(createSimpleNode(nodeText.toString(), "lohn"));
+    }
+		
+		if (r.maxEntertain() != Integer.MIN_VALUE){
+		  // entertain
+		  peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.entertainment") + ": " +
+		      getDiffString(r.maxEntertain(), r.maxOldEntertain()),
+		  "items/silber"));
 		}
-
-		StringBuffer nodeText = new StringBuffer(Resources.get("emapdetailspanel.node.wage")).append(": ").append(getDiffString(getWage(wage,
-																												   false),
-																										   getWage(r.getOldWage(),
-																												   false)));
-
-		if(data.rules.getRace(EresseaConstants.R_ORKS) != null) {
-			nodeText.append(", ").append(data.rules.getRace(EresseaConstants.R_ORKS).getName())
-					.append(": ").append(getDiffString(getWage(wage, true), getWage(r.getOldWage(), true)));
-		}
-
-		peasantsNode.add(createSimpleNode(nodeText.toString(), "lohn"));
-
-		// entertain
-		peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.enterainment") + ": " +
-										  getDiffString(r.maxEntertain(), r.maxOldEntertain()),
-										  "items/silber"));
 	}
 
   
@@ -2971,7 +2974,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 	
 			for(Iterator iter = sortedSpells.iterator(); iter.hasNext();) {
 				Spell spell = (Spell) iter.next();
-				spellsNode.add(createSimpleNode(spell, "spell"));
+				// do not use Named variant here; we want to use Spell.toString() instead of Spell.getName()
+				// in order to display spell level, type, etc.
+				spellsNode.add(createSimpleNode((Object) spell, "spell"));
 			}
 		}
 	}
@@ -4392,42 +4397,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		// reload tree, restore state
 		treeModel.reload();
 		restoreExpansionState();
-	}
-
-	/**
-	 * Calculates the wage for the units of a certain faction in the specified region.
-	 *
-	 * 
-	 * FIXME Gamespecific!
-	 *
-	 * 
-	 */
-	private int getWage(int wage, boolean isOrkRace) {
-		if(isOrkRace) {
-			switch(wage) {
-			case 12:
-				wage = 11;
-
-				break;
-
-			case 13:
-				wage = 12;
-
-				break;
-
-			case 14:
-				wage = 12;
-
-				break;
-
-			case 15:
-				wage = 13;
-
-				break;
-			}
-		}
-
-		return wage;
 	}
 
 	/** 

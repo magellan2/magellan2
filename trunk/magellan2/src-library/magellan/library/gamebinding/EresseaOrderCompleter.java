@@ -170,6 +170,14 @@ public class EresseaOrderCompleter implements Completer {
       ret = list;
     }
     Collections.sort(ret, EresseaOrderCompleter.prioComp);
+    
+    Completion last = null;
+    for (Iterator<Completion> it = ret.iterator(); it.hasNext();){
+      Completion current = it.next();
+      if (current.equals(last))
+        it.remove();
+      last = current;
+    }
 
     return ret;
   }

@@ -675,7 +675,7 @@ public class EresseaOrderParser implements OrderParser {
             }
 
             @Override
-            protected boolean fixWhitespace() {
+            protected boolean isFixWhitespace() {
               // cmplt already takes care of this...
               return false;
             }
@@ -1012,22 +1012,22 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       @Override
-      protected boolean fixWhitespace() {
+      protected boolean isFixWhitespace() {
         return false;
       }
 
       @Override
-      protected boolean cmplOpening() {
+      protected boolean isCmplOpening() {
         return openingToken == null;
       }
 
       @Override
-      protected boolean cmplOpeningName() {
+      protected boolean isCmplOpeningName() {
         return false;
       }
 
       @Override
-      protected boolean doCmplClosing() {
+      protected boolean isCmplClosing() {
         return valid;
       }
     }
@@ -1174,7 +1174,7 @@ public class EresseaOrderParser implements OrderParser {
           }
 
           @Override
-          protected boolean finish() {
+          protected boolean isFinish() {
             return true;
           }
         }.read(t);
@@ -1677,7 +1677,7 @@ public class EresseaOrderParser implements OrderParser {
           }
 
           @Override
-          protected boolean finish() {
+          protected boolean isFinish() {
             return false;
           }
 
@@ -3017,17 +3017,17 @@ public class EresseaOrderParser implements OrderParser {
       @Override
       protected void complete() {
         getCompleter().cmpltZaubere(far, combat, addRegion && openingToken == null,
-            addLevel && openingToken == null, super.cmplOpening() ? "\"" : "",
-            super.doCmplClosing() ? "\"" : "");
+            addLevel && openingToken == null, super.isCmplOpening() ? "\"" : "",
+            super.isCmplClosing() ? "\"" : "");
       }
 
       @Override
-      protected boolean cmplOpening() {
+      protected boolean isCmplOpening() {
         return false;
       }
 
       @Override
-      protected boolean doCmplClosing() {
+      protected boolean isCmplClosing() {
         return false;
       }
 
@@ -3042,7 +3042,7 @@ public class EresseaOrderParser implements OrderParser {
       if (getCompleter() != null && !t.followedBySpace()) {
         getCompleter().cmpltZaubereSpruch(s);
       }
-      if (s==null || s.getSyntax()==null)
+      if (s == null || s.getSyntax() == null)
         return false;
       return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().isEmpty();
     }
@@ -3304,28 +3304,28 @@ public class EresseaOrderParser implements OrderParser {
         getCompleter().clear();
       nextValid = checkNext();
 
-      if (getCompleter() != null && doComplete()) {
+      if (getCompleter() != null && isComplete()) {
         complete();
 
-        if (insertEmpty()) {
+        if (doInsertEmpty()) {
           getCompleter().addCompletion(
               new Completion("", "", "", Completion.DEFAULT_PRIORITY + 1, 1));
         }
 
-        if (finish()) {
+        if (isFinish()) {
           Completion c = new Completion(content, " ", Completion.DEFAULT_PRIORITY * 2);
           if (!getCompleter().getCompletions().contains(c))
             getCompleter().addCompletion(c);
         }
 
-        if (fixWhitespace())
+        if (isFixWhitespace())
           getCompleter().fixWhitespace();
 
         char q = openingToken == null ? defaultQuote : openingToken.getText().charAt(0);
-        if (cmplOpening())
-          getCompleter().cmplOpeningQuote(q, cmplOpeningName());
+        if (isCmplOpening())
+          getCompleter().cmplOpeningQuote(q, isCmplOpeningName());
 
-        if (doCmplClosing())
+        if (isCmplClosing())
           getCompleter().cmplFinalQuote(q);
 
       }
@@ -3337,7 +3337,7 @@ public class EresseaOrderParser implements OrderParser {
      * the case if the last string token is not followed by space and the completer is not
      * <code>null</code>.
      */
-    protected boolean doComplete() {
+    protected boolean isComplete() {
       return getCompleter() != null && !followedBySpace;
     }
 
@@ -3345,7 +3345,7 @@ public class EresseaOrderParser implements OrderParser {
      * If this returns <code>true</code>, a closing quote is added to completions. The default is to
      * complete quotes if quotes are forced or an opening quote is present.
      */
-    protected boolean doCmplClosing() {
+    protected boolean isCmplClosing() {
       return forceQuotes || (openingToken != null && closingToken == null);
     }
 
@@ -3354,7 +3354,7 @@ public class EresseaOrderParser implements OrderParser {
      * to add it if there is none and it is either forced or the content is empty (the
      * <code>magellan.client.completion.AutoCompletion</code> needs this to work properly).
      */
-    protected boolean cmplOpening() {
+    protected boolean isCmplOpening() {
       return closingToken == null
           && ((openingToken == null && forceQuotes) || (openingToken != null && (content.length() == 0)));
     }
@@ -3363,7 +3363,7 @@ public class EresseaOrderParser implements OrderParser {
      * If this returns <code>true</code>, the opening quote is also added to the name of the
      * Completion. Default is <code>true</code>.
      */
-    protected boolean cmplOpeningName() {
+    protected boolean isCmplOpeningName() {
       return true;
     }
 
@@ -3371,7 +3371,7 @@ public class EresseaOrderParser implements OrderParser {
      * If this is <code>true</code>, whitespaces in the content are replace by '~'. The default is
      * to do this if there are no quotes.
      */
-    protected boolean fixWhitespace() {
+    protected boolean isFixWhitespace() {
       return !forceQuotes && openingToken == null;
     }
 
@@ -3379,15 +3379,15 @@ public class EresseaOrderParser implements OrderParser {
      * If this is <code>true</code>, a completion is added for the current content. The default is
      * to do this if the content is valid and non-empty.
      */
-    protected boolean finish() {
-      return valid && content.length() > 0;
+    protected boolean isFinish() {
+      return false;
     }
 
     /**
      * If this returns <code>true</code>, the empty string is added as completion. Default is to do
      * this if quotes are enforced and there is no completion and the content is empty.
      */
-    protected boolean insertEmpty() {
+    protected boolean doInsertEmpty() {
       return forceQuotes && getCompleter().getCompletions().isEmpty() && closingToken == null
           && content.length() == 0;
     }
@@ -3465,7 +3465,11 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected boolean readDescription(OrderToken t, boolean allowEmpty) {
     if (isString(t)) {
-      return new StringChecker(true, true, allowEmpty).read(t);
+      return new StringChecker(true, true, allowEmpty) {
+        protected boolean isFinish() {
+          return valid && content.length() > 0;
+        }
+      }.read(t);
     } else {
       unexpected(t);
       if (getCompleter() != null && !t.followedBySpace()) {

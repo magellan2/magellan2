@@ -188,7 +188,7 @@ public class Completion {
 	    Completion c = (Completion) obj;
 	    return c.getName().equals(getName()) && c.getValue().equals(getValue()) && c.getPostfix().equals(getPostfix());
 	  }
-	  return obj!=this;
+	  return false;
 	}
 	
 	/**

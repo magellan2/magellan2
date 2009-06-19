@@ -120,10 +120,9 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
     JMenuItem unitString = new JMenuItem(getCaption());
-    if (selectedObjects.contains(unit))
-      unitString.setEnabled(false);
+//    if (selectedObjects.contains(unit))
+//      unitString.setEnabled(false);
     unitString.addActionListener(new ActionListener() {
-    
       public void actionPerformed(ActionEvent e) {
         dispatcher.fire(new SelectionEvent(UnitContextMenu.this, null, unit));
       }

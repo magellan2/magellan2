@@ -138,13 +138,15 @@ public class ShipInspector extends AbstractInspector {
     Unit owner = s.getOwnerUnit();
     // the problem also belongs to the faction of the new owner...
     Unit newOwner = null;
-    for (UnitRelation u : owner.getRelations(ControlRelation.class)){
-      if (u instanceof ControlRelation){
-        ControlRelation ctr = (ControlRelation) u;
-        if (u.source==owner)
-          newOwner = ctr.target;
+    if (owner!=null)
+      for (UnitRelation u : owner.getRelations(ControlRelation.class)){
+        if (u instanceof ControlRelation){
+          ControlRelation ctr = (ControlRelation) u;
+          if (u.source==owner)
+            newOwner = ctr.target;
+        }
       }
-    }
+  
     if ((!empty && ((owner != null && Units.isPrivilegedAndNoSpy(owner)) || (newOwner != null && Units
         .isPrivilegedAndNoSpy(newOwner))))
         && (Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel() || Units

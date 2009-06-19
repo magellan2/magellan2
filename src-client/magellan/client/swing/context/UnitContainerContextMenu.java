@@ -95,10 +95,9 @@ public class UnitContainerContextMenu extends JPopupMenu {
 
 	private void initMenu() {
 		JMenuItem name = new JMenuItem(getCaption());
-		if (selectedObjects.contains(uc))
-		  name.setEnabled(false);
+//		if (selectedObjects.contains(uc))
+//		  name.setEnabled(false);
 		name.addActionListener(new ActionListener() {
-    
       public void actionPerformed(ActionEvent e) {
         dispatcher.fire(new SelectionEvent(UnitContainerContextMenu.this, null, uc));
       }

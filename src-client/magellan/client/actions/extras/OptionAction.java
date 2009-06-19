@@ -87,7 +87,6 @@ public class OptionAction extends MenuAction {
 	  if(dialog != null) {
 	    return;
 	  }
-	  log.info("OptionAction.buildDialog()");
 
 	  PreferencesDialog pd = new PreferencesDialog(client, true, client.getProperties(), adapters);
 

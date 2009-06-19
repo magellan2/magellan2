@@ -711,7 +711,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
   }
 
   private String getFileName(String filename) {
-    File defaultFile = new File(filename);
+    File defaultFile = filename==null?null:new File(filename);
     String retVal = null;
 
     JFileChooser fc = new JFileChooser();
@@ -724,20 +724,12 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     EresseaFileFilter bz2Filter = new EresseaFileFilter(EresseaFileFilter.BZ2_FILTER);
     fc.addChoosableFileFilter(bz2Filter);
 
-    // EresseaFileFilter zipFilter = new
-    // EresseaFileFilter(EresseaFileFilter.ZIP_FILTER);
-    // fc.addChoosableFileFilter(zipFilter);
+    EresseaFileFilter allCrFilter = new EresseaFileFilter(EresseaFileFilter.ALLCR_FILTER);
+    fc.addChoosableFileFilter(allCrFilter);
 
-    // select an active file filter
-    if (crFilter.accept(defaultFile)) {
-      fc.setFileFilter(crFilter);
-    } else if (gzFilter.accept(defaultFile)) {
-      fc.setFileFilter(gzFilter);
-    } else if (bz2Filter.accept(defaultFile)) {
-      fc.setFileFilter(bz2Filter);
-      // } else if(zipFilter.accept(defaultFile)) {
-      // fc.setFileFilter(zipFilter);
-    }
+    // we don't currently support zip files for cr export
+
+    fc.setFileFilter(allCrFilter);
 
     if (defaultFile != null) {
       fc.setSelectedFile(defaultFile);

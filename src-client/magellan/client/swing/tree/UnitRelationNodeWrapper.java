@@ -116,4 +116,8 @@ public class UnitRelationNodeWrapper implements CellObject, SupportsClipboard, C
   public String toString(){
     return innerNode.toString();
   }
+
+  public CellObject getInnerNode() {
+    return innerNode;
+  }
 }

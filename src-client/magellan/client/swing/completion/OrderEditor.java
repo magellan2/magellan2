@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.swing.completion;
@@ -64,128 +58,129 @@ import magellan.library.utils.OrderToken;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * A text pane for convenient editing and handling of Eressea orders.
  */
 public class OrderEditor extends JTextPane implements DocumentListener, KeyListener,
-													  SelectionListener, FocusListener, CacheableOrderEditor, Changeable
-{
-	private static final Logger log = Logger.getInstance(OrderEditor.class);
+    SelectionListener, FocusListener, CacheableOrderEditor, Changeable {
+  private static final Logger log = Logger.getInstance(OrderEditor.class);
 
-//	private static int instanceCount = 0;
-	
-	// Style name constants
+// private static int instanceCount = 0;
 
-	/** DOCUMENT-ME */
-	public static final String S_REGULAR = "regular";
+  // Style name constants
+
+  /** DOCUMENT-ME */
+  public static final String S_REGULAR = "regular";
   public static final String S_REGULAR_INV = "regular_inv";
 
-	/** DOCUMENT-ME */
-	public static final String S_KEYWORD = "keyword";
+  /** DOCUMENT-ME */
+  public static final String S_KEYWORD = "keyword";
   public static final String S_KEYWORD_INV = "keyword_inv";
 
-	/** DOCUMENT-ME */
-	public static final String S_STRING = "string";
+  /** DOCUMENT-ME */
+  public static final String S_STRING = "string";
   public static final String S_STRING_INV = "string_inv";
 
-	/** DOCUMENT-ME */
-	public static final String S_NUMBER = "number";
+  /** DOCUMENT-ME */
+  public static final String S_NUMBER = "number";
   public static final String S_NUMBER_INV = "number_inv";
 
-	/** DOCUMENT-ME */
-	public static final String S_ID = "id";
+  /** DOCUMENT-ME */
+  public static final String S_ID = "id";
   public static final String S_ID_INV = "id_inv";
 
-	/** DOCUMENT-ME */
-	public static final String S_COMMENT = "comment";
+  /** DOCUMENT-ME */
+  public static final String S_COMMENT = "comment";
   public static final String S_COMMENT_INV = "comment_inv";
-	
-	/** DOCUMENT-ME */
+
+  /** DOCUMENT-ME */
   public static final String S_LONGORDER = "longorder";
   public static final String S_LONGORDER_INV = "longorder_inv";
-	
-	private Unit unit = null;
-	private boolean modified = false;
-	private List<String> orders = new LinkedList<String>();
-	private OrderParser parser = null;
-	private Properties settings = null;
-	private boolean highlightSyntax = true;
-	private boolean ignoreModifications = false;
-	private EventDispatcher dispatcher = null;
 
-	//private GameData data = null;
-	private UndoManager undoMgr = null;
-	private DocumentUpdateRunnable docUpdateThread = new DocumentUpdateRunnable(null); // keep this udpate runnable instead of re-creating it over and over again
-	private OrderEditorCaret myCaret = null;
+  private Unit unit = null;
+  private boolean modified = false;
+  private List<String> orders = new LinkedList<String>();
+  private OrderParser parser = null;
+  private Properties settings = null;
+  private boolean highlightSyntax = true;
+  private boolean ignoreModifications = false;
+  private EventDispatcher dispatcher = null;
+
+  // private GameData data = null;
+  private UndoManager undoMgr = null;
+  private DocumentUpdateRunnable docUpdateThread = new DocumentUpdateRunnable(null); // keep this
+                                                                                     // udpate
+                                                                                     // runnable
+                                                                                     // instead of
+                                                                                     // re-creating
+                                                                                     // it over and
+                                                                                     // over again
+  private OrderEditorCaret myCaret = null;
 
   private UnitOrdersListener orderListener;
 
-	/**
-	 * Creates a new OrderEditor object.
-	 *
-	 * 
-	 * 
-	 * 
-	 * 
-	 */
-	public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d, OrderParser parser) {
-		super();
-//		if (++instanceCount % 10 == 0) 
-//		  log.info("OE: "+instanceCount);
-		
+  /**
+   * Creates a new OrderEditor object.
+   */
+  public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d,
+      OrderParser parser) {
+    super();
+// if (++instanceCount % 10 == 0)
+// log.info("OE: "+instanceCount);
 
-		// pavkovic 2002.11.11: use own caret for more logical refreshing
-		myCaret = new OrderEditorCaret();
-		setCaret(myCaret);
+    // pavkovic 2002.11.11: use own caret for more logical refreshing
+    myCaret = new OrderEditorCaret();
+    setCaret(myCaret);
 
-		// for new DefaultEditorKit
-		setEditorKit(new OrderEditorKit());
-		this.settings = settings;
+    // for new DefaultEditorKit
+    setEditorKit(new OrderEditorKit());
+    this.settings = settings;
 
-		this.parser = parser; //(data != null) ? data.getGameSpecificStuff().getOrderParser(data) : null;
+    this.parser = parser; // (data != null) ? data.getGameSpecificStuff().getOrderParser(data) :
+                          // null;
 
-		this.undoMgr = _undoMgr;
+    this.undoMgr = _undoMgr;
 
-		this.dispatcher = d;
+    this.dispatcher = d;
 
-		//this.dispatcher.addGameDataListener(this);
-		highlightSyntax = (Boolean.valueOf(settings.getProperty("OrderEditor.highlightSyntax", "true")).booleanValue());
+    // this.dispatcher.addGameDataListener(this);
+    highlightSyntax =
+        (Boolean.valueOf(settings.getProperty("OrderEditor.highlightSyntax", "true"))
+            .booleanValue());
 
-		getDocument().addDocumentListener(this);
+    getDocument().addDocumentListener(this);
 
-		// TODO stm undo is deactivated
-//		SignificantUndos sigUndos = new SignificantUndos();
-//		getDocument().addUndoableEditListener(sigUndos);
-//		getDocument().addDocumentListener(sigUndos);
+    // TODO stm undo is deactivated
+// SignificantUndos sigUndos = new SignificantUndos();
+// getDocument().addUndoableEditListener(sigUndos);
+// getDocument().addDocumentListener(sigUndos);
 
-		addKeyListener(this);
-		addFocusListener(this);
+    addKeyListener(this);
+    addFocusListener(this);
 
-		orderListener = new UnitOrdersListener() {
+    orderListener = new UnitOrdersListener() {
       public void unitOrdersChanged(UnitOrdersEvent e) {
         // refresh local copy of orders in editor
-        if((e.getSource() != OrderEditor.this) &&
-             e.getUnit().equals(OrderEditor.this.unit)) {
+        if ((e.getSource() != OrderEditor.this) && e.getUnit().equals(OrderEditor.this.unit)) {
           setOrders(OrderEditor.this.unit.getOrders());
         }
       }
     };
-		initStyles();
+    initStyles();
 
-		//bind ctrl-shift C to OrderEditor
-		super.getInputMap().put(KeyStroke.getKeyStroke(OrderEditorKit.copyLineActionKeyStroke),
-								OrderEditorKit.copyLineAction);
+    // bind ctrl-shift C to OrderEditor
+    super.getInputMap().put(KeyStroke.getKeyStroke(OrderEditorKit.copyLineActionKeyStroke),
+        OrderEditorKit.copyLineAction);
 
-		//if(log.isDebugEnabled()) {
-		//	if(!swingInspected) {
-		//		swingInspected = true;
-		//		log.debug("KEYBINDING FOR OrderEditor:\n"+
-		//				  com.eressea.util.logging.SwingInspector.printKeybindings(this));
-		//	}
-		//}
-	}
-  
+    // if(log.isDebugEnabled()) {
+    // if(!swingInspected) {
+    // swingInspected = true;
+    // log.debug("KEYBINDING FOR OrderEditor:\n"+
+    // com.eressea.util.logging.SwingInspector.printKeybindings(this));
+    // }
+    // }
+  }
+
   /**
    * registers an OrderListener with the event dispatcher
    */
@@ -193,7 +188,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     dispatcher.addUnitOrdersListener(orderListener);
   }
 
-	
   /**
    * release an OrderListener with the event dispatcher
    */
@@ -201,162 +195,136 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     dispatcher.removeUnitOrdersListener(orderListener);
   }
 
-	@Override
-	protected void finalize() throws Throwable {
-//	  instanceCount--;
-	  releaseListener();
-	  super.finalize();
-	}
+  @Override
+  protected void finalize() throws Throwable {
+// instanceCount--;
+    releaseListener();
+    super.finalize();
+  }
 
-	//private boolean swingInspected;
-	public void changedUpdate(DocumentEvent e) {
-	}
+  // private boolean swingInspected;
+  public void changedUpdate(DocumentEvent e) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
-	 */
-	public void insertUpdate(DocumentEvent e) {
-		removeUpdate(e);
-	}
+  /**
+   * DOCUMENT-ME
+   * 
+   * @see javax.swing.event.DocumentListener#insertUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void insertUpdate(DocumentEvent e) {
+    removeUpdate(e);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
-	 */
-	public void removeUpdate(DocumentEvent e) {
-		if(ignoreModifications) {
-			return;
-		}
+  /**
+   * DOCUMENT-ME
+   * 
+   * @see javax.swing.event.DocumentListener#removeUpdate(javax.swing.event.DocumentEvent)
+   */
+  public void removeUpdate(DocumentEvent e) {
+    if (ignoreModifications) {
+      return;
+    }
 
-		setModified(true);
-		fireDelayedOrdersEvent();
-		docUpdateThread.setEvent(e);
-		SwingUtilities.invokeLater(docUpdateThread);
-	}
+    setModified(true);
+    fireDelayedOrdersEvent();
+    docUpdateThread.setEvent(e);
+    SwingUtilities.invokeLater(docUpdateThread);
+  }
 
-	Timer timer = null;
+  Timer timer = null;
 
-	/*
-	 * Timer support routine for informing other objects about
-	 * changed orders.
-	 */
-	private void fireDelayedOrdersEvent() {
-		if(timer == null) {
-			timer = new Timer(700, new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setOrdersAndFireEvent();
+  /*
+   * Timer support routine for informing other objects about changed orders.
+   */
+  private void fireDelayedOrdersEvent() {
+    if (timer == null) {
+      timer = new Timer(700, new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          setOrdersAndFireEvent();
 
-						//dispatcher.fire(new UnitOrdersEvent(OrderEditor.this,unit));
-					}
-				});
-			timer.setRepeats(false);
-		}
+          // dispatcher.fire(new UnitOrdersEvent(OrderEditor.this,unit));
+        }
+      });
+      timer.setRepeats(false);
+    }
 
-		// always restart to prevent refreshing while moving around
-		timer.restart();
-	}
+    // always restart to prevent refreshing while moving around
+    timer.restart();
+  }
 
-	/**
-	 * Indicates whether the contents of this editor have been modified.
-	 *
-	 * 
-	 */
-	public boolean isModified() {
-		return modified;
-	}
+  /**
+   * Indicates whether the contents of this editor have been modified.
+   */
+  public boolean isModified() {
+    return modified;
+  }
 
-	/**
-	 * If the active object in the selection event is a unit it is registered with this editor.
-	 *
-	 * 
-	 */
-	public void selectionChanged(SelectionEvent e) {
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject());
-			OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject().getClass());
-		}
+  /**
+   * If the active object in the selection event is a unit it is registered with this editor.
+   */
+  public void selectionChanged(SelectionEvent e) {
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject());
+      OrderEditor.log.debug("OrderEditor.selectionChanged: " + e.getActiveObject().getClass());
+    }
 
-		Object activeObject = e.getActiveObject();
+    Object activeObject = e.getActiveObject();
 
-		if(activeObject instanceof Unit) {
-			setUnit((Unit) activeObject);
-		}
-	}
+    if (activeObject instanceof Unit) {
+      setUnit((Unit) activeObject);
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyPressed(KeyEvent e) {
-		if((unit != null) &&
-			   ((e.getKeyCode() == KeyEvent.VK_ENTER) ||
-			   (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) ||
-			   (e.getKeyCode() == KeyEvent.VK_DELETE))) {
-			setOrdersAndFireEvent();
-		} else if(e.getKeyCode() == KeyEvent.VK_C) {
-			//int mask = KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK;
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyPressed(KeyEvent e) {
+    if ((unit != null)
+        && ((e.getKeyCode() == KeyEvent.VK_ENTER) || (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) || (e
+            .getKeyCode() == KeyEvent.VK_DELETE))) {
+      setOrdersAndFireEvent();
+    } else if (e.getKeyCode() == KeyEvent.VK_C) {
+      // int mask = KeyEvent.SHIFT_MASK | KeyEvent.CTRL_MASK;
 
-			//if(e.getModifiers() == mask) {
-			// moved to ordereditorkit!
-			//}
-		}
-	}
+      // if(e.getModifiers() == mask) {
+      // moved to ordereditorkit!
+      // }
+    }
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyReleased(KeyEvent e) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyReleased(KeyEvent e) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void keyTyped(KeyEvent e) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void keyTyped(KeyEvent e) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void focusGained(FocusEvent e) {
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void focusGained(FocusEvent e) {
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void focusLost(FocusEvent e) {
-		setOrdersAndFireEvent();
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public void focusLost(FocusEvent e) {
+    setOrdersAndFireEvent();
+  }
 
-	private void setOrdersAndFireEvent() {
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.setOrdersAndFireEvent(" + isModified() + "," + unit + ")");
-		}
+  private void setOrdersAndFireEvent() {
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.setOrdersAndFireEvent(" + isModified() + "," + unit + ")");
+    }
 
-		if(isModified() && (unit != null)) {
-			// this is done on purpose: in init of UnitOrdersEvent the list of related units is built
-			// so we need to create it before changing orders of the unit
-			UnitOrdersEvent e = new UnitOrdersEvent(this, unit);
-			unit.setOrders(getOrders());
-			// we also need to notify that the unit orders are now unmodified
-			setModified(false);
-			dispatcher.fire(e);
-		}
-	}
-  
-  public void fireOrdersChangedEvent() {
-    if (unit !=null) {
+    if (isModified() && (unit != null)) {
+      // this is done on purpose: in init of UnitOrdersEvent the list of related units is built
+      // so we need to create it before changing orders of the unit
       UnitOrdersEvent e = new UnitOrdersEvent(this, unit);
       unit.setOrders(getOrders());
       // we also need to notify that the unit orders are now unmodified
@@ -365,688 +333,649 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
   }
 
-	/**
-	 * Returns the unit currently registered with this editor.
-	 *
-	 * 
-	 */
-	public Unit getUnit() {
-		return unit;
-	}
+  public void fireOrdersChangedEvent() {
+    if (unit != null) {
+      UnitOrdersEvent e = new UnitOrdersEvent(this, unit);
+      unit.setOrders(getOrders());
+      // we also need to notify that the unit orders are now unmodified
+      setModified(false);
+      dispatcher.fire(e);
+    }
+  }
 
-	/**
-	 * Sets the unit for this editor component. If the orders have been modified and there is a
-	 * previous unit registered with this component, its orders are updated.
-	 *
-	 * 
-	 */
-	public void setUnit(Unit u) {
-		setOrdersAndFireEvent();
+  /**
+   * Returns the unit currently registered with this editor.
+   */
+  public Unit getUnit() {
+    return unit;
+  }
 
-		ignoreModifications = true;
-		unit = u;
+  /**
+   * Sets the unit for this editor component. If the orders have been modified and there is a
+   * previous unit registered with this component, its orders are updated.
+   */
+  public void setUnit(Unit u) {
+    setOrdersAndFireEvent();
 
-		if(unit != null) {
-			setOrders(unit.getOrders());
-		} else {
-			setText("");
-		}
+    ignoreModifications = true;
+    unit = u;
 
-		ignoreModifications = false;
-	}
+    if (unit != null) {
+      setOrders(unit.getOrders());
+    } else {
+      setText("");
+    }
 
-	/**
-	 * Returns a list of the orders this text pane is currently containing. A order extending over
-	 * more than one line is stripped of the trailing backslashes, concatenated and returned as
-	 * one order.
-	 *
-	 * 
-	 */
-	public List<String> getOrders() {
-		if(modified == false) {
-			return orders;
-		}
+    ignoreModifications = false;
+  }
 
-		orders = new LinkedList<String>();
+  /**
+   * Returns a list of the orders this text pane is currently containing. A order extending over
+   * more than one line is stripped of the trailing backslashes, concatenated and returned as one
+   * order.
+   */
+  public List<String> getOrders() {
+    if (modified == false) {
+      return orders;
+    }
 
-		try {
-			String text = getText();
-			String line = null;
-			LineNumberReader stream = new LineNumberReader(new MergeLineReader(new StringReader(text)));
+    orders = new LinkedList<String>();
 
-			// note: stream.ready() is not false at end of string
-			while(stream.ready()) {
-				if((line = stream.readLine()) != null) {
-					orders.add(line);
-				} else {
-					break;
-				}
-			}
+    try {
+      String text = getText();
+      String line = null;
+      LineNumberReader stream = new LineNumberReader(new MergeLineReader(new StringReader(text)));
 
-			stream.close();
-		} catch(IOException ioe) {
-			OrderEditor.log.warn(ioe);
-		}
+      // note: stream.ready() is not false at end of string
+      while (stream.ready()) {
+        if ((line = stream.readLine()) != null) {
+          orders.add(line);
+        } else {
+          break;
+        }
+      }
 
-		return orders;
-	}
+      stream.close();
+    } catch (IOException ioe) {
+      OrderEditor.log.warn(ioe);
+    }
 
-	/**
-	 * Puts the list elements in <tt>c</tt> into this text pane, one at a line.
-	 *
-	 * 
-	 */
-	public void setOrders(Collection<String> c) {
-		orders = new LinkedList<String>();
-		orders.addAll(c);
+    return orders;
+  }
 
-		ignoreModifications = true;
-		setText("");
+  /**
+   * Puts the list elements in <tt>c</tt> into this text pane, one at a line.
+   */
+  public void setOrders(Collection<String> c) {
+    orders = new LinkedList<String>();
+    orders.addAll(c);
 
-		for(Iterator<String> iter = orders.iterator(); iter.hasNext(); ) {
-			addOrder(iter.next());
-		}
+    ignoreModifications = true;
+    setText("");
 
-		setCaretPosition(0);
-		setModified(false);
-		ignoreModifications = false;
-		undoMgr.discardAllEdits();
-	}
+    for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
+      addOrder(iter.next());
+    }
 
-	/**
-	 * Adds a order to this text pane.
-	 *
-	 * 
-	 */
-	public void addOrder(String cmd) {
-		ignoreModifications = true;
+    setCaretPosition(0);
+    setModified(false);
+    ignoreModifications = false;
+    undoMgr.discardAllEdits();
+  }
 
-		Document doc = getDocument();
+  /**
+   * Adds a order to this text pane.
+   */
+  public void addOrder(String cmd) {
+    ignoreModifications = true;
 
-		try {
-			//if((doc.getLength() > 0) && !doc.getText(doc.getLength(), 1).equals("\n")) {
-			if((doc.getLength() > 0)) {
-				doc.insertString(doc.getLength(), "\n", null);
-			}
+    Document doc = getDocument();
 
-			int insertPos = doc.getLength();
-			doc.insertString(insertPos, cmd, null);
+    try {
+      // if((doc.getLength() > 0) && !doc.getText(doc.getLength(), 1).equals("\n")) {
+      if ((doc.getLength() > 0)) {
+        doc.insertString(doc.getLength(), "\n", null);
+      }
 
-			if(highlightSyntax) {
-				formatTokens(insertPos);
-			}
-		} catch(BadLocationException e) {
-			OrderEditor.log.warn("OrderEditor.addOrder(): " + e.toString());
-		}
+      int insertPos = doc.getLength();
+      doc.insertString(insertPos, cmd, null);
 
-		ignoreModifications = false;
-	}
+      if (highlightSyntax) {
+        formatTokens(insertPos);
+      }
+    } catch (BadLocationException e) {
+      OrderEditor.log.warn("OrderEditor.addOrder(): " + e.toString());
+    }
 
-	/**
-	 * Allows to change the modified state of this text pane. Setting it to <tt>true</tt> currently
-	 * does not automatically result in an event being fired.
-	 *
-	 * 
-	 */
-	private void setModified(boolean isModified) {
-		modified = isModified;
-	}
+    ignoreModifications = false;
+  }
 
-	/**
-	 * Return whether syntax highlighting is enabled or disabled.
-	 */
-	public boolean getUseSyntaxHighlighting() {
-		return highlightSyntax;
-	}
+  /**
+   * Allows to change the modified state of this text pane. Setting it to <tt>true</tt> currently
+   * does not automatically result in an event being fired.
+   */
+  private void setModified(boolean isModified) {
+    modified = isModified;
+  }
 
-	/**
-	 * Enable or disable syntax highlighting.
-	 * 
-	 */
-	public void setUseSyntaxHighlighting(boolean bool) {
-		if(highlightSyntax != bool) {
-			highlightSyntax = bool;
+  /**
+   * Return whether syntax highlighting is enabled or disabled.
+   */
+  public boolean getUseSyntaxHighlighting() {
+    return highlightSyntax;
+  }
 
-			formatTokens();
-		}
-	}
+  /**
+   * Enable or disable syntax highlighting.
+   */
+  public void setUseSyntaxHighlighting(boolean bool) {
+    if (highlightSyntax != bool) {
+      highlightSyntax = bool;
 
-	/**
-	 * Set the color of the specified token style used for syntax highlighting.
-	 *
-	 */
-	public void setTokenColor(String styleName, Color color) {
-		Style s = ((StyledDocument) getDocument()).getStyle(styleName);
+      formatTokens();
+    }
+  }
 
-		if(s != null) {
-			StyleConstants.setForeground(s, color);
-		}
-	}
+  /**
+   * Set the color of the specified token style used for syntax highlighting.
+   */
+  public void setTokenColor(String styleName, Color color) {
+    Style s = ((StyledDocument) getDocument()).getStyle(styleName);
 
-	/**
-	 * Refresh the editor's contents.
-	 */
-	public void reloadOrders() {
-		if(unit != null) {
-			setOrders(unit.getOrders());
-		}
-	}
+    if (s != null) {
+      StyleConstants.setForeground(s, color);
+    }
+  }
 
-	/**
-	 * Adds styles to this component with one style for each token type.
-	 */
-	private void initStyles() {
-	  Color errorColor = new Color(1f, .5f, 0f);
-	  
-		Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-		Style regular = addStyle(OrderEditor.S_REGULAR, def);
-		Style s = addStyle(OrderEditor.S_REGULAR_INV, regular);
+  /**
+   * Refresh the editor's contents.
+   */
+  public void reloadOrders() {
+    if (unit != null) {
+      setOrders(unit.getOrders());
+    }
+  }
+
+  /**
+   * Adds styles to this component with one style for each token type.
+   */
+  private void initStyles() {
+    Color errorColor = new Color(1f, .5f, 0f);
+
+    Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
+    Style regular = addStyle(OrderEditor.S_REGULAR, def);
+    Style s = addStyle(OrderEditor.S_REGULAR_INV, regular);
     StyleConstants.setBackground(s, errorColor);
-		
-		s = addStyle(OrderEditor.S_KEYWORD, regular);
-		StyleConstants.setForeground(s,
-									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		OrderEditor.S_KEYWORD + ".color",
-																		getDefaultColor(OrderEditor.S_KEYWORD))));
+
+    s = addStyle(OrderEditor.S_KEYWORD, regular);
+    StyleConstants.setForeground(s, Colors.decode(settings.getProperty("OrderEditor.styles."
+        + OrderEditor.S_KEYWORD + ".color", getDefaultColor(OrderEditor.S_KEYWORD))));
     s = addStyle(OrderEditor.S_KEYWORD_INV, s);
     StyleConstants.setBackground(s, errorColor);
-		
+
     s = addStyle(OrderEditor.S_STRING, regular);
-		StyleConstants.setForeground(s,
-									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		OrderEditor.S_STRING + ".color",
-																		getDefaultColor(OrderEditor.S_STRING))));
+    StyleConstants.setForeground(s, Colors.decode(settings.getProperty("OrderEditor.styles."
+        + OrderEditor.S_STRING + ".color", getDefaultColor(OrderEditor.S_STRING))));
     s = addStyle(OrderEditor.S_STRING_INV, s);
     StyleConstants.setBackground(s, errorColor);
-		
+
     s = addStyle(OrderEditor.S_NUMBER, regular);
-		StyleConstants.setForeground(s,
-									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		OrderEditor.S_NUMBER + ".color",
-																		getDefaultColor(OrderEditor.S_NUMBER))));
+    StyleConstants.setForeground(s, Colors.decode(settings.getProperty("OrderEditor.styles."
+        + OrderEditor.S_NUMBER + ".color", getDefaultColor(OrderEditor.S_NUMBER))));
     s = addStyle(OrderEditor.S_NUMBER_INV, s);
     StyleConstants.setBackground(s, errorColor);
-		
+
     s = addStyle(OrderEditor.S_ID, regular);
-		StyleConstants.setForeground(s,
-									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		OrderEditor.S_ID + ".color",
-																		getDefaultColor(OrderEditor.S_ID))));
+    StyleConstants.setForeground(s, Colors.decode(settings.getProperty("OrderEditor.styles."
+        + OrderEditor.S_ID + ".color", getDefaultColor(OrderEditor.S_ID))));
     s = addStyle(OrderEditor.S_ID_INV, s);
     StyleConstants.setBackground(s, errorColor);
 
     s = addStyle(OrderEditor.S_COMMENT, regular);
-		StyleConstants.setForeground(s,
-									 Colors.decode(settings.getProperty("OrderEditor.styles." +
-																		OrderEditor.S_COMMENT + ".color",
-																		getDefaultColor(OrderEditor.S_COMMENT))));
+    StyleConstants.setForeground(s, Colors.decode(settings.getProperty("OrderEditor.styles."
+        + OrderEditor.S_COMMENT + ".color", getDefaultColor(OrderEditor.S_COMMENT))));
     s = addStyle(OrderEditor.S_COMMENT_INV, s);
     StyleConstants.setBackground(s, errorColor);
-		
-		s = addStyle(OrderEditor.S_LONGORDER, regular);
-    StyleConstants.setBackground(s,Color.yellow);
+
+    s = addStyle(OrderEditor.S_LONGORDER, regular);
+    StyleConstants.setBackground(s, Color.yellow);
     s = addStyle(OrderEditor.S_LONGORDER_INV, s);
     StyleConstants.setBackground(s, errorColor);
-		
-		
-	}
 
-	/**
-	 * Return the default color as a string for the specified token style.
-	 */
-	public static String getDefaultColor(String styleName) {
-		String retVal = "0,0,0";
+  }
 
-		if(styleName.equals(OrderEditor.S_KEYWORD)) {
-			retVal = "0,0,255";
-		} else if(styleName.equals(OrderEditor.S_STRING)) {
-			retVal = "192,0,0";
-		} else if(styleName.equals(OrderEditor.S_NUMBER)) {
-			retVal = "0,0,0";
-		} else if(styleName.equals(OrderEditor.S_ID)) {
-			retVal = "168,103,0";
-		} else if(styleName.equals(OrderEditor.S_COMMENT)) {
-			retVal = "0,128,0";
-		}
+  /**
+   * Return the default color as a string for the specified token style.
+   */
+  public static String getDefaultColor(String styleName) {
+    String retVal = "0,0,0";
 
-		return retVal;
-	}
+    if (styleName.equals(OrderEditor.S_KEYWORD)) {
+      retVal = "0,0,255";
+    } else if (styleName.equals(OrderEditor.S_STRING)) {
+      retVal = "192,0,0";
+    } else if (styleName.equals(OrderEditor.S_NUMBER)) {
+      retVal = "0,0,0";
+    } else if (styleName.equals(OrderEditor.S_ID)) {
+      retVal = "168,103,0";
+    } else if (styleName.equals(OrderEditor.S_COMMENT)) {
+      retVal = "0,128,0";
+    }
 
-	/**
-	 * Returns a style corresponding to a token type
-	 */
-	private Style getTokenStyle(OrderToken t, boolean valid) {
-		StyledDocument doc = (StyledDocument) getDocument();
-		Style retVal = doc.getStyle(OrderEditor.S_REGULAR);
+    return retVal;
+  }
 
-		switch(t.ttype) {
-		case OrderToken.TT_UNDEF:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_REGULAR);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
+  /**
+   * Returns a style corresponding to a token type
+   */
+  private Style getTokenStyle(OrderToken t, boolean valid) {
+    StyledDocument doc = (StyledDocument) getDocument();
+    Style retVal = doc.getStyle(OrderEditor.S_REGULAR);
 
-		  break;
+    switch (t.ttype) {
+    case OrderToken.TT_UNDEF:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_REGULAR);
+      else
+        retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
 
-		case OrderToken.TT_PERSIST:
-		case OrderToken.TT_KEYWORD:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_KEYWORD);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_KEYWORD_INV);
+      break;
 
-		  break;
+    case OrderToken.TT_PERSIST:
+    case OrderToken.TT_KEYWORD:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_KEYWORD);
+      else
+        retVal = doc.getStyle(OrderEditor.S_KEYWORD_INV);
 
-		case OrderToken.TT_STRING:
-		case OrderToken.TT_OPENING_QUOTE:
-		case OrderToken.TT_CLOSING_QUOTE:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_STRING);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_STRING_INV);
+      break;
 
-		  break;
+    case OrderToken.TT_STRING:
+    case OrderToken.TT_OPENING_QUOTE:
+    case OrderToken.TT_CLOSING_QUOTE:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_STRING);
+      else
+        retVal = doc.getStyle(OrderEditor.S_STRING_INV);
 
-		case OrderToken.TT_NUMBER:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_NUMBER);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_NUMBER_INV);
+      break;
 
-		  break;
+    case OrderToken.TT_NUMBER:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_NUMBER);
+      else
+        retVal = doc.getStyle(OrderEditor.S_NUMBER_INV);
 
-		case OrderToken.TT_ID:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_ID);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_ID_INV);
+      break;
 
-		  break;
+    case OrderToken.TT_ID:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_ID);
+      else
+        retVal = doc.getStyle(OrderEditor.S_ID_INV);
 
-		case OrderToken.TT_COMMENT:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_COMMENT);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_COMMENT_INV);
+      break;
 
-		  break;
-		default:
-		  if (valid)
-		    retVal = doc.getStyle(OrderEditor.S_REGULAR);
-		  else
-		    retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
-		}
+    case OrderToken.TT_COMMENT:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_COMMENT);
+      else
+        retVal = doc.getStyle(OrderEditor.S_COMMENT_INV);
 
-		return retVal;
-	}
+      break;
+    default:
+      if (valid)
+        retVal = doc.getStyle(OrderEditor.S_REGULAR);
+      else
+        retVal = doc.getStyle(OrderEditor.S_REGULAR_INV);
+    }
 
-	/**
-	 * Gives back the text in the text pane. Additionally \r is replaced by space. This is a
-	 * so-called "minor incompatibility" introduced by jdk 1.4.
-	 *
-	 * 
-	 */
-	@Override
+    return retVal;
+  }
+
+  /**
+   * Gives back the text in the text pane. Additionally \r is replaced by space. This is a so-called
+   * "minor incompatibility" introduced by jdk 1.4.
+   */
+  @Override
   public String getText() {
-		String text = super.getText();
+    String text = super.getText();
 
-		if((text == null) || (text.indexOf('\r') == -1)) {
-			return text;
-		}
+    if ((text == null) || (text.indexOf('\r') == -1)) {
+      return text;
+    }
 
-		StringBuffer sb = new StringBuffer(text.length());
-		char chars[] = text.toCharArray();
+    StringBuffer sb = new StringBuffer(text.length());
+    char chars[] = text.toCharArray();
 
-		for(int i = 0; i < chars.length; i++) {
-			if(chars[i] != '\r') {
-				sb.append(chars[i]);
-			}
-		}
+    for (int i = 0; i < chars.length; i++) {
+      if (chars[i] != '\r') {
+        sb.append(chars[i]);
+      }
+    }
 
-		return sb.toString();
-	}
+    return sb.toString();
+  }
 
-	/**
-	 * Format the tokens in the line starting in the document at insertPos, with regard to the
-	 * token type colors.
-	 *
-	 * 
-	 */
-	private void formatTokens(int startPos) {
-		StyledDocument doc = (StyledDocument) getDocument();
+  /**
+   * Format the tokens in the line starting in the document at insertPos, with regard to the token
+   * type colors.
+   */
+  private void formatTokens(int startPos) {
+    StyledDocument doc = (StyledDocument) getDocument();
 
-		String text = getText();
+    String text = getText();
 
-		if((text == null) || text.equals("")) {
-			return;
-		}
+    if ((text == null) || text.equals("")) {
+      return;
+    }
 
-		int pos[] = getLineBorders(text, startPos);
-		int newStartPos = startPos;
+    int pos[] = getLineBorders(text, startPos);
+    if (pos[0] == -1) {
+      return;
+    }
 
-		if(pos[0] == -1) {
-			return;
-		}
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + "," + pos[0]
+          + "," + pos[1] + ")");
+    }
 
-		newStartPos = pos[0];
+    text = text.substring(pos[0], pos[1]);
 
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + "," + pos[0] + "," +
-					  pos[1] + ")");
-		}
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
+    }
 
-		text = text.substring(pos[0], pos[1]);
+    boolean valid = parser.read(new StringReader(text));
 
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.formatTokens(" + startPos + "): (" + text + ")");
-		}
+    // doc.setCharacterAttributes(pos[0]+(pos[1]-pos[0])/4, pos[1]-(pos[1]-pos[0])/4,
+    // doc.getStyle(S_REGULAR), true);
 
-		boolean valid = parser.read(new StringReader(text));
+    OrderToken prevToken = null;
+    for (Iterator iter = parser.getTokens().iterator(); iter.hasNext();) {
+      OrderToken token = (OrderToken) iter.next();
 
-    doc.setCharacterAttributes(pos[0], pos[1], doc.getStyle(S_REGULAR), true);
-    
-		for(Iterator iter = parser.getTokens().iterator(); iter.hasNext();) {
-			OrderToken token = (OrderToken) iter.next();
+      if (OrderEditor.log.isDebugEnabled()) {
+        OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);
+      }
 
-			if(OrderEditor.log.isDebugEnabled()) {
-				OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);
-			}
+      if (token.ttype != OrderToken.TT_EOC) {
+        Style style = getTokenStyle(token, valid);
 
-			if(token.ttype != OrderToken.TT_EOC) {
-				Style style = getTokenStyle(token, valid);
+        if (style != null) {
+          if (OrderEditor.log.isDebugEnabled()) {
+            OrderEditor.log.debug("OrderEditor.formatTokens setting style from "
+                + (pos[0] + token.getStart()) + " length " + (token.getEnd() - token.getStart()));
+          }
+          // format from the (whitespace after the) end of the previous token till the end of the
+          // current token
+          int start = (prevToken != null ? prevToken.getEnd() : token.getStart());
+          doc.setCharacterAttributes(pos[0] + start, token.getEnd() - start, style, true);
+        }
+      }
+      prevToken = token;
+    }
+  }
 
-				if(style != null) {
-					if(OrderEditor.log.isDebugEnabled()) {
-						OrderEditor.log.debug("OrderEditor.formatTokens setting style from " +
-								  (newStartPos + token.getStart()) + " length " +
-								  (token.getEnd() - token.getStart()));
-					}
-					doc.setCharacterAttributes(newStartPos + token.getStart(),
-											   token.getEnd() - token.getStart(),
-											   style, true);
-				}
-			}
-		}
-	}
+  /**
+   * Format all tokens with regard to the token type colors.
+   */
+  public void formatTokens() {
+    if (!highlightSyntax) {
+      return;
+    }
 
-	/**
-	 * Format all tokens with regard to the token type colors.
-	 */
-	public void formatTokens() {
-		if(!highlightSyntax) {
-			return;
-		}
+    String text = getText();
 
-		String text = getText();
+    if ((text == null) || text.equals("")) {
+      return;
+    }
 
-		if((text == null) || text.equals("")) {
-			return;
-		}
+    int pos = 0;
 
-		int pos = 0;
+    while (pos != -1) {
+      if (OrderEditor.log.isDebugEnabled()) {
+        OrderEditor.log.debug("OrderEditor.formatTokens(): formatting pos " + pos);
+      }
 
-		while(pos != -1) {
-			if(OrderEditor.log.isDebugEnabled()) {
-				OrderEditor.log.debug("OrderEditor.formatTokens(): formatting pos " + pos);
-			}
+      formatTokens(pos);
+      pos = text.indexOf("\n", pos);
 
-			formatTokens(pos);
-			pos = text.indexOf("\n", pos);
+      if (pos != -1) {
+        pos++;
+      }
+    }
 
-			if(pos != -1) {
-				pos++;
-			}
-		}
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.formatTokens(): formatting done");
+    }
+  }
 
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.formatTokens(): formatting done");
-		}
-	}
+  /**
+   * Returns the start and end of the line denoted by offset.
+   * 
+   * @param text the string to search.
+   * @param offset the position from where to look for linebreaks.
+   * @return start of line at array index 0, end of line at array index 1.
+   */
+  private int[] getLineBorders(String text, int offset) {
+    int ret[] = new int[2];
 
-	/**
-	 * Returns the start and end of the line denoted by offset.
-	 *
-	 * @param text the string to search.
-	 * @param offset the position from where to look for linebreaks.
-	 *
-	 * @return start of line at array index 0, end of line at array index 1.
-	 */
-	private int[] getLineBorders(String text, int offset) {
-		int ret[] = new int[2];
+    // 2002.02.20 pavkovic: if offset is greater than text size, we won't find any position
+    // -> we can return -1 very fast
+    if (offset > text.length()) {
+      ret[0] = -1;
 
-		// 2002.02.20 pavkovic: if offset is greater than text size, we won't find any position
-		// -> we can return -1 very fast
-		if(offset > text.length()) {
-			ret[0] = -1;
+      return ret;
+    }
 
-			return ret;
-		}
+    try {
+      // pavkovic 2003.01.20: line ending may be \r\n!
+      // prior to jdk 1.4 this only may have been \n OR \r
+      // if current position IS \n or \r move to the right
+      // if not, move to the left
+      text = text.replace('\r', ' ');
 
-		try {
-			// pavkovic 2003.01.20: line ending may be \r\n!
-			// prior to jdk 1.4 this only may have been \n OR \r
-			// if current position IS \n or \r move to the right
-			// if not, move to the left
-			text = text.replace('\r', ' ');
+      for (ret[0] = offset - 1; ret[0] > -1; ret[0]--) {
+        char c = text.charAt(ret[0]);
 
-			for(ret[0] = offset - 1; ret[0] > -1; ret[0]--) {
-				char c = text.charAt(ret[0]);
+        if ((c == '\n') || (c == '\r')) {
+          break;
+        }
+      }
 
-				if((c == '\n') || (c == '\r')) {
-					break;
-				}
-			}
+      ret[0]++;
+      ret[1] = text.indexOf('\n', offset);
 
-			ret[0]++;
-			ret[1] = text.indexOf('\n', offset);
+      // ret[1] = text.indexOf('\n', ret[0]);
+      if (ret[1] == -1) {
+        ret[1] = text.length();
+      }
+    } catch (StringIndexOutOfBoundsException e) {
+      OrderEditor.log.error("OrderEditor.getLineBorders(), text: " + text + ", offset: " + offset
+          + ", ret: (" + ret[0] + ", " + ret[1] + ")", e);
+    }
 
-			// ret[1] = text.indexOf('\n', ret[0]);
-			if(ret[1] == -1) {
-				ret[1] = text.length();
-			}
-		} catch(StringIndexOutOfBoundsException e) {
-			OrderEditor.log.error("OrderEditor.getLineBorders(), text: " + text + ", offset: " + offset +
-					  ", ret: (" + ret[0] + ", " + ret[1] + ")", e);
-		}
+    if (OrderEditor.log.isDebugEnabled()) {
+      OrderEditor.log.debug("OrderEditor.getLineBorders:(" + text + "," + offset + ") " + ret[0]
+          + "," + ret[1]);
+    }
 
-		if(OrderEditor.log.isDebugEnabled()) {
-			OrderEditor.log.debug("OrderEditor.getLineBorders:(" + text + "," + offset + ") " + ret[0] + "," +
-					  ret[1]);
-		}
+    if (ret[0] >= 0) {
+      if (ret[1] > ret[0]) {
+        OrderEditor.log.debug("OrderEditor.getLineBorders would be \""
+            + text.substring(ret[0], ret[1]) + "\"");
+      }
+    }
 
-		if(ret[0] >= 0) {
-			if(ret[1] > ret[0]) {
-				OrderEditor.log.debug("OrderEditor.getLineBorders would be \"" +
-						  text.substring(ret[0], ret[1]) + "\"");
-			}
-		}
+    return ret;
+  }
 
-		return ret;
-	}
+  /**
+   * DOCUMENT-ME
+   * 
+   * @see magellan.library.utils.guiwrapper.CacheableOrderEditor#setKeepVisible(boolean)
+   */
+  public void setKeepVisible(boolean b) {
+    myCaret.setKeepVisible(b);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * @see magellan.library.utils.guiwrapper.CacheableOrderEditor#setKeepVisible(boolean)
-	 */
-	public void setKeepVisible(boolean b) {
-		myCaret.setKeepVisible(b);
-	}
+  /**
+   * DOCUMENT-ME
+   */
+  public boolean keepVisible() {
+    return myCaret.keepVisible();
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public boolean keepVisible() {
-		return myCaret.keepVisible();
-	}
+  // pavkovic 2002.11.12
+  // this is a dumb caret that does NOT track JScrollpane!
+  // try to search for "JScrollPane tracks JTextComponent" (grr, took me days to find it!)
+  // we use it in a MultiEditor-situation for the order editors
+  // but this also means we need to handle setText
+  private class OrderEditorCaret extends DefaultCaret {
+    private boolean keepVis = true;
 
-	// pavkovic 2002.11.12
-	// this is a dumb caret that does NOT track JScrollpane!
-	// try to search for "JScrollPane tracks JTextComponent" (grr, took me days to find it!)
-	// we use it in a MultiEditor-situation for the order editors
-	// but this also means we need to handle setText
-	private class OrderEditorCaret extends DefaultCaret {
-		private boolean keepVis = true;
-
-		@Override
+    @Override
     protected void adjustVisibility(Rectangle nloc) {
-			if(OrderEditor.log.isDebugEnabled()) {
-				OrderEditor.log.debug("OrderEditor(" + unit + "): adjustVisibility(" + keepVis + "," + nloc +
-						  ")");
-			}
+      if (OrderEditor.log.isDebugEnabled()) {
+        OrderEditor.log.debug("OrderEditor(" + unit + "): adjustVisibility(" + keepVis + "," + nloc
+            + ")");
+      }
 
-			if(keepVisible()) {
-				super.adjustVisibility(nloc);
-			}
-		}
+      if (keepVisible()) {
+        super.adjustVisibility(nloc);
+      }
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void setKeepVisible(boolean mode) {
-			if(OrderEditor.log.isDebugEnabled()) {
-				OrderEditor.log.debug("OrderEditor: setting caret.setKeepVisible(" + mode + ")");
-			}
+    /**
+     * DOCUMENT-ME
+     */
+    public void setKeepVisible(boolean mode) {
+      if (OrderEditor.log.isDebugEnabled()) {
+        OrderEditor.log.debug("OrderEditor: setting caret.setKeepVisible(" + mode + ")");
+      }
 
-			keepVis = mode;
-		}
+      keepVis = mode;
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public boolean keepVisible() {
-			return keepVis;
-		}
-	}
+    /**
+     * DOCUMENT-ME
+     */
+    public boolean keepVisible() {
+      return keepVis;
+    }
+  }
 
-	private class DocumentUpdateRunnable implements Runnable {
-		private DocumentEvent e;
+  private class DocumentUpdateRunnable implements Runnable {
+    private DocumentEvent e;
 
-		/**
-		 * Creates a new DocumentUpdateRunnable object.
-		 *
-		 * 
-		 */
-		public DocumentUpdateRunnable(DocumentEvent e) {
-			this.e = e;
-		}
+    /**
+     * Creates a new DocumentUpdateRunnable object.
+     */
+    public DocumentUpdateRunnable(DocumentEvent e) {
+      this.e = e;
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void setEvent(DocumentEvent e) {
-			this.e = e;
-		}
+    /**
+     * DOCUMENT-ME
+     */
+    public void setEvent(DocumentEvent e) {
+      this.e = e;
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 */
-		public void run() {
-			int offset = e.getOffset();
-			String text = getText();
-			int pos = getLineBorders(text, offset)[0];
+    /**
+     * DOCUMENT-ME
+     */
+    public void run() {
+      int offset = e.getOffset();
+      String text = getText();
+      int pos = getLineBorders(text, offset)[0];
 
-			if((pos < 0) || (pos > OrderEditor.this.getDocument().getLength())) {
-				return;
-			}
+      if ((pos < 0) || (pos > OrderEditor.this.getDocument().getLength())) {
+        return;
+      }
 
-			if(e.getType().equals(DocumentEvent.EventType.REMOVE)) {
-				formatTokens(pos);
-			} else if(e.getType().equals(DocumentEvent.EventType.INSERT)) {
-				if((text.length() >= (offset + e.getLength())) &&
-					   (text.substring(offset, offset + e.getLength()).indexOf("\n") > -1)) {
-					// multiple-line-insert happened
-					//try {
-					if(text.equals("") == false){
-						int p = pos;
+      if (e.getType().equals(DocumentEvent.EventType.REMOVE)) {
+        formatTokens(pos);
+      } else if (e.getType().equals(DocumentEvent.EventType.INSERT)) {
+        if ((text.length() >= (offset + e.getLength()))
+            && (text.substring(offset, offset + e.getLength()).indexOf("\n") > -1)) {
+          // multiple-line-insert happened
+          // try {
+          if (text.equals("") == false) {
+            int p = pos;
 
-						while(p > -1) {
-							formatTokens(p);
-							p = text.indexOf("\n", p);
+            while (p > -1) {
+              formatTokens(p);
+              p = text.indexOf("\n", p);
 
-							if(p != -1) {
-								p++;
-							}
-						}
-					}
+              if (p != -1) {
+                p++;
+              }
+            }
+          }
 
-					//} catch (Exception e) {
-					//log.error(e);
-					//}
-				} else {
-					// single-line-insert happened
-					formatTokens(pos);
-				}
-			}
-		}
-	}
+          // } catch (Exception e) {
+          // log.error(e);
+          // }
+        } else {
+          // single-line-insert happened
+          formatTokens(pos);
+        }
+      }
+    }
+  }
 
-	private class SignificantUndos implements UndoableEditListener, DocumentListener {
-		boolean bSignificant = true;
-		boolean bMoreThanOne = false;
-		javax.swing.undo.CompoundEdit compoundEdit = new javax.swing.undo.CompoundEdit();
+  private class SignificantUndos implements UndoableEditListener, DocumentListener {
+    boolean bSignificant = true;
+    boolean bMoreThanOne = false;
+    javax.swing.undo.CompoundEdit compoundEdit = new javax.swing.undo.CompoundEdit();
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void changedUpdate(DocumentEvent e) {
-			documentEvent(e);
-		}
+    /**
+     * DOCUMENT-ME
+     */
+    public void changedUpdate(DocumentEvent e) {
+      documentEvent(e);
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void insertUpdate(DocumentEvent e) {
-			documentEvent(e);
-		}
+    /**
+     * DOCUMENT-ME
+     */
+    public void insertUpdate(DocumentEvent e) {
+      documentEvent(e);
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void removeUpdate(DocumentEvent e) {
-			documentEvent(e);
-		}
+    /**
+     * DOCUMENT-ME
+     */
+    public void removeUpdate(DocumentEvent e) {
+      documentEvent(e);
+    }
 
-		private void documentEvent(DocumentEvent e) {
-			bSignificant = (!DocumentEvent.EventType.CHANGE.equals(e.getType()));
-		}
+    private void documentEvent(DocumentEvent e) {
+      bSignificant = (!DocumentEvent.EventType.CHANGE.equals(e.getType()));
+    }
 
-		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 */
-		public void undoableEditHappened(UndoableEditEvent e) {
-			if(bSignificant) {
-				if(bMoreThanOne) {
-					compoundEdit.addEdit(e.getEdit());
-					compoundEdit.end();
-					undoMgr.undoableEditHappened(new UndoableEditEvent(e.getSource(), compoundEdit));
-					compoundEdit = new javax.swing.undo.CompoundEdit();
-					bMoreThanOne = false;
-				} else {
-					undoMgr.undoableEditHappened(e);
-				}
-			} else {
-				compoundEdit.addEdit(e.getEdit());
-				bMoreThanOne = true;
-			}
-		}
-	}
+    /**
+     * DOCUMENT-ME
+     */
+    public void undoableEditHappened(UndoableEditEvent e) {
+      if (bSignificant) {
+        if (bMoreThanOne) {
+          compoundEdit.addEdit(e.getEdit());
+          compoundEdit.end();
+          undoMgr.undoableEditHappened(new UndoableEditEvent(e.getSource(), compoundEdit));
+          compoundEdit = new javax.swing.undo.CompoundEdit();
+          bMoreThanOne = false;
+        } else {
+          undoMgr.undoableEditHappened(e);
+        }
+      } else {
+        compoundEdit.addEdit(e.getEdit());
+        bMoreThanOne = true;
+      }
+    }
+  }
 
   /**
    * Returns the unit for this editor.
@@ -1069,6 +998,5 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   public ContextFactory getContextFactory() {
     return new UnitContextFactory();
   }
-  
-}
 
+}

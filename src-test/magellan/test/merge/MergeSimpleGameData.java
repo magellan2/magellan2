@@ -5,6 +5,7 @@ import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.Skill;
 import magellan.library.Unit;
+import magellan.test.GameDataBuilder;
 
 public class MergeSimpleGameData extends TestCase {
 

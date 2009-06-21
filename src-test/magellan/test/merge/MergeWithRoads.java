@@ -5,6 +5,8 @@ import junit.framework.TestCase;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
+import magellan.library.Unit;
+import magellan.test.GameDataBuilder;
 
 public class MergeWithRoads extends TestCase {
 
@@ -69,7 +71,7 @@ public class MergeWithRoads extends TestCase {
 		
 		Region r4 = gd4.getRegion((CoordinateID) r1.getID());
 		Assert.assertTrue(r4 != null);
-		Assert.assertEquals(0, r4.borders().size());
+		Assert.assertEquals(1, r4.borders().size());
 	}
 
 
@@ -124,7 +126,10 @@ public class MergeWithRoads extends TestCase {
 		builder.addRoad(region_1_1_gd1,1,1,100);
 
 		Region region_1_1_gd2 = builder.addRegion(gd2,"1 1", "Region_1_1","Ebene",3);
-		builder.addUnit(gd2,"Unit_2",region_1_1_gd2);
+		Unit u2 = builder.addUnit(gd2,"Unit_2",region_1_1_gd2);
+		u2.setCombatStatus(1);
+		
+		 System.out.println(u2.getFaction().isPrivileged());
 
 		GameData gd4 = GameData.merge(gd1, gd2);
 

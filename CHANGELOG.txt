@@ -1,5 +1,6 @@
 2009-06-21 / Build 314 - stm (stm_@users.sourceforge.net)
     * clean-up of lib, doc; moved licenses to doc, removed metouia and winlaf, updated commons-httpclient, idw
+    * upgraded tests to JUnit 4; added EresseaOrderParserTest
     
 2009-06-18 / Build 310 - stm (stm_@users.sourceforge.net)
     * OrderParser/OrderCompleter

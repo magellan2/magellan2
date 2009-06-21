@@ -170,9 +170,9 @@ public class EresseaOrderCompleter implements Completer {
       ret = list;
     }
     Collections.sort(ret, EresseaOrderCompleter.prioComp);
-    
+
     Completion last = null;
-    for (Iterator<Completion> it = ret.iterator(); it.hasNext();){
+    for (Iterator<Completion> it = ret.iterator(); it.hasNext();) {
       Completion current = it.next();
       if (current.equals(last))
         it.remove();
@@ -654,24 +654,19 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   void cmpltBetrete() {
-
     if (region.buildings().size() > 0) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " ",
           7));
     }
-
-    addRegionBuildings(Resources.getOrderTranslation(EresseaConstants.O_CASTLE) + " ", Resources
-        .getOrderTranslation(EresseaConstants.O_CASTLE)
-        + " ", unit.getBuilding());
+    addRegionBuildings(Resources.getOrderTranslation(EresseaConstants.O_CASTLE) + " ", " ", unit
+        .getBuilding());
 
     if (region.ships().size() > 0) {
       completions
           .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " ", 7));
     }
-
-    addRegionShips(Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ", Resources
-        .getOrderTranslation(EresseaConstants.O_SHIP)
-        + " ", unit.getShip());
+    addRegionShips(Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ", " ", unit
+        .getShip());
   }
 
   void cmpltBetreteBurg() {
@@ -1836,7 +1831,7 @@ public class EresseaOrderCompleter implements Completer {
    * vorangegangener Parameter
    */
   void cmpltZaubereSpruch(Spell spell) {
-    if (spell == null)
+    if (spell == null || spell.getSyntax() == null)
       return;
     if (spell.getSyntax().contains("k")) {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION), " "));
@@ -2032,10 +2027,10 @@ public class EresseaOrderCompleter implements Completer {
       UnitContainer uc = iter2.next();
 
       if (!uc.equals(exclude)) {
-        completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", uc.getID() + " ;"
-            + uc.getName(), postfix));
-        completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", uc.getID() + " ;"
-            + uc.getName(), postfix));
+        completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", prefix + uc.getID()
+            + " ;" + uc.getName(), postfix));
+        completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", prefix + uc.getID()
+            + " ;" + uc.getName(), postfix));
       }
     }
   }

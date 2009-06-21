@@ -2,6 +2,7 @@ package magellan.test.merge;
 
 import junit.framework.TestCase;
 import magellan.library.GameData;
+import magellan.test.GameDataBuilder;
 
 public class MergeSimplestGameData extends TestCase {
 

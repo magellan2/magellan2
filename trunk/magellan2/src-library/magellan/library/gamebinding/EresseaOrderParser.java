@@ -3072,7 +3072,7 @@ public class EresseaOrderParser implements OrderParser {
       if (s == null || s.getSyntax() == null)
         // FIXME this is not syntactically incorrect...
         return false;
-      return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().isEmpty();
+      return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().length()==0;
     }
 
     /**

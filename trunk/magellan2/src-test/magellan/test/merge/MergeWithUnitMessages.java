@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import magellan.library.GameData;
 import magellan.library.Message;
 import magellan.library.Unit;
+import magellan.test.GameDataBuilder;
 
 public class MergeWithUnitMessages extends TestCase {
 

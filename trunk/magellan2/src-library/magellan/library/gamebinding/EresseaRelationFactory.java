@@ -606,21 +606,26 @@ public class EresseaRelationFactory implements RelationFactory {
       if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_NAME))) {
         if (tokens.size() > 2) {
           OrderToken whatToken = tokens.get(1);
+          OrderToken nameToken = new OrderToken("---");
+          for (OrderToken token : tokens)
+            if (token.ttype==OrderToken.TT_STRING)
+              nameToken = token;
 
+          OrderToken token;
           if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_UNIT))) {
             if (tokens.size() > 3) {
-              relations.addAll(createRenameUnitRelation(u, tokens.get(2), line));
+              relations.addAll(createRenameUnitRelation(u, nameToken, line));
             }
           } else {
             if (tokens.size() > 4) {
               if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CASTLE))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
+                    relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken, line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_FACTION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken, line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_REGION))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken, line));
               } else if (whatToken.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SHIP))) {
-                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), tokens.get(3), line));
+                relations.addAll(createRenameUnitContainerRelation(u, tokens.get(2), nameToken, line));
               }
             }
           }

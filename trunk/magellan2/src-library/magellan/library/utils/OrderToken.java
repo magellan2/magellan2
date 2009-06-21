@@ -82,16 +82,10 @@ public class OrderToken {
 	}
 
 	/**
-	 * Creates a new <tt>OrderToken</tt> object representing the specified string and the specified
-	 * start and end positions.
-	 *
-	 * @param text the text this order token represents.
-	 * @param start the start position of the token in the underlying stream.
-	 * @param end the end position of the token in the underlying stream.
-	 * @param type the type of the token
+	 * Creates a new <tt>OrderToken</tt> object with empty string and specified type
 	 */
-	public OrderToken(String text, int start, int end, int type) {
-		this(text, start, end, type, false);
+	public OrderToken(int type) {
+		this("", -1, -1, type, false);
 	}
 
 	/**

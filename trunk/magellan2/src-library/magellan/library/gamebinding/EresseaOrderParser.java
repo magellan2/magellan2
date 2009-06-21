@@ -10,8 +10,11 @@ package magellan.library.gamebinding;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
@@ -49,15 +52,18 @@ public class EresseaOrderParser implements OrderParser {
   protected static final int MAX_UID = 1679615;
 
   public static final char[] QUOTES = new char[] { '\'', '"' };
-  private String errMsg = null;
-  private TokenBucket tokenBucket = null;
-  private Iterator<OrderToken> tokensIterator = null;
+  
+  private String errMsg;
+  private TokenBucket tokenBucket;
+  private Iterator<OrderToken> tokensIterator;
   private OrderToken lastToken;
   private int tokenIndex;
-  private EresseaOrderCompleter completer = null;
-  private GameData data = null;
+  private EresseaOrderCompleter completer;
+  private GameData data;
 
   private RadixTree<OrderHandler> commandTrie;
+
+  private HashMap<String, OrderHandler> commandMap;
 
   protected static enum Type {
     EMPTY, OPENING, CLOSING
@@ -86,11 +92,18 @@ public class EresseaOrderParser implements OrderParser {
    * <tt>OrderCompleter</tt> class itself.
    */
   public EresseaOrderParser(GameData data, EresseaOrderCompleter cc) {
-    tokenBucket = new TokenBucket();
-    setCompleter(cc);
     this.data = data;
-    commandTrie = new RadixTreeImpl<OrderHandler>();
+    setCompleter(cc);
+    init();
     initCommands();
+  }
+
+  protected void init() {
+    errMsg = null;
+    tokenBucket = new TokenBucket();
+    tokensIterator = null;
+    lastToken = null;
+    tokenIndex = 0;
   }
 
   /**
@@ -135,6 +148,7 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected void initCommands() {
     commandTrie = new RadixTreeImpl<OrderHandler>();
+    commandMap = new HashMap<String, OrderHandler>();
 
     addCommand("@", new AtReader());
     addCommand(Resources.getOrderTranslation(EresseaConstants.O_WORK), new WorkReader());
@@ -230,6 +244,7 @@ public class EresseaOrderParser implements OrderParser {
     if (commandTrie.contains(prefix))
       commandTrie.delete(prefix);
     commandTrie.insert(prefix, handler);
+    commandMap.put(prefix, handler);
   }
 
   /**
@@ -240,6 +255,15 @@ public class EresseaOrderParser implements OrderParser {
   protected void removeCommand(String prefix) {
     if (commandTrie.contains(prefix))
       commandTrie.delete(prefix);
+    commandMap.remove(prefix);
+  }
+  
+  public Set<String> getCommands(){
+    return commandMap.keySet();
+  }
+  
+  protected Collection<OrderHandler> getHandlers(){
+    return commandMap.values();
   }
 
   /**
@@ -273,7 +297,7 @@ public class EresseaOrderParser implements OrderParser {
    * Returns <code>true</code> if there is a next token
    */
   public boolean hasNextToken() {
-    return tokensIterator.hasNext();
+    return tokensIterator!=null && tokensIterator.hasNext();
   }
 
   /**
@@ -372,7 +396,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       // we test for EOC after readOrder in order to get the completions...
-      return !t.getText().equals("@") && readOrder(t) && t.ttype != OrderToken.TT_EOC;
+      return !t.getText().equals("@") && t.ttype!=OrderToken.TT_COMMENT &&  readOrder(t) && t.ttype != OrderToken.TT_EOC;
     }
   }
 
@@ -1332,7 +1356,9 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
+      if (t.ttype == OrderToken.TT_EOC) {
+        retVal = checkFinal(t);
+      } else if (isString(t)) {
         retVal = readFinalString(t);
       } else {
         retVal = checkFinal(t);
@@ -3011,6 +3037,7 @@ public class EresseaOrderParser implements OrderParser {
             }
           }
         }
+        // FIXME this is not necessarily /syntactically/ incorrect...
         return foundSpell != null;
       }
 
@@ -3043,6 +3070,7 @@ public class EresseaOrderParser implements OrderParser {
         getCompleter().cmpltZaubereSpruch(s);
       }
       if (s == null || s.getSyntax() == null)
+        // FIXME this is not syntactically incorrect...
         return false;
       return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().isEmpty();
     }
@@ -3402,8 +3430,14 @@ public class EresseaOrderParser implements OrderParser {
      */
     protected boolean checkInner() {
       boolean retVal = true;
+      if (forceQuotes && openingToken == null)
+        return false;
       if (!allowEmpty) {
         retVal &= content.trim().length() > 0;
+        // no need to check openingToken.getText() = closingToken.getText()
+        retVal &=
+            (openingToken == null && closingToken == null)
+                || (openingToken != null && closingToken != null);
       }
       return retVal;
     }
@@ -3486,6 +3520,9 @@ public class EresseaOrderParser implements OrderParser {
     return checkNextFinal();
   }
 
+  /**
+   * Returns true if the <code>token</code> is a nonempty string.
+   */
   protected boolean readFinalString(OrderToken token) {
     return new StringChecker(false, false, false).read(token);
   }
@@ -3558,6 +3595,9 @@ public class EresseaOrderParser implements OrderParser {
     return retVal;
   }
 
+  /**
+   * Tests if txt represents a non-negative decimal integer number.
+   */
   protected boolean isNumeric(String txt) {
     return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
   }
@@ -3729,13 +3769,7 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected OrderToken[] getString(OrderToken token) {
     OrderToken[] result = new OrderToken[4];
-    if (token.ttype == OrderToken.TT_STRING || isSimpleString(token.getText())) {
-      token.ttype = OrderToken.TT_STRING;
-      result[0] = null;
-      result[1] = token;
-      result[2] = null;
-      result[3] = getNextToken();
-    } else if (token.ttype == OrderToken.TT_OPENING_QUOTE) {
+    if (token.ttype == OrderToken.TT_OPENING_QUOTE) {
       result[0] = token;
       OrderToken t = getNextToken();
       if (t.ttype == OrderToken.TT_EOC) {
@@ -3753,6 +3787,12 @@ public class EresseaOrderParser implements OrderParser {
           result[3] = t;
         }
       }
+    } else if (token.ttype == OrderToken.TT_STRING || isSimpleString(token.getText())) {
+      token.ttype = OrderToken.TT_STRING;
+      result[0] = null;
+      result[1] = token;
+      result[2] = null;
+      result[3] = getNextToken();
     } else if (token.ttype == OrderToken.TT_EOC) {
       result[0] = null;
       result[1] = null;

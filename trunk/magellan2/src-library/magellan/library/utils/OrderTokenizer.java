@@ -52,7 +52,7 @@ public class OrderTokenizer {
 	 * 
 	 */
 	public OrderToken getNextToken() {
-    OrderToken retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC);
+    OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
 	  if (quotedString!=null){
 	    retVal = quotedString;
 	    quotedString = null;
@@ -71,7 +71,7 @@ public class OrderTokenizer {
 
 			if((c = in.read()) != -1) {
 			  if(isFirstToken && (c == '@')) {
-					retVal = new OrderToken("@", in.getPos() - 1, in.getPos(),
+					retVal = new OrderToken("@", in.getPos(), in.getPos()+1,
 											OrderToken.TT_PERSIST, false);
 				} else if(c == '"' || c == '\'') {
           retVal = readQuote(c);
@@ -80,7 +80,7 @@ public class OrderTokenizer {
 				} else if(c == '/') {
 					retVal = readSSComment();
 				} else if((c == '\r') || (c == '\n')) {
-					retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC, false);
+					retVal = new OrderToken(OrderToken.TT_EOC);
 				} else {
 					in.unread(c);
 					retVal = readWord();
@@ -132,13 +132,14 @@ public class OrderTokenizer {
           quotedString = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, false);
       }
     } else {
+      end--;
       c = in.read();
-      quotedString = new OrderToken(sb.toString(), start, end-1, OrderToken.TT_STRING, false);
+      quotedString = new OrderToken(sb.toString(), start, end, OrderToken.TT_STRING, false);
 
       if((c == '\r') || (c == '\n') || (c == '\t') || (c == ' ')) {
-        closingQuote = new OrderToken(""+(char)quote, end-1, end, OrderToken.TT_CLOSING_QUOTE, true);
+        closingQuote = new OrderToken(""+(char)quote, end, end+1, OrderToken.TT_CLOSING_QUOTE, true);
       } else {
-        closingQuote = new OrderToken(""+(char)quote, end-1, end, OrderToken.TT_CLOSING_QUOTE, false);
+        closingQuote = new OrderToken(""+(char)quote, end, end+1, OrderToken.TT_CLOSING_QUOTE, false);
       }
 
 
@@ -170,7 +171,7 @@ public class OrderTokenizer {
 			}
 		}
 
-		return new OrderToken(sb.toString(), start, in.getPos() - 1, OrderToken.TT_COMMENT, true);
+		return new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT, true);
 	}
 
 	/**
@@ -182,7 +183,7 @@ public class OrderTokenizer {
 	 */
 	private OrderToken readSSComment() throws IOException {
 		StringBuffer sb = new StringBuffer("/");
-		OrderToken retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC);
+		OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
 		int start = in.getPos() - 1;
 		int c = in.read();
 
@@ -197,7 +198,7 @@ public class OrderTokenizer {
 				}
 			}
 
-			retVal = new OrderToken(sb.toString(), start, in.getPos() - 1, OrderToken.TT_COMMENT,
+			retVal = new OrderToken(sb.toString(), start, in.getPos(), OrderToken.TT_COMMENT,
 									true);
 		} else {
 			in.unread(c);
@@ -217,7 +218,7 @@ public class OrderTokenizer {
 	 */
 	private OrderToken readWord() throws IOException {
 		StringBuffer sb = new StringBuffer();
-		OrderToken retVal = new OrderToken("", -1, -1, OrderToken.TT_EOC);
+		OrderToken retVal = new OrderToken(OrderToken.TT_EOC);
 		int c = 0;
 		int start = in.getPos();
 

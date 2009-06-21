@@ -91,7 +91,7 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    setGameData(data);
+    setGameData(e.getGameData());
   }
 
   /**

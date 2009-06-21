@@ -137,9 +137,9 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Updates dialog from new game data.
 	 * 
+	 * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		this.data = e.getGameData();

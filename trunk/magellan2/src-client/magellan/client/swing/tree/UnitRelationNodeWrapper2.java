@@ -126,4 +126,9 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   public boolean reverseOrder() {
     return innerNode.reverseOrder();
   }
+  
+  @Override
+  public CellObject getInnerNode() {
+    return innerNode;
+  }
 }

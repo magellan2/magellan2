@@ -4425,6 +4425,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
 		Object fireObj = null;
 
+		if (o instanceof UnitRelationNodeWrapper){
+		  o = ((UnitRelationNodeWrapper) o).getInnerNode();
+		}
+		
 		if(o instanceof UnitNodeWrapper) {
 			fireObj = ((UnitNodeWrapper) o).getUnit();
 		} else if(o instanceof UnitContainerNodeWrapper) {

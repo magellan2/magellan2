@@ -360,13 +360,13 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     // let the editor update
     if (editors != null) {
       editors.selectionChanged(e);
-    }
 
-    // search for new completion
-    JTextComponent j = editors.getCurrentEditor();
+      // search for new completion
+      JTextComponent j = editors.getCurrentEditor();
 
-    if ((j != null) && enableAutoCompletion) {
-      timer.restart();
+      if ((j != null) && enableAutoCompletion) {
+        timer.restart();
+      }
     }
   }
 
@@ -579,6 +579,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
     if (currentGUI != null) {
       currentGUI.stopOffer();
     }
+    if (editors==null)
+    	return;
 
     JTextComponent j = editors.getCurrentEditor();
     int caretPos = j.getCaretPosition();
@@ -772,7 +774,7 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
 
     timer.stop();
 
-    if (enableAutoCompletion && !hotKeyMode) {
+    if (enableAutoCompletion && !hotKeyMode && editors!=null) {
       offerCompletion(editors.getCurrentEditor(), false);
     }
   }
@@ -793,7 +795,8 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
         SwingUtilities.invokeLater(new Runnable() {
 
           public void run() {
-            offerCompletion(editors.getCurrentEditor(), false);
+          	if (editors!=null)
+          	  offerCompletion(editors.getCurrentEditor(), false);
           }
         });
 

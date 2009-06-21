@@ -480,7 +480,6 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   public void gameDataChanged(GameDataEvent e) {
-    // HIGHTODO Automatisch generierte Methode implementieren
     this.data = e.getGameData();
   }
   

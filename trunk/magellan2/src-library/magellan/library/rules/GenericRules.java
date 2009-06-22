@@ -19,6 +19,7 @@ import magellan.library.StringID;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.impl.MagellanSpellImpl;
+import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.logging.Logger;
 
@@ -83,7 +84,7 @@ public class GenericRules implements Rules {
   protected <T extends ObjectType> Map<String, T> getMap(Class<T> class1) {
     Map<String, T> result = (Map<String, T>) metaMap.get(class1);
     if (result == null) {
-      result = new HashMap<String, T>();
+      result = new OrderedHashtable<String, T>();
       metaMap.put(class1, result);
     }
     return result;
@@ -94,7 +95,7 @@ public class GenericRules implements Rules {
   protected <T extends ObjectType> Map<String, T> getNamesMap(Class<T> class1) {
     Map<String, T> result = (Map<String, T>) namesMetaMap.get(class1);
     if (result == null) {
-      result = new HashMap<String, T>();
+      result = new OrderedHashtable<String, T>();
       namesMetaMap.put(class1, result);
     }
     return result;

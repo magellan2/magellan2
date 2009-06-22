@@ -43,6 +43,8 @@ import magellan.library.rules.SkillType;
  * supplied by the user.
  * </p>
  * 
+ * <p>Iterators should enumerate items in the order in which they were inserted</p>
+ * 
  * <p>
  * If necessary, subclasses could also provide additional access methods to distinguish between an
  * access by id or name.

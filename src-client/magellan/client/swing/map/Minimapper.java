@@ -60,9 +60,8 @@ public class Minimapper extends Mapper {
   @Override
   public void setRenderer(MapCellRenderer renderer) {
     if (renderer.getPlaneIndex()==Mapper.PLANE_REGION) {
-      Minimapper.log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
+      Minimapper.log.debug("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer);
-//      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
     }
   }
 
@@ -72,14 +71,8 @@ public class Minimapper extends Mapper {
 	@Override
   public void setRenderer(MapCellRenderer renderer, int plane) {
     if (plane==Mapper.PLANE_REGION) {
-      Minimapper.log.info("Minimapper.setRenderer("+renderer.getClass().getName()+")");
+      Minimapper.log.debug("Minimapper.setRenderer("+renderer.getClass().getName()+")");
       super.setRenderer(renderer, plane);
-//      settings.setProperty("Minimap.Renderer",renderer.getClass().getName());      
-      /*
-      String old = settings.getProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane]);
-      super.setRenderer(renderer, plane);
-      settings.setProperty("Mapper.Planes." + Mapper.PLANE_STRINGS[plane], old);
-      */
     }
 	}
   
@@ -100,11 +93,6 @@ public class Minimapper extends Mapper {
 																			 "Minimap.FactionColors",
 																			 "Minimap.RegionColors",
 																			 "Minimap.PoliticsMode"));
-    /*
-    for (int i=0; i<p.length; i++) {
-      if (p[i] == null) p[i]=new RenderingPlane(i, "not used", RenderingPlane.ACTIVE_OBJECT);
-    }
-    */
 		return p;
 	}
 

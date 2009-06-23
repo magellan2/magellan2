@@ -37,43 +37,6 @@ public class GenericRules implements Rules {
   private Map<Class<? extends ObjectType>, Map<String, ? extends ObjectType>> namesMetaMap =
       new HashMap<Class<? extends ObjectType>, Map<String, ? extends ObjectType>>();
 
-// // Map consisting of Race, RegionType, ShipType, BuildingType, CastleType
-// private Map<String, UnitContainerType> mapUnitContainerType =
-// new OrderedHashtable<String, UnitContainerType>();
-// private Map<String, UnitContainerType> mapUnitContainerTypeNames =
-// new OrderedHashtable<String, UnitContainerType>();
-//
-// // Map consisting of ItemType
-// private Map<String, ItemType> mapItemType = new OrderedHashtable<String, ItemType>();
-// private Map<String, ItemType> mapItemTypeNames = new OrderedHashtable<String, ItemType>();
-//
-// // Map consisting of AllianceCategory
-// private Map<String, AllianceCategory> mapAllianceCategory = new OrderedHashtable<String,
-  // AllianceCategory>();
-// private Map<String, AllianceCategory> mapAllianceCategoryNames =
-// new OrderedHashtable<String, AllianceCategory>();
-//
-// // Map consisting of OptionCategory
-// private Map<String, OptionCategory> mapOptionCategory = new OrderedHashtable<String,
-  // OptionCategory>();
-// private Map<String, OptionCategory> mapOptionCategoryNames =
-// new OrderedHashtable<String, OptionCategory>();
-//
-// // Map consisting of ItemCategory
-// private Map<String, ItemCategory> mapItemCategory = new OrderedHashtable<String, ItemCategory>();
-// private Map<String, ItemCategory> mapItemCategoryNames = new OrderedHashtable<String,
-  // ItemCategory>();
-//
-// // Map consisting of SkillCategory
-// private Map<String, SkillCategory> mapSkillCategory = new OrderedHashtable<String,
-  // SkillCategory>();
-// private Map<String, SkillCategory> mapSkillCategoryNames =
-// new OrderedHashtable<String, SkillCategory>();
-//
-// // Map consisting of SkillType
-// private Map<String, SkillType> mapSkillType = new OrderedHashtable<String, SkillType>();
-// private Map<String, SkillType> mapSkillTypeNames = new OrderedHashtable<String, SkillType>();
-
   // Class with gamespecific things...
   private GameSpecificStuff gameSpecificStuff;
 

@@ -282,29 +282,29 @@ public class Units {
       boolean addItemNode = false;
 
       for (ReserveRelation rrel : u.getItemReserveRelations(currentItem.getItemType())) {
-        String text = String.valueOf(rrel.amount) + " ";
+        StringBuffer text = new StringBuffer(rrel.amount).append(" ");
         List<String> icons = new LinkedList<String>();
         if (rrel.warning) {
           itemNodeWrapper.setWarningFlag(true);
-          text = String.valueOf(rrel.amount) + " (!!!) "; // TODO: use append
+          text.append("(!!!) ");
           icons.add("warnung");
         }
-        text = text + Resources.get("util.units.node.reserved");
+        text.append(Resources.get("util.units.node.reserved"));
         icons.add("reserve");
 
         UnitRelationNodeWrapper reserveNodeWrapper =
-            factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(text, icons));
+            factory.createRelationNodeWrapper(rrel, factory.createSimpleNodeWrapper(text.toString(), icons));
         itemNode.add(new DefaultMutableTreeNode(reserveNodeWrapper));
 
         addItemNode = true;
       }
 
       for (ItemTransferRelation currentRelation : u.getItemTransferRelations(currentItem.getItemType())) {
-        String prefix = String.valueOf(currentRelation.amount) + " ";
+        StringBuffer prefix = new StringBuffer(currentRelation.amount).append(" ");
         if (currentRelation.warning) {
           itemNodeWrapper.setWarningFlag(true);
           // TODO: use append
-          prefix = String.valueOf(currentRelation.amount) + " (!!!) ";
+          prefix.append("(!!!) ");
 
         }
 
@@ -321,7 +321,7 @@ public class Units {
 
         if (u2!=null){
           UnitNodeWrapper giveNodeWrapper =
-            factory.createUnitNodeWrapper(u2, prefix, u2.getPersons(), u2.getModifiedPersons());
+            factory.createUnitNodeWrapper(u2, prefix.toString(), u2.getPersons(), u2.getModifiedPersons());
           giveNodeWrapper.setReverseOrder(true);
           giveNodeWrapper.setAdditionalIcon(addIcon);
 

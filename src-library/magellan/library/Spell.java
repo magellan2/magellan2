@@ -56,7 +56,7 @@ public interface Spell extends Described, Localized {
   public void setRank(int rank);
 
   /**
-   * Returns the class attribute of this spell.
+   * Returns the class attribute of this spell or <code>null</code>.
    */
   public String getType();
 
@@ -126,7 +126,7 @@ public interface Spell extends Described, Localized {
   public String getTypeName();
 
   /**
-   * A human readable string with information about the syntax of the spell (FF)
+   * A human readable string with information about the syntax of the spell or <code>null</code>.
    */
   public String getSyntaxString();
 
@@ -148,7 +148,7 @@ public interface Spell extends Described, Localized {
    * erfuellt wird. Aber in den vielen Faellen kann man damit schonmal sagen,
    * was denn falsch war.
    * 
-   * @return the syntax
+   * @return the syntax or <code>null</code>
    */
   public String getSyntax();
 

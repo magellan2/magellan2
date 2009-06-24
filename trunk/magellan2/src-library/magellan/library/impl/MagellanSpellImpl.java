@@ -352,14 +352,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * Enno in e-client about the syntax: 'c' = Zeichenkette 'k' =
-   * REGION|EINHEIT|STUFE|SCHIFF|GEBAEUDE 'i' = Zahl 's' = Schiffsnummer 'b' = Gebaeudenummer 'r' =
-   * Regionskoordinaten (x, y) 'u' = Einheit '+' = Wiederholung des vorangehenden Parameters '?' =
-   * vorangegangener Parameter ist nicht zwingend Syntaxcheks, die der Server auf dieser Basis
-   * macht, sind nicht perfekt; es ist notwendig, aber nicht hinreichend, dass die Syntax erfuellt
-   * wird. Aber in den vielen Faellen kann man damit schonmal sagen, was denn falsch war.
-   * 
-   * @return the syntax
+   * @see magellan.library.Spell#getSyntax()
    */
   public String getSyntax() {
     return syntax;
@@ -375,7 +368,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   /**
    * returns the spellsyntax object of this spell
    * 
-   * @return a SpellSyntax object
+   * @return a SpellSyntax object or <code>null</code>
    */
   public SpellSyntax getSpellSyntax() {
     if (this.syntax == null || this.syntax.length() == 0) {
@@ -394,7 +387,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * Only returns the locale of the spell
    * 
    * @see magellan.library.Localized#getLocale()
-   * @return the locale of the spell
+   * @return the locale of the spell or <code>null</code>
    */
   public Locale getLocale() {
     return locale;

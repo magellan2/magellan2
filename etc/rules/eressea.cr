@@ -1282,13 +1282,13 @@ ITEM "Schild"
 RESOURCES
 1;Eisen
 
-ITEM "Rostiger Schild"
-"Rostiger Schild";name
+ITEM "Rostiges Schild"
+"Rostiges Schild";name
 "shield";category
 1;weight
 1;storeinbonw
 
-ITEM "Rostiges Schild"
+ITEM "Rostiger Schild"
 "Rostiger Schild";name
 "shield";category
 1;weight

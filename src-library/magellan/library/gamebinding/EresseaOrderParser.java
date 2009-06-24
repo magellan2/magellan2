@@ -3031,7 +3031,7 @@ public class EresseaOrderParser implements OrderParser {
             // here we return just true
             // toDo: get Spell Syntax, check, if more tokens expected and
             // do next checks
-            if (!combat ^ s.getType().toLowerCase().indexOf("combat") > -1) {
+            if (s.getType()==null || (!combat ^ s.getType().toLowerCase().indexOf("combat") > -1)) {
               foundSpell = s;
               break;
             }

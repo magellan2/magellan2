@@ -1112,7 +1112,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     Collection<TreePath> newSel = new LinkedList<TreePath>();
 
     /** HANDLE activeObject : change alliance settings and expand info*/
-    if (se.getActiveObject() != null) {
+    if (se.getActiveObject() instanceof Unique) {
       activeObject = (Unique)se.getActiveObject();
 
       // The path of the selected object (if contained in the tree)

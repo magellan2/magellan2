@@ -700,6 +700,9 @@ public class EresseaConstants {
   /** Building type academy */
   public static final ID B_ACADEMY = StringID.create("Akademie");
 
+  /** Building type harbour */
+  public static final ID B_HARBOUR = StringID.create("Hafen");
+
   /** Shiptype Boat */
   public static final ID ST_BOAT = StringID.create("Boot");
   

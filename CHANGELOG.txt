@@ -1,3 +1,6 @@
+2009-06-27 / Build 316 - stm (stm_@users.sourceforge.net)
+    * small change to semantics of RoutePlanner/RoutingDialog options
+
 2009-06-21 / Build 314 - stm (stm_@users.sourceforge.net)
     * clean-up of lib, doc; moved licenses to doc, removed metouia and winlaf, updated commons-httpclient, idw
     * upgraded tests to JUnit 4; added EresseaOrderParserTest

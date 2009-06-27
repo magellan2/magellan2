@@ -27,13 +27,8 @@ import magellan.library.utils.Resources;
  * @version 1.0
  */
 public class NullReplacer extends AbstractParameterReplacer {
-	/** DOCUMENT-ME */
-	public static final String TRUE = "true";
 
-	/** DOCUMENT-ME */
-	public static final String FALSE = "false";
-
-	/**
+  /**
 	 * Creates new NotReplacer
 	 */
 	public NullReplacer() {

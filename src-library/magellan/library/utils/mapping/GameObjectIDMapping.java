@@ -44,7 +44,6 @@ public class GameObjectIDMapping implements DataMapping {
   }
   
   public CoordinateID getMapping(GameData fromData, GameData toData, int level) {
-    // HIGHTODO Automatisch generierte Methode implementieren
     CoordinateID translation = RegionIDMapping.getSingleton().getMapping(fromData, toData, level);
     if (translation != null ) {
       return translation;

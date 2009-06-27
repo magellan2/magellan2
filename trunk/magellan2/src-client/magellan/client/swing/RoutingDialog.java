@@ -30,13 +30,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -63,8 +61,8 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
 public class RoutingDialog extends InternationalizedDialog implements RoutingDialogDataPicker {
 	private JButton ok;
 	private JButton cancel;
-	private JRadioButton createRoute;
-	private JRadioButton createSingleTrip;
+	private JCheckBox createRoute;
+	private JCheckBox createSingleTrip;
 	private JCheckBox considerShipRange;
 	private JCheckBox createVorlageOrders;
 	private JCheckBox replaceOrdersBox;
@@ -216,40 +214,28 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
     c.gridwidth = 2;
     cp.add(destSelect, c);
 
-    createSingleTrip = new JRadioButton(Resources.get("routingdialog.radiobtn.createsingletrip.title"));
-    createRoute = new JRadioButton(Resources.get("routingdialog.radiobtn.createroute.title"));
+    createSingleTrip = new JCheckBox(Resources.get("routingdialog.radiobtn.createsingletrip.title"));
+    createRoute = new JCheckBox(Resources.get("routingdialog.radiobtn.createroute.title"));
 
-    ButtonGroup buttonGroup = new ButtonGroup();
-    buttonGroup.add(createSingleTrip);
-    buttonGroup.add(createRoute);
-    createSingleTrip.setSelected(true);
-    createSingleTrip.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          considerShipRange.setEnabled(true);
-
-          if(considerShipRange.isSelected()) {
-            createVorlageOrders.setEnabled(true);
-          }
-        }
-      });
     createRoute.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          considerShipRange.setEnabled(false);
-          createVorlageOrders.setEnabled(false);
-        }
-      });
+      public void actionPerformed(ActionEvent e) {
+        createVorlageOrders.setEnabled(!createRoute.isSelected());
+      }
+    });
 
-    c.gridy = 1;
-    cp.add(createSingleTrip, c);
+    createSingleTrip.setSelected(true);
+    createRoute.setSelected(true);
 
-    c.gridy = 2;
+    c.gridy++;
     cp.add(createRoute, c);
 
-    c.insets.left = 30;
-    c.gridy = 3;
+    c.gridy++;
+    cp.add(createSingleTrip, c);
+
+//    c.insets.left = 30;
+    c.gridy++;
 
     considerShipRange = new JCheckBox(Resources.get("routingdialog.chkbox.considerrange.title"));
-    considerShipRange.setSelected(true);
     considerShipRange.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           if(considerShipRange.isSelected()) {
@@ -261,16 +247,16 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
       });
     cp.add(considerShipRange, c);
 
-    c.gridy = 4;
+    c.gridy++;
     createVorlageOrders = new JCheckBox(Resources.get("routingdialog.chkbox.createvorlageorders.title"));
     cp.add(createVorlageOrders, c);
 
-    c.gridy = 5;
+    c.gridy++;
     c.insets.left = 3;
     replaceOrdersBox = new JCheckBox(Resources.get("routingdialog.chkbox.replaceorders.title"));
     cp.add(replaceOrdersBox, c);
 
-    c.gridy = 6;
+    c.gridy++;
     c.gridwidth = 1;
     ok = new JButton(Resources.get("routingdialog.okbutton.text"));
     ok.setMnemonic(Resources.get("routingdialog.okbutton.mnemonic").charAt(0));
@@ -293,7 +279,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 	 * @return A RetValue or <code>null</code> if no destination has been selected
 	 */
 	public RetValue showRoutingDialog() {
-		final RetValue retVal = new RetValue(null, false, false, false, false);
+		final RetValue retVal = new RetValue(null, false, false, false, false, false);
 		ActionListener okButtonAction = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int x = 0;
@@ -307,6 +293,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 					retVal.useRange = considerShipRange.isSelected();
 					retVal.useVorlage = createVorlageOrders.isSelected();
 					retVal.replaceOrders = replaceOrdersBox.isSelected();
+					retVal.makeSingle = createSingleTrip.isSelected();
 				} catch(NumberFormatException exc) {
 				}
 
@@ -331,12 +318,7 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 	 */
 	private class RegionNameComparator implements Comparator<Object> {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 * 
-		 *
-		 * 
+		 * Compares two regions by name.
 		 */
 		public int compare(Object o1, Object o2) {
 			String n1 = "";
@@ -395,6 +377,8 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 		/** whether to replace the unit's orders */
 		public boolean replaceOrders;
 
+    public boolean makeSingle;
+
 		/**
 		 * Creates a new RetValue object.
 		 *
@@ -404,12 +388,13 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 		 * @param vorlage whether to create Vorlage orders
 		 * @param replace whether to replace the unit's orders
 		 */
-		public RetValue(CoordinateID d, boolean route, boolean range, boolean vorlage, boolean replace) {
-			dest = d;
-			makeRoute = route;
-			useRange = range;
-			useVorlage = vorlage;
-			replaceOrders = replace;
+		public RetValue(CoordinateID d, boolean route, boolean range, boolean vorlage, boolean replace, boolean single) {
+		  this.dest = d;
+			this.makeRoute = route;
+			this.useRange = range;
+			this.useVorlage = vorlage;
+			this.replaceOrders = replace;
+			this.makeSingle = single;
 		}
 
     public CoordinateID getDestination() {
@@ -430,6 +415,10 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
     public boolean useVorlage() {
       return useVorlage;
+    }
+
+    public boolean makeSingle() {
+      return makeSingle;
     }
 	}
 }

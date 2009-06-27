@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.swing;
@@ -36,6 +30,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -101,20 +96,18 @@ public class FindDialog extends InternationalizedDataDialog implements
   private List<String> history;
 
   private JCheckBox chkCase;
-  private JRadioButton rbtWord;  
-  private JRadioButton rbtRegexp;  
-  private JRadioButton rbtList;  
-  
+  private JRadioButton rbtWord;
+  private JRadioButton rbtRegexp;
+  private JRadioButton rbtList;
+
   // selected regions that are stored as region-objects!
   private List<Region> selectedRegions = new LinkedList<Region>();
 
   /**
    * Creates the find dialog.
    * 
-   * @param regions
-   *          A collection of region objects that were selected on the map. Up
-   *          to the next SelectionEvent with type ST_REGIONS any search will be
-   *          limited to these regions.
+   * @param regions A collection of region objects that were selected on the map. Up to the next
+   *          SelectionEvent with type ST_REGIONS any search will be limited to these regions.
    */
   public FindDialog(Frame owner, boolean modal, EventDispatcher dispatcher, GameData d,
       Properties p, Collection<Region> regions) {
@@ -164,8 +157,8 @@ public class FindDialog extends InternationalizedDataDialog implements
   }
 
   /**
-	 * Reset data, clear list of selected regions. 
-	 *
+   * Reset data, clear list of selected regions.
+   * 
    * @see magellan.client.swing.InternationalizedDataDialog#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
@@ -176,7 +169,7 @@ public class FindDialog extends InternationalizedDataDialog implements
 
   /**
    * Fire a selection event for the object selected in the result list.
-   *
+   * 
    * @see javax.swing.event.ListSelectionListener#valueChanged(javax.swing.event.ListSelectionEvent)
    */
   public void valueChanged(javax.swing.event.ListSelectionEvent e) {
@@ -275,7 +268,6 @@ public class FindDialog extends InternationalizedDataDialog implements
             "FindDialog.matchcase", "true").equals("true"));
     chkCase.setMnemonic(Resources.get("finddialog.chk.matchcase.mnemonic").charAt(0));
 
-
     rbtList = new JRadioButton(Resources.get("finddialog.rbt.list.caption"));
     rbtWord = new JRadioButton(Resources.get("finddialog.rbt.word.caption"));
     rbtRegexp = new JRadioButton(Resources.get("finddialog.rbt.regexp.caption"));
@@ -291,8 +283,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     JPanel pnlAttributeCheckBoxes = new JPanel(new GridBagLayout());
 
     GridBagConstraints c =
-      new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(2, 2, 2, 2), 0, 0);
 
     pnlAttributeCheckBoxes.add(chkIDs, c);
 
@@ -315,21 +307,20 @@ public class FindDialog extends InternationalizedDataDialog implements
     c.gridx = 0;
     c.gridy++;
     pnlAttributeCheckBoxes.add(chkCase, c);
-    
+
     JPanel radioPanel = new JPanel(new GridBagLayout());
     GridBagConstraints c2 =
-      new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST,
-          GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(2, 2, 2, 2), 0, 0);
     radioPanel.add(rbtList, c2);
     c2.gridx++;
     radioPanel.add(rbtWord, c2);
     c2.gridx++;
     radioPanel.add(rbtRegexp, c2);
-    
 
     c.gridy++;
-    c.gridx=0;
-    c.gridwidth=3;
+    c.gridx = 0;
+    c.gridwidth = 3;
     pnlAttributeCheckBoxes.add(radioPanel, c);
 
     List<Faction> factions = new LinkedList<Faction>(data.factions().values());
@@ -400,8 +391,8 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     JPanel pnlItems = new JPanel(new GridBagLayout());
     GridBagConstraints gbc =
-        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST,
-            GridBagConstraints.NONE, new Insets(2, 2, 2, 2), 0, 0);
+        new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+            new Insets(2, 2, 2, 2), 0, 0);
     pnlItems.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources
         .get("finddialog.frm.objects")));
 
@@ -541,14 +532,28 @@ public class FindDialog extends InternationalizedDataDialog implements
 
     // create search pattern
     Collection<Pattern> patterns = new LinkedList<Pattern>();
-    if (rbtRegexp.isSelected()){
+    if (rbtRegexp.isSelected()) {
       // just take the pattern
-      patterns.add(Pattern.compile(chkCase.isSelected()?pattern:pattern.toLowerCase(data.getLocale())));
-    }else if (rbtWord.isSelected()){
-      // create pattern with search pattern surrounded by word separator characters or line start/end
+      try {
+        patterns.add(Pattern.compile(chkCase.isSelected() ? pattern : pattern.toLowerCase(data
+            .getLocale())));
+      } catch (PatternSyntaxException e) {
+        hits.add(e.getLocalizedMessage());
+        return wrap(hits);
+      }
+    } else if (rbtWord.isSelected()) {
+      // create pattern with search pattern surrounded by word separator characters or line
+      // start/end
       String notword = "([^0-9a-zA-Z.-]|$|^)+";
-      patterns.add(Pattern.compile(".*"+notword+(chkCase.isSelected()?pattern:pattern.toLowerCase(data.getLocale()))+notword+".*"));
-    }else{ // if (rbtList.isSelected()){
+      try {
+        patterns.add(Pattern.compile(".*" + notword
+            + (chkCase.isSelected() ? pattern : pattern.toLowerCase(data.getLocale())) + notword
+            + ".*"));
+      } catch (PatternSyntaxException e) {
+        hits.add(e.getLocalizedMessage());
+        return wrap(hits);
+      }
+    } else { // if (rbtList.isSelected()){
       // tokenize pattern
       StreamTokenizer st = new StreamTokenizer(new StringReader(pattern));
       st.ordinaryChars('0', '9');
@@ -568,10 +573,14 @@ public class FindDialog extends InternationalizedDataDialog implements
         }
         if ((st.ttype == StreamTokenizer.TT_WORD) || (st.ttype == '\'') || (st.ttype == '"')) {
           // surround pattern with wildcard patterns
-          patterns.add(Pattern.compile(".*"+st.sval+".*"));
-          // System.out.println(st.sval);
+          try {
+            patterns.add(Pattern.compile(".*" + st.sval + ".*"));
+          } catch (PatternSyntaxException e) {
+            hits.add(e.getLocalizedMessage());
+            return wrap(hits);
+          }
         } else if (st.ttype != StreamTokenizer.TT_EOF) {
-          FindDialog.log.warn("Found uncexpected TokenType (" + st.ttype
+          FindDialog.log.debug("Found unexpected TokenType (" + st.ttype
               + ") in FindDialog.find() while parsing token: " + st.toString());
         }
       } while (st.ttype != StreamTokenizer.TT_EOF);
@@ -903,8 +912,7 @@ public class FindDialog extends InternationalizedDataDialog implements
    * 
    * @param item
    * @param patterns
-   * @return <code>true</code> if <code>item</code>'s messages contain one of
-   *         the patterns
+   * @return <code>true</code> if <code>item</code>'s messages contain one of the patterns
    */
   private boolean filterMessage(Unique item, Collection<Pattern> patterns) {
     boolean retVal = false;
@@ -1066,8 +1074,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   }
 
   /**
-   * A class wrapping a Region object, customizing the toString() needs for the
-   * tree.
+   * A class wrapping a Region object, customizing the toString() needs for the tree.
    */
   private class RegionWrapper {
     private Region region = null;
@@ -1095,8 +1102,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   }
 
   /**
-   * A class wrapping a Unit object, customizing the toString() needs for the
-   * tree.
+   * A class wrapping a Unit object, customizing the toString() needs for the tree.
    */
   private class UnitWrapper {
     private Unit unit = null;

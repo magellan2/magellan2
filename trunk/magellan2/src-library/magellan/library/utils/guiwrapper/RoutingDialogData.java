@@ -32,5 +32,6 @@ public interface RoutingDialogData {
   public CoordinateID getDestination();
   public boolean useRange();
   public boolean makeRoute();
+  public boolean makeSingle();
 
 }

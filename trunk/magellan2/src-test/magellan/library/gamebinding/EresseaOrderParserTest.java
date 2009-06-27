@@ -272,7 +272,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AtReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.AtReader}.
    */
   @Test
   public void testAtReader() {
@@ -288,7 +288,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.AttackReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.AttackReader}.
    */
   @Test
   public void testAttackReader() {
@@ -302,7 +302,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BannerReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BannerReader}.
    */
   @Test
   public void testBannerReader() {
@@ -315,7 +315,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BeansprucheReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BeansprucheReader}.
    */
   @Test
   public void testBeansprucheReader() {
@@ -330,7 +330,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BefoerderungReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BefoerderungReader}.
    */
   @Test
   public void testBefoerderungReader() {
@@ -343,7 +343,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BeklaueReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BeklaueReader}.
    */
   @Test
   public void testBeklaueReader() {
@@ -358,7 +358,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BelagereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BelagereReader}.
    */
   @Test
   public void testBelagereReader() {
@@ -371,7 +371,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BenenneReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BenenneReader}.
    */
   @Test
   public void testBenenneReader() {
@@ -398,7 +398,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BenutzeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BenutzeReader}.
    */
   @Test
   public void testBenutzeReader() {
@@ -415,7 +415,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BeschreibeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BeschreibeReader}.
    */
   @Test
   public void testBeschreibeReader() {
@@ -431,7 +431,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BetreteReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BetreteReader}.
    */
   @Test
   public void testBetreteReader() {
@@ -443,7 +443,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BewacheReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BewacheReader}.
    */
   @Test
   public void testBewacheReader() {
@@ -454,7 +454,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.BotschaftReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.BotschaftReader}.
    */
   @Test
   public void testBotschaftReader() {
@@ -473,19 +473,31 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.DefaultReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.DefaultReader}.
    */
   @Test
   public void testDefaultReader() {
+    // TODO
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT));
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.EmailReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.EmailReader}.
    */
   @Test
   public void testEmailReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_EMAIL));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_EMAIL)+" \"a@b.com\"");
+    checkOrder("EMAIL \'a@b.com\'");
+    checkOrder("EMAIL \"123@456.com\"");
+    checkOrder("EMAIL \"eressea-server@eressea.upb.de\"");
+    checkOrder("Email \"enno@world\"");
+    checkOrder("EMAIL \"abc\"", false);
+    checkOrder("EMAIL \"www.eressea.de\"", false);
+    checkOrder("EMAIL stm@example.com", false);
+    checkOrder("EMAIL \"hallo@world.com", false);
+    checkOrder("EMAIL ", false);
+    checkOrder("EMAIL \"\"", false);
+    checkOrder("EMAIL \"abc@def.ghi\" \"jkl@mno.pqr\"", false);
   }
 
   /**
@@ -494,42 +506,107 @@ public class EresseaOrderParserTest {
   @Test
   public void testEndeReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_END));
+    checkOrder("ENDE 123", false);
+    checkOrder("ENDE \"123\"", false);
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.FahreReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.FahreReader}.
    */
   @Test
   public void testFahreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE)+" abc");
+    checkOrder("FAHREN 123");
+    checkOrder("FAHREN abcde", false);
+    checkOrder("FAHREN 123 456", false);
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.FolgeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.FolgeReader}.
    */
   @Test
   public void testFolgeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW)+" "+Resources.getOrderTranslation(EresseaConstants.O_UNIT)+" abc");
+    checkOrder("FOLGEN SCHIFF 123");
+    checkOrder("FOLGEN EINHEIT 123 456", false);
+    checkOrder("FOLGEN EINHEIT \"abc\"", false);
+    checkOrder("FOLGEN EINHEIT", false);
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ForscheReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ForscheReader}.
    */
   @Test
   public void testForscheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH)+" "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder("FORSCHE", false);
+    checkOrder("FORSCHE KRÄUTER 123", false);
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.GruppeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.GibReader}.
+   */
+  @Test
+  public void testGibReader() {
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY)+" 123 "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE)+" 123 "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder("GIB KRÄUTER", false);
+    checkOrder("GIB abc \"KRÄUTER\"", false);
+    checkOrder("GIB 123 KRÄUTER 123", false);
+    
+    checkOrder("GIB 123 KOMMANDO");
+    checkOrder("GIB 0 KOMMANDO", false);
+    checkOrder("GIB KOMMANDO", false);
+    checkOrder("GIB abc \"KOMMANDO\"", false);
+    checkOrder("GIB 123 KOMMANDO 123", false);
+    checkOrder("GIB 123 123 KOMMANDO", true); // FIXME should it be false?
+    
+    checkOrder("GIB 123 2 Silber");
+    checkOrder("GIB 0 2 Silber");
+    checkOrder("GIB 123 ALLES Silber");
+    checkOrder("GIB 123 ALLES \"Silber\"");
+    checkOrder("GIB 123 123 123 Silber", false);
+    checkOrder("GIB 123 2 Silber 123", false);
+    checkOrder("GIB 123 123 123 Silber", false);
+    
+    checkOrder("GIB 123 ALLES PERSONEN");
+    checkOrder("GIB 0 ALLES PERSONEN");
+    checkOrder("GIB 123 2 PERSONEN");
+    checkOrder("GIB 123 ALLES PERSONEN 2", false);
+    checkOrder("GIB 123 123 ALLES PERSONEN", false);
+    checkOrder("GIB 123 ALLES 123 PERSONEN", false);
+    
+    checkOrder("GIB 123 EINHEIT");
+    checkOrder("GIB 0 EINHEIT", false);
+    checkOrder("GIB 123 2 EINHEIT", true);  // FIXME should it be false?
+
+    checkOrder("GIB 123 2 Holz");
+    checkOrder("GIB 0 2 Holz");
+    checkOrder("GIB 123 2 \"Holz\"");
+    checkOrder("GIB 123 2 Würziger~Wagemut");
+    checkOrder("GIB 123 ALLES Holz");
+    checkOrder("GIB 123 2 Würziger Wagemut", false);
+
+    checkOrder("GIB 123 2 Würziger~Wagemut");
+    
+  }
+
+  /**
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.GruppeReader}.
    */
   @Test
   public void testGruppeReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GROUP));
+    checkOrder("GRUPPE abc");
+    checkOrder("GRUPPE \"Die wilden Kerle\"");
+    checkOrder("GRUPPE Hallo~Welt");
+    checkOrder("GRUPPE Hallo Welt", false);
+    checkOrder("GRUPPE 123 123", false);
+    		
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.HelfeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.HelfeReader}.
    */
   @Test
   public void testHelfeReader() {
@@ -537,7 +614,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.KaempfeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.KaempfeReader}.
    */
   @Test
   public void testKaempfeReader() {
@@ -545,7 +622,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.KampfzauberReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.KampfzauberReader}.
    */
   @Test
   public void testKampfzauberReader() {
@@ -553,7 +630,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.KaufeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.KaufeReader}.
    */
   @Test
   public void testKaufeReader() {
@@ -561,7 +638,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.KontaktiereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.KontaktiereReader}.
    */
   @Test
   public void testKontaktiereReader() {
@@ -569,7 +646,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.LehreReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.LehreReader}.
    */
   @Test
   public void testLehreReader() {
@@ -577,7 +654,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.LerneReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.LerneReader}.
    */
   @Test
   public void testLerneReader() {
@@ -585,16 +662,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.GibReader}.
-   */
-  @Test
-  public void testGibReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY));
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE));
-  }
-
-  /**
-   * Test method for {@link magellan.library.gamebinding.LocaleReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.LocaleReader}.
    */
   @Test
   public void testLocaleReader() {
@@ -602,7 +670,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.MacheReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.MacheReader}.
    */
   @Test
   public void testMacheReader() {
@@ -610,7 +678,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.NachReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.NachReader}.
    */
   @Test
   public void testNachReader() {
@@ -619,7 +687,7 @@ public class EresseaOrderParserTest {
 
   // new FinalKeywordReader());
   /**
-   * Test method for {@link magellan.library.gamebinding.NeustartReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.NeustartReader}.
    */
   @Test
   public void testNeustartReader() {
@@ -627,7 +695,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.NummerReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.NummerReader}.
    */
   @Test
   public void testNummerReader() {
@@ -635,7 +703,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.OptionReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.OptionReader}.
    */
   @Test
   public void testOptionReader() {
@@ -643,7 +711,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ParteiReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ParteiReader}.
    */
   @Test
   public void testParteiReader() {
@@ -651,7 +719,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.PasswortReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.PasswortReader}.
    */
   @Test
   public void testPasswortReader() {
@@ -659,7 +727,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.PflanzeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.PflanzeReader}.
    */
   @Test
   public void testPflanzeReader() {
@@ -667,7 +735,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.PiraterieReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.PiraterieReader}.
    */
   @Test
   public void testPiraterieReader() {
@@ -675,7 +743,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.PraefixReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.PraefixReader}.
    */
   @Test
   public void testPraefixReader() {
@@ -683,7 +751,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.RegionReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.RegionReader}.
    */
   @Test
   public void testRegionReader() {
@@ -691,7 +759,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.RekrutiereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.RekrutiereReader}.
    */
   @Test
   public void testRekrutiereReader() {
@@ -699,7 +767,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ReserviereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ReserviereReader}.
    */
   @Test
   public void testReserviereReader() {
@@ -707,7 +775,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.RouteReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.RouteReader}.
    */
   @Test
   public void testRouteReader() {
@@ -715,7 +783,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.SortiereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SortiereReader}.
    */
   @Test
   public void testSortiereReader() {
@@ -723,7 +791,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.SpioniereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SpioniereReader}.
    */
   @Test
   public void testSpioniereReader() {
@@ -731,7 +799,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.StirbReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.StirbReader}.
    */
   @Test
   public void testStirbReader() {
@@ -739,7 +807,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.TarneReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.TarneReader}.
    */
   @Test
   public void testTarneReader() {
@@ -747,7 +815,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.TransportiereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.TransportiereReader}.
    */
   @Test
   public void testTransportiereReader() {
@@ -755,7 +823,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.TreibeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.TreibeReader}.
    */
   @Test
   public void testTreibeReader() {
@@ -763,7 +831,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.UnterhalteReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.UnterhalteReader}.
    */
   @Test
   public void testUnterhalteReader() {
@@ -771,7 +839,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.UrsprungReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.UrsprungReader}.
    */
   @Test
   public void testUrsprungReader() {
@@ -779,7 +847,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.VergesseReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.VergesseReader}.
    */
   @Test
   public void testVergesseReader() {
@@ -787,7 +855,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.VerkaufeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.VerkaufeReader}.
    */
   @Test
   public void testVerkaufeReader() {
@@ -795,7 +863,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.FinalKeywordReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.FinalKeywordReader}.
    */
   @Test
   public void testFinalKeywordReader() {
@@ -803,7 +871,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ZaubereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ZaubereReader}.
    */
   @Test
   public void testZaubereReader() {
@@ -811,7 +879,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ZeigeReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ZeigeReader}.
    */
   @Test
   public void testZeigeReader() {
@@ -819,7 +887,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ZerstoereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ZerstoereReader}.
    */
   @Test
   public void testZerstoereReader() {
@@ -827,7 +895,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.ZuechteReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.ZuechteReader}.
    */
   @Test
   public void testZuechteReader() {
@@ -835,7 +903,7 @@ public class EresseaOrderParserTest {
   }
 
   /**
-   * Test method for {@link magellan.library.gamebinding.SabotiereReader}.
+   * Test method for {@link magellan.library.gamebinding.EresseaOrderParser.SabotiereReader}.
    */
   @Test
   public void testSabotiereReader() {

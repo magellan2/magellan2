@@ -1736,6 +1736,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Bergwerk"
 "Bergwerk";name
@@ -1757,6 +1759,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Steinbruch"
 "Steinbruch";name
@@ -1778,6 +1782,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Sägewerk"
 "Sägewerk";name
@@ -1799,6 +1805,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Schmiede"
 "Schmiede";name
@@ -1823,6 +1831,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Pferdezucht"
 "Pferdezucht";name
@@ -1842,6 +1852,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Hafen"
 "Hafen";name
@@ -1861,6 +1873,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Taverne"
 "Taverne";name
@@ -1880,6 +1894,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Akademie"
 "Akademie";name
@@ -1900,6 +1916,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Magierturm"
 "Magierturm";name
@@ -1924,6 +1942,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Karawanserei"
 "Karawanserei";name
@@ -1986,6 +2006,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 REGIONTYPE "Berge"
 "Berge";name

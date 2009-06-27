@@ -1428,50 +1428,119 @@ ITEM "Drachenblut"
 1;weight
 0;storeinbonw
 
-SHIPTYPE "Boot"
-"Boot";name
-5;size
+SHIPTYPE "Einbaum"
+"Einbaum";name
+3;size
 1;level
 2;range
-50;capacity
+20;capacity
+2;persons
 1;captainlevel
 2;sailorlevel
+RAWMATERIALS
+3;Holz
 
-SHIPTYPE "Langboot"
-"Langboot";name
-50;size
+SHIPTYPE "Floß"
+"Floß";name
+7;size
 1;level
-3;range
+1;range
 500;capacity
+5;persons
 1;captainlevel
-10;sailorlevel
+7;sailorlevel
+
+SHIPTYPE "Kutter"
+"Kutter";name
+10;size
+2;level
+2;range
+50;capacity
+5;persons
+2;captainlevel
+5;sailorlevel
+
+SHIPTYPE "Barke"
+"Barke";name
+10;size
+2;level
+4;range
+50;capacity
+10;persons
+2;captainlevel
+5;sailorlevel
+
+SHIPTYPE "Kogge"
+"Kogge";name
+100;size
+4;level
+5;range
+2000;capacity
+50;persons
+4;captainlevel
+20;sailorlevel
+
+SHIPTYPE "Karavelle"
+"Karavelle";name
+300;size
+6;level
+5;range
+6000;capacity
+150;persons
+6;captainlevel
+30;sailorlevel
+
+SHIPTYPE "Fregatte"
+"Fregatte";name
+100;size
+5;level
+5;range
+1000;capacity
+110;persons
+5;captainlevel
+40;sailorlevel
+RAWMATERIALS
+1;Holz
+10;Silber
+
+SHIPTYPE "Galeone"
+"Galeone";name
+300;size
+5;level
+5;range
+3000;capacity
+310;persons
+7;captainlevel
+60;sailorlevel
+RAWMATERIALS
+1;Holz
+10;Silber
 
 SHIPTYPE "Drachenschiff"
 "Drachenschiff";name
 100;size
-2;level
-5;range
-1000;capacity
-2;captainlevel
-50;sailorlevel
-
-SHIPTYPE "Karavelle"
-"Karavelle";name
-250;size
-3;level
-5;range
-3000;capacity
-3;captainlevel
-30;sailorlevel
+5;level
+7;range
+500;capacity
+110;persons
+5;captainlevel
+60;sailorlevel
+RAWMATERIALS
+1;Holz
+10;Silber
 
 SHIPTYPE "Trireme"
 "Trireme";name
-200;size
-4;level
+300;size
+7;level
 7;range
-2000;capacity
-4;captainlevel
-120;sailorlevel
+1500;capacity
+310;persons
+7;captainlevel
+90;sailorlevel
+RAWMATERIALS
+1;Holz
+10;Silber
 
 CASTLETYPE "Grundmauern"
 "Grundmauern";name
@@ -1542,9 +1611,11 @@ CASTLETYPE "Zitadelle"
 RAWMATERIALS
 1;Stein
 
-BUILDINGTYPE "Wache"
-"Wache";name
+CASTLETYPE "Gerüst"
+"Gerüst";name
 1;level
+1;minsize
+4;maxsize
 RAWMATERIALS
 1;Holz
 REGIONTYPES
@@ -1555,10 +1626,14 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
-BUILDINGTYPE "Wachturm"
-"Wachturm";name
-1;level
+CASTLETYPE "Wache"
+"Wache";name
+2;level
+5;minsize
+9;maxsize
 RAWMATERIALS
 1;Holz
 REGIONTYPES
@@ -1569,6 +1644,26 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
+
+CASTLETYPE "Wachturm"
+"Wachturm";name
+2;level
+10;minsize
+10;maxsize
+RAWMATERIALS
+1;Holz
+REGIONTYPES
+"Berge"
+"Ebene"
+"Gletscher"
+"Hochland"
+"Sumpf"
+"Wüste"
+"Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Leuchtturm"
 "Leuchtturm";name
@@ -1588,6 +1683,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Bergwerk"
 "Bergwerk";name
@@ -1609,6 +1706,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Steinbruch"
 "Steinbruch";name
@@ -1630,6 +1729,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Sägewerk"
 "Sägewerk";name
@@ -1651,6 +1752,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Schmiede"
 "Schmiede";name
@@ -1675,6 +1778,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Pferdezucht"
 "Pferdezucht";name
@@ -1694,6 +1799,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Hafen"
 "Hafen";name
@@ -1713,6 +1820,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Taverne"
 "Taverne";name
@@ -1732,6 +1841,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Akademie"
 "Akademie";name
@@ -1752,6 +1863,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Magierturm"
 "Magierturm";name
@@ -1776,6 +1889,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Karawanserei"
 "Karawanserei";name
@@ -1838,6 +1953,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 BUILDINGTYPE "Markt"
 "Markt";name
@@ -1856,6 +1973,8 @@ REGIONTYPES
 "Sumpf"
 "Wüste"
 "Wald"
+"Vulkan"
+"Aktiver Vulkan"
 
 REGIONTYPE "Berge"
 "Berge";name

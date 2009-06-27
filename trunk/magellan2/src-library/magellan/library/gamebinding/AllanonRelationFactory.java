@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 
+
 /**
 *
 * @author Thoralf Rickert
@@ -33,6 +34,7 @@ public class AllanonRelationFactory extends EresseaRelationFactory {
   private static final AllanonRelationFactory singleton = new AllanonRelationFactory();
 
   /**
+   * @param rules 
    * 
    */
   protected AllanonRelationFactory() {

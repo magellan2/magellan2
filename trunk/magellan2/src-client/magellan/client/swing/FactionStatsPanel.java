@@ -77,7 +77,7 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.rules.BuildingType;
+import magellan.library.rules.ConstructibleType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
@@ -811,7 +811,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               Building b = data.getBuilding(id);
               if (b != null) {
                 // get Building type
-                BuildingType bT = b.getBuildingType();
+                ConstructibleType bT = b.getBuildingType();
                 if (bT != null) {
                   // get Maintenance cost Silver
                   ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER, false);
@@ -1168,7 +1168,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               for (Iterator<ID> iterBT = buildingUpkeep.keySet().iterator(); iterBT.hasNext();) {
                 ID btID = iterBT.next();
                 Integer actV = buildingUpkeep.get(btID);
-                BuildingType bT = data.rules.getBuildingType(btID);
+                ConstructibleType bT = data.rules.getBuildingType(btID);
                 if (bT != null && actV != null && actV.intValue() > 0) {
                   DefaultMutableTreeNode subSubNode =
                       new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(bT

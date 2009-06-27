@@ -24,6 +24,7 @@
 package magellan.library.gamebinding;
 
 import magellan.library.Region;
+import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
@@ -34,16 +35,10 @@ import magellan.library.rules.RegionType;
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
-public class AllanonGameSpecificRules implements GameSpecificRules {
-  private static GameSpecificRules _instance = null;
+public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
 
-  private AllanonGameSpecificRules() {
-  }
-
-  public static synchronized GameSpecificRules getInstance() {
-    if (_instance == null)
-      _instance = new AllanonGameSpecificRules();
-    return _instance;
+  protected AllanonGameSpecificRules(Rules rules) {
+    super(rules);
   }
 
   /**

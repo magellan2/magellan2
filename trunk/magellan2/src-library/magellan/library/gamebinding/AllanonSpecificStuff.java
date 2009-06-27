@@ -27,6 +27,15 @@ import magellan.library.completion.OrderParser;
  */
 public class AllanonSpecificStuff extends EresseaSpecificStuff {
 
+  
+  private MovementEvaluator movementEvaluator;
+  private GameSpecificRules gameSpecificRules;
+
+
+  public AllanonSpecificStuff() {
+    super();
+  }
+
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#postProcess(magellan.library.GameData)
    */
@@ -56,7 +65,12 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
 	@Override
   public RelationFactory getRelationFactory() {
-		return AllanonRelationFactory.getSingleton();
+    return AllanonRelationFactory.getSingleton();
+//		if (relationFactory == null) {
+//      relationFactory = new AllanonRelationFactory(rules);
+//    }
+//
+//    return relationFactory;
 	}
 
   /**
@@ -64,7 +78,11 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
 	@Override
   public MovementEvaluator getMovementEvaluator() {
-		return AllanonMovementEvaluator.getSingleton();
+	  if (movementEvaluator == null) {
+      movementEvaluator = new AllanonMovementEvaluator(getRules());
+    }
+
+    return movementEvaluator;
 	}
 
   /**
@@ -114,8 +132,13 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   /**
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
    */
+  @Override
   public GameSpecificRules getGameSpecificRules() {
-    return AllanonGameSpecificRules.getInstance();
+    if (gameSpecificRules == null) {
+      gameSpecificRules = new AllanonGameSpecificRules(getRules());
+    }
+
+    return gameSpecificRules;
   }
   
   

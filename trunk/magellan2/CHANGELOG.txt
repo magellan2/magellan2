@@ -1,5 +1,7 @@
 2009-06-27 / Build 316 - stm (stm_@users.sourceforge.net)
     * small change to semantics of RoutePlanner/RoutingDialog options
+    * ship range made game specific
+    * added support of E3A ship types
 
 2009-06-21 / Build 314 - stm (stm_@users.sourceforge.net)
     * clean-up of lib, doc; moved licenses to doc, removed metouia and winlaf, updated commons-httpclient, idw

@@ -48,6 +48,8 @@ import magellan.library.utils.logging.Logger;
  * @version $Revision: 299 $
  */
 public class TextCellRenderer extends AbstractTextCellRenderer {
+  
+  // FIXME (stm) overrides fields from super class!
 	protected Color fontColor = Color.black;
 	protected Font unscaledFont = null;
 	protected Font font = null;

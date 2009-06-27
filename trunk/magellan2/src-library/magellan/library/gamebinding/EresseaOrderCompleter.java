@@ -1236,7 +1236,7 @@ public class EresseaOrderCompleter implements Completer {
 
           if ((t instanceof CastleType == false)
               && t.containsRegionType(region.getRegionType())
-              && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getMinSkillLevel())
+              && hasSkill(unit, EresseaConstants.S_BURGENBAU, t.getBuildSkillLevel())
               && (!completerSettingsProvider.getLimitMakeCompletion() || checkForMaterials(t
                   .getRawMaterials().iterator()))) {
             completions.add(new Completion(t.getName(), " "));
@@ -1259,7 +1259,7 @@ public class EresseaOrderCompleter implements Completer {
         for (Iterator iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
           ShipType t = (ShipType) iter.next();
 
-          if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildLevel())) {
+          if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU, t.getBuildSkillLevel())) {
             completions.add(new Completion(t.getName(), " "));
           }
         }

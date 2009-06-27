@@ -661,6 +661,8 @@ public class EresseaConstants {
   
   public static final ID I_TREES = StringID.create("Bäume");
   
+  public static final ID I_WOOD = StringID.create("Holz");
+
 	/** DOCUMENT-ME */
 	public static final ID RT_OCEAN = StringID.create("Ozean");
 

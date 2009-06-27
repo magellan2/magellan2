@@ -26,6 +26,7 @@ package magellan.library.gamebinding;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import magellan.library.Rules;
 import magellan.library.utils.mapping.AstralMappingEvaluator;
 import magellan.library.utils.mapping.DataMapping;
 import magellan.library.utils.mapping.LevelMapping;
@@ -45,14 +46,8 @@ import magellan.library.utils.mapping.UnitIDMapping;
  */
 
 public class EresseaMapMergeEvaluator extends MapMergeEvaluator {
-  private static MapMergeEvaluator singleton = new EresseaMapMergeEvaluator();
+  protected EresseaMapMergeEvaluator(Rules rules) { }
   
-  protected EresseaMapMergeEvaluator() { }
-  
-  public static MapMergeEvaluator getSingleton() {
-    return EresseaMapMergeEvaluator.singleton;
-  }
-
   protected static final Integer REAL_LAYER = Integer.valueOf(0); 
   protected static final Integer ASTRAL_LAYER = Integer.valueOf(1);
 

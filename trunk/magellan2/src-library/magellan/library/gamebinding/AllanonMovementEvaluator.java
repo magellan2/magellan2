@@ -23,6 +23,8 @@
 // 
 package magellan.library.gamebinding;
 
+import magellan.library.Rules;
+
 /**
  * 
  *
@@ -30,20 +32,12 @@ package magellan.library.gamebinding;
  * @version 1.0, 17.04.2008
  */
 public class AllanonMovementEvaluator extends EresseaMovementEvaluator {
-  private static final AllanonMovementEvaluator singleton = new AllanonMovementEvaluator();
-
   /**
    * 
    */
-  protected AllanonMovementEvaluator() {
+  protected AllanonMovementEvaluator(Rules rules) {
+    super(rules);
   }
 
-
-  /**
-   * 
-   */
-  public static AllanonMovementEvaluator getSingleton() {
-    return AllanonMovementEvaluator.singleton;
-  }
 
 }

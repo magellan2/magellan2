@@ -20,7 +20,6 @@ import java.util.List;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderChanger;
-import magellan.library.gamebinding.OrderChanger;
 import magellan.library.utils.Resources;
 
 
@@ -31,8 +30,6 @@ import magellan.library.utils.Resources;
  */
 public class E3AOrderChanger extends EresseaOrderChanger {
   private static final E3AOrderChanger singleton = new E3AOrderChanger();
-  
-  public static final String eresseaOrderChangedMarker = ";changed by Magellan";
   
   
 	protected E3AOrderChanger() {

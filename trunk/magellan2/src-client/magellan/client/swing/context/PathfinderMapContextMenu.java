@@ -52,7 +52,7 @@ import magellan.library.utils.Resources;
 /**
  * A context menu for Islands.
  *
- * @author stm
+ * @author fiete
  */
 public class PathfinderMapContextMenu extends JMenu implements SelectionListener, GameDataListener{
   // private static final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
@@ -193,15 +193,11 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
      String path = "";
      List<Region>regionList=null;
-     int aquarianBonus = 0;
      BuildingType harbour = data.rules.getBuildingType(StringID.create("Hafen"));   
      for (Unit u:getSelectedUnits()){
-       if (isSeaConnPossible(u)){
-         aquarianBonus = 0;
-         try {
-           aquarianBonus = u.getFaction().getRace().getAdditiveShipBonus();
-         } catch(Exception exc) {}
-         regionList = Regions.planShipRoute(u.getModifiedShip(), this.destRegion.getCoordinate(), data.regions(), harbour, aquarianBonus);
+       if (isSeaConnPossible(u) && u.getModifiedShip()!=null){
+         int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(u.getModifiedShip());
+         regionList = Regions.planShipRoute(u.getModifiedShip(), this.destRegion.getCoordinate(), data.regions(), harbour, speed);
          path=Regions.getDirections(regionList);
          if (path!=null && path.length()>0){
            // Pfad gefunden

@@ -180,7 +180,7 @@ public class GameDataReader {
       throw new IOException("No Rules for game '" + aGameName + "' readable!");
     }
 
-    return rules.getGameSpecificStuff().createGameData(rules, aGameName);
+    return rules.getGameSpecificStuff().createGameData(aGameName);
   }
 
 }

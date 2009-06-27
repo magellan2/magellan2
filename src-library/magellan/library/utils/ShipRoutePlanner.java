@@ -102,36 +102,24 @@ public class ShipRoutePlanner {
 
       if (shipOwner != null) {
         if ((shipOwner.getFaction() != null) && shipOwner.getFaction().isPrivileged()) {
-          int meerManBonus = 0;
-
-          try {
-            meerManBonus = shipOwner.getFaction().getRace().getAdditiveShipBonus();
-          } catch (Exception exc) {
-          }
-
           BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
 
+          int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
           List<Region> path =
               Regions
-                  .planShipRoute(ship, v.getDestination(), data.regions(), harbour, meerManBonus);
+                  .planShipRoute(ship, v.getDestination(), data.regions(), harbour, speed);
 
           if (path != null) {
             // Now try to calculate the orders:
-            int shipRange = 0;
-
-            try {
-              shipRange = ship.getShipType().getRange() + meerManBonus;
-            } catch (Exception exc) {
-            }
 
             if (!v.useRange()) {
-              shipRange = Integer.MAX_VALUE;
-            } else if (shipRange <= 0) {
+              speed = Integer.MAX_VALUE;
+            } else if (speed <= 0) {
               // couldn't determine ship range
               JOptionPane.showMessageDialog(ui, Resources
                   .get("util.shiprouteplanner.msg.shiprangeiszero.text"), Resources
                   .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
-              shipRange = Integer.MAX_VALUE;
+              speed = Integer.MAX_VALUE;
             }
 
             List<String> orders = new LinkedList<String>();
@@ -141,7 +129,7 @@ public class ShipRoutePlanner {
             if (v.makeRoute()) {
               command = "ROUTE";
             }
-            addOrders(orders, path, command, v.useVorlage(), shipRange, v.makeSingle(), harbour);
+            addOrders(orders, path, command, v.useVorlage(), speed, v.makeSingle(), harbour);
 
             if (v.replaceOrders()) {
               shipOwner.setOrders(orders);

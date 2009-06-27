@@ -18,6 +18,9 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 import magellan.library.Alliance;
 import magellan.library.GameData;
 import magellan.library.Spell;
@@ -26,7 +29,6 @@ import magellan.library.completion.Completion;
 import magellan.library.completion.OrderParser;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.rules.BuildingType;
-import magellan.library.rules.CastleType;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
@@ -52,7 +54,7 @@ public class EresseaOrderParser implements OrderParser {
   protected static final int MAX_UID = 1679615;
 
   public static final char[] QUOTES = new char[] { '\'', '"' };
-  
+
   private String errMsg;
   private TokenBucket tokenBucket;
   private Iterator<OrderToken> tokensIterator;
@@ -257,12 +259,12 @@ public class EresseaOrderParser implements OrderParser {
       commandTrie.delete(prefix);
     commandMap.remove(prefix);
   }
-  
-  public Set<String> getCommands(){
+
+  public Set<String> getCommands() {
     return commandMap.keySet();
   }
-  
-  protected Collection<OrderHandler> getHandlers(){
+
+  protected Collection<OrderHandler> getHandlers() {
     return commandMap.values();
   }
 
@@ -297,7 +299,7 @@ public class EresseaOrderParser implements OrderParser {
    * Returns <code>true</code> if there is a next token
    */
   public boolean hasNextToken() {
-    return tokensIterator!=null && tokensIterator.hasNext();
+    return tokensIterator != null && tokensIterator.hasNext();
   }
 
   /**
@@ -396,7 +398,8 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       // we test for EOC after readOrder in order to get the completions...
-      return !t.getText().equals("@") && t.ttype!=OrderToken.TT_COMMENT &&  readOrder(t) && t.ttype != OrderToken.TT_EOC;
+      return !t.getText().equals("@") && t.ttype != OrderToken.TT_COMMENT && readOrder(t)
+          && t.ttype != OrderToken.TT_EOC;
     }
   }
 
@@ -1287,7 +1290,8 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))
           || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CONTROL))
           || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
-        retVal = readFinalKeyword(t);
+        UnitID id = UnitID.createUnitID(token.getText(), data.base);
+        retVal = id.intValue()!=0 && readFinalKeyword(t);
       } else {
         unexpected(t);
       }
@@ -1379,7 +1383,10 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
+      if (t.ttype == OrderToken.TT_EOC) {
+        // just "GRUPPE" without explicit group is valid
+        retVal = checkFinal(t);
+      } else if (isString(t)) {
         retVal = new StringChecker(false, true, false) {
           @Override
           protected void complete() {
@@ -1387,13 +1394,11 @@ public class EresseaOrderParser implements OrderParser {
           }
         }.read(t);
       } else {
-        if (getCompleter() != null) {
-          getCompleter().cmpltGruppe();
-        }
-
-        // just "GRUPPE" without explicit group is valid
         retVal = checkFinal(t);
-// unexpected(t);
+      }
+
+      if (getCompleter() != null) {
+        getCompleter().cmpltGruppe();
       }
 
       return retVal;
@@ -1789,8 +1794,9 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readMacheBurg(t);
       } else if ((getData().rules != null)
           && ((type = getData().rules.getBuildingType(t.getText())) != null)
-          && (!(type instanceof CastleType) || t.equalsToken(Resources
-              .getOrderTranslation(EresseaConstants.O_CASTLE)))) {
+// && (!(type instanceof CastleType) || t.equalsToken(Resources
+// .getOrderTranslation(EresseaConstants.O_CASTLE)))
+      ) {
         retVal = readMacheBuilding(t);
       } else if ((getData().rules != null) && (getData().rules.getShipType(t.getText()) != null)) {
         retVal = readMacheShip(t);
@@ -3031,7 +3037,7 @@ public class EresseaOrderParser implements OrderParser {
             // here we return just true
             // toDo: get Spell Syntax, check, if more tokens expected and
             // do next checks
-            if (s.getType()==null || (!combat ^ s.getType().toLowerCase().indexOf("combat") > -1)) {
+            if (s.getType() == null || (!combat ^ s.getType().toLowerCase().indexOf("combat") > -1)) {
               foundSpell = s;
               break;
             }
@@ -3072,7 +3078,7 @@ public class EresseaOrderParser implements OrderParser {
       if (s == null || s.getSyntax() == null)
         // FIXME this is not syntactically incorrect...
         return false;
-      return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().length()==0;
+      return t.ttype != OrderToken.TT_EOC ^ s.getSyntax().length() == 0;
     }
 
     /**
@@ -3811,10 +3817,17 @@ public class EresseaOrderParser implements OrderParser {
    * @return
    */
   protected boolean isEmailAddress(String txt) {
-    String nonempty = "[A-Za-zƒ÷‹‰ˆ¸ﬂ0-9][A-Za-zƒ÷‹‰ˆ¸ﬂ~._0-9]*";
-    StringBuffer sb = new StringBuffer();
-    sb.append(nonempty).append("@").append(nonempty).append(".").append(nonempty);
-    return Pattern.matches(sb.toString(), txt);
+    if (true) {
+      try {
+        new InternetAddress(txt, true);
+      } catch (AddressException e) {
+        return false;
+      }
+      return true;
+    }
+
+    // alternative implementation
+    return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
   }
 
 }

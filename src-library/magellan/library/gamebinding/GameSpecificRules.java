@@ -71,4 +71,10 @@ public interface GameSpecificRules {
    */
   public int getWage(Region region, Race race);
 
+
+  /**
+   * Returns the current maximum range of a ship.
+   */
+  public int getShipRange(Ship s);
+
 }

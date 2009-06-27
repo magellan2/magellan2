@@ -29,7 +29,7 @@ import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificOrderWriter;
-import magellan.library.rules.BuildingType;
+import magellan.library.rules.ConstructibleType;
 
 
 /**
@@ -252,7 +252,7 @@ public class OrderWriter {
 
 			if(unit.getBuilding() != null) {
 				if(unit.equals(unit.getBuilding().getOwnerUnit())) {
-					BuildingType type = unit.getBuilding().getBuildingType();
+					ConstructibleType type = unit.getBuilding().getBuildingType();
 
 					if(type != null) {
 						Item i = type.getMaintenance(EresseaConstants.I_SILVER);

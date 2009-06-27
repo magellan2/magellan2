@@ -27,42 +27,34 @@ public class Item {
 	/**
 	 * Creates a new item of the specified type and with the specified amount.
 	 *
-	 * 
-	 * 
-	 *
-	 * @throws IllegalArgumentException DOCUMENT-ME
+	 * @throws NullPointerException if <code>type==null</code>
 	 */
 	public Item(ItemType type, int amount) {
 		if(type != null) {
 			this.type = type;
 			this.amount = amount;
 		} else {
-			throw new IllegalArgumentException("Item.Item(): specified item type is null!");
+			throw new NullPointerException("Item.Item(): specified item type is null!");
 		}
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the amount. 
 	 */
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the amount, i.e. the number of entities this item represents. 
 	 */
 	public int getAmount() {
 		return amount;
 	}
 
 	/**
-	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see java.lang.Object#toString()
 	 */
 	@Override
   public String toString() {
@@ -70,18 +62,14 @@ public class Item {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the type of this item.
 	 */
 	public ItemType getItemType() {
 		return type;
 	}
 
 	/**
-	 * DOCUMENT ME!
-	 *
-	 * 
+   * Returns the type of this item.
 	 *
 	 * @deprecated Use getItemType() instead
 	 */
@@ -98,6 +86,9 @@ public class Item {
 		return type.getName();
 	}
   
+  /**
+   * Returns the name, quoted if required.
+   */
   public String getOrderName() {
     return type.getOrderName();
   }

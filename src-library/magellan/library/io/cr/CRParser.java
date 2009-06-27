@@ -61,6 +61,7 @@ import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanIslandImpl;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesIO;
@@ -68,6 +69,7 @@ import magellan.library.io.file.FileType;
 import magellan.library.rules.AllianceCategory;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.CastleType;
+import magellan.library.rules.ConstructibleType;
 import magellan.library.rules.Date;
 import magellan.library.rules.EresseaDate;
 import magellan.library.rules.GenericRules;
@@ -1337,6 +1339,7 @@ public class CRParser implements RulesIO, GameDataIO {
     int t = sc.argv[0].indexOf("\"", f + 1);
     String id = sc.argv[0].substring(f + 1, t);
     ShipType shipType = rules.getShipType(StringID.create(id), true);
+    shipType.init(rules.getItemType(EresseaConstants.I_WOOD));
     sc.getNextToken(); // skip SHIPTYPE xx
 
     while(!sc.eof) {
@@ -1347,13 +1350,10 @@ public class CRParser implements RulesIO, GameDataIO {
         shipType.setName(sc.argv[0]);
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("level")) {
-        shipType.setBuildLevel(Integer.parseInt(sc.argv[0]));
+        shipType.setBuildSkillLevel(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("range")) {
         shipType.setRange(Integer.parseInt(sc.argv[0]));
-        sc.getNextToken();
-      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("capacity")) {
-        shipType.setCapacity(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("captainlevel")) {
         shipType.setCaptainSkillLevel(Integer.parseInt(sc.argv[0]));
@@ -1361,6 +1361,23 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("sailorlevel")) {
         shipType.setSailorSkillLevel(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("capacity")) {
+        shipType.setCapacity(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("persons")) {
+        shipType.setMaxPersons(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maxsize")) {
+        shipType.setMaxSize(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
+//      } else if(sc.isBlock && sc.argv[0].equals("TALENTBONI")) {
+//        parseBuildingSkillBonuses(shipType, rules);
+      } else if(sc.isBlock && sc.argv[0].equals("RAWMATERIALS")) {
+        parseBuildingRawMaterials(shipType, rules);
+      } else if(sc.isBlock && sc.argv[0].equals("MAINTENANCE")) {
+        parseBuildingMaintenance(shipType, rules);
+      } else if(sc.isBlock) {
+        break;
       } else if(sc.isBlock) {
         break;
       } else {
@@ -1380,6 +1397,7 @@ public class CRParser implements RulesIO, GameDataIO {
       bType = rules.getBuildingType(StringID.create(id), true);
     } else if(blockName.equals("CASTLETYPE")) {
       bType = rules.getCastleType(StringID.create(id), true);
+      ((CastleType) bType).init(rules.getItemType(EresseaConstants.I_STONES));
     } else {
       unknown(blockName, false);
       return;
@@ -1392,7 +1410,7 @@ public class CRParser implements RulesIO, GameDataIO {
         bType.setName(sc.argv[0]);
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("level")) {
-        bType.setMinSkillLevel(Integer.parseInt(sc.argv[0]));
+        bType.setBuildSkillLevel(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("maxsize")) {
         bType.setMaxSize(Integer.parseInt(sc.argv[0]));
@@ -1450,7 +1468,7 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
-  private void parseBuildingRawMaterials(BuildingType bType, Rules rules)
+  private void parseBuildingRawMaterials(ConstructibleType bType, Rules rules)
                   throws IOException
   {
     sc.getNextToken(); // skip RAWMATERIALS
@@ -1470,7 +1488,7 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
-  private void parseBuildingMaintenance(BuildingType bType, Rules rules)
+  private void parseBuildingMaintenance(ConstructibleType bType, Rules rules)
                    throws IOException
   {
     sc.getNextToken(); // skip MAINTENANCE
@@ -2559,8 +2577,10 @@ public class CRParser implements RulesIO, GameDataIO {
         bld.setTrueBuildingType(sc.argv[0]);
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Typ")) {
-        BuildingType type = world.rules.getBuildingType(StringID.create(sc.argv[0]), true);
-        bld.setType(type);
+        BuildingType bType = world.rules.getCastleType(StringID.create(sc.argv[0]), true);
+        if (bType == null)
+          bType = world.rules.getBuildingType(StringID.create(sc.argv[0]), true);
+        bld.setType(bType);
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Beschr")) {
         bld.setDescription(sc.argv[0]);
@@ -2574,7 +2594,6 @@ public class CRParser implements RulesIO, GameDataIO {
           Faction f = world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
           bld.getOwnerUnit().setFaction(f);
         }
-
         sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Groesse")) {
         bld.setSize(Integer.parseInt(sc.argv[0]));

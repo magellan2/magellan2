@@ -123,7 +123,8 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 *
 	 * @return Returns the maximum capacity with respect to  damages of the ship in silver
 	 */
-	public int getMaxCapacity() {
+	@SuppressWarnings("deprecation")
+  public int getMaxCapacity() {
 		if(capacity != -1) {
 			return capacity;
 		}
@@ -139,6 +140,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 * @return The max damaged capacity
 	 */
 	private int getMaxCapacity(int maxCapacity) {
+	  // (int)(maxCapacity*(100-damageRatio)/100)
 		return new BigDecimal(maxCapacity).multiply(new BigDecimal(100 - damageRatio))
 										  .divide(new BigDecimal(100), BigDecimal.ROUND_DOWN)
 										  .intValue();

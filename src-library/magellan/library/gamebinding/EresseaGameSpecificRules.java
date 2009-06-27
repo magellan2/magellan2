@@ -23,7 +23,10 @@
 // 
 package magellan.library.gamebinding;
 
+import java.math.BigDecimal;
+
 import magellan.library.Region;
+import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
@@ -35,15 +38,20 @@ import magellan.library.rules.RegionType;
  * @version 1.0, 19.04.2009
  */
 public class EresseaGameSpecificRules implements GameSpecificRules {
-  private static GameSpecificRules _instance = null;
 
-  protected EresseaGameSpecificRules() {
+  private Rules rules;
+
+  protected EresseaGameSpecificRules(Rules rules) {
+    this.rules = rules;
   }
 
-  public static synchronized GameSpecificRules getInstance() {
-    if (_instance == null)
-      _instance = new EresseaGameSpecificRules();
-    return _instance;
+  /**
+   * Returns the value of rules.
+   * 
+   * @return Returns rules.
+   */
+  public Rules getRules() {
+    return rules;
   }
 
   /**
@@ -147,5 +155,21 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     }
 
     return wage;
+  }
+
+  public int getShipRange(Ship s) {
+    // Reichweite (bei Schaden aufrunden)
+    int rad = s.getShipType().getRange();
+
+    if((s.getOwnerUnit() != null) && (s.getOwnerUnit().getRace() != null) &&
+           s.getOwnerUnit().getRace().getAdditiveShipBonus()!=0) {
+        rad+=s.getOwnerUnit().getRace().getAdditiveShipBonus();
+      }
+
+    // rad = rad*(100.0-damageRatio)/100.0
+    rad = new BigDecimal(rad).multiply(new BigDecimal(100 - s.getDamageRatio()))
+                 .divide(new BigDecimal(100), BigDecimal.ROUND_UP).intValue();
+    
+    return rad;
   }
 }

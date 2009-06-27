@@ -14,7 +14,6 @@
 package magellan.library.gamebinding;
 
 import magellan.library.GameData;
-import magellan.library.Rules;
 import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
@@ -36,7 +35,7 @@ public interface GameSpecificStuff {
 	 * @param rules
 	 * @param name
 	 */
-	public GameData createGameData(Rules rules, String name);
+	public GameData createGameData(String name);
 
 	/**
 	 * DOCUMENT-ME

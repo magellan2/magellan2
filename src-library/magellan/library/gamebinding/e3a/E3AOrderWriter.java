@@ -34,8 +34,6 @@ import magellan.library.gamebinding.GameSpecificOrderWriter;
  */
 public class E3AOrderWriter extends EresseaOrderWriter {
   private static final E3AOrderWriter instance = new E3AOrderWriter();
-  /** Current ECheck version */
-  public static final String ECHECKVERSION = "4.3.2";
   
   /**
    * 

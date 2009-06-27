@@ -779,7 +779,7 @@ public class GenericRules implements Rules {
   public GameSpecificStuff getGameSpecificStuff() {
     if (gameSpecificStuff == null) {
       gameSpecificStuff =
-          new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
+        new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
     }
 
     return gameSpecificStuff;

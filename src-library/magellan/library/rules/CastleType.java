@@ -13,7 +13,11 @@
 
 package magellan.library.rules;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import magellan.library.ID;
+import magellan.library.Item;
 
 /**
  * DOCUMENT-ME
@@ -26,6 +30,8 @@ public class CastleType extends BuildingType implements Comparable {
 	private int wage = -1;
 	private int tax = -1;
 
+  protected ItemType stone;
+
 	/**
 	 * Creates a new CastleType object.
 	 *
@@ -33,6 +39,10 @@ public class CastleType extends BuildingType implements Comparable {
 	 */
 	public CastleType(ID id) {
 		super(id);
+	}
+	
+	public void init(ItemType stone){
+	  this.stone = stone;
 	}
 
 	/**
@@ -72,18 +82,14 @@ public class CastleType extends BuildingType implements Comparable {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the minimum size. 
 	 */
 	public void setMinSize(int s) {
 		this.minSize = s;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the minimum size of this type.
 	 */
 	public int getMinSize() {
 		return minSize;
@@ -116,4 +122,43 @@ public class CastleType extends BuildingType implements Comparable {
 			return super.compareTo(obj);
 		}
 	}
+
+  protected boolean fallBackMaterial = true;
+
+  /**
+   * @see magellan.library.rules.ConstructibleType#addRawMaterial(magellan.library.Item)
+   */
+  @Override
+  public void addRawMaterial(Item i) {
+    fallBackMaterial = false;
+    super.addRawMaterial(i);
+  }
+
+  /**
+   * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
+   */
+  @Override
+  public Item getRawMaterial(ID id) {
+    // if no raw materials have been added we fall back to old behavior: 1 wood per size point
+    if (fallBackMaterial) {
+      if (id.equals(stone.getID()))
+        return new Item(new ItemType(id), 1);
+      else
+        return null;
+    } else {
+      return super.getRawMaterial(id);
+    }
+  }
+
+  /**
+   * @see magellan.library.rules.ConstructibleType#getRawMaterials()
+   */
+  @Override
+  public Collection<Item> getRawMaterials() {
+    if (fallBackMaterial)
+      return Collections.singletonList(new Item(stone, 1));
+    else
+      return super.getRawMaterials();
+  }
+
 }

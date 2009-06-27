@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding;
 
+import java.io.IOException;
+
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -20,6 +22,7 @@ import magellan.library.completion.Completer;
 import magellan.library.completion.CompleterSettingsProvider;
 import magellan.library.completion.OrderParser;
 import magellan.library.io.GameDataIO;
+import magellan.library.io.RulesReader;
 
 
 /**
@@ -29,10 +32,34 @@ import magellan.library.io.GameDataIO;
  * @version $Revision: 242 $
  */
 public class EresseaSpecificStuff implements GameSpecificStuff {
-	/**
+
+  private Rules rules;
+  private GameSpecificRules gamespecificRules;
+  private MapMergeEvaluator mapMergeEvaluator;
+  private MovementEvaluator movementEvaluator;
+
+  /**
+   * Returns the value of rules.
+   * 
+   * @return Returns rules.
+   */
+  public Rules getRules() {
+    return rules;
+  }
+
+  public EresseaSpecificStuff() {
+    try {
+      this.rules = new RulesReader().readRules("Eressea");
+    } catch (IOException e) {
+      this.rules = null;
+      throw new RuntimeException("Eressea rules not readable", e);
+    }
+  }
+  
+  /**
 	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
 	 */
-	public GameData createGameData(Rules rules, String name) {
+	public GameData createGameData(String name) {
 		return new CompleteData(rules, name);
 	}
 
@@ -75,7 +102,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
 	public MovementEvaluator getMovementEvaluator() {
-		return EresseaMovementEvaluator.getSingleton();
+	  if (movementEvaluator == null) {
+      movementEvaluator = new EresseaMovementEvaluator(rules);
+    }
+    return movementEvaluator;
 	}
 
   /**
@@ -107,7 +137,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
    */
   public MapMergeEvaluator getMapMergeEvaluator() {
-    return EresseaMapMergeEvaluator.getSingleton();
+    if (mapMergeEvaluator==null)
+      mapMergeEvaluator = new EresseaMapMergeEvaluator(rules);
+    return mapMergeEvaluator;
   }
 
   /**
@@ -121,6 +153,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
    */
   public GameSpecificRules getGameSpecificRules() {
-    return EresseaGameSpecificRules.getInstance();
+    if (gamespecificRules == null)
+      gamespecificRules = new EresseaGameSpecificRules(rules);
+    return gamespecificRules;
   }
 }

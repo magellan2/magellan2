@@ -13,14 +13,12 @@
 
 package magellan.library.gamebinding;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import magellan.library.Item;
 import magellan.library.Rules;
 import magellan.library.Skill;
 import magellan.library.Unit;
-import magellan.library.io.RulesReader;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.Race;
 
@@ -31,24 +29,12 @@ import magellan.library.rules.Race;
  * @version $Revision: 396 $
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
-  private static final EresseaMovementEvaluator singleton = new EresseaMovementEvaluator();
   private Rules rules;
 
-  protected EresseaMovementEvaluator() {
-    try {
-      rules = (new RulesReader()).readRules("Eressea");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  protected EresseaMovementEvaluator(Rules rules) {
+    this.rules = rules;
 	}
 
-
-	/**
-	 * Return a (the) EresseaMovementEvaluator
-	 */
-	public static EresseaMovementEvaluator getSingleton() {
-		return EresseaMovementEvaluator.singleton;
-	}
 
 	/**
 	 * Returns the maximum payload in GE  100 of this unit when it travels by horse. Horses, carts

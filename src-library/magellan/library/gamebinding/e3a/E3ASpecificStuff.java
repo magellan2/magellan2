@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding.e3a;
 
+import java.io.IOException;
+
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -28,6 +30,7 @@ import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.gamebinding.OrderChanger;
 import magellan.library.gamebinding.RelationFactory;
 import magellan.library.io.GameDataIO;
+import magellan.library.io.RulesReader;
 
 
 /**
@@ -37,12 +40,34 @@ import magellan.library.io.GameDataIO;
  * @version $Revision: 242 $
  */
 public class E3ASpecificStuff implements GameSpecificStuff {
-	
+  private Rules rules;
+  private MovementEvaluator movementEvaluator;
+  private GameSpecificRules gameSpecificRules;
+  private MapMergeEvaluator mapMergeEvaluator;
+
+  /**
+   * Returns the value of rules.
+   * 
+   * @return Returns rules.
+   */
+  public Rules getRules() {
+    return rules;
+  }
+
+  public E3ASpecificStuff() {
+    try {
+      this.rules = new RulesReader().readRules("E3A");
+    } catch (IOException e) {
+      this.rules = null;
+      throw new RuntimeException("Eressea rules not readable", e);
+    }
+  }
+
   /**
 	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
 	 */
-	public GameData createGameData(Rules rules, String name) {
-		return new CompleteData(rules, name);
+	public GameData createGameData(String name) {
+		return new CompleteData(getRules(), name);
 	}
 
   /**
@@ -84,7 +109,10 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getMovementEvaluator()
    */
 	public MovementEvaluator getMovementEvaluator() {
-		return E3AMovementEvaluator.getSingleton();
+    if (movementEvaluator == null) {
+      movementEvaluator = new E3AMovementEvaluator(rules);
+    }
+    return movementEvaluator;
 	}
 
   /**
@@ -116,7 +144,11 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getMapMergeEvaluator()
    */
   public MapMergeEvaluator getMapMergeEvaluator() {
-    return E3AMapMergeEvaluator.getSingleton();
+    if (mapMergeEvaluator == null) {
+      mapMergeEvaluator = new E3AMapMergeEvaluator(rules);
+    }
+
+    return mapMergeEvaluator;
   }
 
   /**
@@ -130,6 +162,8 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getGameSpecificRules()
    */
   public GameSpecificRules getGameSpecificRules() {
-    return E3AGameSpecificRules.getInstance();
+    if (gameSpecificRules==null)
+      gameSpecificRules = new E3AGameSpecificRules(rules);
+    return gameSpecificRules;
   }
 }

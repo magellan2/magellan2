@@ -357,38 +357,27 @@ public class ExtendedCommandsHelper {
    *                    region.
    */
   public String getPathToRegion(Ship ship, Region destination, int speed, boolean makeRoute) {
-    Unit shipOwner = ship.getOwnerUnit();
-    String order = "";
-    int aquarianBonus = 0;
-
-    try {
-      aquarianBonus = shipOwner.getFaction().getRace().getAdditiveShipBonus();
-    } catch(Exception exc) {}
+    StringBuffer order = new StringBuffer();
     
     BuildingType harbour = world.rules.getBuildingType(StringID.create("Hafen"));
 
-    List<Region> path = Regions.planShipRoute(ship, destination.getCoordinate(), world.regions(), harbour, aquarianBonus);
+    int shipRange = world.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
+    List<Region> path = Regions.planShipRoute(ship, destination.getCoordinate(), world.regions(), harbour, shipRange);
     
     if(path != null) {
       // Now try to calculate the orders:
-      int shipRange = 0;
-
-      try {
-        shipRange = ship.getShipType().getRange() + aquarianBonus;
-      } catch(Exception exc) {
-      }
 
       if(speed > 0) {
         shipRange = speed;
       }
 
       if(makeRoute) {
-        order = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
-        order += (" " + Regions.getDirections(path));
-        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+        order.append(Resources.getOrderTranslation(EresseaConstants.O_ROUTE));
+        order.append(" ").append(Regions.getDirections(path));
+        order.append(" ").append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
         Collections.reverse(path);
-        order += (" " + Regions.getDirections(path));
-        order += (" " + Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
+        order.append(" ").append(Regions.getDirections(path));
+        order.append(" ").append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE));
       } else {
         String nach = Resources.getOrderTranslation(EresseaConstants.O_MOVE) + " ";
         List<Region> curPath = new LinkedList<Region>();
@@ -406,10 +395,10 @@ public class ExtendedCommandsHelper {
                 count = shipRange;
 
                 if (!Utils.isEmpty(order)) {
-                  order +=" // ";
+                  order.append(" // ");
                 }
                 
-                order += nach;
+                order.append(nach);
                 nach = "";
               }
 
@@ -422,7 +411,7 @@ public class ExtendedCommandsHelper {
         }
       }
     }
-    return order;
+    return order.toString();
   }
   
   /**

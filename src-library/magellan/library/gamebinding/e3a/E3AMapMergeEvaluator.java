@@ -26,8 +26,8 @@ package magellan.library.gamebinding.e3a;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import magellan.library.Rules;
 import magellan.library.gamebinding.EresseaMapMergeEvaluator;
-import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.utils.mapping.AstralMappingEvaluator;
 import magellan.library.utils.mapping.DataMapping;
 import magellan.library.utils.mapping.LevelMapping;
@@ -45,18 +45,10 @@ import magellan.library.utils.mapping.UnitIDMapping;
  */
 
 public class E3AMapMergeEvaluator extends EresseaMapMergeEvaluator {
-  private static MapMergeEvaluator singleton = new E3AMapMergeEvaluator();
-  
-  protected E3AMapMergeEvaluator(){
+  protected E3AMapMergeEvaluator(Rules rules){
+    super(rules);
   }
   
-  public static MapMergeEvaluator getSingleton() {
-    return E3AMapMergeEvaluator.singleton;
-  }
-
-  protected static final Integer REAL_LAYER = Integer.valueOf(0); 
-  protected static final Integer ASTRAL_LAYER = Integer.valueOf(1);
-
   @Override
   public Collection<DataMapping> getDataMappingVariants(int level) {
     if (level == E3AMapMergeEvaluator.ASTRAL_LAYER) {

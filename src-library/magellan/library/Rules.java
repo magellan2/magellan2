@@ -104,7 +104,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator over all races. 
 	 */
-	public Iterator getRaceIterator();
+	public Iterator<Race> getRaceIterator();
+
+  /**
+   * Returns an iterator over all races. 
+   */
+  public Collection<Race> getRaces();
 
 	/**
 	 * get Race by (possibly localized) name
@@ -134,7 +139,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator over all ship types. 
 	 */
-	public Iterator getShipTypeIterator();
+	public Iterator<ShipType> getShipTypeIterator();
+
+  /**
+   * Returns an collection of all ship types. 
+   */
+  public Collection<ShipType> getShipTypes();
 
 	/**
 	 * get ShipType by (possibly localized) name
@@ -161,10 +171,15 @@ public interface Rules {
 	public BuildingType getBuildingType(ID id, boolean add);
 
 	/**
-	 * Returns an iterator over all building types. 
+	 * Returns an iterator over all building types (including CastleTypes). 
 	 */
 	public Iterator<BuildingType> getBuildingTypeIterator();
 
+	/**
+	 * Returns a collection of all building types (including CastleTypes).
+	 */
+	public Collection<BuildingType> getBuildingTypes();
+  
 	/**
 	 * get BuildingType by (possibly localized) name
 	 *
@@ -191,7 +206,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator of all castle types. 
 	 */
-	public Iterator getCastleTypeIterator();
+	public Iterator<CastleType> getCastleTypeIterator();
+
+	/**
+	 * Returns a collection of all castle types.
+	 */
+  public Collection<CastleType> getCastleTypes();
 
 	/**
 	 * get CastleType by (possibly localized) name
@@ -221,6 +241,11 @@ public interface Rules {
 	 */
 	public Iterator<ItemType> getItemTypeIterator();
 
+  /**
+   * Returns a collection of all item types. 
+   */
+  public Collection<ItemType> getItemTypes();
+
 	/**
 	 * get ItemType by (possibly localized) name
 	 *
@@ -249,6 +274,11 @@ public interface Rules {
 	 */
 	public Iterator<SkillType> getSkillTypeIterator();
 
+  /**
+   * Returns a collection of all skill types. 
+   */
+  public Collection<SkillType> getSkillTypes();
+
 	/**
 	 * get SkillType by (possibly localized) name
 	 *
@@ -275,7 +305,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator over all item categories. 
 	 */
-	public Iterator getItemCategoryIterator();
+	public Iterator<ItemCategory> getItemCategoryIterator();
+
+  /**
+   * Returns a collection of all item categories. 
+   */
+  public Collection<ItemCategory> getItemCategories();
 
 	/**
 	 * get ItemCategory by (possibly localized) name
@@ -303,7 +338,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator over all skill categories. 
 	 */
-	public Iterator getSkillCategoryIterator();
+	public Iterator<SkillCategory> getSkillCategoryIterator();
+
+  /**
+   * Returns a collection of all skill categories. 
+   */
+  public Collection<SkillCategory> getSkillCategories();
 
 	/**
 	 * get SkillCategory by (possibly localized) name
@@ -331,7 +371,12 @@ public interface Rules {
 	/**
 	 * Returns an iterator over all option categories. 
 	 */
-	public Iterator getOptionCategoryIterator();
+	public Iterator<OptionCategory> getOptionCategoryIterator();
+
+  /**
+   * Returns a collection of all option categories. 
+   */
+  public Collection<OptionCategory> getOptionCategories();
 
 	/**
 	 * get OptionCategory by (possibly localized) name
@@ -360,6 +405,11 @@ public interface Rules {
 	 * Returns a list of all possible alliance categories.
 	 */
 	public Iterator<AllianceCategory> getAllianceCategoryIterator();
+
+  /**
+   * Returns a list of all possible alliance categories.
+   */
+  public Collection<AllianceCategory> getAllianceCategories();
 
 	/**
 	 * get AllianceCategory by (possibly localized) name
@@ -402,5 +452,5 @@ public interface Rules {
 	 * @param startingString
 	 */
 	public void setOrderfileStartingString(String startingString);
-	
+
 }

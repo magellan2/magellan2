@@ -7,6 +7,7 @@
 
 package magellan.library.rules;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +22,7 @@ import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.impl.MagellanSpellImpl;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Umlaut;
+import magellan.library.utils.filters.CollectionFilters;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -30,6 +32,7 @@ import magellan.library.utils.logging.Logger;
  * generic rules object.
  */
 public class GenericRules implements Rules {
+
   private static final Logger log = Logger.getInstance(GenericRules.class);
 
   private Map<Class<? extends ObjectType>, Map<String, ? extends ObjectType>> metaMap =
@@ -71,7 +74,7 @@ public class GenericRules implements Rules {
 
     if ((objectType == null) && add) {
       try {
-        addObject(objectType = class1.getConstructor(ID.class).newInstance(id), map, mapNames);// new
+        addObjectType(objectType = class1.getConstructor(ID.class).newInstance(id), map, mapNames);// new
         // T(id),
         // mapT,
         // mapTNames);
@@ -140,7 +143,7 @@ public class GenericRules implements Rules {
     return getShipTypes().iterator();
   }
 
-  protected Collection<ShipType> getShipTypes() {
+  public Collection<ShipType> getShipTypes() {
     return getMap(ShipType.class).values();
   }
 
@@ -183,8 +186,10 @@ public class GenericRules implements Rules {
     return getBuildingTypes().iterator();
   }
 
-  protected Collection<BuildingType> getBuildingTypes() {
-    return getMap(BuildingType.class).values();
+  public Collection<BuildingType> getBuildingTypes() {
+    return new CompoundCollection<BuildingType>(getMap(CastleType.class).values(), getMap(
+        BuildingType.class).values());
+// return getMap(BuildingType.class).values();
   }
 
   /**
@@ -221,14 +226,13 @@ public class GenericRules implements Rules {
 
   /**
    * @see magellan.library.Rules#getCastleTypeIterator()
-   * @deprecated you may use {@link #getCastleTypes()}
    */
   public Iterator<CastleType> getCastleTypeIterator() {
-    return getCastleTypes().iterator();
+    return CollectionFilters.getIterator(CastleType.class, getBuildingTypes());
   }
 
-  protected Collection<CastleType> getCastleTypes() {
-    return getMap(CastleType.class).values();
+  public Collection<CastleType> getCastleTypes() {
+    return CollectionFilters.getCollection(CastleType.class, getBuildingTypes());
   }
 
   /**
@@ -242,7 +246,16 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getCastleType(magellan.library.ID, boolean)
    */
   public CastleType getCastleType(ID id, boolean add) {
-    return getObjectType(CastleType.class, id, add);
+    BuildingType t = getBuildingType(id, false);
+    if (t==null && add){
+      t = new CastleType(id);
+      addObjectType(t, getMap(BuildingType.class), getNamesMap(BuildingType.class));
+    }
+    if (t instanceof CastleType)
+      return (CastleType) t;
+    else
+      return null;
+// return getObjectType(CastleType.class, id, add);
   }
 
   /**
@@ -271,7 +284,7 @@ public class GenericRules implements Rules {
     return getRaces().iterator();
   }
 
-  protected Collection<Race> getRaces() {
+  public Collection<Race> getRaces() {
     return getMap(Race.class).values();
   }
 
@@ -315,7 +328,7 @@ public class GenericRules implements Rules {
     return getItemTypes().iterator();
   }
 
-  protected Collection<ItemType> getItemTypes() {
+  public Collection<ItemType> getItemTypes() {
     return getMap(ItemType.class).values();
   }
 
@@ -359,7 +372,7 @@ public class GenericRules implements Rules {
     return getAllianceCategories().iterator();
   }
 
-  protected Collection<AllianceCategory> getAllianceCategories() {
+  public Collection<AllianceCategory> getAllianceCategories() {
     return getMap(AllianceCategory.class).values();
   }
 
@@ -403,7 +416,7 @@ public class GenericRules implements Rules {
     return getOptionCategories().iterator();
   }
 
-  protected Collection<OptionCategory> getOptionCategories() {
+  public Collection<OptionCategory> getOptionCategories() {
     return getMap(OptionCategory.class).values();
   }
 
@@ -447,7 +460,7 @@ public class GenericRules implements Rules {
     return getSkillCategories().iterator();
   }
 
-  protected Collection<SkillCategory> getSkillCategories() {
+  public Collection<SkillCategory> getSkillCategories() {
     return getMap(SkillCategory.class).values();
   }
 
@@ -491,7 +504,7 @@ public class GenericRules implements Rules {
     return getItemCategories().iterator();
   }
 
-  protected Collection<ItemCategory> getItemCategories() {
+  public Collection<ItemCategory> getItemCategories() {
     return getMap(ItemCategory.class).values();
   }
 
@@ -535,7 +548,7 @@ public class GenericRules implements Rules {
     return getSkillTypes().iterator();
   }
 
-  protected Collection<SkillType> getSkillTypes() {
+  public Collection<SkillType> getSkillTypes() {
     return getMap(SkillType.class).values();
   }
 
@@ -578,17 +591,16 @@ public class GenericRules implements Rules {
 
     return getSkillType(StringID.create(id), add);
   }
-  
-  public MagellanSpellImpl getSpell(String id){
+
+  public MagellanSpellImpl getSpell(String id) {
     return getSpell(id, false);
   }
-  
-  
-  public MagellanSpellImpl getSpell(String id, boolean add){
+
+  public MagellanSpellImpl getSpell(String id, boolean add) {
     if ((id == null) || id.equals("")) {
       return null;
     }
-    
+
     return getSpell(StringID.create(id), add);
   }
 
@@ -596,10 +608,10 @@ public class GenericRules implements Rules {
     return getObjectType(MagellanSpellImpl.class, id, add);
   }
 
-  public Collection<MagellanSpellImpl> getSpells(){
+  public Collection<MagellanSpellImpl> getSpells() {
     return getMap(MagellanSpellImpl.class).values();
   }
-  
+
   /**
    * @see magellan.library.Rules#changeName(java.lang.String, java.lang.String)
    */
@@ -617,66 +629,68 @@ public class GenericRules implements Rules {
     ObjectType ot = null;
 
     ot = changeName(id, name, getMap(RegionType.class), getNamesMap(RegionType.class));
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(ShipType.class), getNamesMap(ShipType.class));
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(BuildingType.class), getNamesMap(BuildingType.class));
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(CastleType.class), getNamesMap(CastleType.class));
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(Race.class), getNamesMap(Race.class));
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(ItemType.class), getNamesMap(ItemType.class));
 
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     // pavkovic 2004.03.17: Don't change the name of alliance and option category
-    //    ot = changeName(id, name, getMap(AllianceCategory.class), getNamesMap(AllianceCategory.class));
-    //    if(ot != null) {
-    //      return ot;
-    //    }
-    //    ot = changeName(id, name, getMap(OptionCategory.class), getNamesMap(OptionCategory.class));
-    //    if(ot != null) {
-    //      return ot;
-    //    }
+    // ot = changeName(id, name, getMap(AllianceCategory.class),
+    // getNamesMap(AllianceCategory.class));
+    // if(ot != null) {
+    // return ot;
+    // }
+    // ot = changeName(id, name, getMap(OptionCategory.class), getNamesMap(OptionCategory.class));
+    // if(ot != null) {
+    // return ot;
+    // }
     ot = changeName(id, name, getMap(ItemCategory.class), getNamesMap(ItemCategory.class));
 
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(SkillCategory.class), getNamesMap(SkillCategory.class));
 
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
     ot = changeName(id, name, getMap(SkillType.class), getNamesMap(SkillType.class));
 
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
-    ot = changeName(id, name, getMap(MagellanSpellImpl.class), getNamesMap(MagellanSpellImpl.class));
+    ot =
+        changeName(id, name, getMap(MagellanSpellImpl.class), getNamesMap(MagellanSpellImpl.class));
 
-    if(ot != null) {
+    if (ot != null) {
       return ot;
     }
 
@@ -694,7 +708,7 @@ public class GenericRules implements Rules {
     if (ot != null) {
       mapObjectTypeNames.remove(Umlaut.normalize(ot.getName()));
       ot.setName(name);
-      addObject(ot, mapObjectType, mapObjectTypeNames);
+      addObjectType(ot, mapObjectType, mapObjectTypeNames);
     }
 
     return null;
@@ -714,7 +728,7 @@ public class GenericRules implements Rules {
   /**
    * Adds the specified object to the specified map by id and by name.
    */
-  protected static <T extends ObjectType> void addObject(T o, Map<String, T> mapObjectType,
+  protected static <T extends ObjectType> void addObjectType(T o, Map<String, T> mapObjectType,
       Map<String, T> mapObjectTypeNames) {
 // private static ObjectType addObject(ObjectType o, Map<String,ObjectType> mapObjectType,
     // Map<String,ObjectType> mapObjectTypeNames) {
@@ -779,7 +793,7 @@ public class GenericRules implements Rules {
   public GameSpecificStuff getGameSpecificStuff() {
     if (gameSpecificStuff == null) {
       gameSpecificStuff =
-        new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
+          new GameSpecificStuffProvider().getGameSpecificStuff(gameSpecificStuffClassName);
     }
 
     return gameSpecificStuff;
@@ -797,6 +811,66 @@ public class GenericRules implements Rules {
    */
   public void setOrderfileStartingString(String startingString) {
     orderFileStartingString = startingString;
+  }
+
+  /**
+   * An iterator that iterates over the union of two collections. Unmodifiable.
+   */
+  public class CompoundIterator<T> implements Iterator<T> {
+
+    private Iterator<? extends T> iterator1;
+    private Iterator<? extends T> iterator2;
+
+    public CompoundIterator(Collection<? extends T> collection1, Collection<? extends T> collection2) {
+      this.iterator1 = collection1.iterator();
+      this.iterator2 = collection2.iterator();
+    }
+
+    public boolean hasNext() {
+      return iterator1.hasNext() || iterator2.hasNext();
+    }
+
+    public T next() {
+      if (iterator1.hasNext())
+        return iterator1.next();
+      return iterator2.next();
+    }
+
+    public void remove() {
+      throw new UnsupportedOperationException();
+    }
+
+  }
+
+  /**
+   * A collection which acts as the union of two collections. Unmodifiable.
+   */
+  public class CompoundCollection<T> extends AbstractCollection<T> {
+
+    private Collection<? extends T> collection1;
+    private Collection<? extends T> collection2;
+
+// public CompoundCollection(){
+// }
+
+    public CompoundCollection(Collection<? extends T> collection1,
+        Collection<? extends T> collection2) {
+      if (collection1 == null || collection2 == null)
+        throw new NullPointerException();
+      this.collection1 = collection1;
+      this.collection2 = collection2;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+      return new CompoundIterator<T>(collection1, collection2);
+    }
+
+    @Override
+    public int size() {
+      return collection1.size() + collection2.size();
+    }
+
   }
 
 }

@@ -16,22 +16,22 @@ package magellan.client.swing.map;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
+import javax.swing.SpringLayout;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import magellan.client.Client;
 import magellan.client.MagellanContext;
+import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
@@ -102,7 +102,7 @@ public class BuildingCellRenderer extends ImageCellRenderer{
    */
   @Override
   public PreferencesAdapter getPreferencesAdapter() {
-    return new BuildingCellRendererPreferences(this);
+    return new BuildingCellRendererPreferences(this, settings);
   }
   
   /**
@@ -132,56 +132,45 @@ public class BuildingCellRenderer extends ImageCellRenderer{
   protected class BuildingCellRendererPreferences extends JPanel implements PreferencesAdapter {
     protected BuildingCellRenderer source = null;
     protected GameData data = null;
-    protected List<JCheckBox> buildings = new ArrayList<JCheckBox>();
+    protected List<JCheckBox> buildings;
+    private Properties settings;
     
     /**
      * Creates a new BuildingCellRendererPreferences object.
      */
-    protected BuildingCellRendererPreferences(MapCellRenderer source) {
+    protected BuildingCellRendererPreferences(MapCellRenderer source, Properties settings) {
       super(new BorderLayout());
       this.source = (BuildingCellRenderer)source;
+      this.settings = settings;
     }
       
     protected void initGUI(){ 
-      JPanel panel = new JPanel(new GridBagLayout());
+      JPanel panel = new JPanel(new SpringLayout());
       panel.setBorder(new TitledBorder(new EtchedBorder(), Resources.get("building.renderer.show.caption")));
       
-      GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.1, 0.1, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0);
-      c.gridwidth = 1;
-      c.gridheight = 1;
-      c.weighty = 0.0;
       
+      buildings = new ArrayList<JCheckBox>();
+      
+      // arrange one box for each building type in a grid
       if (data != null) {
-        Iterator<BuildingType> iterator = data.rules.getBuildingTypeIterator();
-        int xpos = 0;
-        int ypos = 0;
-        
-        while (iterator.hasNext()) {
-          BuildingType type = iterator.next();
+        int i = 0;
+        for (BuildingType type : data.rules.getBuildingTypes()){
           
           boolean selected = PropertiesHelper.getBoolean(Client.INSTANCE.getProperties(),PropertiesHelper.BUILDINGRENDERER_RENDER+type.getID(),true);
           
           JCheckBox box = new JCheckBox(Resources.get("building.renderer.show",type.getName()),selected);
           box.setActionCommand(type.getID().toString());
           buildings.add(box);
-          
-          c.anchor = GridBagConstraints.WEST;
-          c.gridx = xpos;
-          c.gridy = ypos;
-          c.insets.left = 10;
-          c.fill = GridBagConstraints.NONE;
-          c.weightx = 0.0;
-          panel.add(box, c);
-          
-          if (xpos == 2) {
-            xpos = 0;
-            ypos++;
-          } else {
-            xpos++;
+          panel.add(box);
+
+          // add slack components
+          if (++i%5==0){
+            panel.add(new JPanel());
           }
         }
       }
-
+      SpringUtilities.makeCompactGrid(panel, 0, 6, 3, 3, 3, 3);
+      
       this.add(panel,BorderLayout.CENTER);
     }
 
@@ -192,7 +181,7 @@ public class BuildingCellRenderer extends ImageCellRenderer{
       for (JCheckBox box : buildings) {
         boolean selected = box.isSelected();
         String id = box.getActionCommand();
-        Client.INSTANCE.getProperties().setProperty(PropertiesHelper.BUILDINGRENDERER_RENDER+id,Boolean.toString(selected));
+        settings.setProperty(PropertiesHelper.BUILDINGRENDERER_RENDER+id,Boolean.toString(selected));
       }
     }
 

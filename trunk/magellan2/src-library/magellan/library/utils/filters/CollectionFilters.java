@@ -13,16 +13,17 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.library.utils.filters;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,10 +34,10 @@ import java.util.NoSuchElementException;
 public class CollectionFilters {
 
   /**
-   * Casts any collection to a generic collection. USE WITH EXTREME CARE! Use it
-   * only if you are absolutely sure that the oldCollection contains only
-   * elements of Type T. The result is backed by oldCollection. This means that
-   * any changes to oldCollection affect the collection returned and vice versa.
+   * Casts any collection to a generic collection. USE WITH EXTREME CARE! Use it only if you are
+   * absolutely sure that the oldCollection contains only elements of Type T. The result is backed
+   * by oldCollection. This means that any changes to oldCollection affect the collection returned
+   * and vice versa.
    * 
    * @param <T>
    * @param oldCollection
@@ -48,10 +49,9 @@ public class CollectionFilters {
   }
 
   /**
-   * Casts any collection to a generic collection. If not every element of
-   * oldCollection can be cast to type, an Exception is thrown. The result is
-   * backed by oldCollection. This means that any changes to oldCollection
-   * affect the collection returned and vice versa.
+   * Casts any collection to a generic collection. If not every element of oldCollection can be cast
+   * to type, an Exception is thrown. The result is backed by oldCollection. This means that any
+   * changes to oldCollection affect the collection returned and vice versa.
    * 
    * @param <T>
    * @param oldCollection
@@ -69,8 +69,8 @@ public class CollectionFilters {
   }
 
   /**
-   * Creates a new list, adds to it all elements of oldCollection which are of
-   * the specified type, and returns this list.
+   * Creates a new list, adds to it all elements of oldCollection which are of the specified type,
+   * and returns this list.
    * 
    * @param <T>
    * @param oldCollection
@@ -87,8 +87,8 @@ public class CollectionFilters {
   }
 
   /**
-   * Creates a new list, adds to it all elements of oldCollection which are of
-   * the specified type, and returns this list.
+   * Creates a new list, adds to it all elements of oldCollection which are of the specified type,
+   * and returns this list.
    * 
    * @param <T>
    * @param oldCollection
@@ -105,8 +105,7 @@ public class CollectionFilters {
   }
 
   /**
-   * Adds to newList all elements of oldCollection which are of the specified
-   * type.
+   * Adds to newList all elements of oldCollection which are of the specified type.
    * 
    * @param <T>
    * @param oldCollection
@@ -128,12 +127,11 @@ public class CollectionFilters {
    * @param map
    * @return
    */
-  public static <T> Iterator<T> getValueIterator(Class<T> class1,
-      Map<?, ?> map) {
+  public static <T> Iterator<T> getValueIterator(Class<T> class1, Map<?, ?> map) {
     if (map != null) {
       return getIterator(class1, map.values());
     } else {
-      return new ClassIterator<T>(class1,Collections.emptyList().iterator());
+      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
     }
   }
 
@@ -145,12 +143,11 @@ public class CollectionFilters {
    * @param map
    * @return
    */
-  public static <T> Iterator<T> getKeyIterator(Class<T> class1,
-      Map<?, ?> map) {
+  public static <T> Iterator<T> getKeyIterator(Class<T> class1, Map<?, ?> map) {
     if (map != null) {
-    return getIterator(class1, map.keySet());
+      return getIterator(class1, map.keySet());
     } else {
-      return new ClassIterator<T>(class1,Collections.emptyList().iterator());
+      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
     }
   }
 
@@ -162,17 +159,17 @@ public class CollectionFilters {
    * @param coll
    * @return
    */
-  public static <T> Iterator<T> getIterator(Class<T> class1, Collection<?> coll){
+  public static <T> Iterator<T> getIterator(Class<T> class1, Collection<?> coll) {
     if (coll != null) {
-      return new ClassIterator<T>(class1,Collections.unmodifiableCollection(coll).iterator());
+      return new ClassIterator<T>(class1, Collections.unmodifiableCollection(coll).iterator());
     } else {
-      return new ClassIterator<T>(class1,Collections.emptyList().iterator());
+      return new ClassIterator<T>(class1, Collections.emptyList().iterator());
     }
   }
 
   /**
-   * An iterator implementation to iterate over Map of objects and return only
-   * object instances of the given Class.
+   * An iterator implementation to iterate over Map of objects and return only object instances of
+   * the given Class.
    */
   private static class ClassIterator<T> implements Iterator<T> {
     private Class<T> givenClass;
@@ -182,8 +179,7 @@ public class CollectionFilters {
     /**
      * Creates a new ClassIterator object.
      * 
-     * @throws NullPointerException
-     *           DOCUMENT-ME
+     * @throws NullPointerException DOCUMENT-ME
      */
     public ClassIterator(Class<T> c, Iterator<?> i) {
       if (c == null) {
@@ -210,8 +206,7 @@ public class CollectionFilters {
     /**
      * DOCUMENT-ME
      * 
-     * @throws NoSuchElementException
-     *           DOCUMENT-ME
+     * @throws NoSuchElementException DOCUMENT-ME
      */
     public T next() {
       possiblyMoveToNext();
@@ -240,7 +235,7 @@ public class CollectionFilters {
 
           if (!givenClass.isInstance(newObject)) {
             newObject = null;
-          } else 
+          } else
             currentObject = givenClass.cast(newObject);
         }
 
@@ -254,6 +249,30 @@ public class CollectionFilters {
     public void remove() {
       givenIterator.remove();
     }
+  }
+
+  /**
+   * Returns an (unmodifiable) collection that contains all elements that are instances of
+   * <code>class1</code> in <code>values</code>.
+   */
+  public static <T> Collection<T> getCollection(final Class<T> class1, final Collection<?> values) {
+    return new AbstractCollection<T>() {
+
+      @Override
+      public Iterator<T> iterator() {
+        return new ClassIterator<T>(class1, values.iterator());
+      }
+
+      @Override
+      public int size() {
+        int size = 0;
+        for (Object o : values) {
+          if (class1.isInstance(o))
+            size++;
+        }
+        return size;
+      }
+    };
   }
 
 }

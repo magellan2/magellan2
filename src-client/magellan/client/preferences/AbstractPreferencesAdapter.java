@@ -34,8 +34,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
-import magellan.client.swing.layout.GridBagHelper;
-
 /**
  * This class is a helper class for creating PreferencesAdapters or
  * ExtendedPreferencesAdapters. It provides a method for adding groups of
@@ -81,10 +79,7 @@ public abstract class AbstractPreferencesAdapter extends JPanel {
     this.setLayout(new BorderLayout());
     content = new JPanel(new GridBagLayout());
 
-    gridBagConstraints = new GridBagConstraints();
-    gridBagConstraints.insets.top = 10;
-    gridBagConstraints.insets.bottom = 10;
-    GridBagHelper.setConstraints(gridBagConstraints, 0, 0, 1, 1, 1.0, 0.0,
+    gridBagConstraints = new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
         GridBagConstraints.FIRST_LINE_START, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0),
         0, 0);
 

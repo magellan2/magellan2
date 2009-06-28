@@ -111,12 +111,10 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
 		subAdapters.add(new ClientLookAndFeelPreferences(source,settings));
 
 		// add the history only as sub adapter
-		subAdapters.add(new ClientFileHistoryPreferences(source,settings));
+    // add the file name generator only as sub adapter
+    FileNameGenerator.init(settings);
+		subAdapters.add(new ClientFilePreferences(source,settings));
 
-		// add the file name generator only as sub adapter
-		FileNameGenerator.init(settings);
-		subAdapters.add(new ClientFileNameGeneratorPreferences(settings));
-		
 		// add the name generator only as sub adapter
 		subAdapters.add(new ClientNameGeneratorPreferences(source,settings));
 		

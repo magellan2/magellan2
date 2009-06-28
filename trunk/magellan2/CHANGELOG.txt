@@ -1,3 +1,6 @@
+2009-06-28 / Build 317 - stm (stm_@users.sourceforge.net)
+    * small change to file preferences, fixed GenericRules.getBuildingType...
+
 2009-06-27 / Build 316 - stm (stm_@users.sourceforge.net)
     * small change to semantics of RoutePlanner/RoutingDialog options
     * ship range made game specific

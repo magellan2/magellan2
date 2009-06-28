@@ -49,12 +49,11 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
 
+import magellan.client.Client;
 import magellan.client.event.EventDispatcher;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.utils.ImageFactory;
 import magellan.library.GameData;
-import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
@@ -71,11 +70,10 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
  * @author ...
  * @version 1.0, 20.11.2007
  */
- public class RegionOverviewSkillPreferences extends JPanel implements PreferencesAdapter, GameDataListener {
+ public class RegionOverviewSkillPreferences extends JPanel implements PreferencesAdapter {
 
    
-   /** DOCUMENT-ME */
-   public JList skillList = null;
+   private JList skillList = null;
    private JButton upButton = null;
    private JButton downButton = null;
    private JButton refreshListButton = null;
@@ -83,18 +81,14 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
    private SkillTypeComparator skillTypeComparator = null;
    
    private Properties settings;
-   private GameData data;
 
   /**
    * Creates a new SkillPreferences object.
    */
-  public RegionOverviewSkillPreferences(EventDispatcher d, ImageFactory imageFactory, Properties settings, GameData data) {
+  public RegionOverviewSkillPreferences(EventDispatcher dispatcher, ImageFactory imageFactory, Properties settings, GameData data) {
     this.setLayout(new BorderLayout());
     this.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(), Resources.get("emapoverviewpanel.prefs.skillorder")));
     this.settings = settings;
-    this.data = data;
-    
-    d.addGameDataListener(this);
     
     skillList = new JList();
     skillList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -270,16 +264,13 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
     refreshListButton.setEnabled(enable);
   }
 
-  // Game Data has changed
-  public void gameDataChanged(GameDataEvent e){
-    data = e.getGameData();
-    this.initPreferences();
-  }
-  
   /**
    * fills the values
+   *
+   * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
    */
   public void initPreferences() {
+    GameData data = Client.INSTANCE.getData();
     if (data != null) {
       List<SkillType> v = new LinkedList<SkillType>();
 
@@ -302,25 +293,24 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
   }
 
   /**
-   * DOCUMENT-ME
    * 
-   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * DOCUMENT-ME
    * 
-   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("emapoverviewpanel.prefs.skillorder");
   }
 
   /**
-   * DOCUMENT-ME
+   * 
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
     ListModel listData = skillList.getModel();

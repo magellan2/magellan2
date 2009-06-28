@@ -188,7 +188,8 @@ import magellan.library.utils.logging.Logger;
 
 /**
  * This class is the root of all evil. It represents also the main entry point
- * into the application and also the basic frame the application creates.
+ * into the application and also the basic frame the application creates. It is a singleton which is
+ * instantiated from {@link #main(String[])} and stored in {@link #INSTANCE}
  * 
  * @author $Author: $
  * @version $Revision: 388 $
@@ -272,7 +273,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @param fileDir
    * @param settingsDir
    */
-  public Client(GameData gd, File fileDir, File settingsDir) {
+  protected Client(GameData gd, File fileDir, File settingsDir) {
     Client.INSTANCE = this;
     Client.filesDirectory = fileDir;
     Client.settingsDirectory = settingsDir;

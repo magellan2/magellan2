@@ -56,7 +56,7 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   public E3ASpecificStuff() {
     try {
-      this.rules = new RulesReader().readRules("E3A");
+      this.rules = new RulesReader().readRules("E3");
     } catch (IOException e) {
       this.rules = null;
       throw new RuntimeException("Eressea rules not readable", e);

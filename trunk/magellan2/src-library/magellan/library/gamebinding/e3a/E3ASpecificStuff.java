@@ -40,6 +40,8 @@ import magellan.library.io.RulesReader;
  * @version $Revision: 242 $
  */
 public class E3ASpecificStuff implements GameSpecificStuff {
+  private String name = "E3";
+  
   private Rules rules;
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
@@ -56,7 +58,7 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   public E3ASpecificStuff() {
     try {
-      this.rules = new RulesReader().readRules("E3");
+      this.rules = new RulesReader().readRules(getName());
     } catch (IOException e) {
       this.rules = null;
       throw new RuntimeException("Eressea rules not readable", e);
@@ -165,5 +167,9 @@ public class E3ASpecificStuff implements GameSpecificStuff {
     if (gameSpecificRules==null)
       gameSpecificRules = new E3AGameSpecificRules(rules);
     return gameSpecificRules;
+  }
+
+  public String getName() {
+    return name;
   }
 }

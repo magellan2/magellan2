@@ -33,6 +33,8 @@ import magellan.library.io.RulesReader;
  */
 public class EresseaSpecificStuff implements GameSpecificStuff {
 
+  private String name = "Eressea";
+  
   private Rules rules;
   private GameSpecificRules gamespecificRules;
   private MapMergeEvaluator mapMergeEvaluator;
@@ -49,10 +51,10 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   public EresseaSpecificStuff() {
     try {
-      this.rules = new RulesReader().readRules("Eressea");
+      this.rules = new RulesReader().readRules(getName());
     } catch (IOException e) {
       this.rules = null;
-      throw new RuntimeException("Eressea rules not readable", e);
+      throw new RuntimeException(getName()+" rules not readable", e);
     }
   }
   
@@ -156,5 +158,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
     if (gamespecificRules == null)
       gamespecificRules = new EresseaGameSpecificRules(rules);
     return gamespecificRules;
+  }
+
+  public String getName() {
+    return name;
   }
 }

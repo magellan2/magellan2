@@ -30,6 +30,7 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
+  private String name = "Allanon";
 
 
   public AllanonSpecificStuff() {
@@ -141,5 +142,8 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
     return gameSpecificRules;
   }
   
+  public String getName() {
+    return name ;
+  }
   
 }

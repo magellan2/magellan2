@@ -3739,8 +3739,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modWeight)).append(
               ")");
         }
+        
+        // TODO(stm) append person load info
 
-        text.append(" " + Resources.get("emapdetailspanel.node.weightunits"));
+        text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
         UnitNodeWrapper w = nodeWrapperFactory.createUnitNodeWrapper(u, text.toString());
         m = new DefaultMutableTreeNode(w);
@@ -3885,15 +3887,15 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     loadText.append(Resources.get("emapdetailspanel.node.weightunits"));
 
     boolean warning = false;
-    if (s.getShipType().getMaxPersons() >= 0) {
+    if (s.getShipType().getMaxPersons() > 0) {
       loadText.append(" -- ");
       // personen
       int inmates = 0, modInmates = 0;
       for (Unit u : s.units()) {
-        inmates += u.getPersons();
+        inmates += u.getPersons()*u.getRace().getWeight();
       }
       for (Unit u : s.modifiedUnits()) {
-        modInmates += u.getModifiedPersons();
+        modInmates += u.getModifiedPersons()*u.getRace().getWeight();
       }
 
       loadText.append(Resources.get("emapdetailspanel.node.persons")).append(": ");

@@ -124,4 +124,6 @@ public interface GameSpecificStuff {
    * Returns a game specific rule manager.
    */
   public GameSpecificRules getGameSpecificRules();
+
+  public String getName();
 }

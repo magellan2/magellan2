@@ -1277,7 +1277,7 @@ public class EresseaOrderCompleter implements Completer {
       c2 *= Math.max(1, someUnit.getModifiedPersons());
     }
 
-    if (c2 != cost) {
+    if (c2 != cost && data.getGameSpecificStuff().getName().equalsIgnoreCase("eressea")) {
       log.error("assertion error getSkillCost()");
     }
     return c2;

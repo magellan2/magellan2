@@ -569,7 +569,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getSkillType(magellan.library.ID, boolean)
    */
   public SkillType getSkillType(ID id, boolean add) {
-    return getObjectType(SkillType.class, id, add);
+    return getObjectType(SkillType.class, id, add); 
   }
 
   /**

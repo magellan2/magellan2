@@ -107,13 +107,14 @@ public class E3AOrderParser extends EresseaOrderParser {
       OrderToken t = getNextToken();
       
       if (isString(t)){
-        retVal = new StringChecker(false, false, false) {
-          protected boolean check(OrderToken[] tokens) {
-            if (tokens[0]!=null || tokens[2]!=null)
+        retVal = new StringChecker(false, false, false, false) {
+          @Override
+          protected boolean checkInner() {
+            if (openingToken!=null || closingToken!=null)
               return false;
-            if (tokens[1]==null || getData()==null || getData().rules==null)
+            if (innerToken==null || getData()==null || getData().rules==null)
               return true;
-            return getData().rules.getRace(tokens[1].getText())!=null;
+            return getData().rules.getRace(content)!=null;
           }
         }.read(t);
       } else {

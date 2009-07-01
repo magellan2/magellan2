@@ -94,6 +94,19 @@ public class Completion {
 		this(name, value, postfix, prio, 0);
 	}
 
+  /**
+   * Creates a new Completion object.
+   * 
+   * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
+   * @param postfix This is what should be inserted after the value but should not influence, 
+   *                for example, sorting
+   * @param prio The sorting priority, higher priority comes first
+   * @param cursorOffset Indicates that the cursor is set back this amount of characters
+   */
+  public Completion(String text, String postfix, int prio, int cursorOffset) {
+    this(text, text, postfix, prio, cursorOffset);
+  }
+  
 	/**
 	 * Creates a new Completion object.
 	 * 
@@ -113,15 +126,14 @@ public class Completion {
 	}
 
 	/**
-	 * Creates a new Completion object.
-	 *
-	 * 
+	 * Creates a new Completion object as shallow copy of another one.
 	 */
 	public Completion(Completion c) {
 		this.name = c.getName();
 		this.value = c.getValue();
 		this.postfix = c.getPostfix();
 		this.priority = c.getPriority();
+    this.cursorOffset = c.getCursorOffset();
 	}
 
 	/**
@@ -148,11 +160,6 @@ public class Completion {
 		return priority;
 	}
 
-	/*
-	public void setPriority(int prio) {
-	    this.priority = prio;
-	}
-	*/
 	/**
 	 * Returns the text that should be inserted after the value.
 	 * 
@@ -169,18 +176,6 @@ public class Completion {
 		return this.cursorOffset;
 	}
 
-	/*
-	public void setCursorOffset(int offset) {
-	    this.cursorOffset = offset;
-	}
-
-	*/
-	/*
-	public void set(String name, String value) {
-	    this.name = name;
-	    this.value = value;
-	}
-	*/
 	
 	@Override
 	public boolean equals(Object obj) {

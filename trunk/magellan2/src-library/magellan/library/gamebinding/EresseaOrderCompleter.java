@@ -8,6 +8,7 @@
 package magellan.library.gamebinding;
 
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,6 +57,7 @@ import magellan.library.rules.ShipType;
 import magellan.library.rules.SkillType;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
+import magellan.library.utils.OrderTokenizer;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Umlaut;
@@ -194,11 +196,9 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_WORK)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ATTACK), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BANNER),
-        Resources.getOrderTranslation(EresseaConstants.O_BANNER), " \"\"",
-        Completion.DEFAULT_PRIORITY, 1));
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
     if (unit.getFaction().getItems().size() > 0) {
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CLAIM),
-          Resources.getOrderTranslation(EresseaConstants.O_CLAIM), " "));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CLAIM), " "));
     }
     if (!unit.isHero()) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PROMOTION)));
@@ -215,8 +215,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NAME), " "));
 
     if (unit.getItems().size() > 0) {
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_USE),
-          Resources.getOrderTranslation(EresseaConstants.O_USE), " "));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_USE), " "));
     }
 
     completions
@@ -477,8 +476,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   void cmpltBenenne() {
-    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT),
-        Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(Resources
         .getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING), " "));
@@ -489,39 +487,33 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNUNIT),
         " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION),
-        Resources.getOrderTranslation(EresseaConstants.O_FACTION), " \"\"",
-        Completion.DEFAULT_PRIORITY, 1));
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
     if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
-          Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
-          Resources.getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
     }
 
     if ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null)
         && unit.getShip().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP),
-          Resources.getOrderTranslation(EresseaConstants.O_SHIP), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
     }
   }
 
   void cmpltBenenneFremdes(OrderToken token) {
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNUNIT)))
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT),
-          Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING)))
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
-          Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
+      completions
+          .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNFACTION)))
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION),
-          Resources.getOrderTranslation(EresseaConstants.O_FACTION), " "));
+      completions
+          .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION), " "));
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNSHIP)))
-      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP),
-          Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
   void cmpltBenenneFremdeEinheit() {
@@ -629,27 +621,22 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   void cmpltBeschreibe() {
-    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT),
-        Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
+    completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PRIVATE),
-        Resources.getOrderTranslation(EresseaConstants.O_PRIVATE), " \"\"",
-        Completion.DEFAULT_PRIORITY, 1));
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
     if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
-          Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
-          Resources.getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
     }
 
     if ((unit.getShip() != null) && (unit.getShip().getOwnerUnit() != null)
         && unit.getShip().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP),
-          Resources.getOrderTranslation(EresseaConstants.O_SHIP), " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+          " \"\"", Completion.DEFAULT_PRIORITY, 1));
     }
   }
 
@@ -704,8 +691,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REGION),
-        Resources.getOrderTranslation(EresseaConstants.O_REGION), " \"\"",
-        Completion.DEFAULT_PRIORITY, 1));
+        " \"\"", Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
@@ -760,12 +746,98 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  public void cmplFinalQuote(char quote) {
-    List<Completion> oldList = new LinkedList<Completion>(completions);
+  public void fixQuotes(OrderToken openingToken, OrderToken contentToken, OrderToken closingToken,
+      boolean preferQuotes, boolean forceQuotes, boolean doClose, char preferredQuote) {
+    List<Completion> oldList = new ArrayList<Completion>(completions);
     completions.clear();
     for (Completion c : oldList) {
-      completions.add(new Completion(c.getName() + quote, c.getValue().trim() + quote, c
-          .getPostfix(), c.getPriority(), c.getCursorOffset()));
+      OrderTokenizer nameTokenizer = new OrderTokenizer(new StringReader(c.getName()));
+      String newName =
+          fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
+              forceQuotes, doClose, preferredQuote);
+      OrderTokenizer valueTokenizer = new OrderTokenizer(new StringReader(c.getValue()));
+      String newValue =
+          fixQuotes(valueTokenizer, openingToken, contentToken, closingToken, preferQuotes,
+              forceQuotes, doClose, preferredQuote);
+      completions.add(new Completion(newName, newValue, c.getPostfix(), c.getPriority(), c
+          .getCursorOffset()));
+    }
+  }
+
+  private String fixQuotes(OrderTokenizer innerTokenizer, OrderToken openingToken,
+      OrderToken contentToken, OrderToken closingToken, boolean preferQuotes, boolean forceQuotes,
+      boolean doClose, char preferredQuote) {
+
+    StringBuffer result = new StringBuffer();
+
+    // see if first inner token is a quote, if not, add it to inner tokens
+    List<OrderToken> innerTokens = new LinkedList<OrderToken>();
+    OrderToken innerQuote = innerTokenizer.getNextToken();
+    if (innerQuote.ttype != OrderToken.TT_OPENING_QUOTE) {
+      innerTokens.add(innerQuote);
+      innerQuote = null;
+    }
+
+    // assign which quote is used
+    String insertedQuote;
+    if (openingToken != null)
+      insertedQuote = openingToken.getText();
+    else
+      insertedQuote = "" + preferredQuote;
+
+    // add rest of inner tokens
+    for (OrderToken currentToken = innerTokenizer.getNextToken(); currentToken.ttype != OrderToken.TT_EOC
+        && (currentToken.ttype != OrderToken.TT_EOC || (currentToken.ttype == OrderToken.TT_EOC && !currentToken
+            .getText().equals(insertedQuote))); currentToken = innerTokenizer.getNextToken()) {
+      if (currentToken.ttype != OrderToken.TT_CLOSING_QUOTE
+          || (currentToken.ttype == OrderToken.TT_CLOSING_QUOTE && !currentToken.getText().equals(
+              insertedQuote)))
+        innerTokens.add(currentToken);
+    }
+
+    // append opening quote if needed
+    int lastLength = 0;
+    if (openingToken != null || innerQuote != null
+        || ((innerTokens.size() > 1 && preferQuotes) || forceQuotes)) {
+      result.append(insertedQuote);
+      lastLength = insertedQuote.length();
+    }
+
+    // append content
+    for (OrderToken t : innerTokens) {
+      if (t.ttype != OrderToken.TT_EOC) {
+        for (int i =
+            result.length() - lastLength + (innerQuote == null ? 0 : innerQuote.getText().length()); i < t
+            .getStart(); ++i) {
+          if (preferQuotes) {
+            result.append(" ");
+          } else {
+            result.append('~');
+          }
+        }
+        result.append(t.getText());
+      }
+    }
+
+    // append closing quote if needed
+    if (doClose
+        && (openingToken != null || innerQuote != null || (innerTokens.size() > 2 && preferQuotes) || forceQuotes)) {
+      result.append(openingToken != null ? openingToken.getText() : preferredQuote);
+    }
+
+    return result.toString();
+  }
+
+  public void cmplFinalQuote(char quote) {
+    List<Completion> oldList = new ArrayList<Completion>(completions);
+    completions.clear();
+    for (Completion c : oldList) {
+      if (c.getValue().length() > 1 && c.getValue().charAt(c.getValue().length() - 1) == quote
+          && c.getValue().charAt(c.getValue().length() - 2) != '\\')
+        completions.add(c);
+      else
+        completions.add(new Completion(c.getName() + quote, c.getValue().trim() + quote, c
+            .getPostfix(), c.getPriority(), c.getCursorOffset()));
     }
   }
 
@@ -907,7 +979,7 @@ public class EresseaOrderCompleter implements Completer {
 
           boolean suggest = true;
           int loopCount = 0;
-          String order = "";
+          StringBuffer order = new StringBuffer();
 
           for (Iterator iterator = iType.getResources(); iterator.hasNext() && suggest; loopCount++) {
             Item resource = (Item) iterator.next();
@@ -919,17 +991,17 @@ public class EresseaOrderCompleter implements Completer {
             } else {
 
               if ("".equals(order)) {
-                order += resource.getOrderName();
+                order.append(resource.getOrderName());
               } else {
-                order +=
-                    ("\n" + Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " "
-                        + uid.toString() + " " + i + " " + resource.getOrderName());
+                order.append("\n").append(Resources.getOrderTranslation(EresseaConstants.O_GIVE))
+                    .append(" ").append(uid.toString()).append(" ").append(i).append(" ").append(
+                        resource.getOrderName());
               }
             }
           }
 
           if (suggest) {
-            completions.add(new Completion("R-" + iType.getName(), order, "",
+            completions.add(new Completion("R-" + iType.getOrderName(), order.toString(), "",
                 Completion.DEFAULT_PRIORITY + 1));
           }
         }
@@ -1072,7 +1144,7 @@ public class EresseaOrderCompleter implements Completer {
             ItemType t = (ItemType) iter.next();
 
             if (t.getCategory().equals(luxCat)) {
-              completions.add(new Completion(t.getName()));
+              completions.add(new Completion(t.getOrderName()));
             }
           }
         }
@@ -1120,12 +1192,12 @@ public class EresseaOrderCompleter implements Completer {
         SkillType t = (SkillType) iter.next();
         int cost = getSkillCost(t, unit);
         // add quotes if needed
-        String name = t.getName().contains(" ") ? ("\"" + t.getName() + "\"") : t.getName();
+        String name = t.getName().replace(' ', '~');
 
         if (cost > 0) {
-          completions.add(new Completion(t.getName(), name, " " + cost));
+          completions.add(new Completion(name, " " + cost));
         } else {
-          completions.add(new Completion(t.getName(), name, ""));
+          completions.add(new Completion(name));
         }
       }
     }
@@ -1870,7 +1942,7 @@ public class EresseaOrderCompleter implements Completer {
               .getType().toLowerCase().indexOf("combat") > -1)))) {
         String spellName = this.data.getTranslation(spell);
 
-        completions.add(new Completion(opening + spellName + closing, " "));
+        completions.add(new Completion(opening + spellName + closing));
       }
     }
   }
@@ -2142,10 +2214,8 @@ public class EresseaOrderCompleter implements Completer {
 
   protected void addUnitItems(int amount, String postfix) {
     for (Item i : unit.getItems()) {
-      // String name = i.getName().replaceAll(" ", "~");
-      // TODO use replaced name?
       completions
-          .add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount() >= amount)
+          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix, (i.getAmount() >= amount)
               ? Completion.DEFAULT_PRIORITY : Completion.DEFAULT_PRIORITY + 1));
     }
   }
@@ -2156,9 +2226,8 @@ public class EresseaOrderCompleter implements Completer {
 
   protected void addFactionItems(int amount, String postfix) {
     for (Item i : unit.getFaction().getItems()) {
-      // TODO use replaced name?
       completions
-          .add(new Completion(i.getName(), i.getOrderName(), postfix, (i.getAmount() >= amount)
+          .add(new Completion(i.getOrderName(), i.getOrderName(), postfix, (i.getAmount() >= amount)
               ? Completion.DEFAULT_PRIORITY : Completion.DEFAULT_PRIORITY + 1));
     }
   }
@@ -2273,7 +2342,7 @@ public class EresseaOrderCompleter implements Completer {
         if ((i.getItemType().getCategory() != null) && i.getItemType().getCategory().equals(cat)) {
           LuxuryPrice lp = unit.getRegion().getPrices().get(i.getItemType().getID());
           if (lp != null && lp.getPrice() > 0) {
-            completions.add(new Completion(i.getName(), i.getOrderName(), postfix));
+            completions.add(new Completion(i.getOrderName(), i.getOrderName(), postfix));
           }
         }
       }
@@ -2291,8 +2360,8 @@ public class EresseaOrderCompleter implements Completer {
     String id = u.getID().toString();
 
     if (u instanceof TempUnit) {
-      completions.add(new Completion("TEMP " + id, "TEMP " + id, postfix,
-          Completion.DEFAULT_PRIORITY - 1, cursorOffset));
+      completions.add(new Completion("TEMP " + id, postfix, Completion.DEFAULT_PRIORITY - 1,
+          cursorOffset));
     } else {
       String name = u.getName();
 
@@ -2368,6 +2437,12 @@ public class EresseaOrderCompleter implements Completer {
       OrderToken lastWord = tokens.get(tokens.size() - 2);
       if (lastWord.followedBySpace() || lastWord.ttype == OrderToken.TT_PERSIST)
         return "";
+      else if (lastWord.ttype == OrderToken.TT_CLOSING_QUOTE)
+        return tokens.get(tokens.size() - 4).getText() + tokens.get(tokens.size() - 3).getText()
+            + lastWord.getText();
+      else if (tokens.size() > 2
+          && tokens.get(tokens.size() - 3).ttype == OrderToken.TT_OPENING_QUOTE)
+        return tokens.get(tokens.size() - 3).getText() + lastWord.getText();
       else
         return lastWord.getText();
     }
@@ -2444,7 +2519,7 @@ public class EresseaOrderCompleter implements Completer {
    * Adds an item by type
    */
   protected void addItem(ItemType iType, String postfix) {
-    completions.add(new Completion(iType.getName(), iType.getOrderName(), postfix));
+    completions.add(new Completion(iType.getOrderName(), iType.getOrderName(), postfix));
   }
 
   /**

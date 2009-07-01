@@ -181,6 +181,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 		  // subtract all units initially on the ship with their initial weight
 		  for(Unit u : units()) {
 		    modLoad -= u.getWeight();
+		    // if persons and cargo are counted separately (E3A), remove person's weight here
+		    if (getShipType().getMaxPersons()>0)
+		      modLoad += u.getPersons()*u.getRace().getWeight();
 		  }
 		}
 
@@ -192,6 +195,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     // add now the current calculated weight of the units
     for(Unit u : modifiedUnits()) {
 			modLoad += u.getModifiedWeight();
+      // if persons and cargo are counted separately (E3A), remove person's weight here
+      if (getShipType().getMaxPersons()>0)
+        modLoad -= u.getPersons()*u.getRace().getWeight();
 		}
 		return modLoad;
 	}

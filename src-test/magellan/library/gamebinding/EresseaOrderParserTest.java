@@ -402,7 +402,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testBenutzeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_USE)+" Siebenmeilentee");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_USE) + " Siebenmeilentee");
     checkOrder("BENUTZEN Wasser~des~Lebens");
     checkOrder("BENUTZEN \"Wasser des Lebens\"");
     checkOrder("BENUTZEN 22 Wasser~des~Lebens");
@@ -435,7 +435,8 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testBetreteReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ENTER)+" "+Resources.getOrderTranslation(EresseaConstants.O_SHIP)+" foo");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ENTER) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " foo");
     checkOrder("BetreteN BURG 1a2");
     checkOrder("BetreteN BURG 1a2; ");
     checkOrder("BetreteN BURG \"abc\"", false);
@@ -458,7 +459,8 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testBotschaftReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE)+" "+Resources.get(EresseaConstants.O_REGION)+" \"hallo\"");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE) + " "
+        + Resources.get(EresseaConstants.O_REGION) + " \"hallo\"");
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
       String nr = " abc ";
       if (thing.equals("REGION"))
@@ -477,8 +479,19 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testDefaultReader() {
-    // TODO
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_WORK));
+    checkOrder("DEFAULT \"ARBEITEN\"");
+    checkOrder("DEFAULT 'ARBEITEN'");
+    checkOrder("DEFAULT 'LERNEN Ausdauer'");
+    checkOrder("DEFAULT 'LERNEN Alchemie'");
+    checkOrder("DEFAULT 'LERNEN Alchemie 200'");
+    checkOrder("DEFAULT 'BANNER \"abc\"'");
+    checkOrder("DEFAULT 'BANNER \"abc def\"'");
+    checkOrder("DEFAULT 'BANNER 'abc def''", false);
+    checkOrder("DEFAULT 'LERNEN'", false);
+    checkOrder("DEFAULT LERNEN Ausdauer", false);
+    // TODO more checks
   }
 
   /**
@@ -486,7 +499,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testEmailReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_EMAIL)+" \"a@b.com\"");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_EMAIL) + " \"a@b.com\"");
     checkOrder("EMAIL \'a@b.com\'");
     checkOrder("EMAIL \"123@456.com\"");
     checkOrder("EMAIL \"eressea-server@eressea.upb.de\"");
@@ -515,7 +528,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testFahreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE)+" abc");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE) + " abc");
     checkOrder("FAHREN 123");
     checkOrder("FAHREN abcde", false);
     checkOrder("FAHREN 123 456", false);
@@ -526,7 +539,8 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testFolgeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW)+" "+Resources.getOrderTranslation(EresseaConstants.O_UNIT)+" abc");
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " abc");
     checkOrder("FOLGEN SCHIFF 123");
     checkOrder("FOLGEN EINHEIT 123 456", false);
     checkOrder("FOLGEN EINHEIT \"abc\"", false);
@@ -538,7 +552,8 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testForscheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH)+" "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
+        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("FORSCHE", false);
     checkOrder("FORSCHE KRÄUTER 123", false);
   }
@@ -548,19 +563,21 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testGibReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY)+" 123 "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE)+" 123 "+Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SUPPLY) + " 123 "
+        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_GIVE) + " 123 "
+        + Resources.getOrderTranslation(EresseaConstants.O_HERBS));
     checkOrder("GIB KRÄUTER", false);
     checkOrder("GIB abc \"KRÄUTER\"", false);
     checkOrder("GIB 123 KRÄUTER 123", false);
-    
+
     checkOrder("GIB 123 KOMMANDO");
     checkOrder("GIB 0 KOMMANDO", false);
     checkOrder("GIB KOMMANDO", false);
     checkOrder("GIB abc \"KOMMANDO\"", false);
     checkOrder("GIB 123 KOMMANDO 123", false);
     checkOrder("GIB 123 123 KOMMANDO", true); // FIXME should it be false?
-    
+
     checkOrder("GIB 123 2 Silber");
     checkOrder("GIB 0 2 Silber");
     checkOrder("GIB 123 ALLES Silber");
@@ -568,17 +585,17 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 123 123 123 Silber", false);
     checkOrder("GIB 123 2 Silber 123", false);
     checkOrder("GIB 123 123 123 Silber", false);
-    
+
     checkOrder("GIB 123 ALLES PERSONEN");
     checkOrder("GIB 0 ALLES PERSONEN");
     checkOrder("GIB 123 2 PERSONEN");
     checkOrder("GIB 123 ALLES PERSONEN 2", false);
     checkOrder("GIB 123 123 ALLES PERSONEN", false);
     checkOrder("GIB 123 ALLES 123 PERSONEN", false);
-    
+
     checkOrder("GIB 123 EINHEIT");
     checkOrder("GIB 0 EINHEIT", false);
-    checkOrder("GIB 123 2 EINHEIT", true);  // FIXME should it be false?
+    checkOrder("GIB 123 2 EINHEIT", true); // FIXME should it be false?
 
     checkOrder("GIB 123 2 Holz");
     checkOrder("GIB 0 2 Holz");
@@ -588,7 +605,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 123 2 Würziger Wagemut", false);
 
     checkOrder("GIB 123 2 Würziger~Wagemut");
-    
+
   }
 
   /**
@@ -602,7 +619,7 @@ public class EresseaOrderParserTest {
     checkOrder("GRUPPE Hallo~Welt");
     checkOrder("GRUPPE Hallo Welt", false);
     checkOrder("GRUPPE 123 123", false);
-    		
+
   }
 
   /**

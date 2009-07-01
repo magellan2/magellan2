@@ -1,3 +1,7 @@
+2009-07-01 / Build 319 - stm (stm_@users.sourceforge.net)
+    * e3a is know known as e3; images and ship load fix for e3
+    * fixes for StringCompleter
+
 2009-06-28 / Build 317 - stm (stm_@users.sourceforge.net)
     * small change to file preferences, fixed GenericRules.getBuildingType...
 

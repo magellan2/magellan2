@@ -695,16 +695,10 @@ public class EresseaOrderParser implements OrderParser {
         OrderToken t = getNextToken();
 
         if (isString(t)) {
-          retVal = new StringChecker(false, false, false) {
+          retVal = new StringChecker(false, false, false, false) {
             @Override
             protected void complete() {
               getCompleter().cmpltBenutze(minAmount);
-            }
-
-            @Override
-            protected boolean isFixWhitespace() {
-              // cmplt already takes care of this...
-              return false;
             }
           }.read(t);
         } else {
@@ -994,7 +988,7 @@ public class EresseaOrderParser implements OrderParser {
       private ArrayList<Completion> oldList;
 
       public DefaultChecker() {
-        super(false, true, false);
+        super(false, true, true, false);
         defaultQuote = '\'';
       }
 
@@ -1018,9 +1012,19 @@ public class EresseaOrderParser implements OrderParser {
           if (innerParser.getTokens().size() > 1) {
             lastToken = innerParser.getTokens().get(innerParser.getTokens().size() - 2);
             String lastW = "";
-            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST)
-              lastW = lastToken.getText();
+            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST){
+              if (lastToken.ttype==OrderToken.TT_CLOSING_QUOTE){
+                lastW = getLastToken(4).getText() + getLastToken(3).getText() + getLastToken(2).getText();
+              } else if (innerParser.getTokens().size()>2 && getLastToken(3).ttype == OrderToken.TT_OPENING_QUOTE){
+                lastW = getLastToken(3).getText() + getLastToken(2).getText();
+              } else{
+                lastW = getLastToken(2).getText();
+              }
+            }
             getCompleter().clear();
+
+            // add the beginning of the content to the completions, so the AutoCompletion sees the
+            // right stub
             for (Completion c : oldList) {
               if (content.lastIndexOf(lastW) >= 0) {
                 Completion c2 = new Completion(c.getName(), c.getValue(), "", 0, 0);
@@ -1031,6 +1035,9 @@ public class EresseaOrderParser implements OrderParser {
                         .getCursorOffset()));
               }
             }
+            // this is a dirty fix for some special cases like DEFAULT 'BANNER ""|
+            if (valid && lastToken.ttype == OrderToken.TT_CLOSING_QUOTE)
+              getCompleter().addCompletion(new Completion(content));
           } else {
             for (Completion completion : oldList)
               getCompleter().addCompletion(completion);
@@ -1038,24 +1045,8 @@ public class EresseaOrderParser implements OrderParser {
         }
       }
 
-      @Override
-      protected boolean isFixWhitespace() {
-        return false;
-      }
-
-      @Override
-      protected boolean isCmplOpening() {
-        return openingToken == null;
-      }
-
-      @Override
-      protected boolean isCmplOpeningName() {
-        return false;
-      }
-
-      @Override
-      protected boolean isCmplClosing() {
-        return valid;
+      private OrderToken getLastToken(int i) {
+        return innerParser.getTokens().get(innerParser.getTokens().size()-i);
       }
     }
   }
@@ -1069,7 +1060,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = new StringChecker(true, true, false) {
+        retVal = new StringChecker(true, true, true, false) {
           @Override
           protected boolean checkInner() {
             return super.checkInner() && isEmailAddress(content);
@@ -1195,14 +1186,9 @@ public class EresseaOrderParser implements OrderParser {
       if (isNumeric(t.getText())) {
         retVal = readBeansprucheAmount(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, false, false) {
+        retVal = new StringChecker(false, false, false, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
-          }
-
-          @Override
-          protected boolean isFinish() {
-            return true;
           }
         }.read(t);
       } else {
@@ -1219,7 +1205,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = new StringChecker(false, false, false) {
+        retVal = new StringChecker(false, false, false, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
           }
@@ -1291,7 +1277,7 @@ public class EresseaOrderParser implements OrderParser {
           || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CONTROL))
           || t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
         UnitID id = UnitID.createUnitID(token.getText(), data.base);
-        retVal = id.intValue()!=0 && readFinalKeyword(t);
+        retVal = id.intValue() != 0 && readFinalKeyword(t);
       } else {
         unexpected(t);
       }
@@ -1387,7 +1373,7 @@ public class EresseaOrderParser implements OrderParser {
         // just "GRUPPE" without explicit group is valid
         retVal = checkFinal(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, true, false) {
+        retVal = new StringChecker(false, true, true, false) {
           @Override
           protected void complete() {
             getCompleter().cmpltGruppe();
@@ -1688,8 +1674,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isString(t)) {
-        retVal = new StringChecker(false, false, false) {
+      if (token.followedBySpace() && isString(t)) {
+        retVal = new StringChecker(false, false, false, false) {
           SkillType skill = null;
 
           @Override
@@ -1698,18 +1684,13 @@ public class EresseaOrderParser implements OrderParser {
               return false;
             if (getData().rules == null)
               return openingToken.getText().length() > 0;
-            skill = getData().rules.getSkillType(content);
+            skill = getData().rules.getSkillType(content.replace('~', ' '));
             return skill != null;
           }
 
           @Override
           protected void complete() {
             getCompleter().cmpltLerne();
-          }
-
-          @Override
-          protected boolean isFinish() {
-            return false;
           }
 
           @Override
@@ -1936,7 +1917,7 @@ public class EresseaOrderParser implements OrderParser {
       boolean retVal = true;
 
       if (isString(token)) {
-        retVal = new StringChecker(false, true, false).read(token);
+        retVal = new StringChecker(false, false, true, false).read(token);
       }
 
       return retVal;
@@ -1991,7 +1972,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = new StringChecker(false, false, false) {
+        retVal = new StringChecker(false, false, false, false) {
           @Override
           protected boolean checkInner() {
             return super.checkInner() && (getData().rules != null)
@@ -2607,7 +2588,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isString(t)) {
         // password
-        retVal = new StringChecker(true, true, false) {
+        retVal = new StringChecker(true, true, true, false) {
           @Override
           protected void complete() {
             getCompleter().cmpltStirb();
@@ -2637,7 +2618,7 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
         retVal = readTarnePartei(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, false, false) {
+        retVal = new StringChecker(false, false, false, false) {
           @Override
           protected boolean checkInner() {
             return super.checkInner() && (getData().rules != null)
@@ -3013,7 +2994,7 @@ public class EresseaOrderParser implements OrderParser {
       private boolean addLevel;
 
       public ZaubereSpruchChecker(boolean far, boolean combat, boolean addRegion, boolean addLevel) {
-        super(true, true, false);
+        super(false, true, true, false);
         this.far = far;
         this.combat = combat;
         this.addRegion = addRegion;
@@ -3050,18 +3031,7 @@ public class EresseaOrderParser implements OrderParser {
       @Override
       protected void complete() {
         getCompleter().cmpltZaubere(far, combat, addRegion && openingToken == null,
-            addLevel && openingToken == null, super.isCmplOpening() ? "\"" : "",
-            super.isCmplClosing() ? "\"" : "");
-      }
-
-      @Override
-      protected boolean isCmplOpening() {
-        return false;
-      }
-
-      @Override
-      protected boolean isCmplClosing() {
-        return false;
+            addLevel && openingToken == null, "\"", "\"");
       }
 
       @Override
@@ -3144,7 +3114,7 @@ public class EresseaOrderParser implements OrderParser {
       if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ALL))) {
         retVal = readZeigeAlle(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, true, false) {
+        retVal = new StringChecker(false, false, true, false) {
           @Override
           protected void complete() {
             getCompleter().cmpltZeige();
@@ -3279,6 +3249,7 @@ public class EresseaOrderParser implements OrderParser {
     protected OrderToken innerToken;
     protected OrderToken closingToken;
     protected OrderToken nextToken;
+    private boolean preferQuotes;
 
     /**
      * Creates a StringChecker with default behaviour.
@@ -3291,13 +3262,18 @@ public class EresseaOrderParser implements OrderParser {
      * @throws IllegalArgumentException if <code>forceQuotes</code> but not <code>allowQuote</code>
      *           or if <code>allowEmpty</code> but not <code>allowQuotes</code>.
      */
-    public StringChecker(boolean forceQuotes, boolean allowQuotes, boolean allowEmpty) {
+    public StringChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes, boolean allowEmpty) {
       this.forceQuotes = forceQuotes;
       this.allowQuotes = allowQuotes;
+      this.preferQuotes = preferQuotes;
       this.allowEmpty = allowEmpty;
       if (forceQuotes && !allowQuotes)
         throw new IllegalArgumentException();
       if (allowEmpty && !allowQuotes)
+        throw new IllegalArgumentException();
+      if (preferQuotes && !allowQuotes)
+        throw new IllegalArgumentException();
+      if (forceQuotes && !allowQuotes)
         throw new IllegalArgumentException();
     }
 
@@ -3341,29 +3317,10 @@ public class EresseaOrderParser implements OrderParser {
       if (getCompleter() != null && isComplete()) {
         complete();
 
-        if (doInsertEmpty()) {
-          getCompleter().addCompletion(
-              new Completion("", "", "", Completion.DEFAULT_PRIORITY + 1, 1));
-        }
-
-        if (isFinish()) {
-          Completion c = new Completion(content, " ", Completion.DEFAULT_PRIORITY * 2);
-          if (!getCompleter().getCompletions().contains(c))
-            getCompleter().addCompletion(c);
-        }
-
-        if (isFixWhitespace())
-          getCompleter().fixWhitespace();
-
-        char q = openingToken == null ? defaultQuote : openingToken.getText().charAt(0);
-        if (isCmplOpening())
-          getCompleter().cmplOpeningQuote(q, isCmplOpeningName());
-
-        if (isCmplClosing())
-          getCompleter().cmplFinalQuote(q);
-
+          getCompleter().fixQuotes(openingToken, innerToken, closingToken, preferQuotes, forceQuotes,
+              valid, defaultQuote);
       }
-      return valid && nextValid;
+      return valid && isQuotesValid() && nextValid;
     }
 
     /**
@@ -3376,54 +3333,19 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     /**
-     * If this returns <code>true</code>, a closing quote is added to completions. The default is to
-     * complete quotes if quotes are forced or an opening quote is present.
+     * Checks the quotes. According to constructor parameters. Subclasses usually don't need to
+     * overwrite this method.
+     * 
+     * @return <code>false</code> if there are no quotes but quotes are forced or if the closing
+     *         quote doesn't match the opening quote.
      */
-    protected boolean isCmplClosing() {
-      return forceQuotes || (openingToken != null && closingToken == null);
-    }
-
-    /**
-     * If this returns <code>true</code>, an opening quote is added to completions. The default is
-     * to add it if there is none and it is either forced or the content is empty (the
-     * <code>magellan.client.completion.AutoCompletion</code> needs this to work properly).
-     */
-    protected boolean isCmplOpening() {
-      return closingToken == null
-          && ((openingToken == null && forceQuotes) || (openingToken != null && (content.length() == 0)));
-    }
-
-    /**
-     * If this returns <code>true</code>, the opening quote is also added to the name of the
-     * Completion. Default is <code>true</code>.
-     */
-    protected boolean isCmplOpeningName() {
-      return true;
-    }
-
-    /**
-     * If this is <code>true</code>, whitespaces in the content are replace by '~'. The default is
-     * to do this if there are no quotes.
-     */
-    protected boolean isFixWhitespace() {
-      return !forceQuotes && openingToken == null;
-    }
-
-    /**
-     * If this is <code>true</code>, a completion is added for the current content. The default is
-     * to do this if the content is valid and non-empty.
-     */
-    protected boolean isFinish() {
+    protected boolean isQuotesValid() {
+      if (forceQuotes && openingToken == null)
+        return false;
+      if ((openingToken == null && closingToken == null)
+          || (openingToken != null && closingToken != null))
+        return true;
       return false;
-    }
-
-    /**
-     * If this returns <code>true</code>, the empty string is added as completion. Default is to do
-     * this if quotes are enforced and there is no completion and the content is empty.
-     */
-    protected boolean doInsertEmpty() {
-      return forceQuotes && getCompleter().getCompletions().isEmpty() && closingToken == null
-          && content.length() == 0;
     }
 
     /**
@@ -3435,24 +3357,16 @@ public class EresseaOrderParser implements OrderParser {
      * @return
      */
     protected boolean checkInner() {
-      boolean retVal = true;
-      if (forceQuotes && openingToken == null)
-        return false;
-      if (!allowEmpty) {
-        retVal &= content.trim().length() > 0;
-        // no need to check openingToken.getText() = closingToken.getText()
-        retVal &=
-            (openingToken == null && closingToken == null)
-                || (openingToken != null && closingToken != null);
-      }
-      return retVal;
+      return allowEmpty || content.trim().length() > 0;
     }
 
     /**
      * Subclasses should call an appropriate method of <code>getCompleter()</code> here.
      */
     protected void complete() {
-      return;
+      if (valid || openingToken == null && content.length() == 0)
+        getCompleter().addCompletion(
+            new Completion(content, "", Completion.DEFAULT_PRIORITY + 1, allowEmpty && content.length()==0 && openingToken == null?1:0));
     }
 
     /**
@@ -3505,7 +3419,7 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected boolean readDescription(OrderToken t, boolean allowEmpty) {
     if (isString(t)) {
-      return new StringChecker(true, true, allowEmpty) {
+      return new StringChecker(true, true, true, allowEmpty) {
         protected boolean isFinish() {
           return valid && content.length() > 0;
         }
@@ -3530,7 +3444,7 @@ public class EresseaOrderParser implements OrderParser {
    * Returns true if the <code>token</code> is a nonempty string.
    */
   protected boolean readFinalString(OrderToken token) {
-    return new StringChecker(false, false, false).read(token);
+    return new StringChecker(false, false, true, false).read(token);
   }
 
   protected boolean readFinalID(OrderToken token) {

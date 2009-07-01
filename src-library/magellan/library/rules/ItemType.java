@@ -203,7 +203,7 @@ public class ItemType extends ObjectType implements Comparable {
   
   public String getOrderName() {
     if((getName().indexOf(" ") > -1)) { 
-      return "\"" + getName() + "\"";
+      return getName().replace(' ', '~');
     } else {
       return getName();
     }

@@ -110,10 +110,9 @@ public class E3AOrderParser extends EresseaOrderParser {
         retVal = new StringChecker(false, false, false, false) {
           @Override
           protected boolean checkInner() {
-            if (openingToken!=null || closingToken!=null)
-              return false;
             if (innerToken==null || getData()==null || getData().rules==null)
               return true;
+            // TODO einzahl/Mehrzahl
             return getData().rules.getRace(content)!=null;
           }
         }.read(t);

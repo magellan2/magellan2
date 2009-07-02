@@ -1,3 +1,6 @@
+2009-07-02 / Build 323 - stm (stm_@users.sourceforge.net)
+    * fixed Mantis bug #355
+
 2009-07-01 / Build 319 - stm (stm_@users.sourceforge.net)
     * e3a is know known as e3; images and ship load fix for e3
     * fixes for StringCompleter

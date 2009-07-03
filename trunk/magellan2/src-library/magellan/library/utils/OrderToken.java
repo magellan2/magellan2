@@ -261,13 +261,22 @@ public class OrderToken {
 		return retVal.toString();
 	}
 
+	
+  /**
+   * Compares the token and the translation of the specified keyword with respect to abbreviations 
+   * as used by the eressea game server.
+   */
+  public boolean equalsLocalToken(String strKeyword) {
+    if(text.length() == 0) {
+      return false;
+    }
+    return equalsToken(Resources.getOrderTranslation(strKeyword));
+  }
+  
+	
 	/**
 	 * Compares the token and the specified keyword with respect to abbreviations as used by the
 	 * eressea game server.
-	 *
-	 * 
-	 *
-	 * 
 	 */
 	public boolean equalsToken(String strKeyword) {
 		if(text.length() == 0) {

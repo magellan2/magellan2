@@ -885,7 +885,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltBotschaftEinheit();
+        getCompleter().cmpltBotschaftEinheit(false);
       }
       return retVal;
     }
@@ -893,8 +893,14 @@ public class EresseaOrderParser implements OrderParser {
     protected boolean readBotschaftID(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_ID;
+      
+      OrderToken t = getNextToken();
 
-      retVal = readDescription(false);
+      retVal = readDescription(t, false);
+
+      if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+        getCompleter().cmpltBotschaftEinheit(true);
+      }
 
       return retVal;
     }
@@ -1104,7 +1110,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltFahre();
+        getCompleter().cmpltFahre(false);
       }
       return retVal;
     }
@@ -1112,7 +1118,13 @@ public class EresseaOrderParser implements OrderParser {
     protected boolean readFahreUID(OrderToken token) {
       token.ttype = OrderToken.TT_ID;
 
-      return checkNextFinal();
+      OrderToken t = getNextToken();
+      
+      if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+        getCompleter().cmpltFahre(true);
+      }
+      
+      return checkFinal(t);
     }
   }
 
@@ -1151,7 +1163,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltFolgeEinheit();
+        getCompleter().cmpltFolgeEinheit(false);
       }
       return retVal;
     }
@@ -1282,8 +1294,8 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltGibUID();
+      if (getCompleter() != null && (!t.followedBySpace() || token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)))) {
+        getCompleter().cmpltGibUID(token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
       }
       return retVal;
     }
@@ -1642,7 +1654,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltLehre();
+        getCompleter().cmpltLehre(false);
       }
       return retVal;
     }
@@ -1660,7 +1672,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltLehre();
+        getCompleter().cmpltLehre(token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
       }
       return retVal;
     }
@@ -2694,7 +2706,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltTransportiere();
+        getCompleter().cmpltTransportiere(false);
       }
       return retVal;
     }
@@ -3450,7 +3462,13 @@ public class EresseaOrderParser implements OrderParser {
   protected boolean readFinalID(OrderToken token) {
     token.ttype = OrderToken.TT_ID;
 
-    return checkNextFinal();
+    OrderToken t = getNextToken();
+    
+    if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+      getCompleter().addRegionUnits("", true);
+    }
+    
+    return checkFinal(t);
   }
 
   protected boolean readFinalNumber(OrderToken token) {
@@ -3556,7 +3574,7 @@ public class EresseaOrderParser implements OrderParser {
     if (blankPos > -1) {
       String temp = txt.substring(0, blankPos);
       String nr = txt.substring(blankPos + 1);
-      retVal = (temp.equalsIgnoreCase("TEMP"));
+      retVal = (temp.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
       retVal = retVal && isNumeric(nr, getData().base, 0, EresseaOrderParser.MAX_UID);
     }
 
@@ -3806,7 +3824,7 @@ class TokenBucket extends Vector<OrderToken> {
         OrderToken tempToken = tokenAt(i);
         String tempText = tempToken.getText();
 
-        if (tempText.equalsIgnoreCase("TEMP")) {
+        if (tempText.equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
           try {
             OrderToken nrToken = tokenAt(i + 1);
             String nrText = nrToken.getText();
@@ -3814,7 +3832,7 @@ class TokenBucket extends Vector<OrderToken> {
 
             if ((nr >= 0) && (nr <= TokenBucket.MAX_TEMP_NR)) {
               OrderToken mergedToken =
-                  new OrderToken("TEMP " + nrText, tempToken.getStart(), nrToken.getEnd(),
+                  new OrderToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP)+" " + nrText, tempToken.getStart(), nrToken.getEnd(),
                       OrderToken.TT_ID, nrToken.followedBySpace());
               remove(i);
               remove(i);

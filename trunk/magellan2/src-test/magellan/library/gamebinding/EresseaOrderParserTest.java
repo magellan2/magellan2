@@ -229,6 +229,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testRead() {
+    checkOrder(""); // FIXME ???!!!
     checkOrder("AR");
     checkOrder("A", false);
   }
@@ -263,7 +264,6 @@ public class EresseaOrderParserTest {
     checkOrder("arbeiten");
     checkOrder("AR");
     checkOrder("ARBEITE ;");
-    checkOrder(""); // FIXME ???!!!
     checkOrder("arbeitene", false);
     checkOrder("ARBEISEN", false);
     checkOrder("ARBEITE 1", false);
@@ -595,7 +595,6 @@ public class EresseaOrderParserTest {
 
     checkOrder("GIB 123 EINHEIT");
     checkOrder("GIB 0 EINHEIT", false);
-    checkOrder("GIB 123 2 EINHEIT", true); // FIXME should it be false?
 
     checkOrder("GIB 123 2 Holz");
     checkOrder("GIB 0 2 Holz");
@@ -606,6 +605,7 @@ public class EresseaOrderParserTest {
 
     checkOrder("GIB 123 2 Würziger~Wagemut");
 
+    checkOrder("GIB 123 2 EINHEIT", false); // FIXME should it be false?
   }
 
   /**
@@ -627,7 +627,19 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testHelfeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HELP));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_HELP)+" 123 "+Resources.getOrderTranslation(EresseaConstants.O_ALL));
+    checkOrder("HELFE 123 ALLES NICHT");
+    checkOrder("HELFEN 123 GIB");
+    checkOrder("HELFEN 123 GIB NICHT");
+    checkOrder("HELFE 123 KÄMPFE");
+    checkOrder("HELFE 123 BEWACHE");
+    checkOrder("HELFE 123 SILBER");
+    checkOrder("HELFE 123 PARTEITARNUNG");
+    checkOrder("HELFE 123 bla", false);
+    checkOrder("HELFE abcde GIB", false);
+    checkOrder("HELFE 123 GIB BLA", false);
+    checkOrder("HELFE 123 456", false);
+    checkOrder("HELFE 123", false);
   }
 
   /**
@@ -636,6 +648,18 @@ public class EresseaOrderParserTest {
   @Test
   public void testKaempfeReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_COMBAT));
+    checkOrder("KÄMPFE AGGRESSIV");
+    checkOrder("KÄMPFE HINTEN");
+    checkOrder("KÄMPFE DEFENSIV");
+    checkOrder("KÄMPFE NICHT");
+    checkOrder("KÄMPFE FLIEHE");
+    checkOrder("KÄMPFE HELFE");
+    checkOrder("KÄMPFE HELFE NICHT");
+    checkOrder("KÄMPFE VORNE", false); // deprecated
+    checkOrder("KÄMPFE AGGRESSIV NICHT", false);
+    checkOrder("KÄMPFE VORNE HINTEN", false);
+    checkOrder("KÄMPFE 123 HINTEN, false");
+    checkOrder("KÄMPFE FLIEHE NICHT", false);
   }
 
   /**

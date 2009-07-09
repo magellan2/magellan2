@@ -1416,7 +1416,7 @@ public abstract class MagellanFactory {
     }
 
     // FF 20070221: syntax
-    if (curSpell.getSyntax() != null && curSpell.getSyntax().length() > 0) {
+    if (curSpell.getSyntax() != null) {
       newSpell.setSyntax(curSpell.getSyntax());
     }
 

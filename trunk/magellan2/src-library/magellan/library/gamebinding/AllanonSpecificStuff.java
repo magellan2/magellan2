@@ -31,6 +31,7 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
   private String name = "Allanon";
+  private AllanonRelationFactory relationFactory;
 
 
   public AllanonSpecificStuff() {
@@ -66,12 +67,11 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
 	@Override
   public RelationFactory getRelationFactory() {
-    return AllanonRelationFactory.getSingleton();
-//		if (relationFactory == null) {
-//      relationFactory = new AllanonRelationFactory(rules);
-//    }
-//
-//    return relationFactory;
+		if (relationFactory == null) {
+      relationFactory = new AllanonRelationFactory(getRules());
+    }
+
+    return relationFactory;
 	}
 
   /**

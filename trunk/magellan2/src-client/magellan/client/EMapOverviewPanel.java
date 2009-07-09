@@ -583,7 +583,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         activeObject = ((UnitNodeWrapper) o).getUnit();
 
         Group g = ((Unit) activeObject).getGroup();
-
         if (g == null) {
           Faction f = ((Unit) activeObject).getFaction();
           setAlliances(f.getAllies(), f);

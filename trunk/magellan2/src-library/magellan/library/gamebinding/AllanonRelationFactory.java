@@ -23,6 +23,8 @@
 // 
 package magellan.library.gamebinding;
 
+import magellan.library.Rules;
+
 
 
 /**
@@ -31,21 +33,12 @@ package magellan.library.gamebinding;
 * @version 1.0, 17.04.2008
 */
 public class AllanonRelationFactory extends EresseaRelationFactory {
-  private static final AllanonRelationFactory singleton = new AllanonRelationFactory();
 
   /**
    * @param rules 
    * 
    */
-  protected AllanonRelationFactory() {
-    super();
-  }
-
-
-  /**
-   * 
-   */
-  public static AllanonRelationFactory getSingleton() {
-    return AllanonRelationFactory.singleton;
+  protected AllanonRelationFactory(Rules rules) {
+    super(rules);
   }
 }

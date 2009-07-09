@@ -13,6 +13,7 @@
 
 package magellan.library.gamebinding.e3a;
 
+import magellan.library.Rules;
 import magellan.library.gamebinding.EresseaRelationFactory;
 
 
@@ -23,16 +24,8 @@ import magellan.library.gamebinding.EresseaRelationFactory;
  * @version $Revision: 389 $
  */
 public class E3ARelationFactory extends EresseaRelationFactory {
-  private static final E3ARelationFactory singleton = new E3ARelationFactory();
-
-  protected E3ARelationFactory() {
+  protected E3ARelationFactory(Rules rules) {
+    super(rules);
   }
 
-
-  /**
-   * 
-   */
-  public static E3ARelationFactory getSingleton() {
-    return E3ARelationFactory.singleton;
-  }
 }

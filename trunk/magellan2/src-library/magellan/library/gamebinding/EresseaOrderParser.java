@@ -22,6 +22,8 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import magellan.library.Alliance;
+import magellan.library.EntityID;
+import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Spell;
 import magellan.library.UnitID;
@@ -893,12 +895,15 @@ public class EresseaOrderParser implements OrderParser {
     protected boolean readBotschaftID(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_ID;
-      
+
       OrderToken t = getNextToken();
 
       retVal = readDescription(t, false);
 
-      if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+      if (getCompleter() != null
+          && !t.followedBySpace()
+          && token.getText().equalsIgnoreCase(
+              Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
         getCompleter().cmpltBotschaftEinheit(true);
       }
 
@@ -1018,12 +1023,15 @@ public class EresseaOrderParser implements OrderParser {
           if (innerParser.getTokens().size() > 1) {
             lastToken = innerParser.getTokens().get(innerParser.getTokens().size() - 2);
             String lastW = "";
-            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST){
-              if (lastToken.ttype==OrderToken.TT_CLOSING_QUOTE){
-                lastW = getLastToken(4).getText() + getLastToken(3).getText() + getLastToken(2).getText();
-              } else if (innerParser.getTokens().size()>2 && getLastToken(3).ttype == OrderToken.TT_OPENING_QUOTE){
+            if (!lastToken.followedBySpace() && lastToken.ttype != OrderToken.TT_PERSIST) {
+              if (lastToken.ttype == OrderToken.TT_CLOSING_QUOTE) {
+                lastW =
+                    getLastToken(4).getText() + getLastToken(3).getText()
+                        + getLastToken(2).getText();
+              } else if (innerParser.getTokens().size() > 2
+                  && getLastToken(3).ttype == OrderToken.TT_OPENING_QUOTE) {
                 lastW = getLastToken(3).getText() + getLastToken(2).getText();
-              } else{
+              } else {
                 lastW = getLastToken(2).getText();
               }
             }
@@ -1052,7 +1060,7 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       private OrderToken getLastToken(int i) {
-        return innerParser.getTokens().get(innerParser.getTokens().size()-i);
+        return innerParser.getTokens().get(innerParser.getTokens().size() - i);
       }
     }
   }
@@ -1119,11 +1127,14 @@ public class EresseaOrderParser implements OrderParser {
       token.ttype = OrderToken.TT_ID;
 
       OrderToken t = getNextToken();
-      
-      if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+
+      if (getCompleter() != null
+          && !t.followedBySpace()
+          && token.getText().equalsIgnoreCase(
+              Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
         getCompleter().cmpltFahre(true);
       }
-      
+
       return checkFinal(t);
     }
   }
@@ -1294,8 +1305,12 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && (!t.followedBySpace() || token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)))) {
-        getCompleter().cmpltGibUID(token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
+      if (getCompleter() != null
+          && (!t.followedBySpace() || token.getText().equalsIgnoreCase(
+              Resources.getOrderTranslation(EresseaConstants.O_TEMP)))) {
+        getCompleter().cmpltGibUID(
+            token.getText()
+                .equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
       }
       return retVal;
     }
@@ -1672,7 +1687,9 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
-        getCompleter().cmpltLehre(token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
+        getCompleter().cmpltLehre(
+            token.getText()
+                .equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
       }
       return retVal;
     }
@@ -3274,7 +3291,8 @@ public class EresseaOrderParser implements OrderParser {
      * @throws IllegalArgumentException if <code>forceQuotes</code> but not <code>allowQuote</code>
      *           or if <code>allowEmpty</code> but not <code>allowQuotes</code>.
      */
-    public StringChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes, boolean allowEmpty) {
+    public StringChecker(boolean forceQuotes, boolean preferQuotes, boolean allowQuotes,
+        boolean allowEmpty) {
       this.forceQuotes = forceQuotes;
       this.allowQuotes = allowQuotes;
       this.preferQuotes = preferQuotes;
@@ -3329,8 +3347,8 @@ public class EresseaOrderParser implements OrderParser {
       if (getCompleter() != null && isComplete()) {
         complete();
 
-          getCompleter().fixQuotes(openingToken, innerToken, closingToken, preferQuotes, forceQuotes,
-              valid, defaultQuote);
+        getCompleter().fixQuotes(openingToken, innerToken, closingToken, preferQuotes, forceQuotes,
+            valid, defaultQuote);
       }
       return valid && isQuotesValid() && nextValid;
     }
@@ -3378,7 +3396,8 @@ public class EresseaOrderParser implements OrderParser {
     protected void complete() {
       if (valid || openingToken == null && content.length() == 0)
         getCompleter().addCompletion(
-            new Completion(content, "", Completion.DEFAULT_PRIORITY + 1, allowEmpty && content.length()==0 && openingToken == null?1:0));
+            new Completion(content, "", Completion.DEFAULT_PRIORITY + 1, allowEmpty
+                && content.length() == 0 && openingToken == null ? 1 : 0));
     }
 
     /**
@@ -3463,12 +3482,36 @@ public class EresseaOrderParser implements OrderParser {
     token.ttype = OrderToken.TT_ID;
 
     OrderToken t = getNextToken();
-    
-    if (getCompleter() != null && !t.followedBySpace() && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+
+    if (getCompleter() != null && !t.followedBySpace()
+        && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
       getCompleter().addRegionUnits("", true);
     }
-    
+
     return checkFinal(t);
+  }
+
+  /**
+   * Attempts to interpret token as a faction ID and returns the corresponding faction if known.
+   */
+  protected Faction readFactionID() {
+    Faction result = null;
+
+    OrderToken token = getNextToken();
+    if (isID(token.getText())) {
+      token.ttype = OrderToken.TT_ID;
+
+      result = data.getFaction(EntityID.createEntityID(token.getText(), data.base));
+
+    } else {
+      unexpected(token);
+    }
+
+    if (getCompleter() != null && !token.followedBySpace()) {
+      getCompleter().addFactions("");
+    }
+
+    return result;
   }
 
   protected boolean readFinalNumber(OrderToken token) {
@@ -3832,8 +3875,9 @@ class TokenBucket extends Vector<OrderToken> {
 
             if ((nr >= 0) && (nr <= TokenBucket.MAX_TEMP_NR)) {
               OrderToken mergedToken =
-                  new OrderToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP)+" " + nrText, tempToken.getStart(), nrToken.getEnd(),
-                      OrderToken.TT_ID, nrToken.followedBySpace());
+                  new OrderToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP) + " "
+                      + nrText, tempToken.getStart(), nrToken.getEnd(), OrderToken.TT_ID, nrToken
+                      .followedBySpace());
               remove(i);
               remove(i);
               add(i++, mergedToken);

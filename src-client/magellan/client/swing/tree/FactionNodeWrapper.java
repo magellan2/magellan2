@@ -51,11 +51,13 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
 	/**
 	 * Creates a new FactionNodeWrapper object.
 	 *
-	 * 
-	 * 
-	 * 
+	 * @param f
+	 * @param r
+	 * @param activeAlliances
 	 */
 	public FactionNodeWrapper(Faction f, Region r, Map<ID, Alliance> activeAlliances) {
+	  if (f==null)
+	    throw new NullPointerException();
 		this.activeAlliances = activeAlliances;
 		this.faction = f;
 		this.region = r;
@@ -71,9 +73,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @deprecated used by nobody 
 	 */
 	public Region getRegion() {
 		return region;

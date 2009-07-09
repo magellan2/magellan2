@@ -40,6 +40,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   private MapMergeEvaluator mapMergeEvaluator;
   private MovementEvaluator movementEvaluator;
 
+  private RelationFactory relationFactory;
+
   /**
    * Returns the value of rules.
    * 
@@ -97,7 +99,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getRelationFactory()
    */
 	public RelationFactory getRelationFactory() {
-		return EresseaRelationFactory.getSingleton();
+	  if (relationFactory == null)
+	    relationFactory =  new EresseaRelationFactory(getRules());
+	  return relationFactory;
 	}
 
   /**

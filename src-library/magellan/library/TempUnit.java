@@ -13,6 +13,8 @@
 
 package magellan.library;
 
+import magellan.library.rules.Race;
+
 /**
  * DOCUMENT-ME
  * 
@@ -36,5 +38,11 @@ public interface TempUnit extends Unit {
    */
 
   public String toString(boolean withName);
+
+  
+  /**
+   * If the temp unit has a different race than the parent unit, set it here.
+   */
+  public void setTempRace(Race r);
 
 }

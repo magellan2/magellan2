@@ -100,28 +100,28 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	private static final String TAG_PREFIX_TEMP=";"+"ejcTagTemp "; // grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
     
 	/** The private description of the unit. */
-	protected String privDesc = null; // private description
+	private String privDesc = null; // private description
 
 	/** The displayed race of the unit. */
-  protected Race race = null;
+  private Race race = null;
 
 	/** The real race of the (daemon) unit */
-  protected Race realRace = null;
+  private Race realRace = null;
 	
 	/** unitID of the "father"-mage 
 	 *  or mother.mage...
 	 * */
-  protected ID familiarmageID = null;
+  private ID familiarmageID = null;
 
 	/** The weight in silver */
-  protected int weight = -1;
+  private int weight = -1;
 	
 	/** an object encapsulation  the orders of this unit as <tt>String</tt> objects */
-	protected Orders ordersObject = new Orders();
+	private Orders ordersObject = new Orders();
 	
 	/** Comments modifiable by the user. The comments are represented as String objects. */
 	/** analog to comments in unitcontainer**/
-  protected List<String> comments = null;
+  private List<String> comments = null;
 	
 
 	/**
@@ -296,43 +296,43 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	}
 
 	/** The number of persons of the unit */
-  protected int persons = 1;
+  private int persons = 1;
 
 	/** DOCUMENT-ME */
-  protected int guard = 0;
+  private int guard = 0;
 
 	/** DOCUMENT-ME */
-  protected Building siege = null; // belagert
+  private Building siege = null; // belagert
 
 	/** DOCUMENT-ME */
-  protected int stealth = -1; // getarnt
+  private int stealth = -1; // getarnt
 
 	/** the current amount of aura */
-  protected int aura = -1;
+  private int aura = -1;
 
 	/** the maximum amount of aura */
-  protected int auraMax = -1;
+  private int auraMax = -1;
 
 	/** DOCUMENT-ME */
-  protected int combatStatus = -1; // Kampfstatus
+  private int combatStatus = -1; // Kampfstatus
 
 	/** DOCUMENT-ME */
-  protected boolean unaided = false; // if attacked, this unit will not be helped by allied units
+  private boolean unaided = false; // if attacked, this unit will not be helped by allied units
 
 	/** DOCUMENT-ME */
-  protected boolean hideFaction = false; // Parteitarnung
+  private boolean hideFaction = false; // Parteitarnung
 
 	/** DOCUMENT-ME */
-  protected Unit follows = null; // folgt-Tag
+  private Unit follows = null; // folgt-Tag
 
 	/** DOCUMENT-ME */
-  protected boolean isHero = false; // hero-tag
+  private boolean isHero = false; // hero-tag
 
 	/** DOCUMENT-ME */
-  protected String health = null;
+  private String health = null;
 
 	/** DOCUMENT-ME */
-  protected boolean isStarving = false; // hunger-Tag
+  private boolean isStarving = false; // hunger-Tag
 
   
   // (stm 09-06-08) had to get rid of the soft reference again as it leads to problems with 
@@ -343,13 +343,13 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 //	 */
 //  protected SoftReference<Cache> cacheReference = null;
 
-  protected Cache cache;
+  private Cache cache;
 
 	/**
 	 * Messages directly sent to this unit. The list contains instances of class <tt>Message</tt>
 	 * with type -1 and only the text set.
 	 */
-  protected List<Message> unitMessages = null;
+  private List<Message> unitMessages = null;
 
   /** A map for unknown tags */
   private Map<String, String> tagMap = null;
@@ -357,33 +357,33 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	/**
 	 * A list containing <tt>String</tt> objects, specifying effects on this <tt>Unit</tt> object.
 	 */
-  protected List<String> effects = null;
+  private List<String> effects = null;
 
 	/** true indicates that the unit has orders confirmed by an user. */
-  protected boolean ordersConfirmed = false;
+  private boolean ordersConfirmed = false;
 
 	/** DOCUMENT-ME */
-  protected Map<ID,Skill> skills = null; // maps SkillType.getID() objects to Skill objects
-	protected boolean skillsCopied = false;
+  private Map<ID,Skill> skills = null; // maps SkillType.getID() objects to Skill objects
+	private boolean skillsCopied = false;
 
 	/**
 	 * The items carried by this unit. The keys are the IDs of the item's type, the values are the
 	 * Item objects themselves.
 	 */
-	protected Map<ID,Item> items = null;
+	private Map<ID,Item> items = null;
 
 	/**
 	 * The spells known to this unit. The keys are the IDs of the spells, the values are the Spell
 	 * objects themselves.
 	 */
-  protected Map<ID,Spell> spells = null;
+  private Map<ID,Spell> spells = null;
 
 	/**
 	 * Contains the spells this unit has set for use in a combat. This map contains data if a unit
 	 * has a magic skill and has actively set combat spells. The values in this map are objects of
 	 * type CombatSpell, the keys are their ids.
 	 */
-  protected Map<ID,CombatSpell> combatSpells = null;
+  private Map<ID,CombatSpell> combatSpells = null;
 
 	/** The group this unit belongs to. */
 	private Group group = null;
@@ -1801,7 +1801,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 				Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_SILVER);
 
 				if(modifiedItem != null) {
-					Race recruitmentRace = this.getRace();
+					Race recruitmentRace = rr.race;
 
 					if((recruitmentRace != null) && (recruitmentRace.getRecruitmentCosts() > 0)) {
 						modifiedItem.setAmount(modifiedItem.getAmount() -

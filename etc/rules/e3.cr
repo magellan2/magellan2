@@ -421,6 +421,7 @@ SKILL "Wagenbau"
 RACE "Zwerge"
 "Zwerge";name
 240;recruitmentcosts
+"Zwerg";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -447,6 +448,7 @@ TALENTBONI "Gletscher"
 RACE "Orks"
 "Orks";name
 100;recruitmentcosts
+"Ork";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -465,6 +467,7 @@ TALENTBONI
 RACE "Elfen"
 "Elfen";name
 200;recruitmentcosts
+"Elf";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -485,6 +488,7 @@ TALENTBONI "Wald"
 RACE "Dämonen"
 "Dämonen";name
 360;recruitmentcosts
+"Dämon";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -502,6 +506,7 @@ TALENTBONI
 RACE "Halblinge"
 "Halblinge";name
 100;recruitmentcosts
+"Halbling";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -522,6 +527,7 @@ TALENTBONI
 RACE "Menschen"
 "Menschen";name
 100;recruitmentcosts
+"Mensch";recruitmentname
 10;weight
 5.4;capacity
 TALENTBONI
@@ -532,6 +538,7 @@ TALENTBONI
 RACE "Goblins"
 "Goblins";name
 60;recruitmentcosts
+"Goblin";recruitmentname
 6;weight
 4.4;capacity
 TALENTBONI
@@ -548,6 +555,7 @@ TALENTBONI
 RACE "Trolle"
 "Trolle";name
 260;recruitmentcosts
+"Troll";recruitmentname
 20;weight
 10.8;capacity
 TALENTBONI

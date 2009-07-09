@@ -88,7 +88,7 @@ public class OrderWriter {
 		  syntaxCheckOptions = g.getGameSpecificStuff().getOrderWriter().getCheckerDefaultParameter();
 		}
 
-		if(f.getType() != null) {
+		if(f.getType() != null && faction.getRace().getRecruitmentCosts()>0) {
 			syntaxCheckOptions = "-r" + faction.getRace().getRecruitmentCosts() + syntaxCheckOptions;
 		}
 	}

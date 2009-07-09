@@ -14,6 +14,7 @@
 package magellan.library.relation;
 
 import magellan.library.Unit;
+import magellan.library.rules.Race;
 
 /**
  * A relation indicating that a unit recruits a certain amount of peasants.
@@ -28,11 +29,23 @@ public class RecruitmentRelation extends PersonTransferRelation {
 	 * @param line The line in the source's orders
 	 */
 	public RecruitmentRelation(Unit t, int a, int line) {
-		super(t.getRegion().getZeroUnit(), t, a, t.getRace(), line);
-
-		// super(t, t.getRegion().getZeroUnit(), -amount, t.realRace != null ? t.realRace : t.race);
-		// ...but we need to remember that the target unit is the originator of this
-		// relation...
-		this.origin = t;
+	  this(t, a, t.getRace(), line);
 	}
+
+  /**
+   * Creates a new RecruitmentRelation object.
+   *
+   * @param t The target unit
+   * @param a The amount to transfer
+   * @param line The line in the source's orders
+   * @param race The race that is recruited
+   */
+  public RecruitmentRelation(Unit t, int a, Race race, int line) {
+    super(t.getRegion().getZeroUnit(), t, a, race, line);
+
+    // super(t, t.getRegion().getZeroUnit(), -amount, t.realRace != null ? t.realRace : t.race);
+    // ...but we need to remember that the target unit is the originator of this
+    // relation...
+    this.origin = t;
+  }
 }

@@ -16,10 +16,10 @@ package magellan.library.gamebinding;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +29,9 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Region;
+import magellan.library.Rules;
 import magellan.library.StringID;
+import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
@@ -53,6 +55,7 @@ import magellan.library.relation.UnitRelation;
 import magellan.library.relation.UnitTransferRelation;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
+import magellan.library.rules.Race;
 import magellan.library.utils.Direction;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -66,19 +69,10 @@ import magellan.library.utils.logging.Logger;
  */
 public class EresseaRelationFactory implements RelationFactory {
   private static final Logger log = Logger.getInstance(EresseaRelationFactory.class);
-  private static final EresseaRelationFactory singleton = new EresseaRelationFactory();
+  private Rules rules;
 
-  protected EresseaRelationFactory() {
-  }
-
-
-  /**
-   * DOCUMENT-ME
-   * 
-   * 
-   */
-  public static EresseaRelationFactory getSingleton() {
-    return EresseaRelationFactory.singleton;
+  protected EresseaRelationFactory(Rules rules) {
+    this.rules = rules;
   }
 
   private static final int REFRESHRELATIONS_ALL = -2;
@@ -99,7 +93,7 @@ public class EresseaRelationFactory implements RelationFactory {
   // interface? It violates
   // the unit execution order but it might be useful for other games.
   public List createRelations(Unit u, int from) {
-    return createRelations(u, u.getOrders().iterator(), from);
+    return createRelations(u, u.getOrders(), from);
   }
 
   /**
@@ -113,7 +107,7 @@ public class EresseaRelationFactory implements RelationFactory {
    * @return A List of Relations for this unit
    */
   public List createRelations(Unit u, List<String> orders) {
-    return createRelations(u, orders.iterator(), 0);
+    return createRelations(u, orders, 0);
   }
 
   /**
@@ -130,10 +124,10 @@ public class EresseaRelationFactory implements RelationFactory {
    *          be > 0
    * @return A List of Relations for this unit
    */
-  private List createRelations(Unit u, Iterator<String> orders, int from) {
+  private List createRelations(Unit u, List<String> orders, int from) {
     from = 0;
     // NOTE: parameter from is ignored!
-    List<UnitRelation> relations = new ArrayList<UnitRelation>(5);
+    List<UnitRelation> relations = new ArrayList<UnitRelation>(3);
 
     GameData data = u.getRegion().getData();
     Map<ID, Item> modItems = null; // needed to track changes in the items for
@@ -150,27 +144,20 @@ public class EresseaRelationFactory implements RelationFactory {
     // 4. parse the orders and create new relations
     OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
 
-    List<String> ordersCopy = new LinkedList<String>();
-    for (Iterator<String> iter = orders; iter.hasNext();) {
-      String order = iter.next();
-      ordersCopy.add(order);
-    }
-
     // TODO (stm): sort order according to execution order and process them in
     // that order.
     // In that case, the parameter from should be ignored entirely
 
     // process RESERVE orders first
     // Collections.sort(ordersCopy, new EresseaOrderComparator(null));
-    EresseaRelationFactory.createReserveRelations(u, ordersCopy, from, parser, modItems, relations);
+    EresseaRelationFactory.createReserveRelations(u, orders, from, parser, modItems, relations);
 
     // process all other orders
     int line = 0;
     boolean tempOrders = false;
     line = 0;
 
-    for (Iterator iter = ordersCopy.iterator(); iter.hasNext();) {
-      String order = (String) iter.next();
+    for (String order : orders) {
 
       line++; // keep track of line
 
@@ -178,6 +165,10 @@ public class EresseaRelationFactory implements RelationFactory {
       // if(line < from) {
       // continue;
       // }
+
+//      UnitRelation relation = parser.read(new StringReader(order));
+//      
+//      relations.add(relation);
 
       if (!parser.read(new StringReader(order))) {
         continue;
@@ -205,14 +196,16 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // begin of temp unit
-      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MAKE)) && (tokens.get(1)).getText().toUpperCase().startsWith(EresseaRelationFactory.getOrder(EresseaConstants.O_TEMP))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MAKE)) && 
+          (tokens.get(1)).getText().toUpperCase().startsWith(EresseaRelationFactory.getOrder(EresseaConstants.O_TEMP))) {
         tempOrders = true;
 
         continue;
       }
 
       // movement relation
-      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MOVE)) || (tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ROUTE))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_MOVE)) || 
+          (tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_ROUTE))) {
         List<CoordinateID> modifiedMovement = new ArrayList<CoordinateID>(2);
 
         // dissect the order into pieces to detect which way the unit
@@ -484,8 +477,21 @@ public class EresseaRelationFactory implements RelationFactory {
         OrderToken t = tokens.get(1);
 
         if (t.ttype == OrderToken.TT_NUMBER) {
-          RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), line);
-          relations.add(rel);
+          Race race = (u instanceof TempUnit)?((TempUnit) u).getParent().getRace():u.getRace();
+          if (tokens.size()>3){
+            race = getRace(tokens.get(2).getText());
+            if (u.getPersons()==0 || u.getRace().equals(race)){
+              RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), race, line);
+              relations.add(rel);
+            } else 
+              race = u.getRace();
+          } else {
+            RecruitmentRelation rel = new RecruitmentRelation(u, Integer.parseInt(t.getText()), line);
+            relations.add(rel);
+          }
+          if (u instanceof TempUnit){
+            ((TempUnit) u).setTempRace(race);
+          }
         } else {
           EresseaRelationFactory.log.debug("Unit.updateRelations(): invalid amount in order " + order);
         }
@@ -638,7 +644,32 @@ public class EresseaRelationFactory implements RelationFactory {
       }
     }
 
+//    Collections.sort(relations, new OrderPreferenceComparator()); 
+    
     return relations;
+  }
+
+  private Race getRace(String content) {
+    for (Race r : rules.getRaces()){
+      if (r.getRecruitmentName()!=null && 
+          content.equalsIgnoreCase(Resources.getOrderTranslation("race."+r.getRecruitmentName())))
+        return r;
+    }
+    return null;
+  }
+
+  /**
+   * Ensures that {@link ReserveRelation}s are sorted before all other relations.
+   */
+  public class OrderPreferenceComparator implements Comparator<UnitRelation> {
+
+    public int compare(UnitRelation o1, UnitRelation o2) {
+      if (o1 instanceof ReserveRelation && !(o2 instanceof ReserveRelation))
+        return -1;
+      if (!(o1 instanceof ReserveRelation) && (o2 instanceof ReserveRelation))
+        return 1;
+      return 0;
+    }
   }
 
   /**

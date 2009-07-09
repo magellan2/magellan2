@@ -26,12 +26,13 @@ import magellan.library.ID;
  * @version $Revision: 389 $
  */
 public class Race extends UnitContainerType {
-	private int recruit = 0;
+	private int recruit = -1;
 	private float weight = 0;
 	private float capacity = 0;
 	private Map<ID,Integer> skillBonuses = null;
   private Map<ID,Map<ID,Integer>> skillRegionBonuses = null;
 	private int additiveShipBonus;
+  private String recruitName;
 
 	/**
 	 * Creates a new Race object.
@@ -52,13 +53,25 @@ public class Race extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the cost for creating one person of this race. 
 	 */
 	public int getRecruitmentCosts() {
 		return recruit;
 	}
+
+  /**
+   * Sets the string needed for recruiting orders. 
+   */
+	public void setRecruitmentName(String name) {
+	  this.recruitName = name;
+	}
+	
+  /**
+   * Returns the string needed for recruiting orders if applicable, otherwise <code>null</code>. 
+   */
+  public String getRecruitmentName() {
+    return recruitName;
+  }
 
 	/**
 	 * DOCUMENT-ME
@@ -197,4 +210,5 @@ public class Race extends UnitContainerType {
 	public void setAdditiveShipBonus(int bon) {
 		additiveShipBonus = bon;
 	}
+
 }

@@ -19,6 +19,7 @@ import magellan.library.ID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.Race;
 import magellan.library.utils.Resources;
 
 /**
@@ -30,6 +31,7 @@ import magellan.library.utils.Resources;
 public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
   /** If this is a temp unit the parent is the unit that created this temp unit. */
   private Unit parent = null;
+  private Race tempRace;
 
   /**
    * Creates a new TempUnit object.
@@ -70,5 +72,17 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
       String temp = Resources.getOrderTranslation(EresseaConstants.O_TEMP);
       return temp + " " + id.toString();
     }
+  }
+  
+  public void setTempRace(Race r){
+    this.tempRace = r;
+  }
+  
+  @Override
+  public Race getRace() {
+    if (tempRace == null)
+      return super.getRace();
+    else
+      return tempRace;
   }
 }

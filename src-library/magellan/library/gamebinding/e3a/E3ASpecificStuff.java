@@ -47,6 +47,8 @@ public class E3ASpecificStuff implements GameSpecificStuff {
   private GameSpecificRules gameSpecificRules;
   private MapMergeEvaluator mapMergeEvaluator;
 
+  private RelationFactory relationFactory;
+
   /**
    * Returns the value of rules.
    * 
@@ -104,7 +106,11 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getRelationFactory()
    */
 	public RelationFactory getRelationFactory() {
-		return E3ARelationFactory.getSingleton();
+    if (relationFactory == null) {
+      relationFactory = new E3ARelationFactory(getRules());
+    }
+
+    return relationFactory;
 	}
 
   /**

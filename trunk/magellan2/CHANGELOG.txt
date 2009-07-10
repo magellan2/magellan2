@@ -1,3 +1,6 @@
+2009-07-10 / Build 327 - stm (stm_@users.sourceforge.net)
+    * parsing/displaying/writing of E3A region owner and morale
+
 2009-07-09 / Build 326 - stm (stm_@users.sourceforge.net)
     * fixed merging of spells with no parameters (empty syntax)
     * fixed E3A recruit parsing/completing

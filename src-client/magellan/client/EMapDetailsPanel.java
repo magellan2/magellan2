@@ -783,6 +783,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
     parent.add(createSimpleNode(regionKoordinateInfo, "koordinaten"));
 
+    appendRegionOwnerInfo(r, parent, expandableNodes);
+
     // region guards
     appendRegionGuardInfo(r, parent, expandableNodes);
 
@@ -809,6 +811,42 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // tags
     appendTags(r, parent, expandableNodes);
+  }
+
+  private void appendRegionOwnerInfo(Region r, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
+    if (r.getOwnerUnit() != null) {
+      UnitNodeWrapper w =
+          nodeWrapperFactory.createUnitNodeWrapper(r.getOwnerUnit(), Resources
+              .get("emapdetailspanel.node.owner")
+              + ": ", r.getOwnerUnit().getPersons(), r.getOwnerUnit().getModifiedPersons());
+      DefaultMutableTreeNode ownerNode = new DefaultMutableTreeNode(w);
+      parent.add(ownerNode);
+// expandableNodes.add(w);
+
+      Faction ownerFaction = r.getOwnerFaction();
+      if (ownerFaction == null)
+        ownerFaction = r.getOwnerUnit().getFaction();
+
+      DefaultMutableTreeNode n;
+      if (ownerFaction == null) {
+        n =
+            createSimpleNode(Resources.get("emapdetailspanel.node.faction") + ": "
+                + Resources.get("emapdetailspanel.node.unknownfaction"), "faction");
+      } else {
+        n =
+            createSimpleNode(Resources.get("emapdetailspanel.node.faction") + ": "
+                + ownerFaction.toString(), "faction");
+      }
+      parent.add(n);
+      if (r.getMorale() > 0) {
+        n =
+            createSimpleNode(Resources.get("emapdetailspanel.node.morale", new Object[] { r
+                .getMorale() }), "morale");
+        parent.add(n);
+      }
+    }
+
   }
 
   /**
@@ -928,7 +966,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Iterator it = data.rules.getRaceIterator(); it.hasNext();) {
         Race race = (Race) it.next();
         int rWage = data.getGameSpecificStuff().getGameSpecificRules().getWage(r, race);
-        if (rWage != wage) {
+        if (rWage>0 && rWage != wage) {
           nodeText.append(", ").append(race.getName()).append(": ").append(rWage);
         }
       }

@@ -1150,6 +1150,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   private Collection<CoordinateID> neighbours;
 
+  private Faction ownerFaction;
+
+  private int morale = -1;
+
   /**
    * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
    * <tt>neighbours</tt> is null they will be evaluated.
@@ -1973,6 +1977,34 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setUID(long uid) {
     UID = uid;
+  }
+
+  /**
+   * @see magellan.library.Region#getOwnerFaction()
+   */
+  public Faction getOwnerFaction() {
+    return ownerFaction;
+  }
+
+  /**
+   * @see magellan.library.Region#setOwnerFaction(magellan.library.Faction)
+   */
+  public void setOwnerFaction(Faction f) {
+    this.ownerFaction = f;
+  }
+
+  /**
+   * @see magellan.library.Region#getMorale()
+   */
+  public int getMorale() {
+    return morale;
+  }
+
+  /**
+   * @see magellan.library.Region#setMorale(int)
+   */
+  public void setMorale(int morale) {
+    this.morale  = morale;
   }
 
 }

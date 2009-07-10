@@ -102,8 +102,10 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
   public int getWage(Region region, Race race) {
     if (race.equals(region.getData().rules.getRace(EresseaConstants.R_GOBLINS)))
       return 6;
-    else
+    else if (race.getRecruitmentCosts()>0)
       return 10;
+    else
+      return -1;
   }
 
   public int getShipRange(Ship s) {

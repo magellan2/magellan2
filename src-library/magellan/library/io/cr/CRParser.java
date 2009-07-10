@@ -2849,6 +2849,13 @@ public class CRParser implements RulesIO, GameDataIO {
 
         iValidateFlags |= 1;
         sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("owner")) {
+        Faction f = world.getFaction(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        region.setOwnerFaction(f);
+        sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("morale")) {
+        region.setMorale(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
       } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Baeume")) {
         region.setTrees(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();

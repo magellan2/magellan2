@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.library;
@@ -29,8 +23,11 @@ import magellan.library.rules.RegionType;
 public interface Region extends UnitContainer {
 
   /**
-   * 0..very poor - no info (->visibility=null)<br /> 1..neighbour<br /> 2..lighthouse<br />
-   * 3..travel<br /> 4..qualified unit in region (->visibility=null)
+   * 0..very poor - no info (->visibility=null)<br />
+   * 1..neighbour<br />
+   * 2..lighthouse<br />
+   * 3..travel<br />
+   * 4..qualified unit in region (->visibility=null)
    */
   public enum Visibility {
     NULL, NEIGHBOR, LIGHTHOUSE, TRAVEL, UNIT;
@@ -54,7 +51,7 @@ public interface Region extends UnitContainer {
     public boolean greaterThan(Visibility otherVis) {
       return otherVis.lessThan(this);
     }
-}
+  }
 
   /**
    * Returns true if this region has fog of war.
@@ -94,40 +91,36 @@ public interface Region extends UnitContainer {
   public Island getIsland();
 
   /**
-   * A string constant indicating why this region is visible. This should only
-   * be used when writing/reading a CR. Otherwise use {@link #getVisibility()}.
+   * A string constant indicating why this region is visible. This should only be used when
+   * writing/reading a CR. Otherwise use {@link #getVisibility()}.
    * 
    * @return the string object or null, if the visibility is unspecified.
    */
   public String getVisibilityString();
 
   /**
-   * Sets a string constant indicating why this region is visible. This should only
-   * be used when writing/reading a CR. Otherwise use {@link #setVisibilityy(Visibility)}.
+   * Sets a string constant indicating why this region is visible. This should only be used when
+   * writing/reading a CR. Otherwise use {@link #setVisibilityy(Visibility)}.
    * 
-   * @param vis
-   *          a String object or null to indicate that the visibility cannot be
-   *          determined.
+   * @param vis a String object or null to indicate that the visibility cannot be determined.
    */
   public void setVisibilityString(String vis);
 
-
   /**
-   * Represents the quality of the visibility as an int value.
-   * 
-   * 0..very poor - no info (->visibility=null)<br /> 
-   * 1..neighbour <br /> 
-   * 2..lighthouse <br /> 
-   * 3..travel <br /> 
+   * Represents the quality of the visibility as an int value. 0..very poor - no info
+   * (->visibility=null)<br />
+   * 1..neighbour <br />
+   * 2..lighthouse <br />
+   * 3..travel <br />
    * 4..qualified unit in region (->visibility=null)
    */
   public Visibility getVisibility();
 
   /**
-   * 0..very poor - no info (->visibility=null) <br /> 
-   * 1..neighbour <br /> 
-   * 2..lighthouse <br /> 
-   * 3..travel <br /> 
+   * 0..very poor - no info (->visibility=null) <br />
+   * 1..neighbour <br />
+   * 2..lighthouse <br />
+   * 3..travel <br />
    * 4..qualified unit in region (->visibility=null)
    * 
    * @param v
@@ -147,11 +140,11 @@ public interface Region extends UnitContainer {
   public RegionResource addResource(RegionResource resource);
 
   /**
-   * Removes the resource with the specified numerical id or the id of its item
-   * type from this region.
+   * Removes the resource with the specified numerical id or the id of its item type from this
+   * region.
    * 
-   * @return the removed resource or null if no resource with the specified id
-   *         exists in this region.
+   * @return the removed resource or null if no resource with the specified id exists in this
+   *         region.
    */
   public RegionResource removeResource(RegionResource r);
 
@@ -171,8 +164,7 @@ public interface Region extends UnitContainer {
   /**
    * Returns the resource with the ID of its item type.
    * 
-   * @return the resource object or null if no resource with the specified ID
-   *         exists in this region.
+   * @return the resource object or null if no resource with the specified ID exists in this region.
    */
   public RegionResource getResource(ItemType type);
 
@@ -196,8 +188,7 @@ public interface Region extends UnitContainer {
   /**
    * Returns the scheme with the specified corodinate.
    * 
-   * @return the scheme object or null if no scheme with the specified ID exists
-   *         in this region.
+   * @return the scheme object or null if no scheme with the specified ID exists in this region.
    */
   public Scheme getScheme(ID id);
 
@@ -209,8 +200,7 @@ public interface Region extends UnitContainer {
   /**
    * Adds a border to this region.
    * 
-   * @throws NullPointerException
-   *           if border is <code>null</code>
+   * @throws NullPointerException if border is <code>null</code>
    */
   public Border addBorder(Border border);
 
@@ -222,8 +212,7 @@ public interface Region extends UnitContainer {
   /**
    * Returns the border with the specified id.
    * 
-   * @return the border object or null if no border with the specified id exists
-   *         in this region.
+   * @return the border object or null if no border with the specified id exists in this region.
    */
   public Border getBorder(ID key);
 
@@ -238,14 +227,13 @@ public interface Region extends UnitContainer {
   public Ship getShip(ID key);
 
   /**
-   * Adds a ship to this container. This method should only be invoked by
-   * Ship.setXXX() methods.
+   * Adds a ship to this container. This method should only be invoked by Ship.setXXX() methods.
    */
   public void addShip(Ship s);
 
   /**
-   * Removes a ship from this container. This method should only be invoked by
-   * Ship.setXXX() methods.
+   * Removes a ship from this container. This method should only be invoked by Ship.setXXX()
+   * methods.
    */
   public Ship removeShip(Ship s);
 
@@ -260,35 +248,33 @@ public interface Region extends UnitContainer {
   public Building getBuilding(ID key);
 
   /**
-   * Adds a building to this container. This method should only be invoked by
-   * Building.setXXX() methods.
+   * Adds a building to this container. This method should only be invoked by Building.setXXX()
+   * methods.
    */
   public void addBuilding(Building u);
 
   /**
-   * Removes a building from this container. This method should only be invoked
-   * by Building.setXXX() methods.
+   * Removes a building from this container. This method should only be invoked by Building.setXXX()
+   * methods.
    */
   public Building removeBuilding(Building b);
 
   /**
-   * Returns the items of all units that are stationed in this region and
-   * belonging to a faction that has at least a privileged trust level. The
-   * amount of the items of a particular item type are added up, so two units
-   * with 5 pieces of silver yield one silver item of amount 10 here.
+   * Returns the items of all units that are stationed in this region and belonging to a faction
+   * that has at least a privileged trust level. The amount of the items of a particular item type
+   * are added up, so two units with 5 pieces of silver yield one silver item of amount 10 here.
    */
   public Collection<Item> items();
 
   /**
-   * Returns the items of all units that are stationed in this region The amount
-   * of the items of a particular item type are added up, so two units with 5
-   * pieces of silver yield one silver item of amount 10 here.
+   * Returns the items of all units that are stationed in this region The amount of the items of a
+   * particular item type are added up, so two units with 5 pieces of silver yield one silver item
+   * of amount 10 here.
    */
   public Collection<Item> allItems();
 
   /**
-   * Returns a specific item from the items() collection identified by the item
-   * type.
+   * Returns a specific item from the items() collection identified by the item type.
    */
   public Item getItem(ItemType type);
 
@@ -309,62 +295,59 @@ public interface Region extends UnitContainer {
   public int maxEntertain();
 
   /**
-   * Returns the silver that could be earned through entertainment in this
-   * region.
+   * Returns the silver that could be earned through entertainment in this region.
    */
   public int maxOldEntertain();
 
   /**
-   * Returns the maximum number of luxury items that can be bought in this
-   * region without a price penalty.
+   * Returns the maximum number of luxury items that can be bought in this region without a price
+   * penalty.
    */
   public int maxLuxuries();
 
   /**
-   * Returns the maximum number of luxury items that could be bought in this
-   * region without a price penalty.
+   * Returns the maximum number of luxury items that could be bought in this region without a price
+   * penalty.
    */
   public int maxOldLuxuries();
 
   /**
-   * Calculates the wage a peasant earns according to the biggest castle in this
-   * region. While the value of the wage field is directly taken from the report
-   * and may be biased by the race of the owner faction of that report, this
-   * function tries to determine the real wage a peasant can earn in this
-   * region. Wage for player persons can be derived from that value
+   * Calculates the wage a peasant earns according to the biggest castle in this region. While the
+   * value of the wage field is directly taken from the report and may be biased by the race of the
+   * owner faction of that report, this function tries to determine the real wage a peasant can earn
+   * in this region. Wage for player persons can be derived from that value
    */
   public int getPeasantWage();
 
   /**
-   * Returns a String representation of this Region object. If region has no
-   * name the string representation of the region type is used.
+   * Returns a String representation of this Region object. If region has no name the string
+   * representation of the region type is used.
    */
   public String toString();
 
   /**
-   * Returns the coordinate of this region. This method is only a type-safe
-   * short cut for retrieving and converting the ID object of this region.
+   * Returns the coordinate of this region. This method is only a type-safe short cut for retrieving
+   * and converting the ID object of this region.
    */
   public CoordinateID getCoordinate();
 
   /**
-   * Returns the RegionType of this region. This method is only a type-safe
-   * short cut for retrieving and converting the RegionType of this region.
+   * Returns the RegionType of this region. This method is only a type-safe short cut for retrieving
+   * and converting the RegionType of this region.
    */
   public RegionType getRegionType();
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable
-   * to call this method instead of refreshing the unit relations 'manually'.
+   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * instead of refreshing the unit relations 'manually'.
    */
   public void refreshUnitRelations();
 
   /**
-   * Refreshes all the relations of all units in this region. It is preferrable
-   * to call this method instead of refreshing the unit relations 'manually'.
+   * Refreshes all the relations of all units in this region. It is preferrable to call this method
+   * instead of refreshing the unit relations 'manually'.
    * 
-   * @param forceRefresh
-   *          to enforce refreshment, false for one refreshment only
+   * @param forceRefresh to enforce refreshment, false for one refreshment only
    */
 
   public void refreshUnitRelations(boolean forceRefresh);
@@ -393,15 +376,15 @@ public interface Region extends UnitContainer {
   public Unit getUnit(ID key);
 
   /**
-   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
-   * <tt>neighbours</tt> is null they will be evaluated.
+   * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If <tt>neighbours</tt>
+   * is null they will be evaluated.
    */
   public void setNeighbours(Collection<CoordinateID> neighbours);
 
   /**
-   * returns a collection of ids for reachable neighbours. This may be set by
-   * setNeighbours() if neighbours is null it will be calculated from the game
-   * data). This function may be necessary for new xml reports.
+   * returns a collection of ids for reachable neighbours. This may be set by setNeighbours() if
+   * neighbours is null it will be calculated from the game data). This function may be necessary
+   * for new xml reports.
    */
   public Collection<CoordinateID> getNeighbours();
 
@@ -426,8 +409,7 @@ public interface Region extends UnitContainer {
   public Collection<Sign> getSigns();
 
   /**
-   * @param signLines
-   *          the signLines to set
+   * @param signLines the signLines to set
    */
   public void setSigns(List<Sign> signLines);
 
@@ -447,8 +429,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of events.
    * 
-   * @param events
-   *          The value for events.
+   * @param events The value for events.
    */
   public void setEvents(List<Message> events);
 
@@ -462,8 +443,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of herb.
    * 
-   * @param herb
-   *          The value for herb.
+   * @param herb The value for herb.
    */
   public void setHerb(ItemType herb);
 
@@ -477,8 +457,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of herbAmount.
    * 
-   * @param herbAmount
-   *          The value for herbAmount.
+   * @param herbAmount The value for herbAmount.
    */
   public void setHerbAmount(String herbAmount);
 
@@ -492,8 +471,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of horses.
    * 
-   * @param horses
-   *          The value for horses.
+   * @param horses The value for horses.
    */
   public void setHorses(int horses);
 
@@ -507,8 +485,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of iron.
    * 
-   * @param iron
-   *          The value for iron.
+   * @param iron The value for iron.
    */
   public void setIron(int iron);
 
@@ -522,8 +499,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of laen.
    * 
-   * @param laen
-   *          The value for laen.
+   * @param laen The value for laen.
    */
   public void setLaen(int laen);
 
@@ -537,8 +513,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of mallorn.
    * 
-   * @param mallorn
-   *          The value for mallorn.
+   * @param mallorn The value for mallorn.
    */
   public void setMallorn(boolean mallorn);
 
@@ -552,8 +527,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of messages.
    * 
-   * @param messages
-   *          The value for messages.
+   * @param messages The value for messages.
    */
   public void setMessages(List<Message> messages);
 
@@ -567,8 +541,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldHorses.
    * 
-   * @param oldHorses
-   *          The value for oldHorses.
+   * @param oldHorses The value for oldHorses.
    */
   public void setOldHorses(int oldHorses);
 
@@ -582,8 +555,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldIron.
    * 
-   * @param oldIron
-   *          The value for oldIron.
+   * @param oldIron The value for oldIron.
    */
   public void setOldIron(int oldIron);
 
@@ -597,8 +569,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldLaen.
    * 
-   * @param oldLaen
-   *          The value for oldLaen.
+   * @param oldLaen The value for oldLaen.
    */
   public void setOldLaen(int oldLaen);
 
@@ -612,8 +583,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldPeasants.
    * 
-   * @param oldPeasants
-   *          The value for oldPeasants.
+   * @param oldPeasants The value for oldPeasants.
    */
   public void setOldPeasants(int oldPeasants);
 
@@ -627,8 +597,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldPrices.
    * 
-   * @param oldPrices
-   *          The value for oldPrices.
+   * @param oldPrices The value for oldPrices.
    */
   public void setOldPrices(Map<ID, LuxuryPrice> oldPrices);
 
@@ -642,8 +611,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldRecruits.
    * 
-   * @param oldRecruits
-   *          The value for oldRecruits.
+   * @param oldRecruits The value for oldRecruits.
    */
   public void setOldRecruits(int oldRecruits);
 
@@ -657,8 +625,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldSilver.
    * 
-   * @param oldSilver
-   *          The value for oldSilver.
+   * @param oldSilver The value for oldSilver.
    */
   public void setOldSilver(int oldSilver);
 
@@ -672,8 +639,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldSprouts.
    * 
-   * @param oldSprouts
-   *          The value for oldSprouts.
+   * @param oldSprouts The value for oldSprouts.
    */
   public void setOldSprouts(int oldSprouts);
 
@@ -687,8 +653,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldStones.
    * 
-   * @param oldStones
-   *          The value for oldStones.
+   * @param oldStones The value for oldStones.
    */
   public void setOldStones(int oldStones);
 
@@ -702,8 +667,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldTrees.
    * 
-   * @param oldTrees
-   *          The value for oldTrees.
+   * @param oldTrees The value for oldTrees.
    */
   public void setOldTrees(int oldTrees);
 
@@ -717,8 +681,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of oldWage.
    * 
-   * @param oldWage
-   *          The value for oldWage.
+   * @param oldWage The value for oldWage.
    */
   public void setOldWage(int oldWage);
 
@@ -732,8 +695,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of orcInfested.
    * 
-   * @param orcInfested
-   *          The value for orcInfested.
+   * @param orcInfested The value for orcInfested.
    */
   public void setOrcInfested(boolean orcInfested);
 
@@ -747,8 +709,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of peasants.
    * 
-   * @param peasants
-   *          The value for peasants.
+   * @param peasants The value for peasants.
    */
   public void setPeasants(int peasants);
 
@@ -762,8 +723,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of playerMessages.
    * 
-   * @param playerMessages
-   *          The value for playerMessages.
+   * @param playerMessages The value for playerMessages.
    */
   public void setPlayerMessages(List<Message> playerMessages);
 
@@ -777,8 +737,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of prices.
    * 
-   * @param prices
-   *          The value for prices.
+   * @param prices The value for prices.
    */
   public void setPrices(Map<ID, LuxuryPrice> prices);
 
@@ -792,8 +751,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of recruits.
    * 
-   * @param recruits
-   *          The value for recruits.
+   * @param recruits The value for recruits.
    */
   public void setRecruits(int recruits);
 
@@ -807,8 +765,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of silver.
    * 
-   * @param silver
-   *          The value for silver.
+   * @param silver The value for silver.
    */
   public void setSilver(int silver);
 
@@ -822,8 +779,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of sprouts.
    * 
-   * @param sprouts
-   *          The value for sprouts.
+   * @param sprouts The value for sprouts.
    */
   public void setSprouts(int sprouts);
 
@@ -837,8 +793,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of stones.
    * 
-   * @param stones
-   *          The value for stones.
+   * @param stones The value for stones.
    */
   public void setStones(int stones);
 
@@ -852,8 +807,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of surroundings.
    * 
-   * @param surroundings
-   *          The value for surroundings.
+   * @param surroundings The value for surroundings.
    */
   public void setSurroundings(List<Message> surroundings);
 
@@ -867,8 +821,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of travelThru.
    * 
-   * @param travelThru
-   *          The value for travelThru.
+   * @param travelThru The value for travelThru.
    */
   public void setTravelThru(List<Message> travelThru);
 
@@ -882,8 +835,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of travelThruShips.
    * 
-   * @param travelThruShips
-   *          The value for travelThruShips.
+   * @param travelThruShips The value for travelThruShips.
    */
   public void setTravelThruShips(List<Message> travelThruShips);
 
@@ -897,8 +849,7 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of trees.
    * 
-   * @param trees
-   *          The value for trees.
+   * @param trees The value for trees.
    */
   public void setTrees(int trees);
 
@@ -912,16 +863,14 @@ public interface Region extends UnitContainer {
   /**
    * Sets the value of wage.
    * 
-   * @param wage
-   *          The value for wage.
+   * @param wage The value for wage.
    */
   public void setWage(int wage);
 
   /**
    * Sets the value of isActive.
    * 
-   * @param isActive
-   *          The value for isActive.
+   * @param isActive The value for isActive.
    */
   public void setActive(boolean isActive);
 
@@ -933,32 +882,32 @@ public interface Region extends UnitContainer {
   public boolean isActive();
 
   /**
-   * The returned integer is an BitMap representing the info,
-   * if neighboring regions are ozean or not
-   * BitMask 1: dir = 0
-   * BitMask 2: dir = 1
-   * BitMask 4: dir = 2  ....
-   * Bit = 1 -> there is land!
+   * The returned integer is an BitMap representing the info, if neighboring regions are ozean or
+   * not-<br />
+   * BitMask 1: dir = 0<br />
+   * BitMask 2: dir = 1<br />
+   * BitMask 4: dir = 2 ....<br />
+   * Bit = 1 -> there is land!<br />
    * Bit = 0 -> there is ozean!
+   * 
    * @return an Integer as BitMap
    */
-  public Integer getCoastBitMap(); 
-  
+  public Integer getCoastBitMap();
+
   /**
-   * The given integer is an BitMap representing the info,
-   * if neighboring regions are ozean or not
-   * BitMask 1: dir = 0
-   * BitMask 2: dir = 1
-   * BitMask 4: dir = 2  ....
-   * Bit = 1 -> there is land!
+   * The given integer is an BitMap representing the info, if neighboring regions are ozean or not.<br />
+   * BitMask 1: dir = 0<br />
+   * BitMask 2: dir = 1<br />
+   * BitMask 4: dir = 2 ....<br />
+   * Bit = 1 -> there is land!<br />
    * Bit = 0 -> there is ozean!
+   * 
    * @param bitMap an Integer as BitMap
    */
   public void setCoastBitMap(Integer bitMap);
 
   /**
-   * Returns the unique regionID generated by the eressea-server used at first
-   * for merging
+   * Returns the unique regionID generated by the eressea-server used at first for merging
    */
   public long getUID();
 
@@ -966,5 +915,26 @@ public interface Region extends UnitContainer {
    * sets the given long value as the unique regionID
    */
   public void setUID(long uID);
+
+  /**
+   * Sets the faction owning this region (E3A only, currently)
+   */
+  public void setOwnerFaction(Faction f);
+
+  /**
+   * Returns the faction owning this region (E3A only, currently) or <code>null</code> if not
+   * applicable.
+   */
+  public Faction getOwnerFaction();
+
+  /**
+   * Sets the region's morale (from 0 to 5(?)).
+   */
+  public void setMorale(int morale);
+
+  /**
+   * Gets the region's morale (from 0 to 5(?)) or -1 if not defined or known.
+   */
+  public int getMorale();
 
 }

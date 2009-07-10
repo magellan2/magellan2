@@ -1835,6 +1835,11 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
+    if(includeRegionDetails && region.getOwnerFaction()!=null) {
+      write(((IntegerID) region.getOwnerFaction().getID()).intValue()+";owner");
+    }
+		
+		
 		if(region.hasTags()) {
 			java.util.Map map = region.getTagMap();
 			java.util.Iterator it = map.keySet().iterator();
@@ -1939,6 +1944,10 @@ public class CRWriter extends BufferedWriter {
 				write(region.getOldWage() + ";letzterlohn");
 				newLine();
 			}
+
+	    if(includeRegionDetails && region.getMorale()>0) {
+	      write(region.getMorale()+";morale");
+	    }
 
 			if(region.getIron() > 0) {
 				write(region.getIron() + ";Eisen");

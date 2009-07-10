@@ -67,7 +67,7 @@ public interface GameSpecificRules {
 
 
   /**
-   * Returns the wage for <code>race</code> in <code>region</code>. 
+   * Returns the wage for <code>race</code> in <code>region</code> or -1 if unknown or not applicable. 
    */
   public int getWage(Region region, Race race);
 

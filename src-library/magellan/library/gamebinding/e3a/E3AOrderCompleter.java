@@ -82,8 +82,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       // special request for myself (Darcduck)
       // if an unit should guard the region it must have a combat state better than FLIEHE (5)
       // of a combat order (KÄMPFE) after all attack orders
-      if ((getUnit().getCombatStatus() > 4)
-          && (getUnit().getModifiedCombatStatus() > 4)) {
+      if ((getUnit().getCombatStatus() > 4) && (getUnit().getModifiedCombatStatus() > 4)) {
         addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD)
             + "...", Resources.getOrderTranslation(EresseaConstants.O_GUARD) + "\n"
             + Resources.getOrderTranslation(EresseaConstants.O_COMBAT), " ", 5, 0));
@@ -106,10 +105,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RIDE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW), " "));
 
-//    if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 7)) {
-//      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
-//          + Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
-//    }
+// if (hasSkill(getUnit(), EresseaConstants.S_KRAEUTERKUNDE, 7)) {
+// addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_RESEARCH) + " "
+// + Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
+// }
 
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GIVE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROUP), " "));
@@ -177,20 +176,17 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHOW), " "));
 
     // units destroying their own building or ship or...
-    if (((getUnit().getBuilding() != null)
-        && (getUnit().getBuilding().getOwnerUnit() != null) && (getUnit().getBuilding()
-        .getOwnerUnit().equals(getUnit())))
-        || ((getUnit().getShip() != null)
-            && (getUnit().getShip().getOwnerUnit() != null) && (getUnit().getShip()
-            .getOwnerUnit().equals(getUnit())))
+    if (((getUnit().getBuilding() != null) && (getUnit().getBuilding().getOwnerUnit() != null) && (getUnit()
+        .getBuilding().getOwnerUnit().equals(getUnit())))
+        || ((getUnit().getShip() != null) && (getUnit().getShip().getOwnerUnit() != null) && (getUnit()
+            .getShip().getOwnerUnit().equals(getUnit())))
         ||
         // ... vicious warriors destroying other peoples buildings or ships
         (getUnit().getModifiedBuilding() != null
-            && getUnit().getModifiedBuilding().getOwnerUnit() != null && getUnit()
-            .getFaction() != getUnit().getModifiedBuilding().getOwnerUnit().getFaction())
-        || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip()
-            .getOwnerUnit() == null || getUnit().getFaction() != getUnit().getModifiedShip()
-            .getOwnerUnit().getFaction()))) {
+            && getUnit().getModifiedBuilding().getOwnerUnit() != null && getUnit().getFaction() != getUnit()
+            .getModifiedBuilding().getOwnerUnit().getFaction())
+        || (getUnit().getModifiedShip() != null && (getUnit().getModifiedShip().getOwnerUnit() == null || getUnit()
+            .getFaction() != getUnit().getModifiedShip().getOwnerUnit().getFaction()))) {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DESTROY)));
     } else {
       if (hasSkill(getUnit(), EresseaConstants.S_STRASSENBAU) && (getRegion() != null)
@@ -199,7 +195,13 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       }
     }
 
-//    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
+// addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
+  }
+
+  @Override
+  public void cmpltBenenne() {
+    super.cmpltBenenne();
+    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
   }
 
   public void cmpltRekrutiere() {
@@ -211,7 +213,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       if (r.getRecruitmentName() != null)
         addCompletion(new Completion(r.getRecruitmentName()));
     }
-//    addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "", ""));
+// addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "", ""));
   }
 
   public void cmpltAllianz() {

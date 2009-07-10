@@ -151,6 +151,47 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
   }
 
+//************* BENENNE
+  protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+    public boolean read(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+      t.ttype = OrderToken.TT_KEYWORD;
+      if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_REGION))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
+        retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))) {
+        retVal = readBenenneFremdes(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))) {
+        retVal = readBenenneFremdes(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNSHIP))) {
+        retVal = readBenenneFremdes(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))) {
+        retVal = readBenenneFremdes(t);
+      } else {
+        t.ttype = OrderToken.TT_UNDEF;
+        unexpected(t);
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBenenne();
+      }
+
+      return retVal;
+    }
+  }
+  
   // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
     public boolean read(OrderToken token) {

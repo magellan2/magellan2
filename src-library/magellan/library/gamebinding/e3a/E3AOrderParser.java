@@ -7,6 +7,7 @@
 
 package magellan.library.gamebinding.e3a;
 
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaConstants;
@@ -90,21 +91,17 @@ public class E3AOrderParser extends EresseaOrderParser {
       if (t.ttype == OrderToken.TT_EOC) {
         unexpected(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_KICK))) {
-        retVal = readAllianzKick(t);
+        retVal = readAllianzFactionID(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_LEAVE))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND))) {
-        t.ttype = OrderToken.TT_KEYWORD;
-        Faction faction = readFactionID();
-        retVal = faction != null && checkNextFinal();
+        retVal = readAllianzFactionID(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_NEW))) {
         t.ttype = OrderToken.TT_KEYWORD;
         retVal = checkNextFinal();
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE))) {
-        t.ttype = OrderToken.TT_KEYWORD;
-        Faction faction = readFactionID();
-        retVal = faction != null && checkNextFinal();
+        retVal = readAllianzFactionID(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_JOIN))) {
         retVal = readAllianzBeitreten(t);
       } else {
@@ -132,16 +129,22 @@ public class E3AOrderParser extends EresseaOrderParser {
       return false;
     }
 
-    protected boolean readAllianzKick(OrderToken token) {
+    protected boolean readAllianzFactionID(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
 
       OrderToken t = getNextToken();
 
       if (isID(t.getText())) {
-        retVal = readFinalID(t);
+        t.ttype = OrderToken.TT_ID;
+        Faction faction = getData().getFaction(EntityID.createEntityID(t.getText(), getData().base));
+        retVal = faction != null && checkNextFinal();
       } else {
         unexpected(t);
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltFactions("");
       }
 
       return retVal;

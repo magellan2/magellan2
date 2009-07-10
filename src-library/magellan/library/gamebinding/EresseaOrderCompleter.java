@@ -193,7 +193,7 @@ public class EresseaOrderCompleter implements Completer {
     return ret;
   }
 
-  protected void addCompletion(Completion completion) {
+  public void addCompletion(Completion completion) {
     completions.add(completion);
   }
 
@@ -386,7 +386,7 @@ public class EresseaOrderCompleter implements Completer {
         + Resources.getOrderTranslation(EresseaConstants.O_SHIP)));
   }
 
-  protected void cmpltAttack() {
+  public void cmpltAttack() {
     // special request for myself (Darcduck)
     // if an attacking unit has the wrong combat state issue the start
     // of a combat order (KÄMPFE) after all attack orders
@@ -462,11 +462,11 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBeklaue() {
+  public void cmpltBeklaue() {
     addEnemyUnits("");
   }
 
-  protected void cmpltBelagere() {
+  public void cmpltBelagere() {
     if ((data != null) && (unit != null) && (region != null)) {
       Faction ownerFaction = unit.getFaction();
       Iterator buildings = region.buildings().iterator();
@@ -484,7 +484,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBenenne() {
+  public void cmpltBenenne() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(Resources
@@ -512,7 +512,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBenenneFremdes(OrderToken token) {
+  public void cmpltBenenneFremdes(OrderToken token) {
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNUNIT)))
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
     if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING)))
@@ -525,7 +525,7 @@ public class EresseaOrderCompleter implements Completer {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
-  protected void cmpltBenenneFremdeEinheit() {
+  public void cmpltBenenneFremdeEinheit() {
     if ((data != null) && (unit != null) && (region != null)) {
       Faction ownerFaction = unit.getFaction();
       Iterator units = region.units().iterator();
@@ -545,7 +545,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBenenneFremdesGebaeude() {
+  public void cmpltBenenneFremdesGebaeude() {
     if ((data != null) && (unit != null) && (region != null)) {
       Faction ownerFaction = unit.getFaction();
       Iterator buildings = region.buildings().iterator();
@@ -566,7 +566,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBenenneFremdePartei() {
+  public void cmpltBenenneFremdePartei() {
     if ((data != null) && (data.factions() != null) && (unit != null)) {
       Faction ownerFaction = unit.getFaction();
       Iterator factions = data.factions().values().iterator();
@@ -586,7 +586,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBenenneFremdesSchiff() {
+  public void cmpltBenenneFremdesSchiff() {
     if ((data != null) && (unit != null) && (region != null)) {
       Faction ownerFaction = unit.getFaction();
       Iterator ships = region.ships().iterator();
@@ -607,7 +607,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltDescription() {
+  public void cmpltDescription() {
     completions.add(new Completion("\"\"", "\"\"", " ", Completion.DEFAULT_PRIORITY, 2));
   }
 
@@ -616,20 +616,20 @@ public class EresseaOrderCompleter implements Completer {
    * 
    * @param amount
    */
-  protected void cmpltBenutze(int amount) {
+  public void cmpltBenutze(int amount) {
     // addUnitItems("");
     // addFactionItems("");
     addRegionItemsFaction("", amount);
   }
 
-  protected void cmpltBeanspruche() {
+  public void cmpltBeanspruche() {
     for (Iterator<Item> iter = unit.getFaction().getItems().iterator(); iter.hasNext();) {
       Item actItem = iter.next();
       completions.add(new Completion(actItem.getName()));
     }
   }
 
-  protected void cmpltBeschreibe() {
+  public void cmpltBeschreibe() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " \"\"",
         Completion.DEFAULT_PRIORITY, 1));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PRIVATE),
@@ -649,7 +649,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBetrete() {
+  public void cmpltBetrete() {
     if (region.buildings().size() > 0) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " ",
           7));
@@ -665,7 +665,7 @@ public class EresseaOrderCompleter implements Completer {
         .getShip());
   }
 
-  protected void cmpltBetreteBurg() {
+  public void cmpltBetreteBurg() {
     for (Iterator iter = region.buildings().iterator(); iter.hasNext();) {
       UnitContainer uc = (UnitContainer) iter.next();
 
@@ -680,7 +680,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBetreteSchiff() {
+  public void cmpltBetreteSchiff() {
     for (Iterator iter = region.ships().iterator(); iter.hasNext();) {
       UnitContainer uc = (UnitContainer) iter.next();
 
@@ -695,7 +695,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBotschaft() {
+  public void cmpltBotschaft() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION), " "));
@@ -704,15 +704,15 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
-  protected void cmpltBotschaftEinheit(boolean tempToken) {
+  public void cmpltBotschaftEinheit(boolean tempToken) {
     addRegionUnits(" \"\"", 1, tempToken);
   }
 
-  protected void cmpltBotschaftPartei() {
+  public void cmpltBotschaftPartei() {
     addOtherFactions(" \"\"", 1);
   }
 
-  protected void cmpltBotschaftGebaeude() {
+  public void cmpltBotschaftGebaeude() {
     Iterator i = region.buildings().iterator();
 
     while ((i != null) && i.hasNext()) {
@@ -723,11 +723,11 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBotschaftGebaeudeID() {
+  public void cmpltBotschaftGebaeudeID() {
     completions.add(new Completion(" \"\"", " \"\"", "", Completion.DEFAULT_PRIORITY, 1));
   }
 
-  protected void cmpltBotschaftSchiff() {
+  public void cmpltBotschaftSchiff() {
     Iterator i = region.ships().iterator();
 
     while ((i != null) && i.hasNext()) {
@@ -738,11 +738,11 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltBotschaftSchiffID() {
+  public void cmpltBotschaftSchiffID() {
     completions.add(new Completion(" \"\"", " \"\"", "", Completion.DEFAULT_PRIORITY, 1));
   }
 
-  protected void cmpltFahre(boolean tempToken) {
+  public void cmpltFahre(boolean tempToken) {
     addRegionUnits("", tempToken);
   }
 
@@ -863,16 +863,16 @@ public class EresseaOrderCompleter implements Completer {
     completions.clear();
   }
 
-  protected void cmpltFolge() {
+  public void cmpltFolge() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
   }
 
-  protected void cmpltFolgeEinheit(boolean tempToken) {
+  public void cmpltFolgeEinheit(boolean tempToken) {
     addRegionUnits("", tempToken);
   }
 
-  protected void cmpltFolgeSchiff() {
+  public void cmpltFolgeSchiff() {
     if (region != null) {
       Iterator i = region.ships().iterator();
 
@@ -918,11 +918,11 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltForsche() {
+  public void cmpltForsche() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
   }
 
-  protected void cmpltGruppe() {
+  public void cmpltGruppe() {
     if ((unit != null) && (unit.getFaction() != null) && (unit.getFaction().getGroups() != null)) {
       for (Iterator iter = unit.getFaction().getGroups().values().iterator(); iter.hasNext();) {
         Group g = (Group) iter.next();
@@ -931,13 +931,13 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltGib() {
+  public void cmpltGib() {
     addRegionUnits(" ", false);
     addRegionShipCommanders(" ");
     addRegionBuildingOwners(" ");
   }
 
-  protected void cmpltGibUID(boolean tempToken) {
+  public void cmpltGibUID(boolean tempToken) {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT)));
 
@@ -964,7 +964,7 @@ public class EresseaOrderCompleter implements Completer {
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }
 
-  protected void cmpltGibJe() {
+  public void cmpltGibJe() {
     completions.add(new Completion(Resources
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }
@@ -977,7 +977,7 @@ public class EresseaOrderCompleter implements Completer {
    * @param i the amount
    * @param persons Whether to add "PERSONEN" or not
    */
-  protected void cmpltGibUIDAmount(UnitID uid, int i, boolean persons) {
+  public void cmpltGibUIDAmount(UnitID uid, int i, boolean persons) {
     addUnitItems(i, "");
 
     if ((i != 0) && (uid != null)) {
@@ -1057,20 +1057,20 @@ public class EresseaOrderCompleter implements Completer {
 
   }
 
-  protected void cmpltGibUIDAmount() {
+  public void cmpltGibUIDAmount() {
     cmpltGibUIDAmount(null, 0, true);
   }
 
-  protected void cmpltGibUIDAlles() {
+  public void cmpltGibUIDAlles() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN)));
     addUnitItems("");
   }
 
-  protected void cmpltHelfe() {
+  public void cmpltHelfe() {
     addOtherFactions(" ");
   }
 
-  protected void cmpltHelfeFID() {
+  public void cmpltHelfeFID() {
     for (Iterator it = getData().rules.getAllianceCategoryIterator(); it.hasNext();) {
       AllianceCategory all = (AllianceCategory) it.next();
       completions.add(new Completion(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX
@@ -1078,11 +1078,11 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltHelfeFIDModifier() {
+  public void cmpltHelfeFIDModifier() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
   }
 
-  protected void cmpltKaempfe() {
+  public void cmpltKaempfe() {
     int guardMalus = 0;
     int attackMalus = 0;
     if (unit != null) {
@@ -1124,15 +1124,15 @@ public class EresseaOrderCompleter implements Completer {
         " "));
   }
 
-  protected void cmpltKaempfeHelfe() {
+  public void cmpltKaempfeHelfe() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_COMBAT_NOT)));
   }
 
-  protected void cmpltKaufe() {
+  public void cmpltKaufe() {
     completions.add(new Completion(region.maxLuxuries() + "", " "));
   }
 
-  protected void cmpltKaufeAmount() {
+  public void cmpltKaufeAmount() {
     String item = null;
 
     if (region.getPrices() != null) {
@@ -1166,7 +1166,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltKampfzauber(boolean modifiers, String opening, String closing) {
+  public void cmpltKampfzauber(boolean modifiers, String opening, String closing) {
     if ((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
       if (modifiers) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
@@ -1183,22 +1183,22 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltKampfzauberSpell() {
+  public void cmpltKampfzauberSpell() {
     // at this point it is not important if the unit has combat spells, so we don't check for it.
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), ""));
   }
 
-  protected void cmpltKontaktiere() {
+  public void cmpltKontaktiere() {
     Alliance alliance =
         new Alliance(unit.getFaction(), EresseaConstants.A_GIVE | EresseaConstants.A_GUARD);
     addNotAlliedUnits(alliance, "");
   }
 
-  protected void cmpltLehre(boolean tempToken) {
+  public void cmpltLehre(boolean tempToken) {
     addRegionUnits(" ", tempToken);
   }
 
-  protected void cmpltLerne() {
+  public void cmpltLerne() {
     if ((data != null) && (data.rules != null)) {
       for (Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
         SkillType t = (SkillType) iter.next();
@@ -1215,7 +1215,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltLerneTalent(SkillType t) {
+  public void cmpltLerneTalent(SkillType t) {
     if (data != null && data.rules != null && t != null) {
       int cost = getSkillCost(t, unit);
 
@@ -1295,23 +1295,23 @@ public class EresseaOrderCompleter implements Completer {
     return c2;
   }
 
-  protected void cmpltLiefere() {
+  public void cmpltLiefere() {
     cmpltGib();
   }
 
-  protected void cmpltLocale() {
+  public void cmpltLocale() {
     completions.add(new Completion("deutsch", "\"de\"", ""));
     completions.add(new Completion("english", "\"en\"", ""));
   }
 
-  protected void cmpltMache() {
+  public void cmpltMache() {
     // we focus on our temp creation dialog
     // completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEMP),
     // " "));
     cmpltMacheAmount();
   }
 
-  protected void cmpltMacheAmount() {
+  public void cmpltMacheAmount() {
     // buildings
     if (hasSkill(unit, EresseaConstants.S_BURGENBAU)) {
       if ((data != null) && (data.rules != null)) {
@@ -1416,14 +1416,14 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltMacheTemp() {
+  public void cmpltMacheTemp() {
   }
 
-  protected void cmpltMacheTempID() {
+  public void cmpltMacheTempID() {
     completions.add(new Completion("\"\""));
   }
 
-  protected void cmpltMacheBurg() {
+  public void cmpltMacheBurg() {
     Iterator i = region.buildings().iterator();
 
     while ((i != null) && i.hasNext()) {
@@ -1437,7 +1437,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltMacheBuilding(String typeName) {
+  public void cmpltMacheBuilding(String typeName) {
     // TODO(pavkovic): korrigieren!!! Hier soll eigentlich das Gebäude über den
     // übersetzten Namen gefunden werden!!!
     // BuildingType type = ((Eressea) data.rules).getBuildingType(typeName);
@@ -1457,7 +1457,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltMacheSchiff() {
+  public void cmpltMacheSchiff() {
     Faction ownerFaction = unit.getFaction();
     Iterator i = region.ships().iterator();
 
@@ -1477,28 +1477,28 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltMacheStrasse() {
+  public void cmpltMacheStrasse() {
     addDirections("");
   }
 
-  protected void cmpltNach() {
+  public void cmpltNach() {
     addDirections(" ");
     addSurroundingRegions(unit.getRadius(), " ");
   }
 
-  protected void cmpltNeustart() {
+  public void cmpltNeustart() {
     completions.add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.race"),
         "", ""));
   }
 
-  protected void cmpltNummer() {
+  public void cmpltNummer() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
   }
 
-  protected void cmpltOption() {
+  public void cmpltOption() {
     completions
         .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ADDRESSES), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_REPORT), " "));
@@ -1517,40 +1517,40 @@ public class EresseaOrderCompleter implements Completer {
         .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TEMPLATE), " "));
   }
 
-  protected void cmpltOptionOption() {
+  public void cmpltOptionOption() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
   }
 
-  protected void cmpltPflanze() {
+  public void cmpltPflanze() {
     completions.add(new Completion(Resources
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }
 
-  protected void cmpltPflanze(int minAmount) {
+  public void cmpltPflanze(int minAmount) {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_TREES)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SEED)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MALLORNSEED)));
   }
 
-  protected void cmpltPiraterie() {
+  public void cmpltPiraterie() {
     addOtherFactions(" ");
   }
 
-  protected void cmpltPiraterieFID() {
+  public void cmpltPiraterieFID() {
     cmpltPiraterie();
   }
 
-  protected void cmpltPraefix() {
+  public void cmpltPraefix() {
     completions.add(new Completion("\"\"", "\"\"", "", Completion.DEFAULT_PRIORITY, 1));
   }
 
-  protected void cmpltRekrutiere() {
+  public void cmpltRekrutiere() {
     completions.add(new Completion(Resources
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }
 
-  protected void cmpltReserviere() {
+  public void cmpltReserviere() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_EACH), " "));
     completions.add(new Completion(Resources
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
@@ -1612,12 +1612,12 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltReserviereJe() {
+  public void cmpltReserviereJe() {
     completions.add(new Completion(Resources
         .get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
   }
 
-  protected void cmpltReserviereAmount() {
+  public void cmpltReserviereAmount() {
     Faction f = unit.getFaction();
     boolean silverPool = false;
     boolean materialPool = false;
@@ -1673,21 +1673,21 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltRoute() {
+  public void cmpltRoute() {
     addDirections(" ");
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PAUSE), " "));
   }
 
-  protected void cmpltSabotiere() {
+  public void cmpltSabotiere() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP)));
   }
 
-  protected void cmpltSortiere() {
+  public void cmpltSortiere() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_BEFORE), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_AFTER), " "));
   }
 
-  protected void cmpltSortiereVor() {
+  public void cmpltSortiereVor() {
     if (unit.getBuilding() != null) {
       addSortiereUnits(unit, unit.getBuilding(), false);
     } else if (unit.getShip() != null) {
@@ -1706,7 +1706,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltSortiereHinter() {
+  public void cmpltSortiereHinter() {
     if (unit.getBuilding() != null) {
       addSortiereUnits(unit, unit.getBuilding(), true);
     } else if (unit.getShip() != null) {
@@ -1738,18 +1738,18 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltSpioniere() {
+  public void cmpltSpioniere() {
     addEnemyUnits("");
   }
 
-  protected void cmpltStirb() {
+  public void cmpltStirb() {
     if (Units.isPrivilegedAndNoSpy(unit)) {
       completions.add(new Completion('"' + Resources
           .get("gamebinding.eressea.eresseaordercompleter.password") + '"', "\"\"", ""));
     }
   }
 
-  protected void cmpltTarne(boolean quoted) {
+  public void cmpltTarne(boolean quoted) {
     if (!quoted) {
       if (unit.isHideFaction()) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION)
@@ -1775,7 +1775,7 @@ public class EresseaOrderCompleter implements Completer {
 
   }
 
-  protected void cmpltTarnePartei() {
+  public void cmpltTarnePartei() {
     if (unit.isHideFaction()) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT)));
     }
@@ -1783,33 +1783,33 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NUMBER), " "));
   }
 
-  protected void cmpltTarneParteiNummer() {
+  public void cmpltTarneParteiNummer() {
     addFactions("");
   }
 
-  protected void cmpltTransportiere(boolean tempToken) {
+  public void cmpltTransportiere(boolean tempToken) {
     addRegionUnits("", tempToken);
   }
 
-  protected void cmpltVergesse() {
+  public void cmpltVergesse() {
     for (Iterator i = unit.getSkills().iterator(); i.hasNext();) {
       completions.add(new Completion(((Skill) i.next()).getName(), ""));
     }
   }
 
-  protected void cmpltVerkaufe() {
+  public void cmpltVerkaufe() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
   }
 
-  protected void cmpltVerkaufeAmount() {
+  public void cmpltVerkaufeAmount() {
     addUnitLuxuries("");
   }
 
-  protected void cmpltVerkaufeAlles() {
+  public void cmpltVerkaufeAlles() {
     addUnitLuxuries("");
   }
 
-  protected void cmpltZaubere(boolean far, boolean combat, boolean addRegion, boolean addLevel,
+  public void cmpltZaubere(boolean far, boolean combat, boolean addRegion, boolean addLevel,
       String opening, String closing) {
     // this is the check for magicans & familars with own spells:
     if ((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
@@ -1838,12 +1838,12 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltZaubereStufe() {
+  public void cmpltZaubereStufe() {
     completions.add(new Completion(
         Resources.get("gamebinding.eressea.eresseaordercompleter.level"), "", ""));
   }
 
-  protected void cmpltZaubereRegion() {
+  public void cmpltZaubereRegion() {
     Map<CoordinateID, Region> regions1 =
         Regions.getAllNeighbours(data.regions(), region.getID(), 1, null);
     Map<CoordinateID, Region> regions2 =
@@ -1899,7 +1899,7 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltZaubereRegionStufe() {
+  public void cmpltZaubereRegionStufe() {
     cmpltZaubereStufe();
     /*
      * if((unit.getSpells() != null) && (unit.getSpells().size() > 0)) {
@@ -1914,7 +1914,7 @@ public class EresseaOrderCompleter implements Completer {
    * Regionskoordinaten (x, y) 'u' = Einheit '+' = Wiederholung des vorangehenden Parameters '?' =
    * vorangegangener Parameter
    */
-  protected void cmpltZaubereSpruch(Spell spell) {
+  public void cmpltZaubereSpruch(Spell spell) {
     if (spell == null || spell.getSyntax() == null)
       return;
     if (spell.getSyntax().contains("k")) {
@@ -1988,22 +1988,22 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltZeige() {
+  public void cmpltZeige() {
     addUnitItems("");
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " ",
         Completion.DEFAULT_PRIORITY - 1));
   }
 
-  protected void cmpltZeigeAlle() {
+  public void cmpltZeigeAlle() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_POTIONS)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SPELLS)));
   }
 
-  protected void cmpltZerstoere() {
+  public void cmpltZerstoere() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ROAD), " "));
   }
 
-  protected void cmpltZerstoereStrasse() {
+  public void cmpltZerstoereStrasse() {
     if (region != null) {
       for (Iterator iter = region.borders().iterator(); iter.hasNext();) {
         Border b = (Border) iter.next();
@@ -2018,11 +2018,15 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
-  protected void cmpltZuechte() {
+  public void cmpltZuechte() {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HORSES)));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_HERBS)));
   }
 
+  public void cmpltFactions(String postfix) {
+    addFactions(postfix);
+  }
+  
   /**
    * adds all units in this region whose faction has a trustlevel not greater than zero (TL_DEFAULT)
    */

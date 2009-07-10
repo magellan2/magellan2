@@ -141,7 +141,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBetrete()
    */
   @Override
-  protected void cmpltBetrete() {
+  public void cmpltBetrete() {
     Iterator<Building> iter1 = getRegion().buildings().iterator();
 
     if(iter1.hasNext()) {
@@ -199,7 +199,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBenenne()
    */
   @Override
-  protected void cmpltBenenne() {
+  public void cmpltBenenne() {
     super.cmpltBenenne();
 
     if((getUnit().getShip() != null) && (getUnit().getShip().getType().getID().equals(AllanonConstants.ST_KARAWANE)) && (getUnit().getShip().getOwnerUnit() != null) && getUnit().getShip().getOwnerUnit().equals(getUnit())) {
@@ -211,7 +211,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
    * @see magellan.library.gamebinding.EresseaOrderCompleter#cmpltBeanspruche()
    */
   @Override
-  protected void cmpltBeanspruche(){
+  public void cmpltBeanspruche(){
     getCompletions().add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
     getCompletions().add(new Completion(getData().rules.getItemType(EresseaConstants.I_SILVER).getOrderName()));
   }

@@ -22,8 +22,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import magellan.library.Alliance;
-import magellan.library.EntityID;
-import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Spell;
 import magellan.library.UnitID;
@@ -3489,29 +3487,6 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     return checkFinal(t);
-  }
-
-  /**
-   * Attempts to interpret token as a faction ID and returns the corresponding faction if known.
-   */
-  protected Faction readFactionID() {
-    Faction result = null;
-
-    OrderToken token = getNextToken();
-    if (isID(token.getText())) {
-      token.ttype = OrderToken.TT_ID;
-
-      result = data.getFaction(EntityID.createEntityID(token.getText(), data.base));
-
-    } else {
-      unexpected(token);
-    }
-
-    if (getCompleter() != null && !token.followedBySpace()) {
-      getCompleter().addFactions("");
-    }
-
-    return result;
   }
 
   protected boolean readFinalNumber(OrderToken token) {

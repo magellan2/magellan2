@@ -44,8 +44,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   }
 
   @Override
-  // begin of completion methods invoked by OrderParser
-  protected void cmplt() {
+  public void cmplt() {
     // add completions, that were defined by the user in the option pane
     // and can be accessed by CompleterSettingsProvider.getSelfDefinedCompletions()
     for (Completion selfDef : getCompleterSettingsProvider().getSelfDefinedCompletions())
@@ -203,11 +202,11 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 //    addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GROW), " "));
   }
 
-  protected void cmpltRekrutiere() {
+  public void cmpltRekrutiere() {
     super.cmpltRekrutiere();
   }
 
-  void cmpltRekrutiereAmount() {
+  public void cmpltRekrutiereAmount() {
     for (Race r : getData().rules.getRaces()) {
       if (r.getRecruitmentName() != null)
         addCompletion(new Completion(r.getRecruitmentName()));
@@ -215,7 +214,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 //    addCompletion(new Completion(Resources.get("gamebinding.e3a.e3aordercompleter.race"), "", ""));
   }
 
-  void cmpltAllianz() {
+  public void cmpltAllianz() {
     addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_COMMAND),
         " "));
     addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE_INVITE), " "));

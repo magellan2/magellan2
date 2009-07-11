@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import magellan.library.Addeable;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Battle;
 import magellan.library.Border;
 import magellan.library.Building;
@@ -1046,6 +1047,8 @@ public class CRParser implements RulesIO, GameDataIO {
         parseRules(world.rules);
       } else if((sc.argc == 1) && sc.argv[0].startsWith("HOTSPOT ")) {
         parseHotSpot(world);
+      } else if((sc.argc == 1) && sc.argv[0].startsWith("ALLIANCE ")) {
+        parseAlliance2();
       } else if((sc.argc == 1) && sc.argv[0].startsWith("PARTEI ")) {
         parseFaction(factionSortIndex++);
       } else if((sc.argc == 1) && sc.argv[0].startsWith("ZAUBER ")) {
@@ -1814,6 +1817,35 @@ public class CRParser implements RulesIO, GameDataIO {
     return allies;
   }
 
+  /*
+   * This is the new version, the old is called "ALLIERTE"
+   * Heuristic for end of block detection: There are no
+   * subblocks in one ALLIANZ block.
+   */
+  private AllianceGroup parseAlliance2() throws IOException {
+    EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(9)), world.base);
+    AllianceGroup alliance = new AllianceGroup(id);
+    sc.getNextToken();
+
+    while(!sc.eof){
+      if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
+        alliance.setName(sc.argv[0]);
+        sc.getNextToken();
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("leader")) {
+        alliance.setLeader(EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base));
+        sc.getNextToken();
+      } else if (!sc.isBlock){
+        unknown("ALLIANZ", true);
+      } else {
+        break;
+      }
+    }
+
+    world.addAllianceGroup(alliance);
+    
+    return alliance;
+  }
+
   /**
    * NOT IMPLEMENTED YET
    * 
@@ -1978,10 +2010,15 @@ public class CRParser implements RulesIO, GameDataIO {
         faction.setAllies(parseAlliierte()); // old syntax
       } else if(sc.isBlock && sc.argv[0].startsWith("ALLIANZ ")) {
         faction.setAllies(parseAlliance(faction.getAllies())); // newer syntax
+      } else if((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("alliance")) { // even newer syntax
+        EntityID alliance = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
+        world.getAllianceGroup(alliance)
+            .addFaction(faction);
+        faction.setAlliance(world.getAllianceGroup(alliance));
+        sc.getNextToken();
       } else if(sc.isBlock && sc.argv[0].equals("ADRESSEN")) {
         parseAdressen();
       } else if(sc.isBlock && sc.argv[0].equals("GEGENSTAENDE")) {
-        // FIXME: This only prevents the bug but the faction item pool will be lost!
         parseItems(faction);
       } else if(sc.isBlock && sc.argv[0].equals("OPTIONEN")) {
         // ignore this block, if there are options, they are
@@ -3174,52 +3211,56 @@ public class CRParser implements RulesIO, GameDataIO {
     ui.setMaximum(10000);
     ui.setProgress(Resources.get("progressdialog.loadcr.step01"), 1);
     ui.show();
-    
-    this.world = data;
-    sc = new Scanner(in);
-    sc.getNextToken();
-    boolean oome = false;
+    try {
+      this.world = data;
+      sc = new Scanner(in);
+      sc.getNextToken();
+      boolean oome = false;
 
-    while(!sc.eof) {
-      try {
-        if(sc.argv[0].startsWith("VERSION")) {
-          ui.setProgress(Resources.get("progressdialog.loadcr.step02"), 2);
-          parseHeader();
-        } else if((sc.argc == 1) && sc.argv[0].startsWith("REGION ")) {
-          if(!bCorruptReportMsg) {
-            CRParser.log.warn("Warning: This computer report is " +
-                 "missing the header and is therefore invalid or " +
-                 "corrupted. Please contact the originator of this " +
-                 "report if you experience data loss.");
-            bCorruptReportMsg = true;
+      while (!sc.eof) {
+        try {
+          if (sc.argv[0].startsWith("VERSION")) {
+            ui.setProgress(Resources.get("progressdialog.loadcr.step02"), 2);
+            parseHeader();
+          } else if ((sc.argc == 1) && sc.argv[0].startsWith("REGION ")) {
+            if (!bCorruptReportMsg) {
+              CRParser.log.warn("Warning: This computer report is "
+                  + "missing the header and is therefore invalid or "
+                  + "corrupted. Please contact the originator of this "
+                  + "report if you experience data loss.");
+              bCorruptReportMsg = true;
+            }
+
+            parseRegion(++regionSortIndex);
+          } else {
+            unknown("top level", true);
           }
-  
-          parseRegion(++regionSortIndex);
-        } else {
-          unknown("top level", true);
+        } catch (OutOfMemoryError ome) {
+          CRParser.log.error(ome);
+          oome = true;
         }
-      } catch (OutOfMemoryError ome) {
-        CRParser.log.error(ome);
-        oome = true;
+
+        setOwner(data);
+
+        // Fiete 20061208 check Memory
+        if (!MemoryManagment.isFreeMemory() || oome) {
+          // we have a problem..
+          // like in startup of client..we reset the data
+          this.world = new MissingData();
+          // marking the problem
+          this.world.outOfMemory = true;
+
+          ui.ready();
+          // end exit
+          return this.world;
+        }
+
       }
-      
-      setOwner(data);
-      
-      // Fiete 20061208  check Memory
-      if (!MemoryManagment.isFreeMemory() || oome){
-        // we have a problem..
-        // like in startup of client..we reset the data
-        this.world = new MissingData();
-        // marking the problem
-        this.world.outOfMemory = true;
-        
-        ui.ready();
-        // end exit
-        return this.world;
-      }
-      
+      this.world.setMaxSortIndex(++regionSortIndex);
+    } catch (RuntimeException e) {
+      ui.ready();
+      throw e;
     }
-    this.world.setMaxSortIndex(++regionSortIndex);
     ui.ready();
     
     CRParser.log.info("Done reading.");

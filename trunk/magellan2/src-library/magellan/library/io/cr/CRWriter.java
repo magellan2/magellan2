@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 
 import magellan.library.Addeable;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Battle;
 import magellan.library.Border;
 import magellan.library.Building;
@@ -855,6 +856,25 @@ public class CRWriter extends BufferedWriter {
 		writeMessages(battle.messages());
 	}
 
+	
+  /**
+   * Write ALLIANCE blocks to the underlying stream.
+   * 
+   * @param allianceGroups
+   * @throws IOException 
+   */
+  private void writeAlliances(Collection<AllianceGroup> allianceGroups) throws IOException{
+    for (AllianceGroup alliance : allianceGroups){
+      write("ALLIANCE " + alliance.getId().intValue());
+      newLine();
+      write(alliance.getLeader().intValue()+";leader");
+      newLine();
+      if (alliance.getName()!=null)
+        writeQuotedTag(alliance.getName(), "name");
+    }
+  }
+
+
 	/**
 	 * Write a sequence of faction (PARTEI) blocks to the underlying stream.
 	 *
@@ -926,6 +946,11 @@ public class CRWriter extends BufferedWriter {
 			newLine();
 		}
 
+		if (getIncludeUnitDetails() && faction.getAlliance() != null) {
+      write(faction.getAlliance().getId().intValue() + ";alliance");
+      newLine();
+    }
+		
 		Race race = faction.getRace();
 
 		if(race != null) {
@@ -1947,6 +1972,7 @@ public class CRWriter extends BufferedWriter {
 
 	    if(includeRegionDetails && region.getMorale()>0) {
 	      write(region.getMorale()+";morale");
+	      newLine();
 	    }
 
 			if(region.getIron() > 0) {
@@ -2317,6 +2343,8 @@ public class CRWriter extends BufferedWriter {
       if (ui != null) {
         ui.setProgress(Resources.get("crwriterdialog.progress.03"), 3);
       }
+      
+      writeAlliances(world.getAllianceGroups());
       writeFactions(world.factions());
     }
     

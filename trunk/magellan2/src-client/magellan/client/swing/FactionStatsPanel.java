@@ -56,6 +56,7 @@ import magellan.client.swing.tree.UnitContainerNodeWrapper;
 import magellan.client.swing.tree.UnitNodeWrapper;
 import magellan.client.utils.Units;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
@@ -548,7 +549,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                 .get("factionstatspanel.node.alliances"), "alliance"));
         rootNode.add(currentNode);
-        showAlliances(f.getAllies(), currentNode);
+        showAlliances(data, f.getAllies(), f.getAlliance(), currentNode);
       }
 
       /* group alliances node */
@@ -569,7 +570,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 + g.getRaceNamePrefix()));
           }
 
-          showAlliances(g.allies(), subNode);
+          showAlliances(data, g.allies(), f.getAlliance(), subNode);
         }
       }
 
@@ -1603,11 +1604,35 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     setCursor(Cursor.getDefaultCursor());
   }
 
-  private void showAlliances(Map<ID, Alliance> allies, DefaultMutableTreeNode rootNode) {
-    if ((allies == null) || (rootNode == null)) {
+  public static void showAlliances(GameData data, Map<ID, Alliance> allies, AllianceGroup allianceGroup, DefaultMutableTreeNode rootNode) {
+    if (rootNode == null) {
       return;
     }
+    
+    if (allianceGroup!=null){
+      DefaultMutableTreeNode m =
+        new DefaultMutableTreeNode(allianceGroup.toString()); // Resources.get("factionstatspanel.node.alliance", allianceGroup)
+      rootNode.add(m);
 
+      Faction leader = data.getFaction(allianceGroup.getLeader());
+      FactionNodeWrapper wrapper = new FactionNodeWrapper(leader, null, allies);
+      DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
+      m.add(factionNode);
+      
+      for (ID id: allianceGroup.getFactions()){
+        Faction faction = data.getFaction(id);
+        if (faction!=leader){
+          wrapper = new FactionNodeWrapper(faction, null, allies);
+          factionNode = new DefaultMutableTreeNode(wrapper);
+          m.add(factionNode);
+        }
+      }
+    }
+    
+    
+    if (allies == null)
+      return;
+    
     Map<String, List<Alliance>> alliances = new TreeMap<String, List<Alliance>>();
     for (Alliance alliance : allies.values()) {
       String key = alliance.stateToString();

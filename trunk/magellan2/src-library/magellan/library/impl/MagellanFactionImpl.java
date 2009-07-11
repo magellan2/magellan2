@@ -18,6 +18,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Battle;
 import magellan.library.Faction;
 import magellan.library.GameData;
@@ -179,6 +180,8 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	/** A faction dependent prefix to be prepended to this faction's race name. */
 	private String raceNamePrefix = null;
 
+  private AllianceGroup alliance;
+
 	/**
 	 * Sets the faction dependent prefix for the race name.
 	 *
@@ -251,6 +254,20 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   public void setAllies(Map<ID, Alliance> allies) {
     this.allies = allies;
+  }
+
+  /**
+   * @see magellan.library.Faction#getAlliance()
+   */
+  public AllianceGroup getAlliance() {
+    return alliance;
+  }
+
+  /**
+   * @see magellan.library.Faction#setAlliance(magellan.library.AllianceGroup)
+   */
+  public void setAlliance(AllianceGroup alliance) {
+    this.alliance = alliance;
   }
 
   /**
@@ -599,4 +616,5 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
   public void setTreasury(int silver) {
     this.factionTreasury = silver;
   }
+
 }

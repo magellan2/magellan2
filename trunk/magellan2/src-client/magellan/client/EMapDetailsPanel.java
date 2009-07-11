@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Map.Entry;
 
@@ -77,6 +76,7 @@ import magellan.client.event.UnitOrdersEvent;
 import magellan.client.event.UnitOrdersListener;
 import magellan.client.preferences.DetailsViewPreferences;
 import magellan.client.swing.BasicRegionPanel;
+import magellan.client.swing.FactionStatsPanel;
 import magellan.client.swing.InternationalizedDataPanel;
 import magellan.client.swing.MenuProvider;
 import magellan.client.swing.RoutingDialog;
@@ -107,6 +107,7 @@ import magellan.client.swing.tree.UnitRelationNodeWrapper;
 import magellan.client.swing.tree.UnitRelationNodeWrapper2;
 import magellan.client.utils.Units;
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
@@ -160,7 +161,6 @@ import magellan.library.utils.ShipRoutePlanner;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.Umlaut;
 import magellan.library.utils.Utils;
-import magellan.library.utils.comparator.AllianceFactionComparator;
 import magellan.library.utils.comparator.BestSkillComparator;
 import magellan.library.utils.comparator.IDComparator;
 import magellan.library.utils.comparator.NameComparator;
@@ -1614,7 +1614,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Object o = oO[0];
       if (o instanceof Faction) {
         Faction f = (Faction) o;
-        appendFactionInfo(f, parent, expandableNodes);
+        appendFactionInfo(f, f.getAllies(), f.getAlliance(), parent, expandableNodes);
       }
     }
 
@@ -1832,6 +1832,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendGroupInfo(Group g, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
+    // FIXME counting persons for last region is not correct. If a unit in a different region was 
+    // selected before this group node is selected, lastRegion is still the old region
     if (lastRegion != null) {
       int personCount = 0;
       Map<String, SkillStatItem> skills = new Hashtable<String, SkillStatItem>();
@@ -1866,41 +1868,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               + Resources.get("emapdetailspanel.node.persons"));
       parent.add(n);
 
+      // ALLIES
       if ((g.allies() != null) && (g.allies().values().size() > 0)) {
         n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.alliances"));
         parent.add(n);
         expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
 
-        Map<String, List<Alliance>> alliances = new TreeMap<String, List<Alliance>>();
-        for (Alliance alliance : g.allies().values()) {
-          String key = alliance.stateToString();
-          if (alliances.containsKey(key)) {
-            alliances.get(key).add(alliance);
-          } else {
-            List<Alliance> list = new LinkedList<Alliance>();
-            list.add(alliance);
-            alliances.put(key, list);
-          }
-        }
-
-        for (String key : alliances.keySet()) {
-          List<Alliance> alliance = alliances.get(key);
-          Collections.sort(alliance, new AllianceFactionComparator(new NameComparator(
-              IDComparator.DEFAULT)));
-
-          DefaultMutableTreeNode m =
-              new DefaultMutableTreeNode(Resources.get("emapdetailspanel.alliancestate",
-                  new Object[] { key }));
-          expandableNodes.add(new NodeWrapper(m, "EMapDetailsPanel.AlliancesExpandedFaction"));
-          for (Alliance a : alliance) {
-            DefaultMutableTreeNode o =
-                new DefaultMutableTreeNode(a.getFaction().getName() + " (" + a.getFaction().getID()
-                    + ")");
-            m.add(o);
-          }
-
-          n.add(m);
-        }
+        FactionStatsPanel.showAlliances(data, g.allies(), g.getFaction().getAlliance(), n);
       }
 
       // categorized items
@@ -1930,7 +1904,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
 
-      /** DOCUMENT-ME */
+      // SKILLS
       if (skills.size() > 0) {
         // n = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.skills"));
         n =
@@ -2280,19 +2254,21 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param expandableNodes
    */
   private void appendUnitFactionInfo(Unit u, DefaultMutableTreeNode parent,
-      Collection expandableNodes) {
-    appendFactionInfo(u.getFaction(), parent, expandableNodes);
+      Collection<NodeWrapper> expandableNodes) {
+    appendFactionInfo(u.getFaction(), u.getGroup()==null?u.getFaction().getAllies():u.getGroup().allies(), u.getFaction().getAlliance(), parent, expandableNodes);
   }
 
   /**
    * Appends information about this faction.
+   * @param alliance 
+   * @param allies 
    * 
    * @param u
    * @param parent
    * @param expandableNodes
    */
-  private void appendFactionInfo(Faction f, DefaultMutableTreeNode parent,
-      Collection expandableNodes) {
+  private void appendFactionInfo(Faction f, Map<ID, Alliance> allies, AllianceGroup alliance, DefaultMutableTreeNode parent,
+      Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode fNode;
     if (f == null) {
       fNode =
@@ -2317,11 +2293,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 .get("emapdetailspanel.node.faction")
                 + ": " + f.toString(), "faction"));
       }
-    }
 
-    parent.add(fNode);
+      parent.add(fNode);
 
-    if (f != null) {
+      // ALLIES
+      if (allies != null) {
+        DefaultMutableTreeNode n =
+            new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.alliances"));
+        fNode.add(n);
+        expandableNodes.add(new NodeWrapper(n, "EMapDetailsPanel.AlliancesExpanded"));
+
+        FactionStatsPanel.showAlliances(data, allies, alliance, n);
+      }
+
       if (f.getTreasury() > 0) {
         String text = Resources.get("emapdetailspanel.node.treasury", f.getTreasury());
         parent.add(createSimpleNode(text, "reichsschatz"));

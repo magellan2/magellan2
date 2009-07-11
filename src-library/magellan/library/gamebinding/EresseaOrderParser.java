@@ -373,7 +373,7 @@ public class EresseaOrderParser implements OrderParser {
     } else {
       retVal = checkFinal(t);
     }
-    if (getCompleter() != null && !t.followedBySpace()) {
+    if (getCompleter() != null && !t.followedBySpace() && t.ttype != OrderToken.TT_PERSIST) {
       getCompleter().cmplt();
     }
 

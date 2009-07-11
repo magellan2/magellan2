@@ -1738,7 +1738,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * This is a helper method to set this.activeAlliances to a usefull value, if
+   * This is a helper method to set this.activeAlliances to a useful value, if
    * no faction or group is active. The idea is to take all alliances of all
    * privileged factions and combine their states by & (or in other words to
    * take the intersection over all alliances of all privileged factions)

@@ -108,7 +108,14 @@ public class Alliance {
 		return ((state & selector) == selector);
 	}
 
-	/**
+  /**
+   * Changes the state to include state.
+   */
+  public void addState(int state) {
+    this.state = this.state | state;
+  }
+
+  /**
 	 * Get a string representation of the alliance state.
 	 *
 	 * @return the alliance state as string.

@@ -13,15 +13,19 @@
 
 package magellan.library.gamebinding.e3a;
 
+import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
+import magellan.library.Faction;
+import magellan.library.GameData;
+import magellan.library.ID;
+import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaPostProcessor;
 
 
 
 /**
- * DOCUMENT-ME
- *
- * @author $Author: $
- * @version $Revision: 345 $
+ * 
+ * @author $Author: stm$
  */
 public class E3APostProcessor extends EresseaPostProcessor {
   private static final E3APostProcessor singleton = new E3APostProcessor();
@@ -29,12 +33,43 @@ public class E3APostProcessor extends EresseaPostProcessor {
   protected E3APostProcessor() {
 	}
   
+  /**
+   * Returns an instance.
+   */
+  public static E3APostProcessor getSingleton() {
+    return E3APostProcessor.singleton;
+  }
 
 	/**
+	 * Additionally set COMBAT status according to new AllianceGroups.
 	 * 
+	 * @see magellan.library.gamebinding.EresseaPostProcessor#postProcess(magellan.library.GameData)
 	 */
-	public static E3APostProcessor getSingleton() {
-		return E3APostProcessor.singleton;
+	@Override
+	public void postProcess(GameData data) {
+    int fightState = data.rules.getAllianceCategory(StringID.create("KÄMPFE")).getBitMask();
+	  super.postProcess(data);
+	  
+	  // for every pair of factions in the AllianceGroup set the "help fight" state
+	  for (AllianceGroup allianceGroup : data.getAllianceGroups()){
+	    for (ID id1 : allianceGroup.getFactions()){
+	      Faction faction1 = data.getFaction(id1); 
+	      for (ID id2 : allianceGroup.getFactions()){
+	        Faction faction2 = data.getFaction(id2); 
+	        if (faction1!=faction2){
+	          boolean found = false;
+	          for (Alliance alliance : faction1.getAllies().values()){
+	            if (alliance.getFaction().equals(faction2)){
+	              alliance.addState(fightState);
+	              found = true;
+	            }
+	          }
+	          if (!found){
+	            faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
+	          }
+	        }
+	      }
+	    }
+	  }
 	}
-
 }

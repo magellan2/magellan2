@@ -102,6 +102,17 @@ public interface Faction extends UnitContainer {
    * @param allies The value for allies. May be <code>null</code>.
    */
   public void setAllies(Map<ID, Alliance> allies);
+  
+  /**
+   * Returns the alliance this faction is a member of or <code>null</code>.
+   */
+  public AllianceGroup getAlliance();
+  
+  /**
+   * Sets the alliance this faction is a member of.
+   */
+  public void setAlliance(AllianceGroup alliance);
+
   /**
    * Returns the value of averageScore.
    * 
@@ -373,4 +384,5 @@ public interface Faction extends UnitContainer {
    * can be negative - that means this attribute is disabled (default).
    */
   public int getTreasury();
+
 }

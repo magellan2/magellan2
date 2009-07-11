@@ -80,6 +80,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations = new HashMap<Integer, Map<Integer,LevelRelation>>();
   
+  private Map<EntityID, AllianceGroup> alliancegroups;
+
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's
    * suggested ID is usually curTempID and if this suggestion is accepted by the
@@ -314,6 +316,32 @@ public abstract class GameData implements Cloneable,Addeable {
 
     rules = _rules;
     gameName = _name;
+  }
+
+  /**
+   * Returns the AllianceGroup with the specified ID if it exists, otherwise <code>null</code>.
+   */
+  public AllianceGroup getAllianceGroup(EntityID allianceID){
+    if (alliancegroups==null)
+      return null;
+    return alliancegroups.get(allianceID);
+  }
+
+  /**
+   * Returns a collection of all known AllianceGroups.
+   */
+  public Collection<AllianceGroup> getAllianceGroups() {
+    if (alliancegroups == null)
+      return Collections.emptyList();
+    else
+      return alliancegroups.values();
+  }
+
+
+  public void addAllianceGroup(AllianceGroup alliance) {
+    if (alliancegroups == null)
+      alliancegroups = new OrderedHashtable<EntityID, AllianceGroup>(1);
+    alliancegroups.put(alliance.getId(), alliance);
   }
 
   /**
@@ -2081,4 +2109,5 @@ public abstract class GameData implements Cloneable,Addeable {
   public long getTimestamp() {
     return timestamp;
   }
+
 }

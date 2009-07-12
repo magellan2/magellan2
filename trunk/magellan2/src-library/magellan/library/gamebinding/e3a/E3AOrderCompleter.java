@@ -10,6 +10,7 @@ package magellan.library.gamebinding.e3a;
 import java.util.List;
 
 import magellan.library.GameData;
+import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -204,6 +205,26 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
   }
 
+  @Override
+  public void cmpltMache() {
+    super.cmpltMache();
+    if (!getCompleterSettingsProvider().getLimitMakeCompletion()
+        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Stein"))) != null)) {
+      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
+          " "));
+    }
+  }
+  
+  @Override
+  public void cmpltMacheAmount() {
+    super.cmpltMacheAmount();
+    if (!getCompleterSettingsProvider().getLimitMakeCompletion()
+        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Stein"))) != null)) {
+      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
+          " "));
+    }
+  }
+  
   public void cmpltRekrutiere() {
     super.cmpltRekrutiere();
   }

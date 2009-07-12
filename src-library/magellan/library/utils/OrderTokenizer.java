@@ -107,17 +107,21 @@ public class OrderTokenizer {
     openingQuote = new OrderToken(""+(char)quote, in.getPos()-1, in.getPos(), OrderToken.TT_OPENING_QUOTE, false);
 
     int c = 0;
+    int previousC = -1;
     int start = in.getPos();
     StringBuffer sb = new StringBuffer();
 
     while((c = in.read()) != -1) {
-      if(c == quote) {
+      if(c == '\\' && previousC!='\\') {
+        
+      } else if(c == quote && previousC!='\\') {
         break;
       } else if((c == '\r') || (c == '\n')) {
         break;
       } else {
         sb.append((char) c);
       }
+      previousC =  c;
     }
 
     int end = in.getPos();

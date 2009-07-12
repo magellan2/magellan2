@@ -91,30 +91,26 @@ public class AllianceCategory extends ObjectType {
 		bitMask = orig.bitMask;
 	}
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
+  /**
+   * Sets the bitmask of this category. Each category should have a unique bit. Alliances use 
+   * combinations of bits as their bitmask.
+   */
 	public void setBitMask(int mask) {
 		this.bitMask = mask;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the bitmask of this category. Each category should have a unique bit. Alliances use 
+	 * combinations of bits as their bitmask.
 	 */
 	public int getBitMask() {
 		return this.bitMask;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Compares this category to another one according to the bitmask values.
 	 * 
-	 *
-	 * 
+	 * @see magellan.library.impl.MagellanIdentifiableImpl#compareTo(java.lang.Object)
 	 */
 	@Override
   public int compareTo(Object o) {
@@ -124,9 +120,7 @@ public class AllianceCategory extends ObjectType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.impl.MagellanNamedImpl#toString()
 	 */
 	@Override
   public String toString() {

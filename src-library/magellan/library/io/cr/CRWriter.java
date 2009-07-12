@@ -1960,6 +1960,7 @@ public class CRWriter extends BufferedWriter {
 				if(includeBuildings) {
 					write(region.getWage() + ";Lohn");
 				} else {
+				  // FIXME(stm) game specific?
 					write("10;Lohn");
 				}
 

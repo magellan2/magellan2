@@ -67,14 +67,25 @@ public interface GameSpecificRules {
 
 
   /**
+   * Returns the current maximum range of a ship.
+   */
+  public int getShipRange(Ship s);
+
+  /**
    * Returns the wage for <code>race</code> in <code>region</code> or -1 if unknown or not applicable. 
    */
   public int getWage(Region region, Race race);
 
 
   /**
-   * Returns the current maximum range of a ship.
+   * Returns the amount of silver that peasants need to survive.
    */
-  public int getShipRange(Ship s);
+  public int getPeasantMaintenance(Region region);
+
+
+  /**
+   * Returns the amount of students that one teacher can teach.
+   */
+  public int getTeachFactor();
 
 }

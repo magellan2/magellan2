@@ -921,12 +921,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Utils.getIntValue(r.getData().getGameSpecificStuff().getGameSpecificRules()
             .getMaxWorkers(r), 0);
     int workers = Math.min(maxWorkers, r.getPeasants());
-    int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * 10);
+    int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * getPeasantMaintenance(r));
     int oldWorkers = Math.min(maxWorkers, r.getOldPeasants());
     int oldSurplus = -1;
 
     if ((oldWorkers != -1) && (r.getOldWage() != -1) && (r.getOldPeasants() != -1)) {
-      oldSurplus = (oldWorkers * (r.getOldWage() + 1)) - (r.getOldPeasants() * 10);
+      oldSurplus = (oldWorkers * (r.getOldWage() + 1)) - (r.getOldPeasants() * getPeasantMaintenance(r));
     }
 
     String peasantsInfo =
@@ -978,6 +978,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.entertainment") + ": "
           + getDiffString(r.maxEntertain(), r.maxOldEntertain()), "items/silber"));
     }
+  }
+
+  private int getPeasantMaintenance(Region region) {
+    return data.getGameSpecificStuff().getGameSpecificRules().getPeasantMaintenance(region);
   }
 
   /**
@@ -2854,13 +2858,14 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         teachersNode.add(teacherNode);
       }
 
+      int teachFactor = data.getGameSpecificStuff().getGameSpecificRules().getTeachFactor();
       teachersNode.setUserObject(new UnitListNodeWrapper(Resources
           .get("emapdetailspanel.node.teacher")
           + ": "
           + teacherCounter
           + " / "
-          + (((u.getModifiedPersons() % 10) == 0) ? (u.getModifiedPersons() / 10) : ((u
-              .getModifiedPersons() / 10) + 1)), null, teachers, "teacher"));
+          + (((u.getModifiedPersons() % teachFactor) == 0) ? (u.getModifiedPersons() / teachFactor) : ((u
+              .getModifiedPersons() / teachFactor) + 1)), null, teachers, "teacher"));
     }
 
     if (pupils.size() > 0) {
@@ -2899,8 +2904,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       pupilsNode.setUserObject(new UnitListNodeWrapper(Resources
           .get("emapdetailspanel.node.pupils")
-          + ": " + pupilCounter + " / " + (u.getModifiedPersons() * 10) + duplicatePupilWarning,
-          null, pupils, "pupils"));
+          + ": "
+          + pupilCounter
+          + " / "
+          + (u.getModifiedPersons() * data.getGameSpecificStuff().getGameSpecificRules()
+              .getTeachFactor()) + duplicatePupilWarning, null, pupils, "pupils"));
     }
   }
 

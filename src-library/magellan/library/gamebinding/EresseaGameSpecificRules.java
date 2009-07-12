@@ -172,4 +172,18 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     
     return rad;
   }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getPeasantMaintenance(magellan.library.Region)
+   */
+  public int getPeasantMaintenance(Region region) {
+    return 10;
+  }
+
+  /**
+   * @see magellan.library.gamebinding.GameSpecificRules#getTeachFactor()
+   */
+  public int getTeachFactor() {
+    return 10;
+  }
 }

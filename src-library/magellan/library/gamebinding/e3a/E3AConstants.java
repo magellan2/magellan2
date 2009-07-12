@@ -38,5 +38,7 @@ public class E3AConstants extends EresseaConstants {
   public static final String O_ALLIANCE_INVITE = "ALLIANCE_INVITE";
   /** ALLIANZ BEITRETEN <allianz-nr> -- einer anderen Allianz beitreten (wenn sie eine Einladung in der gleichen Runde erhält). */ 
   public static final String O_ALLIANCE_JOIN = "ALLIANCE_JOIN";
+  /** MACHE Wache */
+  public static final String O_WATCH = "WATCH";
   
 }

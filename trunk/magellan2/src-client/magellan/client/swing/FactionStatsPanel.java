@@ -269,6 +269,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     DefaultMutableTreeNode subNode = null;
     Map<ID, Unit> units = new Hashtable<ID, Unit>();
     int personCounter = 0;
+    int maintenance = 0;
     int modifiedUnitsCounter = 0;
     int tempUnitsCounter = 0;
     int modifiedPersonCounter = 0;
@@ -300,6 +301,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         if (factions.containsKey(u.getFaction().getID())) {
           units.put(u.getID(), u);
           personCounter += u.getPersons();
+          maintenance += u.getPersons() * (u.getRace().getMaintenance()>=0?u.getRace().getMaintenance():10);
           skillStats.addUnit(u);
 
           Race race = u.getRace();
@@ -629,10 +631,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (f.getMaxHeroes() > -1 || heros_count > 0) {
         // n = new
         // DefaultMutableTreeNode(Resources.get("factionstatspanel.node.heroes"));
-        double maxHeros = 0;
         long maxHeros2 = 0;
         if (personCounter > 50) {
-          maxHeros = (java.lang.Math.log(personCounter / 50) / java.lang.Math.log(10)) * 20;
+          double maxHeros = (java.lang.Math.log(personCounter / 50) / java.lang.Math.log(10)) * 20;
           maxHeros2 = java.lang.Math.round(java.lang.Math.floor(maxHeros));
         }
 
@@ -993,7 +994,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     // Unterhalt
     // we ignore persons of races which do not need support
-    spent[S_SUPPORT] = personCounter * 10;
+    spent[S_SUPPORT] = maintenance;
 
     for (int i = 0; i < spent.length; i++) {
       totalSpent += spent[i];
@@ -1136,7 +1137,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     }
 
     // iconnames for expense groups
-    // 0 = Unterhalt (just count Persons * 10 ?)
+    // 0 = Unterhalt (persons * maintenance, if known)
     // 1 = Gebäudeunterhalt
     // 2 = Lernkosten
     // 3 = Magiekosten (no chance: Messages contains just the magic item, no

@@ -2053,7 +2053,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                                     + " "
                                     + tempUnit.toString(false)
                                     + " "
-                                    + String.valueOf(10 * i)
+                                    + String.valueOf(parentUnit.getRace().getMaintenance() * i)
                                     + " "
                                     + silver
                                     + "; "

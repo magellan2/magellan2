@@ -1,3 +1,8 @@
+2009-07-10 / Build 329 - stm (stm_@users.sourceforge.net)
+    * made peasant and unit maintenace game specific
+    * added MACHE Wache completion
+    * now parsing escaped characters in strings 
+
 2009-07-10 / Build 328 - stm (stm_@users.sourceforge.net)
     * parsing/displaying/writing of E3A region owner and morale
     * parsing/displaying/writing/completion of E3A alliances

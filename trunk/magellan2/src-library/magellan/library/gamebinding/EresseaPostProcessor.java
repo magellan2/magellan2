@@ -262,6 +262,7 @@ public class EresseaPostProcessor {
 			RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
 			Comparator<Unit> sortIndexComparator = new SortIndexComparator<Unit>(IDComparator.DEFAULT);
 
+			// FIXME(stm) broken, if a unit's faction's report was not added but the skill is still known...
 			if(type != null) {
 				for(Iterator iter = data.buildings().values().iterator(); iter.hasNext();) {
 					Building b = (Building) iter.next();

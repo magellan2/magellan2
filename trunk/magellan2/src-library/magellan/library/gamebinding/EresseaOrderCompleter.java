@@ -1052,7 +1052,7 @@ public class EresseaOrderCompleter implements Completer {
 
     if (persons) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN), (unit
-          .getPersons() >= i) ? 0 : 10));
+          .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY+1));
     }
 
   }
@@ -1887,7 +1887,7 @@ public class EresseaOrderCompleter implements Completer {
 
       if (name == null) {
         name = c.toString(" ");
-        prio = 10;
+        prio += 1;
       }
 
       if (trans != null) {
@@ -2193,9 +2193,9 @@ public class EresseaOrderCompleter implements Completer {
   protected void addUnitContainerOwner(UnitContainer s, Unit u, String postfix, int cursorOffset) {
     String id = u.getID().toString();
 
-    completions.add(new Completion(s.toString() + " (" + s.getID() + ")", id, postfix, 10,
+    completions.add(new Completion(s.toString() + " (" + s.getID() + ")", id, postfix, Completion.DEFAULT_PRIORITY+1,
         cursorOffset));
-    completions.add(new Completion(s.getID() + " (" + s.toString() + ")", id, postfix, 11,
+    completions.add(new Completion(s.getID() + " (" + s.toString() + ")", id, postfix, Completion.DEFAULT_PRIORITY+2,
         cursorOffset));
   }
 

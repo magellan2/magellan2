@@ -543,6 +543,7 @@ RACE "Goblins"
 "Goblins";name
 60;recruitmentcosts
 "Goblin";recruitmentname
+6;maintenance
 6;weight
 4.4;capacity
 TALENTBONI
@@ -588,10 +589,12 @@ RACE "Jungdrachen"
 
 RACE "Schattendämonen"
 "Schattendämonen";name
+0;maintenance
 5;weight
 
 RACE "Schattenmeister"
 "Schattenmeister";name
+0;maintenance
 5;weight
 
 RACE "Bauern"
@@ -608,18 +611,22 @@ RACE "Schneemänner"
 
 RACE "Untote"
 "Untote";name
+0;maintenance
 10;weight
 
 RACE "Zombies"
 "Zombies";name
+0;maintenance
 10;weight
 
 RACE "Skelette"
 "Skelette";name
+0;maintenance
 5;weight
 
 RACE "Ghoule"
 "Ghoule";name
+0;maintenance
 10;weight
 
 RACE "Kröten"
@@ -628,18 +635,22 @@ RACE "Kröten"
 
 RACE "Adler"
 "Adler";name
+0;maintenance
 5;weight
 
 RACE "Delphine"
 "Delphine";name
+0;maintenance
 5;weight
 
 RACE "Einhörner"
 "Einhörner";name
+0;maintenance
 50;weight
 
 RACE "Eulen"
 "Eulen";name
+0;maintenance
 5;weight
 
 RACE "Geister"
@@ -648,18 +659,22 @@ RACE "Geister"
 
 RACE "Luchse"
 "Luchse";name
+0;maintenance
 5;weight
 
 RACE "Nymphen"
 "Nymphen";name
+0;maintenance
 10;weight
 
 RACE "Ratten"
 "Ratten";name
+0;maintenance
 1;weight
 
 RACE "Riesenschildkröten"
 "Riesenschildkröten";name
+0;maintenance
 16;weight
 
 RACE "Teufelchen"

@@ -1862,6 +1862,7 @@ public class CRWriter extends BufferedWriter {
 
     if(includeRegionDetails && region.getOwnerFaction()!=null) {
       write(((IntegerID) region.getOwnerFaction().getID()).intValue()+";owner");
+      newLine();
     }
 		
 		

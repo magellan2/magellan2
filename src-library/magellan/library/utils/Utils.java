@@ -59,8 +59,17 @@ public class Utils {
     }
   }
   
+  /**
+   * Returns the value of an Integer, or a default value if it is <code>null</code>.
+   * 
+   * @param integer
+   * @param defaultValue
+   * @return <code>defaultValue</code> if <code>integer==0</code>, otherwise
+   *         <code>integer.intValue()</code>
+   */
   public static int getIntValue(Integer integer, int defaultValue) {
-    if (integer != null) return integer;
+    if (integer != null)
+      return integer;
     return defaultValue;
   }
   

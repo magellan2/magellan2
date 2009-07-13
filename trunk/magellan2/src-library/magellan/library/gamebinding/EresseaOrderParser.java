@@ -3394,7 +3394,7 @@ public class EresseaOrderParser implements OrderParser {
     protected void complete() {
       if (valid || openingToken == null && content.length() == 0)
         getCompleter().addCompletion(
-            new Completion(content, "", Completion.DEFAULT_PRIORITY + 1, allowEmpty
+            new Completion(content, "", Completion.DEFAULT_PRIORITY + 2, allowEmpty
                 && content.length() == 0 && openingToken == null ? 1 : 0));
     }
 

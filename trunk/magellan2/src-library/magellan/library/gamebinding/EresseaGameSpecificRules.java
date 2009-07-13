@@ -64,7 +64,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
       int trees = Math.max(region.getTrees(), 0);
       int sprouts = Math.max(region.getSprouts(), 0);
 
-      return new Integer(inhabitants - (8 * trees) - (4 * sprouts));
+      return new Integer(Math.max(0, inhabitants - (8 * trees) - (4 * sprouts)));
     }
 
     return null;

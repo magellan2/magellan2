@@ -48,20 +48,41 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   private SpellSyntax spellSyntax = null;
 
   /**
-   * Creates a new Spell object.
+   * Creates a new Spell object. CR looks as follows:
+   * 
+   * <pre>
+   * ZAUBER 1234567
+   * "german name";name
+   * "localized description";description
+   * ...
+   * ...
+   * EINHEIT mage
+   * ...
+   * SPRUECHE
+   * "german name"
+   * ...
+   * ...
+   * TRANSLATION
+   * "english name";german name
+   * </pre>
+   * 
+   * this means, spells are identified by their german names
+   * 
+   * @param id This should currently be a {@link StringID}
+   * @param _data
    */
+  // FIXME(stm) I don't like this reference to GameData here
   public MagellanSpellImpl(ID id, GameData _data) {
     super(id);
     this.data = _data;
   }
 
-  // TODO: this is bad, but right now i dont have a better idea
   /**
    * @see magellan.library.Unique#getID()
    */
   @Override
   public ID getID() {
-    return StringID.create(super.getName());
+    return id; // StringID.create(super.getName());
   }
 
   /**
@@ -95,14 +116,14 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#getRank()
    */
   public int getRank() {
     return rank;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setRank(int)
    */
   public void setRank(int rank) {
     this.rank = rank;
@@ -123,56 +144,56 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#getOnOcean()
    */
   public boolean getOnOcean() {
     return onOcean;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setOnOcean(boolean)
    */
   public void setOnOcean(boolean onOcean) {
     this.onOcean = onOcean;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#getOnShip()
    */
   public boolean getOnShip() {
     return onShip;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setOnShip(boolean)
    */
   public void setOnShip(boolean onShip) {
     this.onShip = onShip;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#getIsFamiliar()
    */
   public boolean getIsFamiliar() {
     return isFamiliar;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setIsFamiliar(boolean)
    */
   public void setIsFamiliar(boolean isFamiliar) {
     this.isFamiliar = isFamiliar;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#getIsFar()
    */
   public boolean getIsFar() {
     return isFar;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setIsFar(boolean)
    */
   public void setIsFar(boolean _isFar) {
     isFar = _isFar;
@@ -180,6 +201,8 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
 
   /**
    * Returns the components of this spell as Strings.
+   * 
+   * @see magellan.library.Spell#getComponents()
    */
   public Map<String, String> getComponents() {
     if (components == null) {
@@ -189,14 +212,17 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.library.Spell#setComponents(java.util.Map)
    */
   public void setComponents(Map<String, String> components) {
     this.components = components;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a string representation which looks like this: <tt>[N1 F S See ]</tt> denoting the
+   * type, the level, and if this is a far, a ship or a sea spell.
+   * 
+   * @see magellan.library.impl.MagellanNamedImpl#toString()
    */
   @Override
   public String toString() {
@@ -230,12 +256,21 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     return sb.toString();
   }
 
+  /**
+   * @return
+   * @deprecated this may change if the constructor is changed to not include a reference to the
+   *             GameData any more.
+   */
   protected String getUnTranslatedName() {
     return super.getName();
   }
-  
-  public String getName(){
-    if (data!=null)
+
+  /**
+   * @see magellan.library.impl.MagellanNamedImpl#getName()
+   */
+  public String getName() {
+    // FIXME(stm) I don't like this reference to GameData here
+    if (data != null)
       return data.getTranslation(super.getName());
     else
       return super.getName();

@@ -66,22 +66,22 @@ public interface Spell extends Described, Localized {
   public void setType(String type);
 
   /**
-   * Returns true if this spell has effect on ocean
+   * Returns <code>true</code> if this spell can be cast while on oceans.
    */
   public boolean getOnOcean();
 
   /**
-   * Sets if this spell has effect on oceans
+   * Sets if this spell has effect on oceans.
    */
   public void setOnOcean(boolean onOcean);
 
   /**
-   * Returns true if this spell has effect on ships
+   * Returns <code>true</code> if this spell can be cast on leaving ships. 
    */
   public boolean getOnShip();
 
   /**
-   * DOCUMENT-ME
+   * Sets if this spell can be cast on leaving ships
    */
   public void setOnShip(boolean onShip);
 
@@ -101,17 +101,18 @@ public interface Spell extends Described, Localized {
   public boolean getIsFar();
 
   /**
-   * DOCUMENT-ME
+   * Sets if this spell has far effects
    */
   public void setIsFar(boolean isFar);
 
   /**
-   * Returns the components of this spell as Strings.
+   * Returns the components of this spell as a map of "type" Strings as keys and "amount amount"
+   * Strings as values.
    */
   public Map<String,String> getComponents();
 
   /**
-   * DOCUMENT-ME
+   * Sets the components of this spell as Strings.
    */
   public void setComponents(Map<String, String> components);
 

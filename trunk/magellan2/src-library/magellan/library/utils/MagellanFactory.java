@@ -54,6 +54,7 @@ import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.Spell;
+import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -142,6 +143,11 @@ public abstract class MagellanFactory {
     return new MagellanUnitImpl(id);
   }
 
+  /**
+   * @param id This should currently be a {@link StringID}
+   * @param data
+   * @return
+   */
   public static Spell createSpell(ID id, GameData data) {
     return new MagellanSpellImpl(id, data);
   }

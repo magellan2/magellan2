@@ -58,6 +58,7 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanIslandImpl;
+import magellan.library.impl.SpellBuilder;
 import magellan.library.io.GameDataIO;
 import magellan.library.io.RulesIO;
 import magellan.library.io.file.FileType;
@@ -696,12 +697,12 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private void parseSpells() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("ZAUBER ")) {
-      ID id = IntegerID.create(sc.argv[0].substring(7).trim());
+      IntegerID id = IntegerID.create(sc.argv[0].substring(7).trim());
 
       // not adding spell immediately is required here, please do not change this, unless you really
       // know, what you're doing!
-      Spell spell = MagellanFactory.createSpell(id, world);
-      spell.setBlockID(((IntegerID) id).intValue());
+      SpellBuilder spell = new SpellBuilder(id, world); // MagellanFactory.createSpell(id, world);
+      spell.setBlockID((id).intValue());
       sc.getNextToken(); // skip ZAUBER nr
 
       while (!sc.eof) {
@@ -753,9 +754,10 @@ public class CRParser implements RulesIO, GameDataIO {
         }
       }
 
-      if (spell.getName() != null) {
-        // spell.setID(StringID.create(spell.getName()));
-        world.addSpell(spell);
+      if (spell.getName() == null) {
+        log.warn("found spell without name:" +spell.toString());
+      } else {
+        world.addSpell(spell.construct());
       }
     }
   }

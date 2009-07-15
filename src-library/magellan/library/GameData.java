@@ -983,12 +983,12 @@ public abstract class GameData implements Cloneable,Addeable {
 
         try {
           newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(), resultGD);
+
+          MagellanFactory.mergeSpell(olderGD, spell, resultGD, newSpell);
+          resultGD.addSpell(newSpell);
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
-
-        MagellanFactory.mergeSpell(olderGD, spell, resultGD, newSpell);
-        resultGD.addSpell(newSpell);
       }
     }
 
@@ -997,16 +997,16 @@ public abstract class GameData implements Cloneable,Addeable {
         Spell spell = iter.next();
         Spell newSpell = resultGD.getSpell(spell.getID());
 
-        if (newSpell == null) {
-          try {
+        try {
+          if (newSpell == null) {
             newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(), resultGD);
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
           }
-        }
 
-        MagellanFactory.mergeSpell(newerGD, spell, resultGD, newSpell);
-        resultGD.addSpell(newSpell);
+          MagellanFactory.mergeSpell(newerGD, spell, resultGD, newSpell);
+          resultGD.addSpell(newSpell);
+        } catch (CloneNotSupportedException e) {
+          GameData.log.error(e);
+        }
       }
     }
 

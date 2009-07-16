@@ -621,6 +621,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     }
 
+    List<Object> selectedObjects2 = new ArrayList<Object>(selectedObjects.size()+1);
+    selectedObjects2.addAll(selectedObjects);
+    
     /**
      * UPDATE SELECTED OBJECTS :
      */
@@ -636,9 +639,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       if (o instanceof Unique){
         if (tse.isAddedPath(path)) {
-          selectedObjects.add(o);
+          selectedObjects2.add(o);
         } else {
-          selectedObjects.remove(o);
+          selectedObjects2.remove(o);
         }
       }
     }
@@ -649,7 +652,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
       }
     }
-    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
+    dispatcher.fire(new SelectionEvent(this, selectedObjects2, activeObject, selectionPath));
   }
 
   /**

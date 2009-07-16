@@ -523,6 +523,8 @@ public class EresseaOrderParser implements OrderParser {
       t.ttype = OrderToken.TT_KEYWORD;
       if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readDescription(false);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_BUILDING))) {
+        retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_UNIT))) {
         retVal = readDescription(false);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
@@ -540,8 +542,18 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNUNIT))) {
         retVal = readBenenneFremdes(t);
       } else {
-        t.ttype = OrderToken.TT_UNDEF;
-        unexpected(t);
+        BuildingType found = null;
+        for (BuildingType type : getData().rules.getBuildingTypes()){
+          if (t.equalsToken(type.getName())){
+            found = type;
+            retVal = readDescription(false);
+            break;
+          }
+        }
+        if (found==null){
+          t.ttype = OrderToken.TT_UNDEF;
+          unexpected(t);
+        }
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -564,6 +576,10 @@ public class EresseaOrderParser implements OrderParser {
           .getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
           && t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readBenenneFremdesGebaeude(t);
+      } else if (token.equalsToken(Resources
+          .getOrderTranslation(EresseaConstants.O_FOREIGNBUILDING))
+          && t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_BUILDING))) {
+        retVal = readBenenneFremdesGebaeude(t);
       } else if (token
           .equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FOREIGNFACTION))
           && t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
@@ -572,7 +588,16 @@ public class EresseaOrderParser implements OrderParser {
           && t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
         retVal = readBenenneFremdesSchiff(t);
       } else {
-        unexpected(t);
+        BuildingType found = null;
+        for (BuildingType type : getData().rules.getBuildingTypes()){
+          if (t.equalsToken(type.getName())){
+            found  = type;
+            retVal = readBenenneFremdesGebaeude(t);
+            break;
+          }
+        }
+        if (found==null)
+          unexpected(t);
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -695,7 +720,7 @@ public class EresseaOrderParser implements OrderParser {
         OrderToken t = getNextToken();
 
         if (isString(t)) {
-          retVal = new StringChecker(false, false, false, false) {
+          retVal = new StringChecker(false, false, true, false) {
             @Override
             protected void complete() {
               getCompleter().cmpltBenutze(minAmount);
@@ -734,8 +759,18 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
         retVal = readDescription();
       } else {
-        t.ttype = OrderToken.TT_UNDEF;
-        unexpected(t);
+        BuildingType found = null;
+        for (BuildingType type : getData().rules.getBuildingTypes()){
+          if (t.equalsToken(type.getName())){
+            found  = type;
+            retVal = readDescription();
+            break;
+          }
+        }
+        if (found==null){
+          t.ttype = OrderToken.TT_UNDEF;
+          unexpected(t);
+        }
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -863,7 +898,17 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SHIP))) {
         retVal = readBotschaftSchiff(t);
       } else {
-        unexpected(t);
+        BuildingType found = null;
+        for (BuildingType type : getData().rules.getBuildingTypes()){
+          if (t.equalsToken(type.getName())){
+            found  = type;
+            retVal = readBotschaftGebaeude(t);
+            break;
+          }
+        }
+        if (found==null){
+          unexpected(t);
+        }
       }
 
       if (getCompleter() != null && !t.followedBySpace()) {
@@ -1207,7 +1252,7 @@ public class EresseaOrderParser implements OrderParser {
       if (isNumeric(t.getText())) {
         retVal = readBeansprucheAmount(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, false, false, false) {
+        retVal = new StringChecker(false, false, true, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
           }
@@ -1226,7 +1271,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = new StringChecker(false, false, false, false) {
+        retVal = new StringChecker(false, false, true, false) {
           protected void complete() {
             getCompleter().cmpltBeanspruche();
           }
@@ -1702,7 +1747,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (token.followedBySpace() && isString(t)) {
-        retVal = new StringChecker(false, false, false, false) {
+        retVal = new StringChecker(false, false, true, false) {
           SkillType skill = null;
 
           @Override
@@ -1999,7 +2044,7 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isString(t)) {
-        retVal = new StringChecker(false, false, false, false) {
+        retVal = new StringChecker(false, false, true, false) {
           @Override
           protected boolean checkInner() {
             return super.checkInner() && (getData().rules != null)
@@ -2645,7 +2690,7 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_FACTION))) {
         retVal = readTarnePartei(t);
       } else if (isString(t)) {
-        retVal = new StringChecker(false, false, false, false) {
+        retVal = new StringChecker(false, false, true, false) {
           @Override
           protected boolean checkInner() {
             return super.checkInner() && (getData().rules != null)
@@ -3058,7 +3103,7 @@ public class EresseaOrderParser implements OrderParser {
       @Override
       protected void complete() {
         getCompleter().cmpltZaubere(far, combat, addRegion && openingToken == null,
-            addLevel && openingToken == null, "\"", "\"");
+            addLevel && openingToken == null, "", "");
       }
 
       @Override
@@ -3408,7 +3453,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = openingToken != null && closingToken != null;
       if (!allowQuotes)
         retVal &= openingToken == null && closingToken == null;
-      return checkFinal(nextToken);
+      return retVal && checkFinal(nextToken);
     }
 
   }
@@ -3448,11 +3493,7 @@ public class EresseaOrderParser implements OrderParser {
    */
   protected boolean readDescription(OrderToken t, boolean allowEmpty) {
     if (isString(t)) {
-      return new StringChecker(true, true, true, allowEmpty) {
-        protected boolean isFinish() {
-          return valid && content.length() > 0;
-        }
-      }.read(t);
+      return new StringChecker(true, true, true, allowEmpty).read(t);
     } else {
       unexpected(t);
       if (getCompleter() != null && !t.followedBySpace()) {

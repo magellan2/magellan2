@@ -827,6 +827,21 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       errorBgColor = c;
       settings.setProperty("OrderEditor.errorBgColor", Colors.encode(c));
     }
+
+    if (multiEditorLayout) {
+      if (data.units() != null) {
+        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = (Unit) iter.next();
+
+          if (getEditor(u) != null) {
+            getEditor(u).setErrorBackround(c);
+          }
+        }
+      }
+
+    } else {
+      editorSingelton.setErrorBackround(c);
+    }
   }
 
 

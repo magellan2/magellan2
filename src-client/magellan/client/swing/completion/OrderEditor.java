@@ -97,6 +97,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   public static final String S_LONGORDER = "longorder";
   public static final String S_LONGORDER_INV = "longorder_inv";
 
+  private Color errorColor;
+
   private Unit unit = null;
   private boolean modified = false;
   private List<String> orders = new LinkedList<String>();
@@ -166,6 +168,9 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
         }
       }
     };
+
+    errorColor = Colors.decode(settings.getProperty("OrderEditor.errorBgColor", "255,128,0"));
+
     initStyles();
 
     // bind ctrl-shift C to OrderEditor
@@ -475,7 +480,11 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   public void setUseSyntaxHighlighting(boolean bool) {
     if (highlightSyntax != bool) {
       highlightSyntax = bool;
-
+      
+      if (bool)
+        errorColor = Colors.decode(settings.getProperty("OrderEditor.errorBgColor", "255,128,0"));
+      else
+        errorColor = getBackground();
       formatTokens();
     }
   }
@@ -500,12 +509,15 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     }
   }
 
+  public void setErrorBackround(Color c) {
+    errorColor = c;
+    initStyles();
+  }
+
   /**
    * Adds styles to this component with one style for each token type.
    */
   private void initStyles() {
-    Color errorColor = new Color(1f, .5f, 0f);
-
     Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
     Style regular = addStyle(OrderEditor.S_REGULAR, def);
     Style s = addStyle(OrderEditor.S_REGULAR_INV, regular);
@@ -722,6 +734,10 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
       }
       prevToken = token;
 
+    }
+    if (prevToken != null) {
+      doc.setCharacterAttributes(pos[0] + prevToken.getEnd(), pos[1] - pos[0] - prevToken.getEnd(), doc
+          .getStyle(OrderEditor.S_REGULAR), true);
     }
   }
 

@@ -761,8 +761,9 @@ public class EresseaOrderCompleter implements Completer {
     completions.clear();
     for (Completion c : oldList) {
       OrderTokenizer nameTokenizer = new OrderTokenizer(new StringReader(c.getName()));
-      String newName =
-          fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
+      String newName = c.getName();
+      if (openingToken!=null)
+          newName = fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
               forceQuotes, doClose, preferredQuote);
       OrderTokenizer valueTokenizer = new OrderTokenizer(new StringReader(c.getValue()));
       String newValue =

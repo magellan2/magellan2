@@ -376,7 +376,7 @@ public class EresseaOrderParserTest {
   @Test
   public void testBenenneReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_NAME) + " EINHEIT \"Foo\"");
-    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF", "REGION" }) {
+    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk", "SCHIFF", "REGION" }) {
       checkOrder("BENENNEN " + thing + " \"Foo\"");
       checkOrder("BENENNE " + thing + " \"Foo\"; comment");
       checkOrder("BENENNE " + thing + " \"\"", false);
@@ -384,9 +384,8 @@ public class EresseaOrderParserTest {
       checkOrder("BENENNE " + thing + " 123 \"abc\"", false);
       checkOrder("BENENNE " + thing + " \"abc\" 123", false);
     }
-    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Sägewerk", "SCHIFF" }) {
+    for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk", "SCHIFF" }) {
       checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"");
-      checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"", false);
       checkOrder("BENENNE FREMDE " + thing + " abc \"Foo\"; comment");
       checkOrder("BENENNE FREMDE " + thing + " xyz \"\"", false);
       checkOrder("BENENNE FREMDE " + thing + " abc abc", false);
@@ -658,7 +657,7 @@ public class EresseaOrderParserTest {
     checkOrder("KÄMPFE VORNE", false); // deprecated
     checkOrder("KÄMPFE AGGRESSIV NICHT", false);
     checkOrder("KÄMPFE VORNE HINTEN", false);
-    checkOrder("KÄMPFE 123 HINTEN, false");
+    checkOrder("KÄMPFE 123 HINTEN", false);
     checkOrder("KÄMPFE FLIEHE NICHT", false);
   }
 
@@ -675,7 +674,13 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testKaufeReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_BUY));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_BUY)+" 2 Balsam");
+    checkOrder("KAUFE 2 Öl");
+    checkOrder("KAUFE 2 Oel");
+    checkOrder("KAUFE Weihrauch", false);
+    checkOrder("KAUFE 2 Schnickschnak", false);
+    checkOrder("KAUFE 2 Öl Weihrauch", false);
+    checkOrder("KAUFE", false);
   }
 
   /**
@@ -683,7 +688,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testKontaktiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CONTACT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CONTACT)+" 123");
+    checkOrder("KONTAKTIERE a");
+    checkOrder("KONTAKTIERE abc def", false);
+    checkOrder("KONTAKTIERE", false);
+    checkOrder("KONTAKTIERE \"abc\"", false);
   }
 
   /**
@@ -691,7 +700,11 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testLehreReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_TEACH));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_TEACH)+" abc");
+    checkOrder("LEHRE abc 123 456");
+    checkOrder("LEHRE abc Hiebwaffen", false);
+    checkOrder("LEHRE", false);
+    checkOrder("LEHRE Hiebwaffen", false);
   }
 
   /**
@@ -699,7 +712,14 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testLerneReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LEARN));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LEARN)+" Ausdauer");
+    checkOrder("LERNE Hiebwaffen");
+    checkOrder("LERNE \"Hiebwaffen\"");
+    checkOrder("LERNE Waffenloser~Kampf");
+    checkOrder("LERNE", false);
+    checkOrder("LERNE foo", false);
+    checkOrder("LERNE Waffenloser Kampf", false);
+    checkOrder("LERNE 123 456", false);
   }
 
   /**
@@ -707,7 +727,7 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testLocaleReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LOCALE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_LOCALE), false);
   }
 
   /**

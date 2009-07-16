@@ -118,6 +118,9 @@ public class EresseaConstants {
 	/** DOCUMENT-ME */
 	public static final String O_CASTLE = "CASTLE";
 
+	/** BENNEN GEBÄUDE xyz */
+	public static final String O_BUILDING = "BUILDING";
+
 	/** DOCUMENT-ME */
 	public static final String O_CLAIM = "CLAIM";
 

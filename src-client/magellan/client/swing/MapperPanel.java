@@ -101,8 +101,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   private final float level3Scale3 = 2.3f;
   
   /** fixed min and max factors for scaling */
-  private final float minScale = 0.3f;
-  private final float maxScale = 2.3f;
+  private final float minScale = 0.1f;
+  private final float maxScale = 3.3f;
   
   /** The map component in this panel. */
   private Mapper mapper = null;
@@ -333,7 +333,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     mapper.setCursor(waitCursor);
 
     CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
-    mapper.setScaleFactor((float) ((sldScaling.getValue() / 50.0) + 0.3));
+    mapper.setScaleFactor(sldScaling2Scale(sldScaling.getValue()));
     setCenter(center);
     this.repaint();
     setCursor(defaultCursor);
@@ -567,13 +567,12 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Sets a new scaling factor for the map.
    * 
    * @param fScale
-   *          the new scaling factor, values may range from 0.3 to 2.3.
+   *          the new scaling factor, values may range from {@link #minScale} to {@link #maxScale}
    */
   public void setScaleFactor(float fScale) {
     fScale = Math.max(minScale, fScale);
-    // fScale = Math.min(fScale, (100.0f / 50.0f) + 0.3f);
     fScale = Math.min(fScale, maxScale);
-    sldScaling.setValue((int) ((fScale - minScale) * 50.0));
+    sldScaling.setValue(scale2sldScaling(fScale));
     mapper.setScaleFactor(fScale);
   }
 
@@ -862,6 +861,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     
     lblScaling = new JLabel(Resources.get("mapperpanel.lbl.zoom.caption"));
     sldScaling = new JSlider(SwingConstants.HORIZONTAL);
+    sldScaling.setMinimum(scale2sldScaling(minScale));
+    sldScaling.setMaximum(scale2sldScaling(maxScale));
     sldScaling.setMajorTickSpacing(5);
     sldScaling.setPaintTicks(true);
     sldScaling.addChangeListener(new ChangeListener() {
@@ -1014,6 +1015,15 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     return mainPanel;
   }
 
+  private int scale2sldScaling(float fScale) {
+    return (int) ((fScale - minScale) * 50.0);
+  }
+
+
+  private float sldScaling2Scale(int value) {
+    return (float) ((value / 50.0) + minScale);
+  }
+
   /**
    * Called when the viewed rect of the main mapper changes. In further
    * implementations a rect of the visible bounds should be displayed in the
@@ -1110,16 +1120,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     case 7:
       // Zoom in CTRL + "+"
       if (this.getScaleFactor()<maxScale){
-        float currentSF = this.getScaleFactor();      
-        this.setNewScaleFactor(currentSF * 1.33f);
+        this.setNewScaleFactor(getNextTickValue());
       }
       break;
     case 8:
     case 9:  
       // Zoom out CTRL + "-"
       if (this.getScaleFactor()>minScale){
-        float currentSF2 = this.getScaleFactor();
-        this.setNewScaleFactor(currentSF2 * 0.66f);
+        this.setNewScaleFactor(getPreviousTickValue());
       }
       break;
       
@@ -1149,10 +1157,16 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }  
   }
 
+  private float getNextTickValue() {
+    return sldScaling2Scale(sldScaling.getValue()+2*sldScaling.getMajorTickSpacing());
+  }
+
+  private float getPreviousTickValue() {
+    return sldScaling2Scale(sldScaling.getValue()-2*sldScaling.getMajorTickSpacing());
+  }
+
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
     return new MapPreferences(this);
@@ -1171,7 +1185,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.desktop.Initializable#initComponent(java.lang.String)
    */
   public void initComponent(java.lang.String p1) {
     if (p1.indexOf(':') >= 0) {

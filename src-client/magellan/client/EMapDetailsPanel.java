@@ -1008,7 +1008,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
     } else {
-      // here we dont have resources, so make the "classic" way to create resource information
+      // here we don't have resources, so make the "classic" way to create resource information
       if ((r.getTrees() > 0) || (r.getOldTrees() > 0)) {
         DefaultMutableTreeNode treeNode;
 

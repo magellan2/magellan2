@@ -54,9 +54,9 @@ public class SelectionHistory {
   }
 
 	/**
-	 * DOCUMENT-ME
+	 * Adds active object to history.
 	 *
-	 * 
+	 * @param e
 	 */
 	public static void selectionChanged(SelectionEvent e) {
 		if((e.getActiveObject() != null) && !SelectionHistory.ignoredSources.contains(e.getSource())){

@@ -21,6 +21,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -335,7 +336,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		 */
 		// factions.clear();
 		// enforce refreshing of regions-table and redrawing of chart
-		selectionChanged(new SelectionEvent(this, new Vector<Object>(), null));
+		selectionChanged(new SelectionEvent(this, Collections.emptyList(), null));
 	}
 
 	/**

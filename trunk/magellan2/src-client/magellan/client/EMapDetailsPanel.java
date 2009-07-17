@@ -4402,6 +4402,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     boolean regions = true;
     boolean factions = true;
     boolean units = true;
+    
+    displayedObject = null;
 
     for (Iterator<?> iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {
       Object o = iter.next();

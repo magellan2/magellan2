@@ -13,7 +13,9 @@
 
 package magellan.client.event;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EventObject;
 
 import javax.swing.JComponent;
@@ -138,10 +140,10 @@ public class SelectionEvent extends EventObject {
    *          {@link SelectionEvent#ST_DEFAULT} if some game object(s) are selected, and
    *          {@link SelectionEvent#ST_REGIONS} if one or more regions are selected. 
    */          
-  public SelectionEvent(Object source, Collection<?> selectedObjects, Object activeObject, Collection<Object> path,
+  public <T> SelectionEvent(Object source, Collection<T> selectedObjects, Object activeObject, Collection<Object> path,
       int selectionType) {
     super(source);
-		this.selectedObjects = selectedObjects;
+		this.selectedObjects = selectedObjects == null?null:new ArrayList<T>(selectedObjects);
 		this.activeObject = activeObject;
 		this.selectionType = selectionType;
     this.path=path;
@@ -158,7 +160,7 @@ public class SelectionEvent extends EventObject {
 	 * 
 	 */
 	public Collection<?> getSelectedObjects() {
-		return selectedObjects;
+		return selectedObjects==null?null:Collections.unmodifiableCollection(selectedObjects);
 	}
 
 

@@ -125,7 +125,7 @@ import magellan.library.utils.comparator.UnitSkillComparator;
 import magellan.library.utils.logging.Logger;
 
 /**
- * DOCUMENT-ME
+ * A panel containing a tree with all regions units, ships, etc.
  * 
  * @author $Author: $
  * @version $Revision: 382 $
@@ -156,7 +156,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   // region with previously selected item
   private Unique activeObject = null;
-  private List<Object> selectedObjects = new LinkedList<Object>();
+  private Set<Object> selectedObjects = new HashSet<Object>();
 
   // needed by FactionNodeWrapper to determine the active alliances
   // keys: FactionIDs, values: Alliance-objects
@@ -204,10 +204,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Creates a new EMapOverviewPanel object.
    * 
-   * @param d
-   *          DOCUMENT-ME
+   * @param d 
    * @param p
-   *          DOCUMENT-ME
    */
   public EMapOverviewPanel(EventDispatcher d, Properties p) {
     super(d, p);
@@ -315,9 +313,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * Returns the factory that creates node wrappers.
    */
   public NodeWrapperFactory getNodeWrapperFactory() {
     return nodeWrapperFactory;
@@ -325,8 +321,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Returns the component displaying the overview tree.
-   * 
-   * 
    */
   public Component getOverviewComponent() {
     return scpTree;
@@ -334,8 +328,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   /**
    * Returns the component displaying the history.
-   * 
-   * 
    */
   public Component getHistoryComponent() {
     return scpHistory;
@@ -346,8 +338,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * significant for the valueChanged() method, how deep the different node
    * types are nested.
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
@@ -424,8 +415,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
-    this.selectionChanged(new SelectionEvent(treeModel, oldSelectedObjects, oldActiveObject));
-
+    dispatcher.fire(new SelectionEvent(treeModel, oldActiveObject==null?null:Collections.singleton(oldActiveObject), oldActiveObject));
   }
 
   private TreeBuilder myTreeBuilder;
@@ -441,7 +431,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Retrieve a Comparator to sort the units according to the settings.
    * 
    * @param settings
-   *          DOCUMENT-ME
    * 
    */
   public static Comparator<? super Unit> getUnitSorting(Properties settings) {
@@ -477,8 +466,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Retrieve the structure of the unit tree according to the settings
    * 
    * @param settings
-   *          DOCUMENT-ME
-   * 
    */
   private static int[] getTreeStructure(Properties settings) {
     String criteria = settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " " + TreeHelper.GROUP);
@@ -506,8 +493,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * TreeSelection event handler, notifies event listeners.
    * 
-   * @param tse
-   *          DOCUMENT-ME
+   * @see javax.swing.event.TreeSelectionListener#valueChanged(javax.swing.event.TreeSelectionEvent)
    */
   public void valueChanged(TreeSelectionEvent tse) {
     if (ignoreTreeSelections) {
@@ -621,9 +607,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     }
 
-    List<Object> selectedObjects2 = new ArrayList<Object>(selectedObjects.size()+1);
-    selectedObjects2.addAll(selectedObjects);
-    
     /**
      * UPDATE SELECTED OBJECTS :
      */
@@ -639,9 +622,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       if (o instanceof Unique){
         if (tse.isAddedPath(path)) {
-          selectedObjects2.add(o);
+          selectedObjects.add(o);
         } else {
-          selectedObjects2.remove(o);
+          selectedObjects.remove(o);
         }
       }
     }
@@ -652,7 +635,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
       }
     }
-    dispatcher.fire(new SelectionEvent(this, selectedObjects2, activeObject, selectionPath));
+    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
   }
 
   /**
@@ -765,34 +748,12 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     sb.append("=");
     sb.append(settings.getProperty("EMapOverviewPanel.treeStructure", " " + TreeHelper.FACTION + " " + TreeHelper.GROUP));
     return sb.toString().replace(' ', '_');
-    /*
-     * sb.append("EMapOverviewPanel.treeHistorySplit"); sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.treeHistorySplit",
-     * "100")); sb.append("_"); sb.append("EMapOverviewPanel.displayIslands");
-     * sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.displayIslands",
-     * "true")); sb.append("_"); sb.append("EMapOverviewPanel.sortRegions");
-     * sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.sortRegions", "true"));
-     * sb.append("_"); sb.append("EMapOverviewPanel.sortRegionsCriteria");
-     * sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.sortRegionsCriteria",
-     * "coordinates")); sb.append("_");
-     * sb.append("EMapOverviewPanel.sortUnitsCriteria"); sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.sortUnitsCriteria","skills"));
-     * sb.append("_"); sb.append("EMapOverviewPanel.useBestSkill");
-     * sb.append("=");
-     * sb.append(settings.getProperty("EMapOverviewPanel.useBestSkill",
-     * "true")); sb.append("_");
-     */
-
   }
 
   /**
    * Event handler for TreeExpansionEvents (recenters the tree if necessary)
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see javax.swing.event.TreeExpansionListener#treeExpanded(javax.swing.event.TreeExpansionEvent)
    */
   public void treeExpanded(TreeExpansionEvent e) {
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.getPath().getLastPathComponent();
@@ -812,8 +773,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Event handler for TreeCollapsedEvents
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see javax.swing.event.TreeExpansionListener#treeCollapsed(javax.swing.event.TreeExpansionEvent)
    */
   public void treeCollapsed(TreeExpansionEvent e) {
   }
@@ -822,8 +782,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Change event handler, change the display status of the tree if an unit
    * orderConfimation Status changed
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.event.OrderConfirmListener#orderConfirmationChanged(magellan.client.event.OrderConfirmEvent)
    */
   public void orderConfirmationChanged(OrderConfirmEvent e) {
     if ((e.getSource() == this) || (e.getUnits() == null) || (e.getUnits().size() == 0)) {
@@ -1060,8 +1019,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * Looks a path down from root to the leaf if to expand any segment
    * 
-   * @param path
-   *          DOCUMENT-ME
    */
   protected void checkPathToExpand(TreePath path) {
     if (path.getPathCount() > 1) {
@@ -1095,6 +1052,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       }
     }
 
+
+    
     // try to prevent notification loops, i.e. that calling this
     // procedure results in a notification of the registered
     // listeners of this object
@@ -1246,6 +1205,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       ignoreTreeSelections = false;
     }
+    tree.repaint();
   }
 
   protected void expandSelected(Region region, DefaultMutableTreeNode node, TreePath path) {
@@ -1411,10 +1371,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
+   * Inserts the temp unit into the tree.
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.event.TempUnitListener#tempUnitCreated(magellan.client.event.TempUnitEvent)
    */
   public void tempUnitCreated(TempUnitEvent e) {
     DefaultMutableTreeNode parentNode = (DefaultMutableTreeNode) unitNodes.get(e.getTempUnit().getParent().getID());
@@ -1440,10 +1399,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
+   * Removes the temp unit from the tree.
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.event.TempUnitListener#tempUnitDeleting(magellan.client.event.TempUnitEvent)
    */
   public void tempUnitDeleting(TempUnitEvent e) {
     TempUnit t = e.getTempUnit();
@@ -1481,7 +1439,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Should return all short cuts this class want to be informed. The elements
    * should be of type javax.swing.KeyStroke
    * 
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getShortCuts()
    */
   public Iterator<KeyStroke> getShortCuts() {
     return shortcuts.iterator();
@@ -1490,8 +1448,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * This method is called when a shortcut from getShortCuts() is recognized.
    * 
-   * @param shortcut
-   *          DOCUMENT-ME
+   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
     int index = shortcuts.indexOf(shortcut);
@@ -1524,26 +1481,29 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
+   * Confirms/unconfirms a unit.
    */
   public void shortCut_B() {
     toggleOrderConfirmation();
   }
 
   /**
-   * DOCUMENT-ME
+   * Selects the next unit.
    */
   public void shortCut_N() {
     shortCut_N(true);
   }
 
   /**
-   * DOCUMENT-ME
+   * Selects the previous unit.
    */
   public void shortCut_Reverse_N() {
     shortCut_N(false);
   }
 
+  /**
+   * Selects the next or previous unit.
+   */
   protected void shortCut_N(boolean traverseDown) {
     if ((tree == null) || (rootNode == null) || (tree.getSelectionPath() == null)) {
       // fail fast
@@ -1724,7 +1684,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * Selects and entry in the selection history by a relative offset.
    * 
    * @param i
-   *          DOCUMENT-ME
    */
   private void jumpInSelectionHistory(int i) {
     ListModel model = lstHistory.getModel();
@@ -1835,10 +1794,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
 
   /**
-   * DOCUMENT-ME
    * 
-   * @param src
-   *          DOCUMENT-ME
+   * 
+   * @see magellan.client.swing.tree.TreeUpdate#updateTree(java.lang.Object)
    */
   public void updateTree(Object src) {
     tree.treeDidChange();
@@ -1857,11 +1815,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
    * 
-   * @param stroke
-   *          DOCUMENT-ME
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
    */
   public String getShortcutDescription(Object stroke) {
     int index = shortcuts.indexOf(stroke);
@@ -1870,9 +1825,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   }
 
   /**
-   * DOCUMENT-ME
    * 
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public String getListenerDescription() {
     return Resources.get("emapoverviewpanel.shortcut.title");
@@ -1885,14 +1839,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      * Creates a new ScrollerRunnable object.
      * 
      * @param r
-     *          DOCUMENT-ME
      */
     public ScrollerRunnable(Rectangle r) {
       centerRect = r;
     }
 
     /**
-     * DOCUMENT-ME
+     * Scrolls tree to correct viewport.
      */
     public void run() {
       if (centerRect != null) {
@@ -1923,8 +1876,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     /**
      * Invoked when the orders of a unit are modified.
      * 
-     * @param e
-     *          DOCUMENT-ME
+     * @see magellan.client.event.UnitOrdersListener#unitOrdersChanged(magellan.client.event.UnitOrdersEvent)
      */
     public void unitOrdersChanged(UnitOrdersEvent e) {
       update(e.getUnit(), true);
@@ -2036,10 +1988,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param actionEvent
-     *          DOCUMENT-ME
      */
     public void actionPerformed(ActionEvent actionEvent) {
       updateState();

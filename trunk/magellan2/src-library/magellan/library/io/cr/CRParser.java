@@ -2875,6 +2875,10 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("letzteslaen")) {
         region.setOldLaen(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Adamantium")) {
+        // we don't need to record it, it will also appear under RESOURCES
+        region.putTag("Adamantium", sc.argv[0]);
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Pferde")) {
         region.setHorses(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();

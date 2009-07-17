@@ -426,7 +426,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltAttack();
       }
 
@@ -471,7 +471,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBeklaue();
       }
 
@@ -499,7 +499,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBelagere();
       }
 
@@ -543,20 +543,20 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readBenenneFremdes(t);
       } else {
         BuildingType found = null;
-        for (BuildingType type : getData().rules.getBuildingTypes()){
-          if (t.equalsToken(type.getName())){
+        for (BuildingType type : getData().rules.getBuildingTypes()) {
+          if (t.equalsToken(type.getName())) {
             found = type;
             retVal = readDescription(false);
             break;
           }
         }
-        if (found==null){
+        if (found == null) {
           t.ttype = OrderToken.TT_UNDEF;
           unexpected(t);
         }
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenne();
       }
 
@@ -589,18 +589,18 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readBenenneFremdesSchiff(t);
       } else {
         BuildingType found = null;
-        for (BuildingType type : getData().rules.getBuildingTypes()){
-          if (t.equalsToken(type.getName())){
-            found  = type;
+        for (BuildingType type : getData().rules.getBuildingTypes()) {
+          if (t.equalsToken(type.getName())) {
+            found = type;
             retVal = readBenenneFremdesGebaeude(t);
             break;
           }
         }
-        if (found==null)
+        if (found == null)
           unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenneFremdes(token);
       }
 
@@ -620,7 +620,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenneFremdeEinheit();
       }
 
@@ -639,7 +639,7 @@ public class EresseaOrderParser implements OrderParser {
       } else {
         unexpected(t);
       }
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenneFremdesGebaeude();
       }
 
@@ -659,7 +659,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenneFremdePartei();
       }
 
@@ -679,7 +679,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenenneFremdesSchiff();
       }
       return retVal;
@@ -703,7 +703,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBenutze(0);
       }
       return retVal;
@@ -728,7 +728,7 @@ public class EresseaOrderParser implements OrderParser {
           }.read(t);
         } else {
           unexpected(t);
-          if (getCompleter() != null && !t.followedBySpace()) {
+          if (shallComplete(token, t)) {
             getCompleter().cmpltBenutze(minAmount);
           }
         }
@@ -760,20 +760,20 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readDescription();
       } else {
         BuildingType found = null;
-        for (BuildingType type : getData().rules.getBuildingTypes()){
-          if (t.equalsToken(type.getName())){
-            found  = type;
+        for (BuildingType type : getData().rules.getBuildingTypes()) {
+          if (t.equalsToken(type.getName())) {
+            found = type;
             retVal = readDescription();
             break;
           }
         }
-        if (found==null){
+        if (found == null) {
           t.ttype = OrderToken.TT_UNDEF;
           unexpected(t);
         }
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBeschreibe();
       }
       return retVal;
@@ -797,7 +797,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBetrete();
       }
       return retVal;
@@ -815,7 +815,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBetreteBurg();
       }
       return retVal;
@@ -839,7 +839,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBetreteSchiff();
       }
       return retVal;
@@ -899,19 +899,19 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readBotschaftSchiff(t);
       } else {
         BuildingType found = null;
-        for (BuildingType type : getData().rules.getBuildingTypes()){
-          if (t.equalsToken(type.getName())){
-            found  = type;
+        for (BuildingType type : getData().rules.getBuildingTypes()) {
+          if (t.equalsToken(type.getName())) {
+            found = type;
             retVal = readBotschaftGebaeude(t);
             break;
           }
         }
-        if (found==null){
+        if (found == null) {
           unexpected(t);
         }
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBotschaft();
       }
       return retVal;
@@ -929,7 +929,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBotschaftEinheit(false);
       }
       return retVal;
@@ -943,8 +943,7 @@ public class EresseaOrderParser implements OrderParser {
 
       retVal = readDescription(t, false);
 
-      if (getCompleter() != null
-          && !t.followedBySpace()
+      if (shallComplete(token, t)
           && token.getText().equalsIgnoreCase(
               Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
         getCompleter().cmpltBotschaftEinheit(true);
@@ -965,7 +964,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBotschaftPartei();
       }
       return retVal;
@@ -992,7 +991,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBotschaftGebaeude();
       }
       return retVal;
@@ -1010,7 +1009,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltBotschaftSchiff();
       }
       return retVal;
@@ -1160,7 +1159,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltFahre(false);
       }
       return retVal;
@@ -1171,8 +1170,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (getCompleter() != null
-          && !t.followedBySpace()
+      if (shallComplete(token, t)
           && token.getText().equalsIgnoreCase(
               Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
         getCompleter().cmpltFahre(true);
@@ -1198,7 +1196,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltFolge();
       }
       return retVal;
@@ -1211,12 +1209,12 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
-        retVal = readFinalID(t);
+        retVal = readFinalID(t, true);
       } else {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltFolgeEinheit(false);
       }
       return retVal;
@@ -1234,7 +1232,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltFolgeSchiff();
       }
       return retVal;
@@ -1298,7 +1296,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltForsche();
       }
       return retVal;
@@ -1319,7 +1317,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltGib();
       }
 
@@ -1348,9 +1346,9 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null
-          && (!t.followedBySpace() || token.getText().equalsIgnoreCase(
-              Resources.getOrderTranslation(EresseaConstants.O_TEMP)))) {
+      if (shallComplete(token, t)
+          && token.getText().equalsIgnoreCase(
+              Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
         getCompleter().cmpltGibUID(
             token.getText()
                 .equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
@@ -1378,7 +1376,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltGibJe();
       }
       return retVal;
@@ -1404,7 +1402,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltGibUIDAmount(uid, i, persons);
       }
       return retVal;
@@ -1424,7 +1422,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltGibUIDAlles();
       }
       return retVal;
@@ -1475,7 +1473,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltHelfe();
       }
       return retVal;
@@ -1498,7 +1496,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltHelfeFID();
       }
       return retVal;
@@ -1516,7 +1514,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltHelfeFIDModifier();
       }
       return retVal;
@@ -1553,7 +1551,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltKaempfe();
       }
       return retVal;
@@ -1571,7 +1569,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltKaempfeHelfe();
       }
       return retVal;
@@ -1599,7 +1597,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltKampfzauber(true, "\"", "\"");
         }
       }
@@ -1640,7 +1638,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltKaufe();
       }
       return retVal;
@@ -1663,7 +1661,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltKaufeAmount();
       }
       return retVal;
@@ -1684,7 +1682,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltKontaktiere();
       }
       return retVal;
@@ -1711,7 +1709,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltLehre(false);
       }
       return retVal;
@@ -1729,7 +1727,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltLehre(
             token.getText()
                 .equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
@@ -1792,7 +1790,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltLerneTalent(skill);
       }
       return retVal;
@@ -1813,7 +1811,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltLocale();
       }
       return retVal;
@@ -1866,7 +1864,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readMacheAnything(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         if (hasAmount)
           getCompleter().cmpltMacheAmount();
         else
@@ -1900,7 +1898,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readDescription(t, false);
       }
 
-      if (getCompleter() != null && !token.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltMacheTempID();
       }
 
@@ -1919,7 +1917,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltMacheBurg();
       }
       return retVal;
@@ -1937,7 +1935,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltMacheBuilding(token.getText());
       }
       return retVal;
@@ -1961,7 +1959,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltMacheSchiff();
       }
       return retVal;
@@ -1979,7 +1977,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltMacheStrasse();
       }
       return retVal;
@@ -2010,7 +2008,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltNach();
       }
       return retVal;
@@ -2028,7 +2026,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltNach();
       }
       return retVal;
@@ -2069,7 +2067,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltStirb();
         }
       }
@@ -2098,7 +2096,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltNummer();
       }
       return retVal;
@@ -2118,7 +2116,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-// if (getCompleter()!=null && !t.followedBySpace()){
+// if (shallComplet(token, t)){
 // getCompleter().cmpltNummerEinheit();
 // }
 
@@ -2200,7 +2198,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltOption();
       }
       return retVal;
@@ -2218,7 +2216,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltOptionOption();
       }
       return retVal;
@@ -2293,7 +2291,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltPflanze();
       }
       return retVal;
@@ -2323,7 +2321,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltPflanze(minAmount);
       }
       return retVal;
@@ -2360,7 +2358,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltPiraterie();
       }
       return retVal;
@@ -2378,7 +2376,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltPiraterieFID();
       }
       return retVal;
@@ -2397,7 +2395,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readDescription(t);
       } else {
         retVal = checkFinal(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltPraefix();
         }
       }
@@ -2438,7 +2436,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltRekrutiere();
       }
 
@@ -2461,7 +2459,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltReserviere();
       }
       return retVal;
@@ -2479,7 +2477,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltReserviereJe();
       }
       return retVal;
@@ -2498,7 +2496,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltReserviereAmount();
       }
       return retVal;
@@ -2521,7 +2519,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltRoute();
       }
       return retVal;
@@ -2541,7 +2539,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltRoute();
       }
       return retVal;
@@ -2562,7 +2560,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltSabotiere();
       }
       return retVal;
@@ -2586,7 +2584,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltSortiere();
       }
       return retVal;
@@ -2604,7 +2602,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltSortiereVor();
       }
       return retVal;
@@ -2622,7 +2620,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltSortiereHinter();
       }
       return retVal;
@@ -2638,12 +2636,12 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
-        retVal = readFinalID(t);
+        retVal = readFinalID(t, true);
       } else {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltSpioniere();
       }
       return retVal;
@@ -2668,7 +2666,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltStirb();
         }
       }
@@ -2704,7 +2702,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         retVal = checkFinal(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltTarne(false);
         }
       }
@@ -2726,7 +2724,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltTarnePartei();
       }
       return retVal;
@@ -2744,7 +2742,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltTarneParteiNummer();
       }
       return retVal;
@@ -2760,12 +2758,12 @@ public class EresseaOrderParser implements OrderParser {
       OrderToken t = getNextToken();
 
       if (isID(t.getText()) == true) {
-        retVal = readFinalID(t);
+        retVal = readFinalID(t, true);
       } else {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltTransportiere(false);
       }
       return retVal;
@@ -2855,7 +2853,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltVergesse();
       }
       return retVal;
@@ -2878,7 +2876,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltVerkaufe();
       }
       return retVal;
@@ -2901,7 +2899,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltVerkaufeAmount();
       }
       return retVal;
@@ -2925,7 +2923,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltVerkaufeAlles();
       }
       return retVal;
@@ -2949,7 +2947,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltZaubere(false, false, true, true, "\"", "\"");
         }
       }
@@ -2969,7 +2967,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZaubereRegion();
       }
       return retVal;
@@ -2994,7 +2992,7 @@ public class EresseaOrderParser implements OrderParser {
           retVal = new ZaubereSpruchChecker(true, false, false, true).read(t);
         } else {
           unexpected(t);
-          if (getCompleter() != null && !t.followedBySpace()) {
+          if (shallComplete(token, t)) {
             getCompleter().cmpltZaubere(true, false, false, true, "\"", "\"");
           }
         }
@@ -3017,13 +3015,13 @@ public class EresseaOrderParser implements OrderParser {
           retVal = new ZaubereSpruchChecker(false, false, false, false).read(t);
         } else {
           unexpected(t);
-          if (getCompleter() != null && !t.followedBySpace()) {
+          if (shallComplete(token, t)) {
             getCompleter().cmpltZaubere(false, combat, false, false, "\"", "\"");
           }
         }
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltZaubereStufe();
         }
       }
@@ -3043,13 +3041,13 @@ public class EresseaOrderParser implements OrderParser {
           retVal = new ZaubereSpruchChecker(true, false, false, false).read(t);
         } else {
           unexpected(t);
-          if (getCompleter() != null && !t.followedBySpace()) {
+          if (shallComplete(token, t)) {
             getCompleter().cmpltZaubere(true, false, false, false, "\"", "\"");
           }
         }
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltZaubereRegionStufe();
         }
       }
@@ -3194,7 +3192,7 @@ public class EresseaOrderParser implements OrderParser {
         }.read(t);
       } else {
         unexpected(t);
-        if (getCompleter() != null && !t.followedBySpace()) {
+        if (shallComplete(token, t)) {
           getCompleter().cmpltZeige();
         }
       }
@@ -3215,7 +3213,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZeigeAlle();
       }
       return retVal;
@@ -3238,7 +3236,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZerstoere();
       }
       return retVal;
@@ -3256,7 +3254,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = checkFinal(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZerstoere();
       }
       return retVal;
@@ -3274,7 +3272,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZerstoereStrasse();
       }
       return retVal;
@@ -3297,7 +3295,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (getCompleter() != null && !t.followedBySpace()) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltZuechte();
       }
       return retVal;
@@ -3518,12 +3516,17 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   protected boolean readFinalID(OrderToken token) {
+    return readFinalID(token, false);
+  }
+
+  protected boolean readFinalID(OrderToken token, boolean tempAllowed) {
     token.ttype = OrderToken.TT_ID;
 
     OrderToken t = getNextToken();
 
-    if (getCompleter() != null && !t.followedBySpace()
-        && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+    if (shallComplete(token, t)
+        && token.getText().equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP))
+        && tempAllowed) {
       getCompleter().addRegionUnits("", true);
     }
 
@@ -3819,6 +3822,10 @@ public class EresseaOrderParser implements OrderParser {
 
     // alternative implementation
     return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
+  }
+
+  public boolean shallComplete(OrderToken token, OrderToken t) {
+    return (getCompleter() != null && token.followedBySpace() && !t.followedBySpace());
   }
 
 }

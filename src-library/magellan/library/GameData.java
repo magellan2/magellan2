@@ -80,7 +80,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
   private Map<Integer, Map<Integer, LevelRelation>> levelRelations = new HashMap<Integer, Map<Integer,LevelRelation>>();
   
-  private Map<EntityID, AllianceGroup> alliancegroups;
+  private Map<ID, AllianceGroup> alliancegroups;
 
   /**
    * The current TempUnit-ID. This means, if a new TempUnit is created, it's
@@ -321,7 +321,7 @@ public abstract class GameData implements Cloneable,Addeable {
   /**
    * Returns the AllianceGroup with the specified ID if it exists, otherwise <code>null</code>.
    */
-  public AllianceGroup getAllianceGroup(EntityID allianceID){
+  public AllianceGroup getAllianceGroup(ID allianceID){
     if (alliancegroups==null)
       return null;
     return alliancegroups.get(allianceID);
@@ -340,8 +340,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
   public void addAllianceGroup(AllianceGroup alliance) {
     if (alliancegroups == null)
-      alliancegroups = new OrderedHashtable<EntityID, AllianceGroup>(1);
-    alliancegroups.put(alliance.getId(), alliance);
+      alliancegroups = new OrderedHashtable<ID, AllianceGroup>(1);
+    alliancegroups.put(alliance.getID(), alliance);
   }
 
   /**
@@ -807,6 +807,10 @@ public abstract class GameData implements Cloneable,Addeable {
       resultGD.setFileType(olderGD.getFileType());
     }
 
+    /***********************************************************************/
+    /**************************** ADDING PHASE *****************************/
+    /***********************************************************************/
+
     /**************************** DATE ***************************/
     EresseaDate date = new EresseaDate(newerGD.getDate().getDate());
     date.setEpoch(((EresseaDate) newerGD.getDate()).getEpoch());
@@ -1085,6 +1089,31 @@ public abstract class GameData implements Cloneable,Addeable {
       }
     }
 
+    /**************************** ALLIANCES ***************************/
+    if (olderGD.alliancegroups != null && sameRound) {
+      for (AllianceGroup alliance : olderGD.alliancegroups.values()) {
+        try {
+          resultGD.addAllianceGroup(MagellanFactory.createAlliance((EntityID) alliance.getID().clone(),
+              resultGD));
+        } catch (CloneNotSupportedException e) {
+          GameData.log.error(e);
+        }
+      }
+    }
+
+    if (newerGD.alliancegroups != null) {
+      for (AllianceGroup alliance : newerGD.alliancegroups.values()) {
+        if (olderGD.getAllianceGroup(alliance.getID())==null){
+          try {
+            resultGD.addAllianceGroup(MagellanFactory.createAlliance((EntityID) alliance.getID().clone(),
+                resultGD));
+          } catch (CloneNotSupportedException e) {
+            GameData.log.error(e);
+          }
+        }
+      }
+    }
+
     /**************************** FACTIONS ***************************/
     // complex object, just add faction without merging here
     if (olderGD.factions() != null) {
@@ -1322,6 +1351,19 @@ public abstract class GameData implements Cloneable,Addeable {
       }
     }
 
+    /***********************************************************************/
+    /********************** MERGING PHASE -- FIRST PASS ********************/
+    /***********************************************************************/
+
+    /**************************** ALLIANCES ***************************/
+    if (olderGD.alliancegroups != null && sameRound) {
+      for (AllianceGroup curAlliance : olderGD.alliancegroups.values()) {
+        AllianceGroup newAlliance = resultGD.getAllianceGroup(curAlliance.getID());
+        
+        MagellanFactory.mergeAlliance(olderGD, curAlliance, resultGD, newAlliance);
+      }
+    }
+
     /**************************** MERGE FACTIONS ***************************/
     // complex object FIRST PASS
     if (olderGD.factions() != null) {
@@ -1400,6 +1442,19 @@ public abstract class GameData implements Cloneable,Addeable {
           // solution
           MagellanFactory.mergeComments(curShip, newShip);
         }
+      }
+    }
+
+    /***********************************************************************/
+    /********************** MERGING PHASE -- SECOND PASS *******************/
+    /***********************************************************************/
+
+    /**************************** ALLIANCES ***************************/
+    if (newerGD.alliancegroups != null) {
+      for (AllianceGroup curAlliance : newerGD.alliancegroups.values()) {
+        AllianceGroup newAlliance = resultGD.getAllianceGroup(curAlliance.getID());
+        
+        MagellanFactory.mergeAlliance(olderGD, curAlliance, resultGD, newAlliance);
       }
     }
 

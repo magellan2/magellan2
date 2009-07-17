@@ -865,7 +865,7 @@ public class CRWriter extends BufferedWriter {
    */
   private void writeAlliances(Collection<AllianceGroup> allianceGroups) throws IOException{
     for (AllianceGroup alliance : allianceGroups){
-      write("ALLIANCE " + alliance.getId().intValue());
+      write("ALLIANCE " + alliance.getID().intValue());
       newLine();
       write(alliance.getLeader().intValue()+";leader");
       newLine();
@@ -947,7 +947,7 @@ public class CRWriter extends BufferedWriter {
 		}
 
 		if (getIncludeUnitDetails() && faction.getAlliance() != null) {
-      write(faction.getAlliance().getId().intValue() + ";alliance");
+      write(faction.getAlliance().getID().intValue() + ";alliance");
       newLine();
     }
 		

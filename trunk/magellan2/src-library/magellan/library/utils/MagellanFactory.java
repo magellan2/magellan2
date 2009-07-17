@@ -33,11 +33,13 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.AllianceGroup;
 import magellan.library.Battle;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -256,6 +258,9 @@ public abstract class MagellanFactory {
       Faction newFaction) {
     MagellanFactory.mergeUnitContainer(curGD, curFaction, newGD, newFaction);
 
+    if (curGD.getDate().equals(newGD.getDate()) && curFaction.getAlliance()!=null)
+      newFaction.setAlliance(curFaction.getAlliance());
+    
     if ((curFaction.getAllies() != null) && (curFaction.getAllies().size() > 0)) {
       if (newFaction.getAllies() == null) {
         newFaction.setAllies(new OrderedHashtable<ID, Alliance>());
@@ -2093,5 +2098,18 @@ public abstract class MagellanFactory {
         faction.setType(race);
       }
     }
+  }
+
+  public static AllianceGroup createAlliance(EntityID id, GameData resultGD) {
+    return new AllianceGroup(id);
+  }
+
+  public static void mergeAlliance(GameData curGD, AllianceGroup curAlliance, GameData newGD,
+      AllianceGroup newAlliance) {
+    newAlliance.setName(curAlliance.getName());
+    newAlliance.setLeader(curAlliance.getLeader());
+    
+    for (ID f : curAlliance.getFactions())
+      newAlliance.addFaction(newGD.getFaction(f));
   }
 }

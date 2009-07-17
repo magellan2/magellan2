@@ -1962,8 +1962,12 @@ public class CRParser implements RulesIO, GameDataIO {
         faction.setAllies(parseAlliance(faction.getAllies())); // newer syntax
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("alliance")) { // even newer syntax
         EntityID alliance = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
-        world.getAllianceGroup(alliance).addFaction(faction);
-        faction.setAlliance(world.getAllianceGroup(alliance));
+        if (world.getAllianceGroup(alliance)==null)
+          log.error("unknown alliance for faction "+faction);
+        else{
+          world.getAllianceGroup(alliance).addFaction(faction);
+          faction.setAlliance(world.getAllianceGroup(alliance));
+        }
         sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("ADRESSEN")) {
         parseAdressen();

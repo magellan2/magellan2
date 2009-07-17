@@ -58,7 +58,7 @@ public class AllianceGroup {
    * 
    * @return Returns id.
    */
-  public EntityID getId() {
+  public EntityID getID() {
     return id;
   }
 

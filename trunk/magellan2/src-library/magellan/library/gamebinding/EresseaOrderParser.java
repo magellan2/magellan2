@@ -255,6 +255,7 @@ public class EresseaOrderParser implements OrderParser {
    * @param prefix
    */
   protected void removeCommand(String prefix) {
+    prefix = prefix.toLowerCase();
     if (commandTrie.contains(prefix))
       commandTrie.delete(prefix);
     commandMap.remove(prefix);
@@ -493,7 +494,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBelagereBID(t);
       } else {
         unexpected(t);
@@ -809,7 +810,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBetreteBurgBID(t);
       } else {
         unexpected(t);
@@ -833,7 +834,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBetreteSchiffSID(t);
       } else {
         unexpected(t);
@@ -958,7 +959,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBotschaftID(t);
       } else {
         unexpected(t);
@@ -985,7 +986,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBotschaftID(t);
       } else {
         unexpected(t);
@@ -1003,7 +1004,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readBotschaftID(t);
       } else {
         unexpected(t);
@@ -1226,7 +1227,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readFinalID(t);
       } else {
         unexpected(t);
@@ -1346,9 +1347,7 @@ public class EresseaOrderParser implements OrderParser {
         unexpected(t);
       }
 
-      if (shallComplete(token, t)
-          && token.getText().equalsIgnoreCase(
-              Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+      if (shallComplete(token, t)) {
         getCompleter().cmpltGibUID(
             token.getText()
                 .equalsIgnoreCase(Resources.getOrderTranslation(EresseaConstants.O_TEMP)));
@@ -1467,7 +1466,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readHelfeFID(t);
       } else {
         unexpected(t);
@@ -1897,6 +1896,8 @@ public class EresseaOrderParser implements OrderParser {
       if (isString(t)) {
         retVal = readDescription(t, false);
       }
+      if (t.ttype==OrderToken.TT_EOC)
+        retVal =  true;
 
       if (shallComplete(token, t)) {
         getCompleter().cmpltMacheTempID();
@@ -1911,7 +1912,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText())) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else {
         retVal = checkFinal(t);
@@ -1929,7 +1930,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else {
         retVal = checkFinal(t);
@@ -1953,7 +1954,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readFinalID(t);
       } else {
         retVal = checkFinal(t);
@@ -1984,10 +1985,13 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     protected boolean readMacheAnything(OrderToken token) {
-      boolean retVal = true;
+      boolean retVal = false;
 
       if (isString(token)) {
         retVal = new StringChecker(false, false, true, false).read(token);
+       
+        return false;
+
       }
 
       return retVal;
@@ -2108,7 +2112,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else if (t.ttype == OrderToken.TT_EOC) {
         retVal = true;
@@ -2129,7 +2133,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else if (t.ttype == OrderToken.TT_EOC) {
         retVal = true;
@@ -2146,7 +2150,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else if (t.ttype == OrderToken.TT_EOC) {
         retVal = true;
@@ -2163,7 +2167,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else if (t.ttype == OrderToken.TT_EOC) {
         retVal = true;
@@ -2231,7 +2235,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false) == true) {
         retVal = readParteiFID(t);
       } else {
         unexpected(t);
@@ -2352,7 +2356,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readPiraterieFID(t);
       } else {
         retVal = checkFinal(t);
@@ -2370,7 +2374,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()) == true) {
+      if (isID(t.getText(), false)) {
         retVal = readPiraterieFID(t);
       } else {
         retVal = checkFinal(t);
@@ -2736,7 +2740,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText())) {
+      if (isID(t.getText(), false)) {
         retVal = readFinalID(t);
       } else {
         unexpected(t);
@@ -3530,7 +3534,9 @@ public class EresseaOrderParser implements OrderParser {
       getCompleter().addRegionUnits("", true);
     }
 
-    return checkFinal(t);
+    return (tempAllowed || !token.getText().toLowerCase().startsWith(Resources
+        .getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase()))
+        && checkFinal(t);
   }
 
   protected boolean readFinalNumber(OrderToken token) {
@@ -3602,6 +3608,10 @@ public class EresseaOrderParser implements OrderParser {
     return isNumeric(txt, 10, 0, Integer.MAX_VALUE);
   }
 
+  protected boolean isID(String txt) {
+    return isID(txt, true);
+  }
+  
   /**
    * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code>
    * and {@link #MAX_UID}.
@@ -3609,10 +3619,10 @@ public class EresseaOrderParser implements OrderParser {
    * @param txt
    * @return
    */
-  protected boolean isID(String txt) {
+  protected boolean isID(String txt, boolean allowTemp) {
     boolean retVal = isNumeric(txt, getData().base, 0, EresseaOrderParser.MAX_UID);
 
-    if (retVal == false) {
+    if (!retVal && allowTemp) {
       retVal = isTempID(txt);
     }
 

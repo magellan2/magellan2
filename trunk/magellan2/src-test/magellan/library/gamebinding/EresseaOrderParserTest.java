@@ -295,6 +295,7 @@ public class EresseaOrderParserTest {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_ATTACK) + " 123");
     checkOrder("ATTACKIERE 123");
     checkOrder("ATTACKIERE xyz");
+    checkOrder("ATTACKIERE TEMP xyz"); // TODO is this really legal?
     checkOrder("ATTACKIERE xyz; abc");
     checkOrder("ATTACKIERE abcde", false);
     checkOrder("ATTACKIERE", false);
@@ -350,6 +351,7 @@ public class EresseaOrderParserTest {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_STEAL) + " 123");
     checkOrder("BEKLAUE 1");
     checkOrder("BEKLAUE abc;");
+    checkOrder("BEKLAUE TEMP abc;"); // TODO is this legal?
     checkOrder("BEKLAUE ;abc", false);
     checkOrder("BEKLAUE \"abc\"", false);
     checkOrder("BEKLAUE", false);
@@ -365,9 +367,10 @@ public class EresseaOrderParserTest {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SIEGE) + " abc");
     checkOrder("BELAGERE abc");
     checkOrder("BELAGERUNG abc", false);
-    checkOrder("BELAGERUNG abc 123", false);
-    checkOrder("BELAGERUNG 2 abc", false);
-    checkOrder("BELAGERUNG \"abc\"", false);
+    checkOrder("BELAGERE TEMP abc", false);
+    checkOrder("BELAGERE abc 123", false);
+    checkOrder("BELAGERE 2 abc", false);
+    checkOrder("BELAGERE \"abc\"", false);
   }
 
   /**
@@ -387,6 +390,7 @@ public class EresseaOrderParserTest {
     for (String thing : new String[] { "EINHEIT", "PARTEI", "BURG", "Gebäude", "Sägewerk", "SCHIFF" }) {
       checkOrder("BENENNEN FREMDE " + thing + " 123 \"Foo\"");
       checkOrder("BENENNE FREMDE " + thing + " abc \"Foo\"; comment");
+      checkOrder("BENENNE FREMDE " + thing + " TEMP xyz \"Foo\""); // TODO is this really allowed?
       checkOrder("BENENNE FREMDE " + thing + " xyz \"\"", false);
       checkOrder("BENENNE FREMDE " + thing + " abc abc", false);
       checkOrder("BENENNE FREMDE " + thing + " 123 123 \"abc\"", false);
@@ -438,6 +442,7 @@ public class EresseaOrderParserTest {
         + Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " foo");
     checkOrder("BetreteN BURG 1a2");
     checkOrder("BetreteN BURG 1a2; ");
+    checkOrder("BetreteN BURG TEMP 123", false);
     checkOrder("BetreteN BURG \"abc\"", false);
     checkOrder("BetreteN 1 BURG abc", false);
   }
@@ -471,6 +476,7 @@ public class EresseaOrderParserTest {
       checkOrder("BOTSCHAFT " + thing + nr + " 123 \"abc\"", false);
       checkOrder("BOTSCHAFT " + thing + nr + " \"abc\" 123", false);
     }
+    checkOrder("BOTSCHAFT EINHEIT TEMP 123 \"Bar\"", true); // TODO is this really allowed?
   }
 
   /**
@@ -529,6 +535,7 @@ public class EresseaOrderParserTest {
   public void testFahreReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RIDE) + " abc");
     checkOrder("FAHREN 123");
+    checkOrder("FAHREN TEMP 456");
     checkOrder("FAHREN abcde", false);
     checkOrder("FAHREN 123 456", false);
   }
@@ -541,6 +548,7 @@ public class EresseaOrderParserTest {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_FOLLOW) + " "
         + Resources.getOrderTranslation(EresseaConstants.O_UNIT) + " abc");
     checkOrder("FOLGEN SCHIFF 123");
+    checkOrder("FOLGEN SCHIFF TEMP 123", false);
     checkOrder("FOLGEN EINHEIT 123 456", false);
     checkOrder("FOLGEN EINHEIT \"abc\"", false);
     checkOrder("FOLGEN EINHEIT", false);
@@ -571,6 +579,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 123 KRÄUTER 123", false);
 
     checkOrder("GIB 123 KOMMANDO");
+    checkOrder("GIB TEMP 123 KOMMANDO");
     checkOrder("GIB 0 KOMMANDO", false);
     checkOrder("GIB KOMMANDO", false);
     checkOrder("GIB abc \"KOMMANDO\"", false);
@@ -581,6 +590,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 0 2 Silber");
     checkOrder("GIB 123 ALLES Silber");
     checkOrder("GIB 123 ALLES \"Silber\"");
+    checkOrder("GIB TEMP 123 ALLES \"Silber\"");
     checkOrder("GIB 123 123 123 Silber", false);
     checkOrder("GIB 123 2 Silber 123", false);
     checkOrder("GIB 123 123 123 Silber", false);
@@ -588,6 +598,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 123 ALLES PERSONEN");
     checkOrder("GIB 0 ALLES PERSONEN");
     checkOrder("GIB 123 2 PERSONEN");
+    checkOrder("GIB TEMP 123 2 PERSONEN");
     checkOrder("GIB 123 ALLES PERSONEN 2", false);
     checkOrder("GIB 123 123 ALLES PERSONEN", false);
     checkOrder("GIB 123 ALLES 123 PERSONEN", false);
@@ -596,6 +607,7 @@ public class EresseaOrderParserTest {
     checkOrder("GIB 0 EINHEIT", false);
 
     checkOrder("GIB 123 2 Holz");
+    checkOrder("GIB TEMP 123 2 Holz");
     checkOrder("GIB 0 2 Holz");
     checkOrder("GIB 123 2 \"Holz\"");
     checkOrder("GIB 123 2 Würziger~Wagemut");
@@ -618,7 +630,7 @@ public class EresseaOrderParserTest {
     checkOrder("GRUPPE Hallo~Welt");
     checkOrder("GRUPPE Hallo Welt", false);
     checkOrder("GRUPPE 123 123", false);
-
+    checkOrder("GRUPPE TEMP 123", false);
   }
 
   /**
@@ -638,6 +650,7 @@ public class EresseaOrderParserTest {
     checkOrder("HELFE abcde GIB", false);
     checkOrder("HELFE 123 GIB BLA", false);
     checkOrder("HELFE 123 456", false);
+    checkOrder("HELFE TEMP 456", false);
     checkOrder("HELFE 123", false);
   }
 
@@ -690,6 +703,7 @@ public class EresseaOrderParserTest {
   public void testKontaktiereReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CONTACT)+" 123");
     checkOrder("KONTAKTIERE a");
+    checkOrder("KONTAKTIERE TEMP a");
     checkOrder("KONTAKTIERE abc def", false);
     checkOrder("KONTAKTIERE", false);
     checkOrder("KONTAKTIERE \"abc\"", false);
@@ -701,7 +715,7 @@ public class EresseaOrderParserTest {
   @Test
   public void testLehreReader() {
     checkOrder(Resources.getOrderTranslation(EresseaConstants.O_TEACH)+" abc");
-    checkOrder("LEHRE abc 123 456");
+    checkOrder("LEHRE abc 123 456 TEMP zyx");
     checkOrder("LEHRE abc Hiebwaffen", false);
     checkOrder("LEHRE", false);
     checkOrder("LEHRE Hiebwaffen", false);
@@ -1279,6 +1293,7 @@ public class EresseaOrderParserTest {
   @Test
   public void testIsID() {
     assertTrue(parser.isID("TEMP abc"));
+    assertFalse(parser.isID("TEMP abc", false));
     assertTrue(parser.isID("12"));
     assertTrue(parser.isID("abc"));
     assertTrue(parser.isID("2ac"));

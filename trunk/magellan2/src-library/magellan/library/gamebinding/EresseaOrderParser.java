@@ -1897,8 +1897,8 @@ public class EresseaOrderParser implements OrderParser {
       if (isString(t)) {
         retVal = readDescription(t, false);
       }
-      if (t.ttype==OrderToken.TT_EOC)
-        retVal =  true;
+      if (t.ttype == OrderToken.TT_EOC)
+        retVal = true;
 
       if (shallComplete(token, t)) {
         getCompleter().cmpltMacheTempID();
@@ -1989,10 +1989,10 @@ public class EresseaOrderParser implements OrderParser {
       boolean retVal = false;
 
       if (isString(token)) {
-        retVal = new StringChecker(false, false, true, false){
+        retVal = new StringChecker(false, false, true, false) {
           @Override
           protected boolean checkInner() {
-            return data.rules.getItemType(content)!=null;
+            return data.rules.getItemType(content) != null;
           }
         }.read(token);
       }
@@ -3537,8 +3537,8 @@ public class EresseaOrderParser implements OrderParser {
       getCompleter().addRegionUnits("", true);
     }
 
-    return (tempAllowed || !token.getText().toLowerCase().startsWith(Resources
-        .getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase()))
+    return (tempAllowed || !token.getText().toLowerCase().startsWith(
+        Resources.getOrderTranslation(EresseaConstants.O_TEMP).toLowerCase()))
         && checkFinal(t);
   }
 
@@ -3614,7 +3614,7 @@ public class EresseaOrderParser implements OrderParser {
   protected boolean isID(String txt) {
     return isID(txt, true);
   }
-  
+
   /**
    * Tests if <code>txt</code> represents a valid ID (or TEMP ID) given the <code>data.base</code>
    * and {@link #MAX_UID}.

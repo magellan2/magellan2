@@ -752,6 +752,15 @@ public abstract class MagellanFactory {
 
     boolean sameTurn = !newTurn || !firstPass;
 
+    /******************** MORALE AND OWNER *************************************/
+    if (curRegion.getMorale() >= 0
+        || (resultRegion.getMorale() >= 0 && curRegion.getVisibility().equals(Visibility.UNIT)))
+      resultRegion.setMorale(curRegion.getMorale());
+    if (curRegion.getOwnerFaction() != null
+        || (resultRegion.getOwnerFaction() != null && curRegion.getVisibility().equals(
+            Visibility.UNIT)))
+      resultRegion.setOwnerFaction(curRegion.getOwnerFaction());
+
     /******************** OLD VALUES OF SIMPLE RESOURCES *************************************/
     // *** OldTrees ****
     if (newTurn && firstPass && curRegion.getTrees() != -1) {

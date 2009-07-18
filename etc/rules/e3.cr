@@ -20,11 +20,6 @@ OPTIONCATEGORY "ZUGVORLAGE"
 "true";order
 4;bitmask
 
-OPTIONCATEGORY "SILBERPOOL"
-"SILBERPOOL";name
-"true";order
-8;bitmask
-
 OPTIONCATEGORY "STATISTIK"
 "STATISTIK";name
 "true";order
@@ -44,11 +39,6 @@ OPTIONCATEGORY "ZEITUNG"
 "ZEITUNG";name
 "false";order
 128;bitmask
-
-OPTIONCATEGORY "MATERIALPOOL"
-"MATERIALPOOL";name
-"true";order
-256;bitmask
 
 OPTIONCATEGORY "ADRESSEN"
 "ADRESSEN";name

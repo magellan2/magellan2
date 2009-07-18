@@ -749,7 +749,65 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testMacheReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MAKE)+" TEMP 123");
+    checkOrder("MACHE BURG");
+    checkOrder("MACHE 2 BURG");
+    checkOrder("MACHE BURG 123");
+    checkOrder("MACHE 3 BURG abc");
+    checkOrder("MACHE Sägewerk");
+    checkOrder("MACHE 2 Sägewerk");
+    checkOrder("MACHE Boot");
+    checkOrder("MACHE Trireme");
+    checkOrder("MACHE SCHIFF");
+    checkOrder("MACHE SCHIFF 123");
+    checkOrder("MACHE 2 SCHIFF 123");
+    checkOrder("MACHE STRASSE no");
+    checkOrder("MACHE 2 STRASSE no");
+    checkOrder("MACHE STRASSE nordwesten");
+    checkOrder("MACHE KRÄUTER");
+    checkOrder("MACHE 2 KRÄUTER");
+    checkOrder("MACHE Pferd");
+    checkOrder("MACHE 2 Schwert");
+    checkOrder("MACHE 1 Pferd");
+    checkOrder("MACHE", false); // actually, this is correct, but dangerous
+    checkOrder("MACHE BURG");
+    checkOrder("MACHE 2 BURG");
+    checkOrder("MACHE BURG 123");
+    checkOrder("MACHE 3 BURG abc");
+    checkOrder("MACHE Sägewerk");
+    checkOrder("MACHE 2 Sägewerk");
+    checkOrder("MACHE \"Sägewerk\"", false); // well...
+    checkOrder("MACHE Boot");
+    checkOrder("MACHE Trireme");
+    checkOrder("MACHE SCHIFF");
+    checkOrder("MACHE SCHIFF 123");
+    checkOrder("MACHE 2 SCHIFF 123");
+    checkOrder("MACHE STRASSE no");
+    checkOrder("MACHE 2 STRASSE no");
+    checkOrder("MACHE STRASSE nordwesten");
+    checkOrder("MACHE KRÄUTER");
+    checkOrder("MACHE 2 KRÄUTER");
+    checkOrder("MACHE Pferd");
+    checkOrder("MACHE \"Pferd\"");
+    checkOrder("MACHE 2 Schwert");
+    checkOrder("MACHE 2 \"Rostiger Zweihänder\"");
+    checkOrder("MACHE 1 Pferd");
+    checkOrder("MACHE", false); // actually, this is correct, but dangerous
+    checkOrder("MACHE BURGG", false);
+    checkOrder("MACHE a BURG", false);
+    checkOrder("MACHE a BURG 123", false);
+    checkOrder("MACHE Boot 123", false);
+    checkOrder("MACHE 3 Trireme a", false);
+    checkOrder("MACHE a Trireme", false);
+    checkOrder("MACHE SCHIFF abc def", false);
+    checkOrder("MACHE STRASSE s", false);
+    checkOrder("MACHE 2 STRASSE", false);
+    checkOrder("MACHE STRASSE", false);
+    checkOrder("MACHE KRÄUTER abc", false);
+    checkOrder("MACHE Pferd abc", false);
+    checkOrder("MACHE a Pferd", false);
+    checkOrder("MACHE a Hurz", false);
+    checkOrder("MACHE a Rostiger Bihänder", false);
   }
 
   /**
@@ -757,7 +815,24 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testNachReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MOVE));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_MOVE)+" westen");
+    checkOrder("NACH o");
+    checkOrder("NACH so");
+    checkOrder("NACH sw");
+    checkOrder("NACH w");
+    checkOrder("NACH nw");
+    checkOrder("NACH no");
+    checkOrder("NACH osten");
+    checkOrder("NACH südosten");
+    checkOrder("NACH suedosten");
+    checkOrder("NACH westen");
+    checkOrder("NACH nordw");
+    checkOrder("NACH nordo");
+    checkOrder("NACH o so sw w nw no o o");
+    checkOrder("NACH 1 o", false);
+    checkOrder("NACH", false);
+    checkOrder("NACH 1", false);
+    checkOrder("NACH o PAUSE", false);
   }
 
   // new FinalKeywordReader());
@@ -862,7 +937,26 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testSortiereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_SORT)+" westen");
+    checkOrder("ROUTE o");
+    checkOrder("ROUTE so");
+    checkOrder("ROUTE sw");
+    checkOrder("ROUTE w");
+    checkOrder("ROUTE nw");
+    checkOrder("ROUTE no");
+    checkOrder("ROUTE osten");
+    checkOrder("ROUTE südosten");
+    checkOrder("ROUTE suedosten");
+    checkOrder("ROUTE westen");
+    checkOrder("ROUTE nordw");
+    checkOrder("ROUTE nordo");
+    checkOrder("ROUTE o so sw w nw no o o");
+    checkOrder("ROUTE o PAUSE");
+    checkOrder("ROUTE o PAUSE w pause pause");
+    checkOrder("ROUTE PAUSE w pause pause");
+    checkOrder("ROUTE 1 o", false);
+    checkOrder("ROUTE", false);
+    checkOrder("ROUTE 1", false);
   }
 
   /**

@@ -51,7 +51,10 @@ public class Direction {
 	public static final int DIR_W = 5;
 	private static List<String> shortNames = null;
 	private static List<String> longNames = null;
+  private static List<String> normalizedLongNames = null;
+  
 	private static Locale usedLocale = null;
+
 	private int dir = Direction.DIR_INVALID;
 
 	/**
@@ -241,18 +244,18 @@ public class Direction {
 	 */
 	public static int toInt(String str) {
 		int dir = Direction.DIR_INVALID;
-		String s = str.toLowerCase();
+		String s = Umlaut.normalize(str).toLowerCase();
 
 		dir = Direction.find(s, Direction.getShortNames());
 
 		if(dir == Direction.DIR_INVALID) {
-			dir = Direction.find(s, Direction.getLongNames());
+			dir = Direction.find(s, Direction.getNormalizedLongNames());
 		}
 
 		return dir;
 	}
 
-	private static String getLongDirectionString(int key) {
+  private static String getLongDirectionString(int key) {
 		switch(key) {
 		case DIR_NW:
 			return Resources.getOrderTranslation(EresseaConstants.O_NORTHWEST);
@@ -309,6 +312,7 @@ public class Direction {
 		if(!Locales.getOrderLocale().equals(Direction.usedLocale)) {
 			Direction.shortNames = null;
 			Direction.longNames = null;
+      Direction.normalizedLongNames = null;
 		}
 
 		if(Direction.shortNames == null) {
@@ -332,6 +336,7 @@ public class Direction {
 		if(!Locales.getOrderLocale().equals(Direction.usedLocale)) {
 			Direction.shortNames = null;
 			Direction.longNames = null;
+			Direction.normalizedLongNames = null;
 		}
 
 		if(Direction.longNames == null) {
@@ -345,6 +350,27 @@ public class Direction {
 
 		return Direction.longNames;
 	}
+
+	private static List getNormalizedLongNames() {
+	  if (!Locales.getOrderLocale().equals(Direction.usedLocale)) {
+      Direction.shortNames = null;
+      Direction.longNames = null;
+      Direction.normalizedLongNames = null;
+    }
+
+    if (Direction.normalizedLongNames == null) {
+      Direction.usedLocale = Locales.getOrderLocale();
+      Direction.normalizedLongNames = new ArrayList<String>(6);
+
+      for (int i = 0; i < 6; i++) {
+        Direction.normalizedLongNames.add(Umlaut
+            .convertUmlauts(Direction.getLongDirectionString(i)).toLowerCase());
+      }
+    }
+
+    return Direction.normalizedLongNames;
+  }
+
 
 	/**
 	 * Finds pattern in the set of matches (case-sensitively) and returns the index of the hit.

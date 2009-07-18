@@ -1843,10 +1843,7 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readMacheBurg(t);
       } else if ((getData().rules != null)
-          && ((type = getData().rules.getBuildingType(t.getText())) != null)
-// && (!(type instanceof CastleType) || t.equalsToken(Resources
-// .getOrderTranslation(EresseaConstants.O_CASTLE)))
-      ) {
+          && ((type = getData().rules.getBuildingType(t.getText())) != null)) {
         retVal = readMacheBuilding(t);
       } else if ((getData().rules != null) && (getData().rules.getShipType(t.getText()) != null)) {
         retVal = readMacheShip(t);
@@ -1855,6 +1852,10 @@ public class EresseaOrderParser implements OrderParser {
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_ROAD))) {
         retVal = readMacheStrasse(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_SEED))) {
+        retVal = readFinalKeyword(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MALLORNSEED))) {
+        retVal = readFinalKeyword(t);
+      } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_HERBS))) {
         retVal = readFinalKeyword(t);
       } else if (t.ttype == OrderToken.TT_EOC) {
         // this is actually allowed, but may be a bit dangerous...
@@ -1988,10 +1989,12 @@ public class EresseaOrderParser implements OrderParser {
       boolean retVal = false;
 
       if (isString(token)) {
-        retVal = new StringChecker(false, false, true, false).read(token);
-       
-        return false;
-
+        retVal = new StringChecker(false, false, true, false){
+          @Override
+          protected boolean checkInner() {
+            return data.rules.getItemType(content)!=null;
+          }
+        }.read(token);
       }
 
       return retVal;

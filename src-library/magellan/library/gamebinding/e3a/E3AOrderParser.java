@@ -120,7 +120,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText()))
+      if (isID(t.getText(), false))
         return readFinalID(t);
       else {
         unexpected(t);
@@ -135,7 +135,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
       OrderToken t = getNextToken();
 
-      if (isID(t.getText())) {
+      if (isID(t.getText(), false)) {
         t.ttype = OrderToken.TT_ID;
         Faction faction = getData().getFaction(EntityID.createEntityID(t.getText(), getData().base));
         retVal = faction != null && checkNextFinal();

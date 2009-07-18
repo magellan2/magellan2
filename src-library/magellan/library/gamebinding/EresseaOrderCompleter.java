@@ -762,7 +762,7 @@ public class EresseaOrderCompleter implements Completer {
     for (Completion c : oldList) {
       OrderTokenizer nameTokenizer = new OrderTokenizer(new StringReader(c.getName()));
       String newName = c.getName();
-      if (openingToken!=null)
+      if (openingToken!=null || forceQuotes)
           newName = fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
               forceQuotes, doClose, preferredQuote);
       OrderTokenizer valueTokenizer = new OrderTokenizer(new StringReader(c.getValue()));
@@ -939,11 +939,14 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltGibUID(boolean tempToken) {
+    if (tempToken){
+      addRegionUnits(" ", tempToken);
+      return;
+    }
+
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT)));
 
-    if (tempToken)
-      addRegionUnits(" ", tempToken);
 
     /*
      * if (unit.getBuilding() != null && unit.equals(unit.getBuilding().getOwnerUnit()) ||

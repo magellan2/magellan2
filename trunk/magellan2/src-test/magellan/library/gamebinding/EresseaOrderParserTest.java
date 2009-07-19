@@ -808,6 +808,7 @@ public class EresseaOrderParserTest {
     checkOrder("MACHE a Pferd", false);
     checkOrder("MACHE a Hurz", false);
     checkOrder("MACHE a Rostiger Bihänder", false);
+    checkOrder("MACHE 2 Wasser~des~Lebens"); // TODO
   }
 
   /**

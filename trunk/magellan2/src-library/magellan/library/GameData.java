@@ -1103,7 +1103,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
     if (newerGD.alliancegroups != null) {
       for (AllianceGroup alliance : newerGD.alliancegroups.values()) {
-        if (olderGD.getAllianceGroup(alliance.getID())==null){
+        if (resultGD.getAllianceGroup(alliance.getID())==null){
           try {
             resultGD.addAllianceGroup(MagellanFactory.createAlliance((EntityID) alliance.getID().clone(),
                 resultGD));

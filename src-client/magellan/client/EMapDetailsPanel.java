@@ -926,7 +926,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     int oldSurplus = -1;
 
     if ((oldWorkers != -1) && (r.getOldWage() != -1) && (r.getOldPeasants() != -1)) {
-      oldSurplus = (oldWorkers * (r.getOldWage() + 1)) - (r.getOldPeasants() * getPeasantMaintenance(r));
+      oldSurplus =
+          (oldWorkers * (r.getOldWage() + 1)) - (r.getOldPeasants() * getPeasantMaintenance(r));
     }
 
     String peasantsInfo =
@@ -966,7 +967,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Iterator it = data.rules.getRaceIterator(); it.hasNext();) {
         Race race = (Race) it.next();
         int rWage = data.getGameSpecificStuff().getGameSpecificRules().getWage(r, race);
-        if (rWage>0 && rWage != wage) {
+        if (rWage > 0 && rWage != wage) {
           nodeText.append(", ").append(race.getName()).append(": ").append(rWage);
         }
       }
@@ -1836,7 +1837,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendGroupInfo(Group g, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    // FIXME counting persons for last region is not correct. If a unit in a different region was 
+    // FIXME counting persons for last region is not correct. If a unit in a different region was
     // selected before this group node is selected, lastRegion is still the old region
     if (lastRegion != null) {
       int personCount = 0;
@@ -2259,20 +2260,21 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitFactionInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    appendFactionInfo(u.getFaction(), u.getGroup()==null?u.getFaction().getAllies():u.getGroup().allies(), u.getFaction().getAlliance(), parent, expandableNodes);
+    appendFactionInfo(u.getFaction(), u.getGroup() == null ? u.getFaction().getAllies() : u
+        .getGroup().allies(), u.getFaction().getAlliance(), parent, expandableNodes);
   }
 
   /**
    * Appends information about this faction.
-   * @param alliance 
-   * @param allies 
    * 
+   * @param alliance
+   * @param allies
    * @param u
    * @param parent
    * @param expandableNodes
    */
-  private void appendFactionInfo(Faction f, Map<ID, Alliance> allies, AllianceGroup alliance, DefaultMutableTreeNode parent,
-      Collection<NodeWrapper> expandableNodes) {
+  private void appendFactionInfo(Faction f, Map<ID, Alliance> allies, AllianceGroup alliance,
+      DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode fNode;
     if (f == null) {
       fNode =
@@ -2864,8 +2866,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           + ": "
           + teacherCounter
           + " / "
-          + (((u.getModifiedPersons() % teachFactor) == 0) ? (u.getModifiedPersons() / teachFactor) : ((u
-              .getModifiedPersons() / teachFactor) + 1)), null, teachers, "teacher"));
+          + (((u.getModifiedPersons() % teachFactor) == 0) ? (u.getModifiedPersons() / teachFactor)
+              : ((u.getModifiedPersons() / teachFactor) + 1)), null, teachers, "teacher"));
     }
 
     if (pupils.size() > 0) {
@@ -3769,7 +3771,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           text.append(" (").append(EMapDetailsPanel.weightNumberFormat.format(modWeight)).append(
               ")");
         }
-        
+
         // TODO(stm) append person load info
 
         text.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
@@ -3918,25 +3920,29 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     boolean warning = false;
     if (s.getShipType().getMaxPersons() > 0) {
+      int maxInmates = s.getShipType().getMaxPersons() * 1000; // 10 GE
       loadText.append(" -- ");
       // personen
       int inmates = 0, modInmates = 0;
       for (Unit u : s.units()) {
-        inmates += u.getPersons()*u.getRace().getWeight();
+        inmates += u.getPersons() * u.getRace().getWeight() * 100;
       }
       for (Unit u : s.modifiedUnits()) {
-        modInmates += u.getModifiedPersons()*u.getRace().getWeight();
+        modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
       }
 
       loadText.append(Resources.get("emapdetailspanel.node.persons")).append(": ");
-      loadText.append(inmates);
+      loadText.append(EMapDetailsPanel.weightNumberFormat.format(new Float(inmates / 100.0F)));
       if (modInmates != inmates)
-        loadText.append(" (").append(modInmates).append(") / ");
+        loadText.append(" (").append(
+            EMapDetailsPanel.weightNumberFormat.format(new Float(modInmates / 100.0F))).append(
+            ") / ");
       else
         loadText.append(" / ");
-      loadText.append(s.getShipType().getMaxPersons());
+      loadText.append(EMapDetailsPanel.weightNumberFormat.format(new Float(maxInmates / 100.0F)));
+      loadText.append(" ").append(Resources.get("emapdetailspanel.node.weightunits"));
 
-      if (modInmates > s.getShipType().getMaxPersons())
+      if (modInmates > maxInmates)
         warning = true;
     }
 
@@ -4402,7 +4408,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     boolean regions = true;
     boolean factions = true;
     boolean units = true;
-    
+
     displayedObject = null;
 
     for (Iterator<?> iter = c.iterator(); iter.hasNext() && (regions || factions || units);) {

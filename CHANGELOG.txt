@@ -1,3 +1,7 @@
+2009-07-19 / Build 340 - stm (stm_@users.sourceforge.net)
+    * fixed alliance merging
+    * changed icons for wache to wachstube
+
 2009-07-16 / Build 336 - stm (stm_@users.sourceforge.net)
     * changed completion of spells (without quotes now possible again)
     * BENENNE GEBÄUDE etc. now legal

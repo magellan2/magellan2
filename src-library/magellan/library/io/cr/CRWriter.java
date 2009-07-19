@@ -1280,7 +1280,7 @@ public class CRWriter extends BufferedWriter {
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 */
-	public void writeOrders(List list) throws IOException {
+	public void writeOrders(List<String> list) throws IOException {
 		if((list == null) || list.isEmpty()) {
 			return;
 		}
@@ -1288,8 +1288,8 @@ public class CRWriter extends BufferedWriter {
 		write("COMMANDS");
 		newLine();
 
-		for(Iterator iter = list.iterator(); iter.hasNext();) {
-			writeQuotedString((String) iter.next());
+		for(String line : list) {
+			writeQuotedString(line);
 		}
 	}
 

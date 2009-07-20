@@ -73,6 +73,7 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
     fc.setAccessory(acc);
 
     if (fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
+      // FIXME (stm) Do this in background thread!
       settings.setProperty("Client.lastOrdersOpened", fc.getSelectedFile().getAbsolutePath());
 
       OrderReader r = new OrderReader(client.getData());

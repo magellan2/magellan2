@@ -26,7 +26,7 @@ import magellan.client.utils.FileHistory;
 
 
 /**
- * DOCUMENT ME!
+ * The action for loading files from the history in the file menu.
  *
  * @author Andreas
  * @version 1.0
@@ -70,9 +70,9 @@ public class FileHistoryAction extends AbstractAction {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Loads the file that was selected.
 	 *
-	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
     try {
@@ -84,20 +84,16 @@ public class FileHistoryAction extends AbstractAction {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the associated file. 
 	 */
 	public File getFile() {
 		return file;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Two actions are equal if their files are equal.
 	 * 
-	 *
-	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
   public boolean equals(Object o) {

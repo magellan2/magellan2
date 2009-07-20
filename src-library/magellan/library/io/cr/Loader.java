@@ -23,8 +23,6 @@ import magellan.library.io.file.CopyFile;
 import magellan.library.io.file.FileType;
 import magellan.library.io.file.FileTypeFactory;
 import magellan.library.io.file.PipeFileType;
-import magellan.library.utils.NullUserInterface;
-import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
 
@@ -55,8 +53,7 @@ public class Loader {
 	  try {
 	    final PipeFileType filetype = new PipeFileType();
 	    filetype.setEncoding(data.getEncoding());
-      UserInterface ui = new NullUserInterface();
-	    final CRWriter crw = new CRWriter(ui, filetype, data.getEncoding());
+	    final CRWriter crw = new CRWriter(null, filetype, data.getEncoding());
 	    GameDataReader crReader = new GameDataReader(null);
 
       class ReadRunner implements Runnable{
@@ -78,33 +75,23 @@ public class Loader {
             d[0] = r.readGameData(filetype, newOrigin, data.getGameName());
             done = true;
           } catch (IOException e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
           }
         }
       }
 
-//	    WriteRunner runner = new WriteRunner(crw); 
-//	    new Thread(runner).start();
-//
-//	    GameData newData = crReader.readGameData(filetype, newOrigin, data.getGameName());
-//	    runner.finish();
-//	    newData.filetype = data.filetype;
-
-      
       GameData newData[] = new GameData[1];
       ReadRunner runner = new ReadRunner(crReader, newData);
       new Thread(runner).start();
       
-      crw.write(data);
+      crw.writeSynchronously(data);
       crw.close();
       
       while(!runner.finished()){
         notifyAll();
         try {
-          wait(1000);
+          wait(500);
         } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
           e.printStackTrace();
         }
       }
@@ -140,7 +127,7 @@ public class Loader {
 	    CRWriter crw = new CRWriter(null,filetype,data.getEncoding());
 
 	    try {
-	      crw.write(data);
+	      crw.writeSynchronously(data);
 	    } finally {
 	      crw.close();
 	    }

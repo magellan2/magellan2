@@ -51,7 +51,6 @@ import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import magellan.client.Client;
 import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.layout.GridLayout2;
 import magellan.library.Alliance;
@@ -79,6 +78,7 @@ import magellan.library.utils.MemoryManagment;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Translations;
+import magellan.library.utils.UserInterface;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -744,11 +744,28 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
   /**
    */
-  private synchronized void write(Writer out) {
+  private synchronized void write(final Writer out) {
     setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
+    final UserInterface ui = new ProgressBarUI(this);
+    ui.show();
+    new Thread(new Runnable() {
+    
+      public void run() {
+        doWrite(ui, out);
+      }
+    }).start();
+    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+  }
+   
+  
+  private void doWrite(UserInterface ui, Writer out){
     try {
-      CRWriter crw = new CRWriter(new ProgressBarUI(Client.INSTANCE), out);
+      int maxProgress = 2+2*(chkSelRegionsOnly.isEnabled()&&chkSelRegionsOnly.isSelected()?regions.size():data.regions().size());
+      ui.setMaximum(maxProgress);
+      ui.setTitle(Resources.get("crwriterdialog.progress.title"));
+      ui.setProgress(Resources.get("crwriterdialog.progress.start"), 2);
+      CRWriter crw = new CRWriter(ui, out);
       crw.setServerConformance(chkServerConformance.isSelected());
       crw.setIncludeIslands(chkIslands.isSelected());
       crw.setIncludeRegions(chkRegions.isSelected());
@@ -767,6 +784,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       GameData newData = data;
 
       // if delemptyfactions is selected we need to have the newData cloned too
+      ui.setProgress(Resources.get("crwriterdialog.progress.cloning"), Math.max(2, maxProgress/20));
       if (chkDelEmptyFactions.isSelected() || chkDelStats.isSelected()
           || chkSelRegionsOnly.isSelected()) {
         // make the clone here already.
@@ -791,6 +809,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanfactions"), maxProgress/2/5*1);
       if (chkDelStats.isSelected()) {
         // delete points, person counts, spell school, alliances, messages
         // of privileged factions
@@ -889,6 +908,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
+      
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleantranslations"), maxProgress/2/5*2);
       if (chkDelTrans.isSelected()) {
         // clean translation table
         List<String> trans = new LinkedList<String>(newData.translations().getKeyTreeSet());
@@ -1033,6 +1054,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanemptyfactions"), maxProgress/2/5*3);
       // Deleting empty Factions
       if (this.chkDelEmptyFactions.isSelected()) {
         Collection<Region> lookup = data.regions().values();
@@ -1046,8 +1068,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           for (Iterator<Faction> it1 = newData.factions().values().iterator(); it1.hasNext();) {
             Faction actF = it1.next();
             boolean found = false;
-            // Looping through exportet regions or all regions, lookup is set
-            // already
+            // Looping through exported regions or all regions to see if the faction has a unit 
+            // lookup is set already
             if (lookup != null && lookup.size() > 0) {
               Iterator<Region> it2 = lookup.iterator();
               it2.hasNext();
@@ -1091,6 +1113,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         }
       }
 
+      ui.setProgress(Resources.get("crwriterdialog.progress.cleanmessages"), maxProgress/2/5*4);
       // Messages: remove all messages concerning regions not in selection
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
         this.cleanMessages(newData, regions);
@@ -1101,7 +1124,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         crw.setRegions(regions);
       }
 
-      crw.write(newData);
+      ui.setProgress(Resources.get("crwriterdialog.progress.writing"), maxProgress/2);
+      crw.writeSynchronously(newData);
       crw.close();
     } catch (Exception exc) {
       CRWriterDialog.log.error(exc);
@@ -1109,8 +1133,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
           + exc.toString(), Resources.get("crwriterdialog.msg.exporterror.title"),
           JOptionPane.WARNING_MESSAGE);
     }
-
-    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
   }
 
   /**

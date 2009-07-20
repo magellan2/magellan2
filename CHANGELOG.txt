@@ -1,3 +1,7 @@
+2009-07-21 / Build 342 - stm (stm_@users.sourceforge.net)
+    * fixed bug #357 -- gleichzeitiges Lesen und Schreiben
+    * CRWriterDialog-Aktionen in den Hintergrund verlegt.
+
 2009-07-19 / Build 340 - stm (stm_@users.sourceforge.net)
     * fixed alliance merging
     * changed icons for wache to wachstube

@@ -199,16 +199,20 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   public synchronized void ready() {
     timer.stop();
     ready = true;
-    if (dlg.isVisible()) {
-      dlg.setVisible(false);
-    }
-    // if the progress dialog hasn't been set visible, because invokeLater is
-    // waiting for an event, we cannot dispose the dialog, because this would
-    // wait, too and could cause a deadlock. Therefore we only dispose if it
-    // has already been shown.
-    if (showing) {
-      dlg.dispose();
-    }
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() {
+        if (dlg.isVisible()) {
+          dlg.setVisible(false);
+        }
+        // if the progress dialog hasn't been set visible, because invokeLater is
+        // waiting for an event, we cannot dispose the dialog, because this would
+        // wait, too and could cause a deadlock. Therefore we only dispose if it
+        // has already been shown.
+        if (showing) {
+          dlg.dispose();
+        }
+      }
+    });
   }
 
   public boolean isVisible() {

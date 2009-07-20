@@ -382,6 +382,7 @@ public class ReportMerger extends Object {
     if (ui != null) {
       ui.setMaximum(reports.length * 4); // four steps per report
     }
+    ui.show();
     if (async) {
       new Thread(new Runnable() {
         public void run() {
@@ -400,7 +401,6 @@ public class ReportMerger extends Object {
   private synchronized GameData mergeThread() {
     if (ui != null) {
       ui.setTitle(Resources.get("util.reportmerger.window.title"));
-      ui.show();
       ui.setProgress(Resources.get("util.reportmerger.status.merge"), 0);
     }
 
@@ -999,6 +999,7 @@ public class ReportMerger extends Object {
       if (ui != null) {
         // Fiete 20090105: displayed a yes/no box with error message - bug #348
         // ui.confirm(newReport.getFile().getName() + ": " + Resources.get("util.reportmerger.msg.wronggametype"), newReport.getFile().getName());
+        // FIXME (stm) this can be a redundant message
         ui.showMessageDialog(newReport.getFile().getName() + ": " + Resources.get("util.reportmerger.msg.wronggametype"));
       }
       if (newReport.getData() == null) {

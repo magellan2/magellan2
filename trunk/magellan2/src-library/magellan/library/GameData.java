@@ -1661,7 +1661,8 @@ public abstract class GameData implements Cloneable,Addeable {
    */
   @Override
   public Object clone() throws CloneNotSupportedException {
-    return new Loader().cloneGameData(this);
+    // return new Loader().cloneGameData(this);
+    return clone (new CoordinateID(0,0));
   }
 
   /**
@@ -1673,10 +1674,10 @@ public abstract class GameData implements Cloneable,Addeable {
    *           DOCUMENT-ME
    */
   public Object clone(CoordinateID newOrigin) throws CloneNotSupportedException {
-    if (newOrigin.x == 0 && newOrigin.y == 0) {
-      GameData.log.info("no need to clone - same origin");
-      return this.clone();
-    }
+//    if (newOrigin.x == 0 && newOrigin.y == 0) {
+//      GameData.log.info("no need to clone - same origin");
+//      return this.clone();
+//    }
     if (MemoryManagment.isFreeMemory(this.estimateSize()*3)) {
       GameData.log.info("cloning in memory");
       GameData clonedData = new Loader().cloneGameDataInMemory(this, newOrigin);

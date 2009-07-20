@@ -42,7 +42,7 @@ public class FileBackup {
 	 *
 	 * @return the created backup file.
 	 *
-	 * @throws IOException if an I/O error occured.
+	 * @throws IOException if the file cannot be created
 	 */
 	public static synchronized File create(File file) throws IOException {
 		return FileBackup.create(file, file.getParentFile());
@@ -56,7 +56,7 @@ public class FileBackup {
 	 *
 	 * @return the created backup file.
 	 *
-	 * @throws IOException if an I/O error occured.
+	 * @throws IOException if the file cannot be created
 	 */
 	public static synchronized File create(File file, int backuplevel) throws IOException {
 		return FileBackup.create(file, file.getParentFile(), backuplevel);
@@ -71,7 +71,7 @@ public class FileBackup {
 	 *
 	 * @return the created backup file.
 	 *
-	 * @throws IOException if an I/O error occured.
+	 * @throws IOException if the file cannot be created
 	 */
 	public static synchronized File create(File file, File directory) throws IOException {
 		return FileBackup.create(file, directory, FileBackup.DEFAULT_BACKUP_LEVEL);
@@ -87,7 +87,7 @@ public class FileBackup {
 	 *
 	 * @return the created backup file or null if target file does not exist
 	 *
-	 * @throws IOException if an I/O error occured.
+	 * @throws IOException if the file cannot be created 
 	 */
 	public static synchronized File create(File file, File directory, int backupLevel)
 									throws IOException

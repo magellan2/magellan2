@@ -64,7 +64,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
     queue = new EQueue();
 
-    Thread t = new Thread(new EManager());
+    Thread t = new Thread(new EManager(), "EventDispatcher");
 
     // t.setPriority(Thread.MIN_PRIORITY);
     t.start();
@@ -396,6 +396,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   private class EManager implements Runnable {
+    
     /**
      * @see java.lang.Runnable#run()
      */

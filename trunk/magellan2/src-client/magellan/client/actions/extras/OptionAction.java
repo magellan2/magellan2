@@ -74,7 +74,7 @@ public class OptionAction extends MenuAction {
 	}
 
 	private void initTimer() {
-		t = new Timer(true);
+		t = new Timer("OptionScheduler", true);
 		t.scheduleAtFixedRate(new TimerTask() {
 				@Override
         public void run() {

@@ -16,6 +16,7 @@ package magellan.library.impl;
 import java.util.Iterator;
 
 import magellan.library.Region;
+import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.RecruitmentRelation;
@@ -37,7 +38,7 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 	 */
 	public MagellanZeroUnitImpl(Region r) {
 		// pavkovic 2003.09.09: reduce amount of UnitID(0) from n regions to 1
-		super(ZeroUnit.ZERO_ID);
+		super(UnitID.createUnitID(0, r.getData().base));
 		setRegion(r);
 	}
 

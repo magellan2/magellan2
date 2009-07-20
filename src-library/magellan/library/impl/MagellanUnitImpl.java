@@ -1276,7 +1276,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 			MagellanUnitImpl clone = null;
 
 			try {
-				clone = new MagellanUnitImpl((ID) u.getID().clone());
+				clone = new MagellanUnitImpl((UnitID) u.getID().clone());
 				clone.persons = u.getPersons();
 				clone.race = u.race;
 				clone.realRace = u.realRace;
@@ -2340,6 +2340,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 */
 	public MagellanUnitImpl(ID id) {
 		super(id);
+		if (!(id instanceof UnitID))
+		  log.warn("unit without unit id: "+this);
 	}
 
 	/**
@@ -2486,11 +2488,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 							token = ct.getNextToken();
 
 							try {
-                                int base = this.getRegion().getData().base;
-                                int idInt = IDBaseConverter.parse(token.getText(), base);
+							  int base = ((UnitID) this.getID()).getRadix();
+							  int idInt = IDBaseConverter.parse(token.getText(), base);
 								UnitID orderTempID = UnitID.createUnitID(idInt * -1, base);
 
-								if(this.getRegion().getUnit(orderTempID) == null) {
+								if(this.getRegion()==null || this.getRegion().getUnit(orderTempID) == null) {
 									tempUnit = this.createTemp(orderTempID);
 									tempUnit.setSortIndex(++tempSortIndex);
 									cmdIterator.remove();

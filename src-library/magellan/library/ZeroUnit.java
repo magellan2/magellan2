@@ -22,11 +22,12 @@ package magellan.library;
  * @version $Revision: 171 $
  */
 public interface ZeroUnit extends Unit {
-	/**
-	 * This is the unit associated with the id 0. Used for UnitRelations for commands like "give
-	 * 0..."
-	 */
-	public static final ID ZERO_ID = IntegerID.create(0);
+  // id should be a UnitID, though, but it is in fact an IntegerID
+  //	/**
+//	 * This is the unit associated with the id 0. Used for UnitRelations for commands like "give
+//	 * 0..."
+//	 */
+//	public static final ID ZERO_ID = UnitID.create(0);
 
 	/**
 	 * Sets the region of this unit

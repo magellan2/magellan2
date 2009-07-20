@@ -39,6 +39,7 @@ import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Sign;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.CastleType;
@@ -1141,7 +1142,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   @Override
   public Unit getUnit(ID key) {
-    if (ZeroUnit.ZERO_ID.equals(key)) {
+    if (UnitID.createUnitID(0, getData().base).equals(key)) {
       return getZeroUnit();
     } else {
       return super.getUnit(key);

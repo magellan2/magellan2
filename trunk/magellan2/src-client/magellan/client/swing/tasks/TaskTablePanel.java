@@ -375,10 +375,10 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     progressUI.setMaximum(data.regions().size());
 
+    progressUI.show();
     new Thread(new Runnable() {
       public void run() {
         try {
-          progressUI.show();
           int iProgress = 0;
           for (Inspector i : getInspectors()) {
             for (Region r : data.regions().values()) {
@@ -665,7 +665,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      */
     public UpdateEventDispatcher() {
       queue = new EQueue();
-      refreshThread = new Thread(new Runner());
+      refreshThread = new Thread(new Runner(), "TaskTableRefresher");
       refreshThread.start();
     }
 

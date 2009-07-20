@@ -80,7 +80,7 @@ public class Log {
 			super();
 			this.out = out;
 
-			Thread timeStamper = new Thread() {
+			Thread timeStamper = new Thread("Log-TimeStamper") {
 				@Override
         public void run() {
 					while(true) {
@@ -104,7 +104,7 @@ public class Log {
 
 			timeStamper.start();
 
-			Thread flusher = new Thread() {
+			Thread flusher = new Thread("Log-Flusher") {
 				@Override
         public void run() {
 					while(true) {

@@ -133,7 +133,7 @@ public abstract class MenuAction extends AbstractAction {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the name of an appropriate icon for this action.
    */
   public String getIconName() {
     return null;

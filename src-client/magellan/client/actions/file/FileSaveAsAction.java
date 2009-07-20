@@ -53,9 +53,8 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 * @see magellan.client.actions.MenuAction#getIconName()
 	 */
 	@Override
   public String getIconName() {
@@ -63,9 +62,9 @@ public class FileSaveAsAction extends MenuAction implements GameDataListener{
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Does the saving.
 	 * 
+	 * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
   public void menuActionPerformed(ActionEvent e) {

@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.swing;
@@ -142,8 +136,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     data = e.getGameData();
 
     /**
-     * Don't clear factions as the SelectionEvent of the updated List in
-     * FactionStatsDialog might be processed befor the GameDataEvent
+     * Don't clear factions as the SelectionEvent of the updated List in FactionStatsDialog might be
+     * processed befor the GameDataEvent
      */
 
     // factions.clear();
@@ -175,14 +169,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
 
       /**
-       * Ulrich Küster: (!) Special care has to be taken. Generelly it can not
-       * be differed, if SelectionEvents come from the faction list in
-       * FactionStatsDialog or from other components of Magellan (except if a
-       * special SelectionType has been defined in SelectionEvent and is used).
-       * To keep the faction list in FactionStatsDialog consistent to the
-       * displayed data in this FactionStatsPanel object, setFaction() should be
-       * _never_ called by this selectionChanged()-method, but directly by the
-       * valueChanged()-method of FactionStatsDialog.
+       * Ulrich Küster: (!) Special care has to be taken. Generelly it can not be differed, if
+       * SelectionEvents come from the faction list in FactionStatsDialog or from other components
+       * of Magellan (except if a special SelectionType has been defined in SelectionEvent and is
+       * used). To keep the faction list in FactionStatsDialog consistent to the displayed data in
+       * this FactionStatsPanel object, setFaction() should be _never_ called by this
+       * selectionChanged()-method, but directly by the valueChanged()-method of FactionStatsDialog.
        */
       setRegions(regions);
     }
@@ -247,17 +239,16 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /*
-   * Ilja Pavkovic 2001.10.19: I wanted to see the original values and the
-   * predictions of units and persons.
+   * Ilja Pavkovic 2001.10.19: I wanted to see the original values and the predictions of units and
+   * persons.
    */
 
   /**
-   * Ulrich Küster: The algorithm wasn't correct as it is wrong to count the
-   * number of persons in the temp units to get the number of recruited persons.
-   * a) Temp units always have zero persons b) 'normal' units can recruit
-   * persons So it is necessary to look at all unit's RecruitmentRelations in
-   * the units's cache-object. I changed that. (Of course this doesn't consider,
-   * that persons can be given to '0'.)
+   * Ulrich Küster: The algorithm wasn't correct as it is wrong to count the number of persons in
+   * the temp units to get the number of recruited persons. a) Temp units always have zero persons
+   * b) 'normal' units can recruit persons So it is necessary to look at all unit's
+   * RecruitmentRelations in the units's cache-object. I changed that. (Of course this doesn't
+   * consider, that persons can be given to '0'.)
    */
   private void updateTree() {
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings,
@@ -276,8 +267,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     rootNode.removeAllChildren();
 
     /**
-     * Used to collect persons of different race than their faction. Key: String
-     * (racename), Value: List containing the units
+     * Used to collect persons of different race than their faction. Key: String (racename), Value:
+     * List containing the units
      */
     Map<String, List<Unit>> specialPersons = new OrderedHashtable<String, List<Unit>>();
     Collection<Unit> heroes = new LinkedList<Unit>();
@@ -289,9 +280,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       Region r = iter.next();
 
       /**
-       * poorly it is necessary to refresh all relations, as at this time it is
-       * not assured that they are always up to date. Possibly it would be
-       * better, to calculate them only, if orders are loaded or changed...
+       * poorly it is necessary to refresh all relations, as at this time it is not assured that
+       * they are always up to date. Possibly it would be better, to calculate them only, if orders
+       * are loaded or changed...
        */
       r.refreshUnitRelations();
 
@@ -301,7 +292,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         if (factions.containsKey(u.getFaction().getID())) {
           units.put(u.getID(), u);
           personCounter += u.getPersons();
-          maintenance += u.getPersons() * (u.getRace().getMaintenance()>=0?u.getRace().getMaintenance():10);
+          maintenance +=
+              u.getPersons()
+                  * (u.getRace().getMaintenance() >= 0 ? u.getRace().getMaintenance() : 10);
           skillStats.addUnit(u);
 
           Race race = u.getRace();
@@ -333,9 +326,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
     }
     /**
-     * Fiete 20060918: made all nodes with icons, thx to khadar for icons n =
-     * new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.units")
-     * + (units.size() - tempUnitsCounter) + " (" + modifiedUnitsCounter + ")");
+     * Fiete 20060918: made all nodes with icons, thx to khadar for icons n = new
+     * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.units") + (units.size() -
+     * tempUnitsCounter) + " (" + modifiedUnitsCounter + ")");
      */
     currentNode =
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
@@ -344,8 +337,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     rootNode.add(currentNode);
     /**
-     * n = new
-     * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.persons") +
+     * n = new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.persons") +
      * personCounter + " (" + modifiedPersonCounter + ")");
      */
     currentNode =
@@ -502,10 +494,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       /* score node */
       if (f.getScore() > 0) {
         /**
-         * n = new
-         * DefaultMutableTreeNode(Resources.get("factionstatspanel.node.score")
-         * + f.score + "/" + f.averageScore + " (" + (int) ((100.0 * f.score) /
-         * f.averageScore) + "%)");
+         * n = new DefaultMutableTreeNode(Resources.get("factionstatspanel.node.score") + f.score +
+         * "/" + f.averageScore + " (" + (int) ((100.0 * f.score) / f.averageScore) + "%)");
          */
         String scoreLabel =
             Resources.get("factionstatspanel.node.score") + f.getScore() + "/"
@@ -521,8 +511,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       /* prefix node */
       if (f.getRaceNamePrefix() != null) {
         /**
-         * n = new DefaultMutableTreeNode(Resources.get(
-         * "factionstatspanel.node.racenameprefix") + f.getRaceNamePrefix());
+         * n = new DefaultMutableTreeNode(Resources.get( "factionstatspanel.node.racenameprefix") +
+         * f.getRaceNamePrefix());
          */
         currentNode =
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
@@ -534,9 +524,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       /* migrants node */
       if (f.getMigrants() > 0) {
         /**
-         * n = new DefaultMutableTreeNode(Resources.get(
-         * "factionstatspanel.node.migrants") + f.migrants + "/" +
-         * f.maxMigrants);
+         * n = new DefaultMutableTreeNode(Resources.get( "factionstatspanel.node.migrants") +
+         * f.migrants + "/" + f.maxMigrants);
          */
         currentNode =
             new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
@@ -606,13 +595,10 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj + ": "
                   + count, iconPersonName));
           /**
-           * String raceNameLang =
-           * com.eressea.util.Umlaut.convertUmlauts(obj.toString()); String
-           * iconNameEn = getString(raceNameLang); if
-           * (iconNameEn.equalsIgnoreCase(raceNameLang)) { m = new
-           * DefaultMutableTreeNode(obj + ": " + count); } else { m = new
-           * DefaultMutableTreeNode
-           * (nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count,
+           * String raceNameLang = com.eressea.util.Umlaut.convertUmlauts(obj.toString()); String
+           * iconNameEn = getString(raceNameLang); if (iconNameEn.equalsIgnoreCase(raceNameLang)) {
+           * m = new DefaultMutableTreeNode(obj + ": " + count); } else { m = new
+           * DefaultMutableTreeNode (nodeWrapperFactory.createSimpleNodeWrapper(obj + ": " + count,
            * iconNameEn)); }
            */
           currentNode.add(subNode);
@@ -677,13 +663,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 4 = am Handel
     // 5 = Diebstahl
     // 6 = Zauberei
-//    final int E_WORK = 0;
-//    final int E_ENTERTAIN = 1;
-//    final int E_TAX = 2;
-//    final int E_TRADE = 3;
+// final int E_WORK = 0;
+// final int E_ENTERTAIN = 1;
+// final int E_TAX = 2;
+// final int E_TRADE = 3;
     final int E_TRADETAX = 4;
-//    final int E_THEFT = 5;
-//    final int E_MAGIC = 6;
+// final int E_THEFT = 5;
+// final int E_MAGIC = 6;
 
     int earned[] = new int[7];
     int wanted[] = new int[7];
@@ -719,7 +705,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     final int S_SUPPORT = 0;
     final int S_UPKEEP = 1;
     final int S_LEARN = 2;
-//    final int S_MAGIC = 3;
+// final int S_MAGIC = 3;
     final int S_TRADE = 4;
     final int S_THEFT = 5;
     final int S_ALMS = 6;
@@ -850,15 +836,17 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           } else if (msgID == 1543395091) {
             // Diebstahl
             try {
-              Unit unit = data.getUnit(UnitID.createUnitID(Integer.parseInt(msg.getAttributes().get("unit")), data.base));
+              Unit unit =
+                  data.getUnit(UnitID.createUnitID(Integer
+                      .parseInt(msg.getAttributes().get("unit")), data.base));
               int amount = Integer.parseInt(msg.getAttributes().get("amount"));
-              if (factions.containsKey(unit.getFaction().getID())){
-                spent[S_THEFT] +=amount;
+              if (factions.containsKey(unit.getFaction().getID())) {
+                spent[S_THEFT] += amount;
               }
-            } catch (Exception e){
-              
+            } catch (Exception e) {
+
             }
-          }else if (msgID == 1682429624) {
+          } else if (msgID == 1682429624) {
             // Almosen
             // müssen in den Regionsmessages überprüft werden
 
@@ -926,8 +914,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                   EntityID fromID = EntityID.createEntityID(Integer.parseInt(from), data.base);
                   // Faction beziehen
                   ID fromFactionID =
-                    data.getFaction(fromID) == null ? EntityID.createEntityID(-1, data.base) : data
-                        .getFaction(fromID).getID();
+                      data.getFaction(fromID) == null ? EntityID.createEntityID(-1, data.base)
+                          : data.getFaction(fromID).getID();
                   String to = actM.getAttributes().get("to");
                   EntityID toID = EntityID.createEntityID(Integer.parseInt(to), data.base);
                   ID toFactionID =
@@ -1147,8 +1135,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 6 = Almosen
     // 7 = Übergaben an andere Parteien
     String spentGroupIcon[] =
-        new String[] { "Persons", "Buildingcost", "Skills", "Magie", "Handeln", "Tarnung", "Alliance",
-            "Persons" };
+        new String[] { "Persons", "Buildingcost", "Skills", "Magie", "Handeln", "Tarnung",
+            "Alliance", "Persons" };
 
     if (totalSpent != 0) {
       currentNode =
@@ -1332,8 +1320,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     for (Iterator iter = shipsCounter.keySet().iterator(); iter.hasNext();) {
       UnitContainerType shipType = (UnitContainerType) iter.next();
       /**
-       * Fiete 20060911 m = new DefaultMutableTreeNode(shipType.getName() + ": "
-       * + ((List) shipsCounter.get(shipType)).size());
+       * Fiete 20060911 m = new DefaultMutableTreeNode(shipType.getName() + ": " + ((List)
+       * shipsCounter.get(shipType)).size());
        */
       // Fiete 20060911: added support for shiptypeicons
       // Fiete 20060915: get rid of english icon names...using stringfactory to
@@ -1605,35 +1593,38 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     setCursor(Cursor.getDefaultCursor());
   }
 
-  public static void showAlliances(GameData data, Map<ID, Alliance> allies, AllianceGroup allianceGroup, DefaultMutableTreeNode rootNode) {
+  public static void showAlliances(GameData data, Map<ID, Alliance> allies,
+      AllianceGroup allianceGroup, DefaultMutableTreeNode rootNode) {
     if (rootNode == null) {
       return;
     }
-    
-    if (allianceGroup!=null){
-      DefaultMutableTreeNode m =
-        new DefaultMutableTreeNode(allianceGroup.toString()); // Resources.get("factionstatspanel.node.alliance", allianceGroup)
+
+    if (allianceGroup != null) {
+      DefaultMutableTreeNode m = new DefaultMutableTreeNode(allianceGroup.toString()); 
       rootNode.add(m);
 
       Faction leader = data.getFaction(allianceGroup.getLeader());
-      FactionNodeWrapper wrapper = new FactionNodeWrapper(leader, null, allies);
-      DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
-      m.add(factionNode);
-      
-      for (ID id: allianceGroup.getFactions()){
+      if (leader == null) {
+        // probably just a stray selection event...
+        log.warn("alliance without leader: " + allianceGroup);
+      } else {
+        FactionNodeWrapper wrapper = new FactionNodeWrapper(leader, null, allies);
+        DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
+        m.add(factionNode);
+      }
+      for (ID id : allianceGroup.getFactions()) {
         Faction faction = data.getFaction(id);
-        if (faction!=leader){
-          wrapper = new FactionNodeWrapper(faction, null, allies);
-          factionNode = new DefaultMutableTreeNode(wrapper);
+        if (faction != leader) {
+          FactionNodeWrapper wrapper = new FactionNodeWrapper(faction, null, allies);
+          DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
           m.add(factionNode);
         }
       }
     }
-    
-    
+
     if (allies == null)
       return;
-    
+
     Map<String, List<Alliance>> alliances = new TreeMap<String, List<Alliance>>();
     for (Alliance alliance : allies.values()) {
       String key = alliance.stateToString();
@@ -1693,10 +1684,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     return new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(obj, icons));
   }
 
-
   /**
-   * A little class used to store information about production statistics for a
-   * certain resource
+   * A little class used to store information about production statistics for a certain resource
    */
   private class ProductionStats {
     // mapping units who produced the special resource (Unit) to the according

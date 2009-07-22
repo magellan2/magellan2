@@ -665,7 +665,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     // 6 = Zauberei
 // final int E_WORK = 0;
 // final int E_ENTERTAIN = 1;
-// final int E_TAX = 2;
+    final int E_TAX = 2;
 // final int E_TRADE = 3;
     final int E_TRADETAX = 4;
 // final int E_THEFT = 5;
@@ -788,6 +788,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
               if (value != null) {
                 wanted[i] += Integer.parseInt(value);
               }
+            }
+          } else if (msgID == 1264208711) {
+            // E3 Steuern
+            value = msg.getAttributes().get("amount");
+
+            if (value != null) {
+              earned[E_TAX] += Integer.parseInt(value);
+              wanted[E_TAX] += Integer.parseInt(value);
             }
           } else if (msgID == 107552268) {
             // Gebäudeunterhalt

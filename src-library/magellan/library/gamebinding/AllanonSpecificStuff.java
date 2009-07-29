@@ -26,11 +26,10 @@ import magellan.library.completion.OrderParser;
  * @version $Revision: 242 $
  */
 public class AllanonSpecificStuff extends EresseaSpecificStuff {
-
+  private static final String name = "Allanon";
   
   private MovementEvaluator movementEvaluator;
   private GameSpecificRules gameSpecificRules;
-  private String name = "Allanon";
   private AllanonRelationFactory relationFactory;
 
 

@@ -40,7 +40,7 @@ import magellan.library.io.RulesReader;
  * @version $Revision: 242 $
  */
 public class E3ASpecificStuff implements GameSpecificStuff {
-  private String name = "E3";
+  private static final String name = "E3";
   
   private Rules rules;
   private MovementEvaluator movementEvaluator;

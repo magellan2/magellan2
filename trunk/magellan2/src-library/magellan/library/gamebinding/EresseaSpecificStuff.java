@@ -33,7 +33,7 @@ import magellan.library.io.RulesReader;
  */
 public class EresseaSpecificStuff implements GameSpecificStuff {
 
-  private String name = "Eressea";
+  private static final String name = "Eressea";
   
   private Rules rules;
   private GameSpecificRules gamespecificRules;

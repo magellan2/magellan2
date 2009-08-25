@@ -11,16 +11,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import magellan.library.utils.IDBaseConverter;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class used to uniquely identify such objects as regions, ships or buildings by an integer. The
  * representation of the integer depends on the system default defined in the IDBaseConverter class.
  */
 public class EntityID extends IntegerID {
+  private static final Logger log = Logger.getInstance(EntityID.class);
+
   protected int radix = 10;
+
+  /** a static cache to use this class as flyweight factory */
+  private static Map<Integer, EntityID> idMap = new HashMap<Integer, EntityID>();
 
   /**
    * Constructs a new entity id based on a new Integer object created from the specified int.
+   * 
+   * @param i id as integer form
+   * @param radix the base
    */
   protected EntityID(int i, int radix) {
     super(i);
@@ -28,26 +37,21 @@ public class EntityID extends IntegerID {
   }
 
   /**
-   * Constructs a new entity id parsing the specified string for an integer using the specified
-   * radix.
-   */
-  protected EntityID(String s, int radix) {
-    super(IDBaseConverter.parse(s, radix));
-    this.radix = radix;
-  }
-
-  /** a static cache to use this class as flyweight factory */
-  private static Map<Integer, EntityID> idMap = new HashMap<Integer, EntityID>();
-
-  /**
    * Returns a (possibly) new EntityID object.
+   * 
+   * @param value id as integer form
+   * @param radix the base
+   * @return An EntityID object matching the given value and radix
    */
-  public static EntityID createEntityID(int o, int radix) {
-    EntityID id = EntityID.idMap.get(o);
+  public static EntityID createEntityID(int value, int radix) {
+    EntityID id = EntityID.idMap.get(value);
 
-    if (id == null) {
-      id = new EntityID(o, radix);
-      EntityID.idMap.put(o, id);
+    if (id == null || id.radix != radix) {
+      if (id != null)
+        log.warn("changing radix of id " + id);
+
+      id = new EntityID(value, radix);
+      EntityID.idMap.put(value, id);
     }
 
     return id;
@@ -55,10 +59,24 @@ public class EntityID extends IntegerID {
 
   /**
    * Constructs a new entity id parsing the specified string for an integer using the specified
-   * radix.
+   * radix. Effectively the same as calling createEntityID(s, radix, radix).
    */
   public static EntityID createEntityID(String s, int radix) {
-    return EntityID.createEntityID(IDBaseConverter.parse(s, radix), radix);
+    return createEntityID(s, radix, radix);
+  }
+
+  /**
+   * Constructs a new entity id parsing the specified string for an integer using the specified
+   * radix.
+   * 
+   * @param s unit id as String
+   * @param inputRadix base for transforming string to int
+   * @param outputRadix base for the return value
+   * @return EntityID of the given string
+   * @throws NumberFormatException if unit id is not parseable
+   */
+  public static EntityID createEntityID(String s, int inputRadix, int outputRadix) {
+    return EntityID.createEntityID(IDBaseConverter.parse(s, inputRadix), outputRadix);
   }
 
   /**

@@ -55,7 +55,7 @@ public class TrustLevels {
 					f.setTrustLevel(Faction.TL_PRIVILEGED);
 				}
 
-				if(f.getID().equals(EntityID.createEntityID(-1,data.base))) { // monster
+				if(f.getID().equals(EntityID.createEntityID(-1,data.base))) { // monster or disguised
 
 					if(!f.isTrustLevelSetByUser()) {
 						f.setTrustLevel(-20);

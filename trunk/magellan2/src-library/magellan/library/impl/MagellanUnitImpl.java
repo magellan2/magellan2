@@ -3384,8 +3384,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
             if((m.getAttributes() != null) && (m.getAttributes().get("unit") != null)) {
               log.debug("PathCellRenderer(" + u + ") Unit   " +
                     m.getAttributes().get("unit"));
+           // FIXME actually it should be creatUnitID(*, 10, data.base), but it doesn't matter here
               log.debug("PathCellRenderer(" + u + ") UnitID " +
-                    UnitID.createUnitID(m.getAttributes().get("unit"), 10));
+                    UnitID.createUnitID(m.getAttributes().get("unit"), 10)); 
             }
           }
         }
@@ -3393,7 +3394,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 
       if(transportMessageType.equals(m.getMessageType()) && (m.getAttributes() != null) &&
            (m.getAttributes().get("unit") != null) &&
-           u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) {
+           u.getID().equals(UnitID.createUnitID(m.getAttributes().get("unit"), 10))) { // FIXME 10, data.base
         // found a transport message; this is only valid in 
         // units with active movement
         if(log.isDebugEnabled()) {

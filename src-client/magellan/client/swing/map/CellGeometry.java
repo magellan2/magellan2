@@ -42,8 +42,8 @@ public class CellGeometry {
 	private Point scaledImgOffset = new Point(0, 0);
 	private Dimension imgSize = new Dimension(0, 0);
 	private Dimension scaledImgSize = new Dimension(0, 0);
-	private Dimension unscaledCellSize = new Dimension(0, 0); // cell.getBounds().width/height + 1
-	private Dimension scaledCellSize = new Dimension(0, 0); // unscaledCellSize.width/height * scaleFactor
+	private Dimension unscaledCellSize = new Dimension(1, 1); // cell.getBounds().width/height + 1
+	private Dimension scaledCellSize = new Dimension(1, 1); // unscaledCellSize.width/height * scaleFactor
 	private float cellShiftXX = 0.0f; // unscaledCellSize.width
 	private float cellShiftXY = 0.0f; // unscaledCellSize.width / 2.0f
 	private float cellShiftYY = 0.0f; // -(cell.ypoints[2] + 1)
@@ -138,7 +138,7 @@ public class CellGeometry {
 		} else {
 			cell = new Polygon(xpoints, ypoints, 6);
 
-			// pavkovic 2003.06.19: the scaled polygon should have a resonable initial value
+			// pavkovic 2003.06.19: the scaled polygon should have a reasonable initial value
 			scaledPoly = scalePolygon(scaleFactor);
 			unscaledCellSize = cell.getBounds().getSize();
 			unscaledCellSize.width++;
@@ -197,14 +197,20 @@ public class CellGeometry {
 	/**
 	 * Set a scale factor to be used for all calculations of cell positions and sizes.
 	 *
-	 * 
-	 */
-	public void setScaleFactor(float scaleFactor) {
-		this.scaleFactor = scaleFactor;
+   * @param scaleFactor The new factor. Must be > 0.
+   * @throws IllegalArgumentException if scaleFactor <= 0.
+   */
+  public void setScaleFactor(float scaleFactor) {
+    if (scaleFactor <= 0 || Float.isInfinite(scaleFactor))
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
+    
+    this.scaleFactor = scaleFactor;
+    
+    // FIXME we should somehow intercept calls which lead to scaledCellSize.* < 1
 
 		scaledPoly = scalePolygon(scaleFactor);
-		scaledCellSize.width = (int)(unscaledCellSize.width * scaleFactor);
-		scaledCellSize.height = (int)(unscaledCellSize.height * scaleFactor);
+		scaledCellSize.width = Math.max(1, (int)(unscaledCellSize.width * scaleFactor));
+		scaledCellSize.height = Math.max(1, (int)(unscaledCellSize.height * scaleFactor));
 
 		scaledImgOffset.x = (int)(imgOffset.x * scaleFactor);
 		scaledImgOffset.y = (int)(imgOffset.y * scaleFactor);

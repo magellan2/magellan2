@@ -126,6 +126,9 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     return img;
   }
 
+  /**
+   * @see magellan.client.swing.map.ImageCellRenderer#scale(float)
+   */
   @Override
   public void scale(float scaleFactor) {
     // do nothing

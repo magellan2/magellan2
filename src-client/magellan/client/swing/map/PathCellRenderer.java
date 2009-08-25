@@ -367,13 +367,16 @@ public class PathCellRenderer extends ImageCellRenderer {
 	// END Image processing
 
 	/**
-	 * Scale all images this renderer uses to a certain scale factor.
-	 *
-	 * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
-	 * 		  images to their original size).
-	 */
-	@Override
+   * Scale all images this renderer uses to a certain scale factor.
+   * 
+   * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
+   *          images to their original size). Must be > 0.
+   * @throws IllegalArgumentException if scaleFactor <= 0.
+   */
+  @Override
   public void scale(float scaleFactor) {
+    if (scaleFactor <= 0)
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
 		super.scale(scaleFactor);
 
 		for(Iterator iter = ownImages.values().iterator(); iter.hasNext();) {

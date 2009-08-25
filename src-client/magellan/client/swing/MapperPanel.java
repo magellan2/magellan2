@@ -83,6 +83,7 @@ import magellan.library.Island;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
 import magellan.library.utils.MagellanFactory;
+import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
@@ -454,6 +455,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , InputEvent.ALT_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
+    
+    float newScale = PropertiesHelper.getFloat(settings, "Map.scaleFactor", 1.0f);
+    // bug fix
+    if (newScale <= 0) {
+      log.warn("illegal property value Map.scaleFactor: " + newScale);
+      newScale = 1f;
+    }
+    setScaleFactor(newScale);
   }
 
   /**
@@ -468,7 +477,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     try {
       size = Integer.parseInt(settings.getProperty("Minimap.Scale"));
-    } catch (Exception exc) {
+    } catch(Exception exc) {
+      size = 10;
+    }
+
+    if (size<=0){
+      log.warn("Minimap.Scale <= 0: "+ size);
+      size = 10;
     }
 
     lastScale = size / (float) d.width;
@@ -494,10 +509,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
   /**
    * DOCUMENT-ME
+   * @throws IllegalArgumentException if scaleFactor <= 0.
    */
   public void setMinimapScale(int scale) {
+    if (scale <= 0)
+      throw new IllegalArgumentException("scale < 0: " + scale);
     Dimension size = minimapGeometry.getCellSize();
-    minimap.setScaleFactor((scale * minimapGeometry.getScaleFactor()) / size.width);
+    float newScale = (scale * minimapGeometry.getScaleFactor()) / size.width;
+    minimap.setScaleFactor(newScale);
     minimapPane.doLayout();
     minimapPane.repaint();
   }
@@ -1251,6 +1270,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
      */
     @Override
     public void componentResized(ComponentEvent e) {
+      // FIXME Does not work well with very large maps!
       if (resizeMinimap && (e.getSource() == minimapPane)) {
         resizeMinimap = false;
 
@@ -1295,8 +1315,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
           try {
             if (sc != 1.0f) {
-              if (sc < 0) {
-                sc = 0;
+              if (sc <= 0) {
+                sc = 1f;
               }
 
               minimap.setScaleFactor(minimap.getScaleFactor() * sc);

@@ -54,7 +54,6 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     super(geo, context);
     // construct new geometry
     this.setCellGeometry(geo);
-    // TODO Auto-generated constructor stub
   }
 
   @Override
@@ -119,6 +118,9 @@ public class EresseaSchemesCellRenderer extends ImageCellRenderer {
     }
   }
 
+  /**
+   * @see magellan.client.swing.map.ImageCellRenderer#scale(float)
+   */
   @Override
   public void scale(float scaleFactor) {
     scaleFactor *= 0.25f;

@@ -44,26 +44,30 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 		super(geo, context);
 	}
 
-	/**
-	 * Scale all images this renderer uses to a certain scale factor.
-	 *
-	 * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
-	 * 		  images to their original size).
-	 */
-	@Override
+  /**
+   * Scale all images this renderer uses to a certain scale factor.
+   * 
+   * @param scaleFactor the factor to scale the images with (a scaleFactor of 1.0 would scale all
+   *          images to their original size).
+   * @param scaleFactor The new factor. Must be > 0.
+   * @throws IllegalArgumentException if scaleFactor <= 0.
+   */
+  @Override
   public void scale(float scaleFactor) {
-		super.scale(scaleFactor);
+    if (scaleFactor <= 0)
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
+    super.scale(scaleFactor);
 
-		for(Iterator<ImageContainer> iter = images.values().iterator(); iter.hasNext();) {
-			ImageContainer c = iter.next();
+    for (Iterator<ImageContainer> iter = images.values().iterator(); iter.hasNext();) {
+      ImageContainer c = iter.next();
 
-			if(c != null) {
-			  // try to identify a memory leak
-			  c.scaled = null;
-				c.scaled = scale(c.unscaled);
-			}
-		}
-	}
+      if (c != null) {
+        // try to identify a memory leak
+        c.scaled = null;
+        c.scaled = scale(c.unscaled);
+      }
+    }
+  }
 
 	/**
 	 * Return a scaled version of the supplied using the current scale factor. If there is no media

@@ -600,7 +600,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // init mapper
     mapPanel = new MapperPanel(getMagellanContext(), cR, geo);
     mapPanel.setMinimumSize(new Dimension(100, 10));
-    mapPanel.setScaleFactor(PropertiesHelper.getFloat(getProperties(), "Map.scaleFactor", 1.0f));
     panels.add(mapPanel);
     components.put("MAP", mapPanel);
     components.put("MINIMAP", mapPanel.getMinimapComponent());

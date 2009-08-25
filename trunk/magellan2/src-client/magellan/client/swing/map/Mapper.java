@@ -1083,11 +1083,15 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   }
 
   /**
-   * Sets the scale or zoom factor. This value is a real factor, i.e. 1.0 means
-   * that the components are painted according to the values supplied by the
-   * underlying CellGeometry object.
+   * Sets the scale or zoom factor. This value is a real factor, i.e. 1.0 means that the components
+   * are painted according to the values supplied by the underlying CellGeometry object.
+   * 
+   * @param scaleFactor The new factor. Must be > 0.
+   * @throws IllegalArgumentException if scaleFactor <= 0.
    */
   public void setScaleFactor(float scaleFactor) {
+    if (scaleFactor <= 0 || Float.isInfinite(scaleFactor))
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
     this.scaleFactor = scaleFactor;
     cellGeometry.setScaleFactor(scaleFactor);
 
@@ -1652,10 +1656,18 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     StringTokenizer st = new StringTokenizer(p1, "_");
 
+    float newFactor = 1;
     try {
-      setScaleFactor(Float.parseFloat(st.nextToken()));
+      newFactor = Float.parseFloat(st.nextToken());
     } catch (Exception exc) {
+      newFactor = 1f;
     }
+    if (newFactor <= 0) {
+      log.warn("scale factor <= 0: " + newFactor);
+      newFactor = 1f;
+    }
+      
+    setScaleFactor(newFactor);
 
     while (st.hasMoreTokens()) {
       try {

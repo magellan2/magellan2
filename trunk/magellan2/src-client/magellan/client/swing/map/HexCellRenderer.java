@@ -119,12 +119,15 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 		return new DefaultRendererPreferencesAdapter(this);
 	}
 
-	/**
-	 * Scales the used cell geometry object.
-	 *
-	 * 
-	 */
-	public void scale(float scaleFactor) {
+  /**
+   * Scales the used cell geometry object.
+   * 
+   * @param scaleFactor The new factor. Must be > 0.
+   * @throws IllegalArgumentException if scaleFactor <= 0.
+   */
+  public void scale(float scaleFactor) {
+    if (scaleFactor <= 0)
+      throw new IllegalArgumentException("factor < 0: " + scaleFactor);
 		cellGeo.setScaleFactor(scaleFactor);
 	}
 

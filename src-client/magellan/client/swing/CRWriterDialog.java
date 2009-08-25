@@ -1302,7 +1302,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     if (value != null && value.indexOf(" ") < 0) {
       erg = true;
       String number = value;
-      UnitID id = UnitID.createUnitID(number, 10);
+      UnitID id = UnitID.createUnitID(number, 10, data.base);
       Unit unit = data.units().get(id);
       if (unit != null) {
         Region r = unit.getRegion();

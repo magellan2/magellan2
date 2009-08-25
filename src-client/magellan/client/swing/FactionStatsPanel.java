@@ -749,7 +749,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           value = msg.getAttributes().get("unit");
           if (value != null) {
             String number = value;
-            UnitID id = UnitID.createUnitID(number, 10);
+            UnitID id = UnitID.createUnitID(number, 10, data.base);
             Unit unit = data.units().get(id);
 
             if (unit != null) {
@@ -866,13 +866,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 && value2 != null) {
               int menge = Integer.parseInt(value2);
               value = msg.getAttributes().get("unit");
-              UnitID id = UnitID.createUnitID(Integer.parseInt(value), 10);
+              UnitID id = UnitID.createUnitID(value, 10, data.base);
               Unit giver = data.units().get(id);
               ID giverID =
                   (giver == null || giver.getFaction() == null) ? EntityID.createEntityID(-1,
                       data.base) : giver.getFaction().getID();
               value = msg.getAttributes().get("target");
-              id = UnitID.createUnitID(Integer.parseInt(value), 10);
+              id = UnitID.createUnitID(value, 10, data.base);
               Unit target = data.units().get(id);
               ID targetID =
                   (target == null || target.getFaction() == null) ? EntityID.createEntityID(-1,

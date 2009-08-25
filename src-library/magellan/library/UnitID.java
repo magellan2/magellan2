@@ -14,6 +14,7 @@ import java.util.Properties;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.utils.IDBaseConverter;
 import magellan.library.utils.Resources;
+import magellan.library.utils.logging.Logger;
 
 /**
  * A class for identifying unit objects through an integer. This class makes equivalent assumptions
@@ -22,6 +23,11 @@ import magellan.library.utils.Resources;
  * integers).
  */
 public class UnitID extends EntityID {
+  private static final Logger log = Logger.getInstance(UnitID.class);
+
+  /** a static cache to use this class as flyweight factory */
+  private static Map<Integer, UnitID> idMap = new HashMap<Integer, UnitID>();
+
   /**
    * Constructs a new UnitID object based on an Integer object created from the specified int.
    * 
@@ -32,20 +38,19 @@ public class UnitID extends EntityID {
     super(i, radix);
   }
 
-  /** a static cache to use this class as flyweight factory */
-  private static Map<Integer, UnitID> idMap = new HashMap<Integer, UnitID>();
-
   /**
    * Constructs a new UnitID object based on the specified Integer and specified radix.
    * 
-   * @param o unitid as int
+   * @param o unit id as int
+   * @param radix base for the UnitID
    * @return UnitID of the given int
-   * @throws NullPointerException if o is null
    */
   public static UnitID createUnitID(int o, int radix) {
     UnitID id = UnitID.idMap.get(o);
 
-    if (id == null) {
+    if (id == null || id.radix != radix) {
+      if (id != null)
+        log.warn("changing radix of id " + id);
       id = new UnitID(o, radix);
       UnitID.idMap.put(o, id);
     }
@@ -54,17 +59,25 @@ public class UnitID extends EntityID {
   }
 
   /**
-   * Constructs a new UnitID object by parsing the specified string for an integer in the default
-   * representation of class IDBaseConverter.
+   * Constructs a new UnitID object by parsing the specified string. Effectively the same as calling
+   * createUnitID(s, radix, radix).
+   */
+  public static UnitID createUnitID(String s, int radix) {
+    return createUnitID(s, radix, radix);
+  }
+
+  /**
+   * Constructs a new UnitID object by parsing the specified string.
    * 
    * @param s unit id as String
-   * @param radix radix as base for transforming string to int
+   * @param inputRadix base for transforming string to int
+   * @param outputRadix base for the return value
    * @return UnitID of the given string
    * @throws NumberFormatException if unit id is not parseable
    */
 
-  public static UnitID createUnitID(String s, int radix) {
-    return UnitID.createUnitID(UnitID.valueOf(s, radix), radix);
+  public static UnitID createUnitID(String s, int inputRadix, int outputRadix) {
+    return UnitID.createUnitID(UnitID.valueOf(s, inputRadix), outputRadix);
   }
 
   /**

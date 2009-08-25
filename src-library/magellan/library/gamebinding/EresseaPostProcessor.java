@@ -331,6 +331,7 @@ public class EresseaPostProcessor {
 
 			if((startpos > -1) && (endpos > startpos)) {
 				try {
+				  // message text always use the report base
 					ID id = EntityID.createEntityID(s.substring(startpos, endpos),data.base);
 
 					if((data.getUnit(id) != null) &&

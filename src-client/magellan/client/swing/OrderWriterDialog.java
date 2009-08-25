@@ -396,7 +396,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     Faction f =
         data.getFaction(EntityID.createEntityID(settings.getProperty(
-            PropertiesHelper.ORDERWRITER_FACTION, "-1"), 10));
+            PropertiesHelper.ORDERWRITER_FACTION, "-1"), 10, data.base));
 
     if (f != null) {
       cmbFaction.setSelectedItem(f);

@@ -246,7 +246,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 			Unit unit = null;
 
 			if(attribute != null) {
-				unit = data.getUnit(UnitID.createUnitID(attribute, 10));
+				unit = data.getUnit(UnitID.createUnitID(attribute, 10, data.base));
 			}
 
 			return (unit == null) ? null : unit.toString();

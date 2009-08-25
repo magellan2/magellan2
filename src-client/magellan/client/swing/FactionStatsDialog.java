@@ -111,7 +111,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 		setLocation(x, y);
 		splFaction.setDividerLocation(Integer.parseInt(settings.getProperty("FactionStatsDialog.split","340")));
 
-		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10);
+		ID selFacID = EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10, data.base);
 		Faction selFac = data.getFaction(selFacID);
 
 		if(selFac != null) {
@@ -597,7 +597,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
     lstFaction.setListData(factions.toArray());
 
     ID selFacID =
-        EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10);
+        EntityID.createEntityID(settings.getProperty("FactionStatsDialog.selFacID", "-1"), 10, data.base);
     Faction selFac = data.getFaction(selFacID);
 
     if (selFac != null) {

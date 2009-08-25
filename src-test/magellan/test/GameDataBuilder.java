@@ -124,7 +124,7 @@ public class GameDataBuilder {
   }
 
   public Faction addFaction(GameData data, String number, String name, String race, int sortIndex) {
-    EntityID id = EntityID.createEntityID(number, 10);
+    EntityID id = EntityID.createEntityID(number, 10); // TODO base?
 
     Faction faction = MagellanFactory.createFaction(id, data);
     data.addFaction(faction);
@@ -172,7 +172,7 @@ public class GameDataBuilder {
   }
 
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
-    UnitID id = UnitID.createUnitID(number, data.base);
+    UnitID id = UnitID.createUnitID(number, data.base); // TODO base?
 
     Unit unit = MagellanFactory.createUnit(id);
     data.addUnit(unit);

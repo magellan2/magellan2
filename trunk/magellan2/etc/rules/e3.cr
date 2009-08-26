@@ -69,6 +69,11 @@ ALLIANCECATEGORY "SILBER"
 "ALLES";parent
 1;bitmask
 
+ALLIANCECATEGORY "GIB"
+"GIVE";name
+"ALLES";parent
+8;bitmask
+
 ALLIANCECATEGORY "BEWACHEN"
 "GUARD";name
 "ALLES";parent

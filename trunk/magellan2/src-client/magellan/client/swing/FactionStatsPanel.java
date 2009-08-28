@@ -1622,7 +1622,9 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       }
       for (ID id : allianceGroup.getFactions()) {
         Faction faction = data.getFaction(id);
-        if (faction != leader) {
+        if (faction==null){
+          log.warn("unknown faction in alliance: "+id);
+        } else if (faction != leader) {
           FactionNodeWrapper wrapper = new FactionNodeWrapper(faction, null, allies);
           DefaultMutableTreeNode factionNode = new DefaultMutableTreeNode(wrapper);
           m.add(factionNode);

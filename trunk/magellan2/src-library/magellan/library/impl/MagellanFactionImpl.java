@@ -82,7 +82,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 * Indicates to what amount this faction can be trusted. It also influences the privileges of
 	 * this faction (e.g. being able to edit its units' orders).
 	 */
-  protected int trustLevel = Faction.TL_DEFAULT;
+  private int trustLevel = Faction.TL_DEFAULT;
 	
 	/**
 	 * Indicates, if one priviliged faction has set the "GIVE" right

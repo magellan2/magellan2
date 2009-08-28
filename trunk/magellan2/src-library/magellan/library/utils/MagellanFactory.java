@@ -13,13 +13,13 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.library.utils;
 
@@ -205,14 +205,10 @@ public abstract class MagellanFactory {
   /**
    * Transfers all available information from the current group to the new one.
    * 
-   * @param curGD
-   *          fully loaded game data
-   * @param curGroup
-   *          a fully initialized and valid group
-   * @param newGD
-   *          the game data to be updated
-   * @param newGroup
-   *          a group to be updated with the data from curGroup
+   * @param curGD fully loaded game data
+   * @param curGroup a fully initialized and valid group
+   * @param newGD the game data to be updated
+   * @param newGroup a group to be updated with the data from curGroup
    */
   public static void mergeGroup(GameData curGD, Group curGroup, GameData newGD, Group newGroup) {
     if (curGroup.getName() != null) {
@@ -242,10 +238,11 @@ public abstract class MagellanFactory {
     if (curGroup.getRaceNamePrefix() != null) {
       newGroup.setRaceNamePrefix(curGroup.getRaceNamePrefix());
     }
-    
+
     if (curGroup.getAttributeSize() > 0) {
       for (String key : curGroup.getAttributeKeys()) {
-        if (!newGroup.containsAttribute(key)) newGroup.addAttribute(key, curGroup.getAttribute(key));
+        if (!newGroup.containsAttribute(key))
+          newGroup.addAttribute(key, curGroup.getAttribute(key));
       }
     }
 
@@ -258,20 +255,27 @@ public abstract class MagellanFactory {
       Faction newFaction) {
     MagellanFactory.mergeUnitContainer(curGD, curFaction, newGD, newFaction);
 
-    if (curGD.getDate().equals(newGD.getDate()) && curFaction.getAlliance()!=null)
+    // tricky: keep alliance only if from the same round and either curFaction is owner faction or 
+    // alliance is known
+    if (curGD.getDate().equals(newGD.getDate())
+        && (curFaction.getAlliance() != null || curFaction.getID().equals(curGD.getOwnerFaction())))
       newFaction.setAlliance(curFaction.getAlliance());
-    
-    if ((curFaction.getAllies() != null) && (curFaction.getAllies().size() > 0)) {
+
+    // keep allies information from last round if now new info is known
+    if ((curFaction.getAllies() != null && curFaction.getAllies().size() > 0)
+        || curFaction.getID().equals(curGD.getOwnerFaction())) {
       if (newFaction.getAllies() == null) {
         newFaction.setAllies(new OrderedHashtable<ID, Alliance>());
       } else {
         newFaction.getAllies().clear();
       }
 
-      for (Iterator<Alliance> iter = curFaction.getAllies().values().iterator(); iter.hasNext();) {
-        Alliance alliance = iter.next();
-        Faction ally = newGD.getFaction(alliance.getFaction().getID());
-        newFaction.getAllies().put(ally.getID(), new Alliance(ally, alliance.getState()));
+      if (curFaction.getAllies() != null) {
+        for (Iterator<Alliance> iter = curFaction.getAllies().values().iterator(); iter.hasNext();) {
+          Alliance alliance = iter.next();
+          Faction ally = newGD.getFaction(alliance.getFaction().getID());
+          newFaction.getAllies().put(ally.getID(), new Alliance(ally, alliance.getState()));
+        }
       }
     }
 
@@ -329,12 +333,11 @@ public abstract class MagellanFactory {
     // ReportMerger.mergeReport() :
 
     /**
-     * prepare faction trustlevel for merging: - to be added CR is older or of
-     * same age -> hold existing trust levels - to be added CR is newer and
-     * contains trust level that were set by the user explicitly (or read from
-     * CR what means the same) -> take the trust levels out of the new CR
-     * otherwise -> hold existing trust levels This means: set those trust
-     * levels, that will not be retained to default values
+     * prepare faction trustlevel for merging: - to be added CR is older or of same age -> hold
+     * existing trust levels - to be added CR is newer and contains trust level that were set by the
+     * user explicitly (or read from CR what means the same) -> take the trust levels out of the new
+     * CR otherwise -> hold existing trust levels This means: set those trust levels, that will not
+     * be retained to default values
      */
     if ((curFaction.getTrustLevel() != Faction.TL_DEFAULT) || curFaction.isTrustLevelSetByUser()) {
       newFaction.setTrustLevel(curFaction.getTrustLevel());
@@ -527,32 +530,28 @@ public abstract class MagellanFactory {
     newUC.setCache(null);
 
     newUC.setSortIndex(Math.max(newUC.getSortIndex(), curUC.getSortIndex()));
-    
+
     if (curUC.getAttributeSize() > 0) {
       for (String key : curUC.getAttributeKeys()) {
-        if (!newUC.containsAttribute(key)) newUC.addAttribute(key, curUC.getAttribute(key));
+        if (!newUC.containsAttribute(key))
+          newUC.addAttribute(key, curUC.getAttribute(key));
       }
     }
 
   }
 
   /**
-   * Transfers all available information from the current message to the new
-   * one. This is generally a localization problem: if newMsg.text == null then
-   * newMsg=curMsg (also in case the locale is different) if curMsg.locale ==
-   * newGD.local then newMsg=curMsg => if correct locale available use it =>
-   * otherwise take wrong locale msg, to have at least a half localized msg if
-   * the msgtype is available in locale => you can notice this half localized
-   * msg because msg.locale=gm.locale, also msg.rerender=true
+   * Transfers all available information from the current message to the new one. This is generally
+   * a localization problem: if newMsg.text == null then newMsg=curMsg (also in case the locale is
+   * different) if curMsg.locale == newGD.local then newMsg=curMsg => if correct locale available
+   * use it => otherwise take wrong locale msg, to have at least a half localized msg if the msgtype
+   * is available in locale => you can notice this half localized msg because msg.locale=gm.locale,
+   * also msg.rerender=true
    * 
-   * @param curGD
-   *          fully loaded game data
-   * @param curMsg
-   *          a fully initialized and valid message
-   * @param newGD
-   *          the game data to be updated
-   * @param newMsg
-   *          a message to be updated with the data from curMsg
+   * @param curGD fully loaded game data
+   * @param curMsg a fully initialized and valid message
+   * @param newGD the game data to be updated
+   * @param newMsg a message to be updated with the data from curMsg
    */
   public static void mergeMessage(GameData curGD, Message curMsg, GameData newGD, Message newMsg) {
     if ((curMsg.getAttributes() != null) && (curMsg.getAttributes().size() > 0)) {
@@ -586,9 +585,8 @@ public abstract class MagellanFactory {
         // otherwise we can render the text from the probably localized
         // messagetype
         /*
-         * we dont render it here as the new GameData is not fully initialized.
-         * as the text is null, it will be rendered on the first usage.
-         * newMsg.render(newGD);
+         * we dont render it here as the new GameData is not fully initialized. as the text is null,
+         * it will be rendered on the first usage. newMsg.render(newGD);
          */
       }
     }
@@ -622,17 +620,13 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Merges buildings. The new one get the name, comments etc. from the current
-   * one, effects etc. are added, not written over.
+   * Merges buildings. The new one get the name, comments etc. from the current one, effects etc.
+   * are added, not written over.
    * 
-   * @param curGD
-   *          current GameData
-   * @param curBuilding
-   *          the current Building
-   * @param newGD
-   *          new GameData
-   * @param newBuilding
-   *          the new Building
+   * @param curGD current GameData
+   * @param curBuilding the current Building
+   * @param newGD new GameData
+   * @param newBuilding the new Building
    */
   public static void mergeBuilding(GameData curGD, Building curBuilding, GameData newGD,
       Building newBuilding) {
@@ -661,14 +655,10 @@ public abstract class MagellanFactory {
   /**
    * Merges two combat spells.
    * 
-   * @param curGD
-   *          the current GameData.
-   * @param curCS
-   *          the current CombatSpell.
-   * @param newGD
-   *          the new GameData.
-   * @param newCS
-   *          the new CombatSpell.
+   * @param curGD the current GameData.
+   * @param curCS the current CombatSpell.
+   * @param newGD the new GameData.
+   * @param newCS the new CombatSpell.
    */
   public static void mergeCombatSpell(GameData curGD, CombatSpell curCS, GameData newGD,
       CombatSpell newCS) {
@@ -718,33 +708,28 @@ public abstract class MagellanFactory {
     }
 
     newIsland.invalidateRegions();
-    
+
     if (curIsland.getAttributeSize() > 0) {
       for (String key : curIsland.getAttributeKeys()) {
-        if (!newIsland.containsAttribute(key)) newIsland.addAttribute(key, curIsland.getAttribute(key));
+        if (!newIsland.containsAttribute(key))
+          newIsland.addAttribute(key, curIsland.getAttribute(key));
       }
     }
   }
 
   /**
    * Merges all info from curRegion into newRegion. The result is influenced by the
-   * <code>sameRound</code> parameter (indicating if the region infos are from the same round)
-   * and the <code>firstPass</code> parameter. Merging is usually done in two passes. In the
-   * first pass, the old info is copied into an intermediate object. In the
-   * second pass, the new object is merged into this intermediate object.
+   * <code>sameRound</code> parameter (indicating if the region infos are from the same round) and
+   * the <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass,
+   * the old info is copied into an intermediate object. In the second pass, the new object is
+   * merged into this intermediate object.
    * 
-   * @param curGD
-   *          The GameData of curUnit
-   * @param curRegion
-   *          The region where the info is taken from
-   * @param resultGD
-   *          The GameData of resultRegion
-   * @param resultRegion
-   *          The info is merged into this region
-   * @param newTurn
-   *          notifies if both game data objects have been from the same round
-   * @param firstPass
-   *          notifies if this is the first of two passes
+   * @param curGD The GameData of curUnit
+   * @param curRegion The region where the info is taken from
+   * @param resultGD The GameData of resultRegion
+   * @param resultRegion The info is merged into this region
+   * @param newTurn notifies if both game data objects have been from the same round
+   * @param firstPass notifies if this is the first of two passes
    */
   public static void mergeRegion(GameData curGD, Region curRegion, GameData resultGD,
       Region resultRegion, boolean newTurn, boolean firstPass) {
@@ -885,18 +870,17 @@ public abstract class MagellanFactory {
     /******************** BORDERS *************************************/
     /**
      * <p>
-     * If we have first-hand visibility (unit, travel; FIXME what about
-     * lighthouse?), we should erase old borders. If visibility == 0, we should
-     * keep the border. It might be gone or it might still be there. It does not
-     * matter if sameRound or not.
+     * If we have first-hand visibility (unit, travel; FIXME what about lighthouse?), we should
+     * erase old borders. If visibility == 0, we should keep the border. It might be gone or it
+     * might still be there. It does not matter if sameRound or not.
      * </p>
      * <p>
-     * FIXME: If visibility==neighbor, we should remove borders to all visible
-     * regions without borders.
+     * FIXME: If visibility==neighbor, we should remove borders to all visible regions without
+     * borders.
      * </p>
      * <p>
-     * Fiete 20080121: we have also full info about borders if we traveled
-     * (status==3) through the region.
+     * Fiete 20080121: we have also full info about borders if we traveled (status==3) through the
+     * region.
      * </p>
      */
     if (curRegion.getVisibility() == Visibility.UNIT
@@ -975,8 +959,8 @@ public abstract class MagellanFactory {
 
     if (curRegion.getHerbAmount() != null) {
       /*
-       * There was a bug around 2002.02.16 where numbers would be stored in this
-       * field - filter them out. This should only be here for one or two weeks.
+       * There was a bug around 2002.02.16 where numbers would be stored in this field - filter them
+       * out. This should only be here for one or two weeks.
        */
       if (curRegion.getHerbAmount().length() > 2) {
         resultRegion.setHerbAmount(curRegion.getHerbAmount());
@@ -1065,19 +1049,16 @@ public abstract class MagellanFactory {
 
         try {
           /**
-           * Remember: Merging of regions works like follows: A new set of
-           * regions is created in the new GameData object. Then first the
-           * regions of the older report are merged into that new object. Then
-           * the regions of the newer report are merged into that new object. At
-           * this time sameTurn is guaranteed to be true! The crucial point is
-           * when a resource is suddenly not seen any longer, because its level
-           * has increased. Please note: - resultRegion is always part of the
-           * resulting GameData - curRegion is always the data to be "merged"
-           * into newRegion (if applicable) Fiete Special case Mallorn: it could
-           * have disappeard (fully cut). In above way it is added from old
-           * region and not removed, if not in new region. but we should only
-           * erase that mallorn info, if we have a unit in the region for that
-           * we have to use curRegion (units not yet merged)
+           * Remember: Merging of regions works like follows: A new set of regions is created in the
+           * new GameData object. Then first the regions of the older report are merged into that
+           * new object. Then the regions of the newer report are merged into that new object. At
+           * this time sameTurn is guaranteed to be true! The crucial point is when a resource is
+           * suddenly not seen any longer, because its level has increased. Please note: -
+           * resultRegion is always part of the resulting GameData - curRegion is always the data to
+           * be "merged" into newRegion (if applicable) Fiete Special case Mallorn: it could have
+           * disappeard (fully cut). In above way it is added from old region and not removed, if
+           * not in new region. but we should only erase that mallorn info, if we have a unit in the
+           * region for that we have to use curRegion (units not yet merged)
            */
 
           if (newRes == null) {
@@ -1465,8 +1446,7 @@ public abstract class MagellanFactory {
   /**
    * Merges two temp units.
    * 
-   * @param sameRound
-   *          notifies if both game data objects have been from the same round
+   * @param sameRound notifies if both game data objects have been from the same round
    */
   public static void merge(GameData curGD, TempUnit curTemp, GameData newGD, TempUnit newTemp,
       boolean sameRound, boolean firstPass) {
@@ -1478,8 +1458,8 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Merges only the comments of <code>curShip</code> to <code>newShip</code>.
-   * Use if you don't want to do a full merge.
+   * Merges only the comments of <code>curShip</code> to <code>newShip</code>. Use if you don't want
+   * to do a full merge.
    * 
    * @param curShip
    * @param newShip
@@ -1497,35 +1477,28 @@ public abstract class MagellanFactory {
 
   /**
    * Merges all info from curUnit into newUnit. The result is influenced by the
-   * <code>sameRound</code> parameter (indicating if the unit infos are from the same round)
-   * and the <code>firstPass</code> parameter. Merging is usually done in two passes. In the
-   * first pass, the old info is copied into an intermediate object. In the
-   * second pass, the new object is merged into this intermediate object.
+   * <code>sameRound</code> parameter (indicating if the unit infos are from the same round) and the
+   * <code>firstPass</code> parameter. Merging is usually done in two passes. In the first pass, the
+   * old info is copied into an intermediate object. In the second pass, the new object is merged
+   * into this intermediate object.
    * 
-   * @param curGD
-   *          The GameData of curUnit
-   * @param curUnit
-   *          The unit where the info is taken from
-   * @param resultGD
-   *          The GameData of newUnit
-   * @param resultUnit
-   *          The info is merged into this unit
-   * @param sameRound
-   *          notifies if both game data objects have been from the same round
-   * @param firstPass
-   *          notifies if this is the first of two passes
+   * @param curGD The GameData of curUnit
+   * @param curUnit The unit where the info is taken from
+   * @param resultGD The GameData of newUnit
+   * @param resultUnit The info is merged into this unit
+   * @param sameRound notifies if both game data objects have been from the same round
+   * @param firstPass notifies if this is the first of two passes
    */
   public static void mergeUnit(GameData curGD, Unit curUnit, GameData resultGD, Unit resultUnit,
       boolean sameRound, boolean firstPass) {
     /*
-     * True, when curUnit is seen by the faction it belongs to and is therefore
-     * fully specified.
+     * True, when curUnit is seen by the faction it belongs to and is therefore fully specified.
      */
     boolean curWellKnown = !curUnit.ordersAreNull() || (curUnit.getCombatStatus() != -1);
 
     /*
-     * True, when newUnit is seen by the faction it belongs to and is therefore
-     * fully specified. This is only meaningful in the second pass.
+     * True, when newUnit is seen by the faction it belongs to and is therefore fully specified.
+     * This is only meaningful in the second pass.
      */
     boolean newWellKnown = !resultUnit.ordersAreNull() || (resultUnit.getCombatStatus() != -1);
 
@@ -1625,15 +1598,15 @@ public abstract class MagellanFactory {
     }
 
     /*
-     * There is a correlation between guise faction and isSpy. Since the guise
-     * faction can only be known by the 'owner faction' it should override the
-     * isSpy value
+     * There is a correlation between guise faction and isSpy. Since the guise faction can only be
+     * known by the 'owner faction' it should override the isSpy value
      */
     if (curUnit.getGuiseFaction() != null) {
       resultUnit.setGuiseFaction(resultGD.getFaction(curUnit.getGuiseFaction().getID()));
     }
 
-    resultUnit.setSpy((curUnit.isSpy() || resultUnit.isSpy()) && (resultUnit.getGuiseFaction() == null));
+    resultUnit.setSpy((curUnit.isSpy() || resultUnit.isSpy())
+        && (resultUnit.getGuiseFaction() == null));
 
     if (curUnit.getHealth() != null) {
       resultUnit.setHealth(curUnit.getHealth());
@@ -1713,8 +1686,8 @@ public abstract class MagellanFactory {
       for (Skill curSkill : curUnit.getSkills()) {
         SkillType newSkillType = resultGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
         Skill newSkill =
-            new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(),
-                resultUnit.getPersons(), curSkill.noSkillPoints());
+            new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(), resultUnit
+                .getPersons(), curSkill.noSkillPoints());
 
         if (curSkill.isLevelChanged()) {
           newSkill.setLevelChanged(true);
@@ -1882,10 +1855,11 @@ public abstract class MagellanFactory {
         resultUnit.putTag(tag, curUnit.getTag(tag));
       }
     }
-    
+
     if (curUnit.getAttributeSize() > 0) {
       for (String key : curUnit.getAttributeKeys()) {
-        if (!resultUnit.containsAttribute(key)) resultUnit.addAttribute(key, curUnit.getAttribute(key));
+        if (!resultUnit.containsAttribute(key))
+          resultUnit.addAttribute(key, curUnit.getAttribute(key));
       }
     }
   }
@@ -1923,8 +1897,7 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Returns a locale specific string representation of the specified unit
-   * combat status.
+   * Returns a locale specific string representation of the specified unit combat status.
    */
   public static String combatStatusToString(Unit u) {
     String retVal = MagellanFactory.combatStatusToString(u.getCombatStatus());
@@ -1948,8 +1921,7 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Returns a locale specific string representation of the specified unit
-   * combat status.
+   * Returns a locale specific string representation of the specified unit combat status.
    */
   public static String combatStatusToString(int combatStatus) {
     String retVal = null;
@@ -2006,9 +1978,9 @@ public abstract class MagellanFactory {
     }
 
     /**
-     * es all standard guarding units seems to have 1 -> tax is alleways
-     * triggered. Deactivating it. if((iFlags & Unit.GUARDFLAG_TAX) != 0) {
-     * strFlags += (", " + Resources.get("unit.guard.tax")); }
+     * es all standard guarding units seems to have 1 -> tax is alleways triggered. Deactivating it.
+     * if((iFlags & Unit.GUARDFLAG_TAX) != 0) { strFlags += (", " +
+     * Resources.get("unit.guard.tax")); }
      */
     if ((iFlags & Unit.GUARDFLAG_MINING) != 0) {
       strFlags += (", " + Resources.get("unit.guard.mining"));
@@ -2036,8 +2008,8 @@ public abstract class MagellanFactory {
   }
 
   /**
-   * Postprocess of Island objects. The Regions of the GameData are attached to
-   * their Island. The Factions got their Race settings.
+   * Postprocess of Island objects. The Regions of the GameData are attached to their Island. The
+   * Factions got their Race settings.
    */
   public static void postProcess(GameData data) {
     // create a map of region maps for every Island
@@ -2117,7 +2089,7 @@ public abstract class MagellanFactory {
       AllianceGroup newAlliance) {
     newAlliance.setName(curAlliance.getName());
     newAlliance.setLeader(curAlliance.getLeader());
-    
+
     for (ID f : curAlliance.getFactions())
       newAlliance.addFaction(newGD.getFaction(f));
   }

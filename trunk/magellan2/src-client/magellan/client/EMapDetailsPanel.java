@@ -839,7 +839,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
                 + ownerFaction.toString(), "faction");
       }
       parent.add(n);
-      if (r.getMorale() > 0) {
+      if (r.getMorale() >= 0) {
         n =
             createSimpleNode(Resources.get("emapdetailspanel.node.morale", new Object[] { r
                 .getMorale() }), "morale");

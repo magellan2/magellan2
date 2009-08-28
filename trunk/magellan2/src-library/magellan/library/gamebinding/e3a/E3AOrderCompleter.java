@@ -209,7 +209,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltMache() {
     super.cmpltMache();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Stein"))) != null)) {
+        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Holz"))) != null)) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
           " "));
     }
@@ -219,7 +219,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltMacheAmount() {
     super.cmpltMacheAmount();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Stein"))) != null)) {
+        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Holz"))) != null)) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
           " "));
     }

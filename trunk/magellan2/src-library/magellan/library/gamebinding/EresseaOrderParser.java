@@ -1842,8 +1842,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readMacheTempID(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_CASTLE))) {
         retVal = readMacheBurg(t);
-      } else if ((getData().rules != null)
-          && ((type = getData().rules.getBuildingType(t.getText())) != null)) {
+      } else if (isBuilding(t)!=null || isCastle(t)!=null) {
         retVal = readMacheBuilding(t);
       } else if ((getData().rules != null) && (getData().rules.getShipType(t.getText()) != null)) {
         retVal = readMacheShip(t);
@@ -1872,6 +1871,16 @@ public class EresseaOrderParser implements OrderParser {
       }
 
       return retVal;
+    }
+
+    protected Object isCastle(OrderToken t) {
+      return null;
+    }
+
+    protected BuildingType isBuilding(OrderToken t) {
+      if (getData().rules != null)
+        return getData().rules.getBuildingType(t.getText());
+      return null;
     }
 
     protected boolean readMacheTemp(OrderToken token) {

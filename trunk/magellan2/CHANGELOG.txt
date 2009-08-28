@@ -1,3 +1,7 @@
+2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
+    * fixed "OrderWriter-Options-Bug" (from Wiki: Options were taken from last time dialog was 
+      opened, not from current faction)
+
 2009-08-25 / Build 344 - stm (stm_@users.sourceforge.net)
     * fixed bug where MiniMap.Scale == 0
     * fixed decimal base bug (#359)

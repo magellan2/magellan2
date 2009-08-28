@@ -265,6 +265,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     c.weighty = 0.0;
     mainPanel.add(getMailPanel(), c);
 
+    factionChanged();
+    
     return mainPanel;
   }
 
@@ -838,23 +840,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         .getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, null) != null) {
       chkUseSettingsFromCR.setSelected(PropertiesHelper.getBoolean(settings,
           PropertiesHelper.ORDERWRITER_MAILSERVER_USE_CR_SETTINGS + suffix, true));
-      if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()) {
-        txtMailRecipient.setText(settings.getProperty(
-            PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix, defaultEmail));
-        txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
-            + suffix, defaultSubject));
-      } else {
-        txtMailRecipient.setText(data.mailTo);
-        txtMailSubject.setText(data.mailSubject);
-      }
-      txtMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
-          || !chkUseSettingsFromCR.isSelected());
-      txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
-          || !chkUseSettingsFromCR.isSelected());
-      lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
-          || !chkUseSettingsFromCR.isSelected());
-      lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
-          || !chkUseSettingsFromCR.isSelected());
+      
+      updateRecipient();
     }
 
     if (settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_CC2SENDER + suffix, null) != null) {
@@ -989,23 +976,26 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   protected void updateRecipient() {
+    Faction faction = (Faction) cmbFaction.getSelectedItem();
+    String suffix = "." + faction.getID();
+
     if (!chkUseSettingsFromCR.isEnabled() || !chkUseSettingsFromCR.isSelected()) {
       txtMailRecipient.setText(settings.getProperty(
-          PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT, defaultEmail));
-      txtMailRecipient.setEnabled(true);
-      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT,
-          defaultSubject));
-      txtMailSubject.setEnabled(true);
-      lblMailRecipient.setEnabled(true);
-      lblMailSubject.setEnabled(true);
+          PropertiesHelper.ORDERWRITER_MAILSERVER_RECIPIENT + suffix, defaultEmail));
+      txtMailSubject.setText(settings.getProperty(PropertiesHelper.ORDERWRITER_MAILSERVER_SUBJECT
+          + suffix, defaultSubject));
     } else {
       txtMailRecipient.setText(data.mailTo);
-      txtMailRecipient.setEnabled(false);
       txtMailSubject.setText(data.mailSubject);
-      txtMailSubject.setEnabled(false);
-      lblMailRecipient.setEnabled(false);
-      lblMailSubject.setEnabled(false);
     }
+    txtMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
+        || !chkUseSettingsFromCR.isSelected());
+    txtMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
+        || !chkUseSettingsFromCR.isSelected());
+    lblMailRecipient.setEnabled(!chkUseSettingsFromCR.isEnabled()
+        || !chkUseSettingsFromCR.isSelected());
+    lblMailSubject.setEnabled(!chkUseSettingsFromCR.isEnabled()
+        || !chkUseSettingsFromCR.isSelected());
   }
 
   private void storeSettings() {

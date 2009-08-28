@@ -80,7 +80,7 @@ public class TrustLevels {
 							ally.setTrustLevel(Math.max(ally.getTrustLevel(), alliance.getTrustLevel()));
 						}
 						/**
-						 * not really fine..but bitmask 8 means "GIVE"
+						 * FIXME not really fine..but bitmask 8 means "GIVE"
 						 * Fiete
 						 */
 						if (alliance.getState(8)){

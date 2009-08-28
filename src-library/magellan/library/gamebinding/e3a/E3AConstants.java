@@ -13,6 +13,8 @@
 
 package magellan.library.gamebinding.e3a;
 
+import magellan.library.ID;
+import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
 
 
@@ -41,4 +43,10 @@ public class E3AConstants extends EresseaConstants {
   /** MACHE Wache */
   public static final String O_WATCH = "WATCH";
   
+  /** Gerüst */
+  public static final ID B_FRAME = StringID.create("Gerüst");
+  /** Wachturm */
+  public static final ID B_GUARDTOWER = StringID.create("Wachturm");
+  /** Wachturm */
+  public static final ID B_GUARDHOUSE = StringID.create("Wachstube");
 }

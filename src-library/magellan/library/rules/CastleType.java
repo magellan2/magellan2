@@ -139,7 +139,7 @@ public class CastleType extends BuildingType implements Comparable {
    */
   @Override
   public Item getRawMaterial(ID id) {
-    // if no raw materials have been added we fall back to old behavior: 1 wood per size point
+    // if no raw materials have been added we fall back to old behavior: 1 stone per size point
     if (fallBackMaterial) {
       if (id.equals(stone.getID()))
         return new Item(new ItemType(id), 1);

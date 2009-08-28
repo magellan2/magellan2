@@ -1651,8 +1651,8 @@ REGIONTYPES
 "Vulkan"
 "Aktiver Vulkan"
 
-CASTLETYPE "Wache"
-"Wache";name
+CASTLETYPE "Wachstube"
+"Wachstube";name
 2;level
 5;minsize
 9;maxsize

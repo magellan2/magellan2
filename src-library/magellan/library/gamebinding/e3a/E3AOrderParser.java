@@ -12,6 +12,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderParser;
+import magellan.library.rules.BuildingType;
 import magellan.library.rules.Race;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.Resources;
@@ -72,6 +73,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     // TODO?
     addCommand(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), new AllianzReader());
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_GIVE), new GibReader());
+    addCommand(Resources.getOrderTranslation(E3AConstants.O_MAKE), new E3MacheReader());
     addCommand(Resources.getOrderTranslation(E3AConstants.O_RECRUIT), new RekrutiereReader());
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_LEARNMAGIC), new XYZReader());
   }
@@ -191,6 +193,19 @@ public class E3AOrderParser extends EresseaOrderParser {
       return retVal;
     }
   }
+
+  // ************* MACHE
+  protected class E3MacheReader extends MacheReader {
+    @Override
+    protected BuildingType isCastle(OrderToken t) {
+      if (t.equalsToken(Resources.getOrderTranslation(E3AConstants.O_WATCH)))
+        if (getData().rules != null)
+          return getData().rules.getCastleType(E3AConstants.B_GUARDTOWER);
+      return null;
+    }
+  }
+
+  
   
   // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
@@ -250,5 +265,5 @@ public class E3AOrderParser extends EresseaOrderParser {
     }
     return null;
   }
-
+  
 }

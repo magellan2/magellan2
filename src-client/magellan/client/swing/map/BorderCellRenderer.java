@@ -177,15 +177,15 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	    // Integervalue != null and no border added->
 	    // we have an nocoast-region with pattern
 	    // from bit 7 and 8 we get our random number back
-	    int erg=0;
+	    int imageNumber=0;
 	    if ((bitArray & bitMaskArray[7])>0){
-	      erg++;
+	      imageNumber++;
 	    }
 	    if ((bitArray & bitMaskArray[6])>0){
-        erg+=2;
+        imageNumber+=2;
       }
 	    String imageNameDefault = "ocean_nocoast";
-	    drawMyImage(imageNameDefault, r,erg,false);
+	    drawMyImage(imageNameDefault, r,imageNumber,false);
 	  }
 	}
 	

@@ -1,4 +1,10 @@
 2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
+    * changed ocean winter tiles
+    * new ship icons for E3
+    * fixed bug with display of outdated resources
+    * ProgressBarUI no longer shows with delay
+
+2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
     * fixed "OrderWriter-Options-Bug" (from Wiki: Options were taken from last time dialog was 
       opened, not from current faction)
 

@@ -921,7 +921,7 @@ public class Regions {
 
     // % part of regions with no borders which will
     // be changed as well
-    double noBorderCoverage = 0.5;
+    double specialBorderProbability = 0.3;
 
     Random r = new Random(System.currentTimeMillis());
 
@@ -929,10 +929,10 @@ public class Regions {
     Regions.log.info("starting calculation of coasts");
     for (Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
       Region actRegion = iter.next();
+      int coastBitmap = 0;
       if (actRegion.getRegionType().isOcean()) {
         // we have an ocean in front
         // the result
-        int erg = 0;
         CoordinateID cID = (CoordinateID) actRegion.getID();
         Map<CoordinateID, Region> n = Regions.getAllNeighbours(data.regions(), cID, null);
         n.remove(cID);
@@ -946,41 +946,34 @@ public class Regions {
             CoordinateID diffCoord = new CoordinateID(checkID.x - cID.x, checkID.y - cID.y, 0);
             int intDir = Direction.toInt(diffCoord);
             int bitMask = bitMaskArray[intDir];
-            erg = erg | bitMask;
+            coastBitmap = coastBitmap | bitMask;
             cnt++;
           }
         }
-        if (erg > 0) {
-          actRegion.setCoastBitMap(new Integer(erg));
-        } else {
+        if (true || coastBitmap <= 0) {
           // we have no borders...lets see, if we want ice anyway
           double nextR = r.nextDouble();
-          if (nextR < noBorderCoverage) {
+          if (nextR < specialBorderProbability) {
             // ok, we want to add a random graphic 0..3
             // putting this info on bit 7 and 8
             int intR = r.nextInt(4);
             // this is poor but I have no better idea..sorry
             switch (intR) {
             case 1:
-              erg = erg | bitMaskArray[7];
+              coastBitmap = coastBitmap | bitMaskArray[7];
               break;
             case 2:
-              erg = erg | bitMaskArray[6];
+              coastBitmap = coastBitmap | bitMaskArray[6];
               break;
             case 3:
-              erg = erg | bitMaskArray[6];
-              erg = erg | bitMaskArray[7];
+              coastBitmap = coastBitmap | bitMaskArray[6];
+              coastBitmap = coastBitmap | bitMaskArray[7];
               break;
             }
-            actRegion.setCoastBitMap(new Integer(erg));
-          } else {
-            actRegion.setCoastBitMap(null);
           }
         }
-      } else {
-        // we do not recalculate non-oceans
-        actRegion.setCoastBitMap(null);
       }
+      actRegion.setCoastBitMap(coastBitmap);
     }
     Regions.log.info("finished calculation of coasts, found " + cnt + " coasts.");
   }

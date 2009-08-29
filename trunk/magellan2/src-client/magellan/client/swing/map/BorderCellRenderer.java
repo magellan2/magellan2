@@ -173,7 +173,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	      drawMyImage(imageNameDefault, r,erg,false);
 	    }
 	  }
-	  if (!borderAdded){
+	  if (true || !borderAdded){
 	    // Integervalue != null and no border added->
 	    // we have an nocoast-region with pattern
 	    // from bit 7 and 8 we get our random number back

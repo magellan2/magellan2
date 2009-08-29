@@ -34,11 +34,10 @@ public abstract class ImageCellRenderer extends HexCellRenderer {
 	private static MediaTracker tracker = null;
 
 	/**
-	 * Creates a new ImageCellRenderer with the specified cell geometry and a Properties object to
-	 * read the render settings from.
+	 * Creates a new ImageCellRenderer.
 	 *
-	 * 
-	 * 
+	 * @param geo The geometry object to use for rendering.
+	 * @param context Context to get settings from.
 	 */
 	public ImageCellRenderer(CellGeometry geo, MagellanContext context) {
 		super(geo, context);

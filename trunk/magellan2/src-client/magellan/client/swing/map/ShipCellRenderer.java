@@ -31,29 +31,23 @@ import magellan.library.utils.comparator.FactionTrustComparator;
 
 
 /**
- * DOCUMENT-ME
+ * A renderer for displaying ships on the map
  *
- * @author $Author: $
- * @version $Revision: 299 $
  */
 public class ShipCellRenderer extends ImageCellRenderer {
 	/**
 	 * Creates a new ShipCellRenderer object.
-	 *
 	 * 
-	 * 
+   * @param geo The geometry object to use for rendering.
+   * @param context Context to get settings from.
 	 */
 	public ShipCellRenderer(CellGeometry geo, MagellanContext context) {
 		super(geo, context);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 * 
-	 */
+   * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
+   */
 	@Override
   public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
@@ -190,10 +184,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
 	}
 	
 	private static class ShipInformation {
-		/** DOCUMENT-ME */
 		public int capacity = -1;
 
-		/** DOCUMENT-ME */
 		public String typeName = null;
 
 		ShipInformation(int aCap, String aName) {
@@ -203,9 +195,9 @@ public class ShipCellRenderer extends ImageCellRenderer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns {@link Mapper#PLANE_SHIP}.
 	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
 	 */
 	@Override
   public int getPlaneIndex() {

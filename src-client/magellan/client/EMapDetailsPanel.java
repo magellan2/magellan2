@@ -993,8 +993,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendRegionResourceInfo(Region r, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    // DefaultMutableTreeNode resourceNode = new
-    // DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.resources"));
     DefaultMutableTreeNode resourceNode =
         createSimpleNode(Resources.get("emapdetailspanel.node.resources"), "ressourcen");
     String icon = null;

@@ -505,6 +505,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				} else {
 					iconLabels[i].setToolTipText(null);
 				}
+				i++;
 			}
 		}
 	}

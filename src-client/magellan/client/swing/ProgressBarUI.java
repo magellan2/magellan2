@@ -1,25 +1,25 @@
-//class magellan.client.swing.SwingUserInterface
-//created on 07.11.2007
+// class magellan.client.swing.SwingUserInterface
+// created on 07.11.2007
 
-//Copyright 2003-2007 by magellan project team
+// Copyright 2003-2007 by magellan project team
 
-//Author : $Author: $
-//$Id: $
+// Author : $Author: $
+// $Id: $
 
-//This program is free software; you can redistribute it and/or modify
-//it under the terms of the GNU General Public License as published by
-//the Free Software Foundation; either version 2 of the License, or
-//(at your option) any later version.
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
 
-//This program is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//GNU General Public License for more details.
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
 
-//You should have received a copy of the GNU General Public License
-//along with this program (see doc/LICENCE.txt); if not, write to the
-//Free Software Foundation, Inc., 
-//59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// You should have received a copy of the GNU General Public License
+// along with this program (see doc/LICENCE.txt); if not, write to the
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 package magellan.client.swing;
 
@@ -64,7 +64,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @param parent
    */
   public ProgressBarUI(JFrame parent) {
-    this(parent, true, 200, null);
+    this(parent, true, 0, null);
   }
 
   /**
@@ -73,27 +73,21 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    * @param parent
    */
   public ProgressBarUI(JDialog parent) {
-    this(parent, true, 200, null);
+    this(parent, true, 0, null);
   }
 
   /**
-   * Creates a ProgressBar Dialog which can be modal or non-modal.
-   * listener.proceed() is called if the dialog receives a WINDOW_CLOSING
-   * event(e.g., if the user clicks the dialog's close button. If
-   * <code>listener</code> is <code>null</code>, a standard listener shall be
-   * used which asks the user for confirmation. If listener.proceed() returns
-   * <code>true</code>, the ProgressBarUI is closed.
+   * Creates a ProgressBar Dialog which can be modal or non-modal. listener.proceed() is called if
+   * the dialog receives a WINDOW_CLOSING event(e.g., if the user clicks the dialog's close button.
+   * If <code>listener</code> is <code>null</code>, a standard listener shall be used which asks the
+   * user for confirmation. If listener.proceed() returns <code>true</code>, the ProgressBarUI is
+   * closed.
    * 
-   * @param parent
-   *          The JFrame acting as the parent frame of the dialog.
-   * @param modal
-   *          Whether the dialog should be modal or not
-   * @param delay
-   *          The time after which the dialog shall be shown after show() has
-   *          been called.
-   * @param listener
-   *          The listener reacting to WINDOW_CLOSING events. If
-   *          <code>null</code>, a standard listener shall be used.
+   * @param parent The JFrame acting as the parent frame of the dialog.
+   * @param modal Whether the dialog should be modal or not
+   * @param delay The time after which the dialog shall be shown after show() has been called.
+   * @param listener The listener reacting to WINDOW_CLOSING events. If <code>null</code>, a
+   *          standard listener shall be used.
    */
   public ProgressBarUI(JFrame parent, boolean modal, int delay, ClosingListener listener) {
     dlg = new ProgressDlg(parent, modal, listener);
@@ -102,22 +96,16 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-   * Creates a ProgressBar Dialog which can be modal or non-modal.
-   * listener.proceed() is called if the dialog receives a WINDOW_CLOSING
-   * event(e.g., if the user clicks the dialog's close button. If
-   * <code>listener</code> is <code>null</code>, a standard listener shall be
-   * used which asks the user for confirmation. If listener.proceed() returns
-   * <code>true</code>, the ProgressBarUI is closed.
+   * Creates a ProgressBar Dialog which can be modal or non-modal. listener.proceed() is called if
+   * the dialog receives a WINDOW_CLOSING event(e.g., if the user clicks the dialog's close button.
+   * If <code>listener</code> is <code>null</code>, a standard listener shall be used which asks the
+   * user for confirmation. If listener.proceed() returns <code>true</code>, the ProgressBarUI is
+   * closed.
    * 
-   * @param parent
-   *          The JD acting as the parent frame of the dialog.
-   * @param modal
-   *          Whether the dialog should be modal or not
-   * @param delay
-   *          The time after which the dialog shall be shown after show() has
-   *          been called.
-   * @param listener
-   *          The listener reacting to WINDOW_CLOSING events.
+   * @param parent The JD acting as the parent frame of the dialog.
+   * @param modal Whether the dialog should be modal or not
+   * @param delay The time after which the dialog shall be shown after show() has been called.
+   * @param listener The listener reacting to WINDOW_CLOSING events.
    */
   public ProgressBarUI(JDialog parent, boolean modal, int delay, ClosingListener listener) {
     dlg = new ProgressDlg(parent, modal, listener);
@@ -155,21 +143,23 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-     * @see magellan.library.utils.UserInterface#setProgress(java.lang.String,
-     *      int)
-     */
-    public void setProgress(String strMessage, int iProgress) {
-      Progress progress = new Progress();
-      progress.strMessage = strMessage;
-      progress.iProgress = iProgress;
-      SwingUtilities.invokeLater(progress);
-    }
+   * @see magellan.library.utils.UserInterface#setProgress(java.lang.String, int)
+   */
+  public void setProgress(String strMessage, int iProgress) {
+    Progress progress = new Progress();
+    progress.strMessage = strMessage;
+    progress.iProgress = iProgress;
+    SwingUtilities.invokeLater(progress);
+  }
 
   /**
    * @see magellan.library.utils.UserInterface#show()
    */
   public synchronized void show() {
-    timer.restart();
+    if (delay > 0)
+      timer.restart();
+    else if (!showing)
+      doShow();
   }
 
   /**
@@ -179,16 +169,20 @@ public class ProgressBarUI implements UserInterface, ActionListener {
    */
   public synchronized void actionPerformed(ActionEvent e) {
     if (e.getSource() == timer && !showing) {
-      (new Thread(new Runnable() {
-      
-        public void run() {
-          if (!ready) {
-            showing = true;
-            ProgressBarUI.this.dlg.setVisible(true);
-          }
-        }
-      })).start();
+      doShow();
     }
+  }
+
+  protected synchronized void doShow() {
+    (new Thread(new Runnable() {
+
+      public void run() {
+        if (!ready) {
+          showing = true;
+          ProgressBarUI.this.dlg.setVisible(true);
+        }
+      }
+    })).start();
   }
 
   /**
@@ -220,8 +214,7 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-   * @see magellan.library.utils.UserInterface#confirm(java.lang.String,
-   *      java.lang.String)
+   * @see magellan.library.utils.UserInterface#confirm(java.lang.String, java.lang.String)
    */
   public boolean confirm(String strMessage, String strTitle) {
     Confirm conf = new Confirm(strTitle, strMessage);
@@ -236,8 +229,8 @@ public class ProgressBarUI implements UserInterface, ActionListener {
   }
 
   /**
-   * @see magellan.library.utils.UserInterface#input(java.lang.String,
-   *      java.lang.String, java.lang.Object[], java.lang.Object)
+   * @see magellan.library.utils.UserInterface#input(java.lang.String, java.lang.String,
+   *      java.lang.Object[], java.lang.Object)
    */
   public Object input(String strMessage, String strTitle, Object[] values, Object initialSelection) {
     Input input = new Input(strMessage, strTitle, values, initialSelection);
@@ -279,20 +272,20 @@ public class ProgressBarUI implements UserInterface, ActionListener {
 
   public static ClosingListener getDefaultClosingListener(final Component parent) {
     return new ClosingListener() {
-  
+
       public boolean proceed(WindowEvent e) {
         return (JOptionPane.showConfirmDialog(parent, Resources.get("progressbarui.abort.message"),
             Resources.get("progressbarui.abort.title"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION);
       }
-  
+
     };
   }
 
   public interface ClosingListener {
 
     /**
-     * Returns <code>true</code> if the dialog should be closed after receiving
-     * an event <code>e</code> of type {@link WindowEvent#WINDOW_CLOSING}.
+     * Returns <code>true</code> if the dialog should be closed after receiving an event
+     * <code>e</code> of type {@link WindowEvent#WINDOW_CLOSING}.
      * 
      * @param e
      * @return

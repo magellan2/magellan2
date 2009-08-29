@@ -73,45 +73,61 @@ public class ShipCellRenderer extends ImageCellRenderer {
 				// Directions 0-6
 				ShipInformation shipInformations[] = new ShipInformation[7];
 
-				// find ships with max capacity
-				while(iter.hasNext()) {
-					Ship s = (Ship) iter.next();
+				boolean multipleTypes = false;
+        // find ships with max capacity
+        while (iter.hasNext()) {
+          Ship s = (Ship) iter.next();
 
-					if(shipInformations[s.getShoreId() + 1] == null) {
-						shipInformations[s.getShoreId() + 1] = new ShipInformation(s.getDeprecatedCapacity(),
-																			  s.getType().getName());
-					}
+          if (shipInformations[s.getShoreId() + 1] == null) {
+            shipInformations[s.getShoreId() + 1] =
+                new ShipInformation(s.getShipType().getCapacity(), s.getType().getName());
+          }
 
-					ShipInformation actShip = shipInformations[s.getShoreId() + 1];
+          ShipInformation actShip = shipInformations[s.getShoreId() + 1];
 
-					if(actShip.capacity < s.getDeprecatedCapacity()) {
-						actShip.capacity = s.getDeprecatedCapacity();
-						actShip.typeName = s.getType().getName();
-					}
-				}
+          if (actShip.capacity != s.getShipType().getCapacity()) {
+            multipleTypes = true;
+            if (actShip.capacity < s.getShipType().getCapacity()) {
+              actShip.capacity = s.getDeprecatedCapacity();
+              actShip.typeName = s.getType().getName();
+            }
+          }
+        }
 
 				// 2. draw ships in region
-				for(int i = 0; i < shipInformations.length; i++) {
-					ShipInformation actShip = shipInformations[i];
+				for(int shore = 0; shore < shipInformations.length; shore++) {
+					ShipInformation actShip = shipInformations[shore];
 
 					if(actShip == null) {
 						continue;
 					}
 
-					Image img = getImage(actShip.typeName + i);
+					Image img = getImage(actShip.typeName + shore);
 
 					if(img == null) {
 						// special image not found, use generic image
-						img = getImage("Schiff" + i);
+						img = getImage("Schiff" + shore);
 					}
 
 					if(img != null) {
 						graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
 					}
+	        if (multipleTypes)
+	          renderMultiple(r, shore);
 				}
 			}
 			renderTravelThrough(r);
 		}
+	}
+
+	private void renderMultiple(Region region, int shore) {
+	  Image img = getImage("viele_schiffe"+shore);
+	  if(img != null) {
+	    CoordinateID c = region.getCoordinate();
+	    Rectangle rect = cellGeo.getImageRect(c.x, c.y);    
+	    rect.translate(-offset.x, -offset.y);
+	    graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
+	  }
 	}
 
 	/** 
@@ -143,6 +159,16 @@ public class ShipCellRenderer extends ImageCellRenderer {
 			}
 		}
 
+		for (Ship ship : region.ships()) {
+      if(ship != null && ship.getOwnerUnit() != null &&
+          ship.getOwnerUnit().getFaction() != null && 
+          ship.getOwnerUnit().getFaction().getTrustLevel() >=FactionTrustComparator.ALLIED) {
+        
+      } else {
+        foundEnemy=true;
+      }
+		}
+		
 		if(foundAllied) {
 			Image img = getImage("durchschiffung_alliiert");
 			if(img != null) {

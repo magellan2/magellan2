@@ -12,7 +12,6 @@ import java.util.Collections;
 
 import magellan.library.ID;
 import magellan.library.Item;
-import magellan.library.Ship;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -66,8 +65,6 @@ public class ShipType extends ConstructibleType {
 
   /**
    * Returns the maximum capacity (in GE).
-   * 
-   * @deprecated {@link Ship#getCapacity()} is now used.
    */
   public int getCapacity() {
     return capacity;

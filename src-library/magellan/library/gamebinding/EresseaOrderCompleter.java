@@ -1006,7 +1006,7 @@ public class EresseaOrderCompleter implements Completer {
               suggest = false;
             } else {
 
-              if ("".equals(order)) {
+              if (order.length()==0) {
                 order.append(resource.getOrderName());
               } else {
                 order.append("\n").append(Resources.getOrderTranslation(EresseaConstants.O_GIVE))

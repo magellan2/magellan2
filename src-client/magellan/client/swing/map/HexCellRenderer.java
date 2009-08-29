@@ -87,7 +87,7 @@ public abstract class HexCellRenderer implements MapCellRenderer {
   }
 
 	/**
-	 * Renders the supplied object.
+	 * @see magellan.client.swing.map.MapCellRenderer#render(java.lang.Object, boolean, boolean)
 	 */
 	public abstract void render(Object obj, boolean active, boolean selected);
 

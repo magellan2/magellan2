@@ -887,6 +887,8 @@ public interface Region extends UnitContainer {
    * BitMask 1: dir = 0<br />
    * BitMask 2: dir = 1<br />
    * BitMask 4: dir = 2 ....<br />
+   * BitMask 64: random bit 1 (for variable effects like ice)<br />
+   * BitMask 128: random bit 2<br />
    * Bit = 1 -> there is land!<br />
    * Bit = 0 -> there is ozean!
    * 
@@ -899,6 +901,8 @@ public interface Region extends UnitContainer {
    * BitMask 1: dir = 0<br />
    * BitMask 2: dir = 1<br />
    * BitMask 4: dir = 2 ....<br />
+   * BitMask 64: random bit 1 (for variable effects like ice)<br />
+   * BitMask 128: random bit 2<br />
    * Bit = 1 -> there is land!<br />
    * Bit = 0 -> there is ozean!
    * 

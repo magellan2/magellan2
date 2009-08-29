@@ -29,6 +29,7 @@ import magellan.client.EMapOverviewPanel;
 import magellan.client.actions.MenuAction;
 import magellan.client.swing.EresseaFileFilter;
 import magellan.client.swing.OpenOrdersAccessory;
+import magellan.client.swing.ProgressBarUI;
 import magellan.library.CoordinateID;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -64,8 +65,8 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    JFileChooser fc = new JFileChooser();
     Properties settings = client.getProperties();
+    JFileChooser fc = new JFileChooser();
     fc.addChoosableFileFilter(new EresseaFileFilter(EresseaFileFilter.TXT_FILTER));
     fc.setSelectedFile(new File(settings.getProperty("Client.lastOrdersOpened", "")));
 
@@ -73,75 +74,81 @@ public class OpenOrdersAction extends MenuAction implements GameDataListener {
     fc.setAccessory(acc);
 
     if (fc.showOpenDialog(client) == JFileChooser.APPROVE_OPTION) {
-      // FIXME (stm) Do this in background thread!
-      settings.setProperty("Client.lastOrdersOpened", fc.getSelectedFile().getAbsolutePath());
-
-      OrderReader r = new OrderReader(client.getData());
-      r.setAutoConfirm(acc.getAutoConfirm());
-      r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
-      r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
-
-      // we clone later the hole gamedata, we do not need to
-      // refresh the UnitRelations now
-      r.setRefreshUnitRelations(false);
-
-      try {
-        // apexo (Fiete) 20061205: if in properties, force ISO encoding
-        if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
-          // old = default = system dependent
-          r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
-        } else {
-          // new: force our default = ISO
-          Reader stream =
-              new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
-                  FileType.DEFAULT_ENCODING.toString());
-          r.read(stream);
-        }
-
-        /**
-         * we do not need the refresh anymore... we clone the hole gamedata
-         * later... // OrderReaderPatch010207 stm (manually by Fiete): if
-         * (client.getData().regions()!=null){ // added by fiete to be failsafe
-         * for (Iterator it =
-         * client.getData().regions().values().iterator();it.hasNext();){ Region
-         * region = (Region)it.next(); region.refreshUnitRelations(true); } } //
-         * OrderReaderPatch end
-         */
-
-        OrderReader.Status status = r.getStatus();
-        Object msgArgs[] = { new Integer(status.factions), new Integer(status.units) };
-        String messageS = Resources.get("actions.openordersaction.msg.fileordersopen.status.text");
-        if (status.confirmedUnitsNotOverwritten > 0) {
-          messageS +=
-              "\n" + status.confirmedUnitsNotOverwritten + " "
-                  + Resources.get("actions.openordersaction.msg.fileordersopen.status.text2");
-        }
-        JOptionPane.showMessageDialog(client, (new java.text.MessageFormat(messageS))
-            .format(msgArgs), Resources
-            .get("actions.openordersaction.msg.fileordersopen.status.title"),
-            (status.factions > 0 && status.units > 0) ? JOptionPane.PLAIN_MESSAGE
-                : JOptionPane.WARNING_MESSAGE);
-      } catch (Exception exc) {
-        OpenOrdersAction.log.error(exc);
-        JOptionPane.showMessageDialog(client, Resources
-            .get("actions.openordersaction.msg.fileordersopen.error.text")
-            + exc.toString(), Resources
-            .get("actions.openordersaction.msg.fileordersopen.error.title"),
-            JOptionPane.ERROR_MESSAGE);
-      }
-
-      // client.getDispatcher().fire(new GameDataEvent(client,
-      // client.getData()));
-      // force a complete new init of the game data, using data.clone
-      // using for that client.setOrigin...(Fiete)
-      this.client.setOrigin(new CoordinateID(0, 0));
+      loadAsynchronously(acc, fc);
     }
 
 		// repaint since command confirmation status may have changed
 		client.getDesktop().repaint(EMapOverviewPanel.IDENTIFIER);
 	}
 
-	/* (non-Javadoc)
+	protected void loadAsynchronously(final OpenOrdersAccessory acc, final JFileChooser fc) {
+    final ProgressBarUI ui = new ProgressBarUI(client);
+
+    ui.show();
+    ui.setMaximum(-1);
+
+    new Thread(new Runnable() {
+
+      public void run() {
+        Properties settings = client.getProperties();
+        settings.setProperty("Client.lastOrdersOpened", fc.getSelectedFile().getAbsolutePath());
+
+        OrderReader r = new OrderReader(client.getData());
+        r.setAutoConfirm(acc.getAutoConfirm());
+        r.ignoreSemicolonComments(acc.getIgnoreSemicolonComments());
+        r.setDoNotOverwriteConfirmedOrders(acc.getDoNotOverwriteConfirmedOrders());
+        
+        // we clone later the hole gamedata, we do not need to
+        // refresh the UnitRelations now
+        r.setRefreshUnitRelations(false);
+
+        try {
+          // apexo (Fiete) 20061205: if in properties, force ISO encoding
+          if (!PropertiesHelper.getBoolean(settings, "TextEncoding.ISOopenOrders", false)) {
+            // old = default = system dependent
+            r.read(new FileReader(fc.getSelectedFile().getAbsolutePath()));
+          } else {
+            // new: force our default = ISO
+            Reader stream =
+                new InputStreamReader(new FileInputStream(fc.getSelectedFile().getAbsolutePath()),
+                    FileType.DEFAULT_ENCODING.toString());
+            r.read(stream);
+          }
+
+          OrderReader.Status status = r.getStatus();
+          Object msgArgs[] = { new Integer(status.factions), new Integer(status.units) };
+          String messageS =
+              Resources.get("actions.openordersaction.msg.fileordersopen.status.text");
+          if (status.confirmedUnitsNotOverwritten > 0) {
+            messageS +=
+                "\n" + status.confirmedUnitsNotOverwritten + " "
+                    + Resources.get("actions.openordersaction.msg.fileordersopen.status.text2");
+          }
+          JOptionPane.showMessageDialog(client, (new java.text.MessageFormat(messageS))
+              .format(msgArgs), Resources
+              .get("actions.openordersaction.msg.fileordersopen.status.title"),
+              (status.factions > 0 && status.units > 0) ? JOptionPane.PLAIN_MESSAGE
+                  : JOptionPane.WARNING_MESSAGE);
+        } catch (Exception exc) {
+          OpenOrdersAction.log.error(exc);
+          JOptionPane.showMessageDialog(client, Resources
+              .get("actions.openordersaction.msg.fileordersopen.error.text")
+              + exc.toString(), Resources
+              .get("actions.openordersaction.msg.fileordersopen.error.title"),
+              JOptionPane.ERROR_MESSAGE);
+        }
+
+        // client.getDispatcher().fire(new GameDataEvent(client,
+        // client.getData()));
+        // force a complete new init of the game data, using data.clone
+        // using for that client.setOrigin...(Fiete)
+        client.setOrigin(new CoordinateID(0, 0));
+        ui.ready();
+      }
+    }).start();
+  }
+
+  /* (non-Javadoc)
 	 * @see com.eressea.event.GameDataListener#gameDataChanged(com.eressea.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {

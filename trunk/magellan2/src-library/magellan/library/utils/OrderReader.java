@@ -82,54 +82,50 @@ public class OrderReader {
 	}
 
 	/**
-	 * Reads the orders from the specified Reader. Orders for multiple factions can be read. Region
-	 * lines are ignored. Unit are not created. If there are orders for a unit that cannot be
-	 * found in the game data these orders are ignored. Lines containing ECHECK comments are
-	 * always ignored. Comments starting with a semicolon and containing the literal 'bestaetigt'
-	 * (case and umlaut insensitive) after an arbitrary number of whitespace characters are never
-	 * added to a unit's orders, instead they set the order confirmation status of the unit to
-	 * true.
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
-	 */
-	public void read(Reader in) throws IOException {
-		stream = new LineNumberReader(new MergeLineReader(in));
+   * Reads the orders from the specified Reader. Orders for multiple factions can be read. Region
+   * lines are ignored. Unit are not created. If there are orders for a unit that cannot be found in
+   * the game data these orders are ignored. Lines containing ECHECK comments are always ignored.
+   * Comments starting with a semicolon and containing the literal 'bestaetigt' (case and umlaut
+   * insensitive) after an arbitrary number of whitespace characters are never added to a unit's
+   * orders, instead they set the order confirmation status of the unit to true.
+   * 
+   * @throws IOException DOCUMENT-ME
+   */
+  public void read(Reader in) throws IOException {
+    stream = new LineNumberReader(new MergeLineReader(in));
 
-		String line = stream.readLine();
+    String line = stream.readLine();
 
-		while(line != null) {
-			StringTokenizer tokenizer = new StringTokenizer(line);
+    while (line != null) {
+      StringTokenizer tokenizer = new StringTokenizer(line);
 
-			if(tokenizer.hasMoreTokens()) {
-				String token = Umlaut.normalize(tokenizer.nextToken());
+      if (tokenizer.hasMoreTokens()) {
+        String token = Umlaut.normalize(tokenizer.nextToken());
 
-				if(Resources.getOrderTranslation(EresseaConstants.O_FACTION).startsWith(token) ||
-            Resources.getOrderTranslation(EresseaConstants.O_ERESSEA).startsWith(token)) {
-					token = tokenizer.nextToken();
+        if (Resources.getOrderTranslation(EresseaConstants.O_FACTION).startsWith(token)
+            || Resources.getOrderTranslation(EresseaConstants.O_ERESSEA).startsWith(token)) {
+          token = tokenizer.nextToken();
 
-					try {
-						ID fID = EntityID.createEntityID(token,data.base);
-						Faction f = data.getFaction(fID);
+          try {
+            ID fID = EntityID.createEntityID(token, data.base);
+            Faction f = data.getFaction(fID);
 
-						if(f != null) {
-							readFaction(fID);
-						} else {
-							OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" +
-									 token +
-									 ") is not present in the game data, skipping this faction.");
-						}
-					} catch(NumberFormatException e) {
-						OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " +
-								  e.toString() + " at line " + stream.getLineNumber(), e);
-					}
-				}
-			}
+            if (f != null) {
+              readFaction(fID);
+            } else {
+              OrderReader.log.info("OrderReader.read(): The faction with id " + fID + " (" + token
+                  + ") is not present in the game data, skipping this faction.");
+            }
+          } catch (NumberFormatException e) {
+            OrderReader.log.error("OrderReader.read(): Unable to parse faction id: " + e.toString()
+                + " at line " + stream.getLineNumber(), e);
+          }
+        }
+      }
 
-			line = stream.readLine();
-		}
-	}
+      line = stream.readLine();
+    }
+  }
 
 	private void readFaction(ID id) throws IOException {
 		Faction faction = data.getFaction(id);
@@ -218,7 +214,7 @@ public class OrderReader {
 				ID unitID = null;
 
 				try {
-					unitID = UnitID.createUnitID(token,data.base);
+					unitID = UnitID.createUnitID(token, data.base);
 				} catch(NumberFormatException e) {
 					OrderReader.log.error("OrderReader.readFaction(): " + e.toString() + " at line " +
 							  stream.getLineNumber(), e);

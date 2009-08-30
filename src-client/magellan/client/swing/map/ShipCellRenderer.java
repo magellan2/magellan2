@@ -66,8 +66,8 @@ public class ShipCellRenderer extends ImageCellRenderer {
 				// The ship with the maximum capacity will be drawn only
 				// Directions 0-6
 				ShipInformation shipInformations[] = new ShipInformation[7];
+        boolean multipleTypes[] = new boolean[7];
 
-				boolean multipleTypes = false;
         // find ships with max capacity
         while (iter.hasNext()) {
           Ship s = (Ship) iter.next();
@@ -80,7 +80,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
           ShipInformation actShip = shipInformations[s.getShoreId() + 1];
 
           if (actShip.capacity != s.getShipType().getCapacity()) {
-            multipleTypes = true;
+            multipleTypes[s.getShoreId()+1] = true;
             if (actShip.capacity < s.getShipType().getCapacity()) {
               actShip.capacity = s.getDeprecatedCapacity();
               actShip.typeName = s.getType().getName();
@@ -106,7 +106,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 					if(img != null) {
 						graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
 					}
-	        if (multipleTypes)
+	        if (multipleTypes[shore])
 	          renderMultiple(r, shore);
 				}
 			}

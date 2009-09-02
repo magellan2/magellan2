@@ -1,21 +1,26 @@
 package magellan.test;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import magellan.library.Border;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
+import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Message;
 import magellan.library.Region;
 import magellan.library.Skill;
+import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
+import magellan.library.impl.SpellBuilder;
 import magellan.library.io.GameDataReader;
 import magellan.library.rules.EresseaDate;
 import magellan.library.rules.SkillType;
@@ -88,7 +93,7 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object with one unit which has Hiebwaffen 4 (+3), Segeln 4, Magie - (-3),
+   * Creates a GameData object with one unit which has Hiebwaffen 4 (+3), Segeln - (-3), Magie 4,
    * Steinbau -. in round {@link #BASE_ROUND}.
    */
   public GameData createSimpleGameData() throws Exception {
@@ -96,7 +101,7 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object with one unit which has Hiebwaffen 4 (+3), Segeln 4, Magie - (-3),
+   * Creates a GameData object with one unit which has Hiebwaffen 4 (+3), Segeln - (-3), Magie 4,
    * Steinbau -.
    */
   public GameData createSimpleGameData(int round) throws Exception {
@@ -104,7 +109,7 @@ public class GameDataBuilder {
   }
 
   /**
-   * Creates a GameData object where all units have Hiebwaffen 4 (+3), Segeln 4, Magie - (-3),
+   * Creates a GameData object where all units have Hiebwaffen 4 (+3), Segeln - (-3), Magie 4,
    * Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(int round, boolean addUnit) throws Exception {
@@ -114,8 +119,8 @@ public class GameDataBuilder {
       Unit unit = data.units().values().iterator().next();
 
       addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
-      addSkill(unit, "Segeln", 4, 0, false); // Segeln 4
-      addSkill(unit, "Magie", -1, -3, true); // Magie - (-3)
+      addSkill(unit, "Segeln", -1, -3, false); // Segeln - (-3)
+      addSkill(unit, "Magie", 4, 0, true); // Magie 4
       addSkill(unit, "Steinbau", -1, -3, false); // Steinbau -
     }
 
@@ -241,6 +246,41 @@ public class GameDataBuilder {
     region.addBorder(road);
 
     return road;
+  }
+
+  public static void addSpells(GameData data) {
+    Unit mage = data.units().values().iterator().next();
+    Map<ID, Spell> spellMap = new HashMap<ID, Spell>();
+    IntegerID id = IntegerID.create(999);
+    SpellBuilder spell = new SpellBuilder(id, data);
+    spell.setName("Hagel");
+    spell.setLevel(5);
+    spell.setType("combat");
+    Spell hail = spell.construct();
+    data.addSpell(hail);
+    spellMap.put(id, hail);
+
+    id = IntegerID.create(998);
+    spell = new SpellBuilder(id, data);
+    spell.setName("Groﬂes Fest");
+    spell.setLevel(2);
+    spell.setType("normal");
+    spell.setSyntax("");
+    Spell feast = spell.construct();
+    data.addSpell(feast);
+    spellMap.put(id, feast);
+    
+    id = IntegerID.create(997);
+    spell = new SpellBuilder(id, data);
+    spell.setName("Schild");
+    spell.setLevel(4);
+    spell.setType("normal");
+    spell.setSyntax("u");
+    Spell shield = spell.construct();
+    data.addSpell(shield);
+    spellMap.put(id, shield);
+    
+    mage.setSpells(spellMap);
   }
 
 }

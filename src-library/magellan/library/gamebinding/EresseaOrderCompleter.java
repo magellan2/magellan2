@@ -1176,10 +1176,10 @@ public class EresseaOrderCompleter implements Completer {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
             " ", Completion.DEFAULT_PRIORITY - 1));
 
-        if ((unit.getCombatSpells() != null) && (unit.getCombatSpells().size() > 0)) {
-          completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "",
-              Completion.DEFAULT_PRIORITY - 1));
-        }
+//        if ((unit.getCombatSpells() != null) && (unit.getCombatSpells().size() > 0)) {
+//          completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "",
+//              Completion.DEFAULT_PRIORITY - 1));
+//        }
       }
 
       addFilteredSpells(unit, false, region.getType().equals(
@@ -1843,8 +1843,12 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltZaubereStufe() {
+    Skill magic = unit.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
+    int level = 1;
+    if (magic!=null)
+      level = magic.getLevel();
     completions.add(new Completion(
-        Resources.get("gamebinding.eressea.eresseaordercompleter.level"), "", ""));
+        Resources.get("gamebinding.eressea.eresseaordercompleter.level"), String.valueOf(level), ""));
   }
 
   public void cmpltZaubereRegion() {

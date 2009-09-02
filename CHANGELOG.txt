@@ -1,3 +1,6 @@
+2009-09-02 / Build 351 - stm (stm_@users.sourceforge.net)
+    * fixed KAMPFZAUBER completion
+
 2009-08-28 / Build 347 - stm (stm_@users.sourceforge.net)
     * changed ocean winter tiles
     * new ship icons for E3

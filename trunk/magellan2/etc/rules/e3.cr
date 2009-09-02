@@ -1464,7 +1464,7 @@ RAWMATERIALS
 
 SHIPTYPE "Floﬂ"
 "Floﬂ";name
-7;size
+10;size
 1;level
 1;range
 500;capacity

@@ -1610,6 +1610,7 @@ public class EresseaOrderParser implements OrderParser {
      */
     protected boolean readZaubereEnde(OrderToken token, Spell s) {
       if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
+        token.ttype = OrderToken.TT_KEYWORD;
         return checkNextFinal();
       } else if (token.ttype == OrderToken.TT_EOC) {
         if (getCompleter() != null) {
@@ -3028,7 +3029,7 @@ public class EresseaOrderParser implements OrderParser {
         t.ttype = OrderToken.TT_NUMBER;
         t = getNextToken();
         if (isString(t)) {
-          retVal = new ZaubereSpruchChecker(false, false, false, false).read(t);
+          retVal = new ZaubereSpruchChecker(false, combat, false, false).read(t);
         } else {
           unexpected(t);
           if (shallComplete(token, t)) {

@@ -679,7 +679,16 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testKampfzauberReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL));
+    GameDataBuilder.addSpells(data);
+    
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_COMBATSPELL)+" Hagel");
+    checkOrder("KAMPFZAUBER STUFE 2 Hagel");
+    checkOrder("KAMPFZAUBER Hagel NICHT");
+    checkOrder("KAMPFZAUBER STUFE 2 \"Groﬂes Fest\"", false); // no combat spell
+    checkOrder("KAMPFZAUBER STUFE Hagel", false);
+    checkOrder("KAMPFZAUBER Magisches Geschoﬂ", false);
+    checkOrder("KAMPFZAUBER Hagel 123", false);
+    checkOrder("KAMPFZAUBER STUFE x Hagel", false);
   }
 
   /**
@@ -842,7 +851,10 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testNeustartReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESTART));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_RESTART)+" Trolle \"passwort\"");
+    checkOrder("NEUSTART Zwerge \"\"", false);
+    checkOrder("NEUSTART Zwerge", false);
+    checkOrder("NEUSTART", false);
   }
 
   /**
@@ -850,7 +862,15 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testNummerReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_NUMBER));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_NUMBER)+" EINHEIT");
+    checkOrder("NUMMER EINHEIT 123");
+    checkOrder("NUMMER PARTEI 123");
+    checkOrder("NUMMER SCHIFF 123");
+    checkOrder("NUMMER BURG 123");
+    checkOrder("NUMMER PARTEI");
+    checkOrder("NUMMER", false);
+    checkOrder("NUMMER EINHEIT 123 123", false);
+    checkOrder("NUMMER EINHEIT abcdefg", false);
   }
 
   /**
@@ -858,7 +878,9 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testOptionReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_OPTION));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_OPTION)+" AUSWERTUNG");
+    checkOrder("AUSWERTUNG PUNKTE NICHT");
+    checkOrder("AUSWERTUNG PUNKTE NICHT MEHR", false);
   }
 
   /**
@@ -874,7 +896,9 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testPasswortReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD));
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_PASSWORD)+" \"squiggy\"");
+    checkOrder("PASSWORT 123", false);
+    checkOrder("PASSWORT", false);
   }
 
   /**
@@ -1045,7 +1069,20 @@ public class EresseaOrderParserTest {
    */
   @Test
   public void testZaubereReader() {
-    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CAST));
+    GameDataBuilder.addSpells(data);
+    
+    checkOrder(Resources.getOrderTranslation(EresseaConstants.O_CAST)+" \"Groﬂes Fest\"");
+    
+    checkOrder("ZAUBERE STUFE 2 Schild abc");
+    checkOrder("ZAUBERE STUFE 2 \"Groﬂes Fest\"");
+    checkOrder("ZAUBERE Schild NICHT", true); // TODO cave: NICHT is read as spell parameter
+    checkOrder("ZAUBERE \"Groﬂes Fest\" NICHT", false);
+    checkOrder("ZAUBERE Hagel", false); // combat spell
+    checkOrder("ZAUBERE STUFE Schild abc", false);
+    checkOrder("ZAUBERE Magisches Geschoﬂ", false);
+    checkOrder("ZAUBERE \"Groﬂes Fest\" 123", false);
+    checkOrder("ZAUBERE STUFE x Schild 123", false);
+
   }
 
   /**

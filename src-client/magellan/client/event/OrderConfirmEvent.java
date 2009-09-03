@@ -13,6 +13,7 @@
 
 package magellan.client.event;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -27,7 +28,7 @@ import magellan.library.event.TimeStampedEvent;
  * @see EventDispatcher
  */
 public class OrderConfirmEvent extends TimeStampedEvent {
-	private Collection units;
+	private Collection<Unit> units;
 	private boolean changedToUnConfirmed = false;
 
 	/**
@@ -36,9 +37,11 @@ public class OrderConfirmEvent extends TimeStampedEvent {
 	 * @param source the object issuing the event.
 	 * @param units the units which order confirmation status was modified.
 	 */
-	public OrderConfirmEvent(Object source, Collection units) {
+	public OrderConfirmEvent(Object source, Collection<Unit> units) {
 		super(source);
-		this.units = units;
+    // we need to copy the list in case the original collection gets modified before the event is
+    // handled by all listeners...
+    this.units = units == null?null:new ArrayList<Unit>(units);
 		this.changedToUnConfirmed = this.calcChangedToUnConfirmed();
 	}
 
@@ -47,7 +50,7 @@ public class OrderConfirmEvent extends TimeStampedEvent {
 	 *
 	 * 
 	 */
-	public Collection getUnits() {
+	public Collection<Unit> getUnits() {
 		return units;
 	}
 	
@@ -71,8 +74,12 @@ public class OrderConfirmEvent extends TimeStampedEvent {
 		return false;
 	}
 	
-	public boolean changedToUnConfirmed(){
-		return this.changedToUnConfirmed;
-	}
+	/**
+   * @return <code>true</code> if one of the units is unconfirmed
+   * @deprecated (stm) does this belong here? Not needed any more (was used by EMapOverviewPanel).
+   */
+  public boolean changedToUnConfirmed() {
+    return this.changedToUnConfirmed;
+  }
 	
 }

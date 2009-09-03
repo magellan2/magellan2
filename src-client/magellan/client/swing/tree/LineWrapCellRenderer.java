@@ -125,6 +125,9 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 
 		try {
 			indent = getIndent(tree, ui, row);
+      // FIXME(stm) workaround for an annoying bug, that caused too low rows
+      if (row==-1)
+        indent += ui.getLeftChildIndent() + ui.getRightChildIndent();
 		} catch(Exception exc) {
 			return false;
 		}
@@ -132,7 +135,8 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		Insets in = getInsets();
 
 		int maxLength = treeWidth - indent - labelWidth - 3 - in.left - in.right;
-		lastLength = maxLength;
+    
+    lastLength = maxLength;
 
 		AttributedString string = new AttributedString(text);
 		if (bold) {
@@ -149,7 +153,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		float help = 0;
 
 		while(lbm.getPosition() < it.getEndIndex()) {
-			TextLayout tl = lbm.nextLayout(maxLength);
+	    TextLayout tl = lbm.nextLayout(maxLength);
 			help += (tl.getAscent() + tl.getDescent());
 
 			if(lbm.getPosition() < it.getEndIndex()) {
@@ -158,6 +162,7 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		}
 
 		height = (int) Math.ceil(help);
+		
 
 		if(icon != null) {
 			height = Math.max(height, icon.getIconHeight());
@@ -559,25 +564,6 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		protected Dimension inDim = new Dimension(0, 0);
 		protected boolean inCompute = false;
 
-		/**
-		 * 
-		 */
-		public java.awt.Dimension minimumLayoutSize(java.awt.Container container) {
-			if(inCompute) {
-				return inDim;
-			}
-
-			inCompute = true;
-
-			Dimension dim = container.getComponent(0).getMinimumSize();
-			Dimension dim2 = container.getComponent(1).getMinimumSize();
-			Insets in = container.getInsets();
-			dim.width += (dim2.width + in.left + in.right);
-			dim.height = Math.max(dim.height, dim2.height) + in.top + in.bottom;
-			inCompute = false;
-
-			return dim;
-		}
 
 		/**
 		 * 
@@ -607,6 +593,12 @@ public class LineWrapCellRenderer extends JPanel implements TreeCellRenderer, Co
 		public void removeLayoutComponent(java.awt.Component component) {
 		}
 
+    /**
+     * 
+     */
+    public java.awt.Dimension minimumLayoutSize(java.awt.Container container) {
+      return preferredLayoutSize(container);
+    }
 		/**
 		 * 
 		 */

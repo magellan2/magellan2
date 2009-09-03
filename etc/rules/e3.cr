@@ -62,7 +62,7 @@ OPTIONCATEGORY "SHOWSKCHANGE"
 
 ALLIANCECATEGORY "ALLES"
 "ALL";name
-17;bitmask
+27;bitmask
 
 ALLIANCECATEGORY "SILBER"
 "SILVER";name
@@ -679,6 +679,7 @@ RACE "Teufelchen"
 
 RACE "Tunnelwürmer"
 "Tunnelwürmer";name
+0;maintenance
 300;weight
 
 RACE "Wölfe"

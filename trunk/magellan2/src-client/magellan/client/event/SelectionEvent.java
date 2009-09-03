@@ -143,6 +143,8 @@ public class SelectionEvent extends EventObject {
   public <T> SelectionEvent(Object source, Collection<T> selectedObjects, Object activeObject, Collection<Object> path,
       int selectionType) {
     super(source);
+    // we need to copy the list in case the original collection gets modified before the event is
+    // handled by all listeners...
 		this.selectedObjects = selectedObjects == null?null:new ArrayList<T>(selectedObjects);
 		this.activeObject = activeObject;
 		this.selectionType = selectionType;

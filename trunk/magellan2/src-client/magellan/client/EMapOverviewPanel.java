@@ -785,17 +785,22 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @see magellan.client.event.OrderConfirmListener#orderConfirmationChanged(magellan.client.event.OrderConfirmEvent)
    */
   public void orderConfirmationChanged(OrderConfirmEvent e) {
-    if ((e.getSource() == this) || (e.getUnits() == null) || (e.getUnits().size() == 0)) {
-      return;
-    }
-    /**
-     * BUG JTree UI see OrderConfimEvent
-     * 
-     * @author Fiete
-     */
-    if (e.changedToUnConfirmed()) {
-      tree.updateUI();
-    }
+    for (Unit unit : e.getUnits())
+      treeModel.nodeChanged(unitNodes.get(unit.getID()));
+
+    
+    // TODO(stm) I doubt that this is necessary
+//    /**
+//     * BUG JTree UI see OrderConfimEvent
+//     * 
+//     * @author Fiete
+//     */
+//    if (e.changedToUnConfirmed()) {
+//      tree.updateUI();
+//    tree.treeDidChange();
+//    }
+
+    tree.validate();
     tree.repaint();
   }
 
@@ -1662,14 +1667,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 //      if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
         u.setOrdersConfirmed(!u.isOrdersConfirmed());
 
-        List<Unit> units = new LinkedList<Unit>();
-        units.add(u);
-        dispatcher.fire(new OrderConfirmEvent(this, units));
+        dispatcher.fire(new OrderConfirmEvent(this, Collections.singletonList(u)));
 //      }
     }
-
-    tree.invalidate();
-    tree.repaint();
   }
 
   /**

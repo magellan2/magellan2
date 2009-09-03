@@ -1267,11 +1267,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
-		 * 
+		 * @see java.awt.LayoutManager#preferredLayoutSize(java.awt.Container)
 		 */
 		public Dimension preferredLayoutSize(Container target) {
 			Dimension dim = new Dimension();
@@ -1293,9 +1289,7 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see java.awt.LayoutManager#layoutContainer(java.awt.Container)
 		 */
 		public void layoutContainer(Container target) {
 			if(target.getComponentCount() > 0) {

@@ -10,16 +10,17 @@ package magellan.library.tasks;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import magellan.library.CoordinateID;
+import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.tasks.Problem.Severity;
+import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 
 /**
@@ -87,17 +88,27 @@ public class MovementInspector extends AbstractInspector {
       if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
         problems.addAll(reviewUnitOnFoot(u));
         if (u.getModifiedMovement().size() > 0) {
-          Iterator<CoordinateID> it = u.getModifiedMovement().iterator();
-          CoordinateID last = it.next();
-          for (int count = 1; count < 3 && it.hasNext(); ++count) {
-            CoordinateID current = it.next();
-            if (current.equals(last))
-              break;
-            if (count > 1) {
-              problems.addAll(reviewUnitOnHorse(u));
-              break;
+          
+          int count = 0;
+          boolean road = true;
+          Region lastRegion = null;
+          for (CoordinateID coordinate : u.getModifiedMovement()){
+            Region currentRegion = u.getRegion().getData().getRegion(coordinate);
+            if (lastRegion==null){
+              lastRegion = currentRegion;
+            } else {
+              if (currentRegion.equals(lastRegion)) // found PAUSE
+                break;
+              
+              if (!Regions.isCompleteRoadConnection(lastRegion, currentRegion)) // ;!roadTo(lastRegion, currentRegion))
+                road  = false;
+              
+              lastRegion = currentRegion;
+              count++;
             }
-            last = current;
+          }
+          if ((count == 2 && !road) || count > 2) {
+            problems.addAll(reviewUnitOnHorse(u));
           }
         }
       }

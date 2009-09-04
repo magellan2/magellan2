@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.EventObject;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -53,6 +54,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -61,6 +63,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellEditor;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -465,11 +469,43 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     tree.setRootVisible(false);
 
     tree.setEditable(true);
+    DefaultTreeCellRenderer delegate = (DefaultTreeCellRenderer) tree.getCellRenderer();
     tree.setCellRenderer(new CellRenderer(getMagellanContext()));
+    
+    tree.setCellEditor(new DefaultTreeCellEditor(tree, delegate) {
+      /**
+       * Ensures that only comment cells are editable.
+       * 
+       * @see javax.swing.tree.DefaultTreeCellEditor#isCellEditable(java.util.EventObject)
+       */
+      @Override
+      public boolean isCellEditable(EventObject anEvent) {
+        if (anEvent==null)
+          return super.isCellEditable(anEvent);
+        DefaultMutableTreeNode selectedNode =
+            (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+        if ((selectedNode != null)
+            && (selectedNode.getUserObject() instanceof UnitContainerCommentNodeWrapper || selectedNode
+                .getUserObject() instanceof UnitCommentNodeWrapper)) {
+
+          return super.isCellEditable(anEvent);
+        }
+        return false;
+      }
+
+    });
+    
+    // handle editing of unit container comment edits
     tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
       public void editingCanceled(ChangeEvent e) {
       }
 
+      /**
+       * Sets the comment of the UnitContainer if a unit container comment node was edited.
+       * 
+       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
+       */
       public void editingStopped(ChangeEvent e) {
         DefaultMutableTreeNode selectedNode =
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -492,10 +528,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
       }
     });
+    
+    // handle editing of unit comment edits
     tree.getCellEditor().addCellEditorListener(new CellEditorListener() {
       public void editingCanceled(ChangeEvent e) {
       }
 
+      /**
+       * Sets the comment of the Unit if a unit comment node was edited.
+       * 
+       * @see javax.swing.event.CellEditorListener#editingStopped(javax.swing.event.ChangeEvent)
+       */
       public void editingStopped(ChangeEvent e) {
         DefaultMutableTreeNode selectedNode =
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
@@ -5146,7 +5189,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     /**
      * Context menu for unit relation nodes.
      */
-    private class RelationContextMenu extends JPopupMenu implements ActionListener {
+    private class RelationContextMenu extends UnitContextMenu implements ActionListener {
 
       /**
        * Action for changing an order
@@ -5160,9 +5203,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         }
 
         public void replace(String newOrder) {
-          relation.origin.removeOrderAt(relation.line - 1);
+          relation.origin.removeOrderAt(relation.line - 1, false);
           if (newOrder != null)
-            relation.origin.addOrderAt(relation.line - 1, newOrder, true);
+            relation.origin.addOrderAt(relation.line - 1, newOrder, false);
+          relation.origin.refreshRelations();
           dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, relation.origin));
         }
       }
@@ -5310,6 +5354,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
        * Creates a new ReserveContextMenu object.
        */
       public RelationContextMenu(Object r) {
+        super(((UnitRelation) r).origin, null, dispatcher, data);
+        this.add(new JSeparator());
         if (r instanceof ReserveRelation) {
           JMenuItem item = new JMenuItem(new Reserve0Action((ReserveRelation) r));
           item.addActionListener(this);
@@ -5334,8 +5380,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       public void actionPerformed(ActionEvent e) {
-        // HIGHTODO Automatisch generierte Methode implementieren
-
       }
 
     }

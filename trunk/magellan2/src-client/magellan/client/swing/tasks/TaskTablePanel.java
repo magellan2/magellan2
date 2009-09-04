@@ -307,13 +307,22 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     private void createPopupMenus() {
       tableMenu = new JPopupMenu();
+      JMenuItem selectMenu = new JMenuItem(Resources.get("tasks.contextmenu.select.title"));
       refreshMenu = new JMenuItem(Resources.get("tasks.contextmenu.refresh.title"));
       acknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.acknowledge.title"));
       unAcknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.unacknowledge.title"));
 
+      tableMenu.add(selectMenu);
       tableMenu.add(refreshMenu);
       tableMenu.add(acknowledgeMenu);
       tableMenu.add(unAcknowledgeMenu);
+
+      selectMenu.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent menuEvent) {
+          int row = table.getSelectedRow();
+          selectObjectOnRow(row);
+        }
+      });
 
       refreshMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {

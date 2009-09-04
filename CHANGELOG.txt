@@ -1,3 +1,10 @@
+2009-09-04 / Build 354 - stm (stm_@users.sourceforge.net)
+    * fixed bug #130 (results of spy)
+    * fixed bug #320 (horse movement inspector)
+    * save orders dialog (see #241) 
+    * improved context editing of UnitRelations
+    * only comment nodes are editable in details panel
+    
 2009-09-03 / Build 353 - stm (stm_@users.sourceforge.net)
     * improved on bug #252
 

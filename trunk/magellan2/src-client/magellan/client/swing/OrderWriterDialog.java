@@ -57,10 +57,12 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
+import magellan.client.swing.layout.GridLayout2;
 import magellan.client.utils.FileNameGenerator;
 import magellan.library.EntityID;
 import magellan.library.Faction;
@@ -301,19 +303,30 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
 
-    JButton cancelButton = new JButton(Resources.get("orderwriterdialog.btn.close.caption"));
+    JButton closeButton = new JButton(Resources.get("orderwriterdialog.btn.close.caption"));
+    closeButton.setToolTipText(Resources.get("orderwriterdialog.btn.close.tooltip", false));
+    closeButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        quit(true);
+      }
+    });
+
+    JButton cancelButton = new JButton(Resources.get("orderwriterdialog.btn.cancel.caption"));
+    cancelButton.setToolTipText(Resources.get("orderwriterdialog.btn.cancel.tooltip", false));
     cancelButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         quit(false);
       }
     });
 
-    JPanel buttonPanel = new JPanel(new GridLayout(6, 1, 0, 6));
+    JPanel buttonPanel = new JPanel(new GridLayout2(0, 1, 0, 6));
     buttonPanel.add(saveButton);
     buttonPanel.add(clipboardButton);
     buttonPanel.add(mailButton);
     buttonPanel.add(autoFileNameButton);
+    buttonPanel.add(new JSeparator());
     buttonPanel.add(cancelButton);
+    buttonPanel.add(closeButton);
 
     return buttonPanel;
   }
@@ -1295,15 +1308,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * DOCUMENT-ME
+   * Copies the orders to the clipboard using the settings from the properties.
    */
-  public void runClipboard() {
-    copyToClipboard();
+  public boolean runClipboard() {
+    return copyToClipboard();
   }
 
-  protected void copyToClipboard() {
+  protected boolean copyToClipboard() {
     if (!checkPassword()) {
-      return;
+      return false;
     }
 
     StringWriter sw = new StringWriter();
@@ -1314,8 +1327,10 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       // so Unix-style linebreaks have to be enforced
       getToolkit().getSystemClipboard().setContents(
           new java.awt.datatransfer.StringSelection(sw.toString()), null);
-      storeSettings();
-    }
+//      storeSettings();
+      return true;
+    } else
+      return false;
   }
 
   /**
@@ -1348,15 +1363,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * DOCUMENT-ME
+   * Mails the orders using the settings from the properties.
    */
-  public void runMail() {
-    sendMail();
+  public boolean runMail() {
+    return sendMail();
   }
 
-  protected void sendMail() {
+  protected boolean sendMail() {
     if (!checkPassword()) {
-      return;
+      return false;
     }
 
     JButton ae = sendButton;
@@ -1390,7 +1405,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           .get("orderwriterdialog.msg.invalidfromaddress.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
-      return;
+      return false;
     }
 
     if (recipient.equals("")) {
@@ -1399,7 +1414,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           .get("orderwriterdialog.msg.invalidrecipient.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
-      return;
+      return false;
     }
 
     if (mailHost.equals("")) {
@@ -1408,7 +1423,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           .get("orderwriterdialog.msg.invalidsmtpserver.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
-      return;
+      return false;
     }
 
     try {
@@ -1423,7 +1438,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
           .get("orderwriterdialog.msg.invalidsmtpserverport.text"), Resources
           .get("orderwriterdialog.msg.mailerror.title"), JOptionPane.WARNING_MESSAGE);
 
-      return;
+      return false;
     }
 
     if (username != null) {
@@ -1432,7 +1447,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
       if (password == null) {
         ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        return;
+        return false;
       }
     }
 
@@ -1442,7 +1457,8 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
     ae.getTopLevelAncestor().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 
-    storeSettings();
+//    storeSettings();
+    return true;
   }
 
   private void sendMailImpl(final String mailHost, int port,  String username, String password, String sender, String recipient, String subject, final JButton ae, String cc) {
@@ -1581,15 +1597,15 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   }
 
   /**
-   * DOCUMENT-ME
+   * Saves the orders to a file using the settings from the properties.
    */
-  public void runSave() {
-    saveToFile();
+  public boolean runSave() {
+    return saveToFile();
   }
 
-  protected void saveToFile() {
+  protected boolean saveToFile() {
     if (!checkPassword()) {
-      return;
+      return false;
     }
 
     File outputFile = new File((String) cmbOutputFile.getSelectedItem());
@@ -1622,12 +1638,14 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         stream = new FileWriter(outputFile);
       }
       if (write(stream, false)) {
-        quit(true);
+//        storeSettings();
+        return true;
       }
     } catch (IOException ioe) {
       JOptionPane.showMessageDialog(this, Resources.getFormatted(
           "orderwriterdialog.msg.writeerror.text", outputFile.toString(), ioe), Resources
           .get("orderwriterdialog.msg.writeerror.title"), JOptionPane.WARNING_MESSAGE);
     }
+    return false;
   }
 }

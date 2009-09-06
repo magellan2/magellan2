@@ -4862,17 +4862,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   /**
-	 * 
-	 */
-  public String getShortcutDescription(Object stroke) {
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   */
+  public String getShortcutDescription(KeyStroke stroke) {
     int index = shortCuts.indexOf(stroke);
 
     return Resources.get("emapdetailspanel.shortcuts.description." + String.valueOf(index));
   }
 
   /**
-	 * 
-	 */
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+   */
   public String getListenerDescription() {
     return Resources.get("emapdetailspanel.shortcuts.title");
   }

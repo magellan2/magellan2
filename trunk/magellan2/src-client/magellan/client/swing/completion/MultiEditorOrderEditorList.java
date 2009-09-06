@@ -1846,7 +1846,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           return Resources.get("completion.multieditorordereditorlist.shortcuts.title");
         }
 
-        public String getShortcutDescription(Object stroke) {
+        public String getShortcutDescription(KeyStroke stroke) {
           int index = shortcuts.indexOf(stroke);
 
           return Resources.get("completion.multieditorordereditorlist.shortcuts.description."

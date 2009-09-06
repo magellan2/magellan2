@@ -47,27 +47,27 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
   public SaveOrdersAction(Client client, Mode mode) {
     super(client);
     this.mode = mode;
-    shortCuts = new ArrayList<KeyStroke>(1);
+      shortCuts = new ArrayList<KeyStroke>(1);
     switch (mode) {
     case DIALOG:
-      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
-          | InputEvent.SHIFT_MASK));
+        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
+            | InputEvent.SHIFT_MASK));
       break;
     case FILE:
-      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
-          | InputEvent.SHIFT_MASK));
+        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
+            | InputEvent.SHIFT_MASK));
       break;
     case CLIPBOARD:
-      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
-          | InputEvent.SHIFT_MASK));
+        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
+            | InputEvent.SHIFT_MASK));
       break;
     case MAIL:
-      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
-          | InputEvent.SHIFT_MASK));
+        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
+            | InputEvent.SHIFT_MASK));
 
       break;
     }
-    DesktopEnvironment.registerShortcutListener(this);
+        DesktopEnvironment.registerShortcutListener(this);
     init();
 
     setEnabled(false);
@@ -170,23 +170,27 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
   /**
    * Should return all short cuts this class want to be informed. The elements should be of type
    * javax.swing.KeyStroke
+   *
+   * @see magellan.client.desktop.ShortcutListener#getShortCuts()
    */
   public Iterator<KeyStroke> getShortCuts() {
     return shortCuts.iterator();
   }
 
   /**
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
    */
-  public String getShortcutDescription(java.lang.Object obj) {
+  public String getShortcutDescription(KeyStroke obj) {
+    if (mode==null) return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
   }
 
   /**
    * 
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public java.lang.String getListenerDescription() {
-    return Resources.get("actions.saveordersaction.shortcuts.title");
+    return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
   }
 
   /**
@@ -206,6 +210,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
    */
   @Override
   protected String getAcceleratorTranslated() {
+    if (mode==null) return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.accelerator." + String.valueOf(mode), false);
   }
 
@@ -214,6 +219,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
    */
   @Override
   protected String getMnemonicTranslated() {
+    if (mode==null) return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.mnemonic." + String.valueOf(mode), false);
   }
 
@@ -222,6 +228,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
    */
   @Override
   protected String getNameTranslated() {
+    if (mode==null) return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.name." + String.valueOf(mode));
   }
 
@@ -230,6 +237,7 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
    */
   @Override
   protected String getTooltipTranslated() {
+    if (mode==null) return "default"; // not yet initialized
     return Resources.get("actions.saveordersaction.tooltip." + String.valueOf(mode), false);
   }
 }

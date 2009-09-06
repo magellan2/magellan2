@@ -2207,23 +2207,21 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Repaints the client.
    * 
-   * @param shortcut DOCUMENT-ME
+   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
     desktop.repaintAllComponents();
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param stroke DOCUMENT-ME
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(javax.swing.KeyStroke)
    */
-  public String getShortcutDescription(Object stroke) {
+  public String getShortcutDescription(KeyStroke stroke) {
     return Resources.get("client.shortcut.description");
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public String getListenerDescription() {
     return Resources.get("client.shortcut.title");

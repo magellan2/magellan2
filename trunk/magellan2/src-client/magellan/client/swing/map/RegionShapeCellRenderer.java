@@ -19,6 +19,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -47,6 +50,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 
 import magellan.client.MagellanContext;
@@ -1151,25 +1155,19 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			///////////////////
 			// Some comparators for list elements
 			///////////////////
+			/**
+			 * Compares (factions) by name
+			 */
 			private class NameComparator implements Comparator<ListElement> {
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 *
-				 * 
+				 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 				 */
 				public int compare(ListElement o1, ListElement o2) {
 					return o1.name.compareTo(o2.name);
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 *
-				 * 
+				 * @see java.lang.Object#equals(java.lang.Object)
 				 */
 				@Override
         public boolean equals(Object o) {
@@ -1177,14 +1175,12 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				}
 			}
 
+			/**
+			 * Compares (factions) by trust level.
+			 */
 			private class ListElementFactionTrustComparator implements Comparator<ListElement> {
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
-				 *
-				 * 
+				 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 				 */
 				public int compare(ListElement o1, ListElement o2) {
 					String name1 = o1.name;
@@ -1239,11 +1235,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 *
-				 * 
+				 * @see java.lang.Object#equals(java.lang.Object)
 				 */
 				@Override
         public boolean equals(Object o) {
@@ -1264,38 +1256,27 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 					/**
 					 * Creates a new ColorIcon object.
-					 *
-					 * 
 					 */
 					public ColorIcon(Color c) {
 						myColor = c;
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
-					 * 
+					 * @see javax.swing.Icon#getIconHeight()
 					 */
 					public int getIconHeight() {
 						return prefDim.height;
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
-					 * 
+					 * @see javax.swing.Icon#getIconWidth()
 					 */
 					public int getIconWidth() {
 						return prefDim.width;
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
-					 * 
-					 * 
-					 * 
-					 * 
+					 * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
 					 */
 					public void paintIcon(Component c, Graphics g, int x, int y) {
 						g.setColor(myColor);
@@ -1305,7 +1286,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					/**
 					 * DOCUMENT-ME
 					 *
-					 * 
 					 */
 					public void setColor(Color c) {
 						myColor = c;
@@ -1324,15 +1304,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				}
 
 				/**
-				 * DOCUMENT-ME
 				 *
-				 * 
-				 * 
-				 * 
-				 * 
-				 * 
-				 *
-				 * 
+				 * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
 				 */
 				public Component getListCellRendererComponent(JList list, Object value, int index,
 															  boolean isSelected,
@@ -1377,29 +1350,21 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 *
-				 * 
+				 * @see javax.swing.ListModel#getElementAt(int)
 				 */
 				public Object getElementAt(int index) {
 					return data.get(index);
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
+				 * @see javax.swing.ListModel#getSize()
 				 */
 				public int getSize() {
 					return data.size();
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
+				 * @param o
 				 */
 				public void add(T o) {
 					data.add(o);
@@ -1410,29 +1375,18 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					}
 				}
 
-				/**
-				 * DOCUMENT-ME
-				 */
 				public void removeAll() {
 					int old = data.size();
 					data.clear();
 					fireIntervalRemoved(this, 0, old - 1);
 				}
 
-				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 */
 				public void contentChanged(int index) {
 					fireContentsChanged(this, index, index);
 				}
 
 				/**
-				 * DOCUMENT-ME
-				 *
-				 * 
-				 * 
+				 * Sorts the list entries after offset by the provided comparator
 				 */
 				public void sort(Comparator<T> comp, int offset) {
 					this.comp = comp;
@@ -1516,6 +1470,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					});
 
 				this.setLayout(new BorderLayout());
+				
 				JScrollPane scrollPane = new JScrollPane(list);
 				// list gets too wide if we have very long faction names so...
 				scrollPane.setPreferredSize(new Dimension(150, 100));
@@ -1745,19 +1700,29 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			modeBox.setEditable(false);
 			modeBox.addActionListener(this);
 
-			JPanel p = new JPanel();
-			p.add(new JLabel(Resources.get("map.regionshapecellrenderer.lbl.rendermode.caption")));
-			p.add(modeBox);
+			JPanel modePanel = new JPanel();
+			modePanel.add(new JLabel(Resources.get("map.regionshapecellrenderer.lbl.rendermode.caption")));
+			modePanel.add(modeBox);
 
-			setLayout(new BorderLayout());
-			add(p, BorderLayout.NORTH);
-			add(inner, BorderLayout.CENTER);
+			setLayout(new GridBagLayout());
+      JTextArea description = HexCellRenderer.createDescriptionPanel(Resources.get("map.regionshapecellrenderer.description"), this);
+      GridBagConstraints con =
+          new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
+              GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+      con.weighty=0.1;
+      add(description, con);
+      
+      con.gridy++;
+      con.weighty=1;
+			add(modePanel, con);
+      con.gridy++;
+			add(inner, con);
 
 			//initColors();
 			showCard(getPaintMode());
 		}
 
-		/**
+    /**
 		 * Adds a new pair to the indexed ModePanel.
 		 *
 		 * @param index the ModePanel to use - 0 for RegionType, 1 for Politics

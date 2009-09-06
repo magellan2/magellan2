@@ -228,7 +228,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	/**
 	 * 
 	 */
-	public java.lang.String getShortcutDescription(java.lang.Object obj) {
+	public java.lang.String getShortcutDescription(KeyStroke obj) {
 		int index = shortCuts.indexOf(obj);
 
 		return Resources.get("util.bookmarkmanager.shortcuts.description." + String.valueOf(index));

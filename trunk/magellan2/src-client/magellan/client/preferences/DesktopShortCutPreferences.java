@@ -50,6 +50,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -108,10 +109,10 @@ import magellan.library.utils.Resources;
                  };
 
       Map<Object,List<KeyStroke>> listeners = new HashMap<Object, List<KeyStroke>>();
-      Iterator it = desktop.getShortCutListeners().entrySet().iterator();
+      Iterator<Entry<KeyStroke, Object>> entryIterator = desktop.getShortCutListeners().entrySet().iterator();
 
-      while(it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
+      while(entryIterator.hasNext()) {
+        Entry<KeyStroke, Object> entry = entryIterator.next();
         Object value = entry.getValue();
 
         if(!listeners.containsKey(value)) {
@@ -119,7 +120,7 @@ import magellan.library.utils.Resources;
         }
 
         // try to find a translation
-        KeyStroke oldStroke = (KeyStroke) entry.getKey();
+        KeyStroke oldStroke = entry.getKey();
         KeyStroke newStroke = desktop.findTranslation(oldStroke);
 
         if(newStroke != null) {
@@ -135,12 +136,12 @@ import magellan.library.utils.Resources;
 
       Collections.sort(list2, new ListenerComparator());
 
-      it = list2.iterator();
+      Iterator<Object> listenerIterator = list2.iterator();
 
       int i = 0;
 
-      while(it.hasNext()) {
-        Object key = it.next();
+      while(listenerIterator.hasNext()) {
+        Object key = listenerIterator.next();
         ShortcutListener sl = null;
 
         if(key instanceof ShortcutListener) {
@@ -162,15 +163,15 @@ import magellan.library.utils.Resources;
 
         Collections.sort(list, new KeyStrokeComparator());
 
-        Iterator it2 = list.iterator();
+        Iterator<KeyStroke> it2 = list.iterator();
 
         while(it2.hasNext()) {
-          Object obj = it2.next();
+          KeyStroke obj = it2.next();
           data[i][0] = obj;
 
           if(sl != null) {
             if(desktop.getShortCutTranslations().containsKey(obj)) {
-              obj = desktop.getTranslation((KeyStroke) obj);
+              obj = desktop.getTranslation(obj);
             }
 
             try {

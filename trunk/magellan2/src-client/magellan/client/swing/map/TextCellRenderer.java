@@ -15,11 +15,13 @@ package magellan.client.swing.map;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -31,6 +33,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -121,9 +124,7 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#getPreferencesAdapter()
 	 */
 	@Override
   public PreferencesAdapter getPreferencesAdapter() {
@@ -261,49 +262,62 @@ public class TextCellRenderer extends AbstractTextCellRenderer {
 
 			this.setLayout(new GridBagLayout());
 
-			GridBagConstraints c = new GridBagConstraints();
-			c.anchor = GridBagConstraints.WEST;
-			c.gridx = 0;
+      GridBagConstraints c =
+        new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.NORTHWEST,
+            GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0);
+
+      c.gridx = 0;
 			c.gridy = 0;
+			c.gridwidth=2;
+			c.fill= GridBagConstraints.BOTH;
+			this.add(new JScrollPane(HexCellRenderer.createDescriptionPanel(Resources
+          .get("map.textcellrenderer.description." + source.getName()), this)), c);
+
+      c.gridwidth = 1;
+			c.gridy++;
 			this.add(lblFontColor, c);
-			c.gridx = 1;
-			c.gridy = 0;
+
+      c.gridx++;
+      c.fill = GridBagConstraints.VERTICAL;
+      pnlFontColor.setMaximumSize(new Dimension(15,15));
 			this.add(pnlFontColor, c);
 
 			c.gridx = 0;
-			c.gridy = 1;
+			c.gridy++;
+      c.fill= GridBagConstraints.BOTH;
 			this.add(lblFontName, c);
-			c.gridx = 1;
-			c.gridy = 1;
+			
+			c.gridx++;
 			this.add(cmbFontName, c);
 
 			c.gridx = 0;
-			c.gridy = 2;
+			c.gridy++;
+      c.gridwidth = 2;
 			this.add(chkFontBold, c);
 
-			c.gridx = 0;
-			c.gridy = 3;
+      c.gridwidth = 1;
+			c.gridy++;
 			this.add(lblFontSize, c);
-			c.gridx = 1;
-			c.gridy = 3;
+
+			c.gridx++;
 			this.add(cmbFontSize, c);
 
 			c.gridx = 0;
-			c.gridy = 4;
+			c.gridy++;
 			this.add(lblMinimumFontSize, c);
-			c.gridx = 1;
-			c.gridy = 4;
+			
+			c.gridx++;
 			this.add(cmbMinimumFontSize, c);
 
 			c.gridx = 0;
-			c.gridy = 5;
+			c.gridy++;
 			c.gridwidth = 2;
 			this.add(chkScaleFont, c);
 		}
 
-        public void initPreferences() {
-            // TODO: implement it
-        }
+		public void initPreferences() {
+      // TODO: implement it
+    }
 
 		/**
 		 * DOCUMENT-ME

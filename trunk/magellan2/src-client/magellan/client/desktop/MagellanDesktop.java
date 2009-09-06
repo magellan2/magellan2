@@ -244,7 +244,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   /**
    * Returns all the components available to this desktop. Keys are IDs, Values are components.
    */
-  public Map getManagedComponents() {
+  public Map<String, Component> getManagedComponents() {
     return components;
   }
 
@@ -374,11 +374,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    *
    * 
    */
-  protected void buildShortCutTable(Collection scomps) {
-    Iterator it = scomps.iterator();
-
-    while(it.hasNext()) {
-      Object o = it.next();
+  protected void buildShortCutTable(Collection<Component> scomps) {
+    for (Component o : scomps){
 
       if(o instanceof ShortcutListener) {
         ShortcutListener sl = (ShortcutListener) o;
@@ -386,7 +383,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
 
         while(it2.hasNext()) {
           KeyStroke stroke = it2.next();
-          shortCutListeners.put(stroke, o);
+          shortCutListeners.put(stroke, sl);
         }
       }
     }
@@ -652,10 +649,22 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
     if(!components.containsKey(id)) {
       return;
     }
+    // FIXME (stm) this only works the first time; try this:
+    // install to ATR modes
+    // select the first (via Ctrl+Alt+T, 1) --> repaint ok
+    // select the second (Ctrl+Alt+T, 2) --> no repaint, only after moving map
+    //    components.get(id).validate();
+    // solution: call Mapper.setRenderContextChanged(true) before...;
+    components.get(id).repaint();
+    
+    
   }
   
   public void repaintAllComponents() {
-    // ????
+    log.debug("repaint all");
+    for (Component c : components.values()){
+      c.repaint();
+    }
   }
 
   /**
@@ -886,6 +895,8 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
         }
       }
 
+      if (shortCutListeners.containsKey(str) && dest!=shortCutListeners.get(str))
+        log.warn("multiply used shortcut + "+str+" old: "+shortCutListeners.get(str)+", new: "+dest);
       shortCutListeners.put(str, dest);
     }
 

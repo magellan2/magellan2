@@ -42,11 +42,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JViewport;
@@ -132,10 +135,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   protected MagellanContext context;
 
   /**
-   * GameData event handler.
+   * Updates components (like hotspot selection etc).
    * 
-   * @param e
-   *          DOCUMENT-ME
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
    */
   @Override
   public void gameDataChanged(GameDataEvent e) {
@@ -183,8 +185,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   /**
    * Selection event handler, updating the map if a new region is selected.
    * 
-   * @param se
-   *          DOCUMENT-ME
+   * 
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent se) {
     if (MapperPanel.log.isDebugEnabled()) {
@@ -218,25 +220,24 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
         }
       }
 
-      // re-center the map if necessary
-      // do this later, mapper probably does not
-      // yet know the right active region
+      /**
+       * re-center the map if necessary
+       * do this later, mapper probably does not
+       * yet know the right active region
+       */
       class CenterRunner implements Runnable {
-        /** DOCUMENT-ME */
         public CoordinateID center = null;
 
         /**
-         * Creates a new CenterRunner object.
+         * Creates a new CenterRunner object that centers the given coordinate.
          * 
-         * @param c
-         *          DOCUMENT-ME
          */
         public CenterRunner(CoordinateID c) {
           center = c;
         }
 
         /**
-         * DOCUMENT-ME
+         * Centers the map on the region with the given coordinate.
          */
         public void run() {
           if (MapperPanel.log.isDebugEnabled()) {
@@ -287,7 +288,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           }
 
           /**
-           * DOCUMENT-ME
+           * Tries to center the given island.
+           * 
+           * @see java.lang.Runnable#run()
            */
           public void run() {
             Rectangle islandBounds = null;
@@ -322,12 +325,13 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
   }
 
-  /** Action event handler for timer events related to the scaling slider. */
   Cursor waitCursor = new Cursor(Cursor.WAIT_CURSOR);
   Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
 
   /**
-   * DOCUMENT-ME
+   * Action event handler for timer events related to the scaling slider.   
+   *  
+   * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent ae) {
     setCursor(waitCursor);
@@ -423,6 +427,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     });
 
     // initialize Shortcuts
+    // (stm) deactivated, too obfuscating for user
     tooltipShortcut = new TooltipShortcut();
 
     shortcuts = new ArrayList<KeyStroke>(13);
@@ -436,8 +441,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
     // 4: fog of war
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.CTRL_MASK));
-    // 5: tooltips ? open open problems
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
+    // 5: tooltip selection
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
     
     // 6,7: Map Zoom in  First is numpad, scnd is normal key
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_ADD  , InputEvent.CTRL_MASK));
@@ -453,6 +458,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     // 12,13 Fast Zoom out
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT , InputEvent.ALT_MASK));
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS , InputEvent.ALT_MASK));
+
+    // 14: ATR selection 
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_MASK | InputEvent.ALT_MASK));
 
     DesktopEnvironment.registerShortcutListener(this);
     
@@ -1133,6 +1141,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     case 5:
       // tooltips? open problems are opened CTRL+P
+      changeTooltip();
       break;
     
     case 6:
@@ -1173,8 +1182,89 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
       }
       break;
     
+    case 14:
+      changeATR();
+      break;
     }  
   }
+
+  /**
+   * Creates a popup menu for changing tooltips
+   */
+  private void changeTooltip() {
+    final List list = mapper.getAllTooltipDefinitions();
+    if (list == null)
+      return;
+
+    JPopupMenu menu = new JPopupMenu("tooltips");
+    JMenuItem popupCaption =
+        new JMenuItem(Resources.get("mapperpanel.shortcuts.changetooltipmenu.caption"));
+    popupCaption.setEnabled(false);
+    menu.add(popupCaption);
+
+    for (int i = 0; i < 10; ++i) {
+      final int number = i;
+      JMenuItem item =
+          new JMenuItem(new AbstractAction(String.valueOf(number) + " "
+              + (list == null || 2 * i >= list.size() ? "---" : list.get(2 * i))) {
+
+            public void actionPerformed(ActionEvent e) {
+              if ((list != null) && (list.size() > (2 * number))) {
+                mapper.setTooltipDefinition((String) list.get((2 * number) + 1));
+              }
+            }
+          });
+      item.setMnemonic(Character.forDigit(i, 10));
+      menu.add(item);
+      if ((list != null) && (list.size() > (2 * number))) {
+        item.setEnabled(true);
+      } else
+        item.setEnabled(false);
+    }
+    menu.show(this, getLocation().x, getLocation().y);
+  }
+
+  /**
+   * Creates a popup menu for changing tooltips
+   */
+  private void changeATR() {
+    final List<String> sets = mapper.getATR().getAllSets();
+    if (sets== null)
+      return;
+
+    JPopupMenu menu = new JPopupMenu("tooltips");
+    JMenuItem popupCaption =
+        new JMenuItem(Resources.get("mapperpanel.shortcuts.changeatr.caption"));
+    popupCaption.setEnabled(false);
+    menu.add(popupCaption);
+
+    for (int i = 0; i < 10; ++i) {
+      final int number = i;
+      String name = i<sets.size()?sets.get(i):"---";
+      JMenuItem item =
+          new JMenuItem(new AbstractAction(String.valueOf(number) + " "
+              + name) {
+
+            public void actionPerformed(ActionEvent e) {
+
+                if(sets.size() > number) {
+                  mapper.setRenderer(mapper.getATR());
+                  mapper.getATR().loadSet(sets.get(number));
+                  Mapper.setRenderContextChanged(true);
+                  DesktopEnvironment.repaintComponent("MAP");
+                }
+              }
+            });
+      item.setMnemonic(Character.forDigit(i, 10));
+      menu.add(item);
+      if (sets.size() > number) {
+        item.setEnabled(true);
+      } else
+        item.setEnabled(false);
+    }
+    menu.show(this, getLocation().x, getLocation().y);
+  }
+
 
   private float getNextTickValue() {
     return sldScaling2Scale(sldScaling.getValue()+2*sldScaling.getMajorTickSpacing());
@@ -1216,46 +1306,34 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * Returns the listener responsible for the sub-short-cuts
-   * 
-   * @param stroke
-   *          DOCUMENT-ME
-   * 
+   * @see magellan.client.desktop.ExtendedShortcutListener#getExtendedShortcutListener(javax.swing.KeyStroke)
    */
   public ShortcutListener getExtendedShortcutListener(KeyStroke stroke) {
     return tooltipShortcut;
   }
 
   /**
-   * Returns wether the given stroke is for an extended short-cut.
-   * 
-   * @param stroke
-   *          DOCUMENT-ME
-   * 
+   * @see magellan.client.desktop.ExtendedShortcutListener#isExtendedShortcut(javax.swing.KeyStroke)
    */
   public boolean isExtendedShortcut(KeyStroke stroke) {
+    // (stm) extended shortcuts are too obfuscated for the user, so I disabled them 
+    if (true) return false;
     int index = shortcuts.indexOf(stroke);
 
     return (index == 5);
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * @param stroke
-   *          DOCUMENT-ME
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
    */
-  public String getShortcutDescription(Object stroke) {
+  public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);
 
     return Resources.get("mapperpanel.shortcuts.description." + String.valueOf(index));
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public String getListenerDescription() {
     return Resources.get("mapperpanel.shortcuts.description");
@@ -1359,10 +1437,9 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
 
     /**
-     * This method is called when a shortcut from getShortCuts() is recognized.
+     * Sets the x-th tooltip (if defined).
      * 
-     * @param shortcut
-     *          DOCUMENT-ME
+     * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
      */
     public void shortCut(javax.swing.KeyStroke shortcut) {
       int index = shortcuts.indexOf(shortcut);
@@ -1373,32 +1450,23 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
 
     /**
-     * Should return all short cuts this class want to be informed. The elements
-     * should be of type javax.swing.KeyStroke
-     * 
-     * 
+     * @see magellan.client.desktop.ShortcutListener#getShortCuts()
      */
     public Iterator<KeyStroke> getShortCuts() {
       return shortcuts.iterator();
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * @param stroke
-     *          DOCUMENT-ME
-     * 
+     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
      */
-    public String getShortcutDescription(Object stroke) {
+    public String getShortcutDescription(KeyStroke stroke) {
       int index = shortcuts.indexOf(stroke);
 
       return Resources.get("mapperpanel.shortcuts.tooltips." + String.valueOf(index));
     }
 
     /**
-     * DOCUMENT-ME
-     * 
-     * 
+     * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
      */
     public String getListenerDescription() {
       return Resources.get("mapperpanel.shortcuts.tooltips");

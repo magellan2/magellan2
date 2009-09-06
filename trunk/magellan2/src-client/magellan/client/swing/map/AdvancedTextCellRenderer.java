@@ -29,8 +29,6 @@ import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +68,6 @@ import javax.swing.event.ListSelectionListener;
 
 import magellan.client.MagellanContext;
 import magellan.client.desktop.DesktopEnvironment;
-import magellan.client.desktop.ExtendedShortcutListener;
 import magellan.client.desktop.ShortcutListener;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
@@ -93,18 +90,15 @@ import magellan.library.utils.replacers.ReplacerSystem;
  * @author Andreas
  * @version 1.1
  */
-public class AdvancedTextCellRenderer extends TextCellRenderer implements ExtendedShortcutListener,
-																		  GameDataListener,
-																		  ContextChangeable,
-																		  ActionListener
-{
+public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDataListener,
+    ContextChangeable, ActionListener {
 	protected static final String BLANK = "";
 	protected boolean breakLines; // Line break style
 	protected static List<String> buffer; // breaking buffer		
 	protected float lastScale = -1; // last scale factor, for broken lines cache
 	protected ATRSet set;
 	protected ATRPreferences adapter;
-	protected ShortcutListener deflistener; // Shortcutlistener at depth 1 (after STRG-A)
+//	protected ShortcutListener deflistener; // Shortcutlistener at depth 1 (after STRG-A)
 	protected JMenu contextMenu;
 	protected ContextObserver obs;
 
@@ -137,19 +131,18 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			setHAlign(AbstractTextCellRenderer.CENTER);
 		}
 
+		// moved to MapperPanel
 		// create shortcut structure
-		DesktopEnvironment.registerShortcutListener(KeyStroke.getKeyStroke(KeyEvent.VK_T,
-																		   InputEvent.CTRL_MASK |
-																		   InputEvent.ALT_MASK), this);
-		deflistener = new DefListener();
+//		DesktopEnvironment.registerShortcutListener(KeyStroke.getKeyStroke(KeyEvent.VK_T,
+//																		   InputEvent.CTRL_MASK |
+//																		   InputEvent.ALT_MASK), this);
+//		deflistener = new DefListener();
 
 		// create the context menu as needed
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Switches to the set with the given name. If such a set does not exist, it is created.  
 	 */
 	public void loadSet(String name) {
 		loadSet(name, settings);
@@ -160,10 +153,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * Switches to the given set. 
 	 */
 	public void loadSet(String name, Properties settings) {
 		ATRSet s = new ATRSet(name);
@@ -173,16 +163,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Saves the current set to the settings.
 	 */
 	public void saveSet() {
 		saveSet(settings);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 *  Saves the current set to the given settings. 
 	 */
 	public void saveSet(Properties settings) {
 		set.save(settings);
@@ -251,8 +239,8 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	// a collection of set names
-	public Collection<String> getAllSets() {
-		Collection<String> c = new LinkedList<String>();
+	public List<String> getAllSets() {
+		List<String> c = new LinkedList<String>();
 		StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
 
 		while(st.hasMoreTokens()) {
@@ -293,7 +281,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see magellan.client.swing.map.AbstractTextCellRenderer#setHAlign(int)
 	 */
 	@Override
   public void setHAlign(int h) {
@@ -304,9 +292,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
-	 * 
-	 * 
+	 * @see magellan.client.swing.map.AbstractTextCellRenderer#init(magellan.library.GameData, java.awt.Graphics, java.awt.Rectangle)
 	 */
 	@Override
   public void init(GameData data, Graphics g, Rectangle offset) {
@@ -332,10 +318,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
-	 * 
-	 *
-	 * 
+	 * @see magellan.client.swing.map.TextCellRenderer#getText(magellan.library.Region, java.awt.Rectangle)
 	 */
 	@Override
   public String[] getText(Region r, Rectangle rect) {
@@ -343,9 +326,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.map.TextCellRenderer#getName()
 	 */
 	@Override
   public String getName() {
@@ -368,9 +349,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.client.swing.map.TextCellRenderer#getPreferencesAdapter()
 	 */
 	@Override
   public PreferencesAdapter getPreferencesAdapter() {
@@ -378,74 +357,56 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		set.clearCache();
 		set.reprocessReplacer();
 	}
 
-	/**
-	 * Should return all short cuts this class want to be informed. The elements should be of type
-	 * javax.swing.KeyStroke
-	 *
-	 * 
-	 */
-	public Iterator<KeyStroke> getShortCuts() {
-		return null;
-	}
+//	/**
+//	 * @see magellan.client.desktop.ShortcutListener#getShortCuts()
+//	 */
+//	public Iterator<KeyStroke> getShortCuts() {
+//		return null;
+//	}
+//
+//	/**
+//	 * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
+//	 */
+//	public void shortCut(javax.swing.KeyStroke shortcut) {
+//	  changeATR();
+//	}
 
-	/**
-	 * This method is called when a shortcut from getShortCuts() is recognized.
-	 *
-	 * 
-	 */
-	public void shortCut(javax.swing.KeyStroke shortcut) {
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public boolean isExtendedShortcut(KeyStroke stroke) {
-		return true;
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public ShortcutListener getExtendedShortcutListener(KeyStroke stroke) {
-		return deflistener;
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String getShortcutDescription(Object stroke) {
-		return Resources.get("map.advancedtextcellrenderer.shortcuts.description");
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public String getListenerDescription() {
-		return Resources.get("map.advancedtextcellrenderer.shortcuts.title");
-	}
+//	/**
+//	 * @see magellan.client.desktop.ExtendedShortcutListener#isExtendedShortcut(javax.swing.KeyStroke)
+//	 */
+//	public boolean isExtendedShortcut(KeyStroke stroke) {
+//	  // (stm) removed, too obfuscating for users
+//	  if (true) return false;
+//		return true;
+//	}
+//
+//	/**
+//	 * @see magellan.client.desktop.ExtendedShortcutListener#getExtendedShortcutListener(javax.swing.KeyStroke)
+//	 */
+//	public ShortcutListener getExtendedShortcutListener(KeyStroke stroke) {
+//		return deflistener;
+//	}
+//
+//	/**
+//	 * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+//	 */
+//	public String getShortcutDescription(KeyStroke stroke) {
+//		return Resources.get("map.advancedtextcellrenderer.shortcuts.description");
+//	}
+//
+//	/**
+//	 * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+//	 */
+//	public String getListenerDescription() {
+//		return Resources.get("map.advancedtextcellrenderer.shortcuts.title");
+//	}
 
 
 
@@ -750,18 +711,16 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see magellan.client.desktop.ShortcutListener#getShortCuts()
 		 */
 		public Iterator<KeyStroke> getShortCuts() {
 			return keys.iterator();
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
+		 * Selects the x-th set (where shortcut is the x-th registered shortcut.
 		 * 
+		 * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
 		 */
 		public void shortCut(javax.swing.KeyStroke shortcut) {
 			int i = keys.indexOf(shortcut);
@@ -790,20 +749,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
-		 *
-		 * 
+		 * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
 		 */
-		public String getShortcutDescription(Object stroke) {
+		public String getShortcutDescription(KeyStroke stroke) {
 			return null;
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
 		 */
 		public String getListenerDescription() {
 			return null;
@@ -841,21 +794,22 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements Extend
 			this.s = s;
 			this.setLayout(new GridBagLayout());
 
-			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
+			GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 1.0, 0.0,
 														  GridBagConstraints.FIRST_LINE_START,
 														  GridBagConstraints.NONE,
 														  new Insets(1, 1, 1, 1), 0, 0);
-			String helpText = Resources.get("map.advancedtextcellrenderer.prefs.fonthelp");
-			JTextArea fontHelp = new JTextArea(helpText);//, 2, helpText.length()/2);
+			String helpText = Resources.get("map.advancedtextcellrenderer.description");
+			JTextArea fontHelp = new JTextArea(helpText, 2,0);//, 2, helpText.length()/2);
       fontHelp.setFont((new JLabel()).getFont());
-			fontHelp.setPreferredSize(new Dimension(500, 30));
+//			fontHelp.setPreferredSize(new Dimension(500, 30));
 			fontHelp.setEditable(false);
 			fontHelp.setBorder(null);
 			fontHelp.setBackground(this.getBackground());
 			fontHelp.setLineWrap(true);
 			fontHelp.setWrapStyleWord(true);
 			
-			this.add(fontHelp, c);
+			c.fill = GridBagConstraints.HORIZONTAL; 
+			this.add(new JScrollPane(fontHelp), c);
 
 			c.gridy++;
 			this.add(new JSeparator(SwingConstants.HORIZONTAL), c);

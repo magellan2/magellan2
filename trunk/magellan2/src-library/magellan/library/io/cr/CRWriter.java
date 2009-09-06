@@ -1893,7 +1893,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (includeRegionDetails && region.getMorale() > 0) {
+      if (includeRegionDetails && region.getMorale() >= 0) {
         write(region.getMorale() + ";morale");
         newLine();
       }

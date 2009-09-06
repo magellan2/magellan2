@@ -38,18 +38,12 @@ public interface ShortcutListener {
 	public void shortCut(KeyStroke shortcut);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns a (localized) description (or name) for this listener. 
 	 */
 	public String getListenerDescription();
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns a short description for the specified thing... 
 	 */
-	public String getShortcutDescription(Object stroke);
+	public String getShortcutDescription(KeyStroke stroke);
 }

@@ -20,6 +20,7 @@ import java.awt.Rectangle;
 import java.util.Properties;
 
 import javax.swing.JLabel;
+import javax.swing.JTextArea;
 
 import magellan.client.MagellanContext;
 import magellan.client.swing.preferences.PreferencesAdapter;
@@ -185,32 +186,49 @@ public abstract class HexCellRenderer implements MapCellRenderer {
 			this.source = source;
 		}
 
-        public void initPreferences() {
-            // TODO: implement it
-        }
+		public void initPreferences() {
+		  // nothing to do
+		}
 
 		/**
-		 * DOCUMENT-ME
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
 		 */
 		public void applyPreferences() {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
+		 * Creates a default component with no configurable options.
 		 * 
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
 		 */
 		public Component getComponent() {
 			return new JLabel(Resources.get("map.hexcellrenderer.lbl.nooptions.caption"));
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
 		 */
 		public String getTitle() {
 			return getName();
 		}
 	}
+
+
+  protected static JTextArea createDescriptionPanel(String text, Component parent) {
+    JTextArea description = new JTextArea(text);
+    description.setLineWrap(true);
+    description.setWrapStyleWord(true);
+    description.setEditable(false);
+    description.setRequestFocusEnabled(false);
+    if (parent != null) {
+      description.setBackground(parent.getBackground());
+      description.setSelectionColor(parent.getBackground());
+      description.setSelectedTextColor(parent.getForeground());
+      description.setBackground(parent.getBackground());
+      description.setSelectionColor(parent.getBackground());
+      description.setSelectedTextColor(parent.getForeground());
+      description.setFont(new JLabel().getFont());
+    }
+    return description;
+  }
 }

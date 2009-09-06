@@ -174,6 +174,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
   protected MagellanContext context;
 
+  private AdvancedTextCellRenderer atr;
+
   /**
    * Creates a new Mapper object.
    */
@@ -1410,7 +1412,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     renderers.add(new ShipCellRenderer(geo, context));
     renderers.add(new TextCellRenderer(geo, context));
     renderers.add(new TradeTextCellRenderer(geo, context));
-    renderers.add(new AdvancedTextCellRenderer(geo, context));
+    renderers.add(atr = new AdvancedTextCellRenderer(geo, context));
     renderers.add(new PathCellRenderer(geo, context));
     renderers.add(new HighlightImageCellRenderer(geo, context));
     renderers.add(new HighlightShapeCellRenderer(geo, context));
@@ -1697,5 +1699,9 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
       } catch (Exception exc) {
       }
     }
+  }
+
+  public AdvancedTextCellRenderer getATR() {
+    return atr;
   }
 }

@@ -1,3 +1,6 @@
+2009-09-06 / Build 356 - stm (stm_@users.sourceforge.net)
+    * changed tooltip selection shortcut (now CTRL+ALT+P) and ATR selection behaviour (CTRL+ALT+T, now with pop-up menu)
+
 2009-09-04 / Build 354 - stm (stm_@users.sourceforge.net)
     * fixed bug #130 (results of spy)
     * fixed bug #320 (horse movement inspector)

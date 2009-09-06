@@ -1818,7 +1818,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * 
    * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
    */
-  public String getShortcutDescription(Object stroke) {
+  public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);
 
     return Resources.get("emapoverviewpanel.shortcut.description." + String.valueOf(index));

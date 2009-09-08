@@ -1455,13 +1455,13 @@ SHIPTYPE "Einbaum"
 "Einbaum";name
 3;size
 1;level
-2;range
+3;range
 20;capacity
 2;persons
 1;captainlevel
 2;sailorlevel
 RAWMATERIALS
-3;Holz
+1;Holz
 
 SHIPTYPE "Floﬂ"
 "Floﬂ";name
@@ -1471,7 +1471,7 @@ SHIPTYPE "Floﬂ"
 500;capacity
 5;persons
 1;captainlevel
-7;sailorlevel
+5;sailorlevel
 
 SHIPTYPE "Kutter"
 "Kutter";name
@@ -1487,7 +1487,7 @@ SHIPTYPE "Barke"
 "Barke";name
 10;size
 2;level
-4;range
+3;range
 50;capacity
 10;persons
 2;captainlevel
@@ -1497,7 +1497,7 @@ SHIPTYPE "Kogge"
 "Kogge";name
 100;size
 4;level
-5;range
+4;range
 2000;capacity
 50;persons
 4;captainlevel
@@ -1507,7 +1507,7 @@ SHIPTYPE "Karavelle"
 "Karavelle";name
 300;size
 6;level
-5;range
+4;range
 6000;capacity
 150;persons
 6;captainlevel
@@ -1517,7 +1517,7 @@ SHIPTYPE "Fregatte"
 "Fregatte";name
 100;size
 5;level
-5;range
+4;range
 1000;capacity
 110;persons
 5;captainlevel
@@ -1529,8 +1529,8 @@ RAWMATERIALS
 SHIPTYPE "Galeone"
 "Galeone";name
 300;size
-5;level
-5;range
+7;level
+4;range
 3000;capacity
 310;persons
 7;captainlevel
@@ -1543,7 +1543,7 @@ SHIPTYPE "Drachenschiff"
 "Drachenschiff";name
 100;size
 5;level
-7;range
+6;range
 500;capacity
 110;persons
 5;captainlevel
@@ -1556,7 +1556,7 @@ SHIPTYPE "Trireme"
 "Trireme";name
 300;size
 7;level
-7;range
+6;range
 1500;capacity
 310;persons
 7;captainlevel

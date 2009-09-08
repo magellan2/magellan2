@@ -49,7 +49,7 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * This class provides a dialog for displaying the "Tips of the Day".
  *
  * @author Andreas
  * @version 1.0
@@ -74,26 +74,25 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	protected List<Tip> nonShown;
 	protected static final String NEXT = "next";
 
-	/** DOCUMENT-ME */
-	public static final String HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 15px\"><font color=#4f3f30><b>";
 
-	/** DOCUMENT-ME */
-	public static final String HTML_END = "</b></font></body></html>";
+	// FIXME unfortunately, java inserts linebreaks before <div> tags, which is ugly...
+//	public static final String SHORTCUT_STYLE = " .shortcut { font-weight: bold; text-decoration: underline; } ";
+//  public static final String MENU_STYLE = " .menu { font-family: monospace; font-style: italic; } ";
+//  public static final STRING STYLE = " <style type=\"text/css\"> "+SHORTCUT_STYLE+MENU_STYLE+" </style>";
+	protected static final String HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 15px; color:#4f3f30; font-size: 16pt; font-family: sans-serif;\">";
 
-	/** DOCUMENT-ME */
-	public static final String E_HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 2px\"><font color=#4f3f30><b>";
+	protected static final String HTML_END = "</body></html>";
 
-	/** DOCUMENT-ME */
-	public static final String E_HTML_END = "</b></font></body></html>";
+	protected static final String E_HTML_START = "<html><body style=\"margin-left: 20px;margin-top: 2px\"><font color=#4f3f30><b>";
 
-	/** DOCUMENT-ME */
-	public static final String E_KEY = "ETIP";
+	protected static final String E_HTML_END = "</b></font></body></html>";
 
-	/** DOCUMENT-ME */
+	protected static final String E_KEY = "ETIP";
+
+	/** Set to true if the dialog has been set visible. */
 	public static boolean active = false;
 
-	/** DOCUMENT-ME */
-	public static boolean firstTime = false;
+	protected static boolean firstTime = false;
 
 	/**
 	 * Creates new TipOfTheDay
@@ -175,7 +174,8 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 
 		kit = new HTMLEditorKit();
 		tipText = new JTextPane();
-		tipText.setEditorKit(kit);
+//		tipText.setEditorKit(kit);
+		tipText.setContentType("text/html");
 		tipText.setForeground(foreground);
 		tipText.setBackground(background);
 		tipText.setBorder(null);
@@ -304,16 +304,14 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @return <code>true</code> if there is at least one tip
 	 */
 	public boolean hasTips() {
 		return allTips.size() > 0;
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Loads the next tool tip.
 	 */
 	public void showNextTip() {
 		if(hasTips() || TipOfTheDay.firstTime) {
@@ -350,15 +348,19 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 				HTMLDocument doc2 = new HTMLDocument();
 
 				if(tip.text.startsWith(TipOfTheDay.E_KEY)) {
-					kit.insertHTML(doc2, 0,
-								   TipOfTheDay.E_HTML_START + "<font size=+1>" + Resources.get("tipoftheday.tip.eressea") +
-								   "</font><br>" + tip.text.substring(TipOfTheDay.E_KEY.length()) + TipOfTheDay.E_HTML_END,
-								   0, 0, null);
+//					kit.insertHTML(doc2, 0,
+//								   TipOfTheDay.E_HTML_START + "<font size=+1>" + Resources.get("tipoftheday.tip.eressea") +
+//								   "</font><br>" + tip.text.substring(TipOfTheDay.E_KEY.length()) + TipOfTheDay.E_HTML_END,
+//								   0, 0, null);
+          tipText.setText(TipOfTheDay.E_HTML_START + "<font size=+1>"
+              + Resources.get("tipoftheday.tip.eressea") + "</font><br>"
+              + tip.text.substring(TipOfTheDay.E_KEY.length()) + TipOfTheDay.E_HTML_END);
 				} else {
-					kit.insertHTML(doc2, 0, TipOfTheDay.HTML_START + tip.text + TipOfTheDay.HTML_END, 0, 0, null);
+//					kit.insertHTML(doc2, 0, TipOfTheDay.HTML_START + tip.text + TipOfTheDay.HTML_END, 0, 0, null);
+          tipText.setText(TipOfTheDay.HTML_START + tip.text + TipOfTheDay.HTML_END);
 				}
 
-				tipText.setStyledDocument(doc2);
+//				tipText.setStyledDocument(doc2);
 				doc = doc2;
 				repaint();
 			} catch(Exception exc) {
@@ -373,9 +375,9 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Reacts on button actions.
 	 *
-	 * 
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent e) {
 		if(TipOfTheDay.NEXT.equals(e.getActionCommand())) {
@@ -388,7 +390,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Makes the dialog visible.
 	 */
 	public void showTipDialog() {
 		TipOfTheDay.active = true;
@@ -396,9 +398,7 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see java.awt.Dialog#setVisible(boolean)
 	 */
 	@Override
   public void setVisible(boolean flag) {
@@ -406,7 +406,11 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		TipOfTheDay.active = flag;
 	}
 
-	// close the dialog and save the settings
+  /**
+	 * Close the dialog and save the settings.
+	 * 
+	 * @see magellan.client.swing.InternationalizedDialog#quit()
+	 */
 	@Override
   protected void quit() {
 		setVisible(false);
@@ -428,7 +432,10 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		settings.setProperty("TipOfTheDay.showTips", showTips.isSelected() ? "true" : "false");
 	}
 
-	// simple pair of number and html text
+	/** 
+	 * Simple pair of number and html text.
+	 * 
+	 */
 	protected class Tip {
 		protected int number;
 		protected String text;

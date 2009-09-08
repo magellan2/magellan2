@@ -79,28 +79,28 @@ public class Race extends UnitContainerType {
   }
 
   /**
-   * DOCUMENT-ME
+   * Set the weight of one person (in GE).
    */
   public void setWeight(float w) {
     weight = w;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the weight of one person (in GE).
    */
   public float getWeight() {
     return weight;
   }
 
   /**
-   * DOCUMENT-ME
+   * Set the carrying capacity (in GE).
    */
   public void setCapacity(float c) {
     capacity = c;
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the carrying capacity (in GE).
    */
   public float getCapacity() {
     return capacity;

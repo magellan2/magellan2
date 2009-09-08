@@ -22,6 +22,7 @@ import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.rules.ShipType;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 
@@ -181,23 +182,23 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 		  // subtract all units initially on the ship with their initial weight
 		  for(Unit u : units()) {
 		    modLoad -= u.getWeight();
-		    // if persons and cargo are counted separately (E3A), remove person's weight here
+		    // if persons and cargo are counted separately (E3), remove persons' weight here
 		    if (getShipType().getMaxPersons()>0)
-		      modLoad += u.getPersons()*u.getRace().getWeight();
+		      modLoad += u.getPersons()*u.getRace().getWeight()*100;
 		  }
 		}
 
 		// now we generally should have modLoad zero or near zero.
-    // the difference to zero is the weight that we don't see or know
-    // (i.e.) silver from factions where we don't have a report or
+    // the difference to zero is the weight that we don't see or know, i.e.,
+    // silver from factions where we don't have a report or
     // items/races where we don't know the weight 
     
     // add now the current calculated weight of the units
     for(Unit u : modifiedUnits()) {
 			modLoad += u.getModifiedWeight();
-      // if persons and cargo are counted separately (E3A), remove person's weight here
+      // if persons and cargo are counted separately (E3), remove persons' weight here
       if (getShipType().getMaxPersons()>0)
-        modLoad -= u.getPersons()*u.getRace().getWeight();
+        modLoad -= u.getPersons()*u.getRace().getWeight()*100;
 		}
 		return modLoad;
 	}
@@ -246,8 +247,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 			}
 
 			if(damageRatio != 0) {
-        // TODO localize
-				sb.append(", ").append(damageRatio).append("% Beschädigung");
+				sb.append(", ").append(damageRatio).append(Resources.get("ship.damage"));
 			}
 		}
 

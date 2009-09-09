@@ -331,8 +331,8 @@ public class MapSaverUI extends InternationalizedDialog {
             }
     
             ui.ready();
+            setVisible(false);
     				System.gc();
-    				setVisible(false);
     				dispose();
             
           }

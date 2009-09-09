@@ -1368,11 +1368,16 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       response = askToSave();
     } else
       response = JOptionPane.NO_OPTION;
+    
+    if (response == JOptionPane.CANCEL_OPTION)
+      return;
+    
     ui.show();
     new Thread(new Runnable() {
 
       public void run() {
         if (response == JOptionPane.CANCEL_OPTION) {
+          ui.ready();
           return; // cancel or exception
         } else if (response == JOptionPane.YES_OPTION) {
           saveSynchronously();

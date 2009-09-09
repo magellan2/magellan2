@@ -37,6 +37,7 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.Region.Visibility;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.ItemType;
@@ -71,72 +72,94 @@ public class EresseaPostProcessor {
 	}
 
 	/**
-	 * This method tries to fix some issues that arise right after reading a report file.
-	 *
-	 * It scans messages for herbs, removes dummy units, creates temp units and tries to 
-	 * detect if resources should be set to zero because they are not in the report.
-	 *
-	 * @param data 
-	 */
-	public void postProcess(GameData data) {
-	  if (data==null)
-	    throw new NullPointerException();
+   * This method tries to fix some issues that arise right after reading a report file. It scans
+   * messages for herbs, removes dummy units, creates temp units and tries to detect if resources
+   * should be set to zero because they are not in the report.
+   * 
+   * @param data
+   */
+  public void postProcess(GameData data) {
+    if (data == null)
+      throw new NullPointerException();
     cleanAstralSchemes(data);
-		/* scan the messages for additional information */
-		if(data.factions() != null) {
-			for(Iterator factions = data.factions().values().iterator(); factions.hasNext();) {
-				Faction f = (Faction) factions.next();
+    /* scan the messages for additional information */
+    if (data.factions() != null) {
+      for (Faction faction : data.factions().values()) {
 
-				if(f.getMessages() != null) {
-					for(Iterator<Message> iter = f.getMessages().iterator(); iter.hasNext();) {
-						Message m = iter.next();
+        if (faction.getMessages() != null) {
+          for (Message message : faction.getMessages()) {
 
-						if(m.getMessageType() != null) {
-							switch((((IntegerID) m.getMessageType().getID()).intValue())) {
-							case 1511758069:
-							case 18362:
+            if (message.getMessageType() != null) {
+              switch ((((IntegerID) message.getMessageType().getID()).intValue())) {
+              case 1511758069:
+              case 18362:
 
-							// a herb was found in a region
-							case 1349776898:
+                // a herb was found in a region
+              case 1349776898:
 
-								// a certain amount of herbs has been detected in a region
-								if((m.getAttributes() != null) && m.getAttributes().containsKey("region")) {
-									String str = m.getAttributes().get("region");
-									CoordinateID coord = CoordinateID.parse(str, ",");
+                // a certain amount of herbs has been detected in a region
+                if ((message.getAttributes() != null)
+                    && message.getAttributes().containsKey("region")) {
+                  String str = message.getAttributes().get("region");
+                  CoordinateID coord = CoordinateID.parse(str, ",");
 
-									if(coord == null) {
-										coord = CoordinateID.parse(str, " ");
-									}
+                  if (coord == null) {
+                    coord = CoordinateID.parse(str, " ");
+                  }
 
-									Region r = data.getRegion(coord);
+                  Region r = data.getRegion(coord);
 
-									if(r != null) {
-										String value = m.getAttributes().get("herb");
+                  if (r != null) {
+                    String value = message.getAttributes().get("herb");
 
-										if(value != null) {
-											ItemType type = data.rules.getItemType(StringID.create(value),
-																				   true);
-											r.setHerb(type);
-										}
+                    if (value != null) {
+                      ItemType type = data.rules.getItemType(StringID.create(value), true);
+                      r.setHerb(type);
+                    }
 
-										if((((IntegerID) m.getMessageType().getID()).intValue()) == 1349776898) {
-											// a certain amount of herbs has been detected in a region
-											String amount = m.getAttributes().get("amount");
+                    if ((((IntegerID) message.getMessageType().getID()).intValue()) == 1349776898) {
+                      // a certain amount of herbs has been detected in a region
+                      String amount = message.getAttributes().get("amount");
 
-											if(amount != null) {
-												r.setHerbAmount(amount);
-											}
-										}
-									}
-								}
+                      if (amount != null) {
+                        r.setHerbAmount(amount);
+                      }
+                    }
+                  }
+                }
 
-								break;
-							}
-						}
-					}
-				}
-			}
-		}
+                break;
+              case 865172808: /// X gelang es, folgende Informationen über Y herauszufinden
+                // fix spy messages which lack the spy attribute (see Magellan bug #333 and Eressea bug 1604)
+                Unit spy = null;
+                Unit target = null;
+                String id = message.getAttributes().get("spy");
+                if (id != null)
+                  spy = data.getUnit(UnitID.createUnitID(id, 10, data.base));
+                id = message.getAttributes().get("target");
+                if (id != null)
+                  target = data.getUnit(UnitID.createUnitID(id, 10, data.base));
+                if (spy == null || target == null || spy.getFaction() == null) {
+                  log.warn("spy message without spy: " + message);
+                } else {
+                  for (Message msg2 : spy.getFaction().getMessages()) {
+                    switch ((((IntegerID) msg2.getMessageType().getID()).intValue())) {
+                    case 387085007: // Y gehört der Partei F an 
+                    case 467205397: // Y beherrscht ...
+                    case 743495578: // Im Gepäck von Y sind ...
+                      msg2.getAttributes().put("spy",
+                          String.valueOf(((IntegerID) spy.getID()).intValue()));
+                      break;
+                    }
+                  }
+                }
+                break;
+              }
+            }
+          }
+        }
+      }
+    }
 
 		// there can be dummy units (UnitContainer owners and such), find and remove these
 		if(data.units() != null) {

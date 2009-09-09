@@ -42,7 +42,7 @@ public class MovementInspector extends AbstractInspector {
       if (typeName == null)
         typeName = message;
       String description = Resources.get("tasks.movementinspector." + name + ".description", false);
-      String group = Resources.get("tasks.movementinspector."+name+".group", false); 
+      String group = Resources.get("tasks.movementinspector." + name + ".group", false);
       type = new ProblemType(typeName, group, description, message, getInstance());
     }
 
@@ -88,22 +88,24 @@ public class MovementInspector extends AbstractInspector {
       if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
         problems.addAll(reviewUnitOnFoot(u));
         if (u.getModifiedMovement().size() > 0) {
-          
+
           int count = 0;
           boolean road = true;
-          Region lastRegion = null;
-          for (CoordinateID coordinate : u.getModifiedMovement()){
+          CoordinateID lastID = null;
+          for (CoordinateID coordinate : u.getModifiedMovement()) {
             Region currentRegion = u.getRegion().getData().getRegion(coordinate);
-            if (lastRegion==null){
-              lastRegion = currentRegion;
+            if (lastID == null) {
+              lastID = coordinate;
             } else {
-              if (currentRegion.equals(lastRegion)) // found PAUSE
+              if (coordinate.equals(lastID) || count > 2) // found PAUSE
                 break;
-              
-              if (!Regions.isCompleteRoadConnection(lastRegion, currentRegion)) // ;!roadTo(lastRegion, currentRegion))
-                road  = false;
-              
-              lastRegion = currentRegion;
+              Region lastRegion = u.getRegion().getData().getRegion(lastID);
+              if (currentRegion == null || lastRegion == null
+                  || !Regions.isCompleteRoadConnection(lastRegion, currentRegion)) // ;!roadTo(lastRegion,
+                                                                                   // currentRegion))
+                road = false;
+
+              lastID = coordinate;
               count++;
             }
           }
@@ -123,8 +125,8 @@ public class MovementInspector extends AbstractInspector {
           st.nextToken();
           if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())) {
             if (UnitID.createUnitID(st.nextToken(), u.getRegion().getData().base).equals(u.getID())) {
-              problems.add(ProblemFactory.createProblem(Severity.ERROR, MovementProblemTypes.UNITFOLLOWSSELF
-                  .getType(), u, line));
+              problems.add(ProblemFactory.createProblem(Severity.ERROR,
+                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, line));
             }
           }
         }
@@ -208,9 +210,9 @@ public class MovementInspector extends AbstractInspector {
   }
 
   public Collection<ProblemType> getTypes() {
-    if (types==null){
+    if (types == null) {
       types = new LinkedList<ProblemType>();
-      for (MovementProblemTypes t : MovementProblemTypes.values()){
+      for (MovementProblemTypes t : MovementProblemTypes.values()) {
         types.add(t.getType());
       }
     }

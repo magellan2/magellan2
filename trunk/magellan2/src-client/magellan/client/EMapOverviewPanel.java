@@ -106,6 +106,7 @@ import magellan.library.Ship;
 import magellan.library.TempUnit;
 import magellan.library.Unique;
 import magellan.library.Unit;
+import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
@@ -1889,6 +1890,21 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         unw.clearBuffer();
         treeModel.nodeChanged(node);
 
+        // building or ship nodes may have been modified, too
+        Ship ship = u.getShip();
+        if (ship!=null && shipNodes.containsKey(ship.getID()))
+          treeModel.nodeChanged(shipNodes.get(ship.getID()));
+        ship = u.getModifiedShip();
+        if (ship!=null && shipNodes.containsKey(ship.getID()))
+          treeModel.nodeChanged(shipNodes.get(ship.getID()));
+        
+        UnitContainer container = u.getBuilding();
+        if (container!=null && buildingNodes.containsKey(container.getID()))
+          treeModel.nodeChanged(buildingNodes.get(container.getID()));
+        container = u.getModifiedBuilding();
+        if (container!=null && buildingNodes.containsKey(container.getID()))
+          treeModel.nodeChanged(buildingNodes.get(container.getID()));
+
         Collection<UnitRelation> relations = u.getRelations(TransferRelation.class);
 
         // ensure that unitRelations has an entry for u
@@ -1899,7 +1915,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
           unitRelations.put(u.getID(), new LinkedList<UnitRelation>());
         }
-
+        
         
         List<UnitRelation> oldRelations = unitRelations.get(u.getID());
         Collection<UnitRelation> buffer = updateRelationPartners ? buff1 : buff2;
@@ -1929,6 +1945,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           }
         }
       }
+//      tree.validate();
+//      tree.repaint();
     }
   }
 

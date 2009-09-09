@@ -138,8 +138,41 @@ public class Resources {
       }
     }
     
+//    check();
   }
   
+  /**
+   * Checks if all resource bundle contain the same set of keys.
+   */
+  public void check() {
+    ResourceBundle defaultBundle = getResourceBundle(null);
+    for (Locale l : getAvailableLocales()) {
+      ResourceBundle firstBundle = getResourceBundle(l);
+      if (firstBundle != null && defaultBundle != firstBundle) {
+        compareKeys(defaultBundle, firstBundle);
+        compareKeys(firstBundle, defaultBundle);
+      }
+      for (Locale l2 : getAvailableLocales()) {
+        ResourceBundle currentBundle = getResourceBundle(l2);
+        if (firstBundle == null || currentBundle == null || defaultBundle == currentBundle
+            || defaultBundle == firstBundle || firstBundle == currentBundle)
+          continue;
+        compareKeys(firstBundle, currentBundle);
+      }
+    }
+  }
+
+  private void compareKeys(ResourceBundle firstBundle, ResourceBundle otherBundle) {
+    for (Enumeration<String> keys = firstBundle.getKeys(); keys.hasMoreElements();) {
+      String key = keys.nextElement();
+      if (!otherBundle.containsKey(key)) {
+        log.warn("key " + key + " in bundle " + firstBundle.getLocale()
+            + " not available in bundle " + otherBundle.getLocale());
+      }
+
+    }
+  }
+
   /**
    * Returns a list of all available translations including
    * the default translation as ENGLISH.

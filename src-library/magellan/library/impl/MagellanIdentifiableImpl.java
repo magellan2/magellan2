@@ -21,9 +21,43 @@ import magellan.library.Unique;
  * A template class for objects to be uniquely identifiable by other objects.
  */
 public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, Comparable, Cloneable {
-	/** The object imposing the unique identifiability.  This is immutable. */
-	protected final ID id;
 
+  /** The object imposing the unique identifiability.  This is immutable. */
+  protected final ID id;
+  
+  // only for memory profiling
+//  public class Counter {
+//
+//    public Counter(String name) {
+//      this.name = name;
+//      created = 0;
+//      deleted = 0;
+//    }
+//    protected String name;
+//    protected long created;
+//    protected long deleted;
+//
+//  }
+
+//	protected static Map<String, Counter> counters; 
+//  private static Timer timer;
+
+//  static {
+//    counters =  new HashMap<String, Counter>();
+//    timer = new Timer("memory tracker");
+//    TimerTask task = new TimerTask() {
+//    
+//      @Override
+//      public void run() {
+//        for (Counter counter : counters.values()){
+//          System.err.println(counter.name+": "+counter.created+" - "+counter.deleted);
+//        }
+//        System.err.println("--------------------------------------------------------");
+//      }
+//    };
+//    timer.scheduleAtFixedRate(task , 10, 10000);
+//  }
+  
 	/**
 	 * Creates a new identifiable object with the specified id.
 	 *
@@ -37,7 +71,24 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
 		}
 
 		this.id = id;
+//    Counter counter = counters.get(this.getClass().getName());
+//		if (counter==null){
+//		  counter = new Counter(this.getClass().getName());
+//		  counters.put(this.getClass().getName(), counter);
+//		}
+//		counter.created++;
 	}
+	
+//	@Override
+//	protected void finalize() throws Throwable {
+//    Counter counter = counters.get(this.getClass().getName());
+//    if (counter==null){
+//      System.err.println("class "+this.getClass().getName()+" should have counter.");
+//      counter = new Counter(this.getClass().getName());
+//    }
+//    counter.deleted++;
+//	  super.finalize();
+//	}
 
 	/**
 	 * Returns the id uniquely identifying this object.

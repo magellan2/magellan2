@@ -695,7 +695,7 @@ ITEM "Silber"
 ITEM "Juwel"
 "Juwel";name
 1;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 RESOURCES
 7;Silber
@@ -703,37 +703,37 @@ RESOURCES
 ITEM "Weihrauch"
 "Weihrauch";name
 2;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Balsam"
 "Balsam";name
 2;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Gewürz"
 "Gewürz";name
 2;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Myrrhe"
 "Myrrhe";name
 2;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Öl"
 "Öl";name
 3;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Seide"
 "Seide";name
 3;weight
-"luxuries";category
+"herbs";category
 1;storeinbonw
 
 ITEM "Eisen"
@@ -1489,7 +1489,7 @@ SHIPTYPE "Barke"
 2;level
 3;range
 50;capacity
-10;persons
+11;persons
 2;captainlevel
 5;sailorlevel
 

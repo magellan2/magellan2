@@ -1,3 +1,8 @@
+2009-09-24 / Build 359 - stm (stm_@users.sourceforge.net)
+    * made Trade-Organizer E3-proof (effectively disabling it)
+    * added base conversion dialog
+    * added alchemy planner dialog
+
 2009-09-06 / Build 356 - stm (stm_@users.sourceforge.net)
     * changed tooltip selection shortcut (now CTRL+ALT+P) and ATR selection behaviour (CTRL+ALT+T, now with pop-up menu)
 

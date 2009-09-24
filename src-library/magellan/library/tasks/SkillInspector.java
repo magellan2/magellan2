@@ -49,19 +49,18 @@ public class SkillInspector extends AbstractInspector {
     return SkillInspector.INSPECTOR;
   }
 
-
   protected static final ProblemType SKILLDECREASE;
-  
+
   static {
     String message = Resources.get("tasks.skillinspector.skilldecrease.message");
     String typeName = Resources.get("tasks.skillinspector.skilldecrease.name", false);
     if (typeName == null)
       typeName = message;
     String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
-    String group = Resources.get("tasks.skillinspector.skilldecrease.group", false); 
+    String group = Resources.get("tasks.skillinspector.skilldecrease.group", false);
     SKILLDECREASE = new ProblemType(typeName, group, description, message, getInstance());
   }
-  
+
   protected SkillInspector() {
   }
 
@@ -83,8 +82,6 @@ public class SkillInspector extends AbstractInspector {
         Unit u2 = relation.target;
         if (u1 != u)
           break;
-        // FIXME when passing persons to an empty unit, no warning is necessary
-        // except when multiple units pass persons to the empty unit
         List<Skill> skills = new LinkedList<Skill>(u1.getModifiedSkills());
         skills.addAll(u2.getModifiedSkills());
         for (Skill skill : skills) {
@@ -94,15 +91,23 @@ public class SkillInspector extends AbstractInspector {
           // source
           if (skill1 != null) {
             if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
-              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u, relation.line));
-              break;
+              // FIXME when passing persons to an empty unit, no warning is necessary
+              // except when multiple units pass persons to the empty unit
+              // this is not perfect yet:
+              if (u2.getPersons() > 0 || u2.getRelations(PersonTransferRelation.class).isEmpty()) {
+                problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u,
+                    relation.line));
+                break;
+              }
             }
           }
           // if a skill of the target unit is higher than the source unit, issue a warning at the
           // target
           if (skill2 != null) {
             if (skill1 == null || skill2.getLevel() > skill1.getLevel()) {
-              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u.getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(), relation.line));
+              problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u
+                  .getRegion(), u, u.getFaction(), u2, this, SKILLDECREASE.getMessage(),
+                  relation.line));
               break;
             }
           }

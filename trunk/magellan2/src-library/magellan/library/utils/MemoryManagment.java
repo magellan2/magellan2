@@ -95,6 +95,7 @@ public class MemoryManagment {
     	if (MemoryManagment.checkFreeMemory(min)){
     		return true;
     	}
+    	MemoryManagment.r.runFinalization();
     	MemoryManagment.r.gc();
     	try {
     	  MemoryManagment.log.warn("waiting for garbage collection");

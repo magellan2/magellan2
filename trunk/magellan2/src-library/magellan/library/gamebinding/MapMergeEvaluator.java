@@ -56,7 +56,7 @@ import magellan.library.utils.mapping.UnitIDMapping;
 
 public class MapMergeEvaluator {
   public Collection<DataMapping> getDataMappingVariants(int level) {
-    Collection<DataMapping> variants = new ArrayList<DataMapping>(3);
+    Collection<DataMapping> variants = new ArrayList<DataMapping>();
     // this is a summarization of all XXXIDMapping classes     
 //    variants.add(GameObjectIDMapping.getSingleton());
     // for testing purposes we use all on it's own

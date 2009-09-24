@@ -147,22 +147,18 @@ public class CoordinateID implements ID {
 		return (x << 12) ^ (y << 6) ^ z;
 	}
 
-	/**
-	 * Creates a new <tt>CoordinateID</tt> object from a string containing the coordinates
-	 * separated by delimiters.
-	 * 
-	 * The string can contain two resp. three integers separated by one resp. two delimiters. For
-	 * example, <code>parse("12 4"," ")</code> returns the CoordinateID (12,4,0). Leading and
-	 * trailing whitespace around numbers is ignored. For instance, <code>parse("13, 4, 1",",")</code>
-	 * returns the CoordinateID (13,4,1), but the result of <code>parse("14  4  5
-	 * 
-	 * @param coords
-	 *            A string which presumably contains a coordinate description
-	 * @param delim
-	 *            The delimiters of the coordinates. See java.util.StringTokenizer
-	 * 
-	 * @return The CoordinateID as read from coord; <code>null</code> if parsing failed
-	 */
+  /**
+   * Creates a new <tt>CoordinateID</tt> object from a string containing the coordinates separated
+   * by delimiters. The string can contain two resp. three integers separated by one resp. two
+   * delimiters. For example, <code>parse("12 4"," ")</code> returns the CoordinateID (12,4,0).
+   * Leading and trailing whitespace around numbers is ignored. For instance,
+   * <code>parse("13, 4, 1",",")</code> returns the CoordinateID (13,4,1), but the result of
+   * <code>parse("14  4  5",  ",")</code> is undefined.
+   * 
+   * @param coords A string which presumably contains a coordinate description
+   * @param delim The delimiters of the coordinates. See java.util.StringTokenizer
+   * @return The CoordinateID as read from coord; <code>null</code> if parsing failed
+   */
 	public static CoordinateID parse(String coords, String delim) {
 		CoordinateID c = null;
 

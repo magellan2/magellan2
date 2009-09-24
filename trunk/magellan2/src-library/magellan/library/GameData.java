@@ -303,21 +303,35 @@ public abstract class GameData implements Cloneable,Addeable {
     this(_rules, "default");
   }
 
+  
+//  static int created = 0;
+//  static int deleted = 0;
+  
   /**
    * Creates a new GameData object.
    * 
-   * @throws NullPointerException
-   *           DOCUMENT-ME
+   * @throws NullPointerException if <code>rules==null</code>
+   *           
    */
-  public GameData(Rules _rules, String _name) {
-    if (_rules == null) {
+  public GameData(Rules rules, String name) {
+    if (rules == null) {
       throw new NullPointerException();
     }
-
-    rules = _rules;
-    gameName = _name;
+    this.rules = rules;
+    this.gameName = name;
+//    created++;
+//    System.err.println("============== data: "+created+" - "+deleted);
+//    Runtime.getRuntime().runFinalization();
+//    System.gc();
   }
 
+//  @Override
+//  protected void finalize() throws Throwable {
+//    deleted++;
+//    System.err.println("==="+this.filename+"=== data: "+created+" - "+deleted);
+//    super.finalize();
+//  }
+  
   /**
    * Returns the AllianceGroup with the specified ID if it exists, otherwise <code>null</code>.
    */

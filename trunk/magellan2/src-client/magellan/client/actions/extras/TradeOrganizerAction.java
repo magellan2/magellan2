@@ -1,14 +1,8 @@
 /*
- *  Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe,
- *                          Stefan Goetz, Sebastian Pappert,
- *                          Klaas Prause, Enno Rehling,
- *                          Sebastian Tusk, Ulrich Kuester,
- *                          Ilja Pavkovic
- *
- * This file is part of the Eressea Java Code Base, see the
- * file LICENSING for the licensing information applying to
- * this file.
- *
+ * Copyright (C) 2000-2004 Roger Butenuth, Andreas Gampe, Stefan Goetz, Sebastian Pappert, Klaas
+ * Prause, Enno Rehling, Sebastian Tusk, Ulrich Kuester, Ilja Pavkovic This file is part of the
+ * Eressea Java Code Base, see the file LICENSING for the licensing information applying to this
+ * file.
  */
 
 package magellan.client.actions.extras;
@@ -22,51 +16,53 @@ import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.Resources;
 
-
 /**
  * Just a little class to invoke a trade organizer
- *
+ * 
  * @author Ulrich Küster
  */
 public class TradeOrganizerAction extends MenuAction implements GameDataListener {
 
-	/**
-	 * Creates a new TradeOrganizerAction object.
-	 *
-	 * @param client
-	 */
-	public TradeOrganizerAction(Client client) {
-        super(client);
-        setEnabled(false);
-        client.getDispatcher().addGameDataListener(this);
-	}
+  /**
+   * Creates a new TradeOrganizerAction object.
+   * 
+   * @param client
+   */
+  public TradeOrganizerAction(Client client) {
+    super(client);
+    setEnabled(false);
+    client.getDispatcher().addGameDataListener(this);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * Creates the dialog and makes it visible.
+   */
+  @Override
   public void menuActionPerformed(ActionEvent e) {
-		new TradeOrganizer(client, client.getDispatcher(), client.getData(), client.getProperties(),
-						   client.getSelectedRegions().values());
-	}
+    new TradeOrganizer(client, client.getDispatcher(), client.getData(), client.getProperties(),
+        client.getSelectedRegions().values()).setVisible(true);
+  }
 
-	public void gameDataChanged(GameDataEvent e) {
-		int i = e.getGameData().regions().size();
-		if (i>0) {
-			setEnabled(true);
-		} else {
-			setEnabled(false);
-		}
-	}
-	
+  /**
+   * Enables/disables the action.
+   * 
+   * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
+   */
+  public void gameDataChanged(GameDataEvent e) {
+    int i = e.getGameData().regions().size();
+    if (i > 0) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }
+
   /**
    * @see magellan.client.actions.MenuAction#getAcceleratorTranslated()
    */
   @Override
   protected String getAcceleratorTranslated() {
-    return Resources.get("actions.tradeorganizeraction.accelerator",false);
+    return Resources.get("actions.tradeorganizeraction.accelerator", false);
   }
 
   /**
@@ -74,7 +70,7 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
    */
   @Override
   protected String getMnemonicTranslated() {
-    return Resources.get("actions.tradeorganizeraction.mnemonic",false);
+    return Resources.get("actions.tradeorganizeraction.mnemonic", false);
   }
 
   /**
@@ -85,9 +81,8 @@ public class TradeOrganizerAction extends MenuAction implements GameDataListener
     return Resources.get("actions.tradeorganizeraction.name");
   }
 
-
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get("actions.tradeorganizeraction.tooltip",false);
+    return Resources.get("actions.tradeorganizeraction.tooltip", false);
   }
 }

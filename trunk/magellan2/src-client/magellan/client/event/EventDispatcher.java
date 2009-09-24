@@ -542,7 +542,9 @@ public class EventDispatcher implements EventDispatcherInterface {
     }
 
     /**
-     * DOCUMENT-ME
+     * Notifies all listener of the event.
+     * 
+     * @see java.lang.Runnable#run()
      */
     public void run() {
       if (EventDispatcher.log.isDebugEnabled()) {

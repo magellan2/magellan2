@@ -99,14 +99,16 @@ public class Resources {
     if (prefix == null) {
       prefix = "";
     }
-    Resources.log.info("Initializing resources for prefix...'"+prefix+"'");
+    Resources.log.info("Initializing resources for prefix...'"+prefix+"' in "+magellanDirectory);
     
     File resourceDirectory = new File(magellanDirectory,"etc");
     
     if (!resourceDirectory.exists()) {
+      Resources.log.info("Could not find resources in directory "+resourceDirectory);
       // hmmm, maybe one directory level up (special Eclipse problem with bin directory)
       resourceDirectory = new File(magellanDirectory.getParentFile(),"etc");
       if (!resourceDirectory.exists()) {
+        Resources.log.info("Could not find resources in directory "+resourceDirectory);
         // okay, I'll give up...
         throw new RuntimeException("Could NOT find location Magellan");
       }

@@ -67,7 +67,9 @@ import magellan.client.actions.edit.FindAction;
 import magellan.client.actions.edit.QuickFindAction;
 import magellan.client.actions.edit.RedoAction;
 import magellan.client.actions.edit.UndoAction;
+import magellan.client.actions.extras.AlchemyAction;
 import magellan.client.actions.extras.ArmyStatsAction;
+import magellan.client.actions.extras.ConversionAction;
 import magellan.client.actions.extras.FactionStatsAction;
 import magellan.client.actions.extras.HelpAction;
 import magellan.client.actions.extras.InfoAction;
@@ -583,7 +585,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * Initializes the Magellan components. The returned hashtable holds all components with
    * well-known desktop keywords.
    * 
-   * @param topLevel DOCUMENT-ME
+   * @param topLevel 
    */
   protected Map<String, Component> initComponents(List<Container> topLevel) {
     Map<String, Component> components = new Hashtable<String, Component>();
@@ -674,7 +676,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Creates a menu bar to be added to this frame.
    * 
-   * @param components DOCUMENT-ME
+   * @param components 
    */
   private JMenuBar createMenuBar(Collection<Container> components) {
     JMenuBar menuBar = new JMenuBar();
@@ -715,7 +717,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // currently not used (stm)
 // for (JMenu menu:topLevel.values()){
 // menuBar.add(menu);
-// }
+//    }
 
     // desktop and extras last
     menuBar.add(desktop.getDesktopMenu());
@@ -925,10 +927,13 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     addMenuItem(extras, new FactionStatsAction(this));
     addMenuItem(extras, new ArmyStatsAction(this));
     addMenuItem(extras, new TradeOrganizerAction(this));
+    addMenuItem(extras, new AlchemyAction(this));
 
 // addMenuItem(extras, new TaskTableAction(this));
 // addMenuItem(extras, new ECheckAction(this));
     addMenuItem(extras, new VorlageAction(this));
+    extras.addSeparator();
+    addMenuItem(extras, new ConversionAction(this));
     extras.addSeparator();
     addMenuItem(extras, new RepaintAction(this));
     addMenuItem(extras, new TileSetAction(this, mapPanel));
@@ -1561,8 +1566,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
               client.getDispatcher().fire(
                   new SelectionEvent(client, new ArrayList<Region>(), activeRegion,
                       SelectionEvent.ST_REGIONS));
-            }
-          }
+        }
+      }
         }
       }
     }, "loadCRThread").start();
@@ -1979,7 +1984,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Adds a single file to the file history.
    * 
-   * @param f DOCUMENT-ME
+   * @param f 
    */
   public void addFileToHistory(File f) {
     fileHistory.addFileToHistory(f);
@@ -1995,7 +2000,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Allows to set the maximum number of files appearing in the file history.
    * 
-   * @param size DOCUMENT-ME
+   * @param size 
    */
   public void setMaxFileHistorySize(int size) {
     fileHistory.setMaxFileHistorySize(size);
@@ -2059,7 +2064,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * DOCUMENT-ME
    * 
-   * @param newData DOCUMENT-ME
+   * @param newData 
    */
   public void setData(GameData newData) {
     context.setGameData(newData);
@@ -2086,7 +2091,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * 
    */
   public MagellanDesktop getDesktop() {
     return desktop;
@@ -2114,7 +2119,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT ME!
+   * 
    * 
    * @return the BookmarkManager associated with this Client-Object
    */
@@ -2186,7 +2191,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Repaints all components.
    * 
    * @param millis DOCUMENT-ME
    */
@@ -2442,7 +2447,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     if (osName.indexOf("windows") > -1) {
       Client.log.info("new ini. windows OS detected. (" + osName + ")");
       // we have a windows OS
-      // lets asume the location
+      // lets assume the location
       String actPath =
           Client.settingsDirectory + File.separator + "echeck" + File.separator + "ECheck.exe";
       Client.log.info("checking for ECheck: " + actPath);

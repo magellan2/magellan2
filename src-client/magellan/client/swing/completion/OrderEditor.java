@@ -120,15 +120,13 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   private OrderEditorCaret myCaret = null;
 
   private UnitOrdersListener orderListener;
-
+  
   /**
    * Creates a new OrderEditor object.
    */
   public OrderEditor(GameData data, Properties settings, UndoManager _undoMgr, EventDispatcher d,
       OrderParser parser) {
     super();
-// if (++instanceCount % 10 == 0)
-// log.info("OE: "+instanceCount);
 
     // pavkovic 2002.11.11: use own caret for more logical refreshing
     myCaret = new OrderEditorCaret();
@@ -185,7 +183,7 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     // }
     // }
   }
-
+  
   /**
    * registers an OrderListener with the event dispatcher
    */
@@ -202,7 +200,6 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
 
   @Override
   protected void finalize() throws Throwable {
-// instanceCount--;
     releaseListener();
     super.finalize();
   }

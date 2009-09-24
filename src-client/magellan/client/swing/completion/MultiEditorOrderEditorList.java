@@ -1426,6 +1426,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
       synchronized (content) {
         if (units != null) {
+          for (Unit u: units){
+            u.setOrderEditor(null);
+          }
           units.clear();
           units = new TreeSet<Unit>(EMapOverviewPanel.getUnitSorting(settings));
         }
@@ -1439,11 +1442,13 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
           removeListeners(getEditor(currentUnit));
           currentUnit.setOrderEditor(null);
         }
-
-        editorSingelton.setUnit(null);
-        editorSingelton.setEditable(false);
-        removeListeners(editorSingelton);
       }
+
+      if (editorSingelton!=null && editorSingelton.getUnit()!=null)
+        editorSingelton.getUnit().setOrderEditor(null);
+      editorSingelton.setUnit(null);
+      editorSingelton.setEditable(false);
+      removeListeners(editorSingelton);
     }
 
     currentUnit = null;

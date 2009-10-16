@@ -140,7 +140,7 @@ public class Resources {
       }
     }
     
-//    check();
+    // check();
   }
   
   /**
@@ -167,11 +167,23 @@ public class Resources {
   private void compareKeys(ResourceBundle firstBundle, ResourceBundle otherBundle) {
     for (Enumeration<String> keys = firstBundle.getKeys(); keys.hasMoreElements();) {
       String key = keys.nextElement();
+      boolean foundIt = false;
+      for (Enumeration<String> otherKeys = otherBundle.getKeys(); otherKeys.hasMoreElements() && !foundIt;) {
+        String otherKey = otherKeys.nextElement();
+        if (key.equals(otherKey)){
+           foundIt=true;
+        }
+      }
+      if (!foundIt){
+        log.warn("key " + key + " in bundle " + firstBundle.getLocale()
+            + " not available in bundle " + otherBundle.getLocale());
+      }
+      /*  
       if (!otherBundle.containsKey(key)) {
         log.warn("key " + key + " in bundle " + firstBundle.getLocale()
             + " not available in bundle " + otherBundle.getLocale());
       }
-
+      */
     }
   }
 

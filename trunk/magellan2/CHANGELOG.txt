@@ -1,3 +1,8 @@
+2009-10-16 / Build 360 - Fiete <sf@fietefietz.de>
+	* replaced ResourceBundle.containsKey in check() in Resources.java
+	* EresseaRelationFactory, transferRelation, itemname: get next token if current tokentext is "
+	* updated settings in izpack.xlm
+
 2009-09-24 / Build 359 - stm (stm_@users.sourceforge.net)
     * made Trade-Organizer E3-proof (effectively disabling it)
     * added base conversion dialog

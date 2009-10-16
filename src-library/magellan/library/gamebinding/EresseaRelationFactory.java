@@ -376,7 +376,9 @@ public class EresseaRelationFactory implements RelationFactory {
                   EresseaRelationFactory.log.debug("EresseaRelationFactory.createRelations(Unit): cannot parse amount in order " + order);
                 } else {
                   t = tokens.get(itemIndex);
-
+                  if (t.getText().equalsIgnoreCase("\"")){
+                    t = tokens.get(++itemIndex);
+                  }
                   if (t.ttype != OrderToken.TT_EOC) {
                     // now the order must look something like:
                     // GIVE <unit id> <amount> <object><EOC>

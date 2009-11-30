@@ -2007,13 +2007,13 @@ REGIONTYPE "Berge"
 
 REGIONTYPE "Ebene"
 "Ebene";name
-10000;maxworkers
+4000;maxworkers
 50;roadstones
 "true";isAstralVisible
 
 REGIONTYPE "Gletscher"
 "Gletscher";name
-100;maxworkers
+150;maxworkers
 250;roadstones
 "Tunnel";roadsupportbuilding
 "true";isAstralVisible
@@ -2025,27 +2025,27 @@ REGIONTYPE "Eisberg"
 
 REGIONTYPE "Hochland"
 "Hochland";name
-4000;maxworkers
+2300;maxworkers
 100;roadstones
 "true";isAstralVisible
 
 REGIONTYPE "Sumpf"
 "Sumpf";name
-2000;maxworkers
+1200;maxworkers
 75;roadstones
 "Damm";roadsupportbuilding
 "true";isAstralVisible
 
 REGIONTYPE "Wüste"
 "Wüste";name
-500;maxworkers
+400;maxworkers
 100;roadstones
 "Karawanserei";roadsupportbuilding
 "true";isAstralVisible
 
 REGIONTYPE "Wald"
 "Wald";name
-10000;maxworkers
+4000;maxworkers
 50;roadstones
 "true";isAstralVisible
 
@@ -2068,12 +2068,12 @@ REGIONTYPE "Feuerwand"
 
 REGIONTYPE "Vulkan"
 "Vulkan";name
-500;maxworkers
+400;maxworkers
 250;roadstones
 "true";isAstralVisible
 
 REGIONTYPE "Aktiver Vulkan"
 "Aktiver Vulkan";name
-500;maxworkers
+400;maxworkers
 250;roadstones
 "true";isAstralVisible

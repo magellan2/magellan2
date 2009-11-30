@@ -25,6 +25,7 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Properties;
@@ -154,8 +155,10 @@ public class TempUnitDialog extends InternationalizedDialog implements ActionLis
 		panel.setOpaque(false);
 		panel.add(ok = new JButton(Resources.get("completion.tempunitdialog.ok")));
 		ok.addActionListener(this);
+		ok.setMnemonic(Resources.get("completion.tempunitdialog.ok.mnemonic").charAt(0));
 		panel.add(cancel = new JButton(Resources.get("completion.tempunitdialog.cancel")));
 		cancel.addActionListener(this);
+    cancel.setMnemonic(Resources.get("completion.tempunitdialog.cancel.mnemonic").charAt(0));
 		con.fill = GridBagConstraints.NONE;
 		c.add(panel, con);
 

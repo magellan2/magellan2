@@ -51,8 +51,7 @@ public class RegionType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the maximum number of peasant workers.
 	 * 
 	 */
 	public void setInhabitants(int i) {

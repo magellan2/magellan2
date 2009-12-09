@@ -1590,7 +1590,7 @@ CASTLETYPE "Befestigung"
 2;level
 10;minsize
 49;maxsize
-12;wage
+11;wage
 6;tradetax
 RAWMATERIALS
 1;Stein
@@ -1600,7 +1600,7 @@ CASTLETYPE "Turm"
 3;level
 50;minsize
 249;maxsize
-13;wage
+12;wage
 12;tradetax
 RAWMATERIALS
 1;Stein
@@ -1610,7 +1610,7 @@ CASTLETYPE "Burg"
 4;level
 250;minsize
 1249;maxsize
-14;wage
+13;wage
 18;tradetax
 RAWMATERIALS
 1;Stein
@@ -1620,7 +1620,7 @@ CASTLETYPE "Festung"
 5;level
 1250;minsize
 6249;maxsize
-15;wage
+14;wage
 24;tradetax
 RAWMATERIALS
 1;Stein
@@ -1629,7 +1629,7 @@ CASTLETYPE "Zitadelle"
 "Zitadelle";name
 6;level
 6250;minsize
-16;wage
+15;wage
 30;tradetax
 RAWMATERIALS
 1;Stein

@@ -111,6 +111,8 @@ public class ReplacerHelp implements GameDataListener {
 		drf.putReplacer("entertain", regionMethod, args);
 		args[0] = "getPeasantWage";
 		drf.putReplacer("peasantWage", regionMethod, args);
+    args[0] = "morale";
+    drf.putReplacer("morale", regionMethod, args);
 		
 		// Fiete 20061222  coords
 		args[1] = new Integer(RegionMethodReplacer.MODE_ALL);

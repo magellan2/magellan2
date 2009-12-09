@@ -204,7 +204,11 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection, Collection<Unit> units, Map<ID,TreeNode> regionNodes, Map<ID,TreeNode> unitNodes, Map<ID,TreeNode> buildingNodes, Map<ID,TreeNode> shipNodes, Comparator<? super Unit> unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[], GameData data) {
+  public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection,
+      Collection<Unit> units, Map<ID, TreeNode> regionNodes, Map<ID, TreeNode> unitNodes,
+      Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
+      Comparator<? super Unit> unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[],
+      GameData data) {
     boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
     boolean buildingInteresting = (getDisplayMode() & TreeBuilder.BUILDINGS) != 0;
     boolean shipInteresting = (getDisplayMode() & TreeBuilder.SHIPS) != 0;
@@ -228,7 +232,10 @@ public class TreeBuilder {
       }
 
       // add region node to tree an node map
-      regionNode = (DefaultMutableTreeNode) treehelper.createRegionNode(r, nodeWrapperFactory, activeAlliances, unitNodes, buildingNodes, shipNodes, unitSorting, treeStructure, data, sortShipUnderUnitParent);
+      regionNode =
+          (DefaultMutableTreeNode) treehelper.createRegionNode(r, nodeWrapperFactory,
+              activeAlliances, unitNodes, buildingNodes, shipNodes, unitSorting, treeStructure,
+              data, sortShipUnderUnitParent);
 
       if (regionNode == null) {
         continue;

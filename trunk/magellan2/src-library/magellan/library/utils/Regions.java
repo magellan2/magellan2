@@ -441,7 +441,7 @@ public class Regions {
         }
       } else {
         Regions.log
-            .warn("Regions.getPath(): Discovered region without distance while backtracking");
+            .warn("Regions.getPath(): Discovered region without distance while backtracking: "+curRegion);
         path.clear();
 
         break;

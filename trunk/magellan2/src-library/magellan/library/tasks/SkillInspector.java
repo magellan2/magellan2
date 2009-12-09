@@ -94,7 +94,9 @@ public class SkillInspector extends AbstractInspector {
               // FIXME when passing persons to an empty unit, no warning is necessary
               // except when multiple units pass persons to the empty unit
               // this is not perfect yet:
-              if (u2.getPersons() > 0 || u2.getRelations(PersonTransferRelation.class).isEmpty()) {
+              if (u2.getPersons() > 0
+                  || (!u2.getRelations(PersonTransferRelation.class).isEmpty() && u2.getRelations(
+                      PersonTransferRelation.class).size() > 1)) {
                 problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u,
                     relation.line));
                 break;

@@ -1806,7 +1806,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (includeRegionDetails) {
-      if (region.getTrees() > 0) {
+      if (region.getTrees() >= 0) {
         write(region.getTrees() + ";Baeume");
         newLine();
       }
@@ -1821,7 +1821,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (region.getSprouts() > 0) {
+      if (region.getSprouts() >= 0) {
         write(region.getSprouts() + ";Schoesslinge");
         newLine();
       }
@@ -1831,7 +1831,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (region.getPeasants() > 0) {
+      if (region.getPeasants() >= 0) {
         write(region.getPeasants() + ";Bauern");
         newLine();
       }
@@ -1841,7 +1841,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (region.getHorses() > 0) {
+      if (region.getHorses() >= 0) {
         write(region.getHorses() + ";Pferde");
         newLine();
       }
@@ -1851,7 +1851,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (region.getSilver() > 0) {
+      if (region.getSilver() >= 0) {
         write(region.getSilver() + ";Silber");
         newLine();
       }

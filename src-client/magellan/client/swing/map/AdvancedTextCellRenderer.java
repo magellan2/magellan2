@@ -1111,7 +1111,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 			String oldName = name;
 
 			while((name != null) && exists(name)) {
-				name = JOptionPane.showInputDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.nameexists2") + name);
+				name = JOptionPane.showInputDialog(this, Resources.get("map.advancedtextcellrenderer.prefs.nameexists2", name));
 			}
 
 			if(name == null) {

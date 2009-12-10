@@ -127,7 +127,7 @@ public class EresseaRelationFactory implements RelationFactory {
   private List createRelations(Unit u, List<String> orders, int from) {
     from = 0;
     // NOTE: parameter from is ignored!
-    List<UnitRelation> relations = new ArrayList<UnitRelation>(3);
+    ArrayList<UnitRelation> relations = new ArrayList<UnitRelation>(3);
 
     GameData data = u.getRegion().getData();
     Map<ID, Item> modItems = null; // needed to track changes in the items for
@@ -157,6 +157,8 @@ public class EresseaRelationFactory implements RelationFactory {
     boolean tempOrders = false;
     line = 0;
 
+    // indicates a possible problem with GIVE CONTROL orders if > 1
+    int controlWarning = 0;
     for (String order : orders) {
 
       line++; // keep track of line
@@ -256,6 +258,7 @@ public class EresseaRelationFactory implements RelationFactory {
         }
 
         if (leftUC != null) {
+          controlWarning = 2;
           LeaveRelation rel = new LeaveRelation(u, leftUC, line);
           relations.add(rel);
         }
@@ -310,7 +313,9 @@ public class EresseaRelationFactory implements RelationFactory {
       }
 
       // transfer relation
-      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GIVE)) || (tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SUPPLY))) {
+      if ((tokens.get(0)).equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_GIVE))
+          || (tokens.get(0))
+              .equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_SUPPLY))) {
         // GIB 0|<enr> (ALLES|EINHEIT|KRaeUTER|KOMMANDO|((([JE] <amount>)|ALLES)
         // (SILBER|PERSONEN|<gegenstand>)))
         final int unitIndex = 1;
@@ -344,6 +349,7 @@ public class EresseaRelationFactory implements RelationFactory {
               }
 
             } else if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_CONTROL))) {
+              controlWarning++;
               UnitRelation r = new ControlRelation(u, target, line);
               relations.add(r);
             } else if (t.equalsToken(EresseaRelationFactory.getOrder(EresseaConstants.O_UNIT))) {
@@ -510,6 +516,7 @@ public class EresseaRelationFactory implements RelationFactory {
         }
 
         if (uc != null) {
+          controlWarning = 2;
           LeaveRelation rel = new LeaveRelation(u, uc, line);
           relations.add(rel);
         } else {
@@ -642,6 +649,17 @@ public class EresseaRelationFactory implements RelationFactory {
             // (OrderToken) tokens.get(2), (OrderToken) tokens.get(3)));
             // retVal = readBenenneFremdes(t);
           }
+        }
+      }
+    }
+    
+    // set the warning flag of ControlRelations if unit is leaving
+    if (controlWarning > 1) {
+      for (int i = 0; i < relations.size(); ++i) {
+        UnitRelation r = relations.get(i);
+        if (r instanceof ControlRelation) {
+          relations.set(i, new ControlRelation(((ControlRelation) r).source,
+              ((ControlRelation) r).target, ((ControlRelation) r).line, true));
         }
       }
     }

@@ -71,6 +71,9 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 */
   protected int capacity = -1;
 
+  /** The maximum capacity for persons &lt;=getType().getMaxPersons() */
+  protected int maxPersons = -1;
+
 	/**
 	 * Creates a new Ship object.
 	 *
@@ -83,6 +86,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
 	/** The region this ship is in. */
 	private Region region = null;
+
 
 	/**
 	 * Sets the region this ship is in and notifies region about it.
@@ -373,4 +377,41 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   public void setCargo(int cargo) {
     this.cargo = cargo;
   }
+  
+  /**
+   * @see magellan.library.Ship#setMaxPersons(int)
+   */
+  public void setMaxPersons(int persons){
+    maxPersons  = persons;
+  }
+
+  /**
+   * @see magellan.library.Ship#getMaxPersons()
+   */
+  public int getMaxPersons(){
+    return maxPersons;
+  }
+
+  /**
+   * @see magellan.library.Ship#getModifiedPersonLoad()
+   */
+  public int getModifiedPersonLoad() {
+    int inmates = 0;
+    for (Unit u : modifiedUnits()) {
+      inmates += u.getPersons() * u.getRace().getWeight() * 100;
+    }
+    return inmates;
+  }
+
+  /**
+   * @see magellan.library.Ship#getPersonLoad()
+   */
+  public int getPersonLoad() {
+    int modInmates = 0;
+    for (Unit u : modifiedUnits()) {
+      modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
+    }
+    return modInmates;
+  }
+ 
 }

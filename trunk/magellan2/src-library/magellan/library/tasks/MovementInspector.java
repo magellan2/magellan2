@@ -85,7 +85,7 @@ public class MovementInspector extends AbstractInspector {
 
     if (!u.getModifiedMovement().isEmpty() || hasMovementOrder(u)) {
       // only test for foot/horse movement if unit is not owner of a modified ship
-      if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getOwnerUnit())) {
+      if ((u.getModifiedShip() == null) || !u.equals(u.getModifiedShip().getModifiedOwnerUnit())) {
         problems.addAll(reviewUnitOnFoot(u));
         if (u.getModifiedMovement().size() > 0) {
 

@@ -201,7 +201,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   @Override
   public void cmpltBenenne() {
     super.cmpltBenenne();
-
+    // use old owner unit (BENENNE before GIB)
     if((getUnit().getShip() != null) && (getUnit().getShip().getType().getID().equals(AllanonConstants.ST_KARAWANE)) && (getUnit().getShip().getOwnerUnit() != null) && getUnit().getShip().getOwnerUnit().equals(getUnit())) {
       getCompletions().add(new Completion(Resources.getOrderTranslation(AllanonConstants.O_KARAWANE),Resources.getOrderTranslation(AllanonConstants.O_KARAWANE)," \"\"", Completion.DEFAULT_PRIORITY, 1));
     }

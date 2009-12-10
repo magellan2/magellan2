@@ -122,6 +122,7 @@ public abstract class AbstractInspector implements Inspector {
    * @return
    */
   protected boolean checkIgnoreUnitContainer(UnitContainer c) {
+    // TODO should we use getModifiedOnwerUnit() here?
     if (c.getOwnerUnit() == null)
       return false;
     return checkIgnoreUnit(c.getOwnerUnit());

@@ -88,4 +88,10 @@ public interface GameSpecificRules {
    */
   public int getTeachFactor();
 
+
+  /**
+   * Returns the number of silver pieces per weight unit (GE).
+   */
+  public int getSilverPerWeightUnit();
+
 }

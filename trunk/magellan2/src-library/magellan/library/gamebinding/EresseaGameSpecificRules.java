@@ -161,9 +161,9 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 
-    if((s.getOwnerUnit() != null) && (s.getOwnerUnit().getRace() != null) &&
-           s.getOwnerUnit().getRace().getAdditiveShipBonus()!=0) {
-        rad+=s.getOwnerUnit().getRace().getAdditiveShipBonus();
+    if((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null) &&
+           s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus()!=0) {
+        rad+=s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
       }
 
     // rad = rad*(100.0-damageRatio)/100.0
@@ -185,5 +185,9 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    */
   public int getTeachFactor() {
     return 10;
+  }
+
+  public int getSilverPerWeightUnit() {
+    return 100;
   }
 }

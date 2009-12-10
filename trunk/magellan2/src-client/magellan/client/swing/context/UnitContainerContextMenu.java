@@ -511,7 +511,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			Object o = iter.next();
 			if (o instanceof Ship){
 				Ship ship = (Ship)o;
-				Unit u = ship.getOwnerUnit();
+				Unit u = ship.getModifiedOwnerUnit();
 
 				if(u!=null && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(u))) {
 					magellan.client.utils.Units.addOrders(u, s);

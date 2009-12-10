@@ -2532,7 +2532,11 @@ public class CRParser implements RulesIO, GameDataIO {
         ship.setCargo(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("capacity")) {
-        ship.setCapacity(Integer.parseInt(sc.argv[0]));
+        if (version<=64)
+          ship.setCapacity(Integer.parseInt(sc.argv[0]));
+        else
+          // in E3 this tag is overloaded with the max number of persons (see Eressea bug #1645)!
+          ship.setMaxPersons(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Ladung")) {
         ship.setDeprecatedLoad(Integer.parseInt(sc.argv[0]));
@@ -3005,6 +3009,8 @@ public class CRParser implements RulesIO, GameDataIO {
     if ((iValidateFlags & 1) == 0) {
       CRParser.log.warn("Warning: No region type is given for region '" + region.toString()
           + "' - it is ignored.");
+      region.setType(world.rules.getRegionType(StringID.create("void"), true));
+      world.addRegion(region);
     } else {
       world.addRegion(region);
     }

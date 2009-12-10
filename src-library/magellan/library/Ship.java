@@ -182,4 +182,31 @@ public interface Ship extends UnitContainer, HasRegion {
    * @param cargo The value for cargo.
    */
   public void setCargo(int cargo);
+
+  
+  /**
+   * Returns the maximum number of persons allowed on board.
+   * 
+   */
+  public int getMaxPersons();
+  
+  /**
+   * Sets the maximum number of persons (default: -1).
+   * 
+   * @see ShipType#getMaxPersons()
+   * 
+   * @param persons
+   */
+  public void setMaxPersons(int persons);
+
+  /**
+   * Returns the current weight of the persons currently on board.
+   * 
+   */
+  public int getPersonLoad();
+
+  /**
+   * Returns the projected weight of the projected peresons on board.
+   */
+  public int getModifiedPersonLoad();
 }

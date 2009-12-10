@@ -112,12 +112,12 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 
-    if (s.getOwnerUnit() != null) {
-      if ( s.getOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
-        rad += s.getOwnerUnit().getRace().getAdditiveShipBonus();
+    if (s.getModifiedOwnerUnit() != null) {
+      if ( s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
+        rad += s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus();
       }
 
-      Skill sailing = s.getOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
+      Skill sailing = s.getModifiedOwnerUnit().getSkill(getRules().getSkillType(EresseaConstants.S_SEGELN));
       if (sailing !=null)
         rad += sailing.getLevel()/7;
     }

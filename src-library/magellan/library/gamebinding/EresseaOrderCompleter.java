@@ -298,7 +298,7 @@ public class EresseaOrderCompleter implements Completer {
     }
 
     if (unit.getShip() != null) {
-      Unit owner = unit.getShip().getOwnerUnit();
+      Unit owner = unit.getShip().getModifiedOwnerUnit();
 
       if (owner != null) {
         if (owner.equals(unit)) {
@@ -361,6 +361,7 @@ public class EresseaOrderCompleter implements Completer {
 
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHOW), " "));
 
+    // TODO dontknow if we should use modified owner here (GIB and ZERSTÖRE have same priority!)
     // units destroying their own building or ship or...
     if (((unit.getBuilding() != null) && (unit.getBuilding().getOwnerUnit() != null) && (unit
         .getBuilding().getOwnerUnit().equals(unit)))
@@ -475,7 +476,7 @@ public class EresseaOrderCompleter implements Completer {
         Building b = (Building) buildings.next();
 
         if (b.getType().getID().equals(StringID.create("Burg"))
-            && (b.getOwnerUnit().getFaction().equals(ownerFaction) == false)) {
+            && (b.getModifiedOwnerUnit().getFaction().equals(ownerFaction) == false)) {
           completions.add(new Completion(b.getName() + " (" + b.getID() + ")",
               b.getID().toString(), "", Completion.DEFAULT_PRIORITY - 1));
           completions.add(new Completion(b.getID() + " (" + b.getName() + ")"));
@@ -498,6 +499,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FACTION),
         " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
+    // use old owner unit (BENENNE before GIB)
     if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
           " \"\"", Completion.DEFAULT_PRIORITY, 1));
@@ -553,6 +555,7 @@ public class EresseaOrderCompleter implements Completer {
       while (buildings.hasNext()) {
         Building b = (Building) buildings.next();
 
+        // use old owner unit (BENENNE before GIB)
         if ((b.getOwnerUnit() != null)
             && (b.getOwnerUnit().getFaction().equals(ownerFaction) == false)) {
           String id = b.getID().toString();
@@ -594,6 +597,7 @@ public class EresseaOrderCompleter implements Completer {
       while (ships.hasNext()) {
         Ship s = (Ship) ships.next();
 
+        // use old owner unit (BENENNE before GIB)
         if ((s.getOwnerUnit() != null)
             && (s.getOwnerUnit().getFaction().equals(ownerFaction) == false)) {
           String id = s.getID().toString();
@@ -635,6 +639,7 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_PRIVATE),
         " \"\"", Completion.DEFAULT_PRIORITY, 1));
 
+    // use old owner unit (BENENNE before GIB)
     if ((unit.getBuilding() != null) && unit.getBuilding().getOwnerUnit().equals(unit)) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
           " \"\"", Completion.DEFAULT_PRIORITY, 1));
@@ -882,7 +887,7 @@ public class EresseaOrderCompleter implements Completer {
 
         int prio = 0;
         // stm 2007-03-11: follow ships, no matter who's the owner
-        if ((s.getOwnerUnit() != null) && (unit.getFaction().equals(s.getOwnerUnit().getFaction()))) {
+        if ((s.getModifiedOwnerUnit() != null) && (unit.getFaction().equals(s.getModifiedOwnerUnit().getFaction()))) {
           prio = 16;
         }
         String id = s.getID().toString();
@@ -1469,7 +1474,7 @@ public class EresseaOrderCompleter implements Completer {
       Ship s = (Ship) i.next();
       String id = s.getID().toString();
 
-      if ((s.getOwnerUnit() != null) && ownerFaction.equals(s.getOwnerUnit().getFaction())) {
+      if ((s.getModifiedOwnerUnit() != null) && ownerFaction.equals(s.getModifiedOwnerUnit().getFaction())) {
         completions.add(new Completion(s.getName() + " (" + id + ")", id, "",
             Completion.DEFAULT_PRIORITY - 1));
         completions.add(new Completion(id + " (" + s.getName() + ")", id, "",
@@ -1729,13 +1734,19 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
+  /**
+   * Adds completions for all units in the container <code>c</code> if they're in the same buildg as
+   * <code>u</code>.
+   * 
+   * @param u 
+   * @param c 
+   * @param addOwner If true, the container's owner is included if applicable.
+   */
   private void addSortiereUnits(Unit u, UnitContainer c, boolean addOwner) {
-    for (Iterator iter = c.units().iterator(); iter.hasNext();) {
-      Unit currentUnit = (Unit) iter.next();
-
+    for (Unit currentUnit : c.units()) {
       if (u.getFaction().equals(currentUnit.getFaction())
           && (c.equals(currentUnit.getBuilding()) || c.equals(currentUnit.getShip()))) {
-        if (!u.equals(currentUnit) && (addOwner || !currentUnit.equals(c.getOwnerUnit()))) {
+        if (!u.equals(currentUnit) && (addOwner || !currentUnit.equals(c.getModifiedOwnerUnit()))) {
           addUnit(currentUnit, "");
         }
       }
@@ -2187,7 +2198,7 @@ public class EresseaOrderCompleter implements Completer {
       while (ships.hasNext() == true) {
         Ship s = ships.next();
         if (s != null) {
-          Unit u = s.getOwnerUnit();
+          Unit u = s.getModifiedOwnerUnit();
           if (u != null) {
             if ((unit == null) || !u.equals(unit)) {
               addUnitContainerOwner(s, u, postfix, cursorOffset);
@@ -2217,7 +2228,7 @@ public class EresseaOrderCompleter implements Completer {
       while (buildings.hasNext() == true) {
         Building b = buildings.next();
         if (b != null) {
-          Unit u = b.getOwnerUnit();
+          Unit u = b.getModifiedOwnerUnit();
           if (u != null) {
             if ((unit == null) || !u.equals(unit)) {
               addUnitContainerOwner(b, u, postfix, cursorOffset);
@@ -2314,7 +2325,8 @@ public class EresseaOrderCompleter implements Completer {
     }
 
     Map<ID, RegionType> excludedRegionTypes = new Hashtable<ID, RegionType>();
-    excludedRegionTypes.put(oceanType.getID(), oceanType);
+    // no need to exclude oceans, ocens have no name anyway and it'll break getPath(...)
+    // excludedRegionTypes.put(oceanType.getID(), oceanType);
 
     Map<CoordinateID, Region> neighbours =
         Regions.getAllNeighbours(data.regions(), region.getID(), radius, excludedRegionTypes);
@@ -2333,7 +2345,7 @@ public class EresseaOrderCompleter implements Completer {
             Regions.getDirections(data.regions(), region.getID(), r.getID(), excludedRegionTypes);
 
         if (directions != null) {
-          completions.add(new Completion(r.getName(), directions, postfix));
+          completions.add(new Completion(r.getName(), directions, postfix, Completion.DEFAULT_PRIORITY-1));
         }
       }
     }

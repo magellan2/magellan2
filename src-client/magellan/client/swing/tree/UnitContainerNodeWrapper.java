@@ -80,11 +80,23 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
 		final NumberFormat weightNumberFormat = NumberFormat.getNumberInstance();
 		StringBuffer text= new StringBuffer(uc.toString());
 		if(showFreeLoad && uc instanceof Ship) {
-			float free = (((Ship) uc).getMaxCapacity() - ((Ship) uc).getModifiedLoad())/100F;
-			text.append(": ");
+      text.append(": ");
+
+      Ship s = (Ship) uc;
+      float free = (s.getMaxCapacity() - s.getModifiedLoad())/100F;
 			text.append(weightNumberFormat.format(free));
+      
+      float pFree = 0;
+      if (s.getShipType().getMaxPersons()>=0) {
+        int personWeight = 10;
+        int silverPerWeightUnit = 100;
+        pFree = (s.getMaxPersons() * personWeight * silverPerWeightUnit - s.getModifiedPersonLoad())/100F;
+        text.append("/");
+        text.append(weightNumberFormat.format(pFree));
+      }
+
 			// overloading
-			if (free<0){
+			if (free<0 || pFree < 0){
 				text.append(" (!!!)");
 			}
 		}

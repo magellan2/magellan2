@@ -103,7 +103,8 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public Collection<Unit> modifiedUnits();
 
   /**
-   * DOCUMENT-ME
+   * Returns the unit with the specified ID if it is in the modified units, <code>null</code>
+   * otherwise.
    */
   public Unit getModifiedUnit(ID key);
 
@@ -142,6 +143,14 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
    * castle is returned. In case of a Faction, null is returned.
    */
   public Unit getOwnerUnit();
+
+  /**
+   * Returns the unit owning this UnitContainer after orders have been executed. If this
+   * UnitContainer is an instance of class Ship or Building the normal owning unit is returned (or
+   * null, if there is none). In case of a Region, the OwnerUnit of the largest castle is returned.
+   * In case of a Faction, null is returned.
+   */
+  public Unit getModifiedOwnerUnit();
 
   /**
    * DOCUMENT-ME
@@ -229,5 +238,6 @@ public interface UnitContainer extends Related, Sorted, Taggable, HasCache {
   public CacheableOrderEditor getOrderEditor();
 
   public void setOrderEditor(CacheableOrderEditor editor);
+
 
 }

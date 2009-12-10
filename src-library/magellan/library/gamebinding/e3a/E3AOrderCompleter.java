@@ -134,7 +134,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     }
 
     if (getUnit().getShip() != null) {
-      Unit owner = getUnit().getShip().getOwnerUnit();
+      Unit owner = getUnit().getShip().getModifiedOwnerUnit();
 
       if (owner != null) {
         if (owner.equals(getUnit())) {
@@ -176,6 +176,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
 
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHOW), " "));
 
+    // TODO dontknow if we should use modified owner here (GIB and ZERSTÖRE have same priority!)
     // units destroying their own building or ship or...
     if (((getUnit().getBuilding() != null) && (getUnit().getBuilding().getOwnerUnit() != null) && (getUnit()
         .getBuilding().getOwnerUnit().equals(getUnit())))

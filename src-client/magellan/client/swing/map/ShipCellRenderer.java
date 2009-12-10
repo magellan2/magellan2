@@ -142,6 +142,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 				if(from>-1 && to <msg.toString().length()) {
 					ID sid = EntityID.createEntityID(msg.substring(from+1,to),region.getData().base);
 					Ship ship = region.getData().getShip(sid);
+			    // use old owner unit (message is about last round)
 					if(ship != null && ship.getOwnerUnit() != null &&
 							ship.getOwnerUnit().getFaction() != null && 
 							ship.getOwnerUnit().getFaction().getTrustLevel() >=FactionTrustComparator.ALLIED) {

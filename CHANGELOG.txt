@@ -1,3 +1,12 @@
+2009-12-10 / Build 365 - stm (stm_@users.sourceforge.net)
+    * fixed E3 capacity bug (compare Eressea(!) bug #1645)
+    * added "modified owner" to ships
+    * added warning to ControlRelations (GIB KOMMANDO) in some cases
+
+2009-12-09 / Build 364 - stm (stm_@users.sourceforge.net)
+    * correction to E3 rules (region workers, wages, ship capacity)
+    * now writing resources with amount 0 (like trees, peasants)
+
 2009-10-16 / Build 360 - Fiete <sf@fietefietz.de>
 	* replaced ResourceBundle.containsKey in check() in Resources.java
 	* EresseaRelationFactory, transferRelation, itemname: get next token if current tokentext is "

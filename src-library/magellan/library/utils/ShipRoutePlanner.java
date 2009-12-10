@@ -36,14 +36,15 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
  */
 public class ShipRoutePlanner {
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if the ship is compete and ship's owner belongs to a privileged
+   * faction.
    */
   public static boolean canPlan(Ship ship) {
     if (ship.getSize() < ship.getShipType().getMaxSize()) {
       return false;
     }
 
-    return (ship.getOwnerUnit() != null) && ship.getOwnerUnit().getFaction().isPrivileged();
+    return (ship.getModifiedOwnerUnit() != null) && ship.getModifiedOwnerUnit().getFaction().isPrivileged();
   }
 
   /**
@@ -98,7 +99,7 @@ public class ShipRoutePlanner {
     RoutingDialogData v = picker.showRoutingDialog();
 
     if (v != null) {
-      Unit shipOwner = ship.getOwnerUnit();
+      Unit shipOwner = ship.getModifiedOwnerUnit();
 
       if (shipOwner != null) {
         if ((shipOwner.getFaction() != null) && shipOwner.getFaction().isPrivileged()) {

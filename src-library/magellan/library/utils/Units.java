@@ -54,7 +54,7 @@ public class Units {
   
   public static int getCaptainSkillAmount(Ship s) {
     SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN, true);
-    Unit owner = s.getOwnerUnit();
+    Unit owner = s.getModifiedOwnerUnit();
     int captainSkillAmount = 0;
     if (owner!=null){
       Skill sailingSkill = owner.getModifiedSkill(sailingSkillType);

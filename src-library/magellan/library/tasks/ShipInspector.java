@@ -138,7 +138,7 @@ public class ShipInspector extends AbstractInspector {
     Unit owner = s.getOwnerUnit();
     // the problem also belongs to the faction of the new owner...
     Unit newOwner = null;
-    if (owner!=null)
+    if (owner!=null) {
       for (UnitRelation u : owner.getRelations(ControlRelation.class)){
         if (u instanceof ControlRelation){
           ControlRelation ctr = (ControlRelation) u;
@@ -146,6 +146,7 @@ public class ShipInspector extends AbstractInspector {
             newOwner = ctr.target;
         }
       }
+    }
   
     if ((!empty && ((owner != null && Units.isPrivilegedAndNoSpy(owner)) || (newOwner != null && Units
         .isPrivilegedAndNoSpy(newOwner))))
@@ -164,11 +165,11 @@ public class ShipInspector extends AbstractInspector {
       return Collections.emptyList();
 
     List<Problem> problems = new ArrayList<Problem>();
-    if (ship.getOwnerUnit() == null) {
+    if (ship.getModifiedOwnerUnit() == null) {
       return problems;
     }
 
-    List<CoordinateID> modifiedMovement = ship.getOwnerUnit().getModifiedMovement();
+    List<CoordinateID> modifiedMovement = ship.getModifiedOwnerUnit().getModifiedMovement();
 
     if (modifiedMovement.isEmpty()) {
       return problems;
@@ -251,6 +252,10 @@ public class ShipInspector extends AbstractInspector {
     if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
       problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
           .getType(), ship));
+    } else if (ship.getShipType().getMaxPersons()>0 && ship.getModifiedPersonLoad() > (ship.getMaxPersons()*1000)) {
+      // persons overload
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
+          .getType(), ship));
     }
 
     return problems;
@@ -300,7 +305,7 @@ public class ShipInspector extends AbstractInspector {
     if (!(uc instanceof Ship)) {
       return Collections.emptyList();
     }
-    if (uc.getOwnerUnit() == null || !uc.getOwnerUnit().equals(u)) {
+    if (uc.getModifiedOwnerUnit() == null || !uc.getModifiedOwnerUnit().equals(u)) {
       return Collections.emptyList();
     }
 

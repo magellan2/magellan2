@@ -409,7 +409,7 @@ public class UnitContextMenu extends JPopupMenu {
     }
 
     // plan ship route
-    if ((unit.getShip() != null) && unit.equals(unit.getShip().getOwnerUnit())) {
+    if ((unit.getShip() != null) && unit.equals(unit.getShip().getModifiedOwnerUnit())) {
       JMenuItem planShipRoute =
           new JMenuItem(Resources.get("context.unitcontextmenu.menu.planshiproute.caption"));
       planShipRoute.addActionListener(new ActionListener() {

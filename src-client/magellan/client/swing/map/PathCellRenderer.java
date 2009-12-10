@@ -94,9 +94,11 @@ public class PathCellRenderer extends ImageCellRenderer {
 	public void render(Object obj, boolean active, boolean selected) {
 		try {
 			if(obj instanceof Unit) {
-				render((Unit) obj);
+				renderPast((Unit) obj);
+        renderFuture((Unit) obj);
 			} else if(obj instanceof Ship) {
-				render(((Ship) obj).getOwnerUnit());
+				renderPast(((Ship) obj).getOwnerUnit());
+        renderFuture(((Ship) obj).getModifiedOwnerUnit());
       }
 		} catch(Exception e) {
 			PathCellRenderer.log.error(e);
@@ -110,7 +112,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 	 *
 	 * 
 	 */
-	private void render(Unit u) {
+	private void renderPast(Unit u) {
 		if(u == null) {
 			return;
 		}
@@ -124,7 +126,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 			renderPath(u, pastMovement, u.isPastMovementPassive() ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
 		}
-
+	}
+	
+	 private void renderFuture(Unit u) {
 		List<CoordinateID> activeMovement = getModifiedMovement(u);
 
 		if(activeMovement.size() > 0) {
@@ -139,7 +143,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 			if(u.getModifiedShip() != null) {
 				// we are on a ship. try to render movemement from ship owner
-				passiveMovement = getModifiedMovement(u.getModifiedShip().getOwnerUnit());
+				passiveMovement = getModifiedMovement(u.getModifiedShip().getModifiedOwnerUnit());
 			} else {
 				// the unit is not on a ship, search for carriers
 				Collection carriers = u.getCarriers();

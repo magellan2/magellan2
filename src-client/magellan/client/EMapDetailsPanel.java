@@ -330,6 +330,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           if (uc instanceof Faction) {
             modUnit = uc.units().iterator().next();
           } else {
+            // use old owner unit (BENENNE before GIB)
             modUnit = uc.getOwnerUnit();
           }
 
@@ -402,6 +403,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           if (uc instanceof Faction) {
             modUnit = uc.units().iterator().next();
           } else {
+            // use old owner unit (BENENNE before GIB)
             modUnit = uc.getOwnerUnit();
           }
 
@@ -791,7 +793,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void showRegion(Region r) {
     // make editable for privileged units
     setNameAndDescription(r, (r != null)
-        && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(r.getOwnerUnit())));
+        && (isEditAll() || magellan.library.utils.Units.isPrivilegedAndNoSpy(r.getModifiedOwnerUnit())));
 
     // build tree
     appendRegionInfo(r, rootNode, myExpandableNodes);
@@ -3224,44 +3226,33 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // command relations
-    Set<Unit> getters = null;
-    Set<Unit> givers = null;
+    DefaultMutableTreeNode commandNode = null;
     for (Iterator it = u.getRelations(ControlRelation.class).iterator(); it.hasNext();) {
       ControlRelation rel = (ControlRelation) it.next();
-      if (givers == null) {
-        givers = new HashSet<Unit>();
-      }
-      if (getters == null) {
-        getters = new HashSet<Unit>();
+      if (commandNode == null)
+        commandNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
+      expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
+      if (rel.target == u) {
+        Unit u2 = rel.source;
+        UnitNodeWrapper unw;
+        if (rel.warning)
+          unw = nodeWrapperFactory.createUnitNodeWrapper(u2, "(!!!) "+u2);
+        else
+          unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
+        unw.setAdditionalIcon("give");
+        unw.setReverseOrder(true);
+        commandNode.add(new DefaultMutableTreeNode(unw));
       }
       if (rel.source == u) {
-        getters.add(rel.target);
-      }
-      if (rel.target == u) {
-        givers.add(rel.source);
-      }
-    }
-    if (givers != null || getters != null) {
-      DefaultMutableTreeNode commandNode =
-          new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
-      expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
-      if (givers != null) {
-        for (Iterator it = givers.iterator(); it.hasNext();) {
-          Unit u2 = (Unit) it.next();
-          UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-          unw.setAdditionalIcon("give");
-          unw.setReverseOrder(true);
-          commandNode.add(new DefaultMutableTreeNode(unw));
-        }
-      }
-      if (getters != null) {
-        for (Iterator it = getters.iterator(); it.hasNext();) {
-          Unit u2 = (Unit) it.next();
-          UnitNodeWrapper unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
-          unw.setAdditionalIcon("get");
-          unw.setReverseOrder(true);
-          commandNode.add(new DefaultMutableTreeNode(unw));
-        }
+        Unit u2 = rel.target;
+        UnitNodeWrapper unw;
+        if (rel.warning)
+          unw = nodeWrapperFactory.createUnitNodeWrapper(u2, "(!!!) "+u2);
+        else
+          unw = nodeWrapperFactory.createUnitNodeWrapper(u2);
+        unw.setAdditionalIcon("get");
+        unw.setReverseOrder(true);
+        commandNode.add(new DefaultMutableTreeNode(unw));
       }
       parent.add(commandNode);
     }
@@ -3371,7 +3362,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
   private void showBuilding(Building b) {
     setNameAndDescription(b, isEditAll()
-        || magellan.library.utils.Units.isPrivilegedAndNoSpy(b.getOwnerUnit()));
+        || magellan.library.utils.Units.isPrivilegedAndNoSpy(b.getModifiedOwnerUnit()));
 
     appendBuildingInfo(b, rootNode, myExpandableNodes);
   }
@@ -3676,7 +3667,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void showShip(Ship s) {
     setNameAndDescription(s, isEditAll()
-        || magellan.library.utils.Units.isPrivilegedAndNoSpy(s.getOwnerUnit()));
+        || magellan.library.utils.Units.isPrivilegedAndNoSpy(s.getModifiedOwnerUnit()));
 
     appendShipInfo(s, rootNode, myExpandableNodes);
   }
@@ -3960,16 +3951,12 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     boolean warning = false;
     if (s.getShipType().getMaxPersons() > 0) {
-      int maxInmates = s.getShipType().getMaxPersons() * 1000; // 10 GE
+      int silverWeight = data.rules.getGameSpecificStuff().getGameSpecificRules().getSilverPerWeightUnit();
+      int personWeight = 10;
+      int maxInmates = s.getMaxPersons() * silverWeight  * personWeight; // 10 GE
       loadText.append(" -- ");
       // personen
-      int inmates = 0, modInmates = 0;
-      for (Unit u : s.units()) {
-        inmates += u.getPersons() * u.getRace().getWeight() * 100;
-      }
-      for (Unit u : s.modifiedUnits()) {
-        modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
-      }
+      int inmates = s.getPersonLoad(), modInmates = s.getModifiedPersonLoad();
 
       loadText.append(Resources.get("emapdetailspanel.node.persons")).append(": ");
       loadText.append(EMapDetailsPanel.weightNumberFormat.format(new Float(inmates / 100.0F)));
@@ -4024,9 +4011,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     int rad = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(s);
 
     String rangeString = Resources.get("emapdetailspanel.node.range") + ": " + rad;
-    if ((s.getOwnerUnit() != null) && (s.getOwnerUnit().getRace() != null)
-        && s.getOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
-      rangeString += (" (" + s.getOwnerUnit().getRace().getName() + ")");
+    if ((s.getModifiedOwnerUnit() != null) && (s.getModifiedOwnerUnit().getRace() != null)
+        && s.getModifiedOwnerUnit().getRace().getAdditiveShipBonus() != 0) {
+      rangeString += (" (" + s.getModifiedOwnerUnit().getRace().getName() + ")");
     }
 
     parent.add(createSimpleNode(rangeString, "radius"));

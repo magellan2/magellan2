@@ -30,6 +30,7 @@ import magellan.library.Item;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.relation.ControlRelation;
 import magellan.library.relation.EnterRelation;
 import magellan.library.relation.LeaveRelation;
 import magellan.library.relation.UnitContainerRelation;
@@ -121,6 +122,33 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
     this.owner = owner;
   }
 
+  /**
+   * Tries to return the new owner.
+   * TODO: not yet fail-proof
+   * @return
+   */
+  public Unit getModifiedOwnerUnit(){
+    Unit oldOwner = getOwnerUnit();
+    if (oldOwner == null)
+      return null;
+    
+    if (oldOwner.getRelations(LeaveRelation.class).isEmpty()){
+      // if the current owner does not leave container and gives command to a unit who will be on 
+      // the ship, this is the new owner.
+      Unit newOwner = oldOwner;
+      List<UnitRelation> commands = oldOwner.getRelations(ControlRelation.class);
+      for (UnitRelation ur : commands){
+        if (ur.source == oldOwner && ((ControlRelation) ur).target.getModifiedShip()==oldOwner.getShip())
+          newOwner = ((ControlRelation) ur).target;
+        else
+          newOwner = null;
+      }
+      return newOwner;
+    } else 
+      // otherwise it's unclear
+      return null;
+  }
+  
 	/**
 	 * Adds an item to the unitcontainer. If the unitcontainer already has an item of the same type, the item is
 	 * overwritten with the specified item object.

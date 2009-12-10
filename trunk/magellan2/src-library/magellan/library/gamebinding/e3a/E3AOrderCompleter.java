@@ -163,7 +163,8 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN), " "));
 
     if ((getUnit().getSkills() != null) && (getUnit().getSkills().size() > 0)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FORGET), " "));
+      addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FORGET), " ",
+          Completion.DEFAULT_PRIORITY + 1));
     }
 
     if ((getUnit().getBuilding() != null) || (getUnit().getShip() != null)) {

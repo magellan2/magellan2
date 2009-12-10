@@ -342,8 +342,8 @@ public class EresseaOrderCompleter implements Completer {
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ORIGIN), " "));
 
     if ((unit.getSkills() != null) && (unit.getSkills().size() > 0)) {
-      completions
-          .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FORGET), " "));
+      completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_FORGET), " ",
+          Completion.DEFAULT_PRIORITY + 1));
     }
 
     if (hasSkill(unit, EresseaConstants.S_HANDELN) && (region.maxLuxuries() > 0)) {

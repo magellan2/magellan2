@@ -18,7 +18,7 @@ package magellan.library.completion;
  */
 public class Completion {
   
-  /** Field <code>DEFAULT_PRIORITY</code> The default priority value*/
+  /** Field <code>DEFAULT_PRIORITY</code> The default priority value, <em>lower</em> priority comes first*/
   public static final int DEFAULT_PRIORITY=9;
   
 	private String name = null;
@@ -40,7 +40,7 @@ public class Completion {
 	 * Creates a new Completion object.
 	 *
 	 * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
-	 * @param prio The sorting priority, higher priority comes first
+	 * @param prio The sorting priority, <em>lower</em> priority comes first
 	 */
 	public Completion(String text, int prio) {
 		this(text, text, "", prio, 0);
@@ -75,7 +75,7 @@ public class Completion {
 	 * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
 	 * @param postfix This is what should be inserted after the value but should not influence, 
 	 *                for example, sorting
-	 * @param prio The sorting priority
+	 * @param prio The sorting priority, <em>lower</em> priority comes first
 	 */
 	public Completion(String text, String postfix, int prio) {
 		this(text, text, postfix, prio, 0);
@@ -100,7 +100,7 @@ public class Completion {
    * @param text The name that is to be displayed to the user <i>and</i> inserted as value 
    * @param postfix This is what should be inserted after the value but should not influence, 
    *                for example, sorting
-   * @param prio The sorting priority, higher priority comes first
+   * @param prio The sorting priority, <em>lower</em> priority comes first
    * @param cursorOffset Indicates that the cursor is set back this amount of characters
    */
   public Completion(String text, String postfix, int prio, int cursorOffset) {
@@ -114,7 +114,7 @@ public class Completion {
 	 * @param value The value that is inserted if this completion is chosen
 	 * @param postfix This is what should be inserted after the value but should not influence, 
 	 *                for example, sorting
-	 * @param prio The sorting priority, higher priority comes first
+	 * @param prio The sorting priority, <em>lower</em> priority comes first
 	 * @param cursorOffset Indicates that the cursor is set back this amount of characters
 	 */
 	public Completion(String name, String value, String postfix, int prio, int cursorOffset) {
@@ -153,7 +153,7 @@ public class Completion {
 	}
 
 	/**
-	 * Returns the sorting priority.
+	 * Returns the sorting priority (<em>lower</em> priority comes first).
 	 * 
 	 */
 	public int getPriority() {

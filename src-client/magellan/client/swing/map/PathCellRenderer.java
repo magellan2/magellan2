@@ -47,10 +47,8 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * A class for rendering movement paths of objects like ships and units. 
  *
- * @author $Author: $
- * @version $Revision: 389 $
  */
 public class PathCellRenderer extends ImageCellRenderer {
 	private static final Logger log = Logger.getInstance(PathCellRenderer.class);
@@ -97,8 +95,10 @@ public class PathCellRenderer extends ImageCellRenderer {
 				renderPast((Unit) obj);
         renderFuture((Unit) obj);
 			} else if(obj instanceof Ship) {
-				renderPast(((Ship) obj).getOwnerUnit());
-        renderFuture(((Ship) obj).getModifiedOwnerUnit());
+			  if (((Ship) obj).getOwnerUnit()!=null)
+			    renderPast(((Ship) obj).getOwnerUnit());
+			  if (((Ship) obj).getModifiedOwnerUnit()!=null)
+			    renderFuture(((Ship) obj).getModifiedOwnerUnit());
       }
 		} catch(Exception e) {
 			PathCellRenderer.log.error(e);
@@ -106,50 +106,55 @@ public class PathCellRenderer extends ImageCellRenderer {
 	}
 
 	/**
-	 * Checks the orders of the specified unit for movement orders and renders arrows indicating
-	 * the direction the unit is taking. Note that the movement orders may not be abbreviated for
-	 * this to work.
+	 * Renders arrows indication the movement of this unit in the previous round.
 	 *
-	 * 
+	 * @param unit
 	 */
-	private void renderPast(Unit u) {
-		if(u == null) {
+	private void renderPast(Unit unit) {
+		if(unit == null) {
 			return;
 		}
 
 		if(drawPastPath) {
-			List<CoordinateID> pastMovement = u.getPastMovement(data);
+			List<CoordinateID> pastMovement = unit.getPastMovement(data);
 
 			if(PathCellRenderer.log.isDebugEnabled()) {
-				PathCellRenderer.log.debug("render for unit u " + u + " travelled through " + pastMovement);
+				PathCellRenderer.log.debug("render for unit u " + unit + " travelled through " + pastMovement);
 			}
 
-			renderPath(u, pastMovement, u.isPastMovementPassive() ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
+			renderPath(unit, pastMovement, unit.isPastMovementPassive() ? PathCellRenderer.PASSIVEPAST : PathCellRenderer.ACTIVEPAST);
 		}
 	}
 	
-	 private void renderFuture(Unit u) {
-		List<CoordinateID> activeMovement = getModifiedMovement(u);
+	/**
+	 * Checks the orders of the specified unit for movement orders and renders arrows indicating
+   * the direction the unit is taking. Note that the movement orders may not be abbreviated for
+   * this to work.
+   *
+	 * @param unit
+	 */
+	private void renderFuture(Unit unit) {
+		List<CoordinateID> activeMovement = getModifiedMovement(unit);
 
 		if(activeMovement.size() > 0) {
-			renderPath(u, activeMovement, PathCellRenderer.ACTIVE);
-	    List<CoordinateID> additionalMovement = getAdditionalMovement(u);
+			renderPath(unit, activeMovement, PathCellRenderer.ACTIVE);
+	    List<CoordinateID> additionalMovement = getAdditionalMovement(unit);
 			if (drawPastPath && additionalMovement.size()>0)
-			  renderPath(u, additionalMovement, PathCellRenderer.ACTIVEFUTURE);
+			  renderPath(unit, additionalMovement, PathCellRenderer.ACTIVEFUTURE);
 		} else if(drawPassivePath) {
 			// unit does not move itself, check for passive movement
 			// Perhaps it is on a ship?
 			List<CoordinateID> passiveMovement = null;
 
-			if(u.getModifiedShip() != null) {
+			if(unit.getModifiedShip() != null) {
 				// we are on a ship. try to render movemement from ship owner
-				passiveMovement = getModifiedMovement(u.getModifiedShip().getModifiedOwnerUnit());
+				passiveMovement = getModifiedMovement(unit.getModifiedShip().getModifiedOwnerUnit());
 			} else {
 				// the unit is not on a ship, search for carriers
-				Collection carriers = u.getCarriers();
+				Collection carriers = unit.getCarriers();
 
 				if(PathCellRenderer.log.isDebugEnabled()) {
-					PathCellRenderer.log.debug("PathCellRenderer.render: " + u + " has " + carriers.size() +
+					PathCellRenderer.log.debug("PathCellRenderer.render: " + unit + " has " + carriers.size() +
 							  " carriers");
 				}
 
@@ -159,7 +164,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				}
 			}
 
-			renderPath(u, passiveMovement, PathCellRenderer.PASSIVE);
+			renderPath(unit, passiveMovement, PathCellRenderer.PASSIVE);
 		}
 	}
 
@@ -413,9 +418,9 @@ public class PathCellRenderer extends ImageCellRenderer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns {@link Mapper#PLANE_PATH}.
 	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
 	 */
 	@Override
   public int getPlaneIndex() {
@@ -442,9 +447,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#getPreferencesAdapter()
 	 */
 	@Override
   public PreferencesAdapter getPreferencesAdapter() {
@@ -486,12 +490,13 @@ public class PathCellRenderer extends ImageCellRenderer {
 			this.add(chkDrawPastPath, c);
 		}
 
-        public void initPreferences() {
-            // TODO: implement it
-        }
+    public void initPreferences() {
+      // TODO: implement it
+    }
 
 		/**
-		 * DOCUMENT-ME
+		 * 
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
 		 */
 		public void applyPreferences() {
 			source.setDrawPassivePath(chkDrawPassivePath.isSelected());
@@ -499,18 +504,16 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
 		 */
 		public Component getComponent() {
 			return this;
 		}
 
 		/**
-		 * DOCUMENT-ME
 		 *
-		 * 
+		 * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
 		 */
 		public String getTitle() {
 			return source.getName();

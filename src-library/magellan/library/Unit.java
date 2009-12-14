@@ -1127,10 +1127,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void setOrderEditor(CacheableOrderEditor editor);
 
   /**
-   * this function inspects travelthru an travelthruship to find the movement in the past
-   *
+   * This function inspects travelthru an travelthruship to find the movement in the past. This
+   * might not always be correct, as reconstructing the path from thravelthru messages may be
+   * ambigous.
    * 
-   *
    * @return List of coordinates from start to end region.
    */
   public List<CoordinateID> getPastMovement(GameData data);

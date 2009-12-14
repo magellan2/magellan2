@@ -91,7 +91,7 @@ public class UnitContainerNodeWrapper implements CellObject, SupportsClipboard {
         int personWeight = 10;
         int silverPerWeightUnit = 100;
         pFree = (s.getMaxPersons() * personWeight * silverPerWeightUnit - s.getModifiedPersonLoad())/100F;
-        text.append("/");
+        text.append("; ");
         text.append(weightNumberFormat.format(pFree));
       }
 

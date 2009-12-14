@@ -1386,6 +1386,10 @@ public abstract class MagellanFactory {
     if (curShip.getSize() != -1) {
       newShip.setSize(curShip.getSize());
     }
+    
+    if (curShip.getMaxPersons() != -1){
+      newShip.setMaxPersons(curShip.getMaxPersons());
+    }
   }
 
   /**

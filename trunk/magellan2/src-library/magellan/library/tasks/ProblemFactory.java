@@ -24,6 +24,7 @@
 package magellan.library.tasks;
 
 import magellan.library.Faction;
+import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -75,9 +76,9 @@ public class ProblemFactory {
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c,
       int line) {
-    return new SimpleProblem(severity, type, c.getOwner() == null ? null : c.getOwner()
-        .getRegion(), c.getOwner(), c.getOwner() == null ? null : c.getOwner().getFaction(), c,
-        type.getInspector(), type.getMessage(), line);
+    return new SimpleProblem(severity, type,
+        c.getOwner() == null ? null : c.getOwner().getRegion(), c.getOwner(), c.getOwner() == null
+            ? null : c.getOwner().getFaction(), c, type.getInspector(), type.getMessage(), line);
   }
 
   /**
@@ -89,9 +90,15 @@ public class ProblemFactory {
    * @param c
    */
   public static SimpleProblem createProblem(Severity severity, ProblemType type, UnitContainer c) {
-    return new SimpleProblem(severity, type, c.getOwner() == null ? null : c.getOwner()
-        .getRegion(), c.getOwner(), c.getOwner() == null ? null : c.getOwner().getFaction(), c,
-        type.getInspector(), type.getMessage(), -1);
+    Region r = null;
+    if (c instanceof HasRegion) {
+      r = ((HasRegion) c).getRegion();
+    } else {
+      r = c.getOwner() == null ? null : c.getOwner().getRegion();
+    }
+
+    return new SimpleProblem(severity, type, r, c.getOwner(), c.getOwner() == null ? null : c
+        .getOwner().getFaction(), c, type.getInspector(), type.getMessage(), -1);
   }
 
   /**

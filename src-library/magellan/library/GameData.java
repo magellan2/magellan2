@@ -743,6 +743,11 @@ public abstract class GameData implements Cloneable,Addeable {
   public int base = 10;
 
   /**
+   * version number of computer report (CR)
+   */
+  public int version = 64;
+  
+  /**
    * Indicates whether in this report skill points are to be expected or whether
    * they are meaningful, respecitively.
    */

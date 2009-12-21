@@ -924,6 +924,8 @@ public abstract class GameData implements Cloneable,Addeable {
       }
     }
 
+    // version - we take the CR version from the newer report 
+    resultGD.version = newerGD.version;
 
     /**************************** LOCALE ***************************/
     if (sameRound) {

@@ -907,6 +907,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     if (blankPos > 0) {
       version = Integer.parseInt(sc.argv[0].substring(blankPos).trim());
+      world.version = version;
     } else {
       version = 0;
     }

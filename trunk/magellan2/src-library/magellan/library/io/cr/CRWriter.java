@@ -433,7 +433,8 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeVersion(GameData world) throws IOException {
-    write("VERSION 65");
+    // write("VERSION 65");
+    write ("VERSION " + world.version);
     newLine();
 
     // The Echecker of German Atlantis has problems with the locale line

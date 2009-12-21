@@ -1,3 +1,6 @@
+2009-12-10 / Build 366 - Fiete <sf@fietefietz.de>
+	* added version to gamedata to write correct version in CRWriter
+
 2009-12-10 / Build 365 - stm (stm_@users.sourceforge.net)
     * fixed E3 capacity bug (compare Eressea(!) bug #1645)
     * added "modified owner" to ships

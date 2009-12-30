@@ -1,3 +1,6 @@
+2009-12-10 / Build 367 - Fiete <sf@fietefietz.de>
+	* added -1;Waffenbau to e3-rules for goblins (privat bugreport)
+
 2009-12-10 / Build 366 - Fiete <sf@fietefietz.de>
 	* added version to gamedata to write correct version in CRWriter
 

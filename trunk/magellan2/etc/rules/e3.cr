@@ -551,6 +551,7 @@ TALENTBONI
 -2;Straﬂenbau
 -2;Taktik
 -1;Wagenbau
+-1;Waffenbau
 
 RACE "Trolle"
 "Trolle";name

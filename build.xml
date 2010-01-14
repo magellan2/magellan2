@@ -419,7 +419,11 @@
       <classpath refid="magellan.class.path" />
       <link href="http://java.sun.com/j2se/1.5.0/docs/api/" />
       <fileset dir="${basedir}">
-        <include name="**/*.java"/>
+        <include name="**/*.java"/> 
+      	<!-- src-test causes javadoc to crash. Could have something to do with this: http://forums.sun.com/thread.jspa?threadID=5333060&tstart=0
+      	     if you need javadoc for src-test, please investigate! --> 
+        <exclude name="src-test/**"/>
+        <!-- does this do anything at all? -->
         <exclude name="magellan/test/**"/>
         <exclude name="magellan/client/**"/>
       </fileset>

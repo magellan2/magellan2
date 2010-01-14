@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import magellan.client.Client;
+import magellan.client.event.UnitOrdersEvent;
 import magellan.client.swing.DebugDock;
 import magellan.client.utils.ErrorWindow;
 import magellan.library.CoordinateID;
@@ -408,6 +409,7 @@ public class ExtendedCommands {
       
       interpreter.eval(script);
       unit.setOrdersChanged(true);
+      client.getDispatcher().fire(new UnitOrdersEvent(unit, unit));
     } catch (EvalError error) {
       String message = error.getMessage();
       if (message==null || message.length()==0) {

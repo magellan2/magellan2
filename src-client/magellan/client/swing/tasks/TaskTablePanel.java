@@ -941,7 +941,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   /**
-   * @see SelectionListener#selectionChanged(com.eressea.event.SelectionEvent)
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
     if ((e.getSource() == this)) {

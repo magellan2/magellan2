@@ -25,6 +25,7 @@ package magellan.library.gamebinding.e3a;
 
 import java.math.BigDecimal;
 
+import magellan.library.Building;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -32,6 +33,7 @@ import magellan.library.Skill;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaGameSpecificRules;
 import magellan.library.gamebinding.GameSpecificRules;
+import magellan.library.rules.CastleType;
 import magellan.library.rules.Race;
 
 /**
@@ -47,13 +49,42 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
   }
 
   /**
-   * Returns 0.
+   * Returns the tax income
    * 
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
-   *      FIXME maybe return something depending on morale (and biggest castle or watch)
    */
   public Integer getMaxEntertain(Region region) {
-    return Integer.MIN_VALUE;
+    int maxsize = 0;
+    Building maxCastle = null;
+    for (Building building : region.buildings()){
+      if (building.getType() instanceof CastleType){
+        if (building.getSize()>maxsize){
+          maxCastle = building;
+          maxsize = building.getSize();
+        }
+      }
+    }
+    float rate = 0;
+    if (maxCastle==null)
+      rate = 0;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachstube")))
+      rate = .5f;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Wachturm")))
+      rate = 1;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Befestigung")))
+      rate = 1;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Turm")))
+      rate = 2;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Burg")))
+      rate = 3;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Festung")))
+      rate = 4;
+    else if (maxCastle.getBuildingType().equals(getRules().getCastleType("Zitadelle")))
+      rate = 5;
+    
+    rate = Math.min(rate, region.getMorale()/2f);
+    
+    return region.containsTag("mourning")&&region.getTag("mourning").equals("1")?0:(int) (rate*region.getSilver()/100);
   }
 
   /**

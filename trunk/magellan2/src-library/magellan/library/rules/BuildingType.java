@@ -22,7 +22,7 @@ import magellan.library.ID;
 
 
 /**
- * DOCUMENT-ME
+ * Stores attributes for a type of building.
  *
  * @author $Author: $
  * @version $Revision: 203 $
@@ -76,9 +76,9 @@ public class BuildingType extends ConstructibleType {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 *  Registers type as allowed region type for this building.
 	 *
-	 * 
+	 * @param type
 	 */
 	public void addRegionType(RegionType type) {
 		if(regionTypes == null) {
@@ -89,20 +89,16 @@ public class BuildingType extends ConstructibleType {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Returns <code>true</code> if either no RegionType has been registered by {@link #addRegionType(RegionType)} or if at least one RegionType has been registered and type is one of the allowed types.  
 	 *
-	 * 
-	 *
-	 * 
+	 * @param type
 	 */
-	public boolean containsRegionType(RegionType t) {
-		return (regionTypes != null) && regionTypes.containsKey(t.getID());
+	public boolean containsRegionType(RegionType type) {
+		return (regionTypes != null) && regionTypes.containsKey(type.getID());
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns a list of allowed RegionTypes. An empty list indicates that any type is allowed!
 	 */
 	public Collection<RegionType> regionTypes() {
     if (regionTypes != null && regionTypes.values() != null) {

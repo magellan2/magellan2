@@ -885,10 +885,19 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
       parent.add(n);
     }
+    
+    // E3 Morale
     if (r.getMorale() >= 0) {
-      DefaultMutableTreeNode n =
-        createSimpleNode(Resources.get("emapdetailspanel.node.morale", new Object[] { r
-            .getMorale() }), "morale");
+      DefaultMutableTreeNode n;
+      if (r.containsTag("mourning") && r.getTag("mourning").equals("1")) {
+        n =
+            createSimpleNode(Resources.get("emapdetailspanel.node.morale.mourning",
+                new Object[] { r.getMorale() }), "morale");
+      } else {
+        n =
+            createSimpleNode(Resources.get("emapdetailspanel.node.morale", new Object[] { r
+                .getMorale() }), "morale");
+      }
       parent.add(n);
     }
   }

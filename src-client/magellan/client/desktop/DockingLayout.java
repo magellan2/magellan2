@@ -186,6 +186,7 @@ public class DockingLayout {
   public void open(RootWindow window, Properties settings) {
     if (window == null) {
       DockingLayout.log.error("RootWindow is null");
+      throw new NullPointerException("RootWindow is null");
     }
     setRootWindow(window);
     open(window,root);
@@ -233,10 +234,7 @@ public class DockingLayout {
       return loadView(window,root);
     } else {
       List<Element> subnodes = Utils.getChildNodes(root);
-      for (int i=0; i<subnodes.size(); i++) {
-        Element node = subnodes.get(i);
-        return open(window,node);
-      }
+      return open(window, subnodes.get(0));
     }
     return null;
   }

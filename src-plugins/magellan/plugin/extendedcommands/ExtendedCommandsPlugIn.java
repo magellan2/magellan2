@@ -259,6 +259,8 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
         ExtendedCommandsPlugIn.log.info("import commands...");
         break;
       }
+      case UNKNOWN:
+        ExtendedCommandsPlugIn.log.info("unknown commands...");
     }
   }
   

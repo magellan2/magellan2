@@ -429,7 +429,7 @@ import magellan.library.utils.Resources;
       td = new TranslateStroke((Frame) top);
     } else if(top instanceof Dialog) {
       td = new TranslateStroke((Dialog) top);
-    }
+    } else throw new RuntimeException("top level ancestor is neither frame nor dialog.");
 
     td.setVisible(true);
 

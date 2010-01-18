@@ -2344,21 +2344,6 @@ public class EresseaOrderParser implements OrderParser {
       return retVal;
     }
 
-    protected boolean readPflanzeWas(OrderToken token) {
-      boolean retVal = false;
-      token.ttype = OrderToken.TT_KEYWORD;
-
-      OrderToken t = getNextToken();
-
-      // might want to treat these not as keywords but as items...?
-      if (false) {
-        retVal = checkFinal(t);
-      } else {
-        unexpected(t);
-      }
-
-      return retVal;
-    }
   }
 
 // ************* PIRATERIE
@@ -3836,17 +3821,15 @@ public class EresseaOrderParser implements OrderParser {
    * @return
    */
   protected boolean isEmailAddress(String txt) {
-    if (true) {
-      try {
-        new InternetAddress(txt, true);
-      } catch (AddressException e) {
-        return false;
-      }
-      return true;
+    try {
+      new InternetAddress(txt, true);
+    } catch (AddressException e) {
+      return false;
     }
+    return true;
 
     // alternative implementation
-    return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
+    // return Pattern.matches("[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,4}", txt);
   }
 
   public boolean shallComplete(OrderToken token, OrderToken t) {

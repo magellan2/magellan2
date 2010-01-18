@@ -950,26 +950,24 @@ public class Regions {
             cnt++;
           }
         }
-        if (true || coastBitmap <= 0) {
-          // we have no borders...lets see, if we want ice anyway
-          double nextR = r.nextDouble();
-          if (nextR < specialBorderProbability) {
-            // ok, we want to add a random graphic 0..3
-            // putting this info on bit 7 and 8
-            int intR = r.nextInt(4);
-            // this is poor but I have no better idea..sorry
-            switch (intR) {
-            case 1:
-              coastBitmap = coastBitmap | bitMaskArray[7];
-              break;
-            case 2:
-              coastBitmap = coastBitmap | bitMaskArray[6];
-              break;
-            case 3:
-              coastBitmap = coastBitmap | bitMaskArray[6];
-              coastBitmap = coastBitmap | bitMaskArray[7];
-              break;
-            }
+        // lets see, if we want ice anyway
+        double nextR = r.nextDouble();
+        if (nextR < specialBorderProbability) {
+          // ok, we want to add a random graphic 0..3
+          // putting this info on bit 7 and 8
+          int intR = r.nextInt(4);
+          // this is poor but I have no better idea..sorry
+          switch (intR) {
+          case 1:
+            coastBitmap = coastBitmap | bitMaskArray[7];
+            break;
+          case 2:
+            coastBitmap = coastBitmap | bitMaskArray[6];
+            break;
+          case 3:
+            coastBitmap = coastBitmap | bitMaskArray[6];
+            coastBitmap = coastBitmap | bitMaskArray[7];
+            break;
           }
         }
       }

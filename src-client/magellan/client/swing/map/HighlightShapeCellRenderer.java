@@ -121,14 +121,14 @@ public class HighlightShapeCellRenderer extends HexCellRenderer {
 
 		graphics.drawPolygon(p);
 
-		if(1 == 2) {
-			p.translate(1, 0);
-			graphics.drawPolygon(p);
-			p.translate(0, 1);
-			graphics.drawPolygon(p);
-			p.translate(-1, 0);
-			graphics.drawPolygon(p);
-		}
+//    if (1 == 2) {
+//      p.translate(1, 0);
+//      graphics.drawPolygon(p);
+//      p.translate(0, 1);
+//      graphics.drawPolygon(p);
+//      p.translate(-1, 0);
+//      graphics.drawPolygon(p);
+//    }
 	}
 
 	// use this as singleton to this object

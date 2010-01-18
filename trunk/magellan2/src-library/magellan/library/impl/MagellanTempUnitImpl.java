@@ -90,7 +90,7 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
    * Returns the id uniquely identifying this object.
    */
   public UnitID getID(){
-    return (UnitID) super.getID();
+    return super.getID();
   }
 
 }

@@ -1114,7 +1114,7 @@ public abstract class GameData implements Cloneable,Addeable {
     if (olderGD.alliancegroups != null && sameRound) {
       for (AllianceGroup alliance : olderGD.alliancegroups.values()) {
         try {
-          resultGD.addAllianceGroup(MagellanFactory.createAlliance((EntityID) alliance.getID().clone(),
+          resultGD.addAllianceGroup(MagellanFactory.createAlliance(alliance.getID().clone(),
               resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
@@ -1126,7 +1126,7 @@ public abstract class GameData implements Cloneable,Addeable {
       for (AllianceGroup alliance : newerGD.alliancegroups.values()) {
         if (resultGD.getAllianceGroup(alliance.getID())==null){
           try {
-            resultGD.addAllianceGroup(MagellanFactory.createAlliance((EntityID) alliance.getID().clone(),
+            resultGD.addAllianceGroup(MagellanFactory.createAlliance(alliance.getID().clone(),
                 resultGD));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
@@ -1345,17 +1345,17 @@ public abstract class GameData implements Cloneable,Addeable {
       for (Iterator<Unit> iter = olderGD.units().values().iterator(); iter.hasNext();) {
         Unit u = iter.next();
 
-        if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
+          if (sameRound || (newerGD.getUnit(u.getID()) != null)) {
           // TODO (stm): Isn't that nonsense? Doesn't it suffice to add the
           // units of the new report
           // if they are not from the same round?
           try {
             resultGD.addUnit(MagellanFactory.createUnit((UnitID) u.getID().clone()));
-          } catch (CloneNotSupportedException e) {
-            GameData.log.error(e);
-          }
+        } catch (CloneNotSupportedException e) {
+          GameData.log.error(e);
         }
       }
+    }
     }
 
     if (newerGD.units() != null) {

@@ -16,7 +16,6 @@ package magellan.library.rules;
 import java.util.Locale;
 
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Localized;
 import magellan.library.impl.MagellanIdentifiableImpl;

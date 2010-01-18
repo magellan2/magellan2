@@ -149,10 +149,8 @@ import magellan.client.utils.RendererLoader;
 import magellan.client.utils.ResourceSettingsFactory;
 import magellan.client.utils.SelectionHistory;
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
@@ -177,7 +175,6 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
-import magellan.library.utils.Units;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
@@ -408,7 +405,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     List<Container> topLevelComponents = new LinkedList<Container>();
     Map<String, Component> components = initComponents(topLevelComponents);
     
-    dispatcher.addGameDataListener(Units.getGameDataListener());
+    // dispatcher.addGameDataListener(Units.getGameDataListener());
 
     // init desktop
     Client.startWindow.progress(3, Resources.get("clientstart.3"));
@@ -1679,7 +1676,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           // take password from settings but only if it is not an
           // empty string
           String pwd =
-              getProperties().getProperty("Faction.password." + ((EntityID) f.getID()).intValue(),
+              getProperties().getProperty("Faction.password." + (f.getID()).intValue(),
                   null);
 
           if ((pwd != null) && !pwd.equals("")) {
@@ -1703,7 +1700,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
             // check message id (new and old)
             if ((m.getMessageType() != null)
-                && ((((IntegerID) m.getMessageType().getID()).intValue() == 1784377885) || (((IntegerID) m
+                && (((m.getMessageType().getID()).intValue() == 1784377885) || ((m
                     .getMessageType().getID()).intValue() == 19735))) {
               // this message indicates that the password has been
               // changed
@@ -1738,7 +1735,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
                       if (getProperties() != null) {
                         getProperties().setProperty(
-                            "Faction.password." + ((EntityID) f.getID()).intValue(),
+                            "Faction.password." + (f.getID()).intValue(),
                             f.getPassword());
                       }
                     }

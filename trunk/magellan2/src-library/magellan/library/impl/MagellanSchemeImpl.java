@@ -49,7 +49,7 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
    * retrieving and converting the ID object of this region.
    */
   public CoordinateID getCoordinate() {
-          return (CoordinateID) this.getID();
+          return this.getID();
   }
 
   /**

@@ -43,7 +43,6 @@ import javax.swing.border.TitledBorder;
 
 import magellan.client.event.EventDispatcher;
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.event.GameDataEvent;
@@ -206,9 +205,9 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
 
     DefaultListModel model = new DefaultListModel();
 
-    if (faction.getData().getCoordinateTranslationMap((EntityID) faction.getID()) != null) {
+    if (faction.getData().getCoordinateTranslationMap(faction.getID()) != null) {
       for (CoordinateID translation : faction.getData().getCoordinateTranslationMap(
-          (EntityID) faction.getID()).values()) {
+          faction.getID()).values()) {
         model.addElement(translation);
       }
     }

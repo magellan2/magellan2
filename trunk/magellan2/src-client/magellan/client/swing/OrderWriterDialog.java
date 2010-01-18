@@ -1098,7 +1098,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
     settings.setProperty(PropertiesHelper.ORDERWRITER_WRITE_TAGS_AS_VORLAGE_COMMENT + suffix,
         String.valueOf(chkWriteUnitTagsAsVorlageComment.isSelected()));
 
-    settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, ((EntityID) ((Faction) cmbFaction
+    settings.setProperty(PropertiesHelper.ORDERWRITER_FACTION, (((Faction) cmbFaction
         .getSelectedItem()).getID()).intValue()
         + "");
 

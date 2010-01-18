@@ -981,7 +981,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           if ((activeRegion.schemes() != null) && !activeRegion.schemes().isEmpty()) {
             for (Iterator<Scheme> iter = activeRegion.schemes().iterator(); iter.hasNext();) {
               Scheme scheme = iter.next();
-              Region r = data.getRegion((CoordinateID) scheme.getID());
+              Region r = data.getRegion(scheme.getID());
 
               if (r != null) {
                 regionSchemeList.add(r);

@@ -25,7 +25,6 @@ import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -1869,7 +1868,7 @@ public class EresseaOrderCompleter implements Completer {
         Regions.getAllNeighbours(data.regions(), region.getID(), 2, null);
 
     CoordinateID trans =
-        data.getCoordinateTranslation((EntityID) unit.getFaction().getID(),
+        data.getCoordinateTranslation(unit.getFaction().getID(),
             region.getCoordinate().z);
     if (trans != null) {
       trans = (new CoordinateID(0, 0, trans.z)).subtract(trans);

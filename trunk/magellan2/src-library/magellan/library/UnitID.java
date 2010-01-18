@@ -99,7 +99,7 @@ public class UnitID extends EntityID {
     if ((data.getCurTempID() == 0) && (parentUnit != null)) {
       // use old system: same id as parent unit
 
-      int i = ((UnitID) parentUnit.getID()).intValue();
+      int i = (parentUnit.getID()).intValue();
 
       while (data.tempUnits().get(UnitID.createUnitID(-i, data.base)) != null) {
         i = UnitID.getNextDecimalID(i, data.base, true);

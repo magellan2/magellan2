@@ -358,7 +358,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 					    // store the password to the settings even if it is invalid
 					    settings.setProperty("Faction.password." +
-					                         ((EntityID) f.getID()).intValue(),
+					                         (f.getID()).intValue(),
 					                         (f.getPassword() != null) ? f.getPassword() : "");
 
 					    // if the pw is valid increase this faction's trust level
@@ -374,16 +374,16 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					  }
 					  
 					  if (dialog.isOwner()) {
-              data.setOwnerFaction((EntityID) f.getID());
+              data.setOwnerFaction(f.getID());
             } else if (data.getOwnerFaction()!=null && data.getOwnerFaction().equals(f.getID())) {
               data.setOwnerFaction(null);
             }
 					  
 					  Collection<CoordinateID> translations = dialog.getTranslations();
 					  if (translations!=null){
-	            data.clearTranslations((EntityID) f.getID());
+	            data.clearTranslations(f.getID());
 					    for (CoordinateID translation : translations){
-		            data.setCoordinateTranslation((EntityID) f.getID(), translation);
+		            data.setCoordinateTranslation(f.getID(), translation);
 					    }
 					  }
 	          // notify game data listeners
@@ -570,7 +570,7 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 
 		if((lstFaction.getModel().getSize() > 0) && (lstFaction.getSelectedValue() != null)) {
 			settings.setProperty("FactionStatsDialog.selFacID",
-								 ((EntityID) ((Faction) lstFaction.getSelectedValue()).getID()).intValue() +
+								 (((Faction) lstFaction.getSelectedValue()).getID()).intValue() +
 								 "");
 		}
 	}

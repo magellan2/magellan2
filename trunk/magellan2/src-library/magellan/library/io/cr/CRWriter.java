@@ -48,7 +48,6 @@ import magellan.library.Skill;
 import magellan.library.Spell;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
-import magellan.library.UnitID;
 import magellan.library.io.file.FileType;
 import magellan.library.rules.EresseaDate;
 import magellan.library.rules.MessageType;
@@ -767,7 +766,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     Faction f = alliance.getFaction();
-    write("ALLIANZ " + ((EntityID) f.getID()).intValue());
+    write("ALLIANZ " + (f.getID()).intValue());
     newLine();
 
     if (f.getName() != null) {
@@ -872,11 +871,11 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeFaction(Faction faction) throws IOException {
-    if (((EntityID) faction.getID()).intValue() == -1) {
+    if ((faction.getID()).intValue() == -1) {
       return;
     }
 
-    write("PARTEI " + ((EntityID) faction.getID()).intValue());
+    write("PARTEI " + (faction.getID()).intValue());
     newLine();
 
     // if (faction.password != null) {
@@ -1026,7 +1025,7 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    */
   public void writeShip(Ship ship) throws IOException {
-    write("SCHIFF " + ((EntityID) ship.getID()).intValue());
+    write("SCHIFF " + (ship.getID()).intValue());
     newLine();
 
     if (ship.getName() != null) {
@@ -1059,11 +1058,11 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (ship.getOwner() != null && shallExportUnit(ship.getOwner())) {
-      write(((UnitID) ship.getOwner().getID()).intValue() + ";Kapitaen");
+      write((ship.getOwner().getID()).intValue() + ";Kapitaen");
       newLine();
 
       if (ship.getOwner().getFaction() != null) {
-        write(((EntityID) ship.getOwner().getFaction().getID()).intValue() + ";Partei");
+        write((ship.getOwner().getFaction().getID()).intValue() + ";Partei");
         newLine();
       }
     }
@@ -1133,7 +1132,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     UnitContainerType type = building.getType();
-    write("BURG " + ((EntityID) building.getID()).intValue());
+    write("BURG " + (building.getID()).intValue());
     newLine();
 
     if (type != null) {
@@ -1154,11 +1153,11 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (building.getOwner() != null && shallExportUnit(building.getOwner())) {
-      write(((UnitID) building.getOwner().getID()).intValue() + ";Besitzer");
+      write((building.getOwner().getID()).intValue() + ";Besitzer");
       newLine();
 
       if (building.getOwner().getFaction() != null) {
-        write(((EntityID) building.getOwner().getFaction().getID()).intValue() + ";Partei");
+        write((building.getOwner().getFaction().getID()).intValue() + ";Partei");
         newLine();
       }
     }
@@ -1381,7 +1380,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     unitsWritten++;
-    write("EINHEIT " + ((UnitID) unit.getID()).intValue());
+    write("EINHEIT " + (unit.getID()).intValue());
     newLine();
 
     if (unit.getName() != null) {
@@ -1397,7 +1396,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (unit.getFaction() != null) {
-      int id = ((EntityID) unit.getFaction().getID()).intValue();
+      int id = (unit.getFaction().getID()).intValue();
 
       if (id != -1) {
         write(id + ";Partei");
@@ -1444,12 +1443,12 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (unit.getShip() != null && includeShips) {
-      write(((EntityID) unit.getShip().getID()).intValue() + ";Schiff");
+      write((unit.getShip().getID()).intValue() + ";Schiff");
       newLine();
     }
 
     if (unit.getBuilding() != null && includeBuildings) {
-      write(((EntityID) unit.getBuilding().getID()).intValue() + ";Burg");
+      write((unit.getBuilding().getID()).intValue() + ";Burg");
       newLine();
     }
 
@@ -1461,7 +1460,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (getIncludeUnitDetails() && shallExportUnit(unit.getFollows())) {
-      write(((UnitID) unit.getFollows().getID()).intValue() + ";folgt");
+      write((unit.getFollows().getID()).intValue() + ";folgt");
       newLine();
     }
 
@@ -2130,7 +2129,7 @@ public class CRWriter extends BufferedWriter {
       return;
     }
 
-    if ((msgType.getID() == null) || (((IntegerID) msgType.getID()).intValue() < 0)) {
+    if ((msgType.getID() == null) || ((msgType.getID()).intValue() < 0)) {
       CRWriter.log.warn("CRWriter.writeMessageType(): invalid ID");
 
       return;

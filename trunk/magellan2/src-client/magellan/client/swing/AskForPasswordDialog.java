@@ -47,7 +47,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import magellan.client.Client;
-import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -201,7 +200,7 @@ public class AskForPasswordDialog extends JDialog implements ActionListener {
         }
 
         if (client.getProperties() != null) {
-          client.getProperties().setProperty("Faction.password." + ((EntityID) faction.getID()).intValue(),faction.getPassword());
+          client.getProperties().setProperty("Faction.password." + (faction.getID()).intValue(),faction.getPassword());
         }
         client.getDispatcher().fire(new GameDataEvent(this, data, true));
       }

@@ -418,7 +418,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
               // it would be cleaner to compare UnitID
               // objects here but that's too expensive 
-              if(((UnitID) u.getID()).intValue() == i) {
+              if((u.getID()).intValue() == i) {
                 node = new DefaultMutableTreeNode(msg);
                 parent.add(node);
               }
@@ -441,7 +441,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
     DefaultMutableTreeNode node = null;
     DefaultMutableTreeNode subNode = null;
 
-    CoordinateID c = (CoordinateID) b.getID();
+    CoordinateID c = b.getID();
     Region r = data.getRegion(c);
 
     if(r != null) {

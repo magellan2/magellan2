@@ -3235,13 +3235,13 @@ public class CRParser implements RulesIO, GameDataIO {
       Faction firstFaction2 = getFirstFaction();
       if (getConfiguration() != null && getConfiguration().equals("Standard")
           && firstFaction2 != null) {
-        newData.setOwnerFaction((EntityID) firstFaction2.getID());
+        newData.setOwnerFaction(firstFaction2.getID());
         CRParser.log.info("setOwner of Report to: " + firstFaction2.toString());
         // set translation to (0,0,...) in all existing layers
         Set<Integer> layers = new HashSet<Integer>();
         for (CoordinateID coord : newData.regions().keySet()) {
           if (!layers.contains(coord.z)) {
-            newData.setCoordinateTranslation((EntityID) firstFaction2.getID(), new CoordinateID(0,
+            newData.setCoordinateTranslation(firstFaction2.getID(), new CoordinateID(0,
                 0, coord.z));
             layers.add(coord.z);
           }

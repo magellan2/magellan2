@@ -90,7 +90,7 @@ public class EresseaPostProcessor {
           for (Message message : faction.getMessages()) {
 
             if (message.getMessageType() != null) {
-              switch ((((IntegerID) message.getMessageType().getID()).intValue())) {
+              switch (((message.getMessageType().getID()).intValue())) {
               case 1511758069:
               case 18362:
 
@@ -117,7 +117,7 @@ public class EresseaPostProcessor {
                       r.setHerb(type);
                     }
 
-                    if ((((IntegerID) message.getMessageType().getID()).intValue()) == 1349776898) {
+                    if (((message.getMessageType().getID()).intValue()) == 1349776898) {
                       // a certain amount of herbs has been detected in a region
                       String amount = message.getAttributes().get("amount");
 
@@ -149,7 +149,7 @@ public class EresseaPostProcessor {
                         log.warn("message " + message.getID() + " seems to belong to "
                             + msg2.getAttributes().get("spy") + " and " + spy);
                       } else {
-                        switch ((((IntegerID) msg2.getMessageType().getID()).intValue())) {
+                        switch (((msg2.getMessageType().getID()).intValue())) {
                         case 387085007: // Y gehört der Partei F an 
                         case 467205397: // Y beherrscht ...
                         case 743495578: // Im Gepäck von Y sind ...

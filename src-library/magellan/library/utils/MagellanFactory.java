@@ -1517,7 +1517,7 @@ public abstract class MagellanFactory {
 
     if (curUnit.getAlias() != null) {
       try {
-        resultUnit.setAlias((UnitID) curUnit.getAlias().clone());
+        resultUnit.setAlias(curUnit.getAlias().clone());
       } catch (CloneNotSupportedException e) {
       }
     }
@@ -1795,7 +1795,7 @@ public abstract class MagellanFactory {
 
     if (curUnit.getTempID() != null) {
       try {
-        resultUnit.setTempID((UnitID) curUnit.getTempID().clone());
+        resultUnit.setTempID(curUnit.getTempID().clone());
       } catch (CloneNotSupportedException e) {
         MagellanFactory.log.error(e);
       }

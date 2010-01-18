@@ -456,7 +456,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           for (Faction f : getFactions()) {
             writer.writeCharacters("\n");
             writer.writeEmptyElement("faction");
-            writer.writeAttribute("id", String.valueOf(((EntityID) f.getID()).intValue()));
+            writer.writeAttribute("id", String.valueOf((f.getID()).intValue()));
           }
           for (Region region : regions) {
             writer.writeCharacters("\n");

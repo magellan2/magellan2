@@ -1383,7 +1383,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
     Iterator<Battle> it1 = f.getBattles().iterator();
     while (it1.hasNext()) {
       Battle actBattle = it1.next();
-      Region actR = data.getRegion((CoordinateID) actBattle.getID());
+      Region actR = data.getRegion(actBattle.getID());
       if (actR == null || !regionList.contains(actR)) {
         // we have to remove the battle
         if (battleRemoveList == null) {

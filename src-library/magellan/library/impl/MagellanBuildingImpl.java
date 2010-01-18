@@ -17,7 +17,6 @@ import magellan.library.Building;
 import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
-import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.rules.BuildingType;
 

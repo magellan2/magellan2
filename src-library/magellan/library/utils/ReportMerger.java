@@ -741,7 +741,7 @@ public class ReportMerger extends Object {
         Faction firstFaction = newReport.getData().factions().values().iterator().next();
         Object result = ui.input(Resources.getFormatted("util.reportmerger.msg.inputowner.msg", newReport.getFile().getName()), Resources.get("util.reportmerger.msg.inputowner.title"), newReport.getData().factions().values().toArray(), firstFaction);
         if (result!=null && result instanceof Faction) {
-          newReport.getData().setOwnerFaction((EntityID) ((Faction)result).getID());
+          newReport.getData().setOwnerFaction(((Faction)result).getID());
         }
       }
     }

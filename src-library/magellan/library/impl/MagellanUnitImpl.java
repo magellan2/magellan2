@@ -945,7 +945,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * @throws IllegalArgumentException If <code>key</code> is negative
 	 */
 	public TempUnit createTemp(UnitID key) {
-		if(((UnitID) key).intValue() >= 0) {
+		if((key).intValue() >= 0) {
 			throw new IllegalArgumentException("Unit.createTemp(): cannot create temp unit with non-negative ID.");
 		}
 
@@ -1272,7 +1272,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 			MagellanUnitImpl clone = null;
 
 			try {
-				clone = new MagellanUnitImpl((UnitID) u.getID().clone());
+				clone = new MagellanUnitImpl(u.getID().clone());
 				clone.persons = u.getPersons();
 				clone.race = u.race;
 				clone.realRace = u.realRace;
@@ -2484,7 +2484,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 							token = ct.getNextToken();
 
 							try {
-							  int base = ((UnitID) this.getID()).getRadix();
+							  int base = (this.getID()).getRadix();
 							  int idInt = IDBaseConverter.parse(token.getText(), base);
 								UnitID orderTempID = UnitID.createUnitID(idInt * -1, base);
 

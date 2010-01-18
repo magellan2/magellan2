@@ -15,7 +15,6 @@ package magellan.library.utils.comparator;
 
 import java.util.Comparator;
 
-import magellan.library.EntityID;
 import magellan.library.Unit;
 
 
@@ -77,8 +76,8 @@ public class UnitPreferredFactionComparator implements Comparator<Unit> {
 	 */
 	public int compare(Unit o1, Unit o2) {
 		int retVal = 0;
-		int id1 = ((EntityID) o1.getFaction().getID()).intValue();
-		int id2 = ((EntityID) o2.getFaction().getID()).intValue();
+		int id1 = (o1.getFaction().getID()).intValue();
+		int id2 = (o2.getFaction().getID()).intValue();
 
 		if(id1 == factionID) {
 			if(id2 == factionID) {

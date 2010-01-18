@@ -58,7 +58,6 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
-import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Region;
@@ -470,14 +469,14 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       /* Translation node */
       if (f.getID() instanceof EntityID) {
-        Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap((EntityID) f.getID());
+        Map<Integer, CoordinateID> map = data.getCoordinateTranslationMap(f.getID());
         if (map != null) {
           currentNode =
               new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
                   .get("factionstatspanel.node.translations"), "coordinatetranslation"));
           SortedSet<Integer> layers = new TreeSet<Integer>(map.keySet());
           for (Integer i : layers) {
-            CoordinateID translation = data.getCoordinateTranslation((EntityID) f.getID(), i);
+            CoordinateID translation = data.getCoordinateTranslation(f.getID(), i);
             DefaultMutableTreeNode translationNode =
                 new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(
                     (new java.text.MessageFormat(Resources.get("factionstatspanel.node.layer")))
@@ -769,7 +768,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         if (msg.getMessageType() == null || msg.getMessageType().getID() == null)
           continue;
 
-        int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
+        int msgID = (msg.getMessageType().getID()).intValue();
         try {
           if ((msgID == 771334452) || (msgID == 2097)) {
             // xyz verdient ... [durch Unterhaltung | ]
@@ -914,7 +913,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             for (Iterator<Message> iterM = actR.getMessages().iterator(); iterM.hasNext();) {
               Message actM = iterM.next();
               if ((actM.getMessageType() != null) && (actM.getMessageType().getID() != null)) {
-                int msgID = ((IntegerID) actM.getMessageType().getID()).intValue();
+                int msgID = (actM.getMessageType().getID()).intValue();
                 if (msgID == 1682429624) {
                   // Almosen
                   // check, ob from unsere Faction ist
@@ -1421,7 +1420,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       if (faction.getMessages() != null) {
         for (Iterator<Message> i = faction.getMessages().iterator(); i.hasNext();) {
           Message msg = i.next();
-          int msgID = ((IntegerID) msg.getMessageType().getID()).intValue();
+          int msgID = (msg.getMessageType().getID()).intValue();
 
           // check whether the message belongs to one of the selected regions
           if (msg.getAttributes() != null) {

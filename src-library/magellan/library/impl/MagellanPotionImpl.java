@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Item;
 import magellan.library.Potion;
 import magellan.library.utils.OrderedHashtable;
@@ -39,7 +40,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
 	 *
 	 * 
 	 */
-	public MagellanPotionImpl(ID id) {
+	public MagellanPotionImpl(IntegerID id) {
 		super(id);
 	}
 
@@ -162,5 +163,12 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
    */
   public int getAttributeSize() {
     return 0;
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

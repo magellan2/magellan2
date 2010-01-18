@@ -107,7 +107,7 @@ public class OrderReader {
           token = tokenizer.nextToken();
 
           try {
-            ID fID = EntityID.createEntityID(token, data.base);
+            EntityID fID = EntityID.createEntityID(token, data.base);
             Faction f = data.getFaction(fID);
 
             if (f != null) {
@@ -127,7 +127,7 @@ public class OrderReader {
     }
   }
 
-	private void readFaction(ID id) throws IOException {
+	private void readFaction(EntityID id) throws IOException {
 		Faction faction = data.getFaction(id);
 
 		if(faction == null) {
@@ -211,7 +211,7 @@ public class OrderReader {
 			} else if(Resources.getOrderTranslation(EresseaConstants.O_UNIT, currentLocale).startsWith(token)) {
 				token = tokenizer.nextToken();
 
-				ID unitID = null;
+				UnitID unitID = null;
 
 				try {
 					unitID = UnitID.createUnitID(token, data.base);

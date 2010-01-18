@@ -90,4 +90,9 @@ public interface Group extends Named, Taggable, Addeable {
   public String toString();
 
 
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
+
 }

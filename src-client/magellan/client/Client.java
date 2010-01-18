@@ -177,6 +177,7 @@ import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SelfCleaningProperties;
 import magellan.library.utils.TrustLevels;
+import magellan.library.utils.Units;
 import magellan.library.utils.UserInterface;
 import magellan.library.utils.Utils;
 import magellan.library.utils.VersionInfo;
@@ -406,6 +407,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     List<Container> topLevelComponents = new LinkedList<Container>();
     Map<String, Component> components = initComponents(topLevelComponents);
+    
+    dispatcher.addGameDataListener(Units.getGameDataListener());
 
     // init desktop
     Client.startWindow.progress(3, Resources.get("clientstart.3"));

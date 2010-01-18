@@ -14,6 +14,7 @@
 package magellan.library.impl;
 
 import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.ID;
@@ -38,7 +39,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 	/**
 	 * Creates the Object for a building.
 	 */
-	public MagellanBuildingImpl(ID id, GameData data) {
+	public MagellanBuildingImpl(EntityID id, GameData data) {
 		super(id, data);
 	}
 
@@ -159,4 +160,11 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
 			return this.trueBuildingType + ": " + getName() + " (" + id + "), " + this.getType() + " (" + this.getSize() + ")";
 		}
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public EntityID getID(){
+    return (EntityID) super.getID();
+  }
 }

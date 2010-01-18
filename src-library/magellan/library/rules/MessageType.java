@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import magellan.library.GameData;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Localized;
 import magellan.library.impl.MagellanIdentifiableImpl;
 
@@ -37,7 +38,7 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
 	 *
 	 * 
 	 */
-	public MessageType(ID id) {
+	public MessageType(IntegerID id) {
 		this(id, null);
 	}
 
@@ -47,7 +48,7 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
 	 * 
 	 * 
 	 */
-	public MessageType(ID id, String pattern) {
+	public MessageType(IntegerID id, String pattern) {
 		super(id);
 		setPattern(pattern);
 	}
@@ -170,5 +171,12 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
   @Override
   public String toString() {
     return "MessageType:{id:"+getID()+",section:"+section+",pattern:"+pattern+"}";
+  }
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

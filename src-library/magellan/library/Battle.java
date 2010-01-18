@@ -44,4 +44,12 @@ public interface Battle extends Identifiable {
 	 * 		   standard BATTLE block.
 	 */
 	public boolean isBattleSpec();
+	
+  /**
+   * Returns the id uniquely identifying this object.
+   *
+   * @see magellan.library.Identifiable#getID()
+   */
+  public CoordinateID getID();
+	
 }

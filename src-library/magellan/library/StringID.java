@@ -147,7 +147,7 @@ public class StringID implements ID {
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
 	@Override
-  public Object clone() throws CloneNotSupportedException {
+  public StringID clone() throws CloneNotSupportedException {
 		// pavkovic 2003.07.08: we dont really clone this object as StringID are immutable after creation
 		return this;
 	}

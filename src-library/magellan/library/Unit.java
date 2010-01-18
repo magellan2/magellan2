@@ -225,8 +225,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public UnitID getAlias();
 
   /**
-   * Returns the item of the specified type if the unit owns such an item. If
-   * not, null is returned.
+   * Returns the item of the specified type if the unit owns such an item, otherwise
+   * <code>null</code>.
    */
   public Item getItem(ItemType type);
 
@@ -406,7 +406,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @throws IllegalArgumentException
    */
-  public TempUnit createTemp(ID key);
+  public TempUnit createTemp(UnitID key);
   
   /**
    * Removes a temp unit with this unit as the parent completely from the game
@@ -1142,5 +1142,10 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public boolean isPastMovementPassive();
 
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public UnitID getID();
 
 }

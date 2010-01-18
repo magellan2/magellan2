@@ -14,7 +14,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
@@ -72,7 +71,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * @param _data
    */
   // FIXME(stm) I don't like this reference to GameData here
-  public MagellanSpellImpl(ID id, GameData _data) {
+  public MagellanSpellImpl(StringID id, GameData _data) {
     super(id);
     this.data = _data;
   }
@@ -81,8 +80,8 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * @see magellan.library.Unique#getID()
    */
   @Override
-  public ID getID() {
-    return id; // StringID.create(super.getName());
+  public StringID getID() {
+    return (StringID) super.getID(); // StringID.create(super.getName());
   }
 
   /**

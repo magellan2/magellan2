@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import magellan.library.Battle;
-import magellan.library.ID;
+import magellan.library.CoordinateID;
 import magellan.library.Message;
 
 
@@ -37,7 +37,7 @@ public class MagellanBattleImpl extends MagellanIdentifiableImpl implements Batt
 	 *
 	 * @param id an unique identifier for this battle.
 	 */
-	public MagellanBattleImpl(ID id) {
+	public MagellanBattleImpl(CoordinateID id) {
 		super(id);
 		messages = new LinkedList<Message>();
 	}
@@ -49,7 +49,7 @@ public class MagellanBattleImpl extends MagellanIdentifiableImpl implements Batt
 	 * @param spec indicates that the CR representation of this battle is a BATTLESPEC block in the
 	 * 		  computer report.
 	 */
-	public MagellanBattleImpl(ID id, boolean spec) {
+	public MagellanBattleImpl(CoordinateID id, boolean spec) {
 		this(id);
 		this.isBattleSpec = true;
 	}
@@ -83,4 +83,12 @@ public class MagellanBattleImpl extends MagellanIdentifiableImpl implements Batt
 	public boolean isBattleSpec() {
 		return this.isBattleSpec;
 	}
+
+  /**
+   * @see magellan.library.Unique#getID()
+   */
+  @Override
+  public CoordinateID getID() {
+    return (CoordinateID) super.getID(); // StringID.create(super.getName());
+  }
 }

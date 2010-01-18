@@ -15,9 +15,9 @@ package magellan.library.impl;
 
 import java.util.Collections;
 
-import magellan.library.ID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
+import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.Race;
 import magellan.library.utils.Resources;
@@ -36,7 +36,7 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
   /**
    * Creates a new TempUnit object.
    */
-  public MagellanTempUnitImpl(ID id, Unit parent) {
+  public MagellanTempUnitImpl(UnitID id, Unit parent) {
     super(id);
     this.parent = parent;
 
@@ -85,4 +85,12 @@ public class MagellanTempUnitImpl extends MagellanUnitImpl implements TempUnit {
     else
       return tempRace;
   }
+  
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public UnitID getID(){
+    return (UnitID) super.getID();
+  }
+
 }

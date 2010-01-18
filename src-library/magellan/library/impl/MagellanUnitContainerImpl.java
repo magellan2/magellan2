@@ -87,7 +87,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	protected Cache cache;
 
 	/**
-	 * The items carried by this unitcontainer. The keys are the IDs of the item's type, the values are the
+	 * The items carried by this UnitContainer. The keys are the IDs of the item's type, the values are the
 	 * Item objects themselves.
 	 */
 	protected Map<ID,Item> items = null;
@@ -150,7 +150,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   }
   
 	/**
-	 * Adds an item to the unitcontainer. If the unitcontainer already has an item of the same type, the item is
+	 * Adds an item to the UnitContainer. If the UnitContainer already has an item of the same type, the item is
 	 * overwritten with the specified item object.
 	 *
 	 * 
@@ -168,7 +168,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 	}
 
 	/**
-	 * Returns all the items this unit possesses.
+	 * Returns all the items this container possesses.
 	 *
 	 * @return a collection of Item objects.
 	 */

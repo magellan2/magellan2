@@ -45,6 +45,7 @@ import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.HotSpot;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
@@ -97,19 +98,19 @@ import magellan.library.utils.logging.Logger;
 public abstract class MagellanFactory {
   private static final Logger log = Logger.getInstance(MagellanFactory.class);
 
-  public static Faction createFaction(ID id, GameData data) {
+  public static Faction createFaction(EntityID id, GameData data) {
     return new MagellanFactionImpl(id, data);
   }
 
-  public static Group createGroup(ID id, GameData data) {
+  public static Group createGroup(IntegerID id, GameData data) {
     return new MagellanGroupImpl(id, data);
   }
 
-  public static Group createGroup(ID id, GameData data, String name) {
+  public static Group createGroup(IntegerID id, GameData data, String name) {
     return new MagellanGroupImpl(id, data, name);
   }
 
-  public static Group createGroup(ID id, GameData data, String name, Faction faction) {
+  public static Group createGroup(IntegerID id, GameData data, String name, Faction faction) {
     return new MagellanGroupImpl(id, data, name, faction);
   }
 
@@ -117,15 +118,15 @@ public abstract class MagellanFactory {
     return new MagellanMessageImpl(text);
   }
 
-  public static Message createMessage(ID id) {
+  public static Message createMessage(IntegerID id) {
     return new MagellanMessageImpl(id);
   }
 
-  public static Message createMessage(ID id, String text) {
+  public static Message createMessage(IntegerID id, String text) {
     return new MagellanMessageImpl(id, text);
   }
 
-  public static Message createMessage(ID id, MessageType type, Map<String, String> attributes) {
+  public static Message createMessage(IntegerID id, MessageType type, Map<String, String> attributes) {
     return new MagellanMessageImpl(id, type, attributes);
   }
 
@@ -137,11 +138,11 @@ public abstract class MagellanFactory {
     return new MagellanRegionImpl(id, data);
   }
 
-  public static Ship createShip(ID id, GameData data) {
+  public static Ship createShip(EntityID id, GameData data) {
     return new MagellanShipImpl(id, data);
   }
 
-  public static Unit createUnit(ID id) {
+  public static Unit createUnit(UnitID id) {
     return new MagellanUnitImpl(id);
   }
 
@@ -150,51 +151,51 @@ public abstract class MagellanFactory {
    * @param data
    * @return
    */
-  public static Spell createSpell(ID id, GameData data) {
+  public static Spell createSpell(StringID id, GameData data) {
     return new MagellanSpellImpl(id, data);
   }
 
-  public static Battle createBattle(ID id) {
+  public static Battle createBattle(CoordinateID id) {
     return new MagellanBattleImpl(id);
   }
 
-  public static Battle createBattle(ID id, boolean spec) {
+  public static Battle createBattle(CoordinateID id, boolean spec) {
     return new MagellanBattleImpl(id, spec);
   }
 
-  public static Border createBorder(ID id) {
+  public static Border createBorder(IntegerID id) {
     return new MagellanBorderImpl(id);
   }
 
-  public static Border createBorder(ID id, int direction, String type, int buildratio) {
+  public static Border createBorder(IntegerID id, int direction, String type, int buildratio) {
     return new MagellanBorderImpl(id, direction, type, buildratio);
   }
 
-  public static Building createBuilding(ID id, GameData data) {
+  public static Building createBuilding(EntityID id, GameData data) {
     return new MagellanBuildingImpl(id, data);
   }
 
-  public static CombatSpell createCombatSpell(ID id) {
+  public static CombatSpell createCombatSpell(IntegerID id) {
     return new MagellanCombatSpellImpl(id);
   }
 
-  public static HotSpot createHotSpot(ID id) {
+  public static HotSpot createHotSpot(IntegerID id) {
     return new MagellanHotSpotImpl(id);
   }
 
-  public static Island createIsland(ID id, GameData data) {
+  public static Island createIsland(IntegerID id, GameData data) {
     return new MagellanIslandImpl(id, data);
   }
 
-  public static Potion createPotion(ID id) {
+  public static Potion createPotion(IntegerID id) {
     return new MagellanPotionImpl(id);
   }
 
-  public static Scheme createScheme(ID id) {
+  public static Scheme createScheme(CoordinateID id) {
     return new MagellanSchemeImpl(id);
   }
 
-  public static TempUnit createTempUnit(ID id, Unit parent) {
+  public static TempUnit createTempUnit(UnitID id, Unit parent) {
     return new MagellanTempUnitImpl(id, parent);
   }
 
@@ -295,7 +296,7 @@ public abstract class MagellanFactory {
         Group newGroup = null;
 
         try {
-          newGroup = MagellanFactory.createGroup((ID) curGroup.getID().clone(), newGD);
+          newGroup = MagellanFactory.createGroup(curGroup.getID().clone(), newGD);
         } catch (CloneNotSupportedException e) {
           throw new NullPointerException("cannot happen");
         }
@@ -358,12 +359,12 @@ public abstract class MagellanFactory {
 
           try {
             Battle newBattle =
-                MagellanFactory.createBattle((ID) curBattle.getID().clone(), curBattle
+                MagellanFactory.createBattle(curBattle.getID().clone(), curBattle
                     .isBattleSpec());
 
             for (Iterator msgs = curBattle.messages().iterator(); msgs.hasNext();) {
               Message curMsg = (Message) msgs.next();
-              Message newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+              Message newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
               MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
               newBattle.messages().add(newMsg);
             }
@@ -391,7 +392,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -894,7 +895,7 @@ public abstract class MagellanFactory {
 
         try {
           newBorder =
-              MagellanFactory.createBorder((ID) curBorder.getID().clone(),
+              MagellanFactory.createBorder(curBorder.getID().clone(),
                   curBorder.getDirection(), curBorder.getType(), curBorder.getBuildRatio());
         } catch (CloneNotSupportedException e) {
         }
@@ -921,7 +922,7 @@ public abstract class MagellanFactory {
         if (!curBorderPresent) {
           // add border to result region
           Border newBorder = null;
-          ID newID = Regions.getNewBorderID(resultRegion, curBorder);
+          IntegerID newID = Regions.getNewBorderID(resultRegion, curBorder);
 
           newBorder =
               MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder.getType(),
@@ -1189,7 +1190,7 @@ public abstract class MagellanFactory {
 
         try {
           if (newScheme == null) {
-            newScheme = MagellanFactory.createScheme((ID) curScheme.getID().clone());
+            newScheme = MagellanFactory.createScheme(curScheme.getID().clone());
             resultRegion.addScheme(newScheme);
           }
 
@@ -1226,7 +1227,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1245,7 +1246,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1264,7 +1265,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1283,7 +1284,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1302,7 +1303,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1326,7 +1327,7 @@ public abstract class MagellanFactory {
           Message newMsg = null;
 
           try {
-            newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+            newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
           } catch (CloneNotSupportedException e) {
           }
 
@@ -1556,7 +1557,7 @@ public abstract class MagellanFactory {
         CombatSpell newCS = null;
 
         try {
-          newCS = MagellanFactory.createCombatSpell((ID) curCS.getID().clone());
+          newCS = MagellanFactory.createCombatSpell(curCS.getID().clone());
         } catch (CloneNotSupportedException e) {
           throw new RuntimeException("should never happen");
         }
@@ -1832,7 +1833,7 @@ public abstract class MagellanFactory {
         Message newMsg = null;
 
         try {
-          newMsg = MagellanFactory.createMessage((ID) curMsg.getID().clone());
+          newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
         } catch (CloneNotSupportedException e) {
         }
 
@@ -2040,9 +2041,9 @@ public abstract class MagellanFactory {
     }
 
     // search for the races of the factions in the report.
-    Map<ID, Faction> factions = data.factions();
+    Map<EntityID, Faction> factions = data.factions();
 
-    for (ID id : factions.keySet()) {
+    for (EntityID id : factions.keySet()) {
       Faction faction = factions.get(id);
 
       // if the race is already set in the report ignore this algorithm

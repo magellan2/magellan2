@@ -30,4 +30,8 @@ public interface Scheme extends Named {
    */
   public CoordinateID getCoordinate();
 	
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public CoordinateID getID();
 }

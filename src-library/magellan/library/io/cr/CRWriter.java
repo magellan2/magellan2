@@ -840,7 +840,7 @@ public class CRWriter extends BufferedWriter {
    *          class <tt>Faction</tt>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeFactions(Map<ID, Faction> map) throws IOException {
+  public void writeFactions(Map<EntityID, Faction> map) throws IOException {
     if (map == null) {
       return;
     }
@@ -2638,7 +2638,7 @@ public class CRWriter extends BufferedWriter {
    *          class <tt>Island</tt>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeIslands(Map<ID, Island> map) throws IOException {
+  public void writeIslands(Map<IntegerID, Island> map) throws IOException {
     if (map == null) {
       return;
     }

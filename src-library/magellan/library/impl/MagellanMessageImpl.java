@@ -71,7 +71,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 */
 	public Map<String,String> attributes = null;
 
-	/*
+	/**
 	 * this is a helper static variable so we only have one reference (tricky, eh?)
 	 */
 	private static final IntegerID ambiguousID = IntegerID.create(-1);
@@ -90,7 +90,7 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
 	 *
 	 * 
 	 */
-	public MagellanMessageImpl(ID id) {
+	public MagellanMessageImpl(IntegerID id) {
 		this(id, null, null, null);
 	}
 
@@ -461,5 +461,16 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    */
   public int getAttributeSize() {
     return 0;
+  }
+  
+  /**
+   * Returns an ID for this message. NOTE: This is not always unique, there are messages with
+   * {@link #ambiguousID}.
+   * 
+   * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
+   */
+  @Override
+  public IntegerID getID() {
+    return (IntegerID) super.getID();
   }
 }

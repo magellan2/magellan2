@@ -165,4 +165,9 @@ public interface Spell extends Described, Localized {
    * @return a SpellSyntax object
    */
   public SpellSyntax getSpellSyntax();
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID();
 }

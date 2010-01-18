@@ -18,6 +18,7 @@ import java.util.List;
 
 import magellan.library.HotSpot;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 
 /**
  * A class encapsulating a hot spot, which represents a region of interest on the map.
@@ -30,7 +31,7 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
 	 *
 	 * 
 	 */
-	public MagellanHotSpotImpl(ID id) {
+	public MagellanHotSpotImpl(IntegerID id) {
 		super(id);
 	}
 
@@ -97,5 +98,12 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
    */
   public int getAttributeSize() {
     return 0;
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

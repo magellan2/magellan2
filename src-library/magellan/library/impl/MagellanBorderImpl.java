@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import magellan.library.Border;
-import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.utils.Direction;
 
 
@@ -48,7 +48,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
 	 *
 	 * @param id the id of the border
 	 */
-	public MagellanBorderImpl(ID id) {
+	public MagellanBorderImpl(IntegerID id) {
 		this(id, Direction.DIR_INVALID, null, -1);
 	}
 
@@ -60,7 +60,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
 	 * @param type the type of the border
 	 * @param buildRatio indicates, to what extend this border type is completed (e.g. street)
 	 */
-	public MagellanBorderImpl(ID id, int direction, String type, int buildRatio) {
+	public MagellanBorderImpl(IntegerID id, int direction, String type, int buildRatio) {
 		super(id);
 		this.direction = direction;
 		this.type = type;
@@ -151,5 +151,12 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
    */
   public int getAttributeSize() {
     return 0;
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import magellan.library.CoordinateID;
-import magellan.library.ID;
 import magellan.library.Scheme;
 
 
@@ -31,7 +30,7 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
 	 *
 	 * 
 	 */
-	public MagellanSchemeImpl(ID id) {
+	public MagellanSchemeImpl(CoordinateID id) {
 		super(id);
 	}
 
@@ -86,5 +85,12 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
    */
   public int getAttributeSize() {
     return 0;
+  }
+
+  /**
+   * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
+   */
+  public CoordinateID getID(){
+    return (CoordinateID) super.getID();
   }
 }

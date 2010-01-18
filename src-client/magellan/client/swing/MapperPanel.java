@@ -80,7 +80,6 @@ import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.CoordinateID;
 import magellan.library.HasRegion;
 import magellan.library.HotSpot;
-import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Region;
@@ -754,7 +753,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     CoordinateID center = mapper.getCenter(scpMapper.getViewport().getViewRect());
 
     if (center != null) {
-      ID id = getNewHotSpotID();
+      IntegerID id = getNewHotSpotID();
 
       if (id == null) {
         MapperPanel.log.warn("MapperPanel.assignHotSpot(): unable to determine free id for new hot spot!");
@@ -863,8 +862,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * @return an integer the Integer representation of which is not already used
    *         as a key in the current game data's hot spot map.
    */
-  private ID getNewHotSpotID() {
-    ID i = null;
+  private IntegerID getNewHotSpotID() {
+    IntegerID i = null;
 
     do {
       i = IntegerID.create((int) (Math.random() * Integer.MAX_VALUE));

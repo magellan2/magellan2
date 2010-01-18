@@ -49,6 +49,7 @@ import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
+import magellan.library.utils.Units;
 
 // Fiete 20080806: prepare for loosing special info in CR
 // pre eressearound 570+(?) we have ;silber as region tag
@@ -830,112 +831,37 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns the items of all units that are stationed in this region and
-   * belonging to a faction that has at least a privileged trust level. The
-   * amount of the items of a particular item type are added up, so two units
-   * with 5 pieces of silver yield one silver item of amount 10 here.
+   * Returns the items of all units that are stationed in this region and belonging to a faction
+   * that has at least a privileged trust level. <br>
+   * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
+   * The amount of the items of a particular item type are added up, so two units with 5 pieces of
+   * silver yield one silver item of amount 10 here.
+   * 
+   * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)} instead.
    */
   public Collection<Item> items() {
-    if (!hasCache() || (getCache().regionItems == null)) {
-      refreshItems();
-    }
-
-    if (getCache().regionItems != null && getCache().regionItems.values() != null) {
-      return Collections.unmodifiableCollection(getCache().regionItems.values());
-    } else {
-      return Collections.emptyList();
-    }
+    return Units.getContainerPrivilegedUnitItems(this);
   }
 
   /**
    * Returns the items of all units that are stationed in this region The amount
    * of the items of a particular item type are added up, so two units with 5
    * pieces of silver yield one silver item of amount 10 here.
+   * 
+   * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
   public Collection<Item> allItems() {
-    if (!hasCache() || (getCache().allRegionItems == null)) {
-      refreshAllItems();
-    }
-
-    if (getCache().allRegionItems != null && getCache().allRegionItems.values() != null) {
-      return Collections.unmodifiableCollection(getCache().allRegionItems.values());
-    } else {
-      return Collections.emptyList();
-    }
+    return Units.getContainerAllUnitItems(this);
   }
 
   /**
-   * Returns a specific item from the items() collection identified by the item
-   * type.
+   * Returns a specific item from the {@link #items()} collection identified by the item
+   * type or <code>null</code> if no such item exists in the region.
+   * 
+   * @deprecated Use {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)} instead.
    */
   public Item getItem(ItemType type) {
-    if (!hasCache() || (getCache().regionItems == null)) {
-      refreshItems();
-    }
-
-    return ((getCache() != null) && (getCache().regionItems != null))
-        ? (Item) getCache().regionItems.get(type.getID()) : null;
-  }
-
-  /**
-   * Updates the cache of items owned by privileged factions in this region.
-   * Fiete 20061224: ...and the factions with "GIVE" alliances too.
-   */
-  private void refreshItems() {
-    if (getCache().regionItems != null) {
-      getCache().regionItems.clear();
-    } else {
-      getCache().regionItems = new Hashtable<ID, Item>();
-    }
-
-    for (Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
-      Unit u = iter.next();
-
-      // if(u.getFaction().isPrivileged()) {
-      if (u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
-        for (Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-          Item item = (Item) unitItemIterator.next();
-          Item i = getCache().regionItems.get(item.getItemType().getID());
-
-          if (i == null) {
-            i = new Item(item.getItemType(), 0);
-            getCache().regionItems.put(item.getItemType().getID(), i);
-          }
-
-          i.setAmount(i.getAmount() + item.getAmount());
-        }
-      }
-    }
-  }
-
-  /**
-   * Updates the cache of items owned by all factions in this region.
-   * 
-   * @author Fiete
-   */
-  private void refreshAllItems() {
-    if (getCache().allRegionItems != null) {
-      getCache().allRegionItems.clear();
-    } else {
-      getCache().allRegionItems = new Hashtable<ID, Item>();
-    }
-
-    for (Iterator iter = units().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
-
-      for (Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-        Item item = (Item) unitItemIterator.next();
-        Item i = getCache().allRegionItems.get(item.getItemType().getID());
-
-        if (i == null) {
-          i = new Item(item.getItemType(), 0);
-          getCache().allRegionItems.put(item.getItemType().getID(), i);
-        }
-
-        i.setAmount(i.getAmount() + item.getAmount());
-      }
-
-    }
+    return Units.getContainerPrivilegedUnitItem(this, type);
   }
 
   /**

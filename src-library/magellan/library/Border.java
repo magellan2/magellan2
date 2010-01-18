@@ -67,4 +67,12 @@ public interface Border extends Identifiable {
    * @return Border object as string.
    */
   public String toString();
+  
+  /**
+   * Returns the id uniquely identifying this object.
+   *
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
+
 }

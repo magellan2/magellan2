@@ -51,4 +51,8 @@ public interface Island extends Described,Addeable {
    */
   public void setRegions(Map<CoordinateID,Region> r);
   
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
 }

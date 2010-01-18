@@ -43,7 +43,6 @@ import magellan.client.swing.map.RenderingPlane;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.HotSpot;
-import magellan.library.ID;
 import magellan.library.IntegerID;
 import magellan.library.Region;
 import magellan.library.event.GameDataEvent;
@@ -343,7 +342,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
         levelSign.addActionListener(new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             MapperPanel mp = (MapperPanel)client.getDesktop().getManagedComponents().get("MAP");
-            ID id = IntegerID.create(e.getActionCommand());
+            IntegerID id = IntegerID.create(e.getActionCommand());
             HotSpot h = data.getHotSpot(id);
             if (h!=null){
               mp.showHotSpot(h);
@@ -597,7 +596,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 
 		if(!found) {
-			ID id;
+			IntegerID id;
 
 			while(true) {
 				id = IntegerID.create((int) (Math.random() * Integer.MAX_VALUE));

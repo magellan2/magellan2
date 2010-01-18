@@ -20,6 +20,7 @@ import java.util.Map;
 import magellan.library.Alliance;
 import magellan.library.AllianceGroup;
 import magellan.library.Battle;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -155,7 +156,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 * 
 	 * 
 	 */
-	public MagellanFactionImpl(ID id, GameData data) {
+	public MagellanFactionImpl(EntityID id, GameData data) {
 		super(id, data);
 	}
 
@@ -615,6 +616,14 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    */
   public void setTreasury(int silver) {
     this.factionTreasury = silver;
+  }
+
+  
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public EntityID getID(){
+    return (EntityID) super.getID(); 
   }
 
 }

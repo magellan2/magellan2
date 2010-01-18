@@ -267,4 +267,12 @@ public class UnitID extends EntityID {
       }
     }
   }
+  
+  /**
+   * @see magellan.library.EntityID#clone()
+   */
+  @Override
+  public UnitID clone() throws CloneNotSupportedException {
+    return this;
+  }
 }

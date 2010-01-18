@@ -126,7 +126,7 @@ public class IntegerID implements ID {
    * @throws CloneNotSupportedException Never
    */
   @Override
-  public Object clone() throws CloneNotSupportedException {
+  public IntegerID clone() throws CloneNotSupportedException {
     // pavkovic 2003.07.08: we dont really clone this object as IntegerID is unchangeable after
     // creation
     return this;

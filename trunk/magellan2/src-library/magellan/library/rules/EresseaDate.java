@@ -82,14 +82,14 @@ public class EresseaDate extends Date {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the epoch ("Zeitalter").
    */
   public int getEpoch() {
     return this.epoch;
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the epoch ("Zeitalter").
    */
   public void setEpoch(int newEpoch) {
     this.epoch = newEpoch;
@@ -103,7 +103,10 @@ public class EresseaDate extends Date {
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a (usually localized) string representation of the date.
+   * 
+   * @see magellan.library.rules.Date#toString(int) Either {@link Date#TYPE_LONG},
+   *      {@link Date#TYPE_LONG}, or {@link Date#TYPE_PHRASE}.
    */
   public String toString(int iDateType) {
     String strDate = "";
@@ -135,10 +138,15 @@ public class EresseaDate extends Date {
       // second age
       int iDate2 = iDate;
 
-      if (iDate2 >= 184) {
-        iDate2 -= 184;
+      if (getEpoch()==2){
+        if (iDate2 >= 184) {
+          iDate2 -= 184;
+        }
+      } else if (getEpoch()==3){
+        iDate2 -=1;
       }
 
+      
       switch (iDateType) {
       default:
       case Date.TYPE_SHORT: {
@@ -289,7 +297,7 @@ public class EresseaDate extends Date {
   }
 
   /**
-   * DOCUMENT-ME
+   * Creates a clone.
    */
   public magellan.library.ID copy() {
     return new EresseaDate(this.iDate);
@@ -306,8 +314,12 @@ public class EresseaDate extends Date {
 
     int time = iDate;
 
-    if (time >= 184) {
-      time -= 184;
+    if (getEpoch()==2){
+      if (time >= 184) {
+        time -= 184;
+      }
+    }else if (getEpoch()==3) {
+      time -=1;
     }
 
     switch ((time / 3) % 9) {
@@ -334,7 +346,4 @@ public class EresseaDate extends Date {
     }
   }
 
-  // /////////////////////////////
-  // INTERNATIONALIZATION Code //
-  // /////////////////////////////
 }

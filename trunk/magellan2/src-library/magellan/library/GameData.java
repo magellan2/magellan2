@@ -189,7 +189,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the units map
    */
-  public abstract Map<ID, Unit> units();
+  public abstract Map<UnitID, Unit> units();
 
   /**
    * A collection of tempUnits. The keys are <tt>Integer</tt> objects containg
@@ -197,7 +197,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the tempunits map
    */
-  public abstract Map<ID, TempUnit> tempUnits();
+  public abstract Map<UnitID, TempUnit> tempUnits();
 
   /**
    * All regions in this game data. The keys are <tt>Coordinate</tt> objects
@@ -216,7 +216,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the factions map
    */
-  public abstract Map<ID, Faction> factions();
+  public abstract Map<EntityID, Faction> factions();
 
   /**
    * All buildings in this game data. The keys are <tt>Integer</tt> objects
@@ -225,7 +225,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the buildings map
    */
-  public abstract Map<ID, Building> buildings();
+  public abstract Map<EntityID, Building> buildings();
 
   /**
    * All ships in this game data. The keys are <tt>Integer</tt> objects containing
@@ -233,7 +233,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the ships map
    */
-  public abstract Map<ID, Ship> ships();
+  public abstract Map<EntityID, Ship> ships();
 
   /**
    * All message types in this game data. The keys are <tt>Integer</tt> objects
@@ -242,7 +242,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the messageType map
    */
-  public abstract Map<ID, MessageType> msgTypes();
+  public abstract Map<IntegerID, MessageType> msgTypes();
 
   /**
    * All magic spells in this game data. The keys are <tt>Integer</tt> objects
@@ -251,7 +251,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the spells map
    */
-  public abstract Map<ID, Spell> spells();
+  public abstract Map<StringID, Spell> spells();
 
   /**
    * All potions in this game data. The keys are <tt>Integer</tt> objects
@@ -260,7 +260,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the potions map
    */
-  public abstract Map<ID, Potion> potions();
+  public abstract Map<IntegerID, Potion> potions();
 
   /**
    * All islands in this game data. The keys are <tt>Integer</tt> objects
@@ -269,14 +269,14 @@ public abstract class GameData implements Cloneable,Addeable {
    * 
    * @return returns the islands map
    */
-  public abstract Map<ID, Island> islands();
+  public abstract Map<IntegerID, Island> islands();
 
   /**
    * All HotSpots existing for this game data. Hot spots are used to quickly
    * access regions of interest on the map. The keys are Integer representations
    * of the hot spot id, the values are Coordinate objects.
    */
-  public abstract Map<ID, HotSpot> hotSpots();
+  public abstract Map<IntegerID, HotSpot> hotSpots();
 
   /**
    * Represents the table of translations from the report.
@@ -643,7 +643,7 @@ public abstract class GameData implements Cloneable,Addeable {
    *         no hot spot with the specified id or if hotSpots() is <tt>null</tt>
    *         .
    */
-  public HotSpot getHotSpot(ID id) {
+  public HotSpot getHotSpot(IntegerID id) {
     return (hotSpots() == null) ? null : (HotSpot) hotSpots().get(id);
   }
 
@@ -653,7 +653,7 @@ public abstract class GameData implements Cloneable,Addeable {
    * @param id
    *          the id of the hot spot to be removed.
    */
-  public void removeHotSpot(ID id) {
+  public void removeHotSpot(IntegerID id) {
     if (hotSpots() != null) {
       hotSpots().remove(id);
     }
@@ -971,7 +971,7 @@ public abstract class GameData implements Cloneable,Addeable {
         MessageType newMT = null;
 
         try {
-          newMT = new MessageType((ID) mt.getID().clone());
+          newMT = new MessageType(mt.getID().clone());
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -988,7 +988,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (newMT == null) {
           try {
-            newMT = new MessageType((ID) mt.getID().clone());
+            newMT = new MessageType(mt.getID().clone());
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1007,7 +1007,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Spell newSpell = null;
 
         try {
-          newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(), resultGD);
+          newSpell = MagellanFactory.createSpell(spell.getID().clone(), resultGD);
 
           MagellanFactory.mergeSpell(olderGD, spell, resultGD, newSpell);
           resultGD.addSpell(newSpell);
@@ -1024,7 +1024,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         try {
           if (newSpell == null) {
-            newSpell = MagellanFactory.createSpell((ID) spell.getID().clone(), resultGD);
+            newSpell = MagellanFactory.createSpell(spell.getID().clone(), resultGD);
           }
 
           MagellanFactory.mergeSpell(newerGD, spell, resultGD, newSpell);
@@ -1043,7 +1043,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Potion newPotion = null;
 
         try {
-          newPotion = MagellanFactory.createPotion((ID) potion.getID().clone());
+          newPotion = MagellanFactory.createPotion(potion.getID().clone());
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1060,7 +1060,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (newPotion == null) {
           try {
-            newPotion = MagellanFactory.createPotion((ID) potion.getID().clone());
+            newPotion = MagellanFactory.createPotion(potion.getID().clone());
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1142,7 +1142,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Faction f = iter.next();
 
         try {
-          resultGD.addFaction(MagellanFactory.createFaction((ID) f.getID().clone(), resultGD));
+          resultGD.addFaction(MagellanFactory.createFaction(f.getID().clone(), resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1155,7 +1155,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (resultGD.getFaction(f.getID()) == null) {
           try {
-            resultGD.addFaction(MagellanFactory.createFaction((ID) f.getID().clone(), resultGD));
+            resultGD.addFaction(MagellanFactory.createFaction(f.getID().clone(), resultGD));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1201,7 +1201,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Island i = iter.next();
 
         try {
-          resultGD.addIsland(MagellanFactory.createIsland((ID) i.getID().clone(), resultGD));
+          resultGD.addIsland(MagellanFactory.createIsland(i.getID().clone(), resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1214,7 +1214,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (olderGD.getIsland(i.getID()) == null) {
           try {
-            resultGD.addIsland(MagellanFactory.createIsland((ID) i.getID().clone(), resultGD));
+            resultGD.addIsland(MagellanFactory.createIsland(i.getID().clone(), resultGD));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1229,7 +1229,7 @@ public abstract class GameData implements Cloneable,Addeable {
         HotSpot h = iter.next();
 
         try {
-          resultGD.setHotSpot(MagellanFactory.createHotSpot((ID) h.getID().clone()));
+          resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID().clone()));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1242,7 +1242,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (resultGD.getHotSpot(h.getID()) == null) {
           try {
-            resultGD.setHotSpot(MagellanFactory.createHotSpot((ID) h.getID().clone()));
+            resultGD.setHotSpot(MagellanFactory.createHotSpot(h.getID().clone()));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1257,7 +1257,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Building b = iter.next();
 
         try {
-          resultGD.addBuilding(MagellanFactory.createBuilding((ID) b.getID().clone(), resultGD));
+          resultGD.addBuilding(MagellanFactory.createBuilding(b.getID().clone(), resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1287,7 +1287,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
               if ((curRegion == null) || curRegion.getVisibility().lessThan(Visibility.TRAVEL)) {
                 try {
-                  resultGD.addBuilding(MagellanFactory.createBuilding((ID) oldBuilding.getID().clone(),
+                  resultGD.addBuilding(MagellanFactory.createBuilding(oldBuilding.getID().clone(),
                       resultGD));
                 } catch (CloneNotSupportedException e) {
                   GameData.log.error(e);
@@ -1311,7 +1311,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Ship s = iter.next();
 
         try {
-          resultGD.addShip(MagellanFactory.createShip((ID) s.getID().clone(), resultGD));
+          resultGD.addShip(MagellanFactory.createShip(s.getID().clone(), resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1324,7 +1324,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (resultGD.getShip(s.getID()) == null) {
           try {
-            resultGD.addShip(MagellanFactory.createShip((ID) s.getID().clone(), resultGD));
+            resultGD.addShip(MagellanFactory.createShip(s.getID().clone(), resultGD));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1350,7 +1350,7 @@ public abstract class GameData implements Cloneable,Addeable {
           // units of the new report
           // if they are not from the same round?
           try {
-            resultGD.addUnit(MagellanFactory.createUnit((ID) u.getID().clone()));
+            resultGD.addUnit(MagellanFactory.createUnit((UnitID) u.getID().clone()));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }
@@ -1364,7 +1364,7 @@ public abstract class GameData implements Cloneable,Addeable {
 
         if (resultGD.getUnit(u.getID()) == null) {
           try {
-            resultGD.addUnit(MagellanFactory.createUnit((ID) u.getID().clone()));
+            resultGD.addUnit(MagellanFactory.createUnit(u.getID().clone()));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
           }

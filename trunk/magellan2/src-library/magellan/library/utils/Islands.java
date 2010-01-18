@@ -47,13 +47,13 @@ public class Islands {
 	 *
 	 * 
 	 */
-	public static Map<ID,Island> getIslands(UserInterface ui, Rules rules, Map<CoordinateID,Region> regions, Map<ID,Island> islands, GameData data) {
+	public static Map<IntegerID,Island> getIslands(UserInterface ui, Rules rules, Map<CoordinateID,Region> regions, Map<IntegerID,Island> islands, GameData data) {
 		if((regions == null) || (regions.size() == 0)) {
-			return new Hashtable<ID, Island>();
+			return new Hashtable<IntegerID, Island>();
 		}
     
 		if(islands == null) {
-			islands = new Hashtable<ID,Island>();
+			islands = new Hashtable<IntegerID,Island>();
 		}
     
     if (ui == null) {

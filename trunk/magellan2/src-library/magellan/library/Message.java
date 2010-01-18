@@ -54,6 +54,7 @@ public interface Message extends Identifiable {
    * pairs of the attributes' keys and values.
    */
   public Map<String,String> getAttributes();
+  
   /**
    * The attributes of this message. The keys are the keys of the attribute, the values object
    * pairs of the attributes' keys and values.
@@ -138,4 +139,12 @@ public interface Message extends Identifiable {
 	 * DOCUMENT-ME
 	 */
 	public String toString();
+
+  /**
+   * Returns an ID for this message. NOTE: This is not always unique, there are messages with
+   * {@link #ambiguousID}.
+   * 
+   * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
+   */
+  public IntegerID getID();
 }

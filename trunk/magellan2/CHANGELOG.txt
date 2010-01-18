@@ -1,3 +1,7 @@
+2009-12-10 / Build 369 - stm (stm_@users.sourceforge.net)
+    * show E3 mourning; overload maxEntertain with E3 tax income
+    * made implicit ID type of report objects explicit (e.g. EntityID for Faction instead of ID)
+
 2009-12-10 / Build 367 - Fiete <sf@fietefietz.de>
 	* added -1;Waffenbau to e3-rules for goblins (privat bugreport)
 

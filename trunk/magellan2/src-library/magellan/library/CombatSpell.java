@@ -68,4 +68,8 @@ public interface CombatSpell extends Identifiable {
 	 */
 	public String toString();
 
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
 }

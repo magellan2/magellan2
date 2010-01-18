@@ -100,4 +100,12 @@ public interface Building extends UnitContainer, HasRegion {
 	 * @return the Building object as string.
 	 */
 	public String toString();
+
+  /**
+   * Returns the id uniquely identifying this object.
+   *
+   * @see magellan.library.Identifiable#getID()
+   */
+  public EntityID getID();
+
 }

@@ -125,4 +125,16 @@ public class EntityID extends IntegerID {
     int oInt = ((EntityID) o).intValue();
     return thisInt > oInt ? 1 : thisInt == oInt ? 0 : -1;
   }
+
+  /**
+   * Returns a copy of this EntityID object.
+   * 
+   * @throws CloneNotSupportedException Never
+   */
+  @Override
+  public EntityID clone() throws CloneNotSupportedException {
+    // pavkovic 2003.07.08: we dont really clone this object as IntegerID is unchangeable after
+    // creation
+    return this;
+  }
 }

@@ -399,7 +399,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @throws IOException DOCUMENT-ME
    */
   private void parseMessageType(GameData data) throws IOException {
-    ID id = IntegerID.create(sc.argv[0].substring(12).trim());
+    IntegerID id = IntegerID.create(sc.argv[0].substring(12).trim());
     MessageType mt = data.getMsgType(id);
 
     if (mt == null) {
@@ -498,7 +498,7 @@ public class CRParser implements RulesIO, GameDataIO {
     sc.getNextToken(); // skip the block
 
     while (!sc.eof && !sc.isBlock) {
-      ID id = StringID.create(sc.argv[0]);
+      StringID id = StringID.create(sc.argv[0]);
       Spell s = world.getSpell(id);
 
       if (s == null) {
@@ -525,7 +525,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param unit the unit that should get the combat spells set
    */
   private void parseUnitCombatSpells(Unit unit) throws IOException {
-    ID id = IntegerID.create(sc.argv[0].substring(12).trim());
+    IntegerID id = IntegerID.create(sc.argv[0].substring(12).trim());
     CombatSpell s = MagellanFactory.createCombatSpell(id);
     s.setUnit(unit);
 
@@ -539,7 +539,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
     while (!sc.eof) {
       if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("name")) {
-        ID spellID = StringID.create(sc.argv[0]);
+        StringID spellID = StringID.create(sc.argv[0]);
         Spell spell = world.getSpell(spellID);
 
         if (spell == null) {
@@ -575,7 +575,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private List<Message> parseMessages(List<Message> list) throws IOException {
     while (sc.isBlock && sc.argv[0].startsWith("MESSAGE ")) {
-      ID id = IntegerID.create(sc.argv[0].substring(8));
+      IntegerID id = IntegerID.create(sc.argv[0].substring(8));
       Message msg = MagellanFactory.createMessage(id);
 
       // read message attributes
@@ -583,7 +583,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
       while (!sc.eof && !sc.isBlock) {
         if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("type")) {
-          ID typeID = IntegerID.create(sc.argv[0]);
+          IntegerID typeID = IntegerID.create(sc.argv[0]);
           MessageType mt = world.getMsgType(typeID);
 
           if (mt == null) {
@@ -769,7 +769,7 @@ public class CRParser implements RulesIO, GameDataIO {
    */
   private void parsePotions() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("TRANK ")) {
-      ID id = IntegerID.create(sc.argv[0].substring(6));
+      IntegerID id = IntegerID.create(sc.argv[0].substring(6));
       Potion potion = world.getPotion(id);
 
       if (potion == null) {
@@ -815,7 +815,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseIslands() throws IOException {
     while (!sc.eof && sc.isBlock && sc.argv[0].startsWith("ISLAND ")) {
       // ID id = StringID.create(sc.argv[0].substring(7));
-      ID id = IntegerID.create(sc.argv[0].substring(7));
+      IntegerID id = IntegerID.create(sc.argv[0].substring(7));
       Island island = world.getIsland(id);
 
       if (island == null) {
@@ -936,7 +936,7 @@ public class CRParser implements RulesIO, GameDataIO {
           world.base = 10;
         }
         /**
-         * asuing we have already the gamename we can make an additional check Buck Tracking wrong
+         * assuming we have already the gamename we can make an additional check Buck Tracking wrong
          * base...
          */
         if (world.getGameName() != null) {
@@ -2027,7 +2027,7 @@ public class CRParser implements RulesIO, GameDataIO {
 
   private Map<ID, Group> parseGroup(Map<ID, Group> groups, Faction faction, int sortIndex)
       throws IOException {
-    ID id = IntegerID.create(sc.argv[0].substring(7));
+    IntegerID id = IntegerID.create(sc.argv[0].substring(7));
     Group group = null;
 
     if (groups == null) {
@@ -2326,7 +2326,7 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2)
           && (sc.argv[1].equalsIgnoreCase("verkleidung") || sc.argv[1]
               .equalsIgnoreCase("anderepartei"))) {
-        ID fid = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
+        EntityID fid = EntityID.createEntityID(Integer.parseInt(sc.argv[0]), world.base);
 
         /*
          * currently (2004-02) the cr is inconsistent with nr. There may be a situation where the
@@ -2652,7 +2652,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @throws IOException DOCUMENT-ME
    */
   private Border parseBorder() throws IOException {
-    ID id = IntegerID.create(sc.argv[0].substring(7));
+    IntegerID id = IntegerID.create(sc.argv[0].substring(7));
     Border b = MagellanFactory.createBorder(id);
     sc.getNextToken(); // skip the block
 
@@ -2718,7 +2718,7 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   private void parseHotSpot(GameData data) throws IOException {
-    ID id = IntegerID.create(sc.argv[0].substring(8));
+    IntegerID id = IntegerID.create(sc.argv[0].substring(8));
     HotSpot h = MagellanFactory.createHotSpot(id);
     sc.getNextToken(); // skip the block
 
@@ -2791,7 +2791,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Insel")) {
         try {
-          ID islandID = IntegerID.create(sc.argv[0]);
+          IntegerID islandID = IntegerID.create(sc.argv[0]);
           Island island = world.getIsland(islandID);
 
           if (island == null) {

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import magellan.library.CombatSpell;
-import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Spell;
 import magellan.library.Unit;
 
@@ -35,7 +35,7 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
 	 *
 	 * @param id the if of the spell.
 	 */
-	public MagellanCombatSpellImpl(ID id) {
+	public MagellanCombatSpellImpl(IntegerID id) {
 		super(id);
 	}
 
@@ -140,5 +140,12 @@ public class MagellanCombatSpellImpl extends MagellanIdentifiableImpl implements
    */
   public int getAttributeSize() {
     return 0;
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

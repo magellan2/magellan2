@@ -35,4 +35,8 @@ public interface HotSpot extends Named {
    */
   public String toString();
 
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
 }

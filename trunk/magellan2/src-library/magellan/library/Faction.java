@@ -385,4 +385,9 @@ public interface Faction extends UnitContainer {
    */
   public int getTreasury();
 
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public EntityID getID();
+
 }

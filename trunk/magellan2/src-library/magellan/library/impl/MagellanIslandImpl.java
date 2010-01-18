@@ -25,6 +25,7 @@ import java.util.Map;
 import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Island;
 import magellan.library.Region;
 
@@ -48,7 +49,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 	 * 		  the<tt>regions()</tt> and <tt>getRegion()</tt> methods.
 	 * 
 	 */
-	public MagellanIslandImpl(ID id, GameData data) {
+	public MagellanIslandImpl(IntegerID id, GameData data) {
 		super(id);
 		this.data = data;
 	}
@@ -193,5 +194,12 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
    */
   public int getAttributeSize() {
     return attributes.size();
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

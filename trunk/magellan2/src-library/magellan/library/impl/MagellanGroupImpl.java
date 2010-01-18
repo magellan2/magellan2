@@ -26,6 +26,7 @@ import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Unit;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.TagMap;
@@ -48,7 +49,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 * @param id the id of this group.
 	 * @param data the game data this group belongs to.
 	 */
-	public MagellanGroupImpl(ID id, GameData data) {
+	public MagellanGroupImpl(IntegerID id, GameData data) {
 		this(id, data, null, null);
 	}
 
@@ -59,7 +60,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 * @param data the game data this group belongs to.
 	 * @param name the name of this group.
 	 */
-	public MagellanGroupImpl(ID id, GameData data, String name) {
+	public MagellanGroupImpl(IntegerID id, GameData data, String name) {
 		this(id, data, name, null);
 	}
 
@@ -71,7 +72,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 * @param name the name of this group.
 	 * @param faction the faction this group belongs to.
 	 */
-	public MagellanGroupImpl(ID id, GameData data, String name, Faction faction) {
+	public MagellanGroupImpl(IntegerID id, GameData data, String name, Faction faction) {
 		super(id);
 //		this.data = data;
 		this.setName(name);
@@ -355,5 +356,12 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
    */
   public int getAttributeSize() {
     return attributes.size();
+  }
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID(){
+    return (IntegerID) super.getID();
   }
 }

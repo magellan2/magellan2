@@ -891,8 +891,8 @@ public class Regions {
    * @param r
    * @param border
    */
-  public static ID getNewBorderID(Region r, Border border) {
-    ID erg = border.getID();
+  public static IntegerID getNewBorderID(Region r, Border border) {
+    IntegerID erg = border.getID();
     // checks, of border with this ID es already present
     if (r.getBorder(erg) != null) {
       // OK, we have a problem
@@ -900,7 +900,7 @@ public class Regions {
       boolean IDisFree = false;
       int i = 1;
       while (!IDisFree) {
-        ID newID = IntegerID.create(i);
+        IntegerID newID = IntegerID.create(i);
         if (r.getBorder(newID) == null) {
           return newID;
         }

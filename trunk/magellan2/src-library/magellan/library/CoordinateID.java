@@ -260,7 +260,8 @@ public class CoordinateID implements ID {
 	 * @throws CloneNotSupportedException DOCUMENT-ME
 	 */
 	@Override
-  public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+  public CoordinateID clone() throws CloneNotSupportedException {
+	  // FIXME (stm): return this?
+		return (CoordinateID) super.clone();
 	}
 }

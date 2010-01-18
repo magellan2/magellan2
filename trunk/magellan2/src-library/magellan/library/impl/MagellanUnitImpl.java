@@ -94,7 +94,7 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasRegion, Sorted, Taggable {
+public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRegion, Sorted, Taggable {
 	private static final Logger log = Logger.getInstance(MagellanUnitImpl.class);
 	private static final String CONFIRMEDTEMPCOMMENT = ";" + OrderWriter.CONFIRMEDTEMP;
 	private static final String TAG_PREFIX_TEMP=";"+"ejcTagTemp "; // grammar for ejcTag: ";ejcTempTag tag numbervalue|'stringvalue'"
@@ -436,14 +436,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 		return alias;
 	}
 
-	/**
-	 * Returns the item of the specified type if the unit owns such an item. If not, null is
-	 * returned.
-	 *
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Returns the item of the specified type if the unit owns such an item, otherwise
+   * <code>null</code>.
+   */
 	public Item getItem(ItemType type) {
 		return (items != null) ? (Item) items.get(type.getID()) : null;
 	}
@@ -948,7 +944,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * @throws IllegalArgumentException If <code>key</code> is negative
 	 */
-	public TempUnit createTemp(ID key) {
+	public TempUnit createTemp(UnitID key) {
 		if(((UnitID) key).intValue() >= 0) {
 			throw new IllegalArgumentException("Unit.createTemp(): cannot create temp unit with non-negative ID.");
 		}
@@ -2338,7 +2334,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 *
 	 * 
 	 */
-	public MagellanUnitImpl(ID id) {
+	public MagellanUnitImpl(UnitID id) {
 		super(id);
 		if (!(id instanceof UnitID))
 		  log.warn("unit without unit id: "+this);
@@ -2575,6 +2571,10 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
 	 * @see magellan.library.utils.Taggable#putTag(java.lang.String, java.lang.String)
 	 */
 	public String putTag(String tag, String value) {
+	  if (tag.equals("$tm_trigger")){
+	    // (new ExtendedTests()).test(this);
+	  }
+	  		
 		if(tagMap == null) {
 			tagMap = new HashMap<String, String>();
 		}
@@ -3412,6 +3412,12 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit,HasReg
     return true;
   }
 
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public UnitID getID(){
+    return (UnitID) super.getID();
+  }
 
 }
 

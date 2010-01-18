@@ -20,7 +20,7 @@ import magellan.library.ID;
 import magellan.library.Item;
 
 /**
- * DOCUMENT-ME
+ * Stores attributes for a type of castle, that is, a building that influences the peasants.
  *
  * @author $Author: $
  * @version $Revision: 203 $
@@ -46,17 +46,16 @@ public class CastleType extends BuildingType implements Comparable {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Sets the wage of peasants that this castle type implies.
 	 *
-	 * 
+	 * @param w
 	 */
 	public void setPeasantWage(int w) {
 		wage = w;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the wage of peasants that this castle type implies.
 	 * 
 	 */
 	public int getPeasantWage() {
@@ -64,17 +63,16 @@ public class CastleType extends BuildingType implements Comparable {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Sets the tax (in percent) that this castle type's owners get from trade.
 	 * 
+	 * @param t
 	 */
 	public void setTradeTax(int t) {
 		tax = t;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+   * Returns the tax (in percent) that this castle type's owners get from trade.
 	 * 
 	 */
 	public int getTradeTax() {
@@ -82,7 +80,7 @@ public class CastleType extends BuildingType implements Comparable {
 	}
 
 	/**
-	 * Sets the minimum size. 
+	 * Sets the minimum size of a building to qualify as this type. 
 	 */
 	public void setMinSize(int s) {
 		this.minSize = s;
@@ -100,9 +98,6 @@ public class CastleType extends BuildingType implements Comparable {
 	 * If obj is an instance of class BuildingType the return value reflects the natural ordering
 	 * of the ids of this object and obj.
 	 *
-	 * 
-	 *
-	 * 
 	 */
 	@Override
   public int compareTo(Object obj) {
@@ -135,6 +130,9 @@ public class CastleType extends BuildingType implements Comparable {
   }
 
   /**
+   * If no raw materials have been added we fall back to old behavior: 1 stone per size point.
+   * 
+   * @param id The id of an {@link ItemType}.
    * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
    */
   @Override

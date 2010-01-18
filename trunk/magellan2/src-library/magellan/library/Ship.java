@@ -209,4 +209,9 @@ public interface Ship extends UnitContainer, HasRegion {
    * Returns the projected weight of the projected peresons on board.
    */
   public int getModifiedPersonLoad();
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public EntityID getID();
 }

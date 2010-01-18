@@ -15,6 +15,7 @@ package magellan.library.impl;
 
 import java.math.BigDecimal;
 
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.HasRegion;
 import magellan.library.ID;
@@ -80,7 +81,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	 * @param id 
 	 * @param data 
 	 */
-	public MagellanShipImpl(ID id, GameData data) {
+	public MagellanShipImpl(EntityID id, GameData data) {
 		super(id, data);
 	}
 
@@ -414,4 +415,10 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     return modInmates;
   }
  
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public EntityID getID(){
+    return (EntityID) super.getID();
+  }
 }

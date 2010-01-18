@@ -62,4 +62,9 @@ public interface Potion extends Described {
    * Removes all ingredients of this potion.
    */
   public void clearIngredients();
+
+  /**
+   * @see magellan.library.Identifiable#getID()
+   */
+  public IntegerID getID();
 }

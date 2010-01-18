@@ -30,16 +30,16 @@ import magellan.library.utils.Translations;
  */
 public class CompleteData extends GameData {
 	protected Map<CoordinateID,Region> regions = new OrderedHashtable<CoordinateID, Region>();
-	protected Map<ID,Unit> units = new Hashtable<ID, Unit>();
-	protected Map<ID,TempUnit> tempUnits = new Hashtable<ID, TempUnit>();
-	protected Map<ID,Faction> factions = new OrderedHashtable<ID, Faction>();
-	protected Map<ID,Ship> ships = new OrderedHashtable<ID, Ship>();
-	protected Map<ID,Building> buildings = new OrderedHashtable<ID, Building>();
-	protected Map<ID,Island> islands = new OrderedHashtable<ID, Island>();
-	protected Map<ID,MessageType> msgTypes = new OrderedHashtable<ID, MessageType>();
-	protected Map<ID,Spell> spells = new OrderedHashtable<ID, Spell>();
-	protected Map<ID,Potion> potions = new OrderedHashtable<ID, Potion>();
-	protected Map<ID,HotSpot> hotSpots = new OrderedHashtable<ID, HotSpot>();
+	protected Map<UnitID,Unit> units = new Hashtable<UnitID, Unit>();
+	protected Map<UnitID,TempUnit> tempUnits = new Hashtable<UnitID, TempUnit>();
+	protected Map<EntityID,Faction> factions = new OrderedHashtable<EntityID, Faction>();
+	protected Map<EntityID,Ship> ships = new OrderedHashtable<EntityID, Ship>();
+	protected Map<EntityID,Building> buildings = new OrderedHashtable<EntityID, Building>();
+	protected Map<IntegerID,Island> islands = new OrderedHashtable<IntegerID, Island>();
+	protected Map<IntegerID,MessageType> msgTypes = new OrderedHashtable<IntegerID, MessageType>();
+	protected Map<StringID,Spell> spells = new OrderedHashtable<StringID, Spell>();
+	protected Map<IntegerID,Potion> potions = new OrderedHashtable<IntegerID, Potion>();
+	protected Map<IntegerID,HotSpot> hotSpots = new OrderedHashtable<IntegerID, HotSpot>();
 	protected Translations translations = new Translations();
 	protected Locale locale = null;
 	protected Map<CoordinateID,Region> selectedRegions = new TreeMap<CoordinateID, Region>();
@@ -53,7 +53,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Island> islands() {
+  public Map<IntegerID,Island> islands() {
 		return islands;
 	}
 
@@ -73,7 +73,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Unit> units() {
+  public Map<UnitID,Unit> units() {
 		return units;
 	}
 
@@ -83,7 +83,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,TempUnit> tempUnits() {
+  public Map<UnitID,TempUnit> tempUnits() {
 		return tempUnits;
 	}
 
@@ -93,7 +93,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Faction> factions() {
+  public Map<EntityID,Faction> factions() {
 		return factions;
 	}
 
@@ -103,7 +103,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Ship> ships() {
+  public Map<EntityID,Ship> ships() {
 		return ships;
 	}
 
@@ -113,7 +113,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Building> buildings() {
+  public Map<EntityID,Building> buildings() {
 		return buildings;
 	}
 
@@ -123,7 +123,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,MessageType> msgTypes() {
+  public Map<IntegerID,MessageType> msgTypes() {
 		return msgTypes;
 	}
 
@@ -133,7 +133,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID, Spell> spells() {
+  public Map<StringID, Spell> spells() {
 		return spells;
 	}
 
@@ -143,7 +143,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,Potion> potions() {
+  public Map<IntegerID,Potion> potions() {
 		return potions;
 	}
 
@@ -177,7 +177,7 @@ public class CompleteData extends GameData {
 	 * 
 	 */
 	@Override
-  public Map<ID,HotSpot> hotSpots() {
+  public Map<IntegerID,HotSpot> hotSpots() {
 		return hotSpots;
 	}
 

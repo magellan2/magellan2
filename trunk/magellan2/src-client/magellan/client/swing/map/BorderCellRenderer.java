@@ -32,10 +32,8 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT-ME
+ * This renderer renders borders, like streets, coasts and the like.
  *
- * @author $Author: $
- * @version $Revision: 299 $
  */
 public class BorderCellRenderer extends ImageCellRenderer {
   private static int noRandomImages = -1;
@@ -58,11 +56,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Renders all borders (streets, firewalls, coasts and others.
 	 * 
-	 * 
-	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#render(java.lang.Object, boolean, boolean)
 	 */
 	@Override
   public void render(Object obj, boolean active, boolean selected) {
@@ -75,6 +71,12 @@ public class BorderCellRenderer extends ImageCellRenderer {
 				// done as late as possible
 				Point pos = null;
 				Dimension size = null;
+		    {
+		      CoordinateID c = r.getCoordinate();
+		      pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+		      pos.translate(-offset.x, -offset.y);
+		      size = cellGeo.getImageSize();
+		    }
 
 				for(Border b : r.borders()) {
 					if(magellan.library.utils.Umlaut.normalize(b.getType()).equals("STRASSE") &&
@@ -88,13 +90,6 @@ public class BorderCellRenderer extends ImageCellRenderer {
 						}
 
 						if(img != null) {
-							if(pos == null || size == null) {
-							  CoordinateID c = r.getCoordinate();
-								pos = new Point(cellGeo.getImagePosition(c.x, c.y));
-								pos.translate(-offset.x, -offset.y);
-								size = cellGeo.getImageSize();
-							}
-
 							graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
 						}
 					} else {
@@ -109,92 +104,85 @@ public class BorderCellRenderer extends ImageCellRenderer {
 
   
   /**
-   * deals with more (classic) borders: firewalls and "Irrlichter"
-   * no prozent
+   * Deals with more (classic) borders without percentage in {@link #borderTypes}.
+   * 
    * @param b the border to check
    * @param r region we are in
    */
-	private void renderOtherBorders(Border b, Region r){
+  private void renderOtherBorders(Border b, Region r) {
     Point pos = null;
     Dimension size = null;
-	  // size of array of type names
+    {
+      CoordinateID c = r.getCoordinate();
+      pos = new Point(cellGeo.getImagePosition(c.x, c.y));
+      pos.translate(-offset.x, -offset.y);
+      size = cellGeo.getImageSize();
+    }
+    
+    // size of array of type names
     int bMax = this.borderTypes.length;
-    // loop throuh them
-    for (int i=0;i<bMax;i++){
+    // loop through them
+    for (int i = 0; i < bMax; i++) {
       String actBorderTypeName = this.borderTypes[i];
-      if(magellan.library.utils.Umlaut.normalize(b.getType()).equals(actBorderTypeName) &&
-           (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
+      if (magellan.library.utils.Umlaut.normalize(b.getType()).equals(actBorderTypeName)
+          && (b.getDirection() != magellan.library.utils.Direction.DIR_INVALID)) {
         Image img = getImage("" + actBorderTypeName.toLowerCase() + b.getDirection());
-        if(img != null) {
-          if(pos == null || size == null) {
-            CoordinateID c = r.getCoordinate();
-            pos = new Point(cellGeo.getImagePosition(c.x, c.y));
-            pos.translate(-offset.x, -offset.y);
-            size = cellGeo.getImageSize();
-          }
+        if (img != null) {
+
           graphics.drawImage(img, pos.x, pos.y, size.width, size.height, null);
         }
       }
     }
   }
-  
-  
-  
-	/**
-	 * Adds some coastal things to ocean regions
-	 * depending on season and direction of non-ocean
-	 * @param r
-	 */
-	private void renderCoastals(Region r){
-	  if (!r.getRegionType().isOcean()){
-	    // no ocean
-	    return;
-	  }
-	  if (r.getCoastBitMap()==null){
-	    // no coast
-	    return;
-	  }
-	  
-	  // lets look for the directions
-	  int bitArray = r.getCoastBitMap().intValue();
-	  boolean borderAdded = false;
-	  for (int i = 0; i<6;i++){
-	    if ((bitArray & bitMaskArray[i])>0){
-	      // hit
-	      borderAdded=true;
-	      String imageNameDefault = "ocean_coast_" + i;
-	      int erg=0;
-	      if ((bitArray & bitMaskArray[7])>0){
-	        erg++;
-	      }
-	      if ((bitArray & bitMaskArray[6])>0){
-	        erg+=2;
-	      }
-	      drawMyImage(imageNameDefault, r,erg,false);
-	    }
-	  }
-	  if (true || !borderAdded){
-	    // Integervalue != null and no border added->
-	    // we have an nocoast-region with pattern
-	    // from bit 7 and 8 we get our random number back
-	    int imageNumber=0;
-	    if ((bitArray & bitMaskArray[7])>0){
-	      imageNumber++;
-	    }
-	    if ((bitArray & bitMaskArray[6])>0){
-        imageNumber+=2;
+
+
+  /**
+   * Adds some coastal things to ocean regions depending on season and direction of non-ocean
+   * 
+   * @param r
+   */
+  private void renderCoastals(Region r) {
+    if (!r.getRegionType().isOcean()) {
+      // no ocean
+      return;
+    }
+    if (r.getCoastBitMap() == null) {
+      // no coast
+      return;
+    }
+
+    // lets look for the directions
+    int bitArray = r.getCoastBitMap().intValue();
+    for (int i = 0; i < 6; i++) {
+      if ((bitArray & bitMaskArray[i]) > 0) {
+        // hit
+        String imageNameDefault = "ocean_coast_" + i;
+        int imageNumber = 0;
+        if ((bitArray & bitMaskArray[7]) > 0) {
+          imageNumber++;
+        }
+        if ((bitArray & bitMaskArray[6]) > 0) {
+          imageNumber += 2;
+        }
+        drawMyImage(imageNameDefault, r, imageNumber, false);
       }
-	    String imageNameDefault = "ocean_nocoast";
-	    drawMyImage(imageNameDefault, r,imageNumber,false);
-	  }
-	}
-	
-  
-  
-  
-  
-  
-	private void drawMyImage(String imageNameDefault, Region r,int randomImageNumber, boolean errorIfNotFound){
+    }
+
+    // from bit 7 and 8 we get our random number back
+    int imageNumber = 0;
+    if ((bitArray & bitMaskArray[7]) > 0) {
+      imageNumber++;
+    }
+    if ((bitArray & bitMaskArray[6]) > 0) {
+      imageNumber += 2;
+    }
+    if (imageNumber!=0){
+      String imageNameDefault = "ocean_nocoast";
+      drawMyImage(imageNameDefault, r, imageNumber, false);
+    }
+  }
+
+	private void drawMyImage(String imageNameDefault, Region r, int randomImageNumber, boolean errorIfNotFound){
 	  CoordinateID c = null;
     Point pos = null;
     Dimension size = null;
@@ -215,12 +203,12 @@ public class BorderCellRenderer extends ImageCellRenderer {
       imageName = seasonalImageName + "_" + randomImageNumber;
       img = getImage(imageName,false);
       if (img==null){
-        // if no randomized image is found we try just the 
-        // seasonal one...switching back somehow
+        // fall-back: if no randomized image is found we try just the 
+        // seasonal one...
         imageName=seasonalImageName;
       }
     }
-    // seasonal allways without error msg
+    // seasonal always without error msg
     img = getImage(imageName,false);
     
     // if we cannot find it, try a default icon.
@@ -240,9 +228,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	}
 	
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Returns {@link Mapper#PLANE_BORDER}.
 	 * 
+	 * @see magellan.client.swing.map.HexCellRenderer#getPlaneIndex()
 	 */
 	@Override
   public int getPlaneIndex() {
@@ -258,6 +246,9 @@ public class BorderCellRenderer extends ImageCellRenderer {
   }
 
   
+  /**
+   * This Preferences dialog does nothing...
+   */
   protected class Preferences extends JPanel implements PreferencesAdapter {
     // The source component to configure
     protected BorderCellRenderer source = null;
@@ -278,29 +269,25 @@ public class BorderCellRenderer extends ImageCellRenderer {
     }
 
     public void initPreferences() {
-        // TODO: implement it
+        
     }
 
     /**
-     * DOCUMENT-ME
+     * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
      */
     public void applyPreferences() {
       
     }
 
     /**
-     * DOCUMENT-ME
-     *
-     * 
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
      */
     public Component getComponent() {
       return this;
     }
 
     /**
-     * DOCUMENT-ME
-     *
-     * 
+     * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
      */
     public String getTitle() {
       return source.getName();

@@ -299,6 +299,7 @@ public class ExtendedCommands {
           }
           break;
         }
+        case UNKNOWN:
       }
     }
     
@@ -373,6 +374,7 @@ public class ExtendedCommands {
           }
           break;
         }
+        case UNKNOWN:
       }
     }
     

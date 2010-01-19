@@ -9,6 +9,7 @@ package magellan.library.gamebinding.e3a;
 
 import magellan.library.Alliance;
 import magellan.library.AllianceGroup;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -71,7 +72,7 @@ public class E3APostProcessor extends EresseaPostProcessor {
             }
             if (!found) {
               if (faction1.getAllies()==null)
-                faction1.setAllies(new OrderedHashtable<ID, Alliance>());
+                faction1.setAllies(new OrderedHashtable<EntityID, Alliance>());
               faction1.getAllies().put(faction2.getID(), new Alliance(faction2, fightState));
             }
           }

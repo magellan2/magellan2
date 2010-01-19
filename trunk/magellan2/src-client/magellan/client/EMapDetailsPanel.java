@@ -116,6 +116,7 @@ import magellan.library.Border;
 import magellan.library.Building;
 import magellan.library.CombatSpell;
 import magellan.library.Described;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -2324,7 +2325,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    * @param parent
    * @param expandableNodes
    */
-  private void appendFactionInfo(Faction f, Map<ID, Alliance> allies, AllianceGroup alliance,
+  private void appendFactionInfo(Faction f, Map<EntityID, Alliance> allies, AllianceGroup alliance,
       DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
     DefaultMutableTreeNode fNode;
     if (f == null) {
@@ -2517,8 +2518,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         // ok..we have a real mage..may be he has an familiar...
         // for further purpose lets look for all familiars...
         Collection<Unit> familiars = new LinkedList<Unit>();
-        for (Iterator iter = this.data.units().keySet().iterator(); iter.hasNext();) {
-          UnitID uID = (UnitID) iter.next();
+        for (UnitID uID : this.data.units().keySet()) {
           Unit uTest = this.data.getUnit(uID);
           if (uTest.getFamiliarmageID() == u.getID()) {
             familiars.add(uTest);

@@ -26,6 +26,7 @@ import javax.swing.tree.TreeNode;
 import magellan.library.Alliance;
 import magellan.library.Border;
 import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Region;
@@ -130,7 +131,7 @@ public class TreeHelper {
    * criteria), ships, buildings, borders etc.
    */
   public TreeNode createRegionNode(Region r, NodeWrapperFactory factory,
-      Map<ID, Alliance> activeAlliances, Map<ID, TreeNode> unitNodes,
+      Map<EntityID, Alliance> activeAlliances, Map<ID, TreeNode> unitNodes,
       Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes, Comparator<? super Unit> unitSorting,
       int treeStructure[], GameData data, boolean sortUnderUnitParent) {
     RegionNodeWrapper regionNodeWrapper = factory.createRegionNodeWrapper(r, 0);
@@ -202,7 +203,7 @@ public class TreeHelper {
    * @return the number of persons (not units) that were added
    */
   private int addUnits(DefaultMutableTreeNode mother, int treeStructure[], int sortCriteria,
-      List<Unit> units, NodeWrapperFactory factory, Map<ID, Alliance> activeAlliances,
+      List<Unit> units, NodeWrapperFactory factory, Map<EntityID, Alliance> activeAlliances,
       Map<ID, TreeNode> unitNodes, GameData data, Comparator<? super Unit> unitSorting) {
     SupportsEmphasizing se = null;
 

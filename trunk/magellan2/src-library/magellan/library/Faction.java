@@ -94,14 +94,14 @@ public interface Faction extends UnitContainer {
    * 
    * @return Returns allies. May return <code>null</code>
    */
-  public Map<ID, Alliance> getAllies();
+  public Map<EntityID, Alliance> getAllies();
 
   /**
    * Sets the value of allies.
    *
    * @param allies The value for allies. May be <code>null</code>.
    */
-  public void setAllies(Map<ID, Alliance> allies);
+  public void setAllies(Map<EntityID, Alliance> allies);
   
   /**
    * Returns the alliance this faction is a member of or <code>null</code>.
@@ -174,14 +174,14 @@ public interface Faction extends UnitContainer {
    * 
    * @return Returns groups. May return <code>null</code>.
    */
-  public Map<ID, Group> getGroups();
+  public Map<IntegerID, Group> getGroups();
 
   /**
    * Sets the value of groups.
    *
    * @param groups The value for groups.
    */
-  public void setGroups(Map<ID, Group> groups);
+  public void setGroups(Map<IntegerID, Group> groups);
 
   /**
    * Returns the value of hasGiveAlliance.

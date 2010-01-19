@@ -57,10 +57,10 @@ import magellan.library.Alliance;
 import magellan.library.Battle;
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Message;
 import magellan.library.Potion;
@@ -1166,24 +1166,24 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    *          may be <code>null</code>
    * @param factionToDel
    */
-  private void cleanAllies(Map<ID, Alliance> allies, Faction factionToDel) {
-    ArrayList<ID> allianceRemoveList = null;
+  private void cleanAllies(Map<EntityID, Alliance> allies, Faction factionToDel) {
+    ArrayList<EntityID> allianceRemoveList = null;
     if (allies != null && allies.keySet() != null) {
-      Iterator<ID> i2 = allies.keySet().iterator();
+      Iterator<EntityID> i2 = allies.keySet().iterator();
       while (i2.hasNext()) {
-        ID allianceID = i2.next();
+        EntityID allianceID = i2.next();
         Alliance actAlliance = allies.get(allianceID);
         if (actAlliance.getFaction().equals(factionToDel)) {
           // jip! delete it!
           if (allianceRemoveList == null) {
-            allianceRemoveList = new ArrayList<ID>();
+            allianceRemoveList = new ArrayList<EntityID>();
           }
           allianceRemoveList.add(allianceID);
         }
       }
       // something to delete?
       if (allianceRemoveList != null && allianceRemoveList.size() > 0) {
-        Iterator<ID> i3 = allianceRemoveList.iterator();
+        Iterator<EntityID> i3 = allianceRemoveList.iterator();
         while (i3.hasNext()) {
           allies.remove(i3.next());
         }

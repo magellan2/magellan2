@@ -1744,9 +1744,9 @@ public class CRParser implements RulesIO, GameDataIO {
    * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
    * There are no subblocks in one ALLIANZ block.
    */
-  private Map<ID, Alliance> parseAlliance(Map<ID, Alliance> allies) throws IOException {
+  private Map<EntityID, Alliance> parseAlliance(Map<EntityID, Alliance> allies) throws IOException {
     if (allies == null) {
-      allies = new OrderedHashtable<ID, Alliance>();
+      allies = new OrderedHashtable<EntityID, Alliance>();
     }
 
     EntityID id = EntityID.createEntityID(Integer.parseInt(sc.argv[0].substring(8)), world.base);
@@ -1809,8 +1809,8 @@ public class CRParser implements RulesIO, GameDataIO {
    * Terminate on any other block This method isn't implemented yet. It skips the entire "ALLIERTE"
    * block.
    */
-  private Map<ID, Alliance> parseAlliierte() throws IOException {
-    Map<ID, Alliance> allies = new Hashtable<ID, Alliance>();
+  private Map<EntityID, Alliance> parseAlliierte() throws IOException {
+    Map<EntityID, Alliance> allies = new Hashtable<EntityID, Alliance>();
     sc.getNextToken(); // skip "ALLIERTE" tag
 
     while (!sc.eof && !sc.isBlock) {
@@ -2025,13 +2025,13 @@ public class CRParser implements RulesIO, GameDataIO {
     return options;
   }
 
-  private Map<ID, Group> parseGroup(Map<ID, Group> groups, Faction faction, int sortIndex)
+  private Map<IntegerID, Group> parseGroup(Map<IntegerID, Group> groups, Faction faction, int sortIndex)
       throws IOException {
     IntegerID id = IntegerID.create(sc.argv[0].substring(7));
     Group group = null;
 
     if (groups == null) {
-      groups = new OrderedHashtable<ID, Group>();
+      groups = new OrderedHashtable<IntegerID, Group>();
     }
 
     group = groups.get(id);

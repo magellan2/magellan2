@@ -792,14 +792,14 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    */
   public void showHotSpot(HotSpot h) {
     // switch planes
-    if ((mapper.getActiveRegion() == null) || (mapper.getActiveRegion().getCoordinate().z != (((CoordinateID) h.getCenter()).z))) {
+    if ((mapper.getActiveRegion() == null) || (mapper.getActiveRegion().getCoordinate().z != ((h.getCenter()).z))) {
       if (cmbLevel.isVisible()) {
-        cmbLevel.setSelectedItem(new Integer(((CoordinateID) h.getCenter()).z));
+        cmbLevel.setSelectedItem(new Integer((h.getCenter()).z));
       }
     }
 
     // re-center mapper
-    Point viewPos = mapper.getCenteredViewPosition(scpMapper.getSize(), (CoordinateID) h.getCenter());
+    Point viewPos = mapper.getCenteredViewPosition(scpMapper.getSize(), h.getCenter());
 
     if (viewPos != null) {
       scpMapper.getViewport().setViewPosition(viewPos);

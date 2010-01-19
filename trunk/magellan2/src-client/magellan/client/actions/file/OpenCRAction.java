@@ -10,7 +10,6 @@ package magellan.client.actions.file;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.Collection;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
@@ -121,33 +120,6 @@ public class OpenCRAction extends MenuAction {
       return fc.getSelectedFile();
     }
     return null;
-  }
-
-  private static class LoadCR implements Runnable {
-    Client client;
-    File file;
-    Collection selectedObjects;
-
-    /**
-     * Creates a new LoadCR object for the given client and file. Reads GameData froma a file and
-     * passes it to the specified client.
-     * 
-     * @param client The client to which the loaded data is passed.
-     * @param file The name of the file containing the game data.
-     */
-    public LoadCR(Client client, File file) {
-      this.client = client;
-      this.file = file;
-      this.selectedObjects = client.getSelectedObjects();
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see java.lang.Runnable#run()
-     */
-    public void run() {
-      client.loadCRThread(file);
-    }
   }
 
   /**

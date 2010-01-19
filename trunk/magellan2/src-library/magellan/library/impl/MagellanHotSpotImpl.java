@@ -16,15 +16,15 @@ package magellan.library.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import magellan.library.CoordinateID;
 import magellan.library.HotSpot;
-import magellan.library.ID;
 import magellan.library.IntegerID;
 
 /**
  * A class encapsulating a hot spot, which represents a region of interest on the map.
  */
 public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
-	private ID center = null;
+	private CoordinateID center = null;
 
 	/**
 	 * Create a new HotSpot object with the specified unique id.
@@ -40,7 +40,7 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
 	 *
 	 * 
 	 */
-	public ID getCenter() {
+	public CoordinateID getCenter() {
 		return center;
 	}
 
@@ -50,7 +50,7 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
 	 *
 	 * 
 	 */
-	public void setCenter(ID center) {
+	public void setCenter(CoordinateID center) {
 		this.center = center;
 	}
 

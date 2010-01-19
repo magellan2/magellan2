@@ -26,8 +26,8 @@ package magellan.client.swing.tree;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.Faction;
-import magellan.library.ID;
 
 /**
  * Displays a alliance node with alliance as icon and text.
@@ -42,7 +42,7 @@ public class AllianceNodeWrapper extends FactionNodeWrapper implements CellObjec
    * @param f
    * @param activeAlliances
    */
-  public AllianceNodeWrapper(Faction f, Map<ID, Alliance> activeAlliances) {
+  public AllianceNodeWrapper(Faction f, Map<EntityID, Alliance> activeAlliances) {
     super(f, null, activeAlliances);
   }
 

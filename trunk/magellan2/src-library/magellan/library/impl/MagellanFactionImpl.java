@@ -24,7 +24,7 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
-import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Message;
 import magellan.library.rules.Options;
 import magellan.library.rules.Race;
@@ -58,25 +58,25 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	/** The email address of the Faction */
   protected String email = null;
 
-	/** DOCUMENT-ME */
+	/** Optionen */
   protected Options options = null;
 
-	/** DOCUMENT-ME */
+	/** Punkte */
   protected int score = -1;
 
-	/** DOCUMENT-ME */
+	/** Durchschnittlicher Punktestand */
   protected int averageScore = -1;
 
-	/** DOCUMENT-ME */
+	/** Personen */
   protected int persons = -1;
 
-	/** DOCUMENT-ME */
+	/** aktuelle Migranten */
   protected int migrants = -1;
 
-	/** DOCUMENT-ME */
+	/** erlaubte Migranten */
   protected int maxMigrants = -1;
 
-	/** DOCUMENT-ME */
+	/** Magiegebite */
   protected String spellSchool = null; // Magiegebiet
 
 	/**
@@ -108,9 +108,8 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
   protected int age = -1;
 
 	/**
-	 * DOCUMENT-ME
-	 *
 	 * 
+	 * @see magellan.library.Faction#isPrivileged()
 	 */
 	public boolean isPrivileged() {
 		return trustLevel >= Faction.TL_PRIVILEGED;
@@ -136,13 +135,13 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
 	 * The allies of this faction are stored in this map with the faction ID of the ally as key and
 	 * an <tt>Alliance</tt> object as value.
 	 */
-  protected Map<ID,Alliance> allies = null;
+  protected Map<EntityID,Alliance> allies = null;
 
 	/**
 	 * The different groups in this faction. The map contains <tt>ID</tt> objects with the group id
 	 * as keys and <tt>Group</tt> objects as values.
 	 */
-  protected Map<ID,Group> groups = null;
+  protected Map<IntegerID,Group> groups = null;
 
 	/** The country code indicating the locale for this faction. */
 	private Locale locale = null;
@@ -244,7 +243,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * 
    * @return Returns allies.
    */
-  public Map<ID, Alliance> getAllies() {
+  public Map<EntityID, Alliance> getAllies() {
     return allies;
   }
 
@@ -253,7 +252,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    *
    * @param allies The value for allies.
    */
-  public void setAllies(Map<ID, Alliance> allies) {
+  public void setAllies(Map<EntityID, Alliance> allies) {
     this.allies = allies;
   }
 
@@ -348,7 +347,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    * 
    * @return Returns groups.
    */
-  public Map<ID, Group> getGroups() {
+  public Map<IntegerID, Group> getGroups() {
     return groups;
   }
 
@@ -357,7 +356,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
    *
    * @param groups The value for groups.
    */
-  public void setGroups(Map<ID, Group> groups) {
+  public void setGroups(Map<IntegerID, Group> groups) {
     this.groups = groups;
   }
 

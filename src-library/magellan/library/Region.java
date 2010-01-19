@@ -13,6 +13,7 @@ import java.util.Map;
 
 import magellan.library.rules.ItemType;
 import magellan.library.rules.RegionType;
+import magellan.library.utils.Units;
 
 /**
  * DOCUMENT-ME
@@ -261,8 +262,13 @@ public interface Region extends UnitContainer {
 
   /**
    * Returns the items of all units that are stationed in this region and belonging to a faction
-   * that has at least a privileged trust level. The amount of the items of a particular item type
-   * are added up, so two units with 5 pieces of silver yield one silver item of amount 10 here.
+   * that has at least a privileged trust level. <br>
+   * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
+   * The amount of the items of a particular item type are added up, so two units with 5 pieces of
+   * silver yield one silver item of amount 10 here.
+   * 
+   * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
+   *             instead.
    */
   public Collection<Item> items();
 
@@ -270,11 +276,18 @@ public interface Region extends UnitContainer {
    * Returns the items of all units that are stationed in this region The amount of the items of a
    * particular item type are added up, so two units with 5 pieces of silver yield one silver item
    * of amount 10 here.
+   * 
+   * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
   public Collection<Item> allItems();
 
   /**
-   * Returns a specific item from the items() collection identified by the item type.
+   * Returns a specific item from the {@link #items()} collection identified by the item type or
+   * <code>null</code> if no such item exists in the region.
+   * 
+   * @deprecated Use
+   *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
+   *             instead.
    */
   public Item getItem(ItemType type);
 
@@ -332,6 +345,13 @@ public interface Region extends UnitContainer {
   public CoordinateID getCoordinate();
 
   /**
+   * A synonym of {@link #getCoordinate()}.
+   * 
+   * @see magellan.library.Identifiable#getID()
+   */
+  public CoordinateID getID();
+  
+  /**
    * Returns the RegionType of this region. This method is only a type-safe short cut for retrieving
    * and converting the RegionType of this region.
    */
@@ -362,14 +382,6 @@ public interface Region extends UnitContainer {
    */
   public List<Unit> getGuards();
 
-  /**
-   * Merges regions.
-   */
-  // TODO should name this either sameTurn everywhere or sameRound everywhere
-  // sameTurn == false actually indicates that this method is to be called again
-  // with the same "newRegion" but a more recent "curRegion".
-  // public static void merge(GameData curGD, Region curRegion, GameData newGD,
-  // Region newRegion,boolean sameTurn);
   /**
    * DOCUMENT-ME
    */

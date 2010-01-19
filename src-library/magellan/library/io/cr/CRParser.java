@@ -844,11 +844,11 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * DOCUMENT ME!
+   * Reads the header and stores the tags in a map.
    * 
    * @param in The reader, that will read the file for us.
    * @return a map, that maps all found header tags to their values.
-   * @throws java.io.IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurs
    */
   public synchronized Map<String, Object> readHeader(Reader in) throws java.io.IOException {
     Map<String, Object> map = new HashMap<String, Object>();
@@ -897,7 +897,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * 1;Umlaute
    * </code>
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurs
    */
   private void parseHeader() throws IOException {
     Region specialRegion = null;
@@ -1586,20 +1586,20 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * DOCUMENT-ME
+   * Read a ruleset from a specified file.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurs
    */
   public Rules readRules(FileType filetype) throws IOException {
     return readRules(filetype.createReader());
   }
 
   /**
-   * DOCUMENT ME!
+   * Reads a Rules object from an input Reader.
    * 
    * @param in The reader that will read the file for us.
-   * @return a ruleset object, or null, if the file hasn't been a ruleset.
-   * @throws IOException DOCUMENT-ME
+   * @return a Rules object, or <code>null</code>, if the file hasn't been a ruleset.
+   * @throws IOException If an I/O error occurs
    */
   private synchronized Rules readRules(Reader in) throws IOException {
     Rules rules = new GenericRules();
@@ -1631,6 +1631,12 @@ public class CRParser implements RulesIO, GameDataIO {
     return rules;
   }
 
+  /**
+   * Parses a rules file and stores the result in <code>rules</code>.
+   * 
+   * @param rules An existing Rules object
+   * @throws IOException If an I/O error occurs
+   */
   private void parseRules(Rules rules) throws IOException {
     sc.getNextToken(); // skip "RULES"
 
@@ -1740,9 +1746,13 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
-  /*
+  /**
    * This is the new version, the old is called "ALLIERTE" Heuristic for end of block detection:
    * There are no subblocks in one ALLIANZ block.
+   *
+   * @param allies A map with existing alliances or <code>null</code>.
+   * @return The (modified) <code>allies</code> map
+   * @throws IOException If an I/O error occurs
    */
   private Map<EntityID, Alliance> parseAlliance(Map<EntityID, Alliance> allies) throws IOException {
     if (allies == null) {
@@ -1824,7 +1834,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * This is the old "ADRESSEN" version. Heuristic for block termination: - Terminate on any other
    * block This method isn't implemented yet. It skips the entire "ADRESSEN" block.
    * 
-   * @throws IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurs
    */
   private void parseAdressen() throws IOException {
     sc.getNextToken(); // skip "ADRESSEN" tag
@@ -1834,10 +1844,14 @@ public class CRParser implements RulesIO, GameDataIO {
     }
   }
 
-  /*
+  /**
    * Parse the FACTION block with all its subblocks. Heuristic for block termination: - Terminate on
    * another PARTEI block (without warning) - Terminate on another id block (without warning) -
    * Terminate on any other unknown block (with warning)
+   *
+   * @param sortIndex
+   * @return The resulting faction
+   * @throws IOException If an I/O error occurs
    */
   private Faction parseFaction(int sortIndex) throws IOException {
     Race type = null;
@@ -3161,6 +3175,8 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param in Reader to cr file
    * @param data GameData to be filled with informations of given cr file This function is
    *          synchronized.
+   * @throws IOException If an I/O error occurs
+   * @see magellan.library.io.GameDataIO#read(java.io.Reader, magellan.library.GameData)
    */
   public synchronized GameData read(Reader in, GameData data) throws IOException {
     boolean bCorruptReportMsg = false;

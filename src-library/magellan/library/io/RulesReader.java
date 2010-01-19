@@ -43,6 +43,8 @@ public class RulesReader {
 	/**
 	 * Reads the rules of the given gamedata. Right now it first tries to read it from an xml. If
 	 * this fails it  possibly reads the cr
+	 * 
+   * @throws IOException If an I/O error occurs
 	 */
 	public Rules readRules(String name) throws IOException {
 		try {
@@ -62,7 +64,9 @@ public class RulesReader {
 	}
 
 	/**
+	 * Looks for the ruleset in etc/rules and reads it.
 	 *
+   * @throws IOException If an I/O error occurs
 	 */
 	private Rules loadRules(String name) throws IOException {
 		String ending = new File("XML").exists() ? ".xml" : ".cr";

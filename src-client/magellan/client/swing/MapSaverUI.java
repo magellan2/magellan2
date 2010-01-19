@@ -38,7 +38,7 @@ import com.sun.jimi.core.JimiWriter;
 import com.sun.jimi.core.options.JPGOptions;
 
 /**
- * DOCUMENT ME!
+ * presents an UI to save the map as an image.
  *
  * @author Sebastian
  * @version 1.0

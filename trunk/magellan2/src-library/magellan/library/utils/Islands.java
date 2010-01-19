@@ -149,18 +149,18 @@ public class Islands {
 		Map<CoordinateID,Region> unchecked = new Hashtable<CoordinateID, Region>();
 
 		if(!excludedRegionTypes.containsValue(r.getRegionType())) {
-			unchecked.put((CoordinateID)r.getID(), r);
+			unchecked.put(r.getID(), r);
 		}
 
 		while(unchecked.size() > 0) {
 			Region currentRegion = unchecked.remove(unchecked.keySet().iterator().next());
-			checked.put((CoordinateID)currentRegion.getID(), currentRegion);
+			checked.put(currentRegion.getID(), currentRegion);
 
 			Map<CoordinateID,Region> neighbours = Regions.getAllNeighbours(regions, currentRegion.getID(), 1, excludedRegionTypes);
       
 			for(Region neighbour : neighbours.values()) {
 				if(!checked.containsKey(neighbour.getID())) {
-					unchecked.put((CoordinateID)neighbour.getID(), neighbour);
+					unchecked.put(neighbour.getID(), neighbour);
 				}
 			}
 		}

@@ -18,7 +18,6 @@ import java.util.Iterator;
 import magellan.client.Client;
 import magellan.client.event.SelectionEvent;
 import magellan.client.event.SelectionListener;
-import magellan.library.CoordinateID;
 import magellan.library.Region;
 import magellan.library.utils.Resources;
 
@@ -68,7 +67,7 @@ public class AddSelectionAction extends OpenSelectionAction implements Selection
 
 				if(o instanceof Region) {
 					Region r = (Region) o;
-					selectedRegions.put((CoordinateID)r.getID(), r);
+					selectedRegions.put(r.getID(), r);
 				}
 			}
 		}

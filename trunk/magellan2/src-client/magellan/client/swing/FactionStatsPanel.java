@@ -206,7 +206,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       for (Iterator<Region> iter = rs.iterator(); iter.hasNext();) {
         Region r = iter.next();
-        regions.put((CoordinateID) r.getID(), r);
+        regions.put(r.getID(), r);
       }
     }
 

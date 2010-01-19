@@ -638,7 +638,7 @@ public abstract class MagellanFactory {
     }
 
     if (curBuilding.getRegion() != null) {
-      newBuilding.setRegion(newGD.getRegion((CoordinateID) curBuilding.getRegion().getID()));
+      newBuilding.setRegion(newGD.getRegion(curBuilding.getRegion().getID()));
     }
 
     if (curBuilding.getSize() != -1) {
@@ -1379,7 +1379,7 @@ public abstract class MagellanFactory {
     }
 
     if (curShip.getRegion() != null) {
-      newShip.setRegion(newGD.getRegion((CoordinateID) curShip.getRegion().getID()));
+      newShip.setRegion(newGD.getRegion(curShip.getRegion().getID()));
     }
 
     newShip.setShoreId(curShip.getShoreId());
@@ -1663,7 +1663,7 @@ public abstract class MagellanFactory {
     }
 
     if (curUnit.getRegion() != null) {
-      resultUnit.setRegion(resultGD.getRegion((CoordinateID) curUnit.getRegion().getID()));
+      resultUnit.setRegion(resultGD.getRegion(curUnit.getRegion().getID()));
     }
 
     if (curUnit.getCombatStatus() != -1) {
@@ -2030,7 +2030,7 @@ public abstract class MagellanFactory {
           islandMap.put(r.getIsland(), actRegionMap);
         }
 
-        actRegionMap.put((CoordinateID) r.getID(), r);
+        actRegionMap.put(r.getID(), r);
       }
     }
 

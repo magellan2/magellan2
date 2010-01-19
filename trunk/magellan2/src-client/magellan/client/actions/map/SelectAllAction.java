@@ -66,7 +66,7 @@ public class SelectAllAction extends MenuAction implements SelectionListener, Ga
 
 				if(o instanceof Region) {
 					Region r = (Region) o;
-					selectedRegions.put((CoordinateID)r.getID(), r);
+					selectedRegions.put(r.getID(), r);
 				}
 			}
 		}

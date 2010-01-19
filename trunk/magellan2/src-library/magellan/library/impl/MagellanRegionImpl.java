@@ -1070,9 +1070,18 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * short cut for retrieving and converting the ID object of this region.
    */
   public CoordinateID getCoordinate() {
-    return (CoordinateID) this.getID();
+    return this.getID();
   }
 
+  /**
+   * A synomym for {@link #getCoordinate()}.
+   * 
+   * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
+   */
+  public CoordinateID getID() {
+    return this.getID();
+  }
+  
   /**
    * Returns the RegionType of this region. This method is only a type-safe
    * short cut for retrieving and converting the RegionType of this region.

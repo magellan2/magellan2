@@ -67,7 +67,7 @@ public class SelectIslandsAction extends MenuAction implements GameDataListener,
 
 				if(o instanceof Region) {
 					Region r = (Region) o;
-					selectedRegions.put((CoordinateID)r.getID(), r);
+					selectedRegions.put(r.getID(), r);
 				}
 			}
 		}

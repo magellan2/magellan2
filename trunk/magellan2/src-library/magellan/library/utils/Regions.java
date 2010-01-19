@@ -90,7 +90,7 @@ public class Regions {
         if (neighbour != null) {
           if ((excludedRegionTypes == null)
               || !excludedRegionTypes.containsKey(neighbour.getType().getID())) {
-            neighbours.put((CoordinateID) neighbour.getID(), neighbour);
+            neighbours.put(neighbour.getID(), neighbour);
           }
         }
       }
@@ -712,7 +712,7 @@ public class Regions {
     List<CoordinateID> coordinates = new ArrayList<CoordinateID>(2);
 
     // first of all add current coordinate
-    coordinates.add((CoordinateID) u.getRegion().getID());
+    coordinates.add(u.getRegion().getID());
 
     // we need a string which is useable for travelThru AND travelThruShip
     String ID = (u.getShip() == null) ? u.toString() : u.getShip().toString(false);
@@ -933,7 +933,7 @@ public class Regions {
       if (actRegion.getRegionType().isOcean()) {
         // we have an ocean in front
         // the result
-        CoordinateID cID = (CoordinateID) actRegion.getID();
+        CoordinateID cID = actRegion.getID();
         Map<CoordinateID, Region> n = Regions.getAllNeighbours(data.regions(), cID, null);
         n.remove(cID);
         // checking all neighbours

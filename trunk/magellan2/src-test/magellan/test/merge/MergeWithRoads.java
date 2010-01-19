@@ -31,8 +31,8 @@ public class MergeWithRoads extends TestCase {
 		GameData gd4 = GameData.merge(gd1, gd2);
 		// WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
-		Region region_1_1_gd4 = gd4.getRegion((CoordinateID) region_1_1_gd1.getID());
-		Region region_1_0_gd4 = gd4.getRegion((CoordinateID) region_1_0_gd2.getID());
+		Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
+		Region region_1_0_gd4 = gd4.getRegion(region_1_0_gd2.getID());
 		
 		Assert.assertEquals(0, region_1_1_gd4.borders().size());
 		Assert.assertEquals(1, region_1_0_gd4.borders().size());
@@ -50,7 +50,7 @@ public class MergeWithRoads extends TestCase {
 		GameData gd4 = GameData.merge(gd1, gd2);
 		// WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 
-		Region r4 = gd4.getRegion((CoordinateID) r2.getID());
+		Region r4 = gd4.getRegion(r2.getID());
 		
 		Assert.assertTrue(r4 != null);
 		Assert.assertEquals(1,r4.borders().size());
@@ -69,7 +69,7 @@ public class MergeWithRoads extends TestCase {
 		GameData gd4 = GameData.merge(gd1, gd2);
 		// WriteGameData.writeCR(gdMerged, gdMerged.getDate().getDate()+"_gd.cr");
 		
-		Region r4 = gd4.getRegion((CoordinateID) r1.getID());
+		Region r4 = gd4.getRegion(r1.getID());
 		Assert.assertTrue(r4 != null);
 		Assert.assertEquals(1, r4.borders().size());
 	}
@@ -91,7 +91,7 @@ public class MergeWithRoads extends TestCase {
 
 		GameData gd4 = GameData.merge(gd1, gd2);
 
-		Region region_1_0_gd4 = gd4.getRegion((CoordinateID) region_1_0_gd1.getID());
+		Region region_1_0_gd4 = gd4.getRegion(region_1_0_gd1.getID());
 		Assert.assertEquals(1,region_1_0_gd4.borders().size());
 	}
 
@@ -110,7 +110,7 @@ public class MergeWithRoads extends TestCase {
 
 		GameData gd4 = GameData.merge(gd1, gd2);
 
-		Region region_1_1_gd4 = gd4.getRegion((CoordinateID) region_1_1_gd1.getID());
+		Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
 		Assert.assertEquals(1, region_1_1_gd4.units().size());
 		Assert.assertEquals(1, region_1_1_gd4.borders().size());
 	}
@@ -133,7 +133,7 @@ public class MergeWithRoads extends TestCase {
 
 		GameData gd4 = GameData.merge(gd1, gd2);
 
-		Region region_1_1_gd4 = gd4.getRegion((CoordinateID) region_1_1_gd1.getID());
+		Region region_1_1_gd4 = gd4.getRegion(region_1_1_gd1.getID());
 		Assert.assertEquals(1, region_1_1_gd4.units().size());
 		Assert.assertEquals(0, region_1_1_gd4.borders().size());
 	}

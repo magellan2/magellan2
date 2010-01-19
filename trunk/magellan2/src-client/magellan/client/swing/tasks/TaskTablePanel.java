@@ -80,17 +80,12 @@ import magellan.library.tasks.ToDoInspector;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
-import net.infonode.docking.DockingWindow;
-import net.infonode.docking.DockingWindowListener;
-import net.infonode.docking.OperationAbortedException;
-import net.infonode.docking.View;
 
 /**
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-    SelectionListener, ShortcutListener, GameDataListener, PreferencesFactory,
-    DockingWindowListener {
+    SelectionListener, GameDataListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   public static final String IDENTIFIER = "TASKS";
@@ -216,7 +211,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_P, InputEvent.CTRL_MASK));
 
     // register for shortcuts
-    DesktopEnvironment.registerShortcutListener(this);
+    DesktopEnvironment.registerShortcutListener(new TTShortcutListener());
 
   }
 
@@ -226,6 +221,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     JPopupMenu activeRegionMenu;
     JPopupMenu selectionMenu;
 
+    JMenuItem selectMenu;
     JMenuItem refreshMenu;
     JMenuItem acknowledgeMenu;
     JMenuItem unAcknowledgeMenu;
@@ -296,10 +292,13 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           }
         }
         if (e.isPopupTrigger()) {
-          if (rowClicked >= 0 && table.getSelectedRowCount() > 0)
+          if (rowClicked >= 0 && table.getSelectedRowCount() > 0){
             acknowledgeMenu.setEnabled(true);
-          else
+            selectMenu.setEnabled(true);
+          }else{
             acknowledgeMenu.setEnabled(false);
+            selectMenu.setEnabled(false);
+          }
           tableMenu.show(e.getComponent(), e.getX(), e.getY());
         }
       }
@@ -307,7 +306,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
     private void createPopupMenus() {
       tableMenu = new JPopupMenu();
-      JMenuItem selectMenu = new JMenuItem(Resources.get("tasks.contextmenu.select.title"));
+      selectMenu = new JMenuItem(Resources.get("tasks.contextmenu.select.title"));
       refreshMenu = new JMenuItem(Resources.get("tasks.contextmenu.refresh.title"));
       acknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.acknowledge.title"));
       unAcknowledgeMenu = new JMenuItem(Resources.get("tasks.contextmenu.unacknowledge.title"));
@@ -320,7 +319,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       selectMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
           int row = table.getSelectedRow();
-          selectObjectOnRow(row);
+          if (row >= 0 && row < sorter.getRowCount() )
+            selectObjectOnRow(row);
         }
       });
 
@@ -333,7 +333,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       acknowledgeMenu.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent menuEvent) {
           int row = table.getSelectedRow();
-          acknowledge(row);
+          if (row >= 0 && row < sorter.getRowCount() )
+            acknowledge(row);
         }
       });
 
@@ -412,6 +413,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   protected void acknowledge(int row) {
+    if (row<0 || row>=sorter.getRowCount())
+      throw new IndexOutOfBoundsException();
     Problem p = (Problem) sorter.getValueAt(row, TaskTableModel.PROBLEM_POS);
     selectObjectOnRow(row);
 
@@ -425,7 +428,9 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * 
    * @param row
    */
-  private void selectObjectOnRow(int row) {
+  protected void selectObjectOnRow(int row) {
+    if (row<0 || row>=sorter.getRowCount())
+      throw new IndexOutOfBoundsException();
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
     dispatcher.fire(new SelectionEvent(this, null, obj));
   }
@@ -1359,46 +1364,50 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     }
   }
 
-  /**
-   * Should return all short cuts this class want to be informed. The elements should be of type
-   * javax.swing.KeyStroke
-   */
-  public Iterator<KeyStroke> getShortCuts() {
-    return shortcuts.iterator();
-  }
+  public class TTShortcutListener implements ShortcutListener {
 
-  /**
-   * This method is called when a shortcut from getShortCuts() is recognized.
-   * 
-   * @param shortcut
-   */
-  public void shortCut(javax.swing.KeyStroke shortcut) {
-    int index = shortcuts.indexOf(shortcut);
-
-    switch (index) {
-    case -1:
-      break; // unknown shortcut
-
-    case 0:
-      DesktopEnvironment.requestFocus(TaskTablePanel.IDENTIFIER);
-      break;
+    /**
+     * Should return all short cuts this class want to be informed. The elements should be of type
+     * javax.swing.KeyStroke
+     */
+    public Iterator<KeyStroke> getShortCuts() {
+      return shortcuts.iterator();
     }
-  }
 
-  /**
-   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
-   */
-  public String getShortcutDescription(KeyStroke stroke) {
-    int index = shortcuts.indexOf(stroke);
+    /**
+     * This method is called when a shortcut from getShortCuts() is recognized.
+     * 
+     * @param shortcut
+     */
+    public void shortCut(javax.swing.KeyStroke shortcut) {
+      int index = shortcuts.indexOf(shortcut);
 
-    return Resources.get("tasks.shortcut.description." + String.valueOf(index));
-  }
+      switch (index) {
+      case -1:
+        break; // unknown shortcut
 
-  /**
-   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
-   */
-  public String getListenerDescription() {
-    return Resources.get("tasks.shortcut.title");
+      case 0:
+        DesktopEnvironment.requestFocus(TaskTablePanel.IDENTIFIER);
+        break;
+      }
+    }
+
+    /**
+     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+     */
+    public String getShortcutDescription(KeyStroke stroke) {
+      int index = shortcuts.indexOf(stroke);
+
+      return Resources.get("tasks.shortcut.description." + String.valueOf(index));
+    }
+
+    /**
+     * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+     */
+    public String getListenerDescription() {
+      return Resources.get("tasks.shortcut.title");
+    }
+
   }
 
   /**
@@ -1461,112 +1470,19 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     return shown;
   }
 
-  /**
-   * @see net.infonode.docking.DockingWindowListener#viewFocusChanged(net.infonode.docking.View,
-   *      net.infonode.docking.View)
-   */
-  public void viewFocusChanged(View arg0, View arg1) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowAdded(net.infonode.docking.DockingWindow,
-   *      net.infonode.docking.DockingWindow)
-   */
-  public void windowAdded(DockingWindow arg0, DockingWindow arg1) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowClosed(net.infonode.docking.DockingWindow)
-   */
-  public void windowClosed(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowClosing(net.infonode.docking.DockingWindow)
-   */
-  public void windowClosing(DockingWindow arg0) throws OperationAbortedException {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowDocked(net.infonode.docking.DockingWindow)
-   */
-  public void windowDocked(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowDocking(net.infonode.docking.DockingWindow)
-   */
-  public void windowDocking(DockingWindow arg0) throws OperationAbortedException {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
-   */
-  public void windowHidden(DockingWindow arg0) {
-    this.setShown(false);
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowMaximized(net.infonode.docking.DockingWindow)
-   */
-  public void windowMaximized(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowMaximizing(net.infonode.docking.DockingWindow)
-   */
-  public void windowMaximizing(DockingWindow arg0) throws OperationAbortedException {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowMinimized(net.infonode.docking.DockingWindow)
-   */
-  public void windowMinimized(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowMinimizing(net.infonode.docking.DockingWindow)
-   */
-  public void windowMinimizing(DockingWindow arg0) throws OperationAbortedException {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowRemoved(net.infonode.docking.DockingWindow,
-   *      net.infonode.docking.DockingWindow)
-   */
-  public void windowRemoved(DockingWindow arg0, DockingWindow arg1) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowRestored(net.infonode.docking.DockingWindow)
-   */
-  public void windowRestored(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowRestoring(net.infonode.docking.DockingWindow)
-   */
-  public void windowRestoring(DockingWindow arg0) throws OperationAbortedException {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
-   */
-  public void windowShown(DockingWindow arg0) {
-    this.setShown(true);
-    this.refreshProblems();
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowUndocked(net.infonode.docking.DockingWindow)
-   */
-  public void windowUndocked(DockingWindow arg0) {
-  }
-
-  /**
-   * @see net.infonode.docking.DockingWindowListener#windowUndocking(net.infonode.docking.DockingWindow)
-   */
-  public void windowUndocking(DockingWindow arg0) throws OperationAbortedException {
-  }
+//  /**
+//   * @see net.infonode.docking.DockingWindowListener#windowHidden(net.infonode.docking.DockingWindow)
+//   */
+//  public void windowHidden(DockingWindow arg0) {
+//    this.setShown(false);
+//  }
+//
+//  /**
+//   * @see net.infonode.docking.DockingWindowListener#windowShown(net.infonode.docking.DockingWindow)
+//   */
+//  public void windowShown(DockingWindow arg0) {
+//    this.setShown(true);
+//    this.refreshProblems();
+//  }
 
 }

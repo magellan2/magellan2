@@ -1070,7 +1070,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * short cut for retrieving and converting the ID object of this region.
    */
   public CoordinateID getCoordinate() {
-    return this.getID();
+    return (CoordinateID) super.getID();
   }
 
   /**
@@ -1079,7 +1079,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
   public CoordinateID getID() {
-    return this.getID();
+    return (CoordinateID) super.getID();
   }
   
   /**

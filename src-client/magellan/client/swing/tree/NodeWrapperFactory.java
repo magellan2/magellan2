@@ -31,9 +31,9 @@ import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.client.swing.preferences.PreferencesFactory;
 import magellan.library.Alliance;
 import magellan.library.Border;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Group;
-import magellan.library.ID;
 import magellan.library.Island;
 import magellan.library.Item;
 import magellan.library.Potion;
@@ -210,7 +210,7 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
    * DOCUMENT-ME
    */
   public FactionNodeWrapper createFactionNodeWrapper(Faction f, Region r,
-      Map<ID, Alliance> alliances) {
+      Map<EntityID, Alliance> alliances) {
     FactionNodeWrapper fnw = new FactionNodeWrapper(f, r, alliances);
     init(fnw, NodeWrapperFactory.FACTION);
 

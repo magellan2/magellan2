@@ -2,7 +2,6 @@ package magellan.test.merge;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;

@@ -1826,7 +1826,6 @@ public class EresseaOrderParser implements OrderParser {
 
     public boolean read(OrderToken token, boolean hasAmount) {
       boolean retVal = false;
-      BuildingType type = null;
       if (hasAmount)
         token.ttype = OrderToken.TT_NUMBER;
       else

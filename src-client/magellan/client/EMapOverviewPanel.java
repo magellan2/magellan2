@@ -97,6 +97,7 @@ import magellan.client.utils.SelectionHistory;
 import magellan.client.utils.TreeBuilder;
 import magellan.library.Alliance;
 import magellan.library.Building;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.Group;
 import magellan.library.ID;
@@ -161,7 +162,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   // needed by FactionNodeWrapper to determine the active alliances
   // keys: FactionIDs, values: Alliance-objects
-  private Map<ID, Alliance> activeAlliances = new Hashtable<ID, Alliance>();
+  private Map<EntityID, Alliance> activeAlliances = new Hashtable<EntityID, Alliance>();
 
   // This flag is added for performance reasons
   // to avoid unnecessary updates to the activeAlliances map
@@ -355,7 +356,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   public void rebuildTree() {
     Unique oldActiveObject = activeObject;
-    Collection<Object> oldSelectedObjects = new LinkedList<Object>(selectedObjects);
 
     // clear the history
     SelectionHistory.clear();
@@ -682,7 +682,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    * @param f
    *          The faction whose alliances are used
    */
-  private void setAlliances(Map<ID,Alliance> allies, Faction f) {
+  private void setAlliances(Map<EntityID,Alliance> allies, Faction f) {
     if ((allies == null) && (activeAlliances.size() > 0)) {
       // can't determine new specific alliances
       // set default alliances
@@ -1739,9 +1739,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // privileged factions and adjust their states if necessary
       boolean delEntry = false;
 
-      for (Iterator iter = activeAlliances.keySet().iterator(); iter.hasNext();) {
-        ID id = (ID) iter.next();
-
+      for (Iterator<EntityID> iter = activeAlliances.keySet().iterator(); iter.hasNext();) {
+        EntityID id = iter.next();
+        
         for (int factionCount = 1; factionCount < privilegedFactions.size(); factionCount++) {
           Faction f = privilegedFactions.get(factionCount);
 

@@ -38,8 +38,8 @@ public interface Group extends Named, Taggable, Addeable {
    * alliance references. The values are instances of class <tt>Alliance</tt>.
    * The return value is never null.
    */
-  public Map<ID, Alliance> allies();
-  public void setAllies(Map<ID, Alliance> alliances);
+  public Map<EntityID, Alliance> allies();
+  public void setAllies(Map<EntityID, Alliance> alliances);
 
   /**
    * Sets the group dependent prefix for the race name.

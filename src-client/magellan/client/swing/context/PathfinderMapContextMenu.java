@@ -18,7 +18,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -502,8 +501,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
            this.isShipableRegion=true;  
         } else {
           // run through the neighbors
-          for (Iterator iter = destRegion.getNeighbours().iterator(); iter.hasNext();) {
-            CoordinateID checkRegionID = (CoordinateID) iter.next();
+          for (CoordinateID checkRegionID : destRegion.getNeighbours()) {
             if (data.getRegion(checkRegionID).getRegionType().isOcean()) {
               this.isShipableRegion=true;
               break;

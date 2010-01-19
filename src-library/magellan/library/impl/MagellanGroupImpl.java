@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
@@ -37,7 +38,7 @@ import magellan.library.utils.TagMap;
  */
 public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	private Faction faction = null;
-	private Map<ID,Alliance> allies = new OrderedHashtable<ID,Alliance>();
+	private Map<EntityID,Alliance> allies = new OrderedHashtable<EntityID,Alliance>();
 
 	private static Map<String, String> tagMap = null; // Map for external tags
   /** Contains all attributes */
@@ -104,7 +105,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
 	 *
 	 * 
 	 */
-	public Map<ID,Alliance> allies() {
+	public Map<EntityID,Alliance> allies() {
 		return allies;
 	}
 
@@ -319,7 +320,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   /**
    * @see magellan.library.Group#setAllies(java.util.Map)
    */
-  public void setAllies(Map<ID, Alliance> allies) {
+  public void setAllies(Map<EntityID, Alliance> allies) {
     this.allies = allies;
   }
 

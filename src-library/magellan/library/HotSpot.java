@@ -22,13 +22,13 @@ public interface HotSpot extends Named {
    * Returns the ID in the center of the region of interest this HotSpot points
    * to.
    */
-  public ID getCenter();
+  public CoordinateID getCenter();
 
   /**
    * Set the ID the is at the center of the region of interest this HotSpot
    * object should point to.
    */
-  public void setCenter(ID center);
+  public void setCenter(CoordinateID center);
 
   /**
    * DOCUMENT-ME

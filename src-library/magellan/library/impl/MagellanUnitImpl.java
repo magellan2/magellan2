@@ -2336,8 +2336,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 */
 	public MagellanUnitImpl(UnitID id) {
 		super(id);
-		if (!(id instanceof UnitID))
-		  log.warn("unit without unit id: "+this);
 	}
 
 	/**

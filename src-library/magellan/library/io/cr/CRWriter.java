@@ -745,7 +745,7 @@ public class CRWriter extends BufferedWriter {
    *          to be instances of class <tt>Alliance</tt>. May be <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeAlliances(Map<ID, Alliance> map) throws IOException {
+  public void writeAlliances(Map<EntityID, Alliance> map) throws IOException {
     if (map == null) {
       return;
     }

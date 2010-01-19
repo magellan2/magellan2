@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.ID;
 import magellan.library.Region;
@@ -40,7 +41,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    * changes, when the user changes between units/factions/groups etc. in EMapOverviewPanel. Don't
    * change it's contents here!
    */
-  private Map<ID, Alliance> activeAlliances;
+  private Map<EntityID, Alliance> activeAlliances;
 
   /**
    * Creates a new FactionNodeWrapper object.
@@ -49,7 +50,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
    * @param r
    * @param activeAlliances
    */
-  public FactionNodeWrapper(Faction f, Region r, Map<ID, Alliance> activeAlliances) {
+  public FactionNodeWrapper(Faction f, Region r, Map<EntityID, Alliance> activeAlliances) {
     if (f == null)
       throw new NullPointerException();
     this.activeAlliances = activeAlliances;

@@ -218,7 +218,7 @@ public abstract class MagellanFactory {
 
     if ((curGroup.allies() != null) && (curGroup.allies().size() > 0)) {
       if (newGroup.allies() == null) {
-        newGroup.setAllies(new Hashtable<ID, Alliance>());
+        newGroup.setAllies(new Hashtable<EntityID, Alliance>());
       } else {
         newGroup.allies().clear();
       }
@@ -266,7 +266,7 @@ public abstract class MagellanFactory {
     if ((curFaction.getAllies() != null && curFaction.getAllies().size() > 0)
         || curFaction.getID().equals(curGD.getOwnerFaction())) {
       if (newFaction.getAllies() == null) {
-        newFaction.setAllies(new OrderedHashtable<ID, Alliance>());
+        newFaction.setAllies(new OrderedHashtable<EntityID, Alliance>());
       } else {
         newFaction.getAllies().clear();
       }
@@ -286,7 +286,7 @@ public abstract class MagellanFactory {
 
     if ((curFaction.getGroups() != null) && (curFaction.getGroups().size() > 0)) {
       if (newFaction.getGroups() == null) {
-        newFaction.setGroups(new Hashtable<ID, Group>());
+        newFaction.setGroups(new Hashtable<IntegerID, Group>());
       } else {
         newFaction.getGroups().clear();
       }
@@ -689,7 +689,7 @@ public abstract class MagellanFactory {
 
     if (curHS.getCenter() != null) {
       try {
-        newHS.setCenter((ID) curHS.getCenter().clone());
+        newHS.setCenter(curHS.getCenter().clone());
       } catch (CloneNotSupportedException e) {
         // impossible position, should throw a runtime exception here
       }

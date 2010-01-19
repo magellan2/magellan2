@@ -38,6 +38,7 @@ import javax.swing.tree.TreeNode;
 import magellan.client.swing.tree.NodeWrapperFactory;
 import magellan.client.swing.tree.TreeHelper;
 import magellan.library.Alliance;
+import magellan.library.EntityID;
 import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Island;
@@ -76,7 +77,7 @@ public class TreeBuilder {
   private Map<ID,TreeNode> unitNodes;
   private Map<ID,TreeNode> buildingNodes;
   private Map<ID,TreeNode> shipNodes;
-  private Map<ID, Alliance> activeAlliances;
+  private Map<EntityID, Alliance> activeAlliances;
   private Comparator<? super Unit> unitComparator;
   private int treeStructure[];
   private boolean sortShipUnderUnitParent = true;
@@ -147,7 +148,7 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void setActiveAlliances(Map<ID,Alliance> alliances) {
+  public void setActiveAlliances(Map<EntityID,Alliance> alliances) {
     activeAlliances = alliances;
   }
 
@@ -207,7 +208,7 @@ public class TreeBuilder {
   public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection,
       Collection<Unit> units, Map<ID, TreeNode> regionNodes, Map<ID, TreeNode> unitNodes,
       Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
-      Comparator<? super Unit> unitSorting, Map<ID, Alliance> activeAlliances, int treeStructure[],
+      Comparator<? super Unit> unitSorting, Map<EntityID, Alliance> activeAlliances, int treeStructure[],
       GameData data) {
     boolean unitInteresting = (getDisplayMode() & TreeBuilder.UNITS) != 0;
     boolean buildingInteresting = (getDisplayMode() & TreeBuilder.BUILDINGS) != 0;

@@ -23,7 +23,7 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * Saves the map as image.
  *
  * @author Andreas
  * @version 1.0
@@ -43,9 +43,7 @@ public class MapSaveAction extends MenuAction {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Shows the UI to save the map.
 	 */
 	@Override
   public void menuActionPerformed(ActionEvent e) {

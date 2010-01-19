@@ -22,7 +22,7 @@ import magellan.library.utils.Resources;
 
 
 /**
- * DOCUMENT ME!
+ * Changes the origin.
  *
  * @author Andreas
  * @version 1.0

@@ -212,9 +212,9 @@ public class CompleteData extends GameData {
 	}
 
 	/**
-	 * Creates a new CompleteData object.
+	 * Creates a new, empty CompleteData object.
 	 *
-	 * 
+   * @param rules Valid rules for the game
 	 */
 	public CompleteData(Rules rules) {
 		super(rules);
@@ -223,8 +223,8 @@ public class CompleteData extends GameData {
 	/**
 	 * Creates a new CompleteData object.
 	 *
-	 * 
-	 * 
+   * @param rules Valid rules for the game
+   * @param name The game name (like "Eressea", "E3", ...)
 	 */
 	public CompleteData(Rules rules, String name) {
 		super(rules, name);

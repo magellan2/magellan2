@@ -22,24 +22,16 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * An unfinished class for reading {@link GameData} from XML files.
  *
- * @author $Author: $
- * @version $Revision: 171 $
  */
 public class XMLGameDataIO implements GameDataIO {
-	/** DOCUMENT-ME */
 	public static final Logger log = Logger.getInstance(XMLGameDataIO.class);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Unfinished class!
 	 * 
-	 * 
-	 *
-	 * 
-	 *
-	 * @throws IOException DOCUMENT-ME
+	 * @see magellan.library.io.GameDataIO#read(java.io.Reader, magellan.library.GameData)
 	 */
 	public GameData read(Reader in, GameData world) throws IOException {
 		throw new IOException("Implementation incomplete");

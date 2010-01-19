@@ -62,6 +62,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   
   /**
 	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
+	 *
+	 * @see magellan.library.gamebinding.GameSpecificStuff#createGameData(java.lang.String)
 	 */
 	public GameData createGameData(String name) {
 		return new CompleteData(rules, name);

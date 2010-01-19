@@ -69,6 +69,8 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   /**
 	 * This is a callback interface to let the  GameSpecificStuff create the GameData object.
+   * 
+   * @param name The game name (like "Eressea", "E3", ...)
 	 */
 	public GameData createGameData(String name) {
 		return new CompleteData(getRules(), name);

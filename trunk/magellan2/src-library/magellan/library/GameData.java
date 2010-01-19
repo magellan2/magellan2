@@ -297,7 +297,8 @@ public abstract class GameData implements Cloneable,Addeable {
   private int maxSortIndex = 0;
 
   /**
-   * Creates a new GameData object.
+   * Creates a new GameData object with the name of "default".
+   * @param rules Valid rules for the game
    */
   public GameData(Rules _rules) {
     this(_rules, "default");
@@ -310,6 +311,8 @@ public abstract class GameData implements Cloneable,Addeable {
   /**
    * Creates a new GameData object.
    * 
+   * @param rules Valid rules for the game
+   * @param name The game name (like "Eressea", "E3", ...)
    * @throws NullPointerException if <code>rules==null</code>
    *           
    */
@@ -319,6 +322,7 @@ public abstract class GameData implements Cloneable,Addeable {
     }
     this.rules = rules;
     this.gameName = name;
+//    // for profiling purposes
 //    created++;
 //    System.err.println("============== data: "+created+" - "+deleted);
 //    Runtime.getRuntime().runFinalization();

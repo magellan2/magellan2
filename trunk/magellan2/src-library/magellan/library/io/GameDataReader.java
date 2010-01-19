@@ -72,8 +72,8 @@ public class GameDataReader {
    * @param newOrigin the loaded report is translated by this coordinates.
    *
    * @return a GameData object read from the cr or xml file.
-   *
-   * @throws IOException iff something went wrong while reading the file.
+   * 
+   * @throws IOException If an I/O error occurs
    */
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin) throws IOException {
     // a) read game name
@@ -86,6 +86,17 @@ public class GameDataReader {
     return readGameData(aFileType, newOrigin, gameName);
   }
   
+  /**
+   * Read a gamedata from a given File. 
+   *
+   * @param aFileType the filetype representing a cr or xml file.
+   * @param newOrigin the loaded report is translated by this coordinates.
+   * @param gameName 
+   *
+   * @return a GameData object read from the cr or xml file.
+   * 
+   * @throws IOException If an I/O error occurs
+   */
   public GameData readGameData(FileType aFileType, CoordinateID newOrigin, String gameName) throws IOException {
     if(aFileType.isXMLFile()) {
       GameData data = readGameDataXML(aFileType, gameName, newOrigin);
@@ -145,7 +156,11 @@ public class GameDataReader {
   /**
    * Reads the game data from a CR file 
    * 
+   * @param aFileType The CR file
+   * @param aGameName
    * @param newOrigin the loaded report is translated by this coordinates.
+   * @return A new GameData object filled in with the information from the file.
+   * @throws IOException If an I/O error occurs
    */
   protected GameData readGameDataCR(FileType aFileType, String aGameName, CoordinateID newOrigin) throws IOException {
     GameData newData = createGameData(aGameName);
@@ -170,7 +185,11 @@ public class GameDataReader {
   }
 
   /**
-   * Creates a new GameData based on the gamename rules
+   * Creates a new GameData based on the gamename rules.
+   *
+   * @param aGameName The game name whose rules are being read.
+   * @return A new, empty GameData object
+   * @throws IOException If an I/O error occurs or no rules could be found.
    */
   public GameData createGameData(String aGameName) throws IOException {
     Rules rules = new RulesReader().readRules(aGameName);

@@ -42,7 +42,7 @@ public class CRGameNameIO implements GameNameIO {
 	 *
 	 * @return A String representing the name of the game.
 	 *
-	 * @throws IOException DOCUMENT-ME
+   * @throws IOException If an I/O error occurs
 	 */
 	public String getGameName(FileType filetype) throws IOException {
 		Reader report = filetype.createReader();

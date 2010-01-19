@@ -21,27 +21,26 @@ import magellan.library.io.GameDataIO;
 
 
 /**
- * DOCUMENT-ME
+ * This utility class provides game specific methods for certain properties of the game. 
  *
- * @author $Author: $
- * @version $Revision: 305 $
  */
 public interface GameSpecificStuff {
 	/**
-	 * For io binding.
+	 * Return a GameData object for the specified game  
 	 *
-	 * TODO DOCUMENT ME! Long description.
-	 *
-	 * @param rules
-	 * @param name
+   * @param name The game name (like "Eressea", "E3", ...)
+   * @return A new, empty GameData object
 	 */
 	public GameData createGameData(String name);
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * DOCUMENT-ME 
 	 * 
+	 * Warning: Not implemented
+	 * 
+	 * @return A game data reader for this game
 	 */
+	// FIXME this somehow never got used (or implemented) 
 	public GameDataIO getGameDataIO();
 
 	// for GameData
@@ -125,5 +124,8 @@ public interface GameSpecificStuff {
    */
   public GameSpecificRules getGameSpecificRules();
 
+  /**
+   * Returns the name of the game this stuff belongs to.
+   */
   public String getName();
 }

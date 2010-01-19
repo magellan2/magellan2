@@ -30,7 +30,10 @@ public class GameNameReader {
   private static final Logger log = Logger.getInstance(GameNameReader.class);
 
 	/**
-	 * 
+	 * Tries to read the game name from the file. 
+	 *
+	 * @param filetype A report or rules file
+	 * @return The name of the game or <code>null</code> if it couldn't be found.
 	 */
 	public static String getGameName(FileType filetype) {
 		try {

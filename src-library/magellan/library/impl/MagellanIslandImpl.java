@@ -144,7 +144,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 				Region r = (Region) iter.next();
 
 				if(this.equals(r.getIsland())) {
-					regions.put((CoordinateID)r.getID(), r);
+					regions.put(r.getID(), r);
 				}
 			}
 		}

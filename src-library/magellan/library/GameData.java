@@ -526,7 +526,7 @@ public abstract class GameData implements Cloneable,Addeable {
    */
   public void addRegion(Region r) {
     if (regions() != null) {
-      regions().put((CoordinateID) r.getID(), r);
+      regions().put(r.getID(), r);
     }
   }
 
@@ -1171,7 +1171,7 @@ public abstract class GameData implements Cloneable,Addeable {
         Region r = iter.next();
 
         try {
-          resultGD.addRegion(MagellanFactory.createRegion((CoordinateID) r.getID().clone(),
+          resultGD.addRegion(MagellanFactory.createRegion(r.getID().clone(),
               resultGD));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
@@ -1183,9 +1183,9 @@ public abstract class GameData implements Cloneable,Addeable {
       for (Iterator<Region> iter = newerGD.regions().values().iterator(); iter.hasNext();) {
         Region r = iter.next();
 
-        if (resultGD.getRegion((CoordinateID) r.getID()) == null) {
+        if (resultGD.getRegion(r.getID()) == null) {
           try {
-            resultGD.addRegion(MagellanFactory.createRegion((CoordinateID) r.getID().clone(),
+            resultGD.addRegion(MagellanFactory.createRegion(r.getID().clone(),
                 resultGD));
           } catch (CloneNotSupportedException e) {
             GameData.log.error(e);
@@ -1283,7 +1283,7 @@ public abstract class GameData implements Cloneable,Addeable {
             if (oldBuilding.getRegion().getID() == null) {
               GameData.log.errorOnce("Region without ID!");
             } else {
-              curRegion = newerGD.getRegion((CoordinateID) oldBuilding.getRegion().getID());
+              curRegion = newerGD.getRegion(oldBuilding.getRegion().getID());
 
               if ((curRegion == null) || curRegion.getVisibility().lessThan(Visibility.TRAVEL)) {
                 try {
@@ -1350,7 +1350,7 @@ public abstract class GameData implements Cloneable,Addeable {
           // units of the new report
           // if they are not from the same round?
           try {
-            resultGD.addUnit(MagellanFactory.createUnit((UnitID) u.getID().clone()));
+            resultGD.addUnit(MagellanFactory.createUnit(u.getID().clone()));
         } catch (CloneNotSupportedException e) {
           GameData.log.error(e);
         }
@@ -1402,7 +1402,7 @@ public abstract class GameData implements Cloneable,Addeable {
     if (olderGD.regions() != null) {
       for (Iterator<Region> iter = olderGD.regions().values().iterator(); iter.hasNext();) {
         Region oldRegion = iter.next();
-        Region resultRegion = resultGD.getRegion((CoordinateID) oldRegion.getID());
+        Region resultRegion = resultGD.getRegion(oldRegion.getID());
 
         // first pass
         MagellanFactory.mergeRegion(olderGD, oldRegion, resultGD, resultRegion, !sameRound, true);
@@ -1541,7 +1541,7 @@ public abstract class GameData implements Cloneable,Addeable {
     if (resultGD.regions() != null) {
       for (Iterator<Region> iter = resultGD.regions().values().iterator(); iter.hasNext();) {
         Region resultRegion = iter.next();
-        Region newerRegion = newerGD.getRegion((CoordinateID) resultRegion.getID());
+        Region newerRegion = newerGD.getRegion(resultRegion.getID());
         if (newerRegion != null) {
           // second pass
           MagellanFactory.mergeRegion(newerGD, newerRegion, resultGD, resultRegion, !sameRound, false);

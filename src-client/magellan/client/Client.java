@@ -1778,7 +1778,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
   private String createTitle(GameData data, boolean showStatusOverride, boolean longTitle) {
     // set frame title (date)
-    StringBuffer title = new StringBuffer("Magellan");
+    StringBuilder title = new StringBuilder("Magellan");
 
     String version = VersionInfo.getVersion(Client.filesDirectory);
 
@@ -1804,6 +1804,10 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       title.append(" [").append(file).append("]");
     }
 
+    if (data.getOwnerFaction()!=null) {
+      title.append("-").append(data.getFaction(data.getOwnerFaction()).toString());
+    }
+    
     if (data.getDate() != null) {
       title.append(" - ").append(
           data.getDate().toString(
@@ -2135,9 +2139,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Changes the progress display behaviour.
    * 
-   * @param bool DOCUMENT-ME
+   * @param bool If <code>true</code>, the progress is shown in the window title
    */
   public void setShowStatus(boolean bool) {
     if (showStatus != bool) {
@@ -2362,6 +2366,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       } else {
         stateChanged = false;
       }
+      updateTitleCaption();
     }
 
     /**

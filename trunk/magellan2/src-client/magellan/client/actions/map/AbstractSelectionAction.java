@@ -134,9 +134,15 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
     return Resources.get(getResourcePrefix()+".name");
   }
 
+  /**
+   * Always returns <code>null</code>! Overwrite if you want a tool tip.
+   * 
+   * @see magellan.client.actions.MenuAction#getTooltipTranslated()
+   */
   @Override
   protected String getTooltipTranslated() {
-    return Resources.get(getResourcePrefix()+".tooltip");
+    return null;
+    // return Resources.get(getResourcePrefix()+".tooltip");
   }
 
   /**

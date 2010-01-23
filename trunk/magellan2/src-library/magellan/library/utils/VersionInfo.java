@@ -150,16 +150,19 @@ public class VersionInfo {
     return newestVersion;
   }
   
-  public static boolean isNewer(String currentVersion, String newVersion) {
-    if (Utils.isEmpty(currentVersion) || Utils.isEmpty(newVersion)) {
+  /**
+   * Returns rue if firstVersion is strictly greater than secondVersion. 
+   */
+  public static boolean isNewer(String firstVersion, String secondVersion) {
+    if (Utils.isEmpty(secondVersion) || Utils.isEmpty(firstVersion)) {
       return false;
     }
     
-    VersionInfo.log.debug("Current: "+currentVersion);
-    VersionInfo.log.debug("Newest : "+newVersion);
+    VersionInfo.log.debug("Current: "+secondVersion);
+    VersionInfo.log.debug("Newest : "+firstVersion);
     
-    Version a = new Version(currentVersion,".",false);
-    Version b = new Version(newVersion,".",false);
-    return b.isNewer(a);
+    Version a = new Version(firstVersion,".",false);
+    Version b = new Version(secondVersion,".",false);
+    return a.isNewer(b);
   }
 }

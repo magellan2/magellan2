@@ -239,6 +239,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** Central undo manager - specialized to deliver change events */
   private MagellanUndoManager undoMgr = null;
 
+  /** Directory for binaries */
+  private static File binDirectory;
+
   /** Magellan Directories */
   private static File filesDirectory = null;
 
@@ -253,22 +256,25 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** start window, disposed after first init */
   protected static StartWindow startWindow;
 
+
   protected Collection<MagellanPlugIn> plugIns = new ArrayList<MagellanPlugIn>();
 
   /**
    * Creates a new Client object taking its data from <tt>gd</tt>.
    * <p>
-   * Preferences are read from and stored in a file called <tt>client.ini</tt>. This file is usually
-   * located in the user's home directed, which is the Windows directory in a Microsoft Windows
+   * Preferences are read from and stored in a file called <tt>magellan.ini</tt>. This file is usually
+   * located in the user's home directory, which is the Windows directory in a Microsoft Windows
    * environment.
    * </p>
    * 
    * @param gd
-   * @param fileDir
-   * @param settingsDir
+   * @param fileDir The directory where magellan files are situated
+   * @param settingsDir The directory where the settings are situated
+   * @param tsettFileDir 
    */
-  protected Client(GameData gd, File fileDir, File settingsDir) {
+  protected Client(GameData gd, File binDir, File fileDir, File settingsDir) {
     Client.INSTANCE = this;
+    Client.binDirectory = binDir;
     Client.filesDirectory = fileDir;
     Client.settingsDirectory = settingsDir;
 
@@ -277,6 +283,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     Client.startWindow.progress(1, Resources.get("clientstart.1"));
     Properties settings = Client.loadSettings(Client.settingsDirectory, "magellan.ini");
+    String lastSavedVersion = null;
     if (settings == null) {
       Client.log.info("Client.loadSettings: settings file " + "magellan.ini"
           + " does not exist, using default values.");
@@ -366,7 +373,14 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         settings.setProperty(PropertiesHelper.MESSAGETYPE_SECTION_BATTLE_COLOR, "#999900");// Format:
         // #RRGGBB
       }
+      
+      lastSavedVersion = settings.getProperty("Client.Version"); 
+      if (lastSavedVersion==null)
+        lastSavedVersion="null";
     }
+    settings.setProperty("Client.Version", VersionInfo.getVersion(fileDir));
+    if (lastSavedVersion!=null)
+      settings.setProperty("Client.LastVersion", lastSavedVersion);
 
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
@@ -1031,6 +1045,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   public static void main(String args[]) {
     try {
       String report = null; // the report to be loaded on startup
+      File binDir = null; // the program directory
       File fileDir = null; // the directory to store ini files and
       File settFileDir = null;
       // stuff in
@@ -1043,7 +1058,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       magellan.library.utils.MemoryManagment.setFinalizerPriority(Thread.MAX_PRIORITY);
 
       /* determine default value for files directory */
-      fileDir = MagellanFinder.findMagellanDirectory();
+      binDir = MagellanFinder.findMagellanDirectory();
 
       /* process command line parameters */
       int i = 0;
@@ -1096,6 +1111,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         i++;
       }
 
+      if (fileDir==null)
+        fileDir = binDir;
       settFileDir = MagellanFinder.findSettingsDirectory(fileDir, settFileDir);
       Resources.getInstance().initialize(fileDir, "");
       MagellanLookAndFeel.setMagellanDirectory(fileDir);
@@ -1146,6 +1163,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         Client.log.warn("Unable to retrieve system properties: " + e);
       }
 
+      final File tBinDir = binDir;
       final File tFileDir = fileDir;
       final File tsettFileDir = settFileDir;
       final String tReport = report;
@@ -1158,22 +1176,30 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
           GameData data = new MissingData();
 
           // new CompleteData(new com.eressea.rules.Eressea(), "void");
-          Client c = new Client(data, tFileDir, tsettFileDir);
+          Client c = new Client(data, tBinDir, tFileDir, tsettFileDir);
           // setup a singleton instance of this client
           Client.INSTANCE = c;
 
           String newestVersion =
               VersionInfo.getNewestVersion(c.getProperties(), Client.startWindow);
+          String currentVersion = VersionInfo.getVersion(tFileDir);
           if (!Utils.isEmpty(newestVersion)) {
-            String currentVersion = VersionInfo.getVersion(tFileDir);
             Client.log.info("Newest Version on server: " + newestVersion);
             Client.log.info("Current Version: " + currentVersion);
-            if (VersionInfo.isNewer(currentVersion, newestVersion)) {
+            if (VersionInfo.isNewer(newestVersion, currentVersion)) {
               JOptionPane.showMessageDialog(Client.startWindow, Resources.get("client.new_version",
                   new Object[] { newestVersion }));
             }
           }
 
+          String lastVersion = c.getProperties().getProperty("Client.LastVersion");
+          if (lastVersion == null || !lastVersion.equals(currentVersion)) {
+            UpdateDialog dlg = new UpdateDialog(c, lastVersion, currentVersion);
+            dlg.setVisible(true);
+            if (!dlg.getResult())
+              c.quit(false);
+          }
+          
           File crFile = null;
 
           if (tReport == null) {
@@ -2029,7 +2055,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns true if the report has changed since last save/load.
    */
   public boolean isReportChanged() {
     return reportState.isStateChanged();
@@ -2066,7 +2092,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets a new GameData and notifies all game data listeners.
    * 
    * @param newData 
    */
@@ -2088,7 +2114,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns the current GameData.
    */
   public GameData getData() {
     return context.getGameData();
@@ -2102,10 +2128,17 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * 
+   * Returns the current event dispatcher.
    */
   public EventDispatcher getDispatcher() {
     return context.getEventDispatcher();
+  }
+
+  /**
+   * Returns the directory where the binaries are.
+   */
+  public static File getBinaryDirectory() {
+    return Client.binDirectory;
   }
 
   /**
@@ -2132,7 +2165,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>true</code> if order status should be shown in title.
    */
   public boolean isShowingStatus() {
     return showStatus;
@@ -2197,7 +2230,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * Repaints all components.
    * 
-   * @param millis DOCUMENT-ME
+   * @param millis maximium time in milliseconds before update
+   * @see Component#repaint(long)
    */
   public void repaint(int millis) {
     super.repaint(millis);
@@ -2356,7 +2390,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
 
     /**
-     * TODO DOCUMENT-ME
+     * Updates the caption and sets changed state if the event occurred after the last call of
+     * <code>setChangedState(false)</code>.
      * 
      * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
      */

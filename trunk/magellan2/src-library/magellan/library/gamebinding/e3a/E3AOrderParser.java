@@ -72,6 +72,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
     // TODO?
     addCommand(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), new AllianzReader());
+    addCommand(Resources.getOrderTranslation(E3AConstants.O_PAY), new BezahleReader());
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_GIVE), new GibReader());
     addCommand(Resources.getOrderTranslation(E3AConstants.O_MAKE), new E3MacheReader());
     addCommand(Resources.getOrderTranslation(E3AConstants.O_RECRUIT), new RekrutiereReader());
@@ -191,6 +192,34 @@ public class E3AOrderParser extends EresseaOrderParser {
       }
 
       return retVal;
+    }
+  }
+
+  //************* BEZAHLE
+  protected class BezahleReader extends OrderHandler {
+    public boolean read(OrderToken token) {
+      boolean retVal = false;
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      OrderToken t = getNextToken();
+
+      if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
+        retVal = readBewacheNicht(t);
+      } else {
+        retVal = false;
+        
+      }
+
+      if (getCompleter() != null && !t.followedBySpace()) {
+        getCompleter().cmpltBezahle();
+      }
+      return retVal;
+    }
+
+    protected boolean readBewacheNicht(OrderToken token) {
+      token.ttype = OrderToken.TT_KEYWORD;
+
+      return checkNextFinal();
     }
   }
 

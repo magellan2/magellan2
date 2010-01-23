@@ -94,7 +94,14 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
     }
-
+    
+    // the if clause is not always correct, but should usually be okay
+    if (getUnit().getModifiedBuilding() != null
+        || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
+            getUnit()))) {
+      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_PAY) + " "
+          + Resources.getOrderTranslation(E3AConstants.O_NOT)));
+    }
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MESSAGE), " "));
     addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_DEFAULT),
         Resources.getOrderTranslation(EresseaConstants.O_DEFAULT) + " '", "",
@@ -205,6 +212,10 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltBenenne() {
     super.cmpltBenenne();
     addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_ALLIANCE), " "));
+  }
+
+  public void cmpltBezahle() {
+    addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_NOT)));
   }
 
   @Override

@@ -1566,6 +1566,32 @@ RAWMATERIALS
 1;Holz
 10;Silber
 
+SHIPTYPE "Königsbarke"
+"Königsbarke";name
+10;size
+5;level
+5;range
+50;capacity
+11;persons
+5;captainlevel
+10;sailorlevel
+RAWMATERIALS
+1;Mallorn
+100;Silber
+
+SHIPTYPE "Katamaran"
+"Katamaran";name
+30;size
+7;level
+7;range
+100;capacity
+22;persons
+7;captainlevel
+20;sailorlevel
+RAWMATERIALS
+1;Mallorn
+100;Silber
+
 CASTLETYPE "Grundmauern"
 "Grundmauern";name
 1;level

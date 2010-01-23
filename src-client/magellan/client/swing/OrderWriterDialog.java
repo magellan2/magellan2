@@ -1013,7 +1013,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
 
   private void storeSettings() {
     Faction faction = (Faction) cmbFaction.getSelectedItem();
-    String suffix = "." + faction.getID();
+    String suffix = "." + (faction==null?"-":faction.getID());
 
     settings.setProperty("OrderWriterDialog.x", getX() + "");
     settings.setProperty("OrderWriterDialog.y", getY() + "");

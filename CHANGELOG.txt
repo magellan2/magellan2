@@ -1,3 +1,7 @@
+2009-12-23 / Build 373 - stm (stm_@users.sourceforge.net)
+    * added BEZAHLE NICHT command
+    * added version upgrade dialog and RELEASENOTES.txt 
+
 2009-12-19 / Build 371 - stm (stm_@users.sourceforge.net)
     * fixed small bug in TaskTable, included owner faction in title bar and a lot of cosmetic 
       changes that shouldn't affect program behavior.

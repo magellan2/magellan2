@@ -23,6 +23,7 @@
 // 
 package magellan.library.utils;
 
+import java.awt.Color;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -42,6 +43,9 @@ public class MagellanImages {
    
   private static File magellanDirectory = null;
   
+  public static  Color foreground = new Color(79, 63, 48);
+  public static  Color background = new Color(213, 169, 131);
+
   public static URL getResource(String path) {
     try {
       File resFile = new File(path);

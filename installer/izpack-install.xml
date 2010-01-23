@@ -68,6 +68,7 @@
       <file src="release/COPYING.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/LICENSE.txt"                       targetdir="$INSTALL_PATH"/>
       <file src="release/README.txt"                        targetdir="$INSTALL_PATH"/>
+      <file src="release/RELEASENOTES.txt"                  targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.bat"                     targetdir="$INSTALL_PATH"/>
       <file src="release/UnInstall.sh"                      targetdir="$INSTALL_PATH"/>
       <executable targetfile="$INSTALL_PATH/magellan.sh"    stage="never"/>

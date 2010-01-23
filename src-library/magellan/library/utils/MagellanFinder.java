@@ -30,14 +30,11 @@ import magellan.library.utils.logging.Logger;
 public class MagellanFinder {
 	private static final Logger log = Logger.getInstance(MagellanFinder.class);
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
-	 *
-	 * 
-	 */
+  /**
+   * Tries to create/read the settings file in <code>settDir</code> (first),
+   * <code>magDirector</code> (second), the user's home directory (third) or the current director
+   * (last). The first valid location is returned.
+   */
 	public static File findSettingsDirectory(File magDirectory, File settDir) {
 		File settFileDir = settDir;
 		File magFile = null;
@@ -114,7 +111,7 @@ public class MagellanFinder {
 	 */
 	public static File findMagellanDirectory() {
 		String classPath = System.getProperty("java.class.path", ".");
-		StringTokenizer st = new StringTokenizer(classPath, ";,");
+		StringTokenizer st = new StringTokenizer(classPath, File.pathSeparator);
 
 		while(st.hasMoreTokens()) {
 			String token = st.nextToken();

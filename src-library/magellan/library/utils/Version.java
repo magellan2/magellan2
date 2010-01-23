@@ -147,6 +147,9 @@ public class Version implements Comparable {
 		}
 	}
   
+  /**
+   * Returns true if this version is strictly greater the aVersion.
+   */
   public boolean isNewer(Version aVersion) {
     return compareTo(aVersion)>0;
   }

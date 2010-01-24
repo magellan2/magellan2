@@ -150,7 +150,7 @@ public class UpdateDialog extends InternationalizedDialog implements HyperlinkLi
     
     releaseText.setBackground(MagellanImages.background);
     releaseText.setForeground(Color.BLACK);
-    releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
+//    releaseText.setFont(releaseText.getFont().deriveFont(releaseText.getFont().getSize()*1.2f));
     Font font = releaseText.getFont();
 //    releaseText.setContentType("text/html");
     releaseText.setEditable(false);

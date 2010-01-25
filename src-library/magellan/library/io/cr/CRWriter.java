@@ -1077,6 +1077,11 @@ public class CRWriter extends BufferedWriter {
       newLine();
     }
 
+    if (ship.getSpeed() != -1) {
+      write(ship.getSpeed() + ";speed");
+      newLine();
+    }
+
     if (ship.getDeprecatedLoad() != -1) {
       write(ship.getDeprecatedLoad() + ";Ladung");
       newLine();

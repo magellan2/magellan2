@@ -214,4 +214,19 @@ public interface Ship extends UnitContainer, HasRegion {
    * Returns the id uniquely identifying this object.
    */
   public EntityID getID();
+
+  /**
+   * Set the ship's current speed
+   * 
+   * @param parseInt
+   */
+  public void setSpeed(int newSpeed);
+
+  /**
+   * Returns the ship's current speed.
+   * 
+   * @return The current speed, -1 if undefined.
+   */
+  public int getSpeed();
+
 }

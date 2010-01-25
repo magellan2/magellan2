@@ -158,6 +158,9 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   }
 
   public int getShipRange(Ship s) {
+    if (s.getSpeed() != -1)
+      return s.getSpeed();
+
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();
 

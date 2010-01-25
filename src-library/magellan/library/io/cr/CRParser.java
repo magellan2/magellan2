@@ -2547,17 +2547,21 @@ public class CRParser implements RulesIO, GameDataIO {
         ship.setCargo(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("capacity")) {
-        if (version<=64)
-          ship.setCapacity(Integer.parseInt(sc.argv[0]));
-        else
-          // in E3 this tag is overloaded with the max number of persons (see Eressea bug #1645)!
+        if (version == 65)
+          // in E3 this tag was overloaded with the max number of persons (see Eressea bug #1645)!
           ship.setMaxPersons(Integer.parseInt(sc.argv[0]));
+        else
+          // in version 65 everything was back to normal
+          ship.setCapacity(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Ladung")) {
         ship.setDeprecatedLoad(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("MaxLadung")) {
         ship.setDeprecatedCapacity(Integer.parseInt(sc.argv[0]));
+        sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("speed")) {
+        ship.setSpeed(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 1) && sc.argv[0].equals("EFFECTS")) {
         ship.setEffects(parseStringSequence(ship.getEffects()));

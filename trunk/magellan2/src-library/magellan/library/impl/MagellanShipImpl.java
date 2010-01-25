@@ -87,6 +87,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 	/** The region this ship is in. */
 	private Region region = null;
 
+  private int speed = -1;
 
 	/**
 	 * Sets the region this ship is in and notifies region about it.
@@ -419,5 +420,19 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    */
   public EntityID getID(){
     return (EntityID) super.getID();
+  }
+
+  /**
+   * @see magellan.library.Ship#getSpeed()
+   */
+  public int getSpeed() {
+    return speed;
+  }
+
+  /**
+   * @see magellan.library.Ship#setSpeed(int)
+   */
+  public void setSpeed(int newSpeed) {
+    speed  = newSpeed;
   }
 }

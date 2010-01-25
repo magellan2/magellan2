@@ -85,6 +85,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     this.client = client;
     this.commands = new ExtendedCommands(client);
     this.dock = new ExtendedCommandsDock(commands);
+    client.getDispatcher().addSelectionListener(dock);
     this.help = new HelpDock();
     ExtendedCommandsPlugIn.log.info(getName()+" initialized...(Client)");
   }
@@ -277,7 +278,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   protected void editCommands(GameData data, UnitContainer container) {
     ExtendedCommandsPlugIn.log.info("Edit Command for UnitContainer "+container);
     
-    // find the commands for this unit or set them to "".
+    // find the commands for this container or set them to "".
     Script script = commands.getCommands(container);
     if (Utils.isEmpty(script)) {
       script = new Script(container.getID().toString(),Script.SCRIPTTYPE_CONTAINER,ContainerType.getType(container.getType()),"");

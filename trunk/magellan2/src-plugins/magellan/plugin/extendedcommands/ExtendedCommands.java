@@ -399,7 +399,7 @@ public class ExtendedCommands {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
       interpreter.set("unit",unit);
-      interpreter.set("helper", new ExtendedCommandsHelper(world,unit));
+      interpreter.set("helper", new ExtendedCommandsHelper(client, world,unit));
       interpreter.set("log", DebugDock.getInstance());
       
       String script = "";
@@ -443,7 +443,7 @@ public class ExtendedCommands {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
       interpreter.set("container",container);
-      interpreter.set("helper", new ExtendedCommandsHelper(world));
+      interpreter.set("helper", new ExtendedCommandsHelper(client, world));
       interpreter.set("log", DebugDock.getInstance());
       
       String script = "";
@@ -479,7 +479,7 @@ public class ExtendedCommands {
     try {
       Interpreter interpreter = new Interpreter();
       interpreter.set("world",world);
-      interpreter.set("helper", new ExtendedCommandsHelper(world));
+      interpreter.set("helper", new ExtendedCommandsHelper(client, world));
       interpreter.set("log", DebugDock.getInstance());
       interpreter.eval(getLibrary().getScript());
     } catch (EvalError error) {

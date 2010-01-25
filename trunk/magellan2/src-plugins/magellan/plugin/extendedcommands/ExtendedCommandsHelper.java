@@ -32,6 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import magellan.client.Client;
+import magellan.client.event.UnitOrdersEvent;
 import magellan.client.utils.UnitRoutePlanner;
 import magellan.library.GameData;
 import magellan.library.ID;
@@ -65,14 +67,18 @@ public class ExtendedCommandsHelper {
 
   private GameData world = null;
   private Unit unit = null;
+
+  private Client client;
   
-  public ExtendedCommandsHelper(GameData world) {
+  public ExtendedCommandsHelper(Client client, GameData world) {
     this.world = world;
+    this.client = client;
   }
   
-  public ExtendedCommandsHelper(GameData world, Unit unit) {
+  public ExtendedCommandsHelper(Client client, GameData world, Unit unit) {
     this.world = world;
     this.unit = unit;
+    this.client = client;
   }
   
   /**
@@ -462,5 +468,17 @@ public class ExtendedCommandsHelper {
       String value = configuration.get(key);
       addOrder("// extcmds:\""+key+"\":"+value);
     }
+  }
+  
+  /**
+   * This method notifies the GUI that the unit's orders have changed. Call it whenever you 
+   * change orders of a unit from a script. You don't have to call it when you change the unit's
+   * orders from the unit's own script.
+   * 
+   * @param u The unit that shall be updated in the GUI.
+   */
+  public void updateUnit(Unit u){
+    u.setOrdersChanged(true);
+    client.getDispatcher().fire(new UnitOrdersEvent(this, u));
   }
 }

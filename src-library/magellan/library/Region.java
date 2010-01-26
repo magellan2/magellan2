@@ -953,4 +953,14 @@ public interface Region extends UnitContainer {
    */
   public int getMorale();
 
+  /**
+   * Returns the current mourning state or -1 if unknown.
+   */
+  public int getMourning();
+
+  /**
+   * Sets the current mourning state.
+   */
+  public void setMourning(int newMourning);
+
 }

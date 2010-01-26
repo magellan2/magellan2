@@ -84,7 +84,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
     
     rate = Math.min(rate, region.getMorale()/2f);
     
-    return region.containsTag("mourning")&&region.getTag("mourning").equals("1")?0:(int) (rate*region.getSilver()/100);
+    return region.getMourning()==1?0:(int) (rate*region.getSilver()/100);
   }
 
   /**
@@ -140,8 +140,9 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
   }
 
   public int getShipRange(Ship s) {
-    if (s.getSpeed() != -1)
-      return s.getSpeed();
+    if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit()) {
+        return s.getSpeed();
+    }
     
     // Reichweite (bei Schaden aufrunden)
     int rad = s.getShipType().getRange();

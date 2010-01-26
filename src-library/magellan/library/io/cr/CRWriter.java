@@ -1903,6 +1903,11 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
+      if (includeRegionDetails && region.getMourning() >= 0) {
+        write(region.getMourning() + ";mourning");
+        newLine();
+      }
+
       if (region.getIron() > 0) {
         write(region.getIron() + ";Eisen");
         newLine();

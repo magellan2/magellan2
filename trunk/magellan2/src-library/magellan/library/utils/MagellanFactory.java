@@ -746,6 +746,10 @@ public abstract class MagellanFactory {
         || (resultRegion.getOwnerFaction() != null && curRegion.getVisibility().equals(
             Visibility.UNIT)))
       resultRegion.setOwnerFaction(curRegion.getOwnerFaction());
+    
+    if (sameTurn) {
+      resultRegion.setMourning(curRegion.getMourning());
+    }
 
     /******************** OLD VALUES OF SIMPLE RESOURCES *************************************/
     // *** OldTrees ****

@@ -1165,6 +1165,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   private int morale = -1;
 
+  private int mourning = -1;
+
   /**
    * Sets the collection of ids for reachable regions to <tt>neighbours</tt>. If
    * <tt>neighbours</tt> is null they will be evaluated.
@@ -2010,6 +2012,20 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    */
   public void setMorale(int morale) {
     this.morale  = morale;
+  }
+
+  /**
+   * @see magellan.library.Region#getMourning()
+   */
+  public int getMourning() {
+    return mourning;
+  }
+
+  /**
+   * @see magellan.library.Region#setMourning(int)
+   */
+  public void setMourning(int newMourning) {
+    mourning  = newMourning;
   }
 
 }

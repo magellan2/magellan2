@@ -890,7 +890,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // E3 Morale
     if (r.getMorale() >= 0) {
       DefaultMutableTreeNode n;
-      if (r.containsTag("mourning") && r.getTag("mourning").equals("1")) {
+      if (r.getMourning()==1) {
         n =
             createSimpleNode(Resources.get("emapdetailspanel.node.morale.mourning",
                 new Object[] { r.getMorale() }), "morale");

@@ -1,6 +1,5 @@
 2009-12-25 / Build 374 - stm (stm_@users.sourceforge.net)
-    * added load button to ExtCmds dock
-    * added updateUnit to ExtCmdsHelper
+    * added load button to ExtCmds dock, updateUnit to ExtCmdsHelper, shortcuts for ExtCmds
 
 2009-12-23 / Build 373 - stm (stm_@users.sourceforge.net)
     * added BEZAHLE NICHT command

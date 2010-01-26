@@ -24,7 +24,7 @@ import javax.swing.KeyStroke;
  */
 public interface ExtendedShortcutListener extends ShortcutListener {
 	/**
-	 * Returns wether the given stroke is for an extended short-cut.
+	 * Returns whether the given stroke is for an extended short-cut.
 	 *
 	 * 
 	 */

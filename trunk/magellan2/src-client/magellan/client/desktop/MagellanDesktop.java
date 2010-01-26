@@ -896,7 +896,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
       }
 
       if (shortCutListeners.containsKey(str) && dest!=shortCutListeners.get(str))
-        log.warn("multiply used shortcut + "+str+" old: "+shortCutListeners.get(str)+", new: "+dest);
+        log.warn("multiply used shortcut + "+str+"\n     old: "+shortCutListeners.get(str)+",\n     new: "+dest);
       shortCutListeners.put(str, dest);
     }
 

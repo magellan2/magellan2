@@ -102,9 +102,9 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(2);
     // 0: Focus
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK));
     // 1: open current
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
   }
@@ -327,11 +327,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // find the commands for this container or set them to "".
     Script script = commands.getCommands(container);
     if (Utils.isEmpty(script)) {
-      script = new Script(container.getID().toString(),Script.SCRIPTTYPE_CONTAINER,ContainerType.getType(container.getType()),"");
-    }
-    if (Utils.isEmpty(script.getScript())) {
-      // show some examples for beginners...
-      script.setScript(commands.getDefaultContainerScript());
+      script = commands.createScript(container);
     }
     
     // open a dialog for the commands...
@@ -350,11 +346,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // find the commands for this unit or set them to "".
     Script script = commands.getCommands(unit);
     if (Utils.isEmpty(script)) {
-      script = new Script(unit.getID().toString(),Script.SCRIPTTYPE_UNIT,ContainerType.UNKNOWN,"");
-    }
-    if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
-      // show some examples for beginners...
-      script.setScript(commands.getDefaultUnitScript());
+      script = commands.createScript(unit);
     }
     
     // open a dialog for the commands...
@@ -372,11 +364,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // find the commands for this unit or set them to "".
     Script script = commands.getLibrary();
     if (Utils.isEmpty(script)) {
-      script = new Script(null,Script.SCRIPTTYPE_LIBRARY,ContainerType.UNKNOWN,"");
-    }
-    if (Utils.isEmpty(script)) {
-      // show some examples for beginners...
-      script.setScript(commands.getDefaultLibrary());
+      script = commands.createLibrary(data); 
     }
     
     // open a dialog for the commands...

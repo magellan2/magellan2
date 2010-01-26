@@ -631,4 +631,34 @@ public class ExtendedCommands {
     defaultContainerScript  = script;
   }
 
+  public Script createScript(Unit unit) {
+    Script script =
+        new Script(unit.getID().toString(), Script.SCRIPTTYPE_UNIT, ContainerType.UNKNOWN, "");
+    if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
+      // show some examples for beginners...
+      script.setScript(getDefaultUnitScript());
+    }
+    return script;
+  }
+
+  public Script createScript(UnitContainer container) {
+    Script script =
+        new Script(container.getID().toString(), Script.SCRIPTTYPE_CONTAINER, ContainerType
+            .getType(container.getType()), "");
+    if (Utils.isEmpty(script.getScript())) {
+      // show some examples for beginners...
+      script.setScript(getDefaultContainerScript());
+    }
+    return script;
+  }
+
+  public Script createLibrary(GameData data) {
+    Script script = new Script(null, Script.SCRIPTTYPE_LIBRARY, ContainerType.UNKNOWN, "");
+    if (Utils.isEmpty(script)) {
+      // show some examples for beginners...
+      script.setScript(getDefaultLibrary());
+    }
+    return script;
+  }
+
 }

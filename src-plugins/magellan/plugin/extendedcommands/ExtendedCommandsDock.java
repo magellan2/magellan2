@@ -211,32 +211,24 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
   }
 
   /**
-   * find the commands for this container or set them to "".
+   * Find the commands for this container or set them to the default.
    */
   private Script getScript(UnitContainer container) {
     Script script = commands.getCommands(container);
     if (Utils.isEmpty(script)) {
-      script =
-          new Script(container.getID().toString(), Script.SCRIPTTYPE_CONTAINER, ContainerType
-              .getType(container.getType()), "");
+      script = commands.createScript(container);
     }
-    if (Utils.isEmpty(script.getScript())) {
-      script.setScript(commands.getDefaultContainerScript());
-    }
+
     return script;
   }
 
   /**
-   * find the commands for this unit or set them to "".
+   * Find the commands for this unit or set them to the default.
    */
   private Script getScript(Unit unit) {
     Script script = commands.getCommands(unit);
     if (Utils.isEmpty(script)) {
-      script =
-          new Script(unit.getID().toString(), Script.SCRIPTTYPE_UNIT, ContainerType.UNKNOWN, "");
-    }
-    if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
-      script.setScript(commands.getDefaultUnitScript());
+      script = commands.createScript(unit);
     }
     return script;
   }
@@ -369,11 +361,9 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     }
     Script library = commands.getLibrary();
     if (Utils.isEmpty(library)) {
-      library = new Script(null, Script.SCRIPTTYPE_LIBRARY, ContainerType.UNKNOWN, "");
+      library = commands.createLibrary(world);
     }
-    if (Utils.isEmpty(library)) {
-      library.setScript(commands.getDefaultLibrary());
-    }
+
     addTab(null, null, library);
   }
 

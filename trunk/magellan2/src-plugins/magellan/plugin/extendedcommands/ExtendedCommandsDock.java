@@ -88,7 +88,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    */
   protected void init() {
     setLayout(new BorderLayout());
-    
+
     tabs = new TabbedPanel();
     tabs.getProperties().setTabReorderEnabled(true);
     tabs.getProperties().setTabDropDownListVisiblePolicy(
@@ -99,7 +99,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     add(tabs, BorderLayout.CENTER);
 
     final JPanel north = new JPanel(new WrapLayout());
-    
+
     JButton loadButton =
         new JButton(Resources.get("extended_commands.button.load.caption"), MagellanImages
             .getImageIcon("etc/images/gui/actions/open.gif"));
@@ -181,10 +181,13 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     }
   }
 
+  /**
+   * Open tabs for current selection.
+   */
   protected void openCurrent() {
     if (selection == null)
       return;
-    
+
     // warn before loading many scripts
     if (selection.getSelectedObjects().size() > 5) {
       if (JOptionPane.showConfirmDialog(this, Resources.get("extended_commands.loadmany.question",
@@ -193,7 +196,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         return;
       }
     }
-    
+
     for (Object sel : selection.getSelectedObjects()) {
       if (sel instanceof Unit) {
         ExtendedCommandsDock.log.debug("Edit Command for Unit " + sel);
@@ -218,11 +221,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
               .getType(container.getType()), "");
     }
     if (Utils.isEmpty(script.getScript())) {
-      // show some examples for beginners...
-      String exampleScript = "// example for beginners...\n";
-      exampleScript += "//\n";
-      exampleScript += "//...";
-      script.setScript(exampleScript);
+      script.setScript(commands.getDefaultContainerScript());
     }
     return script;
   }
@@ -237,13 +236,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
           new Script(unit.getID().toString(), Script.SCRIPTTYPE_UNIT, ContainerType.UNKNOWN, "");
     }
     if (Utils.isEmpty(script) || Utils.isEmpty(script.getScript())) {
-      // show some examples for beginners...
-      String exampleScript = "// example for beginners...\n";
-      exampleScript += "//\n";
-      exampleScript += "//if (!unit.isOrdersConfirmed()) {\n";
-      exampleScript += "//  unit.setOrdersConfirmed(true);\n";
-      exampleScript += "//}\n";
-      script.setScript(exampleScript);
+      script.setScript(commands.getDefaultUnitScript());
     }
     return script;
   }
@@ -273,11 +266,7 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
     doc.setModified(false);
   }
 
-  /**
-   * Setups the dock and opens the script for the given unit or container.
-   */
-  public void setScript(Unit unit, UnitContainer container, Script script) {
-
+  private void addTab(Unit unit, UnitContainer container, Script script) {
     String key = createKey(unit, container);
     String title = createTitle(unit, container);
     if (tabMap.containsKey(key)) {
@@ -301,12 +290,27 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
       tabMap.put(key, tab);
       docMap.put(key, doc);
     }
+    try {
+      ((ExtendedCommandsDocument) tabMap.get(key).getContentComponent()).getScriptingArea()
+      .requestFocus();
+      ((ExtendedCommandsDocument) tabMap.get(key).getContentComponent()).getScriptingArea()
+      .requestFocusInWindow();
+    } catch (ClassCastException e){
+    }
+  }
+
+  /**
+   * Setups the dock and opens the script for the given unit or container.
+   */
+  public void setScript(Unit unit, UnitContainer container, Script script) {
+
+    addTab(unit, container, script);
 
     // Visibility
     if (!visible) {
       MagellanDesktop.getInstance().setVisible(ExtendedCommandsDock.IDENTIFIER, true);
+      
     }
-
   }
 
   protected String createKey(Unit unit, UnitContainer container) {
@@ -351,8 +355,10 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
    */
   public void setWorld(GameData world) {
     this.world = world;
+    if (tabs == null)
+      return;
     // this means, we have to close all currently open tabs
-    if (tabs != null && tabs.getTabCount() > 0) {
+    if (tabs.getTabCount() > 0) {
       tabMap.clear();
       docMap.clear();
 
@@ -360,9 +366,15 @@ public class ExtendedCommandsDock extends JPanel implements ActionListener, Dock
         tabs.removeTab(tabs.getTabAt(i));
         i--;
       }
-
-      // TODO: show library at startup
     }
+    Script library = commands.getLibrary();
+    if (Utils.isEmpty(library)) {
+      library = new Script(null, Script.SCRIPTTYPE_LIBRARY, ContainerType.UNKNOWN, "");
+    }
+    if (Utils.isEmpty(library)) {
+      library.setScript(commands.getDefaultLibrary());
+    }
+    addTab(null, null, library);
   }
 
   /**

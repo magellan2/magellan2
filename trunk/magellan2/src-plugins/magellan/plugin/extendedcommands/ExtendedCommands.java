@@ -72,6 +72,10 @@ public class ExtendedCommands {
   private Hashtable<String,Script> unitContainerCommands = new Hashtable<String,Script>();
   
   private Script library;
+
+  private String defaultLibrary = "";
+  private String defaultUnitScript = "";
+  private String defaultContainerScript = "";
   
   public ExtendedCommands(Client client) {
     this.client = client;
@@ -584,4 +588,47 @@ public class ExtendedCommands {
       errorWindow.setVisible(true);
     }
   }
+
+  /**
+   * Returns the default libary script.
+   */
+  public String getDefaultLibrary() {
+    return defaultLibrary;
+  }
+
+  /**
+   * Returns the default libary script.
+   */
+  public void setDefaultLibrary(String script) {
+    defaultLibrary = script;
+  }
+
+  /**
+   * Return default script for units.
+   */
+  public String getDefaultUnitScript() {
+    return defaultUnitScript;
+  }
+
+  /**
+   * Sets the default script for units.
+   */
+  public void setDefaultUnitScript(String script) {
+    defaultUnitScript  = script;
+  }
+
+  /**
+   * Return default script for units.
+   */
+  public String getDefaultContainerScript() {
+    return defaultContainerScript;
+  }
+
+  /**
+   * Sets the default script for units.
+   */
+  public void setDefaultContainerScript(String script) {
+    defaultContainerScript  = script;
+  }
+
 }

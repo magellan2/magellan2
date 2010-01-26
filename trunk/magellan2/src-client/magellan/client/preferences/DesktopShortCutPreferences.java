@@ -40,9 +40,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.Collator;
 import java.text.MessageFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EventObject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -52,7 +52,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.swing.AbstractCellEditor;
 import javax.swing.Action;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -67,6 +69,7 @@ import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableColumn;
 
 import magellan.client.Client;
@@ -198,12 +201,22 @@ import magellan.library.utils.Resources;
       TableColumn column = new TableColumn();
       column.setHeaderValue(columns[0]);
       column.setCellRenderer(sr);
-      column.setCellEditor(null);
+      column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+          return false;
+        }
+      });
       tcm.addColumn(column);
       column = new TableColumn(1);
       column.setHeaderValue(columns[1]);
       column.setCellRenderer(sr);
-      column.setCellEditor(null);
+      column.setCellEditor(new DefaultCellEditor(new JTextField()) {
+        @Override
+        public boolean isCellEditable(EventObject anEvent) {
+          return false;
+        }
+      });
       tcm.addColumn(column);
 
       table = new JTable(model, tcm);
@@ -213,28 +226,14 @@ import magellan.library.utils.Resources;
     }
 
     // find all java keystrokes
-    Set<KeyStroke> set = new HashSet<KeyStroke>();
-    Collection<Frame> desk = new LinkedList<Frame>();
-    desk.add(client);
 
-    Iterator<Frame> it1 = desk.iterator();
+    ownShortcuts = new HashSet<KeyStroke>(desktop.getShortCutListeners().keySet());
+    otherShortcuts = new HashSet<KeyStroke>();
+    addKeyStrokes(client, otherShortcuts);
+    otherShortcuts.removeAll(ownShortcuts);
+    otherShortcuts.removeAll(desktop.getShortCutTranslations().keySet());
 
-    while(it1.hasNext()) {
-      addKeyStrokes(it1.next(), set);
-    }
-
-    Set<KeyStroke> set2 = new HashSet<KeyStroke>(desktop.getShortCutListeners().keySet());
-    Iterator<KeyStroke> it2 = desktop.getShortCutTranslations().keySet().iterator();
-
-    while(it2.hasNext()) {
-      set2.remove(desktop.getShortCutTranslations().get(it2.next()));
-    }
-
-    ownShortcuts = set2;
-    ownShortcuts.addAll(desktop.getShortCutTranslations().keySet());
-    set.removeAll(set2);
-    set.removeAll(desktop.getShortCutTranslations().keySet());
-    otherShortcuts = set;
+//    (new InformDialog(client)).setVisible(true);
 
 //    JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
 //    JButton help = new JButton(Resources.get("desktop.magellandesktop.prefs.shortcuts.help"));
@@ -405,7 +404,7 @@ import magellan.library.utils.Resources;
     return new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent mouseEvent) {
-          if(mouseEvent.getClickCount() == 2) {
+          if(mouseEvent.getClickCount() > 0) {
             Point p = mouseEvent.getPoint();
 
             if((table.columnAtPoint(p) == 0) && (table.rowAtPoint(p) >= 0)) {
@@ -425,19 +424,28 @@ import magellan.library.utils.Resources;
     Component top = this.getTopLevelAncestor();
     TranslateStroke td = null;
 
-    if(top instanceof Frame) {
-      td = new TranslateStroke((Frame) top);
-    } else if(top instanceof Dialog) {
-      td = new TranslateStroke((Dialog) top);
-    } else throw new RuntimeException("top level ancestor is neither frame nor dialog.");
+    if (model.getValueAt(row, 0) instanceof KeyStroke){
+      if(top instanceof Frame) {
+        td = new TranslateStroke((Frame) top);
+      } else if(top instanceof Dialog) {
+        td = new TranslateStroke((Dialog) top);
+      } else throw new RuntimeException("top level ancestor is neither frame nor dialog.");
 
-    td.setVisible(true);
+      td.setVisible(true);
 
-    KeyStroke newStroke = td.getStroke();
+      KeyStroke newStroke = td.getStroke();
 
+      if (newStroke!=null)
+        changeStroke(newStroke, stroke, row);
+    }
+  }
+    
+  private boolean changeStroke(KeyStroke newStroke, KeyStroke stroke, int row) {
     if((newStroke != null) && !newStroke.equals(stroke)) {
       if(ownShortcuts.contains(newStroke)) {
-        JOptionPane.showMessageDialog(this, Resources.get("desktop.magellandesktop.prefs.shortcuts.error"));
+        JOptionPane.showMessageDialog(this, Resources.get(
+            "desktop.magellandesktop.prefs.shortcuts.error", desktop.getShortCutListeners().get(
+                newStroke)));
       } else {
         boolean doIt = true;
 
@@ -450,6 +458,8 @@ import magellan.library.utils.Resources;
         }
 
         if(doIt) {
+          ownShortcuts.remove(stroke);
+          ownShortcuts.add(newStroke);
           if(desktop.getShortCutTranslations().containsKey(stroke)) {
             KeyStroke oldStroke = desktop.getShortCutTranslations().get(stroke);
             desktop.removeTranslation(stroke);
@@ -466,10 +476,13 @@ import magellan.library.utils.Resources;
             desktop.registerTranslation(newStroke, stroke);
           }
 
-          model.setValueAt(newStroke, row, 0);
+          if (row>=0)
+            model.setValueAt(newStroke, row, 0);
         }
+        return doIt;
       }
     }
+    return false;
   }
 
   /**
@@ -519,7 +532,7 @@ import magellan.library.utils.Resources;
       java.setEditable(false);
       java.setLineWrap(true);
       java.setWrapStyleWord(true);
-      con.add(new JScrollPane(java), BorderLayout.SOUTH);
+      con.add(new JScrollPane(java), BorderLayout.CENTER);
 
       JPanel button = new JPanel(new FlowLayout(FlowLayout.CENTER));
       JButton ok = new JButton("prefs.shortcuts.dialog.ok");
@@ -590,6 +603,8 @@ import magellan.library.utils.Resources;
         if(text.getKeyCode() != 0) {
           stroke = KeyStroke.getKeyStroke(text.getKeyCode(), text.getModifiers());
         }
+      } else {
+        stroke = null;
       }
 
       this.setVisible(false);
@@ -602,120 +617,190 @@ import magellan.library.utils.Resources;
       return stroke;
     }
 
-    private class KeyTextField extends JTextField implements KeyListener {
-      protected int modifiers = 0;
-      protected int key = 0;
+  }
 
-      /**
-       * Creates a new KeyTextField object.
-       */
-      public KeyTextField() {
-        super(20);
-        this.addKeyListener(this);
+  private class KeyTextField extends JTextField implements KeyListener {
+    protected int modifiers = 0;
+    protected int key = 0;
+
+    /**
+     * Creates a new KeyTextField object.
+     */
+    public KeyTextField() {
+      super(20);
+      this.addKeyListener(this);
+    }
+
+    /**
+     * 
+     */
+    public void init(int modifiers, int key) {
+      this.key = key;
+      this.modifiers = modifiers;
+
+      String s = KeyEvent.getKeyModifiersText(modifiers);
+
+      if((s != null) && (s.length() > 0)) {
+        s += ('+' + KeyEvent.getKeyText(key));
+      } else {
+        s = KeyEvent.getKeyText(key);
       }
 
-      /**
-       * 
-       */
-      public void init(int modifiers, int key) {
-        this.key = key;
-        this.modifiers = modifiers;
+      this.setText(s);
+    }
 
-        String s = KeyEvent.getKeyModifiersText(modifiers);
+    /**
+     * 
+     */
+    public void keyReleased(KeyEvent p1) {
+      // maybe should delete any input if there's no "stable"(non-modifying) key
+    }
 
-        if((s != null) && (s.length() > 0)) {
-          s += ('+' + KeyEvent.getKeyText(key));
-        } else {
-          s = KeyEvent.getKeyText(key);
+    /**
+     * 
+     */
+    public void keyPressed(KeyEvent p1) {
+      modifiers = p1.getModifiers();
+      key = p1.getKeyCode();
+
+      // avoid double string
+      if((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) ||
+           (key == KeyEvent.VK_ALT) || (key == KeyEvent.VK_ALT_GRAPH)) {
+        int xored = 0;
+
+        switch(key) {
+        case KeyEvent.VK_SHIFT:
+          xored = InputEvent.SHIFT_MASK;
+
+          break;
+
+        case KeyEvent.VK_CONTROL:
+          xored = InputEvent.CTRL_MASK;
+
+          break;
+
+        case KeyEvent.VK_ALT:
+          xored = InputEvent.ALT_MASK;
+
+          break;
+
+        case KeyEvent.VK_ALT_GRAPH:
+          xored = InputEvent.ALT_GRAPH_MASK;
+
+          break;
         }
 
-        setText(s);
+        modifiers ^= xored;
       }
 
-      /**
-       * 
-       */
-      public void keyReleased(KeyEvent p1) {
-        // maybe should delete any input if there's no "stable"(non-modifying) key
+      String s = KeyEvent.getKeyModifiersText(modifiers);
+
+      if((s != null) && (s.length() > 0)) {
+        s += ('+' + KeyEvent.getKeyText(key));
+      } else {
+        s = KeyEvent.getKeyText(key);
       }
 
-      /**
-       * 
-       */
-      public void keyPressed(KeyEvent p1) {
-        modifiers = p1.getModifiers();
-        key = p1.getKeyCode();
+      this.setText(s);
+      p1.consume();
+    }
 
-        // avoid double string
-        if((key == KeyEvent.VK_SHIFT) || (key == KeyEvent.VK_CONTROL) ||
-             (key == KeyEvent.VK_ALT) || (key == KeyEvent.VK_ALT_GRAPH)) {
-          int xored = 0;
+    /**
+     * 
+     */
+    public void keyTyped(KeyEvent p1) {
+    }
 
-          switch(key) {
-          case KeyEvent.VK_SHIFT:
-            xored = InputEvent.SHIFT_MASK;
+    /** 
+     * To allow "tab" as a key.
+     */
+    @Override
+    public boolean isManagingFocus() {
+      return true;
+    }
 
-            break;
+    /**
+     * 
+     */
+    public int getKeyCode() {
+      return key;
+    }
 
-          case KeyEvent.VK_CONTROL:
-            xored = InputEvent.CTRL_MASK;
+    /**
+     * 
+     */
+    public int getModifiers() {
+      return modifiers;
+    }
+    
+    public KeyStroke getKeyStroke() {
+      return KeyStroke.getKeyStroke(getKeyCode(), getModifiers());
+    }
+  }
+  
+  /**
+   * A CellEditor component for editing key strokes in JTable cells.
+   */
+  protected class KeyStrokeCellEditor extends AbstractCellEditor implements TableCellEditor {
 
-            break;
+    private KeyTextField textField;
+    private Object oldValue;
+    private JTextField dummy = new JTextField();
 
-          case KeyEvent.VK_ALT:
-            xored = InputEvent.ALT_MASK;
+    public KeyStrokeCellEditor() {
+      this.textField = new KeyTextField();
+    }
 
-            break;
-
-          case KeyEvent.VK_ALT_GRAPH:
-            xored = InputEvent.ALT_GRAPH_MASK;
-
-            break;
-          }
-
-          modifiers ^= xored;
-        }
-
-        String s = KeyEvent.getKeyModifiersText(modifiers);
-
-        if((s != null) && (s.length() > 0)) {
-          s += ('+' + KeyEvent.getKeyText(key));
-        } else {
-          s = KeyEvent.getKeyText(key);
-        }
-
-        setText(s);
-        p1.consume();
+    
+    @Override
+    public void cancelCellEditing() {
+      if (oldValue instanceof KeyStroke) {
+        textField.init(((KeyStroke) oldValue).getModifiers(), ((KeyStroke) oldValue).getKeyCode());
       }
+      super.cancelCellEditing();
+    }
+    
+    @Override
+    public boolean stopCellEditing() {
+      if (oldValue instanceof KeyStroke)
+        if (!changeStroke((KeyStroke) getCellEditorValue(), (KeyStroke) oldValue, -1)){
+          textField.init(((KeyStroke) oldValue).getModifiers(), ((KeyStroke) oldValue).getKeyCode());
+        } 
+      
+      return super.stopCellEditing();
+    }
+    
+    
+    @Override
+    public boolean isCellEditable(EventObject anEvent) {
+      return super.isCellEditable(anEvent);
+    }
+    
+    /**
+     * @see javax.swing.DefaultCellEditor#getCellEditorValue()
+     */
+    public Object getCellEditorValue() {
+      if (oldValue instanceof KeyStroke)
+        return textField.getKeyStroke();
+      else
+        return oldValue;
+    }
 
-      /**
-       * 
-       */
-      public void keyTyped(KeyEvent p1) {
-      }
 
-      /** 
-       * To allow "tab" as a key.
-       */
-      @Override
-      public boolean isManagingFocus() {
-        return true;
-      }
-
-      /**
-       * 
-       */
-      public int getKeyCode() {
-        return key;
-      }
-
-      /**
-       * 
-       */
-      public int getModifiers() {
-        return modifiers;
+    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
+        int row, int column) {
+      if (value instanceof KeyStroke){
+        oldValue = value;
+        textField.init(((KeyStroke) value).getModifiers(), ((KeyStroke) value).getKeyCode());
+        return textField;
+      } else {
+        oldValue = value;
+        dummy.setEditable(false);
+        dummy.setText(oldValue.toString());
+        return dummy;
       }
     }
+    
   }
 
   protected class StrokeRenderer extends DefaultTableCellRenderer {

@@ -8,19 +8,12 @@
 package magellan.client.actions.file;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 
 import magellan.client.Client;
 import magellan.client.actions.MenuAction;
-import magellan.client.desktop.DesktopEnvironment;
-import magellan.client.desktop.ShortcutListener;
 import magellan.client.swing.OrderWriterDialog;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -31,8 +24,7 @@ import magellan.library.utils.Resources;
  * 
  * @author Andreas
  */
-public class SaveOrdersAction extends MenuAction implements ShortcutListener, GameDataListener {
-  private List<KeyStroke> shortCuts;
+public class SaveOrdersAction extends MenuAction implements GameDataListener {
   private Mode mode;
 
   public enum Mode {
@@ -47,33 +39,38 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
   public SaveOrdersAction(Client client, Mode mode) {
     super(client);
     this.mode = mode;
-      shortCuts = new ArrayList<KeyStroke>(1);
-    switch (mode) {
-    case DIALOG:
-        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
-            | InputEvent.SHIFT_MASK));
-      break;
-    case FILE:
-        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
-            | InputEvent.SHIFT_MASK));
-      break;
-    case CLIPBOARD:
-        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
-            | InputEvent.SHIFT_MASK));
-      break;
-    case MAIL:
-        shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
-            | InputEvent.SHIFT_MASK));
+    
+    // don't need this, MenuAction takes care of shortcuts
+//    shortCuts = new ArrayList<KeyStroke>(1);
+//    switch (mode) {
+//    case DIALOG:
+//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.CTRL_MASK
+//          | InputEvent.SHIFT_MASK));
+//      break;
+//    case FILE:
+//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK
+//          | InputEvent.SHIFT_MASK));
+//      break;
+//    case CLIPBOARD:
+//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_MASK
+//          | InputEvent.SHIFT_MASK));
+//      break;
+//    case MAIL:
+//      shortCuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.CTRL_MASK
+//          | InputEvent.SHIFT_MASK));
+//
+//      break;
+//    }
+//    DesktopEnvironment.registerShortcutListener(this);
 
-      break;
-    }
-        DesktopEnvironment.registerShortcutListener(this);
     init();
-
     setEnabled(false);
     client.getDispatcher().addGameDataListener(this);
   }
 
+  /**
+   * Simulates {@link MenuAction#MenuAction(Client)}.
+   */
   private void init() {
     this.setName(getNameTranslated());
 
@@ -144,54 +141,54 @@ public class SaveOrdersAction extends MenuAction implements ShortcutListener, Ga
           .get("actions.saveordersaction.action.error.title"), JOptionPane.WARNING_MESSAGE);
   }
 
-  /**
-   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
-   */
-  public void shortCut(KeyStroke shortcut) {
-    if (shortCuts.indexOf(shortcut) < 0)
-      return;
-
-    switch (mode) {
-    case DIALOG:
-      showDialog();
-      break;
-    case FILE:
-      execSave();
-      break;
-    case CLIPBOARD:
-      execClipboard();
-      break;
-    case MAIL:
-      execMail();
-      break;
-    }
-  }
-
-  /**
-   * Should return all short cuts this class want to be informed. The elements should be of type
-   * javax.swing.KeyStroke
-   *
-   * @see magellan.client.desktop.ShortcutListener#getShortCuts()
-   */
-  public Iterator<KeyStroke> getShortCuts() {
-    return shortCuts.iterator();
-  }
-
-  /**
-   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
-   */
-  public String getShortcutDescription(KeyStroke obj) {
-    if (mode==null) return "default"; // not yet initialized
-    return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
-  }
-
-  /**
-   * 
-   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
-   */
-  public java.lang.String getListenerDescription() {
-    return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
-  }
+//  /**
+//   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
+//   */
+//  public void shortCut(KeyStroke shortcut) {
+//    if (shortCuts.indexOf(shortcut) < 0)
+//      return;
+//
+//    switch (mode) {
+//    case DIALOG:
+//      showDialog();
+//      break;
+//    case FILE:
+//      execSave();
+//      break;
+//    case CLIPBOARD:
+//      execClipboard();
+//      break;
+//    case MAIL:
+//      execMail();
+//      break;
+//    }
+//  }
+//
+//  /**
+//   * Should return all short cuts this class want to be informed. The elements should be of type
+//   * javax.swing.KeyStroke
+//   *
+//   * @see magellan.client.desktop.ShortcutListener#getShortCuts()
+//   */
+//  public Iterator<KeyStroke> getShortCuts() {
+//    return shortCuts.iterator();
+//  }
+//
+//  /**
+//   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+//   */
+//  public String getShortcutDescription(KeyStroke obj) {
+//    if (mode==null) return "default"; // not yet initialized
+//    return Resources.get("actions.saveordersaction.shortcuts.description." + String.valueOf(mode));
+//  }
+//
+//  /**
+//   * 
+//   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
+//   */
+//  public java.lang.String getListenerDescription() {
+//    return Resources.get("actions.saveordersaction.shortcuts.title." + String.valueOf(mode));
+//  }
 
   /**
    * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)

@@ -309,7 +309,6 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
       txtOutput.setText("");
       lstMessages.setListData(new Object [] { result });
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -834,13 +833,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		/**
 		 * DOCUMENT-ME
 		 *
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
 		 *
-		 * 
+		 * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
 		 */
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 													  boolean isSelected, boolean cellHasFocus) {
@@ -907,36 +901,28 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the true if only units of selected regions should be checked. 
 	 */
 	public boolean getSelRegionsOnly() {
 		return chkSelRegionsOnly.isSelected();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Set to true if only unitsof selected regions should be checked. 
 	 */
 	public void setSelRegionsOnly(boolean b) {
 		chkSelRegionsOnly.setSelected(b);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns true if only confirmed units should be checked. 
 	 */
 	public boolean getConfirmedOnly() {
 		return chkConfirmedOnly.isSelected();
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Set to true if only confirmed units should be checked. 
 	 */
 	public void setConfirmedOnly(boolean b) {
 		chkConfirmedOnly.setSelected(b);
@@ -945,7 +931,6 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   /**
    * Should return all short cuts this class want to be informed. The elements
    * should be of type javax.swing.KeyStroke
-   * 
    * 
    */
   public Iterator<KeyStroke> getShortCuts() {
@@ -956,7 +941,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
    * This method is called when a shortcut from getShortCuts() is recognized.
    * 
    * @param shortcut
-   *          DOCUMENT-ME
+   * 
+   * @see magellan.client.desktop.ShortcutListener#shortCut(javax.swing.KeyStroke)
    */
   public void shortCut(javax.swing.KeyStroke shortcut) {
     int index = shortcuts.indexOf(shortcut);
@@ -981,9 +967,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   }
 
   /**
-   * DOCUMENT-ME
-   * 
-   * 
+   * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
    */
   public String getListenerDescription() {
     return Resources.get("echeckpanel.shortcut.title");

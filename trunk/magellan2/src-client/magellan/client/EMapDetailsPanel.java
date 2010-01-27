@@ -4188,6 +4188,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           String val = s.getComponents().get(key);
           DefaultMutableTreeNode compNode;
 
+          // FIXME: localize?
           if (key.equalsIgnoreCase("Aura")) {
             int blankPos = val.indexOf(" ");
 

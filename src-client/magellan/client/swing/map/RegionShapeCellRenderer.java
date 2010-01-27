@@ -60,7 +60,6 @@ import magellan.client.swing.context.ContextObserver;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.Unit;
@@ -81,7 +80,9 @@ import magellan.library.utils.logging.Logger;
 public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	implements Initializable, ContextChangeable, GameDataListener
 {
-	/** DOCUMENT-ME */
+  private static final Logger log = Logger.getInstance(RegionShapeCellRenderer.class);
+
+  /** DOCUMENT-ME */
 	public static final String MAP_TAG = "mapcolor";
 
 	/** The default value for factionKey. */
@@ -115,7 +116,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	private List<String> factions = new LinkedList<String>();
 
 	/** Stores the faction - color paires. The key is the faction name (Faction.getName()) */
-	protected Map<Object,Color> factionColors;
+	protected Map<String,Color> factionColors;
 
 	/** The ocean is rendered with this color in Politics Mode. */
 	protected Color oceanColor;
@@ -124,7 +125,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	protected Color unknownColor;
 
 	/** Stores the region - color paires. The key is the region type name (RegionType.getName()). */
-	protected Map<Object,Color> regionColors;
+	protected Map<StringID,Color> regionColors;
 
 	/** The PreferencesAdapter used for changing colors. */
 	protected GeomRendererAdapter adapter;
@@ -183,8 +184,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 								   String pKey) {
 		super(geo, context);
 
-		factionColors = new HashMap<Object,Color>();
-		regionColors = new HashMap<Object, Color>();
+		factionColors = new HashMap<String,Color>();
+		regionColors = new HashMap<StringID, Color>();
 
 		// use this keys for default load/save operations
 		factionKey = fKey;
@@ -318,7 +319,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 *
 	 * @param map A map containing Faction/String - Color pairs
 	 */
-	public void setFactionColors(Map<Object,Color> map) {
+	public <T> void setFactionColors(Map<T,Color> map) {
 		Iterator it = map.keySet().iterator();
 
 		while(it.hasNext()) {
@@ -329,7 +330,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			}
 
 			if(o instanceof String) {
-				factionColors.put(o, map.get(o));
+				factionColors.put((String) o, map.get(o));
 			}
 		}
 
@@ -352,7 +353,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param name The RegionType name the color is for
 	 * @param c The (new) color
 	 */
-	public void setRegionColor(ID name, Color c) {
+	public void setRegionColor(StringID name, Color c) {
 		Color oldC = regionColors.get(name);
 
 		if(!c.equals(oldC)) {
@@ -478,8 +479,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	////////////////////////////////
 	// Global settings operations //
 	////////////////////////////////
-	protected void load(Map<Object, Color> dest, String key, boolean reset) {
-		load(dest, key, reset, false);
+	protected void load(Map<String, Color> dest, String key, boolean reset) {
+		load(dest, key, reset, String.class);
 	}
 
 	/**
@@ -491,7 +492,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param reset true if the hashtable should be cleared
 	 * 
 	 */
-	protected void load(Map<Object, Color> dest, String key, boolean reset, boolean makeID) {
+	protected <T> void load(Map<T, Color> dest, String key, boolean reset, Class<T> keyType) {
 		if(reset) {
 			dest.clear();
 		}
@@ -511,16 +512,23 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				String green = st.nextToken();
 				String blue = st.nextToken();
 
-				// i.pavkovic: stay conform with Colors.decode
-				Object mkey = name;
-
-				if(makeID) {
-					mkey = StringID.create(name);
+				T mkey;
+        // i.pavkovic: stay conform with Colors.decode
+				if (keyType.equals(String.class))
+				  mkey = (T) name;
+				else if(keyType.equals(StringID.class)) {
+					mkey = (T) StringID.create(name);
+				} else {
+				  log.error("unknown key type");
+				  return;
 				}
 
 				dest.put(mkey, Colors.decode(red + "," + green + "," + blue));
 			}
-		} catch(Exception exc) {
+    } catch(ClassCastException exc) {
+      log.error(exc);
+      exc.printStackTrace();
+    } catch(Exception exc) {
 		}
 
 		// maybe not the right count
@@ -532,13 +540,13 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param source The source hashtable with name-Color pairs
 	 * @param key The key for the property to set
 	 */
-	protected void save(Map source, String key) {
+	protected void save(Map<?, Color> source, String key) {
 		StringBuffer buffer = new StringBuffer();
 		Iterator it = source.keySet().iterator();
 
 		while(it.hasNext()) {
 			Object name = it.next();
-			Color col = (Color) source.get(name);
+			Color col = source.get(name);
 			buffer.append(name);
 			buffer.append(';');
 			buffer.append(Colors.encode(col).replace(',', ';'));
@@ -606,7 +614,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param reset true if the region colors should be resetted
 	 */
 	public void loadRegionColors(String key, boolean reset) {
-		load(regionColors, key, reset, true);
+		load(regionColors, key, reset, StringID.class);
 	}
 
 	/**
@@ -1142,10 +1150,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			 */
 			private class ListElement {
 				String name;
-				ID id;
+				StringID id;
 				Color color;
 
-				ListElement(String n, ID i, Color c) {
+				ListElement(String n, StringID i, Color c) {
 					this.name = n;
 					this.id = i;
 					this.color = c;
@@ -1284,8 +1292,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					}
 
 					/**
-					 * DOCUMENT-ME
-					 *
+					 * 
 					 */
 					public void setColor(Color c) {
 						myColor = c;
@@ -1332,9 +1339,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			 * A small ListModel implementation that allows ordering through a Comparator.
 			 */
 			private class SortableListModel<T> extends AbstractListModel {
-				protected List<T> data;
+				protected List<T> listData;
 				protected Comparator<T> comp = null;
-				protected int offset = -1;
+				protected int listOffset = -1;
 
 				/**
 				 * Creates a new SortableListModel object.
@@ -1342,10 +1349,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 * 
 				 */
 				public SortableListModel(Collection<T> initData) {
-					data = new LinkedList<T>();
+					listData = new LinkedList<T>();
 
 					if(initData != null) {
-						data.addAll(initData);
+						listData.addAll(initData);
 					}
 				}
 
@@ -1353,31 +1360,31 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 * @see javax.swing.ListModel#getElementAt(int)
 				 */
 				public Object getElementAt(int index) {
-					return data.get(index);
+					return listData.get(index);
 				}
 
 				/**
 				 * @see javax.swing.ListModel#getSize()
 				 */
 				public int getSize() {
-					return data.size();
+					return listData.size();
 				}
 
 				/**
 				 * @param o
 				 */
 				public void add(T o) {
-					data.add(o);
-					fireIntervalAdded(this, data.size() - 1, data.size() - 1);
+					listData.add(o);
+					fireIntervalAdded(this, listData.size() - 1, listData.size() - 1);
 
 					if(comp != null) {
-						sort(comp, offset);
+						sort(comp, listOffset);
 					}
 				}
 
 				public void removeAll() {
-					int old = data.size();
-					data.clear();
+					int old = listData.size();
+					listData.clear();
 					fireIntervalRemoved(this, 0, old - 1);
 				}
 
@@ -1390,7 +1397,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				 */
 				public void sort(Comparator<T> comp, int offset) {
 					this.comp = comp;
-					this.offset = offset;
+					this.listOffset = offset;
 
 					try {
 						Collection<T> front = null;
@@ -1398,7 +1405,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 						if(offset > 0) {
 							front = new LinkedList<T>();
 
-							Iterator<T> it = data.iterator();
+							Iterator<T> it = listData.iterator();
 
 							for(int i = 0; i < offset; i++) {
 								front.add(it.next());
@@ -1406,20 +1413,21 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 							}
 						}
 
-						Collections.sort(data, comp);
+						Collections.sort(listData, comp);
 
 						if(offset > 0) {
-							data.addAll(0, front);
+							listData.addAll(0, front);
 						}
 
-						fireContentsChanged(this, Math.max(0, offset), data.size() - 1);
+						fireContentsChanged(this, Math.max(0, offset), listData.size() - 1);
 					} catch(Exception exc) {
 					}
 				}
 			}
 
+      @SuppressWarnings("hiding")
       private final Logger log = Logger.getInstance(ModePanel.class);
-			protected boolean mode;
+			protected boolean politicsMode;
 			private Collection<Object> myColors;
 			private Dimension prefDim;
 			private JList list;
@@ -1436,7 +1444,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			 * 
 			 */
 			public ModePanel(boolean politics) {
-				mode = politics;
+				politicsMode = politics;
 
 				oceanLabel = Resources.get("map.regionshapecellrenderer.lbl.ocean.caption");
 				unknownLabel = Resources.get("map.regionshapecellrenderer.lbl.unassignedregion.caption");
@@ -1446,9 +1454,9 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 				listModel = new SortableListModel<ListElement>(null);
 				myColors = new LinkedList<Object>();
-				loadElements(mode ? factionColors : regionColors);
+				loadElements(politicsMode ? factionColors : regionColors);
 
-				listModel.sort(nameComp, mode ? 2 : 0);
+				listModel.sort(nameComp, politicsMode ? 2 : 0);
 
 				prefDim = new Dimension(50, 10);
 
@@ -1476,7 +1484,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				scrollPane.setPreferredSize(new Dimension(150, 100));
 				this.add(scrollPane, BorderLayout.CENTER);
 
-				if(mode) {
+				if(politicsMode) {
 					JPanel left = new JPanel(magellan.client.swing.CenterLayout.SPAN_X_LAYOUT);
 					Box box = Box.createVerticalBox();
 					ButtonGroup group = new ButtonGroup();
@@ -1496,14 +1504,14 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 			protected void addGUIPair(Object obj, Color col) {
 				String name = null;
-				ID id = null;
+				StringID id = null;
 
 				if(obj instanceof RegionType) {
 					RegionType rt = (RegionType) obj;
 					name = rt.getName();
 					id = rt.getID();
-				} else if(obj instanceof ID) {
-					id = (ID) obj;
+				} else if(obj instanceof StringID) {
+					id = (StringID) obj;
 					name = id.toString();
 				} else {
 					if(obj != null) {
@@ -1521,24 +1529,25 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				listModel.add(element);
 			}
 
-			protected void loadElements(Map source) {
-				if(mode) { // add ocean and unknown
+			protected <T> void loadElements(Map<T, Color> source) {
+				if(politicsMode) { // add ocean and unknown
 					addGUIPair(oceanLabel, oceanColor);
 					addGUIPair(unknownLabel, unknownColor);
 				}
 
 				// if we get IDs we have to get the object behind
-				Iterator it = source.keySet().iterator();
+				Iterator<T> it = source.keySet().iterator();
 
 				while(it.hasNext()) {
-					Object name = null;
-					ID id = null;
-					Object key = it.next();
+					Object name;
+					T key = it.next();
 
-					if(mode) {
+					if(politicsMode) {
+					  // we work with factionColors, so key is a String
 						name = key;
 					} else {
-						id = (ID) key;
+					  // we work with regionColors, so key is a StringID
+						StringID id = (StringID) key;
 						name = id;
 
 						if((data != null) && (data.rules != null)) {
@@ -1550,7 +1559,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 						}
 					}
 
-					Color c = (Color) source.get(key);
+					Color c = source.get(key);
 					addGUIPair(name, c);
 					myColors.add(name);
 				}
@@ -1612,7 +1621,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					switch(colMode) {
 					case 0:
 
-						if(mode) {
+						if(politicsMode) {
 							setFactionColor(element.name, c);
 						} else {
 							if(element.id != null) {

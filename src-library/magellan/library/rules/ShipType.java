@@ -10,8 +10,8 @@ package magellan.library.rules;
 import java.util.Collection;
 import java.util.Collections;
 
-import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.StringID;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -33,7 +33,7 @@ public class ShipType extends ConstructibleType {
   /**
    * Creates a new ShipType object.
    */
-  public ShipType(ID id) {
+  public ShipType(StringID id) {
     super(id);
   }
 
@@ -128,7 +128,7 @@ public class ShipType extends ConstructibleType {
    * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
    */
   @Override
-  public Item getRawMaterial(ID id) {
+  public Item getRawMaterial(StringID id) {
     // if no raw materials have been added we fall back to old behavior: 1 wood per size point
     if (fallBackMaterial) {
       if (id.equals(wood.getID()))
@@ -155,4 +155,10 @@ public class ShipType extends ConstructibleType {
       return super.getRawMaterials();
   }
 
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

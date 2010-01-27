@@ -11,12 +11,10 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
- * DOCUMENT-ME
- * 
- * @author $Author: $
- * @version $Revision: 389 $
+ * Holds rule relevant information about a race.
  */
 public class Race extends UnitContainerType {
   private int recruit = -1;
@@ -31,12 +29,12 @@ public class Race extends UnitContainerType {
   /**
    * Creates a new Race object.
    */
-  public Race(ID id) {
+  public Race(StringID id) {
     super(id);
   }
 
   /**
-   * DOCUMENT-ME
+   * Sets the price in silver to recruit one person of this race.
    */
   public void setRecruitmentCosts(int r) {
     recruit = r;
@@ -194,4 +192,10 @@ public class Race extends UnitContainerType {
     additiveShipBonus = bon;
   }
 
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

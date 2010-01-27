@@ -13,7 +13,6 @@
 
 package magellan.library.gamebinding;
 
-import magellan.library.ID;
 import magellan.library.StringID;
 
 /**
@@ -24,58 +23,58 @@ import magellan.library.StringID;
  */
 public class EresseaConstants {
 	/** DOCUMENT-ME */
-	public static final ID OPT_AUSWERTUNG = StringID.create("AUSWERTUNG");
+	public static final StringID OPT_AUSWERTUNG = StringID.create("AUSWERTUNG");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_COMPUTER = StringID.create("COMPUTER");
+	public static final StringID OPT_COMPUTER = StringID.create("COMPUTER");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_ZUGVORLAGE = StringID.create("ZUGVORLAGE");
+	public static final StringID OPT_ZUGVORLAGE = StringID.create("ZUGVORLAGE");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_SILBERPOOL = StringID.create("SILBERPOOL");
+	public static final StringID OPT_SILBERPOOL = StringID.create("SILBERPOOL");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_STATISTIK = StringID.create("STATISTIK");
+	public static final StringID OPT_STATISTIK = StringID.create("STATISTIK");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_DEBUG = StringID.create("DEBUG");
+	public static final StringID OPT_DEBUG = StringID.create("DEBUG");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_ZIPPED = StringID.create("ZIPPED");
+	public static final StringID OPT_ZIPPED = StringID.create("ZIPPED");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_ZEITUNG = StringID.create("ZEITUNG");
+	public static final StringID OPT_ZEITUNG = StringID.create("ZEITUNG");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_MATERIALPOOL = StringID.create("MATERIALPOOL");
+	public static final StringID OPT_MATERIALPOOL = StringID.create("MATERIALPOOL");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_ADRESSEN = StringID.create("ADRESSEN");
+	public static final StringID OPT_ADRESSEN = StringID.create("ADRESSEN");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_BZIP2 = StringID.create("BZIP2");
+	public static final StringID OPT_BZIP2 = StringID.create("BZIP2");
 
 	/** DOCUMENT-ME */
-	public static final ID OPT_PUNKTE = StringID.create("PUNKTE");
+	public static final StringID OPT_PUNKTE = StringID.create("PUNKTE");
 
 	/** DOCUMENT-ME */
-	public static final ID C_WEAPONS = StringID.create("WEAPONS");
+	public static final StringID C_WEAPONS = StringID.create("WEAPONS");
 
 	/** DOCUMENT-ME */
-	public static final ID C_ARMOUR = StringID.create("ARMOUR");
+	public static final StringID C_ARMOUR = StringID.create("ARMOUR");
 
 	/** DOCUMENT-ME */
-	public static final ID C_RESOURCES = StringID.create("RESOURCES");
+	public static final StringID C_RESOURCES = StringID.create("RESOURCES");
 
 	/** DOCUMENT-ME */
-	public static final ID C_LUXURIES = StringID.create("LUXURIES");
+	public static final StringID C_LUXURIES = StringID.create("LUXURIES");
 
 	/** DOCUMENT-ME */
-	public static final ID C_HERBS = StringID.create("HERBS");
+	public static final StringID C_HERBS = StringID.create("HERBS");
 
 	/** DOCUMENT-ME */
-	public static final ID C_MISC = StringID.create("MISC");
+	public static final StringID C_MISC = StringID.create("MISC");
 	
 	/** DOCUMENT-ME */
 	public static final String O_ADDRESSES = "ADDRESSES";
@@ -495,121 +494,121 @@ public class EresseaConstants {
 	public static final String O_W = "W";
 
 	/** DOCUMENT-ME */
-	public static final ID R_DAEMONEN = StringID.create("DAEMONEN");
+	public static final StringID R_DAEMONEN = StringID.create("DAEMONEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_ELFEN = StringID.create("ELFEN");
+	public static final StringID R_ELFEN = StringID.create("ELFEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_GOBLINS = StringID.create("GOBLINS");
+	public static final StringID R_GOBLINS = StringID.create("GOBLINS");
 
 	/** DOCUMENT-ME */
-	public static final ID R_HALBLINGE = StringID.create("HALBLINGE");
+	public static final StringID R_HALBLINGE = StringID.create("HALBLINGE");
 
 	/** DOCUMENT-ME */
-	public static final ID R_INSEKTEN = StringID.create("INSEKTEN");
+	public static final StringID R_INSEKTEN = StringID.create("INSEKTEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_KATZEN = StringID.create("KATZEN");
+	public static final StringID R_KATZEN = StringID.create("KATZEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_MEERMENSCHEN = StringID.create("MEERMENSCHEN");
+	public static final StringID R_MEERMENSCHEN = StringID.create("MEERMENSCHEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_MENSCHEN = StringID.create("MENSCHEN");
+	public static final StringID R_MENSCHEN = StringID.create("MENSCHEN");
 
 	/** DOCUMENT-ME */
-	public static final ID R_ORKS = StringID.create("ORKS");
+	public static final StringID R_ORKS = StringID.create("ORKS");
 
 	/** DOCUMENT-ME */
-	public static final ID R_TROLLE = StringID.create("TROLLE");
+	public static final StringID R_TROLLE = StringID.create("TROLLE");
 
 	/** DOCUMENT-ME */
-	public static final ID R_ZWERGE = StringID.create("ZWERGE");
+	public static final StringID R_ZWERGE = StringID.create("ZWERGE");
 
 	/** DOCUMENT-ME */
-	public static final ID S_ALCHEMIE = StringID.create("ALCHEMIE");
+	public static final StringID S_ALCHEMIE = StringID.create("ALCHEMIE");
 
 	/** DOCUMENT-ME */
-	public static final ID S_ARMBRUSTSCHIESSEN = StringID.create("ARMBRUSTSCHIESSEN");
+	public static final StringID S_ARMBRUSTSCHIESSEN = StringID.create("ARMBRUSTSCHIESSEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_AUSDAUER = StringID.create("AUSDAUER");
+	public static final StringID S_AUSDAUER = StringID.create("AUSDAUER");
 
 	/** DOCUMENT-ME */
-	public static final ID S_BERGBAU = StringID.create("BERGBAU");
+	public static final StringID S_BERGBAU = StringID.create("BERGBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_BOGENSCHIESSEN = StringID.create("BOGENSCHIESSEN");
+	public static final StringID S_BOGENSCHIESSEN = StringID.create("BOGENSCHIESSEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_BURGENBAU = StringID.create("BURGENBAU");
+	public static final StringID S_BURGENBAU = StringID.create("BURGENBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_HANDELN = StringID.create("HANDELN");
+	public static final StringID S_HANDELN = StringID.create("HANDELN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_HIEBWAFFEN = StringID.create("HIEBWAFFEN");
+	public static final StringID S_HIEBWAFFEN = StringID.create("HIEBWAFFEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_HOLZFAELLEN = StringID.create("HOLZFAELLEN");
+	public static final StringID S_HOLZFAELLEN = StringID.create("HOLZFAELLEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_KATAPULTBEDIENUNG = StringID.create("KATAPULTBEDIENUNG");
+	public static final StringID S_KATAPULTBEDIENUNG = StringID.create("KATAPULTBEDIENUNG");
 
 	/** DOCUMENT-ME */
-	public static final ID S_KRAEUTERKUNDE = StringID.create("KRAEUTERKUNDE");
+	public static final StringID S_KRAEUTERKUNDE = StringID.create("KRAEUTERKUNDE");
 
 	/** DOCUMENT-ME */
-	public static final ID S_MAGIE = StringID.create("MAGIE");
+	public static final StringID S_MAGIE = StringID.create("MAGIE");
 
 	/** DOCUMENT-ME */
-	public static final ID S_PFERDEDRESSUR = StringID.create("PFERDEDRESSUR");
+	public static final StringID S_PFERDEDRESSUR = StringID.create("PFERDEDRESSUR");
 
 	/** DOCUMENT-ME */
-	public static final ID S_REITEN = StringID.create("REITEN");
+	public static final StringID S_REITEN = StringID.create("REITEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_RUESTUNGSBAU = StringID.create("RUESTUNGSBAU");
+	public static final StringID S_RUESTUNGSBAU = StringID.create("RUESTUNGSBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_SCHIFFBAU = StringID.create("SCHIFFBAU");
+	public static final StringID S_SCHIFFBAU = StringID.create("SCHIFFBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_SEGELN = StringID.create("SEGELN");
+	public static final StringID S_SEGELN = StringID.create("SEGELN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_SPIONAGE = StringID.create("SPIONAGE");
+	public static final StringID S_SPIONAGE = StringID.create("SPIONAGE");
 
 	/** DOCUMENT-ME */
-	public static final ID S_STANGENWAFFEN = StringID.create("STANGENWAFFEN");
+	public static final StringID S_STANGENWAFFEN = StringID.create("STANGENWAFFEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_STEINBAU = StringID.create("STEINBAU");
+	public static final StringID S_STEINBAU = StringID.create("STEINBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_STEUEREINTREIBEN = StringID.create("STEUEREINTREIBEN");
+	public static final StringID S_STEUEREINTREIBEN = StringID.create("STEUEREINTREIBEN");
 
 	/** DOCUMENT-ME */
-	public static final ID S_STRASSENBAU = StringID.create("STRASSENBAU");
+	public static final StringID S_STRASSENBAU = StringID.create("STRASSENBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_TAKTIK = StringID.create("TAKTIK");
+	public static final StringID S_TAKTIK = StringID.create("TAKTIK");
 
 	/** DOCUMENT-ME */
-	public static final ID S_TARNUNG = StringID.create("TARNUNG");
+	public static final StringID S_TARNUNG = StringID.create("TARNUNG");
 
 	/** DOCUMENT-ME */
-	public static final ID S_UNTERHALTUNG = StringID.create("UNTERHALTUNG");
+	public static final StringID S_UNTERHALTUNG = StringID.create("UNTERHALTUNG");
 
 	/** DOCUMENT-ME */
-	public static final ID S_WAFFENBAU = StringID.create("WAFFENBAU");
+	public static final StringID S_WAFFENBAU = StringID.create("WAFFENBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_WAGENBAU = StringID.create("WAGENBAU");
+	public static final StringID S_WAGENBAU = StringID.create("WAGENBAU");
 
 	/** DOCUMENT-ME */
-	public static final ID S_WAHRNEHMUNG = StringID.create("WAHRNEHMUNG");
+	public static final StringID S_WAHRNEHMUNG = StringID.create("WAHRNEHMUNG");
 
 	/** A state selector for the "Helfe Silber" state. */
 
@@ -639,79 +638,79 @@ public class EresseaConstants {
 	//public static final int A_ALL = A_SILVER | A_COMBAT | A_GIVE | A_GUARD | A_GUISE | A_WHATEVER; // (binary value should be: 111101 (#123) )
   
   /** Bag of negative weight - this bad weights 1 GE but stores 200 GE. However not all items can be stored in the bag. */
-  public static final ID I_BONW = StringID.create("Zauberbeutel");
+  public static final StringID I_BONW = StringID.create("Zauberbeutel");
   
   /** DOCUMENT-ME */
-  public static final ID I_CART = StringID.create("Wagen");
+  public static final StringID I_CART = StringID.create("Wagen");
   
   /** DOCUMENT-ME */
-  public static final ID I_GOTS = StringID.create("Gürtel der Trollstärke");
+  public static final StringID I_GOTS = StringID.create("Gürtel der Trollstärke");
   
-	public static final ID I_HORSE = StringID.create("Pferd");
+	public static final StringID I_HORSE = StringID.create("Pferd");
 
-  public static final ID I_IRON = StringID.create("Eisen");
+  public static final StringID I_IRON = StringID.create("Eisen");
   
-  public static final ID I_LAEN = StringID.create("Laen");
+  public static final StringID I_LAEN = StringID.create("Laen");
   
-  public static final ID I_PEASANTS = StringID.create("Bauern");
+  public static final StringID I_PEASANTS = StringID.create("Bauern");
 
   /** DOCUMENT-ME */
-  public static final ID I_SILVER = StringID.create("Silber");
+  public static final StringID I_SILVER = StringID.create("Silber");
 
-  public static final ID I_SPROUTS = StringID.create("Schösslinge");
+  public static final StringID I_SPROUTS = StringID.create("Schösslinge");
   
-  public static final ID I_STONES = StringID.create("Steine");
+  public static final StringID I_STONES = StringID.create("Steine");
   
-  public static final ID I_TREES = StringID.create("Bäume");
+  public static final StringID I_TREES = StringID.create("Bäume");
   
-  public static final ID I_WOOD = StringID.create("Holz");
+  public static final StringID I_WOOD = StringID.create("Holz");
 
 	/** DOCUMENT-ME */
-	public static final ID RT_OCEAN = StringID.create("Ozean");
+	public static final StringID RT_OCEAN = StringID.create("Ozean");
 
   /** The RegionType firewall */
-  public static final ID RT_FIREWALL = StringID.create("Feuerwand");
+  public static final StringID RT_FIREWALL = StringID.create("Feuerwand");
 
   /** The RegionType plain */
-  public static final ID RT_PLAIN = StringID.create("Ebene");
+  public static final StringID RT_PLAIN = StringID.create("Ebene");
   
   /** The RegionType forest */
-  public static final ID RT_FOREST = StringID.create("Wald");
+  public static final StringID RT_FOREST = StringID.create("Wald");
   
   /** The RegionType glacier */
-  public static final ID RT_GLACIER = StringID.create("Gletscher");
+  public static final StringID RT_GLACIER = StringID.create("Gletscher");
 
   /** The RegionType swamp */
-  public static final ID RT_SWAMP = StringID.create("Sumpf");
+  public static final StringID RT_SWAMP = StringID.create("Sumpf");
 
   /** The RegionType highland */
-  public static final ID RT_HIGHLAND = StringID.create("Hochland");
+  public static final StringID RT_HIGHLAND = StringID.create("Hochland");
   
   /** The RegionType dessert */
-  public static final ID RT_DESSERT = StringID.create("Wüste");
+  public static final StringID RT_DESSERT = StringID.create("Wüste");
   
   /** The RegionType mountain */
-  public static final ID RT_MOUNTAIN = StringID.create("Berge");
+  public static final StringID RT_MOUNTAIN = StringID.create("Berge");
 
   /** The RegionType volcano */
-  public static final ID RT_VOLCANO = StringID.create("Vulkan");
+  public static final StringID RT_VOLCANO = StringID.create("Vulkan");
 
   /** The RegionType active volcano */
-  public static final ID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
+  public static final StringID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
 
   /** building type lighthouse */
-	public static final ID B_LIGHTHOUSE = StringID.create("Leuchtturm");
+	public static final StringID B_LIGHTHOUSE = StringID.create("Leuchtturm");
 
   /** Building type academy */
-  public static final ID B_ACADEMY = StringID.create("Akademie");
+  public static final StringID B_ACADEMY = StringID.create("Akademie");
 
   /** Building type harbour */
-  public static final ID B_HARBOUR = StringID.create("Hafen");
+  public static final StringID B_HARBOUR = StringID.create("Hafen");
 
   /** Shiptype Boat */
-  public static final ID ST_BOAT = StringID.create("Boot");
+  public static final StringID ST_BOAT = StringID.create("Boot");
   
   /** Shiptype longboat */
-  public static final ID ST_LONGBOAT = StringID.create("Langboot");
+  public static final StringID ST_LONGBOAT = StringID.create("Langboot");
 
 }

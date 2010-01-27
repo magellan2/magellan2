@@ -7,16 +7,21 @@
 
 package magellan.library.rules;
 
+import java.lang.reflect.Constructor;
 import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import magellan.library.CoordinateID;
+import magellan.library.EntityID;
 import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Named;
 import magellan.library.Rules;
 import magellan.library.StringID;
+import magellan.library.UnitID;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.GameSpecificStuffProvider;
 import magellan.library.impl.MagellanSpellImpl;
@@ -74,7 +79,17 @@ public class GenericRules implements Rules {
 
     if ((objectType == null) && add) {
       try {
-        addObjectType(objectType = class1.getConstructor(ID.class).newInstance(id), map, mapNames);// new
+        Constructor<T> constructor = null;
+        for (Class<?> idclass : new Class<?>[] { ID.class, StringID.class, CoordinateID.class, IntegerID.class, EntityID.class, UnitID.class }) {
+          try {
+            constructor = class1.getConstructor(idclass);
+          } catch (Exception e) {
+            
+          }
+          if (constructor!=null)
+            break;
+        }
+        addObjectType(objectType = constructor.newInstance(id), map, mapNames);// new
         // T(id),
         // mapT,
         // mapTNames);
@@ -99,14 +114,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getRegionType(magellan.library.ID)
    */
-  public RegionType getRegionType(ID id) {
+  public RegionType getRegionType(StringID id) {
     return getRegionType(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getRegionType(magellan.library.ID, boolean)
    */
-  public RegionType getRegionType(ID id, boolean add) {
+  public RegionType getRegionType(StringID id, boolean add) {
     return getObjectType(RegionType.class, id, add);
   }
 
@@ -150,14 +165,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getShipType(magellan.library.ID)
    */
-  public ShipType getShipType(ID id) {
+  public ShipType getShipType(StringID id) {
     return getShipType(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getShipType(magellan.library.ID, boolean)
    */
-  public ShipType getShipType(ID id, boolean add) {
+  public ShipType getShipType(StringID id, boolean add) {
     return getObjectType(ShipType.class, id, add);
   }
 
@@ -195,14 +210,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getBuildingType(magellan.library.ID)
    */
-  public BuildingType getBuildingType(ID id) {
+  public BuildingType getBuildingType(StringID id) {
     return getBuildingType(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getBuildingType(magellan.library.ID, boolean)
    */
-  public BuildingType getBuildingType(ID id, boolean add) {
+  public BuildingType getBuildingType(StringID id, boolean add) {
     return getObjectType(BuildingType.class, id, add);
   }
 
@@ -238,14 +253,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getCastleType(magellan.library.ID)
    */
-  public CastleType getCastleType(ID id) {
+  public CastleType getCastleType(StringID id) {
     return getCastleType(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getCastleType(magellan.library.ID, boolean)
    */
-  public CastleType getCastleType(ID id, boolean add) {
+  public CastleType getCastleType(StringID id, boolean add) {
     BuildingType t = getBuildingType(id, false);
     if (t==null && add){
       t = new CastleType(id);
@@ -291,14 +306,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getRace(magellan.library.ID)
    */
-  public Race getRace(ID id) {
+  public Race getRace(StringID id) {
     return getRace(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getRace(magellan.library.ID, boolean)
    */
-  public Race getRace(ID id, boolean add) {
+  public Race getRace(StringID id, boolean add) {
     return getObjectType(Race.class, id, add);
   }
 
@@ -335,14 +350,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getItemType(magellan.library.ID)
    */
-  public ItemType getItemType(ID id) {
+  public ItemType getItemType(StringID id) {
     return getItemType(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getItemType(magellan.library.ID, boolean)
    */
-  public ItemType getItemType(ID id, boolean add) {
+  public ItemType getItemType(StringID id, boolean add) {
     return getObjectType(ItemType.class, id, add);
   }
 
@@ -379,14 +394,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getAllianceCategory(magellan.library.ID)
    */
-  public AllianceCategory getAllianceCategory(ID id) {
+  public AllianceCategory getAllianceCategory(StringID id) {
     return getAllianceCategory(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getAllianceCategory(magellan.library.ID, boolean)
    */
-  public AllianceCategory getAllianceCategory(ID id, boolean add) {
+  public AllianceCategory getAllianceCategory(StringID id, boolean add) {
     return getObjectType(AllianceCategory.class, id, add);
   }
 
@@ -423,14 +438,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getOptionCategory(magellan.library.ID)
    */
-  public OptionCategory getOptionCategory(ID id) {
+  public OptionCategory getOptionCategory(StringID id) {
     return getOptionCategory(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getOptionCategory(magellan.library.ID, boolean)
    */
-  public OptionCategory getOptionCategory(ID id, boolean add) {
+  public OptionCategory getOptionCategory(StringID id, boolean add) {
     return getObjectType(OptionCategory.class, id, add);
   }
 
@@ -467,14 +482,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getSkillCategory(magellan.library.ID)
    */
-  public SkillCategory getSkillCategory(ID id) {
+  public SkillCategory getSkillCategory(StringID id) {
     return getSkillCategory(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getSkillCategory(magellan.library.ID, boolean)
    */
-  public SkillCategory getSkillCategory(ID id, boolean add) {
+  public SkillCategory getSkillCategory(StringID id, boolean add) {
     return getObjectType(SkillCategory.class, id, add);
   }
 
@@ -511,14 +526,14 @@ public class GenericRules implements Rules {
   /**
    * @see magellan.library.Rules#getItemCategory(magellan.library.ID)
    */
-  public ItemCategory getItemCategory(ID id) {
+  public ItemCategory getItemCategory(StringID id) {
     return getItemCategory(id, false);
   }
 
   /**
    * @see magellan.library.Rules#getItemCategory(magellan.library.ID, boolean)
    */
-  public ItemCategory getItemCategory(ID id, boolean add) {
+  public ItemCategory getItemCategory(StringID id, boolean add) {
     return getObjectType(ItemCategory.class, id, add);
   }
 
@@ -557,7 +572,7 @@ public class GenericRules implements Rules {
    * 
    * @see magellan.library.Rules#getSkillType(magellan.library.ID)
    */
-  public SkillType getSkillType(ID id) {
+  public SkillType getSkillType(StringID id) {
     return getSkillType(id, false);
   }
 
@@ -568,7 +583,7 @@ public class GenericRules implements Rules {
    * 
    * @see magellan.library.Rules#getSkillType(magellan.library.ID, boolean)
    */
-  public SkillType getSkillType(ID id, boolean add) {
+  public SkillType getSkillType(StringID id, boolean add) {
     return getObjectType(SkillType.class, id, add); 
   }
 
@@ -873,4 +888,22 @@ public class GenericRules implements Rules {
 
   }
 
+  @SuppressWarnings("unused")
+  private void dummy() {
+    // for debugging purposes only.
+    // As this class uses reflection, I added this method to be able to trace constructor calls in
+    // call hierarchy
+    new AllianceCategory(StringID.create("foo"));
+    new BuildingType(StringID.create("foo"));
+    new CastleType(StringID.create("foo"));
+    new ItemCategory(StringID.create("foo"));
+    new ItemType(StringID.create("foo"));
+    new OptionCategory(StringID.create("foo"));
+    new Race(StringID.create("foo"));
+    new RegionType(StringID.create("foo"));
+    new ShipType(StringID.create("foo"));
+    new SkillCategory(StringID.create("foo"));
+    new SkillType(StringID.create("foo"));
+    new MagellanSpellImpl(StringID.create("foo"), null);
+  }
 }

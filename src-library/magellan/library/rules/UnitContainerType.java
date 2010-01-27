@@ -13,7 +13,7 @@
 
 package magellan.library.rules;
 
-import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
  * DOCUMENT-ME
@@ -27,7 +27,15 @@ public abstract class UnitContainerType extends ObjectType {
 	 *
 	 * 
 	 */
-	public UnitContainerType(ID id) {
+	public UnitContainerType(StringID id) {
 		super(id);
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
+
 }

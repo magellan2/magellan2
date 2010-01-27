@@ -13,8 +13,10 @@
 
 package magellan.library;
 
+import java.util.List;
 import java.util.Map;
 
+import magellan.library.rules.ItemType;
 import magellan.library.utils.SpellSyntax;
 
 /**
@@ -23,6 +25,16 @@ import magellan.library.utils.SpellSyntax;
  */
 public interface Spell extends Described, Localized {
 
+  public interface Component {
+    public static final String AURA = "Aura"; 
+    public static final String PERMANENT_AURA = "permanente Aura";
+
+    public String getName();
+    public ItemType getItem();
+    public int getAmount();
+    public boolean isLevelDependent();
+  }
+  
   /**
    * Returns the integer serving as the block id in the cr.
    */
@@ -106,10 +118,15 @@ public interface Spell extends Described, Localized {
   public void setIsFar(boolean isFar);
 
   /**
-   * Returns the components of this spell as a map of "type" Strings as keys and "amount amount"
+   * Returns the components of this spell as a map of "type" Strings as keys and "amount"
    * Strings as values.
    */
   public Map<String,String> getComponents();
+
+  /**
+   * Returns a list of the spells components in a more convenient form.
+   */
+  public List<? extends Spell.Component> getParsedComponents();
 
   /**
    * Sets the components of this spell as Strings.

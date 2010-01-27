@@ -31,4 +31,5 @@ public abstract class ObjectType extends MagellanNamedImpl {
 	public ObjectType(ID id) {
 		super(id);
 	}
+
 }

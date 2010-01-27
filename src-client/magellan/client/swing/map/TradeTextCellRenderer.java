@@ -25,7 +25,6 @@ import javax.swing.JMenuItem;
 import magellan.client.MagellanContext;
 import magellan.client.swing.context.ContextChangeable;
 import magellan.client.swing.context.ContextObserver;
-import magellan.library.ID;
 import magellan.library.LuxuryPrice;
 import magellan.library.Region;
 import magellan.library.StringID;
@@ -87,10 +86,10 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
 				return null;
 			}
 
-			Iterator<ID> it = r.getPrices().keySet().iterator();
+			Iterator<StringID> it = r.getPrices().keySet().iterator();
 
 			while(it.hasNext()) {
-				ID id = it.next();
+			  StringID id = it.next();
 				LuxuryPrice lp = r.getPrices().get(id);
 
 				if(lp.getPrice() < 0) {

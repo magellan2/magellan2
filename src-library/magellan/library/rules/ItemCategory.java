@@ -18,10 +18,10 @@
  */
 package magellan.library.rules;
 
-import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
- * DOCUMENT ME!
+ * A category is a group that an item can belong to, e.g. "weapons", "luxury goods" etc.
  *
  * @author Andreas
  * @version 1.0
@@ -32,7 +32,7 @@ public class ItemCategory extends Category {
 	 *
 	 * 
 	 */
-	public ItemCategory(ID id) {
+	public ItemCategory(StringID id) {
 		super(id);
 	}
 
@@ -42,15 +42,12 @@ public class ItemCategory extends Category {
 	 * 
 	 * 
 	 */
-	public ItemCategory(ID id, Category parent) {
+	public ItemCategory(StringID id, Category parent) {
 		super(id, parent);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Returns <code>true</code> if o is an ItemType and (transitively) belongs to this category. 
 	 * 
 	 */
 	@Override
@@ -65,4 +62,12 @@ public class ItemCategory extends Category {
 
 		return false;
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
+
 }

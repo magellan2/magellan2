@@ -17,14 +17,63 @@ import magellan.library.GameData;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.rules.ItemType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.SpellSyntax;
+import magellan.library.utils.logging.Logger;
 
 /**
  * Container class for a spell based on its representation in a cr version >= 42.
  */
 public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
+  private static final Logger log = Logger.getInstance(MagellanSpellImpl.class);
+  
+  public class Component implements Spell.Component {
+    private String name;
+    private int amount;
+    private boolean leveldependant; 
+    
+    public Component(String name, String ingredients){
+      this.name = name;
+      try {
+        this.amount = Integer.parseInt(ingredients.substring(0, ingredients.indexOf(" ")));
+      } catch (Exception e){
+        log.error(e.toString()+" unexpected spell component "+ingredients+";"+name);
+      }
+      try {
+        this.leveldependant = 1==Integer.parseInt(ingredients.substring(ingredients.indexOf(" ")+1));
+      } catch (Exception e){
+        log.error(e.toString()+" unexpected spell component "+ingredients+";"+name);
+      }
+    }
+    
+    public int getAmount() {
+      return amount;
+    }
+
+    public ItemType getItem() {
+      if (name.equalsIgnoreCase(AURA) || name.equalsIgnoreCase(PERMANENT_AURA)){
+        return null;
+      } else {
+        return data.rules.getItemType(name, false);
+      }
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public boolean isLevelDependent() {
+      return leveldependant;
+    }
+    
+    public String toString() {
+      return amount+" "+name+(leveldependant?"*Stufe":"");
+    }
+    
+  }
+  
   private int blockID = -1; // this is the id of the ZAUBER block in the cr
   private int level = -1; // a mage's level has to be at least this value to be able to cast this
   // spell
@@ -45,6 +94,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * the spellsytnax object
    */
   private SpellSyntax spellSyntax = null;
+  private List<Component> parsedComponents;
 
   /**
    * Creates a new Spell object. CR looks as follows:
@@ -210,6 +260,16 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
     return components;
   }
 
+  public List<? extends Spell.Component> getParsedComponents() {
+//    if (parsedComponents==null){
+      parsedComponents = new ArrayList<Component>(getComponents().size());
+      for (String name : getComponents().keySet()){
+        parsedComponents.add(new Component(name, getComponents().get(name)));
+      }
+//    }
+    return parsedComponents;
+  }
+  
   /**
    * @see magellan.library.Spell#setComponents(java.util.Map)
    */

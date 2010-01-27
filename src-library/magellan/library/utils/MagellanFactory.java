@@ -841,7 +841,7 @@ public abstract class MagellanFactory {
     /******************* PRICES ******************************/
     if ((resultRegion.getPrices() != null) && (curRegion.getPrices() != null)
         && !curRegion.getPrices().equals(resultRegion.getPrices())) {
-      resultRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
+      resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
 
       for (Iterator iter = resultRegion.getPrices().values().iterator(); iter.hasNext();) {
         LuxuryPrice curPrice = (LuxuryPrice) iter.next();
@@ -851,7 +851,7 @@ public abstract class MagellanFactory {
         resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
       }
     } else if (curRegion.getOldPrices() != null) {
-      resultRegion.setOldPrices(new Hashtable<ID, LuxuryPrice>());
+      resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
 
       for (Iterator iter = curRegion.getOldPrices().values().iterator(); iter.hasNext();) {
         LuxuryPrice curPrice = (LuxuryPrice) iter.next();
@@ -1025,7 +1025,7 @@ public abstract class MagellanFactory {
     /******************** PRICES *************************************/
     if ((curRegion.getPrices() != null) && (curRegion.getPrices().size() > 0)) {
       if (resultRegion.getPrices() == null) {
-        resultRegion.setPrices(new OrderedHashtable<ID, LuxuryPrice>());
+        resultRegion.setPrices(new OrderedHashtable<StringID, LuxuryPrice>());
       } else {
         resultRegion.getPrices().clear();
       }

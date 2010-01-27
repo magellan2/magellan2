@@ -540,9 +540,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Changes th game data.
 	 */
 	public void setGameData(GameData d) {
 		data = d;
@@ -628,9 +626,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 
 	protected class TooltipActionListener implements ActionListener {
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * Changes the tooltip 
 		 */
 		public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 			if((source != null) && (actionEvent.getSource() instanceof JMenuItem)) {
@@ -646,11 +642,14 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 	}
 
+  /**
+   * Reacts to actions from the Renderer submenu of the map context menu. 
+   */
 	protected class RendererActionListener implements ActionListener {
 		/**
-		 * DOCUMENT-ME
-		 *
+		 * Changes the renderer.
 		 * 
+		 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 		 */
 		public void actionPerformed(java.awt.event.ActionEvent actionEvent) {
 			if((source != null) && (actionEvent.getSource() instanceof JMenuItem)) {

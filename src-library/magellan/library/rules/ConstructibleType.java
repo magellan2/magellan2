@@ -30,6 +30,7 @@ import java.util.Map;
 
 import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.StringID;
 
 /**
  * A type abstracting a unit container with building and maintenance costs.
@@ -40,10 +41,10 @@ public abstract class ConstructibleType extends UnitContainerType {
 
   private int minSkillLevel = -1;
   private int maxSize = -1;
-  private Map<ID,Item> rawMaterials = null;
-  private Map<ID,Item> maintenance = null;
+  private Map<StringID,Item> rawMaterials = null;
+  private Map<StringID,Item> maintenance = null;
 
-  public ConstructibleType(ID id) {
+  public ConstructibleType(StringID id) {
     super(id);
   }
 
@@ -52,7 +53,7 @@ public abstract class ConstructibleType extends UnitContainerType {
    */
   public void addRawMaterial(Item i) {
   	if(rawMaterials == null) {
-  		rawMaterials = new Hashtable<ID, Item>();
+  		rawMaterials = new Hashtable<StringID, Item>();
   	}
   
   	rawMaterials.put(i.getItemType().getID(), i);
@@ -74,7 +75,7 @@ public abstract class ConstructibleType extends UnitContainerType {
    * 
    * @param id An ItemType ID
    */
-  public Item getRawMaterial(ID id) {
+  public Item getRawMaterial(StringID id) {
   	if(rawMaterials != null) {
   		return rawMaterials.get(id);
   	} else {
@@ -87,7 +88,7 @@ public abstract class ConstructibleType extends UnitContainerType {
    */
   public void addMaintenance(Item i) {
   	if(maintenance == null) {
-  		maintenance = new Hashtable<ID, Item>();
+  		maintenance = new Hashtable<StringID, Item>();
   	}
   
   	maintenance.put(i.getItemType().getID(), i);
@@ -143,6 +144,13 @@ public abstract class ConstructibleType extends UnitContainerType {
    */
   public int getMaxSize() {
   	return maxSize;
+  }
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
   }
 
 }

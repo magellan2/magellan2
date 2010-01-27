@@ -708,7 +708,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     int spent[] = new int[8];
     Arrays.fill(spent, 0);
 
-    Map<ID, Integer> buildingUpkeep = new HashMap<ID, Integer>();
+    Map<StringID, Integer> buildingUpkeep = new HashMap<StringID, Integer>();
 
     Map<ID, Integer> factionGivings = new HashMap<ID, Integer>();
 
@@ -1158,8 +1158,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
           if (i == S_UPKEEP) {
             // buildings after Type
             if (buildingUpkeep.size() > 0) {
-              for (Iterator<ID> iterBT = buildingUpkeep.keySet().iterator(); iterBT.hasNext();) {
-                ID btID = iterBT.next();
+              for (Iterator<StringID> iterBT = buildingUpkeep.keySet().iterator(); iterBT.hasNext();) {
+                StringID btID = iterBT.next();
                 Integer actV = buildingUpkeep.get(btID);
                 ConstructibleType bT = data.rules.getBuildingType(btID);
                 if (bT != null && actV != null && actV.intValue() > 0) {

@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import magellan.library.ID;
 import magellan.library.StringID;
 
 
@@ -46,7 +45,7 @@ public class RegionType extends UnitContainerType {
 	 *
 	 * 
 	 */
-	public RegionType(ID id) {
+	public RegionType(StringID id) {
 		super(id);
 	}
 
@@ -192,4 +191,10 @@ public class RegionType extends UnitContainerType {
 		return s;
 	}
 
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

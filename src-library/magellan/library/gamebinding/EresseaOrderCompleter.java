@@ -2531,7 +2531,7 @@ public class EresseaOrderCompleter implements Completer {
   /**
    * Determines whether the specified unit has a skill.
    */
-  protected boolean hasSkill(Unit u, ID id) {
+  protected boolean hasSkill(Unit u, StringID id) {
     return hasSkill(u, id, 1);
   }
 
@@ -2539,7 +2539,7 @@ public class EresseaOrderCompleter implements Completer {
    * Determines whether the specified unit has a skill at a minimum level. Returns also true, if the
    * specified skill is unknown. FF: changed to reflect modified skill
    */
-  protected boolean hasSkill(Unit u, ID id, int level) {
+  protected boolean hasSkill(Unit u, StringID id, int level) {
     boolean retVal = false;
     SkillType skillType = data.rules.getSkillType(id);
 

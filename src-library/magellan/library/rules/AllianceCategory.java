@@ -17,7 +17,7 @@ package magellan.library.rules;
 import java.util.Collection;
 import java.util.HashSet;
 
-import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
  * This class contains an alliance category. 
@@ -77,7 +77,7 @@ public class AllianceCategory extends ObjectType {
 	 *
 	 * 
 	 */
-	public AllianceCategory(ID id) {
+	public AllianceCategory(StringID id) {
 		super(id);
 	}
 
@@ -126,4 +126,12 @@ public class AllianceCategory extends ObjectType {
   public String toString() {
 		return "AllianceCategory[name=" + getName() + ", bitMask=" + bitMask + "]";
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
+
 }

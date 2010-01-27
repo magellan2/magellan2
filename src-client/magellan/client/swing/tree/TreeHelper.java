@@ -493,10 +493,8 @@ public class TreeHelper {
 
     // end of unit iterator
     // take care of all units that are left
-    if (!helpList.isEmpty()) {
-      DefaultMutableTreeNode node = null;
-      // FIXME (stm) check what this code does and check null pointer acces to curUnit!
-      
+    if (!helpList.isEmpty() && curUnit!=null) {
+      DefaultMutableTreeNode node = null;      
       if (sortCriteria <= treeStructure.length) {
         switch (treeStructure[sortCriteria]) {
         case FACTION:

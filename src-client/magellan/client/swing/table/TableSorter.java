@@ -340,15 +340,15 @@ public class TableSorter extends AbstractTableModel {
 
                 int comparison = 0;
                 // Define null less than everything, except null.
-                if (o1 == null && o2 == null) {
-                    comparison = 0;
-                } else if (o1 == null) {
-                    comparison = -1;
-                } else if (o2 == null) {
-                    comparison = 1;
-                } else {
+//                if (o1 == null && o2 == null) {
+//                    comparison = 0;
+//                } else if (o1 == null) {
+//                    comparison = -1;
+//                } else if (o2 == null) {
+//                    comparison = 1;
+//                } else {
                     comparison = getComparator(column).compare(o1, o2);
-                }
+//                }
                 if (comparison != 0) {
                     return directive.direction == TableSorter.DESCENDING ? -comparison : comparison;
                 }

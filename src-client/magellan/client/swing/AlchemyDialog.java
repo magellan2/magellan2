@@ -34,6 +34,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,7 +47,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.AbstractAction;
@@ -60,6 +62,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -85,20 +88,24 @@ import magellan.client.swing.AlchemyDialog.PlannerModel.HerbInfo;
 import magellan.client.swing.AlchemyDialog.PlannerModel.IngredientValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.MaxValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.PotionInfo;
+import magellan.client.swing.AlchemyDialog.PlannerModel.PotionValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.ProductionValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.RestValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.StockValue;
 import magellan.client.swing.AlchemyDialog.PlannerModel.ValueMarker;
 import magellan.client.swing.basics.SpringUtilities;
 import magellan.client.swing.table.TableSorter;
+import magellan.client.swing.tree.ContextManager;
 import magellan.library.CoordinateID;
 import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
-import magellan.library.ID;
+import magellan.library.IntegerID;
 import magellan.library.Item;
+import magellan.library.LuxuryPrice;
 import magellan.library.Potion;
 import magellan.library.Region;
+import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
@@ -128,8 +135,11 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
   private List<Region> regions;
   private PlannerModel model;
+  private TableSorter sorter;
 
   private List<Faction> factions;
+
+  private JTable planner;
 
   /**
    * Creates the dialog and makes it visible.
@@ -149,8 +159,8 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     dispatcher.addSelectionListener(this);
 
     init();
-    setRegions((newRegions == null) ? Collections.EMPTY_SET : CollectionFilters.checkedCast(
-        newRegions, Region.class));
+    setRegions((newRegions == null) ? Collections.<Region> emptySet() : CollectionFilters
+        .checkedCast(newRegions, Region.class));
   }
 
   /**
@@ -162,7 +172,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.FIRST_LINE_START,
             GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0);
 
-    JTable planner = createTable();
+    planner = createTable();
     // planner.setPreferredSize(new Dimension(400, 300));
 
     con.gridwidth = 1;
@@ -185,7 +195,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     JMenuBar menuBar = new JMenuBar();
 
     // FIXME (stm) this depends on the font!
-    menuBar.setMinimumSize(new Dimension(10, 20));
+// menuBar.setMinimumSize(new Dimension(10, 20));
 
     JMenu menu;
     menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.file.title")));
@@ -235,16 +245,91 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
     });
 
+    menuBar.add(menu = new JMenu(Resources.get("alchemydialog.menu.data.title")));
+    menu.add(new AbstractAction(Resources.get("alchemydialog.menu.addherb.title")) {
+      public void actionPerformed(ActionEvent e) {
+        addHerb();
+      }
+    });
+    menu.add(new AbstractAction(Resources.get("alchemydialog.menu.addpotion.title")) {
+      public void actionPerformed(ActionEvent e) {
+        addPotion();
+      }
+    });
+    menu.add(new AbstractAction(Resources.get("alchemydialog.menu.removeherb.title")) {
+      public void actionPerformed(ActionEvent e) {
+        removeHerb();
+      }
+    });
+    menu.add(new AbstractAction(Resources.get("alchemydialog.menu.removepotion.title")) {
+      public void actionPerformed(ActionEvent e) {
+        removePotion();
+      }
+    });
+    menu.add(new AbstractAction(Resources.get("alchemydialog.menu.reload.title")) {
+      public void actionPerformed(ActionEvent e) {
+        gameDataChanged(new GameDataEvent(this, data));
+      }
+    });
+
     return menuBar;
 
+  }
+
+  protected void removePotion() {
+    if (planner.getSelectedColumn() > 0) {
+      model.removePotion(view2modelColumn((planner.getSelectedColumn())));
+    }
+  }
+
+  protected void removeHerb() {
+    if (planner.getSelectedRow() > 0) {
+      model.removeHerb(view2modelRow((planner.getSelectedRow())));
+    }
+  }
+
+  protected void addPotion() {
+    String answer =
+        JOptionPane.showInputDialog(this, Resources.get("alchemydialog.addpotion.name.label"));
+    if (answer == null)
+      return;
+
+    for (Potion p : data.potions().values()) {
+      if (p.getName().equals(answer)) {
+        model.addPotion(new PotionInfo(p));
+        return;
+      }
+    }
+    for (Spell s : data.spells().values()) {
+      if (s.getName().equals(answer)) {
+        model.addPotion(new PotionInfo(s));
+        break;
+      }
+    }
+
+    model.addPotion(new PotionInfo(answer));
+  }
+
+  protected void addHerb() {
+    String answer =
+        JOptionPane.showInputDialog(this, Resources.get("alchemydialog.addherb.name.label"));
+    if (answer == null)
+      return;
+
+    ItemType ingredient = data.rules.getItemType(answer);
+    if (ingredient == null) {
+      // warning: this is an item type outside the rules!
+      ingredient = new ItemType(StringID.create(answer));
+      ingredient.setName(answer);
+    }
+    model.addHerb(new HerbInfo(ingredient));
   }
 
   /**
    * Creates the main content of the dialog, the production table.
    */
   private JTable createTable() {
-    TableSorter sorter;
-    JTable table = new JTable(sorter = new TableSorter(model = new PlannerModel(getData())));
+    final JTable table = new JTable(sorter = new TableSorter(model = new PlannerModel(getData())));
     table.getModel().addTableModelListener(new TableModelListener() {
 
       public void tableChanged(TableModelEvent e) {
@@ -253,10 +338,12 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       }
     });
     sorter.setTableHeader(table.getTableHeader());
-
+    sorter.setColumnComparator(PotionValue.class, getComp1(false));
+    sorter.setColumnComparator(String.class, getComp2(true));
+    sorter.setColumnComparator(StockValue.class, getComp1(true));
+    sorter.setColumnComparator(RestValue.class, getComp1(true));
+    
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
-    final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Integer.class);
 
     table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
@@ -271,7 +358,126 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     table.setDefaultEditor(ValueMarker.class, table.getDefaultEditor(String.class));
 
     // render table cells according to their types
-    table.setDefaultRenderer(ValueMarker.class, new TableCellRenderer() {
+    table.setDefaultRenderer(ValueMarker.class, getValueRenderer(table));
+
+    // add context menu
+    table.addMouseListener(getContextMenu());
+
+    return table;
+  }
+
+  /**
+   * Returns a comparator for sorting the first column
+   * @param nullUp if <code>true</code>, <code>null</code> values will be sorted to the top.
+   */
+  private Comparator<Object> getComp2(final boolean nullUp) {
+    return new Comparator<Object>() {
+      /**
+       * String (max possible)  | null       | null      | MaxValue             | ...
+       * String (remaining)     | null       | null      | CurrentMaxValue      | ...
+       * String (planned)       | null       | null      | ProductionValue      | ...
+       * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
+       * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
+       * ...
+       */
+       public int compare(Object o1, Object o2) {
+         if (o1 instanceof String)
+           if (o2 instanceof String)
+             return ((String)o1).compareTo((String)o2);
+           else
+             return -1;
+         
+         if (o2 instanceof String)
+           return 1;
+         
+         ItemType val1 = null;
+         if (o1 instanceof ItemType) {
+           val1 = (ItemType) o1;
+         }
+         ItemType val2 = null;
+         if (o2 instanceof ItemType) {
+           val2 = (ItemType) o2;
+         
+         } 
+         if (val1 == null || val2 == null){
+           if (val2!=null)
+             return nullUp?-1:1;
+           else if (val1!=null)
+             return nullUp?1:-1;
+           return 0;
+         } 
+
+         return val1.getName().compareTo(val2.getName());
+       }
+     };
+  }
+
+  /**
+   * Returns a comparator for sorting the {@link ValueMarker} columns.
+   * 
+   * @param nullUp if <code>true</code>, <code>null</code> values will be sorted to the top.
+   */
+  private Comparator<Object> getComp1(final boolean nullUp) {
+    
+    return new Comparator<Object>() {
+      /**
+       * String (max possible)  | null       | null      | MaxValue             | ...
+       * String (remaining)     | null       | null      | CurrentMaxValue      | ...
+       * String (planned)       | null       | null      | ProductionValue      | ...
+       * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
+       * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
+       * ...
+       */
+       public int compare(Object o1, Object o2) {
+         ValueMarker val1 = null;
+         if (o1 instanceof ValueMarker) {
+           val1 = (ValueMarker) o1;
+         }
+         ValueMarker val2 = null;
+         if (o2 instanceof ValueMarker) {
+           val2 = (ValueMarker) o2;
+         
+         } 
+         if (val1 == null || val2 == null){
+           if (val2!=null)
+             return nullUp?-1:1;
+           else if (val1!=null)
+             return nullUp?1:-1;
+           return 0;
+         } 
+
+         if (val1 instanceof MaxValue)
+           if (!(val2 instanceof MaxValue))
+             return -1;
+         if (val2 instanceof MaxValue)
+           return 1;
+
+         if (val1 instanceof CurrentMaxValue)
+           if (!(val2 instanceof CurrentMaxValue))
+             return -1;
+         if (val2 instanceof CurrentMaxValue)
+           return 1;
+
+         if (val1 instanceof ProductionValue)
+           if (!(val2 instanceof ProductionValue))
+             return -1;
+         if (val2 instanceof ProductionValue)
+           return 1;
+         
+         return val2.value - val1.value;
+       }
+
+
+     };
+  }
+
+  /**
+   * Creates and returns the renderer that renders table cells depending on their
+   * {@link ValueMarker} type.
+   */
+  private TableCellRenderer getValueRenderer(JTable table) {
+    final TableCellRenderer defaultRenderer = table.getDefaultRenderer(Integer.class);
+    return new TableCellRenderer() {
 
       public Component getTableCellRendererComponent(JTable table, Object value,
           boolean isSelected, boolean hasFocus, int row, int column) {
@@ -326,9 +532,47 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
         return c;
       }
-    });
+    };
+  }
 
-    return table;
+  /**
+   * Returns the mouse listener that shows the context menu.
+   */
+  private MouseListener getContextMenu() {
+    return new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON3) {
+          JPopupMenu menu = new JPopupMenu();
+          final int col = view2modelColumn(planner.columnAtPoint(e.getPoint()));
+          final int row = view2modelRow(planner.rowAtPoint(e.getPoint()));
+          Object val = model.getValueAt(row, col);
+          StringBuilder text = new StringBuilder();
+          text.append(model.getColumnName(col)).append("\n").append(model.getValueAt(row, 0))
+              .append("\n").append(val);
+          JMenuItem item = new JMenuItem(text.toString());
+          item.setEnabled(false);
+          menu.add(item);
+          item = new JMenuItem(Resources.get("alchemydialog.contextmenu.removerow.title"));
+          item.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              model.removeHerb(row);
+            }
+          });
+          menu.add(item);
+          item = new JMenuItem(Resources.get("alchemydialog.contextmenu.removecol.title"));
+          item.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+              model.removePotion(col);
+            }
+          });
+          menu.add(item);
+          ContextManager.showMenu(menu, AlchemyDialog.this, e.getX(), e.getY());
+
+        }
+      }
+    };
   }
 
   /**
@@ -427,27 +671,31 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
       XMLStreamWriter writer = null;
       FileOutputStream os = null;
-      boolean error = false;
+      String error = null;
       try {
         settings.setProperty(PROPERTYNAME_LAST_SAVED, fc.getSelectedFile().getAbsolutePath());
+        File name = null;
+        name = fc.getSelectedFile();
+        if (!fc.getFileFilter().equals(fc.getAcceptAllFileFilter())
+            && !name.getName().endsWith("." + FILE_EXTENSION)) {
+          name = new File(name.getPath() + "." + FILE_EXTENSION);
+        }
 
-        if (fc.getSelectedFile().exists() && fc.getSelectedFile().canWrite()) {
+        if (name.exists()) {
           // create backup file
           try {
-            File backup = FileBackup.create(fc.getSelectedFile());
+            File backup = FileBackup.create(name);
             log.info("Created backupfile " + backup);
           } catch (IOException ie) {
-            log.warn("Could not create backupfile for file " + fc.getSelectedFile());
+            log.warn("Could not create backupfile for file " + name);
           }
         }
-        if (fc.getSelectedFile().exists() && !fc.getSelectedFile().canWrite()) {
-          throw new IOException("cannot write " + fc.getSelectedFile());
-        } else {
 
+        {
           XMLOutputFactory output = XMLOutputFactory.newInstance();
           writer =
-              output.createXMLStreamWriter(os = new FileOutputStream(fc.getSelectedFile()),
-                  getData().getEncoding());
+              output
+                  .createXMLStreamWriter(os = new FileOutputStream(name), getData().getEncoding());
           writer.writeStartDocument(getData().getEncoding(), "1.0");
           writer.writeStartElement("alchemydialog");
           writer.writeAttribute("version", "0.1");
@@ -466,21 +714,21 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
           for (HerbInfo info : model.herbs) {
             writer.writeCharacters("\n");
             writer.writeEmptyElement("herb");
-            writer.writeAttribute("id", info.item.getID().toString());
+// writer.writeAttribute("id", info.item.getID().toString());
             writer.writeAttribute("name", info.item.getName());
             writer.writeAttribute("amount", String.valueOf(info.number));
           }
-          for (int pot = 0; pot < model.potions.size(); ++pot) {
-            PotionInfo info = model.potions.get(pot);
+          for (int pot = 0; pot < model.getPotions().size(); ++pot) {
+            PotionInfo info = model.getPotions().get(pot);
             writer.writeCharacters("\n");
             writer.writeStartElement("potion");
-            writer.writeAttribute("id", info.potion.getID().toString());
-            writer.writeAttribute("name", info.potion.getName());
+// writer.writeAttribute("id", info.getID().toString());
+            writer.writeAttribute("name", info.getName());
             writer.writeAttribute("planned", String.valueOf(info.production));
             for (ItemType ingredient : info.ingredients.keySet()) {
               writer.writeCharacters("\n");
               writer.writeEmptyElement("ingredient");
-              writer.writeAttribute("id", ingredient.getID().toString());
+// writer.writeAttribute("id", ingredient.getID().toString());
               writer.writeAttribute("name", ingredient.getName());
               writer.writeAttribute("amount", info.ingredients.get(ingredient).toString());
             }
@@ -494,10 +742,10 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         }
       } catch (XMLStreamException e) {
         e.printStackTrace();
-        error = true;
+        error = e.getLocalizedMessage();
       } catch (IOException e) {
         e.printStackTrace();
-        error = true;
+        error = e.getLocalizedMessage();
       } finally {
         try {
           if (os != null)
@@ -506,13 +754,13 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
             writer.close();
         } catch (XMLStreamException e) {
           e.printStackTrace();
-          error = true;
+          error = e.getLocalizedMessage();
         } catch (IOException e) {
           e.printStackTrace();
-          error = true;
+          error = e.getLocalizedMessage();
         }
-        if (error) {
-          JOptionPane.showMessageDialog(this, Resources.get("alchemydialog.savingerror.message"));
+        if (error != null) {
+          JOptionPane.showMessageDialog(this, Resources.get("alchemydialog.savingerror.message", error));
         }
       }
     }
@@ -556,6 +804,28 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
   }
 
   /**
+   * Convert a row from the view (the JTable) to a row in the model ({@link #planner}). This takes
+   * into account sorting by {@link #sorter} and by the JTable ({@link #planner}).
+   * 
+   * @param row row number in the view
+   * @return row number in the model
+   */
+  protected int view2modelRow(int row) {
+    return planner.convertRowIndexToModel(sorter.modelIndex(row));
+  }
+
+  /**
+   * Convert a row from the view (the JTable) to a row in the model ({@link #planner}). This takes
+   * into account sorting by the JTable ({@link #planner}).
+   * 
+   * @param col column number in the view
+   * @return column number in the model
+   */
+  protected int view2modelColumn(int col) {
+    return planner.convertColumnIndexToModel(col);
+  }
+
+  /**
    * A model for the potion planning table.
    */
   public static class PlannerModel extends AbstractTableModel {
@@ -578,7 +848,9 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
 
     public static class PotionInfo {
       public HashMap<ItemType, Integer> ingredients;
-      public Potion potion;
+      private Potion _potion;
+      private Spell _spell;
+      private String _name;
       public int production;
 
       /**
@@ -587,7 +859,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
        * @param potion The potion. Usually, but not necessarily a potion from data.
        */
       public PotionInfo(Potion potion) {
-        this.potion = potion;
+        this._potion = potion;
         this.ingredients = new HashMap<ItemType, Integer>();
         this.production = 0;
 
@@ -596,9 +868,35 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         }
       }
 
+      public PotionInfo(Spell spell) {
+        this._spell = spell;
+        this.ingredients = new HashMap<ItemType, Integer>();
+        this.production = 0;
+
+        for (Spell.Component ingredient : spell.getParsedComponents()) {
+          if (ingredient.getItem() != null)
+            this.ingredients.put(ingredient.getItem(), ingredient.getAmount());
+        }
+      }
+
+      public PotionInfo(String answer) {
+        _name = answer;
+        this.ingredients = new HashMap<ItemType, Integer>();
+        this.production = 0;
+      }
+
       @Override
       public String toString() {
-        return potion.toString();
+        if (_potion != null)
+          return _potion.toString();
+        else if (_spell != null)
+          return _spell.toString();
+        else
+          return _name;
+      }
+
+      public String getName() {
+        return toString();
       }
     }
 
@@ -702,27 +1000,122 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         PotionInfo info = new PotionInfo(potion);
         potions.add(info);
         for (ItemType ingredient : info.ingredients.keySet()) {
-          if (!herbMap.containsKey(ingredient)) {
-            HerbInfo herbInfo = new HerbInfo(ingredient);
-            herbs.add(herbInfo);
-            herbMap.put(ingredient, herbInfo);
+          addHerb(ingredient);
+        }
+      }
+
+      for (Region r : data.regions().values()) {
+        if (r.getHerb() != null)
+          addHerb(r.getHerb());
+
+        if (r.getPrices() != null) {
+          for (LuxuryPrice price : r.getPrices().values()) {
+            addHerb(price.getItemType());
           }
         }
       }
 
+      for (Spell spell : data.spells().values()) {
+        PotionInfo info = new PotionInfo(spell);
+        if (info.ingredients.size() > 0) {
+          potions.add(info);
+          for (ItemType ingredient : info.ingredients.keySet()) {
+            addHerb(ingredient);
+          }
+        }
+      }
+
+      sortHerbs();
+
+      sortPotions();
+
+      return potions;
+    }
+
+    private void sortPotions() {
+      Collections.sort(potions, new Comparator<PotionInfo>() {
+        public int compare(PotionInfo o1, PotionInfo o2) {
+          return o1.getName().compareTo(o2.getName());
+        }
+      });
+    }
+
+    private void sortHerbs() {
       Collections.sort(herbs, new Comparator<HerbInfo>() {
         public int compare(HerbInfo o1, HerbInfo o2) {
           return o1.item.getName().compareTo(o2.item.getName());
         }
       });
+    }
 
-      Collections.sort(potions, new Comparator<PotionInfo>() {
-        public int compare(PotionInfo o1, PotionInfo o2) {
-          return o1.potion.getName().compareTo(o2.potion.getName());
-        }
-      });
+    /**
+     * For internal use only.
+     * 
+     * @param ingredient
+     */
+    private void addHerb(ItemType ingredient) {
+      if (!herbMap.containsKey(ingredient)) {
+        HerbInfo herbInfo = new HerbInfo(ingredient);
+        herbs.add(herbInfo);
+        herbMap.put(ingredient, herbInfo);
+      }
+    }
 
-      return potions;
+    /**
+     * Add an ingredient. External use.
+     * 
+     * @param herbInfo
+     */
+    public void addHerb(HerbInfo herbInfo) {
+      if (!herbMap.containsKey(herbInfo.item)) {
+        herbs.add(herbInfo);
+        herbMap.put(herbInfo.item, herbInfo);
+      }
+      sortHerbs();
+      fireTableStructureChanged();
+    }
+
+    /**
+     * Adds a potion. External use.
+     * 
+     * @param potionInfo
+     * @return false if the potion was already in the model.
+     */
+    public boolean addPotion(PotionInfo potionInfo) {
+      if (potions.contains(potionInfo))
+        return false;
+
+      potions.add(potionInfo);
+      sortPotions();
+      setPotions(potions);
+      return true;
+    }
+
+    public boolean removeHerb(int row) {
+      HerbInfo herbInfo = getHerb(row);
+      if (herbInfo == null)
+        return false;
+      if (herbMap.containsKey(herbInfo.item)) {
+        herbs.remove(herbInfo);
+        herbMap.remove(herbInfo.item);
+        sortHerbs();
+        fireTableStructureChanged();
+        return true;
+      }
+      return false;
+    }
+
+    public boolean removePotion(int col) {
+      PotionInfo potionInfo = getPotion(col);
+      if (potionInfo == null)
+        return false;
+      if (!potions.contains(potionInfo))
+        return false;
+
+      potions.remove(potionInfo);
+      sortPotions();
+      setPotions(potions);
+      return true;
     }
 
     /**
@@ -730,7 +1123,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * 
      * @param newPotions
      */
-    public void setPotions(ArrayList<PotionInfo> newPotions) {
+    public void setPotions(List<PotionInfo> newPotions) {
       potions = new ArrayList<PotionInfo>(newPotions);
       fireTableStructureChanged();
     }
@@ -738,7 +1131,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     /**
      * Change the set of herbs.
      */
-    public void setHerbs(ArrayList<HerbInfo> newHerbs) {
+    public void setHerbs(List<HerbInfo> newHerbs) {
       herbs = new ArrayList<HerbInfo>(newHerbs);
       herbMap = new HashMap<ItemType, HerbInfo>();
       for (HerbInfo info : newHerbs)
@@ -801,6 +1194,14 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         HerbInfo info = getInfo(region.getHerb());
         if (info != null)
           info.number += 10;
+
+        if (region.getPrices() != null) {
+          for (LuxuryPrice price : region.getPrices().values()) {
+            info = getInfo(price.getItemType());
+            if (info != null)
+              info.number += 10;
+          }
+        }
       }
       fireTableDataChanged();
     }
@@ -840,7 +1241,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         return Resources.get("alchemydialog.colname.rest.title");
 
       default:
-        return potions.get(column - fixedCols).potion.getName();
+        return potions.get(column - fixedCols).getName();
       }
     }
 
@@ -887,6 +1288,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
      * Returns the cell type. One of {@link #nameType}, {@link #noType}, {@link #restType},
      * {@link #noType}, {@link #stockType}, {@link #maxType}, {@link #currentMaxType},
      * {@link #productionType}, {@link #ingredientType}.
+     * 
+     * <code>
+     * nameType (max possible)  | noType     | noType   | maxType        | ...
+     * nameType (remaining)     | noType     | noType   | currentMaxType | ...
+     * nameType (planned)       | noType     | noType   | productionType | ...
+     * nameType (Herb1)         | stockType  | restType | ingredientType | ...
+     * nameType (Herb2)         | stockType  | restType | ingredientType | ... 
+     * ...
+     * <code>
      */
     private int getType(int rowIndex, int columnIndex) {
       switch (columnIndex) {
@@ -1015,6 +1425,16 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     }
 
     /**
+     * Returns the value at the specified cell this is either a String or a subclass of {@link ValueMarker}. The table looks as follows:
+     * <code>
+     * String (max possible)  | null       | null      | MaxValue             | ...
+     * String (remaining)     | null       | null      | CurrentMaxValue      | ...
+     * String (planned)       | null       | null      | ProductionValue      | ...
+     * HerbInfo (Herb1)       | StockValue | RestValue | IngredientValue/null | ...
+     * HerbInfo (Herb2)       | StockValue | RestValue | IngredientValue/null | ... 
+     * ...
+     * <code>
+     * 
      * @see javax.swing.table.TableModel#getValueAt(int, int)
      */
     public Object getValueAt(int rowIndex, int columnIndex) {
@@ -1028,14 +1448,15 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         case productionRow:
           return Resources.get("alchemydialog.rowname.production.title");
         default:
-          return getHerb(rowIndex).item.getName();
+          return getHerb(rowIndex).item;
         }
       case stockType:
         return new StockValue(getHerb(rowIndex).number);
       case restType:
         return new RestValue(getRest(getHerb(rowIndex)));
       case ingredientType:
-        return new IngredientValue(getPotion(columnIndex).ingredients.get(getHerb(rowIndex).item));
+        Integer val = getPotion(columnIndex).ingredients.get(getHerb(rowIndex).item);
+        return (val == null || val == 0) ? null : new IngredientValue(val);
       case maxType:
         return new MaxValue(getMax(getPotion(columnIndex)));
       case currentMaxType:
@@ -1049,16 +1470,22 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     }
 
     /**
-     * Returns the herb corresponding to the specified table row.
+     * Returns the herb corresponding to the specified table row or <code>null</code> on an invalid
+     * row.
      */
     private HerbInfo getHerb(int rowIndex) {
+      if (rowIndex < fixedRows)
+        return null;
       return herbs.get(rowIndex - fixedRows);
     }
 
     /**
-     * Returns the potion corresponding to the specified table column.
+     * Returns the potion corresponding to the specified table column or <code>null</code> on an
+     * invalid column.
      */
     private PotionInfo getPotion(int columnIndex) {
+      if (columnIndex < fixedRows)
+        return null;
       return potions.get(columnIndex - fixedCols);
     }
 
@@ -1093,7 +1520,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     }
 
     /**
-     * Return the amount of the ingredient remaining ofter all projected amounts of potions have
+     * Return the amount of the ingredient remaining after all projected amounts of potions have
      * been produced.
      */
     private int getRest(HerbInfo herb) {
@@ -1164,6 +1591,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         fireTableCellUpdated(herb + fixedRows, restCol);
       }
     }
+
   }
 
   /**
@@ -1175,7 +1603,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
     private ArrayList<HerbInfo> newHerbs;
     private ArrayList<PotionInfo> newPotions;
     private PotionInfo currentPotion;
-    private Map<ID, ItemType> addedTypes;
+// private Map<ID, ItemType> addedTypes;
     private ArrayList<Faction> newFactions;
 
     @Override
@@ -1184,7 +1612,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       newHerbs = new ArrayList<HerbInfo>();
       newPotions = new ArrayList<PotionInfo>();
       newFactions = new ArrayList<Faction>();
-      addedTypes = new HashMap<ID, ItemType>();
+// addedTypes = new HashMap<ID, ItemType>();
     }
 
     /**
@@ -1206,7 +1634,7 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
       if (qName.equals("faction")) {
         Faction faction = getData().getFaction(getEntityID(attributes));
         if (faction == null) {
-          log.warn("unknown faction in alchemy file: "+ getEntityID(attributes).toString());
+          log.warn("unknown faction in alchemy file: " + getEntityID(attributes).toString());
         } else {
           newFactions.add(faction);
         }
@@ -1218,49 +1646,62 @@ public class AlchemyDialog extends InternationalizedDataDialog implements Select
         else
           newRegions.add(region);
       } else if (qName.equals("herb")) {
-        ItemType herb = getData().rules.getItemType(getStringID(attributes));
-        if (herb == null) {
-          herb = new ItemType(getStringID(attributes));
-          herb.setName(attributes.getValue("name"));
-          addedTypes.put(getStringID(attributes), herb);
-        }
+        ItemType herb = getHerb(attributes);
         HerbInfo info;
         newHerbs.add(info = new HerbInfo(herb));
         info.number = Integer.parseInt(attributes.getValue("amount"));
       } else if (qName.equals("potion")) {
-        Potion potion = getData().getPotion(getEntityID(attributes));
-        if (potion == null) {
-          getData().addPotion(potion = new MagellanPotionImpl(getEntityID(attributes)));
-          potion.setName(attributes.getValue("name"));
-        }
+        Potion potion = getPotion((attributes));
         PotionInfo info = new PotionInfo(potion);
         newPotions.add(info);
         info.production = Integer.parseInt(attributes.getValue("planned"));
         currentPotion = info;
       } else if (qName.equals("ingredient")) {
-        currentPotion.ingredients.put(getType(getStringID(attributes)), Integer.parseInt(attributes
+        currentPotion.ingredients.put(getHerb(attributes), Integer.parseInt(attributes
             .getValue("amount")));
       }
     }
 
-    private StringID getStringID(Attributes attributes) {
-      return StringID.create(attributes.getValue("id"));
+    private ItemType getHerb(Attributes attributes) {
+      for (ItemType type : getData().rules.getItemTypes()) {
+        if (type.getName().equals(attributes.getValue("name")))
+          return type;
+      }
+      ItemType herb = new ItemType(StringID.create("-1"));
+      herb.setName(attributes.getValue("name"));
+// addedTypes.put(getStringID(attributes), herb);
+      return herb;
     }
 
+    private Potion getPotion(Attributes attributes) {
+      for (Potion p : getData().potions().values()) {
+        if (p.getName().equals(attributes.getValue("name")))
+          return p;
+      }
+      Potion potion = new MagellanPotionImpl(IntegerID.create(-1));
+      potion.setName(attributes.getValue("name"));
+// addedPotion.put()
+      return potion;
+    }
+
+// private StringID getStringID(Attributes attributes) {
+// return StringID.create(attributes.getValue("id"));
+// }
+//
     private EntityID getEntityID(Attributes attributes) {
       return EntityID.createEntityID(attributes.getValue("id"), 10, getData().base);
     }
 
-    private ItemType getType(StringID id) {
-      ItemType type = getData().rules.getItemType(id);
-      if (type == null)
-        type = addedTypes.get(id);
-
-      if (type == null)
-        throw new RuntimeException("unknown ingredient");
-
-      return type;
-    }
+// private ItemType getType(StringID id) {
+// ItemType type = getData().rules.getItemType(id);
+// if (type == null)
+// type = addedTypes.get(id);
+//
+// if (type == null)
+// throw new RuntimeException("unknown ingredient");
+//
+// return type;
+// }
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {

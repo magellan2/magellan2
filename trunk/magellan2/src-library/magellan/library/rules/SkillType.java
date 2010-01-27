@@ -16,7 +16,7 @@ package magellan.library.rules;
 import java.util.HashMap;
 import java.util.Map;
 
-import magellan.library.ID;
+import magellan.library.StringID;
 
 public class SkillType extends ObjectType {
 	protected SkillCategory category;
@@ -28,7 +28,7 @@ public class SkillType extends ObjectType {
 	 *
 	 * 
 	 */
-	public SkillType(ID id) {
+	public SkillType(StringID id) {
 		super(id);
 	}
 
@@ -82,4 +82,13 @@ public class SkillType extends ObjectType {
     else
       return costMap.get(level);
   }
+
+  /**
+   * Returns the id uniquely identifying this object.
+   *
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
+  
 }

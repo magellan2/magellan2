@@ -68,7 +68,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
    * <code>mode=={@link #MODE_SKILL_MIN}</code> or
    * <code>mode=={@link #MODE_SKILL_SUM_MIN}</code>, only persons with a certain skill level are counted.
    * 
-   * @param mode
+   * @param politicsMode
    *          {@link #MODE_SKILL} : counts all persons with the skill<br />
    *          {@link #MODE_SKILL_MIN} : count all persons with at least a
    *          certain skill level<br /> {@link #MODE_SKILL_SUM}: count the skill

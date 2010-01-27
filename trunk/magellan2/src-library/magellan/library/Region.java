@@ -604,14 +604,14 @@ public interface Region extends UnitContainer {
    * 
    * @return Returns oldPrices.
    */
-  public Map<ID, LuxuryPrice> getOldPrices();
+  public Map<StringID, LuxuryPrice> getOldPrices();
 
   /**
    * Sets the value of oldPrices.
    * 
    * @param oldPrices The value for oldPrices.
    */
-  public void setOldPrices(Map<ID, LuxuryPrice> oldPrices);
+  public void setOldPrices(Map<StringID, LuxuryPrice> oldPrices);
 
   /**
    * Returns the value of oldRecruits.
@@ -744,14 +744,14 @@ public interface Region extends UnitContainer {
    * 
    * @return Returns prices.
    */
-  public Map<ID, LuxuryPrice> getPrices();
+  public Map<StringID, LuxuryPrice> getPrices();
 
   /**
    * Sets the value of prices.
    * 
    * @param prices The value for prices.
    */
-  public void setPrices(Map<ID, LuxuryPrice> prices);
+  public void setPrices(Map<StringID, LuxuryPrice> prices);
 
   /**
    * Returns the value of recruits.

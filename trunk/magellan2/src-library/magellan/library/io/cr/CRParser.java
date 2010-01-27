@@ -1205,12 +1205,12 @@ public class CRParser implements RulesIO, GameDataIO {
         itemType.setName(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("category")) {
-        ID catID = StringID.create(sc.argv[0]);
+        StringID catID = StringID.create(sc.argv[0]);
         ItemCategory cat = rules.getItemCategory(catID, true);
         itemType.setCategory(cat);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("region")) {
-        ID regionID = StringID.create(sc.argv[0]);
+        StringID regionID = StringID.create(sc.argv[0]);
         rules.getRegionType(regionID, true);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("iconname")) {
@@ -1265,7 +1265,7 @@ public class CRParser implements RulesIO, GameDataIO {
         skillType.setName(sc.argv[0]);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("category")) {
-        ID catID = StringID.create(sc.argv[0]);
+        StringID catID = StringID.create(sc.argv[0]);
         SkillCategory cat = rules.getSkillCategory(catID, true);
         skillType.setCategory(cat);
         sc.getNextToken();
@@ -1491,7 +1491,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseRegionType(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
-    ID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
     RegionType regionType = rules.getRegionType(id, true);
     sc.getNextToken(); // skip REGIONSTYP xx
 
@@ -1532,7 +1532,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseItemCategory(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
-    ID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
     ItemCategory cat = rules.getItemCategory(id, true);
 
     sc.getNextToken(); // skip ITEMCATEGORY xx
@@ -1562,7 +1562,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseSkillCategory(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
-    ID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
     SkillCategory cat = rules.getSkillCategory(id, true);
 
     sc.getNextToken(); // skip SKILLCATEGORY xx
@@ -1694,7 +1694,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseOptionCategory(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
-    ID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
     OptionCategory opt = rules.getOptionCategory(id, true);
     sc.getNextToken(); // skip OPTIONCATEGORY xx
 
@@ -1724,7 +1724,7 @@ public class CRParser implements RulesIO, GameDataIO {
   private void parseAllianceCategory(Rules rules) throws IOException {
     int f = sc.argv[0].indexOf("\"", 0);
     int t = sc.argv[0].indexOf("\"", f + 1);
-    ID id = StringID.create(sc.argv[0].substring(f + 1, t));
+    StringID id = StringID.create(sc.argv[0].substring(f + 1, t));
     AllianceCategory cat = rules.getAllianceCategory(id, true);
     sc.getNextToken(); // skip ALLIANCECATEGORY xx
 
@@ -2473,7 +2473,7 @@ public class CRParser implements RulesIO, GameDataIO {
   /*
    * Syntax: value;item Example: 24;Balsam < 0: offered in this region > 0: demanded in this region
    */
-  private Map<ID, LuxuryPrice> parsePrices(Map<ID, LuxuryPrice> prices) throws IOException {
+  private Map<StringID, LuxuryPrice> parsePrices(Map<StringID, LuxuryPrice> prices) throws IOException {
     sc.getNextToken(); // skip PREISE
 
     while (!sc.eof && (sc.argc == 2)) {
@@ -2486,7 +2486,7 @@ public class CRParser implements RulesIO, GameDataIO {
       LuxuryPrice pr = new LuxuryPrice(itemType, Integer.parseInt(sc.argv[0]));
 
       if (prices == null) {
-        prices = new OrderedHashtable<ID, LuxuryPrice>();
+        prices = new OrderedHashtable<StringID, LuxuryPrice>();
       }
 
       prices.put(itemType.getID(), pr);

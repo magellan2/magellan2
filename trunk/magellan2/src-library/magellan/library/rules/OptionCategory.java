@@ -13,7 +13,7 @@
 
 package magellan.library.rules;
 
-import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
  * DOCUMENT-ME
@@ -31,7 +31,7 @@ public class OptionCategory extends ObjectType {
 	 *
 	 * 
 	 */
-	public OptionCategory(ID id) {
+	public OptionCategory(StringID id) {
 		super(id);
 	}
 
@@ -100,4 +100,11 @@ public class OptionCategory extends ObjectType {
 	public boolean isOrder() {
 		return this.isOrder;
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

@@ -23,6 +23,7 @@ import java.util.Iterator;
 import magellan.library.ID;
 import magellan.library.LuxuryPrice;
 import magellan.library.Region;
+import magellan.library.StringID;
 import magellan.library.utils.Resources;
 
 
@@ -54,7 +55,7 @@ public class SoldLuxuryReplacer extends AbstractRegionReplacer {
 	@Override
   public Object getRegionReplacement(Region r) {
 		if(r.getPrices() != null) {
-			Iterator<ID> it = r.getPrices().keySet().iterator();
+			Iterator<StringID> it = r.getPrices().keySet().iterator();
 
 			while(it.hasNext()) {
 				ID id = it.next();

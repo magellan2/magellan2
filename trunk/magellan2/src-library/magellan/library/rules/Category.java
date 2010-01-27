@@ -207,11 +207,7 @@ public abstract class Category extends ObjectType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns a path of category from the top level ancestor to <code>ic</code>. 
 	 */
 	public static Category[] getPath(Category ic) {
 		int i = 1;
@@ -233,11 +229,7 @@ public abstract class Category extends ObjectType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns true if p is an ancestor of this category. 
 	 */
 	public boolean isDescendant(Category p) {
 		Category path[] = Category.getPath(this);

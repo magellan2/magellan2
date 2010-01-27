@@ -18,7 +18,8 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Map;
 
-import magellan.library.ID;
+import magellan.library.StringID;
+
 
 
 /**
@@ -28,23 +29,20 @@ import magellan.library.ID;
  * @version $Revision: 203 $
  */
 public class BuildingType extends ConstructibleType {
-	private Map<ID,Integer> skillBonuses = null;
-	private Map<ID,RegionType> regionTypes = null;
+	private Map<StringID,Integer> skillBonuses = null;
+	private Map<StringID,RegionType> regionTypes = null;
 
 	/**
 	 * Creates a new BuildingType object.
 	 *
 	 * 
 	 */
-	public BuildingType(ID id) {
+	public BuildingType(StringID id) {
 		super(id);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
+	 * Returns the bonus this building provides to the given skill.
 	 * 
 	 */
 	public int getSkillBonus(SkillType skillType) {
@@ -62,14 +60,11 @@ public class BuildingType extends ConstructibleType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+   * Sets the bonus this building provides to the given skill.
 	 */
 	public void setSkillBonus(SkillType skillType, int bonus) {
 		if(skillBonuses == null) {
-			skillBonuses = new Hashtable<ID, Integer>();
+			skillBonuses = new Hashtable<StringID, Integer>();
 		}
 
 		skillBonuses.put(skillType.getID(), new Integer(bonus));
@@ -82,7 +77,7 @@ public class BuildingType extends ConstructibleType {
 	 */
 	public void addRegionType(RegionType type) {
 		if(regionTypes == null) {
-			regionTypes = new Hashtable<ID, RegionType>();
+			regionTypes = new Hashtable<StringID, RegionType>();
 		}
 
 		regionTypes.put(type.getID(), type);
@@ -106,4 +101,11 @@ public class BuildingType extends ConstructibleType {
     }
     return Collections.emptyList();
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

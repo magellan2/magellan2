@@ -19,6 +19,7 @@
 package magellan.library.rules;
 
 import magellan.library.ID;
+import magellan.library.StringID;
 
 /**
  * DOCUMENT ME!
@@ -32,7 +33,7 @@ public class SkillCategory extends Category {
 	 *
 	 * 
 	 */
-	public SkillCategory(ID id) {
+	public SkillCategory(StringID id) {
 		super(id);
 	}
 
@@ -65,4 +66,11 @@ public class SkillCategory extends Category {
 
 		return false;
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

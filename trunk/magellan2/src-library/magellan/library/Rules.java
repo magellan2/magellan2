@@ -59,12 +59,12 @@ public interface Rules {
    * Returns the region type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public RegionType getRegionType(ID id, boolean add);
+	public RegionType getRegionType(StringID id, boolean add);
 
 	/**
 	 * Shorthand for getRegionType(id, false).
 	 */
-	public RegionType getRegionType(ID id);
+	public RegionType getRegionType(StringID id);
 
 	/**
 	 * Returns an iterator over all region types. 
@@ -93,13 +93,13 @@ public interface Rules {
 	 * Shorthand for getRace(id, false)
 	 * 
 	 */
-	public Race getRace(ID id);
+	public Race getRace(StringID id);
 
 	/**
    * Returns the race with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public Race getRace(ID id, boolean add);
+	public Race getRace(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all races. 
@@ -128,13 +128,13 @@ public interface Rules {
 	 * Shorthand for getShipType(id, false)
 	 * 
 	 */
-	public ShipType getShipType(ID id);
+	public ShipType getShipType(StringID id);
 
 	/**
    * Returns the ship type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public ShipType getShipType(ID id, boolean add);
+	public ShipType getShipType(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all ship types. 
@@ -162,13 +162,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getBuildingType(id, false) 
 	 */
-	public BuildingType getBuildingType(ID id);
+	public BuildingType getBuildingType(StringID id);
 
 	/**
    * Returns the building type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public BuildingType getBuildingType(ID id, boolean add);
+	public BuildingType getBuildingType(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all building types (including CastleTypes). 
@@ -195,13 +195,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getCastleType(id, false) 
 	 */
-	public CastleType getCastleType(ID id);
+	public CastleType getCastleType(StringID id);
 
 	/**
    * Returns the castle type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public CastleType getCastleType(ID id, boolean add);
+	public CastleType getCastleType(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator of all castle types. 
@@ -228,13 +228,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getItemType(id, false) 
 	 */
-	public ItemType getItemType(ID id);
+	public ItemType getItemType(StringID id);
 
 	/**
    * Returns the item type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public ItemType getItemType(ID id, boolean add);
+	public ItemType getItemType(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all item types. 
@@ -261,13 +261,13 @@ public interface Rules {
 	/**
    * Shorthand for <code>getSkillType(id, false)</code>. 
 	 */
-	public SkillType getSkillType(ID id);
+	public SkillType getSkillType(StringID id);
 
 	/**
 	 * Returns the skill type with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public SkillType getSkillType(ID id, boolean add);
+	public SkillType getSkillType(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all skill types. 
@@ -294,13 +294,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getItemCategory(id, false) 
 	 */
-	public ItemCategory getItemCategory(ID id);
+	public ItemCategory getItemCategory(StringID id);
 
 	/**
    * Returns the item category with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public ItemCategory getItemCategory(ID id, boolean add);
+	public ItemCategory getItemCategory(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all item categories. 
@@ -327,13 +327,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getSkillCategory(id, false) 
 	 */
-	public SkillCategory getSkillCategory(ID id);
+	public SkillCategory getSkillCategory(StringID id);
 
 	/**
    * Returns the skill category with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public SkillCategory getSkillCategory(ID id, boolean add);
+	public SkillCategory getSkillCategory(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all skill categories. 
@@ -360,13 +360,13 @@ public interface Rules {
 	/**
 	 * Shorthand for getOptionCategory(id, false) 
 	 */
-	public OptionCategory getOptionCategory(ID id);
+	public OptionCategory getOptionCategory(StringID id);
 
 	/**
    * Returns the option category with given id. If there is no such skill type and <code>add == true</code>, 
    * a new skill type is added and returns. Otherwise, <code>null</code> is returned.
 	 */
-	public OptionCategory getOptionCategory(ID id, boolean add);
+	public OptionCategory getOptionCategory(StringID id, boolean add);
 
 	/**
 	 * Returns an iterator over all option categories. 
@@ -393,13 +393,13 @@ public interface Rules {
 	/**
 	 * Returns the alliance category with the given id.
 	 */
-	public AllianceCategory getAllianceCategory(ID id);
+	public AllianceCategory getAllianceCategory(StringID id);
 
 	/**
 	 * Returns the alliance category with the given id. If add is true and
 	 * the id is not available, it will be added
 	 */
-	public AllianceCategory getAllianceCategory(ID id, boolean add);
+	public AllianceCategory getAllianceCategory(StringID id, boolean add);
 
 	/**
 	 * Returns a list of all possible alliance categories.

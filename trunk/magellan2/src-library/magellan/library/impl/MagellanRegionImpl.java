@@ -38,6 +38,7 @@ import magellan.library.RegionResource;
 import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Sign;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
@@ -379,10 +380,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * the luxury good as instance of class <tt>StringID</tt> as key and instances
    * of class <tt>LuxuryPrice</tt> as values.
    */
-  public Map<ID, LuxuryPrice> prices = null;
+  public Map<StringID, LuxuryPrice> prices = null;
 
   /** The prices of luxury goods of the last turn. */
-  public Map<ID, LuxuryPrice> oldPrices = null;
+  public Map<StringID, LuxuryPrice> oldPrices = null;
 
   /**
    * The messages for this region. The list consists of objects of class
@@ -1532,7 +1533,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 
    * @return Returns oldPrices.
    */
-  public Map<ID, LuxuryPrice> getOldPrices() {
+  public Map<StringID, LuxuryPrice> getOldPrices() {
     return oldPrices;
   }
 
@@ -1542,7 +1543,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @param oldPrices
    *          The value for oldPrices.
    */
-  public void setOldPrices(Map<ID, LuxuryPrice> oldPrices) {
+  public void setOldPrices(Map<StringID, LuxuryPrice> oldPrices) {
     this.oldPrices = oldPrices;
   }
 
@@ -1727,7 +1728,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 
    * @return Returns prices.
    */
-  public Map<ID, LuxuryPrice> getPrices() {
+  public Map<StringID, LuxuryPrice> getPrices() {
     return prices;
   }
 
@@ -1737,7 +1738,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @param prices
    *          The value for prices.
    */
-  public void setPrices(Map<ID, LuxuryPrice> prices) {
+  public void setPrices(Map<StringID, LuxuryPrice> prices) {
     this.prices = prices;
   }
 

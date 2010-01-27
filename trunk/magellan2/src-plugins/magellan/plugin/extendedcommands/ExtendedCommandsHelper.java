@@ -148,7 +148,7 @@ public class ExtendedCommandsHelper {
     if (region == null) {
       return null;
     }
-    Map<ID,LuxuryPrice> prices = region.getPrices();
+    Map<StringID,LuxuryPrice> prices = region.getPrices();
     for (LuxuryPrice price : prices.values()) {
       if (price.getPrice()<0) {
         return price.getItemType();

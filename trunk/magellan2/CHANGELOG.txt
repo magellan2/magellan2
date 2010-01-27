@@ -1,3 +1,8 @@
+2009-12-27 / Build 379 - stm (stm_@users.sourceforge.net)
+    * finished AlchemyPlanner
+    * made E3 luxuries luxuries again
+    * made implicit ID type of rules objects explicit (e.g. StringID for Region instead of ID)
+
 2009-12-25 / Build 374 - stm (stm_@users.sourceforge.net)
     * added load button to ExtCmds dock, updateUnit to ExtCmdsHelper, shortcuts for ExtCmds
 

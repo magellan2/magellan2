@@ -16,8 +16,8 @@ package magellan.library.rules;
 import java.util.Collection;
 import java.util.Collections;
 
-import magellan.library.ID;
 import magellan.library.Item;
+import magellan.library.StringID;
 
 /**
  * Stores attributes for a type of castle, that is, a building that influences the peasants.
@@ -37,7 +37,7 @@ public class CastleType extends BuildingType implements Comparable {
 	 *
 	 * 
 	 */
-	public CastleType(ID id) {
+	public CastleType(StringID id) {
 		super(id);
 	}
 	
@@ -136,7 +136,7 @@ public class CastleType extends BuildingType implements Comparable {
    * @see magellan.library.rules.ConstructibleType#getRawMaterial(magellan.library.ID)
    */
   @Override
-  public Item getRawMaterial(ID id) {
+  public Item getRawMaterial(StringID id) {
     // if no raw materials have been added we fall back to old behavior: 1 stone per size point
     if (fallBackMaterial) {
       if (id.equals(stone.getID()))

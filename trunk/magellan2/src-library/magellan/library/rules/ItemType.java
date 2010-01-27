@@ -17,17 +17,14 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
-import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.utils.Umlaut;
 
 
 /**
- * DOCUMENT-ME
- *
- * @author $Author: $
- * @version $Revision: 326 $
+ * Stores rule relevant info about types of items, like "Holz".
  */
 public class ItemType extends ObjectType implements Comparable {
 	private float weight = 0;
@@ -35,7 +32,7 @@ public class ItemType extends ObjectType implements Comparable {
 	private Skill makeSkill = null;
 	private Skill useSkill = null;
 	private ItemCategory category = null;
-	private Map<ID,Item> resources = null;
+	private Map<StringID,Item> resources = null;
   private boolean storableInBonw = false;
   
 	/**
@@ -43,68 +40,54 @@ public class ItemType extends ObjectType implements Comparable {
 	 *
 	 * 
 	 */
-	public ItemType(ID id) {
+	public ItemType(StringID id) {
 		super(id);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the items weight in GE. 
 	 */
 	public void setWeight(float w) {
 		weight = w;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the items weight in GE. 
 	 */
 	public float getWeight() {
 		return weight;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the skill needed to MAKE this item.
 	 */
 	public void setMakeSkill(Skill s) {
 		makeSkill = s;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the skill needed to MAKE this item.
 	 */
 	public Skill getMakeSkill() {
 		return makeSkill;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the skill needed to  use this item (e.g. a weapon skill).
 	 */
 	public void setUseSkill(Skill s) {
 		useSkill = s;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the skill needed to  use this item (e.g. a weapon skill).
 	 */
 	public Skill getUseSkill() {
 		return useSkill;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the items category.
 	 */
 	public void setCategory(ItemCategory c) {
 		this.category = c;
@@ -115,31 +98,26 @@ public class ItemType extends ObjectType implements Comparable {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+   * Returns the items category.
 	 */
 	public ItemCategory getCategory() {
 		return this.category;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Adds an item to the set of resources needed to make this ItemType. 
 	 */
 	public void addResource(Item i) {
 		if(resources == null) {
-			resources = new Hashtable<ID, Item>();
+			resources = new Hashtable<StringID, Item>();
 		}
 
 		resources.put(i.getItemType().getID(), i);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 *  Returns the set of resources needed to MAKE this ItemType or <code>null</code> if there are
+	 *  none.
 	 */
 	public Iterator<Item> getResources() {
     if (resources == null) {
@@ -149,13 +127,10 @@ public class ItemType extends ObjectType implements Comparable {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 *
-	 * 
+	 * Returns the resource of this type belonging to the id or <code>null</code> if the id doesn't
+	 * belong to the resources. 
 	 */
-	public Item getResource(ID id) {
+	public Item getResource(StringID id) {
 		if(resources != null) {
 			return resources.get(id);
 		} else {
@@ -230,4 +205,11 @@ public class ItemType extends ObjectType implements Comparable {
 		ItemType cmpItemType = (ItemType)o;
 		return this.getName().compareTo(cmpItemType.getName());
 	}
+
+  /**
+   * Returns the id uniquely identifying this object.
+   */
+  public StringID getID() {
+    return (StringID) id;
+  }
 }

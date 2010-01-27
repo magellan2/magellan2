@@ -696,7 +696,7 @@ ITEM "Silber"
 ITEM "Juwel"
 "Juwel";name
 1;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 RESOURCES
 7;Silber
@@ -704,37 +704,37 @@ RESOURCES
 ITEM "Weihrauch"
 "Weihrauch";name
 2;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Balsam"
 "Balsam";name
 2;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Gewürz"
 "Gewürz";name
 2;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Myrrhe"
 "Myrrhe";name
 2;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Öl"
 "Öl";name
 3;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Seide"
 "Seide";name
 3;weight
-"herbs";category
+"luxuries";category
 1;storeinbonw
 
 ITEM "Eisen"

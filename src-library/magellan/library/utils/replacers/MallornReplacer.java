@@ -15,6 +15,7 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
@@ -38,7 +39,7 @@ public class MallornReplacer extends AbstractRegionReplacer {
 		if (!region.isMallorn()){
 			return new Integer(0);
 		}
-		ItemType mallornType = region.getData().rules.getItemType("Mallorn");
+		ItemType mallornType = region.getData().rules.getItemType(EresseaConstants.I_RMALLORN);
 		if (mallornType==null){
 			return new Integer(0);
 		}

@@ -31,7 +31,7 @@ import magellan.library.CoordinateID;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Scheme;
-import magellan.library.StringID;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Score;
 
@@ -53,7 +53,7 @@ public class AstralMappingEvaluator extends MappingEvaluator {
   @Override
   protected Score<CoordinateID> evaluateMapping(GameData fromData, GameData toData, CoordinateID mapping) {
 
-    RegionType dustTerrain = fromData.rules.getRegionType(StringID.create("Nebel"));
+    RegionType dustTerrain = fromData.rules.getRegionType(EresseaConstants.RT_FOG);
 
     int score = 0;
   

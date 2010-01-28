@@ -25,6 +25,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Region.Visibility;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
@@ -1816,7 +1817,7 @@ public abstract class GameData implements Cloneable,Addeable {
             if (neighbour == null) {
               // Missing Neighbor
               Region r = MagellanFactory.createRegion(c, this);
-              RegionType type = this.rules.getRegionType(StringID.create("Leere"), true);
+              RegionType type = RegionType.unknown;
               r.setType(type);
               r.setName(Resources.get("completedata.region.thevoid.name"));
               r.setDescription(Resources.get("completedata.region.thevoid.beschr"));

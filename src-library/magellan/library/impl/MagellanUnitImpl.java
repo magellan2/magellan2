@@ -1794,7 +1794,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 			if(rel instanceof RecruitmentRelation) {
 				RecruitmentRelation rr = (RecruitmentRelation) rel;
 
-				Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_SILVER);
+				Item modifiedItem = cache1.modifiedItems.get(EresseaConstants.I_USILVER);
 
 				if(modifiedItem != null) {
 					Race recruitmentRace = rr.race;

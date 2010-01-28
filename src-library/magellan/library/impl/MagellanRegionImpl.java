@@ -445,8 +445,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
       // 2002.02.18 ip: this.resources can be null
       if (this.resources == null) {
-        this.resourceCollection =
-            Collections.unmodifiableCollection(new ArrayList<RegionResource>());
+        this.resourceCollection = Collections.emptySet();
       } else {
         this.resourceCollection =
             Collections
@@ -1348,7 +1347,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns horses.
    */
   public int getHorses() {
-    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_HORSE);
+    ItemType horsesIT = data.rules.getItemType(EresseaConstants.I_RHORSES);
     RegionResource horseRR = this.getResource(horsesIT);
     if (horseRR != null) {
       return horseRR.getAmount();
@@ -1372,7 +1371,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns iron.
    */
   public int getIron() {
-    ItemType ironIT = data.rules.getItemType(EresseaConstants.I_IRON);
+    ItemType ironIT = data.rules.getItemType(EresseaConstants.I_RIRON);
     RegionResource ironRR = this.getResource(ironIT);
     if (ironRR != null) {
       return ironRR.getAmount();
@@ -1396,7 +1395,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns laen.
    */
   public int getLaen() {
-    ItemType laenIT = data.rules.getItemType(EresseaConstants.I_LAEN);
+    ItemType laenIT = data.rules.getItemType(EresseaConstants.I_RLAEN);
     RegionResource laenRR = this.getResource(laenIT);
     if (laenRR != null) {
       return laenRR.getAmount();
@@ -1767,7 +1766,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns silver.
    */
   public int getSilver() {
-    RegionResource silverRR = this.getResource(data.rules.getItemType(EresseaConstants.I_SILVER));
+    RegionResource silverRR = this.getResource(data.rules.getItemType(EresseaConstants.I_RSILVER));
     if (silverRR != null) {
       return silverRR.getAmount();
     }
@@ -1814,7 +1813,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * @return Returns stones.
    */
   public int getStones() {
-    ItemType stonesIT = data.rules.getItemType(EresseaConstants.I_STONES);
+    ItemType stonesIT = data.rules.getItemType(EresseaConstants.I_RSTONES);
     RegionResource stonesRR = this.getResource(stonesIT);
     if (stonesRR != null) {
       return stonesRR.getAmount();

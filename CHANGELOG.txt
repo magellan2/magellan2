@@ -1,3 +1,7 @@
+2009-12-27 / Build 382 - stm (stm_@users.sourceforge.net)
+    * changed several EresseaConstants to make distinction between resource and item objects
+    * fixed MACHE BURG/MACHE Wache completion and cmpltZaubereSpruch
+
 2009-12-27 / Build 379 - stm (stm_@users.sourceforge.net)
     * finished AlchemyPlanner
     * made E3 luxuries luxuries again

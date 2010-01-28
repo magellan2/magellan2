@@ -805,7 +805,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 ConstructibleType bT = b.getBuildingType();
                 if (bT != null) {
                   // get Maintenance cost Silver
-                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_SILVER, false);
+                  ItemType silverType = data.rules.getItemType(EresseaConstants.I_USILVER, false);
                   if (silverType != null) {
                     Item silverItem = bT.getMaintenance(silverType.getID());
                     if (silverItem != null) {
@@ -857,7 +857,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
             // Übergaben
             value = msg.getAttributes().get("resource");
             String value2 = msg.getAttributes().get("amount");
-            if (value != null && value.equalsIgnoreCase(EresseaConstants.I_SILVER.toString())
+            if (value != null && value.equalsIgnoreCase(EresseaConstants.I_USILVER.toString())
                 && value2 != null) {
               int menge = Integer.parseInt(value2);
               value = msg.getAttributes().get("unit");

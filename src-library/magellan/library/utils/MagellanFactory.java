@@ -64,6 +64,7 @@ import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.Region.Visibility;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.impl.MagellanBattleImpl;
 import magellan.library.impl.MagellanBorderImpl;
 import magellan.library.impl.MagellanBuildingImpl;
@@ -1087,14 +1088,14 @@ public abstract class MagellanFactory {
     // but not in the current one. These are those, that are not seen in the
     // maybe newer report! This maybe because their level has changed.
     // Types for which no skill is needed to see
-    ItemType horsesType = resultGD.rules.getItemType("Pferde");
-    ItemType treesType = resultGD.rules.getItemType("Baeume");
-    ItemType mallornType = resultGD.rules.getItemType("Mallorn");
-    ItemType schoesslingeType = resultGD.rules.getItemType("Schoesslinge");
-    ItemType mallornSchoesslingeType = resultGD.rules.getItemType("Mallornschoesslinge");
+    ItemType horsesType = resultGD.rules.getItemType(EresseaConstants.I_RHORSES);
+    ItemType treesType = resultGD.rules.getItemType(EresseaConstants.I_TREES);
+    ItemType mallornType = resultGD.rules.getItemType(EresseaConstants.I_RMALLORN);
+    ItemType schoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_SPROUTS);
+    ItemType mallornSchoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_MALLORNSPROUTS);
     // FF 20080910...need new resources too
-    ItemType bauernType = resultGD.rules.getItemType("Bauern");
-    ItemType silberType = resultGD.rules.getItemType("Silber");
+    ItemType bauernType = resultGD.rules.getItemType(EresseaConstants.I_PEASANTS);
+    ItemType silberType = resultGD.rules.getItemType(EresseaConstants.I_RSILVER);
 
     // ArrayList of above Types
     List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();

@@ -59,6 +59,7 @@ import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
@@ -405,7 +406,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
    */
   private boolean checkPrice(LuxuryPrice price) {
     if (price.getPrice() > 0) {
-      Item luxuryPrice = price.getItemType().getResource(StringID.create("Silber"));
+      Item luxuryPrice = price.getItemType().getResource(EresseaConstants.I_USILVER);
 
       if ((luxuryPrice != null) && (luxuryPrice.getAmount() > 0)) {
         if ((price.getPrice() / luxuryPrice.getAmount()) < minSellMultiplier) {

@@ -15,6 +15,7 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
@@ -35,7 +36,7 @@ public class LaenReplacer extends AbstractRegionReplacer {
 	 */
 	@Override
   public Object getRegionReplacement(Region region) {
-		ItemType laenType = region.getData().rules.getItemType("Laen");
+		ItemType laenType = region.getData().rules.getItemType(EresseaConstants.I_RLAEN);
 		if (laenType==null){
 			return new Integer(0);
 		}

@@ -10,7 +10,6 @@ package magellan.library.gamebinding.e3a;
 import java.util.List;
 
 import magellan.library.GameData;
-import magellan.library.StringID;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -222,7 +221,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltMache() {
     super.cmpltMache();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Holz"))) != null)) {
+        || (getRegion().getItem(getData().rules.getItemType(EresseaConstants.I_WOOD)) != null)) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
           " "));
     }
@@ -232,7 +231,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltMacheAmount() {
     super.cmpltMacheAmount();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(StringID.create("Holz"))) != null)) {
+        || (getRegion().getItem(getData().rules.getItemType(EresseaConstants.I_WOOD)) != null)) {
       addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
           " "));
     }

@@ -35,7 +35,6 @@ import magellan.library.GameData;
 import magellan.library.ID;
 import magellan.library.Region;
 import magellan.library.Ship;
-import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
@@ -192,7 +191,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
      String path = "";
      List<Region>regionList=null;
-     BuildingType harbour = data.rules.getBuildingType(StringID.create("Hafen"));   
+     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);   
      for (Unit u:getSelectedUnits()){
        if (isSeaConnPossible(u) && u.getModifiedShip()!=null){
          int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(u.getModifiedShip());

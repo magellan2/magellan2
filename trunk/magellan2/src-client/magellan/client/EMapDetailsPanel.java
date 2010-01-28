@@ -252,16 +252,16 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   // over again when needed
   private Comparator<Unit> sortIndexComparator =
       new SortIndexComparator<Unit>(IDComparator.DEFAULT);
-  private final ID ironID = StringID.create("Eisen");
-  private final ID laenID = StringID.create("Laen");
-  private final ID treesID = StringID.create("Baeume");
-  private final ID mallornID = StringID.create("Mallorn");
-  private final ID sproutsID = StringID.create("Schoesslinge");
-  private final ID mallornSproutsID = StringID.create("Mallornschösslinge");
-  private final ID stonesID = StringID.create("Steine");
-  private final ID horsesID = StringID.create("Pferde");
-  private final ID silverID = StringID.create("Silber");
-  private final ID peasantsID = StringID.create("Bauern");
+  private final StringID rironID = EresseaConstants.I_RIRON; // StringID.create("Eisen");
+  private final StringID rlaenID = EresseaConstants.I_RLAEN; // StringID.create("Laen");
+  private final StringID rtreesID = EresseaConstants.I_TREES; // StringID.create("Baeume");
+  private final StringID rmallornID = EresseaConstants.I_RMALLORN; // StringID.create("Mallorn");
+  private final StringID rsproutsID = EresseaConstants.I_SPROUTS; // StringID.create("Schoesslinge");
+  private final StringID rmallornSproutsID = EresseaConstants.I_MALLORNSPROUTS; // StringID.create("Mallornschösslinge");
+  private final StringID rstonesID = EresseaConstants.I_RSTONES; // StringID.create("Steine");
+  private final StringID rhorsesID = EresseaConstants.I_RHORSES; // StringID.create("Pferde");
+  private final StringID rsilverID = EresseaConstants.I_RSILVER; // StringID.create("Silber");
+  private final StringID rpeasantsID = EresseaConstants.I_PEASANTS; // StringID.create("Bauern");
 
   /**
    * Creates a new EMapDetailsPanel object.
@@ -1002,7 +1002,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // silver
     // Fiete 20080805: if we have silver in Resources, this would be redundant
-    if (!isResourceTypeIDInRegionResources(r, silverID)) {
+    if (!isResourceTypeIDInRegionResources(r, rsilverID)) {
       peasantsNode.add(createSimpleNode(Resources.get("emapdetailspanel.node.silver") + ": "
           + getDiffString(r.getSilver(), r.getOldSilver()), "items/silber"));
     }
@@ -1066,7 +1066,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         DefaultMutableTreeNode treeNode;
 
         if (r.isMallorn()) {
-          icon = "items/" + mallornID;
+          icon = "items/" + rmallornID;
           if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
             icon += "_region";
           }
@@ -1074,7 +1074,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
               createSimpleNode(Resources.get("emapdetailspanel.node.mallorntrees") + ": "
                   + getDiffString(r.getTrees(), r.getOldTrees()), icon);
         } else {
-          icon = "items/" + treesID;
+          icon = "items/" + rtreesID;
           if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
             icon += "_region";
           }
@@ -1091,13 +1091,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
           icon += "_region";
         }
-        resourceNode.add(createSimpleNode(data.rules.getItemType(StringID.create("Eisen"))
+        resourceNode.add(createSimpleNode(data.rules.getItemType(EresseaConstants.I_RIRON)
             .getName()
             + ": " + getDiffString(r.getIron(), r.getOldIron()), icon));
       }
 
       if ((r.getLaen() > 0) || (r.getOldLaen() > 0)) {
-        icon = "items/" + laenID;
+        icon = "items/" + rlaenID;
         if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
           icon += "_region";
         }
@@ -1109,7 +1109,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // horse
     if ((r.getHorses() > 0) || (r.getOldHorses() > 0)) {
       // Fiete 20080805: only, if horses are not already included in ressources
-      if (!isResourceTypeIDInRegionResources(r, horsesID)) {
+      if (!isResourceTypeIDInRegionResources(r, rhorsesID)) {
         icon = "items/pferd";
         if (getMagellanContext().getImageFactory().existImageIcon(icon + "_region")) {
           icon += "_region";
@@ -1154,52 +1154,56 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       return -1;
     }
 
-    if (res.getType().getID().equals(ironID)) {
+    if (res.getType().getID().equals(rironID)) {
       return r.getOldIron();
     }
 
-    if (res.getType().getID().equals(laenID)) {
+    if (res.getType().getID().equals(rlaenID)) {
       return r.getOldLaen();
     }
 
-    if (res.getType().getID().equals(treesID) || res.getType().getID().equals(mallornID)) {
+    if (res.getType().getID().equals(rtreesID) || res.getType().getID().equals(rmallornID)) {
       return r.getOldTrees();
     }
 
-    if (res.getType().getID().equals(sproutsID) || res.getType().getID().equals(mallornSproutsID)) {
+    if (res.getType().getID().equals(rsproutsID) || res.getType().getID().equals(rmallornSproutsID)) {
       return r.getOldSprouts();
     }
 
-    if (res.getType().getID().equals(stonesID)) {
+    if (res.getType().getID().equals(rstonesID)) {
       return r.getOldStones();
     }
 
-    if (res.getType().getID().equals(horsesID)) {
+    if (res.getType().getID().equals(rhorsesID)) {
       return r.getOldHorses();
     }
 
-    if (res.getType().getID().equals(silverID)) {
+    if (res.getType().getID().equals(rsilverID)) {
       return r.getOldSilver();
     }
 
-    if (res.getType().getID().equals(peasantsID)) {
+    if (res.getType().getID().equals(rpeasantsID)) {
       return r.getOldPeasants();
     }
 
     return -1;
   }
 
-  private boolean isResourceTypeIDInRegionResources(Region r, ID resourceID) {
+  private boolean isResourceTypeIDInRegionResources(Region r, StringID resourceID) {
     if (r.resources() == null || r.resources().isEmpty()) {
       return false;
     }
-    for (Iterator iter = r.resources().iterator(); iter.hasNext();) {
-      RegionResource res = (RegionResource) iter.next();
+    
+    for (RegionResource res : r.resources()) {
       if (res.getType().getID().equals(resourceID)) {
+        if (r.getResource(data.rules.getItemType(resourceID))==null)
+          resourceID = null;
         return true;
       }
     }
 
+    if (r.getResource(data.rules.getItemType(resourceID))!=null)
+      resourceID = null;
     return false;
   }
 
@@ -1265,7 +1269,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
 
       if (region.getHorses() > 0) {
-        ItemType iType = data.rules.getItemType(StringID.create("Pferd"));
+        ItemType iType = data.rules.getItemType(EresseaConstants.I_RHORSES);
         Integer amount = resources.get(iType);
         int i = region.getHorses();
 
@@ -3268,9 +3272,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
-    ItemType horses = data.rules.getItemType(EresseaConstants.I_HORSE);
+    ItemType horses = data.rules.getItemType(EresseaConstants.I_UHORSE);
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
-    ItemType silver = data.rules.getItemType(EresseaConstants.I_SILVER);
+    ItemType silver = data.rules.getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
     if (PropertiesHelper.getBoolean(settings, "unitCapacityContextMenuShowFriendly", true)) {
       for (Iterator iter = u.getRegion().items().iterator(); iter.hasNext();) {
@@ -4127,7 +4131,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         int stones = lastRegion.getRegionType().getRoadStones();
         str +=
             (" (" + ((b.getBuildRatio() * stones) / 100) + " / " + stones + " "
-                + data.rules.getItemType(StringID.create("Stein")).getName() + ")");
+                + data.rules.getItemType(EresseaConstants.I_USTONE).getName() + ")");
       }
 
       parent.add(new DefaultMutableTreeNode(str));

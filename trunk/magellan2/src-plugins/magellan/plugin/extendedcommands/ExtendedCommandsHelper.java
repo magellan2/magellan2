@@ -365,7 +365,7 @@ public class ExtendedCommandsHelper {
   public String getPathToRegion(Ship ship, Region destination, int speed, boolean makeRoute) {
     StringBuffer order = new StringBuffer();
     
-    BuildingType harbour = world.rules.getBuildingType(StringID.create("Hafen"));
+    BuildingType harbour = world.rules.getBuildingType(EresseaConstants.B_HARBOUR);
 
     int shipRange = world.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
     List<Region> path = Regions.planShipRoute(ship, destination.getCoordinate(), world.regions(), harbour, shipRange);

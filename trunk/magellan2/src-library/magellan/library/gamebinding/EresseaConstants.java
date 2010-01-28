@@ -646,26 +646,71 @@ public class EresseaConstants {
   /** DOCUMENT-ME */
   public static final StringID I_GOTS = StringID.create("Gürtel der Trollstärke");
   
-	public static final StringID I_HORSE = StringID.create("Pferd");
+  /** @deprecated use either {@link #I_UHORSE} or {@link #I_RHORSES}. */
+  public static final StringID I_HORSE = StringID.create("Pferd");
 
+  /** The item Pferd */
+  public static final StringID I_UHORSE = StringID.create("Pferd");
+  
+  /** The resource Pferde */
+  public static final StringID I_RHORSES = StringID.create("Pferde");
+
+  /** The item Eisen */
+  public static final StringID I_UIRON = StringID.create("Eisen");
+
+  /** The resource Eisen */
+  public static final StringID I_RIRON = StringID.create("Eisen");
+  
+  /** @deprecated use either {@link #I_UIRON} or {@link #I_RIRON}. */
   public static final StringID I_IRON = StringID.create("Eisen");
+
+  /** The item Laen */
+  public static final StringID I_ULAEN = StringID.create("Laen");
   
+  /** The resource Laen */
+  public static final StringID I_RLAEN = StringID.create("Laen");
+
+  /** @deprecated use either {@link #I_ULAEN} or {@link #I_RLAEN}. */
   public static final StringID I_LAEN = StringID.create("Laen");
-  
+
   public static final StringID I_PEASANTS = StringID.create("Bauern");
 
-  /** DOCUMENT-ME */
+  /** The item silve */
+  public static final StringID I_USILVER = StringID.create("Silber");
+
+  /** The resource silver */
+  public static final StringID I_RSILVER = StringID.create("Silber");
+
+  /** @deprecated use either {@link #I_USILVER} or {@link #I_RSILVER}. */
   public static final StringID I_SILVER = StringID.create("Silber");
 
   public static final StringID I_SPROUTS = StringID.create("Schösslinge");
   
-  public static final StringID I_STONES = StringID.create("Steine");
+  /** The item Stein */
+  public static final StringID I_USTONE = StringID.create("Stein");
+
+  /** The resource Steine */
+  public static final StringID I_RSTONES = StringID.create("Steine");
   
+  /** @deprecated use either {@link #I_USTONE} or {@link #I_RSTONES}. */
+  public static final StringID I_STONES = StringID.create("Steine");
+
   public static final StringID I_TREES = StringID.create("Bäume");
   
   public static final StringID I_WOOD = StringID.create("Holz");
 
-	/** DOCUMENT-ME */
+  /** The item Mallorn */
+  public static final StringID I_UMALLORN = StringID.create("Mallorn");
+
+  /** The resource Mallorn */
+  public static final StringID I_RMALLORN = StringID.create("Mallorn");
+
+  /** @deprecated use either {@link #I_UMALLORN} or {@link #I_RMALLORN}. */
+  public static final StringID I_MALLORN = StringID.create("Mallorn");
+
+  public static final StringID I_MALLORNSPROUTS = StringID.create("Mallornschößlinge");
+
+  /** DOCUMENT-ME */
 	public static final StringID RT_OCEAN = StringID.create("Ozean");
 
   /** The RegionType firewall */
@@ -695,17 +740,23 @@ public class EresseaConstants {
   /** The RegionType volcano */
   public static final StringID RT_VOLCANO = StringID.create("Vulkan");
 
+  /** The RegionType Nebel */
+  public static final StringID RT_FOG = StringID.create("Nebel");
+
+  /** The RegoinType "the void" */
+  public static final StringID RT_VOID = StringID.create("Leere");
+
   /** The RegionType active volcano */
   public static final StringID RT_ACTIVE_VOLCANO = StringID.create("Aktiver Vulkan");
-
-  /** building type lighthouse */
-	public static final StringID B_LIGHTHOUSE = StringID.create("Leuchtturm");
 
   /** Building type academy */
   public static final StringID B_ACADEMY = StringID.create("Akademie");
 
   /** Building type harbour */
   public static final StringID B_HARBOUR = StringID.create("Hafen");
+
+  /** building type lighthouse */
+  public static final StringID B_LIGHTHOUSE = StringID.create("Leuchtturm");
 
   /** Shiptype Boat */
   public static final StringID ST_BOAT = StringID.create("Boot");

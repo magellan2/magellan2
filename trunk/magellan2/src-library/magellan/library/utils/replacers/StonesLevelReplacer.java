@@ -15,6 +15,7 @@ package magellan.library.utils.replacers;
 
 import magellan.library.Region;
 import magellan.library.RegionResource;
+import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 
@@ -35,7 +36,7 @@ public class StonesLevelReplacer extends AbstractRegionReplacer {
 	 */
 	@Override
   public Object getRegionReplacement(Region region) {
-		ItemType ironType = region.getData().rules.getItemType("Steine");
+		ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RSTONES);
 		if (ironType==null){
 			return null;
 		}

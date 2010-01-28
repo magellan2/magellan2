@@ -1373,7 +1373,7 @@ public class CRParser implements RulesIO, GameDataIO {
       bType = rules.getBuildingType(StringID.create(id), true);
     } else if (blockName.equals("CASTLETYPE")) {
       bType = rules.getCastleType(StringID.create(id), true);
-      ((CastleType) bType).init(rules.getItemType(EresseaConstants.I_STONES));
+      ((CastleType) bType).init(rules.getItemType(EresseaConstants.I_USTONE));
     } else {
       unknown(blockName, false);
       return;
@@ -1504,7 +1504,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("roadstones")) {
         Resource resource = new Resource(Integer.parseInt(sc.argv[0]));
-        resource.setObjectType(rules.getItemType(StringID.create("Stein"), true));
+        resource.setObjectType(rules.getItemType(EresseaConstants.I_USTONE, true));
         regionType.addRoadResource(resource);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("roadsupportbuilding")) {
@@ -2257,7 +2257,7 @@ public class CRParser implements RulesIO, GameDataIO {
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Silber")) {
         int money = Integer.parseInt(sc.argv[0]);
-        Item item = new Item(world.rules.getItemType(StringID.create("Silber"), true), money);
+        Item item = new Item(world.rules.getItemType(EresseaConstants.I_USILVER, true), money);
         unit.addItem(item);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Burg")) {
@@ -3032,7 +3032,7 @@ public class CRParser implements RulesIO, GameDataIO {
     if ((iValidateFlags & 1) == 0) {
       CRParser.log.warn("Warning: No region type is given for region '" + region.toString()
           + "' - it is ignored.");
-      region.setType(world.rules.getRegionType(StringID.create("void"), true));
+      region.setType(world.rules.getRegionType(EresseaConstants.RT_VOID, true));
       world.addRegion(region);
     } else {
       world.addRegion(region);

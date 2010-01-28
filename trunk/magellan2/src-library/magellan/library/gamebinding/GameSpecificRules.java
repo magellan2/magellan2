@@ -26,6 +26,7 @@ package magellan.library.gamebinding;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.rules.Race;
+import magellan.library.rules.UnitContainerType;
 
 
 /**
@@ -93,5 +94,11 @@ public interface GameSpecificRules {
    * Returns the number of silver pieces per weight unit (GE).
    */
   public int getSilverPerWeightUnit();
+
+
+  /**
+   * Returns true if the type is a castle (Befestigung, Turm, ...)
+   */
+  public boolean isCastle(UnitContainerType type);
 
 }

@@ -29,7 +29,7 @@ import magellan.library.StringID;
  */
 public class RegionType extends UnitContainerType {
 	/** A static instance of the unknown region type */
-	public static RegionType unknown = new RegionType(StringID.create("unbekannt"));
+	public static RegionType unknown= new RegionType(StringID.create("unbekannt"));
 	private int inhabitants = -1;
 
   private boolean isOcean = false;

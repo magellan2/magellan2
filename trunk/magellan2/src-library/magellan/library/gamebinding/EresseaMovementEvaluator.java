@@ -51,7 +51,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	public int getPayloadOnHorse(Unit unit) {
 		int capacity = 0;
 		int horses = 0;
-		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_HORSE, true));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_UHORSE, true));
 
 		if(i != null) {
 			horses = i.getAmount();
@@ -114,7 +114,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	public int getPayloadOnFoot(Unit unit) {
 		int capacity = 0;
 		int horses = 0;
-		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_HORSE, true));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_UHORSE, true));
 
 		if(i != null) {
 			horses = i.getAmount();
@@ -238,7 +238,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 */
 	private int getLoad(Unit unit, Collection<Item> items) {
     int load = 0;
-		ItemType horse = rules.getItemType(EresseaConstants.I_HORSE, true);
+		ItemType horse = rules.getItemType(EresseaConstants.I_UHORSE, true);
 		ItemType cart = rules.getItemType(EresseaConstants.I_CART, true);
     // darcduck 2007-10-31: take care of bags of negative weight
     ItemType bonw = rules.getItemType(EresseaConstants.I_BONW, true);

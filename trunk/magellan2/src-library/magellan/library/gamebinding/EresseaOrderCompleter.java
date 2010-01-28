@@ -33,6 +33,7 @@ import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.LuxuryPrice;
 import magellan.library.Message;
+import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Skill;
@@ -475,11 +476,10 @@ public class EresseaOrderCompleter implements Completer {
       while (buildings.hasNext()) {
         Building b = (Building) buildings.next();
 
-        if (b.getType().getID().equals(StringID.create("Burg"))
-            && (b.getModifiedOwnerUnit().getFaction().equals(ownerFaction) == false)) {
-          completions.add(new Completion(b.getName() + " (" + b.getID() + ")",
-              b.getID().toString(), "", Completion.DEFAULT_PRIORITY - 1));
-          completions.add(new Completion(b.getID() + " (" + b.getName() + ")"));
+        if (data.rules.getGameSpecificStuff().getGameSpecificRules().isCastle(b.getType())
+            && (b.getModifiedOwnerUnit() == null || b.getModifiedOwnerUnit().getFaction().equals(
+                ownerFaction) == false)) {
+          addNamed(b, "", 0, true);
         }
       }
     }
@@ -536,12 +536,7 @@ public class EresseaOrderCompleter implements Completer {
         Unit u = (Unit) units.next();
 
         if (u.getFaction().equals(ownerFaction) == false) {
-          String id = u.getID().toString();
-          String name = u.getName();
-          completions.add(new Completion(name + " (" + id + ")", id, " \"\"",
-              Completion.DEFAULT_PRIORITY - 1, 1));
-          completions.add(new Completion(id + " (" + name + ")", id, " \"\"",
-              Completion.DEFAULT_PRIORITY, 1));
+          addUnit(u, " \"\"", 1);
         }
       }
     }
@@ -558,12 +553,7 @@ public class EresseaOrderCompleter implements Completer {
         // use old owner unit (BENENNE before GIB)
         if ((b.getOwnerUnit() != null)
             && (b.getOwnerUnit().getFaction().equals(ownerFaction) == false)) {
-          String id = b.getID().toString();
-          String name = b.getName();
-          completions.add(new Completion(b.getType().getName() + " " + name + " (" + id + ")", id,
-              " \"\"", Completion.DEFAULT_PRIORITY - 1, 1));
-          completions.add(new Completion(id + " (" + b.getType().getName() + " " + name + ")", id,
-              " \"\"", Completion.DEFAULT_PRIORITY, 1));
+          addNamed(b, " \"\"", 1, false);
         }
       }
     }
@@ -578,12 +568,7 @@ public class EresseaOrderCompleter implements Completer {
         Faction f = (Faction) factions.next();
 
         if (f.equals(ownerFaction) == false) {
-          String id = f.getID().toString();
-          String name = f.getName();
-          completions.add(new Completion(name + " (" + id + ")", id, " \"\"",
-              Completion.DEFAULT_PRIORITY - 1, 1));
-          completions.add(new Completion(id + " (" + name + ")", id, " \"\"",
-              Completion.DEFAULT_PRIORITY, 1));
+          addNamed(f, " \"\"", 1, false);
         }
       }
     }
@@ -660,14 +645,15 @@ public class EresseaOrderCompleter implements Completer {
           7));
     }
     addRegionBuildings(Resources.getOrderTranslation(EresseaConstants.O_CASTLE) + " ", " ", unit
-        .getBuilding());
+        .getBuilding(), true);
 
     if (region.ships().size() > 0) {
       completions
           .add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_SHIP), " ", 7));
     }
+    // FIXME doesn't work as intended?
     addRegionShips(Resources.getOrderTranslation(EresseaConstants.O_SHIP) + " ", " ", unit
-        .getShip());
+        .getShip(), true);
   }
 
   public void cmpltBetreteBurg() {
@@ -675,12 +661,7 @@ public class EresseaOrderCompleter implements Completer {
       UnitContainer uc = (UnitContainer) iter.next();
 
       if (!uc.equals(unit.getBuilding())) {
-        completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", uc.getID()
-            .toString()
-            + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
-        completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", uc.getID()
-            .toString()
-            + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+        addNamed(uc, "", 0, true);
       }
     }
   }
@@ -690,12 +671,7 @@ public class EresseaOrderCompleter implements Completer {
       UnitContainer uc = (UnitContainer) iter.next();
 
       if (!uc.equals(unit.getShip())) {
-        completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", uc.getID()
-            .toString()
-            + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY - 1));
-        completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", uc.getID()
-            .toString()
-            + " ;" + uc.getName(), "", Completion.DEFAULT_PRIORITY));
+        addNamed(uc, "", 0, true);
       }
     }
   }
@@ -714,17 +690,12 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltBotschaftPartei() {
-    addOtherFactions(" \"\"", 1);
+    addOtherFactions(" \"\"", 1, false);
   }
 
   public void cmpltBotschaftGebaeude() {
-    Iterator i = region.buildings().iterator();
-
-    while ((i != null) && i.hasNext()) {
-      UnitContainer uc = (UnitContainer) i.next();
-      String id = uc.getID().toString();
-      completions.add(new Completion(uc.getName() + " (" + id + ")", id, " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+    for (Building uc : region.buildings()) {
+      addNamed(uc, " \"\"", 1, false);
     }
   }
 
@@ -733,13 +704,8 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltBotschaftSchiff() {
-    Iterator i = region.ships().iterator();
-
-    while ((i != null) && i.hasNext()) {
-      UnitContainer uc = (UnitContainer) i.next();
-      String id = uc.getID().toString();
-      completions.add(new Completion(uc.getName() + " (" + id + ")", id, " \"\"",
-          Completion.DEFAULT_PRIORITY, 1));
+    for (Ship s : region.ships()) {
+      addNamed(s, " \"\"", 1, false);
     }
   }
 
@@ -767,9 +733,10 @@ public class EresseaOrderCompleter implements Completer {
     for (Completion c : oldList) {
       OrderTokenizer nameTokenizer = new OrderTokenizer(new StringReader(c.getName()));
       String newName = c.getName();
-      if (openingToken!=null || forceQuotes)
-          newName = fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
-              forceQuotes, doClose, preferredQuote);
+      if (openingToken != null || forceQuotes)
+        newName =
+            fixQuotes(nameTokenizer, openingToken, contentToken, closingToken, preferQuotes,
+                forceQuotes, doClose, preferredQuote);
       OrderTokenizer valueTokenizer = new OrderTokenizer(new StringReader(c.getValue()));
       String newValue =
           fixQuotes(valueTokenizer, openingToken, contentToken, closingToken, preferQuotes,
@@ -887,19 +854,12 @@ public class EresseaOrderCompleter implements Completer {
 
         int prio = 0;
         // stm 2007-03-11: follow ships, no matter who's the owner
-        if ((s.getModifiedOwnerUnit() != null) && (unit.getFaction().equals(s.getModifiedOwnerUnit().getFaction()))) {
+        if ((s.getModifiedOwnerUnit() != null)
+            && (unit.getFaction().equals(s.getModifiedOwnerUnit().getFaction()))) {
           prio = 16;
         }
-        String id = s.getID().toString();
-        String name = s.getName();
 
-        if (name != null) {
-          completions.add(new Completion(name + " (" + id + ")", id, " ", prio
-              + Completion.DEFAULT_PRIORITY - 1));
-          completions.add(new Completion(id + " (" + name + ")", id, " ", prio));
-        } else {
-          completions.add(new Completion(id, " ", prio));
-        }
+        addNamed(s, " ", prio, 0, false);
       }
 
       // add ships from DURCHSCHIFFUNG
@@ -944,14 +904,13 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltGibUID(boolean tempToken) {
-    if (tempToken){
+    if (tempToken) {
       addRegionUnits(" ", tempToken);
       return;
     }
 
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ALL), " "));
     completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_UNIT)));
-
 
     /*
      * if (unit.getBuilding() != null && unit.equals(unit.getBuilding().getOwnerUnit()) ||
@@ -1011,7 +970,7 @@ public class EresseaOrderCompleter implements Completer {
               suggest = false;
             } else {
 
-              if (order.length()==0) {
+              if (order.length() == 0) {
                 order.append(resource.getOrderName());
               } else {
                 order.append("\n").append(Resources.getOrderTranslation(EresseaConstants.O_GIVE))
@@ -1061,7 +1020,7 @@ public class EresseaOrderCompleter implements Completer {
 
     if (persons) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_MEN), (unit
-          .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY+1));
+          .getPersons() >= i) ? 0 : Completion.DEFAULT_PRIORITY + 1));
     }
 
   }
@@ -1076,7 +1035,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltHelfe() {
-    addOtherFactions(" ");
+    addOtherFactions(" ", 0, false);
   }
 
   public void cmpltHelfeFID() {
@@ -1181,10 +1140,10 @@ public class EresseaOrderCompleter implements Completer {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_LEVEL),
             " ", Completion.DEFAULT_PRIORITY - 1));
 
-//        if ((unit.getCombatSpells() != null) && (unit.getCombatSpells().size() > 0)) {
-//          completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "",
-//              Completion.DEFAULT_PRIORITY - 1));
-//        }
+// if ((unit.getCombatSpells() != null) && (unit.getCombatSpells().size() > 0)) {
+// completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_NOT), "",
+// Completion.DEFAULT_PRIORITY - 1));
+// }
       }
 
       addFilteredSpells(unit, false, region.getType().equals(
@@ -1338,7 +1297,7 @@ public class EresseaOrderCompleter implements Completer {
       }
 
       if (!completerSettingsProvider.getLimitMakeCompletion()
-          || (region.getItem(data.rules.getItemType(StringID.create("Stein"))) != null)) {
+          || (region.getItem(data.rules.getItemType(EresseaConstants.I_USTONE)) != null)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
             " "));
       }
@@ -1347,7 +1306,7 @@ public class EresseaOrderCompleter implements Completer {
     // ships
     if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU)
         && (!completerSettingsProvider.getLimitMakeCompletion() || (region.getItem(data.rules
-            .getItemType(StringID.create("Holz"))) != null))) {
+            .getItemType(EresseaConstants.I_WOOD)) != null))) {
       if ((data != null) && (data.rules != null)) {
         for (Iterator iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
           ShipType t = (ShipType) iter.next();
@@ -1378,7 +1337,7 @@ public class EresseaOrderCompleter implements Completer {
 
     if (hasSkill(unit, EresseaConstants.S_STRASSENBAU)
         && (!completerSettingsProvider.getLimitMakeCompletion() || (region.getItem(data.rules
-            .getItemType(StringID.create("Stein"))) != null)) && canMake) {
+            .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ROAD), " "));
     }
 
@@ -1396,25 +1355,25 @@ public class EresseaOrderCompleter implements Completer {
       } else if (completerSettingsProvider.getLimitMakeCompletion()
           && !checkForMaterials(itemType.getResources())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Eisen")))
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UIRON))
           && (region.getIron() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Laen")))
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_ULAEN))
           && (region.getLaen() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Holz"))) &&
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_WOOD)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
           // also take care of mallorn flag
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Mallorn"))) &&
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UMALLORN)) &&
       // bugzilla enhancement 599: also allow completion on sprouts
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Pferd")))
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UHORSE))
           && (region.getHorses() <= 0)) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(StringID.create("Stein")))
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_USTONE))
           && (region.getStones() <= 0)) {
         canMake = false;
       }
@@ -1440,8 +1399,7 @@ public class EresseaOrderCompleter implements Completer {
       BuildingType type = b.getBuildingType();
 
       if (type instanceof CastleType || (type.getMaxSize() != b.getSize())) {
-        String id = b.getID().toString();
-        completions.add(new Completion(b.getName() + " (" + id + ")", id, ""));
+        addNamed(b, "", 0, true);
       }
     }
   }
@@ -1459,8 +1417,7 @@ public class EresseaOrderCompleter implements Completer {
         UnitContainer uc = (UnitContainer) i.next();
 
         if (uc.getType().equals(type)) {
-          String id = uc.getID().toString();
-          completions.add(new Completion(uc.getName() + " (" + id + ")", id, ""));
+          addNamed(uc, "", 0, true);
         }
       }
     }
@@ -1472,16 +1429,12 @@ public class EresseaOrderCompleter implements Completer {
 
     while ((i != null) && i.hasNext()) {
       Ship s = (Ship) i.next();
-      String id = s.getID().toString();
 
-      if ((s.getModifiedOwnerUnit() != null) && ownerFaction.equals(s.getModifiedOwnerUnit().getFaction())) {
-        completions.add(new Completion(s.getName() + " (" + id + ")", id, "",
-            Completion.DEFAULT_PRIORITY - 1));
-        completions.add(new Completion(id + " (" + s.getName() + ")", id, "",
-            Completion.DEFAULT_PRIORITY - 1));
+      if ((s.getModifiedOwnerUnit() != null)
+          && ownerFaction.equals(s.getModifiedOwnerUnit().getFaction())) {
+        addNamed(s, "", Completion.DEFAULT_PRIORITY - 2, 0, true);
       } else {
-        completions.add(new Completion(s.getName() + " (" + id + ")", id, ""));
-        completions.add(new Completion(id + " (" + s.getName() + ")", id, ""));
+        addNamed(s, "", Completion.DEFAULT_PRIORITY, 0, true);
       }
     }
   }
@@ -1543,7 +1496,7 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   public void cmpltPiraterie() {
-    addOtherFactions(" ");
+    addOtherFactions(" ", 0, false);
   }
 
   public void cmpltPiraterieFID() {
@@ -1581,9 +1534,9 @@ public class EresseaOrderCompleter implements Completer {
   private void addMaxReserve(Unit otherUnit) {
     // reserve the maximim the unit can carry
     int modLoad = otherUnit.getModifiedLoad();
-    ItemType horses = data.rules.getItemType(EresseaConstants.I_HORSE);
+    ItemType horses = data.rules.getItemType(EresseaConstants.I_UHORSE);
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
-// ItemType silver = data.rules.getItemType(StringID.create("Silber"));
+// ItemType silver = data.rules.getItemType(EresseaConstants.I_Silber"));
     int maxOnFoot = otherUnit.getPayloadOnFoot();
     int maxOnHorse = otherUnit.getPayloadOnHorse();
 // Float maxFoot = 0f;
@@ -1641,17 +1594,18 @@ public class EresseaOrderCompleter implements Completer {
       addUnitItems("");
 
       // if unit doesn't have silver, but poolsilver is available
-      if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) == null)
-          && (region.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
-        completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_SILVER)
+      if ((unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) == null)
+          && (region.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
+        completions.add(new Completion(data.rules.getItemType(EresseaConstants.I_USILVER)
             .getOrderName()));
       }
     } else if (!silverPool && materialPool) {
       for (Iterator<Item> iter = region.items().iterator(); iter.hasNext();) {
         Item item = iter.next();
 
-        if (silverPool || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_SILVER))
-            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
+        if (silverPool
+            || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))
+            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
           String name = item.getName();
           String quotedName = name;
 
@@ -1667,8 +1621,9 @@ public class EresseaOrderCompleter implements Completer {
         Item item = iter.next();
 
         // silver only if silverpool activated or unit has silver
-        if (silverPool || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_SILVER))
-            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_SILVER)) != null)) {
+        if (silverPool
+            || (item.getItemType() != data.rules.getItemType(EresseaConstants.I_USILVER))
+            || (unit.getItem(data.rules.getItemType(EresseaConstants.I_USILVER)) != null)) {
           String name = item.getName();
           String quotedName = name;
 
@@ -1738,8 +1693,8 @@ public class EresseaOrderCompleter implements Completer {
    * Adds completions for all units in the container <code>c</code> if they're in the same buildg as
    * <code>u</code>.
    * 
-   * @param u 
-   * @param c 
+   * @param u
+   * @param c
    * @param addOwner If true, the container's owner is included if applicable.
    */
   private void addSortiereUnits(Unit u, UnitContainer c, boolean addOwner) {
@@ -1856,10 +1811,11 @@ public class EresseaOrderCompleter implements Completer {
   public void cmpltZaubereStufe() {
     Skill magic = unit.getSkill(data.rules.getSkillType(EresseaConstants.S_MAGIE));
     int level = 1;
-    if (magic!=null)
+    if (magic != null)
       level = magic.getLevel();
-    completions.add(new Completion(
-        Resources.get("gamebinding.eressea.eresseaordercompleter.level"), String.valueOf(level), ""));
+    completions
+        .add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.level"),
+            String.valueOf(level), ""));
   }
 
   public void cmpltZaubereRegion() {
@@ -1869,8 +1825,7 @@ public class EresseaOrderCompleter implements Completer {
         Regions.getAllNeighbours(data.regions(), region.getID(), 2, null);
 
     CoordinateID trans =
-        data.getCoordinateTranslation(unit.getFaction().getID(),
-            region.getCoordinate().z);
+        data.getCoordinateTranslation(unit.getFaction().getID(), region.getCoordinate().z);
     if (trans != null) {
       trans = (new CoordinateID(0, 0, trans.z)).subtract(trans);
     }
@@ -1944,11 +1899,11 @@ public class EresseaOrderCompleter implements Completer {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE), " "));
     }
     if (spell.getSyntax().contains("u"))
-      addRegionUnits(" ", false);
+      addRegionUnits(" ", 0, false);
     if (spell.getSyntax().contains("b"))
-      addRegionBuildings("", " ", null);
+      addRegionBuildings("", " ", null, false);
     if (spell.getSyntax().contains("s"))
-      addRegionShips("", " ", null);
+      addRegionShips("", " ", null, false);
   }
 
   /**
@@ -2045,7 +2000,7 @@ public class EresseaOrderCompleter implements Completer {
   public void cmpltFactions(String postfix) {
     addFactions(postfix);
   }
-  
+
   /**
    * adds all units in this region whose faction has a trustlevel not greater than zero (TL_DEFAULT)
    */
@@ -2124,16 +2079,16 @@ public class EresseaOrderCompleter implements Completer {
    * Add all the ships in the current region except <code>exclude</code> (which may be
    * <code>null</code>). Prefix them with <code>prefix</code>.
    */
-  protected void addRegionShips(String prefix, String postfix, Ship exclude) {
+  protected void addRegionShips(String prefix, String postfix, Ship exclude, boolean comment) {
     Iterator<Ship> iter2 = region.ships().iterator();
     for (; iter2.hasNext();) {
       UnitContainer uc = iter2.next();
 
       if (!uc.equals(exclude)) {
         completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", prefix + uc.getID()
-            + " ;" + uc.getName(), postfix));
+            + (comment ? (" ;" + uc.getName()) : ""), postfix, Completion.DEFAULT_PRIORITY-1));
         completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", prefix + uc.getID()
-            + " ;" + uc.getName(), postfix));
+            + (comment ? (" ;" + uc.getName()) : ""), postfix, Completion.DEFAULT_PRIORITY));
       }
     }
   }
@@ -2144,16 +2099,16 @@ public class EresseaOrderCompleter implements Completer {
    * 
    * @param postfix
    */
-  void addRegionBuildings(String prefix, String postfix, Building exclude) {
+  void addRegionBuildings(String prefix, String postfix, Building exclude, boolean comment) {
     Iterator<Building> iter1 = region.buildings().iterator();
     for (; iter1.hasNext();) {
       UnitContainer uc = iter1.next();
 
       if (!uc.equals(exclude)) {
         completions.add(new Completion(uc.getName() + " (" + uc.getID() + ")", prefix + uc.getID()
-            + " ;" + uc.getName(), postfix));
+            + (comment ? (" ;" + uc.getName()) : ""), postfix, Completion.DEFAULT_PRIORITY-1));
         completions.add(new Completion(uc.getID() + " (" + uc.getName() + ")", prefix + uc.getID()
-            + " ;" + uc.getName(), postfix));
+            + (comment ? (" ;" + uc.getName()) : ""), postfix, Completion.DEFAULT_PRIORITY));
       }
     }
   }
@@ -2212,10 +2167,10 @@ public class EresseaOrderCompleter implements Completer {
   protected void addUnitContainerOwner(UnitContainer s, Unit u, String postfix, int cursorOffset) {
     String id = u.getID().toString();
 
-    completions.add(new Completion(s.toString() + " (" + s.getID() + ")", id, postfix, Completion.DEFAULT_PRIORITY+1,
-        cursorOffset));
-    completions.add(new Completion(s.getID() + " (" + s.toString() + ")", id, postfix, Completion.DEFAULT_PRIORITY+2,
-        cursorOffset));
+    completions.add(new Completion(s.toString() + " (" + s.getID() + ")", id, postfix,
+        Completion.DEFAULT_PRIORITY + 1, cursorOffset));
+    completions.add(new Completion(s.getID() + " (" + s.toString() + ")", id, postfix,
+        Completion.DEFAULT_PRIORITY + 2, cursorOffset));
   }
 
   protected void addRegionBuildingOwners(String postfix) {
@@ -2265,29 +2220,29 @@ public class EresseaOrderCompleter implements Completer {
     }
   }
 
+  /**
+   * Adds all known factions to the completions with comment
+   * 
+   * @param postfix
+   */
   protected void addFactions(String postfix) {
     if (data != null) {
       for (Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
         Faction f = iter.next();
-        String id = f.getID().toString();
-
-        if (f.getName() != null) {
-          completions.add(new Completion(f.getName() + " (" + id + ")", id, postfix,
-              Completion.DEFAULT_PRIORITY - 1));
-          completions.add(new Completion(id + " (" + f.getName() + ")", id, postfix,
-              Completion.DEFAULT_PRIORITY));
-        } else {
-          completions.add(new Completion(id, id, postfix, Completion.DEFAULT_PRIORITY));
-        }
+        addNamed(f, postfix, 0, true);
       }
     }
   }
 
-  protected void addOtherFactions(String postfix) {
-    addOtherFactions(postfix, 0);
-  }
-
-  protected void addOtherFactions(String postfix, int cursorOffset) {
+  /**
+   * Adds all factions except the current unit's.
+   * 
+   * @param postfix appended to Completion
+   * @param cursorOffset used for Completion
+   * @param addComment if <code>true</code>, the faction name is appended as a comment. Does not mix
+   *          well with <code>cursorOffset!=0</code>.
+   */
+  protected void addOtherFactions(String postfix, int cursorOffset, boolean addComment) {
     Faction ownerFaction = unit.getFaction();
     Iterator<Faction> factions = data.factions().values().iterator();
 
@@ -2295,17 +2250,7 @@ public class EresseaOrderCompleter implements Completer {
       Faction f = factions.next();
 
       if ((ownerFaction == null) || (f.equals(ownerFaction) == false)) {
-        String id = f.getID().toString();
-
-        if (f.getName() != null) {
-          completions.add(new Completion(f.getName() + " (" + id + ")", id, postfix,
-              Completion.DEFAULT_PRIORITY - 1, cursorOffset));
-          completions.add(new Completion(id + " (" + f.getName() + ")", id, postfix,
-              Completion.DEFAULT_PRIORITY, cursorOffset));
-        } else {
-          completions
-              .add(new Completion(id, id, postfix, Completion.DEFAULT_PRIORITY, cursorOffset));
-        }
+        addNamed(f, postfix, cursorOffset, addComment);
       }
     }
   }
@@ -2345,7 +2290,8 @@ public class EresseaOrderCompleter implements Completer {
             Regions.getDirections(data.regions(), region.getID(), r.getID(), excludedRegionTypes);
 
         if (directions != null) {
-          completions.add(new Completion(r.getName(), directions, postfix, Completion.DEFAULT_PRIORITY-1));
+          completions.add(new Completion(r.getName(), directions, postfix,
+              Completion.DEFAULT_PRIORITY - 1));
         }
       }
     }
@@ -2388,34 +2334,60 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /**
-   * Adds a unit to the completion in a standard manner.
+   * Adds a unit to the completion in a standard manner without comment.
    */
   protected void addUnit(Unit u, String postfix, int cursorOffset) {
     addUnit(u, postfix, cursorOffset, false);
   }
 
   /**
-   * Adds a unit to the completion in a standard manner.
+   * Adds a unit to the completions in a standard manner without comments.
    */
   protected void addUnit(Unit u, String postfix, int cursorOffset, boolean tempOnly) {
     String id = u.getID().toString();
 
     if (u instanceof TempUnit) {
       completions.add(new Completion((tempOnly ? "" : Resources
-          .getOrderTranslation(EresseaConstants.O_TEMP)+ " " )
+          .getOrderTranslation(EresseaConstants.O_TEMP)
+          + " ")
           + id, postfix, Completion.DEFAULT_PRIORITY - 1, cursorOffset));
     } else {
-      String name = u.getName();
+      addNamed(u, postfix, cursorOffset, false);
+    }
+  }
 
-      if (name != null) {
-        name = name.replaceAll(" ", "~");
-        completions.add(new Completion(name + " (" + id + ")", id, postfix,
-            Completion.DEFAULT_PRIORITY - 1, cursorOffset));
-        completions.add(new Completion(id + " (" + name + ")", id, postfix,
-            Completion.DEFAULT_PRIORITY, cursorOffset));
-      } else {
-        completions.add(new Completion(id, postfix));
-      }
+  /**
+   * Adds a thing to the completions, optionally with comments.
+   * 
+   * @param named This object's name and ID are displayed
+   * @param postfix Completion postfix
+   * @param offset Completion offset (probably doesn't make sense with comment)
+   * @param addComment If this is <code>true</code>, the name is inserted as a comment after the id
+   */
+  protected void addNamed(Named named, String postfix, int offset, boolean addComment) {
+    addNamed(named, postfix, Completion.DEFAULT_PRIORITY, offset, addComment);
+  }
+
+  /**
+   * Adds a thing to the completions, optionally with comments.
+   * 
+   * @param named This object's name and ID are displayed
+   * @param postfix Completion postfix
+   * @param prio This prio and <code>prio-1</code> are used
+   * @param offset Completion offset (probably doesn't make sense with comment)
+   * @param addComment If this is <code>true</code>, the name is inserted as a comment after the id
+   */
+  protected void addNamed(Named named, String postfix, int prio, int offset, boolean addComment) {
+    String name = named.getName();
+    String id = named.getID().toString();
+    if (name != null) {
+      name.replaceAll(" ", "~");
+      completions.add(new Completion(name + " (" + id + ")",
+          id + (addComment ? ("; " + name) : ""), postfix, prio - 1, offset));
+      completions.add(new Completion(id + " (" + name + ")",
+          id + (addComment ? ("; " + name) : ""), postfix, prio, offset));
+    } else {
+      completions.add(new Completion(id, id, postfix, prio, offset));
     }
   }
 
@@ -2448,7 +2420,7 @@ public class EresseaOrderCompleter implements Completer {
       if (ingredient.getItemType() != null) {
         int availableAmount = 0;
 
-        if (ingredient.getItemType().equals(data.rules.getItemType(StringID.create("Bauer")))) {
+        if (ingredient.getItemType().equals(data.rules.getItemType(EresseaConstants.I_PEASANTS))) {
           availableAmount = region.getPeasants();
         } else {
           Item available = region.getItem(ingredient.getItemType());

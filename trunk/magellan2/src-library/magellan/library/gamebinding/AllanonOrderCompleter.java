@@ -32,7 +32,6 @@ import magellan.library.Building;
 import magellan.library.GameData;
 import magellan.library.Ship;
 import magellan.library.Skill;
-import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.completion.CompleterSettingsProvider;
@@ -110,7 +109,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
 
     if(unit != null) {
       if((unit.getModifiedBuilding() != null) &&
-         unit.getModifiedBuilding().getType().equals(getData().rules.getBuildingType(StringID.create("Akademie")))) {
+         unit.getModifiedBuilding().getType().equals(getData().rules.getBuildingType(EresseaConstants.B_ACADEMY))) {
         if(cost == 0) {
           cost = 100;
         } else {
@@ -213,7 +212,7 @@ public class AllanonOrderCompleter extends EresseaOrderCompleter {
   @Override
   public void cmpltBeanspruche(){
     getCompletions().add(new Completion(Resources.get("gamebinding.eressea.eresseaordercompleter.amount"), "1", " "));
-    getCompletions().add(new Completion(getData().rules.getItemType(EresseaConstants.I_SILVER).getOrderName()));
+    getCompletions().add(new Completion(getData().rules.getItemType(EresseaConstants.I_USILVER).getOrderName()));
   }
 
 

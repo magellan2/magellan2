@@ -28,8 +28,10 @@ import java.math.BigDecimal;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.rules.CastleType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
+import magellan.library.rules.UnitContainerType;
 
 /**
  * This class implements all Eressea specific rule informations.
@@ -193,5 +195,13 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
 
   public int getSilverPerWeightUnit() {
     return 100;
+  }
+
+  /**
+   * Returns true if the type is a castle (Befestigung, Turm, ...)
+   * @see magellan.library.gamebinding.GameSpecificRules#isCastle(magellan.library.rules.UnitContainerType)
+   */
+  public boolean isCastle(UnitContainerType type){
+    return type instanceof CastleType;
   }
 }

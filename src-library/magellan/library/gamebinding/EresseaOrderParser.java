@@ -3114,7 +3114,8 @@ public class EresseaOrderParser implements OrderParser {
     }
 
     protected boolean readZaubereEnde(OrderToken t, Spell s) {
-      t= skipRestOfOrder();
+      if (t.ttype!=OrderToken.TT_EOC)
+        t= skipRestOfOrder();
       if (getCompleter() != null && !t.followedBySpace()) {
         getCompleter().cmpltZaubereSpruch(s);
       }

@@ -134,28 +134,31 @@ public class EresseaPostProcessor {
                 // bug #1604)
                 Unit spy = null;
                 Unit target = null;
-                String id = message.getAttributes().get("spy");
-                if (id != null)
-                  spy = data.getUnit(UnitID.createUnitID(id, 10, data.base));
-                id = message.getAttributes().get("target");
-                if (id != null)
-                  target = data.getUnit(UnitID.createUnitID(id, 10, data.base));
-                if (spy == null || target == null || spy.getFaction() == null) {
-                  log.warn("spy message without spy or target: " + message);
-                } else {
-                  for (Message msg2 : spy.getFaction().getMessages()) {
-                    if (target.equals(msg2.getAttributes().get("target"))) {
-                      if (msg2.getAttributes().get("spy") != null) {
-                        log.warn("message " + message.getID() + " seems to belong to "
-                            + msg2.getAttributes().get("spy") + " and " + spy);
-                      } else {
-                        switch (((msg2.getMessageType().getID()).intValue())) {
-                        case 387085007: // Y gehört der Partei F an 
-                        case 467205397: // Y beherrscht ...
-                        case 743495578: // Im Gepäck von Y sind ...
-                          msg2.getAttributes().put("spy",
-                              String.valueOf(((IntegerID) spy.getID()).intValue()));
-                          break;
+                String spyId = message.getAttributes().get("spy");
+                if (spyId != null) {
+                  spy = data.getUnit(UnitID.createUnitID(spyId, 10, data.base));
+                  String targetId = message.getAttributes().get("target");
+                  if (targetId != null) {
+                    target = data.getUnit(UnitID.createUnitID(targetId, 10, data.base));
+                    if (spy == null || target == null || spy.getFaction() == null) {
+                      log.warn("spy message without spy or target: " + message);
+                    } else {
+                      for (Message msg2 : spy.getFaction().getMessages()) {
+                        if (targetId.equals(msg2.getAttributes().get("target"))) {
+                          if (msg2.getAttributes().get("spy") != null) {
+                            if (!spyId.equals(msg2.getAttributes().get("spy")))
+                              log.warn("message " + message.getID() + " seems to belong to "
+                                  + msg2.getAttributes().get("spy") + " and " + spyId);
+                          } else {
+                            switch (((msg2.getMessageType().getID()).intValue())) {
+                            case 387085007: // Y gehört der Partei F an
+                            case 467205397: // Y beherrscht ...
+                            case 743495578: // Im Gepäck von Y sind ...
+                              msg2.getAttributes().put("spy",
+                                  String.valueOf(((IntegerID) spy.getID()).intValue()));
+                              break;
+                            }
+                          }
                         }
                       }
                     }

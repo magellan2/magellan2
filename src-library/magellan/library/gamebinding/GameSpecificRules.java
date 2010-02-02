@@ -25,6 +25,7 @@ package magellan.library.gamebinding;
 
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.Unit;
 import magellan.library.rules.Race;
 import magellan.library.rules.UnitContainerType;
 
@@ -101,4 +102,16 @@ public interface GameSpecificRules {
    */
   public boolean isCastle(UnitContainerType type);
 
+  /**
+   * Returns the maximum number of horses the unit can handle while walking.
+   * @param u 
+   */
+  public int getMaxHorsesWalking(Unit u);
+
+
+  /**
+   * Returns the maximum number of horses the unit can handle while riding.
+   * @param u 
+   */
+  public int getMaxHorsesRiding(Unit u);
 }

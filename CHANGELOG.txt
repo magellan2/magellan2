@@ -1,3 +1,6 @@
+2009-02-01 / Build 383 - stm (stm_@users.sourceforge.net)
+    * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator
+
 2009-12-27 / Build 382 - stm (stm_@users.sourceforge.net)
     * changed several EresseaConstants to make distinction between resource and item objects
     * fixed MACHE BURG/MACHE Wache completion and cmpltZaubereSpruch

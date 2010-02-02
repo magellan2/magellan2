@@ -28,6 +28,8 @@ import java.math.BigDecimal;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
+import magellan.library.Skill;
+import magellan.library.Unit;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.Race;
 import magellan.library.rules.RegionType;
@@ -203,5 +205,26 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
    */
   public boolean isCastle(UnitContainerType type){
     return type instanceof CastleType;
+  }
+
+
+  public int getMaxHorsesRiding(Unit u) {
+    int skillLevel = 0;
+    Skill s = u.getModifiedSkill(getRules().getSkillType(EresseaConstants.S_REITEN, true));
+
+    if (s != null) {
+      skillLevel = s.getLevel();
+    }
+    return ((skillLevel * u.getModifiedPersons() * 4) + u.getModifiedPersons());
+  }
+
+  public int getMaxHorsesWalking(Unit u) {
+    int skillLevel = 0;
+    Skill s = u.getModifiedSkill(getRules().getSkillType(EresseaConstants.S_REITEN, true));
+
+    if (s != null) {
+      skillLevel = s.getLevel();
+    }
+    return (skillLevel * u.getModifiedPersons() * 2);
   }
 }

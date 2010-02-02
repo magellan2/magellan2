@@ -1226,6 +1226,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("storeinbonw")) {
         itemType.setStoreableInBonw(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("ishorse")) {
+        itemType.setHorse(Short.parseShort(sc.argv[0]));
+        sc.getNextToken();
       } else if (sc.isBlock && sc.argv[0].equals("RESOURCES")) {
         parseItemTypeResources(itemType, rules);
       } else if (sc.isBlock) {

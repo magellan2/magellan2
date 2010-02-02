@@ -1529,34 +1529,21 @@ public class EresseaOrderCompleter implements Completer {
   }
 
   /**
+   * Reserve as much of the item as the unit can carry.
+   * 
    * @param otherUnit
    */
   private void addMaxReserve(Unit otherUnit) {
-    // reserve the maximim the unit can carry
-    int modLoad = otherUnit.getModifiedLoad();
-    ItemType horses = data.rules.getItemType(EresseaConstants.I_UHORSE);
+    int modLoad = data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(otherUnit);
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
-// ItemType silver = data.rules.getItemType(EresseaConstants.I_Silber"));
-    int maxOnFoot = otherUnit.getPayloadOnFoot();
-    int maxOnHorse = otherUnit.getPayloadOnHorse();
-// Float maxFoot = 0f;
-// Float freeFoot = 0f;
-    if (maxOnFoot != Unit.CAP_UNSKILLED) {
-// maxFoot = new Float(maxOnFoot / 100.0F);
-// freeFoot = new Float(Math.abs(maxOnFoot - modLoad) / 100.0F);
-    }
-// Float maxHorse = 0f;
-// Float freeHorse = 0f;
-    if (maxOnHorse != Unit.CAP_UNSKILLED && maxOnHorse != Unit.CAP_NO_HORSES) {
-// maxHorse = new Float(maxOnHorse / 100.0F);
-// freeHorse = new Float(Math.abs(maxOnHorse - modLoad) / 100.0F);
-    }
+    int maxOnFoot = data.rules.getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
+    int maxOnHorse = data.rules.getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
 
     for (Iterator iter = otherUnit.getRegion().allItems().iterator(); iter.hasNext();) {
       Item item = (Item) iter.next();
       ItemType type = item.getItemType();
 
-      if ((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)) {
+      if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)) {
         int weight = (int) (type.getWeight() * 100);
         if (weight > 0) {
           if ((maxOnFoot - modLoad) > 0) {

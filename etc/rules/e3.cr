@@ -802,6 +802,7 @@ ITEM "Pferd"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+1;ishorse
 
 ITEM "Pferde"
 "Pferde";name
@@ -809,6 +810,7 @@ ITEM "Pferde"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+1;ishorse
 
 ITEM "Streitross"
 "Streitross";name
@@ -816,6 +818,7 @@ ITEM "Streitross"
 "Pferdedressur";makeskill
 4;makeskilllevel
 "resources";category
+1;ishorse
 RESOURCES
 1;Pferd
 1;Eisen

@@ -161,7 +161,8 @@ public class ItemType extends ObjectType implements Comparable {
 	}
 
 	private boolean iconNameEvaluated = false;
-  private short isHorse;
+	
+  private short isHorse = -1;
 
 	/**
 	 * Sets the file name of the icon to use for this item.

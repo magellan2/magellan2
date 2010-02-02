@@ -79,7 +79,7 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
       icon = this.context.getImageFactory().loadImage(filename);
     }
     if (icon == null) {
-      icon = this.context.getImageFactory().loadImage("etc/images/map/"+filename);
+      icon = this.context.getImageFactory().loadImage("etc/images/map/background/"+filename);
     }
     if (icon != null) {
       return icon.getImage();
@@ -200,10 +200,12 @@ public class BackgroundImageRenderer extends ImageCellRenderer {
     }
     
     public void actionPerformed(ActionEvent e) {
-      File folder = magellan.client.Client.getMagellanDirectory();
+      File folder = null;
       if (this.filename != null) {
         folder = (new File(this.filename)).getParentFile();
       }
+      if (folder==null || !folder.exists())
+        folder = magellan.client.Client.getMagellanDirectory();
       JFileChooser jfc = new JFileChooser(folder);
       int ret = jfc.showOpenDialog(null);
 

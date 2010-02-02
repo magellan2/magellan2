@@ -378,7 +378,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       if (lastSavedVersion==null)
         lastSavedVersion="null";
     }
-    settings.setProperty("Client.Version", VersionInfo.getVersion(fileDir));
+    if (VersionInfo.getVersion(fileDir)!=null)
+      settings.setProperty("Client.Version", VersionInfo.getVersion(fileDir));
     if (lastSavedVersion!=null)
       settings.setProperty("Client.LastVersion", lastSavedVersion);
 

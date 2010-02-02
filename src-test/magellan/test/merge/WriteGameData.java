@@ -36,8 +36,8 @@ public class WriteGameData{
 		System.out.println("Writing file "+file.getAbsolutePath());
 		FileType ft = FileTypeFactory.singleton().createFileType(file, false);
 		ft.setCreateBackup(false);
-		CRWriter crw = new CRWriter(null,ft,data.getEncoding());
-		crw.writeSynchronously(data);
+		CRWriter crw = new CRWriter(data, null,ft,data.getEncoding());
+		crw.writeSynchronously();
 		crw.close();
 	}
 }

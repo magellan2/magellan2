@@ -21,6 +21,8 @@ import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Ship;
 import magellan.library.Unit;
+import magellan.library.gamebinding.GameSpecificStuff;
+import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.rules.ShipType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
@@ -175,6 +177,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * weight of the modified units. 
 	 *
 	 * @return The modified load of the ship
+	 * TODO: move to {@link MovementEvaluator}
 	 */
 	public int getModifiedLoad() {
     // we do a delta calculation
@@ -186,7 +189,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 		} else {
 		  // subtract all units initially on the ship with their initial weight
 		  for(Unit u : units()) {
-		    modLoad -= u.getWeight();
+		    modLoad -= getGameSpecificStuff().getMovementEvaluator().getWeight(u);
 		    // if persons and cargo are counted separately (E3), remove persons' weight here
 		    if (getShipType().getMaxPersons()>0)
 		      modLoad += u.getPersons()*u.getRace().getWeight()*100;
@@ -200,7 +203,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
     
     // add now the current calculated weight of the units
     for(Unit u : modifiedUnits()) {
-			modLoad += u.getModifiedWeight();
+			modLoad +=  getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u);
       // if persons and cargo are counted separately (E3), remove persons' weight here
       if (getShipType().getMaxPersons()>0)
         modLoad -= u.getPersons()*u.getRace().getWeight()*100;
@@ -208,7 +211,11 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 		return modLoad;
 	}
 
-	/**
+	private GameSpecificStuff getGameSpecificStuff() {
+    return data.rules.getGameSpecificStuff();
+  }
+
+  /**
 	 * This is a helper function for showing inner object state.
 	 * 
 	 * @return A debug message
@@ -395,6 +402,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * @see magellan.library.Ship#getModifiedPersonLoad()
+   * TODO: move to {@link MovementEvaluator}
    */
   public int getModifiedPersonLoad() {
     int inmates = 0;

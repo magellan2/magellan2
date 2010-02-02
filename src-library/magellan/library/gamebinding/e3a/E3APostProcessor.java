@@ -16,6 +16,7 @@ import magellan.library.ID;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaPostProcessor;
 import magellan.library.utils.OrderedHashtable;
+import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -46,9 +47,9 @@ public class E3APostProcessor extends EresseaPostProcessor {
 
     int fightState = 2;
     try {
-      fightState = data.rules.getAllianceCategory(EresseaConstants.O_HELP_COMBAT).getBitMask();
+      fightState = data.rules.getAllianceCategory(Resources.getOrderTranslation(EresseaConstants.O_HELP_COMBAT)).getBitMask();
     } catch (NullPointerException e) {
-      // FIXME(stm) fix for bug I did not find..., maybe has to do with English reports
+      // TODO (stm) I think I found the bug that caused this, but leave it here for now...
       log.error("postProcess " + e);
       e.printStackTrace();
       fightState = 2;

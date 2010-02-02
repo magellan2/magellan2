@@ -53,6 +53,7 @@ public class Units {
   }
   
   public static int getCaptainSkillAmount(Ship s) {
+    // FIXME shouldn't access getData() from here, maybe move to GameSpecific
     SkillType sailingSkillType = s.getData().rules.getSkillType(EresseaConstants.S_SEGELN, true);
     Unit owner = s.getModifiedOwnerUnit();
     int captainSkillAmount = 0;

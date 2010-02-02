@@ -51,9 +51,11 @@ public class EventDispatcher implements EventDispatcherInterface {
   private static final int infoMilliSeks = 5000;
   
   /**
-   * TODO DOCUMENT ME!
+   * Creates a new dispatcher
    */
   public EventDispatcher() {
+    // causes an "unchecked" warning, but should be okay. Could change listeners to ArrayList of
+    // Lists...
     listeners = new List[EventDispatcher.PRIORITIES.length];
     notifierIsAliveOnList = new boolean[EventDispatcher.PRIORITIES.length];
 
@@ -81,6 +83,7 @@ public class EventDispatcher implements EventDispatcherInterface {
   }
 
   private MagellanContext context;
+  private int magnitude = 100;
 
   /**
    * Sets the Magellan Context.
@@ -98,14 +101,15 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private void addListener(int pos, Object obj) {
     if (notifierIsAliveOnList[pos]) {
+      // TODO maybe should do this asynchronously in AWT
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
       log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
     }
 
     listeners[pos].add(obj);
-//    if (listeners[pos].size()%10==0)
-//      log.info(pos + " "+listeners[pos].size());
+
+    checkManyListeners(pos);
   }
 
   private void addPriorityListener(int pos, Object obj) {
@@ -116,16 +120,25 @@ public class EventDispatcher implements EventDispatcherInterface {
     }
 
     listeners[pos].add(0, obj);
+
+    checkManyListeners(pos);
+  }
+
+
+  private void checkManyListeners(int pos) {
+    // issue a warning if there are too many listeners (possible memory leak)
+    if (listeners[pos].size()>magnitude){
+      log.warn("many listeners in pos "+pos+": "+listeners[pos].size());
+      magnitude*=2;
+    }
   }
 
   private boolean removeListener(int pos, Object l) {
     if (notifierIsAlive) {
       // clone list before changing
       listeners[pos] = cloneList(listeners[pos]);
-//      EventDispatcher.log.debug("The following exception shall be reported to bugzilla!", new Exception());
+//      log.warn("The following exception shall be reported to bugzilla!", new Exception());
     }
-//    if (listeners[pos].size()%10==0)
-//      log.info(pos + " "+listeners[pos].size());
 
     return listeners[pos].remove(l);
   }
@@ -451,7 +464,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     private boolean block = false;
 
     /**
-     * DOCUMENT-ME
+     * Returns the next EventObject.
      */
     public synchronized EventObject poll() {
       if (block) {
@@ -465,10 +478,10 @@ public class EventDispatcher implements EventDispatcherInterface {
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the next EventObject. Waits for it if <code>block==true</code>.
      * 
-     * @throws InterruptedException
-     *           DOCUMENT-ME
+     * @throws InterruptedException As in {@link Object#wait()}
+     *           
      */
     public synchronized EventObject waitFor() throws InterruptedException {
       if (block) {
@@ -483,7 +496,7 @@ public class EventDispatcher implements EventDispatcherInterface {
     }
 
     /**
-     * DOCUMENT-ME
+     * Adds an EventObject to the queue.
      */
     public synchronized void push(EventObject o) {
       int index = 0;

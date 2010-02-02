@@ -40,7 +40,6 @@ import magellan.library.UnitContainer;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.gamebinding.EresseaConstants;
-import magellan.library.rules.BuildingType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.Islands;
 import magellan.library.utils.Regions;
@@ -161,27 +160,37 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 	 * versucht, Aktion umzusetzen: Landbewegung
 	 * @param mode
 	 */
-	private void doNachLand(int mode){
-	   // System.out.println("doNachLand selected");
-	   Region actRegion = null;
-	   String path = "";
-	   List<Region>regionList=null;
-	   Map<ID,RegionType> excludeMap = Regions.getOceanRegionTypes(data.rules);
-	   for (Unit u:getSelectedUnits()){
-	     if (onSameIsland(u.getRegion(), this.destRegion)){
-  	     if (actRegion==null || !u.getRegion().equals(actRegion)){
-  	       // String path = Regions.getDirections(u.getScriptMain().gd_ScriptMain.regions(), act, dest, excludeMap);
-  	       actRegion = u.getRegion();
-  	       regionList = Regions.getPath(data.regions(), actRegion.getCoordinate(), this.destRegion.getCoordinate(), excludeMap);
-  	       path=Regions.getDirections(regionList);
-  	     }
-  	     if (path!=null && path.length()>0){
-  	       // Pfad gefunden
-  	       this.setOrder(u, regionList, mode, path);
-  	     }
-	     }
-	   }
-	}
+  private void doNachLand(int mode) {
+    Region actRegion = null;
+    String path = "";
+    List<Region> regionList = null;
+    Map<ID, RegionType> excludeMap = Regions.getOceanRegionTypes(data.rules);
+    for (Unit u : getSelectedUnits()) {
+      if (onSameIsland(u.getRegion(), this.destRegion)) {
+        if (actRegion == null || !u.getRegion().equals(actRegion)) {
+          // String path = Regions.getDirections(u.getScriptMain().gd_ScriptMain.regions(), act,
+          // dest, excludeMap);
+          actRegion = u.getRegion();
+          int streetRadius =
+              data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, true);
+          if (streetRadius == 0)
+            streetRadius = 2;
+          int radius =
+              data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(u, false);
+          if (radius == 0)
+            radius = 1;
+          regionList =
+              Regions.getLandPath(data, actRegion.getCoordinate(), this.destRegion.getCoordinate(),
+                  excludeMap, radius, streetRadius);
+          path = Regions.getDirections(regionList);
+        }
+        if (path != null && path.length() > 0) {
+          // Pfad gefunden
+          this.setOrder(u, regionList, mode, path);
+        }
+      }
+    }
+  }
 	
 	/**
    * versucht, Aktion umzusetzen: Seebewegung
@@ -191,11 +200,10 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
      String path = "";
      List<Region>regionList=null;
-     BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);   
      for (Unit u:getSelectedUnits()){
        if (isSeaConnPossible(u) && u.getModifiedShip()!=null){
-         int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(u.getModifiedShip());
-         regionList = Regions.planShipRoute(u.getModifiedShip(), this.destRegion.getCoordinate(), data.regions(), harbour, speed);
+        regionList =
+            Regions.planShipRoute(u.getModifiedShip(), data, this.destRegion.getCoordinate());
          path=Regions.getDirections(regionList);
          if (path!=null && path.length()>0){
            // Pfad gefunden

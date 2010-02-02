@@ -16,6 +16,7 @@ package magellan.library.tasks;
 import java.util.Collection;
 import java.util.List;
 
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.tasks.Problem.Severity;
@@ -80,5 +81,10 @@ public interface Inspector {
    * 
    */
   public Collection<ProblemType> getTypes();
+
+  /**
+   * Changes the GameData this inspector works on from now on.
+   */
+  public void setGameData(GameData gameData);
 
 }

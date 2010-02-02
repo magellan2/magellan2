@@ -134,7 +134,7 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
     if (race.getName().equalsIgnoreCase(
-        region.getData().rules.getRace(AllanonConstants.R_ORKS).getName())) {
+        getRules().getRace(AllanonConstants.R_ORKS).getName())) {
       switch (wage) {
       case 12:
         wage = 11;
@@ -206,7 +206,6 @@ public class EresseaGameSpecificRules implements GameSpecificRules {
   public boolean isCastle(UnitContainerType type){
     return type instanceof CastleType;
   }
-
 
   public int getMaxHorsesRiding(Unit u) {
     int skillLevel = 0;

@@ -57,7 +57,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 */
 	public int getPayloadOnHorse(Unit unit) {
 		int capacity = 0;
-    int horses = getHorses(unit);
+		int horses = getHorses(unit);
 
 		if(horses <= 0) {
 			return MovementEvaluator.CAP_NO_HORSES;
@@ -217,6 +217,42 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		return capacity + (multiplier * (49 * (int) (race.getCapacity() * 100)));
 	}
 
+  
+  /**
+   * @param u
+   * @param onRoad
+   * @return
+   * 
+   * @deprecated Use {@link #getModifiedRadius(Unit)}
+   */
+  public int getRadius(Unit u) {
+      return getRadius(u, false);
+  }
+
+  /**
+   * Returns the number of regions this unit is able to travel within one turn based on the riding
+   * skill, horses, carts and load of this unit.
+   *
+   * @deprecated Use {@link #getModifiedRadius(Unit, boolean)}.
+   */
+  public int getRadius(Unit u, boolean onRoad) {
+    // pavkovic 2003.10.02: use modified load here...int load = getLoad();
+    int load = getModifiedLoad(u);
+    int payload = getPayloadOnHorse(u);
+
+    if ((payload >= 0) && ((payload - load) >= 0)) {
+      return onRoad?3:2;
+    } else {
+      payload = getPayloadOnFoot(u);
+
+      if ((payload >= 0) && ((payload - load) >= 0)) {
+        return onRoad?2:1;
+      } else {
+        return 0;
+      }
+    }
+  }
+
 	private Race getRace(Unit unit) {
 		Race race = unit.getRace();
 
@@ -234,12 +270,19 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
 	/**
    * Returns the weight of all items of this unit that are not horses or carts in silver based
-   * on the modified items.
+   * on the modified items plus all passengers modified weight.
    * 
 	 * @see magellan.library.gamebinding.MovementEvaluator#getModifiedLoad(magellan.library.Unit)
 	 */
 	public int getModifiedLoad(Unit unit) {
-		return getLoad(unit, unit.getModifiedItems());
+		int load = getLoad(unit, unit.getModifiedItems());
+		
+    // also take care of passengers
+		for(Unit passenger : unit.getPassengers()) {
+      load += getModifiedWeight(passenger);
+    }
+
+    return load;
 	}
 
 	/**
@@ -307,7 +350,10 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * @return the weight of the unit in silver (GE 100).
    */
   public int getWeight(Unit unit) {
-    return getWeight(unit, unit.getItems(), unit.getPersons());
+    if (unit.isWeightWellKnown())
+      return unit.getSimpleWeight(); 
+    else
+      return getWeight(unit, unit.getItems(), unit.getPersons());
   }
 
   /**
@@ -318,7 +364,19 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * @return the modified weight of the unit in silver (GE 100).
    */
   public int getModifiedWeight(Unit unit) {
-    return getWeight(unit, unit.getModifiedItems(), unit.getModifiedPersons());
+    int weight = getWeight(unit, unit.getModifiedItems(), unit.getModifiedPersons());
+
+    /* 
+     * if we have a weight tag in the report we know the current exact weight via getWeight()
+     * but we may not know the weight of some items or races which results in a 
+     * to less calculated (modified) weight. to overcome this, we do a delta calculation here, then
+     * we have a higher chance of a correct size, at least when noting is given away or received.
+     */  
+    if (unit.isWeightWellKnown()) {
+      weight += unit.getSimpleWeight(); 
+      weight -= getWeight(unit);
+    }
+    return weight;
   }
   
   /**
@@ -346,7 +404,38 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 
     return weight;
   }
-  
+
+
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedRadius(magellan.library.Unit)
+   */
+  public int getModifiedRadius(Unit unit) {
+    return getModifiedRadius(unit, false);
+  }
+
+  /**
+   * @see magellan.library.gamebinding.MovementEvaluator#getModifiedRadius(magellan.library.Unit,
+   *      boolean)
+   */
+  public int getModifiedRadius(Unit unit, boolean onRoad) {
+    int load = getModifiedLoad(unit); 
+
+    int payload = getPayloadOnHorse(unit);
+
+    if((payload >= 0) && (payload >= load)) {
+      return onRoad?3:2;
+    }
+
+    payload = getPayloadOnFoot(unit);
+
+    if((payload >= 0) && (payload >= load)) {
+      return onRoad?2:1;
+    }
+
+    return 0;
+  }
+
   public Rules getRules() {
     return rules;
   }

@@ -33,10 +33,11 @@ import magellan.library.utils.guiwrapper.RoutingDialogDataPicker;
  * 
  * @author Ulrich Küster
  * @author Andreas
+ * @author stm
  */
-public class ShipRoutePlanner {
+public class ShipRoutePlanner extends RoutePlanner {
   /**
-   * Returns <code>true</code> if the ship is compete and ship's owner belongs to a privileged
+   * Returns <code>true</code> if the ship is complete and ship's owner belongs to a privileged
    * faction.
    */
   public static boolean canPlan(Ship ship) {
@@ -44,7 +45,8 @@ public class ShipRoutePlanner {
       return false;
     }
 
-    return (ship.getModifiedOwnerUnit() != null) && ship.getModifiedOwnerUnit().getFaction().isPrivileged();
+    return (ship.getModifiedOwnerUnit() != null)
+        && ship.getModifiedOwnerUnit().getFaction().isPrivileged();
   }
 
   /**
@@ -52,13 +54,31 @@ public class ShipRoutePlanner {
    * responsible unit that is then returned.
    * 
    * @param ship The ship for which a route is planned
-   * @param data
+   * @param data GameData containing the units
    * @param ui The parent component for message panes
    * @param picker The dialog for selecting target region and other options
-   * @return the unit whose orders may have change
+   * @return the unit whose orders may have changed if orders were changed (i.e., the user didn't
+   *         abort and a path existed)
    */
-  public static Unit planShipRoute(Ship ship, GameData data, Component ui,
-      RoutingDialogDataPicker picker) {
+  public Unit planShipRoute(Ship ship, GameData data, Component ui, RoutingDialogDataPicker picker) {
+    Unit shipOwner = ship.getModifiedOwnerUnit();
+
+    if (shipOwner == null) {
+      // Ship has no captain. No orders will be given.
+      JOptionPane.showMessageDialog(ui, Resources
+          .get("util.shiprouteplanner.msg.captainnotfound.text"), Resources
+          .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+      return null;
+    } else {
+      if ((shipOwner.getFaction() == null) || !shipOwner.getFaction().isPrivileged()) {
+        // Captain of the ship does not belong to a privileged faction.
+        // No orders can be given.
+        JOptionPane.showMessageDialog(ui, Resources
+            .get("util.shiprouteplanner.msg.captainnotprivileged.text"), Resources
+            .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+      }
+    }
+
     // fetch all coast regions
     // Map oceans = Regions.getOceanRegionTypes(data.rules);
     Collection<Region> coast = new LinkedList<Region>();
@@ -96,150 +116,131 @@ public class ShipRoutePlanner {
     } else {
       picker.initialize(data, coast, true);
     }
+
     RoutingDialogData v = picker.showRoutingDialog();
 
+    // find the route
     if (v != null) {
-      Unit shipOwner = ship.getModifiedOwnerUnit();
-
-      if (shipOwner != null) {
-        if ((shipOwner.getFaction() != null) && shipOwner.getFaction().isPrivileged()) {
-          BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
-
-          int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
-          List<Region> path =
-              Regions
-                  .planShipRoute(ship, v.getDestination(), data.regions(), harbour, speed);
-
-          if (path != null) {
-            // Now try to calculate the orders:
-
-            if (!v.useRange()) {
-              speed = Integer.MAX_VALUE;
-            } else if (speed <= 0) {
-              // couldn't determine ship range
-              JOptionPane.showMessageDialog(ui, Resources
-                  .get("util.shiprouteplanner.msg.shiprangeiszero.text"), Resources
-                  .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
-              speed = Integer.MAX_VALUE;
-            }
-
-            List<String> orders = new LinkedList<String>();
-
-            // TODO(pavkovic): move to EresseaOrderChanger
-            String command = "NACH";
-            if (v.makeRoute()) {
-              command = "ROUTE";
-            }
-            addOrders(orders, path, command, v.useVorlage(), speed, v.makeSingle(), harbour);
-
-            if (v.replaceOrders()) {
-              shipOwner.setOrders(orders);
-            } else {
-              for (ListIterator iter = orders.listIterator(); iter.hasNext();) {
-                shipOwner.addOrder((String) iter.next(), false, 0);
-              }
-            }
-
-            return shipOwner;
-          } else {
-            // No path could be found from start to destination region.
-            JOptionPane.showMessageDialog(ui, Resources
-                .get("util.shiprouteplanner.msg.nopathfound.text"), Resources
-                .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
-          }
-        } else {
-          // Captain of the ship does not belong to a privileged faction.
-          // No orders can be given.
-          JOptionPane.showMessageDialog(ui, Resources
-              .get("util.shiprouteplanner.msg.captainnotprivileged.text"), Resources
-              .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
-        }
+      List<String> orders =
+          getOrders(ship, data, ship.getRegion().getID(), v.getDestination(), ui, v.makeSingle(), v
+              .useRange(), v.makeRoute(), v.useVorlage());
+      if (orders.size()==0)
+        return null;
+      
+      // add orders to captain
+      if (v.replaceOrders()) {
+        shipOwner.setOrders(orders);
       } else {
-        // Ship has no captain. No orders will be given.
-        JOptionPane.showMessageDialog(ui, Resources
-            .get("util.shiprouteplanner.msg.captainnotfound.text"), Resources
-            .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+        for (ListIterator iter = orders.listIterator(); iter.hasNext();) {
+          shipOwner.addOrder((String) iter.next(), false, 0);
+        }
       }
+
+      return shipOwner;
     }
 
     return null;
   }
 
-  protected static void addOrders(List<String> orders, List<Region> path, String command,
-      boolean useVorlage, int shipRange, boolean single, BuildingType harbour) {
-
-    String localCommand = Resources.getOrderTranslation(EresseaConstants.O_MOVE);
-    if (command.equals("ROUTE")) {
-      localCommand = Resources.getOrderTranslation(EresseaConstants.O_ROUTE);
+  /**
+   * Creates movement orders for a ship.
+   * 
+   * @param ship The ship for which a route is planned
+   * @param data GameData containing the units
+   * @param start The region where to start, not necessarily equal to the ship's region
+   * @param destination The target region
+   * @param ui The parent component for message panes
+   * @param makeSingle If this is <code>false</code>, a return trip is constructed
+   * @param useRange If this is <code>true</code>, the orders are split into multiple orders, so that the ship's range is not exceeded.
+   * @param makeRoute If this is <code>true</code>, ROUTE commands are produced, as opposed to NACH commands.
+   * @param useVorlage If this is <code>true</code>, Vorlage meta commands are produced.
+   * @return The list of new orders.
+   */
+  public List<String> getOrders(Ship ship, GameData data, CoordinateID start,
+      CoordinateID destination, Component ui, boolean makeSingle, boolean useRange,
+      boolean makeRoute, boolean useVorlage) {
+    BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);
+    int speed = data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship);
+    List<Region> path =
+        Regions
+            .planShipRoute(data, ship.getRegion().getID(), ship.getShoreId(), destination, speed);
+    if (path == null || path.size() <= 1) {
+      if (ui != null) {
+        // No path could be found from start to destination region.
+        JOptionPane.showMessageDialog(ui, Resources
+            .get("util.shiprouteplanner.msg.nopathfound.text"), Resources
+            .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+      }
+      return Collections.emptyList();
     }
 
-    StringBuffer order = new StringBuffer();
-    order.append(localCommand).append(" ");
-    for (int i = 0; i < 1 || (!single && i < 2); ++i) {
-
-      int count = shipRange;
-      int after = 0;
-      String temp = ""; // saves whether a closing bracket must be added: "}"
-
-      List<Region> curPath = new LinkedList<Region>();
-
-      for (Iterator<Region> iter = path.iterator(); iter.hasNext();) {
-        curPath.add(iter.next());
-
-        if (curPath.size() > 1) {
-          String dir = Regions.getDirections(curPath);
-
-          if (dir != null) {
-            if ((count == 0)
-                || ((count != shipRange) && Regions.containsHarbour(curPath.get(0), harbour))) {
-              after++;
-              count = shipRange;
-
-              if (useVorlage) {
-                order.append(temp);
-                orders.add(order.toString());
-                order =
-                    new StringBuffer("// #after ").append(after).append(" { ").append(command)
-                        .append(" ");
-                temp = "}";
-              } else {
-                if (command.equals("ROUTE")) {
-                  order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
-                } else {
-                  orders.add(order.toString());
-                  order = new StringBuffer("// ").append(command).append(" ");
-                }
-              }
-            }
-
-            order.append(dir).append(" ");
-            count--;
-          }
-
-          curPath.remove(0);
-        }
+    // ...and optionally the return path
+    List<Region> returnPath = null;
+    if (!makeSingle) {
+      Region lastRegion = path.get(path.size() - 1);
+      int returnShore = Direction.DIR_INVALID;
+      if (!lastRegion.getRegionType().isOcean() || !Regions.containsBuilding(lastRegion, harbour)) {
+        Region preLastRegion = path.get(path.size() - 2);
+        returnShore =
+            Direction.toInt(lastRegion.getID().createDistanceCoordinate(
+                preLastRegion.getCoordinate()));
       }
-
-      if (command.equals("ROUTE")) {
-        order.append(Resources.getOrderTranslation(EresseaConstants.O_PAUSE)).append(" ");
-        order.append(temp);
-        if (i > 0 || single)
-          orders.add(order.toString());
-      } else {
-        order.append(temp);
-        orders.add(order.toString());
-        if (useVorlage) {
-          order =
-              new StringBuffer("// #after ").append(after).append(" { ").append(command)
-                  .append(" ");
-          temp = "}";
-        } else {
-          order = new StringBuffer("// ").append(command).append(" ");
-        }
-      }
-      if (!single)
-        Collections.reverse(path);
+      returnPath =
+          Regions.planShipRoute(data, destination, returnShore, ship.getRegion().getID(), speed);
+      path.addAll(returnPath);
     }
 
+    Costs shipCosts = new ShipCosts(ship, speed, harbour);
+
+    // adjust cost function
+    if (!useRange) {
+      shipCosts = ZERO_COSTS;
+    } else if (speed <= 0) {
+      // couldn't determine ship range
+      JOptionPane.showMessageDialog(ui, Resources
+          .get("util.shiprouteplanner.msg.shiprangeiszero.text"), Resources
+          .get("util.shiprouteplanner.msg.title"), JOptionPane.WARNING_MESSAGE);
+      shipCosts = ZERO_COSTS;
+    }
+
+    // compute new orders
+    List<String> orders = new LinkedList<String>();
+    addOrders(orders, path, makeRoute, useVorlage, shipCosts);
+    return orders;
   }
+
+  /**
+   * A cost function that accounts ship movement, considering harbours and the ship given in the
+   * constructor.
+   * 
+   * @author stm
+   */
+  protected static class ShipCosts implements RoutePlanner.Costs {
+    private BuildingType harbour;
+    private Ship ship;
+    private int costs;
+    private int speed;
+
+    public ShipCosts(Ship ship, int speed, BuildingType harbour) {
+      this.ship = ship;
+      this.harbour = harbour;
+      this.speed = speed;
+    }
+
+    public void increase(Region region, Region region2) {
+      if (region2.getRegionType().isOcean() || Regions.containsBuilding(region2, harbour)) {
+        costs += 1;
+      } else
+        costs = speed;
+    }
+
+    public void reset() {
+      costs = 0;
+    }
+
+    public boolean isExhausted() {
+      return costs >= speed;
+    }
+  }
+
 }

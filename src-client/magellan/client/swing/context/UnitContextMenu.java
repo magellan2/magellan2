@@ -51,16 +51,17 @@ import magellan.client.swing.GiveOrderDialog;
 import magellan.client.swing.RemoveOrderDialog;
 import magellan.client.swing.RoutingDialog;
 import magellan.client.swing.context.actions.ContextAction;
-import magellan.client.utils.UnitRoutePlanner;
 import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.completion.OrderParser;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.utils.OrderToken;
 import magellan.library.utils.PropertiesHelper;
 import magellan.library.utils.Resources;
 import magellan.library.utils.ShipRoutePlanner;
+import magellan.library.utils.UnitRoutePlanner;
 
 /**
  * This is a contextmenu provider for one or more selected units.
@@ -84,6 +85,8 @@ public class UnitContextMenu extends JPopupMenu {
    */
   private Collection<Unit> selectedUnits;
 
+  private GameSpecificStuff gameSpecStuff;
+
   /**
    * Creates new UnitContextMenu
    * 
@@ -101,6 +104,7 @@ public class UnitContextMenu extends JPopupMenu {
     super(unit.toString());
     this.unit = unit;
     this.data = data;
+    this.gameSpecStuff = data.rules.getGameSpecificStuff();
     this.dispatcher = dispatcher;
     this.settings = dispatcher.getMagellanContext().getProperties();
 
@@ -133,12 +137,6 @@ public class UnitContextMenu extends JPopupMenu {
     if (!selectedObjects.contains(unit))
       return;
 
-    if (selectedUnits.size() <= 1) {
-      initSingle();
-    } else {
-      initMultiple();
-    }
-
     initBoth();
   }
 
@@ -153,6 +151,19 @@ public class UnitContextMenu extends JPopupMenu {
    * Sets some menu entries that can be used for one or multiple selected units.
    */
   private void initBoth() {
+    if (selectedUnits.size() <= 1) {
+      initSingle();
+    } else {
+      initMultiple();
+      addSeparator();
+    }
+
+    // route planning menus
+    JMenuItem planRoute = getPlanRoute();
+    if (planRoute!=null)
+      add(planRoute);
+
+    
     // this part for both (but only for selectedUnits)
 
     if (getComponentCount() > 0) {
@@ -248,8 +259,10 @@ public class UnitContextMenu extends JPopupMenu {
       add(removeTag);
     }
 
-    // route planning menus
+    initContextMenuProviders();
+  }
 
+  private JMenuItem getPlanRoute() {
     // test route planning capability
     boolean canPlan = UnitRoutePlanner.canPlan(unit);
     Region reg = unit.getRegion();
@@ -259,7 +272,7 @@ public class UnitContextMenu extends JPopupMenu {
 
       while (canPlan && it.hasNext()) {
         Unit u = (Unit) it.next();
-        canPlan = UnitRoutePlanner.canPlan(u);
+        canPlan = UnitRoutePlanner.canPlan(unit);
 
         if ((u.getRegion() == null) || !reg.equals(u.getRegion())) {
           canPlan = false;
@@ -268,10 +281,6 @@ public class UnitContextMenu extends JPopupMenu {
     }
 
     if (canPlan) {
-      if (getComponentCount() > 0) {
-        addSeparator();
-      }
-
       JMenuItem planRoute = new JMenuItem(Resources.get("context.unitcontextmenu.menu.planroute"));
 
       planRoute.addActionListener(new ActionListener() {
@@ -279,10 +288,10 @@ public class UnitContextMenu extends JPopupMenu {
           planRoute(e);
         }
       });
-      add(planRoute);
+      return planRoute;
     }
 
-    initContextMenuProviders();
+    return null;
   }
 
   private void initContextMenuProviders() {
@@ -408,6 +417,7 @@ public class UnitContextMenu extends JPopupMenu {
           this.data));
     }
 
+    
     // plan ship route
     if ((unit.getShip() != null) && unit.equals(unit.getShip().getModifiedOwnerUnit())) {
       JMenuItem planShipRoute =
@@ -784,7 +794,8 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   private void planRoute(ActionEvent e) {
-    if (UnitRoutePlanner.planUnitRoute(unit, data, this, selectedUnits)) {
+    if ((new UnitRoutePlanner()).planUnitRoute(unit, data, this, selectedUnits, new RoutingDialog(
+        JOptionPane.getFrameForComponent(this), data, false))) {
       if (selectedUnits != null) {
         for (Unit u : selectedUnits) {
           if (!u.equals(unit)) {
@@ -802,7 +813,7 @@ public class UnitContextMenu extends JPopupMenu {
 
   private void planShipRoute() {
     Unit unit =
-        ShipRoutePlanner.planShipRoute(this.unit.getShip(), data, this, new RoutingDialog(
+        (new ShipRoutePlanner()).planShipRoute(this.unit.getShip(), data, this, new RoutingDialog(
             JOptionPane.getFrameForComponent(this), data, false));
 
     if (unit != null) {
@@ -827,6 +838,11 @@ public class UnitContextMenu extends JPopupMenu {
   private boolean isEditAll() {
     return settings.getProperty(PropertiesHelper.ORDEREDITOR_EDITALLFACTIONS, Boolean.FALSE.toString()).equals("true");
   }
+
+  private GameSpecificStuff getGameSpecifiStuff() {
+    return gameSpecStuff;
+  }
+
 
   private class RemoveUnitFromTeachersListAction implements ActionListener {
     private Unit student;

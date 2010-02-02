@@ -440,7 +440,7 @@ public class EresseaPostProcessor {
           // Check 2. (terrain)
           if (schemeRegion != null) {
             RegionType rt = schemeRegion.getRegionType();
-            if (rt.isOcean() || rt.equals(firewall)) {
+            if (!rt.isAstralVisible()) {
               inconsistent = true;
               break;
             }

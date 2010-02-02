@@ -412,7 +412,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 *
 	 */
 	private void delAllSigns(){
-		for (Iterator iter = region.getData().regions().values().iterator();iter.hasNext();){
+		for (Iterator iter = data.regions().values().iterator();iter.hasNext();){
 			((Region)iter.next()).clearSigns();
 		}
 		updateMap();
@@ -423,7 +423,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 *
 	 */
 	private void updateMap(){
-		dispatcher.fire(new GameDataEvent(this,region.getData()));
+		dispatcher.fire(new GameDataEvent(this, data));
 	}
 	
 	
@@ -566,7 +566,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	private void copyNameID() {
     String toCopy = region.toString();
     if (region.getUID()>0){
-      toCopy += " (" + Integer.toString((int)region.getUID(),region.getData().base).replace("l", "L") + ")";
+      toCopy += " (" + Integer.toString((int)region.getUID(), data.base).replace("l", "L") + ")";
     }
 		StringSelection strSel = new StringSelection(toCopy);
     

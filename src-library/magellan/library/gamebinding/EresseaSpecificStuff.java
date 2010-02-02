@@ -42,6 +42,8 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
 
   private RelationFactory relationFactory;
 
+  private EresseaOrderChanger orderChanger;
+
   /**
    * Returns the value of rules.
    * 
@@ -94,7 +96,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
 	public OrderChanger getOrderChanger() {
-		return EresseaOrderChanger.getSingleton();
+	  if (orderChanger == null)
+	    orderChanger = new EresseaOrderChanger(getRules());
+    return orderChanger;
 	}
 
   /**

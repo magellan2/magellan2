@@ -113,7 +113,8 @@ public class FindDialog extends InternationalizedDataDialog implements
       Properties p, Collection<Region> regions) {
     super(owner, modal, dispatcher, d, p);
     dispatcher.addSelectionListener(this);
-    dispatcher.addGameDataListener(this);
+    // unnecessary
+    // dispatcher.addGameDataListener(this);
     selectedRegions.addAll(regions);
     data = d;
     settings = p;
@@ -1137,7 +1138,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     settings.setProperty("FindDialog.y", getY() + "");
     storeHistory();
     storeSettings();
-    super.dispose();
+    super.quit();
   }
 
   protected void storeSettings() {

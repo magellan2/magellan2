@@ -172,6 +172,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     
 		
 		if(uc instanceof Ship) {
+	    addSeparator();
 			JMenuItem planShipRoute = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.planshiproute.caption"));
 			planShipRoute.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -181,6 +182,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 			planShipRoute.setEnabled(ShipRoutePlanner.canPlan((Ship) uc));
 			add(planShipRoute);
 		} else if(uc instanceof Faction) {
+	    addSeparator();
 			JMenuItem copyMail = new JMenuItem(Resources.get("context.unitcontainercontextmenu.menu.copymail.caption"));
 			copyMail.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -450,7 +452,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
    */
   private void copyNameIDRegionID() {
     Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(),r.getData().base).replace("l","L") + ")");
+    StringSelection strSel = new StringSelection(uc.toString() + " (" + Integer.toString((int)r.getUID(), data.base).replace("l","L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
@@ -460,7 +462,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
    */
   private void copyNameRegionID() {
     Region r = (Region)uc;
-    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(),r.getData().base).replace("l","L") + ")");
+    StringSelection strSel = new StringSelection(r.getName() + " (" + Integer.toString((int)r.getUID(), data.base).replace("l","L") + ")");
     Clipboard cb = getToolkit().getSystemClipboard();
     cb.setContents(strSel, null);
   }
@@ -493,7 +495,9 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	 * @see ShipRoutingDialog
 	 */
 	private void planShipRoute() {
-		Unit unit = ShipRoutePlanner.planShipRoute((Ship) uc, data, this, new RoutingDialog(JOptionPane.getFrameForComponent(this),data,false));
+    Unit unit =
+        (new ShipRoutePlanner()).planShipRoute((Ship) uc, data, this, new RoutingDialog(JOptionPane
+            .getFrameForComponent(this), data, false));
 
 		if(unit != null) {
 			dispatcher.fire(new UnitOrdersEvent(this, unit));

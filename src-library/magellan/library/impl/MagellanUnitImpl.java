@@ -49,6 +49,7 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 import magellan.library.UnitID;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.AttackRelation;
 import magellan.library.relation.CombatStatusRelation;
 import magellan.library.relation.EnterRelation;
@@ -984,6 +985,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
 		// add to tempunits in gamedata
 		if((this.getRegion() != null) && (this.getRegion().getData() != null)) {
+		  // FIXME unit shouldn't access getData()
 			this.getRegion().getData().tempUnits().put(t.getID(), t);
 		} else {
 			MagellanUnitImpl.log.warn("Unit.createTemp(): Warning: Couldn't add temp unit to game data. Couldn't access game data");
@@ -1905,36 +1907,6 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   
   
 	/**
-	 * Returns the weight of a unit with the specified number of persons, their weight and the
-	 * specified items in silver.
-	 *
-	 * 
-	 * 
-	 * 
-	 *
-	 * 
-	 */
-  
-/*  
-	public static int getWeight(int persons, float personWeight, Iterator items) {
-		int weight = 0;
-
-		while((items != null) && items.hasNext()) {
-			Item item = (Item) items.next();
-
-			// pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount
-			if(item.getAmount() > 0) {
-				weight += (item.getAmount() * (int) (item.getItemType().getWeight() * 100));
-			}
-		}
-
-		weight += (persons * (int) (personWeight * 100));
-
-		return weight;
-	}
-*/
-  
-	/**
 	 * @return true if weight is well known and NOT evaluated by Magellan
 	 */
 	public boolean isWeightWellKnown() {
@@ -1947,20 +1919,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * this. Otherwise we call the game specific weight calculation.
 	 *
 	 * @return the initial weight of the unit
+   * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
 	 */
 	public int getWeight() {
-		if(weight != -1) {
-			return weight;
-		}
-		
-    Cache cache1 = getCache();
-		if(cache1.unitWeight == -1) {
-			cache1.unitWeight = getRegion().getData().getGameSpecificStuff()
-                         .getMovementEvaluator().getWeight(this);
-		}
-
-		return cache1.unitWeight;
+	  return getRegion().getData().getGameSpecificStuff()
+    .getMovementEvaluator().getWeight(this);
 	}
+
+  /**
+   * @see magellan.library.Unit#getSimpleWeight()
+   */
+  public int getSimpleWeight() {
+    return weight;
+  }
 
 	/**
 	 * Returns the maximum payload in silver of this unit when it travels by horse. Horses, carts
@@ -1971,6 +1942,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * @return the payload in silver, CAP_NO_HORSES if the unit does not possess horses or
 	 * 		   CAP_UNSKILLED if the unit is not sufficiently skilled in horse riding to travel on
 	 * 		   horseback.
+	 * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
 	 */
 	public int getPayloadOnHorse() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
@@ -1986,6 +1958,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 *
 	 * @return the payload in silver, CAP_UNSKILLED if the unit is not sufficiently skilled in
 	 * 		   horse riding to travel on horseback.
+   * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
 	 */
 	public int getPayloadOnFoot() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(this);
@@ -1994,7 +1967,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	/**
 	 * Returns the weight of all items of this unit that are not horses or carts in silver
 	 *
-	 * 
+   * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
 	 */
 	public int getLoad() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getLoad(this);
@@ -2004,45 +1977,21 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * Returns the weight of all items of this unit that are not horses or carts in silver based
 	 * on the modified items.
 	 *
-	 * 
+   * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
 	 */
 	public int getModifiedLoad() {
-		int load = getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
-					   .getModifiedLoad(this);
-
-		// also take care of passengers
-		Collection passengers = getPassengers();
-
-		for(Iterator iter = passengers.iterator(); iter.hasNext();) {
-			MagellanUnitImpl passenger = (MagellanUnitImpl) iter.next();
-			load += passenger.getModifiedWeight();
-		}
-
-		return load;
+    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
+        .getModifiedLoad(this);
 	}
 
 	/**
 	 * Returns the number of regions this unit is able to travel within one turn based on the
 	 * riding skill, horses, carts and load of this unit.
 	 *
-	 * 
+   * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
 	 */
 	public int getRadius() {
-		// pavkovic 2003.10.02: use modified load here...int load = getLoad();
-		int load = getModifiedLoad();
-		int payload = getPayloadOnHorse();
-
-		if((payload >= 0) && ((payload - load) >= 0)) {
-			return 2;
-		} else {
-			payload = getPayloadOnFoot();
-
-			if((payload >= 0) && ((payload - load) >= 0)) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
+	  return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getRadius(this);
 	}
 
 	/**
@@ -2051,26 +2000,11 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * Generally this should take care of modified persons and modified items.
 	 * 
    * @return the modified weight of the unit
+   * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
 	 */
 	public int getModifiedWeight() {
-    Cache cache1 = getCache();
-		if(cache1.modifiedUnitWeight == -1) {
-			cache1.modifiedUnitWeight = getRegion().getData().getGameSpecificStuff()
-                                 .getMovementEvaluator().getModifiedWeight(this);
-      /* 
-       * if we have a weight tag in the report we know the current exact weight via getWeight()
-       * but we may not know the weight of some items or races which results in a 
-       * to less calculated (modified) weight. to overcome this, we do a delta calculation here, then
-       * we have a higher chance of a correct size, at least when noting is given away or received.
-       */  
-      if (isWeightWellKnown()) {
-        cache1.modifiedUnitWeight += getWeight(); 
-        cache1.modifiedUnitWeight -= getRegion().getData().getGameSpecificStuff()
-                                    .getMovementEvaluator().getWeight(this);
-      }
-		}
-
-		return cache1.modifiedUnitWeight;
+    return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(
+        this);
 	}
 
 	/**
@@ -2258,6 +2192,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
 		invalidateCache();
 		removeRelationsOriginatingFromUs(from);
+    // FIXME shouldn't access GameSpecificlike this 
 		addAndSpreadRelations(getRegion().getData().getGameSpecificStuff().getRelationFactory()
 								  .createRelations(this, from));
 	}
@@ -2337,6 +2272,16 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	public MagellanUnitImpl(UnitID id) {
 		super(id);
 	}
+
+	 /**
+   * Add a order to the unit's orders. This function ensures that TEMP units are not affected by
+   * the operation.
+   *
+   * @return <tt>true</tt> if the order was successfully added.
+   */
+  public boolean addOrder(String order) {
+    return addOrder(order, false, 0);
+  }
 
 	/**
 	 * Add a order to the unit's orders. This function ensures that TEMP units are not affected by

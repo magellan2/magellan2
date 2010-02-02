@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.tasks.Problem.Severity;
 
@@ -29,20 +30,21 @@ import magellan.library.tasks.Problem.Severity;
  */
 public class ToDoInspector extends AbstractInspector {
 	/** The singleton instance. */
-	public static final ToDoInspector INSPECTOR = new ToDoInspector();
+//	public static final ToDoInspector INSPECTOR = new ToDoInspector();
 
-	private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, null, getInstance());
+	private static final ProblemType TODOTYPE = new ProblemType("TODO", null, null, null);
 
 	/**
 	 * Returns a (singleton) instance.
 	 * 
    * @return An instance of this class
 	 */
-	public static ToDoInspector getInstance() {
-		return ToDoInspector.INSPECTOR;
+	public static ToDoInspector getInstance(GameData data) {
+    return new ToDoInspector(data);
 	}
 
-	protected ToDoInspector() {
+	protected ToDoInspector(GameData data) {
+    super(data);
 	}
 
 	/**
@@ -70,14 +72,14 @@ public class ToDoInspector extends AbstractInspector {
 				order = order.substring(2).trim();
 
 				if(order.toLowerCase().startsWith("todo")) {
-					problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
+					problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, this, order, line)); 
 				}
 			} else 
 				if(order.startsWith(";")) {
 					order = order.substring(1).trim();
 
 					if(order.toLowerCase().startsWith("todo")) {
-	          problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, order, line)); 
+	          problems.add(ProblemFactory.createProblem(Severity.INFORMATION, TODOTYPE, u, this, order, line)); 
 					}
 				
 			}

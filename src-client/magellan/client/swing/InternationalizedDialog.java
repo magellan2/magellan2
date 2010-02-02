@@ -27,10 +27,9 @@ import magellan.library.utils.logging.Logger;
 
 
 /**
- * DOCUMENT-ME
+ * A JDialog which should be used as base clase for all Magellan dialogs. The "Internationalized"
+ * in the name is somewhat obsolete since the localization method was changed.
  *
- * @author $Author: $
- * @version $Revision: 310 $
  */
 public abstract class InternationalizedDialog extends JDialog {
 	private static final Logger log = Logger.getInstance(InternationalizedDialog.class);

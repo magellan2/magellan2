@@ -1518,6 +1518,9 @@ public class CRParser implements RulesIO, GameDataIO {
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isOcean")) {
         regionType.setIsOcean(sc.argv[0].equals("true"));
         sc.getNextToken();
+      } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isLand")) {
+        regionType.setLand(sc.argv[0].equals("true"));
+        sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("isAstralVisible")) {
         regionType.setAstralVisible(sc.argv[0].equals("true"));
         sc.getNextToken();
@@ -3250,6 +3253,7 @@ public class CRParser implements RulesIO, GameDataIO {
       ui.ready();
       throw e;
     }
+    // FIXME(stm) this could be too soon if called via the load menu!
     ui.ready();
 
     CRParser.log.info("Done reading.");

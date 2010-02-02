@@ -16,6 +16,7 @@ import java.util.List;
 
 import magellan.library.Building;
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Rules;
 import magellan.library.Ship;
@@ -36,7 +37,7 @@ import magellan.library.utils.Units;
 public class ShipInspector extends AbstractInspector {
 
   /** The singleton instance of the ShipInspector */
-  public static final ShipInspector INSPECTOR = new ShipInspector();
+// public static final ShipInspector INSPECTOR = new ShipInspector();
 
   enum ShipProblemTypes {
     EMPTY, NOCREW, NONEXTREGION, NOOCEAN, WRONGSHORE, WRONGSHOREHARBOUR, SHIPWRECK, OVERLOADED;
@@ -51,7 +52,7 @@ public class ShipInspector extends AbstractInspector {
         typeName = message;
       String description = Resources.get("tasks.shipinspector." + name + ".description", false);
       String group = Resources.get("tasks.shipinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message, getInstance());
+      type = new ProblemType(typeName, group, description, message);
     }
 
     ProblemType getType() {
@@ -64,13 +65,14 @@ public class ShipInspector extends AbstractInspector {
    * 
    * @return The singleton instance of ShipInspector
    */
-  public static ShipInspector getInstance() {
-    return ShipInspector.INSPECTOR;
+  public static ShipInspector getInstance(GameData data) {
+    return new ShipInspector(data);
   }
 
   private Collection<ProblemType> types;
 
-  protected ShipInspector() {
+  protected ShipInspector(GameData data) {
+    super(data);
   }
 
   /**
@@ -127,7 +129,8 @@ public class ShipInspector extends AbstractInspector {
     // also if not ready yet, there should be someone to take care..
     if (s.modifiedUnits().isEmpty()) {
       empty = true;
-      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.EMPTY.getType(), s));
+      problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.EMPTY.getType(),
+          s, this));
     }
 
     if (s.getSize() != nominalShipSize) {
@@ -138,21 +141,22 @@ public class ShipInspector extends AbstractInspector {
     Unit owner = s.getOwnerUnit();
     // the problem also belongs to the faction of the new owner...
     Unit newOwner = null;
-    if (owner!=null) {
-      for (UnitRelation u : owner.getRelations(ControlRelation.class)){
-        if (u instanceof ControlRelation){
+    if (owner != null) {
+      for (UnitRelation u : owner.getRelations(ControlRelation.class)) {
+        if (u instanceof ControlRelation) {
           ControlRelation ctr = (ControlRelation) u;
-          if (u.source==owner)
+          if (u.source == owner)
             newOwner = ctr.target;
         }
       }
     }
-  
+
     if ((!empty && ((owner != null && Units.isPrivilegedAndNoSpy(owner)) || (newOwner != null && Units
         .isPrivilegedAndNoSpy(newOwner))))
         && (Units.getCaptainSkillAmount(s) < s.getShipType().getCaptainSkillLevel() || Units
             .getSailingSkillAmount(s) < s.getShipType().getSailorSkillLevel())) {
-      problems.add(ProblemFactory.createProblem(Severity.WARNING, ShipProblemTypes.NOCREW.getType(), s));
+      problems.add(ProblemFactory.createProblem(Severity.WARNING,
+          ShipProblemTypes.NOCREW.getType(), s, this));
     }
 
     // moving ships are taken care of while checking units...
@@ -185,17 +189,17 @@ public class ShipInspector extends AbstractInspector {
 
       // FIXME That doesnt work anymore because iterator returns always next movement.
       problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NONEXTREGION
-          .getType(), ship));
+          .getType(), ship, this));
       return problems;
     }
     CoordinateID nextRegionCoord = movementIterator.next();
-    Region nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
+    Region nextRegion = getData().getRegion(nextRegionCoord);
 
     // actually we have to check - is this really a ship (caravans are also marked as ships but
     // travel on land)
-    boolean isShip = ship.getData().getGameSpecificStuff().getGameSpecificRules().isShip(ship);
+    boolean isShip = getGameSpecificStuff().getGameSpecificRules().isShip(ship);
 
-    Rules rules = ship.getData().rules;
+    Rules rules = getData().rules;
     RegionType ozean = rules.getRegionType("Ozean");
 
     // TODO: We should consider harbors, too. But this is difficult because we don't know if
@@ -203,7 +207,7 @@ public class ShipInspector extends AbstractInspector {
     if (ship.getShoreId() != -1 && isShip) {
       if (nextRegion != null && !nextRegion.getRegionType().equals(ozean)) {
         problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.NOOCEAN
-            .getType(), ship));
+            .getType(), ship, this));
         return problems;
       }
       // If ship is shored, it can only move deviate by one from the shore direction and only
@@ -213,18 +217,18 @@ public class ShipInspector extends AbstractInspector {
           && Math.abs(ship.getShoreId() - d.getDir()) < 5) {
         if (!this.hasHarbourInRegion(ship.getRegion())) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
-              .getType(), ship));
+              .getType(), ship, this));
         } else {
           // harbour in Region -> just warn, no error
           problems.add(ProblemFactory.createProblem(Severity.WARNING,
-              ShipProblemTypes.WRONGSHOREHARBOUR.getType(), ship));
+              ShipProblemTypes.WRONGSHOREHARBOUR.getType(), ship, this));
         }
         return problems;
       }
 
       if (movementIterator.hasNext()) {
         nextRegionCoord = movementIterator.next();
-        nextRegion = ship.getRegion().getData().getRegion(nextRegionCoord);
+        nextRegion = getData().getRegion(nextRegionCoord);
       } else {
         nextRegion = null;
       }
@@ -233,16 +237,16 @@ public class ShipInspector extends AbstractInspector {
     // loop until end of movement order or until first PAUSE
     for (Region lastRegion = null; movementIterator.hasNext()
         && (lastRegion == null || lastRegion != nextRegion); lastRegion = nextRegion, nextRegion =
-        ship.getRegion().getData().getRegion(movementIterator.next())) {
+        getData().getRegion(movementIterator.next())) {
       // check if next region is unknown or ship cannot land in next region and there is no harbor
       // we have to check game specific stuff, because in Allanon a longboat can
       // land everywhere, too
       if (isShip
-          && (nextRegion == null || !(ship.getData().getGameSpecificStuff().getGameSpecificRules()
+          && (nextRegion == null || !(getGameSpecificStuff().getGameSpecificRules()
               .canLandInRegion(ship, nextRegion)))) {
         if (nextRegion == null || !this.hasHarbourInRegion(nextRegion)) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.SHIPWRECK
-              .getType(), ship));
+              .getType(), ship, this));
           return problems;
         }
       }
@@ -251,11 +255,12 @@ public class ShipInspector extends AbstractInspector {
     // overload
     if (ship.getModifiedLoad() > (ship.getMaxCapacity())) {
       problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
-          .getType(), ship));
-    } else if (ship.getShipType().getMaxPersons()>0 && ship.getModifiedPersonLoad() > (ship.getMaxPersons()*1000)) {
+          .getType(), ship, this));
+    } else if (ship.getShipType().getMaxPersons() > 0
+        && ship.getModifiedPersonLoad() > (ship.getMaxPersons() * 1000)) {
       // persons overload
       problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.OVERLOADED
-          .getType(), ship));
+          .getType(), ship, this));
     }
 
     return problems;

@@ -36,6 +36,8 @@ public class IronLevelReplacer extends AbstractRegionReplacer {
 	 */
 	@Override
   public Object getRegionReplacement(Region region) {
+    // FIXME shouldn't access rules this way. However, Replacers should work with their default
+    // constructor. Hmmm...
 		ItemType ironType = region.getData().rules.getItemType(EresseaConstants.I_RIRON);
 		if (ironType==null){
 			return null;

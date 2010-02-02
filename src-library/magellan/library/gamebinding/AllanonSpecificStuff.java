@@ -32,6 +32,8 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
   private GameSpecificRules gameSpecificRules;
   private AllanonRelationFactory relationFactory;
 
+  private OrderChanger orderChanger;
+
 
   public AllanonSpecificStuff() {
     super();
@@ -58,7 +60,9 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
    */
 	@Override
   public OrderChanger getOrderChanger() {
-		return AllanonOrderChanger.getSingleton();
+    if (orderChanger == null)
+      orderChanger = new AllanonOrderChanger(getRules());
+    return orderChanger;
 	}
 
   /**

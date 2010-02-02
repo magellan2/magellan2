@@ -46,7 +46,7 @@ import magellan.library.utils.Utils;
 public class OrderSyntaxInspector extends AbstractInspector {
 
   /** The singleton instance of the OrderSyntaxInspector */
-  public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
+//  public static final OrderSyntaxInspector INSPECTOR = new OrderSyntaxInspector();
 
   enum OrderSyntaxProblemTypes {
     NO_ORDERS, PARSE_ERROR, PARSE_WARNING;
@@ -62,7 +62,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
       String description =
           Resources.get("tasks.ordersyntaxinspector." + name + ".description", false);
       String group = Resources.get("tasks.ordersyntaxinspector."+name+".group", false); 
-      type = new ProblemType(typeName, group, description, message, getInstance());
+      type = new ProblemType(typeName, group, description, message);
     }
 
     ProblemType getType() {
@@ -72,7 +72,8 @@ public class OrderSyntaxInspector extends AbstractInspector {
 
   private Collection<ProblemType> types;
 
-  protected OrderSyntaxInspector() {
+  protected OrderSyntaxInspector(GameData data) {
+    super(data);
   }
 
   /**
@@ -80,8 +81,8 @@ public class OrderSyntaxInspector extends AbstractInspector {
    * 
    * @return The singleton instance of OrderSyntaxInspector
    */
-  public static OrderSyntaxInspector getInstance() {
-    return OrderSyntaxInspector.INSPECTOR;
+  public static OrderSyntaxInspector getInstance(GameData data) {
+    return new OrderSyntaxInspector(data);
   }
 
   /**
@@ -100,7 +101,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
         return Collections.emptyList();
       } else {
         errors.add(ProblemFactory.createProblem(Severity.ERROR, OrderSyntaxProblemTypes.NO_ORDERS.getType(),
-            unit));
+            unit, this));
       }
 
     }
@@ -110,8 +111,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
     // so I change that from error to warning
 
     if (severity == Severity.WARNING) {
-      GameData data = unit.getRegion().getData();
-      OrderParser parser = data.getGameSpecificStuff().getOrderParser(data);
+      OrderParser parser = getGameSpecificStuff().getOrderParser(getData());
 
       Integer line = 0;
       for (String order : orders) {
@@ -120,7 +120,7 @@ public class OrderSyntaxInspector extends AbstractInspector {
         boolean ok = parser.read(reader);
         if (!ok) {
           errors.add(ProblemFactory.createProblem(Severity.WARNING, OrderSyntaxProblemTypes.PARSE_WARNING
-              .getType(), unit, getWarningMessage(order, line), line));
+              .getType(), unit, this, getWarningMessage(order, line), line));
         }
       }
     }

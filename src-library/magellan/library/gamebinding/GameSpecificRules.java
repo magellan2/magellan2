@@ -102,6 +102,7 @@ public interface GameSpecificRules {
    */
   public boolean isCastle(UnitContainerType type);
 
+
   /**
    * Returns the maximum number of horses the unit can handle while walking.
    * @param u 
@@ -114,4 +115,5 @@ public interface GameSpecificRules {
    * @param u 
    */
   public int getMaxHorsesRiding(Unit u);
+
 }

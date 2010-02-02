@@ -53,7 +53,7 @@ public class Loader {
 	  try {
 	    final PipeFileType filetype = new PipeFileType();
 	    filetype.setEncoding(data.getEncoding());
-	    final CRWriter crw = new CRWriter(null, filetype, data.getEncoding());
+	    final CRWriter crw = new CRWriter(data, null, filetype, data.getEncoding());
 	    GameDataReader crReader = new GameDataReader(null);
 
       class ReadRunner implements Runnable{
@@ -84,7 +84,7 @@ public class Loader {
       ReadRunner runner = new ReadRunner(crReader, newData);
       new Thread(runner).start();
       
-      crw.writeSynchronously(data);
+      crw.writeSynchronously();
       crw.close();
       
       while(!runner.finished()){
@@ -124,10 +124,10 @@ public class Loader {
 	    filetype.setCreateBackup(false);
 
 	    // write cr to file
-	    CRWriter crw = new CRWriter(null,filetype,data.getEncoding());
+	    CRWriter crw = new CRWriter(data, null,filetype,data.getEncoding());
 
 	    try {
-	      crw.writeSynchronously(data);
+	      crw.writeSynchronously();
 	    } finally {
 	      crw.close();
 	    }

@@ -132,14 +132,8 @@ public class Islands {
 	public static Map<CoordinateID,Region> getIsland(Rules rules, Map<CoordinateID,Region> regions, Region r) {
 		Map<CoordinateID,Region> checked = new Hashtable<CoordinateID, Region>();
 
-		Map<ID, RegionType> excludedRegionTypes = Regions.getOceanRegionTypes(rules);
+		Map<ID, RegionType> excludedRegionTypes = Regions.getLandRegionTypes(rules);
 
-		// Feature wish: Feuerwände nicht dabei (Fiete)
-		
-		RegionType feuerwand = Regions.getFeuerwandRegionType(rules,r.getData());
-		if (feuerwand != null) {
-			excludedRegionTypes.put(feuerwand.getID(),feuerwand);
-		}
 		if(excludedRegionTypes.isEmpty()) {
 			Islands.log.warn("Islands.getIsland(): unable to determine ocean region types!");
 

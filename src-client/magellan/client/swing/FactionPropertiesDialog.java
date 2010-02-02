@@ -79,7 +79,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
   public FactionPropertiesDialog(Frame owner, boolean modal, EventDispatcher dispatcher,
       GameData d, Properties p, Faction f) {
     super(owner, modal, dispatcher, d, p);
-    dispatcher.addGameDataListener(this);
+    // unnecessary
+    // dispatcher.addGameDataListener(this);
 
     data = d;
     settings = p;
@@ -144,7 +145,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
     pnlPassword.add(txtPassword, BorderLayout.CENTER);
 
     chkOwner = new JCheckBox(Resources.get("factionpropertiesdialog.owner.label"));
-    chkOwner.setSelected(faction.getID().equals(faction.getData().getOwnerFaction()));
+    chkOwner.setSelected(faction.getID().equals(getData().getOwnerFaction()));
     chkOwner.setToolTipText(Resources.get("factionpropertiesdialog.owner.tooltip"));
 
     JPanel translationPanel = new JPanel();
@@ -205,8 +206,8 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
 
     DefaultListModel model = new DefaultListModel();
 
-    if (faction.getData().getCoordinateTranslationMap(faction.getID()) != null) {
-      for (CoordinateID translation : faction.getData().getCoordinateTranslationMap(
+    if (getData().getCoordinateTranslationMap(faction.getID()) != null) {
+      for (CoordinateID translation : getData().getCoordinateTranslationMap(
           faction.getID()).values()) {
         model.addElement(translation);
       }

@@ -19,6 +19,11 @@ package magellan.library.utils.replacers;
  * A Replacer's getReplacement method takes an object and replaces it by
  * something else. Replacers with several arguments can by implemented by using
  * a {@link BranchReplacer}.
+ * </p>
+ * <p>Our replacers are usually created in {@link ReplacerFactory} and therefore have only default 
+ * constructors.
+ * </p>
+ * 
  * 
  * @author Andreas
  * @version 1.0

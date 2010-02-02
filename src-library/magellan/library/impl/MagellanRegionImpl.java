@@ -1226,7 +1226,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     // run through the neighbors
     for (Iterator iter = this.getNeighbours().iterator(); iter.hasNext();) {
       CoordinateID checkRegionID = (CoordinateID) iter.next();
-      if (!getData().getRegion(checkRegionID).getRegionType().isOcean()) {
+      if (getData().getRegion(checkRegionID).getRegionType().isLand()) {
         return 1;
       }
     }

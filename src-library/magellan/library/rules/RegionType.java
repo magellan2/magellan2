@@ -22,10 +22,8 @@ import magellan.library.StringID;
 
 
 /**
- * DOCUMENT-ME
+ * Stores rule relevant information about a region type.
  *
- * @author $Author: $
- * @version $Revision: 203 $
  */
 public class RegionType extends UnitContainerType {
 	/** A static instance of the unknown region type */
@@ -33,6 +31,7 @@ public class RegionType extends UnitContainerType {
 	private int inhabitants = -1;
 
   private boolean isOcean = false;
+  private boolean isLand = false;
 
   private boolean isAstralVisible = false;
 
@@ -104,7 +103,7 @@ public class RegionType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Adds a resource need for road building.
 	 *
 	 * 
 	 */
@@ -113,7 +112,7 @@ public class RegionType extends UnitContainerType {
 	}
 
 	/**
-	 * Gets a List of needed Resources for road building
+	 * Gets a List of needed Resources for road building.
 	 *
 	 * 
 	 */
@@ -122,22 +121,32 @@ public class RegionType extends UnitContainerType {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns true if the unit is an ocean region.
 	 */
 	public boolean isOcean() {
 		return isOcean;
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the ocean property. 
 	 */
 	public void setIsOcean(boolean isOcean) {
 		this.isOcean = isOcean;
 	}
+
+  /**
+   * Returns true if the unit is a land region (note that this is not just !isOcean()).
+   */
+  public boolean isLand() {
+    return isLand;
+  }
+
+  /**
+   * Sets the land property.
+   */
+  public void setLand(boolean land) {
+    isLand = land;
+  }
 
   /** 
    * Returns <code>true</code> if this RegionType is visible from the astral space.
@@ -176,9 +185,7 @@ public class RegionType extends UnitContainerType {
   }
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.impl.MagellanNamedImpl#toString()
 	 */
 	@Override
   public String toString() {
@@ -197,4 +204,5 @@ public class RegionType extends UnitContainerType {
   public StringID getID() {
     return (StringID) id;
   }
+
 }

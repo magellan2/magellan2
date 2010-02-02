@@ -32,7 +32,6 @@ import magellan.library.Rules;
 import magellan.library.Ship;
 import magellan.library.StringID;
 import magellan.library.Unit;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.BuildingType;
 import magellan.library.rules.RegionType;
 import magellan.library.utils.logging.Logger;
@@ -40,8 +39,8 @@ import magellan.library.utils.logging.Logger;
 /**
  * A class offering common operations on regions.
  */
-public class Regions {
-  private static final Logger log = Logger.getInstance(Regions.class);
+public class CopyOfRegions {
+  private static final Logger log = Logger.getInstance(CopyOfRegions.class);
 
   /**
    * Retrieve the regions within radius around region center.
@@ -60,7 +59,7 @@ public class Regions {
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       ID center, int radius, Map<ID, RegionType> excludedRegionTypes) {
     if (center instanceof CoordinateID) {
-      return Regions.getAllNeighbours(regions, (CoordinateID) center, radius, excludedRegionTypes);
+      return CopyOfRegions.getAllNeighbours(regions, (CoordinateID) center, radius, excludedRegionTypes);
     } else {
       throw new IllegalArgumentException(
           "center is not an eressea coordinate. Support for e2 incomplete!");
@@ -114,7 +113,7 @@ public class Regions {
    */
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       CoordinateID center, Map<ID, RegionType> excludedRegionTypes) {
-    return Regions.getAllNeighbours(regions, center, 1, excludedRegionTypes);
+    return CopyOfRegions.getAllNeighbours(regions, center, 1, excludedRegionTypes);
   }
 
   /**
@@ -126,9 +125,9 @@ public class Regions {
    * @return a String telling the direction statements necessary to follow the sequence of regions
    *         contained in regions.
    */
-  public static String getDirections(GameData data, CoordinateID start,
+  public static String getDirections(Map<CoordinateID, Region> regions, CoordinateID start,
       CoordinateID dest, Map<ID, RegionType> excludedRegionTypes, int radius) {
-    return Regions.getDirections(Regions.getLandPath(data, start, dest, excludedRegionTypes, radius,
+    return CopyOfRegions.getDirections(CopyOfRegions.getPath(regions, start, dest, excludedRegionTypes, radius,
         radius));
   }
 
@@ -144,7 +143,7 @@ public class Regions {
       return null;
     }
 
-    List directions = Regions.getDirectionObjectsOfRegions(regions);
+    List directions = CopyOfRegions.getDirectionObjectsOfRegions(regions);
 
     if (directions == null) {
       return null;
@@ -180,7 +179,7 @@ public class Regions {
       coordinates.add(r.getCoordinate());
     }
 
-    return Regions.getDirectionObjectsOfCoordinates(coordinates);
+    return CopyOfRegions.getDirectionObjectsOfCoordinates(coordinates);
   }
 
   /**
@@ -223,60 +222,29 @@ public class Regions {
   }
 
   /**
-   * Holds shortest-path relevant information for a region.
+   * Find a way from one region to another region.
    * 
-   * @author stm
+   * @return a Collection of regions that have to be trespassed in order to get from the one to the
+   *         other specified region, including both of them.
+   * @throws IllegalArgumentException if start or dest are not CoordinateIDs
+   * @deprecated This is now obsolete
    */
-  public interface RegionInfo<T extends RegionInfo> extends Comparable<T> {
-    /**
-     * Returns a distance value that is used to limit the search horizon.
-     */
+  public static List<Region> getPath(Map<CoordinateID, Region> regions, ID start, ID dest,
+      Map<ID, RegionType> excludedRegionTypes) {
+    if (start instanceof CoordinateID && dest instanceof CoordinateID) {
+      return CopyOfRegions.getPath(regions, (CoordinateID) start, (CoordinateID) dest,
+          excludedRegionTypes, 1, 1);
+    } else {
+      throw new IllegalArgumentException(
+          "start of dest is not an eressea coordinate. Support for e2 incomplete!");
+    }
+  }
+  
+  /**
+   * A generalization of a distance value.
+   */
+  interface Distance extends Comparable {
     public int getDistance();
-
-    /**
-     * Returns the info's region.
-     */
-    public Region getRegion();
-
-    /**
-     * Returns the id this info belongs to.
-     */
-    public CoordinateID getID();
-
-    /**
-     * Marks region as visited.
-     */
-    public void setVisited();
-
-    /**
-     * Returns if region is visited.
-     */
-    public boolean isVisited();
-
-    /**
-     * Returns the region that caused the last distance decrease.
-     */
-    public CoordinateID getPredecessor();
-
-    /**
-     * Sets the predecessor.
-     */
-    public void setPredecessor(CoordinateID pred);
-
-    /**
-     * Returns true if the region's distance is infinity.
-     */
-    public boolean isInfinity();
-
-    /**
-     * Sets the distance to infinity.
-     */
-    public void setInfinity();
-
-    /**
-     * Returns a string representation of the distance.
-     */
-    public String distString();
   }
 
   /**
@@ -284,109 +252,148 @@ public class Regions {
    * 
    * @author stm
    */
-  public interface Metric {
+  interface Metric {
     /**
-     * Creates an entry with zero distance for the specified node.
+     * Returns the sum of <code>dist</code> and the distance between two neighboring coordinates.
+     * All Distance methods should return distances of the same type! This method must assure
+     * <code>getDistance(x,x, dist).compareTo(dist) == 0</code>.
+     * 
+     * @param a
+     * @param b
+     * @return The distance of a and b plus dist.
+     * @see {@link #getNeighbours(CoordinateID)}
      */
-    public RegionInfo createZero(CoordinateID node);
+    public void getDistance(CoordinateID current, CoordinateID next, Distance dist, Distance old);
+
+    public Distance getZero();
 
     /**
-     * Creates an entry with infinite distance for the specified node.
+     * Returns an infinity distance value that is greater than all other distances.
      */
-    public RegionInfo createInfinity(CoordinateID node);
-
-    /**
-     * Returns the info for the node. Creates an infinite one if none exists.
-     */
-    public RegionInfo get(CoordinateID node);
+    public Distance getInfinity();
 
     /**
      * Returns all neighbors of the provided coordinate.
+     * 
+     * @param id
+     * @return
      */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id);
 
-    /**
-     * Changes the distance of <code>nextRecord</code> according to the distance of <code>current</code>
-     * and the distance between the two regions.
-     * 
-     * @return <code>true</code> if <code>nextRecord</code>'s distance was decreased
-     */
-    public boolean relax(RegionInfo current, RegionInfo nextRecord);
+  }
 
-    /**
-     * Returns a map of all known distance values.
-     */
-    public Map<CoordinateID, ? extends RegionInfo> getDistances();
+  /**
+   * Stores distance about a region.
+   */
+  static class RegionRecord implements Comparable<RegionRecord> {
+    public static long instanceCount = 0; 
+    
+    /** This record's information is for this coordinate */
+    public CoordinateID id;
+    /** The distance from the start */
+    public Distance dist;
+    /** A node that is on the shortest path from start to id */
+    public CoordinateID pre;
+
+    /** <code>true</code> if this id's neighbors have been touched in the search */
+    boolean visited;
+
+    public RegionRecord(CoordinateID id, Distance dist) {
+      this.id = id;
+      this.dist = dist;
+      instanceCount++;
+    }
+
+    public int compareTo(RegionRecord o) {
+      return dist.compareTo(o.dist);
+    }
   }
 
   /**
    * Returns distance information about all Coordinates in regions that are at most as far as dest
-   * or as far as maxDist away from start. The result is stored in the metric information.
+   * or as far as maxDist away from start.
    * 
    * @param regions Regions will be looked up in this map.
    * @param start The origin of the search.
    * @param dest The coordinate that must be reached, or <code>null</code>
-   * @param maxDist The maximum distance to search. The search stops if all regions with at most
-   *          this distance have been visited.
-   * @param metric A metric for computing distances.
+   * @param maxDist The maximum radius to search.
+   * @param metric A metric for computing distances
+   * @return A map that maps each coordinate met in the search to its distance information.
    */
-  public static void getDistances(Map<CoordinateID, Region> regions, CoordinateID start,
-      CoordinateID dest, int maxDist, Metric metric) {
+  public static Map<CoordinateID, RegionRecord> getDistances(Map<CoordinateID, Region> regions,
+      CoordinateID start, CoordinateID dest, int maxDist, Metric metric) {
     if (!regions.containsKey(start) || (dest != null && !regions.containsKey(dest)))
       throw new IllegalArgumentException();
 
-    // this method applies Dijkstra's algorithm
-    
-    // initialize queue
-    PriorityQueue<RegionInfo> queue = new PriorityQueue<RegionInfo>(8);
-    queue.add(metric.createZero(start));
+    Map<CoordinateID, RegionRecord> records = new HashMap<CoordinateID, RegionRecord>();
+    PriorityQueue<RegionRecord> queue = new PriorityQueue<RegionRecord>(8);
+
+    queue.add(new RegionRecord(start, metric.getZero()));
+    records.put(start, queue.peek());
 
     int touched = 0;
     int maxQueue = 1;
-
-    while (!queue.isEmpty() && queue.peek().getDistance() <= maxDist
-        && !queue.peek().getID().equals(dest)) {
-      RegionInfo current = queue.poll();
+    
+    Distance newDist = metric.getInfinity();
+    
+    while (!queue.isEmpty() && queue.peek().dist.getDistance() <= maxDist
+        && !queue.peek().id.equals(dest)) {
+      RegionRecord current = queue.poll();
       // for debugging
-      if (regions.get(current.getID()) != null
+      if (regions.get(current.id) != null
           && (metric instanceof LandMetric || metric instanceof ShipMetric)) {
 // regions.get(current.id).clearSigns();
-//        regions.get(current.getID()).addSign(new Sign(touched + " " + current.distString()));
+//        regions.get(current.id).addSign(new Sign(touched + " " + current.dist.toString()));
       } else
         touched += 0;
       touched++;
-      current.setVisited();
-      Map<CoordinateID, Region> neighbors = metric.getNeighbours(current.getID());
+      current.visited = true;
+      Map<CoordinateID, Region> neighbors = metric.getNeighbours(current.id);
       for (CoordinateID next : neighbors.keySet()) {
-        RegionInfo nextRecord = metric.get(next);
-        if (!nextRecord.isVisited()) {
-          // PriorityQueue doesn't have a decreasekey, so we remove, relax, and re-insert
-          queue.remove(nextRecord);
-          metric.relax(current, nextRecord);
-          queue.add(nextRecord);
+        RegionRecord nextRecord = records.get(next);
+        if (nextRecord == null) {
+          nextRecord = new RegionRecord(next, metric.getInfinity());
+          records.put(next, nextRecord);
+        }
+        if (!nextRecord.visited) {
+          metric.getDistance(current.id, next, current.dist, newDist);
+          // if d(next)=\infty OR d(current)+d(current,next) < d(next)
+          // decrease key
+          if (records.get(next) == null) {
+            log.warn("---");
+          } else if (nextRecord.dist.compareTo(newDist) > 0) {
+            queue.remove(next);
+            Distance tempDist = nextRecord.dist;
+            nextRecord.dist = newDist;
+            newDist = tempDist;
+            nextRecord.pre = current.id;
+          }
+          if (!queue.contains(nextRecord))
+            queue.add(nextRecord);
         }
       }
       if (queue.size() > maxQueue)
         maxQueue = queue.size();
     }
+    if (queue.isEmpty()) {
+      return Collections.emptyMap();
+    }
 
-    // TODO remove
-//    log.info(touched + " " + maxQueue + " " + FloatDistance.instanceCount + " "
-//        + CoordinateID.instanceCount);
+    log.debug(touched+" "+maxQueue+" "+RegionRecord.instanceCount+" "+FloatDistance.instanceCount);
+    
+    return records;
   }
 
   /**
-   * Returns a path from start to dest based on the predecessor information in records.
+   * Returns a path from start to dest based on the distance information in records.
    */
   public static List<Region> getPath(Map<CoordinateID, Region> regions, CoordinateID start,
-      CoordinateID dest, Map<CoordinateID, ? extends RegionInfo> records) {
+      CoordinateID dest, Map<CoordinateID, RegionRecord> records) {
     LinkedList<Region> path = new LinkedList<Region>();
-    CoordinateID currentID = records.get(dest).getID();
-    while (!currentID.equals(start) && currentID != null) {
+    CoordinateID currentID = records.get(dest).id;
+    while (currentID != start && currentID != null) {
       path.addFirst(regions.get(currentID));
-      currentID = records.get(currentID).getPredecessor();
-      if (currentID==null)
-        return null;
+      currentID = records.get(currentID).pre;
     }
     path.addFirst(regions.get(currentID));
 
@@ -394,30 +401,49 @@ public class Regions {
   }
 
   /**
-   * Returns a path from start to dest based on the predecessor information in records. Accounts for
+   * Returns a path from start to dest based on the distance information in records. Accounts for
    * skipped regions.
-   *
-   * @param outerMetric The metric for predecessor information
-   * @param radius This method applies a RoadMetric with this minimal...
-   * @param streetRadius ...and this maximal speed
-   * @return A list of regions from start to dest (both inclusively)
    */
   public static List<Region> getPath2(Map<CoordinateID, Region> regions, CoordinateID start,
-      CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes, Metric outerMetric,
-      int radius, int streetRadius) {
+      CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes,
+      Map<CoordinateID, RegionRecord> records, Metric metric) {
     LinkedList<Region> path = new LinkedList<Region>();
-    CoordinateID currentID = outerMetric.get(dest).getID();
+    CoordinateID currentID = records.get(dest).id;
     while (currentID != start && currentID != null) {
-      CoordinateID currentStart = outerMetric.get(currentID).getPredecessor();
-      if (currentStart==null)
-        return null;
+      CoordinateID currentStart = records.get(currentID).pre;
 
-      RoadMetric innerMetric;
-      getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, innerMetric =
-          new RoadMetric(regions, excludedRegionTypes, currentStart, currentID, radius, streetRadius));
-      List<Region> interPath =
-          getPath(regions, currentStart, currentID, innerMetric.getDistances());
+      Map<CoordinateID, RegionRecord> distances =
+          getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, metric);
+      List<Region> interPath = getPath(regions, currentStart, currentID, distances);
       interPath.remove(0);
+
+      // Map<CoordinateID, RegionRecord> distances =
+// getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, metric);
+// if (distances.get(currentID).dist.equals(getRoadMetric(regions, excludedRegionTypes)
+// .getInfinity())) {
+// distances =
+// getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, getUnitMetric(
+// regions, excludedRegionTypes));
+// }
+// List<Region> interPath = getPath(regions, currentStart, currentID, distances);
+// interPath.remove(0);
+
+// Map<CoordinateID, RegionRecord> interDist2 =
+// getDistances(regions, currentStart, currentID, Integer.MAX_VALUE, new RoadMetric2(
+// regions, excludedRegionTypes));
+// List<Region> interPath2 = getPath(regions, currentStart, currentID, interDist2);
+// interPath2.remove(0);
+//
+// if (interPath.size() != interPath2.size())
+// log.warn("error");
+// else {
+// Iterator<Region> it1 = interPath.iterator();
+// Iterator<Region> it2 = interPath2.iterator();
+// for (; it1.hasNext();) {
+// if (it1.next() != it2.next())
+// log.warn("error");
+// }
+// }
 
       path.addAll(0, interPath);
       currentID = currentStart;
@@ -427,82 +453,136 @@ public class Regions {
   }
 
   /**
-   * A distance value that uses a tuple of distance components. <code>dist</code> is the primary
-   * distance value. <code>plus</code> is a bonus value for regions with the same distance but some
-   * additional bonus. <code>realDist</code> is a tertiary value, usually the number of regions on
-   * the shortest path. <code>pot</code> is an additional potential that can be used to speed up the
-   * search ("goal-directed search").
+   * A distance implementation that uses three values. <code>dist</code> is the distance in regions,
+   * that has been modified if harbours have been encountered on the path. <code>plus</code> is the
+   * number of oceans near the coast or land regions on the path. <code>realDist</code> is the
+   * actual length of the path.
    * 
    * @author stm
    */
-  public static class MultidimensionalDistance implements Comparable<MultidimensionalDistance> {
-    protected int dist;
-    protected int plus;
-    protected int realDist;
-    protected int pot;
+  static class FloatDistance implements Distance {
+    public static long instanceCount = 0;
+    /** Distance value for a path between a coastal region an another region */
+//    public static final FloatDistance ONE_PLUS = new FloatDistance(1, 1, 1);
+//    public static FloatDistance ZERO = new FloatDistance(0, 0, 0);
+//    public static FloatDistance ONE = new FloatDistance(1, 0, 1);
+//    public static FloatDistance TWO = new FloatDistance(2, 0, 2);
+//    public static FloatDistance INFINITY =
+//        new FloatDistance(Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
+    public static final int ONE_PLUS = 2;
+    public static final int ZERO = 0;
+    public static final int ONE = 1;
+    public static final int INFINITY = Integer.MAX_VALUE;
 
-    public MultidimensionalDistance(int d, int p, int r, int pot) {
-      this.dist = d;
-      this.plus = p;
-      this.realDist = r;
+    int dist;
+    int plus;
+    int realDist;
+    private int pot;
+
+    public FloatDistance(int d, int p, int r) {
+      this(d,p,r, 0);
+    }
+
+    public FloatDistance(int d, int p, int r, int pot) {
+      dist = d;
+      plus = p;
+      realDist = r;
       this.pot = pot;
+      instanceCount++;
+    }
+
+    public FloatDistance() {
+      this(0,0,0,0);
     }
 
     public int getDistance() {
       return dist;
     }
+    
+    public void set(int d, int p, int r) {
+      dist = d;
+      plus = p;
+      realDist = r;
+    }
 
-    public int compareTo(MultidimensionalDistance o) {
-      return compareTo(o.dist, o.plus, o.realDist, o.pot);
+    public void set(int d, int p, int r, int pot) {
+      dist = d;
+      plus = p;
+      realDist = r;
+      this.pot = pot;
     }
 
     /**
-     * Compares the distance (plus potential) first, the number of "non-plussed" regions on the path
-     * second, and the real distance third.
+     * Compares the dist values first, the number of non-coast regions second and the real path
+     * length third.
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
-    public int compareTo(int newdist, int newplus, int newrealDist, int newpot) {
-      if (dist + pot > newdist + newpot)
-        return 1;
-      if (dist + pot < newdist + newpot)
-        return -1;
-      if (realDist - plus > newrealDist - newplus)
-        return 1;
-      if (realDist - plus < newrealDist - newplus)
-        return -1;
-      return realDist - newrealDist;
+    public int compareTo(Object o) {
+      if (o instanceof FloatDistance) {
+        FloatDistance iDist = (FloatDistance) o;
+        if (dist + pot > iDist.dist + iDist.pot)
+          return 1;
+        if (dist + pot < iDist.dist + iDist.pot)
+          return -1;
+        if (realDist - plus > iDist.realDist - iDist.plus)
+          return 1;
+        if (realDist - plus < iDist.realDist - iDist.plus)
+          return -1;
+        return realDist - iDist.realDist;
+      }
+      throw new IllegalArgumentException(
+          "something very evil has happened that may or may not have been prevented by Java generics...");
     }
 
-    /**
-     * Adds a distance to this distance. Adds all components and takes care of infinite distances.
-     */
-    public void add(MultidimensionalDistance add) {
-      if (add.dist == Integer.MAX_VALUE || dist == Integer.MAX_VALUE)
-        dist = Integer.MAX_VALUE;
-      else
-        dist += add.dist;
-      plus += add.plus;
-      realDist += add.realDist;
-      pot += add.pot;
+    public FloatDistance add(FloatDistance add) {
+      if (add.dist==Integer.MAX_VALUE || dist == Integer.MAX_VALUE)
+        return get(INFINITY);
+      return new FloatDistance(dist + add.dist, plus + add.plus, realDist + add.realDist, pot
+          + add.pot);
     }
 
-    /**
-     * @see java.lang.Object#toString()
-     */
-    @Override
+    public Distance add1(FloatDistance dist2) {
+      dist+=dist2.dist;
+      plus+=dist2.plus;
+      realDist+=dist2.realDist;
+      pot+=dist2.pot;
+      return this;
+    }
+
+    private static FloatDistance get(int size) {
+      switch (size) {
+      case ZERO:
+        return new FloatDistance(0,0,0);
+      case ONE:
+        return new FloatDistance(1,0,1);
+      case ONE_PLUS:
+        return new FloatDistance(1,1,1);
+      case INFINITY:
+        return new FloatDistance(Integer.MAX_VALUE, 0, Integer.MAX_VALUE);
+      default:
+        throw new IllegalArgumentException();
+      }
+    }
+
     public String toString() {
       return String.valueOf(dist) + "," + String.valueOf(plus) + "," + String.valueOf(realDist);
     }
 
-    /**
-     * Sets this distance to infinity.
-     */
-    public void setInfinity() {
-      dist = Integer.MAX_VALUE;
+    @Override
+    public boolean equals(Object o) {
+      if (o instanceof FloatDistance) {
+        FloatDistance other = (FloatDistance) o;
+        return dist == other.dist && plus == other.plus && realDist == other.realDist;
+      }
+      return false;
+
     }
 
-    /**
-     * Sets this distance to zero
-     */
+    public void setInfinity() {
+      this.dist = Integer.MAX_VALUE;
+    }
+
     public void setZero() {
       this.dist = 0;
       this.plus = 0;
@@ -510,178 +590,8 @@ public class Regions {
       this.pot = 0;
     }
 
-    void set(int dist2, int plus2, int realDist2, int pot2) {
-      dist = dist2;
-      plus = plus2;
-      realDist = realDist2;
-      pot = pot2;
-    }
-
-    /**
-     * Returns <code>true</code> if this distance is infinite.
-     */
-    public boolean isInfinity() {
-      return dist == Integer.MAX_VALUE;
-    }
-
-  }
-
-  /**
-   * A distance implementation that uses {@link MultidimensionalDistance}. <code>dist</code> is the
-   * distance in regions, that has been modified if harbours have been encountered on the path.
-   * <code>plus</code> is the number of oceans near the coast or land regions on the path.
-   * <code>realDist</code> is the actual length of the path.
-   * 
-   * @author stm
-   */
-  public static class MultiDimensionalInfo implements RegionInfo<MultiDimensionalInfo> {
-    public static long instanceCount = 0;
-
-    MultidimensionalDistance dist;
-
-    /** This record's information is for this coordinate */
-    protected Region region;
-    /** A node that is on the shortest path from start to id */
-    protected CoordinateID pre;
-
-    /** <code>true</code> if this id's neighbors have been touched in the search */
-    protected boolean visited;
-
-    protected MultiDimensionalInfo(Region region, int d, int p, int r) {
-      this(region, d, p, r, 0);
-    }
-
-    protected MultiDimensionalInfo(Region region, int d, int p, int r, int pot) {
-      this.dist = new MultidimensionalDistance(d, p, r, pot);
-      this.region = region;
-      instanceCount++;
-    }
-
-    protected MultiDimensionalInfo(Region region) {
-      this(region, 0, 0, 0, 0);
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#getDistance()
-     */
-    public int getDistance() {
-      return dist.getDistance();
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(MultiDimensionalInfo o) {
-      return dist.compareTo(o.dist);
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-      return region.toString() + ":" + dist.toString();
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#distString()
-     */
-    public String distString() {
-      return dist.toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (o instanceof MultiDimensionalInfo) {
-        MultiDimensionalInfo other = (MultiDimensionalInfo) o;
-        return region == other.region && dist.equals(other.dist);
-      }
-      return false;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public int hashCode() {
-      int result = 76;
-      return result * 31 + dist.hashCode();
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#setInfinity()
-     */
-    public void setInfinity() {
-      this.dist.setInfinity();
-    }
-
-    /**
-     * Sets the distance to zero.
-     */
-    public void setZero() {
-      dist.setZero();
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#isInfinity()
-     */
-    public boolean isInfinity() {
-      return dist.isInfinity();
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#getID()
-     */
-    public CoordinateID getID() {
-      return region.getID();
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#getRegion()
-     */
-    public Region getRegion() {
-      return region;
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#getPredecessor()
-     */
-    public CoordinateID getPredecessor() {
-      return pre;
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#setPredecessor(magellan.library.CoordinateID)
-     */
-    public void setPredecessor(CoordinateID pred) {
-      this.pre = pred;
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#isVisited()
-     */
-    public boolean isVisited() {
-      return visited;
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.RegionInfo#setVisited()
-     */
-    public void setVisited() {
-      visited = true;
-    }
-
-    /**
-     * Returns a new info with zero distance for the region.
-     */
-    public static MultiDimensionalInfo createZero(Region region) {
-      return new MultiDimensionalInfo(region);
-    }
-
-    /**
-     * Returns a new info with infinite distance for the region.
-     */
-    public static MultiDimensionalInfo createInfinity(Region region) {
-      return new MultiDimensionalInfo(region, Integer.MAX_VALUE, 0, Integer.MAX_VALUE, 0);
+    public void set(FloatDistance dist2) {
+      set(dist2.dist, dist2.plus, dist2.realDist, dist2.pot);
     }
 
   }
@@ -697,242 +607,173 @@ public class Regions {
    * @param speed DOCUMENT ME
    * @return DOCUMENT ME
    */
-  public static List<Region> getShipPath(final Map<CoordinateID, Region> regions,
+  public static List<Region> getPath(final Map<CoordinateID, Region> regions,
       final CoordinateID start, final CoordinateID dest,
       final Map<ID, RegionType> excludedRegionTypes, final Set<BuildingType> harbourTypes,
       final int speed) {
-
-    Metric metric;
-    getDistances(regions, start, dest, Integer.MAX_VALUE, metric =
-        new ShipMetric(regions, start, dest, excludedRegionTypes, harbourTypes, speed));
-    return getPath(regions, start, dest, metric.getDistances());
+    Map<CoordinateID, RegionRecord> distance =
+        getDistances(regions, start, dest, Integer.MAX_VALUE, getShipMetric(regions, start, dest,
+            excludedRegionTypes, harbourTypes, speed));
+    return getPath(regions, start, dest, distance);
   }
 
-  /**
-   * A superclass for metrics that use {@link MultiDimensionalInfo}.
-   * 
-   * @author stm
-   */
-  public static abstract class MultidimensionalMetric implements Metric {
+  protected static Metric getShipMetric(final Map<CoordinateID, Region> regions,
+      CoordinateID start, CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes,
+      final Set<BuildingType> harbourTypes, final int speed) {
+    return new ShipMetric(regions, start, dest, excludedRegionTypes, harbourTypes, speed);
+  }
+
+  protected static abstract class FloatMetric implements Metric {
     protected Map<CoordinateID, Region> regions;
     protected Map<ID, RegionType> excludedRegionTypes;
-    protected HashMap<CoordinateID, MultiDimensionalInfo> records;
-    protected CoordinateID start;
-    protected CoordinateID dest;
 
-    public MultidimensionalMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
-        CoordinateID start, CoordinateID dest) {
+    public FloatMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes) {
       this.regions = regions;
       this.excludedRegionTypes = excludedRegionTypes;
-      this.start = start;
-      this.dest = dest;
+    }
 
-      records = new HashMap<CoordinateID, MultiDimensionalInfo>();
+    public Distance getZero() {
+      return FloatDistance.get(FloatDistance.ZERO);
     }
 
     /**
-     * @see magellan.library.utils.Regions.Metric#get(magellan.library.CoordinateID)
+     * @see magellan.library.utils.CopyOfRegions.Metric#getInfinity()
      */
-    public MultiDimensionalInfo get(CoordinateID id) {
-      MultiDimensionalInfo result = records.get(id);
-      if (result == null) {
-        result = createInfinity(id);
-        records.put(id, result);
-      }
-      return result;
+    public Distance getInfinity() {
+      return FloatDistance.get(FloatDistance.INFINITY);
     }
 
     /**
-     * @see magellan.library.utils.Regions.Metric#getDistances()
-     */
-    public Map<CoordinateID, ? extends RegionInfo> getDistances() {
-      return Collections.unmodifiableMap(records);
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.Metric#createZero(magellan.library.CoordinateID)
-     */
-    public MultiDimensionalInfo createZero(CoordinateID id) {
-      MultiDimensionalInfo record = MultiDimensionalInfo.createZero(regions.get(id));
-      records.put(id, record);
-      return record;
-    }
-
-    /**
-     * @see magellan.library.utils.Regions.Metric#createInfinity(magellan.library.CoordinateID)
-     */
-    public MultiDimensionalInfo createInfinity(CoordinateID id) {
-      return MultiDimensionalInfo.createInfinity(regions.get(id));
-    }
-
-    /**
-     * Should be called by {@link #relax(RegionInfo, RegionInfo)} to exclude some special cases.
+     * Should be called by {@link #getDistance(CoordinateID, CoordinateID, Distance)} to exclude
+     * some special cases.
      * 
-     * @return <code>true</code> if a special case occurred
+     * @return <code>null</code> if no special case occureed
      */
-    public boolean checkDistArguments(Region r1, Region r2, RegionInfo d1, RegionInfo d2) {
-      if (r1 == null || r2 == null) {
-        log.error("found invalid region");
-        return true;
-      }
-      if (d1.isInfinity()) {
-        return true;
-      }
-      if (excludedRegionTypes.containsKey(r1.getType().getID())
-          || excludedRegionTypes.containsKey(r2.getType().getID())) {
-        return true;
-      } else if (r1 == r2) {
-        log.warn("invalid path");
-        return true;
-      }
+    public boolean checkDistArguments(Region current, Region next, Distance dist, Distance old2) {
+      if (old2 instanceof FloatDistance) {
+        FloatDistance old = (FloatDistance) old2;
+        if (current == null || next == null) {
+          old.setInfinity();
+          return true;
+        }
 
+        if (dist != null) {
+          if (dist instanceof FloatDistance) {
+            if (dist.equals(FloatDistance.get(FloatDistance.INFINITY))) {
+              old.setInfinity();
+              return true;
+            }
+          } else
+            throw new IllegalArgumentException(
+                "something very evil has happened that may or may not have been prevented by Java generics...");
+        }          
+        if (excludedRegionTypes.containsKey(current.getType().getID())
+            || excludedRegionTypes.containsKey(next.getType().getID()))
+          old.setInfinity();
+        else if (next == current) {
+          if (dist == null)
+            old.setZero();
+          else
+            old.set((FloatDistance) dist);
+          return true;
+        }
+      } else {
+        throw new IllegalArgumentException(
+        "something very evil has happened that may or may not have been prevented by Java generics...");
+      }
       return false;
     }
-
-    /**
-     * Checks the argument and decreases next's distance if the new distance created by
-     * {@link #getNewValue(Region, Region, MultiDimensionalInfo, MultiDimensionalInfo, int[])} is
-     * smaller than the old one. Subclasses should usually not overwrite this method, but
-     * {@link #getNewValue(Region, Region, MultiDimensionalInfo, MultiDimensionalInfo, int[])}.
-     * 
-     * @see magellan.library.utils.Regions.Metric#relax(magellan.library.utils.Regions.RegionInfo,
-     *      magellan.library.utils.Regions.RegionInfo)
-     */
-    public boolean relax(RegionInfo current, RegionInfo next) {
-      Region r1 = current.getRegion();
-      Region r2 = next.getRegion();
-      if (checkDistArguments(r1, r2, current, next))
-        return false;
-
-      MultiDimensionalInfo current2 = (MultiDimensionalInfo) current;
-      MultiDimensionalInfo next2 = (MultiDimensionalInfo) next;
-
-      int[] newValues = new int[4];
-
-      newValues[3] = getPotential(r1, r2);
-
-      if (!getNewValue(r1, r2, current2, next2, newValues))
-        return false;
-
-      // if d(next)=\infty OR d(current)+d(current,next) < d(next)
-      // decrease key
-      if (next2.dist.compareTo(newValues[0], newValues[1], newValues[2], newValues[3]) > 0) {
-        next2.dist.set(newValues[0], newValues[1], newValues[2], newValues[3]);
-        next2.pre = current.getID();
-        return true;
-      }
-      return false;
-
-    }
-
-    /**
-     * Returns a potential based on the distance from the destination that should heuristically
-     * speed-up search.
-     */
-    protected int getPotential(Region r1, Region r2) {
-      if (dest == null)
-        return 0;
-      // add potential for goal-directed search:
-      int xdiff1 = Math.abs(r1.getID().x - dest.x);
-      int ydiff1 = Math.abs(r1.getID().y - dest.y);
-      int xdiff2 = Math.abs(r2.getID().x - dest.x);
-      int ydiff2 = Math.abs(r2.getID().y - dest.y);
-      return Math.max(xdiff2, ydiff2) - Math.max(xdiff1, ydiff1);
-    }
-
-    /**
-     * Subclasses should implement this method and return their new distance value encoded in
-     * newValues. <code>newValue[3]</code> is pre-initialized with the potential.
-     * 
-     * @param newValues An array with four elements that should hold the result like {dist, plus,
-     *          realDist, pot}.
-     * @return <code>false</code> if the distance of next should not be decreased
-     */
-    protected abstract boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current,
-        MultiDimensionalInfo next, int[] newValues);
   }
 
   /**
    * A metric for ship paths
    */
-  public static class ShipMetric extends MultidimensionalMetric {
+  protected static class ShipMetric extends FloatMetric {
     private Set<BuildingType> harbourType;
     private int speed;
+    private CoordinateID start;
+    private CoordinateID dest;
 
     public ShipMetric(Map<CoordinateID, Region> regions, CoordinateID start, CoordinateID dest,
         Map<ID, RegionType> excludedRegionTypes, Set<BuildingType> harbourTypes, int speed) {
-      super(regions, excludedRegionTypes, start, dest);
+      super(regions, excludedRegionTypes);
       this.harbourType = harbourTypes;
       this.speed = speed;
+      this.start = start;
+      this.dest = dest;
     }
 
     /**
-     * Returns the distance between r1 an r2 plus <code>current</code>'s distance, usually as
-     * component-wise sum. If, however, r2 is a land region, the result is rounded up to the next
-     * multiple of {@link #speed}. Oceans with coast increase the plus value.
+     * Returns the distance between r1 an r2 plus dist. If dist is <code>null</code> it returns the
+     * distance between r1 and r2. Otherwise, it usually returns the component-wise sum of the
+     * distance between the regions and dist. If, however, r2 is a land region, the result is
+     * rounded up to the next multiple of {@link #speed}.
+     * 
+     * @param r1
+     * @param r2
+     * @param dist
+     * @return
      */
-    protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current,
-        MultiDimensionalInfo next, int[] newValues) {
-      int newDist;
-      int newPlus;
-      int newRealDist;
+    public void getDistance(CoordinateID current, CoordinateID next, Distance dist2, Distance oldDist) {
+      Region r1 = regions.get(current);
+      Region r2 = regions.get(next);
+      if (checkDistArguments(r1, r2, dist2, oldDist))
+        return;
+      
+      FloatDistance result = (FloatDistance) oldDist;
+
+      // TODO does not do what it should...
+//      if (Direction.toInt(current.createDistanceCoordinate(next)) == Direction.DIR_INVALID){
+//        result.setInfinity();
+//        return;
+//      }
+
+      // Fiete 20061123
+      // for Ships...prefer Regions near coasts
+      // for land units...prefer Regions with roads
+      // Trick: if suitable situation, reduce the distance minimal
+
+      FloatDistance dist = (FloatDistance) dist2;
+
+      // add potential for goal-directed search:
+      int xdiff1 = Math.abs(current.x - dest.x);
+      int ydiff1 = Math.abs(current.y - dest.y);
+      int xdiff2 = Math.abs(next.x - dest.x);
+      int ydiff2 = Math.abs(next.y - dest.y);
+      int pot = Math.max(xdiff2, ydiff2) - Math.max(xdiff1, ydiff1);
 
       if (r1.getRegionType().isOcean()) {
         if (r2.getRegionType().isOcean()) {
           if (r2.getOceanWithCoast() == 1) {
-            newDist = 1;
-            newPlus = 1;
-            newRealDist = 1;
+            result.set(1,1,1, pot);
           } else {
-            newDist = 1;
-            newPlus = 0;
-            newRealDist = 1;
+            result.set(1, 0, 1, pot);
           }
         } else {
-          if (containsHarbour(r2, harbourType) || r2.getID().equals(dest)) {
-            // movement ends in land regions, so round up to next multiple of speed
-            newDist = speed - current.dist.dist % speed;
-            newPlus = 1;
-            newRealDist = 1;
-          } else
-            return false;
+          // movement ends in land regions, so round up to next multiple of speed
+          if (dist != null)
+            result.set(speed - dist.dist % speed, 1, 1, pot);
+          else
+            result.set(1,1,1, pot);
         }
       } else {
-        if (!r2.getRegionType().isOcean()) {
+        if (!r2.getRegionType().isOcean())
           // this should not happen
           log.warn("ship route to neighboring land region");
-          return false;
-        }
-        newDist = 1;
-        newPlus = 1;
-        newRealDist = 1;
+        result.set(1,1,1, pot);
       }
 
-      newDist += current.dist.dist;
-      newPlus += current.dist.plus;
-      newRealDist += current.dist.realDist;
-      // potential is not additive
-
-      newValues[0] = newDist;
-      newValues[1] = newPlus;
-      newValues[2] = newRealDist;
-      return true;
+      if (dist != null)
+        result.add1(dist);
     }
 
     /**
      * Returns the direct neighbors of id.
      * 
-     * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
+     * @see magellan.library.utils.CopyOfRegions.Metric#getNeighbours(magellan.library.CoordinateID)
      */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
-      Map<CoordinateID, Region> neighbors = Regions.getAllNeighbours(regions, id, null);
-      for (Iterator<CoordinateID> it = neighbors.keySet().iterator(); it.hasNext();) {
-        Region current = neighbors.get(it.next());
-        if (!current.getRegionType().isOcean() && !current.getType().equals(harbourType))
-          if (!current.getID().equals(dest))
-            it.remove();
-      }
-      return neighbors;
+      return CopyOfRegions.getAllNeighbours(regions, id, null);
     }
   }
 
@@ -948,68 +789,75 @@ public class Regions {
    * @param streetRadius
    * @return
    */
-  public static List<Region> getLandPath(GameData data, final CoordinateID start,
-      final CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes, final int radius,
-      final int streetRadius) {
+  public static List<Region> getPath(final Map<CoordinateID, Region> regions,
+      final CoordinateID start, final CoordinateID dest,
+      final Map<ID, RegionType> excludedRegionTypes, final int radius, final int streetRadius) {
+    Map<CoordinateID, RegionRecord> distances =
+        getDistances(regions, start, dest, Integer.MAX_VALUE, getLandMetric(regions,
+            excludedRegionTypes, radius, streetRadius));
+    return getPath2(regions, start, dest, excludedRegionTypes, distances, getRoadMetric(regions,
+        excludedRegionTypes, radius, streetRadius));
+  }
 
-    Metric metric;
-    getDistances(data.regions(), start, dest, Integer.MAX_VALUE, metric =
-        new LandMetric(data.regions(), excludedRegionTypes, start, dest, radius, streetRadius));
-    return getPath2(data.regions(), start, dest, excludedRegionTypes, metric, radius, streetRadius);
+  public static Metric getLandMetric(final Map<CoordinateID, Region> regions,
+      final Map<ID, RegionType> excludedRegionTypes, final int radius, int streetRadius) {
+    return new LandMetric(regions, excludedRegionTypes, radius, streetRadius);
   }
 
   /**
    * A metric for land regions. The secret lies in the neighbor function, which returns regions that
    * can be reached in one week.
    */
-  public static class LandMetric extends MultidimensionalMetric {
+  static class LandMetric extends FloatMetric {
     private int radius;
     private int streetRadius;
 
     public LandMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
-        CoordinateID start, CoordinateID dest, int radius, int streetRadius) {
-      super(regions, excludedRegionTypes, start, dest);
+        int radius, int streetRadius) {
+      super(regions, excludedRegionTypes);
       this.radius = radius;
       this.streetRadius = streetRadius;
     }
 
     /**
-     * Adds the movement costs considering roads to current's distance.
+     * delivers a distance between 2 regions we asume, that both regions are neighbours, so trivial
+     * distance is 1 for oceans, we deliver for landnearregions a significant smaller value for
+     * landregions we calculate a new distance...as like moveoints with propper roads: 2, without: 3
      * 
-     * @see magellan.library.utils.Regions.MultidimensionalMetric#getNewValue(magellan.library.Region,
-     *      magellan.library.Region, magellan.library.utils.Regions.MultiDimensionalInfo,
-     *      magellan.library.utils.Regions.MultiDimensionalInfo, int[])
+     * @param r1
+     * @param r2
+     * @return
      */
-    protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current,
-        MultiDimensionalInfo next, int[] newValues) {
-      RoadMetric metric;
-      Regions.getDistances(regions, current.getID(), next.getID(), Integer.MAX_VALUE, metric =
-          new RoadMetric(regions, excludedRegionTypes, start, dest, radius, streetRadius));
+    public void getDistance(CoordinateID current, CoordinateID next, Distance dist2, Distance oldDist) {
+      Region r1 = regions.get(current);
+      Region r2 = regions.get(next);
+      if (checkDistArguments(r1, r2, dist2, oldDist))
+        return;
+      
+      FloatDistance result = (FloatDistance) oldDist;
+      FloatDistance dist = (FloatDistance) dist2;
 
-      int rawDist = current.dist.dist + (metric.get(next.getID())).dist.dist;
-      // round up if the maximum radius has been used.
-      int newDist = rawDist + rawDist % (radius * streetRadius);
-      int newRealDist = current.dist.realDist + 1;
+      Map<CoordinateID, RegionRecord> distances =
+          getDistances(regions, current, next, Integer.MAX_VALUE, getRoadMetric(regions,
+              excludedRegionTypes, radius, streetRadius));
 
-      newValues[0] = newDist;
-      newValues[1] = 0;
-      newValues[2] = newRealDist;
-      return true;
+      if (dist == null) {
+        result.set((FloatDistance) distances.get(next).dist);
+      } else {
+        int rawDist = dist.dist + ((FloatDistance) distances.get(next).dist).dist;
+        result.set(rawDist + streetRadius * radius - rawDist
+            % (radius * streetRadius), dist.plus, dist.plus + 1);
+      }
     }
 
-    /**
-     * Returns all regions that can be reached in one week from id
-     * 
-     * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
-     */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
-      RoadMetric metric;
-      Regions.getDistances(regions, id, null, streetRadius, metric =
-          new RoadMetric(regions, excludedRegionTypes, start, null, radius, streetRadius));
+      Map<CoordinateID, RegionRecord> distances =
+          getDistances(regions, id, null, streetRadius, getRoadMetric(regions, excludedRegionTypes,
+              radius, streetRadius));
       Map<CoordinateID, Region> neighbors = new HashMap<CoordinateID, Region>();
-      for (RegionInfo record : metric.getDistances().values()) {
-        if (record.getDistance() <= streetRadius)
-          neighbors.put(record.getID(), regions.get(record.getID()));
+      for (RegionRecord record : distances.values()) {
+        if (record.dist.getDistance() <= streetRadius)
+          neighbors.put(record.id, regions.get(record.id));
       }
 
       return neighbors;
@@ -1017,75 +865,110 @@ public class Regions {
   }
 
   /**
-   * A metric that accounts for movement cost using roads.
+   * delivers a distance between 2 regions we asume, that both regions are neighbours, so trivial
+   * distance is 1 for oceans, we deliver for landnearregions a significant smaller value for
+   * landregions we calculate a new distance...as like moveoints with propper roads: 2, without: 3
+   * 
+   * @param r1
+   * @param r2
+   * @param useExtendedVersion
+   * @return
    */
-  public static class RoadMetric extends MultidimensionalMetric {
+  protected static float getFloatDistance(Region r1, Region r2) {
+    // Fiete 20061123
+    // for Ships...prefer Regions near coasts
+    // for land units...prefer Regions with roads
+    // Trick: if suitable situation, reduce the distance minimal
+
+    // if we have 2 Ozean regions...
+    if (r1.getRegionType().isOcean() && r2.getRegionType().isOcean()) {
+      if (r2.getOceanWithCoast() == 1) {
+        return .999f;
+      } else {
+        return 1;
+      }
+    }
+
+    // if we have 2 non-ocean regions....
+    if (!r1.getRegionType().isOcean() && !r2.getRegionType().isOcean()) {
+      if (CopyOfRegions.isCompleteRoadConnection(r1, r2)) {
+        return 1.999f;
+      } else {
+        return 3f;
+      }
+    }
+
+    return 1;
+  }
+
+  public static RoadMetric getRoadMetric(Map<CoordinateID, Region> regions,
+      Map<ID, RegionType> excludedRegionTypes, int radius, int streetRadius) {
+    return new RoadMetric(regions, excludedRegionTypes, radius, streetRadius);
+  }
+
+  static class RoadMetric extends FloatMetric {
 
     private int radius;
     private int streetRadius;
 
     public RoadMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
-        CoordinateID start, CoordinateID dest, int radius, int streetRadius) {
-      super(regions, excludedRegionTypes, start, dest);
+        int radius, int streetRadius) {
+      super(regions, excludedRegionTypes);
       this.radius = radius;
       this.streetRadius = streetRadius;
     }
 
-    protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current2,
-        MultiDimensionalInfo next2, int[] newValues) {
-      int newDist;
-      int newRealDist;
+    public void getDistance(CoordinateID current, CoordinateID next, Distance dist2, Distance oldDist) {
+      Region r1 = regions.get(current);
+      Region r2 = regions.get(next);
+      if (checkDistArguments(r1, r2, dist2, oldDist))
+        return;
+      
+      FloatDistance result = (FloatDistance) oldDist;
+      FloatDistance dist = (FloatDistance) dist2;
 
-      if (Regions.isCompleteRoadConnection(r1, r2)) {
-        // in order to use ints, not floats, we do not use 1/radius, but
-        // streetradius*radius/streetradius
-        newDist = radius;
-      } else {
-        // in order to use ints, not floats, we do not use 1/radius, but streetradius*radius/radius
-        newDist = streetRadius;
-      }
+      if (CopyOfRegions.isCompleteRoadConnection(regions.get(current), regions.get(next)))
+        result.set(radius, 0, 1);
+      else
+        result.set(streetRadius, 0, 1);
 
-      newDist += current2.dist.dist;
-      newRealDist = 1 + current2.dist.realDist;
-
-      newValues[0] = newDist;
-      newValues[1] = 0;
-      newValues[2] = newRealDist;
-      newValues[3] = 0;
-      return true;
+      if (dist != null)
+        result.add1(dist);
     }
 
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
-      return Regions.getAllNeighbours(regions, id, excludedRegionTypes);
+      return CopyOfRegions.getAllNeighbours(regions, id, excludedRegionTypes);
     }
   }
 
-  public static class UnitMetric extends MultidimensionalMetric {
+  public static UnitMetric getUnitMetric(Map<CoordinateID, Region> regions,
+      Map<ID, RegionType> excludedRegionTypes) {
+    return new UnitMetric(regions, excludedRegionTypes);
+  }
 
-    public UnitMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes,
-        CoordinateID start, CoordinateID dest) {
-      super(regions, excludedRegionTypes, start, dest);
+  static class UnitMetric extends FloatMetric {
+
+    public UnitMetric(Map<CoordinateID, Region> regions, Map<ID, RegionType> excludedRegionTypes) {
+      super(regions, excludedRegionTypes);
     }
 
-    /**
-     * @see magellan.library.utils.Regions.MultidimensionalMetric#getNewValue(magellan.library.Region,
-     *      magellan.library.Region, magellan.library.utils.Regions.MultiDimensionalInfo,
-     *      magellan.library.utils.Regions.MultiDimensionalInfo, int[])
-     */
-    protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current2,
-        MultiDimensionalInfo next2, int[] newValues) {
-      newValues[0] = 1;
-      newValues[1] = 0;
-      newValues[2] = 1;
-      newValues[3] = 0;
-      return true;
+    public void getDistance(CoordinateID current, CoordinateID next, Distance dist2, Distance oldDist) {
+      Region r1 = regions.get(current);
+      Region r2 = regions.get(next);
+      if (checkDistArguments(r1, r2, dist2, oldDist))
+        return;
+      
+      FloatDistance result = (FloatDistance) oldDist;
+      FloatDistance dist = (FloatDistance) dist2;
+
+      result.set(1,0,1);
+      if (dist != null) {
+        result.add1(dist);
+      }
     }
 
-    /**
-     * @see magellan.library.utils.Regions.Metric#getNeighbours(magellan.library.CoordinateID)
-     */
     public Map<CoordinateID, Region> getNeighbours(CoordinateID id) {
-      return Regions.getAllNeighbours(regions, id, excludedRegionTypes);
+      return CopyOfRegions.getAllNeighbours(regions, id, excludedRegionTypes);
     }
   }
 
@@ -1098,7 +981,7 @@ public class Regions {
   public static List<Region> getPath1(Map<CoordinateID, Region> regions, CoordinateID start,
       CoordinateID dest, Map<ID, RegionType> excludedRegionTypes) {
     if ((regions == null) || (start == null) || (dest == null)) {
-      Regions.log.warn("Regions.getPath(): invalid argument");
+      CopyOfRegions.log.warn("Regions.getPath(): invalid argument");
 
       return Collections.emptyList();
     }
@@ -1132,7 +1015,7 @@ public class Regions {
      * initialize the backlog list and map with the neighbours of the start region
      */
     Map<CoordinateID, Region> initNeighbours =
-        Regions.getAllNeighbours(regions, start, excludedRegionTypes);
+        CopyOfRegions.getAllNeighbours(regions, start, excludedRegionTypes);
     initNeighbours.remove(start);
     backlogList.addAll(initNeighbours.values());
     backlogMap.putAll(initNeighbours);
@@ -1151,7 +1034,7 @@ public class Regions {
 
       /* safety checks */
       if (excludedRegionTypes.containsKey(curRegion.getType().getID())) {
-        Regions.log.warn("Regions.getPath(): Found an region of type "
+        CopyOfRegions.log.warn("Regions.getPath(): Found an region of type "
             + curRegion.getType().getName() + " in region list! Removing and ignoring it.");
         backlogList.removeFirst();
         backlogMap.remove(curCoord);
@@ -1160,7 +1043,7 @@ public class Regions {
       }
 
       if (distances.containsKey(curCoord)) {
-        Regions.log
+        CopyOfRegions.log
             .warn("Regions.getPath(): Found a region with known distance in region list! Removing and ignoring it.");
         backlogList.removeFirst();
         backlogMap.remove(curCoord);
@@ -1174,7 +1057,7 @@ public class Regions {
       // float minDistance = Float.MAX_VALUE;
       double minDistance = Double.MAX_VALUE;
       Map<CoordinateID, Region> neighbours =
-          Regions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
+          CopyOfRegions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
       neighbours.remove(curCoord);
 
       /*
@@ -1193,7 +1076,7 @@ public class Regions {
            */
           // float curDistance = getDistance(curNb, curRegion) + dist.floatValue();
           // double curDistance = Regions.getDistance(curNb, curRegion,true) + dist.floatValue();
-          double curDistance = Regions.getDistance(curNb, curRegion, true) + dist.doubleValue();
+          double curDistance = CopyOfRegions.getDistance(curNb, curRegion, true) + dist.doubleValue();
 
           if (curDistance < minDistance) {
             minDistance = curDistance;
@@ -1227,12 +1110,12 @@ public class Regions {
           consecutiveReenlistings++;
 
           if (consecutiveReenlistings > backlogList.size()) {
-            Regions.log.warn("Regions.getPath(): looks like an endless loop. Exiting.");
+            CopyOfRegions.log.warn("Regions.getPath(): looks like an endless loop. Exiting.");
 
             break;
           }
         } else {
-          Regions.log
+          CopyOfRegions.log
               .warn("Regions.getPath(): Found a region with known distance in backlog list: "
                   + curRegion);
         }
@@ -1258,7 +1141,7 @@ public class Regions {
         double minDistance = dist.doubleValue() + 1;
 
         CoordinateID closestNbCoord = null;
-        Map neighbours = Regions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
+        Map neighbours = CopyOfRegions.getAllNeighbours(regions, curCoord, excludedRegionTypes);
         neighbours.remove(curCoord);
 
         for (Iterator iter = neighbours.values().iterator(); iter.hasNext();) {
@@ -1270,14 +1153,14 @@ public class Regions {
             double curDistance = nbDist.doubleValue();
 
             // add the last mile, Fiete 20070531
-            curDistance += Regions.getDistance(curRegion, curNb, true);
+            curDistance += CopyOfRegions.getDistance(curRegion, curNb, true);
 
             if (curDistance < minDistance) {
               minDistance = curDistance;
               closestNbCoord = curNbCoord;
             }
           } else {
-            Regions.log.warn("Regions.getPath(): Found neighbouring region without distance: "
+            CopyOfRegions.log.warn("Regions.getPath(): Found neighbouring region without distance: "
                 + curNb + " neighbouring " + curRegion);
           }
         }
@@ -1287,14 +1170,14 @@ public class Regions {
           curRegion = regions.get(curCoord);
           path.addFirst(curRegion);
         } else {
-          Regions.log
+          CopyOfRegions.log
               .warn("Regions.getPath(): Discovered region without any distanced neighbours while backtracking");
           path.clear();
 
           break;
         }
       } else {
-        Regions.log
+        CopyOfRegions.log
             .warn("Regions.getPath(): Discovered region without distance while backtracking: "
                 + curRegion);
         path.clear();
@@ -1306,25 +1189,17 @@ public class Regions {
     return path;
   }
 
-  public static boolean containsHarbour(Region r, Collection<BuildingType> harbours) {
-    for (BuildingType harbourType : harbours) {
-      if (containsBuilding(r, harbourType))
-        return true;
-    }
-    return false;
-  }
-
   /**
-   * Returns <code>true</code> if r contains a build with the specified type
+   * DOCUMENT-ME
    */
-  public static boolean containsBuilding(Region r, BuildingType type) {
+  public static boolean containsHarbour(Region r, BuildingType harbour) {
     boolean harbourFound = false;
 
-    if (type != null) {
+    if (harbour != null) {
       for (Iterator iter = r.buildings().iterator(); iter.hasNext();) {
         Building b = (Building) iter.next();
 
-        if (b.getType().equals(type) && (b.getSize() == type.getMaxSize())) {
+        if (b.getType().equals(harbour) && (b.getSize() == harbour.getMaxSize())) {
           harbourFound = true;
 
           break;
@@ -1335,11 +1210,6 @@ public class Regions {
     return harbourFound;
   }
 
-  public static List<Region> planShipRoute(Ship ship, GameData data, CoordinateID destination) {
-    return planShipRoute(data, ship.getRegion().getCoordinate(), ship.getShoreId(), destination,
-        data.getGameSpecificStuff().getGameSpecificRules().getShipRange(ship));
-  }
-
   /**
    * @param ship
    * @param destination
@@ -1348,16 +1218,16 @@ public class Regions {
    * @param speed The speed of the ship
    * @return
    */
-  public static List<Region> planShipRoute(GameData data, CoordinateID start, int shoreId,
-      CoordinateID destination, int speed) {
-    BuildingType harbour = data.rules.getBuildingType(EresseaConstants.B_HARBOUR);   
-    
-    if (destination == null || data.regions().get(destination) == null || start == null
-        || data.regions().get(start) == null)
+  public static List<Region> planShipRoute(Ship ship, CoordinateID destination,
+      Map<CoordinateID, Region> allregions, BuildingType harbour, int speed) {
+    if (destination == null || allregions.get(destination)==null)
       // no path
       return null;
-    Region destRegion = data.regions().get(destination);
-    Region startRegion = data.regions().get(start);
+    Region destRegion = allregions.get(destination);
+    if (ship.getRegion() == null || !allregions.containsKey(ship.getRegion().getID())) 
+      // strange
+      return null;
+    Region startRegion = ship.getRegion();
 
     Map<CoordinateID, Region> harbourRegions = new Hashtable<CoordinateID, Region>();
     harbourRegions.put(startRegion.getID(), startRegion);
@@ -1366,30 +1236,30 @@ public class Regions {
     // Fetch all ocean-regions and all regions, that contain a harbor.
     // These are the valid one in which a path shall be searched.
     // if(oceanType != null) {
-    for (Iterator iter = data.regions().values().iterator(); iter.hasNext();) {
+    for (Iterator iter = allregions.values().iterator(); iter.hasNext();) {
       Region r = (Region) iter.next();
 
       if ((r.getRegionType() != null) && r.getRegionType().isOcean()
-          || Regions.containsBuilding(r, harbour)) {
+          || CopyOfRegions.containsHarbour(r, harbour)) {
         harbourRegions.put(r.getCoordinate(), r);
       }
     }
 
-    if (shoreId != Direction.DIR_INVALID
-        && !Regions.containsBuilding(startRegion, harbour)) {
+    if (ship.getShoreId() != Direction.DIR_INVALID
+        && !CopyOfRegions.containsHarbour(ship.getRegion(), harbour)) {
       // Ship cannot leave in all directions
       // try to find a path from every allowed shore-off region to the destination
       List<Region> bestPath = null;
-      for (int legalShore = (shoreId + 5) % 6; legalShore != (shoreId + 2) % 6; legalShore =
+      for (int legalShore = (ship.getShoreId() + 5) % 6; legalShore != (ship.getShoreId() + 2) % 6; legalShore =
           (legalShore + 1) % 6) {
         CoordinateID newStart =
-            new CoordinateID(start).translate(Direction
+            new CoordinateID(ship.getRegion().getCoordinate()).translate(Direction
                 .toCoordinate(legalShore));
         if (!harbourRegions.containsKey(newStart) || !harbourRegions.get(newStart).getRegionType().isOcean())
           continue;
         
         List<Region> newPath =
-            Regions.getShipPath(harbourRegions, newStart, destination, Collections
+            CopyOfRegions.getPath(harbourRegions, newStart, destination, Collections
                 .<ID, RegionType> emptyMap(), Collections.singleton(harbour), speed);
         if (bestPath == null || bestPath.size() > newPath.size())
           bestPath = newPath;
@@ -1400,7 +1270,7 @@ public class Regions {
       return result;
     }
     
-    return Regions.getShipPath(harbourRegions, start, destination,
+    return CopyOfRegions.getPath(harbourRegions, ship.getRegion().getCoordinate(), destination,
         Collections.<ID, RegionType> emptyMap(), Collections.singleton(harbour), speed);
   }
 
@@ -1421,7 +1291,7 @@ public class Regions {
   private static double getDistance(Region r1, Region r2, boolean useExtendedVersion) {
     double erg = 1;
     if (!useExtendedVersion) {
-      return Regions.getDistance(r1, r2);
+      return CopyOfRegions.getDistance(r1, r2);
     }
     // Fiete 20061123
     // for Ships...prefer Regions near coasts
@@ -1440,7 +1310,7 @@ public class Regions {
 
     // if we have 2 non ozean regions....
     if (!r1.getRegionType().isOcean() && !r2.getRegionType().isOcean()) {
-      if (Regions.isCompleteRoadConnection(r1, r2)) {
+      if (CopyOfRegions.isCompleteRoadConnection(r1, r2)) {
         // return 2;
         return (1 + suitErg);
       } else {
@@ -1468,11 +1338,11 @@ public class Regions {
     String ID = (u.getShip() == null) ? u.toString() : u.getShip().toString(false);
 
     // run over neighbours recursively
-    CoordinateID c = Regions.getMovement(data, ID, u.getRegion().getCoordinate(), coordinates);
+    CoordinateID c = CopyOfRegions.getMovement(data, ID, u.getRegion().getCoordinate(), coordinates);
 
     while ((c != null) && !coordinates.contains(c)) {
       coordinates.add(c);
-      c = Regions.getMovement(data, ID, c, coordinates);
+      c = CopyOfRegions.getMovement(data, ID, c, coordinates);
     }
 
     Collections.reverse(coordinates);
@@ -1483,7 +1353,7 @@ public class Regions {
   private static CoordinateID getMovement(GameData data, String ID, CoordinateID c,
       List travelledRegions) {
     Map<CoordinateID, Region> neighbours =
-        Regions.getAllNeighbours(data.regions(), c, new Hashtable<ID, RegionType>());
+        CopyOfRegions.getAllNeighbours(data.regions(), c, new Hashtable<ID, RegionType>());
 
     for (Iterator<Region> iter = neighbours.values().iterator(); iter.hasNext();) {
       Region r = iter.next();
@@ -1494,8 +1364,8 @@ public class Regions {
         continue;
       }
 
-      if (Regions.messagesContainsString(r.getTravelThru(), ID)
-          || Regions.messagesContainsString(r.getTravelThruShips(), ID)) {
+      if (CopyOfRegions.messagesContainsString(r.getTravelThru(), ID)
+          || CopyOfRegions.messagesContainsString(r.getTravelThruShips(), ID)) {
         return neighbour;
       }
     }
@@ -1539,18 +1409,6 @@ public class Regions {
     return ret;
   }
 
-  public static Map<ID, RegionType> getLandRegionTypes(Rules rules) {
-    Map<ID, RegionType> ret = new Hashtable<ID, RegionType>();
-
-    for (RegionType rt : rules.getRegionTypes()) {
-      if (rt.isLand()) {
-        ret.put(rt.getID(), rt);
-      }
-    }
-
-    return ret;
-  }
-
   /**
    * Returns the RegionType that is named as <tt>Feuerwand</tt>.
    * 
@@ -1582,7 +1440,7 @@ public class Regions {
     regions.add(r1);
     regions.add(r2);
     // generate List of directions
-    List<Direction> directions = Regions.getDirectionObjectsOfRegions(regions);
+    List<Direction> directions = CopyOfRegions.getDirectionObjectsOfRegions(regions);
     Direction dir1 = directions.get(0);
     // border of r1 ->
     boolean border1OK = false;
@@ -1603,7 +1461,7 @@ public class Regions {
     regions.clear();
     regions.add(r2);
     regions.add(r1);
-    directions = Regions.getDirectionObjectsOfRegions(regions);
+    directions = CopyOfRegions.getDirectionObjectsOfRegions(regions);
     dir1 = directions.get(0);
     // border of r1 ->
     boolean border2OK = false;
@@ -1688,19 +1546,21 @@ public class Regions {
     Random r = new Random(System.currentTimeMillis());
 
     long cnt = 0;
-    Regions.log.info("starting calculation of coasts");
-    for (Region actRegion : data.regions().values()) {
+    CopyOfRegions.log.info("starting calculation of coasts");
+    for (Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
+      Region actRegion = iter.next();
       int coastBitmap = 0;
       if (actRegion.getRegionType().isOcean()) {
         // we have an ocean in front
         // the result
         CoordinateID cID = actRegion.getID();
-        Map<CoordinateID, Region> n = Regions.getAllNeighbours(data.regions(), cID, null);
+        Map<CoordinateID, Region> n = CopyOfRegions.getAllNeighbours(data.regions(), cID, null);
         n.remove(cID);
         // checking all neighbours
-        for (CoordinateID checkID : n.keySet()) {
+        for (Iterator iter2 = n.keySet().iterator(); iter2.hasNext();) {
+          CoordinateID checkID = (CoordinateID) iter2.next();
           Region checkR = n.get(checkID);
-          if (checkR.getRegionType().isLand()) {
+          if (!checkR.getRegionType().isOcean()) {
             // not ocean! we should set an 1
             // what is relative coordinate ?
             CoordinateID diffCoord = new CoordinateID(checkID.x - cID.x, checkID.y - cID.y, 0);
@@ -1733,8 +1593,7 @@ public class Regions {
       }
       actRegion.setCoastBitMap(coastBitmap);
     }
-    Regions.log.info("finished calculation of coasts, found " + cnt + " coasts.");
+    CopyOfRegions.log.info("finished calculation of coasts, found " + cnt + " coasts.");
   }
-
 
 }

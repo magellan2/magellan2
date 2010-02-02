@@ -13,6 +13,7 @@
 
 package magellan.library.gamebinding;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import magellan.library.Item;
@@ -30,9 +31,15 @@ import magellan.library.rules.Race;
  */
 public class EresseaMovementEvaluator implements MovementEvaluator {
   private Rules rules;
+  private Collection<ItemType> horseTypes;
 
   protected EresseaMovementEvaluator(Rules rules) {
     this.rules = rules;
+    horseTypes = new ArrayList<ItemType>(2);
+    for (ItemType type : rules.getItemTypes()) {
+      if (type.isHorse())
+        horseTypes.add(type);
+    }
 	}
 
 
@@ -50,12 +57,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 */
 	public int getPayloadOnHorse(Unit unit) {
 		int capacity = 0;
-		int horses = 0;
-		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_UHORSE, true));
-
-		if(i != null) {
-			horses = i.getAmount();
-		}
+    int horses = getHorses(unit);
 
 		if(horses <= 0) {
 			return MovementEvaluator.CAP_NO_HORSES;
@@ -73,7 +75,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int carts = 0;
-		i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
 
 		if(i != null) {
 			carts = i.getAmount();
@@ -99,6 +101,19 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		return capacity;
 	}
 
+	protected int getHorses(Unit unit) {
+    int horses = 0;
+    for (ItemType horseType : horseTypes) {
+      Item i = unit.getModifiedItem(horseType);
+
+      if(i != null) {
+        horses += i.getAmount();
+      }
+    }
+    return horses;
+  }
+
+
 	/**
 	 * Returns the maximum payload in GE  100 of this unit when it travels on foot. Horses, carts
 	 * and persons are taken into account for this calculation. If the unit has a sufficient skill
@@ -113,12 +128,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 */
 	public int getPayloadOnFoot(Unit unit) {
 		int capacity = 0;
-		int horses = 0;
-		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_UHORSE, true));
-
-		if(i != null) {
-			horses = i.getAmount();
-		}
+		int horses = getHorses(unit);
 
 		if(horses < 0) {
 			horses = 0;
@@ -137,7 +147,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 		}
 
 		int carts = 0;
-		i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
+		Item i = unit.getModifiedItem(rules.getItemType(EresseaConstants.I_CART, true));
 
 		if(i != null) {
 			carts = i.getAmount();
@@ -238,13 +248,12 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
 	 */
 	private int getLoad(Unit unit, Collection<Item> items) {
     int load = 0;
-		ItemType horse = rules.getItemType(EresseaConstants.I_UHORSE, true);
 		ItemType cart = rules.getItemType(EresseaConstants.I_CART, true);
     // darcduck 2007-10-31: take care of bags of negative weight
     ItemType bonw = rules.getItemType(EresseaConstants.I_BONW, true);
 
 		for(Item i : items) {
-			if(!i.getItemType().equals(horse) && !i.getItemType().equals(cart)) {
+			if(!i.getItemType().isHorse() && !i.getItemType().equals(cart)) {
 				// pavkovic 2003.09.10: only take care about (possibly) modified items with positive amount
 				if(i.getAmount() > 0) {
 					load += (((int) (i.getItemType().getWeight() * 100)) * i.getAmount());
@@ -336,5 +345,9 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
     weight += (persons * (int) (personWeight * 100));
 
     return weight;
+  }
+  
+  public Rules getRules() {
+    return rules;
   }
 }

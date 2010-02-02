@@ -161,6 +161,7 @@ public class ItemType extends ObjectType implements Comparable {
 	}
 
 	private boolean iconNameEvaluated = false;
+  private short isHorse;
 
 	/**
 	 * Sets the file name of the icon to use for this item.
@@ -211,5 +212,19 @@ public class ItemType extends ObjectType implements Comparable {
    */
   public StringID getID() {
     return (StringID) id;
+  }
+
+  /**
+   * Returns true if this type is a horse.
+   */
+  public boolean isHorse() {
+    return isHorse > 0;
+  }
+  
+  /**
+   * Sets the horse property.
+   */
+  public void setHorse(short horse) {
+    this.isHorse = horse;
   }
 }

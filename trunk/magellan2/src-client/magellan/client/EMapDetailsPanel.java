@@ -2578,15 +2578,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitHorses(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    int skillLevel = 0;
-    Skill s = u.getModifiedSkill(data.rules.getSkillType(EresseaConstants.S_REITEN, true));
-
-    if (s != null) {
-      skillLevel = s.getLevel();
-    }
-
-    int maxHorsesWalking = ((skillLevel * u.getModifiedPersons() * 4) + u.getModifiedPersons());
-    int maxHorsesRiding = (skillLevel * u.getModifiedPersons() * 2);
+    int maxHorsesWalking = data.rules.getGameSpecificStuff().getGameSpecificRules().getMaxHorsesWalking(u); 
+    int maxHorsesRiding = data.rules.getGameSpecificStuff().getGameSpecificRules().getMaxHorsesRiding(u); 
 
     String text = "Max: " + maxHorsesWalking + " / " + maxHorsesRiding;
     parent.add(createSimpleNode(text, "pferd"));
@@ -3272,7 +3265,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   }
 
   private void appendUnitCapacityByItems(DefaultMutableTreeNode parent, Unit u, int freeCapacity) {
-    ItemType horses = data.rules.getItemType(EresseaConstants.I_UHORSE);
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
     ItemType silver = data.rules.getItemType(EresseaConstants.I_USILVER);
     // Fiete: feature request...showing not only capacity for "good" items in region...
@@ -3281,7 +3273,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Item item = (Item) iter.next();
         ItemType type = item.getItemType();
 
-        if ((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)
+        if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
             && !type.equals(silver)) {
           int weight = (int) (type.getWeight() * 100);
           parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
@@ -3295,7 +3287,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Item item = (Item) iter.next();
         ItemType type = item.getItemType();
 
-        if ((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)
+        if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
             && !type.equals(silver)) {
           int weight = (int) (type.getWeight() * 100);
           parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),
@@ -3331,7 +3323,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Iterator iter3 = l.iterator(); iter3.hasNext();) {
         ItemType type = (ItemType) iter3.next();
 
-        if ((type.getWeight() > 0.0) && !type.equals(horses) && !type.equals(carts)
+        if ((type.getWeight() > 0.0) && !type.isHorse() && !type.equals(carts)
             && !type.equals(silver)) {
           int weight = (int) (type.getWeight() * 100);
           parent.add(createSimpleNode("Max. " + type.getName() + ": " + (freeCapacity / weight),

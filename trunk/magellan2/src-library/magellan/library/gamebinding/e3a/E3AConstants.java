@@ -47,4 +47,6 @@ public class E3AConstants extends EresseaConstants {
   public static final StringID B_GUARDTOWER = StringID.create("Wachturm");
   /** Wachturm */
   public static final StringID B_GUARDHOUSE = StringID.create("Wachstube");
+
+  public static final StringID I_STREITROSS = StringID.create("Streitross");
 }

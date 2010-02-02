@@ -962,6 +962,7 @@ ITEM "Pferd"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+1;ishorse
 
 ITEM "Pferde"
 "Pferde";name
@@ -969,6 +970,7 @@ ITEM "Pferde"
 "Pferdedressur";makeskill
 1;makeskilllevel
 "resources";category
+1;ishorse
 
 ITEM "Kräuter"
 "Kräuter";name

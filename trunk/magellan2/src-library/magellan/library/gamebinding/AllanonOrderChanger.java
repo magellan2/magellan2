@@ -23,26 +23,20 @@
 // 
 package magellan.library.gamebinding;
 
+import magellan.library.Rules;
+
 /**
  *
  * @author Thoralf Rickert
  * @version 1.0, 17.04.2008
  */
 public class AllanonOrderChanger extends EresseaOrderChanger {
-  private static final AllanonOrderChanger singleton = new AllanonOrderChanger();
 
   /**
    * 
    */
-  protected AllanonOrderChanger() {
-    super();
+  protected AllanonOrderChanger(Rules rules) {
+    super(rules);
   }
   
-
-  /**
-   * 
-   */
-  public static AllanonOrderChanger getSingleton() {
-    return AllanonOrderChanger.singleton;
-  }
 }

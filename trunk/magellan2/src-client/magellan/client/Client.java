@@ -1362,9 +1362,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       Client.log.info("Client.saveReport Using encoding: " + getData().getEncoding());
       ProgressBarUI ui = new ProgressBarUI(this);
       crw =
-          new CRWriter(ui, filetype, getData().getEncoding(), Integer.parseInt(getProperties()
+          new CRWriter(getData(), ui, filetype, getData().getEncoding(), Integer.parseInt(getProperties()
               .getProperty("Client.CRBackups.count", FileBackup.DEFAULT_BACKUP_LEVEL + "")));
-      crw.writeAsynchronously(getData());
+      crw.writeAsynchronously();
       crw.close();
 
       // everything worked fine, so reset reportchanged state and also store new FileType settings
@@ -1496,6 +1496,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     try {
       ui.setMaximum(-1);
       ui.show();
+      // FIXME(stm) maybe not pass ui to the reader here!?!
       data =
           new GameDataReader(ui).readGameData(FileTypeFactory.singleton().createFileType(fileName,
               true, new ClientFileTypeChooser(client)));
@@ -1831,7 +1832,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       title.append(" [").append(file).append("]");
     }
 
-    if (data.getOwnerFaction()!=null) {
+    if (data.getOwnerFaction()!=null && data.getFaction(data.getOwnerFaction()) !=null) {
       title.append("-").append(data.getFaction(data.getOwnerFaction()).toString());
     }
     

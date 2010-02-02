@@ -48,6 +48,10 @@ public class ReplacerHelp implements GameDataListener {
 
 		drf.putReplacer("rname", RegionMethodReplacer.class, args);
 
+    args[0] = "getCoordinate";
+    args[1] = new Integer(0);
+    drf.putReplacer("coordinate", RegionMethodReplacer.class, args);
+
 		args[0] = "getType";
 		drf.putReplacer("rtype", RegionMethodReplacer.class, args);
 

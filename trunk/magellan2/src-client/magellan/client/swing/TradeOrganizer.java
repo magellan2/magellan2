@@ -104,11 +104,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     super(owner, false, dispatcher, data, settings);
 
     // register for events
-    dispatcher.addGameDataListener(this);
+    // unnecessary
+    // dispatcher.addGameDataListener(this);
     dispatcher.addSelectionListener(this);
 
     init();
-    setRegions((newRegions == null) ? Collections.EMPTY_SET : newRegions);
+    setRegions((newRegions == null) ? Collections.<Region>emptySet() : newRegions);
   }
 
   @Override

@@ -60,6 +60,7 @@ public class Alliance {
 	}
 
 	private AllianceCategory getMaxAllianceCategory() {
+    // FIXME shouldn't access rules like this
 		Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator();
 
 		if(iter.hasNext()) {
@@ -134,6 +135,7 @@ public class Alliance {
 		StringBuffer ret = new StringBuffer();
 
 		// connect all state strings separated by spaces
+		// TODO shouldn't access rules like this
 		for(Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
 			AllianceCategory ac = iter.next();
 
@@ -165,6 +167,7 @@ public class Alliance {
     }
 	  
 	  
+    // FIXME shouldn't access rules like this
     for(Iterator<AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
       AllianceCategory ac = iter.next();
 
@@ -196,6 +199,7 @@ public class Alliance {
 		int ret = 0;
 
 		// connect all state strings separated by spaces
+    // FIXME shouldn't access rules like this 
 		for(Iterator iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
 			AllianceCategory ac = (AllianceCategory) iter.next();
 

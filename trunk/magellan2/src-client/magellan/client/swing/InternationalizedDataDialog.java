@@ -23,10 +23,8 @@ import magellan.library.event.GameDataListener;
 
 
 /**
- * DOCUMENT-ME
+ * A dialog that is a GameDataListener.
  *
- * @author $Author: $
- * @version $Revision: 310 $
  */
 public abstract class InternationalizedDataDialog extends InternationalizedDialog
 	implements GameDataListener
@@ -36,7 +34,7 @@ public abstract class InternationalizedDataDialog extends InternationalizedDialo
 	protected EventDispatcher dispatcher = null;
 
 	/**
-	 * Creates a new InternationalizedDataDialog object.
+	 * Creates a new InternationalizedDataDialog object. Adds this object as gameDataListener to the dispatcher.
 	 *
 	 * @param owner the <code>Frame</code> from which the dialog is displayed
 	 * @param modal <code>true</code> for a modal dialog, false for one that allows others windows to be 
@@ -59,27 +57,29 @@ public abstract class InternationalizedDataDialog extends InternationalizedDialo
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * @see magellan.library.event.GameDataListener#gameDataChanged(magellan.library.event.GameDataEvent)
 	 */
 	public void gameDataChanged(GameDataEvent e) {
 		this.data = e.getGameData();
 	}
 
-	@Override
-  protected void quit() {
-		super.quit();
-
-		if(dispatcher != null) {
-			dispatcher.removeGameDataListener(this);
-
-			// remove stale listeners
-			dispatcher.removeAllListeners(this);
-		}
-	}
-
+  /**
+   * Removes this instance as listener from the dispatcher. 
+   * 
+   * @see java.awt.Window#dispose()
+   */
+  @Override
+  public void dispose() {
+    if(dispatcher != null) {
+      // remove stale listeners
+      dispatcher.removeAllListeners(this);
+    }
+    super.dispose();
+  }
+	
 	/**
+	 * Returns the current GameData this dialog works with.
+	 * 
 	 * @return the data
 	 */
 	protected GameData getData() {
@@ -87,14 +87,14 @@ public abstract class InternationalizedDataDialog extends InternationalizedDialo
 	}
 
 	/**
-	 * @return the dispatcher
+	 * Returns the dispatcher
 	 */
 	protected EventDispatcher getDispatcher() {
 		return dispatcher;
 	}
 
 	/**
-	 * @return the settings
+	 * Returns the settings.
 	 */
 	protected Properties getSettings() {
 		return settings;

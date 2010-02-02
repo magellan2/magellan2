@@ -49,6 +49,8 @@ public class E3ASpecificStuff implements GameSpecificStuff {
 
   private RelationFactory relationFactory;
 
+  private E3AOrderChanger orderChanger;
+
   /**
    * Returns the value of rules.
    * 
@@ -101,7 +103,9 @@ public class E3ASpecificStuff implements GameSpecificStuff {
    * @see magellan.library.gamebinding.GameSpecificStuff#getOrderChanger()
    */
 	public OrderChanger getOrderChanger() {
-		return E3AOrderChanger.getSingleton();
+    if (orderChanger == null)
+      orderChanger = new E3AOrderChanger(getRules());
+    return orderChanger;
 	}
 
   /**

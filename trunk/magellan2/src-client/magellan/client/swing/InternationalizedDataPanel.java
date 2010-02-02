@@ -36,26 +36,29 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
   private MagellanContext context;
 
   /**
-   * Creates a new InternationalizedDataPanel object.
+   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
    */
   public InternationalizedDataPanel(EventDispatcher ed) {
     this(ed, new Properties());
   }
 
   /**
-   * Creates a new InternationalizedDataPanel object.
+   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
    */
   public InternationalizedDataPanel(EventDispatcher ed, Properties p) {
     this(ed, null, p);
   }
 
   /**
-   * Creates a new InternationalizedDataPanel object.
+   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
    */
   public InternationalizedDataPanel(EventDispatcher ed, GameData initData, Properties p) {
     this(ed.getMagellanContext());
   }
 
+  /**
+   * Creates a new InternationalizedDataPanel object. Adds this object as GameDataListener.
+   */
   public InternationalizedDataPanel(MagellanContext context) {
     this.context = context;
     this.dispatcher = context.getEventDispatcher();
@@ -111,4 +114,11 @@ public abstract class InternationalizedDataPanel extends JPanel implements GameD
   public void setGameData(GameData data) {
     this.data = data;
   }
+  
+  // TODO(stm) listeners almost never get properly removed. We could remove this from the dispatcher
+  // whenever this component is no longer used, but where?
+//  @Override
+//  public void removeNotify() {
+//    super.removeNotify();
+//  }
 }

@@ -25,7 +25,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.Region.Visibility;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.gamebinding.MapMergeEvaluator;
 import magellan.library.io.cr.Loader;
@@ -422,8 +421,10 @@ public abstract class GameData implements Cloneable,Addeable {
    *         <tt>null</tt>.
    */
   public Region getRegion(CoordinateID c) {
-    CoordinateID id = new CoordinateID(c);
-    return (regions() == null) ? null : (Region) regions().get(id);
+    // TODO (stm) why was this here??
+//    CoordinateID id = new CoordinateID(c);
+//    return (regions() == null) ? null : (Region) regions().get(id);
+    return (regions() == null) ? null : regions().get(c);
   }
 
   /**

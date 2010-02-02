@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import magellan.library.GameData;
 import magellan.library.Skill;
 import magellan.library.Unit;
 import magellan.library.relation.PersonTransferRelation;
@@ -38,15 +39,15 @@ import magellan.library.utils.Resources;
 
 public class SkillInspector extends AbstractInspector {
   /** The singleton instance. */
-  public static final SkillInspector INSPECTOR = new SkillInspector();
+//  public static final SkillInspector INSPECTOR = new SkillInspector();
 
   /**
    * Returns a (singleton) instance.
    * 
    * @return An instance of this class
    */
-  public static SkillInspector getInstance() {
-    return SkillInspector.INSPECTOR;
+  public static SkillInspector getInstance(GameData data) {
+    return new SkillInspector(data);
   }
 
   protected static final ProblemType SKILLDECREASE;
@@ -58,10 +59,11 @@ public class SkillInspector extends AbstractInspector {
       typeName = message;
     String description = Resources.get("tasks.skillinspector.skilldecrease.description", false);
     String group = Resources.get("tasks.skillinspector.skilldecrease.group", false);
-    SKILLDECREASE = new ProblemType(typeName, group, description, message, getInstance());
+    SKILLDECREASE = new ProblemType(typeName, group, description, message);
   }
 
-  protected SkillInspector() {
+  protected SkillInspector(GameData data) {
+    super(data);
   }
 
   /**
@@ -97,7 +99,7 @@ public class SkillInspector extends AbstractInspector {
               if (u2.getPersons() > 0
                   || (!u2.getRelations(PersonTransferRelation.class).isEmpty() && u2.getRelations(
                       PersonTransferRelation.class).size() > 1)) {
-                problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u,
+                problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u, this,
                     relation.line));
                 break;
               }

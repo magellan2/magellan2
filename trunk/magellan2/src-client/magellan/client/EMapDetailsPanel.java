@@ -141,6 +141,7 @@ import magellan.library.UnitID;
 import magellan.library.ZeroUnit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.gamebinding.EresseaConstants;
+import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.relation.ControlRelation;
 import magellan.library.relation.ItemTransferRelation;
@@ -203,8 +204,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private Region lastRegion = null;
   private Units unitsTools = null;
 
-  private GameSpecificStuff gameSpecific;
-
   /**
    * A list containing nodewrapper objects, the expansion state of nodes contained in this list can
    * be automatically stored and restored
@@ -263,13 +262,17 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private final StringID rsilverID = EresseaConstants.I_RSILVER; // StringID.create("Silber");
   private final StringID rpeasantsID = EresseaConstants.I_PEASANTS; // StringID.create("Bauern");
 
+  private GameSpecificRules gameRules = null;
+
+  private GameSpecificStuff gameSpecStuff = null;
+
   /**
    * Creates a new EMapDetailsPanel object.
    */
   public EMapDetailsPanel(EventDispatcher d, GameData data, Properties p, UndoManager _undoMgr) {
     super(d, data, p);
-    this.gameSpecific = data.getGameSpecificStuff();
     initGUI(_undoMgr);
+    init (data);
   }
 
   private void initGUI(UndoManager _undoMgr) {
@@ -709,6 +712,38 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     return nodeWrapperFactory;
   }
 
+  private void init(GameData gameData) {
+    data = gameData;
+    gameSpecStuff = gameData.getGameSpecificStuff();
+    gameRules = gameSpecStuff.getGameSpecificRules();
+    orders.gameDataChanged(new GameDataEvent(this, data));
+    unitsTools.setRules(gameData.rules);
+    showNothing();
+    lastRegion = null;
+    displayedObject = null;
+    contextManager.setGameData(data);
+  }
+
+  /**
+   * @see magellan.client.swing.InternationalizedDataPanel#gameDataChanged(magellan.library.event.GameDataEvent)
+   */
+  @Override
+  public void gameDataChanged(GameDataEvent e) {
+    init(e.getGameData());
+  }
+
+  protected GameSpecificStuff getGameSpecificStuff() {
+    if (gameSpecStuff == null)
+      gameSpecStuff = data.rules.getGameSpecificStuff();
+    return gameSpecStuff;
+  }
+
+  protected GameSpecificRules getRules() {
+    if (gameRules == null)
+      gameRules = getGameSpecificStuff().getGameSpecificRules();
+    return gameRules;
+  }
+  
   /*
    * Function to translate a\nb (view representation to "a\\nb" (String representation) It also
    * translates \r to \n
@@ -825,7 +860,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Resources.get("emapdetailspanel.node.coordinates") + ": " + r.getID();
     if (r.getUID() > 0) {
       regionKoordinateInfo +=
-          " (ID:" + Integer.toString((int) r.getUID(), r.getData().base).replace("l", "L") + ")";
+          " (ID:" + Integer.toString((int) r.getUID(), getGameData().base).replace("l", "L") + ")";
     }
     parent.add(createSimpleNode(regionKoordinateInfo, "koordinaten"));
 
@@ -972,8 +1007,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // peasants
     int maxWorkers =
-        Utils.getIntValue(r.getData().getGameSpecificStuff().getGameSpecificRules()
-            .getMaxWorkers(r), 0);
+        Utils.getIntValue(getRules().getMaxWorkers(r), 0);
     int workers = Math.min(maxWorkers, r.getPeasants());
     int surplus = (workers * r.getPeasantWage()) - (r.getPeasants() * getPeasantMaintenance(r));
     int oldWorkers = Math.min(maxWorkers, r.getOldPeasants());
@@ -1731,10 +1765,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       Unit u = iter.next();
 
       // weight (Fiete)
-      Float actUWeight = new Float(u.getWeight() / 100.0F);
+      Float actUWeight = new Float(getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F);
       uWeight += actUWeight.floatValue();
 
-      Float actModUWeight = new Float(u.getModifiedWeight() / 100.0F);
+      Float actModUWeight = new Float(getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F);
       modUWeight += actModUWeight.floatValue();
 
       // persons
@@ -2555,8 +2589,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitWeight(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    Float uWeight = new Float(u.getWeight() / 100.0F);
-    Float modUWeight = new Float(u.getModifiedWeight() / 100.0F);
+    Float uWeight = new Float(getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F);
+    Float modUWeight = new Float(getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F);
     String text =
         Resources.get("emapdetailspanel.node.totalweight") + ": "
             + EMapDetailsPanel.weightNumberFormat.format(uWeight);
@@ -2578,8 +2612,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void appendUnitHorses(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
-    int maxHorsesWalking = data.rules.getGameSpecificStuff().getGameSpecificRules().getMaxHorsesWalking(u); 
-    int maxHorsesRiding = data.rules.getGameSpecificStuff().getGameSpecificRules().getMaxHorsesRiding(u); 
+    int maxHorsesWalking = getRules().getMaxHorsesWalking(u); 
+    int maxHorsesRiding = getRules().getMaxHorsesRiding(u); 
 
     String text = "Max: " + maxHorsesWalking + " / " + maxHorsesRiding;
     parent.add(createSimpleNode(text, "pferd"));
@@ -2595,8 +2629,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendUnitLoadInfo(Unit u, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     // load
-    int load = u.getLoad();
-    int modLoad = u.getModifiedLoad();
+    int load = getGameSpecificStuff().getMovementEvaluator().getLoad(u);
+    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
     if ((load != 0) || (modLoad != 0)) {
       String text =
@@ -2613,7 +2647,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
 
     // payload
-    int maxOnFoot = u.getPayloadOnFoot();
+    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
 
     if (maxOnFoot == Unit.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonfoot") + ": "
@@ -2654,7 +2688,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(capacityNode);
     }
 
-    int maxOnHorse = u.getPayloadOnHorse();
+    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
 
     if (maxOnHorse == Unit.CAP_UNSKILLED) {
       parent.add(createSimpleNode(Resources.get("emapdetailspanel.node.capacityonhorse") + ": "
@@ -2994,18 +3028,18 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       for (Iterator iter = passengers.iterator(); iter.hasNext();) {
         Unit passenger = (Unit) iter.next();
+        int pweight = getGameSpecificStuff().getMovementEvaluator().getWeight(passenger);
+        int pmodweight = getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(passenger);
         String str =
             passenger.toString()
                 + ": "
-                + EMapDetailsPanel.weightNumberFormat.format(new Float(
-                    passenger.getWeight() / 100.0f)) + " "
+                + EMapDetailsPanel.weightNumberFormat.format(new Float(pweight / 100.0f)) + " "
                 + Resources.get("emapdetailspanel.node.weightunits");
 
-        if (passenger.getWeight() != passenger.getModifiedWeight()) {
+        if (pweight != pmodweight) {
           str +=
               (" ("
-                  + EMapDetailsPanel.weightNumberFormat.format(new Float(passenger
-                      .getModifiedWeight() / 100.0f)) + " "
+                  + EMapDetailsPanel.weightNumberFormat.format(new Float(pmodweight / 100.0f)) + " "
                   + Resources.get("emapdetailspanel.node.weightunits") + ")");
         }
 
@@ -3302,7 +3336,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       TreeSet<ItemType> l = new TreeSet<ItemType>();
       // only use the items found in gamedata
       // without fancy merging, for all items should pe Translation present
-      for (Iterator iter2 = u.getRegion().getData().regions().values().iterator(); iter2.hasNext();) {
+      for (Iterator iter2 = getGameData().regions().values().iterator(); iter2.hasNext();) {
         Region r = (Region) iter2.next();
         for (Iterator iteri = r.allItems().iterator(); iteri.hasNext();) {
           Item item = (Item) iteri.next();
@@ -3310,11 +3344,11 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           l.add(type);
         }
       }
-      String actLocale = u.getRegion().getData().getLocale().toString();
+      String actLocale = getGameData().getLocale().toString();
       if (actLocale.equalsIgnoreCase("de")) {
         // ok...a de GameData...here we use all defined ItemTypes from the rules...too
         // need no present Translation for those...in CR all in german...
-        for (Iterator iter2 = u.getRegion().getData().rules.getItemTypeIterator(); iter2.hasNext();) {
+        for (Iterator iter2 = getGameData().rules.getItemTypeIterator(); iter2.hasNext();) {
           ItemType type = (ItemType) iter2.next();
           l.add(type);
         }
@@ -3790,8 +3824,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       for (Iterator iter = units.iterator(); iter.hasNext();) {
         Unit u = (Unit) iter.next();
         StringBuffer text = new StringBuffer();
-        Float weight = new Float(u.getWeight() / 100.0F);
-        Float modWeight = new Float(u.getModifiedWeight() / 100.0F);
+        Float weight = new Float(getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F);
+        Float modWeight = new Float(getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F);
 
         if (s.getModifiedUnit(u.getID()) == null) {
           text.append("<- ");
@@ -3799,7 +3833,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           // modLoad += u.getModifiedWeight();
         }
 
-        load += u.getWeight();
+        load += getGameSpecificStuff().getMovementEvaluator().getWeight(u);
         text.append(u.toString()).append(": ").append(
             EMapDetailsPanel.weightNumberFormat.format(weight));
 
@@ -3824,8 +3858,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
         if (s.getUnit(u.getID()) == null) {
           StringBuffer text = new StringBuffer();
-          Float weight = new Float(u.getWeight() / 100.0F);
-          Float modWeight = new Float(u.getModifiedWeight() / 100.0F);
+          Float weight =
+              new Float(getGameSpecificStuff().getMovementEvaluator().getWeight(u) / 100.0F);
+          Float modWeight =
+              new Float(getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u) / 100.0F);
 
           // modLoad += u.getModifiedWeight();
           text.append("-> ");
@@ -4337,21 +4373,6 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
    */
   private void showNothing() {
     setNameAndDescription("", "", false);
-  }
-
-  /**
-	 * 
-	 */
-  @Override
-  public void gameDataChanged(GameDataEvent e) {
-    data = e.getGameData();
-    gameSpecific = e.getGameData().getGameSpecificStuff();
-    orders.gameDataChanged(e);
-    unitsTools.setRules(e.getGameData().rules);
-    showNothing();
-    lastRegion = null;
-    displayedObject = null;
-    contextManager.setGameData(data);
   }
 
   private void storeExpansionState() {
@@ -5024,8 +5045,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 		 */
     public void actionPerformed(ActionEvent e) {
       Unit unit =
-          ShipRoutePlanner.planShipRoute(target, data, EMapDetailsPanel.this, new RoutingDialog(
-              JOptionPane.getFrameForComponent(EMapDetailsPanel.this), data, false));
+          (new ShipRoutePlanner()).planShipRoute(target, data, EMapDetailsPanel.this,
+              new RoutingDialog(JOptionPane.getFrameForComponent(EMapDetailsPanel.this), data,
+                  false));
 
       if (unit != null) {
         dispatcher.fire(new UnitOrdersEvent(EMapDetailsPanel.this, unit));

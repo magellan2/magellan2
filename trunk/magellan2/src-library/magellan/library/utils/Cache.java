@@ -61,10 +61,10 @@ public class Cache {
   /** DOCUMENT-ME */
   public Map<ID, Item> modifiedItems = null;
 
-  /** DOCUMENT-ME */
+  /** @deprecated currently unused */
   public int unitWeight = -1;
 
-  /** DOCUMENT-ME */
+  /** @deprecated currently unused */
   public int modifiedUnitWeight = -1;
 
   /** DOCUMENT-ME */

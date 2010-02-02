@@ -128,8 +128,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
    */
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
-    if (race.getName().equalsIgnoreCase(
-        region.getData().rules.getRace(AllanonConstants.R_ORKS).getName())) {
+    if (race.getName().equalsIgnoreCase(getRules().getRace(AllanonConstants.R_ORKS).getName())) {
       switch (wage) {
       case 12:
         wage = 11;

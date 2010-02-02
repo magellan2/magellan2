@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import magellan.library.GameData;
 import magellan.library.Unit;
 import magellan.library.relation.AttackRelation;
 import magellan.library.tasks.Problem.Severity;
@@ -41,9 +42,6 @@ import magellan.library.utils.Resources;
  * @version 1.0, Jul 30, 2007
  */
 public class AttackInspector extends AbstractInspector {
-
-  /** The singleton instance. */
-  public static final AttackInspector INSPECTOR = new AttackInspector();
 
   enum AttackProblemTypes {
     FRIENDLYFIRE, NOTFIGHTING, NOTFIGHTING4GUARD;
@@ -58,7 +56,7 @@ public class AttackInspector extends AbstractInspector {
         typeName = message;
       String description = Resources.get("tasks.attackinspector." + name + ".description", false);
       String group = Resources.get("tasks.attackinspector."+name+".group", false); 
-      type = new ProblemType(typeName, group, description, message, getInstance());
+      type = new ProblemType(typeName, group, description, message);
     }
 
     ProblemType getType() {
@@ -73,11 +71,12 @@ public class AttackInspector extends AbstractInspector {
    * 
    * @return An instance of this class
    */
-  public static AttackInspector getInstance() {
-    return AttackInspector.INSPECTOR;
+  public static AttackInspector getInstance(GameData data) {
+    return new AttackInspector(data);
   }
 
-  protected AttackInspector() {
+  protected AttackInspector(GameData data) {
+    super(data);
   }
 
   /**
@@ -110,7 +109,7 @@ public class AttackInspector extends AbstractInspector {
               && relation.source.getFaction().getAllies().containsKey(
                   relation.target.getFaction().getID())) {
             problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.FRIENDLYFIRE.getType(),
-                u, relation.line));
+                u, this, relation.line));
           }
         }
         // TODO define as constants
@@ -137,14 +136,14 @@ public class AttackInspector extends AbstractInspector {
     }
     if (severity == Severity.ERROR) {
       if (wrongStatus != Integer.MAX_VALUE) {
-        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING.getType(), u,
+        problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING.getType(), u, this,
             wrongStatus));
       }
 
       // guard and not fighting (fleeing)?
       if (u.getModifiedGuard() != 0 && u.getModifiedCombatStatus() == 5) {
         problems.add(ProblemFactory.createProblem(severity, AttackProblemTypes.NOTFIGHTING4GUARD.getType(),
-            u));
+            u, this));
       }
 
     }

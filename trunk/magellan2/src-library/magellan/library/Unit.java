@@ -47,13 +47,13 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /** hmmm.... */  // Do not know either (Fiete)
   // OK, mail from enno: different bit coded guard effects
   public static final int GUARDFLAG_TAX = 1;
-  public static final int GUARDFLAG_MINING = 2;
-  public static final int GUARDFLAG_WOOD = 4;
-  public static final int GUARDFLAG_TRAVELTHRU = 8;
-  public static final int GUARDFLAG_LANDING = 16;
-  public static final int GUARDFLAG_CREWS = 32;
-  public static final int GUARDFLAG_RECRUIT = 64;
-  public static final int GUARDFLAG_PRODUCE = 128;
+  public static final int GUARDFLAG_MINING = 1 << 1;
+  public static final int GUARDFLAG_WOOD = 1 << 2;
+  public static final int GUARDFLAG_TRAVELTHRU = 1 << 3;
+  public static final int GUARDFLAG_LANDING = 1 << 4;
+  public static final int GUARDFLAG_CREWS = 1 << 5;
+  public static final int GUARDFLAG_RECRUIT = 1 << 6;
+  public static final int GUARDFLAG_PRODUCE = 1 << 7;
   /**
   Original Mail:
     Das ist was anderes: Je nach Rasse kann Bewachung einen untershciedlichen Effekt haben. Bergwaechter zum Beispiel bewachen den Abbau von Eisen/Steinen, so dass niemand etwas abbauen kann solange sie das tun, Elfen haben das fuer Holz, usw. Das sieht man allerdings nicht im CR.
@@ -616,9 +616,17 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public boolean isWeightWellKnown();
 
   /**
-   * Returns the overall weight of this unit (persons and items) in silver
+   * Returns the overall weight of this unit (persons and items) in silver.
+   * 
+   * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
    */
   public int getWeight();
+  
+
+  /**
+   * Returns the overall weight of this unit (persons and items) in silver if it is known, otherwise -1.
+   */
+  public int getSimpleWeight();
   
   /**
    * Returns the maximum payload in silver of this unit when it travels by
@@ -630,6 +638,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return the payload in silver, CAP_NO_HORSES if the unit does not possess
    *         horses or CAP_UNSKILLED if the unit is not sufficiently skilled in
    *         horse riding to travel on horseback.
+   * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
    */
   public int getPayloadOnHorse();
 
@@ -643,30 +652,39 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @return the payload in silver, CAP_UNSKILLED if the unit is not
    *         sufficiently skilled in horse riding to travel on horseback.
+   * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
    */
   public int getPayloadOnFoot();
 
   /**
    * Returns the weight of all items of this unit that are not horses or carts
-   * in silver
+   * in silver.
+   * 
+   * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
    */
   public int getLoad();
 
   /**
    * Returns the weight of all items of this unit that are not horses or carts
    * in silver based on the modified items.
+   * 
+   * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
    */
   public int getModifiedLoad();
 
   /**
    * Returns the number of regions this unit is able to travel within one turn
    * based on the riding skill, horses, carts and load of this unit.
+   * 
+   * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
    */
   public int getRadius();
 
   /**
    * Returns the overall weight (persons, items) of this unit in silver based on
    * the modified items and persons.
+   * 
+   * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
    */
   public int getModifiedWeight();
 
@@ -746,6 +764,16 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @param withName
    */
   public String toString(boolean withName);
+
+  
+  /**
+   * Add a order to the unit's orders. This function ensures that TEMP units are
+   * not affected by the operation.
+   * 
+   * @param order
+   *          the order to add.
+   */
+  public boolean addOrder(String order);
 
   /**
    * Add a order to the unit's orders. This function ensures that TEMP units are

@@ -1540,7 +1540,7 @@ public abstract class MagellanFactory {
     }
 
     if (curUnit.isWeightWellKnown()) {
-      resultUnit.setWeight(curUnit.getWeight());
+      resultUnit.setWeight(curUnit.getSimpleWeight());
     }
 
     if (curUnit.getBuilding() != null) {

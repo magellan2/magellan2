@@ -30,7 +30,7 @@ public class ProblemType {
   private String group;
   private String description;
   private String message;
-  private Inspector inspector;
+//  private Inspector inspector;
 
   /**
    * name, group and description describe the problem and are used in preferences for selection.
@@ -47,8 +47,7 @@ public class ProblemType {
    * @throws IllegalArgumentException if name contains illegal characters or does not start with a
    *           letter
    */
-  public ProblemType(String name, String group, String description, String message,
-      Inspector inspector) {
+  public ProblemType(String name, String group, String description, String message) {
     if (name == null)
       throw new NullPointerException();
 //    if (!Pattern.matches("[A-Za-z‹¸÷ˆƒ‰][A-Za-z‹¸÷ˆƒ‰ﬂ0-9-_ .]*", name))
@@ -57,7 +56,7 @@ public class ProblemType {
     this.group = group;
     this.description = description;
     this.message = message;
-    this.inspector = inspector;
+//    this.inspector = inspector;
   }
 
   /**
@@ -99,9 +98,9 @@ public class ProblemType {
    * 
    * @return
    */
-  public Inspector getInspector() {
-    return inspector;
-  }
+//  public Inspector getInspector() {
+//    return inspector;
+//  }
 
   public String toString() {
     return getName();

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import magellan.library.Rules;
 import magellan.library.Unit;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderChanger;
@@ -29,17 +30,9 @@ import magellan.library.utils.Resources;
  * @version $Revision: 305 $
  */
 public class E3AOrderChanger extends EresseaOrderChanger {
-  private static final E3AOrderChanger singleton = new E3AOrderChanger();
   
-  
-	protected E3AOrderChanger() {
-	}
-
-	/**
-	 * 
-	 */
-	public static E3AOrderChanger getSingleton() {
-		return E3AOrderChanger.singleton;
+	protected E3AOrderChanger(Rules rules) {
+	  super(rules);
 	}
 
 

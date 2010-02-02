@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import magellan.library.CoordinateID;
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitID;
@@ -28,7 +29,7 @@ import magellan.library.utils.Resources;
  */
 public class MovementInspector extends AbstractInspector {
   /** The singleton instance of this Inspector */
-  public static final MovementInspector INSPECTOR = new MovementInspector();
+  // public static final MovementInspector INSPECTOR = new MovementInspector(data);
 
   enum MovementProblemTypes {
     FOOTOVERLOADED, HORSEOVERLOADED, TOOMANYHORSESFOOT, TOOMANYHORSESRIDE, UNITFOLLOWSSELF;
@@ -43,7 +44,7 @@ public class MovementInspector extends AbstractInspector {
         typeName = message;
       String description = Resources.get("tasks.movementinspector." + name + ".description", false);
       String group = Resources.get("tasks.movementinspector." + name + ".group", false);
-      type = new ProblemType(typeName, group, description, message, getInstance());
+      type = new ProblemType(typeName, group, description, message);
     }
 
     ProblemType getType() {
@@ -56,13 +57,14 @@ public class MovementInspector extends AbstractInspector {
    * 
    * @return The singleton instance of MovementInspector
    */
-  public static MovementInspector getInstance() {
-    return MovementInspector.INSPECTOR;
+  public static MovementInspector getInstance(GameData data) {
+    return new MovementInspector(data);
   }
 
   private Collection<ProblemType> types;
 
-  protected MovementInspector() {
+  protected MovementInspector(GameData data) {
+    super(data);
   }
 
   /**
@@ -93,16 +95,16 @@ public class MovementInspector extends AbstractInspector {
           boolean road = true;
           CoordinateID lastID = null;
           for (CoordinateID coordinate : u.getModifiedMovement()) {
-            Region currentRegion = u.getRegion().getData().getRegion(coordinate);
+            Region currentRegion = getData().getRegion(coordinate);
             if (lastID == null) {
               lastID = coordinate;
             } else {
               if (coordinate.equals(lastID) || count > 2) // found PAUSE
                 break;
-              Region lastRegion = u.getRegion().getData().getRegion(lastID);
+              Region lastRegion = getData().getRegion(lastID);
               if (currentRegion == null || lastRegion == null
                   || !Regions.isCompleteRoadConnection(lastRegion, currentRegion)) // ;!roadTo(lastRegion,
-                                                                                   // currentRegion))
+                // currentRegion))
                 road = false;
 
               lastID = coordinate;
@@ -124,9 +126,9 @@ public class MovementInspector extends AbstractInspector {
           StringTokenizer st = new StringTokenizer(order.trim());
           st.nextToken();
           if (Resources.getOrderTranslation(EresseaConstants.O_UNIT).equals(st.nextToken())) {
-            if (UnitID.createUnitID(st.nextToken(), u.getRegion().getData().base).equals(u.getID())) {
+            if (UnitID.createUnitID(st.nextToken(), getData().base).equals(u.getID())) {
               problems.add(ProblemFactory.createProblem(Severity.ERROR,
-                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, line));
+                  MovementProblemTypes.UNITFOLLOWSSELF.getType(), u, this, line));
             }
           }
         }
@@ -171,37 +173,37 @@ public class MovementInspector extends AbstractInspector {
   }
 
   private List<Problem> reviewUnitOnFoot(Unit u) {
-    int maxOnFoot = u.getPayloadOnFoot();
+    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(u);
 
     if (maxOnFoot == Unit.CAP_UNSKILLED) {
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u)));
+          MovementProblemTypes.TOOMANYHORSESFOOT.getType(), u, this)));
     }
 
-    int modLoad = u.getModifiedLoad();
+    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
     if ((maxOnFoot - modLoad) < 0) {
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.FOOTOVERLOADED.getType(), u)));
+          MovementProblemTypes.FOOTOVERLOADED.getType(), u, this)));
     }
 
     return Collections.emptyList();
   }
 
   private List<Problem> reviewUnitOnHorse(Unit u) {
-    int maxOnHorse = u.getPayloadOnHorse();
+    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(u);
 
     if (maxOnHorse == Unit.CAP_UNSKILLED) {
       return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-          MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u)));
+          MovementProblemTypes.TOOMANYHORSESRIDE.getType(), u, this)));
     }
 
     if (maxOnHorse != Unit.CAP_NO_HORSES) {
-      int modLoad = u.getModifiedLoad();
+      int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(u);
 
       if ((maxOnHorse - modLoad) < 0) {
         return Collections.singletonList((Problem) (ProblemFactory.createProblem(Severity.WARNING,
-            MovementProblemTypes.HORSEOVERLOADED.getType(), u)));
+            MovementProblemTypes.HORSEOVERLOADED.getType(), u, this)));
       }
     }
     // FIXME if unit has no horses, we should report an error

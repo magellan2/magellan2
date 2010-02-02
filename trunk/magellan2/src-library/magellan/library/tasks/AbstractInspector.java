@@ -12,9 +12,11 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import magellan.library.GameData;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
+import magellan.library.gamebinding.GameSpecificStuff;
 import magellan.library.tasks.Problem.Severity;
 import magellan.library.utils.logging.Logger;
 
@@ -30,7 +32,12 @@ public abstract class AbstractInspector implements Inspector {
 
   public static final String SUPPRESS_LINE_PREFIX = SUPPRESS_PREFIX + "Line";
 
-  protected AbstractInspector() {
+  private GameData data;
+
+  private GameSpecificStuff gameSpecStuff;
+
+  protected AbstractInspector(GameData data) {
+    this.data = data;
   }
 
   /**
@@ -232,4 +239,16 @@ public abstract class AbstractInspector implements Inspector {
       u.setOrders(newOrders);
   }
 
+  public void setGameData(GameData gameData) {
+    this.data = gameData;
+    this.gameSpecStuff = data.getGameSpecificStuff();
+  }
+
+  public GameData getData() {
+    return data;
+  }
+  
+  public GameSpecificStuff getGameSpecificStuff() {
+    return gameSpecStuff;
+  }
 }

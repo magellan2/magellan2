@@ -765,21 +765,6 @@ public class CRWriterDialog extends InternationalizedDataDialog {
       ui.setMaximum(maxProgress);
       ui.setTitle(Resources.get("crwriterdialog.progress.title"));
       ui.setProgress(Resources.get("crwriterdialog.progress.start"), 2);
-      CRWriter crw = new CRWriter(ui, out);
-      crw.setServerConformance(chkServerConformance.isSelected());
-      crw.setIncludeIslands(chkIslands.isSelected());
-      crw.setIncludeRegions(chkRegions.isSelected());
-      crw.setIncludeRegionDetails(chkRegionDetails.isSelected());
-      crw.setIncludeBuildings(chkBuildings.isSelected());
-      crw.setIncludeShips(chkShips.isSelected());
-      crw.setIncludeUnits(chkUnits.isSelected());
-      crw.setIncludeUnitDetails(chkUnitDetails.isSelected());
-      crw.setIncludeOrders(chkOrders.isSelected());
-      crw.setIncludeSkills(chkSkills.isSelected());
-      crw.setIncludeItems(chkItems.isSelected());
-      crw.setIncludeMessages(chkMessages.isSelected());
-      crw.setIncludeSpellsAndPotions(chkSpellsAndPotions.isSelected());
-      crw.setExportHotspots(chkExportHotspots.isSelected());
 
       GameData newData = data;
 
@@ -817,7 +802,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         if (newData.factions() != null) {
           Iterator<Faction> it1 = newData.factions().values().iterator();
           boolean excludeBRegions =
-              (crw.getIncludeMessages() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions
+              (chkMessages.isSelected() && chkSelRegionsOnly.isSelected() && (regions != null) && (regions
                   .size() > 0));
 
           while (it1.hasNext()) {
@@ -1120,12 +1105,28 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         this.cleanBattles(newData, regions);
       }
 
+      CRWriter crw = new CRWriter(newData, ui, out);
+      crw.setServerConformance(chkServerConformance.isSelected());
+      crw.setIncludeIslands(chkIslands.isSelected());
+      crw.setIncludeRegions(chkRegions.isSelected());
+      crw.setIncludeRegionDetails(chkRegionDetails.isSelected());
+      crw.setIncludeBuildings(chkBuildings.isSelected());
+      crw.setIncludeShips(chkShips.isSelected());
+      crw.setIncludeUnits(chkUnits.isSelected());
+      crw.setIncludeUnitDetails(chkUnitDetails.isSelected());
+      crw.setIncludeOrders(chkOrders.isSelected());
+      crw.setIncludeSkills(chkSkills.isSelected());
+      crw.setIncludeItems(chkItems.isSelected());
+      crw.setIncludeMessages(chkMessages.isSelected());
+      crw.setIncludeSpellsAndPotions(chkSpellsAndPotions.isSelected());
+      crw.setExportHotspots(chkExportHotspots.isSelected());
+
       if (chkSelRegionsOnly.isSelected() && (regions != null) && (regions.size() > 0)) {
         crw.setRegions(regions);
       }
 
       ui.setProgress(Resources.get("crwriterdialog.progress.writing"), maxProgress/2);
-      crw.writeSynchronously(newData);
+      crw.writeSynchronously();
       crw.close();
     } catch (Exception exc) {
       CRWriterDialog.log.error(exc);

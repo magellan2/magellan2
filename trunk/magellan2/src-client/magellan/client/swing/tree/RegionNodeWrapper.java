@@ -130,6 +130,7 @@ public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, S
 	 */
 	public List<GraphicsElement> getGraphicsElements() {
 		if(GEs == null) {
+		  // TODO do this in background thread!
 			// in this situation init the region
 			region.refreshUnitRelations();
 

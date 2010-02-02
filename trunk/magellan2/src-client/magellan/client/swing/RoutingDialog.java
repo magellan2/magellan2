@@ -88,6 +88,13 @@ public class RoutingDialog extends InternationalizedDialog implements RoutingDia
 
 	/**
 	 * Creates a new RoutingDialog object.
+	 *
+	 * @param owner
+	 * @param data
+	 * @param destRegions
+	 * @param excludeUnnamed
+	 * @param initializeRegions If this is false, {@link #initialize(GameData, Collection, boolean)} <em>must</em> be called manually! 
+	 *
 	 */
 	public RoutingDialog(Frame owner, GameData data, Collection<Region> destRegions, boolean excludeUnnamed, boolean initializeRegions) {
 		super(owner, true);

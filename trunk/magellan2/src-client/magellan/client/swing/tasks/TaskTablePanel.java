@@ -144,7 +144,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     registerListeners();
 
     initGUI();
-    initInspectors();
+    initInspectors(getGameData());
     initUpdateThread();
     refreshProblems();
 
@@ -846,28 +846,33 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
 
   /**
    * Register all inspectors we know of.
+   * @param gameData 
    */
-  private void initInspectors() {
+  private void initInspectors(GameData gameData) {
     inspectors = new ArrayList<Inspector>();
 
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ATTACK, true)) {
-      inspectors.add(AttackInspector.getInstance());
+      inspectors.add(AttackInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_TODO, true)) {
-      inspectors.add(ToDoInspector.getInstance());
+      inspectors.add(ToDoInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_MOVEMENT, true)) {
-      inspectors.add(MovementInspector.getInstance());
+      inspectors.add(MovementInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SHIP, true)) {
-      inspectors.add(ShipInspector.getInstance());
+      inspectors.add(ShipInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_SKILL, true)) {
-      inspectors.add(SkillInspector.getInstance());
+      inspectors.add(SkillInspector.getInstance(gameData));
     }
     if (PropertiesHelper.getBoolean(settings, PropertiesHelper.TASKTABLE_INSPECTORS_ORDER_SYNTAX,
         true)) {
-      inspectors.add(OrderSyntaxInspector.getInstance());
+      inspectors.add(OrderSyntaxInspector.getInstance(gameData));
+    }
+    
+    for (Inspector i: inspectors){
+      i.setGameData(gameData);
     }
   }
 
@@ -924,7 +929,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   private void registerListeners() {
     if (this.dispatcher != null) {
       this.dispatcher.addUnitOrdersListener(this);
-      this.dispatcher.addGameDataListener(this);
+      // unnecessary
+      // dispatcher.addGameDataListener(this);
       this.dispatcher.addSelectionListener(this);
     }
   }
@@ -937,6 +943,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   @Override
   public void gameDataChanged(GameDataEvent e) {
     super.gameDataChanged(e);
+    initInspectors(e.getGameData());
     // do nothing if Panel is hidden
     if (!this.isShown()) {
       return;

@@ -114,7 +114,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 		lastSelected = selRegions;
 
-    ed.addGameDataListener(this);
+    // unnecessary
+    // dispatcher.addGameDataListener(this);
 		ed.addSelectionListener(this);
 
 		factory = new NodeWrapperFactory(settings, "EMapOverviewPanel", "Dummy-Factory");

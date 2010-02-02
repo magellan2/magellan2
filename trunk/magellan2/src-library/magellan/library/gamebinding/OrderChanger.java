@@ -17,17 +17,17 @@ import magellan.library.Unit;
 import magellan.library.UnitContainer;
 
 /**
- * DOCUMENT-ME
+ * This class has methods to change unit orders for various purposes, usually related to higher
+ * order user operations.
  *
  * @author $Author: $
  * @version $Revision: 305 $
  */
 public interface OrderChanger {
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Adds a KÄMPFE order.
 	 * 
-	 * 
+	 * TODO: state are defined... somewhere
 	 */
 	public void addCombatOrder(Unit unit, int newstate);
 
@@ -71,10 +71,7 @@ public interface OrderChanger {
 	public void addNamingOrder(Unit unit, UnitContainer uc, String name);
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 * 
+	 * Adds a REKRUTIERE amount order. 
 	 */
 	public void addRecruitOrder(Unit u, int amount);
 

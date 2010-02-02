@@ -1370,7 +1370,7 @@ public class EresseaOrderCompleter implements Completer {
       // bugzilla enhancement 599: also allow completion on sprouts
           (((region.getTrees() <= 0) && (region.getSprouts() <= 0)) || !region.isMallorn())) {
         canMake = false;
-      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UHORSE))
+      } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_UHORSE)) 
           && (region.getHorses() <= 0)) {
         canMake = false;
       } else if (itemType.equals(data.rules.getItemType(EresseaConstants.I_USTONE))
@@ -1445,7 +1445,7 @@ public class EresseaOrderCompleter implements Completer {
 
   public void cmpltNach() {
     addDirections(" ");
-    addSurroundingRegions(unit.getRadius(), " ");
+    addSurroundingRegions(getGameSpecificStuff().getMovementEvaluator().getModifiedRadius(unit, true), " ");
   }
 
   public void cmpltNeustart() {
@@ -1534,10 +1534,10 @@ public class EresseaOrderCompleter implements Completer {
    * @param otherUnit
    */
   private void addMaxReserve(Unit otherUnit) {
-    int modLoad = data.rules.getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(otherUnit);
+    int modLoad = getGameSpecificStuff().getMovementEvaluator().getModifiedLoad(otherUnit);
     ItemType carts = data.rules.getItemType(EresseaConstants.I_CART);
-    int maxOnFoot = data.rules.getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
-    int maxOnHorse = data.rules.getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
+    int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
+    int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
 
     for (Iterator iter = otherUnit.getRegion().allItems().iterator(); iter.hasNext();) {
       Item item = (Item) iter.next();
@@ -2247,19 +2247,9 @@ public class EresseaOrderCompleter implements Completer {
       radius = 1;
     }
 
-    RegionType oceanType = data.rules.getRegionType(EresseaConstants.RT_OCEAN);
-
-    if (oceanType == null) {
-      EresseaOrderCompleter.log
-          .warn("EresseaOrderCompleter.addSurroundingRegions(): unable to retrieve ocean region type from rules!");
-
-      return;
-    }
-
-    Map<ID, RegionType> excludedRegionTypes = new Hashtable<ID, RegionType>();
-    // no need to exclude oceans, ocens have no name anyway and it'll break getPath(...)
-    // excludedRegionTypes.put(oceanType.getID(), oceanType);
-
+    Map<ID, RegionType> excludedRegionTypes = Regions.getOceanRegionTypes(getData().rules);
+    // no need to exclude oceans, oceans have no name anyway and it'll break getPath(...)
+    
     Map<CoordinateID, Region> neighbours =
         Regions.getAllNeighbours(data.regions(), region.getID(), radius, excludedRegionTypes);
 
@@ -2274,7 +2264,7 @@ public class EresseaOrderCompleter implements Completer {
         // translate the path of regions into a string of
         // directions to take
         String directions =
-            Regions.getDirections(data.regions(), region.getID(), r.getID(), excludedRegionTypes);
+            Regions.getDirections(data, region.getID(), r.getID(), excludedRegionTypes, radius);
 
         if (directions != null) {
           completions.add(new Completion(r.getName(), directions, postfix,
@@ -2615,6 +2605,11 @@ public class EresseaOrderCompleter implements Completer {
   public GameData getData() {
     return data;
   }
+
+  protected GameSpecificStuff getGameSpecificStuff() {
+    return data.rules.getGameSpecificStuff();
+  }
+
 
   /**
    * Returns the value of completions.

@@ -189,6 +189,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
 	  String imageName = imageNameDefault;
     Image img = null;
     // first try a season specific icon, if preferences say so!
+    // FIXME shouldn't access getData() from here
     if (r.getData().getDate() != null && this.isUseSeasonImages()) {
       switch (r.getData().getDate().getSeason()) {
         case Date.SPRING: imageName+="_spring"; break;

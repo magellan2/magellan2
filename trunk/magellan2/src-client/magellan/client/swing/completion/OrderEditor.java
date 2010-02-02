@@ -194,13 +194,18 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
   /**
    * release an OrderListener with the event dispatcher
    */
-  public void releaseListener() {
-    dispatcher.removeUnitOrdersListener(orderListener);
+  public boolean releaseListener() {
+    return dispatcher.removeUnitOrdersListener(orderListener);
   }
 
   @Override
   protected void finalize() throws Throwable {
-    releaseListener();
+    if (releaseListener())
+      if (log!=null)
+        log.error("listener wasn't removed for OrderEditor "+unit+" "+this);
+      else
+        System.err.println("listener wasn't removed for OrderEditor "+unit+" "+this);
+
     super.finalize();
   }
 

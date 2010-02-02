@@ -963,9 +963,12 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       if (e.getSelectionType() == SelectionEvent.ST_REGIONS && e.getSelectedObjects() != null) {
         // no selection: refresh all
         if (e.getSelectedObjects().isEmpty()) {
-          lastSelection = data.regions().values();
+          // copy to Hashset to improve performance!
+          lastSelection = new HashSet<Region>(data.regions().values());
           refreshProblems();
         } else {
+          // copy to Hashset to improve performance!
+          HashSet<?> eventSelection = new HashSet<Object>(e.getSelectedObjects());
           Collection<Region> newSelection = new HashSet<Region>();
           Collection<Region> addSelection = new HashSet<Region>();
           Collection<Region> delSelection = new HashSet<Region>();
@@ -974,7 +977,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
           for (Iterator<Region> it = lastSelection.iterator(); it.hasNext();) {
             Object o = it.next();
             if (o instanceof Region) {
-              if (!e.getSelectedObjects().contains(o)) {
+              if (!eventSelection.contains(o)) {
                 delSelection.add((Region) o);
               }
             }

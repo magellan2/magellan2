@@ -152,7 +152,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				passiveMovement = getModifiedMovement(unit.getModifiedShip().getModifiedOwnerUnit());
 			} else {
 				// the unit is not on a ship, search for carriers
-				Collection carriers = unit.getCarriers();
+				Collection<Unit> carriers = unit.getCarriers();
 
 				if(PathCellRenderer.log.isDebugEnabled()) {
 					PathCellRenderer.log.debug("PathCellRenderer.render: " + unit + " has " + carriers.size() +
@@ -160,7 +160,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 				}
 
 				if(carriers.size() == 1) {
-					Unit trans = (Unit) carriers.iterator().next();
+					Unit trans = carriers.iterator().next();
 					passiveMovement = getModifiedMovement(trans);
 				}
 			}
@@ -214,7 +214,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 	}
 
-	private void renderPath(Unit u, CoordinateID start, List<?> directions, int imageType) {
+	private void renderPath(Unit u, CoordinateID start, List<Direction> directions, int imageType) {
 		if(PathCellRenderer.log.isDebugEnabled()) {
 			PathCellRenderer.log.debug("renderPath for unit " + u + " from " + start + " with list " + directions +
 					  ", imageType " + imageType);
@@ -222,8 +222,8 @@ public class PathCellRenderer extends ImageCellRenderer {
 
 		CoordinateID actCoord = new CoordinateID(start); //  make Coordinate a copy 
 
-		for(Iterator iter = directions.iterator(); iter.hasNext();) {
-			Direction dirObj = (Direction) iter.next();
+		for(Iterator<Direction> iter = directions.iterator(); iter.hasNext();) {
+			Direction dirObj = iter.next();
 			int dir = dirObj.getDir();
 
 			if(dir != -1) {

@@ -58,14 +58,16 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    * 
    * @see magellan.library.Related#getRelations(java.lang.Class)
    */
-  public List<UnitRelation> getRelations(Class<? extends UnitRelation> relationClass) {
-  	List<UnitRelation> ret = new LinkedList<UnitRelation>();
+  public <T extends UnitRelation> List<T> getRelations(Class<T> relationClass) {
+  	List<T> ret = new LinkedList<T>();
   
   	for(Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
       UnitRelation relation = iter.next();
   
   		if(relationClass.isInstance(relation)) {
-  			ret.add(relation);
+  		  @SuppressWarnings("unchecked")
+  		  T toAdd = (T) relation;
+  			ret.add(toAdd);
   		}
   	}
   

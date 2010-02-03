@@ -66,7 +66,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 	 * nicht die selektierten Regionen, sondern die angewählten
 	 * Objekte im Tree (mehrere units z.B....) 
 	 */
-	private Collection selectedObjects;
+	private Collection<?> selectedObjects;
 	
 	/**
 	 * wahr, wenn unter den selektierten Objekten min 1 Unit ist

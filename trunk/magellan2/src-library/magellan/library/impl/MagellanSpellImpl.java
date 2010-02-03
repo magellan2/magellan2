@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import magellan.library.GameData;
+import magellan.library.IntegerID;
 import magellan.library.Spell;
 import magellan.library.StringID;
 import magellan.library.gamebinding.EresseaConstants;

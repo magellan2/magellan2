@@ -1046,8 +1046,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           new StringBuffer(Resources.get("emapdetailspanel.node.wage")).append(": ").append(
               getDiffString(r.getWage(), r.getOldWage()));
 
-      for (Iterator it = data.rules.getRaceIterator(); it.hasNext();) {
-        Race race = (Race) it.next();
+      for (Iterator<Race> it = data.rules.getRaceIterator(); it.hasNext();) {
+        Race race = it.next();
         int rWage = data.getGameSpecificStuff().getGameSpecificRules().getWage(r, race);
         if (rWage > 0 && rWage != wage) {
           nodeText.append(", ").append(race.getName()).append(": ").append(rWage);
@@ -1283,8 +1283,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       list.add(region);
 
       if (!region.resources().isEmpty()) {
-        for (Iterator iterator = region.resources().iterator(); iterator.hasNext();) {
-          RegionResource res = (RegionResource) iterator.next();
+        for (Iterator<RegionResource> iterator = region.resources().iterator(); iterator.hasNext();) {
+          RegionResource res = iterator.next();
           Integer amount = resources.get(res.getType());
           int i = res.getAmount();
 
@@ -1488,8 +1488,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     Set<Faction> parties = new HashSet<Faction>();
     Set<Unit> units = new HashSet<Unit>();
 
-    for (Iterator iter = r.units().iterator(); iter.hasNext();) {
-      Unit unit = (Unit) iter.next();
+    for (Iterator<Unit> iter = r.units().iterator(); iter.hasNext();) {
+      Unit unit = iter.next();
 
       if (unit.getGuard() != 0) {
         parties.add(unit.getFaction());
@@ -1623,8 +1623,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(schemeNode);
     expandableNodes.add(new NodeWrapper(schemeNode, "EMapDetailsPanel.RegionSchemesExpanded"));
 
-    for (Iterator iter = region.schemes().iterator(); iter.hasNext();) {
-      Scheme s = (Scheme) iter.next();
+    for (Iterator<Scheme> iter = region.schemes().iterator(); iter.hasNext();) {
+      Scheme s = iter.next();
       schemeNode.add(new DefaultMutableTreeNode(s));
     }
   }
@@ -1673,8 +1673,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     DefaultMutableTreeNode tags =
         new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.tags"));
 
-    for (Iterator iter = taggable.getTagMap().keySet().iterator(); iter.hasNext();) {
-      String tempName = (String) iter.next();
+    for (Iterator<String> iter = taggable.getTagMap().keySet().iterator(); iter.hasNext();) {
+      String tempName = iter.next();
       String value = taggable.getTag(tempName);
       tags.add(new DefaultMutableTreeNode(tempName + ": " + value));
     }
@@ -1856,11 +1856,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(createSimpleNode(text, "gewicht"));
 
     // categorized items
-    Collection catNodes =
-        unitsTools.addCategorizedUnitItems(units, parent, null, null, true, nodeWrapperFactory,
-            null);
+    Collection<TreeNode> catNodes = unitsTools.addCategorizedUnitItems(units, parent, null, null, true, nodeWrapperFactory,
+        null);
     if (catNodes != null) {
-      for (Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
+      for (Iterator<TreeNode> catIter = catNodes.iterator(); catIter.hasNext();) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
         Object o = node.getUserObject();
         ItemCategory cat = null;
@@ -1903,8 +1902,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
         Collections.sort(item.units, unitCmp);
 
         StringBuilder sb = new StringBuilder();
-        for (Iterator uIter = item.units.iterator(); uIter.hasNext();) {
-          Unit u = (Unit) uIter.next();
+        for (Iterator<Unit> uIter = item.units.iterator(); uIter.hasNext();) {
+          Unit u = uIter.next();
           sb.delete(0, sb.length());
           sb.append(u.toString());
           
@@ -2012,11 +2011,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
   private void appendGroupItems(Group g, Collection<Unit> regionUnits,
       DefaultMutableTreeNode parent, Collection<NodeWrapper> expandableNodes) {
     // categorized items
-    Collection catNodes =
-        unitsTools.addCategorizedUnitItems(regionUnits, parent, null, null, true,
-            nodeWrapperFactory, null);
+    Collection<TreeNode> catNodes = unitsTools.addCategorizedUnitItems(regionUnits, parent, null, null, true,
+        nodeWrapperFactory, null);
     if (catNodes != null) {
-      for (Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
+      for (Iterator<TreeNode> catIter = catNodes.iterator(); catIter.hasNext();) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
 
         if (EMapDetailsPanel.log.isDebugEnabled()) {
@@ -2078,8 +2076,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
          */
         Collections.sort(item.units, unitCmp);
 
-        for (Iterator uIter = item.units.iterator(); uIter.hasNext();) {
-          Unit u = (Unit) uIter.next();
+        for (Iterator<Unit> uIter = item.units.iterator(); uIter.hasNext();) {
+          Unit u = uIter.next();
           StringBuilder sb = new StringBuilder();
           sb.append(u.toString());
 
@@ -2332,8 +2330,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(personNode);
     expandableNodes.add(new NodeWrapper(personNode, "EMapDetailsPanel.PersonsExpanded"));
 
-    for (Iterator iter = u.getPersonTransferRelations().iterator(); iter.hasNext();) {
-      PersonTransferRelation itr = (PersonTransferRelation) iter.next();
+    for (Iterator<PersonTransferRelation> iter = u.getPersonTransferRelations().iterator(); iter.hasNext();) {
+      PersonTransferRelation itr = iter.next();
       String prefix = String.valueOf(itr.amount) + " ";
       String addIcon = null;
       Unit u2 = null;
@@ -2356,8 +2354,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       }
     }
 
-    for (Iterator it = u.getRelations(UnitTransferRelation.class).iterator(); it.hasNext();) {
-      UnitTransferRelation relation = (UnitTransferRelation) it.next();
+    for (Iterator<UnitTransferRelation> it = u.getRelations(UnitTransferRelation.class).iterator(); it.hasNext();) {
+      UnitTransferRelation relation = it.next();
 
       String addIcon = null;
       Unit u2 = null;
@@ -2778,11 +2776,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       parent.add(itemsNode);
       expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.UnitItemsExpanded"));
 
-      Collection catNodes =
-          unitsTools.addCategorizedUnitItems(Collections.singleton(u), itemsNode, null, null,
-              false, nodeWrapperFactory, relationContext);
+      Collection<TreeNode> catNodes = unitsTools.addCategorizedUnitItems(Collections.singleton(u), itemsNode, null, null,
+          false, nodeWrapperFactory, relationContext);
       if (catNodes != null) {
-        for (Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
+        for (Iterator<TreeNode> catIter = catNodes.iterator(); catIter.hasNext();) {
           DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
           Object o = node.getUserObject();
           ID id = null;
@@ -2839,11 +2836,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(itemsNode);
     expandableNodes.add(new NodeWrapper(itemsNode, "EMapDetailsPanel.ShipItemsExpanded"));
 
-    Collection catNodes =
-        unitsTools.addCategorizedUnitItems(allInmates, itemsNode, null, null, true,
-            nodeWrapperFactory, null);
+    Collection<TreeNode> catNodes = unitsTools.addCategorizedUnitItems(allInmates, itemsNode, null, null, true,
+        nodeWrapperFactory, null);
     if (catNodes != null) {
-      for (Iterator catIter = catNodes.iterator(); catIter.hasNext();) {
+      for (Iterator<TreeNode> catIter = catNodes.iterator(); catIter.hasNext();) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) catIter.next();
         Object o = node.getUserObject();
         ID id = null;
@@ -3156,7 +3152,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  private void appendUnitCombatSpells(Map spells, DefaultMutableTreeNode parent,
+  private void appendUnitCombatSpells(Map<? extends ID, CombatSpell> spells, DefaultMutableTreeNode parent,
       Collection<NodeWrapper> expandableNodes) {
     if ((spells == null) || spells.isEmpty()) {
       return;
@@ -3169,8 +3165,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     parent.add(combatSpells);
     expandableNodes.add(new NodeWrapper(combatSpells, "EMapDetailsPanel.UnitCombatSpellsExpanded"));
 
-    for (Iterator iter = spells.values().iterator(); iter.hasNext();) {
-      CombatSpell spell = (CombatSpell) iter.next();
+    for (Iterator<CombatSpell> iter = spells.values().iterator(); iter.hasNext();) {
+      CombatSpell spell = iter.next();
       combatSpells.add(createSimpleNode(spell, "spell"));
     }
   }
@@ -3303,8 +3299,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
     // command relations
     DefaultMutableTreeNode commandNode = null;
-    for (Iterator<UnitRelation> it = u.getRelations(ControlRelation.class).iterator(); it.hasNext();) {
-      ControlRelation rel = (ControlRelation) it.next();
+    for (Iterator<ControlRelation> it = u.getRelations(ControlRelation.class).iterator(); it.hasNext();) {
+      ControlRelation rel = it.next();
       if (commandNode == null)
         commandNode = new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.command"));
       expandableNodes.add(new NodeWrapper(commandNode, "EMapDetailsPanel.PersonsExpanded"));
@@ -4131,10 +4127,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     // command relations
     Set<Unit> givers = null;
     Set<Unit> getters = null;
-    for (Iterator unitIt = s.modifiedUnits().iterator(); unitIt.hasNext();) {
-      Unit inmate = (Unit) unitIt.next();
-      for (Iterator it = inmate.getRelations(ControlRelation.class).iterator(); it.hasNext();) {
-        ControlRelation rel = (ControlRelation) it.next();
+    for (Iterator<Unit> unitIt = s.modifiedUnits().iterator(); unitIt.hasNext();) {
+      Unit inmate = unitIt.next();
+      for (Iterator<ControlRelation> it = inmate.getRelations(ControlRelation.class).iterator(); it.hasNext();) {
+        ControlRelation rel = it.next();
         if (givers == null) {
           givers = new HashSet<Unit>();
         }
@@ -4393,8 +4389,8 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
           new DefaultMutableTreeNode(Resources.get("emapdetailspanel.node.ingredients"));
       parent.add(ingredientsNode);
 
-      for (Iterator iter = p.ingredients().iterator(); iter.hasNext();) {
-        Item ingredient = (Item) iter.next();
+      for (Iterator<Item> iter = p.ingredients().iterator(); iter.hasNext();) {
+        Item ingredient = iter.next();
         ingredientsNode.add(createSimpleNode(ingredient.getItemType(), "items/"
             + ingredient.getItemType().getIconName()));
       }
@@ -4722,13 +4718,13 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
     }
   }
 
-  private void appendAlliances(Map allies, DefaultMutableTreeNode parent) {
+  private void appendAlliances(Map<? extends ID, Alliance> allies, DefaultMutableTreeNode parent) {
     if ((allies == null) || (parent == null)) {
       return;
     }
 
-    for (Iterator iter = allies.values().iterator(); iter.hasNext();) {
-      Alliance alliance = (Alliance) iter.next();
+    for (Iterator<Alliance> iter = allies.values().iterator(); iter.hasNext();) {
+      Alliance alliance = iter.next();
       DefaultMutableTreeNode n = new DefaultMutableTreeNode(alliance.getFaction());
       parent.add(n);
       n.add(new DefaultMutableTreeNode(alliance.stateToString()));
@@ -4745,10 +4741,10 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       int i = 0;
 
-      for (Iterator iter = uc.getComments().iterator(); iter.hasNext()
+      for (Iterator<String> iter = uc.getComments().iterator(); iter.hasNext()
           && (i < uc.getComments().size()); i++) {
         commentNode.add(new DefaultMutableTreeNode(new UnitContainerCommentNodeWrapper(uc,
-            (String) iter.next())));
+            iter.next())));
       }
     }
   }
@@ -4764,9 +4760,9 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
 
       int i = 0;
 
-      for (Iterator iter = u.getComments().iterator(); iter.hasNext()
+      for (Iterator<String> iter = u.getComments().iterator(); iter.hasNext()
           && (i < u.getComments().size()); i++) {
-        String actComment = (String) iter.next();
+        String actComment = iter.next();
         UnitCommentNodeWrapper w = new UnitCommentNodeWrapper(u, actComment);
         unitCommentNode.add(new DefaultMutableTreeNode(w));
       }
@@ -5763,7 +5759,7 @@ public class EMapDetailsPanel extends InternationalizedDataPanel implements Sele
       private void addComment() {
         DefaultMutableTreeNode parent = null;
 
-        for (Enumeration en = rootNode.children(); en.hasMoreElements();) {
+        for (Enumeration<?> en = rootNode.children(); en.hasMoreElements();) {
           DefaultMutableTreeNode n = (DefaultMutableTreeNode) en.nextElement();
           Object obj = n.getUserObject();
 

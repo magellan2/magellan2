@@ -59,9 +59,9 @@ public class HistoryAccessory extends JPanel {
 		      Collections.singletonList(fileChooser.getCurrentDirectory()));
 
 		// load history fifo buffer
-		for(Iterator iter = PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory")
+		for(Iterator<String> iter = PropertiesHelper.getList(settings, "HistoryAccessory.directoryHistory")
 											.iterator(); iter.hasNext();) {
-			String dirName = (String) iter.next();
+			String dirName = iter.next();
 			File dir = new File(dirName);
 
 			if(dir.exists() && dir.isDirectory()) {

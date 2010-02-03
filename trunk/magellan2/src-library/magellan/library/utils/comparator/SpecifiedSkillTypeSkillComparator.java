@@ -18,6 +18,7 @@ import java.util.Map;
 
 import magellan.library.ID;
 import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.rules.SkillType;
 
 
@@ -34,9 +35,9 @@ import magellan.library.rules.SkillType;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<ID, Skill> > {
+public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<? extends ID, Skill> > {
 	private final Comparator<? super Skill> skillCmp;
-	private final Comparator<? super Map<ID, Skill> > subCmp;
+	private final Comparator<? super Map<? extends ID, Skill> > subCmp;
 	private ID skillTypeID;
 
 	/**
@@ -48,7 +49,7 @@ public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<ID, Ski
 	 * @param subComparator applied when the best skills are equal or cannot be determined.
 	 */
 	public SpecifiedSkillTypeSkillComparator(SkillType skillType, Comparator<? super Skill> skillComparator,
-											 Comparator<? super Map<ID, Skill> > subComparator) {
+											 Comparator<? super Map<? extends ID, Skill> > subComparator) {
 		this.skillTypeID = skillType.getID();
 		this.skillCmp = skillComparator;
 		this.subCmp = subComparator;
@@ -63,7 +64,7 @@ public class SpecifiedSkillTypeSkillComparator implements Comparator<Map<ID, Ski
 	 * @return the result of the skill comparator applied to the - according to the given skilltype
 	 * 		   - smallest skills in o1 and o2.
 	 */
-	public int compare(Map<ID, Skill> o1, Map<ID, Skill> o2) {
+	public int compare(Map<? extends ID, Skill> o1, Map<? extends ID, Skill> o2) {
 		int retVal = 0;
 		Skill s1 = o1.get(skillTypeID);
 		Skill s2 = o2.get(skillTypeID);

@@ -294,8 +294,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
           public void run() {
             Rectangle islandBounds = null;
 
-            for (Iterator iter = island.regions().iterator(); iter.hasNext();) {
-              Region r = (Region) iter.next();
+            for (Iterator<Region> iter = island.regions().iterator(); iter.hasNext();) {
+              Region r = iter.next();
               CoordinateID coord = r.getCoordinate();
 
               if (islandBounds == null) {
@@ -947,8 +947,8 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     cmbHotSpots = new JComboBox();
 
     if ((data != null) && (data.hotSpots() != null)) {
-      for (Iterator iter = data.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot h = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = data.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot h = iter.next();
         cmbHotSpots.addItem(h);
       }
     }
@@ -1123,7 +1123,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
 
     case 4:
       // FoW CTRL + W
-      Collection renderers = mapper.getRenderers(Mapper.PLANE_REGION);
+      Collection<MapCellRenderer> renderers = mapper.getRenderers(Mapper.PLANE_REGION);
 
       if ((renderers != null) && (renderers.size() > 0)) {
         Object o = renderers.iterator().next();

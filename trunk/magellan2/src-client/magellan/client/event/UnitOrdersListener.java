@@ -23,7 +23,7 @@ import magellan.library.event.GameDataEvent;
  * @see GameDataEvent
  * @see EventDispatcher
  */
-public interface UnitOrdersListener {
+public interface UnitOrdersListener extends magellan.library.event.EventListener {
 	/**
 	 * Invoked when the orders of a unit are modified.
 	 */

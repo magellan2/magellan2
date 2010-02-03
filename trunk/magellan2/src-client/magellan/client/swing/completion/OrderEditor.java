@@ -711,8 +711,8 @@ public class OrderEditor extends JTextPane implements DocumentListener, KeyListe
     // doc.getStyle(S_REGULAR), true);
 
     OrderToken prevToken = null;
-    for (Iterator iter = parser.getTokens().iterator(); iter.hasNext();) {
-      OrderToken token = (OrderToken) iter.next();
+    for (Iterator<OrderToken> iter = parser.getTokens().iterator(); iter.hasNext();) {
+      OrderToken token = iter.next();
 
       if (OrderEditor.log.isDebugEnabled()) {
         OrderEditor.log.debug("OrderEditor.formatTokens: token " + token);

@@ -60,8 +60,8 @@ public class FillSelectionAction extends AbstractSelectionAction {
       }
     }
 
-    for (Iterator iter = client.getData().regions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID c = (CoordinateID) iter.next();
+    for (Iterator<CoordinateID> iter = client.getData().regions().keySet().iterator(); iter.hasNext();) {
+      CoordinateID c = iter.next();
 
       if ((c.z == client.getLevel()) && (c.x <= maxX) && (c.x >= minX) && (c.y <= maxY)
           && (c.y >= minY)) {

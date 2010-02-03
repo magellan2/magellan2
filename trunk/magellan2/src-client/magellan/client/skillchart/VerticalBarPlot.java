@@ -183,7 +183,7 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 * 
 	 */
 	@Override
-  public java.util.List getCategories() {
+  public java.util.List<?> getCategories() {
 		return getDataSource().getCategories();
 	}
 
@@ -354,7 +354,7 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 			double barWidth = calculateBarWidth(plotArea);
 
 			int currentCategoryIndex = 0;
-			Iterator iterator = data.getCategories().iterator();
+			Iterator<?> iterator = data.getCategories().iterator();
 
 			while(iterator.hasNext()) {
 				Object category = iterator.next();

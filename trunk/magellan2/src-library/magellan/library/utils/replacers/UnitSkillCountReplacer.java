@@ -102,7 +102,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
       }
     }
 
-    Collection units =
+    Collection<Unit> units =
         ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART))
             .getUnits((Region) region);
 
@@ -111,14 +111,14 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
     }
 
     int count = 0;
-    Iterator it = units.iterator();
+    Iterator<Unit> it = units.iterator();
 
     while (it.hasNext()) {
-      Unit u = (Unit) it.next();
-      Iterator it2 = u.getSkills().iterator();
+      Unit u = it.next();
+      Iterator<Skill> it2 = u.getSkills().iterator();
 
       while (it2.hasNext()) {
-        Skill sk = (Skill) it2.next();
+        Skill sk = it2.next();
         SkillType sty = sk.getSkillType();
 
         if (sty.getName().equals(skill) || sty.getID().toString().equals(skill)) {

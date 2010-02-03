@@ -136,8 +136,8 @@ public class EresseaRelationFactory implements RelationFactory {
 
     // clone u unit's items
     modItems = new Hashtable<ID, Item>();
-    for (Iterator iter = u.getItems().iterator(); iter.hasNext();) {
-      Item i = (Item) iter.next();
+    for (Iterator<Item> iter = u.getItems().iterator(); iter.hasNext();) {
+      Item i = iter.next();
       modItems.put(i.getItemType().getID(), new Item(i.getItemType(), i.getAmount()));
     }
 

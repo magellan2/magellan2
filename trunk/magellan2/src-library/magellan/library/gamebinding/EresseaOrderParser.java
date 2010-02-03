@@ -1509,8 +1509,8 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      for (Iterator it = getData().rules.getAllianceCategoryIterator(); it.hasNext();) {
-        AllianceCategory all = (AllianceCategory) it.next();
+      for (Iterator<AllianceCategory> it = getData().rules.getAllianceCategoryIterator(); it.hasNext();) {
+        AllianceCategory all = it.next();
         if (t.equalsToken(Resources.getOrderTranslation(Alliance.ORDER_KEY_PREFIX + all.getName()))) {
           retVal = readHelfeFIDModifier(t);
           break;

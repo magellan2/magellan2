@@ -306,8 +306,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     levelSelect.removeAll();
     if (this.source.getLevels().size()>1){
       levelSelect.setEnabled(true);
-      for (Iterator iter=this.source.getLevels().iterator();iter.hasNext();){
-        Integer actLevel = (Integer)iter.next();
+      for (Iterator<Integer> iter=this.source.getLevels().iterator();iter.hasNext();){
+        Integer actLevel = iter.next();
         JMenuItem levelSign = new JMenuItem(actLevel.toString());
         levelSign.setActionCommand(actLevel.toString());
         if (actLevel.intValue()!=this.source.getLevel()){
@@ -335,8 +335,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
     jumpToHotSpot.removeAll();
     if (data!=null && data.hotSpots()!=null && data.hotSpots().size()>0){
       jumpToHotSpot.setEnabled(true);
-      for (Iterator iter = data.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot h = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = data.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot h = iter.next();
         JMenuItem levelSign = new JMenuItem(h.getName());
         levelSign.setActionCommand(h.getID().toString());
         levelSign.addActionListener(new ActionListener() {
@@ -412,8 +412,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 *
 	 */
 	private void delAllSigns(){
-		for (Iterator iter = data.regions().values().iterator();iter.hasNext();){
-			((Region)iter.next()).clearSigns();
+		for (Iterator<Region> iter = data.regions().values().iterator();iter.hasNext();){
+			(iter.next()).clearSigns();
 		}
 		updateMap();
 	}
@@ -445,11 +445,11 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		this.source = source;
 		tooltips.removeAll();
 
-		Iterator it = source.getAllTooltipDefinitions().iterator();
+		Iterator<String> it = source.getAllTooltipDefinitions().iterator();
 
 		while(it.hasNext()) {
-			String name = (String) it.next();
-			String tip = (String) it.next();
+			String name = it.next();
+			String tip = it.next();
 			String s = name + ": " + tip;
 
 			if(s.length() > 25) {
@@ -508,7 +508,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
         continue;
       } 
       JMenu help = new JMenu(rp.getName());
-			Collection rs = source.getRenderers(rp.getIndex());
+			Collection<MapCellRenderer> rs = source.getRenderers(rp.getIndex());
 			boolean addedi = false;
 
 			if(rs != null) {
@@ -520,10 +520,10 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 				item.addActionListener(rListener);
 				help.add(item);
 
-				Iterator it2 = rs.iterator();
+				Iterator<MapCellRenderer> it2 = rs.iterator();
 
 				while(it2.hasNext()) {
-					MapCellRenderer mcp = (MapCellRenderer) it2.next();
+					MapCellRenderer mcp = it2.next();
 					item = new JMenuItem(mcp.getName());
 					item.setEnabled(mcp != rp.getRenderer());
 					item.addActionListener(rListener);
@@ -581,11 +581,11 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	private void changeHotSpot() {
 		setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-		Map hotspots = data.hotSpots();
+		Map<IntegerID, HotSpot> hotspots = data.hotSpots();
 		boolean found = false;
 
-		for(Iterator iter = hotspots.values().iterator(); iter.hasNext() && !found;) {
-			HotSpot h = (HotSpot) iter.next();
+		for(Iterator<HotSpot> iter = hotspots.values().iterator(); iter.hasNext() && !found;) {
+			HotSpot h = iter.next();
 
 			if(h.getCenter().equals(region.getCoordinate())) {
 				found = true;

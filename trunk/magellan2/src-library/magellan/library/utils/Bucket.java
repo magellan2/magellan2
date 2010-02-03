@@ -121,7 +121,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 * @return true if all were found, false if not.
 	 */
 	@Override
-  public boolean containsAll(Collection c) {
+  public boolean containsAll(Collection<?> c) {
 		return data.containsAll(c);
 	}
 
@@ -216,7 +216,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 * @return true if removal was successful, false if not.
 	 */
 	@Override
-  public boolean removeAll(Collection c) {
+  public boolean removeAll(Collection<?> c) {
 //	  for (Object o : c)
 //	    hashCode = (hashCode - o.hashCode())/7;
 		return data.removeAll(c);
@@ -230,7 +230,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 * @return true if retaining was successfull, false if not.
 	 */
 	@Override
-  public boolean retainAll(Collection c) {
+  public boolean retainAll(Collection<?> c) {
 		boolean val = data.retainAll(c);
 //		hashCode = 76;
 //		for (E o : data)

@@ -119,7 +119,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   public void updateData() {
     DefaultListModel model = new DefaultListModel();
 
-    for(Iterator iter = manager.getBookmarks().listIterator(); iter.hasNext();) {
+    for(Iterator<?> iter = manager.getBookmarks().listIterator(); iter.hasNext();) {
       model.addElement(iter.next());
     }
 

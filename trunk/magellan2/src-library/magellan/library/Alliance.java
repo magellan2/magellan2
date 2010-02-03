@@ -200,8 +200,8 @@ public class Alliance {
 
 		// connect all state strings separated by spaces
     // FIXME shouldn't access rules like this 
-		for(Iterator iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
-			AllianceCategory ac = (AllianceCategory) iter.next();
+		for (Iterator<			AllianceCategory> iter = faction.getData().rules.getAllianceCategoryIterator(); iter.hasNext();) {
+			AllianceCategory ac = iter.next();
 
 			if(getState(ac.getBitMask())) {
 				ret += 10;

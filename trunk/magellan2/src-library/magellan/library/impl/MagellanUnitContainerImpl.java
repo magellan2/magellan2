@@ -136,7 +136,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
       // if the current owner does not leave container and gives command to a unit who will be on 
       // the ship, this is the new owner.
       Unit newOwner = oldOwner;
-      List<UnitRelation> commands = oldOwner.getRelations(ControlRelation.class);
+      List<ControlRelation> commands = oldOwner.getRelations(ControlRelation.class);
       for (UnitRelation ur : commands){
         if (ur.source == oldOwner && ((ControlRelation) ur).target.getModifiedShip()==oldOwner.getShip())
           newOwner = ((ControlRelation) ur).target;
@@ -386,8 +386,8 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
 			cache.modifiedContainerUnits.putAll(units);
 		}
 
-		for(Iterator iter = cache.relations.iterator(); iter.hasNext();) {
-			UnitRelation rel = (UnitRelation) iter.next();
+		for(Iterator<UnitRelation> iter = cache.relations.iterator(); iter.hasNext();) {
+			UnitRelation rel = iter.next();
 
 			if(rel instanceof UnitContainerRelation) {
 				UnitContainerRelation ucr = (UnitContainerRelation) rel;

@@ -21,8 +21,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -182,7 +184,7 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 *
 	 * @throws NullPointerException DOCUMENT-ME
 	 */
-	public synchronized List<Map.Entry<K,V>> entryList() {
+  public synchronized List<Map.Entry<K,V>> entryList() {
 		// 2002.04.18 pavkovic: this code seems to be quite ugly, but  
 		// Hashtable caches the hashCode() value of the key object. This
 		// is fine for normal purposes. But there are some strange objects
@@ -193,7 +195,10 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		// To circumvent this problem we build an array by using the 
 		// hashtable entries and find the position of its key in the keylist. 
 		// As I said before, this is a very expensive operation.
-		Map.Entry<K, V> alist[] = new Map.Entry[entrySet().size()];
+    // 
+    // unchecked cast is safe, because we insert only entries of entryList, which is bounded correctly!
+    @SuppressWarnings("unchecked")
+    Map.Entry<K, V> alist[] = new Map.Entry[entrySet().size()];
 
 		for (Map.Entry<K,V> entry : entrySet()){
 			OHEntry<K,V> newE = new OHEntry<K,V>(entry);
@@ -201,11 +206,12 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		}
 
 		// check consistency
-		for(int i = 0; i < alist.length; i++) {
-			if(alist[i] == null) {
-				throw new NullPointerException();
-			}
-		}
+		// huh? this can never cause an exception...
+//    for (int i = 0; i < alist.length; i++) {
+//      if (alist[i] == null) {
+//        throw new NullPointerException();
+//      }
+//    }
 
 		return Arrays.asList(alist);
 	}
@@ -251,18 +257,20 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 	 * @param t Mappings to be stored in this map.
    * @see java.util.Hashtable#putAll(java.util.Map)
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
+  @Override
   public synchronized void putAll(Map<? extends K, ? extends V> t) {
-		Iterator<?> iter = null;
-
-		if(t instanceof OrderedHashtable) {
+	  Iterator<? extends Map.Entry<? extends K, ? extends V>> iter = null;
+		
+		if(t instanceof OrderedHashtable<?,?>) {
+		  // unchecked cast okay here, because t is correctly bounded 
 			iter = ((OrderedHashtable) t).entryList().iterator();
 		} else {
 			iter = t.entrySet().iterator();
 		}
 
 		while(iter.hasNext()) {
-			Map.Entry<K,V> e = (java.util.Map.Entry<K, V>) iter.next();
+		  Map.Entry<? extends K, ? extends V> e = iter.next();
 			this.put(e.getKey(), e.getValue());
 		}
 	}
@@ -460,7 +468,9 @@ public class OrderedHashtable<K,V> extends Hashtable<K,V> {
 		@Override
     public boolean equals(Object o) {
 			try {
-				OHEntry e2 = (OHEntry) o;
+			  // if this throws a ClassCastException, the entries are not equal...
+			  @SuppressWarnings("unchecked")
+			  OHEntry<K, V> e2 = (OHEntry) o;
 				
 				return ((key == null) ? (e2.key == null) : key.equals(e2.key)) &&
 					((value == null) ? (e2.value == null) : value.equals(e2.value));

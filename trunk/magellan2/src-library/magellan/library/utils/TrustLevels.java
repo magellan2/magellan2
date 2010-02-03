@@ -38,8 +38,8 @@ public class TrustLevels {
 		if(data.factions() != null) {
 			// first reset all trustlevel, that were not set by the user
 			// but by Magellan itself to TL_DEFAULT
-			for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-				Faction f = (Faction) iter.next();
+			for(Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+				Faction f = iter.next();
 
 				if(!f.isTrustLevelSetByUser()) {
 					f.setTrustLevel(Faction.TL_DEFAULT);
@@ -48,8 +48,8 @@ public class TrustLevels {
 				f.setHasGiveAlliance(false);
 			}
 
-			for(Iterator factions = data.factions().values().iterator(); factions.hasNext();) {
-				Faction f = (Faction) factions.next();
+			for(Iterator<Faction> factions = data.factions().values().iterator(); factions.hasNext();) {
+				Faction f = factions.next();
 
 				if((f.getPassword() != null) && !f.isTrustLevelSetByUser()) { // password set
 					f.setTrustLevel(Faction.TL_PRIVILEGED);
@@ -103,8 +103,8 @@ public class TrustLevels {
 	 * 
 	 */
 	public static boolean containsTrustLevelsSetByUser(GameData data) {
-		for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-			if(((Faction) iter.next()).isTrustLevelSetByUser()) {
+		for(Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+			if((iter.next()).isTrustLevelSetByUser()) {
 				return true;
 			}
 		}

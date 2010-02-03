@@ -76,13 +76,13 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	private EventDispatcher dispatcher;
 	private GameData data;
 	private Properties settings;
-	private Collection selectedObjects;
+	private Collection<?> selectedObjects;
 
 	/**
 	 * Creates a new UnitContainerContextMenu object.
 	 */
 	public UnitContainerContextMenu(UnitContainer uc, EventDispatcher dispatcher, GameData data,
-									Properties settings,Collection selectedObjects) {
+									Properties settings,Collection<?> selectedObjects) {
 		super(uc.toString());
 		this.uc = uc;
 		this.dispatcher = dispatcher;
@@ -204,7 +204,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 		// we want to offer: give orders to ship-captns
 		boolean shipsInSelection = false;
 		if (this.selectedObjects!=null){
-			for (Iterator iter = this.selectedObjects.iterator();iter.hasNext();){
+			for (Iterator<?> iter = this.selectedObjects.iterator();iter.hasNext();){
 				Object o = iter.next();
 				if (o instanceof Ship) {
 					shipsInSelection = true;
@@ -392,7 +392,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	private void copyID() {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+    for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
       Object o = iter.next();
       if (o instanceof Identifiable){
         Identifiable idf = (Identifiable) o;
@@ -414,7 +414,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	private void copyNameID() {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+    for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
       Object o = iter.next();
       if (o instanceof Named){
         idString.append(((Named)o).getName());
@@ -435,7 +435,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
   private void copyName() {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+    for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
       Object o = iter.next();
       if (o instanceof Named){
         idString.append(((Named)o).getName() + "\n");
@@ -511,7 +511,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 	private void event_addShipOrder() {
 		GiveOrderDialog giveOderDialog = new GiveOrderDialog(JOptionPane.getFrameForComponent(this), getCaption());
 		String s[] = giveOderDialog.showGiveOrderDialog();
-		for(Iterator iter = this.selectedObjects.iterator(); iter.hasNext();) {
+		for(Iterator<?> iter = this.selectedObjects.iterator(); iter.hasNext();) {
 			Object o = iter.next();
 			if (o instanceof Ship){
 				Ship ship = (Ship)o;
@@ -537,7 +537,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
     int cntShips = 0;
     int cntActModifiedLoad = 0;
     int cntMaxLoad = 0;
-    for(Iterator iter = this.selectedObjects.iterator(); iter.hasNext();) {
+    for(Iterator<?> iter = this.selectedObjects.iterator(); iter.hasNext();) {
       Object o = iter.next();
       if (o instanceof Ship){
         Ship ship = (Ship)o;

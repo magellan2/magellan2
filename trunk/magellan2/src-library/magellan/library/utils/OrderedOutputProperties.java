@@ -61,14 +61,14 @@ public class OrderedOutputProperties extends Properties {
 	}
 
 	private class IteratorEnumeration implements Enumeration<Object> {
-		protected Iterator iterator;
+		protected Iterator<?> iterator;
 
 		/**
 		 * Creates a new IteratorEnumeration object.
 		 *
 		 * 
 		 */
-		public IteratorEnumeration(Iterator it) {
+		public IteratorEnumeration(Iterator<?> it) {
 			iterator = it;
 		}
 

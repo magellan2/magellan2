@@ -259,7 +259,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 				regions.clear();
 			}
 
-			for(Iterator iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
+			for(Iterator<?> iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
 				Object o = iter.next();
 
 				if(o instanceof Region) {
@@ -280,8 +280,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
     
     if (cmbFactions != null) {
       cmbFactions.removeAllItems();
-      for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-        Faction f = (Faction) iter.next();
+      for (Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+        Faction f = iter.next();
 
         if(f.isPrivileged()) {
           cmbFactions.addItem(f);
@@ -533,8 +533,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		cmbFactions = new JComboBox();
 		lblFactions.setLabelFor(cmbFactions);
 
-		for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-			Faction f = (Faction) iter.next();
+		for (Iterator<			Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+			Faction f = iter.next();
 
 			if(f.isPrivileged()) {
 				cmbFactions.addItem(f);

@@ -13,13 +13,13 @@
 // 
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
 // 
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
-// Free Software Foundation, Inc., 
-// 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+// Free Software Foundation, Inc.,
+// 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // 
 package magellan.plugin.extendedcommands;
 
@@ -59,17 +59,11 @@ import magellan.library.utils.Utils;
 import magellan.library.utils.logging.Logger;
 
 /**
- * This is a magellan plugin. It makes it possible to save complex
- * commands for single units and load them every time a report is
- * opened.
+ * This is a magellan plugin. It makes it possible to save complex commands for single units and
+ * load them every time a report is opened. For example: - UnitA creates Wood - UnitB needs Wood for
+ * creating something else So, UnitA needs a GIVE command every week but the Vorlage doesn't want to
+ * show this command...
  * 
- * For example:
- *  - UnitA creates Wood
- *  - UnitB needs Wood for creating something else
- * 
- * So, UnitA needs a GIVE command every week but the Vorlage
- * doesn't want to show this command...
- *
  * @author Thoralf Rickert
  * @version 1.0, 28.05.2007
  */
@@ -81,7 +75,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   private ExtendedCommands commands = null;
   private ExtendedCommandsDock dock = null;
   private HelpDock help = null;
-  
+
   private List<KeyStroke> shortcuts;
 
   /**
@@ -90,46 +84,47 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   public void init(Client client, Properties properties) {
     // init the plugin
     ExtendedCommandsPlugIn.log = Logger.getInstance(ExtendedCommandsPlugIn.class);
-    Resources.getInstance().initialize(Client.getSettingsDirectory(),"extendedcommands_");
+    Resources.getInstance().initialize(Client.getSettingsDirectory(), "extendedcommands_");
     this.client = client;
     this.commands = new ExtendedCommands(client);
     initCommands();
     this.dock = new ExtendedCommandsDock(commands);
     client.getDispatcher().addSelectionListener(dock);
     this.help = new HelpDock();
-    ExtendedCommandsPlugIn.log.debug(getName()+" initialized...(Client)");
-    
+    ExtendedCommandsPlugIn.log.debug(getName() + " initialized...(Client)");
+
     // initialize shortcuts
     shortcuts = new ArrayList<KeyStroke>(2);
     // 0: Focus
     shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK));
     // 1: open current
-    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK));
+    shortcuts.add(KeyStroke.getKeyStroke(KeyEvent.VK_4, InputEvent.CTRL_MASK
+        | InputEvent.SHIFT_MASK));
     // register for shortcuts
     DesktopEnvironment.registerShortcutListener(this);
   }
 
   private void initCommands() {
     String exampleScript = "// example for beginners...\n";
-    exampleScript+= "// \n";
-    exampleScript+= "// import magellan.library.*;\n";
-    exampleScript+= "// \n";
-    exampleScript+= "// int getHorses(Region region) {\n";
-    exampleScript+= "// return region.getHorses();\n";
-    exampleScript+= "// }\n";
-    exampleScript+= "//\n";
+    exampleScript += "// \n";
+    exampleScript += "// import magellan.library.*;\n";
+    exampleScript += "// \n";
+    exampleScript += "// int getHorses(Region region) {\n";
+    exampleScript += "// return region.getHorses();\n";
+    exampleScript += "// }\n";
+    exampleScript += "//\n";
     commands.setDefaultLibrary(exampleScript);
-    
+
     exampleScript = "// example for beginners...\n";
-    exampleScript+= "//\n";
-    exampleScript+= "//if (!unit.isOrdersConfirmed()) {\n";
-    exampleScript+= "//  unit.setOrdersConfirmed(true);\n";
-    exampleScript+= "//}\n";
+    exampleScript += "//\n";
+    exampleScript += "//if (!unit.isOrdersConfirmed()) {\n";
+    exampleScript += "//  unit.setOrdersConfirmed(true);\n";
+    exampleScript += "//}\n";
     commands.setDefaultUnitScript(exampleScript);
-    
+
     exampleScript = "// example for beginners...\n";
-    exampleScript+= "//\n";
-    exampleScript+= "//...";
+    exampleScript += "//\n";
+    exampleScript += "//...";
     commands.setDefaultContainerScript(exampleScript);
   }
 
@@ -138,7 +133,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public void init(GameData data) {
     // init the report
-    ExtendedCommandsPlugIn.log.debug(getName()+" initialized...(GameData)");
+    ExtendedCommandsPlugIn.log.debug(getName() + " initialized...(GameData)");
     dock.setWorld(data);
   }
 
@@ -147,48 +142,50 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    */
   public List<JMenuItem> getMenuItems() {
     List<JMenuItem> items = new ArrayList<JMenuItem>();
-    
+
     JMenu menu = new JMenu(Resources.get("extended_commands.mainmenu.title"));
     items.add(menu);
-    
-    ExtendedCommandsPlugIn.executeMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.execute.title"));
+
+    ExtendedCommandsPlugIn.executeMenu =
+        new JMenuItem(Resources.get("extended_commands.mainmenu.execute.title"));
     ExtendedCommandsPlugIn.executeMenu.setActionCommand(PlugInAction.EXECUTE_ALL.getID());
     ExtendedCommandsPlugIn.executeMenu.addActionListener(this);
     ExtendedCommandsPlugIn.executeMenu.setEnabled(commands.hasCommands());
-    menu.add(ExtendedCommandsPlugIn.executeMenu);    
+    menu.add(ExtendedCommandsPlugIn.executeMenu);
 
-    JMenuItem libraryMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.library.title"));
+    JMenuItem libraryMenu =
+        new JMenuItem(Resources.get("extended_commands.mainmenu.library.title"));
     libraryMenu.setActionCommand(PlugInAction.LIBRARY_EDIT.getID());
     libraryMenu.addActionListener(this);
-    menu.add(libraryMenu);    
+    menu.add(libraryMenu);
 
     JMenuItem clearMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.clear.title"));
     clearMenu.setActionCommand(PlugInAction.CLEAR.getID());
     clearMenu.addActionListener(this);
-    menu.add(clearMenu);   
-    
+    menu.add(clearMenu);
+
     menu.addSeparator();
 
     JMenuItem saveMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.save.title"));
     saveMenu.setActionCommand(PlugInAction.SAVE_ALL.getID());
     saveMenu.addActionListener(this);
-    menu.add(saveMenu);    
+    menu.add(saveMenu);
 
     JMenuItem exportMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.export.title"));
     exportMenu.setActionCommand(PlugInAction.EXPORT.getID());
     exportMenu.addActionListener(this);
     exportMenu.setEnabled(false);
-    menu.add(exportMenu);    
+    menu.add(exportMenu);
 
     JMenuItem importMenu = new JMenuItem(Resources.get("extended_commands.mainmenu.import.title"));
     importMenu.setActionCommand(PlugInAction.IMPORT.getID());
     importMenu.addActionListener(this);
     importMenu.setEnabled(false);
-    menu.add(importMenu);    
+    menu.add(importMenu);
 
     return items;
   }
-  
+
   public static JMenuItem getExecuteMenu() {
     return ExtendedCommandsPlugIn.executeMenu;
   }
@@ -201,116 +198,129 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
   }
 
   /**
-   * @see magellan.client.swing.context.UnitContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher, magellan.library.GameData, magellan.library.Unit, java.util.Collection)
+   * @see magellan.client.swing.context.UnitContextMenuProvider#createContextMenu(magellan.client.event.EventDispatcher,
+   *      magellan.library.GameData, magellan.library.Unit, java.util.Collection)
    */
-  public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data, final Unit unit, Collection selectedObjects) {
+  public JMenuItem createContextMenu(final EventDispatcher dispatcher, final GameData data,
+      final Unit unit, Collection<?> selectedObjects) {
     JMenu menu = new JMenu(Resources.get("extended_commands.popupmenu.title"));
-    
+
     JMenuItem editMenu =
         new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[] {
-            unit.getName(), unit.getID().toString(), KeyEvent.getKeyModifiersText(shortcuts.get(1).getModifiers()),
+            unit.getName(), unit.getID().toString(),
+            KeyEvent.getKeyModifiersText(shortcuts.get(1).getModifiers()),
             KeyEvent.getKeyText(shortcuts.get(1).getKeyCode()) }));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        editCommands(data,unit);
+        editCommands(data, unit);
       }
     });
     menu.add(editMenu);
-    
-    JMenuItem executeMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[]{unit.getName(),unit.getID().toString()})); 
+
+    JMenuItem executeMenu =
+        new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[] {
+            unit.getName(), unit.getID().toString() }));
     executeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        executeCommands(data,unit);
+        executeCommands(data, unit);
       }
     });
     executeMenu.setEnabled(commands.hasCommands(unit));
     menu.add(executeMenu);
-    
+
     return menu;
   }
-  
+
   /**
-   * @see magellan.client.swing.context.UnitContainerContextMenuProvider#createContextMenu(EventDispatcher, GameData, UnitContainer, Collection)
+   * @see magellan.client.swing.context.UnitContainerContextMenuProvider#createContextMenu(EventDispatcher,
+   *      GameData, UnitContainer, Collection)
    */
-  public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data, final UnitContainer container, final Collection selectedObjects) {
+  public JMenuItem createContextMenu(EventDispatcher dispatcher, final GameData data,
+      final UnitContainer container, final Collection<?> selectedObjects) {
     ContainerType type = ContainerType.getType(container.getType());
     if (type.equals(ContainerType.UNKNOWN)) {
-      ExtendedCommandsPlugIn.log.error("Unknown containertype "+container.getType());
+      ExtendedCommandsPlugIn.log.error("Unknown containertype " + container.getType());
       return null;
     }
-    
+
     JMenu menu = new JMenu(Resources.get("extended_commands.popupmenu.title"));
-    
-    JMenuItem editMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[]{container.getName(),container.getID().toString()}));
+
+    JMenuItem editMenu =
+        new JMenuItem(Resources.get("extended_commands.popupmenu.edit.title", new Object[] {
+            container.getName(), container.getID().toString() }));
     editMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        editCommands(data,container);
+        editCommands(data, container);
       }
     });
     menu.add(editMenu);
-    
-    JMenuItem executeMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[]{container.getName(),container.getID().toString()})); 
+
+    JMenuItem executeMenu =
+        new JMenuItem(Resources.get("extended_commands.popupmenu.execute.title", new Object[] {
+            container.getName(), container.getID().toString() }));
     executeMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        executeCommands(data,container);
+        executeCommands(data, container);
       }
     });
     executeMenu.setEnabled(commands.hasCommands(container));
     menu.add(executeMenu);
 
-    JMenuItem executeAllMenu = new JMenuItem(Resources.get("extended_commands.popupmenu.executeall.title", new Object[]{container.getName(),container.getID().toString()})); 
+    JMenuItem executeAllMenu =
+        new JMenuItem(Resources.get("extended_commands.popupmenu.executeall.title", new Object[] {
+            container.getName(), container.getID().toString() }));
     executeAllMenu.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        executeAllCommands(data,container);
+        executeAllCommands(data, container);
       }
     });
-    executeAllMenu.setEnabled(commands.hasAllCommands(data,container));
+    executeAllMenu.setEnabled(commands.hasAllCommands(data, container));
     menu.add(executeAllMenu);
-    
+
     return menu;
   }
-  
+
   /**
    * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
    */
   public void actionPerformed(ActionEvent e) {
     ExtendedCommandsPlugIn.log.debug(e.getActionCommand());
     switch (PlugInAction.getAction(e)) {
-      case EXECUTE_ALL: {
-        ExtendedCommandsPlugIn.log.info("Execute all...");
-        ProgressBarUI progress = new ProgressBarUI(Client.INSTANCE);
-        ExecutionThread thread = new ExecutionThread(client, progress, commands);
-        thread.start();
-        break;
-      }
-      case LIBRARY_EDIT: {
-        ExtendedCommandsPlugIn.log.debug("Edit library...");
-        editLibrary(client.getData());
-        break;
-      }
-      case CLEAR: {
-        ExtendedCommandsPlugIn.log.info("Clear unused scripts...");
-        clearCommands();
-        break;
-      }
-      case SAVE_ALL: {
-        ExtendedCommandsPlugIn.log.debug("Saving...");
-        commands.save();
-        break;
-      }
-      case EXPORT: {
-        ExtendedCommandsPlugIn.log.debug("Exporting commands...");
-        break;
-      }
-      case IMPORT: {
-        ExtendedCommandsPlugIn.log.debug("import commands...");
-        break;
-      }
-      case UNKNOWN:
-        ExtendedCommandsPlugIn.log.debug("unknown command...");
+    case EXECUTE_ALL: {
+      ExtendedCommandsPlugIn.log.info("Execute all...");
+      ProgressBarUI progress = new ProgressBarUI(Client.INSTANCE);
+      ExecutionThread thread = new ExecutionThread(client, progress, commands);
+      thread.start();
+      break;
+    }
+    case LIBRARY_EDIT: {
+      ExtendedCommandsPlugIn.log.debug("Edit library...");
+      editLibrary(client.getData());
+      break;
+    }
+    case CLEAR: {
+      ExtendedCommandsPlugIn.log.info("Clear unused scripts...");
+      clearCommands();
+      break;
+    }
+    case SAVE_ALL: {
+      ExtendedCommandsPlugIn.log.debug("Saving...");
+      commands.save();
+      break;
+    }
+    case EXPORT: {
+      ExtendedCommandsPlugIn.log.debug("Exporting commands...");
+      break;
+    }
+    case IMPORT: {
+      ExtendedCommandsPlugIn.log.debug("import commands...");
+      break;
+    }
+    case UNKNOWN:
+      ExtendedCommandsPlugIn.log.debug("unknown command...");
     }
   }
-  
+
   /**
    * @see magellan.client.extern.MagellanPlugIn#quit(boolean)
    */
@@ -322,37 +332,38 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
    * Opens a Dialog for editing the commands for the given Unitcontainer.
    */
   protected void editCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.debug("Edit Command for UnitContainer "+container);
-    
+    ExtendedCommandsPlugIn.log.debug("Edit Command for UnitContainer " + container);
+
     // find the commands for this container or set them to "".
     Script script = commands.getCommands(container);
     if (Utils.isEmpty(script)) {
       script = commands.createScript(container);
     }
-    
+
     // open a dialog for the commands...
-//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,container,script);
-//    dialog.setVisible(true);
-    dock.setScript(null,container,script);
-    
+// ExtendedCommandsDialog dialog = new
+    // ExtendedCommandsDialog(client,data,commands,container,script);
+// dialog.setVisible(true);
+    dock.setScript(null, container, script);
+
   }
 
   /**
    * Opens a Dialog for editing the commands for the given Unit.
    */
   protected void editCommands(GameData data, Unit unit) {
-    ExtendedCommandsPlugIn.log.debug("Edit Command for Unit "+unit);
-    
+    ExtendedCommandsPlugIn.log.debug("Edit Command for Unit " + unit);
+
     // find the commands for this unit or set them to "".
     Script script = commands.getCommands(unit);
     if (Utils.isEmpty(script)) {
       script = commands.createScript(unit);
     }
-    
+
     // open a dialog for the commands...
-//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
-//    dialog.setVisible(true);
-    dock.setScript(unit,null,script);
+// ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,unit,script);
+// dialog.setVisible(true);
+    dock.setScript(unit, null, script);
   }
 
   /**
@@ -364,79 +375,82 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     // find the commands for this unit or set them to "".
     Script script = commands.getLibrary();
     if (Utils.isEmpty(script)) {
-      script = commands.createLibrary(data); 
+      script = commands.createLibrary(data);
     }
-    
+
     // open a dialog for the commands...
-//    ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
-//    dialog.setVisible(true);
-    dock.setScript(null,null,script);
+// ExtendedCommandsDialog dialog = new ExtendedCommandsDialog(client,data,commands,script);
+// dialog.setVisible(true);
+    dock.setScript(null, null, script);
   }
 
   protected void clearCommands() {
-    if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"), Resources.get("extended_commands.cleanup.title"),JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+    if (JOptionPane.showConfirmDialog(client, Resources.get("extended_commands.cleanup.question"),
+        Resources.get("extended_commands.cleanup.title"), JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
       return;
     }
     int units = commands.clearUnusedUnits();
     int containers = commands.clearUnusedContainers();
-    
-    JOptionPane.showMessageDialog(client, Resources.get("extended_commands.cleanup.result",units,containers), Resources.get("extended_commands.cleanup.title"), JOptionPane.INFORMATION_MESSAGE);
+
+    JOptionPane.showMessageDialog(client, Resources.get("extended_commands.cleanup.result", units,
+        containers), Resources.get("extended_commands.cleanup.title"),
+        JOptionPane.INFORMATION_MESSAGE);
   }
 
   /**
    * Executes the commands for a given unitcontainer.
    */
   protected void executeCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer "+container);
-    
+    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer " + container);
+
     // execute the commands for this container.
     commands.execute(data, container);
-    
+
     client.getDispatcher().fire(new GameDataEvent(this, data));
   }
-  
+
   /**
    * Executes the commands for a given unitcontainer.
    */
   protected void executeAllCommands(GameData data, UnitContainer container) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer "+container);
-    
+    ExtendedCommandsPlugIn.log.info("Execute Command for UnitContainer " + container);
+
     // execute the commands for this unit.
     if (commands.hasCommands(container)) {
       commands.execute(data, container);
     }
-    
+
     Collection<Unit> units = container.units();
-    if (units != null && units.size()>0) {
+    if (units != null && units.size() > 0) {
       for (Unit unit : units) {
         if (commands.hasCommands(unit)) {
           // execute the commands for this unit.
-          ExtendedCommandsPlugIn.log.info("Execute Command for Unit "+unit);
+          ExtendedCommandsPlugIn.log.info("Execute Command for Unit " + unit);
           commands.execute(data, unit);
         }
       }
     }
 
     // client notification is done from commands.execute
-//    client.getDispatcher().fire(new GameDataEvent(this, data));
-//     client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
-//    container.getCache().orderEditor.reloadOrders();
-    
+// client.getDispatcher().fire(new GameDataEvent(this, data));
+// client.getDispatcher().fire(new UnitOrdersEvent(this, unit));
+// container.getCache().orderEditor.reloadOrders();
+
   }
-  
+
   /**
    * Executes the commands for a given unit.
    */
   protected void executeCommands(GameData data, Unit unit) {
-    ExtendedCommandsPlugIn.log.info("Execute Command for Unit "+unit);
-    
+    ExtendedCommandsPlugIn.log.info("Execute Command for Unit " + unit);
+
     // execute the commands for this unit.
     commands.execute(data, unit);
-    
+
     unit.getOrderEditor().reloadOrders();
     unit.getOrderEditor().fireOrdersChangedEvent();
   }
-  
+
   /**
    * @see magellan.client.extern.MagellanPlugIn#getPreferencesProvider()
    */
@@ -454,7 +468,6 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
     docks.put(HelpDock.IDENTIFIER, help);
     return docks;
   }
-
 
   /**
    * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
@@ -487,7 +500,7 @@ public class ExtendedCommandsPlugIn implements MagellanPlugIn, UnitContextMenuPr
       break;
     }
   }
-  
+
   /**
    * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
    */

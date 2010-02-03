@@ -115,8 +115,8 @@ public class Options {
 	private void initOptions(Rules rules) {
 		options = new OrderedHashtable<ID, OptionCategory>();
 
-		for(Iterator iter = rules.getOptionCategoryIterator(); iter.hasNext();) {
-			OptionCategory orig = (OptionCategory) iter.next();
+		for(Iterator<OptionCategory> iter = rules.getOptionCategoryIterator(); iter.hasNext();) {
+			OptionCategory orig = iter.next();
 			options.put(orig.getID(), new OptionCategory(orig));
 		}
 	}

@@ -62,16 +62,16 @@ public class UnitCountReplacer extends AbstractRegionReplacer implements Environ
 	 */
 	@Override
   public Object getRegionReplacement(Region r) {
-		Collection c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits(r);
+		Collection<Unit> c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits(r);
 
 		if(c != null) {
 			int count = 0;
 
 			if(countPersons) {
-				Iterator it = c.iterator();
+				Iterator<Unit> it = c.iterator();
 
 				while(it.hasNext()) {
-					count += ((Unit) it.next()).getPersons();
+					count += (it.next()).getPersons();
 				}
 			} else {
 				count = c.size();

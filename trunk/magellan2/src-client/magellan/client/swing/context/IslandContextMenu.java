@@ -40,7 +40,7 @@ public class IslandContextMenu extends JPopupMenu {
   private EventDispatcher dispatcher;
 	private GameData data;
 //	private Properties settings;
-	private Collection selectedObjects;
+	private Collection<?> selectedObjects;
 
   private Island island;
 
@@ -48,7 +48,7 @@ public class IslandContextMenu extends JPopupMenu {
 	 * Creates a new UnitContainerContextMenu object.
 	 */
 	public IslandContextMenu(Island island, EventDispatcher dispatcher, GameData data,
-									Properties settings,Collection selectedObjects) {
+									Properties settings,Collection<?> selectedObjects) {
 		super(island.toString());
 		this.island = island;
 		this.dispatcher = dispatcher;

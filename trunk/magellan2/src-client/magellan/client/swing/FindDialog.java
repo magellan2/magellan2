@@ -60,6 +60,7 @@ import magellan.library.Message;
 import magellan.library.Named;
 import magellan.library.Region;
 import magellan.library.Ship;
+import magellan.library.TempUnit;
 import magellan.library.Unique;
 import magellan.library.Unit;
 import magellan.library.UnitContainer;
@@ -150,7 +151,7 @@ public class FindDialog extends InternationalizedDataDialog implements
       // it is assumed that selections of this type contain only regions
       selectedRegions.clear();
 
-      for (Iterator iter = s.getSelectedObjects().iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = s.getSelectedObjects().iterator(); iter.hasNext();) {
         Region r = (Region) iter.next();
         selectedRegions.add(r);
       }
@@ -585,8 +586,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     // determine the items to search
     if (addUnits.isSelected() == true) {
       // items.addAll(data.units().values()); TempUnits were forgotten...
-      for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
 
         if ((selectedRegions == null) || selectedRegions.isEmpty()
             || selectedRegions.contains(u.getRegion())) {
@@ -595,8 +596,8 @@ public class FindDialog extends InternationalizedDataDialog implements
               items.add(u);
             }
 
-            for (Iterator iterator = u.tempUnits().iterator(); iterator.hasNext();) {
-              Unit tu = (Unit) iterator.next();
+            for (Iterator<TempUnit> iterator = u.tempUnits().iterator(); iterator.hasNext();) {
+              Unit tu = iterator.next();
 
               if (!tu.isOrdersConfirmed()) {
                 items.add(tu);
@@ -622,8 +623,8 @@ public class FindDialog extends InternationalizedDataDialog implements
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
         items.addAll(data.buildings().values());
       } else {
-        for (Iterator iter = data.buildings().values().iterator(); iter.hasNext();) {
-          Building b = (Building) iter.next();
+        for (Iterator<Building> iter = data.buildings().values().iterator(); iter.hasNext();) {
+          Building b = iter.next();
 
           if (selectedRegions.contains(b.getRegion())) {
             items.add(b);
@@ -636,8 +637,8 @@ public class FindDialog extends InternationalizedDataDialog implements
       if ((selectedRegions == null) || selectedRegions.isEmpty()) {
         items.addAll(data.ships().values());
       } else {
-        for (Iterator iter = data.ships().values().iterator(); iter.hasNext();) {
-          Ship s = (Ship) iter.next();
+        for (Iterator<Ship> iter = data.ships().values().iterator(); iter.hasNext();) {
+          Ship s = iter.next();
 
           if (selectedRegions.contains(s.getRegion())) {
             items.add(s);
@@ -771,8 +772,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     if (item instanceof Unit) {
       Unit u = (Unit) item;
 
-      for (Iterator iterator = u.getItems().iterator(); iterator.hasNext();) {
-        String name = getName(((Item) iterator.next()).getItemType());
+      for (Iterator<Item> iterator = u.getItems().iterator(); iterator.hasNext();) {
+        String name = getName((iterator.next()).getItemType());
         if (match(name, patterns))
           return true;
       }

@@ -122,7 +122,7 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	 *  
 	 * @see magellan.client.swing.completion.CompletionGUI#cycleCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String, int)
 	 */
-	public void cycleCompletion(JTextComponent editor, Collection completions, String stub,
+	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
 								int index) {
 		listPane.setSelectedIndex(index);
 	}

@@ -213,8 +213,8 @@ public class ReplacerHelp implements GameDataListener {
 			return;
 		}
 
-		for(Iterator iter = data.rules.getRegionTypeIterator(); iter.hasNext();) {
-			RegionType type = (RegionType) iter.next();
+		for(Iterator<RegionType> iter = data.rules.getRegionTypeIterator(); iter.hasNext();) {
+			RegionType type = iter.next();
 			Object arg[] = new Object[1];
 			String name = "is" + type.getID().toString();
 			arg[0] = type;

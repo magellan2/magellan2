@@ -120,7 +120,7 @@ public class UnitContextMenu extends JPopupMenu {
   /**
    * Initialize this component.
    */
-  private void init(Collection selectedObjects) {
+  private void init(Collection<?> selectedObjects) {
     selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
     JMenuItem unitString = new JMenuItem(getCaption());

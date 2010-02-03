@@ -45,10 +45,10 @@ public class ExpandSelectionAction extends AbstractSelectionAction {
     for (CoordinateID c : client.getData().getSelectedRegionCoordinates().keySet()) {
       Region region = client.getData().regions().get(c);
       // get neighbors
-      Collection neighbours = region.getNeighbours();
+      Collection<CoordinateID> neighbours = region.getNeighbours();
       if (neighbours != null) {
-        for (Iterator it = neighbours.iterator(); it.hasNext();) {
-          CoordinateID checkRegionID = (CoordinateID) it.next();
+        for (Iterator<CoordinateID> it = neighbours.iterator(); it.hasNext();) {
+          CoordinateID checkRegionID = it.next();
           getSelectedRegions().put(checkRegionID, client.getData().regions().get(checkRegionID));
         }
       }

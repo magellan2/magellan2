@@ -183,10 +183,10 @@ public abstract class Category extends ObjectType {
 		}
 
 		if(hasChildren()) {
-			Iterator it = getChildren().iterator();
+			Iterator<Category> it = getChildren().iterator();
 
 			while(it.hasNext()) {
-				((Category) it.next()).removeInstance(o);
+				(it.next()).removeInstance(o);
 			}
 		}
 	}

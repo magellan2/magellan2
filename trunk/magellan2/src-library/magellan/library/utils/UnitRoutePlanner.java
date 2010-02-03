@@ -105,24 +105,24 @@ public class UnitRoutePlanner {
       if (v.replaceOrders()) {
         unit.setOrders(orders);
       } else {
-        for (Iterator iter = orders.iterator(); iter.hasNext();) {
-          unit.addOrder((String) iter.next(), false, 0);
+        for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
+          unit.addOrder(iter.next(), false, 0);
         }
       }
 
       // change other units' orders
       if ((otherUnits != null) && (otherUnits.size() > 0)) {
-        Iterator it = otherUnits.iterator();
+        Iterator<Unit> it = otherUnits.iterator();
 
         while (it.hasNext()) {
-          Unit u = (Unit) it.next();
+          Unit u = it.next();
 
           if (!u.equals(unit)) {
             if (v.replaceOrders()) {
               u.setOrders(orders);
             } else {
-              for (Iterator iter = orders.iterator(); iter.hasNext();) {
-                u.addOrder((String) iter.next(), false, 0);
+              for (Iterator<String> iter = orders.iterator(); iter.hasNext();) {
+                u.addOrder(iter.next(), false, 0);
               }
             }
           }

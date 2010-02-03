@@ -23,6 +23,7 @@ import magellan.library.CoordinateID;
 import magellan.library.ID;
 import magellan.library.Item;
 import magellan.library.Skill;
+import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.relation.UnitRelation;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
@@ -56,10 +57,10 @@ public class Cache {
    * Unit.skills map!!
    * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    */
-  public Map<ID, Skill> modifiedSkills = null;
+  public Map<StringID, Skill> modifiedSkills = null;
 
   /** DOCUMENT-ME */
-  public Map<ID, Item> modifiedItems = null;
+  public Map<StringID, Item> modifiedItems = null;
 
   /** @deprecated currently unused */
   @Deprecated

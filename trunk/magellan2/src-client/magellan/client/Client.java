@@ -154,6 +154,7 @@ import magellan.library.GameData;
 import magellan.library.Message;
 import magellan.library.MissingData;
 import magellan.library.Region;
+import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
@@ -866,8 +867,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     if (getData() != null) {
       // add all privileged factions
-      for (Iterator iter = getData().factions().values().iterator(); iter.hasNext();) {
-        Faction f = (Faction) iter.next();
+      for (Iterator<Faction> iter = getData().factions().values().iterator(); iter.hasNext();) {
+        Faction f = iter.next();
 
         if ((f.isPrivileged()) && !f.units().isEmpty()) {
           aMenu.add(new ChangeFactionConfirmationAction(this, f, aConfirmationType, false, false));
@@ -1853,8 +1854,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       int units = 0;
       int done = 0;
 
-      for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
 
         if (u.getFaction().isPrivileged()) {
           units++;
@@ -1865,8 +1866,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         }
 
         // also count temp units
-        for (Iterator iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
-          Unit u2 = (Unit) iter2.next();
+        for (Iterator<TempUnit> iter2 = u.tempUnits().iterator(); iter2.hasNext();) {
+          Unit u2 = iter2.next();
 
           if (u2.getFaction().isPrivileged()) {
             units++;

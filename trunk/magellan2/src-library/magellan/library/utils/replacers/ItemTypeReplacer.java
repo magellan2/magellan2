@@ -50,20 +50,20 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
 		if(region instanceof Region) {
 			String items = getParameter(0, region).toString();
 			int count = 0;
-			Collection c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits((Region) region);
+			Collection<Unit> c = ((UnitSelection) environment.getPart(ReplacerEnvironment.UNITSELECTION_PART)).getUnits((Region) region);
 
 			if(c == null) {
 				return null;
 			}
 
-			Iterator unitIt = c.iterator();
+			Iterator<Unit> unitIt = c.iterator();
 
 			while(unitIt.hasNext()) {
-				Unit u = (Unit) unitIt.next();
-				Iterator itemIt = u.getItems().iterator();
+				Unit u = unitIt.next();
+				Iterator<Item> itemIt = u.getItems().iterator();
 
 				while(itemIt.hasNext()) {
-					Item i = (Item) itemIt.next();
+					Item i = itemIt.next();
 					ItemType ity = i.getItemType();
 
 					if(ity.getName().equalsIgnoreCase(items) ||

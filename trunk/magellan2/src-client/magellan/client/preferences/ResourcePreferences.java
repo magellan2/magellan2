@@ -270,11 +270,11 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
     return rpPanel;
   }
 
-  private DefaultListModel getWrappedURLs(Collection urls) {
+  private DefaultListModel getWrappedURLs(Collection<URL> urls) {
     DefaultListModel wrappers = new DefaultListModel();
 
-    for(Iterator iter = urls.iterator(); iter.hasNext();) {
-      wrappers.add(wrappers.getSize(), new URLWrapper((URL) iter.next()));
+    for(Iterator<URL> iter = urls.iterator(); iter.hasNext();) {
+      wrappers.add(wrappers.getSize(), new URLWrapper(iter.next()));
     }
 
     return wrappers;

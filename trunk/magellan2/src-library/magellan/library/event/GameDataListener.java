@@ -22,7 +22,7 @@ package magellan.library.event;
  * @see GameDataEvent
  * @see magellan.client.event.EventDispatcher
  */
-public interface GameDataListener {
+public interface GameDataListener extends EventListener {
 	/**
 	 * Invoked when the current game data object becomes invalid.
 	 */

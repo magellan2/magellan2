@@ -140,8 +140,8 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
 		}
 
 		if(data.regions() != null) {
-			for(Iterator iter = data.regions().values().iterator(); iter.hasNext();) {
-				Region r = (Region) iter.next();
+			for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
+				Region r = iter.next();
 
 				if(this.equals(r.getIsland())) {
 					regions.put(r.getID(), r);

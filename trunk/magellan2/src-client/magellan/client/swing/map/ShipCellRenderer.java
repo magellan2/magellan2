@@ -53,7 +53,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
 
-			Iterator iter = r.ships().iterator();
+			Iterator<Ship> iter = r.ships().iterator();
 
 			if(iter.hasNext()) {
 				CoordinateID c = r.getCoordinate();
@@ -70,7 +70,7 @@ public class ShipCellRenderer extends ImageCellRenderer {
 
         // find ships with max capacity
         while (iter.hasNext()) {
-          Ship s = (Ship) iter.next();
+          Ship s = iter.next();
 
           if (shipInformations[s.getShoreId() + 1] == null) {
             shipInformations[s.getShoreId() + 1] =

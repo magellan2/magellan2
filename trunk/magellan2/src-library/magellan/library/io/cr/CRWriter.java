@@ -305,13 +305,13 @@ public class CRWriter extends BufferedWriter {
    * @param list a list containing the <tt>Message</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeMessages(List<?> list) throws IOException {
+  public void writeMessages(List<Message> list) throws IOException {
     if (list == null) {
       return;
     }
 
-    for (Iterator iter = list.iterator(); iter.hasNext();) {
-      writeMessage((Message) iter.next());
+    for (Iterator<Message> iter = list.iterator(); iter.hasNext();) {
+      writeMessage(iter.next());
     }
   }
 
@@ -368,7 +368,7 @@ public class CRWriter extends BufferedWriter {
    * @param data a collection containing <tt>Message</tt> objects.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeMessageBlock(String blockName, Collection data) throws IOException {
+  public void writeMessageBlock(String blockName, Collection<Message> data) throws IOException {
     if ((data == null) || data.isEmpty()) {
       return;
     }
@@ -384,13 +384,13 @@ public class CRWriter extends BufferedWriter {
    * @param data a collection containing <tt>Message</tt> objects.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeMessageSequence(Collection data) throws IOException {
+  public void writeMessageSequence(Collection<Message> data) throws IOException {
     if ((data == null) || data.isEmpty()) {
       return;
     }
 
-    for (Iterator iter = data.iterator(); iter.hasNext();) {
-      Message msg = (Message) iter.next();
+    for (Iterator<Message> iter = data.iterator(); iter.hasNext();) {
+      Message msg = iter.next();
       writeQuotedString(msg.getText());
     }
   }
@@ -401,13 +401,13 @@ public class CRWriter extends BufferedWriter {
    * @param data a collection containing <tt>String</tt> objects.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeStringSequence(Collection data) throws IOException {
+  public void writeStringSequence(Collection<String> data) throws IOException {
     if ((data == null) || data.isEmpty()) {
       return;
     }
 
-    for (Iterator iter = data.iterator(); iter.hasNext();) {
-      String str = (String) iter.next();
+    for (Iterator<String> iter = data.iterator(); iter.hasNext();) {
+      String str = iter.next();
       writeQuotedString(str);
     }
   }
@@ -420,7 +420,7 @@ public class CRWriter extends BufferedWriter {
    * @param data a colleciton containing <tt>String</tt> objects.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeStringBlock(String blockName, Collection data) throws IOException {
+  public void writeStringBlock(String blockName, Collection<String> data) throws IOException {
     if ((data == null) || data.isEmpty()) {
       return;
     }
@@ -521,13 +521,13 @@ public class CRWriter extends BufferedWriter {
    *          class <tt>Spell</tt>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeSpells(Map map) throws IOException {
+  public void writeSpells(Map<?, Spell> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    for (Iterator iter = map.values().iterator(); iter.hasNext();) {
-      write((Spell) iter.next());
+    for (Iterator<Spell> iter = map.values().iterator(); iter.hasNext();) {
+      write(iter.next());
     }
   }
 
@@ -596,13 +596,13 @@ public class CRWriter extends BufferedWriter {
    *          class <tt>Potion</tt>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writePotions(Map map) throws IOException {
+  public void writePotions(Map<? extends ID, Potion> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    for (Iterator iter = map.values().iterator(); iter.hasNext();) {
-      write((Potion) iter.next());
+    for (Iterator<Potion> iter = map.values().iterator(); iter.hasNext();) {
+      write(iter.next());
     }
   }
 
@@ -631,13 +631,13 @@ public class CRWriter extends BufferedWriter {
    * @param ingredients a collection containing Item objects.
    * @throws IOException If an I/O error occurs.
    */
-  public void writePotionIngredients(Collection ingredients) throws IOException {
+  public void writePotionIngredients(Collection<Item> ingredients) throws IOException {
     if (!ingredients.isEmpty()) {
       write("ZUTATEN");
       newLine();
 
-      for (Iterator iter = ingredients.iterator(); iter.hasNext();) {
-        Item i = (Item) iter.next();
+      for (Iterator<Item> iter = ingredients.iterator(); iter.hasNext();) {
+        Item i = iter.next();
         writeQuotedString(i.getItemType().getID().toString());
       }
     }
@@ -653,12 +653,12 @@ public class CRWriter extends BufferedWriter {
    * @throws IOException If an I/O error occurs.
    * @see magellan.library.Spell
    */
-  public void writeSpellComponents(Map comps) throws IOException {
+  public void writeSpellComponents(Map<String, String> comps) throws IOException {
     if (comps == null) {
       return;
     }
 
-    Iterator iter = comps.keySet().iterator();
+    Iterator<String> iter = comps.keySet().iterator();
 
     if (iter.hasNext()) {
       write("KOMPONENTEN");
@@ -666,8 +666,8 @@ public class CRWriter extends BufferedWriter {
     }
 
     while (iter.hasNext()) {
-      String key = (String) iter.next();
-      String value = (String) comps.get(key);
+      String key = iter.next();
+      String value = comps.get(key);
 
       try {
         Integer.parseInt(value);
@@ -688,8 +688,8 @@ public class CRWriter extends BufferedWriter {
     write("OPTIONEN");
     newLine();
 
-    for (Iterator iter = options.options().iterator(); iter.hasNext();) {
-      OptionCategory o = (OptionCategory) iter.next();
+    for (Iterator<OptionCategory> iter = options.options().iterator(); iter.hasNext();) {
+      OptionCategory o = iter.next();
       write((o.isActive() ? "1" : "0") + ";" + o.getID().toString());
       newLine();
     }
@@ -703,13 +703,13 @@ public class CRWriter extends BufferedWriter {
    *          of class <tt>Group</tt>. May be <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeGroups(Map map) throws IOException {
+  public void writeGroups(Map<? extends ID, Group> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    for (Iterator i = map.values().iterator(); i.hasNext();) {
-      writeGroup((Group) i.next());
+    for (Iterator<Group> i = map.values().iterator(); i.hasNext();) {
+      writeGroup(i.next());
     }
   }
 
@@ -789,13 +789,13 @@ public class CRWriter extends BufferedWriter {
    *          <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeBattles(List<?> list) throws IOException {
+  public void writeBattles(List<Battle> list) throws IOException {
     if (list == null) {
       return;
     }
 
-    for (Iterator iter = list.iterator(); iter.hasNext();) {
-      write((Battle) iter.next());
+    for (Iterator<Battle> iter = list.iterator(); iter.hasNext();) {
+      write(iter.next());
     }
   }
 
@@ -1253,12 +1253,12 @@ public class CRWriter extends BufferedWriter {
    * @param spells a list with the<tt>Spell</tt> object names to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeUnitSpells(Map spells) throws IOException {
+  public void writeUnitSpells(Map<? extends ID, Spell> spells) throws IOException {
     if (spells == null) {
       return;
     }
 
-    Iterator i = spells.values().iterator();
+    Iterator<Spell> i = spells.values().iterator();
 
     if (i.hasNext()) {
       write("SPRUECHE");
@@ -1266,7 +1266,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     while (i.hasNext()) {
-      Spell s = (Spell) i.next();
+      Spell s = i.next();
       writeQuotedString(s.getName());
     }
   }
@@ -1277,15 +1277,15 @@ public class CRWriter extends BufferedWriter {
    * @param map a Map with the <tt>CombatSpell</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeUnitCombatSpells(Map map) throws IOException {
+  public void writeUnitCombatSpells(Map<? extends ID, CombatSpell> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    Iterator i = map.values().iterator();
+    Iterator<CombatSpell> i = map.values().iterator();
 
     while (i.hasNext()) {
-      CombatSpell cs = (CombatSpell) i.next();
+      CombatSpell cs = i.next();
       write(cs);
     }
   }
@@ -1328,14 +1328,14 @@ public class CRWriter extends BufferedWriter {
    * @param items an iterator over the <tt>Item</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeItems(Iterator items) throws IOException {
+  public void writeItems(Iterator<Item> items) throws IOException {
     if (items.hasNext()) {
       write("GEGENSTAENDE");
       newLine();
     }
 
     while (items.hasNext()) {
-      Item item = (Item) items.next();
+      Item item = items.next();
       write(item);
     }
   }
@@ -1593,12 +1593,12 @@ public class CRWriter extends BufferedWriter {
    * @param map list containing the<tt>LuxuryPrice</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writePrices(Map map) throws IOException {
+  public void writePrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    Iterator i = map.values().iterator();
+    Iterator<LuxuryPrice> i = map.values().iterator();
 
     if (i.hasNext()) {
       write("PREISE");
@@ -1606,7 +1606,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     while (i.hasNext()) {
-      write((LuxuryPrice) i.next());
+      write(i.next());
     }
   }
 
@@ -1617,12 +1617,12 @@ public class CRWriter extends BufferedWriter {
    * @param map a map containing the <tt>LuxuryPrice</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeOldPrices(Map map) throws IOException {
+  public void writeOldPrices(Map<? extends ID, LuxuryPrice> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    Iterator i = map.values().iterator();
+    Iterator<LuxuryPrice> i = map.values().iterator();
 
     if (i.hasNext()) {
       write("LETZTEPREISE");
@@ -1630,7 +1630,7 @@ public class CRWriter extends BufferedWriter {
     }
 
     while (i.hasNext()) {
-      write((LuxuryPrice) i.next());
+      write(i.next());
     }
   }
 
@@ -1650,15 +1650,15 @@ public class CRWriter extends BufferedWriter {
    * @param c collection containing the <tt>Border</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeBorders(Collection c) throws IOException {
+  public void writeBorders(Collection<Border> c) throws IOException {
     if (c == null) {
       return;
     }
 
-    Iterator i = c.iterator();
+    Iterator<Border> i = c.iterator();
 
     while (i.hasNext()) {
-      writeBorder((Border) i.next());
+      writeBorder(i.next());
     }
   }
 
@@ -2021,13 +2021,13 @@ public class CRWriter extends BufferedWriter {
    * @param signs Collection of signs
    * @throws IOException passes a IOException from streamwriter
    */
-  private void writeSigns(Collection signs) throws IOException {
+  private void writeSigns(Collection<Sign> signs) throws IOException {
     if (signs == null || signs.isEmpty()) {
       return;
     }
     int counter = 1;
-    for (Iterator iter = signs.iterator(); iter.hasNext();) {
-      writeSign((Sign) iter.next(), counter);
+    for (Iterator<Sign> iter = signs.iterator(); iter.hasNext();) {
+      writeSign(iter.next(), counter);
       counter++;
     }
   }
@@ -2050,13 +2050,13 @@ public class CRWriter extends BufferedWriter {
    * 
    * @throws IOException If an I/O error occurs.
    */
-  public void writeSchemes(Collection schemes) throws IOException {
+  public void writeSchemes(Collection<Scheme> schemes) throws IOException {
     if ((schemes == null) || schemes.isEmpty()) {
       return;
     }
 
-    for (Iterator iter = schemes.iterator(); iter.hasNext();) {
-      writeScheme((Scheme) iter.next());
+    for (Iterator<Scheme> iter = schemes.iterator(); iter.hasNext();) {
+      writeScheme(iter.next());
     }
   }
 
@@ -2079,13 +2079,13 @@ public class CRWriter extends BufferedWriter {
    * 
    * @throws IOException If an I/O error occurs.
    */
-  public void writeRegionResources(Collection resources) throws IOException {
+  public void writeRegionResources(Collection<RegionResource> resources) throws IOException {
     if ((resources == null) || resources.isEmpty()) {
       return;
     }
 
-    for (Iterator iter = resources.iterator(); iter.hasNext();) {
-      writeRegionResource((RegionResource) iter.next());
+    for (Iterator<RegionResource> iter = resources.iterator(); iter.hasNext();) {
+      writeRegionResource(iter.next());
     }
   }
 
@@ -2122,13 +2122,13 @@ public class CRWriter extends BufferedWriter {
    * @param map a map containing the <tt>MessageType</tt> objects to be written as values.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeMsgTypes(Map map) throws IOException {
+  public void writeMsgTypes(Map<? extends ID, MessageType> map) throws IOException {
     if (map == null) {
       return;
     }
 
-    for (Iterator iter = map.values().iterator(); iter.hasNext();) {
-      writeMessageType((MessageType) iter.next());
+    for (Iterator<MessageType> iter = map.values().iterator(); iter.hasNext();) {
+      writeMessageType(iter.next());
     }
   }
 
@@ -2693,13 +2693,13 @@ public class CRWriter extends BufferedWriter {
    * 
    * @throws IOException If an I/O error occurs.
    */
-  public void writeHotSpots(Map hotSpots) throws IOException {
+  public void writeHotSpots(Map<? extends ID, HotSpot> hotSpots) throws IOException {
     if (hotSpots == null) {
       return;
     }
 
-    for (Iterator iter = hotSpots.values().iterator(); iter.hasNext();) {
-      write((HotSpot) iter.next());
+    for (Iterator<HotSpot> iter = hotSpots.values().iterator(); iter.hasNext();) {
+      write(iter.next());
     }
   }
 

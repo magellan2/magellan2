@@ -27,248 +27,254 @@ import magellan.library.rules.ShipType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.logging.Logger;
 
-
 /**
  * A class for representing a ship.
- *
+ * 
  * @author $Author: $
  * @version $Revision: 389 $
  */
-public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,HasRegion {
-	private static final Logger log = Logger.getInstance(MagellanShipImpl.class);
+public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship, HasRegion {
+  private static final Logger log                = Logger.getInstance(MagellanShipImpl.class);
 
-	/** The shore the ship is lying. */
-	protected int shoreId = -1; // 0 = northwest, 1 = northeast, etc.
-							 // -1 = every direction
+  /** The shore the ship is lying. */
+  protected int               shoreId            = -1;                                        // 0
+                                                                                               // =
+                                                                                               // northwest,
+                                                                                               // 1
+                                                                                               // =
+                                                                                               // northeast,
+                                                                                               // etc.
+  // -1 = every direction
 
-	/**
-	 * The size of this ship. While the ship is being built, size &lt;= getType().getMaxSize() is
-	 * true. After the ship is finished,  size equals getType().getMaxSize().
-	 */
-  protected int size = -1;
+  /**
+   * The size of this ship. While the ship is being built, size &lt;= getType().getMaxSize() is
+   * true. After the ship is finished, size equals getType().getMaxSize().
+   */
+  protected int               size               = -1;
 
-	/** The ratio to which degree this ship is damaged. Values range from 0 to 100. */
-  protected int damageRatio = 0;
+  /** The ratio to which degree this ship is damaged. Values range from 0 to 100. */
+  protected int               damageRatio        = 0;
 
-	/** The weight of the units and items on this ship in GE. 
-	 * @deprecated replaced by cargo
-	 */
+  /**
+   * The weight of the units and items on this ship in GE.
+   * 
+   * @deprecated replaced by cargo
+   */
   @Deprecated
-  protected int deprecatedLoad = -1;
+  protected int               deprecatedLoad     = -1;
 
-	/**
-	 * The maximum payload of this ship in GE. 0 &lt;= capacity &lt;= getType().getCapacity() if
-	 * the ship is damaged.
-	 * @deprecated replaced by capacity
-	 */
+  /**
+   * The maximum payload of this ship in GE. 0 &lt;= capacity &lt;= getType().getCapacity() if the
+   * ship is damaged.
+   * 
+   * @deprecated replaced by capacity
+   */
   @Deprecated
-  protected int deprecatedCapacity = -1;
+  protected int               deprecatedCapacity = -1;
 
-	/** the weight of the units and items on this ship in silver */
-  protected int cargo = -1;
+  /** the weight of the units and items on this ship in silver */
+  protected int               cargo              = -1;
 
-	/**
-	 * The maximum payload of this ship in silver. 0 &lt;= capacity &lt;= getType().getCapacity() if
-	 * the ship is damaged.
-	 */
-  protected int capacity = -1;
+  /**
+   * The maximum payload of this ship in silver. 0 &lt;= capacity &lt;= getType().getCapacity() if
+   * the ship is damaged.
+   */
+  protected int               capacity           = -1;
 
   /** The maximum capacity for persons &lt;=getType().getMaxPersons() */
-  protected int maxPersons = -1;
+  protected int               maxPersons         = -1;
 
-	/**
-	 * Creates a new Ship object.
-	 *
-	 * @param id 
-	 * @param data 
-	 */
-	public MagellanShipImpl(EntityID id, GameData data) {
-		super(id, data);
-	}
+  /**
+   * Creates a new Ship object.
+   * 
+   * @param id
+   * @param data
+   */
+  public MagellanShipImpl(EntityID id, GameData data) {
+    super(id, data);
+  }
 
-	/** The region this ship is in. */
-	private Region region = null;
+  /** The region this ship is in. */
+  private Region region = null;
 
-  private int speed = -1;
+  private int    speed  = -1;
 
-	/**
-	 * Sets the region this ship is in and notifies region about it.
-	 *
-	 * @param region 
-	 */
-	public void setRegion(Region region) {
-		if(this.region != null) {
-			this.region.removeShip(this);
-		}
+  /**
+   * Sets the region this ship is in and notifies region about it.
+   * 
+   * @param region
+   */
+  public void setRegion(Region region) {
+    if (this.region != null) {
+      this.region.removeShip(this);
+    }
 
-		this.region = region;
+    this.region = region;
 
-		if(this.region != null) {
-			this.region.addShip(this);
-		}
-	}
+    if (this.region != null) {
+      this.region.addShip(this);
+    }
+  }
 
-	/**
-	 * Returns the region this ship is in.
-	 *
-	 * @return The region the ship is in, possibly null
-	 */
-	public Region getRegion() {
-		return region;
-	}
+  /**
+   * Returns the region this ship is in.
+   * 
+   * @return The region the ship is in, possibly null
+   */
+  public Region getRegion() {
+    return region;
+  }
 
-	/**
-	 * The type of this ship.
-	 *
-	 * @return The type of this ship
-	 */
-	public ShipType getShipType() {
-		return (ShipType) getType();
-	}
+  /**
+   * The type of this ship.
+   * 
+   * @return The type of this ship
+   */
+  public ShipType getShipType() {
+    return (ShipType) getType();
+  }
 
-	/**
-	 * Returns the maximum capacity with respect to  damages of the ship in silver.
-	 *
-	 * @return Returns the maximum capacity with respect to  damages of the ship in silver
-	 */
-	@SuppressWarnings("deprecation")
+  /**
+   * Returns the maximum capacity with respect to damages of the ship in silver.
+   * 
+   * @return Returns the maximum capacity with respect to damages of the ship in silver
+   */
   public int getMaxCapacity() {
-		if(capacity != -1) {
-			return capacity;
-		}
-		return (deprecatedCapacity != -1) ? deprecatedCapacity*100 : getMaxCapacity(getShipType().getCapacity()*100);
-	}
+    if (capacity != -1) {
+      return capacity;
+    }
+    return (deprecatedCapacity != -1) ? deprecatedCapacity * 100 : getMaxCapacity(getShipType()
+        .getCapacity() * 100);
+  }
 
-	/**
-	 * Returns the maximimum capacity with respect to damages of the ship in GE if the undamaged
-	 * capacity was <code>maxCapacity</code>.
-	 * 
-	 * @param maxCapacity The capacity is calculated relative to this capacity 
-	 * 
-	 * @return The max damaged capacity
-	 */
-	private int getMaxCapacity(int maxCapacity) {
-	  // (int)(maxCapacity*(100-damageRatio)/100)
-		return new BigDecimal(maxCapacity).multiply(new BigDecimal(100 - damageRatio))
-										  .divide(new BigDecimal(100), BigDecimal.ROUND_DOWN)
-										  .intValue();
-	}
+  /**
+   * Returns the maximimum capacity with respect to damages of the ship in GE if the undamaged
+   * capacity was <code>maxCapacity</code>.
+   * 
+   * @param maxCapacity The capacity is calculated relative to this capacity
+   * @return The max damaged capacity
+   */
+  private int getMaxCapacity(int maxCapacity) {
+    // (int)(maxCapacity*(100-damageRatio)/100)
+    return new BigDecimal(maxCapacity).multiply(new BigDecimal(100 - damageRatio)).divide(
+        new BigDecimal(100), BigDecimal.ROUND_DOWN).intValue();
+  }
 
-	/**
-	 * Returns the cargo load of this ship.
-	 * 
-	 * @return Returns the cargo load of this ship
-	 */
-	public int getCargo() {
-		if(cargo != -1) {
+  /**
+   * Returns the cargo load of this ship.
+   * 
+   * @return Returns the cargo load of this ship
+   */
+  public int getCargo() {
+    if (cargo != -1) {
       return cargo;
     }
-		if (deprecatedLoad!=-1) {
-      return deprecatedLoad*100;
+    if (deprecatedLoad != -1) {
+      return deprecatedLoad * 100;
     } else {
       return -1;
     }
-	}
-	
-	/**
-	 * Returns the weight of all units of this ship. The method does some
-   * delta calculation to be more precise. The initial load is subtracted 
-   * by the initial weight of the initial units and added by the modified
-   * weight of the modified units. 
-	 *
-	 * @return The modified load of the ship
-	 * TODO: move to {@link MovementEvaluator}
-	 */
-	public int getModifiedLoad() {
+  }
+
+  /**
+   * Returns the weight of all units of this ship. The method does some delta calculation to be more
+   * precise. The initial load is subtracted by the initial weight of the initial units and added by
+   * the modified weight of the modified units.
+   * 
+   * @return The modified load of the ship TODO: move to {@link MovementEvaluator}
+   */
+  public int getModifiedLoad() {
     // we do a delta calculation
     // therefore start with the cargo given in the report
-		int modLoad = getCargo();
+    int modLoad = getCargo();
 
-		if (modLoad<0) {
-		  modLoad=0;
-		} else {
-		  // subtract all units initially on the ship with their initial weight
-		  for(Unit u : units()) {
-		    modLoad -= getGameSpecificStuff().getMovementEvaluator().getWeight(u);
-		    // if persons and cargo are counted separately (E3), remove persons' weight here
-		    if (getShipType().getMaxPersons()>0)
-		      modLoad += u.getPersons()*u.getRace().getWeight()*100;
-		  }
-		}
+    if (modLoad < 0) {
+      modLoad = 0;
+    } else {
+      // subtract all units initially on the ship with their initial weight
+      for (final Unit u : units()) {
+        modLoad -= getGameSpecificStuff().getMovementEvaluator().getWeight(u);
+        // if persons and cargo are counted separately (E3), remove persons' weight here
+        if (getShipType().getMaxPersons() > 0) {
+          modLoad += u.getPersons() * u.getRace().getWeight() * 100;
+        }
+      }
+    }
 
-		// now we generally should have modLoad zero or near zero.
+    // now we generally should have modLoad zero or near zero.
     // the difference to zero is the weight that we don't see or know, i.e.,
     // silver from factions where we don't have a report or
-    // items/races where we don't know the weight 
-    
-    // add now the current calculated weight of the units
-    for(Unit u : modifiedUnits()) {
-			modLoad +=  getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u);
-      // if persons and cargo are counted separately (E3), remove persons' weight here
-      if (getShipType().getMaxPersons()>0)
-        modLoad -= u.getPersons()*u.getRace().getWeight()*100;
-		}
-		return modLoad;
-	}
+    // items/races where we don't know the weight
 
-	private GameSpecificStuff getGameSpecificStuff() {
+    // add now the current calculated weight of the units
+    for (final Unit u : modifiedUnits()) {
+      modLoad += getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(u);
+      // if persons and cargo are counted separately (E3), remove persons' weight here
+      if (getShipType().getMaxPersons() > 0) {
+        modLoad -= u.getPersons() * u.getRace().getWeight() * 100;
+      }
+    }
+    return modLoad;
+  }
+
+  private GameSpecificStuff getGameSpecificStuff() {
     return data.rules.getGameSpecificStuff();
   }
 
   /**
-	 * This is a helper function for showing inner object state.
-	 * 
-	 * @return A debug message
-	 */
-	public String toDebugString() {
-		return "SHIP[" + "shoreId=" + shoreId + "," + "size=" + size + "," + "damageRation=" +
-			   damageRatio + "," + "deprecatedLoad=" + deprecatedLoad + "," + "deprecatedCapacity=" + deprecatedCapacity + "]";
-	}
+   * This is a helper function for showing inner object state.
+   * 
+   * @return A debug message
+   */
+  public String toDebugString() {
+    return "SHIP[" + "shoreId=" + shoreId + "," + "size=" + size + "," + "damageRation="
+        + damageRatio + "," + "deprecatedLoad=" + deprecatedLoad + "," + "deprecatedCapacity="
+        + deprecatedCapacity + "]";
+  }
 
-	/**
-	 * A string representation of this ship.
-	 *
-	 * @return A string representation of this ship
-	 */
-	@Override
+  /**
+   * A string representation of this ship.
+   * 
+   * @return A string representation of this ship
+   */
+  @Override
   public String toString() {
-		return toString(true);
-	}
+    return toString(true);
+  }
 
-	/**
-	 * Returns the string representation of this ship. If <code>printExtended</code> is true,
-	 * type, damage and remaing capacity are shown, too.
-	 * 
-	 * @param printExtended
-	 *            Whether to return a more detailed description
-	 * 
-	 * @return A strig representation of this ship
-	 */
-	public String toString(boolean printExtended) {
-		StringBuffer sb = new StringBuffer();
+  /**
+   * Returns the string representation of this ship. If <code>printExtended</code> is true, type,
+   * damage and remaing capacity are shown, too.
+   * 
+   * @param printExtended Whether to return a more detailed description
+   * @return A strig representation of this ship
+   */
+  public String toString(boolean printExtended) {
+    final StringBuffer sb = new StringBuffer();
 
-		sb.append(getName()).append(" (").append(this.getID().toString()).append(")");
+    sb.append(getName()).append(" (").append(this.getID().toString()).append(")");
 
-		if(printExtended) {
-			sb.append(", ").append(getType());
+    if (printExtended) {
+      sb.append(", ").append(getType());
 
-			int nominalShipSize = getShipType().getMaxSize();
+      final int nominalShipSize = getShipType().getMaxSize();
 
-			if(size != nominalShipSize) {
-				sb.append(" (").append(size).append("/").append(nominalShipSize).append(")");
-			}
+      if (size != nominalShipSize) {
+        sb.append(" (").append(size).append("/").append(nominalShipSize).append(")");
+      }
 
-			if(damageRatio != 0) {
-				sb.append(", ").append(damageRatio).append(Resources.get("ship.damage"));
-			}
-		}
+      if (damageRatio != 0) {
+        sb.append(", ").append(damageRatio).append(Resources.get("ship.damage"));
+      }
+    }
 
-		if(MagellanShipImpl.log.isDebugEnabled()) {
-			MagellanShipImpl.log.debug("Ship.toString: " + sb.toString());
-		}
+    if (MagellanShipImpl.log.isDebugEnabled()) {
+      MagellanShipImpl.log.debug("Ship.toString: " + sb.toString());
+    }
 
-		return sb.toString();
-	}
+    return sb.toString();
+  }
+
   /**
    * Returns the value of capacity.
    * 
@@ -280,7 +286,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of capacity.
-   *
+   * 
    * @param capacity The value for capacity.
    */
   public void setCapacity(int capacity) {
@@ -298,7 +304,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of damageRatio.
-   *
+   * 
    * @param damageRatio The value for damageRatio.
    */
   public void setDamageRatio(int damageRatio) {
@@ -316,7 +322,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of deprecatedCapacity.
-   *
+   * 
    * @param deprecatedCapacity The value for deprecatedCapacity.
    */
   public void setDeprecatedCapacity(int deprecatedCapacity) {
@@ -334,7 +340,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of deprecatedLoad.
-   *
+   * 
    * @param deprecatedLoad The value for deprecatedLoad.
    */
   public void setDeprecatedLoad(int deprecatedLoad) {
@@ -352,7 +358,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of shoreId.
-   *
+   * 
    * @param shoreId The value for shoreId.
    */
   public void setShoreId(int shoreId) {
@@ -370,7 +376,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of size.
-   *
+   * 
    * @param size The value for size.
    */
   public void setSize(int size) {
@@ -379,34 +385,33 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
 
   /**
    * Sets the value of cargo.
-   *
+   * 
    * @param cargo The value for cargo.
    */
   public void setCargo(int cargo) {
     this.cargo = cargo;
   }
-  
+
   /**
    * @see magellan.library.Ship#setMaxPersons(int)
    */
-  public void setMaxPersons(int persons){
-    maxPersons  = persons;
+  public void setMaxPersons(int persons) {
+    maxPersons = persons;
   }
 
   /**
    * @see magellan.library.Ship#getMaxPersons()
    */
-  public int getMaxPersons(){
+  public int getMaxPersons() {
     return (maxPersons != -1) ? maxPersons : getMaxCapacity(getShipType().getMaxPersons());
   }
 
   /**
-   * @see magellan.library.Ship#getModifiedPersonLoad()
-   * TODO: move to {@link MovementEvaluator}
+   * @see magellan.library.Ship#getModifiedPersonLoad() TODO: move to {@link MovementEvaluator}
    */
   public int getModifiedPersonLoad() {
     int inmates = 0;
-    for (Unit u : modifiedUnits()) {
+    for (final Unit u : modifiedUnits()) {
       inmates += u.getPersons() * u.getRace().getWeight() * 100;
     }
     return inmates;
@@ -417,17 +422,17 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    */
   public int getPersonLoad() {
     int modInmates = 0;
-    for (Unit u : modifiedUnits()) {
+    for (final Unit u : modifiedUnits()) {
       modInmates += u.getModifiedPersons() * u.getRace().getWeight() * 100;
     }
     return modInmates;
   }
- 
+
   /**
    * Returns the id uniquely identifying this object.
    */
   @Override
-  public EntityID getID(){
+  public EntityID getID() {
     return (EntityID) super.getID();
   }
 
@@ -442,6 +447,6 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
    * @see magellan.library.Ship#setSpeed(int)
    */
   public void setSpeed(int newSpeed) {
-    speed  = newSpeed;
+    speed = newSpeed;
   }
 }

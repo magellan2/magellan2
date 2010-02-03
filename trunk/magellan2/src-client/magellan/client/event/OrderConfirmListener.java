@@ -21,7 +21,7 @@ package magellan.client.event;
  * @see OrderConfirmEvent
  * @see EventDispatcher
  */
-public interface OrderConfirmListener {
+public interface OrderConfirmListener extends magellan.library.event.EventListener {
 	/**
 	 * Invoked when the order confirmation status of one or more units changes.
 	 */

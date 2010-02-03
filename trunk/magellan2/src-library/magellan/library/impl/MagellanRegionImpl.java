@@ -909,8 +909,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
       // if(u.getFaction().isPrivileged()) {
       if (u.getFaction().hasGiveAlliance() || u.getFaction().isPrivileged()) {
-        for (Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-          Item item = (Item) unitItemIterator.next();
+        for (Iterator<Item> unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
+          Item item = unitItemIterator.next();
           Item i = getCache().regionItems.get(item.getItemType().getID());
 
           if (i == null) {
@@ -938,11 +938,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       getCache().allRegionItems = new Hashtable<ID, Item>();
     }
 
-    for (Iterator iter = units().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = units().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
 
-      for (Iterator unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
-        Item item = (Item) unitItemIterator.next();
+      for (Iterator<Item> unitItemIterator = u.getItems().iterator(); unitItemIterator.hasNext();) {
+        Item item = unitItemIterator.next();
         Item i = getCache().allRegionItems.get(item.getItemType().getID());
 
         if (i == null) {
@@ -1131,8 +1131,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     if (unitRelationsRefreshed == false || forceRefresh) {
       unitRelationsRefreshed = true;
 
-      for (Iterator iter = this.units().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = this.units().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
         u.refreshRelations();
       }
 
@@ -1244,8 +1244,8 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
       return 0;
     }
     // run through the neighbors
-    for (Iterator iter = this.getNeighbours().iterator(); iter.hasNext();) {
-      CoordinateID checkRegionID = (CoordinateID) iter.next();
+    for (Iterator<CoordinateID> iter = this.getNeighbours().iterator(); iter.hasNext();) {
+      CoordinateID checkRegionID = iter.next();
       if (getData().getRegion(checkRegionID).getRegionType().isLand()) {
         return 1;
       }

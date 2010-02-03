@@ -184,7 +184,7 @@ public class EresseaPostProcessor {
 				}
 			}
 
-			for(Iterator iter = dummyUnitIDs.iterator(); iter.hasNext();) {
+			for(Iterator<ID> iter = dummyUnitIDs.iterator(); iter.hasNext();) {
 				data.units().remove(iter.next());
 			}
 		}
@@ -195,8 +195,8 @@ public class EresseaPostProcessor {
 		List<Unit> sortedUnits = new LinkedList<Unit>(data.units().values());
 		Collections.sort(sortedUnits, new SortIndexComparator<Unit>(IDComparator.DEFAULT));
 
-		for(Iterator unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
-			Unit unit = (Unit) unitIter.next();
+		for(Iterator<Unit> unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
+			Unit unit = unitIter.next();
 			unit.setSortIndex(sortIndex++);
 			sortIndex = unit.extractTempUnits(sortIndex);
 		}
@@ -424,7 +424,7 @@ public class EresseaPostProcessor {
         // Check 1. (number)
         if (region.schemes().size()>19) {
           // Inconsistency of type 1. found
-          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: to many schemes");
+          EresseaPostProcessor.log.warn("EresseaPostProcessor: Astral schemes inconsistency type: too many schemes");
           EresseaPostProcessor.log.warn(region);
           region.clearSchemes();
           continue;

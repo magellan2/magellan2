@@ -374,7 +374,7 @@ public class PropertiesHelper {
   public static List<String> getPrefixedList(Properties p, String prefix) {
     List<String> ret = new LinkedList<String>();
 
-    for (Enumeration e = p.propertyNames(); e.hasMoreElements();) {
+    for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
       String key = (String) e.nextElement();
 
       if (key.startsWith(prefix)) {

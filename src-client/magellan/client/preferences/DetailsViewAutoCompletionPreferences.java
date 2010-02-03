@@ -207,7 +207,7 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
 
     DefaultListModel listModel = new DefaultListModel();
 
-    for (Iterator iter = l.iterator(); iter.hasNext();) {
+    for (Iterator<String> iter = l.iterator(); iter.hasNext();) {
       listModel.addElement(iter.next());
     }
 
@@ -435,8 +435,8 @@ public class DetailsViewAutoCompletionPreferences extends JPanel implements Pref
     // insert new values
     completionCount = 0;
 
-    for (Iterator iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
-      String name = (String) iter.next();
+    for (Iterator<String> iter = selfDefinedCompletions.keySet().iterator(); iter.hasNext();) {
+      String name = iter.next();
       String value = selfDefinedCompletions.get(name);
       source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.name" + completionCount, name);
       source.getSettings().setProperty("AutoCompletion.SelfDefinedCompletions.value" + completionCount, value);

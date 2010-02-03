@@ -225,6 +225,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    * 
    * @deprecated Use {@link #getModifiedRadius(Unit)}
    */
+  @Deprecated
   public int getRadius(Unit u) {
       return getRadius(u, false);
   }
@@ -235,6 +236,7 @@ public class EresseaMovementEvaluator implements MovementEvaluator {
    *
    * @deprecated Use {@link #getModifiedRadius(Unit, boolean)}.
    */
+  @Deprecated
   public int getRadius(Unit u, boolean onRoad) {
     // pavkovic 2003.10.02: use modified load here...int load = getLoad();
     int load = getModifiedLoad(u);

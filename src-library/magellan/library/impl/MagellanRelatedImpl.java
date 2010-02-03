@@ -52,15 +52,13 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
   protected abstract Collection<UnitRelation> getRelations();
 
   /**
-   * Returns a Collection over the relations this unit has to other units. The collection consist
-   * of  <tt>UnitRelation</tt> objects.  The UnitRelation objects are filtered by the given
-   * relation class.
-   *
+   * Delivers all relations of the given class (and its subtypes!). Returns a Collection over the
+   * relations this unit has to other units. The collection consist of <tt>UnitRelation</tt>
+   * objects. The UnitRelation objects are filtered by the given relation class.
    * 
-   *
-   * 
+   * @see magellan.library.Related#getRelations(java.lang.Class)
    */
-  public List<UnitRelation> getRelations(Class relationClass) {
+  public List<UnitRelation> getRelations(Class<? extends UnitRelation> relationClass) {
   	List<UnitRelation> ret = new LinkedList<UnitRelation>();
   
   	for(Iterator<UnitRelation> iter = getRelations().iterator(); iter.hasNext();) {
@@ -80,7 +78,7 @@ public abstract class MagellanRelatedImpl extends MagellanDescribedImpl implemen
    */
   @Override
   public String getModifiedName() {
-    List renameRelations = getRelations(RenameNamedRelation.class);
+    List<?> renameRelations = getRelations(RenameNamedRelation.class);
     if(renameRelations.isEmpty()) {
         return null;
     } else {

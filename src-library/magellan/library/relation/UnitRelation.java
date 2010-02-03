@@ -13,6 +13,8 @@
 
 package magellan.library.relation;
 
+import java.util.HashMap;
+
 import magellan.library.Unit;
 
 /**
@@ -75,4 +77,51 @@ public abstract class UnitRelation {
 	public boolean isLongOrder() {
 		return this instanceof LongOrderRelation;
 	}
+
+	/**
+	 * 
+	 */
+	public static class ID {
+	  protected static int lastID = -1;
+	  int id;
+	  
+	  protected ID() {
+	    id = ++lastID;
+	  }
+	  
+	  /**
+	   * Returns true if the
+	   */
+	  @Override
+	  public boolean equals(Object obj) {
+	    if (obj instanceof ID) {
+	      return id == ((ID)obj).id;
+	    }
+	    return false;
+	  }
+	  
+	  @Override
+	  public int hashCode() {
+	    return id;
+	  }
+	}
+	
+	private static HashMap<Class<? extends UnitRelation>, ID> ids = new HashMap<Class<? extends UnitRelation>, ID>();
+	
+  /**
+   * Returns a unique ID for every subclass of UnitRelation. The ID for a given class will always be
+   * the same for one run, but IDs may differ for different instances of
+   * this <em>UnitRelation.class</em>.
+   * 
+   * @param clazz A subclass of UnitRelation.
+   * @return An ID that is unique for each class.
+   */
+  public static ID getClassID(Class<? extends UnitRelation> clazz) {
+    ID result = ids.get(clazz);
+    if (result==null) {
+      result = new ID();
+      ids.put(clazz, result);
+    }
+    return result;
+  }
 }

@@ -91,8 +91,8 @@ public class HelpAction extends MenuAction {
           return;
         }
 
-        Class helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
-        Constructor helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
+        Class<?> helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
+        Constructor<?> helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
         Object helpSetConstructorArgs[] = { loader, hsURL };
 
         // this calls new javax.help.Helpset(ClassLoader, URL)
@@ -109,7 +109,7 @@ public class HelpAction extends MenuAction {
 
       }
 
-      Class setDisplayedMethodSignature[] = { boolean.class };
+      Class<?> setDisplayedMethodSignature[] = { boolean.class };
       Method setDisplayedMethod = this.helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
       Object setDisplayedMethodArgs[] = { Boolean.TRUE };
 

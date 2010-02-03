@@ -25,10 +25,12 @@ import java.util.List;
  * front of the collection. If an already exisiting element is added to the bucket it is moved to
  * the front of the bucket. If a maximum size is set for the bucket it does not grow beyond this
  * limit by dropping elements at the end of the bucket.
+ * @param <E> The content type
  */
 public class Bucket<E> extends AbstractCollection<E> {
 	private int maxSize = -1;
 	private List<E> data = new LinkedList<E>();
+//  private int hashCode = 76;
 
 	/**
 	 * Creates a Bucket object with unlimited maximum size. I.e. this bucket will never drop
@@ -69,17 +71,21 @@ public class Bucket<E> extends AbstractCollection<E> {
 		// and not the first element
 		if(index > 0) {
 			data.remove(index);
+//			hashCode = (hashCode - o.hashCode())/7;
 		}
 
 		// add item if it is not already the first element
 		if(index != 0) {
 			data.add(0, o);
+//      hashCode = hashCode * 7 + o.hashCode();
 		}
 
 		// enforce size limitation
 		if(getMaxSize() > 0) {
 			while(data.size() > getMaxSize()) {
-				data.remove(data.size() - 1);
+//				E old = 
+			  data.remove(data.size() - 1);
+//        hashCode = (hashCode - old.hashCode())/7;
 			}
 		}
 
@@ -92,6 +98,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	@Override
   public void clear() {
 		data.clear();
+//		hashCode = 76;
 	}
 
 	/**
@@ -114,25 +121,27 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 * @return true if all were found, false if not.
 	 */
 	@Override
-  public boolean containsAll(Collection<?> c) {
+  public boolean containsAll(Collection c) {
 		return data.containsAll(c);
 	}
 
 	/**
-	 * Check if a given object is the same as the actual bucket.
+	 * Check if a given object is the same as the actual bucket. This is a semi-deep version
 	 *
 	 * @param o object to be compared with.
 	 *
 	 * @return true if it is the same, false if not.
 	 */
-	@Override
+	// only the instanceof operator is unchecked, but the following cast is safe
+	@SuppressWarnings("unchecked")
+  @Override
   public boolean equals(Object o) {
 		if(o == this) {
 			return true;
 		}
 		
-		try {
-			Bucket b = (Bucket) o;
+		if (o instanceof Bucket) {
+			Bucket<?> b = (Bucket<?>) o;
 			
 			if((this.getMaxSize() == b.getMaxSize()) && (this.size() == b.size())) {
 				Iterator i1 = this.iterator();
@@ -145,11 +154,27 @@ public class Bucket<E> extends AbstractCollection<E> {
 				}
 				return true;
 			}
-		} catch(ClassCastException e) {
 		}
 		return false;
 	}
 
+	/**
+	 * This implementation is pretty naive...
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+	  int count=0;
+	  int hashCode = 76;
+    for (E o : data) {
+	    hashCode = hashCode * 31 + o.hashCode();
+	    if (count++>3)
+	      return hashCode;
+	  }
+	  return hashCode ;
+	}
+	
 	/**
 	 * Check if bucket is empty.
 	 *
@@ -179,6 +204,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 */
 	@Override
   public boolean remove(Object o) {
+//	  hashCode = (hashCode - o.hashCode())/7;
 		return data.remove(o);
 	}
 
@@ -191,6 +217,8 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 */
 	@Override
   public boolean removeAll(Collection c) {
+//	  for (Object o : c)
+//	    hashCode = (hashCode - o.hashCode())/7;
 		return data.removeAll(c);
 	}
 
@@ -203,7 +231,11 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 */
 	@Override
   public boolean retainAll(Collection c) {
-		return data.retainAll(c);
+		boolean val = data.retainAll(c);
+//		hashCode = 76;
+//		for (E o : data)
+//		  hashCode = hashCode*7 + o.hashCode();
+		return val;
 	}
 
 	/**
@@ -227,11 +259,7 @@ public class Bucket<E> extends AbstractCollection<E> {
 	}
 
 	/**
-	 * TODO: don't know... yet. to be commented.
-	 *
-	 * 
-	 *
-	 * 
+	 * @see java.util.AbstractCollection#toArray(T[])
 	 */
 	@Override
   public <T> T[] toArray(T a[]) {
@@ -256,7 +284,9 @@ public class Bucket<E> extends AbstractCollection<E> {
 	 */
 	public void setMaxSize(int maxSize) {
 		while(data.size() > maxSize) {
-			data.remove(data.size() - 1);
+//			E o = 
+		  data.remove(data.size() - 1);
+//			hashCode = (hashCode - o.hashCode())/7;
 		}
 
 		this.maxSize = maxSize;

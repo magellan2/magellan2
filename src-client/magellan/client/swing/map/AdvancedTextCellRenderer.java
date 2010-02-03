@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -238,7 +237,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 		return false;
 	}
 
-	// a collection of set names
+  /**
+   * a collection of set names
+   *
+   * 
+   */
 	public List<String> getAllSets() {
 		List<String> c = new LinkedList<String>();
 		StringTokenizer st = new StringTokenizer(settings.getProperty(PropertiesHelper.ATR_SETS, "Standard"), ";");
@@ -425,11 +428,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 	protected void fillDefItems() {
 		contextMenu.removeAll();
 
-		Collection c = getAllSets();
-		Iterator it = c.iterator();
+		List<String> c = getAllSets();
+		Iterator<String> it = c.iterator();
 
 		while(it.hasNext()) {
-			JMenuItem item = new JMenuItem((String) it.next());
+			JMenuItem item = new JMenuItem(it.next());
 			item.addActionListener(this);
 			contextMenu.add(item);
 		}
@@ -497,11 +500,11 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 		do {
 			changed = false;
 
-			Iterator it = AdvancedTextCellRenderer.buffer.iterator();
+			Iterator<String> it = AdvancedTextCellRenderer.buffer.iterator();
 			int index = 0;
 
 			while(it.hasNext() && !changed) {
-				String part = (String) it.next();
+				String part = it.next();
 
 				if(getWidth(part) > maxWidth) {
 					breakStringImpl(part, AdvancedTextCellRenderer.buffer, maxWidth, index);
@@ -726,14 +729,14 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 			int i = keys.indexOf(shortcut);
 
 			if(i >= 0) {
-				Collection c = getAllSets();
+				List<String> c = getAllSets();
 
 				if(c.size() > i) {
-					Iterator it = c.iterator();
+					Iterator<String> it = c.iterator();
 					int j = 0;
 
 					while(it.hasNext()) {
-						String s = (String) it.next();
+						String s = it.next();
 
 						if(i == j) {
 							loadSet(s);
@@ -749,7 +752,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 		}
 
 		/**
-		 * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+		 * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(javax.swing.KeyStroke)
 		 */
 		public String getShortcutDescription(KeyStroke stroke) {
 			return null;
@@ -921,7 +924,7 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 		}
 
 		protected void fillList() {
-			Collection c = s.getAllSets();
+			List<String> c = s.getAllSets();
 
 			if(c.size() > 0) {
 				fillList(c.iterator().next());
@@ -931,10 +934,10 @@ public class AdvancedTextCellRenderer extends TextCellRenderer implements GameDa
 		}
 
 		protected void fillList(Object select) {
-			Collection c = s.getAllSets();
+			List<String> c = s.getAllSets();
 			listModel.removeAllElements();
 
-			Iterator it = c.iterator();
+			Iterator<String> it = c.iterator();
 
 			while(it.hasNext()) {
 				listModel.addElement(it.next());

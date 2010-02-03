@@ -163,6 +163,7 @@ public class MagellanBuildingImpl extends MagellanUnitContainerImpl implements B
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public EntityID getID(){
     return (EntityID) super.getID();
   }

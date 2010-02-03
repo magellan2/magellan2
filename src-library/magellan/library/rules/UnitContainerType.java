@@ -34,6 +34,7 @@ public abstract class UnitContainerType extends ObjectType {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

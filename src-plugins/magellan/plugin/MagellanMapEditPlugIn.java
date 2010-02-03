@@ -139,8 +139,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     
     Collections.sort(types,new RegionTypeComparator());
     
-    for (Iterator iter = types.iterator();iter.hasNext();){
-      RegionType rType = (RegionType)iter.next();
+    for (Iterator<RegionType> iter = types.iterator();iter.hasNext();){
+      RegionType rType = iter.next();
       JMenuItem toAdd = new JMenuItem(rType.getName());
       toAdd.setActionCommand(this.regionTypeIdentifier + rType.getID().toString());
       toAdd.addActionListener(this);
@@ -419,8 +419,8 @@ public class MagellanMapEditPlugIn implements MagellanPlugIn,MapContextMenuProvi
     
     ArrayList<RegionType> types = new ArrayList<RegionType>();
     types.addAll(this.data.rules.getRegionTypes());
-    for (Iterator iter = types.iterator();iter.hasNext();){
-      RegionType rType = (RegionType)iter.next();
+    for (Iterator<RegionType> iter = types.iterator();iter.hasNext();){
+      RegionType rType = iter.next();
       if (rType.getID().toString().equalsIgnoreCase(regionTypeName)){
         setRegionType = rType;
         break;

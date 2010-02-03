@@ -305,7 +305,7 @@ public class CRWriter extends BufferedWriter {
    * @param list a list containing the <tt>Message</tt> objects to be written.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeMessages(List list) throws IOException {
+  public void writeMessages(List<?> list) throws IOException {
     if (list == null) {
       return;
     }
@@ -789,7 +789,7 @@ public class CRWriter extends BufferedWriter {
    *          <code>null</code>.
    * @throws IOException If an I/O error occurs.
    */
-  public void writeBattles(List list) throws IOException {
+  public void writeBattles(List<?> list) throws IOException {
     if (list == null) {
       return;
     }
@@ -1542,8 +1542,8 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (getIncludeUnitDetails() && unit.hasTags()) {
-      java.util.Map map = unit.getTagMap();
-      java.util.Iterator it = map.keySet().iterator();
+      java.util.Map<String, String> map = unit.getTagMap();
+      java.util.Iterator<String> it = map.keySet().iterator();
 
       while (it.hasNext()) {
         Object key = it.next();
@@ -1798,8 +1798,8 @@ public class CRWriter extends BufferedWriter {
     }
 
     if (region.hasTags()) {
-      java.util.Map map = region.getTagMap();
-      java.util.Iterator it = map.keySet().iterator();
+      java.util.Map<String, String> map = region.getTagMap();
+      java.util.Iterator<String> it = map.keySet().iterator();
 
       while (it.hasNext()) {
         Object key = it.next();
@@ -1956,7 +1956,7 @@ public class CRWriter extends BufferedWriter {
         newLine();
       }
 
-      if (!serverConformance && region.isActive()) {
+      if (!serverConformance && region.getData().getActiveRegion()==region) {
         write("1;aktiveRegion");
         newLine();
       }

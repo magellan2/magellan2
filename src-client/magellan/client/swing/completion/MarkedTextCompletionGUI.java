@@ -124,15 +124,14 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
 	 * Called the advice this GUI to offer the given completions in the given Editor to the user.
 	 *
 	 * 
-	 * 
-	 * 
+	 * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String)
 	 */
-	public void offerCompletion(JTextComponent editor, Collection completions, String stub) {
+	public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
 		lastEditor = editor;
 		markedText = false;
 		editor.addKeyListener(this);
 
-		Completion cmp = (Completion) completions.iterator().next();
+		Completion cmp = completions.iterator().next();
 
 		String cpltStr = null;
 

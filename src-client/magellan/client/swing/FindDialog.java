@@ -179,21 +179,17 @@ public class FindDialog extends InternationalizedDataDialog implements
     }
 
     Object o = resultList.getSelectedValue();
-    Object fireObject = null;
 
     if (o != null) {
       if (o instanceof RegionWrapper) {
-        fireObject = ((RegionWrapper) o).getRegion();
+        dispatcher.fire(SelectionEvent.create(this, ((RegionWrapper) o).getRegion() ));
       } else if (o instanceof UnitWrapper) {
-        fireObject = ((UnitWrapper) o).getUnit();
+        dispatcher.fire(SelectionEvent.create(this, ((UnitWrapper) o).getUnit()));
       } else {
-        fireObject = o;
+        dispatcher.fire(SelectionEvent.create(this, o, SelectionEvent.ST_DEFAULT));
       }
     }
 
-    if (fireObject != null) {
-      dispatcher.fire(new SelectionEvent(this, null, fireObject));
-    }
   }
 
   private JPanel getMainPane() {
@@ -521,7 +517,7 @@ public class FindDialog extends InternationalizedDataDialog implements
         txtPattern.removeAllItems();
         history = save;
 
-        for (Iterator iter = history.iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = history.iterator(); iter.hasNext();) {
           txtPattern.addItem(iter.next());
         }
 
@@ -657,8 +653,8 @@ public class FindDialog extends InternationalizedDataDialog implements
         if ((selectedRegions == null) || selectedRegions.isEmpty()) {
           items.addAll(traitors);
         } else {
-          for (Iterator iter = traitors.iterator(); iter.hasNext();) {
-            Unit u = (Unit) iter.next();
+          for (Iterator<Unit> iter = traitors.iterator(); iter.hasNext();) {
+            Unit u = iter.next();
 
             if (selectedRegions.contains(u.getRegion())) {
               items.add(u);
@@ -867,8 +863,8 @@ public class FindDialog extends InternationalizedDataDialog implements
     Collection<String> cmds = getCmds(item);
 
     if (cmds != null) {
-      for (Iterator cmdsIter = cmds.iterator(); cmdsIter.hasNext();) {
-        String cmd = (String) cmdsIter.next();
+      for (Iterator<String> cmdsIter = cmds.iterator(); cmdsIter.hasNext();) {
+        String cmd = cmdsIter.next();
 
         if (match(cmd, patterns))
           return true;
@@ -920,7 +916,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     Collection<Object> msgs = getMessages(item);
 
     if (msgs != null) {
-      for (Iterator msgsIter = msgs.iterator(); msgsIter.hasNext();) {
+      for (Iterator<Object> msgsIter = msgs.iterator(); msgsIter.hasNext();) {
         Object o = msgsIter.next();
         String msg = "";
 
@@ -1042,7 +1038,7 @@ public class FindDialog extends InternationalizedDataDialog implements
    */
   private Collection<Object> wrap(Collection<Object> items) {
     Collection<Object> wrappers = new LinkedList<Object>();
-    Iterator i = items.iterator();
+    Iterator<Object> i = items.iterator();
 
     while (i.hasNext() == true) {
       Object item = i.next();
@@ -1097,6 +1093,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     /**
      * DOCUMENT-ME
      */
+    @Override
     public String toString() {
       return region.toString();
     }
@@ -1125,6 +1122,7 @@ public class FindDialog extends InternationalizedDataDialog implements
     /**
      * DOCUMENT-ME
      */
+    @Override
     public String toString() {
       return unit.toString();
     }
@@ -1133,6 +1131,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   /**
    * Closes the dialog and stores settings of the dialog.
    */
+  @Override
   protected void quit() {
     settings.setProperty("FindDialog.x", getX() + "");
     settings.setProperty("FindDialog.y", getY() + "");
@@ -1167,7 +1166,7 @@ public class FindDialog extends InternationalizedDataDialog implements
   protected void storeHistory() {
     if ((history != null) && (history.size() > 0)) {
       StringBuffer buf = new StringBuffer();
-      Iterator it = history.iterator();
+      Iterator<String> it = history.iterator();
 
       while (it.hasNext()) {
         buf.append(it.next());

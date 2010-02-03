@@ -29,7 +29,7 @@ import magellan.library.Group;
  *
  * @author Andreas, Ulrich Küster
  */
-public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class GroupNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
 	protected Group group;
 	protected List<GraphicsElement> GE;
 	protected static Icon icon;

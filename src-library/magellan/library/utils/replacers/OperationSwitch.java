@@ -61,6 +61,7 @@ public class OperationSwitch extends AbstractParameterReplacer implements Enviro
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.operationswitch.description")+"\n\n"+super.getDescription();
   }

@@ -362,6 +362,7 @@ public class MagellanGroupImpl extends MagellanNamedImpl implements Group {
   /**
    * @see magellan.library.Identifiable#getID()
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

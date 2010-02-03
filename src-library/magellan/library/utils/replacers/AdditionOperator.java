@@ -42,6 +42,7 @@ public class AdditionOperator extends AbstractOperator {
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.additionoperator.description")+"\n\n"+super.getDescription();
   }

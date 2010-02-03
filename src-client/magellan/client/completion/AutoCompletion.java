@@ -258,10 +258,10 @@ public class AutoCompletion implements SelectionListener, KeyListener, ActionLis
       return;
     }
 
-    Iterator it = completionGUIs.iterator();
+    Iterator<CompletionGUI> it = completionGUIs.iterator();
 
     while (it.hasNext()) {
-      CompletionGUI cGUI = (CompletionGUI) it.next();
+      CompletionGUI cGUI = it.next();
 
       if (cGUI.getTitle().equals(activeGUI)) {
         setCurrentGUI(cGUI);

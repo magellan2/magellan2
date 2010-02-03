@@ -31,8 +31,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import magellan.client.event.EventDispatcher;
+import magellan.client.event.SelectionEvent;
 import magellan.client.swing.context.ContextFactory;
 import magellan.library.GameData;
+import magellan.library.event.GameDataEvent;
+import magellan.library.event.GameDataListener;
 import magellan.library.utils.logging.Logger;
 
 
@@ -42,12 +45,12 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas
  * @version 1.0
  */
-public class ContextManager extends MouseAdapter {
+public class ContextManager extends MouseAdapter implements GameDataListener {
 	private static final Logger log = Logger.getInstance(ContextManager.class);
 	private Collection<ContextListener> listeners = null;
 	private JTree source;
-    private EventDispatcher dispatcher;
-	private Collection<?> selection = null;
+	private EventDispatcher dispatcher;
+	private SelectionEvent selection = null;
 	private GameData data = null;
 	private ContextFactory failFactory = null;
 	private Object failArgument = null;
@@ -60,17 +63,9 @@ public class ContextManager extends MouseAdapter {
 	 */
 	public ContextManager(JTree source, EventDispatcher dispatcher) {
 		this.source = source;
-        this.dispatcher = dispatcher;
+		this.dispatcher = dispatcher;
 		source.addMouseListener(this);
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void setGameData(GameData data) {
-		this.data = data;
+		dispatcher.addGameDataListener(this);
 	}
 
 	/**
@@ -78,7 +73,7 @@ public class ContextManager extends MouseAdapter {
 	 * 
 	 * @param selection
 	 */
-	public void setSelection(Collection<?> selection) {
+	public void setSelection(SelectionEvent selection) {
 		this.selection = selection;
 	}
 
@@ -96,8 +91,6 @@ public class ContextManager extends MouseAdapter {
 
 	/**
 	 * DOCUMENT-ME
-	 *
-	 * 
 	 */
 	public void setSimpleObjects(Map<Object,ContextFactory> simpleObjects) {
 		this.simpleObjects = simpleObjects;
@@ -106,8 +99,6 @@ public class ContextManager extends MouseAdapter {
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
-	 * 
 	 */
 	public void putSimpleObject(Object o, ContextFactory factory) {
 		if(simpleObjects == null) {
@@ -119,7 +110,6 @@ public class ContextManager extends MouseAdapter {
 
 	/**
 	 * DOCUMENT-ME
-	 *
 	 * 
 	 */
 	public void removeSimpleObject(Object o) {
@@ -135,9 +125,9 @@ public class ContextManager extends MouseAdapter {
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Registers a listener that will be notified if context menu creation fails. 
 	 *
-	 * 
+	 * @param cl A new listener
 	 */
 	public void addContextListener(ContextListener cl) {
 		if(listeners == null) {
@@ -148,9 +138,9 @@ public class ContextManager extends MouseAdapter {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Removes this listener
 	 * 
+	 * @param cl This listeners will no longer be notified.
 	 */
 	public void removeContextListener(ContextListener cl) {
 		if(listeners == null) {
@@ -194,7 +184,9 @@ public class ContextManager extends MouseAdapter {
 
 						if(((change.getChangeModes() & Changeable.CONTEXT_MENU) != 0) &&
 							   (change.getContextFactory() != null)) {
-							JPopupMenu menu = change.getContextFactory().createContextMenu(dispatcher, data, change.getArgument(), selection,node);
+              JPopupMenu menu =
+                  change.getContextFactory().createContextMenu(dispatcher, data,
+                      change.getArgument(), selection, node);
 
 							if(menu != null) {
 								showMenu(menu, source, e.getX(), e.getY());
@@ -272,10 +264,10 @@ public class ContextManager extends MouseAdapter {
 
 	protected void fireContextFailed(Component src, MouseEvent e) {
 		if(listeners != null) {
-			Iterator it = listeners.iterator();
+			Iterator<ContextListener> it = listeners.iterator();
 
 			while(it.hasNext()) {
-				((ContextListener) it.next()).contextFailed(src, e);
+				(it.next()).contextFailed(src, e);
 			}
 		}
 	}
@@ -312,7 +304,11 @@ public class ContextManager extends MouseAdapter {
 	/**
 	 * @return the selection
 	 */
-	public Collection<?> getSelection() {
+	public SelectionEvent getSelection() {
 		return selection;
 	}
+
+  public void gameDataChanged(GameDataEvent e) {
+    this.data = e.getGameData();
+  }
 }

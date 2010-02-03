@@ -37,7 +37,7 @@ import magellan.library.utils.Resources;
  * @author $Author: $
  * @version $Revision: 288 $
  */
-public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
 
 //  private int modified = -1;
 //	private String text = null;
@@ -63,7 +63,8 @@ public class MultiIconNodeWrapper extends EmphasizingImpl implements CellObject2
 //		this.clipboardValue = clipboardValue;
 	}
 
-	public String toString() {
+	@Override
+  public String toString() {
 	  boolean first = true;
 	  StringBuffer buffer = new StringBuffer();
 		for (String text : texts){

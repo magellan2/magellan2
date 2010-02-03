@@ -175,6 +175,7 @@ public class MessageType extends MagellanIdentifiableImpl implements Localized {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

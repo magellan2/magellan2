@@ -756,7 +756,7 @@ public class JVorlage extends InternationalizedDialog {
 	 *
 	 * 
 	 */
-	private List getList(String str) {
+	private List<String> getList(String str) {
 		List<String> retVal = new LinkedList<String>();
 		StringTokenizer t = new StringTokenizer(str, "|");
 

@@ -174,6 +174,7 @@ public class CRParser implements RulesIO, GameDataIO {
    * @param string Usually a message text which might contain coordinates
    * @deprecated We should rather use Message.render() for this purpose
    */
+  @Deprecated
   private String originTranslate(String string) {
     StringBuffer result = new StringBuffer();
     String number = "[\\+\\-]?\\d+";
@@ -248,7 +249,7 @@ public class CRParser implements RulesIO, GameDataIO {
   }
 
   /**
-   * Print an error message on the standard output channel.
+   * Print an error message on the standard output channel. Does not produce duplicate messages.
    * 
    * @param context The context (usually a block) within the error has been found.
    * @param fetch If this is true, read the next line and skip the line with the error. Otherwise
@@ -2840,7 +2841,7 @@ public class CRParser implements RulesIO, GameDataIO {
         region.setOldWage(Integer.parseInt(sc.argv[0]));
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("aktiveRegion")) {
-        region.setActive(true);
+        world.setActiveRegion(region);
         sc.getNextToken();
       } else if ((sc.argc == 2) && sc.argv[1].equalsIgnoreCase("Terrain")) {
         try {

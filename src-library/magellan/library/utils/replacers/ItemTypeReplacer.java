@@ -95,6 +95,7 @@ public class ItemTypeReplacer extends AbstractParameterReplacer implements Envir
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.itemtypereplacer.description")+"\n\n"+super.getDescription();
   }

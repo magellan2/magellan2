@@ -90,6 +90,7 @@ public class MagellanSchemeImpl extends MagellanNamedImpl implements Scheme {
   /**
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
+  @Override
   public CoordinateID getID(){
     return (CoordinateID) super.getID();
   }

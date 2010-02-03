@@ -237,8 +237,8 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 	 */
 	public void init(Region r, Collection<Region> selectedRegions) {
 		this.selectedRegions.clear();
-		for(Iterator iter = selectedRegions.iterator(); iter.hasNext(); ) {
-			Region reg = (Region) iter.next();
+		for(Iterator<Region> iter = selectedRegions.iterator(); iter.hasNext(); ) {
+			Region reg = iter.next();
 			this.selectedRegions.put(reg.getID(), reg);
 		}
 		armystatsSel.clear();
@@ -557,7 +557,7 @@ public class MapContextMenu extends JPopupMenu implements ContextObserver {
 		}
 
 		data.setSelectedRegionCoordinates(selectedRegions);
-		dispatcher.fire(new SelectionEvent(this, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+		dispatcher.fire(SelectionEvent.create(this, selectedRegions.values()));
 	}
 
 	/**

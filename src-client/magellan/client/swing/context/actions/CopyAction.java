@@ -14,7 +14,7 @@ public class CopyAction extends ContextAction {
         super(selected, dispatcher);
     }
 
-    public CopyAction(ID selected, List selectedObjects,
+    public CopyAction(ID selected, List<?> selectedObjects,
             EventDispatcher dispatcher) {
         super(selected, selectedObjects, dispatcher);
     }

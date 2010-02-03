@@ -50,7 +50,7 @@ import magellan.library.utils.comparator.SkillRankComparator;
  * @author $Author: $
  * @version $Revision: 288 $
  */
-public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
 	private static final Comparator<Skill> skillComparator = new SkillComparator();
 	private static Comparator<Skill> rankComparator = null;
 
@@ -105,7 +105,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 	 * Returns a string representation of the object, which is either pre-set by the constructor or
 	 * generated from the unit name, id, amount and modified amount (if applicable).
 	 */
-	public String toString() {
+	@Override
+  public String toString() {
 		return text != null ? text : UnitNodeWrapper.getText(unit,prfx, amount, modified);
 	}
 
@@ -132,7 +133,8 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 	 *
 	 * @see magellan.client.swing.tree.CellObject#emphasized()
 	 */
-	public boolean emphasized() {
+	@Override
+  public boolean emphasized() {
 		Faction f = unit.getFaction();
 
 		if((f != null) && f.isPrivileged()) {
@@ -429,14 +431,16 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 		// items
 		if(others != null) {
 			if(isShowingCategorized()) {
-				List<Item> categories[] = new List[adapter.NUMBER_OF_CATEGORIES]; 
+				ArrayList<List<Item>> categories = new ArrayList<List<Item>>(adapter.NUMBER_OF_CATEGORIES); 
 				boolean anything = false;
 
 				for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
 					if(isShowingCatagorized(i)) {
-	          categories[i]=new LinkedList<Item>();
+	          categories.add(new LinkedList<Item>());
 						anything = true;
-					} 
+					} else {
+					  categories.add(null);
+					}
 				}
 
 				if(anything) {
@@ -456,7 +460,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 
 							if(j != -1) {
 								it.remove();
-								categories[j].add(item);
+								categories.get(j).add(item);
 							}
 						} catch(Exception exc) {
 						}
@@ -465,13 +469,13 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 					StringBuffer buffer = new StringBuffer();
 
 					for(int i = 0; i < adapter.NUMBER_OF_CATEGORIES; i++) {
-						if(categories[i] != null) {
+						if(categories.get(i) != null) {
 
 						  int count = 0;
 							buffer.setLength(0);
 							Item item = null;
 
-							for(Iterator<Item> it  = categories[i].iterator(); it.hasNext();) {
+							for(Iterator<Item> it  = categories.get(i).iterator(); it.hasNext();) {
 								item = it.next();
 								buffer.append(item.getAmount());
 								buffer.append(' ');
@@ -492,7 +496,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 							  String iconName = magellan.library.utils.Umlaut
                    .convertUmlauts(catP.getName());
 							  
-							  if (categories[i].size()==1){
+							  if (categories.get(i).size()==1){
 							    iconName = "items/" + item.getItemType().getIconName();
 							  }
 							  /**
@@ -519,7 +523,7 @@ public class UnitNodeWrapper extends EmphasizingImpl implements CellObject2, Sup
 								names.add(ge);
 							}
 
-							categories[i] = null;
+							categories.set(i, null);
 						}
 					}
 

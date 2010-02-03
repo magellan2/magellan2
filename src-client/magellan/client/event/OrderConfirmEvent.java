@@ -67,8 +67,8 @@ public class OrderConfirmEvent extends TimeStampedEvent {
 		if (units==null){
 			return false;
 		}
-		for (Iterator iter = this.units.iterator();iter.hasNext();){
-			Unit u = (Unit)iter.next();
+		for (Iterator<Unit> iter = this.units.iterator();iter.hasNext();){
+			Unit u = iter.next();
 			if (!u.isOrdersConfirmed()){return true;}
 		}
 		return false;
@@ -78,6 +78,7 @@ public class OrderConfirmEvent extends TimeStampedEvent {
    * @return <code>true</code> if one of the units is unconfirmed
    * @deprecated (stm) does this belong here? Not needed any more (was used by EMapOverviewPanel).
    */
+  @Deprecated
   public boolean changedToUnConfirmed() {
     return this.changedToUnConfirmed;
   }

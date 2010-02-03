@@ -67,10 +67,10 @@ public class TrustLevels {
 					}
 				} else if(f.isPrivileged() && (f.getAllies() != null)) { // privileged
 
-					Iterator iter = f.getAllies().entrySet().iterator();
+					Iterator<Map.Entry<EntityID, Alliance>> iter = f.getAllies().entrySet().iterator();
 
 					while(iter.hasNext()) {
-						Alliance alliance = (Alliance) ((Map.Entry) iter.next()).getValue();
+						Alliance alliance = (iter.next()).getValue();
 
 						// update the trustlevel of the allied factions if their
 						// trustlevels were not set by the user

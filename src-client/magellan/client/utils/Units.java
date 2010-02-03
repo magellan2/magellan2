@@ -176,7 +176,7 @@ public class Units {
    *         class ItemCategory or null if the categorization of the items
    *         failed.
    */
-  public Collection addCategorizedUnitItems(Collection<Unit> units,
+  public Collection<TreeNode> addCategorizedUnitItems(Collection<Unit> units,
       DefaultMutableTreeNode parentNode, Comparator<Item> itemComparator,
       Comparator<Unit> unitComparator, boolean showUnits, NodeWrapperFactory factory, ContextFactory reserveContextFactory) {
 
@@ -582,7 +582,7 @@ public class Units {
   
       if (replace) {
         if (keepComments) {
-          Collection oldOrders = u.getOrders();
+          Collection<String> oldOrders = u.getOrders();
           List<String> newOrders = new LinkedList<String>();
 
           for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
@@ -646,10 +646,10 @@ public class Units {
       String mode = s[1];
       String matchCase = s[2];
       
-      Collection oldOrders = u.getOrders();
+      Collection<String> oldOrders = u.getOrders();
       List<String> newOrders = new LinkedList<String>();
 
-      for (Iterator iterator = oldOrders.iterator(); iterator.hasNext();) {
+      for (Iterator<String> iterator = oldOrders.iterator(); iterator.hasNext();) {
         String order = (String) iterator.next();
         String casedOrder;
         if (matchCase.equals("false"))

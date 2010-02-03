@@ -256,7 +256,6 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /** start window, disposed after first init */
   protected static StartWindow startWindow;
 
-
   protected Collection<MagellanPlugIn> plugIns = new ArrayList<MagellanPlugIn>();
 
   /**
@@ -268,9 +267,9 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * </p>
    * 
    * @param gd
-   * @param fileDir The directory where magellan files are situated
+   * @param binDir The directory where magellan files are situated
+   * @param fileDir The directory where magellan configuration files are situated
    * @param settingsDir The directory where the settings are situated
-   * @param tsettFileDir 
    */
   protected Client(GameData gd, File binDir, File fileDir, File settingsDir) {
     Client.INSTANCE = this;
@@ -382,7 +381,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
       settings.setProperty("Client.Version", VersionInfo.getVersion(fileDir));
     if (lastSavedVersion!=null)
       settings.setProperty("Client.LastVersion", lastSavedVersion);
-
+    
     showStatus = PropertiesHelper.getBoolean(settings, "Client.ShowOrderStatus", false);
 
     Properties completionSettings =
@@ -555,6 +554,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         quit(true);
       }
@@ -569,7 +569,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         // undesired way, perhaps
         // we remove this configuration option?
         UIDefaults table = UIManager.getDefaults();
-        Enumeration eKeys = table.keys();
+        Enumeration<?> eKeys = table.keys();
 
         while (eKeys.hasMoreElements()) {
           Object obj = eKeys.nextElement();
@@ -984,6 +984,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
    * @return
    * @deprecated As of Java 1.2, the Font method getLineMetrics should be used.
    */
+  @Deprecated
   public static FontMetrics getDefaultFontMetrics(Font font) {
     return Toolkit.getDefaultToolkit().getFontMetrics(font);
   }
@@ -1004,7 +1005,11 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
      * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
      */
     public void selectionChanged(SelectionEvent se) {
-      activeObject = se.getActiveObject();
+      if (se.isSingleSelection())
+        activeObject = se.getActiveObject();
+      else
+        activeObject = null;
+      
     }
 
     /**
@@ -1013,7 +1018,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
-      bookmarkManager.toggleBookmark(activeObject);
+      if (activeObject != null)
+        bookmarkManager.toggleBookmark(activeObject);
     }
   }
 
@@ -1424,7 +1430,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
         setVisible(false);
 
         if (panels != null) {
-          for (Iterator iter = panels.iterator(); iter.hasNext();) {
+          for (Iterator<JPanel> iter = panels.iterator(); iter.hasNext();) {
             InternationalizedDataPanel p = (InternationalizedDataPanel) iter.next();
             p.quit();
           }
@@ -1578,22 +1584,18 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
 
           if (client.getSelectedObjects() != null) {
             client.getDispatcher()
-                .fire(new SelectionEvent(this, client.getSelectedObjects(), null));
+                .fire(client.getSelectedObjects());
           }
           // if we have active Region, center on it
           Region activeRegion = data.getActiveRegion();
           if (activeRegion != null) {
-            client.getDispatcher().fire(
-                new SelectionEvent(client, new ArrayList<Region>(), activeRegion,
-                    SelectionEvent.ST_REGIONS));
+            client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));
           } else {
             // suggestion by enno...if we have no active region but we have 0,0..center on 0,0
             CoordinateID cID = new CoordinateID(0, 0);
             activeRegion = data.getRegion(cID);
             if (activeRegion != null) {
-              client.getDispatcher().fire(
-                  new SelectionEvent(client, new ArrayList<Region>(), activeRegion,
-                      SelectionEvent.ST_REGIONS));
+              client.getDispatcher().fire(SelectionEvent.create(client, activeRegion));
         }
       }
         }
@@ -1944,8 +1946,8 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     // also inform system about the new selection found in the GameData
     // object
     getDispatcher().fire(
-        new SelectionEvent(this, getData().getSelectedRegionCoordinates().values(), null,
-            SelectionEvent.ST_REGIONS));
+        SelectionEvent.create(this, getData().getSelectedRegionCoordinates().values()));
+    getDispatcher().fire(SelectionEvent.create(this, getData().getActiveRegion()));
 
   }
 
@@ -2221,6 +2223,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
   /**
    * @see java.awt.Component#repaint()
    */
+  @Override
   public void repaint() {
     super.repaint();
 
@@ -2418,7 +2421,7 @@ public class Client extends JFrame implements ShortcutListener, PreferencesFacto
     }
   }
 
-  public Collection<?> getSelectedObjects() {
+  public SelectionEvent getSelectedObjects() {
     return overviewPanel.getSelectedObjects();
   }
 

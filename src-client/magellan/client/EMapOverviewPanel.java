@@ -158,7 +158,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   // region with previously selected item
   private Unique activeObject = null;
-  private Set<Object> selectedObjects = new HashSet<Object>();
+  private List<Object> selectedObjects = new ArrayList<Object>();
+  private List<List<Object>> contexts = new ArrayList<List<Object>>();
 
   // needed by FactionNodeWrapper to determine the active alliances
   // keys: FactionIDs, values: Alliance-objects
@@ -266,8 +267,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     lstHistory.addListSelectionListener(new ListSelectionListener() {
       public void valueChanged(ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
-          if (lstHistory.getSelectedValue()!=null){
-            dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getSelectedValue()));
+          Object val = lstHistory.getSelectedValue();
+          if (val!=null){
+            dispatcher.fire(SelectionEvent.create(lstHistory, SelectionHistory.getHistory(lstHistory.getSelectedIndex()).event));
           }
         }
       }
@@ -346,8 +348,6 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   public void gameDataChanged(GameDataEvent e) {
     this.data = e.getGameData();
 
-    contextManager.setGameData(this.data);
-
     rebuildTree();
 
     // initialize activeAlliances-Map
@@ -359,8 +359,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     // clear the history
     SelectionHistory.clear();
-    lstHistory.setListData(SelectionHistory.getHistory().toArray());
-
+    
+    setLstHistory();
+    
     // clear node maps
     regionNodes.clear();
     unitNodes.clear();
@@ -373,6 +374,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     // clear other buffers
     selectedObjects.clear();
+    contexts.clear();
     activeObject = null;
     lastExpanded.clear();
 
@@ -416,10 +418,28 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     tree.setShowsRootHandles(PropertiesHelper.getBoolean(settings, "EMapOverviewPanel.treeRootHandles", true));
 
     treeModel.reload();
-    dispatcher.fire(new SelectionEvent(treeModel, oldActiveObject==null?null:Collections.singleton(oldActiveObject), oldActiveObject));
+    if (oldActiveObject!=null)
+      dispatcher.fire(SelectionEvent.create(treeModel, oldActiveObject, SelectionEvent.ST_DEFAULT));
+    else 
+      dispatcher.fire(SelectionEvent.create(this));
+  }
+
+  private void setLstHistory() {
+//    Object[] historyItems = new Object[SelectionHistory.getHistory().size()];
+//    int i = 0;
+//    for (SelectionEntry se : SelectionHistory.getHistory()){
+//      historyItems[i++]=se.getActiveObject();
+//    }
+//    
+//    lstHistory.setListData(historyItems);
+    lstHistory.setListData(SelectionHistory.getHistory().toArray());
+//    if (lstHistory.getModel().getSize()>0)
+//      lstHistory.setSelectedIndex(0);
   }
 
   private TreeBuilder myTreeBuilder;
+
+  private boolean supressSelections = false;
 
   private TreeBuilder getTreeBuilder() {
     if (myTreeBuilder == null) {
@@ -529,6 +549,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
        * Note: This is perhaps not the best way because there may be other nodes
        * than that from collapse. But "normally" this shouldn't happen.
        */
+    } else if (!selectionTransfer.isEmpty()){
+      // debug
+      removed = removed;
     }
 
     /**
@@ -624,19 +647,39 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       if (o instanceof Unique){
         if (tse.isAddedPath(path)) {
           selectedObjects.add(o);
+          contexts.add(translate(path));
         } else {
-          selectedObjects.remove(o);
+          Iterator<Object> it = selectedObjects.iterator();
+          Iterator<?> it2 = contexts.iterator();
+          for (; it.hasNext();){
+            it2.next();
+            if (it.next().equals(o)){
+              it.remove();
+              it2.remove();
+            }
+          }
         }
       }
     }
     
-    Collection<Object> selectionPath = new ArrayList<Object>();
-    if (tree!=null && tree.getSelectionPath()!=null) {
-      for (Object o : tree.getSelectionPath().getPath()){
-        selectionPath.add(getNodeSubject((DefaultMutableTreeNode)o));
+    if (!supressSelections ) {
+      ArrayList<List<Object>> contexts = new ArrayList<List<Object>>(selectedObjects.size());
+      if (tree!=null && tree.getSelectionPaths()!=null) {
+        for (TreePath path : tree.getSelectionPaths()){
+          contexts.add(translate(path));
+        }
       }
+
+      dispatcher.fire(SelectionEvent.create(this, contexts));
     }
-    dispatcher.fire(new SelectionEvent(this, selectedObjects, activeObject, selectionPath));
+  }
+
+  private List<Object> translate(TreePath path) {
+    ArrayList<Object> context = new ArrayList<Object>(path.getPathCount());
+    for (Object o : path.getPath()){
+      context.add(getNodeSubject((DefaultMutableTreeNode) o));
+    }
+    return context;
   }
 
   /**
@@ -823,7 +866,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           lastExpanded.clear();
         }
       } else {
-        Enumeration e = rootNode.children();
+        Enumeration<?> e = rootNode.children();
 
         while (e.hasMoreElements()) {
           DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -870,7 +913,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         // search for privileged faction
         // note: Node searching is not nice, but the fastest way
         boolean found = false;
-        Enumeration enumeration = node.children();
+        Enumeration<?> enumeration = node.children();
 
         while (!found && enumeration.hasMoreElements()) {
           DefaultMutableTreeNode child = (DefaultMutableTreeNode) enumeration.nextElement();
@@ -897,7 +940,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       if (eDepth > 0) {
         eDepth--;
 
-        Enumeration enumeration = node.children();
+        Enumeration<?> enumeration = node.children();
         boolean open;
 
         while (enumeration.hasMoreElements()) {
@@ -1054,12 +1097,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // update the selection in the context manager
     if (se.getSelectionType() != SelectionEvent.ST_REGIONS) {
       if (se.getSelectedObjects()!=null) {
-        contextManager.setSelection(se.getSelectedObjects());
+        contextManager.setSelection(se);
       }
     }
 
-
-    
     // try to prevent notification loops, i.e. that calling this
     // procedure results in a notification of the registered
     // listeners of this object
@@ -1071,7 +1112,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     // expand and collapse
     ignoreTreeSelections = true;
     tree.clearSelection();
-    ignoreTreeSelections = false;
+//    ignoreTreeSelections = false;
 
     collectCollapseInfo();
     resetExpandInfo();
@@ -1156,6 +1197,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       // the active object has to be selected in the tree :
       selectedObjects.clear();
+      contexts.clear();
 
       // selectedObjects.add(activeObject);
 
@@ -1168,7 +1210,9 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         newSel.add(path);
       }
 
+      supressSelections = true;
       doExpandAndCollapse(newSel);
+      supressSelections = false;
         
       if (path != null) {
         // center on the selected item if it is outside the view port
@@ -1177,7 +1221,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     /**
-     * HANDLE selectedObjects Don't change anything, if selectedObjects == null
+     * HANDLE selectedObjects. Don't change anything, if selectedObjects == null
      * or selection event type is ST_REGIONS (which means that this is a
      * selection of regions on the map or of regions to be selected on the map.
      * Keep in mind that selections on the map don't have anything to do with
@@ -1186,6 +1230,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     if ((se.getSelectedObjects() != null) && (se.getSelectionType() != SelectionEvent.ST_REGIONS)) {
       selectedObjects.clear();
       selectedObjects.addAll(se.getSelectedObjects());
+      contexts.clear();
+      contexts.addAll(se.getContexts());
       ignoreTreeSelections = true;
       tree.clearSelection();
 
@@ -1209,8 +1255,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         }
       }
 
-      ignoreTreeSelections = false;
     }
+    ignoreTreeSelections = false;
     tree.repaint();
   }
 
@@ -1220,7 +1266,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         // search for privileged faction
         // note: Node searching is not nice, but the fastest way
         boolean found = false;
-        Enumeration enumeration = node.children();
+        Enumeration<?> enumeration = node.children();
 
         while (!found && enumeration.hasMoreElements()) {
           DefaultMutableTreeNode child = (DefaultMutableTreeNode) enumeration.nextElement();
@@ -1250,7 +1296,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       int eDepth = expandMode >> 2;
 
       if (eDepth > 0) {
-        Enumeration enumeration = node.children();
+        Enumeration<?> enumeration = node.children();
         while (enumeration.hasMoreElements()) {
 
           DefaultMutableTreeNode child = (DefaultMutableTreeNode) enumeration.nextElement();
@@ -1311,7 +1357,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
           }
         }
       } else {
-        Enumeration e = rootNode.children();
+        Enumeration<?> e = rootNode.children();
 
         while (e.hasMoreElements()) {
           DefaultMutableTreeNode node = (DefaultMutableTreeNode) e.nextElement();
@@ -1359,7 +1405,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       list.add(node);
     }
 
-    Enumeration e = node.children();
+    Enumeration<?> e = node.children();
 
     while (e.hasMoreElements()) {
       Collection<TreeNode> col = childSelected((DefaultMutableTreeNode) e.nextElement(), true);
@@ -1547,7 +1593,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       // stupid value here, null is prohibited, else
       // the selectionChanged() method would reject
       // the event since it originates from this.
-      selectionChanged(new SelectionEvent(u, null, u));
+      dispatcher.fire(SelectionEvent.create(u, u));
       // pavkovic 2004.04.28: we dont need to fire an event here as
       // treeValueChanged already does this for us
       // dispatcher.fire(new SelectionEvent(this, null, u));
@@ -1560,7 +1606,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
   }
 
-  private Enumeration<?> iterateToNode(Enumeration nodes, Object actNode) {
+  private Enumeration<?> iterateToNode(Enumeration<?> nodes, Object actNode) {
     while (nodes.hasMoreElements()) {
       if (nodes.nextElement().equals(actNode)) {
         break;
@@ -1570,7 +1616,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     return nodes;
   }
 
-  private Unit getUnitInTree(Enumeration nodes, Object actNode, boolean first) {
+  private Unit getUnitInTree(Enumeration<?> nodes, Object actNode, boolean first) {
     Unit ret = null;
 
     while (nodes.hasMoreElements()) {
@@ -1618,7 +1664,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
    */
   public void stateChanged(javax.swing.event.ChangeEvent p1) {
     // update the history list
-    lstHistory.setListData(SelectionHistory.getHistory().toArray());
+    setLstHistory();
   }
 
   /**
@@ -1695,7 +1741,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       if (selectedIndex != newIndex) {
         lstHistory.setSelectedIndex(newIndex);
-        dispatcher.fire(new SelectionEvent(lstHistory, null, lstHistory.getModel().getElementAt(newIndex)));
+        // dispatcher.fire(SelectionEvent.create(lstHistory, SelectionHistory.getHistory(newIndex).event));
       }
     }
   }
@@ -1765,8 +1811,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     // now add all privileged factions with alliance state Integer.MAX_VALUE
-    for (Iterator iter = privilegedFactions.iterator(); iter.hasNext();) {
-      Faction f = (Faction) iter.next();
+    for (Iterator<Faction> iter = privilegedFactions.iterator(); iter.hasNext();) {
+      Faction f = iter.next();
       activeAlliances.put(f.getID(), new Alliance(f, Integer.MAX_VALUE));
     }
   }
@@ -1979,9 +2025,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
      * Creates a new OverviewMenu object.
      * 
      * @param label
-     *          DOCUMENT-ME
-     * @param mnemonic
-     *          DOCUMENT-ME
+     * @param mnemonic 
+     *          
+     * @see #setMnemonic(char)
+     * @see JMenu#JMenu(String)
      */
     public OverviewMenu(String label, char mnemonic) {
       super(label);
@@ -2057,7 +2104,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
   /**
    * 
    */
-  public Collection<?> getSelectedObjects() {
+  public SelectionEvent getSelectedObjects() {
     return this.contextManager.getSelection();
   }
   

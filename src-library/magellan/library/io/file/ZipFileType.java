@@ -78,7 +78,7 @@ public class ZipFileType extends FileType {
 	public static ZipEntry[] getZipEntries(ZipFile zip, String endings[]) {
 		Collection<ZipEntry> ret = new ArrayList<ZipEntry>();
 
-		for(Enumeration iter = zip.entries(); iter.hasMoreElements();) {
+		for(Enumeration<?> iter = zip.entries(); iter.hasMoreElements();) {
 			ZipEntry entry = (ZipEntry)iter.nextElement();
 			String entryName = entry.getName();
 
@@ -129,7 +129,7 @@ public class ZipFileType extends FileType {
   		ZipFile zfile = new ZipFile(tmpfile);
   		ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
   
-  		for(Enumeration e = zfile.entries(); e.hasMoreElements();) {
+  		for(Enumeration<?> e = zfile.entries(); e.hasMoreElements();) {
   			ZipEntry oldEntry = (ZipEntry) e.nextElement();
   
   			if(!oldEntry.getName().equals(zipentry.getName())) {

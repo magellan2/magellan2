@@ -57,7 +57,7 @@ public class ReplacerHelp implements GameDataListener {
 
 		args[1] = new Integer(RegionFieldReplacer.MODE_NON_NEGATIVE);
 
-		Class regionField = RegionFieldReplacer.class;
+		Class<?> regionField = RegionFieldReplacer.class;
 
 		args[0] = "peasants";
 		drf.putReplacer("peasants", regionField, args);
@@ -107,7 +107,7 @@ public class ReplacerHelp implements GameDataListener {
 
 		args[1] = new Integer(RegionMethodReplacer.MODE_NON_NEGATIVE);
 
-		Class regionMethod = RegionMethodReplacer.class;
+		Class<?> regionMethod = RegionMethodReplacer.class;
 
 		args[0] = "maxRecruit";
 		drf.putReplacer("recruit", regionMethod, args);
@@ -135,7 +135,7 @@ public class ReplacerHelp implements GameDataListener {
 		//luxury price, sold luxury
 		drf.putReplacer("price", LuxuryPriceReplacer.class);
 
-		Class soldClass = SoldLuxuryReplacer.class;
+		Class<?> soldClass = SoldLuxuryReplacer.class;
 		drf.putReplacer("soldname", soldClass, new Integer(0));
 		drf.putReplacer("soldchar1", soldClass, new Integer(1));
 		drf.putReplacer("soldchar2", soldClass, new Integer(2));

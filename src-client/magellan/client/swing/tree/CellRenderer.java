@@ -308,14 +308,14 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 				CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_SKILL_ICON_TEXT_COLOR_MAP, "none");
 			} else {
 				StringBuffer str = new StringBuffer();
-				Iterator it = CellRenderer.colorMap.keySet().iterator();
+				Iterator<String> it = CellRenderer.colorMap.keySet().iterator();
 
 				while(it.hasNext()) {
 					if(str.length() > 0) {
 						str.append(';');
 					}
 
-					String value = (String) it.next();
+					String value = it.next();
 					str.append(value);
 					str.append(';');
 
@@ -1060,10 +1060,10 @@ public class CellRenderer extends JPanel implements TreeCellRenderer {
 		// custom sets
 		if(CellRenderer.stylesets != null) {
 			StringBuffer custom = new StringBuffer();
-			Iterator it = CellRenderer.stylesets.keySet().iterator();
+			Iterator<String> it = CellRenderer.stylesets.keySet().iterator();
 
 			while(it.hasNext()) {
-				String name = (String) it.next();
+				String name = it.next();
 				GraphicsStyleset set = CellRenderer.stylesets.get(name);
 				String def = CellRenderer.createDefinitionString(set);
 				CellRenderer.settings.setProperty(PropertiesHelper.CELLRENDERER_STYLESETS + name, def);

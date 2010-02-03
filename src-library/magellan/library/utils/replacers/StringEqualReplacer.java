@@ -76,7 +76,8 @@ public class StringEqualReplacer extends AbstractParameterSwitch {
 	/**
 	 * @see magellan.library.utils.replacers.AbstractParameterSwitch#getDescription()
 	 */
-	public String getDescription() {
+	@Override
+  public String getDescription() {
 		return Resources.get("util.replacers.stringequalreplacer.description." + ignoreCase)+"\n\n"+super.getDescription();
 	}
 

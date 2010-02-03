@@ -32,7 +32,6 @@ import magellan.library.Ship;
 import magellan.library.Skill;
 import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaGameSpecificRules;
-import magellan.library.gamebinding.GameSpecificRules;
 import magellan.library.rules.CastleType;
 import magellan.library.rules.Race;
 
@@ -42,7 +41,7 @@ import magellan.library.rules.Race;
  * @author Thoralf Rickert
  * @version 1.0, 19.04.2009
  */
-public class E3AGameSpecificRules extends EresseaGameSpecificRules implements GameSpecificRules {
+public class E3AGameSpecificRules extends EresseaGameSpecificRules {
 
   protected E3AGameSpecificRules(Rules rules) {
     super(rules);
@@ -53,6 +52,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
    * 
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
    */
+  @Override
   public Integer getMaxEntertain(Region region) {
     int maxsize = 0;
     Building maxCastle = null;
@@ -93,6 +93,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
    *      FIXME maybe return something depending on morale (and biggest castle or watch)
    */
+  @Override
   public Integer getMaxOldEntertain(Region region) {
     return 0;
   }
@@ -100,6 +101,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#isShip(magellan.library.Ship)
    */
+  @Override
   public boolean isShip(Ship ship) {
     return true;
   }
@@ -108,6 +110,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
    * @see magellan.library.gamebinding.GameSpecificRules#canLandInRegion(magellan.library.Ship,
    *      magellan.library.Region)
    */
+  @Override
   public boolean canLandInRegion(Ship ship, Region region) {
     if (region.getType().getID().equals(EresseaConstants.RT_FIREWALL))
       return false;
@@ -139,6 +142,7 @@ public class E3AGameSpecificRules extends EresseaGameSpecificRules implements Ga
       return -1;
   }
 
+  @Override
   public int getShipRange(Ship s) {
     if (s.getSpeed() != -1 && s.getModifiedOwnerUnit() == s.getOwnerUnit()) {
         return s.getSpeed();

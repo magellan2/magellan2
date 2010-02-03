@@ -156,6 +156,7 @@ public class MagellanBorderImpl extends MagellanIdentifiableImpl implements Bord
   /**
    * @see magellan.library.Identifiable#getID()
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

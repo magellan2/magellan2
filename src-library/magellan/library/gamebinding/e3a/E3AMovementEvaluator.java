@@ -31,6 +31,7 @@ public class E3AMovementEvaluator extends EresseaMovementEvaluator {
     super(rules);
 	}
 
+  @Override
   protected int getHorses(Unit unit) {
     int horses = 0;
     

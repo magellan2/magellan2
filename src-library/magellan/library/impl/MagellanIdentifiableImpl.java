@@ -20,7 +20,7 @@ import magellan.library.Unique;
 /**
  * A template class for objects to be uniquely identifiable by other objects.
  */
-public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, Comparable, Cloneable {
+public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, Comparable<Object>, Cloneable {
 
   /** The object imposing the unique identifiability.  This is immutable. */
   protected final ID id;

@@ -1,3 +1,6 @@
+!!! Vorsicht, dies ist eine besonders instabile Version. Vielleicht warten Sie lieber auf die 
+nächste stabile Version !!!
+
 Neueste Meldungen
 
 Dies ist eine experimentelle Magellanversion, ein sogenannter "nightly build". Hier probieren

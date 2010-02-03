@@ -26,7 +26,7 @@ import magellan.library.utils.Umlaut;
 /**
  * Stores rule relevant info about types of items, like "Holz".
  */
-public class ItemType extends ObjectType implements Comparable {
+public class ItemType extends ObjectType {
 	private float weight = 0;
 	private String iconName = null;
 	private Skill makeSkill = null;
@@ -211,6 +211,7 @@ public class ItemType extends ObjectType implements Comparable {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

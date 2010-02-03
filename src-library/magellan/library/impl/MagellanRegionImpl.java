@@ -50,6 +50,7 @@ import magellan.library.rules.UnitContainerType;
 import magellan.library.utils.MagellanFactory;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
+import magellan.library.utils.Units;
 
 // Fiete 20080806: prepare for loosing special info in CR
 // pre eressearound 570+(?) we have ;silber as region tag
@@ -145,8 +146,6 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
 
   /** DOCUMENT-ME */
   public int oldRecruits = -1;
-
-  protected boolean isActive = false;
 
   // fiete 2007.02.12: we add sign support - 2 lines allowed
   private List<Sign> signs = null;
@@ -835,7 +834,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Fiete 20061224: ...and the factions with "GIVE" alliances too. <br>
    * The amount of the items of a particular item type are added up, so two units with 5 pieces of
    * silver yield one silver item of amount 10 here.
+   *
+   * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
+   *             instead.
    */
+  @Deprecated
   public Collection<Item> items() {
     if (!hasCache() || (getCache().regionItems == null)) {
       refreshItems();
@@ -852,7 +855,11 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Returns the items of all units that are stationed in this region The amount
    * of the items of a particular item type are added up, so two units with 5
    * pieces of silver yield one silver item of amount 10 here.
+   *
+   * @see magellan.library.Region#allItems()
+   * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
+  @Deprecated
   public Collection<Item> allItems() {
     if (!hasCache() || (getCache().allRegionItems == null)) {
       refreshAllItems();
@@ -866,9 +873,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * Returns a specific item from the items() collection identified by the item
-   * type.
+   * Returns a specific item from the items() collection identified by the item type.
+   * 
+   * @see magellan.library.Region#getItem(magellan.library.rules.ItemType)
+   * @deprecated Use
+   *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
+   *             instead.
    */
+  @Deprecated
   public Item getItem(ItemType type) {
     if (!hasCache() || (getCache().regionItems == null)) {
       refreshItems();
@@ -881,7 +893,10 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   /**
    * Updates the cache of items owned by privileged factions in this region.
    * Fiete 20061224: ...and the factions with "GIVE" alliances too.
+   * 
+   * @deprecated
    */
+  @Deprecated
   private void refreshItems() {
     if (getCache().regionItems != null) {
       getCache().regionItems.clear();
@@ -913,7 +928,9 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * Updates the cache of items owned by all factions in this region.
    * 
    * @author Fiete
+   * @deprecated
    */
+  @Deprecated
   private void refreshAllItems() {
     if (getCache().allRegionItems != null) {
       getCache().allRegionItems.clear();
@@ -1011,12 +1028,14 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
     return (peasants >= 0) ? (peasants / 100) : (-1);
   }
 
+  @Override
   public RegionType getType() {
     if (super.getType()==null || super.getType() instanceof RegionType)
       return (RegionType) super.getType();
     throw new RuntimeException("invalid region type");
   }
   
+  @Override
   public void setType(UnitContainerType type){
     if (type instanceof RegionType)
       super.setType(type);
@@ -1078,6 +1097,7 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
    * 
    * @see magellan.library.impl.MagellanIdentifiableImpl#getID()
    */
+  @Override
   public CoordinateID getID() {
     return (CoordinateID) super.getID();
   }
@@ -1932,23 +1952,23 @@ public class MagellanRegionImpl extends MagellanUnitContainerImpl implements Reg
   }
 
   /**
-   * @see magellan.library.Region#isActive()
+   * Returns <code>true</code> if this region is the activ region.
+   * 
+   * @deprecated Use {@link GameData#getActiveRegion()} instead.
    */
+  @Deprecated
   public boolean isActive() {
-    return isActive;
+    return getData().getActiveRegion() == this;
   }
 
   /**
-   * @see magellan.library.Region#setActive(boolean)
+   * Marks the region as active
+   * 
+   * @deprecated Use {@link GameData#setActiveRegion(Region)} instead.
    */
+  @Deprecated
   public void setActive(boolean isActive) {
-    if (isActive) {
-      // remove old active region...
-      for (Region r : getData().regions().values()) {
-        r.setActive(false);
-      }
-    }
-    this.isActive = isActive;
+    getData().setActiveRegion(this);
   }
 
   /**

@@ -99,7 +99,7 @@ public class UnitContainerContextMenu extends JPopupMenu {
 //		  name.setEnabled(false);
 		name.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        dispatcher.fire(new SelectionEvent(UnitContainerContextMenu.this, null, uc));
+        dispatcher.fire(SelectionEvent.create(UnitContainerContextMenu.this, uc, SelectionEvent.ST_DEFAULT));
       }
     });
 		add(name);

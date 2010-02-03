@@ -37,7 +37,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -125,9 +124,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   private Unit currentUnit = null;
 
   // for remembering transitional selections
-  private Region transitionalRegion = null;
-  private Island transitionalIsland = null;
-  private Faction transitionalFaction = null;
+  private Region transitionalRegionss = null;
+  private Island transitionalIslandss = null;
+  private Faction transitionalFactionss = null;
 
   private Color errorBgColor = null;
 
@@ -258,6 +257,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   /**
    * @see magellan.client.swing.InternationalizedDataPanel#setGameData(magellan.library.GameData)
    */
+  @Override
   public void setGameData(GameData d){
     super.setGameData(d);
     this.parser = data.getGameSpecificStuff().getOrderParser(d);
@@ -273,12 +273,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   private void initContent() {
     clearUnits();
     currentUnit = null;
-
-    transitionalRegion = null;
-    transitionalIsland = null;
-    transitionalFaction = null;
-
-    // startTimer();
   }
 
   private void readSettings() {
@@ -359,7 +353,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       deselectEditor(currentUnit);
-      loadEditors(se.getActiveObject(), se.getPath());
+      loadEditors(se);
 
     } else {
       // single editor mode
@@ -401,24 +395,30 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
    * 
    * @param activeObject
    */
-  private void loadEditors(Object activeObject, Collection path) {
-    if (path != null) {
-      for (Object o : path) {
-        if (o instanceof Island) {
-          transitionalIsland = (Island) o;
-        }
-        if (o instanceof Region) {
-          transitionalRegion = (Region) o;
-          transitionalIsland = transitionalRegion.getIsland();
-        }
-        if (o instanceof Faction) {
-          transitionalFaction = (Faction) o;
-        }
+  private void loadEditors(SelectionEvent se) {
+    List<Object> context = null;
+    if (se.getActiveObject()!=null)
+      context = se.getContexts().iterator().next();
+    
+    Island newIsland = null;
+    Region newRegion = null;
+    Faction newFaction = null;
+    Object activeObject = null;
+    if (context!=null){
+      for (Object o : context){
+        if (o instanceof Island)
+          newIsland = (Island) o;
+        if (o instanceof Region)
+          newRegion = (Region) o;
+        if (o instanceof Faction)
+          newFaction = (Faction) o;
+        
+        activeObject  = o;
       }
     }
-    Island newIsland = transitionalIsland;
-    Region newRegion = transitionalRegion;
-    Faction newFaction = transitionalFaction;
+    
+    
+    
     Unit newUnit = null;
     if (activeObject != null) {
       if (activeObject instanceof Unit
@@ -437,9 +437,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       } else if (activeObject instanceof Island) {
         newIsland = (Island) activeObject;
       } else { // some other node or non privileged unit selected
-        transitionalIsland = null;
-        transitionalRegion = null;
-        transitionalFaction = null;
+        newUnit = null;
         newIsland = null;
         newRegion = null;
         newFaction = null;
@@ -624,7 +622,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               currentUnit.refreshRelations();
             }
 
-            dispatcher.fire(new SelectionEvent(this, null, u));
+            dispatcher.fire(SelectionEvent.create(this, u));
           }
 
           break;
@@ -642,7 +640,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               currentUnit.refreshRelations();
             }
 
-            dispatcher.fire(new SelectionEvent(this, null, u));
+            dispatcher.fire(SelectionEvent.create(this, u));
           }
 
           break;
@@ -732,7 +730,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
       OrderEditor editor = (OrderEditor) e.getSource();
       // rightclick does select too(Fiete)
-      dispatcher.fire(new SelectionEvent(e.getSource(), null, editor.getUnit()));
+      dispatcher.fire(SelectionEvent.create(e.getSource(), editor.getUnit()));
     }
   }
 
@@ -1194,9 +1192,6 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     // currentRegion = newRegion;
     // currentFaction = newFaction;
     currentUnit = newUnit;
-    transitionalIsland = null;
-    transitionalRegion = null;
-    transitionalFaction = null;
   }
 
   /**
@@ -1791,12 +1786,14 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
   }
 
+  /**
+   * Does the syntax highlighting for an editor.
+   */
   private class UpdateThread implements Runnable {
-    /** DOCUMENT-ME */
     public CacheableOrderEditor e = null;
 
     /**
-     * DOCUMENT-ME
+     * Format the editor
      */
     public void run() {
       e.formatTokens();
@@ -1926,7 +1923,9 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     }
 
     /**
-     * DOCUMENT-ME
+     * Performs the button actions.
+     * 
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(java.awt.event.ActionEvent p1) {
       if (p1.getSource() == checkOrderConfirm) {
@@ -1974,7 +1973,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         // don't show any dialogs, simply create the tempunit and finish.
         TempUnit tempUnit = parentUnit.createTemp(id);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.CREATED));
-        dispatcher.fire(new SelectionEvent(this, null, tempUnit));
+        dispatcher.fire(SelectionEvent.create(this, tempUnit));
       } else {
         // do all the tempunit-dialog-stuff
         UnitID newID = UnitID.createUnitID(-id.intValue(), data.base); // unit
@@ -2115,7 +2114,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                 if (getEditor(tempUnit) != null) {
                   getEditor(tempUnit).requestFocus();
                 }
-                dispatcher.fire(new SelectionEvent(this, null, tempUnit));
+                dispatcher.fire(SelectionEvent.create(this, tempUnit));
                 return;
               } else {
                 JOptionPane.showMessageDialog(this, Resources
@@ -2146,35 +2145,35 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
         if (getEditor(currentUnit) != null) {
           getEditor(currentUnit).requestFocus();
         }
-        dispatcher.fire(new SelectionEvent(this, null, parentUnit), true);
+        dispatcher.fire(SelectionEvent.create(this, parentUnit), true);
         dispatcher.fire(new TempUnitEvent(this, tempUnit, TempUnitEvent.DELETING), true);
         parentUnit.deleteTemp(tempUnit.getID(), data);
       }
     }
 
     /**
-     * DOCUMENT-ME
+     * Enables the confirm box.
      */
     public void setConfirmEnabled(boolean enabled) {
       checkOrderConfirm.setEnabled(enabled);
     }
 
     /**
-     * DOCUMENT-ME
+     * Enables the create temp button.
      */
     public void setCreationEnabled(boolean enabled) {
       btnCreateTempUnit.setEnabled(enabled);
     }
 
     /**
-     * DOCUMENT-ME
+     * Enables the delete temp button
      */
     public void setDeletionEnabled(boolean enabled) {
       btnDeleteTempUnit.setEnabled(enabled);
     }
 
     /**
-     * DOCUMENT-ME
+     * Updates the buttons according to the current unit.
      */
     public void currentUnitChanged() {
       boolean enabled = (currentUnit != null) && currentUnit.getFaction().isPrivileged();
@@ -2192,6 +2191,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
   private class ScrollPanel extends JPanel implements Scrollable {
     /**
      * DOCUMENT-ME
+     *
+     * @see javax.swing.Scrollable#getPreferredScrollableViewportSize()
      */
     public Dimension getPreferredScrollableViewportSize() {
       return this.getPreferredSize();
@@ -2242,7 +2243,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
               return visibleRect.y - lastVisibleComponent.getY();
             } else {
               // component is fully visible, get next component
-              List components = Arrays.asList(this.getComponents());
+              List<Component> components = Arrays.asList(this.getComponents());
               int count = components.indexOf(lastVisibleComponent) - 1;
 
               if ((count >= 0) && (count < this.getComponentCount())) {
@@ -2264,7 +2265,7 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
                   - visibleRect.y - visibleRect.height;
             } else {
               // component is fully visible, get next component
-              List components = Arrays.asList(this.getComponents());
+              List<Component> components = Arrays.asList(this.getComponents());
               int count = components.indexOf(lastVisibleComponent) + 1;
 
               if ((count >= 0) && (count < this.getComponentCount())) {

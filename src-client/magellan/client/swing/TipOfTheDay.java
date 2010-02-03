@@ -269,10 +269,10 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 				while(st.hasMoreTokens()) {
 					try {
 						int num = Integer.parseInt(st.nextToken());
-						Iterator it = allTips.iterator();
+						Iterator<Tip> it = allTips.iterator();
 
 						while(it.hasNext()) {
-							Tip tip = (Tip) it.next();
+							Tip tip = it.next();
 
 							if(tip.number == num) {
 								nonShown.add(tip);
@@ -416,10 +416,10 @@ public class TipOfTheDay extends InternationalizedDialog implements ActionListen
 		setVisible(false);
 
 		StringBuffer buf = new StringBuffer();
-		Iterator it = nonShown.iterator();
+		Iterator<Tip> it = nonShown.iterator();
 
 		while(it.hasNext()) {
-			Tip tip = (Tip) it.next();
+			Tip tip = it.next();
 			buf.append(tip.number);
 
 			if(it.hasNext()) {

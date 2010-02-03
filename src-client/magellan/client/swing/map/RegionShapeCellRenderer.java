@@ -368,7 +368,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 * @param map A map containig RegionType/String - Color pairs
 	 */
 	public void setRegionColors(Map<Object,Color> map) {
-		for(Iterator iter = map.keySet().iterator(); iter.hasNext();) {
+		for(Iterator<Object> iter = map.keySet().iterator(); iter.hasNext();) {
 			Object o = iter.next();
 
 			if(o instanceof RegionType) {
@@ -1173,14 +1173,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 				public int compare(ListElement o1, ListElement o2) {
 					return o1.name.compareTo(o2.name);
 				}
-
-				/**
-				 * @see java.lang.Object#equals(java.lang.Object)
-				 */
-				@Override
-        public boolean equals(Object o) {
-					return false;
-				}
 			}
 
 			/**
@@ -1242,13 +1234,6 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					return nameComp.compare(o1, o2);
 				}
 
-				/**
-				 * @see java.lang.Object#equals(java.lang.Object)
-				 */
-				@Override
-        public boolean equals(Object o) {
-					return false;
-				}
 			}
 
 			/**

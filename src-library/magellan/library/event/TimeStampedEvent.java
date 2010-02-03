@@ -21,7 +21,7 @@ package magellan.library.event;
 import java.util.EventObject;
 
 /**
- * DOCUMENT ME!
+ * Event which remembers its creation time.
  *
  * @author Andreas
  * @version 1.0
@@ -40,9 +40,7 @@ public abstract class TimeStampedEvent extends EventObject {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the time when the event was created. 
 	 */
 	public long getTimestamp() {
 		return timestamp;

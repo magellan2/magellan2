@@ -484,7 +484,7 @@ public class VerticalBarPlot extends BarPlot implements VerticalValuePlot {
 	 *
 	 * 
 	 */
-	public Vector getBarAreas() {
+	public Vector<Rectangle2D> getBarAreas() {
 		return barAreas;
 	}
 }

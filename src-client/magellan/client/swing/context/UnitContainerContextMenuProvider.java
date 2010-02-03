@@ -26,5 +26,5 @@ public interface UnitContainerContextMenuProvider {
    * @param selectedObjects null or Collection of selected objects which may be of different types
    */
   public JMenuItem createContextMenu(EventDispatcher dispatcher, GameData data,
-      UnitContainer unitContainer, Collection<?> selectedObjects);
+      UnitContainer unitContainer, Collection selectedObjects);
 }

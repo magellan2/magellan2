@@ -47,7 +47,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	 * 
 	 * 
 	 */
-	public void putReplacer(String name, Class repClass, Object args[]) {
+	public void putReplacer(String name, Class<?> repClass, Object args[]) {
 		putReplacer(name, repClass);
 
 		if(args != null) {
@@ -62,7 +62,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	 * 
 	 * 
 	 */
-	public void putReplacer(String name, Class repClass, Object arg) {
+	public void putReplacer(String name, Class<?> repClass, Object arg) {
 		putReplacer(name, repClass);
 
 		if(arg != null) {
@@ -76,7 +76,7 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	 * 
 	 * 
 	 */
-	public void putReplacer(String name, Class repClass) {
+	public void putReplacer(String name, Class<?> repClass) {
 		replacers.put(name, new ReplacerInfo(repClass));
 	}
 
@@ -150,14 +150,14 @@ public class DefaultReplacerFactory implements ReplacerFactory {
 	protected class ReplacerInfo {
 		Class<?> replacerClass;
 		Object args[] = null;
-		Class argClasses[] = null;
+		Class<?> argClasses[] = null;
 
 		/**
 		 * Creates a new ReplacerInfo object.
 		 *
 		 * 
 		 */
-		public ReplacerInfo(Class repClass) {
+		public ReplacerInfo(Class<?> repClass) {
 			replacerClass = repClass;
 		}
 

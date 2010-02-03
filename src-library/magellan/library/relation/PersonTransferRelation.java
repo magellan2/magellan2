@@ -21,7 +21,7 @@ import magellan.library.rules.Race;
  * A relation indicating that a unit transfers a certain amount of persons to another unit.
  */
 public class PersonTransferRelation extends TransferRelation {
-	/** The source unit's race  */
+  /** The source unit's race  */
 	public final Race race;
 
 	/**

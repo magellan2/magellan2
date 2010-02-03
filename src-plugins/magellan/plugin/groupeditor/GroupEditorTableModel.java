@@ -132,6 +132,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
   /**
    * @see javax.swing.table.AbstractTableModel#getColumnName(int)
    */
+  @Override
   public String getColumnName(int pos) {
     if (pos == 0) return Resources.get("dock.GroupEditor.table.header.faction.title");
     if (pos == 1 && hasAllied) return Resources.get("dock.GroupEditor.table.header.default.title");
@@ -256,6 +257,7 @@ public class GroupEditorTableModel extends AbstractTableModel {
   /**
    * @see javax.swing.table.AbstractTableModel#isCellEditable(int, int)
    */
+  @Override
   public boolean isCellEditable(int row, int col) {
     return col>0;
   }

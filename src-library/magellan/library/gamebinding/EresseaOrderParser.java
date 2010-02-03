@@ -395,6 +395,7 @@ public class EresseaOrderParser implements OrderParser {
   // protected class \1Reader extends OrderReader { public boolean read(\2) {
   // ************* AT
   protected class AtReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       OrderToken t = getNextToken();
 
@@ -406,6 +407,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* WORK (ARBEITE)
   protected class WorkReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -415,6 +417,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ATTACK (ATTACKIERE)
   protected class AttackReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -442,6 +445,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BANNER
   protected class BannerReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -451,6 +455,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BEFÖRDERUNG
   protected class BefoerderungReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -460,6 +465,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BEKLAUE
   protected class BeklaueReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -488,6 +494,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BELAGERE
   protected class BelagereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -516,6 +523,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BENENNE
   protected class BenenneReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -690,6 +698,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BENUTZE
   protected class BenutzeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -743,6 +752,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BESCHREIBE
   protected class BeschreibeReader extends BenenneReader {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -784,6 +794,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BETRETE
   protected class BetreteReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -855,6 +866,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BEWACHE
   protected class BewacheReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -879,6 +891,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* BOTSCHAFT
   protected class BotschaftReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1020,6 +1033,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* DEFAULT
   protected class DefaultReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -1110,6 +1124,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* EMAIL
   protected class EmailReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1139,6 +1154,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ENDE
   protected class EndeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -1148,6 +1164,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* FAHRE
   protected class FahreReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1183,6 +1200,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* FOLGE
   protected class FolgeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1242,6 +1260,7 @@ public class EresseaOrderParser implements OrderParser {
 
   // ************* BEANSPRUCHE (Fiete)
   protected class BeansprucheReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1252,6 +1271,7 @@ public class EresseaOrderParser implements OrderParser {
         retVal = readBeansprucheAmount(t);
       } else if (isString(t)) {
         retVal = new StringChecker(false, false, true, false) {
+          @Override
           protected void complete() {
             getCompleter().cmpltBeanspruche();
           }
@@ -1271,6 +1291,7 @@ public class EresseaOrderParser implements OrderParser {
 
       if (isString(t)) {
         retVal = new StringChecker(false, false, true, false) {
+          @Override
           protected void complete() {
             getCompleter().cmpltBeanspruche();
           }
@@ -1285,6 +1306,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* FORSCHE
   protected class ForscheReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1306,6 +1328,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* GIB
   protected class GibReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1430,6 +1453,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* GRUPPE
   protected class GruppeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1460,6 +1484,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* HELFE
   protected class HelfeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1528,6 +1553,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* KAEMPFE
   protected class KaempfeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1577,6 +1603,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* KAMPFZAUBER
   protected class KampfzauberReader extends ZaubereReader {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1608,6 +1635,7 @@ public class EresseaOrderParser implements OrderParser {
      * @see magellan.library.gamebinding.EresseaOrderParser.ZaubereReader#readZaubereEnde(magellan.library.utils.OrderToken,
      *      magellan.library.Spell)
      */
+    @Override
     protected boolean readZaubereEnde(OrderToken token, Spell s) {
       if (token.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_NOT))) {
         token.ttype = OrderToken.TT_KEYWORD;
@@ -1626,6 +1654,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* KAUFE
   protected class KaufeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1670,6 +1699,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* KONTAKTIERE
   protected class KontaktiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1697,6 +1727,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* LEHRE
   protected class LehreReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1738,6 +1769,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* LERNE
   protected class LerneReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1799,6 +1831,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* LOCALE
   protected class LocaleReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -1820,6 +1853,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* MACHE
   protected class MacheReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       return read(token, false);
     }
@@ -2012,6 +2046,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* NACH
   protected class NachReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2051,6 +2086,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* NEUSTART
   protected class NeustartReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2094,6 +2130,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* NUMMER
   protected class NummerReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2193,6 +2230,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* OPTION
   protected class OptionReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2241,6 +2279,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* PARTEI
   protected class ParteiReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2274,6 +2313,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* PASSWORT
   protected class PasswortReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2295,6 +2335,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* PFLANZEN
   protected class PflanzeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2347,6 +2388,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* PIRATERIE
   protected class PiraterieReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2386,6 +2428,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* PRAEFIX
   protected class PraefixReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2407,6 +2450,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* REGION
   protected class RegionReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2425,6 +2469,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2447,6 +2492,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* RESERVIERE
   protected class ReserviereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2506,6 +2552,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ROUTE
   protected class RouteReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2549,6 +2596,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* SABOTIERE
   protected class SabotiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2570,6 +2618,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* SORTIERE
   protected class SortiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2630,6 +2679,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* SPIONIERE
   protected class SpioniereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2651,6 +2701,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* STIRB
   protected class StirbReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2678,6 +2729,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* TARNE
   protected class TarneReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2752,6 +2804,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* TRANSPORTIERE
   protected class TransportiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2773,6 +2826,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* TREIBE
   protected class TreibeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2791,6 +2845,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* UNTERHALTE
   protected class UnterhalteReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2809,6 +2864,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* URSPRUNG
   protected class UrsprungReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2842,6 +2898,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* VERGESSE
   protected class VergesseReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2863,6 +2920,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* VERKAUFE
   protected class VerkaufeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -2933,6 +2991,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ZAUBERE
   protected class ZaubereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -3179,6 +3238,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ZEIGE
   protected class ZeigeReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -3226,6 +3286,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ZERSTOERE
   protected class ZerstoereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -3285,6 +3346,7 @@ public class EresseaOrderParser implements OrderParser {
 
 // ************* ZUECHTE
   protected class ZuechteReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -3461,6 +3523,7 @@ public class EresseaOrderParser implements OrderParser {
   }
 
   protected class FinalKeywordReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       return readFinalKeyword(token);
     }
@@ -3690,6 +3753,7 @@ public class EresseaOrderParser implements OrderParser {
    * 
    * @deprecated use {@link #isNewString(OrderToken, true)}
    */
+  @Deprecated
   protected boolean isQuoted(String txt) {
     return (txt.startsWith("\"") && txt.endsWith("\"") && txt.length() >= 2);
   }
@@ -3699,6 +3763,7 @@ public class EresseaOrderParser implements OrderParser {
    * 
    * @deprecated use {@link #isNewString(OrderToken, true)}
    */
+  @Deprecated
   protected boolean isSingleQuoted(String txt) {
     return (txt.startsWith("\'") && txt.endsWith("\'") && txt.length() >= 2);
   }
@@ -3719,6 +3784,7 @@ public class EresseaOrderParser implements OrderParser {
    * @return
    * @deprecated you should prefer {@link #isString(OrderToken)} and {@link StringChecker}
    */
+  @Deprecated
   protected boolean isString(String txt) {
     boolean retVal = isQuoted(txt);
 
@@ -3861,7 +3927,7 @@ class TokenBucket extends Vector<OrderToken> {
    * @see java.util.Vector#add(java.lang.Object)
    */
   @Override
-  public boolean add(OrderToken o) {
+  public synchronized boolean add(OrderToken o) {
     super.add(o);
 
     return true;

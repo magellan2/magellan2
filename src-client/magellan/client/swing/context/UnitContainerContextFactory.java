@@ -13,13 +13,13 @@
 
 package magellan.client.swing.context;
 
-import java.util.Collection;
 import java.util.Properties;
 
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import magellan.client.event.EventDispatcher;
+import magellan.client.event.SelectionEvent;
 import magellan.client.swing.tree.FactionNodeWrapper;
 import magellan.client.swing.tree.IslandNodeWrapper;
 import magellan.client.swing.tree.RegionNodeWrapper;
@@ -51,22 +51,22 @@ public class UnitContainerContextFactory implements ContextFactory {
    *      javax.swing.tree.DefaultMutableTreeNode)
    */
   public JPopupMenu createContextMenu(EventDispatcher dispatcher, GameData data, Object argument,
-      Collection selectedObjects, DefaultMutableTreeNode node) {
+      SelectionEvent selectedObjects, DefaultMutableTreeNode node) {
     if (argument instanceof UnitContainer) {
       return new UnitContainerContextMenu((UnitContainer) argument, dispatcher, data, settings,
-          selectedObjects);
+          selectedObjects.getSelectedObjects());
     } else if (argument instanceof RegionNodeWrapper) {
       return new UnitContainerContextMenu(((RegionNodeWrapper) argument).getRegion(), dispatcher,
-          data, settings, selectedObjects);
+          data, settings, selectedObjects.getSelectedObjects());
     } else if (argument instanceof FactionNodeWrapper) {
       return new UnitContainerContextMenu(((FactionNodeWrapper) argument).getFaction(), dispatcher,
-          data, settings, selectedObjects);
+          data, settings, selectedObjects.getSelectedObjects());
     } else if (argument instanceof UnitContainerNodeWrapper) {
       return new UnitContainerContextMenu(((UnitContainerNodeWrapper) argument).getUnitContainer(),
-          dispatcher, data, settings, selectedObjects);
+          dispatcher, data, settings, selectedObjects.getSelectedObjects());
     } else if (argument instanceof IslandNodeWrapper) {
       return new IslandContextMenu(((IslandNodeWrapper) argument).getIsland(), dispatcher, data,
-          settings, selectedObjects);
+          settings, selectedObjects.getSelectedObjects());
     }
 
     return null;

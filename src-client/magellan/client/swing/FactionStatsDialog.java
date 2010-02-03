@@ -22,7 +22,6 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -214,9 +213,10 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
                 .filter(list.getSelectedValues(), Faction.class));
 						} else if(c instanceof SelectionListener) {
 		          if((list.getModel().getSize() > 0) && !list.isSelectionEmpty()) {
-		            se = new SelectionEvent(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
+		            se = SelectionEvent.create(d, list.getSelectedValue(), SelectionEvent.ST_DEFAULT); 
+//		              new SelectionEvent(d, Arrays.asList(list.getSelectedValues()), list.getSelectedValue());
 		          } else {
-		            se = new SelectionEvent(d, Collections.emptyList(), null);
+		            se = SelectionEvent.create(d); 
 		          }
 							((SelectionListener) c).selectionChanged(se);
 						}
@@ -315,8 +315,8 @@ public class FactionStatsDialog extends InternationalizedDataDialog {
 					}
 
 					if(victims.size() > 0) {
-						for(Iterator iter = victims.iterator(); iter.hasNext();) {
-							Faction f = (Faction) iter.next();
+						for(Iterator<Faction> iter = victims.iterator(); iter.hasNext();) {
+							Faction f = iter.next();
 							data.factions().remove(f.getID());
 						}
 

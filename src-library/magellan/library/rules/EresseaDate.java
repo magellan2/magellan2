@@ -108,6 +108,7 @@ public class EresseaDate extends Date {
    * @see magellan.library.rules.Date#toString(int) Either {@link Date#TYPE_LONG},
    *      {@link Date#TYPE_LONG}, or {@link Date#TYPE_PHRASE}.
    */
+  @Override
   public String toString(int iDateType) {
     String strDate = "";
 

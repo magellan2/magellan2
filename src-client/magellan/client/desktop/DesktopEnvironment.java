@@ -48,11 +48,11 @@ public class DesktopEnvironment extends Object {
 
 		// somebody registered before init
 		if(DesktopEnvironment.pendingSCListeners != null) {
-			Iterator it = DesktopEnvironment.pendingSCListeners.iterator();
+			Iterator<ShortcutListener> it = DesktopEnvironment.pendingSCListeners.iterator();
 
 			while(it.hasNext()) {
 				try {
-					DesktopEnvironment.registerShortcutListener((ShortcutListener) it.next());
+					DesktopEnvironment.registerShortcutListener(it.next());
 				} catch(Exception exc) {
 				}
 			}

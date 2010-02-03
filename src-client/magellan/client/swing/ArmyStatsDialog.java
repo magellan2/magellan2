@@ -215,10 +215,10 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		if(excludeNames == null) {
 			settings.remove("ArmyStatsDialog.ExcludedNames");
 		} else {
-			Iterator it = excludeNames.iterator();
+			Iterator<String> it = excludeNames.iterator();
 
 			while(it.hasNext()) {
-				String s = (String) it.next();
+				String s = it.next();
 				buf.append(s);
 
 				if(it.hasNext()) {
@@ -234,10 +234,10 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		if(excludeSkills == null) {
 			settings.remove("ArmyStatsDialog.ExcludedSkills");
 		} else {
-			Iterator it = excludeSkills.iterator();
+			Iterator<SkillType> it = excludeSkills.iterator();
 
 			while(it.hasNext()) {
-				SkillType st = (SkillType) it.next();
+				SkillType st = it.next();
 				buf.append(st.getID().toString());
 
 				if(it.hasNext()) {
@@ -253,10 +253,10 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		if(excludeCombatStates == null) {
 			settings.remove("ArmyStatsDialog.ExcludedCombatStates");
 		} else {
-			Iterator it = excludeCombatStates.iterator();
+			Iterator<Integer> it = excludeCombatStates.iterator();
 
 			while(it.hasNext()) {
-				buf.append(((Integer) it.next()).intValue());
+				buf.append((it.next()).intValue());
 
 				if(it.hasNext()) {
 					buf.append('~');
@@ -343,7 +343,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 		 * 
 		 * 
 		 */
-		public ExcludeDialog(Dialog owner, String title, GameData data, List eNames, List eSkills,
+		public ExcludeDialog(Dialog owner, String title, GameData data, List<String> eNames, List<SkillType> eSkills,
 							 List<Integer> eStates) {
 			super(owner, title, true);
 
@@ -353,7 +353,7 @@ public class ArmyStatsDialog extends InternationalizedDataDialog implements Acti
 			DefaultListModel model = new DefaultListModel();
 
 			if(eNames != null) {
-				Iterator it = eNames.iterator();
+				Iterator<String> it = eNames.iterator();
 
 				while(it.hasNext()) {
 					model.addElement(it.next());

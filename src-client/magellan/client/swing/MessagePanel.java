@@ -115,6 +115,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
    * Handles the selection of a new object to display messages for.
    */
   public void selectionChanged(SelectionEvent se) {
+    // TODO (stm) only single selection?
     Object activeObject = se.getActiveObject();
 
     if(se.getSource() == this) {
@@ -138,7 +139,7 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
 
     treeModel.reload();
 
-    Enumeration enumeration = rootNode.children();
+    Enumeration<?> enumeration = rootNode.children();
 
     while(enumeration.hasMoreElements()) {
       DefaultMutableTreeNode node = (DefaultMutableTreeNode) enumeration.nextElement();
@@ -591,8 +592,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       o = ((RegionNodeWrapper) o).getRegion();
     }
 
-    if(o instanceof Unit || o instanceof Region) {
-      dispatcher.fire(new SelectionEvent(this, null, o));
+    if(o instanceof Unit) 
+      dispatcher.fire(SelectionEvent.create(this, (Unit) o));
+    if (o instanceof Region) {
+      dispatcher.fire(SelectionEvent.create(this, (Region) o));
     }
   }
 

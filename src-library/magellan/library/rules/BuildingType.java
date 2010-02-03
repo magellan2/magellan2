@@ -105,6 +105,7 @@ public class BuildingType extends ConstructibleType {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

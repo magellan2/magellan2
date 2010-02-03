@@ -96,8 +96,10 @@ public class GroupEditorDock extends JPanel implements ActionListener, GameDataL
     
     model = new GroupEditorTableModel();
     table = new JTable(model) {
+      @Override
       protected JTableHeader createDefaultTableHeader() {
         return new JTableHeader(columnModel) {
+          @Override
           public String getToolTipText(MouseEvent e) {
             int index = columnModel.getColumnIndexAtX(e.getPoint().x);
             Object tip = columnModel.getColumn(index).getHeaderValue();

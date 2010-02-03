@@ -103,4 +103,9 @@ public class FileHistoryAction extends AbstractAction {
 			return false;
 		}
 	}
+	
+	@Override
+	public int hashCode() {
+	  return file==null?42:file.hashCode();
+	}
 }

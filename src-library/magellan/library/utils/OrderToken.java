@@ -117,6 +117,7 @@ public class OrderToken {
    * Sets the followedBySpace() value.
    * @deprecated better make this immutable...
    */
+  @Deprecated
   public void setFollowedBySpace(boolean b) {
     followedBySpace = b;
   }
@@ -155,7 +156,8 @@ public class OrderToken {
 	 * Sets the token text. 
 	 * @deprecated better make this immutable...
 	 */
-	public void setText(String text) {
+	@Deprecated
+  public void setText(String text) {
 		this.text = text;
 	}
 
@@ -170,7 +172,8 @@ public class OrderToken {
    * Sets the position of the start of the token text in the order.
    * @deprecated better make this immutable...
 	 */
-	public void setStart(int start) {
+	@Deprecated
+  public void setStart(int start) {
 		this.start = start;
 	}
 
@@ -186,7 +189,8 @@ public class OrderToken {
 	 * Sets the position of the end of the token text in the order.
    * @deprecated better make this immutable...
 	 */
-	public void setEnd(int end) {
+	@Deprecated
+  public void setEnd(int end) {
 		this.end = end;
 	}
 

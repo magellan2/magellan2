@@ -60,7 +60,6 @@ import magellan.library.Scheme;
 import magellan.library.Ship;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Sorted;
@@ -81,7 +80,7 @@ import magellan.library.utils.replacers.ReplacerSystem;
  * than 1.2.
  * </p>
  */
-public class Mapper extends InternationalizedDataPanel implements SelectionListener, Scrollable, UnitOrdersListener, GameDataListener, Initializable {
+public class Mapper extends InternationalizedDataPanel implements SelectionListener, Scrollable, UnitOrdersListener, Initializable {
   private static final Logger log = Logger.getInstance(Mapper.class);
 
   /**
@@ -244,13 +243,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
               }
 
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
               repaint();
               prevDragRegion = r;
             } else {
               activeRegion = r;
               activeObject = r;
-              dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
               repaint();
             }
           } else if ((me.getModifiers() & InputEvent.BUTTON3_MASK) != 0) {
@@ -304,7 +303,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
             if (doFire) {
               data.setSelectedRegionCoordinates(selectedRegions);
-              dispatcher.fire(new SelectionEvent(mapper, selectedRegions.values(), null, SelectionEvent.ST_REGIONS));
+              dispatcher.fire(SelectionEvent.create(mapper, selectedRegions.values()));
             }
 
             repaint();
@@ -377,7 +376,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
           CoordinateID c = new CoordinateID(activeRegion.getCoordinate());
           activeRegion = data.getRegion(c.translate(translationCoord));
           data.setSelectedRegionCoordinates(null);
-          dispatcher.fire(new SelectionEvent(mapper, null, activeRegion, SelectionEvent.ST_REGIONS));
+          dispatcher.fire(SelectionEvent.create(mapper, activeRegion));
           repaint();
         }
       }
@@ -994,7 +993,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
             if (renderer != null) {
               renderer.init(data, g, offset);
 
-              for (Iterator iter = regionSchemeList.iterator(); iter.hasNext();) {
+              for (Iterator<Region> iter = regionSchemeList.iterator(); iter.hasNext();) {
                 renderer.render(iter.next(), true, true);
               }
             }
@@ -1025,7 +1024,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
         renderer.init(data, g, offset);
 
-        for (Iterator iter = regList.iterator(); iter.hasNext();) {
+        for (Iterator<Sorted> iter = regList.iterator(); iter.hasNext();) {
           Object obj = iter.next();
           boolean selected = false;
           boolean active = false;
@@ -1437,7 +1436,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
 
     // look for Mapper-aware renderers. Add Mapper if Interface MapperAware is
     // implemented
-    for (Iterator iter = renderers.iterator(); iter.hasNext();) {
+    for (Iterator<MapCellRenderer> iter = renderers.iterator(); iter.hasNext();) {
       Object o = iter.next();
 
       if (o instanceof MapperAware) {
@@ -1559,7 +1558,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
   /**
    * Sets a list of available tooltip definitions
    */
-  public void setAllTooltipDefinitions(List l) {
+  public void setAllTooltipDefinitions(List<?> l) {
     StringBuffer buf = new StringBuffer();
 
     if (l.size() > 1) {

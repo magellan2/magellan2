@@ -186,7 +186,7 @@ public class MagellanLookAndFeel {
 
 						if((name != null) && (clazz != null)) {
 							try {
-								Class c = Class.forName(clazz);
+								Class<?> c = Class.forName(clazz);
 								LookAndFeel laf = (LookAndFeel) c.newInstance();
 
 								if(laf.isSupportedLookAndFeel()) {
@@ -362,7 +362,7 @@ public class MagellanLookAndFeel {
 			Object skin = MagellanLookAndFeel.loadSkinLFThemepack(themepack);
 
 			// call method public static Skin SkinLookAndFeel.setSkin(Skin skin)
-			Class cSkin = Class.forName("com.l2fprod.gui.plaf.skin.Skin");
+			Class<?> cSkin = Class.forName("com.l2fprod.gui.plaf.skin.Skin");
 			MagellanLookAndFeel.getSkinLFClass().getMethod("setSkin", new Class[] { cSkin }).invoke(null,
 																				new Object[] { skin });
 

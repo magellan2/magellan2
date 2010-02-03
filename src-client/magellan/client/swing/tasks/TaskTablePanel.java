@@ -67,7 +67,6 @@ import magellan.library.HasRegion;
 import magellan.library.Region;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.tasks.AttackInspector;
 import magellan.library.tasks.Inspector;
 import magellan.library.tasks.MovementInspector;
@@ -85,7 +84,7 @@ import magellan.library.utils.logging.Logger;
  * A panel for showing reviews about unit, region and/or gamedata.
  */
 public class TaskTablePanel extends InternationalizedDataPanel implements UnitOrdersListener,
-    SelectionListener, GameDataListener, PreferencesFactory {
+    SelectionListener, PreferencesFactory {
   private static final Logger log = Logger.getInstance(TaskTablePanel.class);
 
   public static final String IDENTIFIER = "TASKS";
@@ -235,15 +234,18 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * 
      * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
      */
+    @Override
     public void mouseClicked(final MouseEvent e) {
       maybeSelect(e);
       maybeShowPopup(e);
     }
 
+    @Override
     public void mousePressed(MouseEvent e) {
       maybeShowPopup(e);
     }
 
+    @Override
     public void mouseReleased(MouseEvent e) {
       maybeShowPopup(e);
     }
@@ -432,7 +434,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (row<0 || row>=sorter.getRowCount())
       throw new IndexOutOfBoundsException();
     Object obj = sorter.getValueAt(row, TaskTableModel.OBJECT_POS);
-    dispatcher.fire(new SelectionEvent(this, null, obj));
+    dispatcher.fire(SelectionEvent.create(this, obj, SelectionEvent.ST_DEFAULT));
   }
 
   private void initUpdateThread() {
@@ -1279,7 +1281,7 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param header
      * @see javax.swing.table.DefaultTableModel#DefaultTableModel(Vector, int)
      */
-    public TaskTableModel(Vector header) {
+    public TaskTableModel(Vector<?> header) {
       super(header, 0);
       init();
     }
@@ -1349,14 +1351,14 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
      * @param source
      */
     public void removeProblems(final Inspector inspector, final Object source) {
-      Vector dataVector = getDataVector();
+      Vector<?> dataVector = getDataVector();
 
       for (int i = getRowCount() - 1; i >= 0; i--) {
         if (i >= dataVector.size()) {
           TaskTablePanel.log.warn("TaskTablePanel: synchronization problem");
           break;
         }
-        Vector v = (Vector) dataVector.get(i);
+        Vector<?> v = (Vector<?>) dataVector.get(i);
         Problem p = (Problem) v.get(TaskTableModel.PROBLEM_POS);
 
         // Inspector and region: only non unit objects will be removed

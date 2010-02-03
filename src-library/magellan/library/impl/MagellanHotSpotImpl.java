@@ -103,6 +103,7 @@ public class MagellanHotSpotImpl extends MagellanNamedImpl implements HotSpot {
   /**
    * @see magellan.library.Identifiable#getID()
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

@@ -16,7 +16,7 @@ package magellan.library;
 /**
  * A template class for objects to be uniquely identifiable by other objects.
  */
-public interface Identifiable extends Unique, Comparable, Cloneable {
+public interface Identifiable extends Unique, Comparable<Object>, Cloneable {
 
 	/**
 	 * Returns the id uniquely identifying this object.

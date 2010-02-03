@@ -113,7 +113,7 @@ public class IconPreferences extends JPanel implements ExtendedPreferencesAdapte
 		con2.gridx = 0;
 		con2.gridy = 0;
 
-		Iterator it = nw.iterator();
+		Iterator<NodeWrapperFactory> it = nw.iterator();
 
 		while(it.hasNext()) {
 			PreferencesAdapter pref = ((PreferencesFactory) it.next()).createPreferencesAdapter();

@@ -84,7 +84,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.SHIFT_MASK))) {
 			jumpBackward();
 		} else if(shortCut.equals(KeyStroke.getKeyStroke(KeyEvent.VK_F2, InputEvent.CTRL_MASK))) {
-			toggleBookmark(activeObject);
+			toggleBookmark();
 		}
 	}
 
@@ -111,10 +111,10 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Equivalent to <code>toggleBookmark(getActiveObject())</code>.
 	 */
 	public void toggleBookmark() {
-		toggleBookmark(activeObject);
+		toggleBookmark(getActiveObject());
 	}
 
 	/**
@@ -134,7 +134,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Removes all bookmarks
 	 */
 	public void clearBookmarks() {
 		bookmarks.clear();
@@ -162,7 +162,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 				jumpForward();
 			} else if(!o.equals(activeObject)) {
 				activeObject = o;
-				dispatcher.fire(new SelectionEvent(this, null, o));
+				dispatcher.fire(SelectionEvent.create(this, o, SelectionEvent.ST_DEFAULT));
 
 				if(dialog != null) {
 					dialog.setSelectedObject(o);
@@ -187,7 +187,7 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 				jumpBackward();
 			} else if(!o.equals(activeObject)) {
 				activeObject = o;
-				dispatcher.fire(new SelectionEvent(this, null, o));
+				dispatcher.fire(SelectionEvent.create(this, o, SelectionEvent.ST_DEFAULT));
 
 				if(dialog != null) {
 					dialog.setSelectedObject(o);
@@ -197,23 +197,25 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * 
+	 * Returns the list of all bookmarks
 	 */
 	public List<Object> getBookmarks() {
 		return bookmarks;
 	}
 
 	/**
+	 * Changes the active object.
 	 * 
+	 * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
 	 */
 	public void selectionChanged(SelectionEvent se) {
-		if(!se.getSource().equals(this) && (se.getActiveObject() != null)) {
+    if(!se.getSource().equals(this) && se.isSingleSelection()) {
 			activeObject = se.getActiveObject();
 		}
 	}
 
 	/**
-	 * 
+	 * Resets bookmark list.
 	 */
 	public void gameDataChanged(GameDataEvent ge) {
 		activeObject = null;
@@ -226,23 +228,23 @@ public class BookmarkManager implements ShortcutListener, SelectionListener, Gam
 	}
 
 	/**
-	 * 
+	 * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(javax.swing.KeyStroke)
 	 */
-	public java.lang.String getShortcutDescription(KeyStroke obj) {
+	public String getShortcutDescription(KeyStroke obj) {
 		int index = shortCuts.indexOf(obj);
 
 		return Resources.get("util.bookmarkmanager.shortcuts.description." + String.valueOf(index));
 	}
 
 	/**
-	 * 
+	 * @see magellan.client.desktop.ShortcutListener#getListenerDescription()
 	 */
-	public java.lang.String getListenerDescription() {
+	public String getListenerDescription() {
 		return Resources.get("util.bookmarkmanager.shortcuts.title");
 	}
 	
 	/**
-	 * 
+	 * Returns the currently active (i.e. selected elsewhere) object.
 	 */
 	public Object getActiveObject() {
 	  return activeObject;

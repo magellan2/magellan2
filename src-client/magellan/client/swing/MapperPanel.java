@@ -148,7 +148,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     
     lblScaling.setVisible(showNavi);
     sldScaling.setVisible(showNavi);
-    List levels = mapper.getLevels();
+    List<?> levels = mapper.getLevels();
     lblLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.setVisible((levels.size() > 1) && showNavi);
     cmbLevel.removeAllItems();
@@ -1191,7 +1191,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
    * Creates a popup menu for changing tooltips
    */
   private void changeTooltip() {
-    final List list = mapper.getAllTooltipDefinitions();
+    final List<?> list = mapper.getAllTooltipDefinitions();
     if (list == null)
       return;
 
@@ -1428,10 +1428,10 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
 
     protected void setTooltip(int index) {
-      java.util.List list = mapper.getAllTooltipDefinitions();
+      java.util.List<String> list = mapper.getAllTooltipDefinitions();
 
       if ((list != null) && (list.size() > (2 * index))) {
-        mapper.setTooltipDefinition((String) list.get((2 * index) + 1));
+        mapper.setTooltipDefinition(list.get((2 * index) + 1));
       }
     }
 

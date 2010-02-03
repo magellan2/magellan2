@@ -113,8 +113,8 @@ public class SpellSyntax {
 		if (this.tokens==null || this.tokens.size()==0){
 			return retVal;
 		}
-		for (Iterator iter = this.tokens.iterator();iter.hasNext();){
-			SpellSyntaxToken token = (SpellSyntaxToken) iter.next();
+		for (Iterator<SpellSyntaxToken> iter = this.tokens.iterator();iter.hasNext();){
+			SpellSyntaxToken token = iter.next();
 			String tokenString = token.toString();
 			if (tokenString!=null) {
 				if (retVal==null){

@@ -621,6 +621,7 @@ public class MagellanFactionImpl extends MagellanUnitContainerImpl implements Fa
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public EntityID getID(){
     return (EntityID) super.getID(); 
   }

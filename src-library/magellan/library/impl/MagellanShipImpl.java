@@ -426,6 +426,7 @@ public class MagellanShipImpl extends MagellanUnitContainerImpl implements Ship,
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public EntityID getID(){
     return (EntityID) super.getID();
   }

@@ -38,7 +38,8 @@ public class Skill {
 	/** The number of persons in the unit this skill belongs to. 
 	 * @deprecated (stm) This seems to be obsolete.
 	 */
-	private int persons = 0;
+	@Deprecated
+  private int persons = 0;
 
 	/** The level of change. Only important in merged reports. */
 	private int changeLevel = 0;
@@ -312,7 +313,8 @@ public class Skill {
 	 * @deprecated (stm) This information seems to be obsolete.
 	 * 
 	 */
-	public void setPersons(int p) {
+	@Deprecated
+  public void setPersons(int p) {
 		this.persons = p;
 	}
 
@@ -321,7 +323,8 @@ public class Skill {
 	 * 
 	 * @deprecated This seems to be somewhat obsolete as skill points are not used consequently any more.
 	 */
-	public int getPointsPerPerson() {
+	@Deprecated
+  public int getPointsPerPerson() {
 		if(persons != 0) {
 			return this.getPoints() / persons;
 		} else {

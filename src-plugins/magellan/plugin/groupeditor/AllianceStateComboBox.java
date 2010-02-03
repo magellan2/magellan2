@@ -223,6 +223,10 @@ class AllianceState {
     }
   }
   
+  @Override
+  public int hashCode() {
+    return getBitMask();
+  }
   /**
    * @see java.lang.Object#toString()
    */

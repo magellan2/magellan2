@@ -279,6 +279,7 @@ public class ExtendedCommandsHelper {
    * @param makeRoute If true, then this unit returns to the current region.
    * @deprecated Use {@link #getPathToRegion(Unit, Region, boolean, boolean)}
    */
+  @Deprecated
   public String getPathToRegion(Unit unit, Region destination, int speed, boolean makeRoute) {
     return getPathToRegion(unit, destination, false, makeRoute);
   }
@@ -316,6 +317,7 @@ public class ExtendedCommandsHelper {
    * @param makeRoute If true, then this unit returns to the current region.
    * @deprecated Use {@link #getPathToRegion(Ship, Region, boolean, boolean)}
    */
+  @Deprecated
   public String getPathToRegion(Ship ship, Region destination, int speed, boolean makeRoute) {
     return getPathToRegion(ship, destination, false, makeRoute);
   }

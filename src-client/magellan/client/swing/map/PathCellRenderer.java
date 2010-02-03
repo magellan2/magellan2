@@ -35,6 +35,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 import magellan.client.MagellanContext;
+import magellan.client.swing.map.ImageCellRenderer.ImageContainer;
 import magellan.client.swing.preferences.PreferencesAdapter;
 import magellan.library.CoordinateID;
 import magellan.library.Ship;
@@ -213,7 +214,7 @@ public class PathCellRenderer extends ImageCellRenderer {
 		}
 	}
 
-	private void renderPath(Unit u, CoordinateID start, List directions, int imageType) {
+	private void renderPath(Unit u, CoordinateID start, List<?> directions, int imageType) {
 		if(PathCellRenderer.log.isDebugEnabled()) {
 			PathCellRenderer.log.debug("renderPath for unit " + u + " from " + start + " with list " + directions +
 					  ", imageType " + imageType);
@@ -388,8 +389,8 @@ public class PathCellRenderer extends ImageCellRenderer {
       throw new IllegalArgumentException("factor < 0: " + scaleFactor);
 		super.scale(scaleFactor);
 
-		for(Iterator iter = ownImages.values().iterator(); iter.hasNext();) {
-			ImageContainer c = (ImageContainer) iter.next();
+		for(Iterator<ImageContainer> iter = ownImages.values().iterator(); iter.hasNext();) {
+			ImageContainer c = iter.next();
 
 			if(c != null) {
 				c.scaled = scale(c.unscaled);

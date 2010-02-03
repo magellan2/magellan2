@@ -142,8 +142,8 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
         int selection[] = new int[newSelectedIndices.size()];
         int i = 0;
 
-        for (Iterator iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
-          selection[i] = ((Integer) iter.next()).intValue();
+        for (Iterator<Integer> iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
+          selection[i] = (iter.next()).intValue();
         }
 
         skillList.setSelectedIndices(selection);
@@ -197,8 +197,8 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
         int selection[] = new int[newSelectedIndices.size()];
         int i = 0;
 
-        for (Iterator iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
-          selection[i] = ((Integer) iter.next()).intValue();
+        for (Iterator<Integer> iter = newSelectedIndices.iterator(); iter.hasNext(); i++) {
+          selection[i] = (iter.next()).intValue();
         }
 
         skillList.setSelectedIndices(selection);

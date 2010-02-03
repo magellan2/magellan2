@@ -45,6 +45,7 @@ public class FactionSwitch extends AbstractParameterReplacer implements Environm
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
 		return Resources.get("util.replacers.factionswitch.description")+"\n\n"+super.getDescription();
 	}

@@ -66,6 +66,7 @@ public class LuxuryPriceReplacer extends AbstractParameterReplacer {
 		return null;
 	}
 
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.luxurypricereplacer.description")+"\n\n"+super.getDescription();
   }

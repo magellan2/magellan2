@@ -85,8 +85,8 @@ public class Help {
         return;
       }
       
-      Class helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
-      Constructor helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
+      Class<?> helpSetConstructorSignature[] = { Class.forName("java.lang.ClassLoader"), hsURL.getClass() };
+      Constructor<?> helpSetConstructor = helpSetClass.getConstructor(helpSetConstructorSignature);
       Object helpSetConstructorArgs[] = { loader, hsURL };
   
       // this calls new javax.help.Helpset(ClassLoader, URL)
@@ -101,7 +101,7 @@ public class Help {
       // this calls new javax.help.HelpBroker.initPresentation()
       initPresentationMethod.invoke(helpBroker, (Object[])null);
   
-      Class setDisplayedMethodSignature[] = { boolean.class };
+      Class<?> setDisplayedMethodSignature[] = { boolean.class };
       Method setDisplayedMethod = helpBroker.getClass().getMethod("setDisplayed", setDisplayedMethodSignature);
       Object setDisplayedMethodArgs[] = { Boolean.TRUE };
   

@@ -30,7 +30,7 @@ public interface TempUnitFactory {
 	 *
 	 * 
 	 */
-	public List getTempOrders(Unit unit);
+	public List<?> getTempOrders(Unit unit);
 
 	/**
 	 * DOCUMENT-ME
@@ -39,5 +39,5 @@ public interface TempUnitFactory {
 	 *
 	 * 
 	 */
-	public List extractTempUnits(Unit unit);
+	public List<?> extractTempUnits(Unit unit);
 }

@@ -59,7 +59,7 @@ public class UnitOrdersEvent extends TimeStampedEvent {
 	 *
 	 * 
 	 */
-	public Collection getRelatedUnits() {
+	public Collection<Unit> getRelatedUnits() {
 		return relatedUnits;
 	}
 }

@@ -63,8 +63,8 @@ public class Options {
 	public int getBitMap() {
 		int bitMap = 0;
 
-		for(Iterator iter = options.values().iterator(); iter.hasNext();) {
-			OptionCategory o = (OptionCategory) iter.next();
+		for(Iterator<OptionCategory> iter = options.values().iterator(); iter.hasNext();) {
+			OptionCategory o = iter.next();
 
 			if(o.isActive()) {
 				bitMap = bitMap | o.getBitMask();
@@ -81,8 +81,8 @@ public class Options {
 	 */
 	public void setValues(int bitMap) {
 		// log.info("CR BitMap: " + Integer.toBinaryString(bitMap));
-		for(Iterator iter = options.values().iterator(); iter.hasNext();) {
-			OptionCategory o = (OptionCategory) iter.next();
+		for(Iterator<OptionCategory> iter = options.values().iterator(); iter.hasNext();) {
+			OptionCategory o = iter.next();
 	        int test = bitMap & o.getBitMask();
 	        // log.info("Option: " + o.getName() + " Bitmask:(" + o.getBitMask() + "):" + Integer.toBinaryString(o.getBitMask()));
 	        // log.info("test: " + test);
@@ -157,8 +157,8 @@ public class Options {
   public String toString() {
 		StringBuffer sb = new StringBuffer();
 
-		for(Iterator iter = options.values().iterator(); iter.hasNext();) {
-			OptionCategory o = (OptionCategory) iter.next();
+		for(Iterator<OptionCategory> iter = options.values().iterator(); iter.hasNext();) {
+			OptionCategory o = iter.next();
 			sb.append(o.getID() + ": " + o.isActive());
 
 			if(iter.hasNext()) {

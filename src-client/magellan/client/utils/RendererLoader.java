@@ -44,11 +44,11 @@ public class RendererLoader extends Object {
 	private static final Logger log = Logger.getInstance(RendererLoader.class);
 	private File directory;
 	private ZipClassLoader loader;
-	private Class paramClass[];
+	private Class<?> paramClass[];
 	private Object paramInst[];
 	private Properties settings;
 	private static final String RENDERER_CLASS_STRING = "magellan.client.swing.map.ExternalMapCellRenderer";
-	private static Class RENDERER_CLASS;
+	private static Class<?> RENDERER_CLASS;
 
 	/**
 	 * Creates new RendererLoader
@@ -122,7 +122,7 @@ public class RendererLoader extends Object {
 									if(isRenderer(rclass)) {
 										try {
 											try {
-												Constructor constr = rclass.getConstructor(paramClass);
+												Constructor<?> constr = rclass.getConstructor(paramClass);
 												Object obj = constr.newInstance(paramInst);
                         if (obj instanceof  MapCellRenderer) {
                           MapCellRenderer renderer = (MapCellRenderer)obj;
@@ -165,7 +165,7 @@ public class RendererLoader extends Object {
 			}
 
 			if(list.size() > 0) {
-				Iterator it = list.iterator();
+				Iterator<MapCellRenderer> it = list.iterator();
 				StringBuffer msg = new StringBuffer();
 
 				if(list.size() > 1) {
@@ -175,7 +175,7 @@ public class RendererLoader extends Object {
 				}
 
 				while(it.hasNext()) {
-					msg.append(((MapCellRenderer) it.next()).getName());
+					msg.append((it.next()).getName());
 
 					if(it.hasNext()) {
 						msg.append(';');
@@ -216,8 +216,8 @@ public class RendererLoader extends Object {
 		return isRenderer(cur.getClass());
 	}
 
-	protected boolean isRenderer(Class cur) {
-		Class inf[] = cur.getInterfaces();
+	protected boolean isRenderer(Class<?> cur) {
+		Class<?> inf[] = cur.getInterfaces();
 
 		if((inf != null) && (inf.length > 0)) {
 			for(int i = 0; i < inf.length; i++) {
@@ -227,7 +227,7 @@ public class RendererLoader extends Object {
 			}
 		}
 
-		Class parent = cur.getSuperclass();
+		Class<?> parent = cur.getSuperclass();
 
 		return (parent == null) ? false : isRenderer(parent);
 	}

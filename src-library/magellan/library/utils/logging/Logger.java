@@ -77,7 +77,7 @@ public class Logger {
 	/**
 	 * 
 	 */
-	public static Logger getInstance(Class aClass) {
+	public static Logger getInstance(Class<?> aClass) {
 		// be fail-fast
 		if(aClass == null) {
 			throw new NullPointerException();
@@ -382,7 +382,7 @@ public class Logger {
 
 		if(Logger.awtLogger != null) {
 			try {
-				Class parameterTypes[] = new Class[] { Object.class, Throwable.class };
+				Class<?> parameterTypes[] = new Class[] { Object.class, Throwable.class };
 				Object arguments[] = new Object[] { aObj, aThrowable };
 				Method method = Logger.awtLogger.getClass().getMethod("log", parameterTypes);
 				method.invoke(Logger.awtLogger, arguments);

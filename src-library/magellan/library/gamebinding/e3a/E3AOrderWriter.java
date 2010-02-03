@@ -52,6 +52,7 @@ public class E3AOrderWriter extends EresseaOrderWriter {
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerName()
    */
+  @Override
   public String getCheckerName() {
     return "ECheck";
   }
@@ -59,6 +60,7 @@ public class E3AOrderWriter extends EresseaOrderWriter {
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#useChecker()
    */
+  @Override
   public boolean useChecker() {
     return true;
   }
@@ -66,6 +68,7 @@ public class E3AOrderWriter extends EresseaOrderWriter {
   /**
    * @see magellan.library.gamebinding.GameSpecificOrderWriter#getCheckerDefaultParameter()
    */
+  @Override
   public String getCheckerDefaultParameter() {
     return " -s -l -w4 -v" + E3AOrderWriter.ECHECKVERSION;
   }

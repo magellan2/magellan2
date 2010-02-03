@@ -82,7 +82,8 @@ public class EresseaConstants {
 	/** 
 	 * @deprecated replaced by COMBAT_AGGRESSIVE
 	 */
-	public static final String O_AGGRESSIVE = "AGGRESSIVE";
+	@Deprecated
+  public static final String O_AGGRESSIVE = "AGGRESSIVE";
 
 	/** DOCUMENT-ME */
 	public static final String O_AFTER = "AFTER";
@@ -162,7 +163,8 @@ public class EresseaConstants {
 	/** 
 	 * @deprecated replaced by O_COMBAT_DEFENSIVE
 	 */
-	public static final String O_DEFENSIVE = "DEFENSIVE";
+	@Deprecated
+  public static final String O_DEFENSIVE = "DEFENSIVE";
 
 	/** DOCUMENT-ME */
 	public static final String O_DESCRIBE = "DESCRIBE";
@@ -194,18 +196,21 @@ public class EresseaConstants {
 	/**
 	 * @deprecated replaced by HELP_FACTIONSTEALTH
 	 */
-	public static final String O_FACTIONSTEALTH = "FACTIONSTEALTH";
+	@Deprecated
+  public static final String O_FACTIONSTEALTH = "FACTIONSTEALTH";
 
 	/** 
 	 * @deprecated replaced by COMBAT_FLEE 
 	 */
-	public static final String O_FLEE = "FLEE";
+	@Deprecated
+  public static final String O_FLEE = "FLEE";
 
 	/** DOCUMENT-ME */
 	public static final String O_FOLLOW = "FOLLOW";
 
 	/** @deprecated you should use one of <code>O_FOREIGNUNIT, -FACTION, -BUILDING, -SHIP</code> */
-	public static final String O_FOREIGN = "FOREIGN";
+	@Deprecated
+  public static final String O_FOREIGN = "FOREIGN";
 
   /** BENENNE FREMDE EINHEIT */
 	public static final String O_FOREIGNUNIT = "FOREIGNUNIT";
@@ -225,7 +230,8 @@ public class EresseaConstants {
 	/** 
 	 * @deprecated replaced by COMBAT_FRONT
 	 */
-	public static final String O_FRONT = "FRONT";
+	@Deprecated
+  public static final String O_FRONT = "FRONT";
 
 	/** DOCUMENT-ME */
 	public static final String O_GIVE = "GIVE";
@@ -352,7 +358,8 @@ public class EresseaConstants {
 	/** 
    * @deprecated replaced by O_COMBAT_REAR
   */
-	public static final String O_REAR = "REAR";
+	@Deprecated
+  public static final String O_REAR = "REAR";
 
 	/** DOCUMENT-ME */
 	public static final String O_RECRUIT = "RECRUIT";
@@ -405,7 +412,8 @@ public class EresseaConstants {
 	/** 
 	 * @deprecated use rules.getItemType(EresseaConstants.I_SILVER) instead
 	 */
-	public static final String O_SILVER = "SILVER";
+	@Deprecated
+  public static final String O_SILVER = "SILVER";
 
 	/** DOCUMENT-ME */
 	public static final String O_SILVERPOOL = "SILVERPOOL";
@@ -647,6 +655,7 @@ public class EresseaConstants {
   public static final StringID I_GOTS = StringID.create("Gürtel der Trollstärke");
   
   /** @deprecated use either {@link #I_UHORSE} or {@link #I_RHORSES}. */
+  @Deprecated
   public static final StringID I_HORSE = StringID.create("Pferd");
 
   /** The item Pferd */
@@ -662,6 +671,7 @@ public class EresseaConstants {
   public static final StringID I_RIRON = StringID.create("Eisen");
   
   /** @deprecated use either {@link #I_UIRON} or {@link #I_RIRON}. */
+  @Deprecated
   public static final StringID I_IRON = StringID.create("Eisen");
 
   /** The item Laen */
@@ -671,6 +681,7 @@ public class EresseaConstants {
   public static final StringID I_RLAEN = StringID.create("Laen");
 
   /** @deprecated use either {@link #I_ULAEN} or {@link #I_RLAEN}. */
+  @Deprecated
   public static final StringID I_LAEN = StringID.create("Laen");
 
   public static final StringID I_PEASANTS = StringID.create("Bauern");
@@ -682,6 +693,7 @@ public class EresseaConstants {
   public static final StringID I_RSILVER = StringID.create("Silber");
 
   /** @deprecated use either {@link #I_USILVER} or {@link #I_RSILVER}. */
+  @Deprecated
   public static final StringID I_SILVER = StringID.create("Silber");
 
   public static final StringID I_SPROUTS = StringID.create("Schösslinge");
@@ -693,6 +705,7 @@ public class EresseaConstants {
   public static final StringID I_RSTONES = StringID.create("Steine");
   
   /** @deprecated use either {@link #I_USTONE} or {@link #I_RSTONES}. */
+  @Deprecated
   public static final StringID I_STONES = StringID.create("Steine");
 
   public static final StringID I_TREES = StringID.create("Bäume");
@@ -706,6 +719,7 @@ public class EresseaConstants {
   public static final StringID I_RMALLORN = StringID.create("Mallorn");
 
   /** @deprecated use either {@link #I_UMALLORN} or {@link #I_RMALLORN}. */
+  @Deprecated
   public static final StringID I_MALLORN = StringID.create("Mallorn");
 
   public static final StringID I_MALLORNSPROUTS = StringID.create("Mallornschößlinge");

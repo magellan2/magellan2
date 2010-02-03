@@ -28,8 +28,7 @@ import magellan.library.utils.logging.Logger;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard,
-    SupportsEmphasizing {
+public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
   private static final Logger log = Logger.getInstance(FactionNodeWrapper.class);
   private Faction faction = null;
   private Region region = null;
@@ -68,6 +67,7 @@ public class FactionNodeWrapper extends EmphasizingImpl implements CellObject2, 
   /**
    * @deprecated used by nobody
    */
+  @Deprecated
   public Region getRegion() {
     return region;
   }

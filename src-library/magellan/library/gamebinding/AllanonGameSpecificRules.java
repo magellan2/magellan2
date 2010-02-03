@@ -44,6 +44,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxWorkers(magellan.library.Region)
    */
+  @Override
   public Integer getMaxWorkers(Region region) {
     if ((region.getTrees() != -1) && (region.getSprouts() != -1) && (region.getType() != null)) {
       if ((region.getTrees() != -1) && (region.getSprouts() != -1) && (region.getType() != null)) {
@@ -68,6 +69,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxEntertain(magellan.library.Region)
    */
+  @Override
   public Integer getMaxEntertain(Region region) {
     return getEntertain(((RegionType) region.getType()).getInhabitants(), region.getSilver(),
         region.getTrees(), region.getSprouts(), region.getPeasantWage());
@@ -76,6 +78,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#getMaxOldEntertain(magellan.library.Region)
    */
+  @Override
   public Integer getMaxOldEntertain(Region region) {
     return getEntertain(((RegionType) region.getType()).getInhabitants(), region.getOldSilver(),
         region.getOldTrees(), region.getOldSprouts(), region.getPeasantWage());
@@ -92,6 +95,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   /**
    * @see magellan.library.gamebinding.GameSpecificRules#isShip(magellan.library.Ship)
    */
+  @Override
   public boolean isShip(Ship ship) {
     if (ship.getType().getID().equals(AllanonConstants.ST_KARAWANE))
       return false;
@@ -102,6 +106,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
    * @see magellan.library.gamebinding.GameSpecificRules#canLandInRegion(magellan.library.Ship,
    *      magellan.library.Region)
    */
+  @Override
   public boolean canLandInRegion(Ship ship, Region region) {
     if (region.getType().getID().equals(AllanonConstants.RT_FIREWALL))
       return false;
@@ -126,6 +131,7 @@ public class AllanonGameSpecificRules extends EresseaGameSpecificRules {
   /**
    * Calculates the wage for the units of a certain faction in the specified region.
    */
+  @Override
   public int getWage(Region region, Race race) {
     int wage = region.getWage();
     if (race.getName().equalsIgnoreCase(getRules().getRace(AllanonConstants.R_ORKS).getName())) {

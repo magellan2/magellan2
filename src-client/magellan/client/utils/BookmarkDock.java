@@ -87,7 +87,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
             Object selectedValue = list.getSelectedValue();
 
             if((selectedValue != null) && (selectedValue != manager.getActiveObject())) {
-              dispatcher.fire(new SelectionEvent(this, null, selectedValue));
+              dispatcher.fire(SelectionEvent.create(this, selectedValue, SelectionEvent.ST_DEFAULT));
             }
           }
         }
@@ -114,7 +114,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Rebuilds the whole list from the manager.
    */
   public void updateData() {
     DefaultListModel model = new DefaultListModel();
@@ -130,9 +130,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   }
 
   /**
-   * DOCUMENT-ME
-   *
-   * 
+   * Select an entry in the list. 
    */
   public void setSelectedObject(Object o) {
     list.setSelectedValue(o, true);
@@ -140,11 +138,14 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   }
 
   /**
-   * DOCUMENT-ME
-   *
+   * Selects (in the list) the entry corresponding to the selection. 
    * 
+   * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent se) {
+    if (!se.isSingleSelection())
+      list.clearSelection();
+    
     Object o = se.getActiveObject();
 
     if(o != null) {
@@ -158,7 +159,7 @@ public class BookmarkDock extends JPanel implements SelectionListener {
   }
 
   /**
-   * DOCUMENT-ME
+   * Does nothing
    */
   public void quit() {
 //    settings.put("BookmarkManager.DialogWidth", String.valueOf(this.getWidth()));

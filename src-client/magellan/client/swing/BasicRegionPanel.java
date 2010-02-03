@@ -331,7 +331,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 	/**
 	 * This class emulates the behaviour of StringTokenizer with a string as delimiter.
 	 */
-	public static class BasicStringTokenizer implements Iterator {
+	public static class BasicStringTokenizer implements Iterator<Object> {
 		int newPosition = -1;
 		int currentPosition = 0;
 		int maxPosition = 0;

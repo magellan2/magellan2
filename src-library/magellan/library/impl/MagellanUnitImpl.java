@@ -192,7 +192,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	/**
 	 * Adds the order at position <tt>i</tt> and refreshes the relations
 	 *
-	 * @param i An index between 0 and getOrders().getSize() (inclusively)
+	 * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
 	 * @param newOrders 
 	 */
 	public void addOrderAt(int i, String newOrders) {
@@ -202,7 +202,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	/**
 	 * Adds the order at position <tt>i</tt> and possibly refreshes the relations
 	 *
-	 * @param i An index between 0 and getOrders().getSize() (inclusively)
+	 * @param i An index between 0 and getOrders().getSize() (inclusively), or -1 to add at the end.
 	 * @param newOrders 
 	 * @param refreshRelations if true also refresh the relations of the unit.
 	 */
@@ -1119,19 +1119,19 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
 	/**
 	 * Recursively retrieves all units that are related to this unit via one of the specified
-	 * relations.
+	 * relations (excatly, not as subclasses).
 	 *
 	 * @param units all units gathered so far to prevent loops.
 	 * @param relations a set of classes naming the types of relations that are eligible for
 	 * 		  regarding a unit as related to some other unit.
 	 */
-	public void getRelatedUnits(Set<Unit> units, Set relations) {
+	public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations) {
 		units.add(this);
 
 		for(Iterator<UnitRelation> iter = this.getRelations().iterator(); iter.hasNext();) {
 			UnitRelation rel = iter.next();
 
-			if(relations.contains(rel.getClass())) {
+			if(relations.contains(UnitRelation.getClassID(rel.getClass()))) {
 				Unit src = rel.source;
         Unit target = null;
 
@@ -1256,9 +1256,9 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 
 		// get all related units (as set) and sort it in a list afterwards
 		Set<Unit> relatedUnits = new HashSet<Unit>();
-		Set<Class> relationTypes = new HashSet<Class>();
-		relationTypes.add(PersonTransferRelation.class);
-		relationTypes.add(RecruitmentRelation.class);
+		Set<UnitRelation.ID> relationTypes = new HashSet<UnitRelation.ID>();
+		relationTypes.add(UnitRelation.getClassID(PersonTransferRelation.class));
+		relationTypes.add(RecruitmentRelation.getClassID(RecruitmentRelation.class));
 		this.getRelatedUnits(relatedUnits, relationTypes);
 
 		/* sort related units according to report order */
@@ -1269,7 +1269,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 		/* clone units with all aspects relevant for skills */
 		Map<ID,MagellanUnitImpl> clones = new Hashtable<ID, MagellanUnitImpl>();
 
-		for(Iterator iter = relatedUnits.iterator(); iter.hasNext();) {
+		for(Iterator<Unit> iter = relatedUnits.iterator(); iter.hasNext();) {
 			MagellanUnitImpl u = (MagellanUnitImpl) iter.next();
 			MagellanUnitImpl clone = null;
 
@@ -1302,7 +1302,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 		 modifier can push it up to positive values.*/
 		final int lostSkillLevel = (Integer.MIN_VALUE / 2);
 
-		for(Iterator unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
+		for(Iterator<Unit> unitIter = sortedUnits.iterator(); unitIter.hasNext();) {
 			MagellanUnitImpl srcUnit = (MagellanUnitImpl) unitIter.next();
 
 			for(Iterator<UnitRelation> relationIter = srcUnit.getRelations().iterator(); relationIter.hasNext();) {
@@ -1668,8 +1668,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 *
 	 * @return a collection of PersonTransferRelation objects.
 	 */
-	public List getPersonTransferRelations() {
-		List ret = getRelations(PersonTransferRelation.class);
+	public List<?> getPersonTransferRelations() {
+		List<?> ret = getRelations(PersonTransferRelation.class);
 
 		if(MagellanUnitImpl.log.isDebugEnabled()) {
 			MagellanUnitImpl.log.debug("Unit.getPersonTransferRelations for " + this);
@@ -1921,7 +1921,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * @return the initial weight of the unit
    * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
 	 */
-	public int getWeight() {
+	@Deprecated
+  public int getWeight() {
 	  return getRegion().getData().getGameSpecificStuff()
     .getMovementEvaluator().getWeight(this);
 	}
@@ -1944,7 +1945,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * 		   horseback.
 	 * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
 	 */
-	public int getPayloadOnHorse() {
+	@Deprecated
+  public int getPayloadOnHorse() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
 				   .getPayloadOnHorse(this);
 	}
@@ -1960,7 +1962,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 * 		   horse riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
 	 */
-	public int getPayloadOnFoot() {
+	@Deprecated
+  public int getPayloadOnFoot() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(this);
 	}
 
@@ -1969,7 +1972,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 *
    * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
 	 */
-	public int getLoad() {
+	@Deprecated
+  public int getLoad() {
 		return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getLoad(this);
 	}
 
@@ -1979,7 +1983,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 *
    * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
 	 */
-	public int getModifiedLoad() {
+	@Deprecated
+  public int getModifiedLoad() {
     return getRegion().getData().getGameSpecificStuff().getMovementEvaluator()
         .getModifiedLoad(this);
 	}
@@ -1990,7 +1995,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 	 *
    * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
 	 */
-	public int getRadius() {
+	@Deprecated
+  public int getRadius() {
 	  return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getRadius(this);
 	}
 
@@ -2002,7 +2008,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    * @return the modified weight of the unit
    * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
 	 */
-	public int getModifiedWeight() {
+	@Deprecated
+  public int getModifiedWeight() {
     return getRegion().getData().getGameSpecificStuff().getMovementEvaluator().getModifiedWeight(
         this);
 	}
@@ -2153,8 +2160,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 			}
 		}
 
-		for(Iterator iter = deathRow.iterator(); iter.hasNext();) {
-			this.removeRelation((UnitRelation) iter.next());
+		for(Iterator<UnitRelation> iter = deathRow.iterator(); iter.hasNext();) {
+			this.removeRelation(iter.next());
 		}
 	}
 
@@ -2302,89 +2309,112 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 			return false;
 		}
 
-		// parse order until there are enough match tokens
-		int tokenCounter = 0;
-		Collection<OrderToken> matchTokens = new LinkedList<OrderToken>();
-		OrderTokenizer ct = new OrderTokenizer(new StringReader(order));
-		OrderToken t = ct.getNextToken();
-
-		while((t.ttype != OrderToken.TT_EOC) && (tokenCounter++ < length)) {
-			matchTokens.add(t);
-			t = ct.getNextToken();
-		}
-
-		// order does not contain enough match tokens, abort
-		if(matchTokens.size() < length) {
-			return false;
-		}
-
-		// if replace, delete matching orders first
-		if(replace && !this.ordersAreNull()) {
-			boolean tempBlock = false;
-
-			// cycle through this unit's orders
-			for(ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds.hasNext();) {
-				String cmd = cmds.next();
-				ct = new OrderTokenizer(new StringReader(cmd));
-				t = ct.getNextToken();
-
-				// skip empty orders and comments
-				if((OrderToken.TT_EOC == t.ttype) || (OrderToken.TT_COMMENT == t.ttype)) {
-					continue;
-				}
-
-				if(false == tempBlock) {
-					if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
-						t = ct.getNextToken();
-
-						if(OrderToken.TT_EOC == t.ttype) {
-							continue;
-						} else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
-							tempBlock = true;
-
-							continue;
-						}
-					} else {
-						// compare the current unit order and tokens of the one to add
-						boolean removeOrder = true;
-
-						for(Iterator iter = matchTokens.iterator();
-								iter.hasNext() && (t.ttype != OrderToken.TT_EOC);) {
-							OrderToken matchToken = (OrderToken) iter.next();
-
-							if(!(t.equalsToken(matchToken.getText()) ||
-								   matchToken.equalsToken(t.getText()))) {
-								removeOrder = false;
-
-								break;
-							}
-
-							t = ct.getNextToken();
-						}
-
-						if(removeOrder) {
-							cmds.remove();
-						}
-
-						continue;
-					}
-				} else {
-					if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
-						tempBlock = false;
-
-						continue;
-					}
-				}
-			}
-		}
-
+		if (replace)
+		  removeOrder(order, length);
+		
 		addOrderAt(-1, order);
 
 		return true;
 	}
-
+	
 
 	/**
+	 * Removes orders that match the given order up to a given length.
+	 * 
+   * @param order pattern to remove
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *      specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should
+   *      be replaced but not all "BENENNE" orders.
+   *
+   * @return <tt>true</tt> if at least one order was removed
+	 */
+	public boolean removeOrder(String order, int length) {
+    if((order == null) || order.trim().equals("")) {
+     return false;
+   }
+
+    // parse order until there are enough match tokens
+    int tokenCounter = 0;
+    Collection<OrderToken> matchTokens = new LinkedList<OrderToken>();
+    OrderTokenizer ct = new OrderTokenizer(new StringReader(order));
+    OrderToken t = ct.getNextToken();
+
+    while((t.ttype != OrderToken.TT_EOC) && (tokenCounter++ < length)) {
+      matchTokens.add(t);
+      t = ct.getNextToken();
+    }
+
+    // order does not contain enough match tokens, abort
+    if(matchTokens.size() < length) {
+      return false;
+    }
+
+    boolean result = false;
+    
+    // if replace, delete matching orders first
+    if(!this.ordersAreNull()) {
+      boolean tempBlock = false;
+
+      // cycle through this unit's orders
+      for(ListIterator<String> cmds = ordersObject.getOrders().listIterator(); cmds.hasNext();) {
+        String cmd = cmds.next();
+        ct = new OrderTokenizer(new StringReader(cmd));
+        t = ct.getNextToken();
+
+        // skip empty orders and comments
+        if((OrderToken.TT_EOC == t.ttype) || (OrderToken.TT_COMMENT == t.ttype)) {
+          continue;
+        }
+
+        if(false == tempBlock) {
+          if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_MAKE))) {
+            t = ct.getNextToken();
+
+            if(OrderToken.TT_EOC == t.ttype) {
+              continue;
+            } else if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_TEMP))) {
+              tempBlock = true;
+
+              continue;
+            }
+          } else {
+            // compare the current unit order and tokens of the one to add
+            boolean removeOrder = true;
+
+            for(Iterator<OrderToken> iter = matchTokens.iterator();
+                iter.hasNext() && (t.ttype != OrderToken.TT_EOC);) {
+              OrderToken matchToken = iter.next();
+
+              if(!(t.equalsToken(matchToken.getText()) ||
+                   matchToken.equalsToken(t.getText()))) {
+                removeOrder = false;
+
+                break;
+              }
+
+              t = ct.getNextToken();
+            }
+
+            if(removeOrder) {
+              cmds.remove();
+              result  = true;
+            }
+
+            continue;
+          }
+        } else {
+          if(t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_END))) {
+            tempBlock = false;
+
+            continue;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
 	 * Scans this unit's orders for temp units to create. It constructs them as TempUnit objects
 	 * and removes the corresponding orders from this unit. Uses the default order locale to parse
 	 * the orders.
@@ -2668,9 +2698,8 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
 		}
 
     /**
-     * Inserts the specified order at the specified position.
+     * Inserts the specified order at the end.
      *
-     * @param i An index between 0 and getOrders().getSize() (inclusively)
      * @param newOrders 
      */
     public void addOrder(String newOrders) {
@@ -3358,6 +3387,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public UnitID getID(){
     return (UnitID) super.getID();
   }

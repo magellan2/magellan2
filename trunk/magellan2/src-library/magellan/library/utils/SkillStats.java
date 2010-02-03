@@ -45,7 +45,7 @@ public class SkillStats {
 	 *
 	 * 
 	 */
-	public SkillStats(List units) {
+	public SkillStats(List<?> units) {
 		for(Iterator iter = units.iterator(); iter.hasNext();) {
 			addUnit((Unit) iter.next());
 		}
@@ -205,8 +205,8 @@ public class SkillStats {
 		if(type == null) {
 			List<Skill> v = new LinkedList<Skill>();
 
-			for(Iterator iter = skillData.keySet().iterator(); iter.hasNext();) {
-				type = (SkillType) iter.next();
+			for(Iterator<SkillType> iter = skillData.keySet().iterator(); iter.hasNext();) {
+				type = iter.next();
 
 				SkillStorage skillStorage = skillData.get(type);
 

@@ -35,8 +35,7 @@ import magellan.library.Faction;
  * @author ...
  * @version 1.0, Jan 13, 2008
  */
-public class AllianceNodeWrapper extends FactionNodeWrapper implements CellObject2,
-    SupportsClipboard, SupportsEmphasizing {
+public class AllianceNodeWrapper extends FactionNodeWrapper {
 
   /**
    * @param f

@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ListReplacer implements Replacer {
 	protected StringBuffer buffer;
-	protected List list;
+	protected List<?> list;
 	protected String unknown;
 	protected String evolved = null;
 	protected static NumberFormat numberFormat;
@@ -41,7 +41,7 @@ public class ListReplacer implements Replacer {
 	 * 
 	 * 
 	 */
-	public ListReplacer(List list, String unknown) {
+	public ListReplacer(List<?> list, String unknown) {
 		buffer = new StringBuffer();
 		this.list = list;
 		this.unknown = unknown;

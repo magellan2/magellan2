@@ -120,6 +120,18 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   public void removeOrderAt(int i, boolean refreshRelations);
 
   /**
+   * Removes orders that match the given order up to a given length.
+   * 
+   * @param order pattern to remove
+   * @param length denotes the number of tokens that need to be equal for a replacement. E.g.
+   *      specify 2 if order is "BENENNE EINHEIT abc" and all "BENENNE EINHEIT" orders should
+   *      be replaced but not all "BENENNE" orders.
+   *
+   * @return <tt>true</tt> if at least one order was removed
+   */
+  public boolean removeOrder(String order, int length);
+
+  /**
    * Adds the order at position <tt>i</tt> and refreshes the relations
    * 
    * @param i
@@ -444,7 +456,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *          a set of classes naming the types of relations that are eligible
    *          for regarding a unit as related to some other unit.
    */
-  public void getRelatedUnits(Set<Unit> units, Set relations);
+  public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations);
   
   /**
    * Returns a List of the reached coordinates of the units movement starting
@@ -569,7 +581,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @return a collection of PersonTransferRelation objects.
    */
-  public List getPersonTransferRelations();
+  public List<?> getPersonTransferRelations();
 
   /**
    * Returns the items of this unit as they would appear after the orders of
@@ -620,6 +632,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @deprecated use {@link MovementEvaluator#getWeight(Unit)}
    */
+  @Deprecated
   public int getWeight();
   
 
@@ -640,6 +653,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *         horse riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnHorse(Unit)}
    */
+  @Deprecated
   public int getPayloadOnHorse();
 
   /**
@@ -654,6 +668,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *         sufficiently skilled in horse riding to travel on horseback.
    * @deprecated use {@link MovementEvaluator#getPayloadOnFoot(Unit)}
    */
+  @Deprecated
   public int getPayloadOnFoot();
 
   /**
@@ -662,6 +677,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @deprecated use {@link MovementEvaluator#getLoad(Unit)}
    */
+  @Deprecated
   public int getLoad();
 
   /**
@@ -670,6 +686,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @deprecated use {@link MovementEvaluator#getModifiedLoad(Unit)}
    */
+  @Deprecated
   public int getModifiedLoad();
 
   /**
@@ -678,6 +695,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @deprecated use {@link MovementEvaluator#getRadius(Unit)}
    */
+  @Deprecated
   public int getRadius();
 
   /**
@@ -686,6 +704,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @deprecated use {@link MovementEvaluator#getModifiedWeight(Unit)}
    */
+  @Deprecated
   public int getModifiedWeight();
 
   /**

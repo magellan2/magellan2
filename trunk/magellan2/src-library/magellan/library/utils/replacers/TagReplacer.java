@@ -74,6 +74,7 @@ public class TagReplacer extends AbstractParameterReplacer {
 	 * 
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
 		return Resources.get("util.replacers.tagreplacer.description." + mode)+"\n\n"+super.getDescription();
 	}

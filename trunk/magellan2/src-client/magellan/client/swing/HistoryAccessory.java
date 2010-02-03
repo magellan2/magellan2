@@ -121,8 +121,8 @@ public class HistoryAccessory extends JPanel {
 
 		List<String> dirs = new ArrayList<String>(7);
 
-		for(Iterator iter = history.iterator(); iter.hasNext();) {
-			dirs.add(((DirWrapper) iter.next()).getDirectory().getAbsolutePath());
+		for(Iterator<DirWrapper> iter = history.iterator(); iter.hasNext();) {
+			dirs.add((iter.next()).getDirectory().getAbsolutePath());
 		}
 
 		Collections.reverse(dirs);
@@ -176,5 +176,10 @@ class DirWrapper {
 		} catch(ClassCastException e) {
 			return false;
 		}
+	}
+	
+	@Override
+	public int hashCode() {
+	  return getDirectory()==null?42:getDirectory().hashCode();
 	}
 }

@@ -1738,6 +1738,8 @@ public abstract class GameData implements Cloneable,Addeable {
   /** Post processes the game data (if necessary) once */
   private boolean postProcessed = false;
 
+  private Region activeRegion;
+
   /**
    * This method can be called after loading or merging a report to avoid double
    * messages and to set some game specific stuff.
@@ -1831,8 +1833,8 @@ public abstract class GameData implements Cloneable,Addeable {
       }
     }
     if (newRegions.size() > 0) {
-      for (Iterator iter = newRegions.iterator(); iter.hasNext();) {
-        Region actRegion = (Region) iter.next();
+      for (Iterator<Region> iter = newRegions.iterator(); iter.hasNext();) {
+        Region actRegion = iter.next();
         if (!this.regions().containsKey(actRegion.getID())) {
           this.addRegion(actRegion);
         }
@@ -1996,14 +1998,18 @@ public abstract class GameData implements Cloneable,Addeable {
    * Returns the current active region.
    */
   public Region getActiveRegion() {
-    for (Region r : regions().values()) {
-      if (r.isActive()) {
-        return r;
-      }
-    }
-
-    return null;
+    return activeRegion;
   }
+
+  /**
+   * Marks a new region as the active region.
+   * 
+   * @param region
+   */
+  public void setActiveRegion(Region region) {
+    activeRegion  = region;
+  }
+
 
   /**
    * Sets the mapping for astral to real space.

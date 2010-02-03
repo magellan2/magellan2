@@ -43,6 +43,7 @@ public class MultiplicationOperator extends AbstractOperator {
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.multiplicationoperator.description")+"\n\n"+super.getDescription();
   }

@@ -107,6 +107,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getRegionTypeIterator()
    * @deprecated use {@link #getRegionTypes()}
    */
+  @Deprecated
   public Iterator<RegionType> getRegionTypeIterator() {
     return getMap(RegionType.class).values().iterator();
   }
@@ -154,6 +155,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getShipTypeIterator()
    * @deprecated use {@link #getShipTypes()}
    */
+  @Deprecated
   public Iterator<ShipType> getShipTypeIterator() {
     return getShipTypes().iterator();
   }
@@ -295,6 +297,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getRaceIterator()
    * @deprecated you may use getRaces()
    */
+  @Deprecated
   public Iterator<Race> getRaceIterator() {
     return getRaces().iterator();
   }
@@ -339,6 +342,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getItemTypeIterator()
    * @deprecated you may use getItemTypes()
    */
+  @Deprecated
   public Iterator<ItemType> getItemTypeIterator() {
     return getItemTypes().iterator();
   }
@@ -383,6 +387,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getAllianceCategoryIterator()
    * @deprecated you may use {@link #getAllianceCategories()}
    */
+  @Deprecated
   public Iterator<AllianceCategory> getAllianceCategoryIterator() {
     return getAllianceCategories().iterator();
   }
@@ -427,6 +432,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getOptionCategoryIterator()
    * @deprecated you may use getOptionCategories()
    */
+  @Deprecated
   public Iterator<OptionCategory> getOptionCategoryIterator() {
     return getOptionCategories().iterator();
   }
@@ -471,6 +477,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getSkillCategoryIterator()
    * @deprecated you may use {@link #getSkillCategories()}
    */
+  @Deprecated
   public Iterator<SkillCategory> getSkillCategoryIterator() {
     return getSkillCategories().iterator();
   }
@@ -515,6 +522,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getItemCategoryIterator()
    * @deprecated use getItemCategories
    */
+  @Deprecated
   public Iterator<ItemCategory> getItemCategoryIterator() {
     return getItemCategories().iterator();
   }
@@ -559,6 +567,7 @@ public class GenericRules implements Rules {
    * @see magellan.library.Rules#getSkillTypeIterator()
    * @deprecated u may use {@link #getSkillTypes()}
    */
+  @Deprecated
   public Iterator<SkillType> getSkillTypeIterator() {
     return getSkillTypes().iterator();
   }

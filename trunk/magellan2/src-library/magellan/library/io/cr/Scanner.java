@@ -77,7 +77,7 @@ public class Scanner {
 	/**
 	 * Parses until the next token, skipping empty lines.
 	 *
-	 * @throws IOException 
+	 * @throws IOException If an I/O error occurs
 	 */
 	public void getNextToken() throws IOException {
 		String line;
@@ -136,7 +136,7 @@ public class Scanner {
 			}
 
 			if(buf[i] == '"') {
-				// quoted string
+				// quoted string, all until the last '"' is the string content; escaped quotes are replaced 
 				i++; // skip start "
 				if(line.lastIndexOf('"')!= -1) {
 					int lastQuote = line.lastIndexOf('"');

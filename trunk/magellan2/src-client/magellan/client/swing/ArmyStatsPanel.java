@@ -58,7 +58,6 @@ import magellan.library.Skill;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
-import magellan.library.event.GameDataListener;
 import magellan.library.rules.ItemCategory;
 import magellan.library.rules.ItemType;
 import magellan.library.rules.SkillType;
@@ -73,7 +72,7 @@ import magellan.library.utils.logging.Logger;
  * @author Andreas
  * @version 1.0
  */
-public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSelectionListener, SelectionListener, GameDataListener {
+public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSelectionListener, SelectionListener {
   public static final String IDENTIFIER = "ARMYSTATS";
 
 	private static final Logger log = Logger.getInstance(ArmyStatsPanel.class);
@@ -92,9 +91,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	protected ItemCategory armourType;
 	protected ItemCategory shieldType;
 	protected boolean categorize = true;
-	protected List excludeSkills;
-	protected List excludeNames;
-	protected List excludeCombatStates;
+	protected List<?> excludeSkills;
+	protected List<?> excludeNames;
+	protected List<?> excludeCombatStates;
 	protected Collection<Region> lastSelected;
 
 	/**
@@ -164,7 +163,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeSkills(List l) {
+	public void setExcludeSkills(List<?> l) {
 		excludeSkills = l;
 	}
 
@@ -173,7 +172,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeNames(List l) {
+	public void setExcludeNames(List<?> l) {
 		excludeNames = l;
 	}
 
@@ -182,7 +181,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeCombatStates(List l) {
+	public void setExcludeCombatStates(List<?> l) {
 		excludeCombatStates = l;
 	}
 
@@ -283,8 +282,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		((DefaultTreeModel) tree2.getModel()).reload();
 	}
 
-	protected void addList(DefaultMutableTreeNode root, Collection list, boolean mode) {
-		Iterator it = list.iterator();
+	protected void addList(DefaultMutableTreeNode root, Collection<Armies> list, boolean mode) {
+		Iterator<Armies> it = list.iterator();
 
 		while(it.hasNext()) {
 			Object obj = it.next();
@@ -594,7 +593,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					List<Faction> list = new ArrayList<Faction>(armyMap.keySet());
 					Collections.sort(list, compare);
 
-					Iterator iarmies = list.iterator();
+					Iterator<Faction> iarmies = list.iterator();
 
 					while(iarmies.hasNext()) {
 						IslandArmy ia = armyMap.get(iarmies.next());
@@ -827,7 +826,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			Army army = facMap.get(unit.getFaction());
 
 			if(cat) {
-				Collection col2 = unitMap.keySet();
+				Collection<Skill> col2 = unitMap.keySet();
 				int persons = unit.getPersons();
 				int line = inFront ? 0 : 1;
 				int maxSkillLevel = 0;
@@ -1218,13 +1217,13 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		return map;
 	}
 
-	protected Skill getHighestSkill(Unit unit, Collection col) {
+	protected Skill getHighestSkill(Unit unit, Collection<Skill> col) {
 		Skill maxSkill = null;
 		int maxValue = -1;
-		Iterator it = col.iterator();
+		Iterator<Skill> it = col.iterator();
 
 		while(it.hasNext()) {
-			Skill sk = (Skill) it.next();
+			Skill sk = it.next();
 
 			if(sk.getLevel() > maxValue) {
 				maxValue = sk.getLevel();
@@ -1247,12 +1246,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			Object o2 = ((DefaultMutableTreeNode) o).getUserObject();
 
 			if(o2 instanceof UnitNodeWrapper) {
-				dispatcher.fire(new SelectionEvent(this, null, ((UnitNodeWrapper) o2).getUnit()));
+				dispatcher.fire(SelectionEvent.create(this,  ((UnitNodeWrapper) o2).getUnit()));
 			} else if(o2 instanceof SimpleNodeWrapper) {
 				Object o3 = ((SimpleNodeWrapper) o2).getObject();
 
 				if(o3 instanceof PartUnit) {
-					dispatcher.fire(new SelectionEvent(this, null, ((PartUnit) o3).parent));
+					dispatcher.fire(SelectionEvent.create(this, ((PartUnit) o3).parent));
 				} else if(o3 instanceof WeaponGroup) {
 					fireWeaponGroupSelection((WeaponGroup) o3);
 				} else if(o3 instanceof WarLine) {
@@ -1260,11 +1259,11 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				} else if(o3 instanceof Army) {
 					fireArmySelection((Army) o3);
 				} else if(o3 instanceof RegionArmies) {
-					dispatcher.fire(new SelectionEvent(this, null, ((RegionArmies) o3).region));
+					dispatcher.fire(SelectionEvent.create(this, ((RegionArmies) o3).region));
 				} else if(o3 instanceof IslandArmy) {
-					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmy) o3).island));
+					dispatcher.fire(SelectionEvent.create(this, ((IslandArmy) o3).island, SelectionEvent.ST_DEFAULT));
 				} else if(o3 instanceof IslandArmies) {
-					dispatcher.fire(new SelectionEvent(this, null, ((IslandArmies) o3).island));
+					dispatcher.fire(SelectionEvent.create(this, ((IslandArmies) o3).island, SelectionEvent.ST_DEFAULT));
 				}
 			} else if(o2 instanceof WarLine) {
 				fireWareLineSelection((WarLine) o2);
@@ -1294,7 +1293,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent(this, s, o));
+		dispatcher.fire(SelectionEvent.create(this, (Unit) null, s));
 	}
 
 	protected Set<Unit> getWarLineUnits(WarLine w, Set<Unit> set) {
@@ -1321,7 +1320,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 			o = s.iterator().next();
 		}
 
-		dispatcher.fire(new SelectionEvent(this, s, o));
+		dispatcher.fire(SelectionEvent.create(this, null, s));
 	}
 
 	protected void fireArmySelection(Army a) {
@@ -1334,10 +1333,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 
 		if (a.region!=null)
-		  dispatcher.fire(new SelectionEvent(this, Collections.singleton(a.region), a.region, SelectionEvent.ST_REGIONS));
+		  dispatcher.fire(SelectionEvent.create(this, a.region));
 		if (a instanceof IslandArmy){
-		  // TODO(stm) does not select anything
-		  dispatcher.fire(new SelectionEvent(this, Collections.singleton(((IslandArmy) a).island), ((IslandArmy) a).island, SelectionEvent.ST_REGIONS));
+		  dispatcher.fire(SelectionEvent.create(this, ((IslandArmy) a).island, SelectionEvent.ST_DEFAULT));
 		}
 	}
 
@@ -2024,13 +2022,6 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
       }
 		}
 
-		/**
-		 * DOCUMENT-ME
-		 */
-		@Override
-    public boolean equals(Object o) {
-			return false;
-		}
 	}
 
 }

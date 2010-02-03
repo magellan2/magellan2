@@ -690,6 +690,7 @@ public class CRWriterDialog extends InternationalizedDataDialog {
    * 
    * @see magellan.client.swing.InternationalizedDataDialog#quit()
    */
+  @Override
   protected void quit(){
     quit(false);
   }
@@ -882,8 +883,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
 
                 // check if some messages should be removed
                 if (messageRemoveList != null && messageRemoveList.size() > 0) {
-                  for (Iterator iter = messageRemoveList.iterator(); iter.hasNext();) {
-                    Message removeM = (Message) iter.next();
+                  for (Iterator<Message> iter = messageRemoveList.iterator(); iter.hasNext();) {
+                    Message removeM = iter.next();
                     f.getMessages().remove(removeM);
                   }
                 }
@@ -1088,8 +1089,8 @@ public class CRWriterDialog extends InternationalizedDataDialog {
         // remove code
         // check if factions should be removed
         if (factionRemoveList != null && factionRemoveList.size() > 0) {
-          for (Iterator iter = factionRemoveList.iterator(); iter.hasNext();) {
-            Faction removeF = (Faction) iter.next();
+          for (Iterator<Faction> iter = factionRemoveList.iterator(); iter.hasNext();) {
+            Faction removeF = iter.next();
             // Removing the faction from newData
             newData.factions().remove(removeF.getID());
             // alliances...if one of the partners is our delete Faction->delete

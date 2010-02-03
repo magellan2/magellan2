@@ -54,7 +54,7 @@ import magellan.library.utils.VersionInfo;
  * @version 1.0
  */
 public class StartWindow extends JFrame {
-	protected Collection images;
+	protected Collection<Icon> images;
 	protected int steps;
 	protected int currentStep = 0;
 	protected JLabel imageLabel;
@@ -125,7 +125,7 @@ public class StartWindow extends JFrame {
 		int prefwidth = 0;
 
 		if((images != null) && !images.isEmpty()) {
-			Icon icon = (Icon) images.iterator().next();
+			Icon icon = images.iterator().next();
 			prefwidth = icon.getIconWidth();
 			imageLabel = new JLabel(icon);
 			imageLabel.setBackground(background);
@@ -146,13 +146,11 @@ public class StartWindow extends JFrame {
 		String names = null;
 		String descr = "\n"+Resources.get("startwindow.infotext");
 
-		if((names == null) || (names.length() == 0)) {
-			names = "Roger Butenuth, Enno Rehling, Stefan Götz, Klaas Prause, Sebastian Tusk, ";
-      names+= "Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, ";
-      names+= "Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, ";
-      names+= "Ulrich Küster, Jake Hofer, Ilja Pavkovic, Fiete Fietz, Steffen Mecke, ";
-      names+= "Steve Wagner, Thoralf Rickert, Ralf Duckstein, Mark Gerritsen\n";
-		}
+		names = "Roger Butenuth, Enno Rehling, Stefan Götz, Klaas Prause, Sebastian Tusk, ";
+		names+= "Andreas Gampe, Roland Behme, Michael Schmidt, Henning Zahn, Oliver Hertel, ";
+		names+= "Guenter Grossberger, Sören Bendig, Marc Geerligs, Matthias Müller, ";
+		names+= "Ulrich Küster, Jake Hofer, Ilja Pavkovic, Fiete Fietz, Steffen Mecke, ";
+		names+= "Steve Wagner, Thoralf Rickert, Ralf Duckstein, Mark Gerritsen\n";
 
 		StyledDocument styled = new DefaultStyledDocument();
 
@@ -270,10 +268,10 @@ public class StartWindow extends JFrame {
 
 			if((images != null) && (step < images.size())) {
 				Icon icon = null;
-				Iterator it = images.iterator();
+				Iterator<Icon> it = images.iterator();
 
 				for(int i = 0; i <= step; i++) {
-					icon = (Icon) it.next();
+					icon = it.next();
 				}
 
 				imageLabel.setIcon(icon);

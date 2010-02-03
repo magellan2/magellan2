@@ -158,6 +158,7 @@ public class ShipType extends ConstructibleType {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

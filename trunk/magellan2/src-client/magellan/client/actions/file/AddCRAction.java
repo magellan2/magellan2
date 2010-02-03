@@ -15,7 +15,6 @@ package magellan.client.actions.file;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.Collection;
 import java.util.Properties;
 
 import javax.swing.JFileChooser;
@@ -65,7 +64,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 	@Override
   public void menuActionPerformed(ActionEvent e) {
 		final Client theclient = client;
-		Collection<?> selectedObjects = client.getSelectedObjects();
+		SelectionEvent selectedObjects = client.getSelectedObjects();
 		Properties settings = client.getProperties();
 		JFileChooser fc = new JFileChooser();
 		fc.setMultiSelectionEnabled(true);
@@ -147,7 +146,7 @@ public class AddCRAction extends MenuAction implements GameDataListener{
 
 			merger.merge(new ProgressBarUI(client), acc.getSort(), acc.getInteractive(), true);
 			if (selectedObjects!=null){
-				client.getDispatcher().fire(new SelectionEvent(this,selectedObjects,null));
+				client.getDispatcher().fire(selectedObjects);
 			}
 		}
 	}

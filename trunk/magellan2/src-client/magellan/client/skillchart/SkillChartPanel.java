@@ -21,7 +21,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
@@ -237,7 +236,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 			}
 		}
 
-		return new DefaultCategoryDataSource(new Vector(), names, dataArray);
+		return new DefaultCategoryDataSource(new Vector<Object>(), names, dataArray);
 	}
 
 	/**
@@ -288,8 +287,8 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 				// update the skillStats-Object to the new data (new factions or new regions)
 				skillStats = new SkillStats();
 
-				for(Iterator iter = regions.values().iterator(); iter.hasNext();) {
-					Region r = (Region) iter.next();
+				for(Iterator<Region> iter = regions.values().iterator(); iter.hasNext();) {
+					Region r = iter.next();
 
 					for(Iterator i = r.units().iterator(); i.hasNext();) {
 						Unit u = (Unit) i.next();
@@ -336,7 +335,7 @@ public class SkillChartPanel extends InternationalizedDataPanel implements Selec
 		 */
 		// factions.clear();
 		// enforce refreshing of regions-table and redrawing of chart
-		selectionChanged(new SelectionEvent(this, Collections.emptyList(), null));
+		selectionChanged(SelectionEvent.create(this));
 	}
 
 	/**

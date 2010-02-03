@@ -250,6 +250,8 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 	 * @see SelectionListener#selectionChanged(SelectionEvent)
 	 */
 	public void selectionChanged(SelectionEvent e) {
+    if (e.getSelectionType() != SelectionEvent.ST_REGIONS)
+      return;
 		if(e.getSelectedObjects() != null) {
 			if(regions == null) {
 				regions = new HashSet<Region>();
@@ -670,26 +672,26 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		lstMessages = new JList();
 		lstMessages.setCellRenderer(new ECheckMessageRenderer());
 		lstMessages.addListSelectionListener(new ListSelectionListener() {
-				public void valueChanged(ListSelectionEvent e) {
-					if(!e.getValueIsAdjusting()) {
-						JECheck.ECheckMessage msg = (JECheck.ECheckMessage) lstMessages.getSelectedValue();
+		  public void valueChanged(ListSelectionEvent e) {
+		    if(!e.getValueIsAdjusting()) {
+		      JECheck.ECheckMessage msg = (JECheck.ECheckMessage) lstMessages.getSelectedValue();
 
-						if(msg == null || msg.getType() == ECheckMessage.MESSAGE) {
-							return;
-						}
+		      if(msg == null || msg.getType() == ECheckMessage.MESSAGE) {
+		        return;
+		      }
 
-						if(msg.getAffectedObject() != null) {
-							dispatcher.fire(new SelectionEvent(ECheckPanel.this, null,
-															   msg.getAffectedObject()));
-						} else {
-							JOptionPane.showMessageDialog(ECheckPanel.this.getRootPane(),
-														  Resources.get("echeckpanel.msg.messagetargetnotfound.text"),
-														  Resources.get("echeckpanel.msg.messagetargetnotfound.title"),
-														  JOptionPane.INFORMATION_MESSAGE);
-						}
-					}
-				}
-			});
+		      if(msg.getAffectedObject() != null) {
+		        dispatcher.fire(SelectionEvent.create(ECheckPanel.this, msg.getAffectedObject(),
+		            SelectionEvent.ST_DEFAULT));
+		      } else {
+		        JOptionPane.showMessageDialog(ECheckPanel.this.getRootPane(),
+		            Resources.get("echeckpanel.msg.messagetargetnotfound.text"),
+		            Resources.get("echeckpanel.msg.messagetargetnotfound.title"),
+		            JOptionPane.INFORMATION_MESSAGE);
+		      }
+		    }
+		  }
+		});
 
 		JPanel messages = new JPanel(new BorderLayout());
 		messages.setBorder(new TitledBorder(BorderFactory.createEtchedBorder(),
@@ -833,7 +835,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
 		/**
 		 * DOCUMENT-ME
 		 *
-		 *
+		 * 
 		 * @see javax.swing.ListCellRenderer#getListCellRendererComponent(javax.swing.JList, java.lang.Object, int, boolean, boolean)
 		 */
 		public Component getListCellRendererComponent(JList list, Object value, int index,

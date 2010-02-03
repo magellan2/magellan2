@@ -46,8 +46,8 @@ public class MixedTreeCellRenderer implements TreeCellRenderer {
 	 * 
 	 */
 	public void putRenderer(Object o, TreeCellRenderer r) {
-		if(o instanceof Class) {
-			renderers.put((Class)o, r);
+		if(o instanceof Class<?>) {
+			renderers.put((Class<?>)o, r);
 		} else {
 			renderers.put(o.getClass(), r);
 		}

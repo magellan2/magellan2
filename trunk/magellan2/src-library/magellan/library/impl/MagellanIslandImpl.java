@@ -199,6 +199,7 @@ public class MagellanIslandImpl extends MagellanDescribedImpl implements Island 
   /**
    * @see magellan.library.Identifiable#getID()
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

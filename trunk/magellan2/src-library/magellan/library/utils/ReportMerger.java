@@ -875,7 +875,7 @@ public class ReportMerger extends Object {
         }
         tChoices.add(new Score<CoordinateID>(new CoordinateID(0,0,layer), -1));
         
-        Score help = (Score) ui.input(Resources.getFormatted("util.reportmerger.msg.usertranslation.choose", newReport.getFile().getName(), layer), 
+        Score<?> help = (Score<?>) ui.input(Resources.getFormatted("util.reportmerger.msg.usertranslation.choose", newReport.getFile().getName(), layer), 
             Resources.get("util.reportmerger.msg.usertranslation.title"), tChoices.toArray(), bestTranslation);
         Score<CoordinateID> chosenTranslation = null;
         // workaround since we cannot cast Object to Score<CoordinateID>
@@ -894,7 +894,7 @@ public class ReportMerger extends Object {
         }
       }else if (choice.equals(inputMethod)){
         bestTranslation = inputMapping(newReport, layer);
-      }else if (choice instanceof Score){
+      }else if (choice instanceof Score<?>){
         // workaround since we cannot cast Object to Score<CoordinateID>
         for (Score<CoordinateID> s : translationList) {
           if (s.equals(choice)) {

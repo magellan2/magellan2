@@ -18,6 +18,7 @@ import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.gamebinding.EresseaOrderCompleter;
 import magellan.library.rules.Race;
 import magellan.library.utils.Resources;
+import magellan.library.utils.Units;
 
 /**
  * 
@@ -39,6 +40,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
    * @see magellan.library.gamebinding.EresseaOrderCompleter#getCompletions(magellan.library.Unit,
    *      java.lang.String, java.util.List) FIXME implement E2K9 subtleties!
    */
+  @Override
   public List<Completion> getCompletions(Unit u, String line, List<Completion> old) {
     return super.getCompletions(u, line, old);
   }
@@ -93,7 +95,7 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
       addCompletion(new Completion(Resources.getOrderTranslation(EresseaConstants.O_GUARD) + " "
           + Resources.getOrderTranslation(EresseaConstants.O_NOT)));
     }
-    
+
     // the if clause is not always correct, but should usually be okay
     if (getUnit().getModifiedBuilding() != null
         || (getUnit().getBuilding() != null && getUnit().getBuilding().getOwnerUnit().equals(
@@ -221,22 +223,23 @@ public class E3AOrderCompleter extends EresseaOrderCompleter {
   public void cmpltMache() {
     super.cmpltMache();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(EresseaConstants.I_WOOD)) != null)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
-          " "));
+        || (Units.getContainerPrivilegedUnitItem(getRegion(), getData().rules
+            .getItemType(EresseaConstants.I_WOOD)) != null)) {
+      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH), " "));
     }
   }
-  
+
   @Override
   public void cmpltMacheAmount() {
     super.cmpltMacheAmount();
     if (!getCompleterSettingsProvider().getLimitMakeCompletion()
-        || (getRegion().getItem(getData().rules.getItemType(EresseaConstants.I_WOOD)) != null)) {
-      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH),
-          " "));
+        || (Units.getContainerPrivilegedUnitItem(getRegion(), getData().rules
+            .getItemType(EresseaConstants.I_WOOD)) != null)) {
+      addCompletion(new Completion(Resources.getOrderTranslation(E3AConstants.O_WATCH), " "));
     }
   }
-  
+
+  @Override
   public void cmpltRekrutiere() {
     super.cmpltRekrutiere();
   }

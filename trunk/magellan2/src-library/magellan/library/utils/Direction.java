@@ -332,7 +332,7 @@ public class Direction {
 	 *
 	 * 
 	 */
-	public static List getLongNames() {
+	public static List<String> getLongNames() {
 		if(!Locales.getOrderLocale().equals(Direction.usedLocale)) {
 			Direction.shortNames = null;
 			Direction.longNames = null;
@@ -351,7 +351,7 @@ public class Direction {
 		return Direction.longNames;
 	}
 
-	private static List getNormalizedLongNames() {
+	private static List<String> getNormalizedLongNames() {
 	  if (!Locales.getOrderLocale().equals(Direction.usedLocale)) {
       Direction.shortNames = null;
       Direction.longNames = null;
@@ -382,13 +382,13 @@ public class Direction {
 	 *
 	 * 
 	 */
-	private static int find(String pattern, List matches) {
+	private static int find(String pattern, List<String> matches) {
 		int i = 0;
 		int hitIndex = -1;
 		int hits = 0;
 
-		for(Iterator iter = matches.iterator(); iter.hasNext(); i++) {
-			String match = (String) iter.next();
+		for(Iterator<String> iter = matches.iterator(); iter.hasNext(); i++) {
+			String match = iter.next();
 
 			if(match.startsWith(pattern)) {
 				hits++;

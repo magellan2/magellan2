@@ -345,7 +345,7 @@ public class FactionPropertiesDialog extends InternationalizedDataDialog {
   public Collection<CoordinateID> getTranslations() {
     Collection<CoordinateID> result = new ArrayList<CoordinateID>(getModel().size());
 
-    for (Enumeration elements = getModel().elements(); elements.hasMoreElements();) {
+    for (Enumeration<?> elements = getModel().elements(); elements.hasMoreElements();) {
       result.add((CoordinateID) elements.nextElement());
     }
     return result;

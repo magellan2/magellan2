@@ -16,10 +16,8 @@ import magellan.library.rules.RegionType;
 import magellan.library.utils.Units;
 
 /**
- * DOCUMENT-ME
+ * Represents a region of a report.
  * 
- * @author $Author: $
- * @version $Revision: 356 $
  */
 public interface Region extends UnitContainer {
 
@@ -270,6 +268,7 @@ public interface Region extends UnitContainer {
    * @deprecated Use {@link Units#getContainerPrivilegedUnitItems(magellan.library.UnitContainer)}
    *             instead.
    */
+  @Deprecated
   public Collection<Item> items();
 
   /**
@@ -279,6 +278,7 @@ public interface Region extends UnitContainer {
    * 
    * @deprecated Use {@link Units#getContainerAllUnitItems(magellan.library.UnitContainer)} instead.
    */
+  @Deprecated
   public Collection<Item> allItems();
 
   /**
@@ -289,6 +289,7 @@ public interface Region extends UnitContainer {
    *             {@link Units#getContainerPrivilegedUnitItem(magellan.library.UnitContainer, ItemType)}
    *             instead.
    */
+  @Deprecated
   public Item getItem(ItemType type);
 
   /**
@@ -880,18 +881,20 @@ public interface Region extends UnitContainer {
   public void setWage(int wage);
 
   /**
-   * Sets the value of isActive.
+   * Returns <code>true</code> if this region is the activ region.
    * 
-   * @param isActive The value for isActive.
+   * @deprecated Use {@link GameData#getActiveRegion()} instead.
    */
-  public void setActive(boolean isActive);
+  @Deprecated
+  public boolean isActive();
 
   /**
-   * Returns the value of isActive.
+   * Marks the region as active
    * 
-   * @return Returns isActive.
+   * @deprecated Use {@link GameData#setActiveRegion(Region)} instead.
    */
-  public boolean isActive();
+  @Deprecated
+  public void setActive(boolean isActive);
 
   /**
    * The returned integer is an BitMap representing the info, if neighboring regions are ozean or

@@ -51,6 +51,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
   /**
    * @see magellan.library.gamebinding.EresseaOrderParser#initCommands()
    */
+  @Override
   protected void initCommands() {
     super.initCommands();
     addCommand(Resources.getOrderTranslation(AllanonConstants.O_ANWERBEN), new AnwerbenReader());
@@ -59,6 +60,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* ANWERBEN
   protected class AnwerbenReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       token.ttype = OrderToken.TT_KEYWORD;
 
@@ -68,6 +70,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* MEUCHELN
   protected class MeuchelnReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -99,6 +102,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* BETRETE
   protected class BetreteReader extends EresseaOrderParser.BetreteReader {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -148,6 +152,7 @@ public class AllanonOrderParser extends EresseaOrderParser {
 
   // ************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;

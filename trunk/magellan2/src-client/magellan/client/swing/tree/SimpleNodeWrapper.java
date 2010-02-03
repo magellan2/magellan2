@@ -28,8 +28,7 @@ import magellan.client.swing.context.ContextFactory;
  * @author $Author: $
  * @version $Revision: 259 $
  */
-public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard, Changeable,
-    SupportsEmphasizing {
+public class SimpleNodeWrapper extends EmphasizingImpl implements CellObject, SupportsClipboard, Changeable {
   protected static final List<String> defaultIcon = Collections.singletonList("simpledefault");
   protected List<String> icons;
   protected List<String> returnIcons;

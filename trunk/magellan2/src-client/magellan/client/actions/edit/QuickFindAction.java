@@ -68,12 +68,13 @@ public class QuickFindAction extends MenuAction {
 		String input = f.getInput();
 		  Named o = findEntity(input.trim());
 		  if (o!=null)
-	      client.getDispatcher().fire(new SelectionEvent(this, null, o));
+	      client.getDispatcher().fire(SelectionEvent.create(this, o, SelectionEvent.ST_DEFAULT));
 		  else if (false){
 		    // we could optionally display a short error message here...
 		    JDialog err = new JDialog(client) {
 		      boolean started = false;
-		      public void setVisible(boolean vis){
+		      @Override
+          public void setVisible(boolean vis){
 		        if (vis)
 		          // hide dialog after 500 ms
 		          new Thread(new Runnable() {

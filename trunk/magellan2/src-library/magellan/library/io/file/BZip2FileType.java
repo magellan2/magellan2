@@ -39,7 +39,7 @@ public class BZip2FileType extends FileType {
 	/** 
 	 * the tmpfile used for reading the BZIP2 content. Note that it will be nullified 
 	 * if createOutputStream is called or if the garbage collector decides to. */
-	private WeakReference tmpfileRef;
+	private WeakReference<File> tmpfileRef;
 
 	@Override
   protected InputStream createInputStream() throws IOException {

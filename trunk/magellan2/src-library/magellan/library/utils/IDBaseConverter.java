@@ -55,6 +55,7 @@ public class IDBaseConverter {
    * 
    * @deprecated is not used any more
    */
+  @Deprecated
   private static GameDataListener listener = null;
 
   /**
@@ -70,6 +71,7 @@ public class IDBaseConverter {
   /**
    * @deprecated Does not do anything (any more?)
    */
+  @Deprecated
   private static class IDBaseConverterListener implements GameDataListener {
     /**
      * Creates a new IDBaseConverterListener object.

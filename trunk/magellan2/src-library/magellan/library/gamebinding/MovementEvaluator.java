@@ -95,6 +95,7 @@ public interface MovementEvaluator {
    * 
    * @deprecated Use {@link #getModifiedRadius(Unit)}.
    */
+  @Deprecated
   public int getRadius(Unit u);
 
   /**
@@ -104,5 +105,6 @@ public interface MovementEvaluator {
    * 
    * @deprecated Use {@link #getModifiedRadius(Unit, boolean)}.
    */
+  @Deprecated
   public int getRadius(Unit u, boolean onRoad);
 }

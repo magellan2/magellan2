@@ -120,7 +120,7 @@ public class UnitContextMenu extends JPopupMenu {
   /**
    * Initialize this component.
    */
-  private void init(Collection<?> selectedObjects) {
+  private void init(Collection selectedObjects) {
     selectedUnits = ContextAction.filterObjects(selectedObjects, Unit.class);
 
     JMenuItem unitString = new JMenuItem(getCaption());
@@ -128,7 +128,7 @@ public class UnitContextMenu extends JPopupMenu {
 //      unitString.setEnabled(false);
     unitString.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        dispatcher.fire(new SelectionEvent(UnitContextMenu.this, null, unit));
+        dispatcher.fire(SelectionEvent.create(UnitContextMenu.this, unit));
       }
     });
 
@@ -268,10 +268,10 @@ public class UnitContextMenu extends JPopupMenu {
     Region reg = unit.getRegion();
 
     if (canPlan && (selectedUnits != null)) {
-      Iterator it = selectedUnits.iterator();
+      Iterator<Unit> it = selectedUnits.iterator();
 
       while (canPlan && it.hasNext()) {
-        Unit u = (Unit) it.next();
+        Unit u = it.next();
         canPlan = UnitRoutePlanner.canPlan(unit);
 
         if ((u.getRegion() == null) || !reg.equals(u.getRegion())) {
@@ -434,17 +434,16 @@ public class UnitContextMenu extends JPopupMenu {
   }
 
   /**
-   * Sets the selected Units as selected Units in Overview FeatureRequest
+   * Sets the selected Units as selected Units in Overview 
    * 
    * @author Fiete
    */
   private void event_selectUnits() {
     if (this.selectedUnits.size() > 1) {
-      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, null));
+      dispatcher.fire(SelectionEvent.create(this, this.selectedUnits.iterator().next(), this.selectedUnits));
     }
     if (this.selectedUnits.size() == 1) {
-      dispatcher.fire(new SelectionEvent(this, this.selectedUnits, this.selectedUnits
-          .toArray()[0]));
+      dispatcher.fire(SelectionEvent.create(this, this.selectedUnits.iterator().next()));
     }
   }
 
@@ -571,7 +570,7 @@ public class UnitContextMenu extends JPopupMenu {
     selectedUnits.clear();
   }
 
-  private String showInputDialog(String message, List values) {
+  private String showInputDialog(String message, List<String> values) {
     if (1 == 2) {
       return JOptionPane.showInputDialog(message);
     } else {
@@ -732,8 +731,8 @@ public class UnitContextMenu extends JPopupMenu {
   private void event_copyMultipleID(ActionEvent e) {
     StringBuffer idString = new StringBuffer("");
 
-    for (Iterator iter = selectedUnits.iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = selectedUnits.iterator(); iter.hasNext();) {
+      Unit u = iter.next();
 
       idString.append(u.toString(false));
       if (iter.hasNext()) {
@@ -886,7 +885,7 @@ public class UnitContextMenu extends JPopupMenu {
           continue;
         }
 
-        List tokens = parser.getTokens();
+        List<?> tokens = parser.getTokens();
         if (((OrderToken) tokens.get(0)).equalsToken(Resources
             .getOrderTranslation(EresseaConstants.O_TEACH))) {
           if (order.indexOf(id) > -1) {

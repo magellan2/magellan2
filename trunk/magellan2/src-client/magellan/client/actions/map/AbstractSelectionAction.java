@@ -79,7 +79,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
       return;
     }
 
-    if((e.getSelectedObjects() != null) && (e.getSelectionType() == SelectionEvent.ST_REGIONS)) {
+    if (e.getSelectionType() == SelectionEvent.ST_REGIONS && e.getSelectedObjects() != null) {
       selectedRegions.clear();
 
       for(Iterator iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
@@ -107,6 +107,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
    * 
    * @see magellan.client.actions.MenuAction#menuActionPerformed(java.awt.event.ActionEvent)
    */
+  @Override
   public abstract void menuActionPerformed(ActionEvent e);
 
   
@@ -157,8 +158,8 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
    */
   protected void updateClientSelection() {
     client.getData().setSelectedRegionCoordinates(getSelectedRegions());
-    client.getDispatcher().fire(
-        new SelectionEvent(this, getSelectedRegions().values(), null, SelectionEvent.ST_REGIONS));
+    client.getDispatcher().fire(SelectionEvent.create(this, getSelectedRegions().values()));
+//        new SelectionEvent(this, getSelectedRegions().values(), null, SelectionEvent.ST_REGIONS));
   }
 
 }

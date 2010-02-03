@@ -147,7 +147,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
   }
 
   /**
-   * Updates the panel if a new region has been selecte.
+   * Updates the panel if a new region has been selected.
    * 
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
@@ -227,13 +227,13 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
     if (o instanceof UnitNodeWrapper) {
       Unit u = ((UnitNodeWrapper) o).getUnit();
-      dispatcher.fire(new SelectionEvent(this, null, u));
+      dispatcher.fire(SelectionEvent.create(this, u));
     } else if (o instanceof UnitContainerNodeWrapper) {
       UnitContainer uc = ((UnitContainerNodeWrapper) o).getUnitContainer();
-      dispatcher.fire(new SelectionEvent(this, null, uc));
+      dispatcher.fire(SelectionEvent.create(this, uc, SelectionEvent.ST_DEFAULT));
     } else if (o instanceof RegionNodeWrapper) {
       Region r = ((RegionNodeWrapper) o).getRegion();
-      dispatcher.fire(new SelectionEvent(this, null, r));
+      dispatcher.fire(SelectionEvent.create(this, r));
     }
   }
 
@@ -264,6 +264,12 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     int tempUnitsCounter = 0;
     int modifiedPersonCounter = 0;
     rootNode.removeAllChildren();
+
+    currentNode =
+      new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
+          .get("factionstatspanel.node.regions", regions.size()), "regions"));
+
+    rootNode.add(currentNode);
 
     /**
      * Used to collect persons of different race than their faction. Key: String (racename), Value:
@@ -569,7 +575,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 .get("factionstatspanel.node.otherrace"), "persons_of_other_race"));
         rootNode.add(currentNode);
 
-        for (Iterator iter = specialPersons.keySet().iterator(); iter.hasNext();) {
+        for (Iterator<String> iter = specialPersons.keySet().iterator(); iter.hasNext();) {
           Object obj = iter.next();
           List<Unit> v = specialPersons.get(obj);
           int count = 0;
@@ -598,8 +604,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
            */
           currentNode.add(subNode);
 
-          for (Iterator iterator = v.iterator(); iterator.hasNext();) {
-            Unit actUnit = (Unit) iterator.next();
+          for (Iterator<Unit> iterator = v.iterator(); iterator.hasNext();) {
+            Unit actUnit = iterator.next();
             DefaultMutableTreeNode o =
                 new DefaultMutableTreeNode(nodeWrapperFactory.createUnitNodeWrapper(actUnit,
                     actUnit.getPersons()));
@@ -637,8 +643,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
                 "heroes"));
         rootNode.add(currentNode);
 
-        for (Iterator iter = heroes.iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = heroes.iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           subNode =
               new DefaultMutableTreeNode(nodeWrapperFactory
@@ -1238,8 +1244,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         new Hashtable<UnitContainerType, List<Building>>();
 
     // collect the buildings
-    for (Iterator iterator = regions.values().iterator(); iterator.hasNext();) {
-      Region r = (Region) iterator.next();
+    for (Iterator<Region> iterator = regions.values().iterator(); iterator.hasNext();) {
+      Region r = iterator.next();
 
       for (Iterator iter = r.buildings().iterator(); iter.hasNext();) {
         Building building = (Building) iter.next();
@@ -1266,8 +1272,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       rootNode.add(currentNode);
     }
 
-    for (Iterator iter = buildingsCounter.keySet().iterator(); iter.hasNext();) {
-      UnitContainerType buildingType = (UnitContainerType) iter.next();
+    for (Iterator<UnitContainerType> iter = buildingsCounter.keySet().iterator(); iter.hasNext();) {
+      UnitContainerType buildingType = iter.next();
       // Fiete 20060916: changed to display icons instead of folders
       // m = new DefaultMutableTreeNode(buildingType.getName() + ": " +
       // ((List) buildingsCounter.get(buildingType)).size());
@@ -1276,11 +1282,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       subNode =
           new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(buildingType
               .getName()
-              + ": " + ((List) buildingsCounter.get(buildingType)).size(), buildingIconName));
+              + ": " + ((List<?>) buildingsCounter.get(buildingType)).size(), buildingIconName));
 
       currentNode.add(subNode);
 
-      for (Iterator i = ((List) buildingsCounter.get(buildingType)).iterator(); i.hasNext();) {
+      for (Iterator i = ((List<?>) buildingsCounter.get(buildingType)).iterator(); i.hasNext();) {
         UnitContainerNodeWrapper uc =
             nodeWrapperFactory.createUnitContainerNodeWrapper((Building) i.next());
         subNode.add(new DefaultMutableTreeNode(uc));
@@ -1293,8 +1299,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         new Hashtable<UnitContainerType, List<Ship>>();
 
     // collect the ships
-    for (Iterator iterator = regions.values().iterator(); iterator.hasNext();) {
-      Region r = (Region) iterator.next();
+    for (Iterator<Region> iterator = regions.values().iterator(); iterator.hasNext();) {
+      Region r = iterator.next();
 
       for (Iterator iter = r.ships().iterator(); iter.hasNext();) {
         Ship ship = (Ship) iter.next();
@@ -1320,8 +1326,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       rootNode.add(currentNode);
     }
 
-    for (Iterator iter = shipsCounter.keySet().iterator(); iter.hasNext();) {
-      UnitContainerType shipType = (UnitContainerType) iter.next();
+    for (Iterator<UnitContainerType> iter = shipsCounter.keySet().iterator(); iter.hasNext();) {
+      UnitContainerType shipType = iter.next();
       /**
        * Fiete 20060911 m = new DefaultMutableTreeNode(shipType.getName() + ": " + ((List)
        * shipsCounter.get(shipType)).size());
@@ -1332,11 +1338,11 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
       String shipIconName = StringFactory.getFactory().intern(shipType.getID().toString());
       subNode =
           new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(shipType.getName()
-              + ": " + ((List) shipsCounter.get(shipType)).size(), shipIconName));
+              + ": " + ((List<?>) shipsCounter.get(shipType)).size(), shipIconName));
 
       currentNode.add(subNode);
 
-      for (Iterator i = ((List) shipsCounter.get(shipType)).iterator(); i.hasNext();) {
+      for (Iterator i = ((List<?>) shipsCounter.get(shipType)).iterator(); i.hasNext();) {
         UnitContainerNodeWrapper uc =
             nodeWrapperFactory.createUnitContainerNodeWrapper((Ship) i.next());
         subNode.add(new DefaultMutableTreeNode(uc));
@@ -1344,7 +1350,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
     }
 
     // add skills
-    List sortedSkillTypes = skillStats.getKnownSkillTypes();
+    List<?> sortedSkillTypes = skillStats.getKnownSkillTypes();
 
     if (sortedSkillTypes.size() > 0) {
       // n = new
@@ -1356,7 +1362,7 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
 
       for (Iterator iter = sortedSkillTypes.iterator(); iter.hasNext();) {
         SkillType type = (SkillType) iter.next();
-        List sortedSkills = skillStats.getKnownSkills(type);
+        List<?> sortedSkills = skillStats.getKnownSkills(type);
 
         for (Iterator i = sortedSkills.iterator(); i.hasNext();) {
           Skill skill = (Skill) i.next();
@@ -1520,8 +1526,8 @@ public class FactionStatsPanel extends InternationalizedDataPanel implements Sel
         new DefaultMutableTreeNode(nodeWrapperFactory.createSimpleNodeWrapper(Resources
             .get("factionstatspanel.node.production"), "production"));
 
-    for (Iterator iter = production.keySet().iterator(); iter.hasNext();) {
-      ItemCategory iCategory = (ItemCategory) iter.next();
+    for (Iterator<ItemCategory> iter = production.keySet().iterator(); iter.hasNext();) {
+      ItemCategory iCategory = iter.next();
 
       ArrayList<DefaultMutableTreeNode> subNodeChildList = new ArrayList<DefaultMutableTreeNode>();
 

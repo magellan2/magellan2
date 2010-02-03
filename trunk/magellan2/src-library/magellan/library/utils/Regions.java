@@ -57,6 +57,7 @@ public class Regions {
    * @throws IllegalArgumentException If center is not a CoordinatID
    * @deprecated now obsolete
    */
+  @Deprecated
   public static Map<CoordinateID, Region> getAllNeighbours(Map<CoordinateID, Region> regions,
       ID center, int radius, Map<ID, RegionType> excludedRegionTypes) {
     if (center instanceof CoordinateID) {
@@ -227,7 +228,7 @@ public class Regions {
    * 
    * @author stm
    */
-  public interface RegionInfo<T extends RegionInfo> extends Comparable<T> {
+  public interface RegionInfo<T extends RegionInfo<?>> extends Comparable<T> {
     /**
      * Returns a distance value that is used to limit the search horizon.
      */
@@ -288,17 +289,17 @@ public class Regions {
     /**
      * Creates an entry with zero distance for the specified node.
      */
-    public RegionInfo createZero(CoordinateID node);
+    public RegionInfo<?> createZero(CoordinateID node);
 
     /**
      * Creates an entry with infinite distance for the specified node.
      */
-    public RegionInfo createInfinity(CoordinateID node);
+    public RegionInfo<?> createInfinity(CoordinateID node);
 
     /**
      * Returns the info for the node. Creates an infinite one if none exists.
      */
-    public RegionInfo get(CoordinateID node);
+    public RegionInfo<?> get(CoordinateID node);
 
     /**
      * Returns all neighbors of the provided coordinate.
@@ -311,12 +312,12 @@ public class Regions {
      * 
      * @return <code>true</code> if <code>nextRecord</code>'s distance was decreased
      */
-    public boolean relax(RegionInfo current, RegionInfo nextRecord);
+    public boolean relax(RegionInfo<?> current, RegionInfo<?> nextRecord);
 
     /**
      * Returns a map of all known distance values.
      */
-    public Map<CoordinateID, ? extends RegionInfo> getDistances();
+    public Map<CoordinateID, ? extends RegionInfo<?>> getDistances();
   }
 
   /**
@@ -338,7 +339,7 @@ public class Regions {
     // this method applies Dijkstra's algorithm
     
     // initialize queue
-    PriorityQueue<RegionInfo> queue = new PriorityQueue<RegionInfo>(8);
+    PriorityQueue<RegionInfo<?>> queue = new PriorityQueue<RegionInfo<?>>(8);
     queue.add(metric.createZero(start));
 
     int touched = 0;
@@ -346,7 +347,7 @@ public class Regions {
 
     while (!queue.isEmpty() && queue.peek().getDistance() <= maxDist
         && !queue.peek().getID().equals(dest)) {
-      RegionInfo current = queue.poll();
+      RegionInfo<?> current = queue.poll();
       // for debugging
       if (regions.get(current.getID()) != null
           && (metric instanceof LandMetric || metric instanceof ShipMetric)) {
@@ -358,7 +359,7 @@ public class Regions {
       current.setVisited();
       Map<CoordinateID, Region> neighbors = metric.getNeighbours(current.getID());
       for (CoordinateID next : neighbors.keySet()) {
-        RegionInfo nextRecord = metric.get(next);
+        RegionInfo<?> nextRecord = metric.get(next);
         if (!nextRecord.isVisited()) {
           // PriorityQueue doesn't have a decreasekey, so we remove, relax, and re-insert
           queue.remove(nextRecord);
@@ -379,10 +380,10 @@ public class Regions {
    * Returns a path from start to dest based on the predecessor information in records.
    */
   public static List<Region> getPath(Map<CoordinateID, Region> regions, CoordinateID start,
-      CoordinateID dest, Map<CoordinateID, ? extends RegionInfo> records) {
+      CoordinateID dest, Map<CoordinateID, ? extends RegionInfo<?>> records) {
     LinkedList<Region> path = new LinkedList<Region>();
     CoordinateID currentID = records.get(dest).getID();
-    while (!currentID.equals(start) && currentID != null) {
+    while (currentID != null && !currentID.equals(start)) {
       path.addFirst(regions.get(currentID));
       currentID = records.get(currentID).getPredecessor();
       if (currentID==null)
@@ -578,6 +579,7 @@ public class Regions {
     /**
      * @see java.lang.Object#toString()
      */
+    @Override
     public String toString() {
       return region.toString() + ":" + dist.toString();
     }
@@ -728,6 +730,8 @@ public class Regions {
       this.dest = dest;
 
       records = new HashMap<CoordinateID, MultiDimensionalInfo>();
+      createInfinity(dest);
+      createZero(start);  
     }
 
     /**
@@ -745,7 +749,7 @@ public class Regions {
     /**
      * @see magellan.library.utils.Regions.Metric#getDistances()
      */
-    public Map<CoordinateID, ? extends RegionInfo> getDistances() {
+    public Map<CoordinateID, ? extends RegionInfo<?>> getDistances() {
       return Collections.unmodifiableMap(records);
     }
 
@@ -762,7 +766,9 @@ public class Regions {
      * @see magellan.library.utils.Regions.Metric#createInfinity(magellan.library.CoordinateID)
      */
     public MultiDimensionalInfo createInfinity(CoordinateID id) {
-      return MultiDimensionalInfo.createInfinity(regions.get(id));
+      MultiDimensionalInfo record = MultiDimensionalInfo.createInfinity(regions.get(id));
+      records.put(id, record);
+      return record;
     }
 
     /**
@@ -770,7 +776,7 @@ public class Regions {
      * 
      * @return <code>true</code> if a special case occurred
      */
-    public boolean checkDistArguments(Region r1, Region r2, RegionInfo d1, RegionInfo d2) {
+    public boolean checkDistArguments(Region r1, Region r2, RegionInfo<?> d1, RegionInfo<?> d2) {
       if (r1 == null || r2 == null) {
         log.error("found invalid region");
         return true;
@@ -798,7 +804,7 @@ public class Regions {
      * @see magellan.library.utils.Regions.Metric#relax(magellan.library.utils.Regions.RegionInfo,
      *      magellan.library.utils.Regions.RegionInfo)
      */
-    public boolean relax(RegionInfo current, RegionInfo next) {
+    public boolean relax(RegionInfo<?> current, RegionInfo<?> next) {
       Region r1 = current.getRegion();
       Region r2 = next.getRegion();
       if (checkDistArguments(r1, r2, current, next))
@@ -871,6 +877,7 @@ public class Regions {
      * component-wise sum. If, however, r2 is a land region, the result is rounded up to the next
      * multiple of {@link #speed}. Oceans with coast increase the plus value.
      */
+    @Override
     protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current,
         MultiDimensionalInfo next, int[] newValues) {
       int newDist;
@@ -980,6 +987,7 @@ public class Regions {
      *      magellan.library.Region, magellan.library.utils.Regions.MultiDimensionalInfo,
      *      magellan.library.utils.Regions.MultiDimensionalInfo, int[])
      */
+    @Override
     protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current,
         MultiDimensionalInfo next, int[] newValues) {
       RoadMetric metric;
@@ -1007,7 +1015,7 @@ public class Regions {
       Regions.getDistances(regions, id, null, streetRadius, metric =
           new RoadMetric(regions, excludedRegionTypes, start, null, radius, streetRadius));
       Map<CoordinateID, Region> neighbors = new HashMap<CoordinateID, Region>();
-      for (RegionInfo record : metric.getDistances().values()) {
+      for (RegionInfo<?> record : metric.getDistances().values()) {
         if (record.getDistance() <= streetRadius)
           neighbors.put(record.getID(), regions.get(record.getID()));
       }
@@ -1031,6 +1039,7 @@ public class Regions {
       this.streetRadius = streetRadius;
     }
 
+    @Override
     protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current2,
         MultiDimensionalInfo next2, int[] newValues) {
       int newDist;
@@ -1072,6 +1081,7 @@ public class Regions {
      *      magellan.library.Region, magellan.library.utils.Regions.MultiDimensionalInfo,
      *      magellan.library.utils.Regions.MultiDimensionalInfo, int[])
      */
+    @Override
     protected boolean getNewValue(Region r1, Region r2, MultiDimensionalInfo current2,
         MultiDimensionalInfo next2, int[] newValues) {
       newValues[0] = 1;

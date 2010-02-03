@@ -168,6 +168,7 @@ public class MagellanPotionImpl extends MagellanDescribedImpl implements Potion 
   /**
    * @see magellan.library.Identifiable#getID()
    */
+  @Override
   public IntegerID getID(){
     return (IntegerID) super.getID();
   }

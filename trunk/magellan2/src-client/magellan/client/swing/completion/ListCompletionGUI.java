@@ -71,10 +71,9 @@ public class ListCompletionGUI extends AbstractCompletionGUI {
 	 * DOCUMENT-ME
 	 *
 	 * 
-	 * 
-	 * 
+	 * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String)
 	 */
-	public void offerCompletion(JTextComponent editor, Collection completions, String stub) {
+	public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub) {
 		listPane.choiceList.setListData(completions.toArray());
 		listPane.choiceList.setSelectedIndex(0);
 		listPane.choiceList.setVisibleRowCount(0);

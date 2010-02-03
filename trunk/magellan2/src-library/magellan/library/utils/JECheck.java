@@ -451,8 +451,8 @@ public class JECheck extends Reader {
 		int errorsFound = 0;
 		int warningsFound = 0;
 
-		for(Iterator iter = msgs.iterator(); iter.hasNext();) {
-			ECheckMessage msg = (ECheckMessage) iter.next();
+		for(Iterator<ECheckMessage> iter = msgs.iterator(); iter.hasNext();) {
+			ECheckMessage msg = iter.next();
 
 			if(msg.type == ECheckMessage.ERROR) {
 				errorsFound++;

@@ -92,7 +92,7 @@ public class EresseaRelationFactory implements RelationFactory {
   // FIXME (stm 2007-02-24) Should we remove the parameter from from the
   // interface? It violates
   // the unit execution order but it might be useful for other games.
-  public List createRelations(Unit u, int from) {
+  public List<UnitRelation> createRelations(Unit u, int from) {
     return createRelations(u, u.getOrders(), from);
   }
 
@@ -106,7 +106,7 @@ public class EresseaRelationFactory implements RelationFactory {
    *          Use these orders instead of the unit's orders
    * @return A List of Relations for this unit
    */
-  public List createRelations(Unit u, List<String> orders) {
+  public List<UnitRelation> createRelations(Unit u, List<String> orders) {
     return createRelations(u, orders, 0);
   }
 
@@ -124,7 +124,7 @@ public class EresseaRelationFactory implements RelationFactory {
    *          be > 0
    * @return A List of Relations for this unit
    */
-  private List createRelations(Unit u, List<String> orders, int from) {
+  private List<UnitRelation> createRelations(Unit u, List<String> orders, int from) {
     from = 0;
     // NOTE: parameter from is ignored!
     ArrayList<UnitRelation> relations = new ArrayList<UnitRelation>(3);
@@ -215,8 +215,8 @@ public class EresseaRelationFactory implements RelationFactory {
         CoordinateID c = u.getRegion().getCoordinate();
         modifiedMovement.add(c);
 
-        for (Iterator iter2 = tokens.listIterator(1); iter2.hasNext();) {
-          OrderToken token = (OrderToken) iter2.next();
+        for (Iterator<OrderToken> iter2 = tokens.listIterator(1); iter2.hasNext();) {
+          OrderToken token = iter2.next();
           int dir = Direction.toInt(token.getText());
 
           c = new CoordinateID(c); // make c a new copy
@@ -337,8 +337,8 @@ public class EresseaRelationFactory implements RelationFactory {
               ItemCategory herbCategory = data.rules.getItemCategory(StringID.create(("HERBS")));
 
               if ((herbCategory != null)) {
-                for (Iterator items = modItems.values().iterator(); items.hasNext();) {
-                  Item i = (Item) items.next();
+                for (Iterator<Item> items = modItems.values().iterator(); items.hasNext();) {
+                  Item i = items.next();
 
                   if (herbCategory.equals(i.getItemType().getCategory())) {
                     TransferRelation r = new ItemTransferRelation(u, target, i.getAmount(), i.getItemType(), line);
@@ -461,8 +461,8 @@ public class EresseaRelationFactory implements RelationFactory {
                       // the amount
                       // was 'ALL'
 
-                      for (Iterator items = modItems.values().iterator(); items.hasNext();) {
-                        Item i = (Item) items.next();
+                      for (Iterator<Item> items = modItems.values().iterator(); items.hasNext();) {
+                        Item i = items.next();
                         TransferRelation r = new ItemTransferRelation(u, target, i.getAmount(), i.getItemType(), line);
                         i.setAmount(0);
                         relations.add(r);

@@ -68,6 +68,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
       return leveldependant;
     }
     
+    @Override
     public String toString() {
       return amount+" "+name+(leveldependant?"*Stufe":"");
     }
@@ -320,6 +321,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
    * @deprecated this may change if the constructor is changed to not include a reference to the
    *             GameData any more.
    */
+  @Deprecated
   protected String getUnTranslatedName() {
     return super.getName();
   }
@@ -327,6 +329,7 @@ public class MagellanSpellImpl extends MagellanDescribedImpl implements Spell {
   /**
    * @see magellan.library.impl.MagellanNamedImpl#getName()
    */
+  @Override
   public String getName() {
     // FIXME(stm) I don't like this reference to GameData here
     if (data != null)

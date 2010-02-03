@@ -59,11 +59,11 @@ public class UnitSelection extends EnvironmentPart {
 	 *
 	 * 
 	 */
-	public void removeFilters(Class filterClass) {
-		Iterator it = filters.iterator();
+	public void removeFilters(Class<?> filterClass) {
+		Iterator<UnitFilter> it = filters.iterator();
 
 		while(it.hasNext()) {
-			Class c = it.next().getClass();
+			Class<? extends Object> c = it.next().getClass();
 
 			if(filterClass.equals(c)) {
 				it.remove();
@@ -104,10 +104,10 @@ public class UnitSelection extends EnvironmentPart {
 		}
 
 		Unit u = (Unit) o;
-		Iterator it = filters.iterator();
+		Iterator<UnitFilter> it = filters.iterator();
 
 		while(it.hasNext()) {
-			UnitFilter filter = (UnitFilter) it.next();
+			UnitFilter filter = it.next();
 
 			if(!filter.acceptUnit(u)) {
 				return false;
@@ -124,7 +124,7 @@ public class UnitSelection extends EnvironmentPart {
 	 *
 	 * 
 	 */
-	public Collection getUnits(Region r) {
+	public Collection<Unit> getUnits(Region r) {
 		Collection<Unit> retList = new LinkedList<Unit>(r.units());
 		Iterator<UnitFilter> it = filters.iterator();
 		int i = 0;

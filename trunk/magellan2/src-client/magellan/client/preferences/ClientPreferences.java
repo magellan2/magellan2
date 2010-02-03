@@ -494,6 +494,11 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements Ext
 				return false;
 			}
 		}
+		
+		@Override
+		public int hashCode() {
+		  return locale.hashCode();
+		}
 	}
 
   public void actionPerformed(ActionEvent e) {

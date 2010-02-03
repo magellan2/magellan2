@@ -102,6 +102,7 @@ public class ProblemType {
 //    return inspector;
 //  }
 
+  @Override
   public String toString() {
     return getName();
   }

@@ -178,6 +178,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
       }
     });
     addWindowListener(new WindowAdapter() {
+      @Override
       public void windowClosing(WindowEvent e) {
         quit(false);
       }
@@ -1563,6 +1564,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   private String showPasswordDialog(JButton ae) {
     String title = Resources.get("orderwriterdialog.lbl.smtpserver.password");
     JPasswordField passwd = new JPasswordField(20) {
+      @Override
       public void setVisible(boolean b) {
         super.setVisible(b);
         if (b) {
@@ -1577,6 +1579,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
         pwd = passwdf;
       }
 
+      @Override
       public void requestFocus() {
         pwd.requestFocus();
       }

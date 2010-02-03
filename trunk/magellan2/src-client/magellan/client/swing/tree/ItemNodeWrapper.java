@@ -29,6 +29,7 @@ import magellan.library.Item;
 import magellan.library.Unit;
 import magellan.library.utils.Resources;
 import magellan.library.utils.StringFactory;
+import magellan.library.utils.Units;
 
 
 /**
@@ -207,7 +208,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
         }
 
 				if(showRegion) {
-					Item ri = unit.getRegion().getItem(modItem.getItemType());
+					Item ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
 
 					if(ri != null) {
 						nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())
@@ -247,7 +248,7 @@ public class ItemNodeWrapper implements CellObject, SupportsClipboard {
 				}
 
 				if(showRegion) {
-					Item ri = unit.getRegion().getItem(modItem.getItemType());
+          Item ri = Units.getContainerPrivilegedUnitItem(unit.getRegion(), modItem.getItemType());
 
 					if(ri != null) {
 						nodeText.append(Resources.get("tree.itemnodewrapper.node.of")).append(' ').append(ri.getAmount())

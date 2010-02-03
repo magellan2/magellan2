@@ -26,7 +26,7 @@ import java.util.StringTokenizer;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class Version implements Comparable {
+public class Version implements Comparable<Object> {
 	private String major = "0";
 	private String minor = "0";
 	private String build = "0";

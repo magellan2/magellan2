@@ -169,7 +169,7 @@ public class TreeBuilder {
   /**
    * Sort a collection of regions in a specific order.
    */
-  private Collection sortRegions(Collection<Region> regions) {
+  private Collection<Region> sortRegions(Collection<Region> regions) {
     if ((Boolean.valueOf(settings.getProperty("EMapOverviewPanel.sortRegions", "true"))).booleanValue()) {
       if (settings.getProperty("EMapOverviewPanel.sortRegionsCriteria", "coordinates").equals("coordinates")) {
         List<Region> sortedRegions = new LinkedList<Region>(regions);
@@ -205,7 +205,7 @@ public class TreeBuilder {
   /**
    * DOCUMENT-ME
    */
-  public void buildTree(DefaultMutableTreeNode rootNode, Collection regionCollection,
+  public void buildTree(DefaultMutableTreeNode rootNode, Collection<Region> regionCollection,
       Collection<Unit> units, Map<ID, TreeNode> regionNodes, Map<ID, TreeNode> unitNodes,
       Map<ID, TreeNode> buildingNodes, Map<ID, TreeNode> shipNodes,
       Comparator<? super Unit> unitSorting, Map<EntityID, Alliance> activeAlliances, int treeStructure[],
@@ -221,8 +221,8 @@ public class TreeBuilder {
     Island curIsland = null;
 
     TreeHelper treehelper = new TreeHelper();
-    for (Iterator regions = regionCollection.iterator(); regions.hasNext();) {
-      Region r = (Region) regions.next();
+    for (Iterator<Region> regions = regionCollection.iterator(); regions.hasNext();) {
+      Region r = regions.next();
 
       // check preferences if we want to include this region
       if (!((unitInteresting && !r.units().isEmpty())

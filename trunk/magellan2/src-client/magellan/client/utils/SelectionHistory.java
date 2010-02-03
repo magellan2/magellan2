@@ -29,51 +29,105 @@ import magellan.library.utils.Bucket;
 
 
 /**
- * DOCUMENT-ME
+ * Records selection events.
  *
- * @author $Author: $
- * @version $Revision: 171 $
  */
 public class SelectionHistory {
-	private static EventHook eventHook = new EventHook();
-	private static Bucket<Object> history = new Bucket<Object>(10);
+	/**
+	 * Encapsulates a Selectionevent
+	 */
+	public static class SelectionEntry {
+	  /** The Selection that represents this entry. */
+	  public SelectionEvent event;
+	  
+	  protected SelectionEntry(SelectionEvent e) {
+      event = e;
+    }
+
+    /**
+	   * Two Entries are equal if they have the same context, but not necessarily the same source.
+	   * 
+	   * @see java.lang.Object#equals(java.lang.Object)
+	   */
+	  @Override
+	  public boolean equals(Object obj) {
+	    if (obj instanceof SelectionEntry)
+	      return event.equals(((SelectionEntry) obj).event);
+	      
+	    return false;
+	  }
+	  
+	  @Override
+    public String toString(){
+	    return event.getActiveObject()+((event.getContexts().size()>1)?"+"+(event.getContexts().size()-1):"");
+	  }
+	  
+	  @Override
+	  public int hashCode() {
+	    return event.hashCode();
+	  }
+  }
+
+  private static EventHook eventHook = new EventHook();
+	private static Bucket<SelectionEntry> history = new Bucket<SelectionEntry>(10);
 	private static Collection<Object> ignoredSources = new HashSet<Object>();
 	private static List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+  private static SelectionEvent lastEvent;
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the SelectionListener of this history.
 	 */
 	public static SelectionListener getSelectionEventHook() {
 		return SelectionHistory.eventHook;
 	}
 
+  /**
+   * Returns the TempUnitListener of this history.
+   */
   public static TempUnitListener getTempUnitEventHook() {
     return SelectionHistory.eventHook;
   }
 
 	/**
-	 * Adds active object to history.
+	 * Adds active object to history if it is not from an ignored source.
 	 *
 	 * @param e
 	 */
-	public static void selectionChanged(SelectionEvent e) {
-		if((e.getActiveObject() != null) && !SelectionHistory.ignoredSources.contains(e.getSource())){
-			SelectionHistory.history.add(e.getActiveObject());
-			SelectionHistory.informListeners();
-		}
-	}
+  public static void selectionChanged(SelectionEvent e) {
+    // ignore empty events and events from ignored sources
+    if (e.getSelectionType() == SelectionEvent.ST_DEFAULT) {
+      if ((e.getActiveObject() != null) && !SelectionHistory.ignoredSources.contains(e.getSource())) {
+        // do not change list if the last event is repeated
+        if (!e.equals(lastEvent)) {
+          // cut of head of list up to selected entry
+          SelectionEntry newEntry = new SelectionEntry(e);
+          SelectionEntry lastEntry = new SelectionEntry(lastEvent);
+          for (Iterator<SelectionEntry> it = SelectionHistory.history.iterator(); it.hasNext();) {
+            if (it.next().equals(lastEntry))
+              break;
+            else
+              it.remove();
+          }
+
+          // insert new entry
+          SelectionHistory.history.add(newEntry);
+          SelectionHistory.informListeners();
+        }
+      }
+      lastEvent = e;
+    }
+  }
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Registers another listener.
 	 */
 	public static void addListener(ChangeListener l) {
 		SelectionHistory.listeners.add(l);
 	}
 
+	/**
+	 * Asynchronously notifies all ChangeListeners
+	 */
 	private static void informListeners() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
@@ -87,43 +141,46 @@ public class SelectionHistory {
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Returns the history of events
 	 */
-	public static Collection getHistory() {
+	public static Collection<SelectionEntry> getHistory() {
 		return SelectionHistory.history;
 	}
 
+  /**
+   * Returns the history of events
+   */
+  public static SelectionEntry getHistory(int index) {
+    return SelectionHistory.history.get(index);
+  }
+
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Events from sources registered here will be ignored by {@link #selectionChanged(SelectionEvent)}.
 	 * 
+	 * @see #selectionChanged(SelectionEvent)
 	 */
-	public static void ignoreSource(Object o) {
-		SelectionHistory.ignoredSources.add(o);
+	public static void ignoreSource(Object source) {
+		SelectionHistory.ignoredSources.add(source);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
+	 * Events from this source will no longer be ignored.
 	 * 
+	 *  @see #ignoreSource(Object)
 	 */
-	public static void unignoreSource(Object o) {
-		SelectionHistory.ignoredSources.remove(o);
+	public static void unignoreSource(Object source) {
+		SelectionHistory.ignoredSources.remove(source);
 	}
 
 	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
+	 * Sets the maximum number of events that the history holds. 
 	 */
 	public static void setMaxSize(int i) {
 		SelectionHistory.history.setMaxSize(i);
 	}
 
 	/**
-	 * DOCUMENT-ME
+	 * Empties the history.
 	 */
 	public static void clear() {
 		SelectionHistory.history.clear();
@@ -153,10 +210,15 @@ public class SelectionHistory {
 	}
 
   /**
+   * Removes entries corresponding to the temp unit from the history
+   * 
    * @param e
    */
   public static void tempUnitDeleting(TempUnitEvent e) {
-    SelectionHistory.getHistory().remove(e.getTempUnit());
-    
+    for (Iterator<SelectionEntry> it = getHistory().iterator(); it.hasNext();){
+      SelectionEvent se = it.next().event;
+      if (se.getActiveObject().equals(e.getTempUnit()))
+        it.remove();
+    }
   }
 }

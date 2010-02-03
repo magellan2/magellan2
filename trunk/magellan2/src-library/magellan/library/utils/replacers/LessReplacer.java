@@ -76,6 +76,7 @@ public class LessReplacer extends AbstractParameterSwitch {
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.lessreplacer.description")+"\n\n"+super.getDescription();
   }  

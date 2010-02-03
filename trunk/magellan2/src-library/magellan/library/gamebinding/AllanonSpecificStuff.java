@@ -145,6 +145,7 @@ public class AllanonSpecificStuff extends EresseaSpecificStuff {
     return gameSpecificRules;
   }
   
+  @Override
   public String getName() {
     return name ;
   }

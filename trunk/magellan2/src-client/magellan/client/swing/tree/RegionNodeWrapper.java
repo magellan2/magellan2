@@ -32,7 +32,7 @@ import magellan.library.utils.StringFactory;
  * @author $Author: $
  * @version $Revision: 171 $
  */
-public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard, SupportsEmphasizing {
+public class RegionNodeWrapper extends EmphasizingImpl implements CellObject2, SupportsClipboard {
 	private Region region = null;
 	private List<GraphicsElement> GEs = null;
 	private int amount = Integer.MIN_VALUE;

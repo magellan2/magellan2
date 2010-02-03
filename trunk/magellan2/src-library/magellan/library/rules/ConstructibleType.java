@@ -149,6 +149,7 @@ public abstract class ConstructibleType extends UnitContainerType {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

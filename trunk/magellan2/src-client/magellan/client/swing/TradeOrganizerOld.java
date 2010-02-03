@@ -46,7 +46,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import magellan.client.event.EventDispatcher;
 import magellan.client.event.SelectionEvent;
@@ -59,20 +58,18 @@ import magellan.library.Region;
 import magellan.library.StringID;
 import magellan.library.Unit;
 import magellan.library.event.GameDataEvent;
-import magellan.library.gamebinding.EresseaConstants;
 import magellan.library.rules.ItemType;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
-import magellan.library.utils.filters.CollectionFilters;
 
 /**
- * Dialog for planning trade.
+ * DOCUMENT ME!
  * 
- * @author Ulrich Küster, stm
+ * @author Ulrich Küster
  */
-public class TradeOrganizer extends InternationalizedDataDialog implements SelectionListener {
+public class TradeOrganizerOld extends InternationalizedDataDialog implements SelectionListener {
   public static final String IDENTIFIER = "TRADES";
   protected List<Region> regions = new LinkedList<Region>();
   protected int minSellMultiplier = 1;
@@ -85,31 +82,32 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   protected JLabel totalBuyingVolume;
   protected JLabel averagePrice;
   protected JList factionList;
-
   // Fiete: Keys: German Values:locale (en)
   protected Hashtable<String, String> luxuryTranslations = null;
+
+// protected LinkedList<String> luxuryListTranslated = null;
 
   /**
    * Creates a new TradeOrganizer object.
    */
-  public TradeOrganizer(Frame owner, EventDispatcher dispatcher, GameData data, Properties settings) {
+  public TradeOrganizerOld(Frame owner, EventDispatcher dispatcher, GameData data, Properties settings) {
     this(owner, dispatcher, data, settings, null);
   }
 
   /**
    * Creates a new TradeOrganizer object.
    */
-  public TradeOrganizer(Frame owner, EventDispatcher dispatcher, GameData data,
-      Properties settings, Collection<Region> newRegions) {
+  public TradeOrganizerOld(Frame owner, EventDispatcher dispatcher, GameData data,
+      Properties settings, Collection newRegions) {
     super(owner, false, dispatcher, data, settings);
 
     // register for events
-    // unnecessary
-    // dispatcher.addGameDataListener(this);
+    dispatcher.addGameDataListener(this);
     dispatcher.addSelectionListener(this);
 
     init();
-    setRegions((newRegions == null) ? Collections.<Region>emptySet() : newRegions);
+    setRegions((newRegions == null) ? Collections.EMPTY_SET : newRegions);
+    setVisible(true);
   }
 
   @Override
@@ -180,8 +178,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     c.gridx++;
     c.weightx = 1.0;
 
-    luxuries = new JComboBox();
     this.buildLuxuryTranslations();
+    // this was in random order...Fiete 20061219
+    // luxuries = new JComboBox(this.luxuryTranslations.values().toArray());
+    // this is better:
+    luxuries = new JComboBox(getLuxuryListTranslated().toArray());
+
     luxuries.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         setSellTableRegions();
@@ -236,6 +238,9 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   private JPanel getStocksPanel() {
     JPanel panel = new JPanel();
 
+    // panel.setLayout(new GridBagLayout());
+    // GridBagConstraints c = new GridBagConstraints(0, 0, 1, 1, 0, 1, GridBagConstraints.CENTER,
+    // GridBagConstraints.BOTH, new Insets(3, 3, 3, 3), 0, 0);
     factionList = new JList();
     updateFactions();
     factionList.addListSelectionListener(new ListSelectionListener() {
@@ -287,10 +292,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   @Override
   public void gameDataChanged(GameDataEvent ge) {
     super.gameDataChanged(ge);
-
-    this.buildLuxuryTranslations();
-
-    setRegions(Collections.<Region>emptySet());
+    setRegions(Collections.EMPTY_SET);
 
     updateFactions();
   }
@@ -302,21 +304,23 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
    */
   public void selectionChanged(SelectionEvent se) {
     if ((se.getSelectionType() == SelectionEvent.ST_REGIONS) && (se.getSelectedObjects() != null)) {
-      setRegions(CollectionFilters.uncheckedCast(se.getSelectedObjects(), Region.class));
+      setRegions(se.getSelectedObjects());
     }
   }
 
   /**
    * Sets this classes region list. Filters out all regions, which trade information is unknown.
    */
-  private void setRegions(Collection<Region> newRegions) {
+  private void setRegions(Collection newRegions) {
     if (newRegions.isEmpty() && (data.regions() != null)) {
       newRegions = data.regions().values();
     }
 
     regions = new LinkedList<Region>();
 
-    for (Region region : newRegions) {
+    for (Iterator iter = newRegions.iterator(); iter.hasNext();) {
+      Region region = (Region) iter.next();
+
       if ((region.getPrices() != null) && (region.getPrices().size() > 0)) {
         regions.add(region);
       }
@@ -344,11 +348,11 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     LinkedList<Region> newRegions = new LinkedList<Region>();
     int total = 0;
 
-    for (Iterator iter = regions.iterator(); iter.hasNext();) {
-      Region region = (Region) iter.next();
+    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+      Region region = iter.next();
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
-      if (price != null && price.getPrice() < 0) {
+      if (price.getPrice() < 0) {
         newRegions.add(region);
         total += region.maxLuxuries();
       }
@@ -377,11 +381,11 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     int total = 0;
     int totalPrice = 0;
 
-    for (Iterator iter = regions.iterator(); iter.hasNext();) {
-      Region region = (Region) iter.next();
+    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+      Region region = iter.next();
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
-      if (price != null && checkPrice(price)) {
+      if (checkPrice(price)) {
         newRegions.add(region);
 
         int volume = region.maxLuxuries();
@@ -407,7 +411,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
    */
   private boolean checkPrice(LuxuryPrice price) {
     if (price.getPrice() > 0) {
-      Item luxuryPrice = price.getItemType().getResource(EresseaConstants.I_USILVER);
+      Item luxuryPrice = price.getItemType().getResource(StringID.create("Silber"));
 
       if ((luxuryPrice != null) && (luxuryPrice.getAmount() > 0)) {
         if ((price.getPrice() / luxuryPrice.getAmount()) < minSellMultiplier) {
@@ -445,22 +449,31 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     super.quit();
   }
 
-  public class SortableRegionTable extends JTable {
+  /**
+   * DOCUMENT-ME
+   * 
+   * @author $Author: $
+   * @version $Revision: 384 $
+   */
+  public class SellTable extends JTable {
+    private SellTableModel model;
 
-    public SortableRegionTable(final SortableRegionTableModel sortableModel) {
-      super(sortableModel);
-
+    /**
+     * Creates a new SellTable object.
+     */
+    public SellTable() {
+      super();
+      model = new SellTableModel();
+      this.setModel(model);
       this.getTableHeader().setReorderingAllowed(false);
       this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
       this.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
-          int i = getSelectedRow();
-          if (i >= 0) {
-            Region r = sortableModel.getRegion(i);
+          int i = SellTable.this.getSelectedRow();
+          Region r = model.getRegion(i);
 
-            if (r != null) {
-              dispatcher.fire(SelectionEvent.create(this, r));
-            }
+          if (r != null) {
+            dispatcher.fire(SelectionEvent.create(this, r));
           }
         }
       });
@@ -470,181 +483,56 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         @Override
         public void mouseClicked(MouseEvent e) {
           int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
-          getModel().sort(i);
+          model.sort(i);
         }
       });
     }
 
-    @Override
-    public SortableRegionTableModel getModel() {
-      return (SortableRegionTableModel) super.getModel();
-      // return model;
-    }
-
     /**
-     * Returns the current set of regions.
+     * DOCUMENT-ME
      */
     public Collection<Region> getRegions() {
-      return getModel().getRegions();
+      return model.getRegions();
     }
 
     /**
-     * Changes the current set of regions.
+     * DOCUMENT-ME
      */
     public void setRegions(Collection<Region> regions) {
-      getModel().setRegions(regions);
-      revalidate();
-      validate();
-      repaint();
+      model.setRegions(regions);
     }
 
     /**
-     * Do the sorting according to current sort mode.
+     * DOCUMENT-ME
      */
     public void sort() {
-      getModel().sort(getModel().curSort);
+      model.sort(model.curSort);
     }
-
   }
 
-  /**
-   * A table model where rows correspond to regions and sortable by columns.
-   */
-  public abstract class SortableRegionTableModel extends AbstractTableModel {
-
-    public class ColumnInfo {
-      ColumnInfo(String title, Class<?> type, Comparator<? super Region> comparator) {
-        this.title = title;
-        this.type = type;
-        this.comparator = comparator;
-      }
-
-      Class<?> type;
-      String title;
-      Comparator<? super Region> comparator;
-    }
-
-    protected int curSort = 1;
-    private LinkedList<Region> tableRegions;
-
-    private List<ColumnInfo> colInfos;
-
-    public SortableRegionTableModel() {
-      tableRegions = new LinkedList<Region>();
-    }
-
-    public void configure(ColumnInfo... columns) {
-      colInfos = new ArrayList<ColumnInfo>(columns.length);
-      for (ColumnInfo info : columns) {
-        colInfos.add(info);
-      }
-    }
+  private class SellTableModel extends AbstractTableModel {
+    private int curSort = 1;
+    private LinkedList<Region> tableRegions = new LinkedList<Region>();
 
     /**
-     * @see javax.swing.table.TableModel#getRowCount()
+     * DOCUMENT-ME
      */
     public int getRowCount() {
       return tableRegions.size();
     }
 
     /**
-     * @see javax.swing.table.TableModel#getColumnCount()
+     * DOCUMENT-ME
      */
     public int getColumnCount() {
-      return colInfos.size();
+      return 3;
     }
 
     /**
-     * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
-     */
-    @Override
-    public Class<? extends Object> getColumnClass(int col) {
-      return colInfos.get(col).type;
-    }
-
-    @Override
-    public String getColumnName(int column) {
-      return colInfos.get(column).title;
-    }
-
-    /**
-     * Returns the current set of regions.
-     */
-    public Collection<Region> getRegions() {
-      return tableRegions;
-    }
-
-    /**
-     * Changes the current set of regions.
-     */
-    public void setRegions(Collection<Region> regs) {
-      tableRegions.clear();
-      tableRegions.addAll(regs);
-      sort(curSort);
-      fireTableDataChanged();
-    }
-
-    /**
-     * Returns the region of the indicated row.
-     * 
-     * @param row The table row
-     */
-    public Region getRegion(int row) {
-      return tableRegions.get(row);
-    }
-
-    /**
-     *  
-     */
-    public void sort(int i) {
-      if (i < 0 || i >= getColumnCount())
-        throw new RuntimeException("invalid column " + i);
-      curSort = i;
-
-      Collections.sort(tableRegions, getComparator(i));
-    }
-
-    protected Comparator<? super Region> getComparator(int col) {
-      return colInfos.get(col).comparator;
-    }
-
-  }
-
-  /**
-   * A JTable adaption for luxury good selling dialog.
-   */
-  public class SellTable extends SortableRegionTable {
-
-    /**
-     * Creates a new SellTable object.
-     */
-    public SellTable() {
-      super(new SellTableModel());
-    }
-
-  }
-
-  /**
-   * A model for {@link SellTable}.
-   */
-  private class SellTableModel extends SortableRegionTableModel {
-
-    public SellTableModel() {
-      super();
-      super.configure(new ColumnInfo[] {
-          this.new ColumnInfo(Resources.get("tradeorganizer.buycolumnname1"), String.class,
-              new NameComparator(null)),
-          this.new ColumnInfo(Resources.get("tradeorganizer.buycolumnname2"), String.class,
-              new RegionPriceComparator()),
-          this.new ColumnInfo(Resources.get("tradeorganizer.buycolumnname3"), Integer.class,
-              new RegionTradeVolumeComparator()) });
-    }
-
-    /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     * DOCUMENT-ME
      */
     public Object getValueAt(int row, int col) {
-      Region region = getRegion(row);
+      Region region = tableRegions.get(row);
 
       switch (col) {
       case 0:
@@ -664,25 +552,87 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
         if (price == null) {
           return "-?-";
         } else {
-          return price.getPrice();
+          return new Integer(price.getPrice());
         }
       }
 
       case 2:
-        return region.getPeasants() / 100;
+        return new Integer(region.getPeasants() / 100);
       }
 
       return null;
     }
 
     /**
-     * Sorts the model by the specified column (0=name, 1=price, 2=volume).
-     * 
-     * @param i
+     * DOCUMENT-ME
      */
     @Override
+    public String getColumnName(int col) {
+      switch (col) {
+      case 0:
+        return Resources.get("tradeorganizer.buycolumnname1");
+
+      case 1:
+        return Resources.get("tradeorganizer.buycolumnname2");
+
+      case 2:
+        return Resources.get("tradeorganizer.buycolumnname3");
+      }
+
+      return "";
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
+    public Class<? extends Object> getColumnClass(int col) {
+      return this.getValueAt(0, col).getClass();
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public Collection<Region> getRegions() {
+      return tableRegions;
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public void setRegions(Collection<Region> regs) {
+      tableRegions.clear();
+      tableRegions.addAll(regs);
+      sort(curSort);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public Region getRegion(int row) {
+      return tableRegions.get(row);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
     public void sort(int i) {
-      super.sort(i);
+      curSort = i;
+
+      switch (i) {
+      case 0:
+        Collections.sort(tableRegions, new NameComparator(null));
+
+        break;
+
+      case 1:
+        Collections.sort(tableRegions, new RegionPriceComparator());
+
+        break;
+
+      case 2:
+        Collections.sort(tableRegions, new RegionTradeVolumeComparator());
+      }
 
       sell.revalidate();
       sell.repaint();
@@ -690,113 +640,251 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   }
 
   /**
-   * A JTable adaption for the buying panel.
+   * DOCUMENT-ME
+   * 
+   * @author $Author: $
+   * @version $Revision: 384 $
    */
-  public class BuyTable extends SortableRegionTable {
+  public class BuyTable extends JTable {
+    private BuyTableModel model;
+
     /**
      * Creates a new BuyTable object.
      */
     public BuyTable() {
-      super(new BuyTableModel());
-    }
+      model = new BuyTableModel();
+      this.setModel(model);
+      this.getTableHeader().setReorderingAllowed(false);
+      this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      this.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          int i = BuyTable.this.getSelectedRow();
+          Region r = model.getRegion(i);
 
-  }
+          if (r != null) {
+            dispatcher.fire(SelectionEvent.create(this, r));
+          }
+        }
+      });
 
-  /**
-   * A model for {@link BuyTable}.
-   */
-  private class BuyTableModel extends SortableRegionTableModel {
-
-    public BuyTableModel() {
-      super();
-      super.configure(new ColumnInfo[] {
-          new ColumnInfo(Resources.get("tradeorganizer.sellcolumnname1"), String.class,
-              new NameComparator(null)),
-          new ColumnInfo(Resources.get("tradeorganizer.sellcolumnname2"), Integer.class,
-              new RegionTradeVolumeComparator()) });
+      // sorting
+      this.getTableHeader().addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
+          model.sort(i);
+        }
+      });
     }
 
     /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     * DOCUMENT-ME
+     */
+    public Collection<Region> getRegions() {
+      return model.getRegions();
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public void setRegions(Collection<Region> regions) {
+      model.setRegions(regions);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public void sort() {
+      model.sort(model.curSort);
+    }
+  }
+
+  private class BuyTableModel extends AbstractTableModel {
+    private int curSort = 1;
+    private LinkedList<Region> tableRegions = new LinkedList<Region>();
+
+    /**
+     * DOCUMENT-ME
+     */
+    public int getRowCount() {
+      return tableRegions.size();
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public int getColumnCount() {
+      return 2;
+    }
+
+    /**
+     * DOCUMENT-ME
      */
     public Object getValueAt(int row, int col) {
-      Region region = getRegion(row);
+      Region region = tableRegions.get(row);
 
       switch (col) {
       case 0:
         return region.toString();
 
       case 1:
-        return region.getPeasants() / 100;
+        return new Integer(region.getPeasants() / 100);
       }
 
       return null;
     }
 
     /**
-     * Sorts the model according to the specified column (0=name, 1=volume).
+     * DOCUMENT-ME
      */
     @Override
+    public String getColumnName(int col) {
+      switch (col) {
+      case 0:
+        return Resources.get("tradeorganizer.sellcolumnname1");
+
+      case 1:
+        return Resources.get("tradeorganizer.sellcolumnname2");
+      }
+
+      return "";
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
+    public Class<? extends Object> getColumnClass(int col) {
+      return this.getValueAt(0, col).getClass();
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public Collection<Region> getRegions() {
+      return tableRegions;
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public void setRegions(Collection<Region> regs) {
+      tableRegions.clear();
+      tableRegions.addAll(regs);
+      sort(curSort);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
+    public Region getRegion(int row) {
+      return tableRegions.get(row);
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
     public void sort(int i) {
-      super.sort(i);
+      curSort = i;
+
+      switch (i) {
+      case 0:
+        Collections.sort(tableRegions, new NameComparator(null));
+
+        break;
+
+      case 1:
+        Collections.sort(tableRegions, new RegionTradeVolumeComparator());
+      }
 
       buy.revalidate();
       buy.repaint();
     }
   }
 
-  /**
-   * A JTable adaption for the stocks panel.
-   */
-  private class StocksTable extends SortableRegionTable {
+  private class StocksTable extends JTable {
+    private StocksTableModel model;
 
     /**
      * Creates a new StocksTable object.
      */
     public StocksTable() {
-      super(new StocksTableModel());
+      model = new StocksTableModel();
+      this.setModel(model);
+      this.getTableHeader().setReorderingAllowed(false);
+      this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+      this.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        public void valueChanged(ListSelectionEvent e) {
+          int i = StocksTable.this.getSelectedRow();
+          if (i>=0){
+            Region r = model.getRegion(i);
+
+            if (r != null) {
+              dispatcher.fire(SelectionEvent.create(this, r));
+            }
+          }
+        }
+      });
+
+      // sorting
+      this.getTableHeader().addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+          int i = getTableHeader().getColumnModel().getColumnIndexAtX(e.getPoint().x);
+          model.sort(i);
+        }
+      });
     }
 
     /**
-     * Changes the set of managed factions.
+     * DOCUMENT-ME
+     */
+    public void setRegions(Collection<Region> regions) {
+      model.setRegions(regions);
+    }
+
+    /**
+     * DOCUMENT-ME
      */
     public void setFactions(Collection<Faction> factions) {
-      getModel().setFactions(factions);
-      revalidate();
-      repaint();
-    }
-
-    @Override
-    public void setModel(TableModel dataModel) {
-      super.setModel(dataModel);
+      model.setFactions(factions);
     }
 
     /**
-     * @see magellan.client.swing.TradeOrganizer.SortableRegionTable#getModel()
+     * DOCUMENT-ME
      */
-    @Override
-    public StocksTableModel getModel() {
-      if (super.getModel() instanceof StocksTableModel)
-        return (StocksTableModel) super.getModel();
-      else
-        return new StocksTableModel();
+    public void sort() {
+      model.sort(model.curSort);
     }
   }
 
-  private class StocksTableModel extends SortableRegionTableModel {
+  private class StocksTableModel extends AbstractTableModel {
+    private int curSort = 1;
+    private LinkedList<Region> tableRegions = new LinkedList<Region>();
     private LinkedList<Faction> tableFactions = new LinkedList<Faction>();
 
     // maps Region to Integer (available luxury in stock of selected factions)
-    @SuppressWarnings("hiding")
     private Hashtable<Region, Integer> stocks = new Hashtable<Region, Integer>();
 
-    private Collection<Region> allRegions;
+    /**
+     * DOCUMENT-ME
+     */
+    public int getRowCount() {
+      return tableRegions.size();
+    }
 
     /**
-     * @see javax.swing.table.TableModel#getValueAt(int, int)
+     * DOCUMENT-ME
+     */
+    public int getColumnCount() {
+      return 2;
+    }
+
+    /**
+     * DOCUMENT-ME
      */
     public Object getValueAt(int row, int col) {
-      Region region = getRegion(row);
+      Region region = tableRegions.get(row);
 
       switch (col) {
       case 0:
@@ -809,27 +897,37 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       return null;
     }
 
-    public StocksTableModel() {
-      super();
-      super.configure(new ColumnInfo[] {
-          new ColumnInfo(Resources.get("tradeorganizer.sellcolumnname1"), String.class,
-              new NameComparator(null)),
-          new ColumnInfo(Resources.get("tradeorganizer.sellcolumnname2"), String.class,
-              new RegionStockVolumeComparator(stocks)) });
+    /**
+     * DOCUMENT-ME
+     */
+    @Override
+    public String getColumnName(int col) {
+      switch (col) {
+      case 0:
+        return Resources.get("tradeorganizer.sellcolumnname1");
+
+      case 1:
+        return Resources.get("tradeorganizer.sellcolumnname2");
+      }
+
+      return "";
     }
 
     /**
-     * @see magellan.client.swing.TradeOrganizer.SortableRegionTableModel#setRegions(java.util.Collection)
+     * DOCUMENT-ME
      */
     @Override
-    public void setRegions(Collection<Region> regs) {
-      super.setRegions(regs);
-      allRegions = new ArrayList<Region>(regs);
-      updateStocksHashtable();
+    public Class<? extends Object> getColumnClass(int col) {
+      return this.getValueAt(0, col).getClass();
     }
 
-    Collection<Region> getAllRegions() {
-      return allRegions;
+    /**
+     * DOCUMENT-ME
+     */
+    public void setRegions(Collection<Region> regs) {
+      tableRegions.clear();
+      tableRegions.addAll(regs);
+      updateStocksHashtable();
     }
 
     /**
@@ -847,9 +945,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
      */
     private void updateStocksHashtable() {
       stocks.clear();
-
-      if (luxuries.getItemCount() <= 0)
-        return;
+      tableRegions.clear();
+      tableRegions.addAll(regions);
 
       if (luxuries.getSelectedIndex() == -1) {
         luxuries.setSelectedIndex(0);
@@ -859,13 +956,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
           StringID.create(getOriginalLuxuryTranslation((String) luxuries.getSelectedItem()));
       ItemType luxury = data.rules.getItemType(actSID);
 
-      if (luxury == null)
-        return;
-
-      super.setRegions(getAllRegions());
-
-      for (Iterator regionIter = getRegions().iterator(); regionIter.hasNext();) {
-        Region r = (Region) regionIter.next();
+      for (Iterator<Region> regionIter = tableRegions.iterator(); regionIter.hasNext();) {
+        Region r = regionIter.next();
         int amount = 0;
 
         for (Iterator unitIter = r.units().iterator(); unitIter.hasNext();) {
@@ -890,9 +982,33 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
       sort(curSort);
     }
 
-    @Override
+    /**
+     * DOCUMENT-ME
+     */
+    public Region getRegion(int row) {
+      if (row>=0)
+        return tableRegions.get(row);
+      return null;
+    }
+
+    /**
+     * DOCUMENT-ME
+     */
     public void sort(int i) {
-      super.sort(i);
+      curSort = i;
+
+      switch (i) {
+      case 0:
+        Collections.sort(tableRegions, new NameComparator(null));
+
+        break;
+
+      case 1:
+        Collections.sort(tableRegions, new RegionStockVolumeComparator(stocks));
+      }
+
+      TradeOrganizerOld.this.stocks.revalidate();
+      TradeOrganizerOld.this.stocks.repaint();
     }
   }
 
@@ -954,7 +1070,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
   }
 
   /**
-   * Compares two regions using their trade volume.
+   * compares two regions unsing their trade volume
    */
   private class RegionTradeVolumeComparator implements Comparator<Region> {
     /**
@@ -976,26 +1092,32 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     }
 
     if ((data != null) && (data.rules != null)) {
+// String help[] =
+// new String[] { "Balsam", "Gewürz", "Juwel", "Myrrhe", "Öl", "Seide", "Weihrauch" };
       for (ItemType currentType : data.rules.getItemTypes()) {
         if (currentType.getCategory() != null
             && currentType.getCategory().equals(data.rules.getItemCategory("luxuries"))) {
-          this.luxuryTranslations.put(data.getTranslation(currentType), currentType.getID()
-              .toString());
+          this.luxuryTranslations.put(currentType.toString(), data.getTranslation(currentType));
+
+// this.luxuryListTranslated.add(data.getTranslation(currentType));
         }
       }
     }
-
-    luxuries.removeAllItems();
-    for (String name : getLuxuryListTranslated())
-      luxuries.addItem(name);
-    if (luxuries.getItemCount() <= 0)
-      luxuries.addItem("-?-");
-
   }
 
   private String getOriginalLuxuryTranslation(String value) {
-    if (luxuryTranslations.containsKey(value))
-      return luxuryTranslations.get(value);
+    String erg = value;
+    if (this.luxuryTranslations == null) {
+      return erg;
+    }
+    for (Iterator<String> iter = this.luxuryTranslations.keySet().iterator(); iter.hasNext();) {
+      String actKey = iter.next();
+      String actValue = this.luxuryTranslations.get(actKey);
+      if (actValue.equalsIgnoreCase(value)) {
+        return actKey;
+      }
+    }
+
     return value;
   }
 
@@ -1005,7 +1127,7 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
    * @return Returns luxuryListTranslated.
    */
   public Collection<String> getLuxuryListTranslated() {
-    return luxuryTranslations.keySet();
+    return luxuryTranslations.values();
   }
 
 }

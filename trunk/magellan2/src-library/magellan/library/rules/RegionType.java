@@ -76,8 +76,8 @@ public class RegionType extends UnitContainerType {
 	 * DOCUMENT ME!
 	 */
 	public int getRoadStones() {
-		for(Iterator iter = resources.iterator(); iter.hasNext();) {
-			Resource r = (Resource) iter.next();
+		for(Iterator<Resource> iter = resources.iterator(); iter.hasNext();) {
+			Resource r = iter.next();
 
 			if(r.getObjectType() instanceof ItemType) {
 				return r.getAmount();
@@ -116,7 +116,7 @@ public class RegionType extends UnitContainerType {
 	 *
 	 * 
 	 */
-	public List getRoadResources() {
+	public List<Resource> getRoadResources() {
 		return Collections.unmodifiableList(resources);
 	}
 
@@ -201,6 +201,7 @@ public class RegionType extends UnitContainerType {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

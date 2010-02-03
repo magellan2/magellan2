@@ -185,6 +185,11 @@ public class Completion {
 	  }
 	  return false;
 	}
+
+	@Override
+	public int hashCode() {
+	  return getName().hashCode() + getValue().hashCode() + getPostfix().hashCode();
+	}
 	
 	/**
 	 * @see java.lang.Object#toString()

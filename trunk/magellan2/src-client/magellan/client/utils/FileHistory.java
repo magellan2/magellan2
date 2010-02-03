@@ -117,7 +117,7 @@ public class FileHistory {
    */
   public void clearFileHistoryMenu() {
     if (history != null) {
-      for (Iterator iter = history.iterator(); iter.hasNext();) {
+      for (Iterator<FileHistoryAction> iter = history.iterator(); iter.hasNext();) {
         iter.next();
         historyMenu.remove(insertionIndex);
       }
@@ -135,8 +135,8 @@ public class FileHistory {
 
     int iIndex = insertionIndex;
 
-    for (Iterator iter = history.iterator(); iter.hasNext(); iIndex++) {
-      FileHistoryAction item = (FileHistoryAction) iter.next();
+    for (Iterator<FileHistoryAction> iter = history.iterator(); iter.hasNext(); iIndex++) {
+      FileHistoryAction item = iter.next();
       historyMenu.insert(item, iIndex);
     }
   }

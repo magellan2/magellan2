@@ -101,12 +101,11 @@ public class NoneCompletionGUI extends AbstractCompletionGUI {
 	 * DOCUMENT-ME
 	 *
 	 * 
-	 * 
-	 * 
+	 * @see magellan.client.swing.completion.CompletionGUI#offerCompletion(javax.swing.text.JTextComponent, java.util.Collection, java.lang.String)
 	 */
 	public void offerCompletion(javax.swing.text.JTextComponent jTextComponent,
-								java.util.Collection collection, java.lang.String str) {
-		last = (Completion) collection.iterator().next();
+								java.util.Collection<Completion> collection, java.lang.String str) {
+		last = collection.iterator().next();
 		offering = true;
 	}
 

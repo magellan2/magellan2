@@ -177,8 +177,8 @@ public class EresseaFileFilter extends javax.swing.filechooser.FileFilter {
 		if (!extensions.isEmpty()) {
       retVal += " (";
     }
-		for (Iterator it = extensions.iterator(); it.hasNext(); ){
-		    retVal += "*" + (String) it.next();
+		for (Iterator<String> it = extensions.iterator(); it.hasNext(); ){
+		    retVal += "*" + it.next();
 		    if (it.hasNext()) {
           retVal +=", ";
         } else {

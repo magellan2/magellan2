@@ -30,7 +30,7 @@ import java.util.Properties;
 import magellan.client.swing.context.ContextFactory;
 import magellan.library.relation.UnitRelation;
 
-public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements CellObject2, SupportsClipboard, Changeable {
+public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements CellObject2 {
 
   private UnitRelation relation;
   private CellObject2 innerNode;
@@ -45,6 +45,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.CellObject#emphasized()
    */
+  @Override
   public boolean emphasized() {
     return innerNode.emphasized();
   }
@@ -52,6 +53,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.CellObject#getIconNames()
    */
+  @Override
   public Collection<String> getIconNames() {
     return innerNode.getIconNames();
   }
@@ -59,6 +61,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
+  @Override
   public NodeWrapperDrawPolicy init(Properties settings, NodeWrapperDrawPolicy adapter) {
     return null;
   }
@@ -66,6 +69,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.CellObject#init(java.util.Properties, java.lang.String, magellan.client.swing.tree.NodeWrapperDrawPolicy)
    */
+  @Override
   public NodeWrapperDrawPolicy init(Properties settings, String prefix,
       NodeWrapperDrawPolicy adapter) {
     return null;
@@ -74,6 +78,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.CellObject#propertiesChanged()
    */
+  @Override
   public void propertiesChanged() {
     innerNode.propertiesChanged();
   }
@@ -81,6 +86,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.SupportsClipboard#getClipboardValue()
    */
+  @Override
   public String getClipboardValue() {
     return innerNode.toString();
   }
@@ -88,6 +94,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.Changeable#getArgument()
    */
+  @Override
   public Object getArgument() {
     return relation;
   }
@@ -95,6 +102,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.Changeable#getChangeModes()
    */
+  @Override
   public int getChangeModes() {
     return Changeable.CONTEXT_MENU;
   }
@@ -102,10 +110,12 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
   /**
    * @see magellan.client.swing.tree.Changeable#getContextFactory()
    */
+  @Override
   public ContextFactory getContextFactory() {
     return contextFactory;
   }
   
+  @Override
   public void setContextFactory(ContextFactory factory){
     this.contextFactory = factory;
   }
@@ -115,6 +125,7 @@ public class UnitRelationNodeWrapper2 extends UnitRelationNodeWrapper implements
    * 
    * @see java.lang.Object#toString()
    */
+  @Override
   public String toString(){
     return innerNode.toString();
   }

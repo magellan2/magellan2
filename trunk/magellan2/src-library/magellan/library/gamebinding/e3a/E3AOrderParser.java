@@ -40,6 +40,7 @@ public class E3AOrderParser extends EresseaOrderParser {
     this.completer = cc;
   }
 
+  @Override
   protected void initCommands() {
     super.initCommands();
 
@@ -79,12 +80,14 @@ public class E3AOrderParser extends EresseaOrderParser {
     // addCommand(Resources.getOrderTranslation(E3AConstants.O_LEARNMAGIC), new XYZReader());
   }
 
+  @Override
   public E3AOrderCompleter getCompleter() {
     return this.completer;
   }
 
   // ************* ALLIANZ
   protected class AllianzReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -156,6 +159,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
 //************* BENENNE
   protected class BenenneReader extends EresseaOrderParser.BenenneReader {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -197,6 +201,7 @@ public class E3AOrderParser extends EresseaOrderParser {
 
   //************* BEZAHLE
   protected class BezahleReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;
@@ -238,6 +243,7 @@ public class E3AOrderParser extends EresseaOrderParser {
   
   // ************* REKRUTIERE
   protected class RekrutiereReader extends OrderHandler {
+    @Override
     public boolean read(OrderToken token) {
       boolean retVal = false;
       token.ttype = OrderToken.TT_KEYWORD;

@@ -187,7 +187,7 @@ public class OrderWriter {
 
 		for(Iterator iter = regions.iterator(); iter.hasNext();) {
 			Region r = (Region) iter.next();
-			Collection units = filterUnits(r.units());
+			Collection<Unit> units = filterUnits(r.units());
 
 			if(units.size() > 0) {
 				writtenUnits += writeRegion(r, units, stream);
@@ -200,7 +200,7 @@ public class OrderWriter {
 		return writtenUnits;
 	}
 
-	private int writeRegion(Region r, Collection units, BufferedWriter stream)
+	private int writeRegion(Region r, Collection<Unit> units, BufferedWriter stream)
 					 throws IOException
 	{
 		if(addECheckComments) {
@@ -217,8 +217,8 @@ public class OrderWriter {
 
 		int writtenUnits = 0;
 
-		for(Iterator iter = units.iterator(); iter.hasNext();) {
-			Unit u = (Unit) iter.next();
+		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
+			Unit u = iter.next();
 
 			if(writeUnit(u, stream)) {
 				writtenUnits++;
@@ -306,7 +306,7 @@ public class OrderWriter {
 		writeln(stream, Resources.getOrderTranslation(EresseaConstants.O_NEXT));
 	}
 
-	private Collection filterUnits(Collection units) {
+	private Collection<Unit> filterUnits(Collection units) {
 		Collection<Unit> filteredUnits = new LinkedList<Unit>();
 
 		for(Iterator iter = units.iterator(); iter.hasNext();) {

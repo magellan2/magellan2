@@ -13,12 +13,11 @@
 
 package magellan.client.swing.context;
 
-import java.util.Collection;
-
 import javax.swing.JPopupMenu;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import magellan.client.event.EventDispatcher;
+import magellan.client.event.SelectionEvent;
 import magellan.client.swing.tree.UnitNodeWrapper;
 import magellan.library.GameData;
 import magellan.library.Unit;
@@ -36,13 +35,13 @@ public class UnitContextFactory implements ContextFactory {
 	 */
 	public JPopupMenu createContextMenu(EventDispatcher dispatcher,
             GameData data, Object argument,
-            Collection<?> selectedObjects,
+            SelectionEvent selectedObjects,
             DefaultMutableTreeNode node) {
 		if(argument instanceof Unit) {
-			return new UnitContextMenu((Unit) argument, selectedObjects,
+			return new UnitContextMenu((Unit) argument, selectedObjects==null?null:selectedObjects.getSelectedObjects(),
 									   dispatcher, data);
 		} else if(argument instanceof UnitNodeWrapper) {
-			return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects,
+			return new UnitContextMenu(((UnitNodeWrapper) argument).getUnit(), selectedObjects==null?null:selectedObjects.getSelectedObjects(),
 									   dispatcher, data);
 		}
 

@@ -21,12 +21,14 @@ import magellan.library.Unit;
  * @version 1.0
  * @deprecated Use {@link magellan.library.utils.UnitRoutePlanner}.
  */
+@Deprecated
 public class UnitRoutePlanner {
 
   /**
    * @deprecated {@link magellan.library.utils.UnitRoutePlanner#planUnitRoute(Unit, GameData, Component, Collection)}
    */
-  public boolean planUnitRoute(Unit unit, GameData data, Component ui, Collection otherUnits) {
+  @Deprecated
+  public boolean planUnitRoute(Unit unit, GameData data, Component ui, Collection<Unit> otherUnits) {
     return (new magellan.library.utils.UnitRoutePlanner()).planUnitRoute(unit, data, ui,
         otherUnits, new RoutingDialog(JOptionPane.getFrameForComponent(ui), data, false));
   }

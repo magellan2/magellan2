@@ -567,10 +567,10 @@ public class NodeWrapperFactory extends JTabbedPane implements PreferencesFactor
      * DOCUMENT-ME
      */
     public void applyPreferences() {
-      Iterator it = myAdapters.iterator();
+      Iterator<PreferencesAdapter> it = myAdapters.iterator();
 
       while (it.hasNext()) {
-        PreferencesAdapter pref = (PreferencesAdapter) it.next();
+        PreferencesAdapter pref = it.next();
         pref.applyPreferences();
       }
     }

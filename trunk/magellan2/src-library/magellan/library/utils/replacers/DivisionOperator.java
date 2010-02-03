@@ -51,6 +51,7 @@ public class DivisionOperator extends AbstractOperator {
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.divisionoperator.description")+"\n\n"+super.getDescription();
   }

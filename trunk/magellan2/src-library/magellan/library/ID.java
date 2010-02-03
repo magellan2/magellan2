@@ -16,7 +16,7 @@ package magellan.library;
 /**
  * A general interface to ID objects conveying "uniqueness".
  */
-public interface ID extends Comparable, Cloneable {
+public interface ID extends Comparable<Object>, Cloneable {
 	/**
 	 * DOCUMENT ME!
 	 *

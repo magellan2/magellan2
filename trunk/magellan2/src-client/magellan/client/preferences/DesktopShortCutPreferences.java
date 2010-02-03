@@ -518,10 +518,10 @@ import magellan.library.utils.Resources;
       buf.append('\n');
       buf.append('\n');
 
-      Iterator it = otherShortcuts.iterator();
+      Iterator<KeyStroke> it = otherShortcuts.iterator();
 
       while(it.hasNext()) {
-        buf.append(getKeyStroke((KeyStroke) it.next()));
+        buf.append(getKeyStroke(it.next()));
 
         if(it.hasNext()) {
           buf.append(", ");

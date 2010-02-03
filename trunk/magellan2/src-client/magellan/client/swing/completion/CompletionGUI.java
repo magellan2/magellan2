@@ -47,7 +47,7 @@ public interface CompletionGUI {
 	 * @param editor The editor where the completions should be shown.
 	 * @param completions A list of completions.
 	 */
-	public void offerCompletion(JTextComponent editor, Collection completions, String stub);
+	public void offerCompletion(JTextComponent editor, Collection<Completion> completions, String stub);
 
 	/**
 	 * Called to cycle through multiple completions. Use the given index to find the completion

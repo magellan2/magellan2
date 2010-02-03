@@ -216,8 +216,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 	 * @see magellan.client.swing.preferences.PreferencesAdapter#initPreferences()
 	 */
 	public void initPreferences() {
-	  for(Iterator iter = rendererAdapters.iterator(); iter.hasNext();) {
-	    PreferencesAdapter adap = (PreferencesAdapter) iter.next();
+	  for(Iterator<PreferencesAdapter> iter = rendererAdapters.iterator(); iter.hasNext();) {
+	    PreferencesAdapter adap = iter.next();
 	    adap.initPreferences();
 	  }
 	}
@@ -246,8 +246,8 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 		}
 
 		// apply changes on the renderers
-		for(Iterator iter = rendererAdapters.iterator(); iter.hasNext();) {
-			PreferencesAdapter adap = (PreferencesAdapter) iter.next();
+		for(Iterator<PreferencesAdapter> iter = rendererAdapters.iterator(); iter.hasNext();) {
+			PreferencesAdapter adap = iter.next();
 			adap.applyPreferences();
 		}
 
@@ -1368,7 +1368,7 @@ public class MapperPreferences extends AbstractPreferencesAdapter implements Pre
 				}
 			} else if(e.getSource() == delete) {
 				try {
-					java.util.List src = source.getAllTooltipDefinitions();
+					java.util.List<String> src = source.getAllTooltipDefinitions();
 					src.remove(tooltipList.getSelectedIndex() * 2);
 					src.remove(tooltipList.getSelectedIndex() * 2);
 					source.setAllTooltipDefinitions(src);

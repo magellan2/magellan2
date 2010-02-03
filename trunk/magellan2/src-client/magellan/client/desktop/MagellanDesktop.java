@@ -434,16 +434,16 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
   protected void saveTranslations() {
     if(shortCutTranslations.size() > 0) {
       StringBuffer buf = new StringBuffer();
-      Iterator it = shortCutTranslations.entrySet().iterator();
+      Iterator<Map.Entry<KeyStroke, KeyStroke>> it = shortCutTranslations.entrySet().iterator();
 
       while(it.hasNext()) {
-        Map.Entry e = (Map.Entry) it.next();
-        KeyStroke stroke = (KeyStroke) e.getKey();
+        Map.Entry<KeyStroke, KeyStroke> e = it.next();
+        KeyStroke stroke = e.getKey();
         buf.append(stroke.getKeyCode());
         buf.append(',');
         buf.append(stroke.getModifiers());
         buf.append(',');
-        stroke = (KeyStroke) e.getValue();
+        stroke = e.getValue();
         buf.append(stroke.getKeyCode());
         buf.append(',');
         buf.append(stroke.getModifiers());
@@ -499,7 +499,7 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
    * 
    */
   public KeyStroke findTranslation(KeyStroke oldStroke) {
-    Iterator it = shortCutTranslations.keySet().iterator();
+    Iterator<KeyStroke> it = shortCutTranslations.keySet().iterator();
 
     while(it.hasNext()) {
       Object obj = it.next();
@@ -833,24 +833,24 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      */
     public void disconnect() {
       if(lastComponents.size() > 0) {
-        Iterator it = shortCutListeners.keySet().iterator();
+        Iterator<KeyStroke> it = shortCutListeners.keySet().iterator();
 
         while(it.hasNext()) {
-          KeyStroke str = (KeyStroke) it.next();
+          KeyStroke str = it.next();
           remove(str);
         }
 
         it = extendedListeners.iterator();
 
         while(it.hasNext()) {
-          KeyStroke str = (KeyStroke) it.next();
+          KeyStroke str = it.next();
           remove(str);
         }
 
         it = shortCutTranslations.keySet().iterator();
 
         while(it.hasNext()) {
-          KeyStroke str = (KeyStroke) it.next();
+          KeyStroke str = it.next();
           remove(str);
         }
       }
@@ -1016,11 +1016,11 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * is true, all key-strokes in the collection are removed, else only non-base-level
      * key-strokes.
      */
-    protected void remove(Collection col, boolean flag) {
-      Iterator it = col.iterator();
+    protected void remove(Collection<KeyStroke> col, boolean flag) {
+      Iterator<KeyStroke> it = col.iterator();
 
       while(it.hasNext()) {
-        KeyStroke stroke = (KeyStroke) it.next();
+        KeyStroke stroke = it.next();
 
         if(flag ||
              (!shortCutTranslations.containsKey(stroke) &&

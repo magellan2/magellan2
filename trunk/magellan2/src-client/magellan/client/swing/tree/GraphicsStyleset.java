@@ -251,7 +251,8 @@ public class GraphicsStyleset implements Cloneable {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
-	public GraphicsStyleset clone() {
+	@Override
+  public GraphicsStyleset clone() {
 	  try {
       return (GraphicsStyleset) super.clone();
     } catch (CloneNotSupportedException e) {

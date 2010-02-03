@@ -66,6 +66,7 @@ public class ItemCategory extends Category {
   /**
    * Returns the id uniquely identifying this object.
    */
+  @Override
   public StringID getID() {
     return (StringID) id;
   }

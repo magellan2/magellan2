@@ -65,7 +65,11 @@ public class FindAction extends MenuAction implements SelectionListener, GameDat
 			selectedRegions.clear();
 
 			if(s.getSelectedObjects() != null) {
-				s.addSelectedObjects(selectedRegions, Region.class);
+		    for (Object o : s.getSelectedObjects()){
+		      if (o instanceof Region){
+		        selectedRegions.add((Region) o);
+		      }
+		    }
 			}
 		}
 	}

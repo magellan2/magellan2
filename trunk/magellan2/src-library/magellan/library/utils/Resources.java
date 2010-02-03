@@ -470,7 +470,7 @@ public class Resources {
    * If no translation is found, the key is returned.
    * 
    * @param key    An order key
-   * @param locale 
+   * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
    * @return The translation as found in the Resources or the key if no translation is found
    */
   public static String getOrderTranslation(String key, Locale locale) {
@@ -556,6 +556,8 @@ public class Resources {
   
   /**
    * This method tries to find a resource in the set of bundles.
+   *
+   * @param locale If this is <code>null</code>, the {@link #DEFAULT} locale is used.
    */
   private String getResource(String key, Locale locale) {
     key=key.trim().replaceAll(" ","");
@@ -668,6 +670,7 @@ class MyResourceBundle extends PropertyResourceBundle {
    * @see java.util.ResourceBundle#containsKey(java.lang.String)
    */
   // @Override
+  @Override
   public boolean containsKey(String key) {
     try {
       getString(key);

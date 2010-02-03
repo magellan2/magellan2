@@ -62,9 +62,11 @@ public class Cache {
   public Map<ID, Item> modifiedItems = null;
 
   /** @deprecated currently unused */
+  @Deprecated
   public int unitWeight = -1;
 
   /** @deprecated currently unused */
+  @Deprecated
   public int modifiedUnitWeight = -1;
 
   /** DOCUMENT-ME */
@@ -104,12 +106,18 @@ public class Cache {
   /**
    * Used in Region for creating a list of Items of priviliged factions in the
    * region
+   * 
+   * @deprecated replaced by method in Units
    */
+  @Deprecated
   public Map<ID,Item> regionItems = null;
 
   /**
    * Used in Region for creating a list of Items of all factions in the region
+   * 
+   * @deprecated replaced by method in Units
    */
+  @Deprecated
   public Map<ID,Item> allRegionItems = null;
 
   /**
@@ -155,8 +163,8 @@ public class Cache {
    */
   public void clear() {
     if (handlers != null) {
-      for (Iterator iter = handlers.iterator(); iter.hasNext();) {
-        CacheHandler h = (CacheHandler) iter.next();
+      for (Iterator<CacheHandler> iter = handlers.iterator(); iter.hasNext();) {
+        CacheHandler h = iter.next();
         h.clearCache(this);
       }
     }

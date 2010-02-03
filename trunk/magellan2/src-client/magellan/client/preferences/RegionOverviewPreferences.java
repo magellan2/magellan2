@@ -868,6 +868,7 @@ public class RegionOverviewPreferences extends JPanel implements ExtendedPrefere
       /**
        * DOCUMENT-ME
        */
+      @Override
       public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
         sep.setBounds(x, y, width, height);
         SwingUtilities.paintComponent(g, sep, new JPanel(), x, y, width, height);

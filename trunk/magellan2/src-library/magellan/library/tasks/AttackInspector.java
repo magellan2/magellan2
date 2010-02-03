@@ -97,7 +97,7 @@ public class AttackInspector extends AbstractInspector {
     // int line = 0;
     int wrongStatus = Integer.MAX_VALUE;
 
-    List relations = u.getRelations(AttackRelation.class);
+    List<?> relations = u.getRelations(AttackRelation.class);
     for (Object o : relations) {
       if (o instanceof AttackRelation) {
         AttackRelation relation = (AttackRelation) o;

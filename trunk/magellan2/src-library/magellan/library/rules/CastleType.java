@@ -25,7 +25,7 @@ import magellan.library.StringID;
  * @author $Author: $
  * @version $Revision: 203 $
  */
-public class CastleType extends BuildingType implements Comparable {
+public class CastleType extends BuildingType {
 	private int minSize;
 	private int wage = -1;
 	private int tax = -1;

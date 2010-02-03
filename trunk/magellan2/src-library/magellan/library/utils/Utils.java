@@ -112,7 +112,7 @@ public class Utils {
    * @param list
    * @return <code>true</code> if list is <code>null</code> or empty
    */
-  public static boolean isEmpty(List list) {
+  public static boolean isEmpty(List<Element> list) {
     return (list==null || list.size()==0);
   }
   
@@ -120,7 +120,7 @@ public class Utils {
    * @param map
    * @return <code>true</code> if map is <code>null</code> or empty
    */
-  public static boolean isEmpty(HashMap map) {
+  public static boolean isEmpty(HashMap<?, ?> map) {
     return (map==null || map.size()==0);
   }
   

@@ -148,6 +148,7 @@ public class UnitSkillCountReplacer extends AbstractParameterReplacer implements
   /**
    * @see magellan.library.utils.replacers.Replacer#getDescription()
    */
+  @Override
   public String getDescription() {
     return Resources.get("util.replacers.unitskillcountreplacer.description." + mode)+"\n\n"+super.getDescription();
   }

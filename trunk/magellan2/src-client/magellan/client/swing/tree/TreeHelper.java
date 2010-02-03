@@ -176,8 +176,8 @@ public class TreeHelper {
     List<Building> sortedBuildings = new ArrayList<Building>(r.buildings());
     Collections.sort(sortedBuildings, TreeHelper.buildingCmp);
 
-    for (Iterator iter = sortedBuildings.iterator(); iter.hasNext();) {
-      Building b = (Building) iter.next();
+    for (Iterator<Building> iter = sortedBuildings.iterator(); iter.hasNext();) {
+      Building b = iter.next();
       node = new DefaultMutableTreeNode(factory.createUnitContainerNodeWrapper(b));
       regionNode.add(node);
 

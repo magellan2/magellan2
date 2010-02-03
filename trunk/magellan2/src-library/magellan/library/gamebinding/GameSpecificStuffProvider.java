@@ -56,7 +56,7 @@ public class GameSpecificStuffProvider {
 
 		try {
 			// TODO: perhaps use ResourcePathClassLoader instead?
-			Class clazz = Class.forName(className);
+			Class<?> clazz = Class.forName(className);
 			Object result = clazz.newInstance();
 
 			if(result instanceof GameSpecificStuff) {

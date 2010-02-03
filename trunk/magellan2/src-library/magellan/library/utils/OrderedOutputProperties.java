@@ -21,6 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 
+import magellan.library.utils.logging.Logger;
+
 
 /**
  * DOCUMENT ME!
@@ -47,13 +49,13 @@ public class OrderedOutputProperties extends Properties {
 	/**
 	 * DOCUMENT-ME
 	 *
-	 * 
+	 * @see java.util.Hashtable#keys()
 	 */
 	@Override
-  public Enumeration<Object> keys() {
+  public synchronized Enumeration<Object> keys() {
 		List<Object> l = new LinkedList<Object>();
 		l.addAll(keySet());
-		Collections.sort(l, new ObjectComparator());
+		Collections.sort(l, new ObjectComparator<Object>());
 
 		return new IteratorEnumeration(l.iterator());
 	}
@@ -71,26 +73,31 @@ public class OrderedOutputProperties extends Properties {
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see java.util.Enumeration#hasMoreElements()
 		 */
 		public boolean hasMoreElements() {
 			return iterator.hasNext();
 		}
 
 		/**
-		 * DOCUMENT-ME
-		 *
-		 * 
+		 * @see java.util.Enumeration#nextElement()
 		 */
 		public Object nextElement() {
 			return iterator.next();
 		}
 	}
 	
-	private class ObjectComparator implements Comparator<Object> {
+	private class ObjectComparator<T extends Object> implements Comparator<T> {
 
+	  ObjectComparator() {
+      
+    }
+	  
+    /**
+     * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+     */
+	  // The class cast exception is caught...
+    @SuppressWarnings("unchecked")
     public int compare(Object o1, Object o2) {
       if (o1 == null) {
         return Integer.MAX_VALUE;
@@ -101,10 +108,13 @@ public class OrderedOutputProperties extends Properties {
       if (o1 instanceof Comparable && o2 instanceof Comparable) {
         Comparable c1 = (Comparable)o1;
         Comparable c2 = (Comparable)o2;
-        return c1.compareTo(c2);
-      } else {
-        return o1.toString().compareTo(o2.toString());
+        try {
+          return c1.compareTo(c2);
+        } catch (ClassCastException e){
+          Logger.getInstance(OrderedOutputProperties.class).warn(e);
+        }
       }
+      return o1.toString().compareTo(o2.toString());
     }
 	  
 	}

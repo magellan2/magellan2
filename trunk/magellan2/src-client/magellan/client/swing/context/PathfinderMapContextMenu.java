@@ -465,17 +465,17 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
    * @see magellan.client.event.SelectionListener#selectionChanged(magellan.client.event.SelectionEvent)
    */
   public void selectionChanged(SelectionEvent e) {
-     // rausfinden, ob units selektiert sind
-     if (e.getSelectedObjects()!=null){
-        this.selectedObjects = e.getSelectedObjects();
-     }
-     
-     // Enable
-     if (this.getSelectedUnits()!=null){
-        this.unitsSelected=true;
-     } else {
-       this.unitsSelected=false;
-     }
+    // rausfinden, ob units selektiert sind
+    if (e.getSelectedObjects()!=null){
+      this.selectedObjects = e.getSelectedObjects();
+    }
+
+    // Enable
+    if (this.getSelectedUnits()!=null){
+      this.unitsSelected=true;
+    } else {
+      this.unitsSelected=false;
+    }
   }
 
   /**

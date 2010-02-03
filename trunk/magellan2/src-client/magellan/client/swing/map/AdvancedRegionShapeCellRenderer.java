@@ -57,6 +57,7 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -181,17 +182,17 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     }
 
     protected void save(Properties settings) {
-      Collection entries = cTable.getEntries();
+      Collection<Entry<Float, Color>> cEntries = cTable.getEntries();
       StringBuffer buf = new StringBuffer();
 
-      if (entries.size() > 0) {
-        Iterator it = entries.iterator();
+      if (cEntries.size() > 0) {
+        Iterator<Entry<Float, Color>> it = cEntries.iterator();
 
         while (it.hasNext()) {
-          Map.Entry entry = (Map.Entry) it.next();
-          buf.append(((Float) entry.getKey()).floatValue());
+          Entry<Float, Color> entry = it.next();
+          buf.append((entry.getKey()).floatValue());
           buf.append(';');
-          buf.append(Colors.encode((Color) entry.getValue()));
+          buf.append(Colors.encode(entry.getValue()));
 
           if (it.hasNext()) {
             buf.append(';');
@@ -203,17 +204,17 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         settings.remove(PropertiesHelper.ADVANCEDSHAPERENDERER + name + PropertiesHelper.ADVANCEDSHAPERENDERER_COLORS);
       }
 
-      entries = vMapping.getEntries();
+      Collection<Entry<Float, Float>> vEntries = vMapping.getEntries();
 
-      if (entries.size() > 0) {
-        Iterator it = entries.iterator();
+      if (vEntries.size() > 0) {
+        Iterator<Entry<Float, Float>> it = vEntries.iterator();
         buf.setLength(0);
 
         while (it.hasNext()) {
-          Map.Entry entry = (Map.Entry) it.next();
-          buf.append(((Float) entry.getKey()).floatValue());
+          Entry<Float, Float> entry = it.next();
+          buf.append((entry.getKey()).floatValue());
           buf.append(';');
-          buf.append(((Float) entry.getValue()).floatValue());
+          buf.append((entry.getValue()).floatValue());
 
           if (it.hasNext()) {
             buf.append(';');
@@ -595,13 +596,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
      */
     public float interpolate(float f) {
       Float fl = new Float(f);
-      SortedMap m1 = values.headMap(fl);
+      SortedMap<Float, Float> m1 = values.headMap(fl);
 
       if ((m1 == null) || (m1.size() == 0)) {
         return (values.get(values.firstKey())).floatValue();
       }
 
-      SortedMap m2 = values.tailMap(fl);
+      SortedMap<Float, Float> m2 = values.tailMap(fl);
 
       if ((m2 == null) || (m2.size() == 0)) {
         float last = (values.get(values.lastKey())).floatValue();
@@ -610,13 +611,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
       }
 
       if (m2.firstKey().equals(fl)) {
-        return ((Float) m2.get(fl)).floatValue();
+        return m2.get(fl).floatValue();
       }
 
-      Float left = (Float) m1.lastKey();
-      Float right = (Float) m2.firstKey();
-      Float leftMapping = (Float) m1.get(left);
-      Float rightMapping = (Float) m2.get(right);
+      Float left = m1.lastKey();
+      Float right = m2.firstKey();
+      Float leftMapping = m1.get(left);
+      Float rightMapping = m2.get(right);
 
       float percent = (f - left.floatValue()) / (right.floatValue() - left.floatValue());
       float ret = ((leftMapping.floatValue() * (1 - percent)) + (rightMapping.floatValue() * percent));
@@ -698,14 +699,14 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
     /**
      * DOCUMENT-ME
      */
-    public Collection getColors() {
+    public Collection<Color> getColors() {
       return colors.values();
     }
 
     /**
      * DOCUMENT-ME
      */
-    public Collection getValues() {
+    public Collection<Float> getValues() {
       return colors.keySet();
     }
 
@@ -845,6 +846,9 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
   }
 
   // MAPPER things
+  /**
+   * DOCUMENT-ME
+   */
   public String getMapperTooltip() {
     if (mapper != null) {
       return mapper.getTooltipDefinition();
@@ -1104,7 +1108,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       model.clear();
 
-      Iterator it = sets.iterator();
+      Iterator<String> it = sets.iterator();
 
       while (it.hasNext()) {
         model.addElement(it.next());
@@ -1475,13 +1479,13 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
 
       // add all mapper tool tips
       if (mapper != null) {
-        java.util.List l = mapper.getAllTooltipDefinitions();
-        Iterator it = l.iterator();
+        List<String> l = mapper.getAllTooltipDefinitions();
+        Iterator<String> it = l.iterator();
         int i = 3;
 
         while (it.hasNext()) {
-          String name = (String) it.next();
-          String tip = (String) it.next();
+          String name = it.next();
+          String tip = it.next();
 
           if ((prefSet.mapperTooltip != null) && tip.equals(prefSet.mapperTooltip)) {
             selIndex = i;
@@ -1963,10 +1967,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         int ox = -1;
 
         if (value.size() > 0) {
-          Iterator it = value.iterator();
+          Iterator<Float> it = value.iterator();
 
           while ((ox < x) && it.hasNext()) {
-            float next = ((Float) it.next()).floatValue();
+            float next = it.next().floatValue();
             ox = (int) (next * width);
 
             if (ox == x) { // don't allow equal x position
@@ -2070,6 +2074,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         /**
          * DOCUMENT-ME
          */
+        @Override
         public void paintComponent(Graphics g) {
           Dimension size = this.getSize();
           g.setColor(this.getBackground());
@@ -2323,10 +2328,10 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         int ox = -1;
 
         if (value.size() > 0) {
-          Iterator it = value.iterator();
+          Iterator<Float> it = value.iterator();
 
           while ((ox < x) && it.hasNext()) {
-            float next = ((Float) it.next()).floatValue();
+            float next = it.next().floatValue();
             ox = (int) (next * width);
 
             if (ox == x) { // don't allow equal x position
@@ -2458,6 +2463,7 @@ public class AdvancedRegionShapeCellRenderer extends AbstractRegionShapeCellRend
         /**
          * DOCUMENT-ME
          */
+        @Override
         public void paintComponent(Graphics g) {
           Dimension size = this.getSize();
           g.setColor(this.getBackground());

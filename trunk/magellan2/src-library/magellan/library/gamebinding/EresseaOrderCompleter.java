@@ -162,10 +162,10 @@ public class EresseaOrderCompleter implements Completer {
           start = Math.abs(start) - 1;
         }
 
-        Iterator it = list.listIterator(start);
+        Iterator<Completion> it = list.listIterator(start);
 
         while (it.hasNext()) {
-          Completion elem = (Completion) it.next();
+          Completion elem = it.next();
           String val = elem.getName();
           int len = Math.min(stub.length(), val.length());
 
@@ -1297,7 +1297,8 @@ public class EresseaOrderCompleter implements Completer {
       }
 
       if (!completerSettingsProvider.getLimitMakeCompletion()
-          || (region.getItem(data.rules.getItemType(EresseaConstants.I_USTONE)) != null)) {
+          || (Units.getContainerPrivilegedUnitItem(region, data.rules
+              .getItemType(EresseaConstants.I_USTONE)) != null)) {
         completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_CASTLE),
             " "));
       }
@@ -1305,8 +1306,8 @@ public class EresseaOrderCompleter implements Completer {
 
     // ships
     if (hasSkill(unit, EresseaConstants.S_SCHIFFBAU)
-        && (!completerSettingsProvider.getLimitMakeCompletion() || (region.getItem(data.rules
-            .getItemType(EresseaConstants.I_WOOD)) != null))) {
+        && (!completerSettingsProvider.getLimitMakeCompletion() || (Units
+            .getContainerPrivilegedUnitItem(region, data.rules.getItemType(EresseaConstants.I_WOOD)) != null))) {
       if ((data != null) && (data.rules != null)) {
         for (Iterator iter = data.rules.getShipTypeIterator(); iter.hasNext();) {
           ShipType t = (ShipType) iter.next();
@@ -1336,8 +1337,9 @@ public class EresseaOrderCompleter implements Completer {
     }
 
     if (hasSkill(unit, EresseaConstants.S_STRASSENBAU)
-        && (!completerSettingsProvider.getLimitMakeCompletion() || (region.getItem(data.rules
-            .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
+        && (!completerSettingsProvider.getLimitMakeCompletion() || (Units
+            .getContainerPrivilegedUnitItem(region, data.rules
+                .getItemType(EresseaConstants.I_USTONE)) != null)) && canMake) {
       completions.add(new Completion(Resources.getOrderTranslation(EresseaConstants.O_ROAD), " "));
     }
 
@@ -1539,7 +1541,8 @@ public class EresseaOrderCompleter implements Completer {
     int maxOnFoot = getGameSpecificStuff().getMovementEvaluator().getPayloadOnFoot(otherUnit);
     int maxOnHorse = getGameSpecificStuff().getMovementEvaluator().getPayloadOnHorse(otherUnit);
 
-    for (Iterator iter = otherUnit.getRegion().allItems().iterator(); iter.hasNext();) {
+    for (Iterator iter = Units.getContainerAllUnitItems(otherUnit.getRegion()).iterator(); iter
+        .hasNext();) {
       Item item = (Item) iter.next();
       ItemType type = item.getItemType();
 
@@ -2553,13 +2556,6 @@ public class EresseaOrderCompleter implements Completer {
       return 0;
     }
 
-    /**
-		 * 
-		 */
-    @Override
-    public boolean equals(Object obj) {
-      return false;
-    }
   }
 
   /**

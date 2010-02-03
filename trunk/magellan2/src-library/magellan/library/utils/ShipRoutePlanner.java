@@ -85,11 +85,11 @@ public class ShipRoutePlanner extends RoutePlanner {
 
     try {
       Map<CoordinateID, Region> regionMap = data.regions();
-      Iterator cIt = regionMap.values().iterator();
+      Iterator<Region> cIt = regionMap.values().iterator();
 
       while (cIt.hasNext()) {
         try {
-          Region region = (Region) cIt.next();
+          Region region = cIt.next();
           Map<CoordinateID, Region> m =
               Regions.getAllNeighbours(regionMap, region.getCoordinate(), 1, null);
           Iterator<Region> cIt2 = m.values().iterator();
@@ -131,8 +131,9 @@ public class ShipRoutePlanner extends RoutePlanner {
       if (v.replaceOrders()) {
         shipOwner.setOrders(orders);
       } else {
-        for (ListIterator iter = orders.listIterator(); iter.hasNext();) {
-          shipOwner.addOrder((String) iter.next(), false, 0);
+        data.getGameSpecificStuff().getOrderChanger().disableLongOrders(shipOwner);
+        for (ListIterator<String> iter = orders.listIterator(); iter.hasNext();) {
+          shipOwner.addOrder(iter.next(), false, 0);
         }
       }
 

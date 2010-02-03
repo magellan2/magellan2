@@ -64,9 +64,9 @@ public class ToDoInspector extends AbstractInspector {
 
 		int line = 0;
 
-		for(Iterator iter = u.getOrders().iterator(); iter.hasNext();) {
+		for(Iterator<String> iter = u.getOrders().iterator(); iter.hasNext();) {
       line++;
-			String order = ((String) iter.next()).trim();
+			String order = (iter.next()).trim();
 
 			if(order.startsWith("//")) {
 				order = order.substring(2).trim();

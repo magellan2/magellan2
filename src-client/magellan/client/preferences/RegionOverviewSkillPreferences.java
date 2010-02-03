@@ -274,8 +274,8 @@ import magellan.library.utils.comparator.SkillTypeRankComparator;
     if (data != null) {
       List<SkillType> v = new LinkedList<SkillType>();
 
-      for (Iterator iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
-        SkillType type = (SkillType) iter.next();
+      for (Iterator<SkillType> iter = data.rules.getSkillTypeIterator(); iter.hasNext();) {
+        SkillType type = iter.next();
         v.add(type);
       }
 

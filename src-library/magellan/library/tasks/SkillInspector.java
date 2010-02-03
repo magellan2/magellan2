@@ -77,9 +77,7 @@ public class SkillInspector extends AbstractInspector {
 
     // check all person transfer relations
     List<Problem> problems = new ArrayList<Problem>(2);
-    for (UnitRelation rel : u.getRelations(PersonTransferRelation.class)) {
-      if (rel instanceof PersonTransferRelation) {
-        PersonTransferRelation relation = (PersonTransferRelation) rel;
+    for (PersonTransferRelation relation : u.getRelations(PersonTransferRelation.class)) {
         Unit u1 = relation.source;
         Unit u2 = relation.target;
         if (u1 != u)
@@ -93,12 +91,11 @@ public class SkillInspector extends AbstractInspector {
           // source
           if (skill1 != null) {
             if (skill2 == null || skill1.getLevel() > skill2.getLevel()) {
-              // FIXME when passing persons to an empty unit, no warning is necessary
+              // when passing persons to an empty unit, no warning is necessary
               // except when multiple units pass persons to the empty unit
               // this is not perfect yet:
               if (u2.getPersons() > 0
-                  || (!u2.getRelations(PersonTransferRelation.class).isEmpty() && u2.getRelations(
-                      PersonTransferRelation.class).size() > 1)) {
+                  || (u2.getRelations(PersonTransferRelation.class).size() > 1)) {
                 problems.add(ProblemFactory.createProblem(Severity.WARNING, SKILLDECREASE, u, this,
                     relation.line));
                 break;
@@ -116,7 +113,7 @@ public class SkillInspector extends AbstractInspector {
             }
           }
         }
-      }
+      
     }
 
     if (problems.isEmpty()) {

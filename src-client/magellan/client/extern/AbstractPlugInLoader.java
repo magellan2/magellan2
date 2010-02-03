@@ -101,14 +101,14 @@ public abstract class AbstractPlugInLoader<T> {
   /**
    * 
    */
-  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class externalModuleClass, String path) {
+  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class<?> externalModuleClass, String path) {
     return getClassesFromPath(resLoader, externalModuleClass, path, null, getLastCapitalizedString(externalModuleClass.getName()).toLowerCase() + ".class");
   }
 
   /**
    * 
    */
-  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class externalModuleClass, String path, String packagePrefix, String postfix) {
+  protected Collection<Class<T>> getClassesFromPath(ClassLoader resLoader, Class<?> externalModuleClass, String path, String packagePrefix, String postfix) {
     Collection<Class<T>> classes = new ArrayList<Class<T>>();
 
     try {
@@ -139,11 +139,11 @@ public abstract class AbstractPlugInLoader<T> {
               String name = entry.getName();
               name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');
 
-              Class foundClass = resLoader.loadClass(name);
-              Class interfaces[] = foundClass.getInterfaces();
+              Class<?> foundClass = resLoader.loadClass(name);
+              Class<?> interfaces[] = foundClass.getInterfaces();
               boolean found = false;
               
-              for (Class ainterface : interfaces) {
+              for (Class<?> ainterface : interfaces) {
                 AbstractPlugInLoader.log.debug("interface: "+ainterface.getName());
               }
 
@@ -156,7 +156,8 @@ public abstract class AbstractPlugInLoader<T> {
               
               if (found) {
                 // found a class that implements ExternalModule
-                classes.add(foundClass);
+                // TODO this cast is... probably okay
+                classes.add((Class<T>) foundClass);
                 AbstractPlugInLoader.log.info("Found " + foundClass.getName());
               }
             }
@@ -165,7 +166,7 @@ public abstract class AbstractPlugInLoader<T> {
           String name = file.getName();
           name = name.substring(0, name.indexOf(".class")).replace('\\', '.').replace('/', '.');
 
-          Class foundClass;
+          Class<?> foundClass;
 
           try {
             foundClass = resLoader.loadClass(name);
@@ -175,12 +176,13 @@ public abstract class AbstractPlugInLoader<T> {
             foundClass = resLoader.loadClass(name);
           }
 
-          Class interfaces[] = foundClass.getInterfaces();
+          Class<?> interfaces[] = foundClass.getInterfaces();
 
           for (int i = 0; i < interfaces.length; i++) {
             if (interfaces[i].equals(externalModuleClass)) {
               // found a class that implements ExternalModule
-              classes.add(foundClass);
+              // TODO this cast is... probably okay
+              classes.add((Class<T>) foundClass);
               AbstractPlugInLoader.log.info("Found " + foundClass.getName());
 
               break;
@@ -204,7 +206,7 @@ public abstract class AbstractPlugInLoader<T> {
   /**
    * 
    */
-  protected Collection<Class<T>> getExternalModuleClasses(Properties settings, Class externalModuleClass) {
+  protected Collection<Class<T>> getExternalModuleClasses(Properties settings, Class<?> externalModuleClass) {
     Collection<Class<T>> classes = new HashSet<Class<T>>();
 
     ResourcePathClassLoader resLoader = new ResourcePathClassLoader(settings);

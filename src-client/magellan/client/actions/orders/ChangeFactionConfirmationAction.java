@@ -20,6 +20,7 @@ import magellan.client.Client;
 import magellan.client.actions.MenuAction;
 import magellan.client.event.OrderConfirmEvent;
 import magellan.library.Faction;
+import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.utils.Resources;
 
@@ -91,7 +92,7 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 	 */
 	@Override
   public void menuActionPerformed(java.awt.event.ActionEvent e) {
-		Collection units = null;
+		Collection<Unit> units = null;
 
 		if(faction == null) {
 			if((client.getData() != null) && (client.getData().units() != null)) {
@@ -102,8 +103,8 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 		}
 
 		if(units != null) {
-			for(Iterator iter = units.iterator(); iter.hasNext();) {
-				Unit unit = (Unit) iter.next();
+			for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
+				Unit unit = iter.next();
 
 				if(spies==unit.isSpy()) {
 					// this is slow but ok for this situation (normally one would iterate over the
@@ -117,8 +118,8 @@ public class ChangeFactionConfirmationAction extends MenuAction {
 
 					// (!) temp units are contained in Faction.units(),
 					// but not in GameData.units() (!)
-					for(Iterator temps = unit.tempUnits().iterator(); temps.hasNext();) {
-						Unit temp = (Unit) temps.next();
+					for(Iterator<TempUnit> temps = unit.tempUnits().iterator(); temps.hasNext();) {
+						Unit temp = temps.next();
 						changeConfirmation(temp);
 					}
 				}

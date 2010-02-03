@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.security.spec.ECGenParameterSpec;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Iterator;
@@ -508,16 +509,15 @@ public class JECheck extends Reader {
 	 * 		  retrieved.
 	 * @param orderFile a file containing the orders that ECheck was run on when it produced the
 	 * 		  specified message.
-	 * @param msgs the messages to be processed.
+	 * @param messages the messages to be processed.
 	 *
 	 * @return the collection of input messages with their affected objects fields set if possible.
 	 *
 	 * @throws IOException DOCUMENT-ME
 	 * @throws IllegalArgumentException DOCUMENT-ME
 	 */
-	public static Collection determineAffectedObjects(GameData data, File orderFile, Collection msgs)
-											   throws IOException
-	{
+  public static Collection<ECheckMessage> determineAffectedObjects(GameData data, File orderFile,
+      List<ECheckMessage> messages) throws IOException {
 		if(data == null) {
 			throw new IllegalArgumentException("JECheck.getAffectedObject(): invalid data argument specified.");
 		}
@@ -530,7 +530,7 @@ public class JECheck extends Reader {
 			throw new IllegalArgumentException("JECheck.getAffectedObject(): the specified orderFile file does not exist.");
 		}
 
-		if(msgs == null) {
+		if(messages == null) {
 			throw new IllegalArgumentException("JECheck.getAffectedObject(): invalid msgs argument specified.");
 		}
 
@@ -554,8 +554,8 @@ public class JECheck extends Reader {
 
 		/* now walk all messages and determine the affected object by
 		   looking at the line referenced. */
-		for(Iterator msgIter = msgs.iterator(); msgIter.hasNext();) {
-			ECheckMessage msg = (ECheckMessage) msgIter.next();
+		for(Iterator<ECheckMessage> msgIter = messages.iterator(); msgIter.hasNext();) {
+			ECheckMessage msg = msgIter.next();
 
 			if(msg.getLineNr() > 0) {
 				for(int i = msg.getLineNr() - 1; i > -1; i--) {
@@ -599,7 +599,7 @@ public class JECheck extends Reader {
 			}
 		}
 
-		return msgs;
+		return messages;
 	}
 
 	/**

@@ -45,4 +45,5 @@ public class PersonTransferRelation extends TransferRelation {
   public String toString() {
 		return super.toString() + "@RACE=" + race;
 	}
+
 }

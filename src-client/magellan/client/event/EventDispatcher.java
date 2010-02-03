@@ -22,6 +22,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import magellan.client.MagellanContext;
+import magellan.library.event.EventListener;
 import magellan.library.event.GameDataEvent;
 import magellan.library.event.GameDataListener;
 import magellan.library.utils.guiwrapper.EventDispatcherInterface;
@@ -32,7 +33,7 @@ import magellan.library.utils.logging.Logger;
  */
 public class EventDispatcher implements EventDispatcherInterface {
   private static final Logger log = Logger.getInstance(EventDispatcher.class);
-  private List<Object> listeners[];
+  private ArrayList<List<EventListener>> listenerss;
   private boolean notifierIsAliveOnList[];
   private boolean notifierIsAlive = false;
   private boolean stopNotification = false;
@@ -54,16 +55,15 @@ public class EventDispatcher implements EventDispatcherInterface {
    * Creates a new dispatcher
    */
   public EventDispatcher() {
-    // causes an "unchecked" warning, but should be okay. Could change listeners to ArrayList of
-    // Lists...
-    listeners = new List[EventDispatcher.PRIORITIES.length];
+    listenerss = new ArrayList<List<EventListener>>(EventDispatcher.PRIORITIES.length);
     notifierIsAliveOnList = new boolean[EventDispatcher.PRIORITIES.length];
 
     for (int i = 0; i < EventDispatcher.PRIORITIES.length; i++) {
-      listeners[i] = new ArrayList<Object>();
+      listenerss.add(new ArrayList<EventListener>());
       notifierIsAliveOnList[i] = false;
     }
-
+    assert listenerss.size() == EventDispatcher.PRIORITIES.length;
+    
     queue = new EQueue();
 
     Thread t = new Thread(new EManager(), "EventDispatcher");
@@ -95,31 +95,31 @@ public class EventDispatcher implements EventDispatcherInterface {
   /**
    * Clones the List (and remove WeakReference objects with null target)
    */
-  private List<Object> cloneList(List<Object> list) {
-    return new ArrayList<Object>(list);
+  private <T> List<T> cloneList(List<T> list) {
+    return new ArrayList<T>(list);
   }
 
-  private void addListener(int pos, Object obj) {
+  private void addListener(int pos, EventListener obj) {
     if (notifierIsAliveOnList[pos]) {
       // TODO maybe should do this asynchronously in AWT
       // clone list before changing
-      listeners[pos] = cloneList(listeners[pos]);
+      listenerss.set(pos, cloneList(listenerss.get(pos)));
       log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
     }
 
-    listeners[pos].add(obj);
+    listenerss.get(pos).add(obj);
 
     checkManyListeners(pos);
   }
 
-  private void addPriorityListener(int pos, Object obj) {
+  private void addPriorityListener(int pos, EventListener obj) {
     if (notifierIsAlive) {
       // clone list before changing
-      listeners[pos] = cloneList(listeners[pos]);
+      listenerss.set(pos, cloneList(listenerss.get(pos)));
       log.warn("The following exception shall be reported to bugzilla!", new Exception("It is not allowed to add a listener during a listener run (queue: "+pos+", new listener: "+obj.getClass().getName()));
     }
 
-    listeners[pos].add(0, obj);
+    listenerss.get(pos).add(0, obj);
 
     checkManyListeners(pos);
   }
@@ -127,8 +127,8 @@ public class EventDispatcher implements EventDispatcherInterface {
 
   private void checkManyListeners(int pos) {
     // issue a warning if there are too many listeners (possible memory leak)
-    if (listeners[pos].size()>magnitude){
-      log.warn("many listeners in pos "+pos+": "+listeners[pos].size());
+    if (listenerss.get(pos).size()>magnitude){
+      log.warn("many listeners in pos "+pos+": "+listenerss.get(pos).size());
       magnitude*=2;
     }
   }
@@ -136,11 +136,11 @@ public class EventDispatcher implements EventDispatcherInterface {
   private boolean removeListener(int pos, Object l) {
     if (notifierIsAlive) {
       // clone list before changing
-      listeners[pos] = cloneList(listeners[pos]);
+      listenerss.set(pos, cloneList(listenerss.get(pos)));
 //      log.warn("The following exception shall be reported to bugzilla!", new Exception());
     }
 
-    return listeners[pos].remove(l);
+    return listenerss.get(pos).remove(l);
   }
 
   /**
@@ -575,7 +575,7 @@ public class EventDispatcher implements EventDispatcherInterface {
         
         notifierIsAliveOnList[EventDispatcher.SELECTION] = true;
 
-        for (Iterator iter = listeners[EventDispatcher.SELECTION].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.SELECTION).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -603,7 +603,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.ORDERCONFIRM] = true;
 
-        for (Iterator iter = listeners[EventDispatcher.ORDERCONFIRM].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.ORDERCONFIRM).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -627,7 +627,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.UNITORDERS] = true;
 
-        for (Iterator iter = listeners[EventDispatcher.UNITORDERS].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.UNITORDERS).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -652,7 +652,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.TEMPUNIT] = true;
 
-        for (Iterator iter = listeners[EventDispatcher.TEMPUNIT].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.TEMPUNIT).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 
@@ -684,7 +684,7 @@ public class EventDispatcher implements EventDispatcherInterface {
 
         notifierIsAliveOnList[EventDispatcher.GAMEDATA] = true;
         
-        for (Iterator iter = listeners[EventDispatcher.GAMEDATA].iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
+        for (Iterator<EventListener> iter = listenerss.get(EventDispatcher.GAMEDATA).iterator(); iter.hasNext() && !EventDispatcher.this.stopNotification;) {
           // Object o = ((WeakReference) iter.next()).get();
           Object o = iter.next();
 

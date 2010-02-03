@@ -904,10 +904,10 @@ public class MagellanDesktop extends JPanel implements WindowListener, ActionLis
      * 
      */
     public void addListener(ShortcutListener sl) {
-      Iterator it = sl.getShortCuts();
+      Iterator<KeyStroke> it = sl.getShortCuts();
 
       while(it.hasNext()) {
-        addStroke((KeyStroke) it.next(), sl, false);
+        addStroke(it.next(), sl, false);
       }
     }
 

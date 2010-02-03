@@ -21,6 +21,7 @@ import java.util.Set;
 
 import magellan.library.gamebinding.MovementEvaluator;
 import magellan.library.relation.ItemTransferRelation;
+import magellan.library.relation.PersonTransferRelation;
 import magellan.library.relation.ReserveRelation;
 import magellan.library.relation.UnitRelation;
 import magellan.library.rules.ItemType;
@@ -68,15 +69,15 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
     #define GUARD_TRAVELTHRU 8
       /* Blockiert Durchreisende *
     #define GUARD_LANDING 16
-      /* Verhindert Ausstieg + Weiterreise * 
-    *#define GUARD_CREWS 32
+      /* Verhindert Ausstieg + Weiterreise *
+   *#define GUARD_CREWS 32
       /* Verhindert Unterhaltung auf Schiffen
-       * * #define GUARD_RECRUIT 64
+   * * #define GUARD_RECRUIT 64
        /* Verhindert Rekrutieren *
     #define GUARD_PRODUCE 128
       /* Verhindert Abbau von Resourcen mit RTF_LIMITED *
-    */
-  
+   */
+
   /**
    * Returns true if no orders are set
    */
@@ -408,7 +409,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @param writeUnitTagsAsVorlageComment
    */
   public List<String> getCompleteOrders(boolean writeUnitTagsAsVorlageComment);
-  
+
   /**
    * Creates a new temp unit with this unit as the parent. The temp unit is
    * fully initialised, i.e. it is added to the region units collection in the
@@ -419,7 +420,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @throws IllegalArgumentException
    */
   public TempUnit createTemp(UnitID key);
-  
+
   /**
    * Removes a temp unit with this unit as the parent completely from the game
    * data.
@@ -440,12 +441,12 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Removes a relation to this unit.
    */
   public UnitRelation removeRelation(UnitRelation rel);
-  
+
   /**
    * Adds all directly related units to <code>units</code>.
    */
   public void getRelatedUnits(Collection<Unit> units);
-  
+
   /**
    * Recursively retrieves all units that are related to this unit via one of
    * the specified relations.
@@ -457,7 +458,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *          for regarding a unit as related to some other unit.
    */
   public void getRelatedUnits(Set<Unit> units, Set<UnitRelation.ID> relations);
-  
+
   /**
    * Returns a List of the reached coordinates of the units movement starting
    * with the current region or an empty list if unit is not moving.
@@ -465,7 +466,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return A list of coordinates, empty list means no movement
    */
   public List<CoordinateID> getModifiedMovement();
-  
+
   /**
    * Returns the modified ship if this unit modifies the ship
    */
@@ -480,30 +481,30 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns the modified skills if this will change.
    */
   public Skill getModifiedSkill(SkillType type);
-  
+
   /**
    * Returns the skills of this unit as they would appear after the orders for
    * person transfers are processed.
    */
   public Collection<Skill> getModifiedSkills();
-  
+
   /**
    * Returns the unit container this belongs to. (ship, building or null)
    */
   public UnitContainer getUnitContainer();
-  
+
   /**
    * Returns the modified unit container this unit belongs to. (ship, building
    * or null)
    */
   public UnitContainer getModifiedUnitContainer();
-  
+
   /**
    * Returns the skill of the specified type if the unit has such a skill, else
    * null is returned.
    */
   public Skill getSkill(SkillType type);
-  
+
   /**
    * @return
    * 
@@ -525,15 +526,15 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return the specified skill s.
    */
   public Skill addSkill(Skill s);
-  
+
   /**
    * Returns all skills this unit has.
    * 
    * @return a collection of Skill objects.
    */
   public Collection<Skill> getSkills();
-  public Map<ID,Skill> getSkillMap();
-  
+  public Map<StringID,Skill> getSkillMap();
+
   /**
    * Removes all skills from this unit.
    */
@@ -545,8 +546,8 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @return a collection of Item objects.
    */
   public Collection<Item> getItems();
-  public void setItems(Map<ID,Item> items);
-  public Map<ID,Item> getItemMap();
+  public void setItems(Map<StringID,Item> items);
+  public Map<StringID,Item> getItemMap();
 
   /**
    * Removes all items from this unit.
@@ -581,7 +582,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * 
    * @return a collection of PersonTransferRelation objects.
    */
-  public List<?> getPersonTransferRelations();
+  public List<PersonTransferRelation> getPersonTransferRelations();
 
   /**
    * Returns the items of this unit as they would appear after the orders of
@@ -602,20 +603,20 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * transfer orders.
    */
   public int getModifiedPersons();
-  
+
   /**
    * Returns the new combat status of this unit as it would be after the orders
    * of this unit have been processed.
    */
   public int getModifiedCombatStatus();
-  
+
   /**
    * Returns the new (expected) guard value of this unit as it would be after the orders of this unit
    * (and the unit is still allive next turn)
    * (@TODO: do we need a region.getModifiedGuards - List? guess and hope not)
    */
   public int getModifiedGuard();
-  
+
   /**
    * Returns the new Unaided status of this unit as it would be after the orders of this unit
    * 
@@ -634,13 +635,13 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   @Deprecated
   public int getWeight();
-  
+
 
   /**
    * Returns the overall weight of this unit (persons and items) in silver if it is known, otherwise -1.
    */
   public int getSimpleWeight();
-  
+
   /**
    * Returns the maximum payload in silver of this unit when it travels by
    * horse. Horses, carts and persons are taken into account for this
@@ -745,7 +746,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns a list of attackers.
    */
   public Collection<Unit> getAttackAggressors();
-  
+
   /**
    * Parses the orders of this unit and detects relations between units
    * established by those orders. When does this method have to be called? No
@@ -778,13 +779,13 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * Returns a String representation of this unit.
    */
   public String toString();
-  
+
   /**
    * @param withName
    */
   public String toString(boolean withName);
 
-  
+
   /**
    * Add a order to the unit's orders. This function ensures that TEMP units are
    * not affected by the operation.
@@ -1067,7 +1068,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
   /**
    * Returns the disguised race or <code>null</code> if unit has no race disguise.
    * 
-   * @return 
+   * @return
    */
   public Race getDisguiseRace();
 
@@ -1091,7 +1092,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    * @param siege The value for siege.
    */
   public void setSiege(Building siege);
-  
+
   /**
    * Returns the value of spells.
    * 
@@ -1160,7 +1161,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    *
    * @param skills The value for skills.
    */
-  public void setSkills(Map<ID, Skill> skills);
+  public void setSkills(Map<StringID, Skill> skills);
 
   /**
    * Sets the value of weight.
@@ -1182,7 +1183,7 @@ public interface Unit extends Related, HasRegion, Sorted, Taggable, HasCache {
    */
   public List<CoordinateID> getPastMovement(GameData data);
 
-  /** 
+  /**
    * Checks if the unit's movement was passive (transported or shipped).
    * 
    * @return

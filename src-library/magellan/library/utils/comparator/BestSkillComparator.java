@@ -34,7 +34,7 @@ import magellan.library.Skill;
  * sub-comparator which is applied in cases of equality.
  * </p>
  */
-public class BestSkillComparator implements Comparator<Map<ID,Skill> > {
+public class BestSkillComparator implements Comparator<Map<? extends ID,Skill> > {
 	private final Comparator<? super Skill> bestCmp;
 	private final Comparator<? super Skill> skillTypeCmp;
 	private final Comparator<? super Skill> subCmp;
@@ -63,7 +63,7 @@ public class BestSkillComparator implements Comparator<Map<ID,Skill> > {
 	 * @return the result of the skill comparator applied to the - according to the best comparator
 	 * 		   - smallest skills in o1 and o2.
 	 */
-	public int compare(Map<ID,Skill> o1, Map<ID,Skill> o2) {
+	public int compare(Map<? extends ID,Skill> o1, Map<? extends ID,Skill> o2) {
 		int retVal = 0;
 		Skill s1 = getBestSkill(o1);
 		Skill s2 = getBestSkill(o2);
@@ -92,7 +92,7 @@ public class BestSkillComparator implements Comparator<Map<ID,Skill> > {
 		return retVal;
 	}
 
-	private Skill getBestSkill(Map<ID,Skill> skills) {
+	private Skill getBestSkill(Map<? extends ID,Skill> skills) {
 		if((skills == null) || (skills.size() == 0)) {
 			return null;
 		}

@@ -609,7 +609,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     if ((se.getSelectedObjects() != null) && (se.getSelectionType() == SelectionEvent.ST_REGIONS)) {
       selectedRegions.clear();
 
-      for (Iterator iter = se.getSelectedObjects().iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = se.getSelectedObjects().iterator(); iter.hasNext();) {
         Object o = iter.next();
 
         if (o instanceof Region) {
@@ -1333,10 +1333,10 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     Point upperLeft = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
     Point lowerRight = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
     
-    Iterator iter = data.regions().values().iterator();
+    Iterator<Region> iter = data.regions().values().iterator();
 
     while (iter.hasNext()) {
-      CoordinateID c = ((Region) iter.next()).getCoordinate();
+      CoordinateID c = (iter.next()).getCoordinate();
 
       if (c.z == showLevel) {
         int x = cellGeometry.getCellPositionX(c.x, c.y);
@@ -1451,8 +1451,8 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     MapCellRenderer renderer = null;
 
     if (!className.equals("none")) {
-      for (Iterator iter = getAvailableRenderers().iterator(); iter.hasNext();) {
-        MapCellRenderer r = (MapCellRenderer) iter.next();
+      for (Iterator<MapCellRenderer> iter = getAvailableRenderers().iterator(); iter.hasNext();) {
+        MapCellRenderer r = iter.next();
 
         if (r.getClass().getName().equals(className)) {
           renderer = r;
@@ -1562,7 +1562,7 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
     StringBuffer buf = new StringBuffer();
 
     if (l.size() > 1) {
-      Iterator it = l.iterator();
+      Iterator<?> it = l.iterator();
 
       for (int i = 0; i < (l.size() / 2); i++) {
         buf.append(it.next());
@@ -1606,13 +1606,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
    * configuration).
    */
   public String getComponentConfiguration() {
-    Iterator it = getPlanes().iterator();
+    Iterator<RenderingPlane> it = getPlanes().iterator();
     StringBuffer buf = new StringBuffer();
     buf.append(getScaleFactor());
     buf.append('_');
 
     while (it.hasNext()) {
-      RenderingPlane rp = (RenderingPlane) it.next();
+      RenderingPlane rp = it.next();
 
       if ((rp == null) || (rp.getRenderer() == null)) {
         continue;
@@ -1676,13 +1676,13 @@ public class Mapper extends InternationalizedDataPanel implements SelectionListe
         int iindex = Integer.parseInt(index);
         String className = st.nextToken();
         String config = st.nextToken();
-        Collection col = getRenderers(iindex);
+        Collection<MapCellRenderer> col = getRenderers(iindex);
 
         if (col != null) {
-          Iterator it = col.iterator();
+          Iterator<MapCellRenderer> it = col.iterator();
 
           while (it.hasNext()) {
-            MapCellRenderer mcp = (MapCellRenderer) it.next();
+            MapCellRenderer mcp = it.next();
 
             if (className.equals(((Object) mcp).getClass().getName())) {
               setRenderer(mcp, iindex);

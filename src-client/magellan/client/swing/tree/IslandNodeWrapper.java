@@ -78,12 +78,12 @@ public class IslandNodeWrapper implements CellObject, SupportsClipboard {
 	 * 
 	 */
 	public boolean emphasized() {
-		for(Iterator regionIter = island.regions().iterator(); regionIter.hasNext();) {
-			Iterator it = ((Region) regionIter.next()).units().iterator();
+		for(Iterator<Region> regionIter = island.regions().iterator(); regionIter.hasNext();) {
+			Iterator<Unit> it = (regionIter.next()).units().iterator();
 
 			if(it != null) {
 				while(it.hasNext()) {
-					Unit u = (Unit) it.next();
+					Unit u = it.next();
 
 					if(u.getFaction().isPrivileged()) {
 						if(!u.isOrdersConfirmed()) {

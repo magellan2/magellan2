@@ -101,13 +101,13 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return null;
 		}
 
-		Map m = get(id);
+		TagMap m = get(id);
 
 		if(m == null) {
 			return null;
 		}
 
-		return (String) m.get(tag);
+		return m.get(tag);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return false;
 		}
 
-		Map m = get(id);
+		TagMap m = get(id);
 
 		if(m == null) {
 			return false;
@@ -149,13 +149,13 @@ public class ExternalTagMap extends HashMap<ID,TagMap> {
 			return null;
 		}
 
-		Map m = get(id);
+		TagMap m = get(id);
 
 		if(m == null) {
 			return null;
 		}
 
-		return (String) m.remove(tag);
+		return m.remove(tag);
 	}
 
 	/**

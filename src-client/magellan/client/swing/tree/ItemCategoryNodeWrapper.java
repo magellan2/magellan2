@@ -137,12 +137,12 @@ public class ItemCategoryNodeWrapper implements CellObject{
     }
 	}
 	
-	public void setIcons(Map icons) {
+	public void setIcons(Map<?, ?> icons) {
     this.icons = null;
     if(icons != null) {
       this.icons = new ArrayList<String>(icons.size());
   
-      for(Iterator iter = icons.values().iterator(); iter.hasNext();) {
+      for(Iterator<?> iter = icons.values().iterator(); iter.hasNext();) {
         this.icons.add(iter.next().toString());
       }
     }

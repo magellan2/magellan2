@@ -60,7 +60,7 @@ public class ListReplacer implements Replacer {
 		if(list == null) {
 			evolved = "";
 		} else {
-			Iterator it = list.iterator();
+			Iterator<?> it = list.iterator();
 			boolean canEvolve = true;
 
 			while(canEvolve && it.hasNext()) {
@@ -101,7 +101,7 @@ public class ListReplacer implements Replacer {
 
 		buffer.setLength(0);
 
-		Iterator it = list.iterator();
+		Iterator<?> it = list.iterator();
 
 		while(it.hasNext()) {
 			Object obj = it.next();
@@ -138,7 +138,7 @@ public class ListReplacer implements Replacer {
 	@Override
   public String toString() {
 		StringBuffer buf = new StringBuffer();
-		Iterator it = list.iterator();
+		Iterator<?> it = list.iterator();
 
 		while(it.hasNext()) {
 			buf.append(it.next());

@@ -221,8 +221,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     dispatcher.addOrderConfirmListener(new OrderConfirmListener() {
       public void orderConfirmationChanged(OrderConfirmEvent e) {
         if (!this.equals(e.getSource())) {
-          for (Iterator iter = e.getUnits().iterator(); iter.hasNext();) {
-            Unit u = (Unit) iter.next();
+          for (Iterator<Unit> iter = e.getUnits().iterator(); iter.hasNext();) {
+            Unit u = iter.next();
 
             if (getEditor(u) != null) {
               if (u.equals(currentUnit)) {
@@ -770,8 +770,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           if (getEditor(u) != null) {
             getEditor(u).setUseSyntaxHighlighting(bool);
@@ -802,8 +802,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     if (multiEditorLayout) {
 
       if (data.units() != null) {
-        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           if (getEditor(u) != null) {
             getEditor(u).setTokenColor(styleName, color);
@@ -828,8 +828,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           if (getEditor(u) != null) {
             getEditor(u).setErrorBackround(c);
@@ -861,8 +861,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           if (getEditor(u) != null) {
             if (!u.isOrdersConfirmed() && u!=currentUnit)
@@ -891,8 +891,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
 
     if (multiEditorLayout) {
       if (data.units() != null) {
-        for (Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-          Unit u = (Unit) iter.next();
+        for (Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+          Unit u = iter.next();
 
           if (getEditor(u) != null) {
             if (u.isOrdersConfirmed() && u!=currentUnit)
@@ -1597,8 +1597,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyPressed(KeyEvent e) {
       // first external listeners
-      for (Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
-        ((KeyListener) iter.next()).keyPressed(e);
+      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
+        (iter.next()).keyPressed(e);
 
         if (e.isConsumed()) {
           return;
@@ -1615,8 +1615,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyReleased(KeyEvent e) {
       // first external listeners
-      for (Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
-        ((KeyListener) iter.next()).keyReleased(e);
+      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
+        (iter.next()).keyReleased(e);
 
         if (e.isConsumed()) {
           return;
@@ -1633,8 +1633,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void keyTyped(KeyEvent e) {
       // first external listeners
-      for (Iterator iter = source.keyListeners.iterator(); iter.hasNext();) {
-        ((KeyListener) iter.next()).keyTyped(e);
+      for (Iterator<KeyListener> iter = source.keyListeners.iterator(); iter.hasNext();) {
+        (iter.next()).keyTyped(e);
 
         if (e.isConsumed()) {
           return;
@@ -1665,8 +1665,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       source.focusGained(e);
 
       // then external listeners
-      for (Iterator iter = source.focusListeners.iterator(); iter.hasNext();) {
-        ((FocusListener) iter.next()).focusGained(e);
+      for (Iterator<FocusListener> iter = source.focusListeners.iterator(); iter.hasNext();) {
+        (iter.next()).focusGained(e);
       }
     }
 
@@ -1676,8 +1676,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
     @Override
     public void focusLost(FocusEvent e) {
       // first external listeners
-      for (Iterator iter = source.focusListeners.iterator(); iter.hasNext();) {
-        ((FocusListener) iter.next()).focusLost(e);
+      for (Iterator<FocusListener> iter = source.focusListeners.iterator(); iter.hasNext();) {
+        (iter.next()).focusLost(e);
       }
 
       // now the source
@@ -1699,8 +1699,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
      * @see javax.swing.event.CaretListener#caretUpdate(javax.swing.event.CaretEvent)
      */
     public void caretUpdate(CaretEvent e) {
-      for (Iterator iter = source.caretListeners.iterator(); iter.hasNext();) {
-        ((CaretListener) iter.next()).caretUpdate(e);
+      for (Iterator<CaretListener> iter = source.caretListeners.iterator(); iter.hasNext();) {
+        (iter.next()).caretUpdate(e);
       }
     }
   }
@@ -1897,8 +1897,8 @@ public class MultiEditorOrderEditorList extends InternationalizedDataPanel imple
       dispatcher.addOrderConfirmListener(new OrderConfirmListener() {
         public void orderConfirmationChanged(OrderConfirmEvent e) {
           if (!this.equals(e.getSource())) {
-            for (Iterator iter = e.getUnits().iterator(); iter.hasNext();) {
-              Unit u = (Unit) iter.next();
+            for (Iterator<Unit> iter = e.getUnits().iterator(); iter.hasNext();) {
+              Unit u = iter.next();
 
               if (u.equals(currentUnit)) {
                 checkOrderConfirm.setSelected(u.isOrdersConfirmed());

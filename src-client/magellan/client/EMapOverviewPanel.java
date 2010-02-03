@@ -979,16 +979,16 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
   protected void doExpandAndCollapse(Collection<TreePath> newSelection) {
     // filter collapse info that would be re-expanded
-    Iterator it = collapseInfo.iterator();
+    Iterator<TreeNode> cIt = collapseInfo.iterator();
     Map<TreeNode, TreePath> pathsToCollapse = new HashMap<TreeNode, TreePath>();
     Map<TreeNode, TreePath> pathsToExpand = new HashMap<TreeNode, TreePath>();
 
-    while (it.hasNext()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
+    while (cIt.hasNext()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) cIt.next();
       TreePath path = new TreePath(node.getPath());
       pathsToCollapse.put(node, path);
 
-      Iterator it2 = expandInfo.iterator();
+      Iterator<TreeNode> it2 = expandInfo.iterator();
 
       while (it2.hasNext()) {
         DefaultMutableTreeNode node2 = (DefaultMutableTreeNode) it2.next();
@@ -1000,7 +1000,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         TreePath path2 = pathsToExpand.get(node2);
 
         if (path.isDescendant(path2)) {
-          it.remove();
+          cIt.remove();
 
           // but save it for last expand on expand-only mode
           if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0) {
@@ -1013,10 +1013,10 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     }
 
     // now expand
-    it = expandInfo.iterator();
+    Iterator<TreeNode> eIt = expandInfo.iterator();
 
-    while (it.hasNext()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
+    while (eIt.hasNext()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) eIt.next();
       TreePath path = null;
 
       if (pathsToExpand.containsKey(node)) {
@@ -1032,13 +1032,13 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
     selectionTransfer.clear();
 
     // sort out already selected objects
-    it = newSelection.iterator();
+    Iterator<TreePath> sIt = newSelection.iterator();
 
-    while (it.hasNext()) {
-      TreePath path = (TreePath) it.next();
+    while (sIt.hasNext()) {
+      TreePath path = sIt.next();
 
       if (tree.isPathSelected(path)) {
-        it.remove();
+        sIt.remove();
       }
     }
 
@@ -1052,15 +1052,15 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     // now collapse
     // (this should'nt trigger selection events any more)
-    it = collapseInfo.iterator();
+    cIt = collapseInfo.iterator();
 
-    while (it.hasNext()) {
-      DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
+    while (cIt.hasNext()) {
+      DefaultMutableTreeNode node = (DefaultMutableTreeNode) cIt.next();
       TreePath path = pathsToCollapse.get(node);
 
       if (tree.isExpanded(path)) {
         tree.collapsePath(path);
-        it.remove();
+        cIt.remove();
       }
     }
   }
@@ -1235,7 +1235,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       ignoreTreeSelections = true;
       tree.clearSelection();
 
-      for (Iterator iter = selectedObjects.iterator(); iter.hasNext();) {
+      for (Iterator<?> iter = selectedObjects.iterator(); iter.hasNext();) {
         Object o = iter.next();
 
         DefaultMutableTreeNode node = null;
@@ -1339,8 +1339,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
       if ((collapseMode & EMapOverviewPanel.COLLAPSE_ONLY_EXPANDED) != 0) {
         if (lastExpanded.size() > 0) {
-          List<Object> copy = new LinkedList<Object>(lastExpanded);
-          Iterator it = copy.iterator();
+          List<TreeNode> copy = new LinkedList<TreeNode>(lastExpanded);
+          Iterator<TreeNode> it = copy.iterator();
 
           while (it.hasNext()) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) it.next();
@@ -1694,8 +1694,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
       boolean first = true;
       boolean confirm = false;
 
-      for (Iterator iter = r.units().iterator(); iter.hasNext();) {
-        Unit u = (Unit) iter.next();
+      for (Iterator<Unit> iter = r.units().iterator(); iter.hasNext();) {
+        Unit u = iter.next();
 
 //        if (EMapDetailsPanel.isPrivilegedAndNoSpy(u)) {
           if (first) {
@@ -1760,8 +1760,8 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
 
     boolean privilegedWithoutAllies = false;
 
-    for (Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-      Faction f = (Faction) iter.next();
+    for (Iterator<Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+      Faction f = iter.next();
 
       if (f.isPrivileged()) {
         privilegedFactions.add(f);
@@ -1951,7 +1951,7 @@ public class EMapOverviewPanel extends InternationalizedDataPanel implements Tre
         if (container!=null && buildingNodes.containsKey(container.getID()))
           treeModel.nodeChanged(buildingNodes.get(container.getID()));
 
-        Collection<UnitRelation> relations = u.getRelations(TransferRelation.class);
+        List<TransferRelation> relations = u.getRelations(TransferRelation.class);
 
         // ensure that unitRelations has an entry for u
         if (!unitRelations.containsKey(u.getID())) {

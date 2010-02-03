@@ -64,7 +64,7 @@ public class BorderCellRenderer extends ImageCellRenderer {
   public void render(Object obj, boolean active, boolean selected) {
 		if(obj instanceof Region) {
 			Region r = (Region) obj;
-			Collection borders = r.borders();
+			Collection<Border> borders = r.borders();
 
 			if(!borders.isEmpty()) {
 				// since border objects are rare initialization is

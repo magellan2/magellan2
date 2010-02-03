@@ -1,6 +1,7 @@
 2009-02-03 / Build 402 - stm (stm_@users.sourceforge.net)
     * Changes SelectionEvent interface and fixed selection history
-    * removed many compiler warnings
+    * removed many compiler warnings, especially legacy collection code
+    * ...I hope that not too many things are broken...
 
 2009-02-02 / Build 401 - stm (stm_@users.sourceforge.net)
     * activated Streitross>=Pferd in movement related code and move it to MovementEvaluator

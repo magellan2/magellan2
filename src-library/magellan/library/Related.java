@@ -31,5 +31,5 @@ public interface Related extends Described,Addeable {
      * @param relationClass Should be a subclass of {@link UnitRelation}
      * @return list of relations that are instances of relationClass
      */
-    public List<UnitRelation> getRelations(Class<? extends UnitRelation> relationClass);
+    public <T extends UnitRelation> List<T> getRelations(Class<T> relationClass);
 }

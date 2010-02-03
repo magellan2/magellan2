@@ -75,9 +75,9 @@ public class CollectionFilters {
    * @param <T>
    * @param oldCollection
    * @param type
-   * @return
+   * @return A collection with the objects of the desired type
    */
-  public static <T> Collection<T> filter(Collection oldCollection, Class<T> type) {
+  public static <T> Collection<T> filter(Collection<?> oldCollection, Class<T> type) {
     Collection<T> result = new HashSet<T>();
     for (Object o : oldCollection) {
       if (type.isInstance(o))
@@ -93,7 +93,7 @@ public class CollectionFilters {
    * @param <T>
    * @param oldCollection
    * @param type
-   * @return
+   * @return A collection with the objects of the desired type
    */
   public static <T> Collection<T> filter(Object[] oldCollection, Class<T> type) {
     Collection<T> result = new HashSet<T>();
@@ -112,7 +112,7 @@ public class CollectionFilters {
    * @param newCollection
    * @param type
    */
-  public static <T> void filter(Collection oldCollection, Collection<T> newCollection, Class<T> type) {
+  public static <T> void filter(Collection<?> oldCollection, Collection<T> newCollection, Class<T> type) {
     for (Object o : oldCollection) {
       if (type.isInstance(o))
         newCollection.add(type.cast(o));

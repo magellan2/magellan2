@@ -117,12 +117,12 @@ public class NoneCompletionGUI extends AbstractCompletionGUI {
 	 * 
 	 * 
 	 */
-	public void cycleCompletion(JTextComponent editor, Collection completions, String stub,
+	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
 								int index) {
-		Iterator it = completions.iterator();
+		Iterator<Completion> it = completions.iterator();
 
 		for(int i = 0; i <= index; i++) {
-			last = (Completion) it.next();
+			last = it.next();
 		}
 	}
 

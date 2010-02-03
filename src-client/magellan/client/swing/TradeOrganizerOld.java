@@ -63,6 +63,7 @@ import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Resources;
 import magellan.library.utils.comparator.FactionTrustComparator;
 import magellan.library.utils.comparator.NameComparator;
+import magellan.library.utils.filters.CollectionFilters;
 
 /**
  * DOCUMENT ME!
@@ -98,7 +99,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
    * Creates a new TradeOrganizer object.
    */
   public TradeOrganizerOld(Frame owner, EventDispatcher dispatcher, GameData data,
-      Properties settings, Collection newRegions) {
+      Properties settings, Collection<Region> newRegions) {
     super(owner, false, dispatcher, data, settings);
 
     // register for events
@@ -106,7 +107,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
     dispatcher.addSelectionListener(this);
 
     init();
-    setRegions((newRegions == null) ? Collections.EMPTY_SET : newRegions);
+    setRegions((newRegions == null) ? Collections.<Region>emptySet() : newRegions);
     setVisible(true);
   }
 
@@ -292,7 +293,7 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
   @Override
   public void gameDataChanged(GameDataEvent ge) {
     super.gameDataChanged(ge);
-    setRegions(Collections.EMPTY_SET);
+    setRegions(Collections.<Region>emptySet());
 
     updateFactions();
   }
@@ -304,22 +305,22 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
    */
   public void selectionChanged(SelectionEvent se) {
     if ((se.getSelectionType() == SelectionEvent.ST_REGIONS) && (se.getSelectedObjects() != null)) {
-      setRegions(se.getSelectedObjects());
+      setRegions(CollectionFilters.filter(se.getSelectedObjects(), Region.class));
     }
   }
 
   /**
    * Sets this classes region list. Filters out all regions, which trade information is unknown.
    */
-  private void setRegions(Collection newRegions) {
+  private void setRegions(Collection<Region> newRegions) {
     if (newRegions.isEmpty() && (data.regions() != null)) {
       newRegions = data.regions().values();
     }
 
     regions = new LinkedList<Region>();
 
-    for (Iterator iter = newRegions.iterator(); iter.hasNext();) {
-      Region region = (Region) iter.next();
+    for (Iterator<Region> iter = newRegions.iterator(); iter.hasNext();) {
+      Region region = iter.next();
 
       if ((region.getPrices() != null) && (region.getPrices().size() > 0)) {
         regions.add(region);
@@ -960,8 +961,8 @@ public class TradeOrganizerOld extends InternationalizedDataDialog implements Se
         Region r = regionIter.next();
         int amount = 0;
 
-        for (Iterator unitIter = r.units().iterator(); unitIter.hasNext();) {
-          Unit u = (Unit) unitIter.next();
+        for (Iterator<Unit> unitIter = r.units().iterator(); unitIter.hasNext();) {
+          Unit u = unitIter.next();
 
           if ((u.getFaction() != null) && tableFactions.contains(u.getFaction())) {
             Item item = u.getItem(luxury);

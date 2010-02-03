@@ -1076,8 +1076,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       return;
     }
 
-    for (Iterator iter = r.units().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = r.units().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
       reviewUnit(u);
     }
 
@@ -1101,15 +1101,15 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
       return;
     }
 
-    for (Iterator iter = r.units().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = r.units().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
       unReviewUnit(u);
     }
   }
 
   private void removeRegion(final Region r) {
-    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
-      final Inspector c = (Inspector) iter.next();
+    for (Iterator<Inspector> iter = getInspectors().iterator(); iter.hasNext();) {
+      final Inspector c = iter.next();
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           // remove problems in the AWT event dispatching thread to avoid
@@ -1121,8 +1121,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
   }
 
   private void unReviewUnit(final Unit u) {
-    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
-      final Inspector c = (Inspector) iter.next();
+    for (Iterator<Inspector> iter = getInspectors().iterator(); iter.hasNext();) {
+      final Inspector c = iter.next();
       SwingUtilities.invokeLater(new Runnable() {
         public void run() {
           // remove problems in the AWT event dispatching thread to avoid
@@ -1137,8 +1137,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
    * Reviews a the specified region and the specified unit.
    */
   private void reviewRegion(Region r) {
-    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
-      Inspector c = (Inspector) iter.next();
+    for (Iterator<Inspector> iter = getInspectors().iterator(); iter.hasNext();) {
+      Inspector c = iter.next();
       if (r != null) {
         final List<Problem> problems = c.reviewRegion(r);
         // add problems in the AWT event dispatching thread to avoid
@@ -1166,8 +1166,8 @@ public class TaskTablePanel extends InternationalizedDataPanel implements UnitOr
     if (!isValidUnitByFaction(u)) {
       return;
     }
-    for (Iterator iter = getInspectors().iterator(); iter.hasNext();) {
-      Inspector c = (Inspector) iter.next();
+    for (Iterator<Inspector> iter = getInspectors().iterator(); iter.hasNext();) {
+      Inspector c = iter.next();
       if (u != null) {
         final List<Problem> problems = c.reviewUnit(u);
         // add problems in the AWT event dispatching thread to avoid

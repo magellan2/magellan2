@@ -51,7 +51,7 @@ public class OrderWriter {
 	private boolean removeSSComments = false;
 	private boolean confirmedOnly = false;
 	private boolean forceUnixLineBreaks = false;
-	private Collection regions = null;
+	private Collection<Region> regions = null;
 	private boolean writeUnitTagsAsVorlageComment = false;
 	/**
 	 * sometimes I don't want the timestamp..
@@ -182,11 +182,11 @@ public class OrderWriter {
 		writeln(stream, "LOCALE " + Locales.getOrderLocale().getLanguage());
 	}
 
-	private int writeRegions(Collection regions, BufferedWriter stream) throws IOException {
+	private int writeRegions(Collection<Region> regions, BufferedWriter stream) throws IOException {
 		int writtenUnits = 0;
 
-		for(Iterator iter = regions.iterator(); iter.hasNext();) {
-			Region r = (Region) iter.next();
+		for(Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+			Region r = iter.next();
 			Collection<Unit> units = filterUnits(r.units());
 
 			if(units.size() > 0) {
@@ -306,11 +306,11 @@ public class OrderWriter {
 		writeln(stream, Resources.getOrderTranslation(EresseaConstants.O_NEXT));
 	}
 
-	private Collection<Unit> filterUnits(Collection units) {
+	private Collection<Unit> filterUnits(Collection<Unit> units) {
 		Collection<Unit> filteredUnits = new LinkedList<Unit>();
 
-		for(Iterator iter = units.iterator(); iter.hasNext();) {
-			Unit u = (Unit) iter.next();
+		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
+			Unit u = iter.next();
 
 			if(filterUnit(u)) {
 				filteredUnits.add(u);
@@ -330,8 +330,8 @@ public class OrderWriter {
 				/* if this is a parent unit, it has to be added if
 				   one of it's children has unconfirmed orders */
 				if(confirmedOnly && !(u instanceof TempUnit) && !u.tempUnits().isEmpty()) {
-					for(Iterator tempIter = u.tempUnits().iterator(); tempIter.hasNext();) {
-						TempUnit tu = (TempUnit) tempIter.next();
+					for(Iterator<TempUnit> tempIter = u.tempUnits().iterator(); tempIter.hasNext();) {
+						TempUnit tu = tempIter.next();
 
 						if(tu.isOrdersConfirmed()) {
 							return true;
@@ -412,7 +412,7 @@ public class OrderWriter {
 	/**
 	 * DOCUMENT-ME
 	 */
-	public void setRegions(Collection aRegions) {
+	public void setRegions(Collection<Region> aRegions) {
 		regions = aRegions;
 	}
 

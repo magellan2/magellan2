@@ -22,7 +22,7 @@ package magellan.client.event;
  * @see SelectionEvent
  * @see EventDispatcher
  */
-public interface SelectionListener {
+public interface SelectionListener extends magellan.library.event.EventListener {
 	/**
 	 * Invoked when different objects are activated or selected.
 	 */

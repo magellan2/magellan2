@@ -22,7 +22,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -54,312 +53,306 @@ import com.jrefinery.chart.Plot;
 import com.jrefinery.chart.VerticalNumberAxis;
 
 /**
- * A class painting barcharts out of skills of eressea units. The data with
- * the units to be considered is received solely by SelectionEvents.
- *
- * @author Ulrich Küster 
+ * A class painting barcharts out of skills of eressea units. The data with the units to be
+ * considered is received solely by SelectionEvents.
+ * 
+ * @author Ulrich Küster
  */
 public class SkillChartPanel extends InternationalizedDataPanel implements SelectionListener {
-	private static final Logger log = Logger.getInstance(SkillChartPanel.class);
-	private SkillChartJFreeChartPanel chartPanel;
-	private JComboBox persons;
-	private JComboBox totalSkillPoints;
-	private JComboBox totalSkillLevel;
-	private JComboBox skills;
-	private SkillStats skillStats = new SkillStats();
-	private Map<CoordinateID, Region> regions = new Hashtable<CoordinateID, Region>();
-	private Map<ID,Faction> factions = new Hashtable<ID,Faction>();
+  private static final Logger log = Logger.getInstance(SkillChartPanel.class);
+  private SkillChartJFreeChartPanel chartPanel;
+  private JComboBox persons;
+  private JComboBox totalSkillPoints;
+  private JComboBox totalSkillLevel;
+  private JComboBox skills;
+  private SkillStats skillStats = new SkillStats();
+  private Map<CoordinateID, Region> regions = new Hashtable<CoordinateID, Region>();
+  private Map<ID, Faction> factions = new Hashtable<ID, Faction>();
 
-	/**
-	 * Creates a new SkillChartPanel. The data is received by SelectionEvents (where factions and
-	 * regions are considered). Despite of that an GameData-reference is necessary to set all
-	 * regions as data, if no region is selected
-	 *
-	 * 
-	 * 
-	 * 
-	 */
-	public SkillChartPanel(EventDispatcher ed, GameData data, Properties settings) {
-		super(ed, data, settings);
-		regions.putAll(data.regions());
+  /**
+   * Creates a new SkillChartPanel. The data is received by SelectionEvents (where factions and
+   * regions are considered). Despite of that an GameData-reference is necessary to set all regions
+   * as data, if no region is selected
+   */
+  public SkillChartPanel(EventDispatcher ed, GameData data, Properties settings) {
+    super(ed, data, settings);
+    regions.putAll(data.regions());
 
-		// create axis, plot, chart
-		HorizontalCategoryAxis xAxis = new HorizontalCategoryAxis(Resources.get("skillchart.skillchartpanel.labeltext.horizontalaxis"));
-		VerticalNumberAxis yAxis = new VerticalNumberAxis(Resources.get("skillchart.skillchartpanel.labeltext.verticalaxis"));
-		yAxis.setTickValue(new Integer(1));
-		yAxis.setAutoRangeIncludesZero(true);
+    // create axis, plot, chart
+    HorizontalCategoryAxis xAxis =
+        new HorizontalCategoryAxis(Resources
+            .get("skillchart.skillchartpanel.labeltext.horizontalaxis"));
+    VerticalNumberAxis yAxis =
+        new VerticalNumberAxis(Resources.get("skillchart.skillchartpanel.labeltext.verticalaxis"));
+    yAxis.setTickValue(new Integer(1));
+    yAxis.setAutoRangeIncludesZero(true);
 
-		try {
-			Plot verticalBarPlot = new VerticalBarPlot(null, xAxis, yAxis);
-			DefaultCategoryDataSource dataSource = createDataSource(null);
-			chartPanel = new SkillChartJFreeChartPanel(new JFreeChart("",
-																	  new Font("Arial", Font.BOLD,
-																			   24), dataSource,
-																	  verticalBarPlot), this);
-		} catch(AxisNotCompatibleException e) { // work on this later...
-			SkillChartPanel.log.warn(e);
-		}
+    try {
+      Plot verticalBarPlot = new VerticalBarPlot(null, xAxis, yAxis);
+      DefaultCategoryDataSource dataSource = createDataSource(null);
+      chartPanel =
+          new SkillChartJFreeChartPanel(new JFreeChart("", new Font("Arial", Font.BOLD, 24),
+              dataSource, verticalBarPlot), this);
+    } catch (AxisNotCompatibleException e) { // work on this later...
+      SkillChartPanel.log.warn(e);
+    }
 
-		JFreeChart chart = chartPanel.getChart();
-		chart.setLegend(null);
-		chart.setChartBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 1000, Color.blue));
+    JFreeChart chart = chartPanel.getChart();
+    chart.setLegend(null);
+    chart.setChartBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 1000, Color.blue));
 
-		//		chart.setChartBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 500, new Color(153, 153, 204)));
-		chart.getPlot().setInsets(new Insets(10, 20, 20, 40));
+    // chart.setChartBackgroundPaint(new GradientPaint(0, 0, Color.white, 0, 500, new Color(153,
+    // 153, 204)));
+    chart.getPlot().setInsets(new Insets(10, 20, 20, 40));
 
-		// initialize the Panel with all the stuff
-		GridBagLayout grid = new GridBagLayout();
-		setLayout(grid);
+    // initialize the Panel with all the stuff
+    GridBagLayout grid = new GridBagLayout();
+    setLayout(grid);
 
-		GridBagConstraints c = new GridBagConstraints(0, 0, 2, 1, 1.0, 1.0,
-													  GridBagConstraints.CENTER,
-													  GridBagConstraints.BOTH,
-													  new Insets(5, 5, 5, 5), 2, 2);
-		add(chartPanel, c);
+    GridBagConstraints c =
+        new GridBagConstraints(0, 0, 2, 1, 1.0, 1.0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(5, 5, 5, 5), 2, 2);
+    add(chartPanel, c);
 
-		c = new GridBagConstraints(0, 1, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
-								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
-		skills = new JComboBox();
-		skills.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					SkillType skillType = (SkillType) skills.getSelectedItem();
+    c =
+        new GridBagConstraints(0, 1, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
+    skills = new JComboBox();
+    skills.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        SkillType skillType = (SkillType) skills.getSelectedItem();
 
-					if(skillType != null) {
-						chartPanel.getChart().setTitle(skillType.getName());
-					} else {
-						chartPanel.getChart().setTitle("");
-					}
+        if (skillType != null) {
+          chartPanel.getChart().setTitle(skillType.getName());
+        } else {
+          chartPanel.getChart().setTitle("");
+        }
 
-					setComboBoxes(skillType);
-					chartPanel.getChart().setDataSource(createDataSource(skillType));
-				}
-			});
-		add(skills, c);
+        setComboBoxes(skillType);
+        chartPanel.getChart().setDataSource(createDataSource(skillType));
+      }
+    });
+    add(skills, c);
 
-		persons = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") });
-		c = new GridBagConstraints(1, 1, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
-								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
-		add(persons, c);
+    persons =
+        new JComboBox(new String[] { Resources
+            .get("skillchart.skillchartpanel.labeltext.totalpersons") });
+    c =
+        new GridBagConstraints(1, 1, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
+    add(persons, c);
 
-		totalSkillPoints = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") });
-		c = new GridBagConstraints(0, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
-								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
-		add(totalSkillPoints, c);
+    totalSkillPoints =
+        new JComboBox(new String[] { Resources
+            .get("skillchart.skillchartpanel.labeltext.totalskilllevel") });
+    c =
+        new GridBagConstraints(0, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
+    add(totalSkillPoints, c);
 
-		if(data.noSkillPoints) {
-			totalSkillPoints.setVisible(false);
-		}
+    if (data.noSkillPoints) {
+      totalSkillPoints.setVisible(false);
+    }
 
-		totalSkillLevel = new JComboBox(new String[] { Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") });
-		c = new GridBagConstraints(1, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
-								   GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
-		add(totalSkillLevel, c);
-	}
+    totalSkillLevel =
+        new JComboBox(new String[] { Resources
+            .get("skillchart.skillchartpanel.labeltext.totalskillpoints") });
+    c =
+        new GridBagConstraints(1, 2, 1, 1, 0.1, 0.0, GridBagConstraints.CENTER,
+            GridBagConstraints.BOTH, new Insets(6, 6, 6, 6), 2, 2);
+    add(totalSkillLevel, c);
+  }
 
-	/**
-	 * just to reset the combo boxes
-	 *
-	 * 
-	 */
-	private void setComboBoxes(SkillType skillType) {
-		if(skillType != null) {
-			Vector<String> vPersons = new Vector<String>();
-			Vector<String> vTotalSkillLevel = new Vector<String>();
-			Vector<String> vTotalSkillPoints = new Vector<String>();
-			vPersons.add(Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") + skillStats.getPersonNumber(skillType));
-			vTotalSkillLevel.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") + skillStats.getSkillLevelNumber(skillType));
-			vTotalSkillPoints.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") + skillStats.getSkillPointsNumber(skillType));
+  /**
+   * just to reset the combo boxes
+   */
+  private void setComboBoxes(SkillType skillType) {
+    if (skillType != null) {
+      Vector<String> vPersons = new Vector<String>();
+      Vector<String> vTotalSkillLevel = new Vector<String>();
+      Vector<String> vTotalSkillPoints = new Vector<String>();
+      vPersons.add(Resources.get("skillchart.skillchartpanel.labeltext.totalpersons")
+          + skillStats.getPersonNumber(skillType));
+      vTotalSkillLevel.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel")
+          + skillStats.getSkillLevelNumber(skillType));
+      vTotalSkillPoints.add(Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints")
+          + skillStats.getSkillPointsNumber(skillType));
 
-			for(Iterator<Skill> iter = skillStats.getKnownSkills(skillType).iterator(); iter.hasNext();) {
-				Skill skill = iter.next();
-				vPersons.add("T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill));
-				vTotalSkillLevel.add("T" + skill.getLevel() + ": " + skillStats.getSkillLevelNumber(skill));
-				vTotalSkillPoints.add("T" + skill.getLevel() + ": " + skillStats.getSkillPointsNumber(skill));
-			}
+      for (Skill skill : skillStats.getKnownSkills(skillType)) {
+        vPersons.add("T" + skill.getLevel() + ": " + skillStats.getPersonNumber(skill));
+        vTotalSkillLevel.add("T" + skill.getLevel() + ": " + skillStats.getSkillLevelNumber(skill));
+        vTotalSkillPoints.add("T" + skill.getLevel() + ": "
+            + skillStats.getSkillPointsNumber(skill));
+      }
 
-			persons.setModel(new DefaultComboBoxModel(vPersons));
-			totalSkillLevel.setModel(new DefaultComboBoxModel(vTotalSkillLevel));
-			totalSkillPoints.setModel(new DefaultComboBoxModel(vTotalSkillPoints));
-		} else {
-			persons.setModel(new DefaultComboBoxModel(new String[] {
-														  Resources.get("skillchart.skillchartpanel.labeltext.totalpersons")
-													  }));
-			totalSkillPoints.setModel(new DefaultComboBoxModel(new String[] {
-																   Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel")
-															   }));
-			totalSkillLevel.setModel(new DefaultComboBoxModel(new String[] {
-																  Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints")
-															  }));
-		}
-	}
+      persons.setModel(new DefaultComboBoxModel(vPersons));
+      totalSkillLevel.setModel(new DefaultComboBoxModel(vTotalSkillLevel));
+      totalSkillPoints.setModel(new DefaultComboBoxModel(vTotalSkillPoints));
+    } else {
+      persons.setModel(new DefaultComboBoxModel(new String[] { Resources
+          .get("skillchart.skillchartpanel.labeltext.totalpersons") }));
+      totalSkillPoints.setModel(new DefaultComboBoxModel(new String[] { Resources
+          .get("skillchart.skillchartpanel.labeltext.totalskilllevel") }));
+      totalSkillLevel.setModel(new DefaultComboBoxModel(new String[] { Resources
+          .get("skillchart.skillchartpanel.labeltext.totalskillpoints") }));
+    }
+  }
 
-	/**
-	 * creates a DefaultCategoryDataSource as basis of a skillchart out of the SkillStats-Object of
-	 * this class and the specified skillType. If skillType is null, an empty datasource is
-	 * created, containing the single value (0,0)
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	private DefaultCategoryDataSource createDataSource(SkillType skillType) {
-		Number dataArray[][];
-		Vector<Object> names;
+  /**
+   * creates a DefaultCategoryDataSource as basis of a skillchart out of the SkillStats-Object of
+   * this class and the specified skillType. If skillType is null, an empty datasource is created,
+   * containing the single value (0,0)
+   */
+  private DefaultCategoryDataSource createDataSource(SkillType skillType) {
+    Number dataArray[][];
+    Vector<Object> names;
 
-		if(skillType == null) {
-			dataArray = new Number[][] {
-							{ new Integer(0) }
-						};
-			names = new Vector<Object>();
-			names.add("");
-		} else {
-			int lowLevel = skillStats.getLowestKnownSkillLevel(skillType);
-			int highLevel = skillStats.getHighestKnownSkillLevel(skillType);
+    if (skillType == null) {
+      dataArray = new Number[][] { { new Integer(0) } };
+      names = new Vector<Object>();
+      names.add("");
+    } else {
+      int lowLevel = skillStats.getLowestKnownSkillLevel(skillType);
+      int highLevel = skillStats.getHighestKnownSkillLevel(skillType);
 
-			if(highLevel != 0) {
-				highLevel++;
-			}
+      if (highLevel != 0) {
+        highLevel++;
+      }
 
-			if(lowLevel != 0) {
-				lowLevel--;
-			}
+      if (lowLevel != 0) {
+        lowLevel--;
+      }
 
-			dataArray = new Number[1][highLevel - lowLevel + 1];
-			names = new Vector<Object>();
+      dataArray = new Number[1][highLevel - lowLevel + 1];
+      names = new Vector<Object>();
 
-			int loopCounter = 0;
+      int loopCounter = 0;
 
-			for(int level = lowLevel; level <= highLevel; loopCounter++, level++) {
-				Skill skill = new Skill(skillType, 1, level, 1, false);
-				dataArray[0][loopCounter] = new Integer(skillStats.getPersonNumber(skill));
-				names.add(new Integer(level));
-			}
-		}
+      for (int level = lowLevel; level <= highLevel; loopCounter++, level++) {
+        Skill skill = new Skill(skillType, 1, level, 1, false);
+        dataArray[0][loopCounter] = new Integer(skillStats.getPersonNumber(skill));
+        names.add(new Integer(level));
+      }
+    }
 
-		return new DefaultCategoryDataSource(new Vector<Object>(), names, dataArray);
-	}
+    return new DefaultCategoryDataSource(new Vector<Object>(), names, dataArray);
+  }
 
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	public void selectionChanged(SelectionEvent e) {
-		// we are only interested in the selectedObjects, not in activeObject
-		// and there only in regions and factions
-		if(e.getSelectedObjects() != null) {
-			boolean modified = false;
+  /**
+   * DOCUMENT-ME
+   */
+  public void selectionChanged(SelectionEvent e) {
+    // we are only interested in the selectedObjects, not in activeObject
+    // and there only in regions and factions
+    if (e.getSelectedObjects() != null) {
+      boolean modified = false;
 
-			// empty Selection => set all region as data
-			if(e.getSelectedObjects().isEmpty()) {
-				regions.clear();
+      // empty Selection => set all region as data
+      if (e.getSelectedObjects().isEmpty()) {
+        regions.clear();
 
-				if(data != null) {
-					regions.putAll(data.regions());
-				}
+        if (data != null) {
+          regions.putAll(data.regions());
+        }
 
-				modified = true;
-			} else {
-				Object o = e.getSelectedObjects().iterator().next();
+        modified = true;
+      } else {
+        boolean rModified = false;
+        boolean fModified = false;
+        for (Object o : e.getSelectedObjects()) {
+          if (o instanceof Region) {
+            // some regions were selected:
+            Region region = (Region) o;
+            if (!rModified) {
+              regions.clear();
+            }
+            rModified = true;
 
-				// some regions were selected:
-				if(o instanceof Region) {
-					modified = true;
-					regions.clear();
+            regions.put(region.getCoordinate(), region);
+          } else if (o instanceof Faction) {
+            // a faction has been selected
+            Faction faction = (Faction) o;
+            if (!fModified) {
+              factions.clear();
+            }
+            fModified = true;
 
-					for(Iterator iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
-						Region region = (Region) iter.next();
-						regions.put(region.getCoordinate(), region);
-					}
-				} else if(o instanceof Faction) {
-					// a faction has been selected
-					modified = true;
-					factions.clear();
+            factions.put(faction.getID(), faction);
+          }
+        }
+        modified = rModified || fModified;
+      }
 
-					for(Iterator iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
-						Faction faction = (Faction) iter.next();
-						factions.put(faction.getID(), faction);
-					}
-				}
-			}
+      if (modified) {
+        // update the skillStats-Object to the new data (new factions or new regions)
+        skillStats = new SkillStats();
 
-			if(modified) {
-				// update the skillStats-Object to the new data (new factions or new regions)
-				skillStats = new SkillStats();
+        for (Region r : regions.values()) {
+          for (Unit u : r.units()) {
+            if (factions.containsValue(u.getFaction())) {
+              skillStats.addUnit(u);
+            }
+          }
+        }
 
-				for(Iterator<Region> iter = regions.values().iterator(); iter.hasNext();) {
-					Region r = iter.next();
+        skills.removeAllItems();
 
-					for(Iterator i = r.units().iterator(); i.hasNext();) {
-						Unit u = (Unit) i.next();
+        for (SkillType skillType : skillStats.getKnownSkillTypes()) {
+          skills.addItem(skillType);
+        }
 
-						if(factions.containsValue(u.getFaction())) {
-							skillStats.addUnit(u);
-						}
-					}
-				}
+        if (skills.getItemCount() > 0) {
+          skills.setSelectedIndex(0);
+        }
 
-				skills.removeAllItems();
+        chartPanel.getChart().setDataSource(createDataSource((SkillType) skills.getSelectedItem()));
+      }
+    }
+  }
 
-				for(Iterator iter = skillStats.getKnownSkillTypes().iterator(); iter.hasNext();) {
-					skills.addItem(iter.next());
-				}
-
-				if(skills.getItemCount() > 0) {
-					skills.setSelectedIndex(0);
-				}
-
-				chartPanel.getChart().setDataSource(createDataSource((SkillType) skills.getSelectedItem()));
-			}
-		}
-	}
-
-	/**
-	 * DOCUMENT-ME
-	 *
-	 * 
-	 */
-	@Override
+  /**
+   * DOCUMENT-ME
+   */
+  @Override
   public void gameDataChanged(magellan.library.event.GameDataEvent e) {
-		data = e.getGameData();
+    data = e.getGameData();
 
-		if(data.noSkillPoints) {
-			totalSkillPoints.setVisible(false);
-		} else {
-			totalSkillPoints.setVisible(true);
-		}
+    if (data.noSkillPoints) {
+      totalSkillPoints.setVisible(false);
+    } else {
+      totalSkillPoints.setVisible(true);
+    }
 
-		/**
-		 * Don't clear factions as the SelectionEvent of the updated List in FactionStatsDialog
-		 * might be processed befor the GameDataEvent
-		 */
-		// factions.clear();
-		// enforce refreshing of regions-table and redrawing of chart
-		selectionChanged(SelectionEvent.create(this));
-	}
+    /**
+     * Don't clear factions as the SelectionEvent of the updated List in FactionStatsDialog might be
+     * processed befor the GameDataEvent
+     */
+    // factions.clear();
+    // enforce refreshing of regions-table and redrawing of chart
+    selectionChanged(SelectionEvent.create(this));
+  }
 
-	/**
-	 * returns a tooltip for the (i)th Bar of the chart
-	 *
-	 * 
-	 *
-	 * 
-	 */
-	public String getToolTip(int i) {
-		SkillType type = (SkillType) skills.getSelectedItem();
+  /**
+   * returns a tooltip for the (i)th Bar of the chart
+   */
+  public String getToolTip(int i) {
+    SkillType type = (SkillType) skills.getSelectedItem();
 
-		if((type == null) || (i >= skillStats.getKnownSkills(type).size())) {
-			return null;
-		} else {
-			Skill skill = skillStats.getKnownSkills(type).get(i);
-			String retVal = Resources.get("skillchart.skillchartpanel.labeltext.totalpersons") +
-							skillStats.getPersonNumber(skill);
-			retVal += (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") +
-			skillStats.getSkillLevelNumber(skill));
-			retVal += (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") +
-			skillStats.getSkillPointsNumber(skill));
+    if ((type == null) || (i >= skillStats.getKnownSkills(type).size())) {
+      return null;
+    } else {
+      Skill skill = skillStats.getKnownSkills(type).get(i);
+      String retVal =
+          Resources.get("skillchart.skillchartpanel.labeltext.totalpersons")
+              + skillStats.getPersonNumber(skill);
+      retVal +=
+          (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskilllevel") + skillStats
+              .getSkillLevelNumber(skill));
+      retVal +=
+          (", " + Resources.get("skillchart.skillchartpanel.labeltext.totalskillpoints") + skillStats
+              .getSkillPointsNumber(skill));
 
-			return retVal;
-		}
-	}
+      return retVal;
+    }
+  }
 }

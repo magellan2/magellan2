@@ -92,8 +92,8 @@ public class MagellanZeroUnitImpl extends MagellanUnitImpl implements ZeroUnit {
 		// delivers the number of persons given to region via command "GIVE 0 x PERSONS"
 		int result = 0;
 
-		for(Iterator iter = getPersonTransferRelations().iterator(); iter.hasNext();) {
-			PersonTransferRelation ptr = (PersonTransferRelation) iter.next();
+		for(Iterator<PersonTransferRelation> iter = getPersonTransferRelations().iterator(); iter.hasNext();) {
+			PersonTransferRelation ptr = iter.next();
 
 			if(!(ptr instanceof RecruitmentRelation)) {
 				result += ptr.amount;

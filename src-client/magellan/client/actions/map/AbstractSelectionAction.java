@@ -82,7 +82,7 @@ public abstract class AbstractSelectionAction extends MenuAction implements Sele
     if (e.getSelectionType() == SelectionEvent.ST_REGIONS && e.getSelectedObjects() != null) {
       selectedRegions.clear();
 
-      for(Iterator iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
+      for (Iterator<Object> iter = e.getSelectedObjects().iterator(); iter.hasNext();) {
         Object o = iter.next();
 
         if(o instanceof Region) {

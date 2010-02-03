@@ -187,8 +187,8 @@ public class TreeHelper {
     }
 
     // add borders
-    for (Iterator iter = r.borders().iterator(); iter.hasNext();) {
-      Border b = (Border) iter.next();
+    for (Iterator<Border> iter = r.borders().iterator(); iter.hasNext();) {
+      Border b = iter.next();
       node = new DefaultMutableTreeNode(factory.createBorderNodeWrapper(b));
       regionNode.add(node);
     }

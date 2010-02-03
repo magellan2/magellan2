@@ -176,8 +176,8 @@ public class EresseaPostProcessor {
 		if(data.units() != null) {
 			Collection<ID> dummyUnitIDs = new LinkedList<ID>();
 
-			for(Iterator iter = data.units().values().iterator(); iter.hasNext();) {
-				Unit unit = (Unit) iter.next();
+			for(Iterator<Unit> iter = data.units().values().iterator(); iter.hasNext();) {
+				Unit unit = iter.next();
 
 				if(unit.getName() == null) {
 					dummyUnitIDs.add(unit.getID());
@@ -211,8 +211,8 @@ public class EresseaPostProcessor {
 			/*ItemType mallornSproutResourceID = */data.rules.getItemType("Mallornschößlinge",true);
 			/*ItemType mallornTreeResourceID = */data.rules.getItemType("Mallorn",true);
 
-			for(Iterator regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
-				Region region = (Region) regionIter.next();
+			for(Iterator<Region> regionIter = data.regions().values().iterator(); regionIter.hasNext();) {
+				Region region = regionIter.next();
 
         // ------------------------------------------------------------------
         // the following tags seem to be visible for "lighthouse";visibility:
@@ -284,8 +284,8 @@ public class EresseaPostProcessor {
 		// initialize fog-of-war cache (FIXME(pavkovic): Do it always?)
 		// clear all fog-of-war caches
 		if(data.regions() != null) {
-			for(Iterator iter = data.regions().values().iterator(); iter.hasNext();) {
-				Region r = (Region) iter.next();
+			for(Iterator<Region> iter = data.regions().values().iterator(); iter.hasNext();) {
+				Region r = iter.next();
 				r.setFogOfWar(-1);
 			}
 		}
@@ -298,8 +298,8 @@ public class EresseaPostProcessor {
 
 			// FIXME(stm) broken, if a unit's faction's report was not added but the skill is still known...
 			if(type != null) {
-				for(Iterator iter = data.buildings().values().iterator(); iter.hasNext();) {
-					Building b = (Building) iter.next();
+				for(Iterator<Building> iter = data.buildings().values().iterator(); iter.hasNext();) {
+					Building b = iter.next();
 
 					if(type.equals(b.getType()) && (b.getSize() >= 10)) {
 						int personCounter = 0;
@@ -322,13 +322,13 @@ public class EresseaPostProcessor {
 													   perceptionSkillLevel / 3);
 
 						if(maxRadius > 0) {
-							Map regions = Regions.getAllNeighbours(data.regions(),
+							Map<CoordinateID, Region> regions = Regions.getAllNeighbours(data.regions(),
 																   b.getRegion().getCoordinate(),
 																   maxRadius, null);
 
-							for(Iterator regionIter = regions.values().iterator();
+							for(Iterator<Region> regionIter = regions.values().iterator();
 									regionIter.hasNext();) {
-								Region r = (Region) regionIter.next();
+								Region r = regionIter.next();
 
 								if((oceanType == null) || oceanType.equals(r.getType())) {
 									r.setFogOfWar(0);
@@ -341,8 +341,8 @@ public class EresseaPostProcessor {
 		}
 
 		// intialize the fog-of-war cache for all regions where units or ships traveled through
-		for(Iterator iterator = data.regions().values().iterator(); iterator.hasNext();) {
-			Region r = (Region) iterator.next();
+		for(Iterator<Region> iterator = data.regions().values().iterator(); iterator.hasNext();) {
+			Region r = iterator.next();
 
 			if(r.getTravelThru() != null) {
 				initTravelThru(data, r, r.getTravelThru());
@@ -354,9 +354,9 @@ public class EresseaPostProcessor {
 		}
 	}
 
-	private void initTravelThru(GameData data, Region region, Collection travelThru) {
-		for(Iterator iter = travelThru.iterator(); iter.hasNext();) {
-			Message mes = (Message) iter.next();
+	private void initTravelThru(GameData data, Region region, Collection<Message> travelThru) {
+		for(Iterator<Message> iter = travelThru.iterator(); iter.hasNext();) {
+			Message mes = iter.next();
 
 			// fetch ID of Unit or Ship from Message of type "<name> (<id>)"
 			String s = mes.getText();
@@ -378,8 +378,8 @@ public class EresseaPostProcessor {
 						Ship ship = data.getShip(id);
 
 						if(ship != null) {
-							for(Iterator i = ship.units().iterator(); i.hasNext();) {
-								if(((Unit) i.next()).getFaction().isPrivileged()) {
+							for(Iterator<Unit> i = ship.units().iterator(); i.hasNext();) {
+								if((i.next()).getFaction().isPrivileged()) {
 									// fast return
 									region.setFogOfWar(0);
 

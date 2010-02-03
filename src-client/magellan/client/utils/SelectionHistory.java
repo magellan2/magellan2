@@ -131,10 +131,10 @@ public class SelectionHistory {
 	private static void informListeners() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					Iterator it = SelectionHistory.listeners.iterator();
+					Iterator<ChangeListener> it = SelectionHistory.listeners.iterator();
 
 					while(it.hasNext()) {
-						((ChangeListener) it.next()).stateChanged(null);
+						(it.next()).stateChanged(null);
 					}
 				}
 			});

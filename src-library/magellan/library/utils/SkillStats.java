@@ -45,9 +45,9 @@ public class SkillStats {
 	 *
 	 * 
 	 */
-	public SkillStats(List<?> units) {
-		for(Iterator iter = units.iterator(); iter.hasNext();) {
-			addUnit((Unit) iter.next());
+	public SkillStats(List<Unit> units) {
+		for(Iterator<Unit> iter = units.iterator(); iter.hasNext();) {
+			addUnit(iter.next());
 		}
 	}
 
@@ -93,8 +93,8 @@ public class SkillStats {
 		if(skillStorage == null) {
 			return 0;
 		} else {
-			Map levelTable = skillStorage.levelTable;
-			UnitVector uv = (UnitVector) levelTable.get(new Integer(skill.getLevel()));
+			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
+			UnitVector uv = levelTable.get(new Integer(skill.getLevel()));
 
 			if(uv == null) {
 				return 0;
@@ -131,8 +131,8 @@ public class SkillStats {
 	public int getSkillPointsNumber(Skill skill) {
 		int retVal = 0;
 
-		for(Iterator iter = getUnits(skill).iterator(); iter.hasNext();) {
-			Unit u = (Unit) iter.next();
+		for(Iterator<Unit> iter = getUnits(skill).iterator(); iter.hasNext();) {
+			Unit u = iter.next();
 			retVal += u.getSkill(skill.getSkillType()).getPoints();
 		}
 
@@ -166,8 +166,8 @@ public class SkillStats {
 	public int getSkillLevelNumber(Skill skill) {
 		int retVal = 0;
 
-		for(Iterator iter = getUnits(skill).iterator(); iter.hasNext();) {
-			Unit u = (Unit) iter.next();
+		for(Iterator<Unit> iter = getUnits(skill).iterator(); iter.hasNext();) {
+			Unit u = iter.next();
 			retVal += (u.getPersons() * skill.getLevel());
 		}
 
@@ -210,8 +210,8 @@ public class SkillStats {
 
 				SkillStorage skillStorage = skillData.get(type);
 
-				for(Iterator i = skillStorage.levelTable.keySet().iterator(); i.hasNext();) {
-					Integer level = (Integer) i.next();
+				for(Iterator<Integer> i = skillStorage.levelTable.keySet().iterator(); i.hasNext();) {
+					Integer level = i.next();
 					v.add(new Skill(type, 1, level.intValue(), 1, false));
 				}
 			}
@@ -225,11 +225,11 @@ public class SkillStats {
 			if(skillStorage == null) {
 				return Collections.emptyList();
 			} else {
-				Map levelTable = skillStorage.levelTable;
+				Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
 				List<Skill> v = new LinkedList<Skill>();
 
-				for(Iterator iter = levelTable.keySet().iterator(); iter.hasNext();) {
-					int level = ((Integer) iter.next()).intValue();
+				for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
+					int level = (iter.next()).intValue();
 					v.add(new Skill(type, Skill.getPointsAtLevel(level), level, 1, false));
 				}
 
@@ -274,11 +274,11 @@ public class SkillStats {
 		if(skillStorage == null) {
 			return 0;
 		} else {
-			Map levelTable = skillStorage.levelTable;
+			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
 			int retVal = Integer.MAX_VALUE;
 
-			for(Iterator iter = levelTable.keySet().iterator(); iter.hasNext();) {
-				int i = ((Integer) iter.next()).intValue();
+			for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
+				int i = (iter.next()).intValue();
 
 				if(i < retVal) {
 					retVal = i;
@@ -302,11 +302,11 @@ public class SkillStats {
 		if(skillStorage == null) {
 			return 0;
 		} else {
-			Map levelTable = skillStorage.levelTable;
+			Map<Integer, UnitVector> levelTable = skillStorage.levelTable;
 			int retVal = Integer.MIN_VALUE;
 
-			for(Iterator iter = levelTable.keySet().iterator(); iter.hasNext();) {
-				int i = ((Integer) iter.next()).intValue();
+			for(Iterator<Integer> iter = levelTable.keySet().iterator(); iter.hasNext();) {
+				int i = (iter.next()).intValue();
 
 				if(i > retVal) {
 					retVal = i;
@@ -323,8 +323,8 @@ public class SkillStats {
 	 * 
 	 */
 	public void addUnit(Unit u) {
-		for(Iterator iter = u.getSkills().iterator(); iter.hasNext();) {
-			Skill skill = (Skill) iter.next();
+		for(Iterator<Skill> iter = u.getSkills().iterator(); iter.hasNext();) {
+			Skill skill = iter.next();
 			SkillStorage skillStorage = skillData.get(skill.getSkillType());
 
 			if(skillStorage == null) {

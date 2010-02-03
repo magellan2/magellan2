@@ -295,10 +295,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
         Faction f = fac.next();
 
         if(f.getMessages() != null) {
-          Iterator msgs = f.getMessages().iterator();
+          Iterator<Message> msgs = f.getMessages().iterator();
 
           while(msgs.hasNext()) {
-            Message msg = (Message) msgs.next();
+            Message msg = msgs.next();
 
             if(msg.getAttributes() != null) {
               Iterator<String> iter = msg.getAttributes().values().iterator();
@@ -356,10 +356,10 @@ public class MessagePanel extends InternationalizedDataPanel implements Selectio
       node = new DefaultMutableTreeNode(Resources.get("messagepanel.node.battles"));
       parent.add(node);
 
-      Iterator battles = f.getBattles().iterator();
+      Iterator<Battle> battles = f.getBattles().iterator();
 
       while(battles.hasNext() == true) {
-        show((Battle) battles.next(), node);
+        show(battles.next(), node);
       }
     }
 

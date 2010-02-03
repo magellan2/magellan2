@@ -457,7 +457,7 @@ public class PropertiesHelper {
    * a) remove old properties b) set prefix.count value c) set prefix.0 ..
    * prefix.n values
    */
-  public static void setList(Properties p, String prefix, Collection list) {
+  public static void setList(Properties p, String prefix, Collection<?> list) {
     // a) remove old properties
     for (Iterator<String> iter = PropertiesHelper.getPrefixedList(p, prefix).iterator(); iter.hasNext();) {
       p.remove(iter.next());
@@ -469,7 +469,7 @@ public class PropertiesHelper {
     // c) set prefix.0 .. prefix.n values
     int i = 0;
 
-    for (Iterator iter = list.iterator(); iter.hasNext(); i++) {
+    for (Iterator<?> iter = list.iterator(); iter.hasNext(); i++) {
       Object value = iter.next();
       p.setProperty(prefix + "." + i, value.toString());
     }

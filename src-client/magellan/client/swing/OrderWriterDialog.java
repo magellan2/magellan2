@@ -68,6 +68,7 @@ import magellan.library.EntityID;
 import magellan.library.Faction;
 import magellan.library.GameData;
 import magellan.library.Group;
+import magellan.library.Region;
 import magellan.library.TempUnit;
 import magellan.library.Unit;
 import magellan.library.io.file.FileBackup;
@@ -96,7 +97,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
   final String defaultSubject = "Eressea Befehle";
 
   private boolean standAlone = false;
-  private Collection regions = null;
+  private Collection<Region> regions = null;
   private JComboBox cmbOutputFile = null;
   private JCheckBox chkUseSettingsFromCR = null;
   private JCheckBox chkFixedWidth = null;
@@ -161,7 +162,7 @@ public class OrderWriterDialog extends InternationalizedDataDialog {
    * a set of selected regions.
    */
   public OrderWriterDialog(Frame owner, boolean modal, GameData initData, Properties p,
-      Collection selectedRegions) {
+      Collection<Region> selectedRegions) {
     super(owner, modal, null, initData, p);
     standAlone = false;
     this.regions = selectedRegions;

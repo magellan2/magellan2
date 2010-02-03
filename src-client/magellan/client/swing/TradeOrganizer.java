@@ -344,8 +344,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     LinkedList<Region> newRegions = new LinkedList<Region>();
     int total = 0;
 
-    for (Iterator iter = regions.iterator(); iter.hasNext();) {
-      Region region = (Region) iter.next();
+    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+      Region region = iter.next();
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
       if (price != null && price.getPrice() < 0) {
@@ -377,8 +377,8 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
     int total = 0;
     int totalPrice = 0;
 
-    for (Iterator iter = regions.iterator(); iter.hasNext();) {
-      Region region = (Region) iter.next();
+    for (Iterator<Region> iter = regions.iterator(); iter.hasNext();) {
+      Region region = iter.next();
       LuxuryPrice price = region.getPrices().get(StringID.create(curLux));
 
       if (price != null && checkPrice(price)) {
@@ -864,12 +864,12 @@ public class TradeOrganizer extends InternationalizedDataDialog implements Selec
 
       super.setRegions(getAllRegions());
 
-      for (Iterator regionIter = getRegions().iterator(); regionIter.hasNext();) {
-        Region r = (Region) regionIter.next();
+      for (Iterator<Region> regionIter = getRegions().iterator(); regionIter.hasNext();) {
+        Region r = regionIter.next();
         int amount = 0;
 
-        for (Iterator unitIter = r.units().iterator(); unitIter.hasNext();) {
-          Unit u = (Unit) unitIter.next();
+        for (Iterator<Unit> unitIter = r.units().iterator(); unitIter.hasNext();) {
+          Unit u = unitIter.next();
 
           if ((u.getFaction() != null) && tableFactions.contains(u.getFaction())) {
             Item item = u.getItem(luxury);

@@ -111,7 +111,7 @@ public class Units {
     Collection<Unit> modUnits = s.modifiedUnits(); // the collection of units on the ship in the next turn
 
     for (Iterator<Unit> sailors = modUnits.iterator(); sailors.hasNext();) {
-      Unit u = (Unit) sailors.next();
+      Unit u = sailors.next();
       Skill sailingSkill = u.getModifiedSkill(sailingSkillType);
 
       if (sailingSkill != null) {

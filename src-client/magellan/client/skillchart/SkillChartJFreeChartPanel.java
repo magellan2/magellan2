@@ -58,7 +58,7 @@ public class SkillChartJFreeChartPanel extends JFreeChartPanel {
 	 */
 	@Override
   public String getToolTipText(MouseEvent e) {
-		Vector<?> barAreas = ((VerticalBarPlot) chart.getPlot()).getBarAreas();
+		Vector<Rectangle2D> barAreas = ((VerticalBarPlot) chart.getPlot()).getBarAreas();
 
 		if(barAreas.size() == 0) {
 			return "";
@@ -66,8 +66,8 @@ public class SkillChartJFreeChartPanel extends JFreeChartPanel {
 			Point p = e.getPoint();
 			int i = barAreas.size() - 1;
 
-			for(Iterator iter = barAreas.iterator(); iter.hasNext(); i--) {
-				Rectangle2D rec = (Rectangle2D) iter.next();
+			for(Iterator<Rectangle2D> iter = barAreas.iterator(); iter.hasNext(); i--) {
+				Rectangle2D rec = iter.next();
 
 				if(rec.contains(p)) {
 					return skillChartPanel.getToolTip(i);

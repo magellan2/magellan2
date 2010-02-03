@@ -35,8 +35,8 @@ public class SelectNothingAction extends AbstractSelectionAction {
    */
   @Override
   public void menuActionPerformed(ActionEvent e) {
-    for (Iterator iter = getSelectedRegions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID c = (CoordinateID) iter.next();
+    for (Iterator<CoordinateID> iter = getSelectedRegions().keySet().iterator(); iter.hasNext();) {
+      CoordinateID c = iter.next();
 
       if (c.z == client.getLevel()) {
         iter.remove();

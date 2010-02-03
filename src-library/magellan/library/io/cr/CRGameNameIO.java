@@ -48,7 +48,7 @@ public class CRGameNameIO implements GameNameIO {
 		Reader report = filetype.createReader();
 
 		try {
-			Map headerMap = (new CRParser(null)).readHeader(report);
+			Map<String, Object> headerMap = (new CRParser(null)).readHeader(report);
 
 			if(headerMap.containsKey("Spiel")) {
 				return (String) headerMap.get("Spiel");

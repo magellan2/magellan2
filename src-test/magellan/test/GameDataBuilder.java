@@ -55,8 +55,8 @@ public class GameDataBuilder {
    * <code>addUnit</code>) one unit.
    */
   private GameData createSimplestGameData(int round, boolean addUnit, boolean postProcess)
-      throws Exception {
-    GameData data = new GameDataReader(null).createGameData("Eressea");
+  throws Exception {
+    final GameData data = new GameDataReader(null).createGameData("Eressea");
 
     data.base = 36;
     // this is sadly needed
@@ -66,7 +66,7 @@ public class GameDataBuilder {
 
     data.setLocale(Locale.GERMAN);
 
-    EresseaDate ed = new EresseaDate(round);
+    final EresseaDate ed = new EresseaDate(round);
     ed.setEpoch(2);
     data.setDate(ed);
 
@@ -75,11 +75,11 @@ public class GameDataBuilder {
     // data.mailSubject
 
     // data.addFaction
-    Faction faction = addFaction(data, "867718", "Faction_867718", "Meermenschen", 1);
+    final Faction faction = addFaction(data, "867718", "Faction_867718", "Meermenschen", 1);
 
-    Island island = addIsland(data, "1", "Island_1");
+    final Island island = addIsland(data, "1", "Island_1");
 
-    Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Gletscher", 1);
+    final Region region_0_0 = addRegion(data, "0 0", "Region_0_0", "Gletscher", 1);
     region_0_0.setIsland(island);
 
     if (addUnit) {
@@ -113,10 +113,10 @@ public class GameDataBuilder {
    * Steinbau -. Add a unit if <code>addUnit</code>.
    */
   public GameData createSimpleGameData(int round, boolean addUnit) throws Exception {
-    GameData data = createSimplestGameData(round, addUnit, false);
+    final GameData data = createSimplestGameData(round, addUnit, false);
 
     if (data.units().size() > 0) {
-      Unit unit = data.units().values().iterator().next();
+      final Unit unit = data.units().values().iterator().next();
 
       addSkill(unit, "Hiebwaffen", 4, 3, true); // Hiebwaffen 4 (+3)
       addSkill(unit, "Segeln", -1, -3, false); // Segeln - (-3)
@@ -129,9 +129,9 @@ public class GameDataBuilder {
   }
 
   public Faction addFaction(GameData data, String number, String name, String race, int sortIndex) {
-    EntityID id = EntityID.createEntityID(number, 10); // TODO base?
+    final EntityID id = EntityID.createEntityID(number, 10); // TODO base?
 
-    Faction faction = MagellanFactory.createFaction(id, data);
+    final Faction faction = MagellanFactory.createFaction(id, data);
     data.addFaction(faction);
 
     faction.setName(name);
@@ -146,9 +146,9 @@ public class GameDataBuilder {
   }
 
   public Island addIsland(GameData data, String number, String name) {
-    IntegerID id = IntegerID.create(number);
+    final IntegerID id = IntegerID.create(number);
 
-    Island island = MagellanFactory.createIsland(id, data);
+    final Island island = MagellanFactory.createIsland(id, data);
     data.addIsland(island);
 
     island.setName(name);
@@ -157,9 +157,9 @@ public class GameDataBuilder {
   }
 
   public Region addRegion(GameData data, String number, String name, String type, int sortIndex) {
-    CoordinateID c = CoordinateID.parse(number, " ");
+    final CoordinateID c = CoordinateID.parse(number, " ");
 
-    Region region = MagellanFactory.createRegion(c, data);
+    final Region region = MagellanFactory.createRegion(c, data);
     data.addRegion(region);
 
     region.setName(name);
@@ -171,15 +171,15 @@ public class GameDataBuilder {
   }
 
   public Unit addUnit(GameData data, String name, Region region) {
-    String number = "g" + (data.units().size() + 1);
-    Faction faction = data.factions().values().iterator().next();
+    final String number = "g" + (data.units().size() + 1);
+    final Faction faction = data.factions().values().iterator().next();
     return addUnit(data, number, name, faction, region);
   }
 
   public Unit addUnit(GameData data, String number, String name, Faction faction, Region region) {
-    UnitID id = UnitID.createUnitID(number, data.base); // TODO base?
+    final UnitID id = UnitID.createUnitID(number, data.base); // TODO base?
 
-    Unit unit = MagellanFactory.createUnit(id);
+    final Unit unit = MagellanFactory.createUnit(id);
     data.addUnit(unit);
 
     unit.setName(name);
@@ -210,12 +210,12 @@ public class GameDataBuilder {
 
   protected Skill addSkill(Unit unit, String name, int level, int change, boolean changed) {
 
-    SkillType skt = unit.getRegion().getData().rules.getSkillType(StringID.create(name), true);
-    int raceBonus = unit.getRace().getSkillBonus(skt);
-    int points = Skill.getPointsAtLevel(level - raceBonus);
+    final SkillType skt = unit.getRegion().getData().rules.getSkillType(StringID.create(name), true);
+    final int raceBonus = unit.getRace().getSkillBonus(skt);
+    final int points = Skill.getPointsAtLevel(level - raceBonus);
 
-    Skill skill =
-        new Skill(skt, points, level, unit.getPersons(), unit.getRegion().getData().noSkillPoints);
+    final Skill skill =
+      new Skill(skt, points, level, unit.getPersons(), unit.getRegion().getData().noSkillPoints);
 
     skill.setChangeLevel(change);
 
@@ -237,7 +237,7 @@ public class GameDataBuilder {
     // "Straﬂe";typ
     // 0;richtung
     // 100;prozent
-    Border road = MagellanFactory.createBorder(IntegerID.create(id));
+    final Border road = MagellanFactory.createBorder(IntegerID.create(id));
 
     road.setDirection(direction);
     road.setBuildRatio(buildRatio);
@@ -256,7 +256,7 @@ public class GameDataBuilder {
     spell.setName("Hagel");
     spell.setLevel(5);
     spell.setType("combat");
-    Spell hail = spell.construct();
+    final Spell hail = spell.construct();
     data.addSpell(hail);
     spellMap.put(id, hail);
 
@@ -266,20 +266,20 @@ public class GameDataBuilder {
     spell.setLevel(2);
     spell.setType("normal");
     spell.setSyntax("");
-    Spell feast = spell.construct();
+    final Spell feast = spell.construct();
     data.addSpell(feast);
     spellMap.put(id, feast);
-    
+
     id = IntegerID.create(997);
     spell = new SpellBuilder(id, data);
     spell.setName("Schild");
     spell.setLevel(4);
     spell.setType("normal");
     spell.setSyntax("u");
-    Spell shield = spell.construct();
+    final Spell shield = spell.construct();
     data.addSpell(shield);
     spellMap.put(id, shield);
-    
+
     mage.setSpells(spellMap);
   }
 

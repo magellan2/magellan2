@@ -10,17 +10,17 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with this program (see doc/LICENCE.txt); if not, write to the
 // Free Software Foundation, Inc.,
 // 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
-// 
+//
 package magellan.library.utils;
 
 import java.util.ArrayList;
@@ -224,9 +224,9 @@ public abstract class MagellanFactory {
         newGroup.allies().clear();
       }
 
-      for (Iterator<Alliance> iter = curGroup.allies().values().iterator(); iter.hasNext();) {
-        Alliance alliance = iter.next();
-        Faction ally = newGD.getFaction(alliance.getFaction().getID());
+      for (final Iterator<Alliance> iter = curGroup.allies().values().iterator(); iter.hasNext();) {
+        final Alliance alliance = iter.next();
+        final Faction ally = newGD.getFaction(alliance.getFaction().getID());
         newGroup.allies().put(ally.getID(), new Alliance(ally, alliance.getState()));
       }
     }
@@ -242,7 +242,7 @@ public abstract class MagellanFactory {
     }
 
     if (curGroup.getAttributeSize() > 0) {
-      for (String key : curGroup.getAttributeKeys()) {
+      for (final String key : curGroup.getAttributeKeys()) {
         if (!newGroup.containsAttribute(key))
           newGroup.addAttribute(key, curGroup.getAttribute(key));
       }
@@ -257,7 +257,7 @@ public abstract class MagellanFactory {
       Faction newFaction) {
     MagellanFactory.mergeUnitContainer(curGD, curFaction, newGD, newFaction);
 
-    // tricky: keep alliance only if from the same round and either curFaction is owner faction or 
+    // tricky: keep alliance only if from the same round and either curFaction is owner faction or
     // alliance is known
     if (curGD.getDate().equals(newGD.getDate())
         && (curFaction.getAlliance() != null || curFaction.getID().equals(curGD.getOwnerFaction())))
@@ -273,9 +273,9 @@ public abstract class MagellanFactory {
       }
 
       if (curFaction.getAllies() != null) {
-        for (Iterator<Alliance> iter = curFaction.getAllies().values().iterator(); iter.hasNext();) {
-          Alliance alliance = iter.next();
-          Faction ally = newGD.getFaction(alliance.getFaction().getID());
+        for (final Iterator<Alliance> iter = curFaction.getAllies().values().iterator(); iter.hasNext();) {
+          final Alliance alliance = iter.next();
+          final Faction ally = newGD.getFaction(alliance.getFaction().getID());
           newFaction.getAllies().put(ally.getID(), new Alliance(ally, alliance.getState()));
         }
       }
@@ -292,13 +292,13 @@ public abstract class MagellanFactory {
         newFaction.getGroups().clear();
       }
 
-      for (Iterator<Group> iter = curFaction.getGroups().values().iterator(); iter.hasNext();) {
-        Group curGroup = iter.next();
+      for (final Iterator<Group> iter = curFaction.getGroups().values().iterator(); iter.hasNext();) {
+        final Group curGroup = iter.next();
         Group newGroup = null;
 
         try {
           newGroup = MagellanFactory.createGroup(curGroup.getID().clone(), newGD);
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
           throw new NullPointerException("cannot happen");
         }
 
@@ -355,23 +355,23 @@ public abstract class MagellanFactory {
       if ((curFaction.getBattles() != null) && (curFaction.getBattles().size() > 0)) {
         newFaction.setBattles(new LinkedList<Battle>());
 
-        for (Iterator iter = curFaction.getBattles().iterator(); iter.hasNext();) {
-          Battle curBattle = (Battle) iter.next();
+        for (final Iterator<Battle> iter = curFaction.getBattles().iterator(); iter.hasNext();) {
+          final Battle curBattle = iter.next();
 
           try {
-            Battle newBattle =
-                MagellanFactory.createBattle(curBattle.getID().clone(), curBattle
-                    .isBattleSpec());
+            final Battle newBattle =
+              MagellanFactory.createBattle(curBattle.getID().clone(), curBattle
+                  .isBattleSpec());
 
-            for (Iterator msgs = curBattle.messages().iterator(); msgs.hasNext();) {
-              Message curMsg = (Message) msgs.next();
-              Message newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
+            for (final Iterator<Message> msgs = curBattle.messages().iterator(); msgs.hasNext();) {
+              final Message curMsg = msgs.next();
+              final Message newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
               MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
               newBattle.messages().add(newMsg);
             }
 
             newFaction.getBattles().add(curBattle);
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
             MagellanFactory.log.error("Faction.merge()", e);
           }
         }
@@ -388,13 +388,13 @@ public abstract class MagellanFactory {
           newFaction.getMessages().clear();
         }
 
-        for (Iterator<Message> iter = curFaction.getMessages().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curFaction.getMessages().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, newGD, newMsg);
@@ -435,8 +435,8 @@ public abstract class MagellanFactory {
 
       if (curFaction.getItems() != null) {
         if (curFaction.getItems().size() > 0) {
-          for (Iterator<Item> iter = curFaction.getItems().iterator(); iter.hasNext();) {
-            Item currentItem = iter.next();
+          for (final Iterator<Item> iter = curFaction.getItems().iterator(); iter.hasNext();) {
+            final Item currentItem = iter.next();
             newFaction.addItem(currentItem);
           }
         }
@@ -518,10 +518,10 @@ public abstract class MagellanFactory {
 
     // copy tags
     if (curGD.getDate().equals(newGD.getDate()) && curUC.hasTags()) {
-      Iterator it = curUC.getTagMap().keySet().iterator();
+      final Iterator<String> it = curUC.getTagMap().keySet().iterator();
 
       while (it.hasNext()) {
-        String str = (String) it.next();
+        final String str = it.next();
 
         if (!newUC.containsTag(str)) {
           newUC.putTag(str, curUC.getTag(str));
@@ -534,7 +534,7 @@ public abstract class MagellanFactory {
     newUC.setSortIndex(Math.max(newUC.getSortIndex(), curUC.getSortIndex()));
 
     if (curUC.getAttributeSize() > 0) {
-      for (String key : curUC.getAttributeKeys()) {
+      for (final String key : curUC.getAttributeKeys()) {
         if (!newUC.containsAttribute(key))
           newUC.addAttribute(key, curUC.getAttribute(key));
       }
@@ -613,9 +613,9 @@ public abstract class MagellanFactory {
     if (!curPotion.ingredients().isEmpty()) {
       newPotion.clearIngredients();
 
-      for (Iterator iter = curPotion.ingredients().iterator(); iter.hasNext();) {
-        Item i = (Item) iter.next();
-        magellan.library.rules.ItemType it = newGD.rules.getItemType(i.getItemType().getID(), true);
+      for (final Iterator<Item> iter = curPotion.ingredients().iterator(); iter.hasNext();) {
+        final Item i = iter.next();
+        final magellan.library.rules.ItemType it = newGD.rules.getItemType(i.getItemType().getID(), true);
         newPotion.addIngredient(new Item(it, i.getAmount()));
       }
     }
@@ -691,7 +691,7 @@ public abstract class MagellanFactory {
     if (curHS.getCenter() != null) {
       try {
         newHS.setCenter(curHS.getCenter().clone());
-      } catch (CloneNotSupportedException e) {
+      } catch (final CloneNotSupportedException e) {
         // impossible position, should throw a runtime exception here
       }
     }
@@ -712,7 +712,7 @@ public abstract class MagellanFactory {
     newIsland.invalidateRegions();
 
     if (curIsland.getAttributeSize() > 0) {
-      for (String key : curIsland.getAttributeKeys()) {
+      for (final String key : curIsland.getAttributeKeys()) {
         if (!newIsland.containsAttribute(key))
           newIsland.addAttribute(key, curIsland.getAttribute(key));
       }
@@ -737,7 +737,7 @@ public abstract class MagellanFactory {
       Region resultRegion, boolean newTurn, boolean firstPass) {
     MagellanFactory.mergeUnitContainer(curGD, curRegion, resultGD, resultRegion);
 
-    boolean sameTurn = !newTurn || !firstPass;
+    final boolean sameTurn = !newTurn || !firstPass;
 
     /******************** MORALE AND OWNER *************************************/
     if (curRegion.getMorale() >= 0
@@ -747,7 +747,7 @@ public abstract class MagellanFactory {
         || (resultRegion.getOwnerFaction() != null && curRegion.getVisibility().equals(
             Visibility.UNIT)))
       resultRegion.setOwnerFaction(curRegion.getOwnerFaction());
-    
+
     if (sameTurn) {
       resultRegion.setMourning(curRegion.getMourning());
     }
@@ -844,21 +844,21 @@ public abstract class MagellanFactory {
         && !curRegion.getPrices().equals(resultRegion.getPrices())) {
       resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
 
-      for (Iterator iter = resultRegion.getPrices().values().iterator(); iter.hasNext();) {
-        LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+      for (final Iterator <LuxuryPrice>iter = resultRegion.getPrices().values().iterator(); iter.hasNext();) {
+        final LuxuryPrice curPrice = iter.next();
+        final LuxuryPrice newPrice =
+          new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+              .getPrice());
         resultRegion.getOldPrices().put(newPrice.getItemType().getID(), newPrice);
       }
     } else if (curRegion.getOldPrices() != null) {
       resultRegion.setOldPrices(new Hashtable<StringID, LuxuryPrice>());
 
-      for (Iterator iter = curRegion.getOldPrices().values().iterator(); iter.hasNext();) {
-        LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+      for (final Iterator<LuxuryPrice> iter = curRegion.getOldPrices().values().iterator(); iter.hasNext();) {
+        final LuxuryPrice curPrice = iter.next();
+        final LuxuryPrice newPrice =
+          new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+              .getPrice());
 
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
@@ -894,15 +894,15 @@ public abstract class MagellanFactory {
 
       resultRegion.clearBorders();
 
-      for (Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
-        Border curBorder = (Border) iter.next();
+      for (final Iterator<Border> iter = curRegion.borders().iterator(); iter.hasNext();) {
+        final Border curBorder = iter.next();
         Border newBorder = null;
 
         try {
           newBorder =
-              MagellanFactory.createBorder(curBorder.getID().clone(),
-                  curBorder.getDirection(), curBorder.getType(), curBorder.getBuildRatio());
-        } catch (CloneNotSupportedException e) {
+            MagellanFactory.createBorder(curBorder.getID().clone(),
+                curBorder.getDirection(), curBorder.getType(), curBorder.getBuildRatio());
+        } catch (final CloneNotSupportedException e) {
         }
 
         resultRegion.addBorder(newBorder);
@@ -910,13 +910,13 @@ public abstract class MagellanFactory {
 
     } else {
       // just add new Borders
-      for (Iterator iter = curRegion.borders().iterator(); iter.hasNext();) {
-        Border curBorder = (Border) iter.next();
+      for (final Iterator<Border> iter = curRegion.borders().iterator(); iter.hasNext();) {
+        final Border curBorder = iter.next();
 
         // do we already have this border?
         boolean curBorderPresent = false;
-        for (Iterator iter2 = resultRegion.borders().iterator(); iter2.hasNext();) {
-          Border actNewBorder = (Border) iter2.next();
+        for (final Iterator<Border> iter2 = resultRegion.borders().iterator(); iter2.hasNext();) {
+          final Border actNewBorder = iter2.next();
           if (actNewBorder.getType().equalsIgnoreCase(curBorder.getType())
               && actNewBorder.getDirection() == curBorder.getDirection()) {
             curBorderPresent = true;
@@ -927,11 +927,11 @@ public abstract class MagellanFactory {
         if (!curBorderPresent) {
           // add border to result region
           Border newBorder = null;
-          IntegerID newID = Regions.getNewBorderID(resultRegion, curBorder);
+          final IntegerID newID = Regions.getNewBorderID(resultRegion, curBorder);
 
           newBorder =
-              MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder.getType(),
-                  curBorder.getBuildRatio());
+            MagellanFactory.createBorder(newID, curBorder.getDirection(), curBorder.getType(),
+                curBorder.getBuildRatio());
 
           if (newBorder != null) {
             resultRegion.addBorder(newBorder);
@@ -947,9 +947,9 @@ public abstract class MagellanFactory {
       else
         resultRegion.setVisibility(curRegion.getVisibility());
     } else {
-      Visibility curRegionVis = curRegion.getVisibility();
-      Visibility actNewRegionVis = resultRegion.getVisibility();
-      Visibility result = Visibility.getMax(curRegionVis, actNewRegionVis);
+      final Visibility curRegionVis = curRegion.getVisibility();
+      final Visibility actNewRegionVis = resultRegion.getVisibility();
+      final Visibility result = Visibility.getMax(curRegionVis, actNewRegionVis);
       resultRegion.setVisibility(result);
     }
 
@@ -983,7 +983,7 @@ public abstract class MagellanFactory {
     }
 
     if (curRegion.getIsland() != null) {
-      Island newIsland = resultGD.getIsland(curRegion.getIsland().getID());
+      final Island newIsland = resultGD.getIsland(curRegion.getIsland().getID());
 
       if (newIsland != null) {
         resultRegion.setIsland(newIsland);
@@ -1031,11 +1031,11 @@ public abstract class MagellanFactory {
         resultRegion.getPrices().clear();
       }
 
-      for (Iterator iter = curRegion.getPrices().values().iterator(); iter.hasNext();) {
-        LuxuryPrice curPrice = (LuxuryPrice) iter.next();
-        LuxuryPrice newPrice =
-            new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
-                .getPrice());
+      for (final Iterator<LuxuryPrice> iter = curRegion.getPrices().values().iterator(); iter.hasNext();) {
+        final LuxuryPrice curPrice = iter.next();
+        final LuxuryPrice newPrice =
+          new LuxuryPrice(resultGD.rules.getItemType(curPrice.getItemType().getID()), curPrice
+              .getPrice());
 
         if (newPrice.getItemType() == null) {
           // this happens if there does exist an unknown tag in
@@ -1050,7 +1050,7 @@ public abstract class MagellanFactory {
 
     /******************** MERGE RESOURCES *************************************/
     if (!curRegion.resources().isEmpty()) {
-      for (RegionResource curRes : curRegion.resources()) {
+      for (final RegionResource curRes : curRegion.resources()) {
         RegionResource newRes = resultRegion.getResource(curRes.getType());
 
         try {
@@ -1070,14 +1070,14 @@ public abstract class MagellanFactory {
           if (newRes == null) {
             // add Resource
             newRes =
-                new RegionResource((ID) curRes.getID().clone(), resultGD.rules.getItemType(curRes
-                    .getType().getID(), true));
+              new RegionResource((ID) curRes.getID().clone(), resultGD.rules.getItemType(curRes
+                  .getType().getID(), true));
             resultRegion.addResource(newRes);
           }
 
           RegionResource.merge(curGD, curRes, resultGD, newRes, sameTurn);
 
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
           MagellanFactory.log.error(e);
         }
       }
@@ -1088,17 +1088,17 @@ public abstract class MagellanFactory {
     // but not in the current one. These are those, that are not seen in the
     // maybe newer report! This maybe because their level has changed.
     // Types for which no skill is needed to see
-    ItemType horsesType = resultGD.rules.getItemType(EresseaConstants.I_RHORSES);
-    ItemType treesType = resultGD.rules.getItemType(EresseaConstants.I_TREES);
-    ItemType mallornType = resultGD.rules.getItemType(EresseaConstants.I_RMALLORN);
-    ItemType schoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_SPROUTS);
-    ItemType mallornSchoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_MALLORNSPROUTS);
+    final ItemType horsesType = resultGD.rules.getItemType(EresseaConstants.I_RHORSES);
+    final ItemType treesType = resultGD.rules.getItemType(EresseaConstants.I_TREES);
+    final ItemType mallornType = resultGD.rules.getItemType(EresseaConstants.I_RMALLORN);
+    final ItemType schoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_SPROUTS);
+    final ItemType mallornSchoesslingeType = resultGD.rules.getItemType(EresseaConstants.I_MALLORNSPROUTS);
     // FF 20080910...need new resources too
-    ItemType bauernType = resultGD.rules.getItemType(EresseaConstants.I_PEASANTS);
-    ItemType silberType = resultGD.rules.getItemType(EresseaConstants.I_RSILVER);
+    final ItemType bauernType = resultGD.rules.getItemType(EresseaConstants.I_PEASANTS);
+    final ItemType silberType = resultGD.rules.getItemType(EresseaConstants.I_RSILVER);
 
     // ArrayList of above Types
-    List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();
+    final List<ItemType> skillIrrelevantTypes = new ArrayList<ItemType>();
     skillIrrelevantTypes.add(horsesType);
     skillIrrelevantTypes.add(treesType);
     skillIrrelevantTypes.add(mallornType);
@@ -1114,8 +1114,8 @@ public abstract class MagellanFactory {
 
     if ((resultRegion.resources() != null) && !resultRegion.resources().isEmpty()) {
       List<ItemType> deleteRegionRessources = null;
-      for (RegionResource newRes : resultRegion.resources()) {
-        RegionResource curRes = curRegion.getResource(newRes.getType());
+      for (final RegionResource newRes : resultRegion.resources()) {
+        final RegionResource curRes = curRegion.getResource(newRes.getType());
 
         if (curRes == null) {
           // check whether talent is good enough that it should be seen!
@@ -1124,11 +1124,11 @@ public abstract class MagellanFactory {
           boolean found = false;
 
           // new coding with same effect but better performance
-          Skill makeSkill = newRes.getType().getMakeSkill();
+          final Skill makeSkill = newRes.getType().getMakeSkill();
           if (makeSkill != null) {
-            for (Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
-              Unit unit = i.next();
-              Skill skill = unit.getSkill(makeSkill.getSkillType());
+            for (final Iterator<Unit> i = curRegion.units().iterator(); i.hasNext() && !found;) {
+              final Unit unit = i.next();
+              final Skill skill = unit.getSkill(makeSkill.getSkillType());
               if (skill != null) {
                 if (skill.getLevel() >= newRes.getSkillLevel()) {
                   found = true;
@@ -1178,7 +1178,7 @@ public abstract class MagellanFactory {
       }
       if (deleteRegionRessources != null) {
         // so we have Resources, that are not present any more
-        for (ItemType regResID : deleteRegionRessources) {
+        for (final ItemType regResID : deleteRegionRessources) {
           // newRegion.resources().remove(regResID);
           // doesn't work, as it doesn't modify the
           // collection (only the hashset)
@@ -1189,8 +1189,8 @@ public abstract class MagellanFactory {
 
     /******************** SCHEMES *************************************/
     if (!curRegion.schemes().isEmpty()) {
-      for (Iterator iter = curRegion.schemes().iterator(); iter.hasNext();) {
-        Scheme curScheme = (Scheme) iter.next();
+      for (final Iterator<Scheme> iter = curRegion.schemes().iterator(); iter.hasNext();) {
+        final Scheme curScheme = iter.next();
         Scheme newScheme = resultRegion.getScheme(curScheme.getID());
 
         try {
@@ -1200,7 +1200,7 @@ public abstract class MagellanFactory {
           }
 
           MagellanFactory.mergeScheme(curGD, curScheme, resultGD, newScheme);
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
           MagellanFactory.log.error(e);
         }
       }
@@ -1227,13 +1227,13 @@ public abstract class MagellanFactory {
           resultRegion.setEvents(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getEvents().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getEvents().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1246,13 +1246,13 @@ public abstract class MagellanFactory {
           resultRegion.setMessages(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getMessages().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getMessages().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1265,13 +1265,13 @@ public abstract class MagellanFactory {
           resultRegion.setPlayerMessages(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getPlayerMessages().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getPlayerMessages().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1284,13 +1284,13 @@ public abstract class MagellanFactory {
           resultRegion.setSurroundings(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getSurroundings().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getSurroundings().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1303,13 +1303,13 @@ public abstract class MagellanFactory {
           resultRegion.setTravelThru(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getTravelThru().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getTravelThru().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1327,13 +1327,13 @@ public abstract class MagellanFactory {
           resultRegion.setTravelThruShips(new LinkedList<Message>());
         }
 
-        for (Iterator<Message> iter = curRegion.getTravelThruShips().iterator(); iter.hasNext();) {
-          Message curMsg = iter.next();
+        for (final Iterator<Message> iter = curRegion.getTravelThruShips().iterator(); iter.hasNext();) {
+          final Message curMsg = iter.next();
           Message newMsg = null;
 
           try {
             newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-          } catch (CloneNotSupportedException e) {
+          } catch (final CloneNotSupportedException e) {
           }
 
           MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1392,7 +1392,7 @@ public abstract class MagellanFactory {
     if (curShip.getSize() != -1) {
       newShip.setSize(curShip.getSize());
     }
-    
+
     if (curShip.getMaxPersons() != -1){
       newShip.setMaxPersons(curShip.getMaxPersons());
     }
@@ -1504,13 +1504,13 @@ public abstract class MagellanFactory {
     /*
      * True, when curUnit is seen by the faction it belongs to and is therefore fully specified.
      */
-    boolean curWellKnown = !curUnit.ordersAreNull() || (curUnit.getCombatStatus() != -1);
+    final boolean curWellKnown = !curUnit.ordersAreNull() || (curUnit.getCombatStatus() != -1);
 
     /*
      * True, when newUnit is seen by the faction it belongs to and is therefore fully specified.
      * This is only meaningful in the second pass.
      */
-    boolean newWellKnown = !resultUnit.ordersAreNull() || (resultUnit.getCombatStatus() != -1);
+    final boolean newWellKnown = !resultUnit.ordersAreNull() || (resultUnit.getCombatStatus() != -1);
 
     if (curUnit.getName() != null) {
       resultUnit.setName(curUnit.getName());
@@ -1523,7 +1523,7 @@ public abstract class MagellanFactory {
     if (curUnit.getAlias() != null) {
       try {
         resultUnit.setAlias(curUnit.getAlias().clone());
-      } catch (CloneNotSupportedException e) {
+      } catch (final CloneNotSupportedException e) {
       }
     }
 
@@ -1556,14 +1556,14 @@ public abstract class MagellanFactory {
         resultUnit.getCombatSpells().clear();
       }
 
-      for (Iterator<CombatSpell> iter = curUnit.getCombatSpells().values().iterator(); iter
-          .hasNext();) {
-        CombatSpell curCS = iter.next();
+      for (final Iterator<CombatSpell> iter = curUnit.getCombatSpells().values().iterator(); iter
+      .hasNext();) {
+        final CombatSpell curCS = iter.next();
         CombatSpell newCS = null;
 
         try {
           newCS = MagellanFactory.createCombatSpell(curCS.getID().clone());
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
           throw new RuntimeException("should never happen");
         }
 
@@ -1633,16 +1633,16 @@ public abstract class MagellanFactory {
     if (firstPass || !newWellKnown || curWellKnown) {
       if ((curUnit.getItems() != null) && (curUnit.getItems().size() > 0)) {
         if (resultUnit.getItemMap() == null) {
-          resultUnit.setItems(new Hashtable<ID, Item>());
+          resultUnit.setItems(new Hashtable<StringID, Item>());
         } else {
           resultUnit.getItemMap().clear();
         }
 
-        for (Iterator<Item> iter = curUnit.getItems().iterator(); iter.hasNext();) {
-          Item curItem = iter.next();
-          Item newItem =
-              new Item(resultGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
-                  .getAmount());
+        for (final Iterator<Item> iter = curUnit.getItems().iterator(); iter.hasNext();) {
+          final Item curItem = iter.next();
+          final Item newItem =
+            new Item(resultGD.rules.getItemType(curItem.getItemType().getID(), true), curItem
+                .getAmount());
           resultUnit.getItemMap().put(newItem.getItemType().getID(), newItem);
         }
       }
@@ -1684,20 +1684,20 @@ public abstract class MagellanFactory {
     }
 
     // this block requires newUnit.person to be already set!
-    Collection<Skill> oldSkills = new LinkedList<Skill>();
+    final Collection<Skill> oldSkills = new LinkedList<Skill>();
 
     if (resultUnit.getSkillMap() == null) {
-      resultUnit.setSkills(new OrderedHashtable<ID, Skill>());
+      resultUnit.setSkills(new OrderedHashtable<StringID, Skill>());
     } else {
       oldSkills.addAll(resultUnit.getSkills());
     }
 
     if ((curUnit.getSkills() != null) && (curUnit.getSkills().size() > 0)) {
-      for (Skill curSkill : curUnit.getSkills()) {
-        SkillType newSkillType = resultGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
-        Skill newSkill =
-            new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(), resultUnit
-                .getPersons(), curSkill.noSkillPoints());
+      for (final Skill curSkill : curUnit.getSkills()) {
+        final SkillType newSkillType = resultGD.rules.getSkillType(curSkill.getSkillType().getID(), true);
+        final Skill newSkill =
+          new Skill(newSkillType, curSkill.getPoints(), curSkill.getLevel(), resultUnit
+              .getPersons(), curSkill.noSkillPoints());
 
         if (curSkill.isLevelChanged()) {
           newSkill.setLevelChanged(true);
@@ -1710,12 +1710,12 @@ public abstract class MagellanFactory {
 
         // NOTE: Maybe some decision about change-level computation in reports
         // of same date here
-        Skill oldSkill = resultUnit.getSkillMap().put(newSkillType.getID(), newSkill);
+        final Skill oldSkill = resultUnit.getSkillMap().put(newSkillType.getID(), newSkill);
 
         if (!sameRound) {
           // notify change as we are not in the same round.
           if (oldSkill != null) {
-            int dec = oldSkill.getLevel();
+            final int dec = oldSkill.getLevel();
             newSkill.setChangeLevel(newSkill.getLevel() - dec);
           } else {
             // the skill is new as we did not have it before
@@ -1766,8 +1766,8 @@ public abstract class MagellanFactory {
     // pavkovic 2004.01.27: now we remove oldSkills only if the round changed.
     if (!sameRound) {
       // Now remove all skills that are lost
-      for (Iterator<Skill> iter = oldSkills.iterator(); iter.hasNext();) {
-        Skill oldSkill = iter.next();
+      for (final Iterator<Skill> iter = oldSkills.iterator(); iter.hasNext();) {
+        final Skill oldSkill = iter.next();
 
         if (oldSkill.isLostSkill()) { // remove if it was lost
           resultUnit.getSkillMap().remove(oldSkill.getSkillType().getID());
@@ -1787,9 +1787,9 @@ public abstract class MagellanFactory {
         resultUnit.getSpells().clear();
       }
 
-      for (Iterator<Spell> iter = curUnit.getSpells().values().iterator(); iter.hasNext();) {
-        Spell curSpell = iter.next();
-        Spell newSpell = resultGD.getSpell(curSpell.getID());
+      for (final Iterator<Spell> iter = curUnit.getSpells().values().iterator(); iter.hasNext();) {
+        final Spell curSpell = iter.next();
+        final Spell newSpell = resultGD.getSpell(curSpell.getID());
         resultUnit.getSpells().put(newSpell.getID(), newSpell);
       }
     }
@@ -1801,7 +1801,7 @@ public abstract class MagellanFactory {
     if (curUnit.getTempID() != null) {
       try {
         resultUnit.setTempID(curUnit.getTempID().clone());
-      } catch (CloneNotSupportedException e) {
+      } catch (final CloneNotSupportedException e) {
         MagellanFactory.log.error(e);
       }
     }
@@ -1833,13 +1833,13 @@ public abstract class MagellanFactory {
         resultUnit.setUnitMessages(new LinkedList<Message>());
       }
 
-      for (Iterator<Message> iter = curUnit.getUnitMessages().iterator(); iter.hasNext();) {
-        Message curMsg = iter.next();
+      for (final Iterator<Message> iter = curUnit.getUnitMessages().iterator(); iter.hasNext();) {
+        final Message curMsg = iter.next();
         Message newMsg = null;
 
         try {
           newMsg = MagellanFactory.createMessage(curMsg.getID().clone());
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
         }
 
         MagellanFactory.mergeMessage(curGD, curMsg, resultGD, newMsg);
@@ -1860,14 +1860,14 @@ public abstract class MagellanFactory {
 
     // merge tags
     if (curUnit.hasTags()) {
-      for (Iterator iter = curUnit.getTagMap().keySet().iterator(); iter.hasNext();) {
-        String tag = (String) iter.next();
+      for (final Iterator<String> iter = curUnit.getTagMap().keySet().iterator(); iter.hasNext();) {
+        final String tag = iter.next();
         resultUnit.putTag(tag, curUnit.getTag(tag));
       }
     }
 
     if (curUnit.getAttributeSize() > 0) {
-      for (String key : curUnit.getAttributeKeys()) {
+      for (final String key : curUnit.getAttributeKeys()) {
         if (!resultUnit.containsAttribute(key))
           resultUnit.addAttribute(key, curUnit.getAttribute(key));
       }
@@ -1888,19 +1888,19 @@ public abstract class MagellanFactory {
     v.setSkillsCopied(true);
 
     if (u.getSkills() != null) {
-      Iterator<Skill> it = u.getSkills().iterator();
+      final Iterator<Skill> it = u.getSkills().iterator();
 
       while (it.hasNext()) {
-        Skill sk = it.next();
+        final Skill sk = it.next();
 
         // sort out if changed to non-existent
         if (sortOut && sk.isLostSkill()) {
           continue;
         }
 
-        Skill newSkill =
-            new Skill(sk.getSkillType(), sk.getPoints(), sk.getLevel(), v.getPersons(), sk
-                .noSkillPoints());
+        final Skill newSkill =
+          new Skill(sk.getSkillType(), sk.getPoints(), sk.getLevel(), v.getPersons(), sk
+              .noSkillPoints());
         v.addSkill(newSkill);
       }
     }
@@ -1969,9 +1969,9 @@ public abstract class MagellanFactory {
 
     default:
 
-      Object msgArgs[] = { new Integer(combatStatus) };
+      final Object msgArgs[] = { new Integer(combatStatus) };
       retVal =
-          (new java.text.MessageFormat(Resources.get("unit.combatstatus.unknown"))).format(msgArgs);
+        (new java.text.MessageFormat(Resources.get("unit.combatstatus.unknown"))).format(msgArgs);
     }
 
     return retVal;
@@ -2023,10 +2023,10 @@ public abstract class MagellanFactory {
    */
   public static void postProcess(GameData data) {
     // create a map of region maps for every Island
-    Map<Island, Map<CoordinateID, Region>> islandMap =
-        new Hashtable<Island, Map<CoordinateID, Region>>();
+    final Map<Island, Map<CoordinateID, Region>> islandMap =
+      new Hashtable<Island, Map<CoordinateID, Region>>();
 
-    for (Region r : data.regions().values()) {
+    for (final Region r : data.regions().values()) {
       if (r.getIsland() != null) {
         Map<CoordinateID, Region> actRegionMap = islandMap.get(r.getIsland());
 
@@ -2040,33 +2040,33 @@ public abstract class MagellanFactory {
     }
 
     // setRegions for every Island in the map of region maps.
-    for (Island island : islandMap.keySet()) {
-      Map<CoordinateID, Region> actRegionMap = islandMap.get(island);
+    for (final Island island : islandMap.keySet()) {
+      final Map<CoordinateID, Region> actRegionMap = islandMap.get(island);
       island.setRegions(actRegionMap);
     }
 
     // search for the races of the factions in the report.
-    Map<EntityID, Faction> factions = data.factions();
+    final Map<EntityID, Faction> factions = data.factions();
 
-    for (EntityID id : factions.keySet()) {
-      Faction faction = factions.get(id);
+    for (final EntityID id : factions.keySet()) {
+      final Faction faction = factions.get(id);
 
       // if the race is already set in the report ignore this algorithm
       if (faction.getType() != null) {
         continue;
       }
 
-      Map<Race, Integer> personsPerRace = new HashMap<Race, Integer>();
+      final Map<Race, Integer> personsPerRace = new HashMap<Race, Integer>();
 
       // iterate thru all units and count the races of them
-      Collection<Unit> units = faction.units();
-      for (Unit unit : units) {
-        Race race = unit.getRace();
+      final Collection<Unit> units = faction.units();
+      for (final Unit unit : units) {
+        final Race race = unit.getRace();
         if (race == null) {
           continue;
         }
         if (personsPerRace.containsKey(race)) {
-          int amount = personsPerRace.get(race) + unit.getPersons();
+          final int amount = personsPerRace.get(race) + unit.getPersons();
           personsPerRace.put(race, amount);
         } else {
           personsPerRace.put(race, unit.getPersons());
@@ -2077,8 +2077,8 @@ public abstract class MagellanFactory {
       // faction.
       int maxPersons = 0;
       Race race = null;
-      for (Race aRace : personsPerRace.keySet()) {
-        int amount = personsPerRace.get(aRace);
+      for (final Race aRace : personsPerRace.keySet()) {
+        final int amount = personsPerRace.get(aRace);
         if (amount > maxPersons) {
           maxPersons = amount;
           race = aRace;
@@ -2100,7 +2100,7 @@ public abstract class MagellanFactory {
     newAlliance.setName(curAlliance.getName());
     newAlliance.setLeader(curAlliance.getLeader());
 
-    for (ID f : curAlliance.getFactions())
+    for (final ID f : curAlliance.getFactions())
       newAlliance.addFaction(newGD.getFaction(f));
   }
 }

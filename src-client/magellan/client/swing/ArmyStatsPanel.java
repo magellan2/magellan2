@@ -91,9 +91,9 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	protected ItemCategory armourType;
 	protected ItemCategory shieldType;
 	protected boolean categorize = true;
-	protected List<?> excludeSkills;
-	protected List<?> excludeNames;
-	protected List<?> excludeCombatStates;
+	protected List<SkillType> excludeSkills;
+	protected List<String> excludeNames;
+	protected List<Integer> excludeCombatStates;
 	protected Collection<Region> lastSelected;
 
 	/**
@@ -163,7 +163,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeSkills(List<?> l) {
+	public void setExcludeSkills(List<SkillType> l) {
 		excludeSkills = l;
 	}
 
@@ -172,7 +172,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeNames(List<?> l) {
+	public void setExcludeNames(List<String> l) {
 		excludeNames = l;
 	}
 
@@ -181,7 +181,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	 *
 	 * 
 	 */
-	public void setExcludeCombatStates(List<?> l) {
+	public void setExcludeCombatStates(List<Integer> l) {
 		excludeCombatStates = l;
 	}
 
@@ -304,19 +304,19 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																						  "insel"));
 		root.add(islRoot);
 
-		Iterator it = armies.iarmies.iterator();
+		Iterator<IslandArmy> it1 = armies.iarmies.iterator();
 
-		while(it.hasNext()) {
-			IslandArmy iArmy = (IslandArmy) it.next();
+		while(it1.hasNext()) {
+			IslandArmy iArmy = it1.next();
 			DefaultMutableTreeNode iRoot = new DefaultMutableTreeNode(new SimpleNodeWrapper(iArmy,
 																							getArmyIcon(iArmy.owner)));
 			islRoot.add(iRoot);
 		}
 
-		it = armies.rarmies.iterator();
+		Iterator<RegionArmies> it2 = armies.rarmies.iterator();
 
-		while(it.hasNext()) {
-			addRegionArmies(islRoot, (RegionArmies) it.next());
+		while(it2.hasNext()) {
+			addRegionArmies(islRoot, it2.next());
 		}
 
 		return islRoot;
@@ -331,10 +331,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																						  "-detail"));
 		root.add(regRoot);
 
-		Iterator it = armies.armies.iterator();
+		Iterator<Army> it = armies.armies.iterator();
 
 		while(it.hasNext()) {
-			addArmy(regRoot, (Army) it.next());
+			addArmy(regRoot, it.next());
 		}
 
 		return regRoot;
@@ -348,8 +348,8 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		} else if(data != null) {
 			int minTrust = 255;
 
-			for(Iterator iter = data.factions().values().iterator(); iter.hasNext();) {
-				Faction f = (Faction) iter.next();
+			for (Iterator<				Faction> iter = data.factions().values().iterator(); iter.hasNext();) {
+				Faction f = iter.next();
 
 				if(f.isPrivileged()) {
 					if((f.getAllies() != null) && f.getAllies().containsKey(fac.getID())) {
@@ -372,7 +372,7 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																						  getArmyIcon(army.owner)));
 		root.add(armRoot);
 
-		Iterator it = army.armies.iterator();
+		Iterator<Army> it = army.armies.iterator();
 
 		while(it.hasNext()) {
 			Object obj = it.next();
@@ -385,10 +385,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																								"insel"));
 				armRoot.add(iRoot);
 
-				Iterator it2 = ia.armies.iterator();
+				Iterator<Army> it2 = ia.armies.iterator();
 
 				while(it2.hasNext()) {
-					addArmy(iRoot, (Army) it2.next());
+					addArmy(iRoot, it2.next());
 				}
 			}
 		}
@@ -430,10 +430,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 																												icon));
 							lineRoot.add(groupRoot);
 
-							Iterator it2 = wg.units.iterator();
+							Iterator<PartUnit> it2 = wg.units.iterator();
 
 							while(it2.hasNext()) {
-								PartUnit u = (PartUnit) it2.next();
+								PartUnit u = it2.next();
 								groupRoot.add(createNodeWrapper(u));
 							}
 						}
@@ -445,12 +445,12 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		}
 	}
 
-	protected void addUnits(DefaultMutableTreeNode root, Collection units) {
+	protected void addUnits(DefaultMutableTreeNode root, Collection<Unit> units) {
 		if(units != null) {
-			Iterator it = units.iterator();
+			Iterator<Unit> it = units.iterator();
 
 			while(it.hasNext()) {
-				Unit u = (Unit) it.next();
+				Unit u = it.next();
 				root.add(new DefaultMutableTreeNode(factory.createUnitNodeWrapper(u, u.getPersons())));
 			}
 		}
@@ -677,10 +677,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					if(o instanceof IslandArmy) {
 						IslandArmy ia = (IslandArmy) o;
 						IslandArmy ia2 = new IslandArmy(ia.owner, ia.island);
-						Iterator facIt3 = ia.armies.iterator();
+						Iterator<Army> facIt3 = ia.armies.iterator();
 
 						while(facIt3.hasNext()) {
-							Army army = (Army) facIt3.next();
+							Army army = facIt3.next();
 							army = army.copy();
 							army.shortString = true;
 							ia2.addArmy(army);
@@ -755,10 +755,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 			if(excludeSkills != null) {
 				boolean doContinue = true;
-				Iterator it = excludeSkills.iterator();
+				Iterator<SkillType> it = excludeSkills.iterator();
 
 				while(doContinue && it.hasNext()) {
-					SkillType sk = (SkillType) it.next();
+					SkillType sk = it.next();
 					Skill skill = unit.getSkill(sk);
 
 					if(skill != null /* && skill.getLevel()>0) */   ) {
@@ -773,11 +773,11 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 			if((unit.getName() != null) && (excludeNames != null)) {
 				boolean doContinue = true;
-				Iterator it = excludeNames.iterator();
+				Iterator<String> it = excludeNames.iterator();
 				String name = unit.getName();
 
 				while(doContinue && it.hasNext()) {
-					String st = (String) it.next();
+					String st = it.next();
 
 					if(name.indexOf(st) != -1) {
 						doContinue = false;
@@ -791,10 +791,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 			if(unit.getFaction().isPrivileged() && (excludeCombatStates != null)) {
 				boolean doContinue = true;
-				Iterator it = excludeCombatStates.iterator();
+				Iterator<Integer> it = excludeCombatStates.iterator();
 
 				while(doContinue && it.hasNext()) {
-					Integer i = (Integer) it.next();
+					Integer i = it.next();
 					doContinue = i.intValue() != unit.getCombatStatus();
 				}
 
@@ -840,23 +840,23 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 					if(col2.size() > 0) {
 						maxSkill = getHighestSkill(unit, col2);
 
-						Collection col3 = unitMap.get(maxSkill);
+						Collection<Item> col3 = unitMap.get(maxSkill);
 						col2.remove(maxSkill);
 
-						Iterator itemIt = col3.iterator();
+						Iterator<Item> itemIt = col3.iterator();
 
 						while((persons > 0) && itemIt.hasNext()) {
-							Item item = (Item) itemIt.next();
+							Item item = itemIt.next();
 							int amount = Math.min(persons, item.getAmount());
 							persons -= amount;
 							addArmoured(unit, amount, maxSkill.getLevel(), army, line,
 										item.getItemType(), null, armour, false, true);
 						}
 					} else {
-						Iterator itemIt = nonSkillWeapons.iterator();
+						Iterator<Item> itemIt = nonSkillWeapons.iterator();
 
 						while((persons > 0) && itemIt.hasNext()) {
-							Item item = (Item) itemIt.next();
+							Item item = itemIt.next();
 							int amount = 0;
 
 							if(item != null) {
@@ -876,14 +876,14 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 
 				int persons = unit.getPersons();
 				int unarmed = persons;
-				Iterator weaponIt = unitMap.values().iterator();
+				Iterator<Collection<Item>> weaponIt1 = unitMap.values().iterator();
 
-				while((unarmed > 0) && weaponIt.hasNext()) {
-					Collection col2 = (Collection) weaponIt.next();
-					Iterator colIt = col2.iterator();
+				while((unarmed > 0) && weaponIt1.hasNext()) {
+					Collection<Item> col2 = weaponIt1.next();
+					Iterator<Item> colIt = col2.iterator();
 
 					while((unarmed > 0) && colIt.hasNext()) {
-						Item item = (Item) colIt.next();
+						Item item = colIt.next();
 						unarmed -= item.getAmount();
 
 						if(unarmed < 0) {
@@ -893,10 +893,10 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 				}
 
 				if((unarmed > 0) && (nonSkillWeapons.size() > 1)) {
-					weaponIt = nonSkillWeapons.iterator();
+					Iterator<Item> weaponIt2 = nonSkillWeapons.iterator();
 
-					while((unarmed > 0) && weaponIt.hasNext()) {
-						Item item = (Item) weaponIt.next();
+					while((unarmed > 0) && weaponIt2.hasNext()) {
+						Item item = weaponIt2.next();
 
 						if(item != null) {
 							unarmed -= item.getAmount();
@@ -921,15 +921,15 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 		return col;
 	}
 
-	protected int guessCombatState(Collection weapons) {
+	protected int guessCombatState(Collection<Item> weapons) {
 		int guess = 0; // guess front
 
 		// now search for distance weapons
 		if((weapons != null) && (back != null)) {
-			Iterator it = weapons.iterator();
+			Iterator<Item> it = weapons.iterator();
 
 			while(it.hasNext()) {
-				Item item = (Item) it.next();
+				Item item = it.next();
 
 				if(item != null) {
 					if((item.getItemType().getCategory() != null) &&
@@ -953,14 +953,14 @@ public class ArmyStatsPanel extends InternationalizedDataPanel implements TreeSe
 	}
 
 	protected boolean addArmoured(Unit unit, int amount, int skill, Army army, int line,
-								  ItemType weapon, ItemType armour, Collection armourCol,
+								  ItemType weapon, ItemType armour, Collection<Item> armourCol,
 								  boolean shield, boolean hasSkill) {
-		Iterator aIt = armourCol.iterator();
+		Iterator<Item> aIt = armourCol.iterator();
 
 		boolean ret = false; // something deleted within, need a new iterator
 
 		while((amount > 0) && aIt.hasNext()) {
-			Item aItem = (Item) aIt.next();
+			Item aItem = aIt.next();
 
 			if(shield) {
 				if(aItem.getItemType().getCategory().isDescendant(shieldType)) {

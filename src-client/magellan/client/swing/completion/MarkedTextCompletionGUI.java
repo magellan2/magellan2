@@ -188,22 +188,22 @@ public class MarkedTextCompletionGUI extends AbstractCompletionGUI implements Ke
 	 * 
 	 * 
 	 */
-	public void cycleCompletion(JTextComponent editor, Collection completions, String stub,
+	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
 								int index) {
 		if(!markedText || (editor.getSelectionStart() < 0)) { // offerCompletion broken
 
 			return;
 		}
 
-		Iterator it = completions.iterator();
-		Completion cmp = (Completion) it.next();
+		Iterator<Completion> it = completions.iterator();
+		Completion cmp = it.next();
 
 		for(int i = 1; i <= index; i++) {
 			if(!it.hasNext()) {
 				it = completions.iterator();
 			}
 
-			cmp = (Completion) it.next();
+			cmp = it.next();
 		}
 
 		String cpltStr = null;

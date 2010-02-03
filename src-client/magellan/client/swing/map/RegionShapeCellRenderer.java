@@ -319,8 +319,8 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 *
 	 * @param map A map containing Faction/String - Color pairs
 	 */
-	public <T> void setFactionColors(Map<T,Color> map) {
-		Iterator it = map.keySet().iterator();
+	public void setFactionColors(Map<?,Color> map) {
+		Iterator<?> it = map.keySet().iterator();
 
 		while(it.hasNext()) {
 			Object o = it.next();
@@ -542,7 +542,7 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	 */
 	protected void save(Map<?, Color> source, String key) {
 		StringBuffer buffer = new StringBuffer();
-		Iterator it = source.keySet().iterator();
+		Iterator<?> it = source.keySet().iterator();
 
 		while(it.hasNext()) {
 			Object name = it.next();
@@ -688,10 +688,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 
 		factions.clear();
 
-		Iterator it = r.units().iterator();
+		Iterator<Unit> it = r.units().iterator();
 
 		while(it.hasNext()) {
-			String f = ((Unit) it.next()).getFaction().getName();
+			String f = (it.next()).getFaction().getName();
 
 			if(!factions.contains(f)) {
 				factions.add(f);
@@ -803,10 +803,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	protected Color getLowestTrustColor(Region r) {
 		int minLevel = Integer.MAX_VALUE;
 		Faction minFaction = null;
-		Iterator it = r.units().iterator();
+		Iterator<Unit> it = r.units().iterator();
 
 		while(it.hasNext()) {
-			Unit u = (Unit) it.next();
+			Unit u = it.next();
 
 			if(u.getFaction().getTrustLevel() < minLevel) {
 				minFaction = u.getFaction();
@@ -824,10 +824,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	protected Color getLowestGuardingTrustColor(Region r) {
 		int minLevel = Integer.MAX_VALUE;
 		Faction minFaction = null;
-		Iterator it = r.units().iterator();
+		Iterator<Unit> it = r.units().iterator();
 
 		while(it.hasNext()) {
-			Unit u = (Unit) it.next();
+			Unit u = it.next();
 
 			if((u.getGuard() != 0) && (u.getFaction().getTrustLevel() < minLevel)) {
 				minFaction = u.getFaction();
@@ -979,16 +979,16 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 	public static Faction getMaxPeopleFaction(Region r) {
 		Faction maxFaction = null;
 		int maxPeople = -1;
-		Iterator it = r.units().iterator();
+		Iterator<Unit> it = r.units().iterator();
 
 		while(it.hasNext()) {
-			Unit unit = (Unit) it.next();
+			Unit unit = it.next();
 			Faction curFaction = unit.getFaction();
-			Iterator intern = r.units().iterator();
+			Iterator<Unit> intern = r.units().iterator();
 			int curPeople = 0;
 
 			while(intern.hasNext()) {
-				Unit unit2 = (Unit) intern.next();
+				Unit unit2 = intern.next();
 
 				if(unit2.getFaction().equals(curFaction)) {
 					curPeople += unit2.getPersons();
@@ -1099,10 +1099,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 		GameData data = e.getGameData();
 
 		//check for new factions
-		Iterator it = data.factions().values().iterator();
+		Iterator<Faction> fIt = data.factions().values().iterator();
 
-		while(it.hasNext()) {
-			Faction f = (Faction) it.next();
+		while(fIt.hasNext()) {
+			Faction f = fIt.next();
 
 			// generates a new one if not present
 			if(f.getTrustLevel() <= Faction.TL_DEFAULT) {
@@ -1112,10 +1112,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 			}
 		}
 
-		it = data.regions().values().iterator();
+		Iterator<Region> rIt = data.regions().values().iterator();
 
-		while(it.hasNext()) {
-			Region r = (Region) it.next();
+		while(rIt.hasNext()) {
+			Region r = rIt.next();
 			getRegionTypeColor(r.getRegionType());
 		}
 
@@ -1198,10 +1198,10 @@ public class RegionShapeCellRenderer extends AbstractRegionShapeCellRenderer
 					if(data != null) {
 						Faction f1 = null;
 						Faction f2 = null;
-						Iterator it = data.factions().values().iterator();
+						Iterator<Faction> it = data.factions().values().iterator();
 
 						while(it.hasNext() && ((f1 == null) || (f2 == null))) {
-							Faction f = (Faction) it.next();
+							Faction f = it.next();
 
 							if(name1.equals(f.getName())) {
 								f1 = f;

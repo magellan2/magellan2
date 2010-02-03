@@ -247,9 +247,9 @@ public class OrderReader {
   						   temp units */
   						Collection<ID> victimIDs = new LinkedList<ID>();
   
-  						for(Iterator tempIter = currentUnit.tempUnits().iterator();
+  						for(Iterator<TempUnit> tempIter = currentUnit.tempUnits().iterator();
   								tempIter.hasNext();) {
-  							victimIDs.add(((TempUnit) tempIter.next()).getID());
+  							victimIDs.add((tempIter.next()).getID());
   						}
   
   						for(Iterator<ID> idIter = victimIDs.iterator(); idIter.hasNext();) {

@@ -13,6 +13,8 @@
 
 package magellan.client.event;
 
+import magellan.library.event.EventListener;
+
 /**
  * The listener interface for receiving temp unit events. A class interested in temp unit events
  * implements this interface and registers with an instance of the EventDispatcher class to
@@ -21,7 +23,7 @@ package magellan.client.event;
  * @see TempUnitEvent
  * @see EventDispatcher
  */
-public interface TempUnitListener {
+public interface TempUnitListener extends magellan.library.event.EventListener {
 	/**
 	 * Invoked when a temporary unit is created.
 	 */

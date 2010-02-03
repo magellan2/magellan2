@@ -464,8 +464,8 @@ public abstract class GameData implements Cloneable,Addeable {
     if (spells() == null || spells().size() == 0) {
       return null;
     }
-    for (Iterator iter = spells().values().iterator(); iter.hasNext();) {
-      Spell spell = (Spell) iter.next();
+    for (Iterator<Spell> iter = spells().values().iterator(); iter.hasNext();) {
+      Spell spell = iter.next();
       if (spell.getName().equalsIgnoreCase(spellName)) {
         return spell;
       }
@@ -1563,8 +1563,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
     /**************************** MERGE ISLANDS, SECOND PASS ***************************/
     if (newerGD.islands() != null) {
-      for (Iterator iter = newerGD.islands().values().iterator(); iter.hasNext();) {
-        Island curIsland = (Island) iter.next();
+      for (Iterator<Island> iter = newerGD.islands().values().iterator(); iter.hasNext();) {
+        Island curIsland = iter.next();
         Island newIsland = resultGD.getIsland(curIsland.getID());
 
         // second pass
@@ -1574,8 +1574,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
     /**************************** MERGE HOTSPOTS, SECOND PASS ***************************/
     if (newerGD.hotSpots() != null) {
-      for (Iterator iter = newerGD.hotSpots().values().iterator(); iter.hasNext();) {
-        HotSpot curHotSpot = (HotSpot) iter.next();
+      for (Iterator<HotSpot> iter = newerGD.hotSpots().values().iterator(); iter.hasNext();) {
+        HotSpot curHotSpot = iter.next();
         HotSpot newHotSpot = resultGD.getHotSpot(curHotSpot.getID());
         // second pass
         MagellanFactory.mergeHotSpot(newerGD, curHotSpot, resultGD, newHotSpot);
@@ -1584,8 +1584,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
     /**************************** MERGE BUILDINGS, SECOND PASS ***************************/
     if (newerGD.buildings() != null) {
-      for (Iterator iter = newerGD.buildings().values().iterator(); iter.hasNext();) {
-        Building curBuilding = (Building) iter.next();
+      for (Iterator<Building> iter = newerGD.buildings().values().iterator(); iter.hasNext();) {
+        Building curBuilding = iter.next();
         Building newBuilding = resultGD.getBuilding(curBuilding.getID());
 
         if (newBuilding != null) {
@@ -1597,8 +1597,8 @@ public abstract class GameData implements Cloneable,Addeable {
 
     /**************************** MERGE SHIPS, SECOND PASS ***************************/
     if (newerGD.ships() != null) {
-      for (Iterator iter = newerGD.ships().values().iterator(); iter.hasNext();) {
-        Ship curShip = (Ship) iter.next();
+      for (Iterator<Ship> iter = newerGD.ships().values().iterator(); iter.hasNext();) {
+        Ship curShip = iter.next();
         Ship newShip = resultGD.getShip(curShip.getID());
 
         // second pass
@@ -1616,10 +1616,10 @@ public abstract class GameData implements Cloneable,Addeable {
     // search for a temp unit
     if (tempID != null) {
       if (newRegion == null) {
-        Iterator it = units().values().iterator();
+        Iterator<Unit> it = units().values().iterator();
 
         while (it.hasNext()) {
-          Unit u = (Unit) it.next();
+          Unit u = it.next();
           Unit u2 = u.getTempUnit(tempID);
 
           if (u2 != null) {
@@ -1627,13 +1627,13 @@ public abstract class GameData implements Cloneable,Addeable {
           }
         }
       } else {
-        Map m = Regions.getAllNeighbours(regions(), newRegion.getID(), 3, null);
+        Map<CoordinateID, Region> m = Regions.getAllNeighbours(regions(), newRegion.getID(), 3, null);
 
         if (m != null) {
-          Iterator it = m.values().iterator();
+          Iterator<Region> it = m.values().iterator();
 
           while (it.hasNext()) {
-            Region r = (Region) it.next();
+            Region r = it.next();
             Unit u2 = r.getUnit(tempID);
 
             if (u2 != null) {
@@ -1658,8 +1658,8 @@ public abstract class GameData implements Cloneable,Addeable {
       return true;
     }
 
-    for (Iterator iter = g.units().values().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = g.units().values().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
 
       if (u.ordersHaveChanged()) {
         return true;
@@ -1673,8 +1673,8 @@ public abstract class GameData implements Cloneable,Addeable {
    * reset change state of all units to false
    */
   public void resetToUnchanged() {
-    for (Iterator iter = units().values().iterator(); iter.hasNext();) {
-      Unit u = (Unit) iter.next();
+    for (Iterator<Unit> iter = units().values().iterator(); iter.hasNext();) {
+      Unit u = iter.next();
       u.setOrdersChanged(false);
     }
   }
@@ -1797,8 +1797,8 @@ public abstract class GameData implements Cloneable,Addeable {
    */
   public void postProcessTheVoid() {
     List<Region> newRegions = new ArrayList<Region>();
-    for (Iterator iter = this.regions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID actRegionID = (CoordinateID) iter.next();
+    for (Iterator<CoordinateID> iter = this.regions().keySet().iterator(); iter.hasNext();) {
+      CoordinateID actRegionID = iter.next();
       Region actRegion = regions().get(actRegionID);
       boolean shouldHaveAllNeighbours = false;
       if (actRegion.getVisibility().greaterEqual(Region.Visibility.TRAVEL)){
@@ -1963,8 +1963,8 @@ public abstract class GameData implements Cloneable,Addeable {
    */
   public void removeTheVoid() {
     List<CoordinateID> delRegionID = new ArrayList<CoordinateID>();
-    for (Iterator iter = this.regions().keySet().iterator(); iter.hasNext();) {
-      CoordinateID actRegionID = (CoordinateID) iter.next();
+    for (Iterator<CoordinateID> iter = this.regions().keySet().iterator(); iter.hasNext();) {
+      CoordinateID actRegionID = iter.next();
       Region actRegion = regions().get(actRegionID);
       if (actRegion.getRegionType().equals(this.rules.getRegionType("Leere"))) {
         delRegionID.add(actRegionID);

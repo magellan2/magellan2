@@ -62,7 +62,7 @@ public interface CompletionGUI {
 	 * </li>
 	 * </ul>
 	 */
-	public void cycleCompletion(JTextComponent editor, Collection completions, String stub,
+	public void cycleCompletion(JTextComponent editor, Collection<Completion> completions, String stub,
 								int index);
 
 	/**

@@ -16,6 +16,7 @@ package magellan.library.gamebinding;
 import java.util.List;
 
 import magellan.library.Unit;
+import magellan.library.relation.UnitRelation;
 
 
 /**
@@ -34,7 +35,7 @@ public interface RelationFactory {
 	 * @param from The line of the <code>unit</code>'s orders where to start. Must be > 0
 	 * @return A List of Relations for this unit
 	 */
-	public List<?> createRelations(Unit u, int from);
+	public List<UnitRelation> createRelations(Unit u, int from);
 
 	/**
 	 * Creates a list of com.eressea.util.Relation objects  for a unit using <code>orders</code>.

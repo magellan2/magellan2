@@ -161,9 +161,9 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 					  "):\n" + def);
 		}
 
-		for(Iterator iterRow = new BasicStringTokenizer(def, "\\\\"); iterRow.hasNext();) {
+		for(Iterator<String> iterRow = new BasicStringTokenizer(def, "\\\\"); iterRow.hasNext();) {
 			// create new rows
-			String row = (String) iterRow.next();
+			String row = iterRow.next();
 
 			if(BasicRegionPanel.log.isDebugEnabled()) {
 				BasicRegionPanel.log.debug("BasicRegionPanel.makeHTMLFromString: working on row " + row);
@@ -173,8 +173,8 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 
 			int i = 0;
 
-			for(Iterator iter = new BasicStringTokenizer(row, "&&"); iter.hasNext();) {
-				String str = (String) iter.next();
+			for(Iterator<String> iter = new BasicStringTokenizer(row, "&&"); iter.hasNext();) {
+				String str = iter.next();
 				sb.append("<td>");
 
 				if(!filter || (str.indexOf('?') == -1)) {
@@ -331,7 +331,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 	/**
 	 * This class emulates the behaviour of StringTokenizer with a string as delimiter.
 	 */
-	public static class BasicStringTokenizer implements Iterator<Object> {
+	public static class BasicStringTokenizer implements Iterator<String> {
 		int newPosition = -1;
 		int currentPosition = 0;
 		int maxPosition = 0;
@@ -399,7 +399,7 @@ public class BasicRegionPanel extends InternationalizedDataPanel implements Sele
 		 *
 		 * @throws java.util.NoSuchElementException DOCUMENT-ME
 		 */
-		public Object next() {
+		public String next() {
 			currentPosition = (newPosition > 0) ? newPosition : skipDelims(currentPosition);
 
 			if(currentPosition >= maxPosition) {

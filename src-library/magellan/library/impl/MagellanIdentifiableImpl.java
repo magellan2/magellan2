@@ -102,6 +102,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
    * 
    * @throws CloneNotSupportedException DOCUMENT-ME
    */
+  // FIXME this is nonsense (?)
   @Override
   public Object clone() throws CloneNotSupportedException {
     return super.clone();
@@ -110,17 +111,20 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
   /**
    * Indicates that this object is to be regarded as equal to some other object. Especially with
    * implementing sub classes of Identifiable, equality will often be established through the
-   * equality of ids.
+   * equality of IDs.
+   * <p>
+   * <b>Attention</b>: Overriding this method will most likely break the general contract of equals!
+   * </p>
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
    */
   @Override
   public boolean equals(Object o) {
-    try {
-      return this == o
-          || (o != null && getID().equals(((MagellanIdentifiableImpl) o).getID()) && getClass()
-              .isInstance(o));
-    } catch (ClassCastException e) {
-      return false;
-    }
+    if (this == o)
+      return true;
+    if (o instanceof MagellanIdentifiableImpl)
+      return getID().equals(((MagellanIdentifiableImpl) o).getID());
+    return false;
   }
 
   /**
@@ -134,7 +138,7 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns <code>Object</code>'s hash code.
    */
   public int superHashCode() {
     return super.hashCode();
@@ -143,6 +147,8 @@ public abstract class MagellanIdentifiableImpl implements Identifiable, Unique, 
   /**
    * Imposes a natural ordering on Identifiable objects. Especially with implementing sub classes of
    * Identifiable, such orderings will often be established by the natural order of ids.
+   * 
+   * @see magellan.library.Identifiable#compareTo(java.lang.Object)
    */
   public int compareTo(Object o) {
     return getID().compareTo(((MagellanIdentifiableImpl) o).getID());

@@ -207,8 +207,7 @@ public class ShipInspector extends AbstractInspector {
       // If ship is shored, it can only move deviate by one from the shore direction and only
       // move to an ocean region
       Direction d = Regions.getDirectionObjectsOfCoordinates(modifiedMovement).get(0);
-      if (Math.abs(ship.getShoreId() - d.getDir()) > 1
-          && Math.abs(ship.getShoreId() - d.getDir()) < 5) {
+      if (d.getDifference(ship.getShoreId()) > 1 || d.getDifference(ship.getShoreId()) < -1) {
         if (!hasHarbourInRegion(ship.getRegion())) {
           problems.add(ProblemFactory.createProblem(Severity.ERROR, ShipProblemTypes.WRONGSHORE
               .getType(), ship, this));

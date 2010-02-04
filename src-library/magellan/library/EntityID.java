@@ -98,33 +98,34 @@ public class EntityID extends IntegerID {
     return IDBaseConverter.toString(intValue(), radix);
   }
 
-  /**
-   * Returns whether some other object is equal to this integer id.
-   * 
-   * @return true, if o is an instance of class EntityID and the numerical values of this object and
-   *         o match.
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (o == null)
-      return false;
-    try {
-      return (this == o) || id == ((EntityID) o).id;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  /**
-   * Imposes a natural ordering on EntityID objects which is based on the natural ordering of the
-   * integers they are constructed from.
-   */
-  @Override
-  public int compareTo(Object o) {
-    int thisInt = intValue();
-    int oInt = ((EntityID) o).intValue();
-    return thisInt > oInt ? 1 : thisInt == oInt ? 0 : -1;
-  }
+  // (stm) equals and compareTo already have been overridden by IntegerID. Overriding it here is
+  // unnecessary (and dangerous).
+  // /**
+  // * Returns whether some other object is equal to this integer id.
+  // *
+  // * @return true, if o is an instance of class EntityID and the numerical values of this object
+  // and
+  // * o match.
+  // */
+  // @Override
+  // public boolean equals(Object o) {
+  // if (o == this)
+  // return true;
+  // if (o instanceof EntityID)
+  // return id == ((EntityID) o).id;
+  // return false;
+  // }
+  //
+  // /**
+  // * Imposes a natural ordering on EntityID objects which is based on the natural ordering of the
+  // * integers they are constructed from.
+  // */
+  // @Override
+  // public int compareTo(Object o) {
+  // int thisInt = intValue();
+  // int oInt = ((EntityID) o).intValue();
+  // return thisInt > oInt ? 1 : thisInt == oInt ? 0 : -1;
+  // }
 
   /**
    * Returns a copy of this EntityID object.

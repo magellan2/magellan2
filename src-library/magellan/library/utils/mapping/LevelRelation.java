@@ -79,6 +79,7 @@ public class LevelRelation extends CoordinateID {
     return new CoordinateID((c.x - x) / scaleX, (c.y - y) / scaleY, fromLevel);
   }
 
+  // FIXME overriding equals violates the contract of equals (symmetry)!
   @Override
   public boolean equals(Object o) {
     if (o instanceof CoordinateID) {

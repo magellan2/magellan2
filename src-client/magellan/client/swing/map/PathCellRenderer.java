@@ -226,19 +226,17 @@ public class PathCellRenderer extends ImageCellRenderer {
     CoordinateID actCoord = new CoordinateID(start); // make Coordinate a copy
 
     for (Direction dirObj : directions) {
-      int dir = dirObj.getDir();
-
-      if (dir != -1) {
+      if (dirObj != Direction.INVALID) {
         Rectangle rect = cellGeo.getImageRect(actCoord.x, actCoord.y);
         rect.translate(-offset.x, -offset.y);
 
-        Image img = getImage("Pfeil" + dir, imageType);
+        Image img = getImage("Pfeil" + dirObj.getDir(), imageType);
 
         if (img != null) {
           graphics.drawImage(img, rect.x, rect.y, rect.width, rect.height, null);
         }
 
-        actCoord.translate(Direction.toCoordinate(dir));
+        actCoord.translate(dirObj.toCoordinate());
       } else {
         break;
       }

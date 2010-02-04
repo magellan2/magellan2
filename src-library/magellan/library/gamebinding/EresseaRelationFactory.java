@@ -207,11 +207,11 @@ public class EresseaRelationFactory implements RelationFactory {
 
         for (Iterator<OrderToken> iter2 = tokens.listIterator(1); iter2.hasNext();) {
           OrderToken token = iter2.next();
-          int dir = Direction.toInt(token.getText());
+          Direction movement = Direction.toDirection(token.getText());
 
           c = new CoordinateID(c); // make c a new copy
-          if (dir != -1) {
-            c.translate(Direction.toCoordinate(dir));
+          if (movement != Direction.INVALID) {
+            c.translate(movement.toCoordinate());
           }
           modifiedMovement.add(c);
         }

@@ -95,14 +95,14 @@ public class OrderToken {
    * @param text the text this order token represents.
    * @param start the start position of the token in the underlying stream.
    * @param end the end position of the token in the underlying stream.
-   * @param type the type of the token, the value must equal one the TT_XXX constants.
+   * @param ttype the type of the token, the value must equal one the TT_XXX constants.
    * @param followedBySpace defines wether the token was followed by either '\r' '\n' '\t' or ' '
    */
-  public OrderToken(String text, int start, int end, int type, boolean followedBySpace) {
+  public OrderToken(String text, int start, int end, int ttype, boolean followedBySpace) {
     this.text = text;
     this.start = start;
     this.end = end;
-    ttype = type;
+    this.ttype = ttype;
     this.followedBySpace = followedBySpace;
   }
 
@@ -294,6 +294,14 @@ public class OrderToken {
       return strTest.equalsIgnoreCase(strText);
   }
 
+  // FIXME this could be dangerous!
+  /**
+   * Returns <code>true</code> if this is a prefix of token or vice versa. <b>Attention</b> This
+   * method does not override {@link Object#equals(Object)}!
+   * 
+   * @deprecated Use <code>equalsToken(token.getText()) || token.equalsToken(this.getText())</code>.
+   */
+  @Deprecated
   public boolean equals(OrderToken token) {
     return equalsToken(token.text) || token.equalsToken(text);
   }

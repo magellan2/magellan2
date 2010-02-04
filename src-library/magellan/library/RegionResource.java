@@ -153,6 +153,8 @@ public class RegionResource implements Unique {
    */
   @Override
   public boolean equals(Object o) {
+    if (o == null)
+      return false;
     try {
       // pavkovic 2003.01.16: even if the id seems to be unique
       // use the item type for uniqueness

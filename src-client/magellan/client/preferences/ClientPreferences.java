@@ -381,7 +381,7 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#applyPreferences()
    */
   public void applyPreferences() {
     Locale guiLocale = ((LocaleWrapper) cmbGUILocale.getSelectedItem()).getLocale();
@@ -449,14 +449,14 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getComponent()
    */
   public Component getComponent() {
     return this;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.preferences.PreferencesAdapter#getTitle()
    */
   public String getTitle() {
     return Resources.get("clientpreferences.title");
@@ -477,14 +477,14 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     }
 
     /**
-     * DOCUMENT-ME
+     * Returns the locale
      */
     public Locale getLocale() {
       return locale;
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
@@ -492,15 +492,17 @@ public class ClientPreferences extends AbstractPreferencesAdapter implements
     }
 
     /**
-     * DOCUMENT-ME
+     * Compares the locales.
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object o) {
-      try {
-        return locale.equals(((LocaleWrapper) o).getLocale());
-      } catch (ClassCastException e) {
+      if (this == o)
+        return true;
+      if (!(o instanceof LocaleWrapper))
         return false;
-      }
+      return locale.equals(((LocaleWrapper) o).getLocale());
     }
 
     @Override

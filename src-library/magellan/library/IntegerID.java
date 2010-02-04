@@ -90,11 +90,11 @@ public class IntegerID implements ID {
    */
   @Override
   public boolean equals(Object o) {
-    try {
-      return this == o || id == ((IntegerID) o).id;
-    } catch (ClassCastException e) {
-      return false;
-    }
+    if (o == this)
+      return true;
+    if (o instanceof IntegerID)
+      return id == ((IntegerID) o).id;
+    return false;
   }
 
   /**

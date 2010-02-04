@@ -449,6 +449,8 @@ public class OrderedHashtable<K, V> extends Hashtable<K, V> {
      */
     @Override
     public boolean equals(Object o) {
+      if (o == null)
+        return false;
       try {
         // if this throws a ClassCastException, the entries are not equal...
         @SuppressWarnings("unchecked")

@@ -1,3 +1,7 @@
+2009-02-03 / Build 403 - stm (stm_@users.sourceforge.net)
+    * fixed equals methods
+    * converted Direction to Enum
+
 2009-02-03 / Build 402 - stm (stm_@users.sourceforge.net)
     * Changes SelectionEvent interface and fixed selection history
     * removed many compiler warnings, especially legacy collection code

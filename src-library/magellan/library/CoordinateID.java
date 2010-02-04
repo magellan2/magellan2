@@ -66,19 +66,19 @@ public class CoordinateID implements ID {
   }
 
   /**
-   * DOCUMENT-ME
+   * Two instances are equal if their x,y,z values are equal.
    */
   @Override
   public boolean equals(Object o) {
-    if (o == null)
-      return false;
-    try {
+    if (o == this)
+      return true;
+    if (o instanceof CoordinateID) {
       CoordinateID c = (CoordinateID) o;
 
-      return ((c == this) || ((x == c.x) && (y == c.y) && (z == c.z)));
-    } catch (ClassCastException e) {
-      return false;
+      return (x == c.x) && (y == c.y) && (z == c.z);
     }
+    return false;
+
   }
 
   /**

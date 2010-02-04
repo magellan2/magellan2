@@ -65,6 +65,11 @@ public class XMLRulesIO implements RulesIO {
     return readRules(aDocument.getDocumentElement());
   }
 
+  /**
+   * @param aDocumentElement
+   * @throws SAXException if an XML rules file cannot be read properly
+   * @throws IOException if rules file cannot be read
+   */
   private Rules readRules(Element aDocumentElement) throws SAXException, IOException {
     Rules rules = new GenericRules();
 

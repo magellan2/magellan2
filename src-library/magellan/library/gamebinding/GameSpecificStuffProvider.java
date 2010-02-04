@@ -13,8 +13,6 @@
 
 package magellan.library.gamebinding;
 
-import java.io.IOException;
-
 import magellan.library.utils.logging.Logger;
 
 /**
@@ -31,12 +29,11 @@ public class GameSpecificStuffProvider {
    * 
    * @param className the classname of the game to load
    * @return a GameSpecificStuff object based on the given game name
-   * @throws IOException if we must fall back to Eressea and no rules file can be read.
    */
-  public GameSpecificStuff getGameSpecificStuff(String className) throws IOException {
+  public GameSpecificStuff getGameSpecificStuff(String className) {
     GameSpecificStuff gameSpecificStuff = loadGameSpecificStuff(className);
 
-    if ((className == null) || (gameSpecificStuff == null)) {
+    if (gameSpecificStuff == null) {
       gameSpecificStuff = new EresseaSpecificStuff();
       // if classname is not provided..no warning is needed
       if (className != null) {
@@ -46,6 +43,13 @@ public class GameSpecificStuffProvider {
     }
 
     return gameSpecificStuff;
+  }
+
+  /**
+   * Returns the default GameSpecificStuff object for Eressea
+   */
+  public GameSpecificStuff getGameSpecificStuff() {
+    return new EresseaSpecificStuff();
   }
 
   private GameSpecificStuff loadGameSpecificStuff(String className) {

@@ -13,8 +13,6 @@
 
 package magellan.library.gamebinding.e3a;
 
-import java.io.IOException;
-
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -60,12 +58,7 @@ public class E3ASpecificStuff implements GameSpecificStuff {
   }
 
   public E3ASpecificStuff() {
-    try {
-      rules = new RulesReader().readRules(getName());
-    } catch (IOException e) {
-      rules = null;
-      throw new RuntimeException("Eressea rules not readable", e);
-    }
+    rules = new RulesReader().readRules(getName());
   }
 
   /**

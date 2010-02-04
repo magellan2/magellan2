@@ -13,8 +13,6 @@
 
 package magellan.library.gamebinding;
 
-import java.io.IOException;
-
 import magellan.library.CompleteData;
 import magellan.library.GameData;
 import magellan.library.Rules;
@@ -53,15 +51,9 @@ public class EresseaSpecificStuff implements GameSpecificStuff {
   }
 
   /**
-   * @throws IOException If the rules are not readable
    */
-  public EresseaSpecificStuff() throws IOException {
-    try {
-      rules = new RulesReader().readRules(getName());
-    } catch (IOException e) {
-      rules = null;
-      throw new IOException(getName() + " rules not readable", e);
-    }
+  public EresseaSpecificStuff() {
+    rules = new RulesReader().readRules(getName());
   }
 
   /**

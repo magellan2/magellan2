@@ -307,10 +307,11 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
    */
   @Override
   public boolean equals(Object o) {
+    if (o == null)
+      return false;
     try {
-      boolean ret =
-          getID().equals(Message.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
-              : isComplexEquals((MagellanMessageImpl) o);
+      return getID().equals(Message.ambiguousID) ? isPrimitiveEquals((MagellanMessageImpl) o)
+          : isComplexEquals((MagellanMessageImpl) o);
 
       /*
        * if(ret && log.isDebugEnabled()) { log.debug("Messages: "+this+", "+o);
@@ -318,7 +319,6 @@ public class MagellanMessageImpl extends MagellanIdentifiableImpl implements Mes
        * log.debug("isPrimitiveEquals:"+isPrimitiveEquals((Message) o));
        * log.debug("isComplexEquals:"+isComplexEquals((Message) o)); }
        */
-      return ret;
     } catch (ClassCastException e) {
       return false;
     }

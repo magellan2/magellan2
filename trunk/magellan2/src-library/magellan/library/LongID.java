@@ -117,11 +117,11 @@ public class LongID implements ID {
    */
   @Override
   public boolean equals(Object o) {
-    try {
-      return (this == o) || (id == ((LongID) o).id);
-    } catch (ClassCastException e) {
-      return false;
-    }
+    if (this == o)
+      return true;
+    if (o instanceof LongID)
+      return id == ((LongID) o).id;
+    return false;
   }
 
   /**

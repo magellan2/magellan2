@@ -174,8 +174,13 @@ public class Completion {
     return cursorOffset;
   }
 
+  /**
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
     if (obj instanceof Completion) {
       Completion c = (Completion) obj;
       return c.getName().equals(getName()) && c.getValue().equals(getValue())

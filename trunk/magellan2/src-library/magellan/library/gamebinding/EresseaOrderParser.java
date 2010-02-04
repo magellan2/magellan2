@@ -2025,7 +2025,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);
@@ -2062,7 +2062,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readNachDirection(t);
       } else {
         unexpected(t);
@@ -2080,7 +2080,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readNachDirection(t);
       } else {
         retVal = checkFinal(t);
@@ -2568,7 +2568,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PAUSE))) {
         retVal = readRouteDirection(t);
@@ -2588,7 +2588,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readRouteDirection(t);
       } else if (t.equalsToken(Resources.getOrderTranslation(EresseaConstants.O_PAUSE))) {
         retVal = readRouteDirection(t);
@@ -3340,7 +3340,7 @@ public class EresseaOrderParser implements OrderParser {
 
       OrderToken t = getNextToken();
 
-      if (Direction.toInt(t.getText()) != Direction.DIR_INVALID) {
+      if (Direction.toDirection(t.getText()) != Direction.INVALID) {
         retVal = readFinalString(t);
       } else {
         unexpected(t);

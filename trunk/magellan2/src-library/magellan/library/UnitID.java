@@ -213,33 +213,35 @@ public class UnitID extends EntityID {
     return IDBaseConverter.toString(Math.abs(intValue()), radix);
   }
 
-  /**
-   * Indicates that this UnitID is equal to some other object.
-   * 
-   * @param o object to compare
-   * @return true, if o is an instance of UnitID and the integer values of this and the specfied
-   *         object o are equal.
-   */
-  @Override
-  public boolean equals(Object o) {
-    try {
-      return this == o || id == ((EntityID) o).id;
-    } catch (ClassCastException e) {
-      return false;
-    }
-  }
-
-  /**
-   * Imposes a natural ordering on UnitID objects based on the natural ordering of the absolute
-   * values of the underlying integers.
-   * 
-   * @param o object to compare
-   * @return int based on comparability
-   */
-  @Override
-  public int compareTo(Object o) {
-    return Math.abs(intValue()) - Math.abs(((EntityID) o).intValue());
-  }
+  // (stm) equals and compareTo already have been overridden by IntegerID. Overriding it here is
+  // unnecessary (and dangerous).
+  // /**
+  // * Indicates that this UnitID is equal to some other object.
+  // *
+  // * @param o object to compare
+  // * @return true, if o is an instance of UnitID and the integer values of this and the specfied
+  // * object o are equal.
+  // */
+  // @Override
+  // public boolean equals(Object o) {
+  // try {
+  // return this == o || id == ((EntityID) o).id;
+  // } catch (ClassCastException e) {
+  // return false;
+  // }
+  // }
+  //
+  // /**
+  // * Imposes a natural ordering on UnitID objects based on the natural ordering of the absolute
+  // * values of the underlying integers.
+  // *
+  // * @param o object to compare
+  // * @return int based on comparability
+  // */
+  // @Override
+  // public int compareTo(Object o) {
+  // return Math.abs(intValue()) - Math.abs(((EntityID) o).intValue());
+  // }
 
   /**
    * Returns the integer contained in the specified string with the specified radix. This method is

@@ -188,17 +188,27 @@ public class LanguageDialog {
     }
 
     /**
-     * DOCUMENT-ME
+     * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
       return locale.getDisplayLanguage(locale);
     }
 
+    /**
+     * Compares the String representations.
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
     public int compareTo(Lang o) {
       return toString().compareTo(o.toString());
     }
 
+    /**
+     * Compares the languages
+     * 
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object o) {
       if (o instanceof Lang) {
@@ -208,6 +218,9 @@ public class LanguageDialog {
       return false;
     }
 
+    /**
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
       return toString().hashCode();

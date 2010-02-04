@@ -14,6 +14,7 @@
 package magellan.library.utils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -27,7 +28,31 @@ import magellan.library.gamebinding.EresseaConstants;
  * north west and clockwise up), string representation (like 'NW' or 'Nordwesten') and relative
  * coordinate representation (coordinate with x = -1, y = 1).
  */
-public class Direction {
+public enum Direction {
+
+  /**
+   * north-west direction
+   */
+  NW(0), /**
+   * north-east direction
+   */
+  NE(1), /**
+   * east direction
+   */
+  E(2), /**
+   * south-east direction
+   */
+  SE(3), /**
+   * south-west direction
+   */
+  SW(4), /**
+   * west direction
+   */
+  W(5), /**
+   * Invalid/unknown direction
+   */
+  INVALID(-1);
+
   /** Invalid/unknown direction */
   public static final int DIR_INVALID = -1;
 
@@ -48,23 +73,39 @@ public class Direction {
 
   /** west direction */
   public static final int DIR_W = 5;
+
+  private static ArrayList<Direction> tempDirections = new ArrayList<Direction>(7);
+  static {
+    tempDirections.add(NW);
+    tempDirections.add(NE);
+    tempDirections.add(E);
+    tempDirections.add(SE);
+    tempDirections.add(SW);
+    tempDirections.add(W);
+  }
+
+  private static final List<Direction> directions = Collections.unmodifiableList(tempDirections);
+  static {
+    tempDirections = null;
+  }
+
   private static List<String> shortNames = null;
   private static List<String> longNames = null;
   private static List<String> normalizedLongNames = null;
 
   private static Locale usedLocale = null;
 
-  private int dir = Direction.DIR_INVALID;
+  private int dir;
 
   /**
    * Creates a new Direction object interpreting the specified integer as a direction according to
    * the direction constants of this class.
    */
-  public Direction(int direction) {
+  private Direction(int direction) {
     if ((direction > -1) && (direction < 6)) {
       dir = direction;
     } else {
-      dir = Direction.DIR_INVALID;
+      dir = DIR_INVALID;
     }
   }
 
@@ -73,14 +114,15 @@ public class Direction {
    * 
    * @param c a relative coordinate, e.g. (1, 0) for DIR_E. If c is null an IllegalArgumentException
    *          is thrown.
-   * @throws IllegalArgumentException if the c param is null.
+   * @throws NullPointerException if the c param is null.
+   * @deprecated
    */
-  public Direction(CoordinateID c) {
+  @Deprecated
+  private Direction(CoordinateID c) {
     if (c != null) {
       dir = Direction.toInt(c);
     } else
-      throw new IllegalArgumentException(
-          "Direction.Direction(Coordinate c): invalid coordinate specified!");
+      throw new NullPointerException();
   }
 
   /**
@@ -88,40 +130,99 @@ public class Direction {
    * 
    * @param str a german name for a direction, e.g. "Osten" for DIR_E. If str is null an
    *          IllegalArgumentException is thrown.
-   * @throws IllegalArgumentException if the str param is null.
+   * @throws NullPointerException if the str param is null.
+   * @deprecated
    */
-  public Direction(String str) {
+  @Deprecated
+  private Direction(String str) {
     if (str != null) {
       dir = Direction.toInt(str);
     } else
-      throw new IllegalArgumentException(
-          "Direction.Direction(String str): invalid string specified!");
+      throw new NullPointerException();
   }
 
   /**
-   * Returns the actual direction of this object.
+   * Returns the actual direction of this object. Please prefer using the singletons
+   * {@link #INVALID}, {@link #NE}, {@link #E}, {@link #SE}, {@link #SW}, {@link #W}, {@link #NW}.
    */
   public int getDir() {
     return dir;
   }
 
   /**
-   * Returns a String representation for this direction.
+   * Returns a direction as distance from from to to.
    */
-  @Override
-  public String toString() {
-    return Direction.toString(dir, false);
+  public static Direction toDirection(CoordinateID from, CoordinateID to) {
+    return toDirection(to.x - from.x, to.y - from.y);
   }
 
   /**
-   * Returns a relative coordinate representing the direction dir. E.g. the direction DIR_W would
+   * Converts a relative coordinate to a direction.
+   */
+  public static Direction toDirection(CoordinateID c) {
+    return toDirection(c.x, c.y);
+  }
+
+  /**
+   * Converts to coordinates to a direction.
+   * 
+   * @see #toDirection(CoordinateID)
+   */
+  public static Direction toDirection(int x, int y) {
+    if (x == -1) {
+      if (y == 0)
+        return W;
+      else if (y == 1)
+        return NW;
+    } else if (x == 0) {
+      if (y == -1)
+        return SW;
+      else if (y == 1)
+        return NE;
+    } else if (x == 1) {
+      if (y == -1)
+        return SE;
+      else if (y == 0)
+        return E;
+    }
+
+    return INVALID;
+  }
+
+  /**
+   * Converts a string to a direction.
+   */
+  public static Direction toDirection(String str) {
+    int dir = Direction.DIR_INVALID;
+    String s = Umlaut.normalize(str).toLowerCase();
+
+    dir = Direction.find(s, Direction.getShortNames());
+
+    if (dir == Direction.DIR_INVALID) {
+      dir = Direction.find(s, Direction.getNormalizedLongNames());
+    }
+
+    return toDirection(dir);
+  }
+
+  /**
+   * Converts one of the <code>DIR_</code>constants to a direction.
+   */
+  public static Direction toDirection(int dir) {
+    if (dir < 0 || dir > 5)
+      return INVALID;
+    return directions.get(dir + 1);
+  }
+
+  /**
+   * Returns a relative coordinate representing this direction. E.g. the direction DIR_W would
    * create the coordinate (-1, 0).
    */
-  public static CoordinateID toCoordinate(int dir) {
+  public CoordinateID toCoordinate() {
     int x = 0;
     int y = 0;
 
-    switch (dir) {
+    switch (this.getDir()) {
     case DIR_NW:
       x = -1;
       y = 1;
@@ -148,29 +249,37 @@ public class Direction {
   }
 
   /**
-   * Returns a String representation of the specified direction.
+   * Returns a relative coordinate representing the direction dir. E.g. the direction DIR_W would
+   * create the coordinate (-1, 0).
    */
-  public static String toString(int dir) {
+  public static CoordinateID toCoordinate(Direction dir) {
+    return dir.toCoordinate();
+  }
+
+  /**
+   * Returns a relative coordinate representing the direction dir. E.g. the direction DIR_W would
+   * create the coordinate (-1, 0).
+   * 
+   * @deprecated Prefer using {@link #toCoordinate(Direction)}.
+   */
+  @Deprecated
+  public static CoordinateID toCoordinate(int dir) {
+    return toCoordinate(toDirection(dir));
+  }
+
+  /**
+   * Returns a String representation for this direction.
+   */
+  @Override
+  public String toString() {
     return Direction.toString(dir, false);
   }
 
   /**
-   * DOCUMENT-ME
+   * @param shortForm
+   * @return f true, a short form of the direction's string representation is returned.
    */
-  public static String toString(CoordinateID c) {
-    return Direction.toString(Direction.toInt(c));
-  }
-
-  /**
-   * Returns a String representation of the specified direction.
-   * 
-   * @param dir if true, a short form of the direction's string representation is returned.
-   */
-  public static String toString(int dir, boolean shortForm) {
-    if ((dir < Direction.DIR_NW) || (dir > Direction.DIR_W)) {
-      dir = Direction.DIR_INVALID;
-    }
-
+  public String toString(boolean shortForm) {
     if (shortForm)
       return Direction.getShortDirectionString(dir);
     else
@@ -178,48 +287,31 @@ public class Direction {
   }
 
   /**
-   * Converts a relative coordinate to an integer representation of the direction.
+   * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
+   * {@link #toString()}.
    */
-  public static int toInt(CoordinateID c) {
-    int dir = Direction.DIR_INVALID;
-
-    if (c.x == -1) {
-      if (c.y == 0) {
-        dir = Direction.DIR_W;
-      } else if (c.y == 1) {
-        dir = Direction.DIR_NW;
-      }
-    } else if (c.x == 0) {
-      if (c.y == -1) {
-        dir = Direction.DIR_SW;
-      } else if (c.y == 1) {
-        dir = Direction.DIR_NE;
-      }
-    } else if (c.x == 1) {
-      if (c.y == -1) {
-        dir = Direction.DIR_SE;
-      } else if (c.y == 0) {
-        dir = Direction.DIR_E;
-      }
-    }
-
-    return dir;
+  public static String toString(int dir) {
+    return Direction.toString(dir, false);
   }
 
   /**
-   * Converts a string to an integer representation of the direction.
+   * Returns a String representation of the specified direction. <b>Note:</b> Please prefer using
+   * {@link #toString(boolean)}.
+   * 
+   * @param dir if true, a short form of the direction's string representation is returned.
    */
-  public static int toInt(String str) {
-    int dir = Direction.DIR_INVALID;
-    String s = Umlaut.normalize(str).toLowerCase();
+  public static String toString(int dir, boolean shortForm) {
+    if (shortForm)
+      return Direction.getShortDirectionString(dir);
+    else
+      return Direction.getLongDirectionString(dir);
+  }
 
-    dir = Direction.find(s, Direction.getShortNames());
-
-    if (dir == Direction.DIR_INVALID) {
-      dir = Direction.find(s, Direction.getNormalizedLongNames());
-    }
-
-    return dir;
+  /**
+   * Returns a String representation of the specified direction.
+   */
+  public static String toString(CoordinateID c) {
+    return toDirection(c).toString();
   }
 
   private static String getLongDirectionString(int key) {
@@ -268,6 +360,26 @@ public class Direction {
     }
 
     return Resources.get("util.direction.name.short.invalid");
+  }
+
+  /**
+   * Converts a relative coordinate to an integer representation of the direction.
+   * 
+   * @deprecated Prefer using {@link #toDirection(CoordinateID)}.
+   */
+  @Deprecated
+  public static int toInt(CoordinateID c) {
+    return toDirection(c.x, c.y).getDir();
+  }
+
+  /**
+   * Converts a string to an integer representation of the direction.
+   * 
+   * @deprecated Prefer using {@link #toDirection(String)}.
+   */
+  @Deprecated
+  public static int toInt(String str) {
+    return toDirection(str).getDir();
   }
 
   /**
@@ -358,4 +470,31 @@ public class Direction {
     else
       return -1;
   }
+
+  /**
+   * Returns the difference to the specified Direction constant. E.g.,
+   * <code>N.getDifference(SE) == -2</code>.
+   */
+  public int getDifference(Direction dir) {
+    return getDifference(dir.dir);
+  }
+
+  /**
+   * Returns the difference to the specified dir constant. E.g.,
+   * <code>N.getDifference(SE) == -2</code>. Differences to {@link #INVALID} are always
+   * {@link Integer#MAX_VALUE}.
+   */
+  public int getDifference(int dir) {
+    if (toDirection(dir) == INVALID)
+      return Integer.MAX_VALUE;
+    return (6 + this.dir - dir) % 6 - 6;
+  }
+
+  /**
+   * Returns a list of all valid directions.
+   */
+  public static List<Direction> getDirections() {
+    return directions;
+  }
+
 }

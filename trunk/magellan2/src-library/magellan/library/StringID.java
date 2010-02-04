@@ -91,6 +91,8 @@ public class StringID implements ID {
    */
   @Override
   public boolean equals(Object o) {
+    if (o == null)
+      return false;
     try {
       return (this == o) || id.equals(((StringID) o).id);
     } catch (ClassCastException e) {

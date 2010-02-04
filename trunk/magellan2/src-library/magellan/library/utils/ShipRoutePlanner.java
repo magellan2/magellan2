@@ -180,15 +180,14 @@ public class ShipRoutePlanner extends RoutePlanner {
     List<Region> returnPath = null;
     if (!makeSingle) {
       Region lastRegion = path.get(path.size() - 1);
-      int returnShore = Direction.DIR_INVALID;
+      Direction returnDirection = Direction.INVALID;
       if (!lastRegion.getRegionType().isOcean() || !Regions.containsBuilding(lastRegion, harbour)) {
         Region preLastRegion = path.get(path.size() - 2);
-        returnShore =
-            Direction.toInt(lastRegion.getID().createDistanceCoordinate(
-                preLastRegion.getCoordinate()));
+        returnDirection = Direction.toDirection(lastRegion.getID(), preLastRegion.getID());
       }
       returnPath =
-          Regions.planShipRoute(data, destination, returnShore, ship.getRegion().getID(), speed);
+          Regions.planShipRoute(data, destination, returnDirection.getDir(), ship.getRegion()
+              .getID(), speed);
       path.addAll(returnPath);
     }
 

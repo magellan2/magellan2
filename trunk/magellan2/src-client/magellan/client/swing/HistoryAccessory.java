@@ -136,14 +136,14 @@ class DirWrapper {
   }
 
   /**
-   * DOCUMENT-ME
+   * @return
    */
   public File getDirectory() {
     return dir;
   }
 
   /**
-   * DOCUMENT-ME
+   * @see java.lang.Object#toString()
    */
   @Override
   public String toString() {
@@ -157,15 +157,25 @@ class DirWrapper {
   }
 
   // Bucket needs this
+  /**
+   * Compares the directories.
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
   @Override
   public boolean equals(Object o) {
-    try {
-      return o != null && getDirectory().equals(((DirWrapper) o).getDirectory());
-    } catch (ClassCastException e) {
-      return false;
+    if (o instanceof DirWrapper) {
+      if (this == o)
+        return true;
+      return getDirectory().equals(((DirWrapper) o).getDirectory());
     }
+    return false;
+
   }
 
+  /**
+   * @see java.lang.Object#hashCode()
+   */
   @Override
   public int hashCode() {
     return getDirectory() == null ? 42 : getDirectory().hashCode();

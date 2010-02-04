@@ -73,11 +73,9 @@ public abstract class Date extends Object implements ID {
    */
   @Override
   public boolean equals(Object o) {
-    try {
+    if (o instanceof Date)
       return (this == o) || iDate == ((Date) o).iDate;
-    } catch (ClassCastException e) {
-      return false;
-    }
+    return false;
   }
 
   /**

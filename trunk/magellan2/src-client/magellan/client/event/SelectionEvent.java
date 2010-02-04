@@ -32,7 +32,7 @@ public class SelectionEvent extends EventObject {
   /**
    * Default selection type.
    * 
-   * @see #ST_REGIONSs
+   * @see #ST_REGIONS
    */
   public static final int ST_DEFAULT = 0;
 
@@ -164,7 +164,6 @@ public class SelectionEvent extends EventObject {
    * 
    * @param source
    * @param hasRegion
-   * @return
    */
   public static SelectionEvent create(Object source, HasRegion hasRegion) {
     if (hasRegion == null)
@@ -180,7 +179,6 @@ public class SelectionEvent extends EventObject {
    * 
    * @param source
    * @param region
-   * @return
    */
   public static SelectionEvent create(Object source, Region region) {
     if (region == null)
@@ -195,7 +193,6 @@ public class SelectionEvent extends EventObject {
    * @param source
    * @param activeRegion null allowed
    * @param regions
-   * @return
    */
   public static SelectionEvent create(Object source, Region activeRegion, Collection<Region> regions) {
     ArrayList<List<Object>> contexts = new ArrayList<List<Object>>(regions.size());
@@ -213,7 +210,6 @@ public class SelectionEvent extends EventObject {
    * @param source
    * @param activeUnit <code>null</code> allowed
    * @param selectedObjects
-   * @return
    */
   public static SelectionEvent create(Object source, HasRegion activeUnit,
       Collection<? extends HasRegion> selectedObjects) {
@@ -233,7 +229,6 @@ public class SelectionEvent extends EventObject {
    * 
    * @param source
    * @param regions
-   * @return
    */
   public static SelectionEvent create(Object source, Collection<Region> regions) {
     ArrayList<List<Object>> contexts = new ArrayList<List<Object>>(regions.size());
@@ -249,10 +244,7 @@ public class SelectionEvent extends EventObject {
    * Creates a {@link #ST_DEFAULT} SelectionEvent with all the details.
    * 
    * @param source
-   * @param selectedObjects
    * @param contexts
-   * @param activeObject
-   * @return
    */
   public static SelectionEvent create(Object source, List<? extends List<?>> contexts) {
     return new SelectionEvent(source, SelectionEvent.copy2(contexts), SelectionEvent.ST_DEFAULT);
@@ -264,7 +256,6 @@ public class SelectionEvent extends EventObject {
    * @param source
    * @param selection
    * @param mode
-   * @return
    */
   public static SelectionEvent create(Object source, Object selection, int mode) {
     if (selection == null)

@@ -528,7 +528,7 @@ public class PathfinderMapContextMenu extends JMenu implements SelectionListener
 
   /**
    * Returns a translation for the specified order key.
-   * */
+   */
   private static String getOrder(String key) {
     return Resources.getOrderTranslation(key);
   }

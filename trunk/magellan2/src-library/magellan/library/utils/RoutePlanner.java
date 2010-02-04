@@ -36,14 +36,13 @@ public class RoutePlanner {
   public final static Costs ZERO_COSTS = new ZeroCosts();
 
   /**
-   * Creates unit movement orders using the cost function provided by {@link #getCosts()}.
+   * Creates unit movement orders using the cost function provided as argument.
    * 
    * @param orders New orders will be appended to this list.
    * @param path The path to convert to orders
    * @param makeRoute ROUTE commands will be created if this is <code>true</code>.
    * @param useVorlage Vorlage meta orders will be created if this is <code>true</code>.
-   * @param vorlageOffset This value will be added to the value of Vorlage "#after" orders.
-   * @param A cost function specific to the kind of movement used.
+   * @param costs A cost function specific to the kind of movement used.
    * @return Number of added order lines
    * @see RoutingDialogData
    */
@@ -121,6 +120,9 @@ public class RoutePlanner {
     return orders.size() - size;
   }
 
+  /**
+   * An abstract function that calculates route costs.
+   */
   public interface Costs {
     /**
      * Set costs to zero, starting a new leg
@@ -144,6 +146,7 @@ public class RoutePlanner {
   public static class ZeroCosts implements Costs {
 
     public void increase(Region region, Region region2) {
+      // no costs
     }
 
     public boolean isExhausted() {
@@ -151,6 +154,7 @@ public class RoutePlanner {
     }
 
     public void reset() {
+      // nothing to do
     }
   }
 

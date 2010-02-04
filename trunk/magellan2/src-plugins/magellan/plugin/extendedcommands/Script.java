@@ -81,9 +81,8 @@ public class Script implements Cloneable {
    * @see #toXML(PrintWriter)
    */
   public Script(Element node) {
-    if (node == null) {
+    if (node == null)
       return;
-    }
     if (node.getNodeName().equalsIgnoreCase("library")) {
       script = Utils.getCData(node);
       priority = Priority.NORMAL;
@@ -106,9 +105,8 @@ public class Script implements Cloneable {
       containerId = getContainerId(node);
       scripttype = Script.SCRIPTTYPE_UNIT;
 
-    } else {
+    } else
       throw new IllegalArgumentException("Unknown Script type");
-    }
   }
 
   /**

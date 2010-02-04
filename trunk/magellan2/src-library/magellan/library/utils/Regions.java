@@ -951,13 +951,12 @@ public class Regions {
    * Returns a shortest path over land from start to dest, excluding certain region types and
    * considering streets.
    * 
-   * @param regions
+   * @param data
    * @param start
    * @param dest
    * @param excludedRegionTypes
    * @param radius
    * @param streetRadius
-   * @return
    */
   public static List<Region> getLandPath(GameData data, final CoordinateID start,
       final CoordinateID dest, final Map<ID, RegionType> excludedRegionTypes, final int radius,
@@ -1354,12 +1353,14 @@ public class Regions {
   }
 
   /**
-   * @param ship
+   * Finds a shortes path for a ship from start to destination.
+   * 
+   * @param data
+   * @param start
+   * @param shoreId The ship's shore or {@link Direction#DIR_INVALID}
    * @param destination
-   * @param allregions
-   * @param harbour
-   * @param speed The speed of the ship
-   * @return
+   * @param speed The number of regions per week
+   * @return A list of region from start to destination, or <code>null</code> if no path exists.
    */
   public static List<Region> planShipRoute(GameData data, CoordinateID start, int shoreId,
       CoordinateID destination, int speed) {

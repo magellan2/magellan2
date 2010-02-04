@@ -44,6 +44,11 @@ import magellan.library.rules.MessageType;
  */
 public interface Message extends Identifiable {
   /**
+   * An placeholder ID for messages without valid ID.
+   */
+  static final IntegerID ambiguousID = IntegerID.create(-1);
+
+  /**
    * The attributes of this message. The keys are the keys of the attribute, the values object pairs
    * of the attributes' keys and values.
    */

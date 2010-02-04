@@ -1298,7 +1298,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
   }
 
   /**
-   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
    */
   public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);
@@ -1431,7 +1431,7 @@ public class MapperPanel extends InternationalizedDataPanel implements ActionLis
     }
 
     /**
-     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+     * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
      */
     public String getShortcutDescription(KeyStroke stroke) {
       int index = shortcuts.indexOf(stroke);

@@ -71,7 +71,7 @@ public class MovementInspector extends AbstractInspector {
   /**
    * Checks the specified movement for overload and too many horses.
    * 
-   * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, int)
+   * @see magellan.library.tasks.AbstractInspector#reviewUnit(magellan.library.Unit, Severity)
    */
   @Override
   public List<Problem> reviewUnit(Unit u, Severity severity) {

@@ -61,7 +61,7 @@ public class TradeTextCellRenderer extends TextCellRenderer implements GameDataL
     context.getEventDispatcher().addGameDataListener(this);
     itemName = settings.getProperty("TradeTextCellRenderer.Item");
     sellMode = itemName == null; // settings.getProperty("TradeTextCellRenderer.SellMode",
-                                 // "true").equals("true");
+    // "true").equals("true");
     findLuxuries();
     createContextMenu();
   }

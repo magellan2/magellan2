@@ -30,6 +30,11 @@ import magellan.library.utils.logging.Logger;
 public abstract class AbstractInspector implements Inspector {
   private static final Logger log = Logger.getInstance(AbstractInspector.class);
 
+  /**
+   * This prefix is prepended to suppress markers.
+   * 
+   * @see #suppress(Problem)
+   */
   public static final String SUPPRESS_LINE_PREFIX = Inspector.SUPPRESS_PREFIX + "Line";
 
   private GameData data;
@@ -112,10 +117,11 @@ public abstract class AbstractInspector implements Inspector {
   protected boolean checkIgnoreUnit(Unit u) {
     for (ProblemType p : getTypes()) {
       boolean found = false;
-      for (String order : u.getOrders())
+      for (String order : u.getOrders()) {
         if (order.equals(getSuppressUnitComment(p))) {
           found = true;
         }
+      }
       if (!found)
         return false;
     }
@@ -139,9 +145,10 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link #reviewRegion(Region, int)} (or both).
+   * {@link #reviewRegion(Region, Severity)} (or both).
    * 
-   * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit, int)
+   * @see magellan.library.tasks.Inspector#reviewUnit(magellan.library.Unit,
+   *      magellan.library.tasks.Problem.Severity)
    */
   public List<Problem> reviewUnit(Unit u, Severity severity) {
     return Collections.emptyList();
@@ -188,9 +195,9 @@ public abstract class AbstractInspector implements Inspector {
 
   /**
    * Returns an empty list. Sub-classes should usually overwrite this method or
-   * {@link #reviewUnit(Unit, int)} (or both).
+   * {@link #reviewUnit(Unit, Severity)} (or both).
    * 
-   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region, int)
+   * @see magellan.library.tasks.Inspector#reviewRegion(magellan.library.Region, Severity)
    */
   public List<Problem> reviewRegion(Region r, Severity severity) {
     return Collections.emptyList();
@@ -250,10 +257,16 @@ public abstract class AbstractInspector implements Inspector {
     gameSpecStuff = data.getGameSpecificStuff();
   }
 
+  /**
+   * Returns the current GameData
+   */
   public GameData getData() {
     return data;
   }
 
+  /**
+   * Returns the current gameSpecificStuff.
+   */
   public GameSpecificStuff getGameSpecificStuff() {
     return gameSpecStuff;
   }

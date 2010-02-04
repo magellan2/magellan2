@@ -88,16 +88,15 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
     }
   }
 
-  // pavkovic 2003.06.23: back to version 1.3
-  // public void applyPreferences() {
+  /**
+   * @param adapter
+   */
   public void applyPreferences(DetailedPreferencesAdapter adapter) {
     System.arraycopy(adapter.properties, 0, properties, 0, properties.length);
     applyPreferences();
   }
 
   /**
-   * DOCUMENT-ME
-   * 
    * @see magellan.client.swing.preferences.PreferencesFactory#createPreferencesAdapter()
    */
   public PreferencesAdapter createPreferencesAdapter() {
@@ -105,7 +104,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
   }
 
   /**
-   * DOCUMENT-ME
+   * Returns a resource translation for the given key in the configured resource prefix
    */
   public String getString(String key) {
     return Resources.get(resourcePrefix + key);
@@ -128,7 +127,6 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
      * @param sK suffixes of properties keys
      * @param lK suffixes of resource keys
      * @param rows number of rows of boxes
-     * @param resourcePrefix Prefix for resource keys
      */
     public DetailPolicyPreferencesAdapter(int count, int subcount[], Properties p, String prefix,
         String sK[][], String lK[], int rows, DetailsNodeWrapperDrawPolicy parent) {
@@ -149,7 +147,7 @@ public class DetailsNodeWrapperDrawPolicy extends AbstractNodeWrapperDrawPolicy 
   }
 
   /**
-   * DOCUMENT-ME
+   * @see magellan.client.swing.tree.NodeWrapperDrawPolicy#getTitle()
    */
   public String getTitle() {
     return getString("pref.title");

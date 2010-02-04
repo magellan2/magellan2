@@ -942,7 +942,7 @@ public class ECheckPanel extends InternationalizedDataPanel implements Selection
   }
 
   /**
-   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(java.lang.Object)
+   * @see magellan.client.desktop.ShortcutListener#getShortcutDescription(KeyStroke)
    */
   public String getShortcutDescription(KeyStroke stroke) {
     int index = shortcuts.indexOf(stroke);

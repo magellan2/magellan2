@@ -25,7 +25,8 @@ import magellan.library.Unit;
 public class UnitRoutePlanner {
 
   /**
-   * @deprecated {@link magellan.library.utils.UnitRoutePlanner#planUnitRoute(Unit, GameData, Component, Collection)}
+   * @deprecated Use
+   *             {@link magellan.library.utils.UnitRoutePlanner#planUnitRoute(Unit, GameData, Component, Collection, magellan.library.utils.guiwrapper.RoutingDialogDataPicker)}
    */
   @Deprecated
   public boolean planUnitRoute(Unit unit, GameData data, Component ui, Collection<Unit> otherUnits) {

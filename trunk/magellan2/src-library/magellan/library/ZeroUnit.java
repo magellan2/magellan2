@@ -48,6 +48,9 @@ public interface ZeroUnit extends Unit {
    */
   public int getModifiedPersons();
 
+  /**
+   * Delivers the number of persons given to region via command "GIVE 0 x PERSONS".
+   */
   public int getGivenPersons();
 
   /**

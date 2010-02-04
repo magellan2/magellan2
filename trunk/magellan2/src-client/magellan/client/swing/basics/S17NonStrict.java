@@ -94,7 +94,7 @@ public class S17NonStrict extends PlainDocument {
       } else {
         // User hit backspace with the cursor positioned on the start => beep
         comboBox.getToolkit().beep(); // when available use:
-                                      // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        // UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
       }
       highlightCompletedText(offs);
     } else {

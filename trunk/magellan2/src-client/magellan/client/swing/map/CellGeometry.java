@@ -43,7 +43,7 @@ public class CellGeometry {
   private Dimension scaledImgSize = new Dimension(0, 0);
   private Dimension unscaledCellSize = new Dimension(1, 1); // cell.getBounds().width/height + 1
   private Dimension scaledCellSize = new Dimension(1, 1); // unscaledCellSize.width/height *
-                                                          // scaleFactor
+  // scaleFactor
   private float cellShiftXX = 0.0f; // unscaledCellSize.width
   private float cellShiftXY = 0.0f; // unscaledCellSize.width / 2.0f
   private float cellShiftYY = 0.0f; // -(cell.ypoints[2] + 1)

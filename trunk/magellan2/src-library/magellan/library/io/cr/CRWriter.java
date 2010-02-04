@@ -74,7 +74,7 @@ import magellan.library.utils.logging.Logger;
  * Implementation notes:
  * </p>
  * <p>
- * The basic mechanism of this class is to overload the {@link #write()} method for most of the
+ * The basic mechanism of this class is to overload the <code>write()</code> method for most of the
  * Eressea base classes. Since many blocks and tags come in bunches there are helper functions for
  * each such sequence handling the collections in which the data objects are stored in.
  * </p>
@@ -97,13 +97,16 @@ public class CRWriter extends BufferedWriter {
    * Creates a CR writer with a default-sized ouput buffer.
    * 
    * @param out the stream to write output to.
+   * @throws NullPointerException if data is null.
    */
   public CRWriter(GameData data, UserInterface ui, Writer out) {
     super(out);
+    if (data == null)
+      throw new NullPointerException("CRWriter.write(GameData): argument world is null");
     world = data;
     this.ui = ui;
     if (this.ui == null) {
-      ui = new NullUserInterface();
+      this.ui = new NullUserInterface();
     }
   }
 
@@ -1999,7 +2002,7 @@ public class CRWriter extends BufferedWriter {
    * Write a presentation of a sign to the underlying stream
    * 
    * @param sign the sign
-   * @param int counter just a counter for IDing the sign
+   * @param counter just a counter for IDing the sign
    * @throws IOException passes a IOException from streamwriter
    */
   private void writeSign(Sign s, int counter) throws IOException {
@@ -2126,9 +2129,12 @@ public class CRWriter extends BufferedWriter {
     }
   }
 
-  public synchronized void writeSynchronously() throws IOException, NullPointerException {
-    if (world == null)
-      throw new NullPointerException("CRWriter.write(GameData): argument world is null");
+  /**
+   * Writes the GameData in the current thread.
+   * 
+   * @throws IOException If an I/O error occurs
+   */
+  public synchronized void writeSynchronously() throws IOException {
     savingInProgress = true;
 
     if (ui != null) {
@@ -2149,8 +2155,6 @@ public class CRWriter extends BufferedWriter {
 
   /**
    * Write the complete game data from <tt>world</tt> in the cr format.
-   * 
-   * @param world the game data to write.
    */
   public synchronized Thread writeAsynchronously() throws IOException, NullPointerException {
     if (world == null)
@@ -2180,6 +2184,7 @@ public class CRWriter extends BufferedWriter {
     t.start();
 
     if (false) {
+      // for debugging
       doWrite();
     }
 
@@ -2211,8 +2216,9 @@ public class CRWriter extends BufferedWriter {
    * public method write(). This method can be run in a thread.
    * 
    * @param world the game data to write.
+   * @throws IOException If an I/O error occurs.
    */
-  protected synchronized void doWrite() throws IOException, NullPointerException {
+  protected synchronized void doWrite() throws IOException {
     CRWriter.log.info("Start saving report. Encoding: " + encoding);
     if (!encoding.equalsIgnoreCase(world.getEncoding())) {
       CRWriter.log.warn("Encodings differ while writing CR: writer users " + encoding
@@ -2325,6 +2331,9 @@ public class CRWriter extends BufferedWriter {
     CRWriter.log.info("Done saving report");
   }
 
+  /**
+   * Returns <code>true</code> if writing has begun, but not finished
+   */
   public boolean savingInProgress() {
     return savingInProgress;
   }
@@ -2344,16 +2353,16 @@ public class CRWriter extends BufferedWriter {
   private boolean includeRegions = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the regions in data to the underlying
-   * stream.
+   * Returns whether {@link #doWrite()} writes information about the regions in data to the
+   * underlying stream.
    */
   public boolean getIncludeRegions() {
     return includeRegions;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the regions in data to the underlying
-   * stream.
+   * Toggles whether {@link #doWrite()} writes information about the regions in data to the
+   * underlying stream.
    */
   public void setIncludeRegions(boolean includeRegions) {
     this.includeRegions = includeRegions;
@@ -2362,7 +2371,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeBuildings = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the buildings in data to the
+   * Returns whether {@link #doWrite()} writes information about the buildings in data to the
    * underlying stream.
    */
   public boolean getIncludeBuildings() {
@@ -2370,7 +2379,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the buildings in data to the
+   * Toggles whether {@link #doWrite()} writes information about the buildings in data to the
    * underlying stream.
    */
   public void setIncludeBuildings(boolean includeBuildings) {
@@ -2380,7 +2389,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeShips = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the ships in data to the underlying
+   * Returns whether {@link #doWrite()} writes information about the ships in data to the underlying
    * stream.
    */
   public boolean getIncludeShips() {
@@ -2388,7 +2397,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the ships in data to the underlying
+   * Toggles whether {@link #doWrite()} writes information about the ships in data to the underlying
    * stream.
    */
   public void setIncludeShips(boolean includeShips) {
@@ -2398,7 +2407,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeUnits = true;
 
   /**
-   * Returns whether {@link #write()} writes information about the units in data to the underlying
+   * Returns whether {@link #doWrite()} writes information about the units in data to the underlying
    * stream.
    */
   public boolean getIncludeUnits() {
@@ -2406,7 +2415,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about the units in data to the underlying
+   * Toggles whether {@link #doWrite()} writes information about the units in data to the underlying
    * stream.
    */
   public void setIncludeUnits(boolean includeUnits) {
@@ -2416,7 +2425,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeUnitDetails = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * Toggles whether {@link #doWrite()} writes information about the unit skills in data to the
    * underlying stream.
    * 
    * @param newValue
@@ -2426,7 +2435,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * @return
+   * Returns true if details of unit's will be included in the written report.
    */
   public boolean getIncludeUnitDetails() {
     return includeUnitDetails;
@@ -2435,7 +2444,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeSkills = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * Toggles whether {@link #doWrite()} writes information about the unit skills in data to the
    * underlying stream.
    * 
    * @param newValue
@@ -2445,7 +2454,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * @return
+   * Returns <code>true</code> if units' skills will be written.
    */
   public boolean getIncludeSkills() {
     return includeSkills;
@@ -2454,7 +2463,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeOrders = true;
 
   /**
-   * Toggles whether {@link #write()} writes the units' orders in data to the underlying stream.
+   * Toggles whether {@link #doWrite()} writes the units' orders in data to the underlying stream.
    * 
    * @param newValue
    */
@@ -2463,7 +2472,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * @return
+   * Returns <code>true</code> if the unit's orders will be included in writing.
    */
   public boolean getIncludeOrders() {
     return includeOrders;
@@ -2472,7 +2481,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeItems = true;
 
   /**
-   * Toggles whether {@link #write()} writes information about the unit skills in data to the
+   * Toggles whether {@link #doWrite()} writes information about the unit skills in data to the
    * underlying stream.
    * 
    * @param newValue
@@ -2482,7 +2491,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * @return
+   * Returns true if items will be written.
    */
   public boolean getIncludeItems() {
     return includeItems;
@@ -2491,7 +2500,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeRegionDetails = true;
 
   /**
-   * Returns whether {@link #write()} writes detailed information about the regions in data to the
+   * Returns whether {@link #doWrite()} writes detailed information about the regions in data to the
    * underlying stream.
    */
   public boolean getIncludeRegionDetails() {
@@ -2499,7 +2508,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes detailed information about the regions in data to the
+   * Toggles whether {@link #doWrite()} writes detailed information about the regions in data to the
    * underlying stream.
    */
   public void setIncludeRegionDetails(boolean includeRegionDetails) {
@@ -2509,14 +2518,14 @@ public class CRWriter extends BufferedWriter {
   private boolean includeIslands = true;
 
   /**
-   * Returns whether {@link #write()} writes information about islands to the underlying stream.
+   * Returns whether {@link #doWrite()} writes information about islands to the underlying stream.
    */
   public boolean getIncludeIslands() {
     return includeIslands;
   }
 
   /**
-   * Toggles whether {@link #write()} writes information about islands to the underlying stream.
+   * Toggles whether {@link #doWrite()} writes information about islands to the underlying stream.
    */
   public void setIncludeIslands(boolean includeIslands) {
     this.includeIslands = includeIslands;
@@ -2525,7 +2534,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeMessages = true;
 
   /**
-   * Returns whether {@link #write()} writes messages contained in the game data to the underlying
+   * Returns whether {@link #doWrite()} writes messages contained in the game data to the underlying
    * stream.
    */
   public boolean getIncludeMessages() {
@@ -2533,7 +2542,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes messages contained in the game data to the underlying
+   * Toggles whether {@link #doWrite()} writes messages contained in the game data to the underlying
    * stream.
    */
   public void setIncludeMessages(boolean includeMessages) {
@@ -2543,7 +2552,7 @@ public class CRWriter extends BufferedWriter {
   private boolean exportHotspots = true;
 
   /**
-   * Returns whether {@link #write()} writes Hotspots contained in the game data to the underlying
+   * Returns whether {@link #doWrite()} writes Hotspots contained in the game data to the underlying
    * stream.
    */
   public boolean getExportHotspots() {
@@ -2551,7 +2560,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes Hotspots contained in the game data to the underlying
+   * Toggles whether {@link #doWrite()} writes Hotspots contained in the game data to the underlying
    * stream.
    */
   public void setExportHotspots(boolean exportHotspots) {
@@ -2561,7 +2570,7 @@ public class CRWriter extends BufferedWriter {
   private boolean includeSpellsAndPotions = true;
 
   /**
-   * Returns whether {@link #write()} writes messages contained in the game data to the underlying
+   * Returns whether {@link #doWrite()} writes messages contained in the game data to the underlying
    * stream.
    */
   public boolean getIncludeSpellsAndPotions() {
@@ -2569,7 +2578,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes messages contained in the game data to the underlying
+   * Toggles whether {@link #doWrite()} writes messages contained in the game data to the underlying
    * stream.
    */
   public void setIncludeSpellsAndPotions(boolean includeSpellsAndPotions) {
@@ -2579,7 +2588,7 @@ public class CRWriter extends BufferedWriter {
   private boolean serverConformance = false;
 
   /**
-   * Returns whether {@link #write()} writes a cr that is compatible with cr's generated by the
+   * Returns whether {@link #doWrite()} writes a cr that is compatible with cr's generated by the
    * Eressea server, i.e. not including JavaClient specific data.
    */
   public boolean getServerConformance() {
@@ -2587,7 +2596,7 @@ public class CRWriter extends BufferedWriter {
   }
 
   /**
-   * Toggles whether {@link #write()} writes a cr that is compatible with cr's generated by the
+   * Toggles whether {@link #doWrite()} writes a cr that is compatible with cr's generated by the
    * Eressea server, i.e. not including JavaClient specific data.
    */
   public void setServerConformance(boolean serverConformance) {

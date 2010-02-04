@@ -36,7 +36,7 @@ public class ToStringComparator<T extends Object> implements Comparator<T> {
   /**
    * Creates a new NameComparator object.
    * 
-   * @param sameNameSubComparator if two objects with the same name are compared, this
+   * @param sameStringSubComparator if two objects with the same name are compared, this
    *          sub-comparator is applied if it is not <tt>null</tt>.
    */
   public ToStringComparator(Comparator<? super Object> sameStringSubComparator) {

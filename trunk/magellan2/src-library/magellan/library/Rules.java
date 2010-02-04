@@ -13,6 +13,7 @@
 
 package magellan.library;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -412,8 +413,10 @@ public interface Rules {
 
   /**
    * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName.
+   * 
+   * @throws IOException If rules are not readable
    */
-  public void setGameSpecificStuffClassName(String className);
+  public void setGameSpecificStuffClassName(String className) throws IOException;
 
   /**
    * Returns the GameSpecificStuff object for the name specified by setGameSpecificClassName.

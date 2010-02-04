@@ -284,7 +284,7 @@ public abstract class GameData implements Cloneable, Addeable {
   /**
    * Creates a new GameData object with the name of "default".
    * 
-   * @param rules Valid rules for the game
+   * @param _rules Valid rules for the game
    */
   public GameData(Rules _rules) {
     this(_rules, "default");
@@ -1898,7 +1898,6 @@ public abstract class GameData implements Cloneable, Addeable {
    * This method should wrap the mapping information former contained in
    * magellan.client.swing.MapperPanel.setLevel(int)
    * 
-   * @param data
    * @param level
    * @return Mapped Coordinate
    */

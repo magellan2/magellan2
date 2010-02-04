@@ -209,8 +209,6 @@ public interface Ship extends UnitContainer, HasRegion {
 
   /**
    * Set the ship's current speed
-   * 
-   * @param parseInt
    */
   public void setSpeed(int newSpeed);
 

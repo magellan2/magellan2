@@ -217,8 +217,8 @@ public class ResourcePreferences extends AbstractPreferencesAdapter implements P
             new java.awt.GridBagLayout());
 
     lstPaths = new JList(getWrappedURLs(Resources.getStaticPaths())); // later we need to assume
-                                                                      // that this list's model is a
-                                                                      // DefaultListModel!
+    // that this list's model is a
+    // DefaultListModel!
 
     lstPaths.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 

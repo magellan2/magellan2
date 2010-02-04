@@ -21,24 +21,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import magellan.library.utils.logging.Logger;
+
 /**
- * I'm not really sure why this class is here. It implements Map<String,
- * String>. It's probably just a pre-java-1.5 typesafe variant plus the
- * <code>getTag</code> and <code>putTag</code> methods.
- * <code>entrySet()</code> returns <code>null</code> and
- * <code>equals()</code> always returns <code>false</code>.
+ * I'm not really sure why this class is here. It implements Map<String, String>. It's probably just
+ * a pre-java-1.5 typesafe variant plus the <code>getTag</code> and <code>putTag</code> methods.
+ * <code>entrySet()</code> returns <code>null</code> and <code>equals()</code> always returns
+ * <code>false</code>.
  * 
  * @author $Author: $
  * @version $Revision: 171 $
- * @deprecated (stm) Nobody seems to really need this class. A simple Map<String,
- *             String> would do. The implementation is very inefficient.
+ * @deprecated (stm) Nobody seems to really need this class. A simple Map<String, String> would do.
+ *             The implementation is very inefficient.
  */
-/**
- * TODO This class must be commented
- * 
- * @author ...
- * @version 1.0, Feb 26, 2008
- */
+@Deprecated
 public class TagMap implements Map<String, String> {
   protected class Tag {
     /** DOCUMENT-ME */
@@ -63,7 +59,7 @@ public class TagMap implements Map<String, String> {
   }
 
   public TagMap() {
-
+    Logger.getInstance(TagMap.class).warn("using deprecated TagMap");
   }
 
   protected Tag tags[] = null;

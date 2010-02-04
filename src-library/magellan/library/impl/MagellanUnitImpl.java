@@ -82,7 +82,6 @@ import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Regions;
 import magellan.library.utils.Resources;
 import magellan.library.utils.Sorted;
-import magellan.library.utils.TagMap;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.comparator.LinearUnitTempUnitComparator;
 import magellan.library.utils.comparator.SortIndexComparator;
@@ -2370,7 +2369,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
     }
 
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>();
+      tagMap = new HashMap<String, String>(1);
     }
 
     return tagMap.put(tag, value);
@@ -2411,7 +2410,7 @@ public class MagellanUnitImpl extends MagellanRelatedImpl implements Unit, HasRe
    */
   public Map<String, String> getTagMap() {
     if (tagMap == null) {
-      tagMap = new TagMap();
+      tagMap = new HashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(tagMap);

@@ -40,7 +40,6 @@ import magellan.library.utils.Cache;
 import magellan.library.utils.CacheHandler;
 import magellan.library.utils.OrderedHashtable;
 import magellan.library.utils.Sorted;
-import magellan.library.utils.TagMap;
 import magellan.library.utils.Taggable;
 import magellan.library.utils.guiwrapper.CacheableOrderEditor;
 import magellan.library.utils.logging.Logger;
@@ -90,8 +89,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
   protected Map<ID, Item> items = null;
 
   /**
-   * A map storing all unknown tags for all UnitContainer objects. Keys are IDs of these objects,
-   * values are Maps(should be TagMaps).
+   * A map storing all unknown tags for all UnitContainer objects.
    */
   private Map<String, String> tagMap = null;
 
@@ -484,7 +482,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public String putTag(String tag, String value) {
     if (tagMap == null) {
-      tagMap = new HashMap<String, String>();
+      tagMap = new HashMap<String, String>(1);
     }
 
     return tagMap.put(tag, value);
@@ -525,7 +523,7 @@ public abstract class MagellanUnitContainerImpl extends MagellanRelatedImpl impl
    */
   public Map<String, String> getTagMap() {
     if (tagMap == null) {
-      tagMap = new TagMap();
+      tagMap = new HashMap<String, String>(1);
     }
 
     return Collections.unmodifiableMap(tagMap);

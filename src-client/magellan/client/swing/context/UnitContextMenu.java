@@ -243,7 +243,12 @@ public class UnitContextMenu extends JPopupMenu {
     for (Unit u : selectedUnits) {
       tags.addAll(u.getTagMap().keySet());
     }
+    int count = 0;
     for (String tag : tags) {
+      if (count++ > 40) {
+        add(new JMenuItem(Resources.get("context.unitcontextmenu.toomanytags.message")));
+        break;
+      }
       JMenuItem removeTag =
           new JMenuItem(Resources.get("context.unitcontextmenu.removetag.caption") + ": " + tag);
       removeTag.addActionListener(new ActionListener() {
@@ -504,7 +509,6 @@ public class UnitContextMenu extends JPopupMenu {
   private void event_addTag() {
     String key = null;
     Collection<String> keys = new HashSet<String>();
-    Collection<String> values = new HashSet<String>();
     Collection<Unit> keyUnits = new HashSet<Unit>();
 
     {
@@ -516,7 +520,6 @@ public class UnitContextMenu extends JPopupMenu {
         for (Unit u : r.units()) {
           keyUnits.add(u);
           keys.addAll(u.getTagMap().keySet());
-          values.addAll(u.getTagMap().values());
         }
       }
     }

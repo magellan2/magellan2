@@ -400,7 +400,7 @@ public class EresseaPostProcessor {
           // Check 2. (terrain)
           if (schemeRegion != null) {
             RegionType rt = schemeRegion.getRegionType();
-            if (!rt.isAstralVisible()) {
+            if (!rt.isAstralVisible() && !rt.equals(RegionType.unknown)) {
               inconsistent = true;
               break;
             }
